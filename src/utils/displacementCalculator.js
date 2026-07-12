@@ -16,8 +16,8 @@ function calculateDisplacement(eslora, manga, puntal, cb, densidad = 1.025) {
   return Math.round(displacement * 100) / 100;
 }
 
-function calculateDisplacementByType(eslora, manga, puntal, vesselType) {
-  const cb = getCbByType(vesselType);
+function calculateDisplacementByType(eslora, manga, puntal, tipoEstructura, tipoActividad) {
+  const cb = getCbByType(tipoEstructura, tipoActividad);
   return calculateDisplacement(eslora, manga, puntal, cb);
 }
 

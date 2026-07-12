@@ -22,7 +22,8 @@ async function createOrUpdateVessel(req, res) {
     const {
       nombre,
       trg,
-      tipo_nave,
+      tipo_estructura,
+      tipo_actividad,
       eslora,
       manga,
       puntal,
@@ -31,9 +32,9 @@ async function createOrUpdateVessel(req, res) {
       capacidad_fuel
     } = req.body;
 
-    if (!nombre || !trg || !eslora || !manga || !tipo_nave) {
+    if (!nombre || !trg || !eslora || !manga || !tipo_estructura || !tipo_actividad) {
       return res.status(400).json({
-        error: 'Campos requeridos: nombre, trg, eslora, manga, tipo_nave'
+        error: 'Campos requeridos: nombre, trg, eslora, manga, tipo_estructura, tipo_actividad'
       });
     }
 
@@ -41,7 +42,8 @@ async function createOrUpdateVessel(req, res) {
       user_id: userId,
       nombre,
       trg,
-      tipo_nave,
+      tipo_estructura,
+      tipo_actividad,
       eslora,
       manga,
       puntal: puntal || 2.0,
@@ -87,12 +89,13 @@ async function getJobStatus(req, res) {
 
       await Vessel.destroy({ where: { user_id: userId } });
 
-      const cb = getCbByType(jobData.tipo_nave);
+      const cb = getCbByType(jobData.tipo_estructura, jobData.tipo_actividad);
       const vessel = await Vessel.create({
         user_id: userId,
         nombre: jobData.nombre,
         trg: jobData.trg,
-        tipo_nave: jobData.tipo_nave,
+        tipo_estructura: jobData.tipo_estructura,
+        tipo_actividad: jobData.tipo_actividad,
         eslora: jobData.eslora,
         manga: jobData.manga,
         puntal: jobData.puntal,
@@ -113,7 +116,8 @@ async function getJobStatus(req, res) {
           id: vessel.id,
           nombre: vessel.nombre,
           trg: vessel.trg,
-          tipo_nave: vessel.tipo_nave,
+          tipo_estructura: vessel.tipo_estructura,
+          tipo_actividad: vessel.tipo_actividad,
           eslora: vessel.eslora,
           manga: vessel.manga,
           puntal: vessel.puntal,
@@ -167,7 +171,8 @@ async function getCurrentVessel(req, res) {
         id: vessel.id,
         nombre: vessel.nombre,
         trg: vessel.trg,
-        tipo_nave: vessel.tipo_nave,
+        tipo_estructura: vessel.tipo_estructura,
+        tipo_actividad: vessel.tipo_actividad,
         eslora: vessel.eslora,
         manga: vessel.manga,
         puntal: vessel.puntal,

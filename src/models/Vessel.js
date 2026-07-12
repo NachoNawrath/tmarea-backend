@@ -36,11 +36,33 @@ module.exports = (sequelize) => {
         allowNull: false,
         comment: 'Toneladas de Registro'
       },
-      tipo_nave: {
-        type: DataTypes.ENUM('barcaza', 'trasmallo', 'motonave', 'catamarano', 'otro'),
+      tipo_estructura: {
+        type: DataTypes.ENUM(
+          'lancha_motor',
+          'bote_motor',
+          'barcaza',
+          'panga',
+          'catamaran',
+          'bote_remo_vela',
+          'yate',
+          'moto_agua'
+        ),
         allowNull: false,
-        defaultValue: 'trasmallo',
-        comment: 'Tipo de nave'
+        defaultValue: 'lancha_motor',
+        comment: 'Tipo de estructura de la nave (clasificación DIRECTEMAR)'
+      },
+      tipo_actividad: {
+        type: DataTypes.ENUM(
+          'pesca_artesanal',
+          'transporte_pasajeros',
+          'carga_servicios',
+          'apoyo_acuicultura',
+          'deportiva_recreo',
+          'especiales'
+        ),
+        allowNull: false,
+        defaultValue: 'pesca_artesanal',
+        comment: 'Tipo de actividad de la nave (clasificación DIRECTEMAR)'
       },
       eslora: {
         type: DataTypes.DECIMAL(6, 2),

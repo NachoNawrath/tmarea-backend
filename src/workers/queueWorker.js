@@ -21,12 +21,12 @@ const {
 const { getOrCache } = require('../config/redis');
 
 displacementQueue.process(10, async (job) => {
-  const { eslora, manga, puntal, tipo_nave, trg, user_id } = job.data;
+  const { eslora, manga, puntal, tipo_estructura, tipo_actividad, trg, user_id } = job.data;
 
   console.log(`Processing displacement calc (${job.id})`);
 
   try {
-    const displacement = calculateDisplacementByType(eslora, manga, puntal || 2.0, tipo_nave);
+    const displacement = calculateDisplacementByType(eslora, manga, puntal || 2.0, tipo_estructura, tipo_actividad);
     const draft = calculateDraft(displacement, eslora, manga);
     const validation = validateDisplacement(trg, displacement);
 

@@ -1,58 +1,85 @@
 /**
- * VESSEL TYPES - Coeficientes de Bloque automáticos (SOLAS)
+ * VESSEL TYPES - Clasificación DIRECTEMAR (tipo_estructura + tipo_actividad)
  *
- * Used in P1.1 (Perfil Nave) para calcular desplazamiento automático
- * según tipo de nave. Validado contra datos empíricos chilenos.
+ * NOTA IMPORTANTE: el coeficiente de bloque (Cb) depende actualmente
+ * solo de tipo_estructura. tipo_actividad se registra para clasificación
+ * pero todavía NO ajusta el Cb: falta la tabla empírica real por
+ * combinación estructura×actividad (48 valores), que debe salir de una
+ * referencia normativa o naval real, no de una estimación genérica.
+ * Los valores de cb aquí son una migración directa del esquema anterior
+ * (5 tipos) a los 8 tipos de estructura nuevos — no están validados
+ * contra datos empíricos y deben revisarse antes de usarse en producción.
  */
 
-const VESSEL_TYPES = {
+const TIPO_ESTRUCTURA = {
+  lancha_motor: {
+    cb: 0.50,
+    label: 'Lancha Motor',
+    typical_trg_range: [5, 50]
+  },
+  bote_motor: {
+    cb: 0.45,
+    label: 'Bote Motor',
+    typical_trg_range: [1, 15]
+  },
   barcaza: {
     cb: 0.70,
-    label: "Barcaza chata o gabarra",
-    typical_trg_range: [15, 80],
-    description: "Embarcación de fondo plano, máximo volumen"
+    label: 'Barcaza',
+    typical_trg_range: [15, 80]
   },
-  trasmallo: {
+  panga: {
     cb: 0.60,
-    label: "Trasmallo / Palangrera",
-    typical_trg_range: [20, 70],
-    description: "Embarcación pesquera de forma media"
+    label: 'Panga',
+    typical_trg_range: [1, 10]
   },
-  motonave: {
-    cb: 0.55,
-    label: "Motonave carguera",
-    typical_trg_range: [30, 100],
-    description: "Buque carguero de trabajo"
-  },
-  catamarano: {
+  catamaran: {
     cb: 0.45,
-    label: "Catamarán de trabajo",
-    typical_trg_range: [25, 90],
-    description: "Casco doble, velocidad media-alta"
+    label: 'Catamarán',
+    typical_trg_range: [25, 90]
   },
-  otro: {
-    cb: 0.60,
-    label: "Otro tipo",
-    typical_trg_range: [15, 100],
-    description: "Usa trasmallo como referencia por defecto"
+  bote_remo_vela: {
+    cb: 0.40,
+    label: 'Bote a Remo/Vela',
+    typical_trg_range: [0.5, 8]
+  },
+  yate: {
+    cb: 0.45,
+    label: 'Yate',
+    typical_trg_range: [10, 60]
+  },
+  moto_agua: {
+    cb: 0.40,
+    label: 'Moto de Agua',
+    typical_trg_range: [0.1, 1]
   }
 };
 
-function getCbByType(vesselType) {
-  const type = VESSEL_TYPES[vesselType?.toLowerCase()] || VESSEL_TYPES.otro;
-  return type.cb;
+const TIPO_ACTIVIDAD = {
+  pesca_artesanal: { label: 'Pesca Artesanal' },
+  transporte_pasajeros: { label: 'Transporte Pasajeros' },
+  carga_servicios: { label: 'Carga y Servicios' },
+  apoyo_acuicultura: { label: 'Apoyo Acuicultura' },
+  deportiva_recreo: { label: 'Deportiva/Recreo' },
+  especiales: { label: 'Especiales' }
+};
+
+function getCbByType(tipoEstructura, tipoActividad) {
+  // tipoActividad reservado para la futura tabla estructura×actividad.
+  const estructura = TIPO_ESTRUCTURA[tipoEstructura?.toLowerCase()] || TIPO_ESTRUCTURA.lancha_motor;
+  return estructura.cb;
 }
 
-function isTrgInRange(vesselType, trg) {
-  const type = VESSEL_TYPES[vesselType?.toLowerCase()];
-  if (!type) return true;
+function isTrgInRange(tipoEstructura, trg) {
+  const estructura = TIPO_ESTRUCTURA[tipoEstructura?.toLowerCase()];
+  if (!estructura) return true;
 
-  const [min, max] = type.typical_trg_range;
+  const [min, max] = estructura.typical_trg_range;
   return trg >= min && trg <= max;
 }
 
 module.exports = {
-  VESSEL_TYPES,
+  TIPO_ESTRUCTURA,
+  TIPO_ACTIVIDAD,
   getCbByType,
   isTrgInRange
 };
