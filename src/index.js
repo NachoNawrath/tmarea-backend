@@ -11,6 +11,8 @@ const centrosRouter = require('./services/centros');
 app.use('/api/centros', centrosRouter);
 const mitilidosRoutes = require('./routes/mitilidos-routes');
 app.use('/api/mitilidos', mitilidosRoutes);
+const sitportRoutes = require('./routes/sitport-routes');
+app.use('/api/sitport', sitportRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
