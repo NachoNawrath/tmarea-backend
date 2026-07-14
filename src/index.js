@@ -7,6 +7,8 @@ app.use(express.json());
 // Rutas
 const puertosRoutes = require('./routes/puertos');
 app.use('/api/puertos', puertosRoutes);
+const centrosRouter = require('./services/centros');
+app.use('/api/centros', centrosRouter);
 
 // Health check
 app.get('/health', (req, res) => {
