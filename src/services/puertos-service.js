@@ -82,10 +82,20 @@ async function getPuertosByProximidad(lat, lng, radiusKm = 50) {
     return distance <= radiusKm;
   });
 }
-
+async function searchPuertos(query, limit = 8) {
+  const puertos = await getPuertos();
+  const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const resultados = puertos.filter((p) => {
+    const nombre = p.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const provincia = (p.provincia || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return nombre.includes(q) || provincia.includes(q);
+  });
+  return resultados.slice(0, limit);
+}
 module.exports = {
   getPuertos,
   getPuertosByProvincia,
   getPuertosByProximidad,
   loadPuertos,
+  searchPuertos,
 };

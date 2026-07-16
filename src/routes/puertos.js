@@ -5,7 +5,13 @@ const router = express.Router();
 // Obtener todos los puertos
 router.get('/', async (req, res) => {
   try {
-    const puertos = await puertosService.getPuertos();
+    const { search, limit } = req.query;
+    let puertos;
+    if (search && search.trim().length >= 2) {
+      puertos = await puertosService.searchPuertos(search.trim(), parseInt(limit) || 8);
+    } else {
+      puertos = await puertosService.getPuertos();
+    }
     res.json({
       success: true,
       count: puertos.length,
