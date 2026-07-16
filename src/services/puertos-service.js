@@ -6,7 +6,7 @@ let puertosCache = null;
 async function loadPuertos() {
   try {
     // Ruta al archivo JSON (fuera del backend, en C:\Users\katia\)
-    const jsonPath = 'C:\\Users\\katia\\puertos_chile.json';
+    const jsonPath = path.join(__dirname, 'data', 'puertos_chile_nacional.json');
     
     // Leer archivo
     const rawData = fs.readFileSync(jsonPath, 'utf-8');
