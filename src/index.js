@@ -13,6 +13,8 @@ const mitilidosRoutes = require('./routes/mitilidos-routes');
 app.use('/api/mitilidos', mitilidosRoutes);
 const sitportRoutes = require('./routes/sitport-routes');
 app.use('/api/sitport', sitportRoutes);
+const navigationRoutes = require('./routes/navigation-routes');
+app.use('/api', navigationRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
