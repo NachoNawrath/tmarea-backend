@@ -1,10 +1,20 @@
-const centrosService = require('../services/centros-acuicolas-service');
+const centrosService = require('../services/centros-service');
 const express = require('express');
 const router = express.Router();
 
-router.get('/', centrosService.getAllCentros);
-router.get('/search', centrosService.searchCentros);
-router.get('/nearby', centrosService.getNearbyCentros);
-router.get('/:id', centrosService.getCentroById);
+router.get('/', async (req, res) => {
+  try {
+    const { search, limit } = req.query;
+    let centros;
+    if (search && search.trim().length >= 2) {
+      centros = centrosService.search(search.trim(), parseInt(limit) || 10);
+    } else {
+      centros = centrosService.getAll();
+    }
+    res.json({ count: centros.length, data: centros });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;

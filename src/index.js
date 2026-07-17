@@ -16,7 +16,9 @@ app.use((req, res, next) => {
 // Rutas
 const puertosRoutes = require('./routes/puertos');
 app.use('/api/puertos', puertosRoutes);
-const centrosRouter = require('./services/centros');
+const centrosRouter = require('./routes/centros');
+const centrosService = require('./services/centros-service');
+centrosService.loadCentros();
 app.use('/api/centros', centrosRouter);
 const mitilidosRoutes = require('./routes/mitilidos-routes');
 app.use('/api/mitilidos', mitilidosRoutes);
