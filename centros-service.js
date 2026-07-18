@@ -58,4 +58,16 @@ function getStats() {
   });
   return { total_centros: centrosData.length, total_superficie_hectareas: parseFloat(totalSuperficie.toFixed(2)), por_region: regionStats };
 }
-module.exports = { loadCentros, getAll, getByRegion, getByProximity, getStats };
+function search(query, limit) {
+  limit = limit || 10;
+  const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const resultados = centrosData.filter(c => {
+    const nombre = c.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const empresa = c.empresa.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const comuna = c.comuna.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return nombre.includes(q) || empresa.includes(q) || comuna.includes(q);
+  });
+  return resultados.slice(0, limit);
+}
+
+module.exports = { loadCentros, getAll, getByRegion, getByProximity, getStats, search };

@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const app = express();
 
@@ -16,14 +18,20 @@ app.use((req, res, next) => {
 // Rutas
 const puertosRoutes = require('./routes/puertos');
 app.use('/api/puertos', puertosRoutes);
+
 const centrosRouter = require('./routes/centros');
 const centrosService = require('./services/centros-service');
 centrosService.loadCentros();
 app.use('/api/centros', centrosRouter);
+
 const mitilidosRoutes = require('./routes/mitilidos-routes');
+const mitilidosService = require('./services/mitilidos-service');
+mitilidosService.loadMitilidos();
 app.use('/api/mitilidos', mitilidosRoutes);
+
 const sitportRoutes = require('./routes/sitport-routes');
 app.use('/api/sitport', sitportRoutes);
+
 const navigationRoutes = require('./routes/navigation-routes');
 app.use('/api', navigationRoutes);
 
