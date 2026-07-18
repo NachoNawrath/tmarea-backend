@@ -29,6 +29,9 @@ const mitilidosService = require('./services/mitilidos-service');
 mitilidosService.loadMitilidos();
 app.use('/api/mitilidos', mitilidosRoutes);
 
+const marineWeatherRoutes = require('./routes/marine-weather-routes');
+app.use('/api/marine-weather', marineWeatherRoutes);
+
 const sitportRoutes = require('./routes/sitport-routes');
 app.use('/api/sitport', sitportRoutes);
 
