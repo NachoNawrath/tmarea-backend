@@ -1,3 +1,4 @@
+require('dotenv').config();
 'use strict';
 
 const express = require('express');
@@ -37,6 +38,10 @@ app.use('/api/sitport', sitportRoutes);
 
 const navigationRoutes = require('./routes/navigation-routes');
 app.use('/api', navigationRoutes);
+const mapRoutes = require('./routes/map-routes');
+app.use('/api/mapa', mapRoutes);
+const voyageReportRoutes = require('./routes/voyage-report-routes');
+app.use('/api/viaje', voyageReportRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
