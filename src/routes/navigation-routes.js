@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const { OceanDataReader, OceanDataUnavailableError } = require('../services/ocean-data-reader');
 const ShipPhysics = require('../services/ship-physics');
 const NavigationCalculator = require('../services/navigation-calculator');
@@ -42,7 +42,7 @@ router.post('/navegacion/calculo', async (req, res) => {
 
     const [datosOceanicos, fisica] = await Promise.all([
       oceanReader.obtenerDatos(
-        req.body.ruta_puntos,
+        req.body.ruta_puntos.map(p => Array.isArray(p) ? { lat: p[0], lon: p[1] } : { lat: p.lat, lon: p.lon ?? p.lng }),
         req.body.fecha_hora_salida,
         req.body.velocidad_crucero_nominal
       ),

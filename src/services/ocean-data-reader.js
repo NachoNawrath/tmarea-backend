@@ -1,12 +1,12 @@
-const axios = require('axios');
+﻿const axios = require('axios');
 
 // La API real de Open-Meteo no expone wind_u_10m/wind_v_10m/ocean_current_u/
 // ocean_current_v en /v1/marine (devuelve 400 "Data corrupted"). Verificado
 // contra la API en vivo: /v1/marine solo da ocean_current_velocity (km/h) +
-// ocean_current_direction (°); el viento en componentes U/V (m/s) existe pero
-// en el endpoint de pronóstico general /v1/forecast, como
+// ocean_current_direction (Â°); el viento en componentes U/V (m/s) existe pero
+// en el endpoint de pronÃ³stico general /v1/forecast, como
 // wind_u_component_10m / wind_v_component_10m con wind_speed_unit=ms. Por eso
-// se consultan ambos endpoints y la corriente se descompone U/V aquí mismo.
+// se consultan ambos endpoints y la corriente se descompone U/V aquÃ­ mismo.
 const OPEN_METEO_MARINE_URL = 'https://marine-api.open-meteo.com/v1/marine';
 const OPEN_METEO_FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
 const OPEN_METEO_TIMEOUT_MS = 10000;
@@ -53,7 +53,7 @@ function roundTo(value, step) {
 
 function calcularBoundingBox(ruta_puntos) {
   const lats = ruta_puntos.map((p) => p.lat);
-  const lons = ruta_puntos.map((p) => p.lon);
+  const lons = ruta_puntos.map((p) => p.lon ?? p.lng);
   return {
     minLat: roundTo(Math.min(...lats) - BBOX_MARGIN_DEG, BBOX_ROUNDING_DEG),
     maxLat: roundTo(Math.max(...lats) + BBOX_MARGIN_DEG, BBOX_ROUNDING_DEG),
@@ -137,7 +137,7 @@ class OceanDataReader {
     return response.data;
   }
 
-  // Interpolación lineal de un componente U/V de la grilla horaria de
+  // InterpolaciÃ³n lineal de un componente U/V de la grilla horaria de
   // Open-Meteo en un instante arbitrario (no necesariamente alineado a la hora).
   interpolarValor(tiemposHoras, valores, horasObjetivo) {
     const ultimo = tiemposHoras.length - 1;
@@ -157,7 +157,7 @@ class OceanDataReader {
   // Convierte un array paralelo de {time, velocidad_kmh, direccion_grados} en
   // ejes horarios + arrays U/V ya descompuestos. Descomponer en la grilla
   // (antes de interpolar) evita el problema de interpolar linealmente un
-  // ángulo que cruza 0°/360°.
+  // Ã¡ngulo que cruza 0Â°/360Â°.
   construirEjeYComponentesCorriente(horarioMarino) {
     const inicioGrilla = parseUTC(horarioMarino.time[0]).getTime();
     const tiemposHoras = horarioMarino.time.map(
@@ -183,11 +183,11 @@ class OceanDataReader {
   }
 
   // velocidadReferenciaKn es la velocidad_crucero_nominal real de la
-  // embarcación (provista por el llamador), usada para estimar en qué punto
-  // de la grilla horaria de Open-Meteo cae cada segmento. Es una aproximación
-  // razonable —el STW real difiere por carga y deriva, que calculan
-  // ShipPhysics/NavigationCalculator más adelante— pero ya no es un valor
-  // fijo arbitrario: refleja la embarcación real de cada solicitud.
+  // embarcaciÃ³n (provista por el llamador), usada para estimar en quÃ© punto
+  // de la grilla horaria de Open-Meteo cae cada segmento. Es una aproximaciÃ³n
+  // razonable â€”el STW real difiere por carga y deriva, que calculan
+  // ShipPhysics/NavigationCalculator mÃ¡s adelanteâ€” pero ya no es un valor
+  // fijo arbitrario: refleja la embarcaciÃ³n real de cada solicitud.
   construirVectoresOpenMeteo(datosOpenMeteo, fechaSalida, ruta_puntos, velocidadReferenciaKn) {
     const horarioViento = datosOpenMeteo.viento.hourly;
     const horarioMarino = datosOpenMeteo.marino.hourly;
@@ -215,9 +215,9 @@ class OceanDataReader {
       const horasNavegadas =
         acumuladoNM / velocidadReferenciaKn + duracionEstimadaHoras / 2;
       // Punto medio temporal del segmento: para segmentos cortos (<1h) esto
-      // equivale a "usar la hora más cercana"; para segmentos más largos,
+      // equivale a "usar la hora mÃ¡s cercana"; para segmentos mÃ¡s largos,
       // interpolarValor mezcla los dos puntos horarios que rodean ese
-      // instante, cumpliendo la interpolación lineal pedida.
+      // instante, cumpliendo la interpolaciÃ³n lineal pedida.
       const horaObjetivoViento = offsetSalidaViento + horasNavegadas;
       const horaObjetivoMarino = offsetSalidaMarino + horasNavegadas;
 
@@ -267,7 +267,7 @@ class OceanDataReader {
             V_corriente: Number.isFinite(v) ? round2(v) : segmento.V_corriente,
           };
         } catch (error) {
-          console.warn('[OCEAN] IFOP falló para segmento, uso Open-Meteo:', error.message);
+          console.warn('[OCEAN] IFOP fallÃ³ para segmento, uso Open-Meteo:', error.message);
           fallbackUsado = true;
           return segmento;
         }
@@ -292,7 +292,7 @@ class OceanDataReader {
     try {
       datosOpenMeteo = await this.consultarOpenMeteo(bbox);
     } catch (error) {
-      throw new OceanDataUnavailableError(`Open-Meteo falló: ${error.message}`);
+      throw new OceanDataUnavailableError(`Open-Meteo fallÃ³: ${error.message}`);
     }
 
     let segmentos = this.construirVectoresOpenMeteo(

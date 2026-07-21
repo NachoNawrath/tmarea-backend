@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 'use strict';
 
 const express = require('express');
@@ -43,6 +43,9 @@ app.use('/api/mapa', mapRoutes);
 const voyageReportRoutes = require('./routes/voyage-report-routes');
 app.use('/api/viaje', voyageReportRoutes);
 
+const rutasRoutes = require('./routes/routes-routes');
+app.use('/api/rutas', rutasRoutes);
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -53,3 +56,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
 });
+
