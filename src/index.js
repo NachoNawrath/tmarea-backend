@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 'use strict';
 
 const express = require('express');
@@ -28,7 +28,7 @@ app.use('/api/centros', centrosRouter);
 const mitilidosRoutes = require('./routes/mitilidos-routes');
 const mitilidosService = require('./services/mitilidos-service');
 mitilidosService.loadMitilidos();
-app.use('/api/mitilidos', mitilidosRoutes);
+app.use('/api/concesiones', mitilidosRoutes);
 
 const marineWeatherRoutes = require('./routes/marine-weather-routes');
 app.use('/api/marine-weather', marineWeatherRoutes);
