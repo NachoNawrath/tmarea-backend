@@ -36,7 +36,7 @@ router.post('/restricciones', async (req, res) => {
     const data = await sitportService.consultaRestricciones();
     if (!puerto) return res.json({ success: true, data, error: null });
     const filtradas = data.filter(r =>
-      r.GLBahia?.toLowerCase().includes(puerto.toLowerCase())
+      (() => { const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); const skip = ['caleta','bahia','puerto','ensenada','canal','punta','seno','rada','isla','lago','golfo']; const p = norm(puerto); const words = norm(r.GLBahia || '').split(/\s+/).filter(w => w.length > 3 && !skip.includes(w)); return words.length > 0 && words.some(w => p.includes(w)); })()
     );
     const timestamp = new Date().toISOString();
     res.json({ success: true, restricciones: filtradas, timestamp, error: null });
