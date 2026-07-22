@@ -89,6 +89,7 @@ function search(query = '', { grupo, comuna, region, limit = MAX_RESULTS } = {})
       if (region && !normalize(c.region).includes(normalize(region))) return false;
       if (!q) return true;
       return (
+        String(c.codigo_centro).includes(q)      ||
         normalize(c.titular).includes(q)         ||
         normalize(c.especies).includes(q)        ||
         normalize(c.ubicacion_nombre).includes(q)||
