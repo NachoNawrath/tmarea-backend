@@ -18,6 +18,15 @@ const ROUTE_CACHE_PRECISION = 3; // decimales de redondeo para la clave de cach�
 const routeCache = new LRUCache({ max: 5000, ttl: 1000 * 60 * 60 }); // 1h, hasta 5000 rutas
 const MAX_SNAP_RADIUS_NM = 60;
 
+// Penalización de costo (NO de distancia real) para que Dijkstra prefiera
+// canales interiores protegidos por sobre tramos de mar abierto cuando ambos
+// están disponibles en el grafo. La distancia reportada al usuario (mn) sigue
+// siendo la real — esto solo sesga qué arista conviene MÁS elegir.
+const OPEN_SEA_COST_PENALTY = 8; // dentro del rango 5x-10x pedido
+function routingCost(edge) {
+  return edge.confianza === 'ROJO' ? edge.length * OPEN_SEA_COST_PENALTY : edge.length;
+}
+
 function haversine(lat1, lon1, lat2, lon2) {
   const R = 3440.065;
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -108,8 +117,9 @@ function buildGraph() {
       console.warn(`[NauticalGraph] Edge ${e.id} referencia nodo inexistente (${e.from} -> ${e.to})`);
       continue;
     }
-    adjacency.get(e.from).push({ to: e.to, edgeId: e.id, dist: length, confianza: e.confianza });
-    adjacency.get(e.to).push({ to: e.from, edgeId: e.id, dist: length, confianza: e.confianza });
+    const cost = routingCost(edges.get(e.id));
+    adjacency.get(e.from).push({ to: e.to, edgeId: e.id, dist: length, cost, confianza: e.confianza });
+    adjacency.get(e.to).push({ to: e.from, edgeId: e.id, dist: length, cost, confianza: e.confianza });
 
     for (let i = 0; i < smoothedPath.length - 1; i++) {
       segments.push({ edgeId: e.id, i, a: smoothedPath[i], b: smoothedPath[i + 1], cumA: cum[i] });
@@ -382,8 +392,8 @@ function dijkstraVirtual(graph, snapO, snapD) {
     if (visited.has(cur)) continue;
     visited.add(cur);
 
-    for (const { to, edgeId, dist: edgeDist } of (graph.adjacency.get(cur) || [])) {
-      const nd = curDist + edgeDist;
+    for (const { to, edgeId, cost: edgeCost } of (graph.adjacency.get(cur) || [])) {
+      const nd = curDist + edgeCost;
       if (!dist.has(to) || nd < dist.get(to)) {
         dist.set(to, nd);
         prev.set(to, { from: cur, edgeId });
@@ -450,6 +460,21 @@ function extractSubpath(edge, d1, d2) {
 
 function confianzaRank(c) {
   return { VERDE: 0, AMARILLO: 1, ROJO: 2 }[c] ?? 1;
+}
+
+// Cuando el snap de origen/destino cae muy cerca de un extremo de su edge,
+// solo se recorre una fracción mínima de ese eje (a veces unos pocos cientos
+// de metros) — pero antes se etiquetaba con la descripción COMPLETA del eje
+// ("Puerto Montt → Hornopirén por Seno Reloncaví"), dando la falsa impresión
+// de que la ruta viaja hacia ese destino cuando en realidad solo lo toca de
+// paso para entrar al corredor troncal. Con <20% del eje o <2mn, se usa una
+// etiqueta honesta en vez de la descripción completa.
+function partialEdgeLabel(edge, distNM) {
+  const fraccion = edge.length > 0 ? distNM / edge.length : 1;
+  if (distNM < 2 && fraccion < 0.2) {
+    return `Acceso al corredor troncal (eje: ${edge.descripcion})`;
+  }
+  return `Eje: ${edge.descripcion}`;
 }
 
 function pathLength(coords) {
@@ -648,7 +673,8 @@ function calcularRutaSinCache(latOrigen, lonOrigen, latDestino, lonDestino) {
       const firstNodeCum = firstNode === startEdge.from ? 0 : startEdge.length;
       const initSeg = extractSubpath(startEdge, snapO.cumAtProj, firstNodeCum);
       if (initSeg.length > 1) {
-        pushTramo(initSeg, startEdge.confianza, `Eje: ${startEdge.descripcion}`, Math.abs(firstNodeCum - snapO.cumAtProj));
+        const distNM = Math.abs(firstNodeCum - snapO.cumAtProj);
+        pushTramo(initSeg, startEdge.confianza, partialEdgeLabel(startEdge, distNM), distNM);
       }
 
       // Tramos intermedios: nodo a nodo siguiendo prev[]
@@ -666,7 +692,8 @@ function calcularRutaSinCache(latOrigen, lonOrigen, latDestino, lonDestino) {
       const lastNodeCum = lastNode === endEdge.from ? 0 : endEdge.length;
       const finalSeg = extractSubpath(endEdge, lastNodeCum, snapD.cumAtProj);
       if (finalSeg.length > 1) {
-        pushTramo(finalSeg, endEdge.confianza, `Eje: ${endEdge.descripcion}`, Math.abs(snapD.cumAtProj - lastNodeCum));
+        const distNM = Math.abs(snapD.cumAtProj - lastNodeCum);
+        pushTramo(finalSeg, endEdge.confianza, partialEdgeLabel(endEdge, distNM), distNM);
       }
     }
   }
