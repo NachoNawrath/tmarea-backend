@@ -91,7 +91,7 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/rutas/calcular
-const { calcularRuta } = require('../services/nodos-service');
+const { calcularRutaOSM } = require('../services/corridor-router-service');
 
 router.post('/calcular', (req, res) => {
   try {
@@ -99,7 +99,7 @@ router.post('/calcular', (req, res) => {
     if (!lat_origen || !lon_origen || !lat_destino || !lon_destino) {
       return res.status(400).json({ error: 'Faltan coordenadas: lat_origen, lon_origen, lat_destino, lon_destino' });
     }
-    const resultado = calcularRuta(
+    const resultado = calcularRutaOSM(
       parseFloat(lat_origen), parseFloat(lon_origen),
       parseFloat(lat_destino), parseFloat(lon_destino)
     );

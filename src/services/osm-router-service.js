@@ -52,7 +52,7 @@ function buildGraph() {
   if (_graph) return _graph;
 
   const t0 = Date.now();
-  const filePath = path.join(__dirname, 'data', 'export.geojson');
+  const filePath = path.join(__dirname, 'data', 'red_nautica_chile_completa.geojson');
   const geojson = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
   const nodeCoords = new Map(); // key -> {lon, lat}
@@ -67,11 +67,16 @@ function buildGraph() {
     return k;
   }
 
-function ferryPenalty(ferryType) {
-    if (ferryType === 'trunk')   return 2.0;
-    if (ferryType === 'primary') return 4.0;
+function ferryPenalty(feat) {
+    const props = feat.properties || {};
+    // Rutas custom tmarea: costo base sin penalización
+    if (props.source === 'tmarea_custom') return 1.0;
+    // Ferries OSM: penalizar para que el algoritmo prefiera canales directos
+    if (props.route === 'ferry') return 1.5;
+    if (props.ferry === 'trunk') return 2.0;
+    if (props.ferry === 'primary') return 4.0;
     return 1.0;
-  }
+}
 
   function addEdge(kA, kB, la, loa, lb, lob, penalty) {
     const d = haversine(la, loa, lb, lob) * (penalty || 1.0);
@@ -84,7 +89,7 @@ function ferryPenalty(ferryType) {
   for (const feat of geojson.features) {
     const coords = feat.geometry.coordinates;
     if (coords.length < 2) continue;
-    const penalty = ferryPenalty(feat.properties.ferry || 'none');
+    const penalty = ferryPenalty(feat);
     const keys = coords.map(([lon,lat]) => addNode(lon, lat));
     for (let i = 0; i < keys.length-1; i++) {
       const [lonA, latA] = coords[i];
