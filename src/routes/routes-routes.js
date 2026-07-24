@@ -90,4 +90,24 @@ router.get('/:id', (req, res) => {
   }
 });
 
+// POST /api/rutas/calcular
+const { calcularRuta } = require('../services/nodos-service');
+
+router.post('/calcular', (req, res) => {
+  try {
+    const { lat_origen, lon_origen, lat_destino, lon_destino } = req.body;
+    if (!lat_origen || !lon_origen || !lat_destino || !lon_destino) {
+      return res.status(400).json({ error: 'Faltan coordenadas: lat_origen, lon_origen, lat_destino, lon_destino' });
+    }
+    const resultado = calcularRuta(
+      parseFloat(lat_origen), parseFloat(lon_origen),
+      parseFloat(lat_destino), parseFloat(lon_destino)
+    );
+    res.json(resultado);
+  } catch (err) {
+    console.error('[rutas/calcular]', err.message);
+    res.status(500).json({ error: 'Error calculando ruta náutica' });
+  }
+});
+
 module.exports = router;

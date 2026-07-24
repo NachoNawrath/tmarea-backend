@@ -1,0 +1,1263 @@
+{
+  "meta": {
+    "version": "1.0",
+    "fecha": "2026-07",
+    "fuentes": [
+      "SUBPESCA: 4124 concesiones acuícolas activas (análisis de densidad)",
+      "DIRECTEMAR TM-008 Art.45: estaciones de prácticos",
+      "Ejes de canal: trazados sobre zonas de libre navegación documentadas",
+      "NGA Pub.125 West Coast South America: puntos de giro de referencia"
+    ],
+    "nota_uso": "Corredor de Referencia Tmarea — línea segmentada informativa. No reemplaza carta náutica SHOA. El patrón mantiene responsabilidad absoluta de la derrota.",
+    "srs": "WGS84",
+    "confianza": {
+      "VERDE": "Waypoint normativo confirmado Art.45 / Estación prácticos DIRECTEMAR",
+      "AMARILLO": "Eje de canal documentado, zona de alta densidad operativa acuícola",
+      "ROJO": "Punto de referencia geográfica — navegue con carta SHOA y criterio propio"
+    }
+  },
+  "nodos": [
+    {
+      "id": "N-PM-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Puerto Montt — Caleta Anahuac",
+      "lat": -41.4718,
+      "lon": -72.9378,
+      "confianza": "VERDE",
+      "ref_normativa": "Capitanía Puerto Montt",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-PM-02",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Tenglo — Paso obligado salida Puerto Montt",
+      "lat": -41.487,
+      "lon": -72.975,
+      "confianza": "VERDE",
+      "ref_normativa": "Canal Tenglo, paso reglamentario",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-PM-03",
+      "tipo": "TRONCAL",
+      "nombre": "Seno de Reloncaví — boca norte",
+      "lat": -41.65,
+      "lon": -72.7,
+      "confianza": "AMARILLO",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 166
+    },
+    {
+      "id": "N-PM-04",
+      "tipo": "TRONCAL",
+      "nombre": "Archipiélago Calbuco — eje canal",
+      "lat": -41.85,
+      "lon": -73.05,
+      "confianza": "AMARILLO",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 150
+    },
+    {
+      "id": "N-ML-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Maullín — Puerto",
+      "lat": -41.628,
+      "lon": -73.604,
+      "confianza": "VERDE",
+      "ref_normativa": "Capitanía Puerto Montt",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-ML-02",
+      "tipo": "TRONCAL",
+      "nombre": "Río Maullín — eje estuario (clúster algas n=421)",
+      "lat": -41.55,
+      "lon": -73.65,
+      "confianza": "AMARILLO",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 421
+    },
+    {
+      "id": "N-CB-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Calbuco — Puerto",
+      "lat": -41.773,
+      "lon": -73.136,
+      "confianza": "VERDE",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-CB-02",
+      "tipo": "TRONCAL",
+      "nombre": "Paso Calbuco — eje canal sur",
+      "lat": -41.92,
+      "lon": -73.28,
+      "confianza": "AMARILLO",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 126
+    },
+    {
+      "id": "N-HU-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Hualaihué — Hornopirén",
+      "lat": -41.93,
+      "lon": -72.44,
+      "confianza": "VERDE",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "MEDIUM"
+    },
+    {
+      "id": "N-HU-02",
+      "tipo": "TRONCAL",
+      "nombre": "Seno de Reloncaví — eje sur (clúster n=109)",
+      "lat": -41.95,
+      "lon": -72.52,
+      "confianza": "AMARILLO",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "MEDIUM",
+      "densidad_ces": 109
+    },
+    {
+      "id": "N-AC-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Ancud — Estación Prácticos Art.45",
+      "lat": -41.7945,
+      "lon": -73.840583,
+      "confianza": "VERDE",
+      "ref_normativa": "TM-008 Art.45, Estación Practicos Ancud",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-AC-02",
+      "tipo": "TRONCAL",
+      "nombre": "Canal de Chacao — paso obligado norte",
+      "lat": -41.77,
+      "lon": -73.86,
+      "confianza": "VERDE",
+      "ref_normativa": "Canal Chacao, paso normativo",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-AC-03",
+      "tipo": "TRONCAL",
+      "nombre": "Golfo de Ancud — eje central norte",
+      "lat": -42.0,
+      "lon": -73.45,
+      "confianza": "AMARILLO",
+      "zona": "A_LOSLAGOS_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 243
+    },
+    {
+      "id": "N-CS-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Castro — Puerto",
+      "lat": -42.48,
+      "lon": -73.762,
+      "confianza": "VERDE",
+      "zona": "B_CHILOE_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-CS-02",
+      "tipo": "TRONCAL",
+      "nombre": "Canal Dalcahue — eje central (clúster n=110)",
+      "lat": -42.39,
+      "lon": -73.5,
+      "confianza": "AMARILLO",
+      "ref_normativa": "Canal Dalcahue, libre navegación aguas profundas",
+      "zona": "B_CHILOE_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 110
+    },
+    {
+      "id": "N-DL-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Dalcahue — Puerto",
+      "lat": -42.381,
+      "lon": -73.641,
+      "confianza": "VERDE",
+      "zona": "B_CHILOE_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-QN-01",
+      "tipo": "TRONCAL",
+      "nombre": "Canal Quinchao — eje (clúster n=90)",
+      "lat": -42.55,
+      "lon": -73.35,
+      "confianza": "AMARILLO",
+      "zona": "B_CHILOE_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 90
+    },
+    {
+      "id": "N-QL-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Queilen — Puerto",
+      "lat": -42.885,
+      "lon": -73.449,
+      "confianza": "VERDE",
+      "zona": "B_CHILOE_NORTE",
+      "trafico": "MEDIUM"
+    },
+    {
+      "id": "N-CH-01",
+      "tipo": "TRONCAL",
+      "nombre": "Golfo de Ancud — eje central sur (clúster n=77)",
+      "lat": -42.75,
+      "lon": -73.4,
+      "confianza": "AMARILLO",
+      "zona": "B_CHILOE_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 77
+    },
+    {
+      "id": "N-QU-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Quellón — Puerto principal",
+      "lat": -43.115,
+      "lon": -73.614,
+      "confianza": "VERDE",
+      "ref_normativa": "Capitanía Puerto Montt — jurisdicción Quellón",
+      "zona": "B_CHILOE_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-QU-02",
+      "tipo": "TRONCAL",
+      "nombre": "Golfo Corcovado — boca norte (clúster n=63)",
+      "lat": -43.2,
+      "lon": -73.35,
+      "confianza": "AMARILLO",
+      "zona": "B_CHILOE_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 63
+    },
+    {
+      "id": "N-LT-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Laitec — Estación Prácticos Art.45",
+      "lat": -43.458,
+      "lon": -73.592,
+      "confianza": "VERDE",
+      "ref_normativa": "TM-008 Art.45, Estación Prácticos Laitec",
+      "zona": "B_CHILOE_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-GC-01",
+      "tipo": "TRONCAL",
+      "nombre": "Golfo Corcovado — eje central",
+      "lat": -43.8,
+      "lon": -73.55,
+      "confianza": "AMARILLO",
+      "zona": "C_CHILOE_SUR_PALENA",
+      "trafico": "HIGH",
+      "densidad_ces": 39
+    },
+    {
+      "id": "N-GC-02",
+      "tipo": "TRONCAL",
+      "nombre": "Boca del Guafo — acceso Canal Moraleda",
+      "lat": -43.98,
+      "lon": -73.85,
+      "confianza": "ROJO",
+      "ref_normativa": "Zona de mar abierto — navegue con carta SHOA",
+      "zona": "C_CHILOE_SUR_PALENA",
+      "trafico": "MEDIUM"
+    },
+    {
+      "id": "N-CH-02",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Chaitén — Puerto",
+      "lat": -42.916,
+      "lon": -72.714,
+      "confianza": "VERDE",
+      "zona": "C_CHILOE_SUR_PALENA",
+      "trafico": "MEDIUM"
+    },
+    {
+      "id": "N-MR-01",
+      "tipo": "TRONCAL",
+      "nombre": "Canal Moraleda — eje norte (clúster n=30)",
+      "lat": -44.25,
+      "lon": -73.5,
+      "confianza": "AMARILLO",
+      "zona": "C_CHILOE_SUR_PALENA",
+      "trafico": "HIGH",
+      "densidad_ces": 39
+    },
+    {
+      "id": "N-MR-02",
+      "tipo": "TRONCAL",
+      "nombre": "Canal Moraleda — eje central",
+      "lat": -44.55,
+      "lon": -73.6,
+      "confianza": "AMARILLO",
+      "zona": "C_CHILOE_SUR_PALENA",
+      "trafico": "HIGH",
+      "densidad_ces": 30
+    },
+    {
+      "id": "N-MR-03",
+      "tipo": "TRONCAL",
+      "nombre": "Canal Moraleda — eje sur / Costa Channel",
+      "lat": -44.9,
+      "lon": -73.75,
+      "confianza": "AMARILLO",
+      "zona": "C_CHILOE_SUR_PALENA",
+      "trafico": "MEDIUM",
+      "densidad_ces": 16
+    },
+    {
+      "id": "N-AY-01",
+      "tipo": "TRONCAL",
+      "nombre": "Seno Aysén — boca acceso (clúster n=16)",
+      "lat": -45.15,
+      "lon": -73.35,
+      "confianza": "AMARILLO",
+      "zona": "D_AYSEN_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 16
+    },
+    {
+      "id": "N-AY-02",
+      "tipo": "TRONCAL",
+      "nombre": "Seno Aysén — eje fiordos (clúster n=16)",
+      "lat": -45.45,
+      "lon": -72.9,
+      "confianza": "AMARILLO",
+      "zona": "D_AYSEN_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 16
+    },
+    {
+      "id": "N-AY-03",
+      "tipo": "TRONCAL",
+      "nombre": "Canal Costa — acceso Puerto Chacabuco",
+      "lat": -45.47,
+      "lon": -72.77,
+      "confianza": "AMARILLO",
+      "ref_normativa": "Ruta Art.45(j) — acceso Bahía Chacabuco vía Seno Aysén",
+      "zona": "D_AYSEN_NORTE",
+      "trafico": "HIGH",
+      "densidad_ces": 13
+    },
+    {
+      "id": "N-PC-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Puerto Chacabuco — Puerto principal Aysén",
+      "lat": -45.462,
+      "lon": -72.807,
+      "confianza": "VERDE",
+      "ref_normativa": "TM-008 Art.45(j)",
+      "zona": "D_AYSEN_NORTE",
+      "trafico": "HIGH"
+    },
+    {
+      "id": "N-AY-04",
+      "tipo": "TRONCAL",
+      "nombre": "Fiordos Aysén sur — zona alta densidad salmones",
+      "lat": -45.9,
+      "lon": -74.2,
+      "confianza": "ROJO",
+      "ref_normativa": "Canales interiores — navegue con carta SHOA",
+      "zona": "D_AYSEN_NORTE",
+      "trafico": "MEDIUM",
+      "densidad_ces": 10
+    },
+    {
+      "id": "N-BP-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Bahía Posesión — Estación Prácticos Art.45",
+      "lat": -52.379167,
+      "lon": -68.977167,
+      "confianza": "VERDE",
+      "ref_normativa": "TM-008 Art.45(a) Estrecho de Magallanes",
+      "zona": "F_MAGALLANES",
+      "trafico": "MEDIUM"
+    },
+    {
+      "id": "N-PA-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Punta Arenas — Puerto principal",
+      "lat": -53.175,
+      "lon": -70.908333,
+      "confianza": "VERDE",
+      "zona": "F_MAGALLANES",
+      "trafico": "MEDIUM"
+    },
+    {
+      "id": "N-PA-02",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Punta Arenas — Estación Prácticos Art.45",
+      "lat": -53.175,
+      "lon": -70.908333,
+      "confianza": "VERDE",
+      "ref_normativa": "TM-008 Art.45(a)",
+      "zona": "F_MAGALLANES",
+      "trafico": "MEDIUM"
+    },
+    {
+      "id": "N-RV-01",
+      "tipo": "TRONCAL",
+      "nombre": "Seno Skyring / Río Verde — eje (clúster n=27)",
+      "lat": -51.75,
+      "lon": -72.9,
+      "confianza": "AMARILLO",
+      "zona": "F_MAGALLANES",
+      "trafico": "MEDIUM",
+      "densidad_ces": 27
+    },
+    {
+      "id": "N-NT-01",
+      "tipo": "ORIGEN_CONTROL",
+      "nombre": "Puerto Natales — Puerto",
+      "lat": -51.726,
+      "lon": -72.495,
+      "confianza": "VERDE",
+      "ref_normativa": "TM-008 Art.45(c) Ruta Puerto Natales",
+      "zona": "F_MAGALLANES",
+      "trafico": "MEDIUM"
+    },
+    {
+      "id": "N-NT-02",
+      "tipo": "TRONCAL",
+      "nombre": "Seno Última Esperanza — eje (clúster n=30)",
+      "lat": -51.85,
+      "lon": -72.55,
+      "confianza": "AMARILLO",
+      "zona": "F_MAGALLANES",
+      "trafico": "MEDIUM",
+      "densidad_ces": 30
+    },
+    {
+      "id": "N-NT-03",
+      "tipo": "TRONCAL",
+      "nombre": "Seno Otway — eje acceso Natales (clúster n=44)",
+      "lat": -52.15,
+      "lon": -72.5,
+      "confianza": "AMARILLO",
+      "zona": "F_MAGALLANES",
+      "trafico": "MEDIUM",
+      "densidad_ces": 44
+    },
+    {
+      "id": "N-MG-01",
+      "tipo": "TRONCAL",
+      "nombre": "Estrecho Magallanes — eje central (clúster n=41)",
+      "lat": -52.35,
+      "lon": -72.75,
+      "confianza": "VERDE",
+      "ref_normativa": "TM-008 Art.45(a) Ruta Estrecho Magallanes",
+      "zona": "F_MAGALLANES",
+      "trafico": "MEDIUM",
+      "densidad_ces": 41
+    },
+    {
+      "id": "N-MG-02",
+      "tipo": "TRONCAL",
+      "nombre": "Estrecho Magallanes — paso Punta Delgada (VTS)",
+      "lat": -52.4695,
+      "lon": -69.5238,
+      "confianza": "VERDE",
+      "ref_normativa": "VTS Punta Delgada, reporte obligatorio TM-008",
+      "zona": "F_MAGALLANES",
+      "trafico": "MEDIUM"
+    }
+  ],
+  "edges": [
+    {
+      "id": "E-01",
+      "from": "N-PM-01",
+      "to": "N-PM-02",
+      "tipo": "TRONCAL",
+      "confianza": "VERDE",
+      "distancia_mn": 1.2,
+      "descripcion": "Salida Puerto Montt por Canal Tenglo",
+      "path": [
+        [
+          -72.9378,
+          -41.4718
+        ],
+        [
+          -72.975,
+          -41.487
+        ]
+      ]
+    },
+    {
+      "id": "E-02",
+      "from": "N-PM-02",
+      "to": "N-CB-01",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 18,
+      "descripcion": "Paso Tenglo → Calbuco por Golfo de Ancud norte",
+      "path": [
+        [
+          -72.975,
+          -41.487
+        ],
+        [
+          -72.95,
+          -41.52
+        ],
+        [
+          -72.88,
+          -41.58
+        ],
+        [
+          -72.9,
+          -41.65
+        ],
+        [
+          -73.05,
+          -41.85
+        ]
+      ]
+    },
+    {
+      "id": "E-03",
+      "from": "N-CB-01",
+      "to": "N-CB-02",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 8,
+      "descripcion": "Calbuco → canal interior sur archipiélago",
+      "path": [
+        [
+          -73.05,
+          -41.85
+        ],
+        [
+          -73.13,
+          -41.77
+        ],
+        [
+          -73.16,
+          -41.84
+        ],
+        [
+          -73.12,
+          -41.91
+        ],
+        [
+          -73.05,
+          -41.95
+        ],
+        [
+          -73.2,
+          -41.95
+        ]
+      ]
+    },
+    {
+      "id": "E-04",
+      "from": "N-CB-02",
+      "to": "N-AC-03",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 22,
+      "descripcion": "Archipiélago Calbuco → Golfo Ancud eje central",
+      "path": [
+        [
+          -73.2,
+          -41.95
+        ],
+        [
+          -73.1,
+          -41.95
+        ],
+        [
+          -73.0,
+          -41.97
+        ],
+        [
+          -73.2,
+          -42.05
+        ]
+      ]
+    },
+    {
+      "id": "E-05",
+      "from": "N-AC-03",
+      "to": "N-CS-02",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 28,
+      "descripcion": "Golfo Ancud → Canal Dalcahue",
+      "path": [
+        [
+          -73.2,
+          -42.05
+        ],
+        [
+          -73.25,
+          -42.25
+        ],
+        [
+          -73.38,
+          -42.42
+        ],
+        [
+          -73.55,
+          -42.48
+        ],
+        [
+          -73.6,
+          -42.48
+        ]
+      ]
+    },
+    {
+      "id": "E-06",
+      "from": "N-CS-02",
+      "to": "N-QN-01",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 15,
+      "descripcion": "Canal Dalcahue → Canal Quinchao",
+      "path": [
+        [
+          -73.6,
+          -42.48
+        ],
+        [
+          -73.5,
+          -42.52
+        ],
+        [
+          -73.35,
+          -42.55
+        ]
+      ]
+    },
+    {
+      "id": "E-07",
+      "from": "N-QN-01",
+      "to": "N-CH-01",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 20,
+      "descripcion": "Canal Quinchao → Golfo Ancud sur",
+      "path": [
+        [
+          -73.35,
+          -42.55
+        ],
+        [
+          -73.38,
+          -42.62
+        ],
+        [
+          -73.4,
+          -42.75
+        ]
+      ]
+    },
+    {
+      "id": "E-08",
+      "from": "N-CH-01",
+      "to": "N-QU-01",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 25,
+      "descripcion": "Golfo Ancud sur → Quellón",
+      "path": [
+        [
+          -73.4,
+          -42.75
+        ],
+        [
+          -73.35,
+          -42.85
+        ],
+        [
+          -73.38,
+          -43.05
+        ],
+        [
+          -73.5,
+          -43.11
+        ],
+        [
+          -73.614,
+          -43.115
+        ]
+      ]
+    },
+    {
+      "id": "E-R01",
+      "from": "N-PM-01",
+      "to": "N-ML-01",
+      "tipo": "RAMAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 32,
+      "descripcion": "Puerto Montt → Maullín por Costa",
+      "path": [
+        [
+          -72.9378,
+          -41.4718
+        ],
+        [
+          -73.2,
+          -41.52
+        ],
+        [
+          -73.45,
+          -41.55
+        ],
+        [
+          -73.604,
+          -41.628
+        ]
+      ]
+    },
+    {
+      "id": "E-R02",
+      "from": "N-PM-01",
+      "to": "N-HU-01",
+      "tipo": "RAMAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 60,
+      "descripcion": "Puerto Montt → Hornopirén por Seno Reloncaví",
+      "path": [
+        [
+          -72.9378,
+          -41.4718
+        ],
+        [
+          -72.8,
+          -41.6
+        ],
+        [
+          -72.6,
+          -41.75
+        ],
+        [
+          -72.52,
+          -41.93
+        ],
+        [
+          -72.44,
+          -41.93
+        ]
+      ]
+    },
+    {
+      "id": "E-R03",
+      "from": "N-AC-01",
+      "to": "N-AC-02",
+      "tipo": "RAMAL",
+      "confianza": "VERDE",
+      "distancia_mn": 5,
+      "descripcion": "Ancud — Canal de Chacao (Art.45)",
+      "path": [
+        [
+          -73.8406,
+          -41.7945
+        ],
+        [
+          -73.86,
+          -41.77
+        ]
+      ]
+    },
+    {
+      "id": "E-09",
+      "from": "N-QU-01",
+      "to": "N-LT-01",
+      "tipo": "TRONCAL",
+      "confianza": "VERDE",
+      "distancia_mn": 10,
+      "descripcion": "Quellón → Laitec Estación Prácticos (Art.45)",
+      "path": [
+        [
+          -73.614,
+          -43.115
+        ],
+        [
+          -73.58,
+          -43.25
+        ],
+        [
+          -73.592,
+          -43.458
+        ]
+      ]
+    },
+    {
+      "id": "E-10",
+      "from": "N-LT-01",
+      "to": "N-GC-01",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 20,
+      "descripcion": "Laitec → Golfo Corcovado eje central",
+      "path": [
+        [
+          -73.592,
+          -43.458
+        ],
+        [
+          -73.6,
+          -43.55
+        ],
+        [
+          -73.62,
+          -43.65
+        ],
+        [
+          -73.7,
+          -43.75
+        ]
+      ]
+    },
+    {
+      "id": "E-11",
+      "from": "N-GC-01",
+      "to": "N-GC-02",
+      "tipo": "TRONCAL",
+      "confianza": "ROJO",
+      "distancia_mn": 35,
+      "descripcion": "Golfo Corcovado → Boca del Guafo — MAR ABIERTO",
+      "path": [
+        [
+          -73.7,
+          -43.75
+        ],
+        [
+          -73.75,
+          -43.85
+        ],
+        [
+          -73.85,
+          -43.98
+        ]
+      ]
+    },
+    {
+      "id": "E-12",
+      "from": "N-GC-02",
+      "to": "N-MR-01",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 15,
+      "descripcion": "Boca del Guafo → Canal Moraleda norte",
+      "path": [
+        [
+          -73.85,
+          -43.98
+        ],
+        [
+          -73.7,
+          -44.1
+        ],
+        [
+          -73.5,
+          -44.25
+        ]
+      ]
+    },
+    {
+      "id": "E-13",
+      "from": "N-MR-01",
+      "to": "N-MR-02",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 30,
+      "descripcion": "Canal Moraleda norte → central",
+      "path": [
+        [
+          -73.5,
+          -44.25
+        ],
+        [
+          -73.55,
+          -44.38
+        ],
+        [
+          -73.6,
+          -44.55
+        ]
+      ]
+    },
+    {
+      "id": "E-14",
+      "from": "N-MR-02",
+      "to": "N-MR-03",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 40,
+      "descripcion": "Canal Moraleda central → sur",
+      "path": [
+        [
+          -73.6,
+          -44.55
+        ],
+        [
+          -73.65,
+          -44.7
+        ],
+        [
+          -73.75,
+          -44.9
+        ]
+      ]
+    },
+    {
+      "id": "E-15",
+      "from": "N-MR-03",
+      "to": "N-AY-01",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 30,
+      "descripcion": "Canal Moraleda sur → Seno Aysén acceso",
+      "path": [
+        [
+          -73.75,
+          -44.9
+        ],
+        [
+          -73.65,
+          -45.0
+        ],
+        [
+          -73.5,
+          -45.1
+        ],
+        [
+          -73.35,
+          -45.15
+        ]
+      ]
+    },
+    {
+      "id": "E-16",
+      "from": "N-AY-01",
+      "to": "N-AY-02",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 35,
+      "descripcion": "Acceso Seno Aysén → fiordos interiores",
+      "path": [
+        [
+          -73.35,
+          -45.15
+        ],
+        [
+          -73.2,
+          -45.25
+        ],
+        [
+          -73.1,
+          -45.35
+        ],
+        [
+          -72.9,
+          -45.45
+        ]
+      ]
+    },
+    {
+      "id": "E-17",
+      "from": "N-AY-02",
+      "to": "N-PC-01",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 15,
+      "descripcion": "Fiordos Aysén → Puerto Chacabuco",
+      "path": [
+        [
+          -72.9,
+          -45.45
+        ],
+        [
+          -72.85,
+          -45.46
+        ],
+        [
+          -72.807,
+          -45.462
+        ]
+      ]
+    },
+    {
+      "id": "E-18",
+      "from": "N-PC-01",
+      "to": "N-NT-01",
+      "tipo": "TRONCAL",
+      "confianza": "VERDE",
+      "distancia_mn": 180,
+      "descripcion": "Puerto Chacabuco → Puerto Natales Art.45(c)",
+      "path": [
+        [
+          -72.807,
+          -45.462
+        ],
+        [
+          -72.6,
+          -46.5
+        ],
+        [
+          -72.8,
+          -47.5
+        ],
+        [
+          -73.0,
+          -48.5
+        ],
+        [
+          -73.2,
+          -49.5
+        ],
+        [
+          -73.0,
+          -50.5
+        ],
+        [
+          -72.8,
+          -51.0
+        ],
+        [
+          -72.495,
+          -51.726
+        ]
+      ]
+    },
+    {
+      "id": "E-19",
+      "from": "N-NT-01",
+      "to": "N-RV-01",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 40,
+      "descripcion": "Puerto Natales → Seno Skyring/Río Verde",
+      "path": [
+        [
+          -72.495,
+          -51.726
+        ],
+        [
+          -72.6,
+          -51.75
+        ],
+        [
+          -72.9,
+          -51.75
+        ]
+      ]
+    },
+    {
+      "id": "E-20",
+      "from": "N-RV-01",
+      "to": "N-NT-03",
+      "tipo": "TRONCAL",
+      "confianza": "AMARILLO",
+      "distancia_mn": 45,
+      "descripcion": "Río Verde → Seno Otway → Estrecho Magallanes",
+      "path": [
+        [
+          -72.9,
+          -51.75
+        ],
+        [
+          -72.75,
+          -51.9
+        ],
+        [
+          -72.6,
+          -52.0
+        ],
+        [
+          -72.5,
+          -52.15
+        ]
+      ]
+    },
+    {
+      "id": "E-21",
+      "from": "N-NT-03",
+      "to": "N-MG-01",
+      "tipo": "TRONCAL",
+      "confianza": "VERDE",
+      "distancia_mn": 30,
+      "descripcion": "Acceso Estrecho Magallanes Art.45(a)",
+      "path": [
+        [
+          -72.5,
+          -52.15
+        ],
+        [
+          -72.6,
+          -52.25
+        ],
+        [
+          -72.75,
+          -52.35
+        ]
+      ]
+    },
+    {
+      "id": "E-22",
+      "from": "N-MG-01",
+      "to": "N-MG-02",
+      "tipo": "TRONCAL",
+      "confianza": "VERDE",
+      "distancia_mn": 65,
+      "descripcion": "Estrecho Magallanes → VTS Punta Delgada",
+      "path": [
+        [
+          -72.75,
+          -52.35
+        ],
+        [
+          -71.5,
+          -52.4
+        ],
+        [
+          -70.5,
+          -52.45
+        ],
+        [
+          -69.5238,
+          -52.4695
+        ]
+      ]
+    },
+    {
+      "id": "E-23",
+      "from": "N-MG-02",
+      "to": "N-BP-01",
+      "tipo": "TRONCAL",
+      "confianza": "VERDE",
+      "distancia_mn": 40,
+      "descripcion": "VTS Punta Delgada → Bahía Posesión (Art.45)",
+      "path": [
+        [
+          -69.5238,
+          -52.4695
+        ],
+        [
+          -69.3,
+          -52.4
+        ],
+        [
+          -68.977,
+          -52.379
+        ]
+      ]
+    },
+    {
+      "id": "E-24",
+      "from": "N-MG-01",
+      "to": "N-PA-01",
+      "tipo": "TRONCAL",
+      "confianza": "VERDE",
+      "distancia_mn": 50,
+      "descripcion": "Estrecho Magallanes → Punta Arenas (Art.45)",
+      "path": [
+        [
+          -72.75,
+          -52.35
+        ],
+        [
+          -72.0,
+          -52.8
+        ],
+        [
+          -71.0,
+          -53.0
+        ],
+        [
+          -70.908,
+          -53.175
+        ]
+      ]
+    }
+  ],
+  "algoritmo_ruta": {
+    "descripcion": "Dado origen y destino, calcular secuencia de nodos del grafo",
+    "pseudocodigo": [
+      "1. Encontrar nodo_origen: buscar en nodos el más cercano a coords_origen (radio 50mn)",
+      "2. Encontrar nodo_destino: buscar en nodos el más cercano a coords_destino (radio 50mn)",
+      "3. BFS/Dijkstra sobre edges usando distancia_mn como peso",
+      "4. Si nodo_origen y nodo_destino en misma zona: retornar path directo",
+      "5. Si cruzan zonas: retornar path por nodos troncales inter-zona",
+      "6. Para cada edge del path: asignar color según confianza (VERDE/AMARILLO/ROJO)",
+      "7. Retornar: array de coords [lon,lat] para LineString + metadata de tramos"
+    ],
+    "schema_respuesta": {
+      "tramos": [
+        {
+          "desde": "string (id nodo)",
+          "hasta": "string (id nodo)",
+          "confianza": "VERDE|AMARILLO|ROJO",
+          "coords": "[[lon,lat], ...]",
+          "distancia_mn": "number",
+          "advertencia": "string|null"
+        }
+      ],
+      "distancia_total_mn": "number",
+      "advertencias": [
+        "string"
+      ]
+    }
+  },
+  "prioridad_carga": {
+    "HIGH": {
+      "zonas": [
+        "A_LOSLAGOS_NORTE",
+        "B_CHILOE_NORTE"
+      ],
+      "concesiones": 2871,
+      "nodos": [
+        "N-PM-01",
+        "N-PM-02",
+        "N-CB-01",
+        "N-AC-01",
+        "N-QU-01",
+        "N-LT-01",
+        "N-CS-01",
+        "N-ML-01"
+      ],
+      "cargar_primero": true
+    },
+    "MEDIUM": {
+      "zonas": [
+        "C_CHILOE_SUR_PALENA",
+        "D_AYSEN_NORTE",
+        "F_MAGALLANES"
+      ],
+      "concesiones": 1252,
+      "nodos": [
+        "N-MR-01",
+        "N-MR-02",
+        "N-PC-01",
+        "N-NT-01",
+        "N-PA-01"
+      ],
+      "cargar_segundo": true
+    },
+    "LOW": {
+      "zonas": [
+        "E_AYSEN_SUR"
+      ],
+      "concesiones": 1,
+      "nodos": [],
+      "cargar_tercero": true
+    }
+  }
+}
