@@ -44,6 +44,8 @@ const voyageReportRoutes = require('./routes/voyage-report-routes');
 app.use('/api/viaje', voyageReportRoutes);
 
 const rutasRoutes = require('./routes/routes-routes');
+const nauticalGraphRouter = require('./services/nautical-graph-router');
+nauticalGraphRouter.warmup();
 app.use('/api/rutas', rutasRoutes);
 
 // Health check

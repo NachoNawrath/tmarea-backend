@@ -5,3 +5,9 @@ dist/
 .DS_Store
 *.log
 build/
+
+# Fuente cruda del polígono de costa (55MB, zip + shapefile) — regenerable
+# desde osmdata.openstreetmap.de con build-coastline-compact.js. Solo se
+# versionan los derivados livianos (coastline_compact.json / _fallback.json).
+src/services/data/coastline/land-polygons/
+test-ruta-melinka-output.json
