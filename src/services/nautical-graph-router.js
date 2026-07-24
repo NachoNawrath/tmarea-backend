@@ -96,10 +96,13 @@ function buildGraph() {
   const edges = new Map(); // edgeId -> { ...edge, cum, length }
   const segments = []; // { edgeId, i, a, b, cumA }
 
+  let nCuspsFixed = 0;
   for (const e of data.edges) {
-    const cum = cumulativeDistances(e.path);
+    const smoothedPath = smoothCusps(e.path);
+    if (smoothedPath.length !== e.path.length) nCuspsFixed++;
+    const cum = cumulativeDistances(smoothedPath);
     const length = cum[cum.length - 1];
-    edges.set(e.id, { ...e, cum, length });
+    edges.set(e.id, { ...e, path: smoothedPath, cum, length });
 
     if (!adjacency.has(e.from) || !adjacency.has(e.to)) {
       console.warn(`[NauticalGraph] Edge ${e.id} referencia nodo inexistente (${e.from} -> ${e.to})`);
@@ -108,10 +111,11 @@ function buildGraph() {
     adjacency.get(e.from).push({ to: e.to, edgeId: e.id, dist: length, confianza: e.confianza });
     adjacency.get(e.to).push({ to: e.from, edgeId: e.id, dist: length, confianza: e.confianza });
 
-    for (let i = 0; i < e.path.length - 1; i++) {
-      segments.push({ edgeId: e.id, i, a: e.path[i], b: e.path[i + 1], cumA: cum[i] });
+    for (let i = 0; i < smoothedPath.length - 1; i++) {
+      segments.push({ edgeId: e.id, i, a: smoothedPath[i], b: smoothedPath[i + 1], cumA: cum[i] });
     }
   }
+  if (nCuspsFixed > 0) console.log(`[NauticalGraph] Cúspides suavizadas en ${nCuspsFixed} edge(s)`);
 
   _graph = { nodesById, edges, adjacency, segments };
   console.log(`[NauticalGraph] Grafo listo: ${nodesById.size} nodos, ${edges.size} edges, ${segments.length} segmentos (${Date.now() - t0}ms)`);
@@ -267,6 +271,60 @@ function connectAvoidingLand(pointA, pointB) {
   }
   _detourCache.set(key, result);
   return result;
+}
+
+// ── Suavizado de cúspides (giros casi en U) ──────────────────────────────
+// Algunos edges troncales traen, en su digitalización original, un vértice
+// donde el rumbo gira más de ~120° y casi vuelve sobre sí mismo (ej. E-07
+// cerca de Apiao/Quinchao) — se ve como una "M" o espiral en el mapa. No es
+// un problema de Dijkstra (los pesos ya son distancia real, y ese tramo del
+// grafo es una cadena lineal sin rutas alternativas) sino del propio trazado.
+// Para cada cúspide se intenta: (a) saltarla en línea recta si no cruza
+// tierra (glitch puro de digitalización), o (b) si el punto SÍ evita una
+// obstrucción real, reemplazarlo por el mejor rodeo del grafo de visibilidad
+// (más suave que el vértice original) — nunca se elimina a ciegas.
+const CUSP_ANGLE_THRESHOLD_DEG = 120;
+const CUSP_MAX_ITER = 15;
+
+function bearingDeg(lat1, lon1, lat2, lon2) {
+  const y = Math.sin((lon2 - lon1) * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180);
+  const x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
+            Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos((lon2 - lon1) * Math.PI / 180);
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
+function angleDiffDeg(a, b) {
+  const d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+function turnAngle(pA, pB, pC) {
+  const b1 = bearingDeg(pA[1], pA[0], pB[1], pB[0]);
+  const b2 = bearingDeg(pB[1], pB[0], pC[1], pC[0]);
+  return angleDiffDeg(b1, b2);
+}
+
+function smoothCusps(coords) {
+  if (coords.length < 3) return coords;
+  let pts = coords.slice();
+  for (let iter = 0; iter < CUSP_MAX_ITER; iter++) {
+    let fixedAny = false;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const turn = turnAngle(pts[i - 1], pts[i], pts[i + 1]);
+      if (turn < CUSP_ANGLE_THRESHOLD_DEG) continue;
+      const fix = connectAvoidingLand(pts[i - 1], pts[i + 1]);
+      // Solo se elimina el vértice si conectar directo YA queda limpio (ruido
+      // puro de digitalización). Si hace falta un rodeo (fix.detoured), el
+      // giro es geométricamente necesario para pasar una punta de tierra real
+      // — se conserva tal cual. Intentar "reemplazarlo" por otro rodeo fue lo
+      // que producía una oscilación infinita (insertaba una vía y esa vía
+      // volvía a marcarse como cúspide contra su propio vecino, sin converger).
+      if (!fix.ok || fix.detoured) continue;
+      pts.splice(i, 1);
+      fixedAny = true;
+      break; // el índice cambió, reiniciar el escaneo
+    }
+    if (!fixedAny) break;
+  }
+  return pts;
 }
 
 // Elige el mejor snap que no cruce tierra en el feeder [origen -> snap]
@@ -435,6 +493,50 @@ function repairTramoInternal(tramo) {
   };
 }
 
+// Suaviza codos agudos dentro de un tramo ya ensamblado (feeders y conectores
+// entre edges son los más propensos, ya que insertan un único vértice de
+// rodeo elegido solo por validez geométrica, no por prolijidad del ángulo).
+// Usa el mismo smoothCusps validado contra costa — nunca reintroduce un cruce.
+function smoothTramoAngles(tramo) {
+  if (tramo.coords.length < 3) return tramo;
+  const smoothed = smoothCusps(tramo.coords);
+  if (smoothed.length === tramo.coords.length) return tramo;
+  return { ...tramo, coords: smoothed, distancia_mn: Math.round(pathLength(smoothed) * 10) / 10 };
+}
+
+// smoothTramoAngles solo mira DENTRO de cada tramo — un giro brusco puede
+// caer justo en la COSTURA entre dos tramos consecutivos (ej. el punto donde
+// termina un conector y empieza el tramo de mar abierto siguiente). Esta
+// pasada revisa esos empalmes y, igual que smoothCusps, solo elimina el
+// punto de unión si conectar directo ya queda limpio — nunca lo reemplaza
+// por un rodeo (eso ya lo intentó bridgeGaps al armar el conector).
+function smoothJunctions(tramos) {
+  const out = tramos.map(t => ({ ...t, coords: t.coords.slice() }));
+  for (let iter = 0; iter < CUSP_MAX_ITER; iter++) {
+    let fixedAny = false;
+    for (let i = 0; i < out.length - 1; i++) {
+      const curr = out[i], next = out[i + 1];
+      if (curr.coords.length < 2 || next.coords.length < 2) continue;
+      const joint = curr.coords[curr.coords.length - 1];
+      if (!pointsMatch(joint, next.coords[0])) continue; // no están realmente empalmados
+      if (next.coords.length < 2) continue;
+      const prevPt = curr.coords[curr.coords.length - 2];
+      const afterPt = next.coords[1];
+      const turn = turnAngle(prevPt, joint, afterPt);
+      if (turn < CUSP_ANGLE_THRESHOLD_DEG) continue;
+      const fix = connectAvoidingLand(prevPt, afterPt);
+      if (!fix.ok || fix.detoured) continue; // solo si saltar el empalme queda limpio directo
+      curr.coords = [...curr.coords.slice(0, -1), afterPt];
+      next.coords = next.coords.slice(1);
+      curr.distancia_mn = Math.round(pathLength(curr.coords) * 10) / 10;
+      next.distancia_mn = Math.round(pathLength(next.coords) * 10) / 10;
+      fixedAny = true;
+    }
+    if (!fixedAny) break;
+  }
+  return out.filter(t => t.coords.length >= 2);
+}
+
 // Inserta un tramo conector explícito entre tramos consecutivos cuyas
 // coordenadas no calzan exactamente (p.ej. dos edges del grafo troncal que
 // nominalmente comparten un nodo pero cuyos paths digitalizados no llegan al
@@ -584,7 +686,8 @@ function calcularRutaSinCache(latOrigen, lonOrigen, latDestino, lonDestino) {
   }
 
   const tramosConGaps = bridgeGaps(tramos, advertencias);
-  const tramosFinales = tramosConGaps.map(repairTramoInternal);
+  const tramosSuavizados = tramosConGaps.map(repairTramoInternal).map(smoothTramoAngles);
+  const tramosFinales = smoothJunctions(tramosSuavizados);
   for (const t of tramosFinales) {
     if (t.confianza === 'ROJO' && /no resuelto/.test(t.advertencia || '')) {
       advertencias.push(`Cruce de costa interno no resuelto en un eje del grafo troncal (${t.distancia_mn}mn) — verifique con carta SHOA`);
