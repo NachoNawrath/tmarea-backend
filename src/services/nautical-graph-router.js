@@ -164,28 +164,53 @@ function findSnapCandidates(lon, lat, graph) {
 // prueba rodear el obstáculo usando los propios vértices del polígono de
 // costa cercanos al punto de cruce (geometría real, no dato normativo
 // inventado) antes de rendirse.
-const DETOUR_MAX_STEPS = 14;
-const DETOUR_STEP_SIZE = 2;
+// Rodear un obstáculo caminando su propio anillo de costa es O(n) (lineal,
+// en el orden natural del anillo) — muchísimo más barato que un grafo de
+// visibilidad O(n²) entre todos sus vértices, y para el caso común (un solo
+// way bloqueando el paso) alcanza perfecto. Se escanea el way COMPLETO
+// (antes se cortaba a ±14 puntos, lo que fallaba con islas anchas donde el
+// rodeo necesario está lejos del punto de cruce) y se prueba primero cerca
+// del punto de cruce, alejándose de a poco — se toma el primer candidato
+// que despeje ambos lados.
+function walkRingForDetour(pointA, pointB, wayIdx, localIdx) {
+  const wLen = coastlineGuard.wayLength(wayIdx);
+  const t0 = Date.now();
+  for (let k = 1; k <= wLen; k++) {
+    if ((k & 63) === 0 && Date.now() - t0 > DETOUR_TIME_BUDGET_MS) return null;
+    for (const dir of [1, -1]) {
+      const idx = localIdx + dir * k;
+      if (idx < 0 || idx >= wLen) continue;
+      const via = coastlineGuard.wayVertex(wayIdx, idx);
+      const c1 = coastlineGuard.crossesCoastline([pointA, via]);
+      if (c1.crossesLand) continue;
+      const c2 = coastlineGuard.crossesCoastline([via, pointB]);
+      if (!c2.crossesLand) {
+        return { coords: [pointA, via, pointB], ok: true, detoured: true };
+      }
+    }
+  }
+  return null;
+}
+
 function simpleDetour(pointA, pointB) {
   const [ax, ay] = pointA, [bx, by] = pointB;
   const hit = coastlineGuard.findFirstCrossing(ax, ay, bx, by);
   if (!hit.crossesLand) return { coords: [pointA, pointB], ok: true, detoured: false };
 
-  const { wayIdx, localIdx } = hit;
-  const wLen = coastlineGuard.wayLength(wayIdx);
-  for (let k = 1; k <= DETOUR_MAX_STEPS; k++) {
-    for (const dir of [1, -1]) {
-      const idx = localIdx + dir * k * DETOUR_STEP_SIZE;
-      if (idx < 0 || idx >= wLen) continue;
-      const via = coastlineGuard.wayVertex(wayIdx, idx);
-      const c1 = coastlineGuard.crossesCoastline([pointA, via]);
-      const c2 = coastlineGuard.crossesCoastline([via, pointB]);
-      if (!c1.crossesLand && !c2.crossesLand) {
-        return { coords: [pointA, via, pointB], ok: true, detoured: true };
-      }
-    }
+  // Probar primero el way del cruce más cercano (caso común, un solo
+  // obstáculo) y si no alcanza, cada uno de los demás ways que la línea
+  // también atraviesa (obstáculos múltiples) — cada intento es O(n) sobre
+  // su propio anillo, mucho más barato que combinar todo en un solo grafo
+  // de visibilidad O(n²) (eso queda como último recurso en visibilityDetour).
+  const first = walkRingForDetour(pointA, pointB, hit.wayIdx, hit.localIdx);
+  if (first) return first;
+
+  const otherWays = coastlineGuard.findAllCrossingWays(ax, ay, bx, by).filter(w => w !== hit.wayIdx);
+  for (const wayIdx of otherWays) {
+    const result = walkRingForDetour(pointA, pointB, wayIdx, 0);
+    if (result) return result;
   }
-  return null; // no resuelto con un rodeo simple de un solo anillo
+  return null; // no resuelto rodeando anillos individuales — puede necesitar visibilityDetour
 }
 
 // Rodeo por grafo de visibilidad: cuando el obstáculo es un archipiélago
@@ -193,38 +218,81 @@ function simpleDetour(pointA, pointB) {
 // grafo con A, B y los vértices reales de costa cercanos al hueco, se unen
 // los pares que "se ven" en línea recta sin tocar tierra, y se corre
 // Dijkstra — un rodeo geométrico genuino, no una ruta inventada.
-const VISIBILITY_MARGIN_DEG = 0.15;
-const VISIBILITY_MAX_VERTS = 100;
+const VISIBILITY_MAX_VERTS = 500;
+const VISIBILITY_FALLBACK_MARGIN_DEG = 0.3; // solo si el enfoque dirigido no alcanza
 function distPointToSegment(px, py, ax, ay, bx, by) {
   const proj = projectPointOnSegment(px, py, ax, ay, bx, by);
   return haversine(py, px, proj.y, proj.x);
 }
-function visibilityDetour(pointA, pointB) {
-  const [ax, ay] = pointA, [bx, by] = pointB;
-  const minLon = Math.min(ax, bx) - VISIBILITY_MARGIN_DEG, maxLon = Math.max(ax, bx) + VISIBILITY_MARGIN_DEG;
-  const minLat = Math.min(ay, by) - VISIBILITY_MARGIN_DEG, maxLat = Math.max(ay, by) + VISIBILITY_MARGIN_DEG;
 
-  let verts = coastlineGuard.verticesInBbox(minLon, minLat, maxLon, maxLat);
-  if (verts.length > VISIBILITY_MAX_VERTS) {
-    verts = verts
-      .map(v => ({ v, d: distPointToSegment(v[0], v[1], ax, ay, bx, by) }))
-      .sort((p, q) => p.d - q.d)
-      .slice(0, VISIBILITY_MAX_VERTS)
-      .map(x => x.v);
-  }
+// Muestreo sistemático (1 de cada N) en vez de "los más cercanos a la
+// línea": con un obstáculo ancho, los vértices necesarios para rodearlo
+// pueden estar lejos de la línea directa — priorizar por cercanía descarta
+// justo esos y rompe la conectividad del anillo. Un stride uniforme
+// preserva la forma completa de cada way, solo con menos detalle.
+function sampleWay(way, maxPerWay) {
+  if (way.length <= maxPerWay) return way;
+  const stride = Math.ceil(way.length / maxPerWay);
+  const out = [];
+  for (let i = 0; i < way.length; i += stride) out.push(way[i]);
+  return out;
+}
+
+function capVerts(verts, ax, ay, bx, by) {
+  if (verts.length <= VISIBILITY_MAX_VERTS) return verts;
+  return verts
+    .map(v => ({ v, d: distPointToSegment(v[0], v[1], ax, ay, bx, by) }))
+    .sort((p, q) => p.d - q.d)
+    .slice(0, VISIBILITY_MAX_VERTS)
+    .map(x => x.v);
+}
+
+// Presupuesto de tiempo duro para el rodeo geométrico (ring walk O(n) y
+// grafo de visibilidad O(n²)): con costa de alta resolución, un obstáculo
+// suficientemente complejo puede tener decenas de miles de pares — sin este
+// límite, un solo caso patológico puede colgar el proceso por horas (pasó:
+// 4.5h en prewarmDetours(), y 21s en una sola petición en vivo sin caché).
+// Si se corta, el rodeo queda incompleto y probablemente no conecta A-B —
+// eso es SEGURO (se informa como no resuelto/ROJO), nunca un falso positivo.
+// En vivo se usa un presupuesto CORTO (nunca hacer esperar al usuario real
+// varios segundos); prewarmDetours() lo sube temporalmente porque corre una
+// sola vez al arrancar y sí puede permitirse tardar más para dejar cacheados
+// los casos difíciles antes de recibir tráfico real.
+let DETOUR_TIME_BUDGET_MS = 300;
+
+// Un solo detour acotado no alcanza: una ruta complicada puede necesitar
+// MUCHOS rodeos (uno por hueco/zigzag), y aunque cada uno respete su propio
+// presupuesto, se acumulan (se vio en la práctica: 18.6s en una petición
+// real). Este es el techo GLOBAL de tiempo dedicado a rodeos dentro de UNA
+// sola petición — al superarlo, cualquier intento nuevo se descarta de
+// inmediato (ok:false, ROJO), sin ni siquiera empezar a buscar.
+const REQUEST_DETOUR_BUDGET_MS = 400;
+let _detourDeadline = Infinity;
+
+// Arma el grafo de visibilidad (A, B + vértices candidatos) y corre Dijkstra.
+// Una sola búsqueda de candidatos en el R-tree para acotar el bbox real de
+// los nodos involucrados, reutilizada en los O(n²) pares — no una por par.
+function runVisibilityGraph(pointA, pointB, verts) {
   if (verts.length === 0) return null;
-
   const nodes = [pointA, pointB, ...verts];
   const n = nodes.length;
 
-  // Una sola búsqueda en el R-tree para todo el grafo de visibilidad, en vez
-  // de una por cada uno de los O(n²) pares — evita miles de flatbush.search().
+  let minLon = Infinity, minLat = Infinity, maxLon = -Infinity, maxLat = -Infinity;
+  for (const [lon, lat] of nodes) {
+    if (lon < minLon) minLon = lon; if (lon > maxLon) maxLon = lon;
+    if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+  }
   const candIds = coastlineGuard.segmentIdsInBbox(minLon, minLat, maxLon, maxLat);
 
+  const t0 = Date.now();
   const adj = Array.from({ length: n }, () => []);
+  let pairsChecked = 0;
+  timeboxed:
   for (let i = 0; i < n; i++) {
     const [ix, iy] = nodes[i];
     for (let j = i + 1; j < n; j++) {
+      pairsChecked++;
+      if ((pairsChecked & 127) === 0 && Date.now() - t0 > DETOUR_TIME_BUDGET_MS) break timeboxed;
       const [jx, jy] = nodes[j];
       if (!coastlineGuard.crossesAnyOf(candIds, ix, iy, jx, jy)) {
         const d = haversine(iy, ix, jy, jx);
@@ -258,6 +326,36 @@ function visibilityDetour(pointA, pointB) {
   return { coords: path, ok: true, detoured: path.length > 2 };
 }
 
+function visibilityDetour(pointA, pointB) {
+  const [ax, ay] = pointA, [bx, by] = pointB;
+
+  // 1º intento: dirigido — solo los vértices de los ways que la línea
+  // directa realmente atraviesa (el obstáculo real), no una caja grande.
+  // Con costa de alta resolución esto es muchísimo más rápido y más preciso
+  // que muestrear todo lo que haya alrededor.
+  // A esta altura simpleDetour ya intentó rodear caminando el primer way
+  // cruzado (O(n), rápido) y falló — llegar acá implica un caso raro
+  // (varios ways bloqueando a la vez). El grafo de visibilidad SÍ es O(n²),
+  // así que aquí conviene acotar: se prioriza por cercanía a la línea, pero
+  // con un límite generoso para no repetir el problema de conectividad de
+  // antes con obstáculos anchos.
+  const crossedWays = coastlineGuard.findAllCrossingWays(ax, ay, bx, by);
+  if (crossedWays.length > 0) {
+    const maxPerWay = Math.max(20, Math.floor(VISIBILITY_MAX_VERTS / crossedWays.length));
+    const targeted = [];
+    for (const wayIdx of crossedWays) targeted.push(...sampleWay(coastlineGuard.wayVertices(wayIdx), maxPerWay));
+    const result = runVisibilityGraph(pointA, pointB, targeted);
+    if (result) return result;
+  }
+
+  // 2º intento: el obstáculo puede requerir rodear por OTRO way cercano no
+  // directamente cruzado (ej. un islote vecino) — fallback acotado por bbox.
+  const minLon = Math.min(ax, bx) - VISIBILITY_FALLBACK_MARGIN_DEG, maxLon = Math.max(ax, bx) + VISIBILITY_FALLBACK_MARGIN_DEG;
+  const minLat = Math.min(ay, by) - VISIBILITY_FALLBACK_MARGIN_DEG, maxLat = Math.max(ay, by) + VISIBILITY_FALLBACK_MARGIN_DEG;
+  const verts = capVerts(coastlineGuard.verticesInBbox(minLon, minLat, maxLon, maxLat), ax, ay, bx, by);
+  return runVisibilityGraph(pointA, pointB, verts);
+}
+
 // Los huecos/zigzags que esto resuelve son propiedades fijas del grafo
 // troncal (mismos dos puntos, mismo obstáculo), no dependen del usuario —
 // se memoiza para no recalcular el grafo de visibilidad en cada petición.
@@ -272,13 +370,22 @@ function connectAvoidingLand(pointA, pointB) {
   if (cached) return cached;
 
   const hit = coastlineGuard.findFirstCrossing(pointA[0], pointA[1], pointB[0], pointB[1]);
-  let result;
   if (!hit.crossesLand) {
-    result = { coords: [pointA, pointB], ok: true, detoured: false };
-  } else {
-    result = simpleDetour(pointA, pointB) || visibilityDetour(pointA, pointB) ||
-      { coords: [pointA, pointB], ok: false, detoured: false };
+    const clean = { coords: [pointA, pointB], ok: true, detoured: false };
+    _detourCache.set(key, clean);
+    return clean;
   }
+
+  // Presupuesto global de la petición ya agotado: ni siquiera se intenta un
+  // rodeo nuevo (evita que muchos huecos difíciles se acumulen en segundos
+  // de espera real). No se cachea — una petición futura con presupuesto
+  // fresco (o el warmup, con presupuesto amplio) sí puede intentarlo.
+  if (Date.now() > _detourDeadline) {
+    return { coords: [pointA, pointB], ok: false, detoured: false };
+  }
+
+  const result = simpleDetour(pointA, pointB) || visibilityDetour(pointA, pointB) ||
+    { coords: [pointA, pointB], ok: false, detoured: false };
   _detourCache.set(key, result);
   return result;
 }
@@ -615,6 +722,7 @@ function calcularRutaSinCache(latOrigen, lonOrigen, latDestino, lonDestino) {
   const t0 = Date.now();
   const graph = buildGraph();
   coastlineGuard.ensureReady();
+  _detourDeadline = Date.now() + REQUEST_DETOUR_BUDGET_MS;
 
   const snapO = snapWithLandMask(lonOrigen, latOrigen, graph);
   const snapD = snapWithLandMask(lonDestino, latDestino, graph);
@@ -758,28 +866,43 @@ function calcularRutaSinCache(latOrigen, lonOrigen, latDestino, lonDestino) {
 // dependen de qué usuario pida qué ruta. Resolverlos una sola vez aquí evita
 // que la primera petición real de cada tramo pague el costo del grafo de
 // visibilidad — con esto, ninguna petición debería tardar por esta causa.
+const PREWARM_DETOUR_BUDGET_MS = 5000;
+
 function prewarmDetours() {
   const t0 = Date.now();
   const graph = buildGraph();
   let nGaps = 0;
 
-  for (const edge of graph.edges.values()) {
-    repairTramoInternal({ coords: edge.path, confianza: edge.confianza, advertencia: null, distancia_mn: 0 });
-  }
+  // Solo el arranque puede permitirse un presupuesto más generoso (por
+  // intento Y total) — corre una única vez y deja los casos difíciles
+  // cacheados antes de que llegue tráfico real (que usa presupuestos
+  // cortos: ~300ms por intento, ~400ms total por petición).
+  const liveBudget = DETOUR_TIME_BUDGET_MS;
+  const liveDeadline = _detourDeadline;
+  DETOUR_TIME_BUDGET_MS = PREWARM_DETOUR_BUDGET_MS;
+  _detourDeadline = Infinity;
+  try {
+    for (const edge of graph.edges.values()) {
+      repairTramoInternal({ coords: edge.path, confianza: edge.confianza, advertencia: null, distancia_mn: 0 });
+    }
 
-  for (const [nodeId, neighbors] of graph.adjacency) {
-    const endpoints = neighbors.map(({ edgeId }) => {
-      const edge = graph.edges.get(edgeId);
-      return edge.from === nodeId ? edge.path[0] : edge.path[edge.path.length - 1];
-    });
-    for (let i = 0; i < endpoints.length; i++) {
-      for (let j = i + 1; j < endpoints.length; j++) {
-        if (!pointsMatch(endpoints[i], endpoints[j])) {
-          connectAvoidingLand(endpoints[i], endpoints[j]);
-          nGaps++;
+    for (const [nodeId, neighbors] of graph.adjacency) {
+      const endpoints = neighbors.map(({ edgeId }) => {
+        const edge = graph.edges.get(edgeId);
+        return edge.from === nodeId ? edge.path[0] : edge.path[edge.path.length - 1];
+      });
+      for (let i = 0; i < endpoints.length; i++) {
+        for (let j = i + 1; j < endpoints.length; j++) {
+          if (!pointsMatch(endpoints[i], endpoints[j])) {
+            connectAvoidingLand(endpoints[i], endpoints[j]);
+            nGaps++;
+          }
         }
       }
     }
+  } finally {
+    DETOUR_TIME_BUDGET_MS = liveBudget;
+    _detourDeadline = liveDeadline;
   }
 
   console.log(`[NauticalGraph] Pre-calentado de costa: ${graph.edges.size} edges, ${nGaps} conectores entre edges resueltos (${Date.now() - t0}ms)`);

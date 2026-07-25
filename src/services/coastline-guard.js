@@ -261,6 +261,26 @@ function wayVertex(wayIdx, i) {
 function wayLength(wayIdx) {
   return _ways[wayIdx].length;
 }
+function wayVertices(wayIdx) {
+  return _ways[wayIdx];
+}
+
+// Todos los wayIdx (únicos) cuyos segmentos son cruzados por la línea A-B —
+// para armar un grafo de visibilidad enfocado en el obstáculo REAL, no en
+// todo lo que haya en una caja grande alrededor (mucho más rápido con costa
+// de alta resolución).
+function findAllCrossingWays(p1x, p1y, p2x, p2y) {
+  ensureReady();
+  if (!_ready) return [];
+  const candidateIds = candidatesForLine([[p1x, p1y], [p2x, p2y]]);
+  const ways = new Set();
+  for (const id of candidateIds) {
+    if (segmentsIntersect(p1x, p1y, p2x, p2y, _segAX[id], _segAY[id], _segBX[id], _segBY[id])) {
+      ways.add(_segWay[id]);
+    }
+  }
+  return [...ways];
+}
 
 // Vértices únicos de costa cuyos segmentos caen dentro del bbox dado —
 // candidatos para un grafo de visibilidad local (rodeo de archipiélagos).
@@ -286,8 +306,10 @@ function verticesInBbox(minLon, minLat, maxLon, maxLat) {
 module.exports = {
   crossesCoastline,
   findFirstCrossing,
+  findAllCrossingWays,
   wayVertex,
   wayLength,
+  wayVertices,
   verticesInBbox,
   segmentIdsInBbox,
   crossesAnyOf,
