@@ -16,15 +16,24 @@ const coastlineGuard = require('./coastline-guard');
 const MAX_SNAP_CANDIDATES = 6; // nº de segmentos candidatos a probar si el más cercano cruza tierra
 const ROUTE_CACHE_PRECISION = 3; // decimales de redondeo para la clave de caché (~111m)
 const routeCache = new LRUCache({ max: 5000, ttl: 1000 * 60 * 60 }); // 1h, hasta 5000 rutas
-const MAX_SNAP_RADIUS_NM = 60;
+const MAX_SNAP_RADIUS_NM = 150; // para permitir feeders inter-regionales (ej. Valdivia -> Chacao)
 
-// Penalización de costo (NO de distancia real) para que Dijkstra prefiera
-// canales interiores protegidos por sobre tramos de mar abierto cuando ambos
-// están disponibles en el grafo. La distancia reportada al usuario (mn) sigue
-// siendo la real — esto solo sesga qué arista conviene MÁS elegir.
-const OPEN_SEA_COST_PENALTY = 8; // dentro del rango 5x-10x pedido
+// Matriz de pesos por tipo de canal (naves menores/deportivas): el costo de
+// Dijkstra NO es la distancia real, es distancia × factor — así el algoritmo
+// prefiere SIEMPRE un canal resguardado aunque sea más largo en millas que
+// cortar por mar abierto. La distancia_mn reportada al usuario sigue siendo
+// la real (edge.length), el factor solo decide qué arista conviene más.
+// channel_type es una re-etiqueta del campo confianza ya existente (VERDE→
+// CANAL_RESGUARDADO_MENOR, AMARILLO→CANALIZO_GENERAL, ROJO→MAR_ABIERTO_OCEANICO)
+// — no es normativa nueva, ver meta.channel_type_info en el JSON fuente.
+const CHANNEL_COST_FACTOR = {
+  CANAL_RESGUARDADO_MENOR: 1.0,
+  CANALIZO_GENERAL: 2.0,
+  MAR_ABIERTO_OCEANICO: 10.0,
+};
 function routingCost(edge) {
-  return edge.confianza === 'ROJO' ? edge.length * OPEN_SEA_COST_PENALTY : edge.length;
+  const factor = CHANNEL_COST_FACTOR[edge.channel_type] ?? 1.0;
+  return edge.length * factor;
 }
 
 function haversine(lat1, lon1, lat2, lon2) {
@@ -400,7 +409,7 @@ function connectAvoidingLand(pointA, pointB) {
 // tierra (glitch puro de digitalización), o (b) si el punto SÍ evita una
 // obstrucción real, reemplazarlo por el mejor rodeo del grafo de visibilidad
 // (más suave que el vértice original) — nunca se elimina a ciegas.
-const CUSP_ANGLE_THRESHOLD_DEG = 120;
+const CUSP_ANGLE_THRESHOLD_DEG = 45;
 const CUSP_MAX_ITER = 15;
 
 function bearingDeg(lat1, lon1, lat2, lon2) {

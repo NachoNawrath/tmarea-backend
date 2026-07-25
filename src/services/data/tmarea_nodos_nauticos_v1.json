@@ -14,6 +14,12 @@
       "VERDE": "Waypoint normativo confirmado Art.45 / Estación prácticos DIRECTEMAR",
       "AMARILLO": "Eje de canal documentado, zona de alta densidad operativa acuícola",
       "ROJO": "Punto de referencia geográfica — navegue con carta SHOA y criterio propio"
+    },
+    "channel_type_info": {
+      "nota": "channel_type derivado del campo confianza ya existente (VERDE/AMARILLO/ROJO), sourced originalmente de TM-008 Art.45 / DIRECTEMAR / ejes documentados. No es un dato nuevo fabricado, es una re-etiqueta del mismo dato ya verificado.",
+      "CANAL_RESGUARDADO_MENOR": "Vía normada/documentada Art.45 o estación de prácticos (antes VERDE) — factor de costo 1.0",
+      "CANALIZO_GENERAL": "Eje de canal estimado sobre zona de libre navegación documentada (antes AMARILLO) — factor de costo 2.0",
+      "MAR_ABIERTO_OCEANICO": "Tramo de mar abierto/expuesto (antes ROJO) — factor de costo 10.0, se evita siempre que exista alternativa resguardada"
     }
   },
   "nodos": [
@@ -151,7 +157,7 @@
       "id": "N-AC-03",
       "tipo": "TRONCAL",
       "nombre": "Golfo de Ancud — eje central norte",
-      "lat": -42.0,
+      "lat": -42,
       "lon": -73.45,
       "confianza": "AMARILLO",
       "zona": "A_LOSLAGOS_NORTE",
@@ -643,7 +649,8 @@
           -72.9595701,
           -41.4851186
         ]
-      ]
+      ],
+      "channel_type": "CANAL_RESGUARDADO_MENOR"
     },
     {
       "id": "E-02",
@@ -786,7 +793,8 @@
           -72.9540254,
           -41.8369556
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-03",
@@ -861,7 +869,8 @@
           -73.1543623,
           -41.8794645
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-04",
@@ -881,14 +890,15 @@
           -41.95
         ],
         [
-          -73.0,
+          -73,
           -41.97
         ],
         [
           -73.2,
           -42.05
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-05",
@@ -1023,7 +1033,8 @@
           -73.5072384,
           -42.3669305
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-06",
@@ -1102,7 +1113,8 @@
           -73.3721868,
           -42.5626888
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-07",
@@ -1245,7 +1257,8 @@
           -73.2983958,
           -42.6257959
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-08",
@@ -1472,7 +1485,8 @@
           -73.5823327,
           -42.9249439
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-R01",
@@ -1775,7 +1789,8 @@
           -73.0037642,
           -41.5545496
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-R02",
@@ -1930,7 +1945,8 @@
           -72.642093,
           -41.6913024
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-R03",
@@ -1949,7 +1965,8 @@
           -73.86,
           -41.77
         ]
-      ]
+      ],
+      "channel_type": "CANAL_RESGUARDADO_MENOR"
     },
     {
       "id": "E-09",
@@ -2284,7 +2301,8 @@
           -73.6453537,
           -43.3951061
         ]
-      ]
+      ],
+      "channel_type": "CANAL_RESGUARDADO_MENOR"
     },
     {
       "id": "E-10",
@@ -2311,7 +2329,8 @@
           -73.6951012,
           -43.7662179
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-11",
@@ -2702,7 +2721,8 @@
           -73.7471725,
           -43.9047187
         ]
-      ]
+      ],
+      "channel_type": "MAR_ABIERTO_OCEANICO"
     },
     {
       "id": "E-12",
@@ -2993,7 +3013,8 @@
           -73.3849062,
           -44.1530521
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-13",
@@ -3024,7 +3045,8 @@
           -73.50098,
           -44.626707
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-14",
@@ -3071,7 +3093,8 @@
           -73.5735513,
           -44.9459688
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-15",
@@ -3098,7 +3121,8 @@
           -73.6326029,
           -45.0989725
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-16",
@@ -3301,7 +3325,8 @@
           -72.8839875,
           -45.4468846
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-17",
@@ -3424,7 +3449,8 @@
           -72.8537322,
           -45.4328826
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-18",
@@ -6171,7 +6197,8 @@
           -74.3841148,
           -49.1374454
         ]
-      ]
+      ],
+      "channel_type": "CANAL_RESGUARDADO_MENOR"
     },
     {
       "id": "E-19",
@@ -6194,7 +6221,8 @@
           -72.9,
           -51.75
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-20",
@@ -6237,7 +6265,8 @@
           -72.7126768,
           -51.9385923
         ]
-      ]
+      ],
+      "channel_type": "CANALIZO_GENERAL"
     },
     {
       "id": "E-21",
@@ -6384,7 +6413,8 @@
           -72.9820028,
           -52.0566951
         ]
-      ]
+      ],
+      "channel_type": "CANAL_RESGUARDADO_MENOR"
     },
     {
       "id": "E-22",
@@ -6411,7 +6441,8 @@
           -69.5238,
           -52.4695
         ]
-      ]
+      ],
+      "channel_type": "CANAL_RESGUARDADO_MENOR"
     },
     {
       "id": "E-23",
@@ -6434,7 +6465,8 @@
           -69.5205709,
           -52.487238
         ]
-      ]
+      ],
+      "channel_type": "CANAL_RESGUARDADO_MENOR"
     },
     {
       "id": "E-24",
@@ -6485,7 +6517,8 @@
           -70.8667496,
           -53.1211734
         ]
-      ]
+      ],
+      "channel_type": "CANAL_RESGUARDADO_MENOR"
     }
   ],
   "algoritmo_ruta": {
