@@ -267,7 +267,7 @@ function capVerts(verts, ax, ay, bx, by) {
 // varios segundos); prewarmDetours() lo sube temporalmente porque corre una
 // sola vez al arrancar y sí puede permitirse tardar más para dejar cacheados
 // los casos difíciles antes de recibir tráfico real.
-let DETOUR_TIME_BUDGET_MS = 300;
+let DETOUR_TIME_BUDGET_MS = 800;
 
 // Un solo detour acotado no alcanza: una ruta complicada puede necesitar
 // MUCHOS rodeos (uno por hueco/zigzag), y aunque cada uno respete su propio
@@ -275,7 +275,7 @@ let DETOUR_TIME_BUDGET_MS = 300;
 // real). Este es el techo GLOBAL de tiempo dedicado a rodeos dentro de UNA
 // sola petición — al superarlo, cualquier intento nuevo se descarta de
 // inmediato (ok:false, ROJO), sin ni siquiera empezar a buscar.
-const REQUEST_DETOUR_BUDGET_MS = 400;
+const REQUEST_DETOUR_BUDGET_MS = 2500;
 let _detourDeadline = Infinity;
 
 // Arma el grafo de visibilidad (A, B + vértices candidatos) y corre Dijkstra.
@@ -335,34 +335,55 @@ function runVisibilityGraph(pointA, pointB, verts) {
   return { coords: path, ok: true, detoured: path.length > 2 };
 }
 
+// Radios de búsqueda LOCAL progresivos (grados), probados de menor a mayor.
+// Antes se armaba el grafo con TODOS los vértices de la way cruzada,
+// muestreados por stride uniforme — pero con costa real de alta resolución
+// una sola "way" puede representar un continente entero (~200.000 puntos,
+// ej. Sudamérica completa en el polígono simplificado): el muestreo uniforme
+// sobre TODO ese rango deja casi nada cerca del cruce real, y ni con
+// presupuesto de tiempo generoso se encuentra un rodeo que sí existe
+// localmente (verificado a mano: con un bbox de ~2km alrededor del punto
+// real de Anahuac SÍ hay conexión). La forma correcta es buscar por
+// CERCANÍA GEOGRÁFICA (bbox), no por muestreo dentro de la way — probando
+// radios chicos primero, más rápido además para el caso común (obstáculo
+// pequeño y local, como un muelle o punta cerca de un puerto real).
+const VISIBILITY_SEARCH_RADII_DEG = [0.03, 0.1, 0.3];
+const HUGE_WAY_THRESHOLD = 10000; // por encima de esto, no es una isla real — es un polígono continental
+
 function visibilityDetour(pointA, pointB) {
   const [ax, ay] = pointA, [bx, by] = pointB;
 
-  // 1º intento: dirigido — solo los vértices de los ways que la línea
-  // directa realmente atraviesa (el obstáculo real), no una caja grande.
-  // Con costa de alta resolución esto es muchísimo más rápido y más preciso
-  // que muestrear todo lo que haya alrededor.
-  // A esta altura simpleDetour ya intentó rodear caminando el primer way
-  // cruzado (O(n), rápido) y falló — llegar acá implica un caso raro
-  // (varios ways bloqueando a la vez). El grafo de visibilidad SÍ es O(n²),
-  // así que aquí conviene acotar: se prioriza por cercanía a la línea, pero
-  // con un límite generoso para no repetir el problema de conectividad de
-  // antes con obstáculos anchos.
+  // 1º intento: dirigido por way — para el obstáculo común (una isla real de
+  // tamaño normal), usar TODOS sus vértices (sin cap) reproduce fielmente su
+  // forma y suele resolver de una. Se salta si la way es gigante (un
+  // polígono continental fusionado, ~200k puntos) — ahí un muestreo dentro
+  // de la way deja casi nada cerca del cruce real; para esos casos abajo se
+  // busca por cercanía geográfica en cambio.
   const crossedWays = coastlineGuard.findAllCrossingWays(ax, ay, bx, by);
-  if (crossedWays.length > 0) {
-    const maxPerWay = Math.max(20, Math.floor(VISIBILITY_MAX_VERTS / crossedWays.length));
-    const targeted = [];
-    for (const wayIdx of crossedWays) targeted.push(...sampleWay(coastlineGuard.wayVertices(wayIdx), maxPerWay));
-    const result = runVisibilityGraph(pointA, pointB, targeted);
+  const targeted = [];
+  for (const wayIdx of crossedWays) {
+    const len = coastlineGuard.wayLength(wayIdx);
+    if (len > HUGE_WAY_THRESHOLD) continue;
+    targeted.push(...coastlineGuard.wayVertices(wayIdx));
+  }
+  if (targeted.length > 0) {
+    const result = runVisibilityGraph(pointA, pointB, capVerts(targeted, ax, ay, bx, by));
     if (result) return result;
   }
 
-  // 2º intento: el obstáculo puede requerir rodear por OTRO way cercano no
-  // directamente cruzado (ej. un islote vecino) — fallback acotado por bbox.
-  const minLon = Math.min(ax, bx) - VISIBILITY_FALLBACK_MARGIN_DEG, maxLon = Math.max(ax, bx) + VISIBILITY_FALLBACK_MARGIN_DEG;
-  const minLat = Math.min(ay, by) - VISIBILITY_FALLBACK_MARGIN_DEG, maxLat = Math.max(ay, by) + VISIBILITY_FALLBACK_MARGIN_DEG;
-  const verts = capVerts(coastlineGuard.verticesInBbox(minLon, minLat, maxLon, maxLat), ax, ay, bx, by);
-  return runVisibilityGraph(pointA, pointB, verts);
+  // 2º intento: radios de búsqueda LOCAL progresivos por cercanía geográfica
+  // (bbox), no por muestreo dentro de la way — necesario cuando el obstáculo
+  // es parte de una way gigante (continental) o cuando hace falta rodear por
+  // OTRO way cercano no directamente cruzado (ej. un islote vecino).
+  for (const margin of VISIBILITY_SEARCH_RADII_DEG) {
+    const minLon = Math.min(ax, bx) - margin, maxLon = Math.max(ax, bx) + margin;
+    const minLat = Math.min(ay, by) - margin, maxLat = Math.max(ay, by) + margin;
+    const verts = capVerts(coastlineGuard.verticesInBbox(minLon, minLat, maxLon, maxLat), ax, ay, bx, by);
+    const result = runVisibilityGraph(pointA, pointB, verts);
+    if (result) return result;
+    if (Date.now() > _detourDeadline) break; // no seguir ampliando si ya no hay presupuesto
+  }
+  return null;
 }
 
 // Los huecos/zigzags que esto resuelve son propiedades fijas del grafo
