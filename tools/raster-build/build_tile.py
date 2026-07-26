@@ -30,6 +30,10 @@ WATER_POLYGONS_ZIP = f"{DATA_DIR}/water-polygons-split-4326.zip"
 HAZARD_BUFFER_M = 100
 UNIT_M = 10  # unidad del campo distancia empaquetado (spec Sec 5.1)
 
+# tools/raster-build/build_tile.py -> raiz del repo (tmarea-backend/)
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ZONAS_DRAGADAS_PATH = os.path.join(REPO_ROOT, "src", "config", "zonas-dragadas.json")
+
 
 def find_water_shapefile():
     """El zip de osmdata.openstreetmap.de trae el shapefile dentro de una
@@ -115,6 +119,61 @@ def subtract_hazards(agua, tile_id, grid, transform, log):
     return agua, len(geoms)
 
 
+def rasterize_zonas_dragadas(grid, transform, agua_shape, log):
+    """Zonas de margen relajado (spec Sec 7.1). Tres tipos, todos con el
+    mismo efecto (bit 15 / kml_bit, dMinM acotado a dMinM_max en
+    banded_edt.py) pero geometria distinta:
+      - area_portuaria: punto + buffer_m (puertos reales)
+      - canal_conocido: linea + buffer_m (ej. Tenglo, 39 pts verificados)
+      - canal_acceso_derivado: linea + buffer_m (generada por el propio
+        router, derivar-zonas-canal.js) -- condicion de honestidad: estas
+        celdas NUNCA deben promoverse a VERDE en Fase 3 aunque haya
+        bafimetria cercana, solo se permite el paso por geometria. El
+        formato actual no tiene bit para distinguir el tipo a nivel de
+        celda (16 bits ya totalmente ocupados) asi que ese chequeo debe
+        hacerse en la etapa de integracion bafimetrica de Fase 3
+        consultando este mismo JSON, no en el raster."""
+    zonas_path = ZONAS_DRAGADAS_PATH
+    if not os.path.exists(zonas_path):
+        log(f"  AVISO: no se encontro {zonas_path}, zona_relajada queda vacia")
+        return None
+
+    with open(zonas_path, encoding="utf-8") as f:
+        zonas = json.load(f)
+    if not zonas:
+        return None
+
+    from shapely.geometry import Point, LineString
+    from shapely.ops import transform as shp_transform
+    from pyproj import Transformer
+
+    to_proj = Transformer.from_crs("EPSG:4326", grid["crs_proj4"], always_xy=True).transform
+
+    buffered = []
+    for z in zonas:
+        geom_wgs84 = z["geometria_wgs84"]
+        if z["tipo"] == "area_portuaria":
+            geom = Point(*geom_wgs84)
+        else:  # canal_conocido, canal_acceso_derivado: linea
+            geom = LineString(geom_wgs84)
+        proyectada = shp_transform(to_proj, geom)
+        buffered.append(proyectada.buffer(z["buffer_m"]))
+
+    zona_mask = rasterio.features.rasterize(
+        [(g, 1) for g in buffered],
+        out_shape=agua_shape,
+        transform=transform,
+        fill=0,
+        dtype=np.uint8,
+    ).astype(bool)
+
+    por_tipo = {}
+    for z in zonas:
+        por_tipo[z["tipo"]] = por_tipo.get(z["tipo"], 0) + 1
+    log(f"  {len(zonas)} zonas de margen relajado ({por_tipo}) rasterizadas -> {zona_mask.sum():,} celdas marcadas")
+    return zona_mask
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tile", default="AUSTRAL_N")
@@ -137,13 +196,22 @@ def main():
     agua, transform = load_water_mask(tile_cfg, grid, log)
     agua, n_hazards = subtract_hazards(agua, tile_id, grid, transform, log)
 
+    log("Rasterizando zonas de margen relajado (zonas-dragadas.json)...")
+    zona_relajada = rasterize_zonas_dragadas(grid, transform, agua.shape, log)
+    n_zonas_dragadas = 0
+    if os.path.exists(ZONAS_DRAGADAS_PATH):
+        with open(ZONAS_DRAGADAS_PATH, encoding="utf-8") as f:
+            n_zonas_dragadas = len(json.load(f))
+
     bin_path = f"{OUT_DIR}/{tile_id}.bin"
     log(f"Abriendo memmap de salida: {bin_path}")
     packed = np.memmap(bin_path, dtype=np.uint16, mode="w+", shape=(grid["rows"], grid["cols"]))
 
     log("Procesando EDT por bandas...")
-    stats = process_tile_banded(agua, grid["res_m"], UNIT_M, packed, progress=log)
+    stats = process_tile_banded(agua, grid["res_m"], UNIT_M, packed, zona_relajada=zona_relajada, progress=log)
     del agua
+    if zona_relajada is not None:
+        del zona_relajada
     gc.collect()
 
     navegable = stats["navegable"]
@@ -173,14 +241,20 @@ def main():
             "Es un numero bajo, pero no es un bug: OSM tiene muy poca cobertura de seamarks en "
             "Chile (pobreza de datos de la fuente, no del pipeline). No se debe interpretar como "
             "'zona sin peligros reales', solo como 'zona sin peligros mapeados en OSM'.",
+            f"El bit 15 (kml_bit) se puebla con {n_zonas_dragadas} zonas de margen relajado "
+            "(src/config/zonas-dragadas.json, spec Sec 7.1) -- buffers de 1-2km alrededor de "
+            "puertos reales, NO con los 14 KML de canales (esos siguen sin digitalizar, "
+            "decision Fase 2: no digitalizar por adelantado).",
         ],
         "build": {
             "fecha": time.strftime("%Y-%m-%d"),
-            "fase": 1,
+            "fase": 2,
             "fuentes": {
                 "osm_water": "osmdata.openstreetmap.de/download/water-polygons-split-4326.zip",
                 "seamarks_overpass": f"{tile_id}_seamarks_peligro.json ({n_hazards} peligros, buffer {HAZARD_BUFFER_M}m)",
-                "gmrt": None, "ibcso": None, "gebco": None, "kml": None,
+                "gmrt": None, "ibcso": None, "gebco": None,
+                "kml": None,
+                "zonas_dragadas": f"src/config/zonas-dragadas.json ({n_zonas_dragadas} zonas)",
             },
         },
     }

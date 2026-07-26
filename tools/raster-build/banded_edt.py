@@ -47,15 +47,21 @@ OVERLAP_KM = 30
 TARGET_BAND_CELLS = 25_000_000  # tamano de banda EXTENDIDA (con solape), spec Sec 5.5
 
 
-def process_tile_banded(agua, res_m, unit_m, packed_memmap, progress=print):
+def process_tile_banded(agua, res_m, unit_m, packed_memmap, zona_relajada=None, progress=print):
     """
     agua: array booleano (rows, cols) en RAM -- True = navegable. Liviano
           (1 byte/celda), no es lo que se banda.
     packed_memmap: np.memmap uint16 (rows, cols), abierto en modo 'w+',
           donde se escribe el resultado final ya empaquetado.
+    zona_relajada: array booleano (rows, cols) opcional -- celdas dentro
+          de zonas de margen relajado (KML o zonas-dragadas.json, spec
+          Sec 7.1). Se escribe en el bit 15 del empaquetado. Si es None,
+          el bit queda en 0 en todas las celdas (equivalente a la Fase 1
+          original, sin ninguna zona relajada).
 
     Devuelve stats: {'navegable': int, 'tierra': int, 'rojo': int}
-    (verde=amarillo=0 en esta corrida: sin bafimetria ni KML, Fase 1).
+    (verde=amarillo=0 en esta corrida: sin bafimetria ni KML/zonas
+    propiamente dichas de canal -- solo zonas-dragadas si se paso).
     """
     rows, cols = agua.shape
     overlap_rows = int(np.ceil(OVERLAP_KM * 1000 / res_m))
@@ -79,7 +85,10 @@ def process_tile_banded(agua, res_m, unit_m, packed_memmap, progress=print):
 
         dist_units = np.clip(np.round(dist_core / unit_m), 0, DIST_MASK).astype(np.uint16)
         confianza = agua_core.astype(np.uint16)  # 1 (ROJO) si navegable, 0 (TIERRA) si no
-        kml = np.zeros_like(confianza)  # Fase 1: sin KML disponible en esta corrida
+        if zona_relajada is not None:
+            kml = zona_relajada[start_row:end_row, :].astype(np.uint16)
+        else:
+            kml = np.zeros_like(confianza)
 
         packed_memmap[start_row:end_row, :] = pack_cells(kml, confianza, dist_units)
 
