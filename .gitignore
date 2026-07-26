@@ -5,6 +5,8 @@ dist/
 .DS_Store
 *.log
 build/
+__pycache__/
+*.pyc
 
 # Fuente cruda del polígono de costa (55MB, zip + shapefile) — regenerable
 # desde osmdata.openstreetmap.de con build-coastline-compact.js. Solo se
@@ -12,3 +14,13 @@ build/
 src/services/data/coastline/land-polygons/
 src/services/data/coastline/regional/
 test-ruta-melinka-output.json
+
+# Pipeline raster (TMAREA_SPEC_Router_Raster_v1.md §5): venv local y
+# cualquier salida intermedia que caiga dentro del repo por error. Los
+# datos crudos (OSM water polygons, ~861MB) y los .bin/.tif generados
+# viven fuera del repo en C:\tmarea-data\ — GitHub rechaza archivos >100MB.
+tools/raster-build/.venv/
+tools/raster-build/output/
+tools/raster-build/*.bin
+tools/raster-build/*.tif
+tools/raster-build/*.zip
