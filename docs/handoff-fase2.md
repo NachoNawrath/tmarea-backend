@@ -1,6 +1,84 @@
-# Handoff — Fase 2 (raster-router-service.js), regresión sin resolver
+# Handoff — Fase 2 (raster-router-service.js)
 
 Interrumpido para asegurar el estado antes de quedarse sin contexto. Este documento existe para que la próxima sesión no tenga que re-descubrir nada de lo ya investigado hoy.
+
+## Estado actual (actualizado tras cerrar la regresión)
+
+**Regresión de Anahuac→Chacabuco: RESUELTA.** Causa raíz: el salto directo al fallback cuando el fino fallaba por `sin_camino` (`if (res.motivo === 'sin_camino') break;` en `runHierarchicalAstar`). Revertido según spec v1.9 §7.2 — dilatar el corredor no solo ensancha un paso, puede incorporar una ruta alternativa completa; las tres iteraciones de dilatación (3/6/12km) deben agotarse siempre. Confirmado: Anahuac→Chacabuco (dMinM=50) vuelve a 1.12–1.17s en 3 corridas consecutivas.
+
+**Nuevo hallazgo bloqueante — tramo austral, no la salida de Puerto Montt:**
+
+Al probar las 4 rutas del corredor real a dMinM=200/perfil PNM (§7.1), Puerto Montt→Chacabuco falla (`ruta_no_convergente`). Se aisló la variable con 5 corridas (Puerto Montt real —punto detrás de Canal Tenglo, no Anahuac— y Anahuac, cada uno a varios dMinM, mismo destino Chacabuco):
+
+| Origen → Destino | dMinM | Resultado | Tiempo |
+|---|---|---|---|
+| Puerto Montt → Chacabuco | 50 | OK | 1.48s |
+| Puerto Montt → Chacabuco | 80 | OK | 1.31s |
+| Puerto Montt → Chacabuco | 150 | **FALLA** | 6.29s |
+| Puerto Montt → Chacabuco | 200 | **FALLA** | 5.41s |
+| Anahuac → Chacabuco | 200 | **FALLA** | 5.18s |
+
+Anahuac también falla a 200 (no es un problema exclusivo de la salida de Puerto Montt/Tenglo), y el umbral de falla está entre dMinM=80 y dMinM=150 — es decir, **bloqueante**: dMinM=150 es calado 2,5–4,0m, el rango de barcazas salmoneras y transporte que hacen ese trayecto todos los días.
+
+**Herramienta permanente para este tipo de caso:** `tools/detectar-chokepoints.js` (ver sección propia más abajo). Corrida para Puerto Montt→Chacabuco a dMinM=150 y dMinM=200 — devuelve los tramos exactos donde el margen real cae por debajo del objetivo, con coordenadas para identificar el canal. **No se investigó más allá del listado ni se agregó ninguna zona** — queda pendiente decidir, canal por canal, cuáles son pasos reales a declarar `canal_conocido`/`canal_acceso_derivado` y cuáles son estrechamientos donde el modelo tiene razón.
+
+## Herramienta: `tools/detectar-chokepoints.js`
+
+Para cualquier ruta que no converge a un `dMinM` objetivo pero sí converge a `dMinM=50` (el margen más laxo): corre el A* jerárquico completo a dMinM=50 (converge por definición, es el mínimo de la tabla de `perfiles-costo.js`), recorre esa ruta de referencia sobre el `.bin` fino, y lista los tramos contiguos donde el margen real (`d`, distancia a costa) cae por debajo del `dMinM` objetivo pedido. Duplica la lógica de `runHierarchicalAstar` de `raster-router-service.js` a propósito (no depende de sus exports) para seguir funcionando aunque el router cambie de forma.
+
+```
+node tools/detectar-chokepoints.js --origen=LAT,LON --destino=LAT,LON --dmin=150 [--tile=AUSTRAL_N]
+```
+
+Por cada chokepoint reporta: coordenadas WGS84 del centro, largo del tramo en metros, margen mínimo a la orilla (el `d` más chico dentro del tramo), un ancho estimado (`2 × margen mínimo`, asumiendo que la ruta corre centrada en el canal — es una aproximación, no una medición perpendicular real), si la celda más angosta cae dentro de una zona relajada (bit 15 del `.bin`, ground truth de `zonas-dragadas.json` ya rasterizado) y qué zonas de `zonas-dragadas.json` tienen el buffer lo bastante cerca como para candidatas (chequeo geométrico independiente del bit 15, informativo).
+
+**Uso previsto:** cualquier caso futuro de "esta ruta no converge a tal margen y no sé por qué" — corridas contra dMinM=50 y compara. No agrega ni corrige nada, es solo diagnóstico.
+
+### Resultado: Puerto Montt→Chacabuco a dMinM=150 (13 chokepoints)
+
+Origen usado: `-41.46985128159208,-72.91715797729832` (2km detrás del extremo Anahuac/PM del trazado de Canal Tenglo — lado interior, no Anahuac). Destino: `-45.462,-72.807`.
+
+| # | centro (lat, lon) | largo (m) | margen mín (m) | ancho est (m) | zona relajada | zonas_dragadas cercanas |
+|---|---|---|---|---|---|---|
+| 1 | -41.475671, -72.923714 | 141 | 50 | 100 | sí | Puerto Montt (centro/bahía interior), 1284m |
+| 2 | -41.705142, -73.002712 | 200 | 100 | 200 | no | ninguna |
+| 3 | -41.869497, -72.896225 | 141 | 140 | 280 | sí | Embarcadero Rampa Isla Queullin, 696m |
+| 4 | -41.973258, -72.810777 | 0 | 140 | 280 | no | ninguna |
+| 5 | -42.505961, -72.812758 | 212 | 140 | 280 | sí | Embarcadero Rampa Chumelden, 515m |
+| 6 | -42.507736, -72.816432 | 141 | 140 | 280 | sí | Embarcadero Rampa Chumelden, 791m |
+| 7 | -44.03345, -73.144713 | 0 | 140 | 280 | no | ninguna |
+| 8 | -44.063856, -73.208354 | 0 | 140 | 280 | no | ninguna |
+| 9 | -45.236393, -73.513241 | 0 | 140 | 280 | no | ninguna |
+| 10 | -45.426587, -72.829304 | 391 | 50 | 100 | no | ninguna |
+| 11 | -45.432138, -72.808291 | 71 | 140 | 280 | no | ninguna |
+| 12 | -45.44301, -72.798217 | 483 | 100 | 200 | no | ninguna |
+| 13 | -45.45823, -72.809943 | 121 | 50 | 100 | sí | Chacabuco, 464m |
+
+### Resultado: Puerto Montt→Chacabuco a dMinM=200 (76 chokepoints)
+
+Mismo origen/destino. La lista completa a 200m incluye los 13 de arriba (umbral más laxo) más 63 tramos adicionales, mayormente en tres zonas geográficas: cerca de la salida de Puerto Montt (lat -41.58 a -41.97, ~10 tramos), en el tramo -42.2 a -43.5 (canales interiores camino a Chiloé/Golfo Corcovado, ~20 tramos, casi ninguno con zona relajada cercana), y agrupados cerca de la llegada a Chacabuco/Puerto Aguirre (lat -45.1 a -45.46, ~15 tramos). La salida completa de la corrida (76 registros con coordenadas, largo, margen, ancho estimado y zonas cercanas) quedó en la transcripción de la sesión — se puede volver a generar en segundos con:
+
+```
+node tools/detectar-chokepoints.js --origen=-41.46985128159208,-72.91715797729832 --destino=-45.462,-72.807 --dmin=200
+```
+
+**Resumen de las 4 rutas del corredor a dMinM=200/perfil PNM (§7.1): 3 de 4 pasan.** Puerto Montt→Chacabuco es la única que falla, y falla desde dMinM=150, no solo desde 200 (ver tabla arriba) — es decir, el límite bloqueante está más cerca de lo que el test original a 200 hacía parecer.
+
+### Conclusión: el margen mínimo escalado por calado está mal fundamentado
+
+De los 13 chokepoints a dMinM=150, 8 fallan por exactamente 10 metros (margen real 140m contra un objetivo de 150m). Eso no es ruido de medición — es que el objetivo de 150m no tiene respaldo.
+
+**Evidencia:** la Angostura Inglesa tiene 185m de ancho útil documentado y por ahí pasan, según DIRECTEMAR, naves de hasta 10,7m de calado. Exigir 300m de canal libre (2× margen para una nave de calado bajo, si el criterio actual escala linealmente) a una nave de 3m de calado es indefendible frente a ese dato real.
+
+**El número de reemplazo no se define por criterio propio — se calibra con datos del derrotero.** Es exactamente el propósito de `pasos.csv` en la extracción del Derrotero SHOA (ver sección siguiente): cada paso documentado trae ancho útil real y, en algunos casos, calado máximo verificado, que reemplaza la fórmula actual por un límite ya validado en la práctica de navegación.
+
+## Derrotero SHOA — extracción de datos (tarea paralela, independiente de esta regresión)
+
+**Etapa A (reconocimiento) completa.** Esquema y patrones confirmados en `docs/extraccion-derrotero-shoa.md` v1.1: tres formatos de coordenadas conviviendo en el mismo tomo (grados-minutos enteros, grados-minutos con coma decimal, grados-minutos-segundos con coma decimal en segundos), símbolo de grado inconsistente (`º`/`°`), sondas siempre en metros sin brazas, anchos en cables/millas, números de línea sueltos como ruido principal a filtrar, página física del PDF vs. numeración oficial del derrotero, y la Lista de Faros (características lumínicas) no está en este tomo.
+
+Seis datasets definidos: `pasos.csv`, `peligros.csv`, `sondas_canal.csv`, `ayudas.csv` (obligatorios) más `corrientes.csv` y `areas.csv` (oportunistas, de tablas ya estructuradas que `extract_tables()` levanta limpias).
+
+**Esperando Etapa B** (los cuatro extractores). `pasos.csv` es el dataset que directamente calibra el margen mínimo escalado por calado mencionado arriba.
 
 ## Estado de commits
 
@@ -101,9 +179,10 @@ FALLA, motivo=ruta_no_convergente, ~2.6s
 
 ## Próximos pasos sugeridos (en orden)
 
-1. Encontrar la causa real de la regresión (probar `snap.js` y el salto de dilatación por separado, o la combinación de reversiones sugerida arriba).
-2. Una vez resuelta la regresión, confirmar Puyuhuapi→Chacabuco y re-correr el test de rendimiento original (Anahuac→Chacabuco dMinM=50, meta <1.5s).
-3. Overpass de riberas fluviales (fuente 8, §4) + rebuild, para resolver Valdivia.
-4. Re-correr el test de sanidad completo (meta: 100% de puertos costeros a dMinM=200, incluyendo Valdivia).
-5. Re-correr el test de Tenglo con el criterio corregido (punto 11).
-6. Recién ahí: medir el daño del buffer portuario de 2km y considerar bajarlo a 800m (spec §7.1, secuencia de calibración) — no se llegó a esto.
+1. ~~Encontrar la causa real de la regresión~~ — **hecho**, ver "Estado actual" arriba.
+2. Revisar, canal por canal, los chokepoints de dMinM=150/200 listados arriba (coordenadas ya generadas). Para cada uno: ¿es un paso real que se navega en la práctica (→ declarar `canal_conocido`/`canal_acceso_derivado` en `zonas-dragadas.json`) o un estrechamiento genuino donde el modelo tiene razón en cerrar? Esto es decisión del usuario, no automatizable.
+3. Una vez resueltos los chokepoints bloqueantes, confirmar Puyuhuapi→Chacabuco y re-correr el test de rendimiento original (Anahuac→Chacabuco dMinM=50, meta <1.5s) — ya en 1.12-1.17s, sigue cumpliendo.
+4. Overpass de riberas fluviales (fuente 8, §4) + rebuild, para resolver Valdivia.
+5. Re-correr el test de sanidad completo (meta: 100% de puertos costeros a dMinM=200, incluyendo Valdivia).
+6. Re-correr el test de Tenglo con el criterio corregido (punto 11).
+7. Recién ahí: medir el daño del buffer portuario de 2km y considerar bajarlo a 800m (spec §7.1, secuencia de calibración) — no se llegó a esto.
