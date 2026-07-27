@@ -171,12 +171,10 @@ function runHierarchicalAstar(startIdx, goalIdx, perfilCosto) {
         finoResult = { ...res, restringido: true };
         break;
       }
-      // spec §7.2: si el fino falla por 'sin_camino' (agoto el corredor,
-      // no el tope de expansiones), el paso no existe a esa resolucion --
-      // dilatar el corredor medio no va a crear conectividad fina que no
-      // esta ahi. Saltar directo al fallback en vez de gastar las
-      // iteraciones restantes de la escalera.
-      if (res.motivo === 'sin_camino') break;
+      // spec §7.2 v1.9: nunca saltar la dilatacion iterativa. Dilatar el
+      // corredor no solo ensancha un paso -- puede incorporar una ruta
+      // alternativa completa que el corredor previo no contenia. Se agotan
+      // las tres iteraciones sea cual sea el motivo del fallo del fino.
     }
   }
   if (finoResult) return finoResult;
