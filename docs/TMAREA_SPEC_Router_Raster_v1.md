@@ -1,6 +1,6 @@
 # Tmarea — Especificación técnica: Motor de ruteo raster nacional
 
-**Versión:** 1.9 — revierte el salto de dilatación (causó regresión); geometría siempre a resolución fina
+**Versión:** 2.0 — Fase 2 cerrada. `dMinM` calibrado con el Derrotero SHOA; cotejo vertical por sonda
 **Destinatario:** Claude Code
 **Repositorios:** `NachoNawrath/tmarea-backend` (motor, §2–14) y `NachoNawrath/tmarea-pwa` (integración, §15)
 **Reemplaza:** `corridor-router-service.js`, `nautical-graph-router.js`, `osm-router-service.js`, `coastline-guard.js`
@@ -312,10 +312,34 @@ Constantes de referencia: 12 MN = 22.224 m · 60 MN = 111.120 m.
 
 | Calado | `dMinM` | `bandaMinM` | `bandaMaxM` |
 |---|---|---|---|
-| < 1,5 m | 50 | 150 | 2500 |
-| 1,5 – 2,5 m | 80 | 250 | 3000 |
-| 2,5 – 4,0 m | 150 | 400 | 3000 |
-| > 4,0 m | 200 | 500 | 3000 |
+| < 1,5 m | **50** | 150 | 2500 |
+| 1,5 – 2,5 m | **50** | 250 | 3000 |
+| 2,5 – 4,0 m | **50** | 400 | 3000 |
+| > 4,0 m | **50** | 500 | 3000 |
+
+#### `dMinM` es constante y está calibrado con dato
+
+> **Corrección de las versiones 1.0 a 1.9.** Esos documentos hacían escalar `dMinM` con el calado (50/80/150/200). **Estaba mal fundamentado y causaba fallos reales:** con `dMinM = 150` el router no encontraba salida desde Puerto Montt, y Puerto Montt→Chacabuco no convergía porque el margen cerraba Paso Tautil.
+
+**Derivación del techo**, a partir del Derrotero del SHOA:
+
+```
+Paso más angosto documentado como navegable en el corredor troncal:
+    Paso Tautil, Seno de Reloncaví — 241 m de ancho útil (derrotero p. 282)
+
+Ancho navegable que requiere el A* a 50 m de celda: ~150 m (3 celdas)
+
+    dMinM ≤ (241 − 150) / 2 = 45,5  →  50 m
+```
+
+**El margen no mide seguridad. Mide representación:** impide que la línea trazada vaya pegada a la orilla sugiriendo una precisión que el modelo no tiene. Por eso no depende del calado — una nave grande no necesita más distancia horizontal a la costa, necesita más agua bajo la quilla, y eso es otra magnitud.
+
+Evidencia de que ambas son independientes: el propio derrotero casi nunca da ancho y sonda juntos, y donde lo hace no correlacionan. **Paso Chocoi tiene 2.963 m de ancho y 5 m de sonda** — amplísimo horizontalmente, y cerrado para una barcaza de 4 m de calado.
+
+El calado se expresa en dos lugares, ninguno de ellos `dMinM`:
+
+- **`bandaMinM`** — preferencia con costo. Una barcaza prefiere más espacio, y lo paga; no se le prohíbe pasar
+- **Cotejo vertical** (§6.3) — donde hay sonda documentada, se compara contra el calado. Ahí sí se prohíbe
 
 > ⚠️ **Valores preliminares, pendientes de calibración operacional.** No los valida un ingeniero naval — los valida un patrón con experiencia en la zona, o los tracks reales. Implementar como constante exportada y editable en un solo lugar (`src/config/perfiles-costo.js`), nunca hardcodeada dentro del router.
 
@@ -333,6 +357,33 @@ Ajuste sobre esa base, por licencia y clasificación:
 | **CDC** con nave Costera 60 MN o Alta Mar | Sin ajuste | Corte de 60 MN |
 | **CDAM** | `penalMax` = 1.2 en vez de 2.2 | Alta mar quiere la ruta directa, no el resguardo |
 | **PNM** (comercial) | Sin ajuste | Perfil de resguardo base, sin cortes de distancia |
+
+### 6.3 Cotejo vertical por sonda documentada
+
+Donde el Derrotero del SHOA documenta la sonda mínima de un canal, se aplica el criterio náutico estándar: **profundidad disponible contra calado más margen bajo la quilla**. Es el mismo criterio de Navionics, Aqua Map y savvy navvy — el único válido para decidir si una nave pasa.
+
+```
+profundidad_requerida = calado + margen_bajo_quilla
+margen_bajo_quilla    = max(0,5 m ; 0,1 × calado)
+
+si sonda_canal_min_m < profundidad_requerida:
+    el paso es INTRANSITABLE para esa nave
+```
+
+> `margen_bajo_quilla` es práctica náutica común, no dato de fuente. Configurable en `src/config/perfiles-costo.js` y marcado como preliminar. El squat dinámico se desprecia: a las velocidades de nave menor es despreciable.
+
+**Fuente:** campo `sonda_canal_min_m` de `pasos.csv`, unido por nombre de canal.
+
+**Distinción crítica en los datos.** El derrotero menciona dos cosas que se parecen y no son lo mismo:
+
+| | Ejemplo | Destino |
+|---|---|---|
+| **Sonda de canal** | "de 5 a 27 metros de profundidad" (Paso Chocoi) | `sonda_canal_min_m` → cotejo vertical |
+| **Escollo puntual** | "arrecife con bajo fondo de 1,3 m casi en el centro del canal" (Canal Carbunco) | `peligros.csv` → advertencia textual |
+
+Un escollo cargado como sonda de canal cerraría Canal Carbunco para cualquier nave de más de un metro de calado, cuando el canal es navegable y lo que hay es una roca que se esquiva. **Dato bien extraído, campo mal interpretado** — verificar caso por caso contra el texto fuente antes de cargar.
+
+**Cobertura inicial: 7 canales con sonda documentada.** Es poco, y es el estado honesto: donde no hay sonda, rige la confianza batimétrica ROJO y la advertencia de usar la ecosonda.
 
 ### 6.2 Habilitación licencia × nave
 
@@ -894,7 +945,7 @@ Tests en `tests/router/`, ejecutables sin servidor:
 | Fase | Contenido | Verificable por | Depende de |
 |---|---|---|---|
 | 1 | ✅ **COMPLETADA** — pipeline + tile `AUSTRAL_N` (6.177 × 12.345 = 76,3 M celdas antes del rebbox; regenerado a −39,5). Test 9, 10/10 puntos de control, conectividad Tenglo 250 m, QGIS verificado | Test 9 + inspección visual (§5.6) | — |
-| 2 | `raster-router-service.js` con A* jerárquico **de 3 niveles**, LUT, snap, string-pulling | Tests 1, 2, 5, 6, 7, 12 | Fase 1 |
+| 2 | ✅ **COMPLETADA** — A* jerárquico de 3 niveles, LUT, snap, string-pulling. Las 4 rutas del corredor trazan; Anahuac→Chacabuco 1,13 s | Tests 1, 2, 5, 6, 7, 12 | Fase 1 |
 | 3 | Capa batimétrica: GMRT + IBCSO + sondas de derrotero → niveles VERDE | Tests 10, 11 | Fase 1 |
 | 4 | Contrato `PerfilNavegacion` + perfiles por calado, licencia y clasificación **+ integración frontend §15** | Tests 3, 4 | — (normativa cerrada, §14) |
 | 5 | EDT offline + `edt-offline.js` en el PWA | Alerta CDC funciona en modo avión | Fase 1 |

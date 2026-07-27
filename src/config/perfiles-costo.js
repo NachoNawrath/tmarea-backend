@@ -6,8 +6,25 @@
  * garantia de profundidad. La profundidad la resuelven la ecosonda de
  * la nave y la capa de confianza batimetrica (Fase 3), no este archivo.
  *
- * Valores preliminares, pendientes de calibracion operacional (ver spec
- * §6.1). Viven aca, exportados, para no hardcodearlos dentro del router.
+ * dMinM CALIBRADO CON DATO (Etapa B, extraccion derrotero SHOA -- ver
+ * docs/extraccion-derrotero-shoa.md): el paso navegable documentado mas
+ * angosto de todo el corredor troncal (Prioridad 1) es Paso Tautil, Seno
+ * de Reloncavi, 241 m de ancho util (fuente: Derrotero Pub. 3002, p.282).
+ * El A* fino necesita un minimo de ~150 m navegables (bandaMinM, 3
+ * celdas de 50 m) para converger sin degradar. Descontando eso del ancho
+ * real y repartiendo el resto simetrico entre ambas orillas:
+ *
+ *     dMinM <= (ancho_min_corredor_troncal - bandaMinM_requerido) / 2
+ *     dMinM <= (241 - 150) / 2 = 45,5  ->  50 m
+ *
+ * dMinM = 50 m queda CONSTANTE para todos los calados: es un techo
+ * geometrico derivado del paso mas angosto real, no debe escalar con el
+ * calado (escalar con calado aca fue el error de la version anterior de
+ * esta tabla -- con calados grandes, dMinM=200 hubiera dejado a Paso
+ * Tautil con menos de los 150 m navegables que el A* necesita, cerrando
+ * un paso real por sobreestimacion del margen). El calado se sigue
+ * expresando en bandaMinM (preferencia con costo, no bloqueo duro) y en
+ * el cotejo vertical (sonda_canal_min_m de pasos.csv) donde hay dato.
  *
  * Nota Fase 2: esto NO es el contrato PerfilNavegacion completo de §6/§15
  * (licencia x clasificacion de nave x ambito) -- eso es Fase 4, bloqueado
@@ -16,12 +33,14 @@
  * cubre exactamente eso.
  */
 
-// Tabla calado -> {dMinM, bandaMinM, bandaMaxM} (spec §6.1)
+// Tabla calado -> {dMinM, bandaMinM, bandaMaxM} (spec §6.1). dMinM es
+// constante (ver derivacion arriba); bandaMinM/bandaMaxM siguen
+// escalando con el calado -- esos si son preferencia legitima por calado.
 const TABLA_CALADO = [
   { caladoMaxM: 1.5, dMinM: 50, bandaMinM: 150, bandaMaxM: 2500 },
-  { caladoMaxM: 2.5, dMinM: 80, bandaMinM: 250, bandaMaxM: 3000 },
-  { caladoMaxM: 4.0, dMinM: 150, bandaMinM: 400, bandaMaxM: 3000 },
-  { caladoMaxM: Infinity, dMinM: 200, bandaMinM: 500, bandaMaxM: 3000 },
+  { caladoMaxM: 2.5, dMinM: 50, bandaMinM: 250, bandaMaxM: 3000 },
+  { caladoMaxM: 4.0, dMinM: 50, bandaMinM: 400, bandaMaxM: 3000 },
+  { caladoMaxM: Infinity, dMinM: 50, bandaMinM: 500, bandaMaxM: 3000 },
 ];
 
 const PENAL_MAX_DEFAULT = 2.2;

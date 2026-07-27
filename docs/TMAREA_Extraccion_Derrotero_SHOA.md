@@ -1,6 +1,6 @@
 # Tmarea — Especificación de extracción del Derrotero SHOA
 
-**Versión:** 1.1 — incorpora los patrones reales detectados en la Etapa A
+**Versión:** 2.0 — la unidad de extracción pasa de punto a tramo nombrado (hallazgo del piloto Canal Chacao)
 **Ubicación en el repo:** `tmarea-backend/docs/extraccion-derrotero-shoa.md`
 
 **Objetivo:** convertir los datos náuticos del derrotero en tablas georreferenciadas que alimenten el motor de ruteo raster.
@@ -56,6 +56,53 @@ La numeración oficial del derrotero (`VII-1-3`, `VIII-4-51`) **no coincide con 
 
 ## 0.1 Regla que decide si un dato sirve
 
+> **La unidad de extracción es el TRAMO NOMBRADO, no el punto.**
+
+**Hallazgo de la Etapa B (piloto Canal Chacao, pp. 141–173):** los peligros y pasos **no tienen coordenada propia en el derrotero**. Se posicionan relacionalmente — *"se encuentra al SW y a 3,5 millas de la punta Ahuenco"* — y los puntos ancla de esas cadenas tampoco la tienen. De 19 candidatos de peligro/paso en la sección, **cero** eran extraíbles por coordenada.
+
+No es un defecto del extractor: **un derrotero está escrito para usarse con la carta náutica al lado**. El navegante ubica la punta en la carta y mide desde ahí; la coordenada absoluta sería redundante.
+
+### Por qué no se resuelve con rumbo + distancia
+
+Se evaluó y se descartó. Análisis de error para un peligro a 3,5 millas de su ancla:
+
+| Fuente | Magnitud |
+|---|---|
+| Semilla (bahías marcadas "aprox.", mediana medida contra OSM) | ±1.000 m |
+| Rumbo cardinal de 16 puntos (±11,25°) | ±1.265 m |
+| Distancia declarada (±0,05 millas) | ±93 m |
+| **Combinado** | **≈1.600 m = 32 celdas** |
+
+Y las cadenas son de varios saltos, con error acumulativo. **Un peligro con 1,6 km de incertidumbre es peor que no tenerlo**: marca intransitable una zona que puede estar limpia y deja limpia la zona donde está la roca.
+
+### Qué sí tiene coordenada directa
+
+Bahías, caletas, radas y puertos, con el patrón `Nombre.- Carta N° X. Lat… Long… (aprox.)`. Unas 69 en el tomo completo. Sirven como **puntos ancla y referencia**, no como dato de seguridad — el "(aprox.)" es literal: mediana de 1.097 m de diferencia contra OSM, con rumbos distribuidos en todo el círculo, o sea ruido de centroide y no sesgo sistemático.
+
+### Consecuencia sobre el esquema
+
+`pasos.csv` **no lleva coordenadas**. Se une **por nombre de canal** a geometría que ya existe en el proyecto: los trazados propios de `red_nautica_chile_completa.geojson`, Canal Tenglo en `tmarea_nodos_nauticos_v1.json`, y la red OSM.
+
+`peligros.csv` **no alimenta el raster**. Pasa a ser texto de advertencia por tramo.
+
+---
+
+## 0.2 Nota sobre el datum
+
+No hay datum global declarado para el tomo. Verificado sobre las 623 páginas:
+
+- **PSAD56: cero ocurrencias.** El escenario de 200–350 m de desplazamiento no aplica
+- **SAD-69: 4 ocurrencias**, tres en front matter y una en el cuerpo (p. 158, Reserva Ostrícola Pullinque). Shift medido contra WGS84: **79 m**
+- **WGS-84 / SIRGAS explícito:** 5 tablas en el cuerpo
+
+**Las tablas de vértices se autoetiquetan**, cada una con su datum impreso justo antes. Es parseable y afecta solo a `areas.csv`, que debe transformar según la etiqueta.
+
+Para la prosa se asume WGS-84, **documentado como supuesto no verificado**. El intento de validación empírica (emparejar bahías contra OSM) tiene ruido de ±1.100 m, un orden de magnitud sobre el shift SAD69 de 79 m: descarta un error a escala PSAD56, no un residuo chico. Riesgo acotado, no eliminado.
+
+---
+
+## 0.3 Regla de posición (aplica a los datasets que sí la llevan)
+
 > **Todo registro necesita posición. Un dato sin coordenada no entra.**
 
 "El paso tiene 12 metros de sonda" es inútil si no se sabe dónde está ese paso. Si el derrotero no da coordenada explícita, se ancla al accidente geográfico nombrado más cercano que sí la tenga (faro, baliza, punta, islote) y se marca el registro como posición aproximada.
@@ -86,45 +133,46 @@ Si el volumen obliga a elegir, **la Prioridad 1 sola ya resuelve el problema pri
 
 ## 2. Los cuatro datasets
 
-### 2.1 `pasos.csv` — el más importante
+### 2.1 `pasos.csv` — el que resuelve el problema del margen
 
-Un registro por paso, angostura o tramo con restricción descrita.
+Un registro por paso, angostura o canal nombrado. **Sin coordenadas**: se une por nombre a geometría existente.
 
 | Campo | Tipo | Obligatorio | Ejemplo |
 |---|---|---|---|
 | `nombre` | texto | sí | Angostura Inglesa – paso isla Medio-Canal |
 | `canal` | texto | sí | Canal Messier |
-| `lat_inicio` | decimal | sí | -48.916667 |
-| `lon_inicio` | decimal | sí | -74.408333 |
-| `lat_fin` | decimal | sí | -49.108333 |
-| `lon_fin` | decimal | sí | -74.366667 |
+| `geometria_ref` | texto | sí | id o nombre en `red_nautica_chile_completa.geojson`, o `SIN_GEOMETRIA` |
 | `ancho_util_m` | entero | si figura | 185 |
 | `sonda_minima_m` | decimal | si figura | 12.5 |
 | `calado_max_m` | decimal | si figura | 10.7 |
 | `eslora_max_m` | entero | si figura | 180 |
 | `corriente_max_kt` | decimal | si figura | 6.0 |
-| `restriccion` | texto corto | no | solo en estoa; no con marea y viento de popa |
+| `restriccion` | texto corto | no | solo en estoa |
 | `pagina` | entero | sí | 247 |
 
-**Sobre `ancho_util_m`:** el derrotero suele expresarlo en cables. **1 cable = 185,2 m.** Convertir y anotar el original en `restriccion` si hay duda.
+**Este es el dataset que justifica todo el esfuerzo.** `ancho_util_m` y `sonda_minima_m` son los valores que calibran el margen mínimo del router, hoy sin respaldo.
 
-**`restriccion` es campo corto, no transcripción.** Máximo unas pocas palabras que resuman la condición. Si la condición es larga, se referencia por página y se consulta la fuente.
+**Sobre `ancho_util_m`:** el derrotero lo expresa en cables. **1 cable = 185,2 m.**
 
-### 2.2 `peligros.csv`
+**`geometria_ref` = `SIN_GEOMETRIA`** es válido y útil: indica un paso documentado cuya geometría todavía no está en el proyecto. Es la lista de qué vale digitalizar, derivada de dato en vez de intuición.
 
-Rocas, bajos, restingas, bancos, naufragios. Alimenta directamente las celdas intransitables del raster.
+### 2.2 `peligros.csv` — advertencia textual, no geometría
+
+Rocas, bajos, restingas, bancos y naufragios mencionados en el derrotero. **No alimentan el raster** — sin coordenada fiable no se pueden convertir en celdas intransitables (ver §0.1).
+
+Su destino es el texto de advertencia del tramo: *"en este sector el derrotero menciona Bajo Lar, Rocas Guapacho y Banco Inglés — consulte carta N° 7320"*.
 
 | Campo | Tipo | Obligatorio | Ejemplo |
 |---|---|---|---|
-| `nombre` | texto | sí | Bajo Cotopaxi |
+| `nombre` | texto | sí | Bajo Lar |
 | `tipo` | enum | sí | roca · bajo · restinga · banco · naufragio · escollo |
-| `lat` | decimal | sí | -48.883000 |
-| `lon` | decimal | sí | -74.367000 |
+| `canal` | texto | sí | Canal Chacao |
+| `carta_ref` | texto | si figura | 7320 |
 | `sonda_m` | decimal | si figura | 4.5 |
 | `senalizado` | sí/no | si figura | sí |
-| `pagina` | entero | sí | 251 |
+| `pagina` | entero | sí | 160 |
 
-Este dataset es el de mayor impacto inmediato: OSM aporta **37 peligros en toda la zona austral**, que es pobreza de datos, no ausencia de peligros.
+Es honesto y útil: le dice al patrón qué hay en el sector y a qué carta ir, sin fingir una precisión que el derrotero no da.
 
 ### 2.3 `sondas_canal.csv`
 
@@ -222,8 +270,8 @@ Un quinto archivo `fuente.txt` con: título exacto de la publicación, número d
 
 | Dataset | Efecto en el modelo |
 |---|---|
-| `pasos.csv` | Calibra el margen mínimo con dato real en vez de criterio. Resuelve el problema abierto de §6.1 del spec del router |
-| `peligros.csv` | Multiplica por diez la cobertura de peligros respecto de OSM. Celdas intransitables reales |
+| `pasos.csv` | **Objetivo principal.** Calibra el margen mínimo con dato real. Resuelve el problema abierto de §6.1 del spec del router |
+| `peligros.csv` | Advertencia textual por tramo con referencia de carta. **No** celdas intransitables |
 | `sondas_canal.csv` | Convierte tramos de confianza ROJO a VERDE. Hoy `AUSTRAL_N` está 100% en rojo |
 | `ayudas.csv` | Define el eje navegable de canales y ancla posiciones descritas por referencia |
 | `corrientes.csv` | Habilita la capa de corrientes de marea como costo. Chacao a 8–9 nudos decide viabilidad de viaje |
