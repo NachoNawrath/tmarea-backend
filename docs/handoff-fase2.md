@@ -1,5 +1,53 @@
 # Handoff — Fase 2 (raster-router-service.js)
 
+## FASE 2 CERRADA
+
+El resto de este documento es la investigación que llevó hasta acá — se conserva completa porque tiene hallazgos que no hay que redescubrir (sección "Hallazgos que NO hay que redescubrir" más abajo sigue vigente). Esta sección es el resumen de cierre.
+
+### dMinM calibrado con dato real: 50 m constante
+
+La tabla de `src/config/perfiles-costo.js` escalaba `dMinM` con el calado (50/80/150/200). La sección "Conclusión" más abajo ya había encontrado que ese criterio no tenía respaldo (8 de 13 chokepoints a dMinM=150 fallaban por exactamente 10 m). La Etapa B de la extracción del Derrotero SHOA (`docs/TMAREA_Extraccion_Derrotero_SHOA.md` v2.0) dio el dato de reemplazo:
+
+- Corrida completa sobre el Derrotero SHOA Pub. 3002, pp. 141-623: **247 registros en `pasos.csv`** (`tools/derrotero/piloto_chacao/pasos_full.csv`), unidad de extracción por **tramo nombrado**, no coordenada puntual — los pasos y peligros del derrotero se posicionan por rumbo+distancia desde un ancla, no con Lat/Long propia, y resolver eso geométricamente acumula ~1,6 km de error (peor que no tener el dato; ver `docs/TMAREA_Extraccion_Derrotero_SHOA.md` §0.1).
+- El paso navegable documentado más angosto del **corredor troncal** (Prioridad 1) es **Paso Tautil, Seno de Reloncaví, 241 m** (Derrotero, p.282). De 247 pasos, 63 traen `ancho_util_m` y/o `sonda_canal_min_m`.
+- Derivación: `dMinM <= (ancho_min_corredor_troncal - bandaMinM_requerido) / 2 = (241 - 150) / 2 = 45,5 -> 50 m`. `bandaMinM_requerido` = 150 m = 3 celdas de 50 m, el mínimo que el A* fino necesita para converger sin degradar.
+- `dMinM = 50` queda **constante para los 4 calados** de la tabla — escalar con calado fue el error original: con el `dMinM=150` viejo (bucket de calado 4 m), Paso Tautil quedaba con menos margen navegable del que el A* necesita. **Verificado, no solo derivado:** se corrió Puerto Montt→Chacabuco con el perfil viejo (dMinM=150 para calado 4 m) antes de aplicar el fix — `FALLA: No se encontró ruta navegable`. Con dMinM=50 constante, la misma ruta pasa para calado 2,5 y 4,0 m (`test-pm-chacabuco-dmin50.js`).
+- `bandaMinM`/`bandaMaxM` (preferencia con costo, no bloqueo) siguen escalando con calado — esa sí es una preferencia legítima por tipo de nave.
+
+### `sonda_minima_m` separado en dos campos — evitó un bug real
+
+Al revisar a mano los 9 valores de sonda que salieron de la corrida completa, dos (Canal Carbunco 1,3 m; Canal Chauques 2,0 m) resultaron ser **la profundidad de un escollo puntual a esquivar**, no la profundidad del canal ("el arrecife con un bajo fondo de 1,3 metros... casi en el centro del canal" — Carbunco). Si hubieran entrado como profundidad de canal, cualquier nave de más de 1 m de calado habría quedado bloqueada de un canal que en realidad es navegable rodeando la roca.
+
+`pasos.csv` ahora separa:
+- **`sonda_canal_min_m`** — profundidad general del canal/paso (ej. "de 5 a 27 metros de profundidad", Paso Chocoi). Alimenta el cotejo vertical: `sonda_canal_min_m < calado + margen ⇒ paso intransitable para esa nave`. 7 registros con dato (Paso Chocoi 5,0 m; Canal Cruces 6,6 m; Canal Pilcomayo 9,5 m ×2; Paso Galvarino 10,0 m; Canal Tenglo 11,0 m; Paso De Vidts 12,5 m).
+- **`sonda_peligro_m`** — ya no vive en `pasos.csv`. El escollo de Carbunco se agregó a `peligros.csv` (sin nombre propio en el derrotero, tipo `escollo`); el de Chauques resultó ser el mismo hallazgo que ya tenía entrada propia ("Bajo fondo (PD)", `peligros.csv` p.188 — "(PD)" es literalmente "posición dudosa" en el texto del SHOA) — no se duplicó.
+
+`peligros.csv` sigue siendo texto de advertencia por tramo, no alimenta el raster (`docs/TMAREA_Extraccion_Derrotero_SHOA.md` §0.1) — el cotejo vertical usa solo `sonda_canal_min_m` de `pasos.csv`.
+
+### Control post-fix: `pct_en_resguardo`
+
+Con `dMinM` fijo, una nave grande ya no está *prohibida* de acercarse a la costa, solo lo prefiere menos (costo vía `bandaMinM`). Se corrieron 4 rutas del corredor (Anahuac→Melinka vía Canal Tenglo, Anahuac→Chacabuco corredor completo, Anahuac→Isla Maillén vía Paso Poniente, Chonchi→Quellón vía Paso Imelev/Canal Lemuy) a calado 2,5 y 4,0 m (`test-corredor-resguardo.js`):
+
+| Ruta | calado 2,5 m | calado 4,0 m |
+|---|---|---|
+| Anahuac→Melinka (Tenglo) | 0,788 | 0,761 |
+| Anahuac→Chacabuco | 0,857 | 0,818 |
+| Anahuac→Isla Maillén (Paso Poniente) | 0,697 | **0,516** |
+| Chonchi→Quellón (Imelev/Lemuy) | 0,985 | 0,907 |
+
+**Un caso bajo 0,6: Anahuac→Isla Maillén, calado 4,0 m.** No subí `bandaMinM` para corregirlo — antes de tocarlo miré `max_dist_costa_mn` de esa ruta: **2111 m en ambos calados, misma ruta**. `pct_en_resguardo` cae de 0,697 a 0,516 solo porque `bandaMinM` sube de 250 a 400 al subir el calado — hay celdas del Paso Poniente (un paso angosto real, no un defecto) que quedan a más de 250 m pero menos de 400 m de la costa, así que cuentan como "en resguardo" a calado bajo y como "muy cerca" a calado alto. **Subir `bandaMinM` más todavía empeoraría el número, no lo mejoraría** — exige más despeje del que el paso físicamente tiene. Queda como decisión pendiente del usuario: o se acepta que un paso angosto real tenga `pct_en_resguardo` bajo (es información correcta sobre la ruta, no un bug), o se ajusta el umbral de 0,6 para no aplicar a tramos que cruzan un paso documentado como angosto.
+
+### Pendientes para la próxima sesión (no bloquean el cierre de Fase 2)
+
+- **Puyuhuapi→Chacabuco** — al momento de cerrar la regresión de Anahuac→Chacabuco (ver más abajo) seguía fallando; no se volvió a correr con `dMinM=50` constante ya aplicado.
+- **Apiao** — pasaba (Apiao→Quellón, 54,27mn) con el invariante de LUT corregido; no se re-verificó después del cambio de `dMinM`, aunque no hay razón para esperar que se rompa (dMinM=50 es igual o más laxo que antes en todos los calados).
+- **Valdivia / riberas fluviales** — fuente 8 del spec (`natural=water` + `water=river` + `waterway=riverbank` vía Overpass) sigue sin implementarse. Sin esto, Valdivia ciudad, Río Bueno y Maullín quedan fuera de la máscara de agua.
+- **`corrientes.csv`** — dataset oportunista de la extracción del derrotero (tablas de mareas y corrientes ya estructuradas, `extract_tables()` las levanta limpias). No se corrió sobre el tomo completo en la Etapa B — solo `pasos.csv` y `peligros.csv`. Habilita la capa de costo por corriente de marea (Canal Chacao a 8-9 nudos decide viabilidad de viaje).
+- **`sondas_canal.csv`, `ayudas.csv`, `areas.csv`** — mismo caso: definidos en el spec de extracción, no corridos todavía sobre el tomo completo.
+- Los 13 chokepoints de dMinM=150/200 documentados abajo (sección "Resultado: Puerto Montt→Chacabuco a dMinM=150/200") quedaron con esa decisión pendiente ("¿zona real o estrechamiento legítimo?") **antes** de que `dMinM` pasara a ser constante en 50 — con el criterio nuevo, varios podrían ya no ser chokepoints. Vale re-correr `tools/detectar-chokepoints.js` con el perfil actual antes de retomar esa decisión canal por canal.
+
+---
+
 Interrumpido para asegurar el estado antes de quedarse sin contexto. Este documento existe para que la próxima sesión no tenga que re-descubrir nada de lo ya investigado hoy.
 
 ## Estado actual (actualizado tras cerrar la regresión)
