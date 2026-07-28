@@ -15,6 +15,8 @@ const { astarBBox } = require('./raster/astar-bbox');
 const { dilatar, bboxANivelFino, corridorABitmap, makeCorridorPredicate, RADIOS_DILATACION_M } = require('./raster/multi-level');
 const { snapToNavigable } = require('./raster/snap');
 const { stringPull } = require('./raster/string-pull');
+const { advertenciasCotejoVertical } = require('./raster/cotejo-vertical');
+const { advertenciasPeligrosPorCanal } = require('./raster/peligros-canal');
 const { MAX_EXPANSIONES_ASTAR } = require('../config/perfiles-costo');
 
 const EARTH_RADIUS_NM = 3440.065;
@@ -295,6 +297,16 @@ function calcularRuta(perfilCosto, origen, destino) {
   const waypointIdxs = stringPull(resultado.path, meta, TILE.packed, dMinM);
   const tramosRaw = cortarTramos(waypointIdxs);
   const tramos = tramosRaw.map((t) => construirTramoRespuesta(t, 'ruta'));
+
+  // Fase 3 redefinida (docs/handoff-fase2.md): post-proceso sobre la ruta
+  // ya trazada, no toca el raster ni el A*. Cotejo vertical como
+  // advertencia (spec §6.3) y aviso de peligros catalogados por canal,
+  // ambos limitados a los canales con geometría real verificable
+  // (canal-geometria.js) — sin eso no hay forma honesta de confirmar que
+  // la ruta los cruza.
+  const waypointsLonLat = waypointIdxs.map((idx) => idxToLonLat(idx));
+  advertencias.push(...advertenciasCotejoVertical(waypointsLonLat, perfilCosto.calado_m));
+  advertencias.push(...advertenciasPeligrosPorCanal(waypointsLonLat));
 
   if (snapOrigen.distSnapM > 0) {
     const [olon, olat] = [origen.lon, origen.lat];

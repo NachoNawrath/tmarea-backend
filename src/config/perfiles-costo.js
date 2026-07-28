@@ -77,6 +77,7 @@ function construirPerfilCosto({ calado_m, licencia = 'PNM', maxDistCostaM = null
   const costo = aplicarAjusteLicencia(costoBaseDesdeCalado(calado_m), licencia);
   return {
     licencia,
+    calado_m,
     limites: { maxDistCostaM },
     costo,
   };

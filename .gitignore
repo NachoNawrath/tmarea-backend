@@ -21,6 +21,15 @@ test-ruta-melinka-output.json
 # viven fuera del repo en C:\tmarea-data\ — GitHub rechaza archivos >100MB.
 tools/raster-build/.venv/
 tools/raster-build/output/
+
+# Fase 3: dumps crudos de la evaluacion GMRT/GEBCO (tools/raster-build/
+# eval_gmrt.py, eval_gebco.py, eval_gebco_tramos.py) -- regenerables
+# corriendo esos scripts; el resumen que importa ya esta en
+# docs/handoff-fase2.md, seccion Fase 3.
+tools/raster-build/gebco_control_points.json
+tools/raster-build/gebco_tramos.json
+tools/raster-build/gmrt_control_points.json
+tools/raster-build/gmrt_tramos.json
 tools/raster-build/*.bin
 tools/raster-build/*.tif
 tools/raster-build/*.zip

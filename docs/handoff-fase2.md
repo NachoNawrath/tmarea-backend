@@ -48,6 +48,76 @@ Con `dMinM` fijo, una nave grande ya no está *prohibida* de acercarse a la cost
 
 ---
 
+## FASE 3 — capa de confianza batimétrica: sin fuente pública utilizable
+
+**Conclusión de fondo, para no repetir esta evaluación dentro de seis meses: no existe hoy una fuente pública de batimetría de eje navegable para los canales chilenos, a la resolución y confiabilidad que el router necesita. La capa de confianza batimétrica de `AUSTRAL_N` queda en ROJO documentado para el corredor troncal.** No es una falla de esta sesión — es el estado real del dato, y declararlo así es más honesto que lo que hace cualquier app que muestre profundidades derivadas de GEBCO a 450 m de celda en canales de 250 m de ancho.
+
+### `sondas_canal.csv` → `fondeaderos.csv`: el primer intento midió otra cosa
+
+El plan original de Fase 3 era cargar 7 sondas de `pasos_full.csv` (`sonda_canal_min_m`: Chocoi 5,0 · Tenglo 11,0 · Cruces 6,6 · Pilcomayo Acceso W 9,5 · Galvarino 10,0 · Pilcomayo 9,5 · De Vidts 12,5) como VERDE en el raster. Se paró antes de tocar el `.bin` por dos motivos, ambos de datos, no de criterio:
+
+1. **Umbral de 10 m mal fundamentado para un escalar único de derrotero** (SS5.2 del spec del router mezclaba confianza batimétrica con transitabilidad — dos preguntas distintas). Corregido en el spec: VERDE = hay sonda documentada, sin importar el valor; el bloqueo por calado lo resuelve el cotejo vertical en runtime, no la capa de confianza.
+2. **Geometría real: solo 3 de los 7 canales la tienen** en el proyecto hoy (Canal Tenglo vía `tmarea_nodos_nauticos_v1.json` edge E-01, Canal Chacao y Canal Moraleda vía `red_nautica_chile_completa.geojson`). Los otros 4 (Cruces, Galvarino, Pilcomayo, De Vidts) son `SIN_GEOMETRIA` — no hay nada que rasterizar sin inventar un trazado.
+
+Se construyó en su lugar un extractor nuevo (`tools/derrotero/extract_sondas_canal.py`, para el dataset `sondas_canal.csv` de SS2.3 de `docs/extraccion-derrotero-shoa.md`: sondas del EJE con posición, distinto de `pasos.csv`). Corrida sobre pp.141-623: **48 candidatos**, validados contra `AUSTRAL_N.bin` (misma lógica que usa el router: distancia a costa > 0 ⇒ agua) → **26 en agua, 22 en tierra** (ruido de ±1.100 m ya documentado en `docs/extraccion-derrotero-shoa.md` SS0 para coordenadas "(aprox.)" cayendo en costa de fiordo muy recortada — no es bug del extractor, verificado a mano contra el texto fuente).
+
+**El patrón detectado era sistemáticamente el fondeadero, no el eje del canal**: "Nombre.- Carta N°X. Lat...; Long... (aprox.). ... fondeadero en N metros de agua" / "sondándose N metros de profundidad" son entradas de bahía/caleta/ensenada, y un fondeadero se elige a propósito poco profundo (Fondeadero Stokes 2,6 m, Caleta Gualas 3,0 m — ningún canal navegable tiene eso). Cargarlo como `sonda_canal_min_m` habría declarado innavegables los lugares donde los barcos van a resguardarse — mismo tipo de error que Carbunco/Chauques (arriba) pero en la dirección opuesta.
+
+**El dato no se tiró, cambió de destino.** Renombrado a `fondeaderos.csv` (26 filas, esquema `canal,nombre,lat,lon,profundidad_fondeo_m,pagina`), con auditoría completa en `fondeaderos_validado.csv` (48, con estado agua/tierra) y candidatos crudos en `fondeaderos_candidatos.csv`. Alimenta la regla R5 (refugio con mal tiempo) y los consejos de P3 — no la capa de confianza del router. El extractor quedó en `tools/derrotero/extract_fondeaderos.py` / `validar_fondeaderos.py`.
+
+**Conclusión sobre el derrotero como fuente:** el Derrotero SHOA describe cómo navegar, no es una fuente de batimetría de eje — esas sondas viven en las cartas náuticas del SHOA, no en este tomo.
+
+### Evaluación de las 3 fuentes del spec SS4 (GMRT, IBCSO v2, GEBCO) — nunca se habían probado
+
+Herramientas en `tools/raster-build/eval_gmrt.py`, `eval_gebco.py`, `eval_gebco_tramos.py`. Metodología: descargar solo muestras de los 4 tramos críticos (Canal Tenglo, Seno de Reloncaví, Canal de Chacao, Fiordo Aysén/acceso Chacabuco) y de los 7 puntos de control del derrotero, no los tiles completos. Salida cruda en `tools/raster-build/gmrt_tramos.json`, `gmrt_control_points.json`, `gebco_tramos.json`, `gebco_control_points.json`.
+
+**IBCSO v2 — no aplica, confirmado contra el metadato propio del dataset (PANGAEA DOI 10.1594/PANGAEA.937574), no contra la nota de prensa: límite norte = −50,0°S exacto.** `AUSTRAL_N` termina en −47,0°S (spec SS3.2) — el tile entero queda 3° al norte del límite de cobertura. Cero overlap, no hizo falta descargar nada.
+
+**GMRT (fuente 5, GridServer REST público, `~44-46 m/celda` en la zona):** se separó `topo` (con relleno sintético) de `topo-mask` (solo alta resolución medida) celda a celda, como el propio servicio documenta.
+
+| Tramo | agua navegable (muestras) | con dato (topo) | con dato MEDIDO (topo-mask) |
+|---|---|---|---|
+| Canal Tenglo | 33.807 | 93,0% | **0,0%** |
+| Seno de Reloncaví | 4.557 | 92,9% | **0,0%** |
+| Canal de Chacao | 16.030 | 93,8% | **0,0%** |
+| Fiordo Aysén (acceso Chacabuco) | 4.858 | 66,0% | **0,0%** |
+
+Los cuatro tramos críticos tienen casi todo su dato relleno sintético — cero multihaz real detectado en el muestreo de área (submuestreado a ~200×200 por velocidad; el chequeo punto a punto, a resolución nativa, confirma la misma conclusión — ver más abajo).
+
+**GEBCO (fuente 4, versión pública actual GEBCO_2026 — GEBCO_2024 ya no está disponible en el servicio, se documenta el cambio en vez de forzar un mirror histórico; acceso vía OPeNDAP directo contra CEDA, sin pasar por el flujo de `download.gebco.net` que exige email + cola asíncrona; resolución 15″ ≈ 450 m):**
+
+| Tramo | agua navegable (celdas) | con dato | TID 10-19 (medido) |
+|---|---|---|---|
+| Canal Tenglo | 451 | 95,6% | 87,1% |
+| Seno de Reloncaví | 963 | 93,8% | 68,7% |
+| Canal de Chacao | 843 | 94,9% | 83,6% |
+| Fiordo Aysén | 533 | 65,7% | 22,7% |
+
+**El hallazgo que decide todo — desglose de TID en Canal Tenglo:** de las 393 celdas "medidas", **334 son TID=14 (sonda extraída de carta náutica/ENC) y solo 53 son TID=11 (multihaz real)**, 6 son TID=17 (combinación). La mayoría de lo que GEBCO cuenta como "medido" en Tenglo es la misma carta SHOA reingresada — no es una fuente independiente que respalde al derrotero, es el derrotero dado vuelta. En Fiordo Aysén el patrón es peor: de 533 celdas de agua navegable, 245 son TID=40 (predicho por gravedad satelital) y solo 121 son medición directa.
+
+**Los 7 puntos de control SHOA vs ambas fuentes** (coordenadas por geocodificación aproximada salvo Canal Tenglo, que usa el nodo propio del proyecto — la única de alta confianza):
+
+| Punto | SHOA | GEBCO centro | error | GMRT centro | error | posición |
+|---|---|---|---|---|---|---|
+| Paso Chocoi | 5,0 m | 102,0 m | +97,0 m | 91,9 m | +86,9 m | baja (aprox.) |
+| **Canal Tenglo** | **11,0 m** | **tierra** | — | **0,3 m** | **−10,7 m** | **alta (nodo propio)** |
+| Canal Cruces | 6,6 m | tierra | — | tierra | — | baja (aprox.) |
+| Pilcomayo Acceso W | 9,5 m | tierra | — | 3,9 m | −5,6 m | baja (aprox.) |
+| Paso Galvarino | 10,0 m | 61,0 m | +51,0 m | 55,9 m | +45,9 m | baja (aprox.) |
+| Canal Pilcomayo | 9,5 m | tierra | — | tierra | — | media |
+| Paso De Vidts | 12,5 m | 8,0 m | −4,5 m | 6,4 m | −6,1 m | media |
+
+**El único punto con coordenada exacta (Canal Tenglo, nodo propio del proyecto — no geocodificación aproximada) lo fallan las dos fuentes**: GEBCO lo muestra como tierra (el canal de 250 m es más angosto que su celda de 450 m); GMRT muestra agua pero a 0,3 m — casi seco — contra los 11 m documentados, sin respaldo de `topo-mask` (sin medición real ahí). Ningún resultado, en ningún punto, acierta "dentro de unos pocos metros" de forma consistente — el criterio de aceptación que se fijó antes de correr la evaluación.
+
+### Qué se implementó en su lugar (Fase 3 redefinida)
+
+1. **Cotejo vertical como ADVERTENCIA, no bloqueo** (`src/services/raster/cotejo-vertical.js`). Post-proceso sobre la polilínea ya trazada, no toca el raster ni el A*. Usa `src/config/pasos-sonda-canal.json` (los 7 registros de `sonda_canal_min_m`, generados por `tools/raster-build/generar_pasos_sonda_canal.py` desde `pasos_full.csv` — **no** desde `pasos.csv`, que es un archivo piloto más chico y sin ese campo, a pesar del nombre usado en las tareas de esta fase). Solo se verifican los 3 canales con geometría real (`src/services/raster/canal-geometria.js`); los otros 4 quedan marcados `canal_geometria_disponible: false` y el router no puede confirmar si una ruta los cruza — no se inventa la detección. Por qué advertencia y no bloqueo: 6 de los 7 registros tienen posición aproximada o sin geometría; bloquear con eso sería peor que el falso positivo ocasional.
+2. **`fondeaderos.csv`** — ver arriba.
+3. **Advertencia de peligros por canal** (`src/services/raster/peligros-canal.js` + `src/config/peligros-por-canal.json`, generado por `tools/raster-build/generar_peligros_por_canal.py` desde `peligros_full.csv`, 241 filas → 226 peligros únicos tras dedupe por nombre normalizado dentro de cada canal). Mismo límite de cobertura que el cotejo vertical: solo se adjunta para los 3 canales con geometría verificable.
+4. **`pct_batimetria` en la respuesta del router** — ya existía en `calcularRuta()` (líneas finales de `raster-router-service.js`), calculado en runtime desde la confianza real de cada celda del camino. Como la capa de confianza nunca se pobló (Fase 1/2), toda celda navegable cae al fallback `'ROJO'` — verificado con `test-raster-router-smoke.js`: `pct_batimetria: { verde: 0, amarillo: 0, rojo: 1 }`. No hizo falta escribir nada nuevo, solo confirmar que ya reporta el valor honesto.
+
+---
+
 Interrumpido para asegurar el estado antes de quedarse sin contexto. Este documento existe para que la próxima sesión no tenga que re-descubrir nada de lo ya investigado hoy.
 
 ## Estado actual (actualizado tras cerrar la regresión)
