@@ -1,6 +1,8 @@
 require('dotenv').config();
 'use strict';
 
+const BOOT_T0 = Date.now();
+
 const express = require('express');
 const app = express();
 
@@ -45,7 +47,12 @@ app.use('/api/viaje', voyageReportRoutes);
 
 const rutasRoutes = require('./routes/routes-routes');
 const nauticalGraphRouter = require('./services/nautical-graph-router');
+const rasterRouterService = require('./services/raster-router-service');
+// Los dos motores viven calientes en paralelo mientras se verifica
+// /calcular-v2 contra /calcular (docs/handoff-fase2.md) -- temporal, se
+// saca cuando el switch esté confirmado y nautical-graph-router.js se borre.
 nauticalGraphRouter.warmup();
+rasterRouterService.warmup('AUSTRAL_N');
 app.use('/api/rutas', rutasRoutes);
 
 // Health check
@@ -56,6 +63,8 @@ app.get('/health', (req, res) => {
 // Puerto
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
+  const mem = process.memoryUsage();
   console.log(`Servidor corriendo en puerto ${PORT}`);
+  console.log(`Boot: ${Date.now() - BOOT_T0}ms | RSS: ${(mem.rss / 1048576).toFixed(1)}MB | heapUsed: ${(mem.heapUsed / 1048576).toFixed(1)}MB`);
 });
 

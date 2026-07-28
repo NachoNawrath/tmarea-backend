@@ -110,4 +110,35 @@ router.post('/calcular', (req, res) => {
   }
 });
 
+// POST /api/rutas/calcular-v2
+// Motor raster (TMAREA_SPEC_Router_Raster_v1.md) en paralelo a /calcular
+// mientras se verifica -- ver docs/handoff-fase2.md. calado_m y licencia ya
+// existen en el frontend (vessel_profile de P1.1, user_profile de P1); el
+// resto del contrato PerfilNavegacion (clasificación de nave, propulsión)
+// es Fase 4 y no bloquea este switch.
+const rasterRouterService = require('../services/raster-router-service');
+const { construirPerfilCosto } = require('../config/perfiles-costo');
+
+router.post('/calcular-v2', (req, res) => {
+  try {
+    const { lat_origen, lon_origen, lat_destino, lon_destino, calado_m, licencia } = req.body;
+    if (!lat_origen || !lon_origen || !lat_destino || !lon_destino) {
+      return res.status(400).json({ error: 'Faltan coordenadas: lat_origen, lon_origen, lat_destino, lon_destino' });
+    }
+    const perfil = construirPerfilCosto({
+      calado_m: calado_m !== undefined ? parseFloat(calado_m) : 1.5,
+      licencia: licencia || 'PNM',
+    });
+    const resultado = rasterRouterService.calcularRuta(
+      perfil,
+      { lat: parseFloat(lat_origen), lon: parseFloat(lon_origen) },
+      { lat: parseFloat(lat_destino), lon: parseFloat(lon_destino) }
+    );
+    res.json(resultado);
+  } catch (err) {
+    console.error('[rutas/calcular-v2]', err.message);
+    res.status(500).json({ error: 'Error calculando ruta náutica (raster)' });
+  }
+});
+
 module.exports = router;
