@@ -44,6 +44,54 @@ Tres huecos de cobertura geográfica identificados en esta sesión, ninguno es u
 2. **Al norte de -39,5°S: no existe tile.** Mismo caso, tile `NORTE` (spec §3.2) sin construir.
 3. **Valdivia ciudad (y en general ríos: Río Bueno, Maullín): los water polygons de OSM son solo océano, sin ríos.** Ya documentado en el hallazgo #9 más abajo (sesión anterior) como pendiente vía Overpass. **Ahora es más barato**: el `.osm.pbf` de Chile completo ya está en disco (`C:\tmarea-data\raw\chile-latest.osm.pbf`, bajado para el diagnóstico de Piedraplén de arriba), así que las riberas fluviales (`natural=water`+`water=river`, `waterway=riverbank`) se extraen de ahí con `pyosmium` — mismo patrón que `extraer_highways_pbf.py` pero filtrando por esos tags en vez de `highway=*` — sin tocar Overpass en absoluto. Sigue sin implementarse.
 
+### Addendum 2026-07-29 — el cierre de arriba era real, pero se pidió un enfoque más robusto igual
+
+Reporte de usuario tras el cierre del 28: "la ruta sigue cruzando, unos metros más al norte cada vez que se tapa un punto" — patrón consistente con que una franja bufferizada alrededor del EJE de cada vía (buffer_m=60) no cubre el ancho real del istmo en todo punto si el terraplén/relleno excede el ancho de calzada asumido.
+
+**Verificación exhaustiva contra el `.bin` vigente en ese momento (buffer_m=60, las 8 líneas) antes de tocar nada:**
+1. Muestreo cada 5m sobre las 8 líneas propias → **0 gaps** (igual que ya documentado arriba).
+2. Polígono de tierra real derivado de las ways `natural=coastline` del `.osm.pbf` (fuente Bing, más reciente que el snapshot de `water-polygons-split-4326.zip` usado para la máscara base) para el cluster Vicuña Mackenna/Avenida Brasil/Punta Blanca, recortado a ventana local y poligonizado con `shapely.ops.polygonize()` → **0 celdas de agua dentro de ese polígono** en el `.bin` ya vigente.
+3. Flood-fill 3km alrededor del cruce: SÍ hay conexión norte-sur, pero se verificó celda por celda que la región conectada tiene **0 celdas dentro del polígono de tierra real** — es decir, es el rodeo real por el flanco este de la península (~7.9mn, confirmado también por ruta real vía `/api/rutas/calcular-v2`), no un cruce por el terraplén.
+
+**Conclusión: el `.bin` con buffer_m=60 (28 jul) ya estaba correcto para este cluster.** La causa más probable del reporte de "sigue cruzando" es el bug de caché de servidor ya documentado arriba (`warmup()` una sola vez, sin reload) contra un proceso que no se había reiniciado tras el rebuild — no un hueco de dato nuevo. No se pudo confirmar contra el proceso que el usuario probó porque no había ningún servidor corriendo al momento de este diagnóstico.
+
+**Cambio aplicado de todas formas, por pedido explícito y porque es estrictamente más robusto:** las 4 exclusiones de línea del cluster Piedraplén/Avenida Brasil/Punta Blanca (ways 58320021, 71238136, 184520229, 306903111) se reemplazaron por **una sola exclusión de polígono** en `src/config/exclusiones.json` (campo nuevo `"tipo_geometria": "poligono"`, soportado en `subtract_exclusiones()` de `build_tile.py`) — el polígono de tierra real derivado de `natural=coastline` de arriba, con `buffer_m: 60` adicional. Las 4 exclusiones de línea del otro cluster (Camino Punta Quihua + 3 sin nombre, más al sur) quedaron sin tocar — mismo chequeo de 5m, 0 gaps, sin necesidad de cambiar de enfoque ahí.
+
+**Ventaja del polígono sobre la unión de líneas bufferizadas:** usa el límite tierra/agua real (überificable, tiene ancho variable de verdad) en vez de una franja de ancho fijo alrededor del eje de la vía — no depende de que las ways del terraplén formen una cadena continua ni de adivinar cuánto excede el relleno real al ancho de la calzada.
+
+**Rebuild + verificación de cierre (con servidor reiniciado desde cero, no un proceso viejo):**
+- `python build_tile.py --tile AUSTRAL_N` → 68.1s, 5 estructuras artificiales (240 celdas removidas, vs. las 8 anteriores).
+- Servidor iniciado limpio (`node src/index.js`, sin proceso previo corriendo).
+- `POST /api/rutas/calcular-v2` con origen/destino a ambos lados del cluster → ruta real de 7.93mn que rodea por el sur, sin ningún punto en confianza=0 (muestreo cada 25m, spec §10.1).
+- Flood-fill 3km re-verificado sobre el `.bin` nuevo: la única conexión norte-sur es, otra vez, 0 celdas dentro del polígono de tierra.
+- Regresión: `test-raster-router-smoke.js`, `test-raster-router-casos.js` (incluye ruta Anahuac→Isla Calbuco pasando junto al cluster), `test_connectivity.py` (Tenglo, sigue PASA) y `test-sanidad-puertos.js` (222/222 puertos costeros) — todos ok, sin regresión por el rebuild.
+
+### Addendum 2026-07-29 (2) — segundo caso: istmo intermareal El Banquito / Isla Huapi Abtao
+
+Mismo modo de falla que el Piedraplén (tierra descrita como agua), pero origen distinto: **no es un terraplén artificial mal mapeado, es un istmo intermareal** (se cubre y descubre con la marea) en torno a −41,77 / −73,60 (coordenada aproximada dada por el usuario; la real, encontrada buscando por nombre en el `.pbf`, es El Banquito −73.3400086,−41.80094 ↔ Isla Huapi Abtao −73.3484979,−41.8032598). Reportado por el usuario tras confirmar visualmente que la ruta cruza justo por el paso que une ambas masas de tierra. En cualquier caso no es un paso confiable para nave menor, así que se trata igual como celda intransitable.
+
+**Por qué no apareció en las 326/34 candidatas originales — dos causas distintas, ambas corregidas:**
+
+1. **La way nunca se extraía del `.pbf`.** El único elemento OSM que conecta ambas costas es una way `route=ferry` (id 1116970201, sin tag `highway`), con `amenity=ferry_terminal` en **ambos** extremos calzando a 0m exacto contra la costa real de cada lado. `tools/raster-build/extraer_highways_pbf.py` solo pedía `highway=*` — la way ni siquiera entraba a la lista de 326, independiente de cualquier filtro de ancho.
+2. **Aunque se hubiera extraído, el criterio de ancho la habría descartado igual.** Verificado con el propio algoritmo de 4 ejes del detector: el ancho mínimo local de El Banquito da **600m**, por encima del umbral de 300m. La razón de fondo es conceptual, no un bug de cálculo: el umbral existe para detectar "highway=\* cruzando agua sospechosamente angosta" (ninguna calle cruza 600m sin puente real). Para una **ferry** es la señal contraria — un ferry sobre 600m de agua real es normal (Chile tiene decenas), y este tenía terminales en ambos extremos, indistinguible de un ferry real solo por los tags. No hay hoy ninguna señal de dato que separe "ferry sobre agua real" de "ferry/paso sobre intermareal no navegable".
+
+**Corrección aplicada al pipeline de detección** (no solo al caso puntual — ver más abajo "por qué no ir encontrándolos de a uno"):
+
+- `extraer_highways_pbf.py` ahora también extrae `route=ferry` (marcadas `"es_ferry": true`), separado de `highway=*`.
+- `detectar-estructuras-artificiales.js`: las ferries **no** se filtran por el umbral de ancho (300m) — se reportan siempre en una sección aparte ("FERRIES -- REVISAR SIEMPRE") si pasan Filtro A (agua sustancial a ambos lados) y Filtro C (no es un tramo largo pegado a la orilla), sin importar cuán "ancho" mida el cruce.
+- Bug secundario encontrado al validar el fix: incluso extendiendo el criterio a ferries, El Banquito **seguía sin generar candidata** porque sus nodos extremos (aunque calzan a 0m contra la costa vectorial real) caen en confianza=1 en el `.bin` (el water-polygon rasterizado no tiene la precisión del vector) — el criterio estricto de "confianza=0 en la propia way" nunca encontraba landA/landB y la función retornaba `null` antes de llegar al filtro de ancho. Corregido con un fallback (`celdaTierraCercaRC`, radio 5 celdas/250m): si el extremo de una ferry no tiene confianza=0 propia, se busca tierra real cerca; si se encuentra, se usa esa celda como ancla para el resto del análisis (incluida la búsqueda de semilla de agua del Filtro A, que también necesitó radio ampliado — `buscarSemillaAgua` — porque el corredor excluido del propio cruce tapaba toda la vecindad inmediata de radio 1).
+- **Validado end-to-end contra el estado real:** se revirtió temporalmente la exclusión de El Banquito, se reconstruyó el tile a ese estado "pre-fix", y se corrió el detector actualizado sobre una extracción fresca del `.pbf` — el caso aparece correctamente como candidata ferry (`esCandidata=true`, ancho informativo 600m). Después se restauró la exclusión y se reconstruyó de nuevo antes de cerrar.
+
+**Poligono de la exclusión** (`src/config/exclusiones.json`, `"tipo_geometria": "poligono"`, igual mecanismo que el Piedraplén): construido tomando el arco de costa real (`natural=coastline`) más cercano al cruce de cada lado (±350m alrededor del punto de aproximación mínima, 538m línea recta El Banquito↔Isla Huapi Abtao) y cerrando el anillo por los extremos más próximos entre ambos arcos (638m) — no es un buffer alrededor del eje de una vía, es el área real delimitada por ambas costas. `buffer_m: 60` adicional. Verificado: el 100% de las celdas del polígono (141 de 141) eran agua navegable antes del fix.
+
+**Rebuild + verificación de cierre:**
+- `python build_tile.py --tile AUSTRAL_N` → 59.1s, 6 estructuras artificiales (424 celdas removidas, vs. las 240 de Piedraplén solo).
+- Servidor reiniciado desde cero.
+- `POST /api/rutas/calcular-v2` con origen/destino en los dos puntos de aproximación mínima → ruta real que rodea, sin ningún punto en confianza=0 fuera de los tramos de aproximación final sin snapear (comportamiento esperado, documentado en spec §10).
+- Flood-fill 3km: conectado (rodeo real por la bahía, igual que Piedraplén) pero **0 celdas de la ruta conectada caen dentro del polígono de exclusión** — verificado explícitamente, no solo inferido.
+- Regresión completa (`test-raster-router-smoke.js`, `test-raster-router-casos.js`, `test_connectivity.py` Tenglo, `test-sanidad-puertos.js` 222/222) — sin regresión.
+- Hallazgo aparte, no relacionado con este fix: un punto muestreado de la ruta Piedraplén cae en confianza=0 a ~1,5km del polígono de El Banquito/Piedraplén, en un islote distinto — artefacto conocido de string-pulling cortando muy cerca de una esquina de una celda de tierra aislada. Un solo punto de 139 muestreados; no bloquea este cierre, queda pendiente investigar aparte.
+
 ## FASE 2 CERRADA
 
 El resto de este documento es la investigación que llevó hasta acá — se conserva completa porque tiene hallazgos que no hay que redescubrir (sección "Hallazgos que NO hay que redescubrir" más abajo sigue vigente). Esta sección es el resumen de cierre.

@@ -12,6 +12,14 @@ esta pensada para barrer 8 grados de latitud -- ver diagnostico Piedraplen,
 2026-07-28): un solo .osm.pbf descargado una vez, procesado local, sin rate
 limit ni dependencia de un servicio externo.
 
+Tambien extrae route=ferry (marcadas "es_ferry": true), agregado
+2026-07-29 tras el caso El Banquito / Isla Huapi Abtao: el detector solo
+miraba highway=*, asi que cualquier cruce mapeado unicamente como ferry
+(sin highway=*) era invisible para todo el pipeline, sin importar su
+ancho. Ver la nota en detectar-estructuras-artificiales.js sobre por que
+a las ferries NO se les aplica el mismo umbral de ancho que a las
+highway=*.
+
 Reutilizable para cualquier tile futuro: basta con pasar el bbox del tile
 correspondiente.
 
@@ -34,11 +42,16 @@ import osmium
 
 
 class HighwayHandler(osmium.SimpleHandler):
+    """Extrae highway=* y route=ferry (marcadas con es_ferry=true) -- ver
+    nota 2026-07-29 en el docstring del modulo sobre por que route=ferry
+    tambien se extrae aqui."""
+
     def __init__(self, bbox):
         super().__init__()
         self.min_lon, self.min_lat, self.max_lon, self.max_lat = bbox
         self.ways = []
         self.total_highway = 0
+        self.total_ferry = 0
         self.excluidas_bridge_tunnel = 0
         self.sin_nodo_en_bbox = 0
 
@@ -47,13 +60,18 @@ class HighwayHandler(osmium.SimpleHandler):
 
     def way(self, w):
         tags = w.tags
-        if "highway" not in tags:
+        es_highway = "highway" in tags
+        es_ferry = tags.get("route") == "ferry"
+        if not es_highway and not es_ferry:
             return
-        self.total_highway += 1
 
-        if tags.get("bridge") == "yes" or tags.get("tunnel") == "yes":
-            self.excluidas_bridge_tunnel += 1
-            return
+        if es_highway:
+            self.total_highway += 1
+            if tags.get("bridge") == "yes" or tags.get("tunnel") == "yes":
+                self.excluidas_bridge_tunnel += 1
+                return
+        else:
+            self.total_ferry += 1
 
         geometry = []
         alguno_en_bbox = False
@@ -79,6 +97,7 @@ class HighwayHandler(osmium.SimpleHandler):
             "id": w.id,
             "tags": dict(tags),
             "geometry": geometry,
+            "es_ferry": es_ferry,
         })
 
 
@@ -99,6 +118,7 @@ def main():
     handler.apply_file(args.pbf_path, locations=True)
 
     print(f"Total ways con highway=*: {handler.total_highway}")
+    print(f"Total ways con route=ferry: {handler.total_ferry}")
     print(f"Excluidas por bridge=yes/tunnel=yes: {handler.excluidas_bridge_tunnel}")
     print(f"Descartadas por no tener ningun nodo dentro del bbox: {handler.sin_nodo_en_bbox}")
     print(f"Ways retenidas: {len(handler.ways)}")

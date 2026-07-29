@@ -97,6 +97,31 @@
  * candidatas pueden ser puentes reales mal mapeados, sin bridge=yes, o
  * canales genuinamente angostos no documentados en el derrotero).
  *
+ * FERRIES (agregado 2026-07-29, caso El Banquito / Isla Huapi Abtao) --
+ * hueco sistematico encontrado tras el cierre de Piedraplen: este caso NO
+ * aparecio en las 326/34 candidatas originales porque el extractor
+ * (tools/raster-build/extraer_highways_pbf.py) solo pedia highway=* --
+ * el cruce esta mapeado unicamente como route=ferry (way 1116970201, sin
+ * tag highway, con amenity=ferry_terminal en AMBOS extremos, calzando a
+ * 0m de distancia contra la costa real de cada lado). Ni siquiera entraba
+ * a la lista de 326 -- no era un problema del criterio de ancho, era que
+ * la way jamas se extraia del .pbf.
+ *
+ * Verificado con el propio algoritmo de 4 ejes de este archivo (una vez
+ * corregido el extractor): el ancho minimo local de El Banquito da 600m --
+ * MAYOR al umbral de 300m. Osea que aunque el extractor lo hubiera
+ * incluido desde el principio, el filtro de ancho lo habria descartado
+ * igual. La razon de fondo: el umbral de ancho supone que "highway=* cruza
+ * 600m de agua" es sospechoso (ninguna calle cruza un canal de 600m sin
+ * puente real), pero para una ferry es lo opuesto -- un ferry sobre 600m
+ * de agua real es normal, Chile tiene decenas. No hay hoy ninguna señal de
+ * dato (tags, terminal, ancho) que distinga "ferry sobre agua real" de
+ * "ferry/paso sobre istmo intermareal no navegable" -- asi que route=ferry
+ * se extrae por separado (extraer_highways_pbf.py, "es_ferry": true) y se
+ * reporta SIEMPRE para revision humana si pasa Filtro A/C, sin aplicar el
+ * umbral de ancho. Mas caro en revision manual, pero es la unica forma
+ * honesta de no perderse el proximo caso silenciosamente.
+ *
  * Uso:
  *   node tools/detectar-estructuras-artificiales.js <archivo.json> [--umbral=300]
  */
@@ -117,6 +142,7 @@ const TIPOS_EXCLUIDOS = new Set(['path', 'footway', 'track']); // Filtro B
 const UMBRAL_LARGO_M = 1000; // Filtro C
 const UMBRAL_CELDAS_LADO = 500; // Filtro A
 const VENTANA_LADO_M = 2000;
+const RADIO_TIERRA_CERCANA_CELDAS = 5; // 250m a res 50m -- tolerancia de extremos de ferry, ver nota FERRIES
 
 const TILE = loadTile('AUSTRAL_N');
 const meta = TILE.meta;
@@ -131,6 +157,23 @@ function confianzaRC(fila, col) {
   if (fila < 0 || fila >= meta.rows || col < 0 || col >= meta.cols) return null;
   const raw = TILE.packed[fila * meta.cols + col];
   return (raw >> 13) & 0b11;
+}
+/** Celda de tierra (confianza=0) mas cercana dentro de un radio, o null. A
+ * diferencia de un simple booleano, devuelve la celda real -- la necesitamos
+ * para buscar semilla de agua alrededor de tierra REAL cuando el extremo de
+ * la way no lo es (ver nota FERRIES). */
+function celdaTierraCercaRC(fila, col, radioCeldas) {
+  let mejor = null;
+  let mejorD2 = Infinity;
+  for (let dr = -radioCeldas; dr <= radioCeldas; dr++) {
+    for (let dc = -radioCeldas; dc <= radioCeldas; dc++) {
+      if (confianzaRC(fila + dr, col + dc) === 0) {
+        const d2 = dr * dr + dc * dc;
+        if (d2 < mejorD2) { mejorD2 = d2; mejor = [fila + dr, col + dc]; }
+      }
+    }
+  }
+  return mejor;
 }
 function confianzaLonLat(lon, lat) {
   const { fila, col } = lonLatToRowCol(lon, lat);
@@ -177,6 +220,25 @@ function anchoMinimoLocalM(fila, col) {
 
 const NEIGHBORS8 = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
+/** Busca agua no excluida cerca de (fila,col), ampliando el radio de 1 en 1
+ * hasta radioMax. NEIGHBORS8 (radio 1) alcanza para landA/B real, pero para
+ * el ancla de tierra-real de un ferry (ver nota FERRIES) el agua inmediata
+ * puede caer entera dentro del corredor excluido del propio cruce -- hace
+ * falta radio > 1 para encontrar semilla fuera de esa franja. */
+function buscarSemillaAgua(fila, col, corredorExcluido, radioMax) {
+  for (let r = 1; r <= radioMax; r++) {
+    for (let dr = -r; dr <= r; dr++) {
+      for (let dc = -r; dc <= r; dc++) {
+        if (Math.max(Math.abs(dr), Math.abs(dc)) !== r) continue; // solo el anillo del radio actual
+        const fr = fila + dr, cc = col + dc;
+        if (corredorExcluido.has(fr * meta.cols + cc)) continue;
+        if (confianzaRC(fr, cc) >= 1) return [fr, cc];
+      }
+    }
+  }
+  return undefined;
+}
+
 /**
  * Tamaño (celdas) del cuerpo de agua conectado desde (filaSemilla,colSemilla),
  * dentro de una ventana de +-margenM alrededor de (filaCentro,colCentro),
@@ -216,7 +278,8 @@ function tamanoCuerpoDeAgua(filaSemilla, colSemilla, filaCentro, colCentro, marg
 }
 
 function analizarWay(way) {
-  if (TIPOS_EXCLUIDOS.has(way.tags && way.tags.highway)) return null; // Filtro B
+  const esFerry = !!(way.tags && way.tags.route === 'ferry'); // ver nota FERRIES mas abajo
+  if (!esFerry && TIPOS_EXCLUIDOS.has(way.tags && way.tags.highway)) return null; // Filtro B (no aplica a ferries: no tienen tag highway)
 
   const geom = way.geometry;
   if (!geom || geom.length < 2) return null;
@@ -227,6 +290,34 @@ function analizarWay(way) {
   for (let i = 0; i < confs.length; i++) { if (confs[i] === 0) { iA = i; break; } }
   let iB = -1;
   for (let i = confs.length - 1; i >= 0; i--) { if (confs[i] === 0) { iB = i; break; } }
+
+  // FERRIES -- extremos sin confianza=0 propia (2026-07-29, caso El
+  // Banquito): el extremo de la way calzaba a 0m de la costa real
+  // (natural=coastline) pero la celda del .bin ahi seguia en confianza=1 --
+  // el water-polygon usado para rasterizar no tiene la precision del
+  // extremo exacto de la costa vectorial. Con el criterio estricto (exigir
+  // confs[i]===0 dentro de la propia geometria de la way), El Banquito
+  // nunca generaba iA/iB y la funcion retornaba null ANTES de llegar al
+  // filtro de ancho -- invisible para el pipeline por una segunda razon,
+  // distinta de "no era highway=*". Para ferries, si no hay confianza=0 en
+  // la propia way, se busca tierra en un radio chico alrededor de cada
+  // extremo (tolerancia a la imprecision del raster contra la costa
+  // vectorial) antes de descartar.
+  let tierraRealA = null; // celda de tierra real cercana, si el extremo A no es tierra por si mismo
+  let tierraRealB = null;
+  if (esFerry) {
+    if (iA === -1) {
+      const { fila, col } = lonLatToRowCol(geom[0].lon, geom[0].lat);
+      tierraRealA = celdaTierraCercaRC(fila, col, RADIO_TIERRA_CERCANA_CELDAS);
+      if (tierraRealA) iA = 0;
+    }
+    if (iB === -1) {
+      const last = geom.length - 1;
+      const { fila, col } = lonLatToRowCol(geom[last].lon, geom[last].lat);
+      tierraRealB = celdaTierraCercaRC(fila, col, RADIO_TIERRA_CERCANA_CELDAS);
+      if (tierraRealB) iB = last;
+    }
+  }
 
   if (iA === -1 || iB === -1 || iA >= iB) return null; // sin tierra en ambos extremos, o sin hueco de agua real
 
@@ -265,10 +356,19 @@ function analizarWay(way) {
 
   const { fila: filaA, col: colA } = lonLatToRowCol(landA.lon, landA.lat);
   const { fila: filaB, col: colB } = lonLatToRowCol(landB.lon, landB.lat);
-  const seedA = NEIGHBORS8.map(([dr, dc]) => [filaA + dr, colA + dc])
-    .find(([r, c]) => !corredorExcluido.has(r * meta.cols + c) && confianzaRC(r, c) >= 1);
-  const seedB = NEIGHBORS8.map(([dr, dc]) => [filaB + dr, colB + dc])
-    .find(([r, c]) => !corredorExcluido.has(r * meta.cols + c) && confianzaRC(r, c) >= 1);
+  // Ancla para la busqueda de semilla de agua: la propia landA/landB si es
+  // tierra real, o -- caso ferry con extremo sin confianza=0 propia -- la
+  // celda de tierra real mas cercana (tierraRealA/B), para no buscar
+  // vecinos de un punto que en realidad es agua (ver nota FERRIES).
+  const [anclaFilaA, anclaColA] = tierraRealA || [filaA, colA];
+  const [anclaFilaB, anclaColB] = tierraRealB || [filaB, colB];
+  // radio 1 (NEIGHBORS8) para landA/B real; para el ancla de tierra-real de
+  // un ferry, el corredor excluido puede tapar todo el radio 1 -- se
+  // permite buscar mas lejos (ver buscarSemillaAgua).
+  const radioSemillaA = tierraRealA ? RADIO_TIERRA_CERCANA_CELDAS : 1;
+  const radioSemillaB = tierraRealB ? RADIO_TIERRA_CERCANA_CELDAS : 1;
+  const seedA = buscarSemillaAgua(anclaFilaA, anclaColA, corredorExcluido, radioSemillaA);
+  const seedB = buscarSemillaAgua(anclaFilaB, anclaColB, corredorExcluido, radioSemillaB);
 
   const celdasLadoA = seedA
     ? tamanoCuerpoDeAgua(seedA[0], seedA[1], filaA, colA, VENTANA_LADO_M, corredorExcluido, UMBRAL_CELDAS_LADO)
@@ -279,10 +379,31 @@ function analizarWay(way) {
 
   const pasaFiltroA = celdasLadoA >= UMBRAL_CELDAS_LADO && celdasLadoB >= UMBRAL_CELDAS_LADO; // agua sustancial a AMBOS lados
   const pasaFiltroC = largoAguaM <= UMBRAL_LARGO_M; // Filtro C: no es un camino pegado a la orilla por kilometros
+  const anchoOk = anchoMinM < UMBRAL_ANCHO_M;
+
+  // FERRIES -- por que NO se les aplica anchoOk (2026-07-29, caso El
+  // Banquito / Isla Huapi Abtao): el umbral de ancho existe para
+  // distinguir "canal real, ancho, normal" de "franja angosta
+  // sospechosa de estar mal mapeada" en una VIA (highway=*), donde un
+  // camino cruzando 600m de agua es rarisimo y por eso es señal fuerte de
+  // bug. Un route=ferry es la señal CONTRARIA: existe precisamente PORQUE
+  // alguien cruza agua ahi, y un ferry sobre 600m de agua real es de lo
+  // mas normal (Chile tiene decenas). El caso El Banquito midio 600m por
+  // este mismo algoritmo -- mayor al umbral de 300m -- y aun asi es un
+  // istmo intermareal no navegable; el ferry tenia amenity=ferry_terminal
+  // en ambos extremos, indistinguible de un ferry real solo por los tags.
+  // No hay hoy una señal de dato que separe "ferry sobre agua real" de
+  // "ferry/paso sobre intermareal" -- asi que TODA ferry con cruce
+  // land-agua-land real (idxsAgua no vacio) y que pasa A/C se reporta
+  // SIEMPRE para revision humana, sin importar el ancho.
+  const esCandidata = esFerry
+    ? (pasaFiltroA && pasaFiltroC)
+    : (anchoOk && pasaFiltroA && pasaFiltroC);
 
   return {
     id: way.id,
     tags: way.tags || {},
+    esFerry,
     landA: [landA.lat, landA.lon],
     landB: [landB.lat, landB.lon],
     largoTramoAguaM: Math.round(largoAguaM),
@@ -292,8 +413,8 @@ function analizarWay(way) {
     celdasLadoB,
     pasaFiltroA,
     pasaFiltroC,
-    anchoOk: anchoMinM < UMBRAL_ANCHO_M,
-    esCandidata: anchoMinM < UMBRAL_ANCHO_M && pasaFiltroA && pasaFiltroC,
+    anchoOk,
+    esCandidata,
   };
 }
 
@@ -301,13 +422,16 @@ function analizarWay(way) {
 
 const data = JSON.parse(fs.readFileSync(inputPath, 'utf8'));
 const ways = (data.elements || []).filter((e) => e.type === 'way' && e.geometry);
-console.log(`Total ways highway (sin bridge/tunnel): ${ways.length}`);
-console.log(`Umbral de ancho: ${UMBRAL_ANCHO_M}m (ref: Paso Tautil, el mas angosto documentado del corredor, 241m)`);
+const waysHighway = ways.filter((w) => w.tags && w.tags.highway);
+const waysFerry = ways.filter((w) => w.tags && w.tags.route === 'ferry');
+console.log(`Total ways highway (sin bridge/tunnel): ${waysHighway.length}`);
+console.log(`Total ways route=ferry: ${waysFerry.length} (agregado 2026-07-29, caso El Banquito -- ver nota FERRIES mas abajo)`);
+console.log(`Umbral de ancho: ${UMBRAL_ANCHO_M}m (ref: Paso Tautil, el mas angosto documentado del corredor, 241m) -- NO se aplica a ferries`);
 
 const conAlgoDeAgua = ways.filter((w) =>
   w.geometry.some((pt) => pt && confianzaLonLat(pt.lon, pt.lat) >= 1)
 );
-console.log(`Ways con al menos un nodo en agua (prefiltro): ${conAlgoDeAgua.length}`);
+console.log(`Ways (highway+ferry) con al menos un nodo en agua (prefiltro): ${conAlgoDeAgua.length}`);
 
 const analizadas = [];
 for (const w of conAlgoDeAgua) {
@@ -315,20 +439,23 @@ for (const w of conAlgoDeAgua) {
   if (r !== null) analizadas.push(r);
 }
 
-const anchoNoOk = analizadas.filter((r) => !r.anchoOk);
-const anchoOk = analizadas.filter((r) => r.anchoOk);
+const analizadasHighway = analizadas.filter((r) => !r.esFerry);
+const analizadasFerry = analizadas.filter((r) => r.esFerry);
+
+const anchoNoOk = analizadasHighway.filter((r) => !r.anchoOk);
+const anchoOk = analizadasHighway.filter((r) => r.anchoOk);
 const caminosLargos = anchoOk.filter((r) => !r.pasaFiltroC); // Filtro C: separados, no descartados
 const charcoOZanja = anchoOk.filter((r) => r.pasaFiltroC && !r.pasaFiltroA); // Filtro A: descartados
 const candidatas = anchoOk.filter((r) => r.pasaFiltroC && r.pasaFiltroA).sort((a, b) => a.anchoMinimoLocalM - b.anchoMinimoLocalM);
 
-console.log(`\nWays evaluadas (con cruce land-agua-land real, ya sin path/footway/track): ${analizadas.length}`);
+console.log(`\nWays highway evaluadas (con cruce land-agua-land real, ya sin path/footway/track): ${analizadasHighway.length}`);
 console.log(`  Sobre umbral de ancho (${UMBRAL_ANCHO_M}m, canal ancho -- descartadas): ${anchoNoOk.length}`);
 console.log(`  Bajo el umbral de ancho: ${anchoOk.length}`);
 console.log(`    -> Filtro C (camino pegado a la orilla, largo_sobre_agua > ${UMBRAL_LARGO_M}m -- separadas aparte): ${caminosLargos.length}`);
 console.log(`    -> Filtro A (charco/zanja sin salida, algun lado < ${UMBRAL_CELDAS_LADO} celdas -- descartadas): ${charcoOZanja.length}`);
-console.log(`    -> CANDIDATAS FINALES (pasan los 3 filtros): ${candidatas.length}`);
+console.log(`    -> CANDIDATAS FINALES highway (pasan los 3 filtros): ${candidatas.length}`);
 
-console.log(`\n================ CANDIDATAS FINALES (ordenadas por ancho, mas angosto primero) ================`);
+console.log(`\n================ CANDIDATAS FINALES highway (ordenadas por ancho, mas angosto primero) ================`);
 for (const r of candidatas) {
   console.log(
     `id=${r.id} highway=${r.tags.highway || ''} name="${r.tags.name || ''}" ` +
@@ -346,6 +473,26 @@ for (const r of caminosLargos.sort((a, b) => b.largoTramoAguaM - a.largoTramoAgu
   );
 }
 
+// FERRIES -- siempre a revision humana, sin filtro de ancho (ver nota en
+// analizarWay). Solo se descartan por Filtro A (charco) y Filtro C (pegado
+// a la orilla), que si tienen sentido para una ferry.
+const candidatasFerry = analizadasFerry.filter((r) => r.esCandidata)
+  .sort((a, b) => a.anchoMinimoLocalM - b.anchoMinimoLocalM);
+console.log(`\n================ FERRIES -- REVISAR SIEMPRE (el umbral de ancho de ${UMBRAL_ANCHO_M}m NO aplica) ================`);
+console.log(`route=ferry evaluadas: ${analizadasFerry.length}, candidatas (pasan Filtro A/C): ${candidatasFerry.length}`);
+if (process.env.DEBUG_FERRY) {
+  for (const r of analizadasFerry) {
+    console.log(`  DEBUG id=${r.id} anchoMinimoLocalM=${r.anchoMinimoLocalM} pasaFiltroA=${r.pasaFiltroA} (ladoA=${r.celdasLadoA} ladoB=${r.celdasLadoB}) pasaFiltroC=${r.pasaFiltroC} largoTramoAguaM=${r.largoTramoAguaM} esCandidata=${r.esCandidata}`);
+  }
+}
+for (const r of candidatasFerry) {
+  console.log(
+    `id=${r.id} name="${r.tags.name || ''}" ancho_min_local=${r.anchoMinimoLocalM}m (informativo, NO filtra) ` +
+    `largo_sobre_agua=${r.largoTramoAguaM}m lado_A=${r.celdasLadoA}${r.celdasLadoA >= UMBRAL_CELDAS_LADO ? '+' : ''} lado_B=${r.celdasLadoB}${r.celdasLadoB >= UMBRAL_CELDAS_LADO ? '+' : ''} ` +
+    `landA=${r.landA} landB=${r.landB}`
+  );
+}
+
 fs.writeFileSync(
   inputPath.replace(/\.json$/, '.candidatas-exclusion.json'),
   JSON.stringify(candidatas, null, 2)
@@ -354,8 +501,13 @@ fs.writeFileSync(
   inputPath.replace(/\.json$/, '.caminos-pegados-orilla.json'),
   JSON.stringify(caminosLargos, null, 2)
 );
+fs.writeFileSync(
+  inputPath.replace(/\.json$/, '.candidatas-ferry.json'),
+  JSON.stringify(candidatasFerry, null, 2)
+);
 console.log(`\nGuardado: ${inputPath.replace(/\.json$/, '.candidatas-exclusion.json')} (${candidatas.length})`);
 console.log(`Guardado: ${inputPath.replace(/\.json$/, '.caminos-pegados-orilla.json')} (${caminosLargos.length})`);
+console.log(`Guardado: ${inputPath.replace(/\.json$/, '.candidatas-ferry.json')} (${candidatasFerry.length})`);
 
 // Verificacion especifica: Piedraplen debe aparecer entre las candidatas finales
 console.log(`\n================ VERIFICACION PIEDRAPLEN ================`);
