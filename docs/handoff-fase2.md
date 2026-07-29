@@ -1,5 +1,42 @@
 # Handoff — Fase 2 (raster-router-service.js)
 
+## Estructuras artificiales que cortan un canal (diagnóstico Piedraplén) — CERRADO (2026-07-28)
+
+**Modo de falla nuevo, distinto de todo lo documentado hasta ahora en este archivo:** no es el A* eligiendo mal entre alternativas reales (eso es lo que cubren los chokepoints/KML de más abajo), es que **el dato de entrada describe tierra como agua**. El terraplén que une Isla Calbuco al continente (Av. Vicuña Mackenna / "Piedraplén") es relleno sólido, pero el water-polygon de OSM no tiene un recorte para la calzada (`highway=tertiary`, sin `bridge=yes`), así que el pipeline lo rasteriza como agua navegable. El router trazaba rutas cruzando el terraplén en línea recta.
+
+**Detectado por reporte del usuario con captura de pantalla (zoom de calle), no por los tests automáticos** — el test 1 de §10 (muestreo cada 25m, confianza>0) pasaba limpio porque el `.bin` decía honestamente que ahí había agua; el bug estaba en el dato de entrada, no en el router ni en el string-pulling. Dos hipótesis descartadas antes de llegar al criterio correcto, documentadas en detalle en spec §7.6 porque vale la pena no repetirlas:
+
+1. **"¿landA y landB son alcanzables por agua rodeando?"** (flood-fill sin restricción más que una ventana proporcional al largo del cruce). Falla en el propio Piedraplén: Isla Calbuco es una isla real en una bahía real, y cualquier ventana suficientemente grande encuentra un rodeo real porque la isla efectivamente es circunnavegable. No distingue estructura de isla real.
+2. **Overpass en vivo para barrer el bbox del tile.** La API pública no está pensada para eso — se cae con "server too busy" incluso en tiles de 0.5°, con reintentos y mirrors alternativos. Se abandonó a favor de un extracto `.osm.pbf` de Chile completo (Geofabrik, 345MB, descarga única) procesado local con `pyosmium` — sin red ni rate limit en el loop de análisis, y reutilizable para los tiles futuros.
+
+**Criterio final** (`tools/detectar-estructuras-artificiales.js`, documentado con el historial completo de versiones descartadas en el propio archivo):
+
+1. Ancho mínimo local del cuerpo de agua en el punto de cruce (4 ejes perpendiculares), umbral 300m (referencia: Paso Tautil, 241m, el paso navegable documentado más angosto de todo el corredor troncal).
+2. Filtro A — agua sustancial a **cada lado** por separado (flood-fill excluyendo el propio cruce, ventana 2km, mínimo 500 celdas conectadas por lado): descarta charcos/zanjas sin salida junto a un camino.
+3. Filtro B — descarta `path`/`footway`/`track` (no cortan navegación de nave menor).
+4. Filtro C — descarta cruces con largo_sobre_agua > 1000m (camino corriendo pegado a la orilla con el water-polygon extendido sobre la banquina, no un cruce puntual).
+
+**Resultado: 326 candidatas → 34 tras los 3 filtros → 8 aplicadas.** De las 34 finales, el usuario revisó las 21 no obvias con un contact sheet visual (`tools/raster-build/generar_contact_sheet.py`, recorte 4km del `.bin` fino con la way en rojo — **no** del `.control.tif`, que a 200m/px es inútil para un canal de 100-300m de ancho) y descartó las 19 restantes: en casi todas la línea corre paralela a la costa (mismo patrón de falso positivo que el Filtro C, incluidas las 2 de Carretera Austral que quedaron justo debajo del umbral de 1000m), y en las pocas que sí cruzan perpendicular, el corte es de 100-250m junto a un camino menor sin motivo para que el router se meta ahí — agregar exclusiones dudosas cierra celdas potencialmente navegables por un beneficio cercano a cero.
+
+**8 aplicadas** (`src/config/exclusiones.json`, tipo `estructura_artificial`), todas en el cluster de Calbuco: Av. Vicuña Mackenna ×2 (Piedraplén, el caso original), Avenida Brasil, Punta Blanca, Camino Punta Quihua, y 3 sin nombre del mismo cluster.
+
+**Verificación de cierre:** rebuild de `AUSTRAL_N` con `build_tile.py` (nuevo paso `subtract_exclusiones()`, wireado junto a `subtract_hazards` — resta de la máscara de agua ANTES del EDT, así que sale confianza=0/tierra, no solo penalizado). Confirmado a nivel de dato: los nodos exactos del cruce de Piedraplén pasaron de `confianza=1` a `confianza=0`. Anahuac→Corral (la ruta que motivó el reporte original) sigue con 0 cruces antes y después — esa ruta puntual nunca pasaba lo bastante cerca del Piedraplén como para haber sido afectada (735-807m de distancia mínima). Intento de forzar un antes/después causal con Anahuac→Isla Calbuco: el router llega a la isla por costa abierta en ambos estados, sin necesidad del gap específico — no se logró un caso donde el A* explotara el bug de forma reproducible con los pares origen/destino ya probados. **La verificación de dato (celda navegable → tierra exactamente donde debía) se consideró suficiente para cerrar** — Nacho va a reproducir la ruta original en el navegador para confirmar visualmente; si sigue cruzando, se reabre.
+
+**Referencia guardada, sin procesar:** `C:\tmarea-data\raw\AUSTRAL_N_candidatas_326_solo-ancho.json` (solo filtro de ancho), `AUSTRAL_N_candidatas_34_final-tras-3-filtros.json` (tras los 3 filtros), y el contact sheet en `C:\tmarea-data\raw\contact_sheet\` — por si en el futuro aparece otro caso similar y conviene revisar si alguna de las 19 descartadas ahora sí aplica con más contexto.
+
+**Herramientas nuevas, reutilizables para tiles futuros:**
+- `tools/raster-build/extraer_highways_pbf.py` — filtra `highway=*` de un `.osm.pbf` local dentro de un bbox, sin Overpass.
+- `tools/detectar-estructuras-artificiales.js` — el criterio de 4 pasos de arriba.
+- `tools/raster-build/generar_contact_sheet.py` — contact sheet visual para revisión humana rápida.
+
+### Pendientes de cobertura (no son bugs — alcance no implementado todavía)
+
+Tres huecos de cobertura geográfica identificados en esta sesión, ninguno es un defecto del router: simplemente no hay dato ahí todavía.
+
+1. **Al sur de -47°S (Tortel, Puerto Natales, Punta Arenas): no existe tile.** `AUSTRAL_S` (spec §3.2) nunca se construyó — solo `AUSTRAL_N` está built. Cualquier ruta con origen/destino al sur de -47 falla con "fuera del tile cargado", no con un error de ruteo.
+2. **Al norte de -39,5°S: no existe tile.** Mismo caso, tile `NORTE` (spec §3.2) sin construir.
+3. **Valdivia ciudad (y en general ríos: Río Bueno, Maullín): los water polygons de OSM son solo océano, sin ríos.** Ya documentado en el hallazgo #9 más abajo (sesión anterior) como pendiente vía Overpass. **Ahora es más barato**: el `.osm.pbf` de Chile completo ya está en disco (`C:\tmarea-data\raw\chile-latest.osm.pbf`, bajado para el diagnóstico de Piedraplén de arriba), así que las riberas fluviales (`natural=water`+`water=river`, `waterway=riverbank`) se extraen de ahí con `pyosmium` — mismo patrón que `extraer_highways_pbf.py` pero filtrando por esos tags en vez de `highway=*` — sin tocar Overpass en absoluto. Sigue sin implementarse.
+
 ## FASE 2 CERRADA
 
 El resto de este documento es la investigación que llevó hasta acá — se conserva completa porque tiene hallazgos que no hay que redescubrir (sección "Hallazgos que NO hay que redescubrir" más abajo sigue vigente). Esta sección es el resumen de cierre.

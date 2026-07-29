@@ -33,6 +33,7 @@ UNIT_M = 10  # unidad del campo distancia empaquetado (spec Sec 5.1)
 # tools/raster-build/build_tile.py -> raiz del repo (tmarea-backend/)
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 ZONAS_DRAGADAS_PATH = os.path.join(REPO_ROOT, "src", "config", "zonas-dragadas.json")
+EXCLUSIONES_PATH = os.path.join(REPO_ROOT, "src", "config", "exclusiones.json")
 
 
 def find_water_shapefile():
@@ -119,6 +120,55 @@ def subtract_hazards(agua, tile_id, grid, transform, log):
     return agua, len(geoms)
 
 
+def subtract_exclusiones(agua, grid, transform, log):
+    """Estructuras artificiales que cortan un canal (terraplenes, espigones,
+    causeways, tombolos) que el water-polygon de OSM no registra como
+    tierra porque no modifican la linea de costa mapeada -- ver
+    tools/detectar-estructuras-artificiales.js y spec Sec 7.6 (mecanismo de
+    exclusion, "no pases por alla": celdas marcadas intransitables en el
+    build, preferido sobre un waypoint forzado).
+
+    src/config/exclusiones.json: cada entrada es una linea WGS84 (el tramo
+    de la via que corre sobre agua, entre landA y landB) + buffer_m. Se
+    resta de la mascara de agua ANTES del EDT, igual que subtract_hazards
+    -- estas celdas deben salir confianza=0 (tierra), no solo penalizadas."""
+    if not os.path.exists(EXCLUSIONES_PATH):
+        log(f"  AVISO: no se encontro {EXCLUSIONES_PATH}, se omite la resta de exclusiones")
+        return agua, 0
+
+    with open(EXCLUSIONES_PATH, encoding="utf-8") as f:
+        exclusiones = json.load(f)
+    if not exclusiones:
+        log("  0 exclusiones -- nada que restar")
+        return agua, 0
+
+    from shapely.geometry import LineString
+    from shapely.ops import transform as shp_transform
+    from pyproj import Transformer
+
+    to_proj = Transformer.from_crs("EPSG:4326", grid["crs_proj4"], always_xy=True).transform
+
+    buffered = []
+    for exc in exclusiones:
+        geom = LineString(exc["geometria_wgs84"])
+        proyectada = shp_transform(to_proj, geom)
+        buffered.append(proyectada.buffer(exc["buffer_m"]))
+
+    exclusion_mask = rasterio.features.rasterize(
+        [(g, 1) for g in buffered],
+        out_shape=agua.shape,
+        transform=transform,
+        fill=0,
+        dtype=np.uint8,
+    ).astype(bool)
+
+    n_before = agua.sum()
+    agua = agua & ~exclusion_mask
+    log(f"  {len(exclusiones)} estructuras artificiales (exclusiones.json) -> "
+        f"{n_before - agua.sum():,} celdas removidas de agua")
+    return agua, len(exclusiones)
+
+
 def rasterize_zonas_dragadas(grid, transform, agua_shape, log):
     """Zonas de margen relajado (spec Sec 7.1). Tres tipos, todos con el
     mismo efecto (bit 15 / kml_bit, dMinM acotado a dMinM_max en
@@ -196,6 +246,9 @@ def main():
     agua, transform = load_water_mask(tile_cfg, grid, log)
     agua, n_hazards = subtract_hazards(agua, tile_id, grid, transform, log)
 
+    log("Restando estructuras artificiales (exclusiones.json)...")
+    agua, n_exclusiones = subtract_exclusiones(agua, grid, transform, log)
+
     log("Rasterizando zonas de margen relajado (zonas-dragadas.json)...")
     zona_relajada = rasterize_zonas_dragadas(grid, transform, agua.shape, log)
     n_zonas_dragadas = 0
@@ -245,6 +298,10 @@ def main():
             "(src/config/zonas-dragadas.json, spec Sec 7.1) -- buffers de 1-2km alrededor de "
             "puertos reales, NO con los 14 KML de canales (esos siguen sin digitalizar, "
             "decision Fase 2: no digitalizar por adelantado).",
+            f"{n_exclusiones} estructuras artificiales (src/config/exclusiones.json, spec Sec 7.6) "
+            "restadas de la mascara de agua antes del EDT -- terraplenes/causeways que el "
+            "water-polygon de OSM no registra como tierra (caso Piedraplen, Calbuco, "
+            "diagnostico 2026-07-28).",
         ],
         "build": {
             "fecha": time.strftime("%Y-%m-%d"),
@@ -255,6 +312,7 @@ def main():
                 "gmrt": None, "ibcso": None, "gebco": None,
                 "kml": None,
                 "zonas_dragadas": f"src/config/zonas-dragadas.json ({n_zonas_dragadas} zonas)",
+                "exclusiones": f"src/config/exclusiones.json ({n_exclusiones} estructuras artificiales)",
             },
         },
     }
