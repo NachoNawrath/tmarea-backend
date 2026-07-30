@@ -245,6 +245,8 @@ router.post('/weather-ruta', async (req, res) => {
       bahias_en_ruta: bahias.map(b => ({
         id_bahia:            b.idBahia,
         nombre:              b.nombreBahia,
+        lat:                 b.lat,
+        lng:                 b.lng,
         temperatura_c:       b.temperatura,
         presion_hpa:         b.presion,
         velocidad_viento_kt: b.velocidadViento,
