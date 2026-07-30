@@ -55,6 +55,9 @@ nauticalGraphRouter.warmup();
 rasterRouterService.warmup('AUSTRAL_N');
 app.use('/api/rutas', rutasRoutes);
 
+const tideRoutes = require('./routes/tide-routes');
+app.use('/api/tide', tideRoutes);
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
