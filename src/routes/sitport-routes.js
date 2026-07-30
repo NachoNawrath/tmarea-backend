@@ -1,5 +1,7 @@
 ﻿const express = require('express');
 const sitportService = require('../services/sitport-service');
+const { buscarFondeadero } = require('../services/fondeadero-service');
+const { getCapitania } = require('../utils/capitanias');
 const router = express.Router();
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -282,6 +284,151 @@ router.post('/weather-ruta', async (req, res) => {
       bahias_en_ruta: [],
       condicion_puerto: null,
       alerta_nivel: null
+    });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Deriva la "Condición de Puerto" desde el texto libre de la restricción.
+// SITPORT no expone un campo estructurado de condición; la publica dentro de
+// Observacion ("SE ESTABLECE CONDICIÓN DE MAL TIEMPO..."). Se detecta por
+// palabras clave, de mayor a menor severidad.
+// ─────────────────────────────────────────────────────────────────────────────
+function derivarCondicion(r) {
+  const t = (r.Observacion || '').toUpperCase();
+  if (t.includes('TEMPORAL')) return 'Temporal';
+  if (t.includes('MAL TIEMPO')) return 'Mal Tiempo';
+  if (t.includes('TIEMPO VARIABLE')) return 'Tiempo Variable';
+  if (t.includes('PUERTO CERRADO') || t.includes('CERRADO')) return 'Puerto Cerrado';
+  const m = (r.MotivoRestriccion || '').trim();
+  return m ? m.charAt(0).toUpperCase() + m.slice(1).toLowerCase() : null;
+}
+
+// De todas las restricciones activas de una bahía, elige la más útil para el
+// cotejo de Arqueo Bruto del frontend: prioriza la que menciona un límite de AB
+// (formato SITPORT "... A 25 AB" / "EEMM"); si ninguna lo hace, la primera.
+function elegirRestriccion(lista) {
+  return (
+    lista.find((r) => {
+      const t = r.Observacion || '';
+      return /(\d+)\s*AB\b/i.test(t) || /EEMM/i.test(t);
+    }) || lista[0]
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/sitport/restricciones-ruta
+// Recibe: { ruta_puntos: [{lat, lng}], zarpe_id?, recalada_id? }
+// Devuelve las restricciones SITPORT activas en las bahías que la ruta cruza en
+// TRÁNSITO (excluye zarpe y recalada, que ya cubre PortStatusBlock), cada una
+// con la Gobernación jurisdiccional y un fondeadero previo para esperar.
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/restricciones-ruta', async (req, res) => {
+  try {
+    const { ruta_puntos, zarpe_id, recalada_id } = req.body;
+
+    if (!Array.isArray(ruta_puntos) || ruta_puntos.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'ruta_puntos debe ser un array no vacío de {lat, lng}',
+        restricciones_intermedias: [],
+        total: 0
+      });
+    }
+
+    // Latitud de zarpe → define la dirección de viaje para el fondeadero.
+    const latZarpe = ruta_puntos[0]?.lat;
+
+    // 1-2. Para cada punto de la ruta, la bahía más cercana del mapa estático
+    //      (< 80 km), igual que weather-ruta. Se conserva el ORDEN de aparición.
+    const MAX_DIST_KM = 80;
+    const matched = [];         // { idBahia, coords } en orden de tránsito
+    const vistas = new Set();
+
+    for (const punto of ruta_puntos) {
+      if (!punto || punto.lat == null || punto.lng == null) continue;
+
+      let mejorId = null;
+      let mejorDist = Infinity;
+      for (const [id, c] of Object.entries(BAHIA_COORDS)) {
+        const d = distKm(punto.lat, punto.lng, c.lat, c.lng);
+        if (d < mejorDist && d < MAX_DIST_KM) {
+          mejorDist = d;
+          mejorId = Number(id);
+        }
+      }
+
+      // 3. Deduplicar: una bahía entra una sola vez, en su primera aparición.
+      if (mejorId != null && !vistas.has(mejorId)) {
+        vistas.add(mejorId);
+        matched.push({ idBahia: mejorId, coords: BAHIA_COORDS[mejorId] });
+      }
+    }
+
+    // 6. Excluir zarpe y recalada: la primera y la última bahía de la ruta, más
+    //    cualquier id explícito recibido.
+    const excluidas = new Set();
+    if (matched.length > 0) {
+      excluidas.add(matched[0].idBahia);
+      excluidas.add(matched[matched.length - 1].idBahia);
+    }
+    if (zarpe_id != null) excluidas.add(Number(zarpe_id));
+    if (recalada_id != null) excluidas.add(Number(recalada_id));
+
+    // 4. Todas las restricciones activas del país (cache 10 min del servicio).
+    const restricciones = await sitportService.consultaRestricciones();
+    const porBahia = new Map();
+    for (const r of restricciones) {
+      if (r.bahia == null) continue;
+      if (!porBahia.has(r.bahia)) porBahia.set(r.bahia, []);
+      porBahia.get(r.bahia).push(r);
+    }
+
+    // 5 + 7. Restricciones de las bahías intermedias, en orden de tránsito.
+    const intermedias = [];
+    let orden = 1;
+    for (const { idBahia, coords } of matched) {
+      if (excluidas.has(idBahia)) continue;
+      const lista = porBahia.get(idBahia);
+      if (!lista || lista.length === 0) continue;
+
+      const r = elegirRestriccion(lista);
+      const cap = getCapitania(coords.lat, coords.lng);
+
+      intermedias.push({
+        id_bahia: idBahia,
+        nombre_bahia: coords.nombre || r.GLBahia || 'Bahía',
+        lat: coords.lat,
+        lng: coords.lng,
+        restriccion: r.MotivoRestriccion || r.tiporestriccion || 'Restricción activa',
+        observacion: r.Observacion || '',
+        condicion: derivarCondicion(r),
+        motivo: r.MotivoRestriccion || null,
+        tipo_restriccion: r.tiporestriccion || null,
+        nave_recibe: r.NaveRecibe || null,
+        gobernacion: cap?.nombre || null,
+        telefono: cap?.telefono || null,
+        orden_en_ruta: orden++,
+        fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, latZarpe)
+      });
+    }
+
+    res.json({
+      success: true,
+      restricciones_intermedias: intermedias,
+      total: intermedias.length,
+      fuente: 'SITPORT/DIRECTEMAR',
+      timestamp: new Date().toISOString(),
+      error: null
+    });
+
+  } catch (error) {
+    console.error('[sitport/restricciones-ruta] Error:', error.message);
+    res.status(502).json({
+      success: false,
+      error: error.message,
+      restricciones_intermedias: [],
+      total: 0
     });
   }
 });
