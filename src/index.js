@@ -46,12 +46,10 @@ const voyageReportRoutes = require('./routes/voyage-report-routes');
 app.use('/api/viaje', voyageReportRoutes);
 
 const rutasRoutes = require('./routes/routes-routes');
-const nauticalGraphRouter = require('./services/nautical-graph-router');
 const rasterRouterService = require('./services/raster-router-service');
-// Los dos motores viven calientes en paralelo mientras se verifica
-// /calcular-v2 contra /calcular (docs/handoff-fase2.md) -- temporal, se
-// saca cuando el switch esté confirmado y nautical-graph-router.js se borre.
-nauticalGraphRouter.warmup();
+// Motor único de rutas: raster A* jerárquico (spec §7). Se calienta el tile
+// de arranque; los demás tiles de cobertura se cargan on-demand según las
+// coordenadas de la ruta (registry en raster-router-service.js).
 rasterRouterService.warmup('AUSTRAL_N');
 app.use('/api/rutas', rutasRoutes);
 

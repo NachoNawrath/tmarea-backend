@@ -90,32 +90,13 @@ router.get('/:id', (req, res) => {
   }
 });
 
-// POST /api/rutas/calcular
-const { calcularRuta } = require('../services/nautical-graph-router');
-
-router.post('/calcular', (req, res) => {
-  try {
-    const { lat_origen, lon_origen, lat_destino, lon_destino } = req.body;
-    if (!lat_origen || !lon_origen || !lat_destino || !lon_destino) {
-      return res.status(400).json({ error: 'Faltan coordenadas: lat_origen, lon_origen, lat_destino, lon_destino' });
-    }
-    const resultado = calcularRuta(
-      parseFloat(lat_origen), parseFloat(lon_origen),
-      parseFloat(lat_destino), parseFloat(lon_destino)
-    );
-    res.json(resultado);
-  } catch (err) {
-    console.error('[rutas/calcular]', err.message);
-    res.status(500).json({ error: 'Error calculando ruta náutica' });
-  }
-});
-
 // POST /api/rutas/calcular-v2
-// Motor raster (TMAREA_SPEC_Router_Raster_v1.md) en paralelo a /calcular
-// mientras se verifica -- ver docs/handoff-fase2.md. calado_m y licencia ya
-// existen en el frontend (vessel_profile de P1.1, user_profile de P1); el
-// resto del contrato PerfilNavegacion (clasificación de nave, propulsión)
-// es Fase 4 y no bloquea este switch.
+// Motor raster (TMAREA_SPEC_Router_Raster_v1.md) — motor ÚNICO de rutas.
+// El antiguo motor de grafo (nautical-graph-router / POST /calcular) y el
+// comparador de motores se eliminaron: el raster A* jerárquico quedó como
+// derrota de referencia definitiva. calado_m y licencia vienen del frontend
+// (vessel_profile de P1.1, user_profile de P1); el resto del contrato
+// PerfilNavegacion (clasificación de nave, propulsión) es Fase 4.
 const rasterRouterService = require('../services/raster-router-service');
 const { construirPerfilCosto } = require('../config/perfiles-costo');
 
