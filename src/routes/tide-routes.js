@@ -115,6 +115,56 @@ router.get('/curve', rateLimiter, (req, res) => {
   }
 });
 
+// ─── POST /api/tide/curve-ruta ────────────────────────────────────────────
+/**
+ * Curva de marea multi-estación a lo largo de una ruta.
+ *
+ * NOTA: la spec P4 lo describía como GET, pero `ruta_puntos` es un array de
+ * objetos {lat,lng} que no cabe razonablemente en un query string. Se
+ * implementa como POST con body JSON, igual que los endpoints hermanos
+ * /api/sitport/weather-ruta y /restricciones-ruta.
+ *
+ * Body: {
+ *   ruta_puntos: [{ lat, lng }, ...]  (requerido, >= 1 punto)
+ *   hora_zarpe: ISO8601                (requerido)
+ *   velocidad_nudos: number > 0        (requerido)
+ * }
+ * 200: { ok, estaciones_ruta: [...], disclaimer }
+ * 400: parámetros inválidos
+ */
+router.post('/curve-ruta', rateLimiter, (req, res) => {
+  const { ruta_puntos, hora_zarpe, velocidad_nudos } = req.body || {};
+  const errores = [];
+
+  if (!Array.isArray(ruta_puntos) || ruta_puntos.length < 1) {
+    errores.push('ruta_puntos debe ser un array con al menos un punto {lat, lng}');
+  } else {
+    const puntoInvalido = ruta_puntos.some((p) => {
+      const lat = p && parseFloat(p.lat);
+      const lon = p && parseFloat(p.lng != null ? p.lng : p.lon);
+      return Number.isNaN(lat) || lat < -90 || lat > 90 || Number.isNaN(lon) || lon < -180 || lon > 180;
+    });
+    if (puntoInvalido) errores.push('ruta_puntos contiene coordenadas inválidas');
+  }
+
+  const { date: zarpe, error: dateErr } = parseOptionalDate(hora_zarpe, null);
+  if (hora_zarpe === undefined || zarpe === null) errores.push('hora_zarpe es requerida (ISO8601)');
+  if (dateErr) errores.push(dateErr);
+
+  const vel = parseFloat(velocidad_nudos);
+  if (Number.isNaN(vel) || vel <= 0) errores.push('velocidad_nudos debe ser un número mayor que 0');
+
+  if (errores.length) return res.status(400).json({ ok: false, error: 'Parámetros inválidos', detalle: errores });
+
+  try {
+    const result = tps.tideCurveRuta(ruta_puntos, zarpe, vel);
+    return res.json({ ok: true, ...result });
+  } catch (err) {
+    console.error('[tide/curve-ruta] Error interno:', err.message);
+    return res.status(500).json({ ok: false, error: 'No fue posible calcular la curva de marea de la ruta.' });
+  }
+});
+
 // ─── GET /api/tide/stations ───────────────────────────────────────────────
 router.get('/stations', rateLimiter, (req, res) => {
   res.json({ stations: tps.listStations() });

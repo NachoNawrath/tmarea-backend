@@ -182,6 +182,105 @@ function tideCurve(lat, lon, fromDatetime, hours, stepMinutes = 10) {
   };
 }
 
+/**
+ * tideCurveRuta(rutaPuntos, horaZarpe, velocidadNudos) — curva de marea a lo
+ * largo de una ruta. Para cada punto de la ruta busca la estación más cercana
+ * (mismo criterio de 50mn que predict/curve, SIN interpolar entre estaciones),
+ * deduplica estaciones consecutivas repetidas y calcula la hora estimada de
+ * paso por cada zona según la distancia acumulada y la velocidad de la nave.
+ *
+ * Para cada estación de la ruta genera la curva desde horaZarpe cubriendo TODA
+ * la ventana del viaje — todas las curvas comparten la MISMA ventana temporal
+ * para que el eje X del gráfico compuesto alinee (Puerto Montt M2=1876mm y
+ * Ancud M2=665mm se ven a la misma escala, que es justo el punto de mostrarlas
+ * juntas).
+ *
+ * La ventana es de `hours` horas (24 por defecto), pero se EXTIENDE si el viaje
+ * dura más: window = max(24h, duración_viaje + colita). Sin esto, en un viaje
+ * de ~24h la estación de recalada llegaba casi al borde de la ventana y su
+ * curva quedaba vacía/cortada en el gráfico. La colita (WINDOW_TAIL_H) además
+ * garantiza que la zona de recalada tenga un tramo visible después de la hora
+ * de llegada. Se topa en WINDOW_MAX_H para no generar curvas absurdas si la
+ * velocidad es muy baja.
+ *
+ * Puntos sin estación a menos de 50mn (p.ej. el agujero de Quellón, sin
+ * mareógrafo) simplemente no aportan estación: no se interpola sobre ellos.
+ * `lastStationId` NO se reinicia en esos huecos, para que un tramo sin datos
+ * seguido de la MISMA estación no genere una entrada duplicada en la leyenda.
+ *
+ * -> { estaciones_ruta: [ { station_id, nombre, lat, lng,
+ *        hora_estimada_paso, distancia_mn_desde_zarpe, distancia_estacion_mn,
+ *        precision_reducida, curva: [{time, height_m}] } ],
+ *      hora_recalada_estimada, ventana_horas, disclaimer }
+ */
+const WINDOW_TAIL_H = 3;   // horas de curva visible tras llegar a recalada
+const WINDOW_MAX_H = 72;   // tope de ventana (evita curvas absurdas a baja velocidad)
+
+function tideCurveRuta(rutaPuntos, horaZarpe, velocidadNudos, { hours = 24, stepMinutes = 10 } = {}) {
+  const zarpe = parseDate(horaZarpe);
+  const lonOf = (p) => (p.lng != null ? p.lng : p.lon);
+
+  // Pre-pase: distancia total de la ruta para dimensionar la ventana temporal
+  // de forma que cubra el viaje completo + la colita de recalada.
+  let totalNm = 0;
+  for (let i = 1; i < rutaPuntos.length; i++) {
+    const prev = rutaPuntos[i - 1];
+    const cur = rutaPuntos[i];
+    totalNm += haversineNm(prev.lat, lonOf(prev), cur.lat, lonOf(cur));
+  }
+  const tripHours = velocidadNudos > 0 ? totalNm / velocidadNudos : 0;
+  const windowHours = Math.min(WINDOW_MAX_H, Math.max(hours, Math.ceil(tripHours) + WINDOW_TAIL_H));
+
+  const estaciones = [];
+  let lastStationId = null;
+  let cumNm = 0;
+
+  const n = Math.floor((windowHours * 60) / stepMinutes);
+
+  for (let i = 0; i < rutaPuntos.length; i++) {
+    const p = rutaPuntos[i];
+    if (i > 0) {
+      const prev = rutaPuntos[i - 1];
+      cumNm += haversineNm(prev.lat, lonOf(prev), p.lat, lonOf(p));
+    }
+
+    const found = findNearestStation(p.lat, lonOf(p));
+    if (!found) continue; // hueco (sin estación a <=50mn): no se interpola
+    if (found.station.id === lastStationId) continue; // dedup consecutivo
+    lastStationId = found.station.id;
+
+    const { station, distanceNm } = found;
+    const curva = new Array(n + 1);
+    for (let k = 0; k <= n; k++) {
+      const t = new Date(zarpe.getTime() + k * stepMinutes * 60 * 1000);
+      curva[k] = { time: t.toISOString(), height_m: Math.round(heightAt(station, t) * 1000) / 1000 };
+    }
+
+    const horaPasoMs = zarpe.getTime() + (cumNm / velocidadNudos) * 3600 * 1000;
+
+    estaciones.push({
+      station_id: station.id,
+      nombre: station.name,
+      lat: station.lat,
+      lng: station.lon,
+      hora_estimada_paso: new Date(horaPasoMs).toISOString(),
+      distancia_mn_desde_zarpe: Math.round(cumNm * 10) / 10,
+      distancia_estacion_mn: Math.round(distanceNm * 10) / 10,
+      // 30–50mn: la estación cubre el tramo pero con menor precisión (regla P4).
+      precision_reducida: distanceNm >= 30,
+      curva,
+    });
+  }
+
+  return {
+    estaciones_ruta: estaciones,
+    hora_recalada_estimada: new Date(zarpe.getTime() + tripHours * 3600 * 1000).toISOString(),
+    ventana_horas: windowHours,
+    disclaimer:
+      'Predicción basada en análisis armónico. No reemplaza la información oficial del SHOA. Uso informativo.',
+  };
+}
+
 function listStations() {
   return tidalData.stations.map((s) => ({
     id: s.id,
@@ -209,6 +308,7 @@ module.exports = {
   predictTide,
   nextHighLow,
   tideCurve,
+  tideCurveRuta,
   listStations,
   getHealthInfo,
   findNearestStation,
