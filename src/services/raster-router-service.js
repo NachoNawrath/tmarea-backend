@@ -15,9 +15,9 @@
  *   traspaso ("handoff") sobre la costura compartida y se corre el A* en cada
  *   tile por separado, concatenando el resultado.
  *
- *   Hoy solo el tile AUSTRAL_N esta construido; los demas estan registrados
- *   (bbox lat/lon) pero sus binarios aun no existen. Una ruta que entre en un
- *   tile no construido devuelve un error explicito nombrando el tile faltante
+ *   Los 5 tiles de costa (NORTE, CENTRO, SUR, AUSTRAL_N, AUSTRAL_S) estan
+ *   construidos y cubren de Arica a Punta Arenas. Una ruta que entrara en un
+ *   tile aun no generado devuelve un error explicito nombrando el tile faltante
  *   (nunca un crash). Ver docs/RUNBOOK_tiles_costa_completa.md para generarlos.
  */
 const proj4 = require('proj4');
@@ -38,16 +38,19 @@ const FALLBACK_EPSILON = 1.5; // spec §7.2 v1.5: weighted epsilon del fallback 
 // ---- registry de tiles (cobertura costa completa) -------------------------
 //
 // Bandas de latitud de norte a sur. lonW/lonE acotan a la costa de cada zona.
-// Los tiles reales se solapan ~0.1° en los bordes (requisito de generacion,
-// ver runbook) para que el punto de traspaso caiga sobre agua cubierta por
-// AMBOS tiles adyacentes; estos bbox son los extents nominales usados para la
-// SELECCION — al construir un tile, ajustar su entrada a los extents reales.
+// Estos bbox son los EXTENTS REALES de cada tile, derivados proyectando las
+// esquinas del raster (origin_x/y, res_m, cols, rows del .meta.json) de tmerc
+// (crs_proj4) a EPSG:4326. Los tiles reales se solapan en latitud en los
+// bordes (0.075°–0.24° entre vecinos) para que el punto de traspaso caiga
+// sobre agua cubierta por AMBOS tiles adyacentes (seamLat toma el midpoint del
+// solape). Los 5 tiles de costa de Chile estan construidos. Al regenerar un
+// tile, recomputar su entrada desde el .meta con tools (ver runbook).
 const TILE_REGISTRY = [
-  { id: 'NORTE',     latN: -18.3, latS: -30.0, lonW: -71.9, lonE: -69.4 },
-  { id: 'CENTRO',    latN: -30.0, latS: -37.5, lonW: -74.0, lonE: -70.9 },
-  { id: 'SUR',       latN: -37.5, latS: -39.5, lonW: -74.2, lonE: -72.3 },
-  { id: 'AUSTRAL_N', latN: -39.5, latS: -47.0, lonW: -75.6, lonE: -71.9 }, // construido
-  { id: 'AUSTRAL_S', latN: -47.0, latS: -56.5, lonW: -76.2, lonE: -66.4 },
+  { id: 'NORTE',     latN: -18.2821, latS: -30.1260, lonW: -71.9092, lonE: -69.1481 },
+  { id: 'CENTRO',    latN: -29.8848, latS: -37.6173, lonW: -74.1879, lonE: -70.7962 },
+  { id: 'SUR',       latN: -37.3796, latS: -39.6207, lonW: -74.2682, lonE: -72.2909 },
+  { id: 'AUSTRAL_N', latN: -39.4442, latS: -47.0570, lonW: -76.0714, lonE: -71.8868 },
+  { id: 'AUSTRAL_S', latN: -46.7822, latS: -56.6093, lonW: -77.5689, lonE: -65.5709 },
 ];
 
 // Cache de tiles cargados (lazy). Un tile pesa 100+MB en RAM; solo se cargan
@@ -111,6 +114,117 @@ function lonAtLat(origen, destino, lat) {
   if (Math.abs(denom) < 1e-9) return (origen.lon + destino.lon) / 2;
   const t = (lat - origen.lat) / denom;
   return origen.lon + t * (destino.lon - origen.lon);
+}
+
+/** ¿La celda (lon,lat) de este tile es agua navegable con el MISMO criterio que
+ *  el snap (cost-lut.js / snap.js), incluida la relajacion del bit 15 (KML)?
+ *  Se usa para posar el punto de traspaso sobre agua real. */
+function celdaNavegable(tile, lon, lat, dMinM) {
+  const { rows, cols, unit_m } = tile.meta;
+  const { fila, col } = lonLatToRowCol(tile, lon, lat);
+  if (fila < 0 || fila >= rows || col < 0 || col >= cols) return false;
+  const raw = tile.packed[fila * cols + col];
+  const confianza = (raw >> 13) & 0b11;
+  if (confianza === 0) return false;
+  const kml = (raw >> 15) & 0b1;
+  const d = (raw & 0x1fff) * unit_m;
+  const dMinEfectivo = kml ? Math.min(dMinM, 50) : dMinM;
+  return d >= dMinEfectivo;
+}
+
+/** Longitud del punto de traspaso sobre la costura entre dos tiles adyacentes.
+ *
+ *  La lon "nominal" es la de la recta origen->destino a la latitud de la
+ *  costura (`lonRecta`), pero esa recta cruza TIERRA donde la costa se curva
+ *  (p.ej. entre Valparaiso y Puerto Montt cae ~75 km tierra adentro). Un
+ *  traspaso ahi es irruteable. Esto reancla la lon al agua navegable presente
+ *  en AMBOS tiles adyacentes (para que el tramo norte pueda cerrar ahi su
+ *  destino y el tramo sur arrancar su origen) mas cercana a `lonRecta`,
+ *  restringida al solape de longitudes de los dos tiles. Devuelve null si no
+ *  hay agua comun en la costura (ruta imposible por esa via -> error explicito,
+ *  nunca un tramo colgando en tierra). */
+function seamHandoffLon(regN, regS, tileN, tileS, seamLat_, lonRecta, dMinM) {
+  const lonW = Math.max(regN.lonW, regS.lonW);
+  const lonE = Math.min(regN.lonE, regS.lonE);
+  if (lonW > lonE) return null; // los tiles no comparten longitudes
+  const nav = (lon) =>
+    celdaNavegable(tileN, lon, seamLat_, dMinM) && celdaNavegable(tileS, lon, seamLat_, dMinM);
+  return scanNavLon(nav, lonW, lonE, lonRecta);
+}
+
+/** Barrido simetrico de longitudes desde `lonRecta` (clampeada a [lonW,lonE])
+ *  buscando la primera que satisface `nav`; ~50 m/paso. Devuelve esa lon o null
+ *  si no hay agua navegable en todo el rango. Compartido por el traspaso de
+ *  costura (nav en dos tiles) y la sub-segmentacion intra-tile (nav en uno). */
+function scanNavLon(nav, lonW, lonE, lonRecta) {
+  const centro = Math.min(Math.max(lonRecta, lonW), lonE);
+  if (nav(centro)) return centro;
+  const paso = 0.0005;
+  const maxPasos = Math.ceil((lonE - lonW) / paso);
+  for (let k = 1; k <= maxPasos; k++) {
+    const dl = k * paso;
+    const oeste = centro - dl;
+    if (oeste >= lonW && nav(oeste)) return oeste;
+    const este = centro + dl;
+    if (este <= lonE && nav(este)) return este;
+  }
+  return null;
+}
+
+/** Longitud de agua navegable en UN tile a la latitud `lat`, la mas cercana a
+ *  `lonRecta` (la recta origen->destino a esa latitud). Usada para posar los
+ *  waypoints intermedios de la sub-segmentacion de legs largos sobre agua. */
+function navLonAtLat(tile, reg, lat, lonRecta, dMinM) {
+  return scanNavLon((lon) => celdaNavegable(tile, lon, lat, dMinM), reg.lonW, reg.lonE, lonRecta);
+}
+
+// ---- sub-segmentacion de legs largos intra-tile (convergencia A*) ----------
+//
+// El A* jerarquico (grueso->medio->fino) restringe el fino a un corredor
+// dilatado del camino medio. En legs muy largos (o de canales angostos y
+// sinuosos) ese corredor puede no tener un camino fino conectado con ninguno
+// de los radios 3/6/12 km, y cae al fino SIN restriccion sobre el tile entero
+// -> agota el tope de expansiones (ruta_no_convergente). Trocear el leg en
+// sub-tramos mas cortos mantiene cada corredor jerarquico viable. Misma idea
+// que el encadenado entre tiles, pero DENTRO de un tile: los waypoints
+// intermedios se posan sobre agua navegable (navLonAtLat) cerca de la recta.
+// Umbrales calibrados con dato (ver pruebas de convergencia, 2026-07-31): con
+// 400 mn / 5° los sub-tramos de los canales patagonicos (Golfo de Penas, senos
+// de Aysen) todavia colapsaban el corredor jerarquico. 150 mn / 2° mantiene
+// cada sub-tramo -- costa abierta del norte incluida -- dentro de lo que el A*
+// jerarquico resuelve sin caer al fallback global.
+const MAX_LEG_NM = 150;       // umbral de distancia por sub-tramo
+const MAX_LEG_LAT_DEG = 2;    // umbral de span de latitud por sub-tramo
+
+/** Devuelve la secuencia de puntos [pA, ...waypoints, pB] que trocea el leg
+ *  pA->pB (ambos en `tile`) en sub-tramos bajo los umbrales. Si el leg ya es
+ *  corto, devuelve [pA, pB] (comportamiento previo intacto). */
+function subsegmentarLeg(tile, reg, pA, pB, dMinM) {
+  const distNM = haversineNM(pA.lon, pA.lat, pB.lon, pB.lat);
+  const latSpan = Math.abs(pB.lat - pA.lat);
+  const nSeg = Math.max(1, Math.ceil(distNM / MAX_LEG_NM), Math.ceil(latSpan / MAX_LEG_LAT_DEG));
+  if (nSeg === 1) return [pA, pB];
+  const puntos = [pA];
+  // Continuidad costera: cada waypoint se ancla a la lon del waypoint ANTERIOR,
+  // no a la recta origen->destino. En la Patagonia esa recta cruza el continente
+  // al este de los canales, y "el agua mas cercana a la recta" salta entre
+  // cuerpos de agua desconectados (p.ej. de un canal a otro separados por
+  // Chiloe) -> sub-tramos irruteables. Anclando al punto previo, los waypoints
+  // siguen el mismo corredor navegable de una latitud a la siguiente.
+  let anchorLon = pA.lon;
+  for (let k = 1; k < nSeg; k++) {
+    const lat = pA.lat + (pB.lat - pA.lat) * (k / nSeg);
+    const lon = navLonAtLat(tile, reg, lat, anchorLon, dMinM);
+    // Si a esa latitud no hay agua en el tile (raro en la costa), se omite el
+    // waypoint y el sub-tramo contiguo queda algo mas largo -- nunca partimos
+    // en un punto irruteable.
+    if (lon != null) {
+      puntos.push({ lat, lon });
+      anchorLon = lon;
+    }
+  }
+  puntos.push(pB);
+  return puntos;
 }
 
 // ---- proyeccion / indexado (por tile) -------------------------------------
@@ -488,32 +602,62 @@ function calcularRuta(perfilCosto, origen, destino) {
     }
   }
 
-  // Puntos de traspaso sobre cada costura, sobre la recta origen->destino.
-  const puntos = [origen];
-  for (let i = 0; i < seq.length - 1; i++) {
-    const lat = seamLat(seq[i], seq[i + 1]);
-    puntos.push({ lat, lon: lonAtLat(origen, destino, lat) });
-  }
-  puntos.push(destino);
-
+  // Pasada secuencial norte->sur con un ANCHOR de longitud que arrastra la
+  // continuidad costera por toda la ruta: origen -> costuras -> sub-tramos ->
+  // destino. Cada punto de traspaso (costura entre tiles) y cada waypoint de
+  // sub-segmentacion se posan sobre el agua navegable mas cercana al anchor del
+  // punto previo, NO a la recta origen->destino (que en la Patagonia cruza el
+  // continente al este de los canales). Asi la polilinea sigue un corredor
+  // navegable conexo en vez de saltar entre cuerpos de agua desconectados.
+  const dMinM = perfilCosto.costo.dMinM;
   const tramos = [];
   const aggs = [];
   const advertencias = [...ADVERTENCIAS_BASE];
   const debugLegs = [];
+  let anchorLon = origen.lon;
+  let legStart = origen;
 
   for (let i = 0; i < seq.length; i++) {
-    const leg = _routeInTile(tilesCargados[i], perfilCosto, puntos[i], puntos[i + 1]);
-    if (!leg.ok) {
-      return respuestaError(leg.error, {
-        motivo: leg.motivo,
-        tile: seq[i].id,
-        tramo_ruta: seq.length > 1 ? `${i + 1}/${seq.length}` : undefined,
-      });
+    // Fin del leg: costura hacia el siguiente tile (anclada a la continuidad) o
+    // el destino final en el ultimo tile.
+    let legEnd;
+    if (i < seq.length - 1) {
+      const lat = seamLat(seq[i], seq[i + 1]);
+      const lon = seamHandoffLon(
+        seq[i], seq[i + 1], tilesCargados[i], tilesCargados[i + 1], lat, anchorLon, dMinM
+      );
+      if (lon == null) {
+        return respuestaError(
+          `No se encontró agua navegable común en la costura entre "${seq[i].id}" y "${seq[i + 1].id}".`,
+          { tiles_ruta: seq.map((x) => x.id) }
+        );
+      }
+      legEnd = { lat, lon };
+    } else {
+      legEnd = destino;
     }
-    tramos.push(...leg.tramos);
-    aggs.push(leg.agg);
-    for (const a of leg.advertencias) if (!advertencias.includes(a)) advertencias.push(a);
-    debugLegs.push(leg._debug);
+
+    // Cada leg intra-tile se trocea en sub-tramos bajo los umbrales de longitud
+    // para que el A* jerarquico converja (ver subsegmentarLeg). Un leg corto
+    // devuelve [pA, pB] -> un solo sub-tramo, comportamiento previo intacto.
+    const subPuntos = subsegmentarLeg(tilesCargados[i], seq[i], legStart, legEnd, dMinM);
+    for (let j = 0; j < subPuntos.length - 1; j++) {
+      const leg = _routeInTile(tilesCargados[i], perfilCosto, subPuntos[j], subPuntos[j + 1]);
+      if (!leg.ok) {
+        return respuestaError(leg.error, {
+          motivo: leg.motivo,
+          tile: seq[i].id,
+          tramo_ruta: seq.length > 1 ? `${i + 1}/${seq.length}` : undefined,
+          sub_tramo: subPuntos.length > 2 ? `${j + 1}/${subPuntos.length - 1}` : undefined,
+        });
+      }
+      tramos.push(...leg.tramos);
+      aggs.push(leg.agg);
+      for (const a of leg.advertencias) if (!advertencias.includes(a)) advertencias.push(a);
+      debugLegs.push(leg._debug);
+    }
+    anchorLon = legEnd.lon;
+    legStart = legEnd;
   }
 
   const metricas = metricasDesdeAgg(tramos, aggs);
@@ -525,7 +669,7 @@ function calcularRuta(perfilCosto, origen, destino) {
     tramos,
     ...metricas,
     advertencias,
-    _debug: seq.length === 1 ? debugLegs[0] : { legs: debugLegs },
+    _debug: debugLegs.length === 1 ? debugLegs[0] : { legs: debugLegs },
   };
 }
 

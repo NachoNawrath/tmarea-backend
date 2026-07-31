@@ -127,6 +127,13 @@ function makeCorridorPredicate(corridorBitmap, colsFino, factorAlNivel, colsNive
   };
 }
 
-const RADIOS_DILATACION_M = [3000, 6000, 12000];
+// Radios de dilatacion del corredor jerarquico (grueso->medio->fino), probados
+// en orden. Los dos ultimos (24/48 km) son para pasos abiertos donde el camino
+// navegable rodea una peninsula muy lejos de la recta grueso (p.ej. Golfo de
+// Penas / Peninsula de Taitao, ~46.5S): con solo 3/6/12 km el corredor fino no
+// contenia la vuelta por el exterior y la ruta caia al A* fino SIN restriccion
+// (lento y a veces agota el tope de expansiones). Estos radios anchos solo se
+// evaluan cuando los estrechos fallan, asi que no penalizan las rutas normales.
+const RADIOS_DILATACION_M = [3000, 6000, 12000, 24000, 48000];
 
 module.exports = { derivarGrueso, dilatar, bboxANivelFino, corridorABitmap, makeCorridorPredicate, RADIOS_DILATACION_M };
