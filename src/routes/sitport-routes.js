@@ -2,6 +2,8 @@
 const sitportService = require('../services/sitport-service');
 const { buscarFondeadero } = require('../services/fondeadero-service');
 const { getCapitania } = require('../utils/capitanias');
+const { normalizarRestriccion } = require('../services/sitport-parser');
+const { evaluarRuta } = require('../services/route-restriction-evaluator');
 const router = express.Router();
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -325,24 +327,22 @@ function elegirRestriccion(lista) {
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/restricciones-ruta', async (req, res) => {
   try {
-    const { ruta_puntos, zarpe_id, recalada_id } = req.body;
+    const { ruta_puntos, zarpe_id, recalada_id, nave_ab } = req.body;
 
     if (!Array.isArray(ruta_puntos) || ruta_puntos.length === 0) {
       return res.status(400).json({
         success: false,
         error: 'ruta_puntos debe ser un array no vacío de {lat, lng}',
+        veredicto: 'Q',
         restricciones_intermedias: [],
         total: 0
       });
     }
 
-    // Latitud de zarpe → define la dirección de viaje para el fondeadero.
     const latZarpe = ruta_puntos[0]?.lat;
 
-    // 1-2. Para cada punto de la ruta, la bahía más cercana del mapa estático
-    //      (< 80 km), igual que weather-ruta. Se conserva el ORDEN de aparición.
     const MAX_DIST_KM = 80;
-    const matched = [];         // { idBahia, coords } en orden de tránsito
+    const matched = [];
     const vistas = new Set();
 
     for (const punto of ruta_puntos) {
@@ -358,15 +358,12 @@ router.post('/restricciones-ruta', async (req, res) => {
         }
       }
 
-      // 3. Deduplicar: una bahía entra una sola vez, en su primera aparición.
       if (mejorId != null && !vistas.has(mejorId)) {
         vistas.add(mejorId);
         matched.push({ idBahia: mejorId, coords: BAHIA_COORDS[mejorId] });
       }
     }
 
-    // 6. Excluir zarpe y recalada: la primera y la última bahía de la ruta, más
-    //    cualquier id explícito recibido.
     const excluidas = new Set();
     if (matched.length > 0) {
       excluidas.add(matched[0].idBahia);
@@ -375,7 +372,6 @@ router.post('/restricciones-ruta', async (req, res) => {
     if (zarpe_id != null) excluidas.add(Number(zarpe_id));
     if (recalada_id != null) excluidas.add(Number(recalada_id));
 
-    // 4. Todas las restricciones activas del país (cache 10 min del servicio).
     const restricciones = await sitportService.consultaRestricciones();
     const porBahia = new Map();
     for (const r of restricciones) {
@@ -384,7 +380,6 @@ router.post('/restricciones-ruta', async (req, res) => {
       porBahia.get(r.bahia).push(r);
     }
 
-    // 5 + 7. Restricciones de las bahías intermedias, en orden de tránsito.
     const intermedias = [];
     let orden = 1;
     for (const { idBahia, coords } of matched) {
@@ -394,6 +389,7 @@ router.post('/restricciones-ruta', async (req, res) => {
 
       const r = elegirRestriccion(lista);
       const cap = getCapitania(coords.lat, coords.lng);
+      const norm = normalizarRestriccion(r);
 
       intermedias.push({
         id_bahia: idBahia,
@@ -402,24 +398,50 @@ router.post('/restricciones-ruta', async (req, res) => {
         lng: coords.lng,
         restriccion: r.MotivoRestriccion || r.tiporestriccion || 'Restricción activa',
         observacion: r.Observacion || '',
-        condicion: derivarCondicion(r),
+        condicion: norm.condicion,
+        condicion_legible: derivarCondicion(r),
         motivo: r.MotivoRestriccion || null,
         tipo_restriccion: r.tiporestriccion || null,
         nave_recibe: r.NaveRecibe || null,
         gobernacion: cap?.nombre || null,
         telefono: cap?.telefono || null,
         orden_en_ruta: orden++,
-        fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, latZarpe)
+        fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, latZarpe),
+        _raw: r,
       });
     }
 
+    // Motor de reglas: evaluar toda la ruta contra el perfil de la nave
+    const evaluacion = await evaluarRuta(intermedias, nave_ab);
+
+    // Enriquecer cada restricción intermedia con su evaluación individual
+    const intermediasEnriquecidas = intermedias.map((r, i) => {
+      const ev = evaluacion.restricciones[i] || {};
+      const { _raw, ...sinRaw } = r;
+      return {
+        ...sinRaw,
+        evaluacion: {
+          bloquea: ev.bloquea ?? false,
+          estado: ev.estado || 'indeterminado',
+          umbral_ab: ev.umbral_ab ?? null,
+          nivel: ev.nivel || null,
+          motivo: ev.motivo || null,
+        },
+      };
+    });
+
     res.json({
       success: true,
-      restricciones_intermedias: intermedias,
-      total: intermedias.length,
+      veredicto: evaluacion.veredicto,
+      motivo_principal: evaluacion.motivo_principal,
+      ultimo_tramo_seguro: evaluacion.ultimo_tramo_seguro,
+      fondeadero_sugerido: evaluacion.fondeadero_sugerido,
+      restricciones_intermedias: intermediasEnriquecidas,
+      total: intermediasEnriquecidas.length,
       fuente: 'SITPORT/DIRECTEMAR',
       timestamp: new Date().toISOString(),
-      error: null
+      timestamp_sitport: evaluacion.timestamp_sitport,
+      error: null,
     });
 
   } catch (error) {
@@ -427,6 +449,7 @@ router.post('/restricciones-ruta', async (req, res) => {
     res.status(502).json({
       success: false,
       error: error.message,
+      veredicto: 'U',
       restricciones_intermedias: [],
       total: 0
     });
