@@ -3,12 +3,14 @@
 // Busca el puerto/fondeadero más cercano ANTES de una restricción de tránsito,
 // en la dirección de viaje, para sugerir dónde esperar condiciones favorables.
 //
+// "Antes" se determina con la geometría real de la ruta: solo puertos MOP que
+// estén cerca del segmento de ruta ANTERIOR a la zona restringida son candidatos.
+//
 // Fuente: puertos_chile_nacional.json (644 puertos MOP, FeatureSet Esri:
 // { features: [{ attributes: { NOMBRE, ... }, geometry: { x: lng, y: lat } }] }).
 
 const puertosRaw = require('./data/puertos_chile_nacional.json');
 
-// Normaliza el FeatureSet a una lista plana { nombre, lat, lng } una sola vez.
 const PUERTOS = (puertosRaw.features || [])
   .map((f) => ({
     nombre: f.attributes?.NOMBRE || 'Puerto sin nombre',
@@ -32,36 +34,57 @@ function distKm(lat1, lng1, lat2, lng2) {
 }
 
 /**
- * Encuentra el puerto más cercano ANTES de la restricción, en el sentido de viaje.
+ * Encuentra el puerto MOP más cercano a la restricción que esté sobre el
+ * tramo de ruta ANTERIOR a la zona restringida.
  *
- * "Antes" depende de la dirección: si el viaje va de norte a sur (lat de zarpe
- * mayor —menos negativa— que la restricción), antes = puertos AL NORTE de la
- * restricción (latitud mayor). Si va de sur a norte, antes = puertos AL SUR.
- *
- * @param {number} lat  latitud de la restricción
- * @param {number} lng  longitud de la restricción
- * @param {number} latZarpe latitud del puerto de zarpe (define la dirección)
+ * @param {number} latRestr  latitud de la restricción
+ * @param {number} lngRestr  longitud de la restricción
+ * @param {{lat:number, lng:number}[]} rutaAntes  puntos de ruta desde zarpe
+ *        hasta justo antes de entrar en la zona restringida
  * @returns {{ nombre, lat, lng, distancia_mn } | null}
  */
-function buscarFondeadero(lat, lng, latZarpe) {
-  if (typeof lat !== 'number' || typeof lng !== 'number') return null;
+function buscarFondeadero(latRestr, lngRestr, rutaAntes) {
+  if (typeof latRestr !== 'number' || typeof lngRestr !== 'number') return null;
+  if (!rutaAntes || rutaAntes.length === 0) return null;
 
-  // Dirección de viaje. Si no viene latZarpe, se asume norte→sur (corredor
-  // austral), coherente con la simplificación v1 del contexto.
-  const vaAlSur = latZarpe == null || isNaN(latZarpe) || latZarpe >= lat;
+  const MAX_DIST_RUTA_KM = 30;
+  const MARGEN_BBOX = 0.3; // ~33 km
 
-  const candidatos = PUERTOS.filter((p) => {
-    // Excluir el propio punto de la restricción (mismo lugar, ~0 km).
-    if (vaAlSur) return p.lat > lat;   // antes = más al norte
-    return p.lat < lat;                // antes = más al sur
-  });
+  // Bounding box del tramo anterior, expandido por margen
+  let minLat = Infinity, maxLat = -Infinity;
+  let minLng = Infinity, maxLng = -Infinity;
+  for (const p of rutaAntes) {
+    if (p.lat < minLat) minLat = p.lat;
+    if (p.lat > maxLat) maxLat = p.lat;
+    if (p.lng < minLng) minLng = p.lng;
+    if (p.lng > maxLng) maxLng = p.lng;
+  }
+  minLat -= MARGEN_BBOX; maxLat += MARGEN_BBOX;
+  minLng -= MARGEN_BBOX; maxLng += MARGEN_BBOX;
 
-  if (candidatos.length === 0) return null;
+  // Submuestra de la ruta para chequeo eficiente (~100 puntos max)
+  const step = Math.max(1, Math.floor(rutaAntes.length / 100));
+  const muestra = [];
+  for (let i = 0; i < rutaAntes.length; i += step) muestra.push(rutaAntes[i]);
+  const ultimo = rutaAntes[rutaAntes.length - 1];
+  if (muestra[muestra.length - 1] !== ultimo) muestra.push(ultimo);
 
   let mejor = null;
   let mejorDist = Infinity;
-  for (const p of candidatos) {
-    const d = distKm(lat, lng, p.lat, p.lng);
+
+  for (const p of PUERTOS) {
+    if (p.lat < minLat || p.lat > maxLat || p.lng < minLng || p.lng > maxLng) continue;
+
+    let cercaDeRuta = false;
+    for (const rp of muestra) {
+      if (distKm(p.lat, p.lng, rp.lat, rp.lng) < MAX_DIST_RUTA_KM) {
+        cercaDeRuta = true;
+        break;
+      }
+    }
+    if (!cercaDeRuta) continue;
+
+    const d = distKm(latRestr, lngRestr, p.lat, p.lng);
     if (d < mejorDist) {
       mejorDist = d;
       mejor = p;

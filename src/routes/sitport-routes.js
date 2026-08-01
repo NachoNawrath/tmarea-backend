@@ -505,13 +505,12 @@ router.post('/restricciones-ruta', async (req, res) => {
       });
     }
 
-    const latZarpe = ruta_puntos[0]?.lat;
-
     const MAX_DIST_KM = 80;
     const matched = [];
     const vistas = new Set();
 
-    for (const punto of ruta_puntos) {
+    for (let pi = 0; pi < ruta_puntos.length; pi++) {
+      const punto = ruta_puntos[pi];
       if (!punto || punto.lat == null || punto.lng == null) continue;
 
       let mejorId = null;
@@ -526,7 +525,7 @@ router.post('/restricciones-ruta', async (req, res) => {
 
       if (mejorId != null && !vistas.has(mejorId)) {
         vistas.add(mejorId);
-        matched.push({ idBahia: mejorId, coords: BAHIA_COORDS[mejorId] });
+        matched.push({ idBahia: mejorId, coords: BAHIA_COORDS[mejorId], rutaIdx: pi });
       }
     }
 
@@ -548,7 +547,7 @@ router.post('/restricciones-ruta', async (req, res) => {
 
     const intermedias = [];
     let orden = 1;
-    for (const { idBahia, coords } of matched) {
+    for (const { idBahia, coords, rutaIdx } of matched) {
       if (excluidas.has(idBahia)) continue;
       const lista = porBahia.get(idBahia);
       if (!lista || lista.length === 0) continue;
@@ -557,6 +556,7 @@ router.post('/restricciones-ruta', async (req, res) => {
       const cap = getCapitania(coords.lat, coords.lng);
       const norm = normalizarRestriccion(r);
 
+      const rutaAntes = ruta_puntos.slice(0, rutaIdx);
       intermedias.push({
         id_bahia: idBahia,
         nombre_bahia: coords.nombre || r.GLBahia || 'Bahía',
@@ -572,7 +572,7 @@ router.post('/restricciones-ruta', async (req, res) => {
         gobernacion: cap?.nombre || null,
         telefono: cap?.telefono || null,
         orden_en_ruta: orden++,
-        fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, latZarpe),
+        fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, rutaAntes),
         _raw: r,
       });
     }
