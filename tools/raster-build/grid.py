@@ -17,12 +17,12 @@ from pyproj import Transformer
 CRS_PROJ4 = "+proj=tmerc +lat_0=0 +lon_0=-72 +k=0.9996 +x_0=500000 +y_0=10000000 +datum=WGS84 +units=m"
 
 TILES = {
-    # AUSTRAL_N llega hasta -39.5 (no -41.5): el primer corte dejaba Puerto
-    # Montt (-41.47), Canal Tenglo y Corral (-39.87) fuera del tile -- el
-    # borde caia en medio de la zona de operacion. Ver spec Sec 3.2.
+    # Mantenemos AUSTRAL_N intacto por si el proyecto lo requiere internamente
     "AUSTRAL_N": {"lon_min": -75.6, "lon_max": -71.9, "lat_min": -47.0, "lat_max": -39.5, "res_m": 50},
-    "NORTE": {"lon_min": -75.0, "lon_max": -69.5, "lat_min": -40.0, "lat_max": -17.5, "res_m": 100},
-    "AUSTRAL_S": {"lon_min": -76.5, "lon_max": -66.8, "lat_min": -56.2, "lat_max": -47.0, "res_m": 50},
+    "NORTE": {"lon_min": -71.9, "lon_max": -69.4, "lat_min": -30.1, "lat_max": -18.3, "res_m": 50},
+    "CENTRO": {"lon_min": -74.0, "lon_max": -70.9, "lat_min": -37.6, "lat_max": -29.9, "res_m": 50},
+    "SUR": {"lon_min": -74.2, "lon_max": -72.3, "lat_min": -39.6, "lat_max": -37.4, "res_m": 50},
+    "AUSTRAL_S": {"lon_min": -76.5, "lon_max": -66.8, "lat_min": -56.5, "lat_max": -46.9, "res_m": 50},
 }
 
 
