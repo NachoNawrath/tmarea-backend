@@ -43,7 +43,7 @@ const TABLA_CALADO = [
   { caladoMaxM: Infinity, dMinM: 50, bandaMinM: 500, bandaMaxM: 3000 },
 ];
 
-const PENAL_MAX_DEFAULT = 2.2;
+const PENAL_MAX_DEFAULT = 20.0;
 
 // Tope duro de expansiones del A* fino sin restriccion (spec §7.2): un
 // OOM nunca es un modo de falla aceptable. Si se supera, el router

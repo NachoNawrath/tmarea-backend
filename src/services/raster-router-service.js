@@ -118,8 +118,10 @@ function lonAtLat(origen, destino, lat) {
 
 /** ¿La celda (lon,lat) de este tile es agua navegable con el MISMO criterio que
  *  el snap (cost-lut.js / snap.js), incluida la relajacion del bit 15 (KML)?
- *  Se usa para posar el punto de traspaso sobre agua real. */
-function celdaNavegable(tile, lon, lat, dMinM) {
+ *  Se usa para posar el punto de traspaso sobre agua real.
+ *  maxDistCostaM (opcional): tope de distancia a costa -- celdas mas lejanas
+ *  se rechazan aunque sean agua navegable (para forzar waypoints costeros). */
+function celdaNavegable(tile, lon, lat, dMinM, maxDistCostaM) {
   const { rows, cols, unit_m } = tile.meta;
   const { fila, col } = lonLatToRowCol(tile, lon, lat);
   if (fila < 0 || fila >= rows || col < 0 || col >= cols) return false;
@@ -129,7 +131,9 @@ function celdaNavegable(tile, lon, lat, dMinM) {
   const kml = (raw >> 15) & 0b1;
   const d = (raw & 0x1fff) * unit_m;
   const dMinEfectivo = kml ? Math.min(dMinM, 50) : dMinM;
-  return d >= dMinEfectivo;
+  if (d < dMinEfectivo) return false;
+  if (maxDistCostaM != null && d > maxDistCostaM) return false;
+  return true;
 }
 
 /** Longitud del punto de traspaso sobre la costura entre dos tiles adyacentes.
@@ -147,6 +151,11 @@ function seamHandoffLon(regN, regS, tileN, tileS, seamLat_, lonRecta, dMinM) {
   const lonW = Math.max(regN.lonW, regS.lonW);
   const lonE = Math.min(regN.lonE, regS.lonE);
   if (lonW > lonE) return null; // los tiles no comparten longitudes
+  const navCostera = (lon) =>
+    celdaNavegable(tileN, lon, seamLat_, dMinM, MAX_DIST_COSTA_WAYPOINT_M) &&
+    celdaNavegable(tileS, lon, seamLat_, dMinM, MAX_DIST_COSTA_WAYPOINT_M);
+  const costera = scanNavLon(navCostera, lonW, lonE, lonRecta);
+  if (costera != null) return costera;
   const nav = (lon) =>
     celdaNavegable(tileN, lon, seamLat_, dMinM) && celdaNavegable(tileS, lon, seamLat_, dMinM);
   return scanNavLon(nav, lonW, lonE, lonRecta);
@@ -173,8 +182,19 @@ function scanNavLon(nav, lonW, lonE, lonRecta) {
 
 /** Longitud de agua navegable en UN tile a la latitud `lat`, la mas cercana a
  *  `lonRecta` (la recta origen->destino a esa latitud). Usada para posar los
- *  waypoints intermedios de la sub-segmentacion de legs largos sobre agua. */
+ *  waypoints intermedios de la sub-segmentacion de legs largos sobre agua.
+ *  Prioriza celdas COSTERAS (dentro de 5 NM de la costa) para evitar que los
+ *  waypoints intermedios caigan en mar abierto y fuercen al A* a trazar rutas
+ *  lejos del litoral. Si no hay agua costera a esa latitud, acepta cualquier
+ *  celda navegable como fallback. */
+const MAX_DIST_COSTA_WAYPOINT_M = 5 * 1852;
+
 function navLonAtLat(tile, reg, lat, lonRecta, dMinM) {
+  const costera = scanNavLon(
+    (lon) => celdaNavegable(tile, lon, lat, dMinM, MAX_DIST_COSTA_WAYPOINT_M),
+    reg.lonW, reg.lonE, lonRecta
+  );
+  if (costera != null) return costera;
   return scanNavLon((lon) => celdaNavegable(tile, lon, lat, dMinM), reg.lonW, reg.lonE, lonRecta);
 }
 

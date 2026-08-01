@@ -10,6 +10,31 @@ const KML_BONUS = 0.85;
 const PISO_GLOBAL = 0.8;
 const DIST_MASK = 0x1fff;
 
+// Factor de costo costero: penaliza progresivamente la distancia al litoral
+// para que el A* prefiera rutas pegadas a la costa (naves menores).
+// Interpolacion lineal entre bandas para evitar artefactos de escalon.
+const NM_A_M = 1852;
+const BANDAS_COSTA = [
+  { limiteM:  5 * NM_A_M, factor:  1.0 },
+  { limiteM: 10 * NM_A_M, factor:  3.0 },
+  { limiteM: 20 * NM_A_M, factor:  8.0 },
+  { limiteM: 40 * NM_A_M, factor: 15.0 },
+];
+const FACTOR_MAR_ABIERTO = 20.0;
+
+function factorCostero(d) {
+  if (d <= BANDAS_COSTA[0].limiteM) return BANDAS_COSTA[0].factor;
+  for (let i = 1; i < BANDAS_COSTA.length; i++) {
+    if (d <= BANDAS_COSTA[i].limiteM) {
+      const prev = BANDAS_COSTA[i - 1];
+      const curr = BANDAS_COSTA[i];
+      const t = (d - prev.limiteM) / (curr.limiteM - prev.limiteM);
+      return prev.factor + (curr.factor - prev.factor) * t;
+    }
+  }
+  return FACTOR_MAR_ABIERTO;
+}
+
 function costoBase(d, dMinEfectivo, bandaMinM, bandaMaxM, penalMax) {
   if (d < dMinEfectivo) return Infinity;
   if (d < bandaMinM) {
@@ -18,7 +43,7 @@ function costoBase(d, dMinEfectivo, bandaMinM, bandaMaxM, penalMax) {
     return 1.6 + (1.0 - 1.6) * t;
   }
   if (d <= bandaMaxM) return 1.0;
-  return Math.min(1.0 + (d - bandaMaxM) / 8000, penalMax);
+  return Math.min(factorCostero(d), penalMax);
 }
 
 /** Tabla de 65536 entradas, indexada por el valor crudo de la celda empaquetada. */
@@ -102,4 +127,4 @@ function buildCoarseCostLUT(perfil) {
   return lut;
 }
 
-module.exports = { buildCostLUT, buildCoarseCostLUT, FACTOR_CONFIANZA, KML_BONUS, PISO_GLOBAL, costoBase };
+module.exports = { buildCostLUT, buildCoarseCostLUT, FACTOR_CONFIANZA, KML_BONUS, PISO_GLOBAL, costoBase, factorCostero, BANDAS_COSTA, FACTOR_MAR_ABIERTO, NM_A_M };
