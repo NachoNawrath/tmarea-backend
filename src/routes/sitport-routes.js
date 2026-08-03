@@ -506,51 +506,73 @@ router.post('/restricciones-ruta', async (req, res) => {
     }
 
     const MAX_DIST_KM = 80;
-    const matched = [];
-    const vistas = new Set();
 
-    for (let pi = 0; pi < ruta_puntos.length; pi++) {
-      const punto = ruta_puntos[pi];
-      if (!punto || punto.lat == null || punto.lng == null) continue;
+    // 1. Obtener y filtrar restricciones: sólo las que afectan naves menores a nivel de bahía
+    const todasRestricciones = await sitportService.consultaRestricciones();
+    const restriccionesMenores = todasRestricciones.filter(r =>
+      r.NaveRecibe && r.NaveRecibe.includes('MENOR') && r.tipo && r.tipo.trim() === 'TODOS'
+    );
 
-      let mejorId = null;
-      let mejorDist = Infinity;
-      for (const [id, c] of Object.entries(BAHIA_COORDS)) {
-        const d = distKm(punto.lat, punto.lng, c.lat, c.lng);
-        if (d < mejorDist && d < MAX_DIST_KM) {
-          mejorDist = d;
-          mejorId = Number(id);
+    // 2. Matching invertido: iterar restricciones y verificar cuáles cruzan la ruta.
+    // Agrupa por bahía (varias restricciones pueden compartir el mismo bahia ID).
+    const porBahia = new Map(); // bahiaId → { restricciones, indiceRuta, coordsBahia }
+
+    for (const restriccion of restriccionesMenores) {
+      const coordsBahia = BAHIA_COORDS[restriccion.bahia];
+      if (!coordsBahia) continue;
+
+      let indiceConflicto = -1;
+      for (let i = 0; i < ruta_puntos.length; i++) {
+        const p = ruta_puntos[i];
+        if (!p || p.lat == null || p.lng == null) continue;
+        if (distKm(p.lat, p.lng, coordsBahia.lat, coordsBahia.lng) <= MAX_DIST_KM) {
+          indiceConflicto = i;
+          break;
         }
       }
 
-      if (mejorId != null && !vistas.has(mejorId)) {
-        vistas.add(mejorId);
-        matched.push({ idBahia: mejorId, coords: BAHIA_COORDS[mejorId], rutaIdx: pi });
+      if (indiceConflicto >= 0) {
+        if (!porBahia.has(restriccion.bahia)) {
+          porBahia.set(restriccion.bahia, {
+            restricciones: [],
+            indiceRuta: indiceConflicto,
+            coordsBahia,
+          });
+        } else {
+          const entry = porBahia.get(restriccion.bahia);
+          if (indiceConflicto < entry.indiceRuta) entry.indiceRuta = indiceConflicto;
+        }
+        porBahia.get(restriccion.bahia).restricciones.push(restriccion);
       }
     }
 
+    // 3. Ordenar por posición en la ruta (orden de tránsito)
+    const restriccionesEnRuta = [...porBahia.entries()]
+      .map(([id, { restricciones, indiceRuta, coordsBahia }]) => ({
+        idBahia: Number(id),
+        coords: coordsBahia,
+        rutaIdx: indiceRuta,
+        lista: restricciones,
+      }))
+      .sort((a, b) => a.rutaIdx - b.rutaIdx);
+
+    // 4. Excluir zarpe y recalada (misma lógica actual)
     const excluidas = new Set();
-    if (matched.length > 0) {
-      excluidas.add(matched[0].idBahia);
-      excluidas.add(matched[matched.length - 1].idBahia);
+    if (restriccionesEnRuta.length > 0) {
+      excluidas.add(restriccionesEnRuta[0].idBahia);
+      excluidas.add(restriccionesEnRuta[restriccionesEnRuta.length - 1].idBahia);
     }
     if (zarpe_id != null) excluidas.add(Number(zarpe_id));
     if (recalada_id != null) excluidas.add(Number(recalada_id));
 
-    const restricciones = await sitportService.consultaRestricciones();
-    const porBahia = new Map();
-    for (const r of restricciones) {
-      if (r.bahia == null) continue;
-      if (!porBahia.has(r.bahia)) porBahia.set(r.bahia, []);
-      porBahia.get(r.bahia).push(r);
-    }
+    // Coordenadas de todas las zonas restringidas (para validar fondeadero)
+    const zonasRestringidas = [...porBahia.values()].map(({ coordsBahia }) => coordsBahia);
 
+    // 5. Construir intermedias deduplicadas por bahía
     const intermedias = [];
     let orden = 1;
-    for (const { idBahia, coords, rutaIdx } of matched) {
+    for (const { idBahia, coords, rutaIdx, lista } of restriccionesEnRuta) {
       if (excluidas.has(idBahia)) continue;
-      const lista = porBahia.get(idBahia);
-      if (!lista || lista.length === 0) continue;
 
       const r = elegirRestriccion(lista);
       const cap = getCapitania(coords.lat, coords.lng);
@@ -572,7 +594,7 @@ router.post('/restricciones-ruta', async (req, res) => {
         gobernacion: cap?.nombre || null,
         telefono: cap?.telefono || null,
         orden_en_ruta: orden++,
-        fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, rutaAntes),
+        fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, rutaAntes, zonasRestringidas),
         _raw: r,
       });
     }

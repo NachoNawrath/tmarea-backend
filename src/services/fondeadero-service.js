@@ -35,19 +35,24 @@ function distKm(lat1, lng1, lat2, lng2) {
 
 /**
  * Encuentra el puerto MOP más cercano a la restricción que esté sobre el
- * tramo de ruta ANTERIOR a la zona restringida.
+ * tramo de ruta ANTERIOR a la zona restringida, garantizando que el
+ * fondeadero no caiga dentro de ninguna zona con restricción activa.
  *
  * @param {number} latRestr  latitud de la restricción
  * @param {number} lngRestr  longitud de la restricción
  * @param {{lat:number, lng:number}[]} rutaAntes  puntos de ruta desde zarpe
  *        hasta justo antes de entrar en la zona restringida
+ * @param {{lat:number, lng:number}[]} zonasExcluidas  centros de bahías con
+ *        restricción activa — el fondeadero candidato no puede caer dentro
+ *        de ninguna (radio 80 km)
  * @returns {{ nombre, lat, lng, distancia_mn } | null}
  */
-function buscarFondeadero(latRestr, lngRestr, rutaAntes) {
+function buscarFondeadero(latRestr, lngRestr, rutaAntes, zonasExcluidas = []) {
   if (typeof latRestr !== 'number' || typeof lngRestr !== 'number') return null;
   if (!rutaAntes || rutaAntes.length === 0) return null;
 
   const MAX_DIST_RUTA_KM = 30;
+  const RADIO_EXCLUSION_KM = 80;
   const MARGEN_BBOX = 0.3; // ~33 km
 
   // Bounding box del tramo anterior, expandido por margen
@@ -69,9 +74,8 @@ function buscarFondeadero(latRestr, lngRestr, rutaAntes) {
   const ultimo = rutaAntes[rutaAntes.length - 1];
   if (muestra[muestra.length - 1] !== ultimo) muestra.push(ultimo);
 
-  let mejor = null;
-  let mejorDist = Infinity;
-
+  // Construir lista de candidatos: puertos dentro del bbox y cerca de la ruta
+  const candidatos = [];
   for (const p of PUERTOS) {
     if (p.lat < minLat || p.lat > maxLat || p.lng < minLng || p.lng > maxLng) continue;
 
@@ -84,20 +88,29 @@ function buscarFondeadero(latRestr, lngRestr, rutaAntes) {
     }
     if (!cercaDeRuta) continue;
 
-    const d = distKm(latRestr, lngRestr, p.lat, p.lng);
-    if (d < mejorDist) {
-      mejorDist = d;
-      mejor = p;
+    candidatos.push({ ...p, dist: distKm(latRestr, lngRestr, p.lat, p.lng) });
+  }
+
+  // Ordenar por distancia a la restricción (más cercano = más conveniente)
+  candidatos.sort((a, b) => a.dist - b.dist);
+
+  // Seleccionar el primer candidato que no caiga dentro de ninguna zona restringida
+  for (const c of candidatos) {
+    const enZonaRestringida = zonasExcluidas.some(z =>
+      z && typeof z.lat === 'number' && typeof z.lng === 'number' &&
+      distKm(c.lat, c.lng, z.lat, z.lng) <= RADIO_EXCLUSION_KM
+    );
+    if (!enZonaRestringida) {
+      return {
+        nombre: c.nombre,
+        lat: c.lat,
+        lng: c.lng,
+        distancia_mn: Math.round(c.dist / KM_POR_MN),
+      };
     }
   }
 
-  if (!mejor) return null;
-  return {
-    nombre: mejor.nombre,
-    lat: mejor.lat,
-    lng: mejor.lng,
-    distancia_mn: Math.round(mejorDist / KM_POR_MN),
-  };
+  return null;
 }
 
 module.exports = { buscarFondeadero };
