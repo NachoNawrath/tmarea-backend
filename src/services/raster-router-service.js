@@ -481,15 +481,39 @@ function _routeInTile(tile, perfilCosto, origen, destino) {
     return { ok: false, error: `Origen o destino fuera del tile ${meta.tile_id}` };
   }
 
-  const snapOrigen = snapToNavigable(origenRC.fila, origenRC.col, meta, tile.packed, perfilCosto);
-  const snapDestino = snapToNavigable(destinoRC.fila, destinoRC.col, meta, tile.packed, perfilCosto);
-  if (!snapOrigen || !snapDestino) {
-    return { ok: false, error: `No se encontró agua navegable cerca de origen o destino en ${meta.tile_id}` };
+  const snapOrigen = snapToNavigable(origenRC.fila, origenRC.col, meta, tile.packed, perfilCosto, 5000);
+  if (!snapOrigen) {
+    return {
+      ok: false,
+      error: `No se encontró agua navegable cerca del origen (radio >5 km) en ${meta.tile_id}`,
+      error_code: 'SNAP_FAILED',
+      punto_fallido: 'origen',
+      coordenadas: { lat: origen.lat, lon: origen.lon },
+    };
+  }
+  const snapDestino = snapToNavigable(destinoRC.fila, destinoRC.col, meta, tile.packed, perfilCosto, 5000);
+  if (!snapDestino) {
+    return {
+      ok: false,
+      error: `No se encontró agua navegable cerca del destino (radio >5 km) en ${meta.tile_id}`,
+      error_code: 'SNAP_FAILED',
+      punto_fallido: 'destino',
+      coordenadas: { lat: destino.lat, lon: destino.lon },
+    };
   }
 
   const resultado = runHierarchicalAstar(tile, snapOrigen.idx, snapDestino.idx, perfilCosto);
   if (!resultado.path) {
-    return { ok: false, error: 'No se encontró ruta navegable entre origen y destino', motivo: resultado.motivo || 'sin_camino' };
+    const [olon, olat] = idxToLonLat(tile, snapOrigen.idx);
+    const [dlon, dlat] = idxToLonLat(tile, snapDestino.idx);
+    return {
+      ok: false,
+      error: 'No se encontró ruta navegable entre origen y destino',
+      error_code: 'NO_ROUTE',
+      motivo: resultado.motivo || 'sin_camino',
+      origen_snap: { lat: olat, lon: olon },
+      destino_snap: { lat: dlat, lon: dlon },
+    };
   }
 
   const waypointIdxs = stringPull(resultado.path, meta, tile.packed, dMinM);
@@ -665,7 +689,12 @@ function calcularRuta(perfilCosto, origen, destino) {
       const leg = _routeInTile(tilesCargados[i], perfilCosto, subPuntos[j], subPuntos[j + 1]);
       if (!leg.ok) {
         return respuestaError(leg.error, {
+          error_code: leg.error_code,
           motivo: leg.motivo,
+          punto_fallido: leg.punto_fallido,
+          coordenadas: leg.coordenadas,
+          origen_snap: leg.origen_snap,
+          destino_snap: leg.destino_snap,
           tile: seq[i].id,
           tramo_ruta: seq.length > 1 ? `${i + 1}/${seq.length}` : undefined,
           sub_tramo: subPuntos.length > 2 ? `${j + 1}/${subPuntos.length - 1}` : undefined,
