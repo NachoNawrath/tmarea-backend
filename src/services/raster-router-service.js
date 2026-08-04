@@ -481,21 +481,21 @@ function _routeInTile(tile, perfilCosto, origen, destino) {
     return { ok: false, error: `Origen o destino fuera del tile ${meta.tile_id}` };
   }
 
-  const snapOrigen = snapToNavigable(origenRC.fila, origenRC.col, meta, tile.packed, perfilCosto, 5000);
+  const snapOrigen = snapToNavigable(origenRC.fila, origenRC.col, meta, tile.packed, perfilCosto);
   if (!snapOrigen) {
     return {
       ok: false,
-      error: `No se encontró agua navegable cerca del origen (radio >5 km) en ${meta.tile_id}`,
+      error: `No se encontró agua navegable cerca del origen en ${meta.tile_id}`,
       error_code: 'SNAP_FAILED',
       punto_fallido: 'origen',
       coordenadas: { lat: origen.lat, lon: origen.lon },
     };
   }
-  const snapDestino = snapToNavigable(destinoRC.fila, destinoRC.col, meta, tile.packed, perfilCosto, 5000);
+  const snapDestino = snapToNavigable(destinoRC.fila, destinoRC.col, meta, tile.packed, perfilCosto);
   if (!snapDestino) {
     return {
       ok: false,
-      error: `No se encontró agua navegable cerca del destino (radio >5 km) en ${meta.tile_id}`,
+      error: `No se encontró agua navegable cerca del destino en ${meta.tile_id}`,
       error_code: 'SNAP_FAILED',
       punto_fallido: 'destino',
       coordenadas: { lat: destino.lat, lon: destino.lon },

@@ -90,17 +90,14 @@ router.get('/:id', (req, res) => {
   }
 });
 
-// POST /api/rutas/calcular-v2
+// POST /api/rutas/calcular
 // Motor raster (TMAREA_SPEC_Router_Raster_v1.md) — motor ÚNICO de rutas.
-// El antiguo motor de grafo (nautical-graph-router / POST /calcular) y el
-// comparador de motores se eliminaron: el raster A* jerárquico quedó como
-// derrota de referencia definitiva. calado_m y licencia vienen del frontend
-// (vessel_profile de P1.1, user_profile de P1); el resto del contrato
-// PerfilNavegacion (clasificación de nave, propulsión) es Fase 4.
+// calado_m y licencia vienen del frontend (vessel_profile de P1.1,
+// user_profile de P1); el resto del contrato PerfilNavegacion es Fase 4.
 const rasterRouterService = require('../services/raster-router-service');
 const { construirPerfilCosto } = require('../config/perfiles-costo');
 
-router.post('/calcular-v2', (req, res) => {
+router.post('/calcular', (req, res) => {
   try {
     const { lat_origen, lon_origen, lat_destino, lon_destino, calado_m, licencia } = req.body;
     if (!lat_origen || !lon_origen || !lat_destino || !lon_destino) {
@@ -117,7 +114,7 @@ router.post('/calcular-v2', (req, res) => {
     );
     res.json(resultado);
   } catch (err) {
-    console.error('[rutas/calcular-v2]', err.message);
+    console.error('[rutas/calcular]', err.message);
     res.status(500).json({ error: 'Error calculando ruta náutica (raster)' });
   }
 });
