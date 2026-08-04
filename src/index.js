@@ -56,6 +56,9 @@ app.use('/api/rutas', rutasRoutes);
 const tideRoutes = require('./routes/tide-routes');
 app.use('/api/tide', tideRoutes);
 
+const supportRoutes = require('./routes/support-routes');
+app.use('/api/support', supportRoutes);
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
