@@ -485,6 +485,54 @@ function elegirRestriccion(lista) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Helpers para matching por segmento de ruta
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Interpola puntos intermedios cada ~2.5km cuando los segmentos son > 5km
+function densificarRuta(puntos) {
+  if (puntos.length < 2) return puntos;
+  const resultado = [puntos[0]];
+  for (let i = 1; i < puntos.length; i++) {
+    const a = puntos[i - 1];
+    const b = puntos[i];
+    const d = distKm(a.lat, a.lng, b.lat, b.lng);
+    if (d > 5) {
+      const pasos = Math.ceil(d / 2.5);
+      for (let j = 1; j < pasos; j++) {
+        const t = j / pasos;
+        resultado.push({ lat: a.lat + t * (b.lat - a.lat), lng: a.lng + t * (b.lng - a.lng) });
+      }
+    }
+    resultado.push(b);
+  }
+  return resultado;
+}
+
+// Distancia mínima de un punto al segmento AB (proyección perpendicular o extremo)
+function distanciaASegmento(punto, segA, segB) {
+  const dx = segB.lng - segA.lng;
+  const dy = segB.lat - segA.lat;
+  if (dx === 0 && dy === 0) return distKm(punto.lat, punto.lng, segA.lat, segA.lng);
+  let t = ((punto.lng - segA.lng) * dx + (punto.lat - segA.lat) * dy) / (dx * dx + dy * dy);
+  t = Math.max(0, Math.min(1, t));
+  return distKm(punto.lat, punto.lng, segA.lat + t * dy, segA.lng + t * dx);
+}
+
+// Distancia mínima de un punto a toda la ruta; devuelve { dist, segIdx }
+function distanciaMinimaARuta(punto, rutaPuntos) {
+  if (rutaPuntos.length === 1) {
+    return { dist: distKm(punto.lat, punto.lng, rutaPuntos[0].lat, rutaPuntos[0].lng), segIdx: 0 };
+  }
+  let minDist = Infinity;
+  let minIdx = 0;
+  for (let i = 0; i < rutaPuntos.length - 1; i++) {
+    const d = distanciaASegmento(punto, rutaPuntos[i], rutaPuntos[i + 1]);
+    if (d < minDist) { minDist = d; minIdx = i; }
+  }
+  return { dist: minDist, segIdx: minIdx };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /api/sitport/restricciones-ruta
 // Recibe: { ruta_puntos: [{lat, lng}], zarpe_id?, recalada_id? }
 // Devuelve las restricciones SITPORT activas en las bahías que la ruta cruza en
@@ -505,7 +553,8 @@ router.post('/restricciones-ruta', async (req, res) => {
       });
     }
 
-    const MAX_DIST_KM = 80;
+    // 15 millas náuticas — suficiente en canales interiores chilenos sin cruzar islas
+    const MAX_DIST_KM = 15 * 1.852;
 
     // 1. Obtener y filtrar restricciones: sólo las que afectan naves menores a nivel de bahía
     const todasRestricciones = await sitportService.consultaRestricciones();
@@ -513,37 +562,37 @@ router.post('/restricciones-ruta', async (req, res) => {
       r.NaveRecibe && r.NaveRecibe.includes('MENOR') && r.tipo && r.tipo.trim() === 'TODOS'
     );
 
+    // Densificar la ruta para mayor resolución en canales angostos (interpola cada ~2.5km)
+    const puntosValidos = ruta_puntos.filter(p => p && p.lat != null && p.lng != null);
+    const rutaDensa = densificarRuta(puntosValidos);
+
     // 2. Matching invertido: iterar restricciones y verificar cuáles cruzan la ruta.
+    // Mide distancia al SEGMENTO más cercano, no al punto más cercano.
     // Agrupa por bahía (varias restricciones pueden compartir el mismo bahia ID).
-    const porBahia = new Map(); // bahiaId → { restricciones, indiceRuta, coordsBahia }
+    const porBahia = new Map(); // bahiaId → { restricciones, indiceRuta, distanciaKm, coordsBahia }
 
     for (const restriccion of restriccionesMenores) {
       const coordsBahia = BAHIA_COORDS[restriccion.bahia];
       if (!coordsBahia) continue;
 
-      let indiceConflicto = -1;
-      for (let i = 0; i < ruta_puntos.length; i++) {
-        const p = ruta_puntos[i];
-        if (!p || p.lat == null || p.lng == null) continue;
-        if (distKm(p.lat, p.lng, coordsBahia.lat, coordsBahia.lng) <= MAX_DIST_KM) {
-          indiceConflicto = i;
-          break;
-        }
-      }
+      const { dist, segIdx } = distanciaMinimaARuta(coordsBahia, rutaDensa);
+      if (dist > MAX_DIST_KM) continue;
 
-      if (indiceConflicto >= 0) {
-        if (!porBahia.has(restriccion.bahia)) {
-          porBahia.set(restriccion.bahia, {
-            restricciones: [],
-            indiceRuta: indiceConflicto,
-            coordsBahia,
-          });
-        } else {
-          const entry = porBahia.get(restriccion.bahia);
-          if (indiceConflicto < entry.indiceRuta) entry.indiceRuta = indiceConflicto;
+      if (!porBahia.has(restriccion.bahia)) {
+        porBahia.set(restriccion.bahia, {
+          restricciones: [],
+          indiceRuta: segIdx,
+          distanciaKm: dist,
+          coordsBahia,
+        });
+      } else {
+        const entry = porBahia.get(restriccion.bahia);
+        if (dist < entry.distanciaKm) {
+          entry.indiceRuta = segIdx;
+          entry.distanciaKm = dist;
         }
-        porBahia.get(restriccion.bahia).restricciones.push(restriccion);
       }
+      porBahia.get(restriccion.bahia).restricciones.push(restriccion);
     }
 
     // 3. Ordenar por posición en la ruta (orden de tránsito)
@@ -578,7 +627,7 @@ router.post('/restricciones-ruta', async (req, res) => {
       const cap = getCapitania(coords.lat, coords.lng);
       const norm = normalizarRestriccion(r);
 
-      const rutaAntes = ruta_puntos.slice(0, rutaIdx);
+      const rutaAntes = rutaDensa.slice(0, rutaIdx);
       intermedias.push({
         id_bahia: idBahia,
         nombre_bahia: coords.nombre || r.GLBahia || 'Bahía',
