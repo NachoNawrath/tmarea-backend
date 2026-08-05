@@ -1,115 +1,89 @@
-const fs = require('fs');
-const path = require('path');
-const { normalizarTexto } = require('../utils/normalizarTexto');
+const { Pool } = require('pg');
 
-let puertosCache = null;
+const pool = new Pool({
+  host:     process.env.DB_HOST     || 'localhost',
+  port:     Number(process.env.DB_PORT) || 5432,
+  database: process.env.DB_NAME     || 'mapa_navegacion',
+  user:     process.env.DB_USER     || 'postgres',
+  password: process.env.DB_PASSWORD,
+});
 
-async function loadPuertos() {
-  try {
-    const jsonPath = path.join(__dirname, 'data', 'puertos_chile_nacional.json');
-    const rawData = fs.readFileSync(jsonPath, 'utf-8');
-    const data = JSON.parse(rawData);
-
-    if (!data.features || !Array.isArray(data.features)) {
-      console.error('No se encontraron features en el JSON');
-      return [];
-    }
-
-    console.log(`Total de features MOP encontrados: ${data.features.length}`);
-
-    const puertosMOP = data.features.map((feature) => {
-      const attr = feature.attributes;
-      const geom = feature.geometry;
-      return {
-        id: attr.OBJECTID,
-        nombre: attr.NOMBRE,
-        provincia: attr.PROVINCIA,
-        ubicacion: { lat: geom.y, lng: geom.x },
-        operativa: attr.OPERATIVA === 'Si',
-        locationMOP: attr.LOCATION,
-        fuente: 'MOP',
-      };
-    });
-
-    // Cargar y fusionar puertos adicionales (no registrados en MOP)
-    const adicionalPath = path.join(__dirname, 'data', 'puertos_adicionales.json');
-    let puertosManuales = [];
-    try {
-      const adicionalRaw = fs.readFileSync(adicionalPath, 'utf-8');
-      const adicionales = JSON.parse(adicionalRaw);
-      puertosManuales = adicionales.map((p, i) => ({
-        id: `manual_${i + 1}`,
-        nombre: p.nombre,
-        provincia: p.region,
-        ubicacion: { lat: p.lat, lng: p.lng },
-        operativa: true,
-        locationMOP: null,
-        fuente: p.fuente || 'manual',
-      }));
-      console.log(`Puertos adicionales cargados: ${puertosManuales.length}`);
-    } catch (e) {
-      console.warn('No se pudo cargar puertos_adicionales.json:', e.message);
-    }
-
-    const total = [...puertosMOP, ...puertosManuales];
-    console.log(`Total de puertos disponibles: ${total.length}`);
-    return total;
-  } catch (error) {
-    console.error('Error cargando puertos:', error.message);
-    return [];
-  }
+// Convierte una fila de nodos_maritimos al shape que espera el frontend
+function rowToPort(row) {
+  return {
+    id: row.id,
+    nombre: row.nombre,
+    tipo: row.tipo,
+    fuente: row.fuente,
+    provincia: row.provincia || row.region || null,
+    region: row.region || null,
+    autoridad_maritima: row.autoridad_maritima || null,
+    bahia_sitport_id: row.bahia_sitport_id || null,
+    ubicacion: { lat: parseFloat(row.lat), lng: parseFloat(row.lng) },
+    // Fallbacks planos para compatibilidad con código que use p.lat / p.lng
+    lat: parseFloat(row.lat),
+    lng: parseFloat(row.lng),
+  };
 }
 
 async function getPuertos() {
-  if (!puertosCache) {
-    puertosCache = await loadPuertos();
-  }
-  return puertosCache;
+  const { rows } = await pool.query(
+    `SELECT id, nombre, tipo, fuente, provincia, region, autoridad_maritima, bahia_sitport_id,
+            ST_Y(geom) AS lat, ST_X(geom) AS lng
+     FROM nodos_maritimos
+     ORDER BY nombre
+     LIMIT 2000`
+  );
+  return rows.map(rowToPort);
+}
+
+async function searchPuertos(query, limit = 8) {
+  const { rows } = await pool.query(
+    `SELECT id, nombre, tipo, fuente, provincia, region, autoridad_maritima, bahia_sitport_id,
+            ST_Y(geom) AS lat, ST_X(geom) AS lng
+     FROM nodos_maritimos
+     WHERE nombre_normalizado ILIKE $1
+        OR nombre ILIKE $2
+     ORDER BY
+       CASE WHEN nombre_normalizado ILIKE $3 THEN 0 ELSE 1 END,
+       nombre
+     LIMIT $4`,
+    [`%${query}%`, `%${query}%`, `${query}%`, limit]
+  );
+  return rows.map(rowToPort);
 }
 
 async function getPuertosByProvincia(provincia) {
-  const puertos = await getPuertos();
-  return puertos.filter(
-    (p) => p.provincia.toLowerCase() === provincia.toLowerCase()
+  const { rows } = await pool.query(
+    `SELECT id, nombre, tipo, fuente, provincia, region, autoridad_maritima, bahia_sitport_id,
+            ST_Y(geom) AS lat, ST_X(geom) AS lng
+     FROM nodos_maritimos
+     WHERE LOWER(provincia) = LOWER($1)
+        OR LOWER(region) = LOWER($1)
+     ORDER BY nombre`,
+    [provincia]
   );
+  return rows.map(rowToPort);
 }
 
 async function getPuertosByProximidad(lat, lng, radiusKm = 50) {
-  const puertos = await getPuertos();
-
-  // Fórmula simple de distancia (no es geográficamente exacta pero funciona)
-  const toRad = (deg) => (deg * Math.PI) / 180;
-  const R = 6371; // Radio Tierra en km
-
-  return puertos.filter((puerto) => {
-    const dLat = toRad(puerto.ubicacion.lat - lat);
-    const dLng = toRad(puerto.ubicacion.lng - lng);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat)) *
-        Math.cos(toRad(puerto.ubicacion.lat)) *
-        Math.sin(dLng / 2) *
-        Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-
-    return distance <= radiusKm;
-  });
+  const radiusDeg = radiusKm / 111.0;
+  const { rows } = await pool.query(
+    `SELECT id, nombre, tipo, fuente, provincia, region, autoridad_maritima, bahia_sitport_id,
+            ST_Y(geom) AS lat, ST_X(geom) AS lng,
+            ST_Distance(geom::geography, ST_SetSRID(ST_MakePoint($2, $1), 4326)::geography) / 1000 AS distancia_km
+     FROM nodos_maritimos
+     WHERE ST_DWithin(geom, ST_SetSRID(ST_MakePoint($2, $1), 4326), $3)
+     ORDER BY distancia_km
+     LIMIT 50`,
+    [lat, lng, radiusDeg]
+  );
+  return rows.map(r => ({ ...rowToPort(r), distancia_km: parseFloat(r.distancia_km) }));
 }
-async function searchPuertos(query, limit = 8) {
-  const puertos = await getPuertos();
-  const q = normalizarTexto(query);
-  const resultados = puertos.filter((p) => {
-    const nombre = normalizarTexto(p.nombre);
-    const provincia = normalizarTexto(p.provincia);
-    return nombre.includes(q) || provincia.includes(q);
-  });
-  return resultados.slice(0, limit);
-}
+
 module.exports = {
   getPuertos,
+  searchPuertos,
   getPuertosByProvincia,
   getPuertosByProximidad,
-  loadPuertos,
-  searchPuertos,
 };
