@@ -556,10 +556,11 @@ router.post('/restricciones-ruta', async (req, res) => {
     // 15 millas náuticas — suficiente en canales interiores chilenos sin cruzar islas
     const MAX_DIST_KM = 15 * 1.852;
 
-    // 1. Obtener y filtrar restricciones: sólo las que afectan naves menores a nivel de bahía
+    // 1. Obtener restricciones de área completa (tipo TODOS = afecta zona, no frente de atraque)
+    // No filtrar por NaveRecibe aquí — el BRE determina si aplica al perfil de la nave
     const todasRestricciones = await sitportService.consultaRestricciones();
-    const restriccionesMenores = todasRestricciones.filter(r =>
-      r.NaveRecibe && r.NaveRecibe.includes('MENOR') && r.tipo && r.tipo.trim() === 'TODOS'
+    const restriccionesTransito = todasRestricciones.filter(r =>
+      r.tipo && r.tipo.trim() === 'TODOS'
     );
 
     // Densificar la ruta para mayor resolución en canales angostos (interpola cada ~2.5km)
@@ -571,7 +572,7 @@ router.post('/restricciones-ruta', async (req, res) => {
     // Agrupa por bahía (varias restricciones pueden compartir el mismo bahia ID).
     const porBahia = new Map(); // bahiaId → { restricciones, indiceRuta, distanciaKm, coordsBahia }
 
-    for (const restriccion of restriccionesMenores) {
+    for (const restriccion of restriccionesTransito) {
       const coordsBahia = BAHIA_COORDS[restriccion.bahia];
       if (!coordsBahia) continue;
 
