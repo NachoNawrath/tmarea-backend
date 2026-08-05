@@ -1,7 +1,7 @@
 ﻿const express = require('express');
 const sitportService = require('../services/sitport-service');
 const { buscarFondeadero } = require('../services/fondeadero-service');
-const { getCapitania } = require('../utils/capitanias');
+const { getCapitaniaByBahiaId } = require('../utils/capitanias');
 const { normalizarRestriccion } = require('../services/sitport-parser');
 const { evaluarRuta } = require('../services/route-restriction-evaluator');
 const router = express.Router();
@@ -229,6 +229,22 @@ const BAHIA_COORDS = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Lookup de bahia_id por nombre de puerto (para enriquecer estado de zarpe/recalada)
+// ─────────────────────────────────────────────────────────────────────────────
+function resolverBahiaIdPorNombre(nombre) {
+  if (!nombre) return null;
+  const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const skip = new Set(['caleta','bahia','puerto','ensenada','canal','punta','seno','rada','isla','lago','golfo']);
+  const palabras = norm(nombre).split(/\s+/).filter(w => w.length > 3 && !skip.has(w));
+  if (palabras.length === 0) return null;
+  for (const [id, coords] of Object.entries(BAHIA_COORDS)) {
+    const nombreNorm = norm(coords.nombre);
+    if (palabras.some(p => nombreNorm.includes(p))) return Number(id);
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Haversine (km)
 // ─────────────────────────────────────────────────────────────────────────────
 function distKm(lat1, lng1, lat2, lng2) {
@@ -301,11 +317,17 @@ router.post('/restricciones', async (req, res) => {
       return words.length > 0 && words.some(w => p.includes(w));
     });
 
+    const bahiaId = filtradas[0]?.bahia ?? resolverBahiaIdPorNombre(puerto);
+    const cap = bahiaId ? getCapitaniaByBahiaId(bahiaId) : null;
+
     res.json({
       success: true,
       restricciones: filtradas,
       timestamp: new Date().toISOString(),
-      error: null
+      error: null,
+      capitania: cap?.capitania || null,
+      gobernacion: cap?.gobernacion || null,
+      telefono: cap?.telefono || null,
     });
   } catch (error) {
     res.status(502).json({ success: false, restricciones: [], error: error.message });
@@ -625,7 +647,7 @@ router.post('/restricciones-ruta', async (req, res) => {
       if (excluidas.has(idBahia)) continue;
 
       const r = elegirRestriccion(lista);
-      const cap = getCapitania(coords.lat, coords.lng);
+      const cap = getCapitaniaByBahiaId(idBahia);
       const norm = normalizarRestriccion(r);
 
       const rutaAntes = rutaDensa.slice(0, rutaIdx);
@@ -641,7 +663,8 @@ router.post('/restricciones-ruta', async (req, res) => {
         motivo: r.MotivoRestriccion || null,
         tipo_restriccion: r.tiporestriccion || null,
         nave_recibe: r.NaveRecibe || null,
-        gobernacion: cap?.nombre || null,
+        capitania: cap?.capitania || null,
+        gobernacion: cap?.gobernacion || null,
         telefono: cap?.telefono || null,
         orden_en_ruta: orden++,
         fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, rutaAntes, zonasRestringidas),

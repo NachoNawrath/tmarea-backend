@@ -1,14 +1,13 @@
 // src/utils/capitanias.js
-// Jurisdicción de las Gobernaciones Marítimas de Chile por rango de latitud.
+// Jurisdicción de las Gobernaciones Marítimas de Chile.
 //
-// Espejo CommonJS de tmarea-pwa/src/utils/capitanias.js. Se usa en el backend
-// para etiquetar cada restricción de tránsito con la Gobernación jurisdiccional
-// y su teléfono. El frontend vuelve a resolverlo con getCapitania() para los
-// links tel:; mantener AMBAS tablas sincronizadas si cambia un teléfono.
+// Expone dos funciones:
+//   getCapitania(lat, lon)        — por franja de latitud (legacy, usa el frontend)
+//   getCapitaniaByBahiaId(id)     — por bahia_id SITPORT (lookup exacto, usa el backend)
 //
-// Es una aproximación por FRANJAS DE LATITUD del continente (la costa chilena
-// es casi norte-sur), no un polígono de jurisdicción real. Suficiente para
-// orientar la llamada; ante duda, prima lo que indique la Autoridad Marítima.
+// getCapitaniaByBahiaId lee src/data/bahia-capitania-map.json y devuelve
+// { capitania, gobernacion, telefono } con jurisdicción exacta por bahía,
+// eliminando los falsos match de Calbuco→Puerto Montt y similares.
 
 // Rangos ordenados de norte (lat menos negativa) a sur (lat más negativa).
 // lat_norte es el borde norte de la franja, lat_sur el borde sur; ambos negativos.
@@ -50,4 +49,12 @@ function getCapitania(lat, lon) {
   return { nombre: match.nombre, telefono: match.tel };
 }
 
-module.exports = { getCapitania, GOBERNACIONES };
+const BAHIA_CAPITANIA_MAP = require('../data/bahia-capitania-map.json');
+
+function getCapitaniaByBahiaId(bahiaId) {
+  const entry = BAHIA_CAPITANIA_MAP[String(bahiaId)];
+  if (!entry) return { capitania: 'Desconocida', gobernacion: 'Desconocida', telefono: null };
+  return entry;
+}
+
+module.exports = { getCapitania, getCapitaniaByBahiaId, GOBERNACIONES };
