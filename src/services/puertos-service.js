@@ -38,17 +38,18 @@ async function getPuertos() {
 }
 
 async function searchPuertos(query, limit = 8) {
+  // Normalizar el término de búsqueda en DB para que "puerto chacabuco" encuentre "Bahía Chacabuco"
   const { rows } = await pool.query(
     `SELECT id, nombre, tipo, fuente, provincia, region, autoridad_maritima, bahia_sitport_id,
             ST_Y(geom) AS lat, ST_X(geom) AS lng
      FROM nodos_maritimos
-     WHERE nombre_normalizado ILIKE $1
+     WHERE nombre_normalizado ILIKE '%' || normalizar_nombre($1) || '%'
         OR nombre ILIKE $2
      ORDER BY
-       CASE WHEN nombre_normalizado ILIKE $3 THEN 0 ELSE 1 END,
+       CASE WHEN nombre_normalizado ILIKE normalizar_nombre($1) || '%' THEN 0 ELSE 1 END,
        nombre
-     LIMIT $4`,
-    [`%${query}%`, `%${query}%`, `${query}%`, limit]
+     LIMIT $3`,
+    [query, `%${query}%`, limit]
   );
   return rows.map(rowToPort);
 }
