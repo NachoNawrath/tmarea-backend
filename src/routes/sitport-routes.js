@@ -553,8 +553,9 @@ router.post('/restricciones-ruta', async (req, res) => {
       });
     }
 
-    // 15 millas náuticas — suficiente en canales interiores chilenos sin cruzar islas
-    const MAX_DIST_KM = 15 * 1.852;
+    // 50 km — captura bahías de tránsito relevantes (Maullín 40km, Carelmapu 40km,
+    // Ancud 43km) sin llegar a la siguiente repartición marítima (~80-100km).
+    const MAX_DIST_KM = 50;
 
     // 1. Obtener restricciones de área completa (tipo TODOS = afecta zona, no frente de atraque)
     // No filtrar por NaveRecibe aquí — el BRE determina si aplica al perfil de la nave
