@@ -606,12 +606,11 @@ router.post('/restricciones-ruta', async (req, res) => {
       }))
       .sort((a, b) => a.rutaIdx - b.rutaIdx);
 
-    // 4. Excluir zarpe y recalada (misma lógica actual)
+    // 4. Excluir zarpe y recalada por ID explícito.
+    // La exclusión posicional (primer/último match) fue eliminada: asumía que
+    // las bahías más cercanas a los extremos de la ruta son zarpe/recalada, lo
+    // cual falla cuando solo hay pocas bahías dentro del radio y todas son tránsito.
     const excluidas = new Set();
-    if (restriccionesEnRuta.length > 0) {
-      excluidas.add(restriccionesEnRuta[0].idBahia);
-      excluidas.add(restriccionesEnRuta[restriccionesEnRuta.length - 1].idBahia);
-    }
     if (zarpe_id != null) excluidas.add(Number(zarpe_id));
     if (recalada_id != null) excluidas.add(Number(recalada_id));
 
