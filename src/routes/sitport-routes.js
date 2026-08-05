@@ -443,20 +443,26 @@ router.post('/weather-ruta', async (req, res) => {
     // 6. Respuesta estructurada
     res.json({
       success: true,
-      bahias_en_ruta: bahias.map(b => ({
-        id_bahia:            b.idBahia,
-        nombre:              b.nombreBahia,
-        lat:                 b.lat,
-        lng:                 b.lng,
-        temperatura_c:       b.temperatura,
-        presion_hpa:         b.presion,
-        velocidad_viento_kt: b.velocidadViento,
-        direccion_viento:    b.textoDireccionViento || String(b.direccionVientoAprox ?? ''),
-        lluvia_mm:           b.lluviaUltimaHora,
-        pronostico_texto:    b.pronostico ?? null,
-        fecha_dato:          b.fecha,
-        distancia_km:        b.distancia_km
-      })),
+      bahias_en_ruta: bahias.map(b => {
+        const cap = getCapitaniaByBahiaId(b.idBahia);
+        return {
+          id_bahia:            b.idBahia,
+          nombre:              b.nombreBahia,
+          lat:                 b.lat,
+          lng:                 b.lng,
+          temperatura_c:       b.temperatura,
+          presion_hpa:         b.presion,
+          velocidad_viento_kt: b.velocidadViento,
+          direccion_viento:    b.textoDireccionViento || String(b.direccionVientoAprox ?? ''),
+          lluvia_mm:           b.lluviaUltimaHora,
+          pronostico_texto:    b.pronostico ?? null,
+          fecha_dato:          b.fecha,
+          distancia_km:        b.distancia_km,
+          capitania:           cap?.capitania || null,
+          gobernacion:         cap?.gobernacion || null,
+          telefono:            cap?.telefono || null,
+        };
+      }),
       peor_tramo: peorTramo ? {
         id_bahia:            peorTramo.idBahia,
         nombre:              peorTramo.nombreBahia,
