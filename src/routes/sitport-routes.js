@@ -1,10 +1,19 @@
 ﻿const express = require('express');
+const { Pool } = require('pg');
 const sitportService = require('../services/sitport-service');
 const { buscarFondeadero } = require('../services/fondeadero-service');
 const { getCapitaniaByBahiaId } = require('../utils/capitanias');
 const { normalizarRestriccion } = require('../services/sitport-parser');
 const { evaluarRuta } = require('../services/route-restriction-evaluator');
 const router = express.Router();
+
+const pool = new Pool({
+  host:     process.env.DB_HOST     || 'localhost',
+  port:     Number(process.env.DB_PORT) || 5432,
+  database: process.env.DB_NAME     || 'mapa_navegacion',
+  user:     process.env.DB_USER     || 'postgres',
+  password: process.env.DB_PASSWORD || '',
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MAPA ESTÁTICO idBahia → coordenadas WGS84
@@ -510,48 +519,20 @@ function elegirRestriccion(lista) {
 // Helpers para matching por segmento de ruta
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Interpola puntos intermedios cada ~2.5km cuando los segmentos son > 5km
-function densificarRuta(puntos) {
-  if (puntos.length < 2) return puntos;
-  const resultado = [puntos[0]];
-  for (let i = 1; i < puntos.length; i++) {
-    const a = puntos[i - 1];
-    const b = puntos[i];
-    const d = distKm(a.lat, a.lng, b.lat, b.lng);
-    if (d > 5) {
-      const pasos = Math.ceil(d / 2.5);
-      for (let j = 1; j < pasos; j++) {
-        const t = j / pasos;
-        resultado.push({ lat: a.lat + t * (b.lat - a.lat), lng: a.lng + t * (b.lng - a.lng) });
-      }
-    }
-    resultado.push(b);
-  }
-  return resultado;
-}
-
-// Distancia mínima de un punto al segmento AB (proyección perpendicular o extremo)
-function distanciaASegmento(punto, segA, segB) {
-  const dx = segB.lng - segA.lng;
-  const dy = segB.lat - segA.lat;
-  if (dx === 0 && dy === 0) return distKm(punto.lat, punto.lng, segA.lat, segA.lng);
-  let t = ((punto.lng - segA.lng) * dx + (punto.lat - segA.lat) * dy) / (dx * dx + dy * dy);
-  t = Math.max(0, Math.min(1, t));
-  return distKm(punto.lat, punto.lng, segA.lat + t * dy, segA.lng + t * dx);
-}
-
-// Distancia mínima de un punto a toda la ruta; devuelve { dist, segIdx }
-function distanciaMinimaARuta(punto, rutaPuntos) {
-  if (rutaPuntos.length === 1) {
-    return { dist: distKm(punto.lat, punto.lng, rutaPuntos[0].lat, rutaPuntos[0].lng), segIdx: 0 };
-  }
-  let minDist = Infinity;
-  let minIdx = 0;
-  for (let i = 0; i < rutaPuntos.length - 1; i++) {
-    const d = distanciaASegmento(punto, rutaPuntos[i], rutaPuntos[i + 1]);
-    if (d < minDist) { minDist = d; minIdx = i; }
-  }
-  return { dist: minDist, segIdx: minIdx };
+// Matching geográfico via PostGIS: devuelve los bahia_id cuyas celdas Voronoi
+// (recortadas por costa) intersectan la ruta. Elimina falsos positivos en
+// geografía de fiordos (ej: Maullín no matchea rutas por el Golfo de Ancud).
+async function bahiasEnRutaPostGIS(waypoints) {
+  if (waypoints.length < 2) return new Set();
+  const coordinates = waypoints.map(wp => [wp.lng, wp.lat]);
+  const rutaGeoJSON = JSON.stringify({ type: 'LineString', coordinates });
+  const { rows } = await pool.query(
+    `SELECT bahia_id
+     FROM bahia_jurisdicciones
+     WHERE ST_Intersects(geom, ST_SetSRID(ST_GeomFromGeoJSON($1), 4326))`,
+    [rutaGeoJSON]
+  );
+  return new Set(rows.map(r => r.bahia_id));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -575,10 +556,6 @@ router.post('/restricciones-ruta', async (req, res) => {
       });
     }
 
-    // 50 km — captura bahías de tránsito relevantes (Maullín 40km, Carelmapu 40km,
-    // Ancud 43km) sin llegar a la siguiente repartición marítima (~80-100km).
-    const MAX_DIST_KM = 50;
-
     // 1. Obtener restricciones de área completa (tipo TODOS = afecta zona, no frente de atraque)
     // No filtrar por NaveRecibe aquí — el BRE determina si aplica al perfil de la nave
     const todasRestricciones = await sitportService.consultaRestricciones();
@@ -586,40 +563,36 @@ router.post('/restricciones-ruta', async (req, res) => {
       r.tipo && r.tipo.trim() === 'TODOS'
     );
 
-    // Densificar la ruta para mayor resolución en canales angostos (interpola cada ~2.5km)
     const puntosValidos = ruta_puntos.filter(p => p && p.lat != null && p.lng != null);
-    const rutaDensa = densificarRuta(puntosValidos);
 
-    // 2. Matching invertido: iterar restricciones y verificar cuáles cruzan la ruta.
-    // Mide distancia al SEGMENTO más cercano, no al punto más cercano.
-    // Agrupa por bahía (varias restricciones pueden compartir el mismo bahia ID).
-    const porBahia = new Map(); // bahiaId → { restricciones, indiceRuta, distanciaKm, coordsBahia }
+    // 2. Matching geográfico PostGIS: qué celdas Voronoi (recortadas por costa)
+    // intersectan la ruta. Reemplaza el radio de 50km — elimina falsos positivos
+    // en geografía de fiordos (ej: Maullín no matchea rutas por el Golfo de Ancud).
+    const bahiaIdsEnRuta = await bahiasEnRutaPostGIS(puntosValidos);
+
+    // 3. Agrupar restricciones por bahía y calcular posición en ruta para ordenar.
+    // La posición se estima como el índice del waypoint más cercano al punto de la bahía.
+    const porBahia = new Map(); // bahiaId → { restricciones, indiceRuta, coordsBahia }
 
     for (const restriccion of restriccionesTransito) {
-      const coordsBahia = BAHIA_COORDS[restriccion.bahia];
+      const bahiaId = restriccion.bahia;
+      if (!bahiaIdsEnRuta.has(bahiaId)) continue;
+      const coordsBahia = BAHIA_COORDS[bahiaId];
       if (!coordsBahia) continue;
 
-      const { dist, segIdx } = distanciaMinimaARuta(coordsBahia, rutaDensa);
-      if (dist > MAX_DIST_KM) continue;
-
-      if (!porBahia.has(restriccion.bahia)) {
-        porBahia.set(restriccion.bahia, {
-          restricciones: [],
-          indiceRuta: segIdx,
-          distanciaKm: dist,
-          coordsBahia,
+      if (!porBahia.has(bahiaId)) {
+        // Estimar posición en ruta: índice del waypoint más cercano al punto de la bahía
+        let minDist = Infinity, minIdx = 0;
+        puntosValidos.forEach((wp, i) => {
+          const d = distKm(coordsBahia.lat, coordsBahia.lng, wp.lat, wp.lng);
+          if (d < minDist) { minDist = d; minIdx = i; }
         });
-      } else {
-        const entry = porBahia.get(restriccion.bahia);
-        if (dist < entry.distanciaKm) {
-          entry.indiceRuta = segIdx;
-          entry.distanciaKm = dist;
-        }
+        porBahia.set(bahiaId, { restricciones: [], indiceRuta: minIdx, coordsBahia });
       }
-      porBahia.get(restriccion.bahia).restricciones.push(restriccion);
+      porBahia.get(bahiaId).restricciones.push(restriccion);
     }
 
-    // 3. Ordenar por posición en la ruta (orden de tránsito)
+    // 4. Ordenar por posición en la ruta (orden de tránsito)
     const restriccionesEnRuta = [...porBahia.entries()]
       .map(([id, { restricciones, indiceRuta, coordsBahia }]) => ({
         idBahia: Number(id),
@@ -650,7 +623,7 @@ router.post('/restricciones-ruta', async (req, res) => {
       const cap = getCapitaniaByBahiaId(idBahia);
       const norm = normalizarRestriccion(r);
 
-      const rutaAntes = rutaDensa.slice(0, rutaIdx);
+      const rutaAntes = puntosValidos.slice(0, rutaIdx);
       intermedias.push({
         id_bahia: idBahia,
         nombre_bahia: coords.nombre || r.GLBahia || 'Bahía',
