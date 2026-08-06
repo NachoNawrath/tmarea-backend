@@ -658,11 +658,13 @@ router.post('/restricciones-ruta', async (req, res) => {
     const intermediasEnriquecidas = intermedias.map((r, i) => {
       const ev = evaluacion.restricciones[i] || {};
       const { _raw, ...sinRaw } = r;
+      const estado = ev.estado || 'indeterminado';
       return {
         ...sinRaw,
+        aplica_a_mi_embarcacion: estado !== 'no_afecta',
         evaluacion: {
           bloquea: ev.bloquea ?? false,
-          estado: ev.estado || 'indeterminado',
+          estado,
           umbral_ab: ev.umbral_ab ?? null,
           nivel: ev.nivel || null,
           motivo: ev.motivo || null,

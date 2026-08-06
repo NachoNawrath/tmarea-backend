@@ -26,25 +26,30 @@ function rowToPort(row) {
   };
 }
 
-async function getPuertos() {
+async function getPuertos(opciones = {}) {
+  const { incluirSitport = false } = opciones;
+  const filtroSitport = incluirSitport ? '' : "AND fuente != 'SITPORT'";
   const { rows } = await pool.query(
     `SELECT id, nombre, tipo, fuente, provincia, region, autoridad_maritima, bahia_sitport_id,
             ST_Y(geom) AS lat, ST_X(geom) AS lng
      FROM nodos_maritimos
+     WHERE 1=1 ${filtroSitport}
      ORDER BY nombre
      LIMIT 2000`
   );
   return rows.map(rowToPort);
 }
 
-async function searchPuertos(query, limit = 8) {
-  // Normalizar el término de búsqueda en DB para que "puerto chacabuco" encuentre "Bahía Chacabuco"
+async function searchPuertos(query, limit = 8, opciones = {}) {
+  const { incluirSitport = false } = opciones;
+  const filtroSitport = incluirSitport ? '' : "AND fuente != 'SITPORT'";
   const { rows } = await pool.query(
     `SELECT id, nombre, tipo, fuente, provincia, region, autoridad_maritima, bahia_sitport_id,
             ST_Y(geom) AS lat, ST_X(geom) AS lng
      FROM nodos_maritimos
-     WHERE nombre_normalizado ILIKE '%' || normalizar_nombre($1) || '%'
-        OR nombre ILIKE $2
+     WHERE (nombre_normalizado ILIKE '%' || normalizar_nombre($1) || '%'
+        OR nombre ILIKE $2)
+        ${filtroSitport}
      ORDER BY
        CASE WHEN nombre_normalizado ILIKE normalizar_nombre($1) || '%' THEN 0 ELSE 1 END,
        nombre
@@ -54,20 +59,24 @@ async function searchPuertos(query, limit = 8) {
   return rows.map(rowToPort);
 }
 
-async function getPuertosByProvincia(provincia) {
+async function getPuertosByProvincia(provincia, opciones = {}) {
+  const { incluirSitport = false } = opciones;
+  const filtroSitport = incluirSitport ? '' : "AND fuente != 'SITPORT'";
   const { rows } = await pool.query(
     `SELECT id, nombre, tipo, fuente, provincia, region, autoridad_maritima, bahia_sitport_id,
             ST_Y(geom) AS lat, ST_X(geom) AS lng
      FROM nodos_maritimos
-     WHERE LOWER(provincia) = LOWER($1)
-        OR LOWER(region) = LOWER($1)
+     WHERE (LOWER(provincia) = LOWER($1) OR LOWER(region) = LOWER($1))
+        ${filtroSitport}
      ORDER BY nombre`,
     [provincia]
   );
   return rows.map(rowToPort);
 }
 
-async function getPuertosByProximidad(lat, lng, radiusKm = 50) {
+async function getPuertosByProximidad(lat, lng, radiusKm = 50, opciones = {}) {
+  const { incluirSitport = false } = opciones;
+  const filtroSitport = incluirSitport ? '' : "AND fuente != 'SITPORT'";
   const radiusDeg = radiusKm / 111.0;
   const { rows } = await pool.query(
     `SELECT id, nombre, tipo, fuente, provincia, region, autoridad_maritima, bahia_sitport_id,
@@ -75,6 +84,7 @@ async function getPuertosByProximidad(lat, lng, radiusKm = 50) {
             ST_Distance(geom::geography, ST_SetSRID(ST_MakePoint($2, $1), 4326)::geography) / 1000 AS distancia_km
      FROM nodos_maritimos
      WHERE ST_DWithin(geom, ST_SetSRID(ST_MakePoint($2, $1), 4326), $3)
+        ${filtroSitport}
      ORDER BY distancia_km
      LIMIT 50`,
     [lat, lng, radiusDeg]
