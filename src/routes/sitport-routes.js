@@ -5,6 +5,7 @@ const { buscarFondeadero } = require('../services/fondeadero-service');
 const { getCapitaniaByBahiaId } = require('../utils/capitanias');
 const { normalizarRestriccion } = require('../services/sitport-parser');
 const { evaluarRuta } = require('../services/route-restriction-evaluator');
+const { validarHabilitacionDeportiva } = require('../services/deportivo-validator');
 const router = express.Router();
 
 const pool = new Pool({
@@ -550,7 +551,7 @@ async function bahiasEnRutaPostGIS(waypoints) {
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/restricciones-ruta', async (req, res) => {
   try {
-    const { ruta_puntos, zarpe_id, recalada_id, nave_ab } = req.body;
+    const { ruta_puntos, zarpe_id, recalada_id, nave_ab, perfil_deportivo, navegacion_deportiva } = req.body;
 
     // ── Validación de entrada ──────────────────────────────────────────────
     if (!Array.isArray(ruta_puntos) || ruta_puntos.length === 0) {
@@ -708,11 +709,27 @@ router.post('/restricciones-ruta', async (req, res) => {
       };
     });
 
-    console.log(`[sitport/restricciones-ruta] waypoints=${puntosValidos.length} bahias_matcheadas=${porBahia.size} restricciones=${intermediasEnriquecidas.length} omitidas=${bahiasOmitidas} veredicto=${evaluacion.veredicto}`);
+    // ─── Validación deportiva (INV-4.1, 4.2, 4.4) ────────────────────────
+    let veredictoDep = null;
+    let banderaFinal = evaluacion.veredicto;
+    if (perfil_deportivo) {
+      veredictoDep = {
+        ...validarHabilitacionDeportiva(perfil_deportivo, navegacion_deportiva || {}),
+        licencia: perfil_deportivo?.licencia || null,
+      };
+      const rankDep = { Q: 0, U: 1, UV: 2 };
+      if (rankDep[veredictoDep.bandera] > rankDep[banderaFinal]) {
+        banderaFinal = veredictoDep.bandera;
+      }
+    }
+
+    console.log(`[sitport/restricciones-ruta] waypoints=${puntosValidos.length} bahias_matcheadas=${porBahia.size} restricciones=${intermediasEnriquecidas.length} omitidas=${bahiasOmitidas} veredicto=${evaluacion.veredicto} deportivo=${veredictoDep?.bandera || '-'} final=${banderaFinal}`);
 
     res.json({
       success: true,
       veredicto: evaluacion.veredicto,
+      bandera_final: banderaFinal,
+      veredicto_deportivo: veredictoDep,
       motivo_principal: evaluacion.motivo_principal,
       ultimo_tramo_seguro: evaluacion.ultimo_tramo_seguro,
       fondeadero_sugerido: evaluacion.fondeadero_sugerido,

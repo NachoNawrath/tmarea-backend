@@ -11,8 +11,12 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 1.3
+Versión: 1.4
 Última actualización: 2026-08-07
+Cambios v1.4: INV-4.7 ratificada — la eximición de matrícula (<5 m) se resuelve en el
+formulario de captura, no en el motor: si eslora <5 m + propulsión manual/vela/motor <10 HP,
+el formulario asigna clasificación = Bahía automáticamente, oculta el campo de clasificación
+y avisa. El motor recibe siempre sus tres variables completas y queda intocado.
 Cambios v1.3: §3 `restricciones-ruta` pasa de ROTO a RESUELTO — el diagnóstico descartó la
 regresión (era falso positivo por rutas de prueba sin restricción activa); el endpoint quedó
 endurecido (validación de entrada, aislamiento por bahía, 503 en SITPORT caído). Sincronizado
@@ -357,19 +361,31 @@ Base: **CIRC A-41/014 C.2** (texto literal):
 
 Una nave que cumple los tres criterios (< 5 m eslora **Y** propulsión manual/vela/motor < 10
 HP) puede no tener clasificación de nave registrada (no pasa por certificado de
-navegabilidad). En ese caso la Variable 2 de INV-4.1 no tiene dato declarado.
+navegabilidad). En ese caso faltaría la Variable 2 de INV-4.1.
 
-**Decisión de producto (dueño del producto — PENDIENTE de confirmar):** ante una nave sin
-clasificación registrada, el motor trata el tope de nave como **Bahía por defecto** (opción
-más conservadora: aguas protegidas, límite local), muestra un aviso informativo de que la
-nave parece eximida de matrícula y que el ámbito quedó acotado a bahía por falta de
-clasificación, y permite al patrón declarar explícitamente otra clasificación si
-corresponde. NO se bloquea la evaluación por este motivo (no es U+V por sí solo).
-> Marcar como decisión provisional hasta que el dueño del producto la ratifique o cambie.
+**Decisión de producto (RATIFICADA 07-AGO-2026):** la eximición NO es un caso especial del
+motor de decisión, es una regla del **formulario de captura** (P1/P2). El motor de INV-4.1
+siempre recibe sus tres variables completas; el hueco lo rellena el formulario ANTES de
+llamar al motor.
+
+Regla del formulario:
+- Si el usuario declara eslora < 5 m **Y** propulsión manual/vela/motor < 10 HP → la nave es
+  eximida de matrícula. El formulario **asigna automáticamente clasificación = Bahía**, NO
+  muestra el campo de clasificación de nave (el usuario no lo tiene y no debe inventarlo), y
+  muestra un aviso informativo: "Tu embarcación está eximida de matrícula (CIRC A-41/014 C.2);
+  la evaluamos como navegación de bahía."
+- La licencia y la propulsión SÍ se siguen pidiendo normalmente (la eximición es solo de
+  matrícula, no de licencia ni de las demás reglas).
+
+Consecuencias:
+- El motor NO conoce el concepto "eximida": para él siempre llegan las tres variables. Queda
+  simple e intocado.
+- La clasificación asignada (Bahía) entra a `min()` como Variable 2 igual que cualquier otra.
+- NO es U+V por sí solo; es una navegación de bahía normal, sujeta al resto de las reglas.
 
 ### ESTADO ACTUAL DEPORTIVO — ❌ NO IMPLEMENTADO (declarado Fase 4)
 `src/config/perfiles-costo.js` solo ajusta costo de ruteo por licencia, NO valida
-habilitación. Construir desde cero el validador (INV-4.1 a INV-4.6). Va en el lanzamiento.
+habilitación. Construir desde cero el validador (INV-4.1 a INV-4.7). Va en el lanzamiento.
 
 ---
 
