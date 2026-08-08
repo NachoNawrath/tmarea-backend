@@ -14,14 +14,16 @@
  * porque snap y A* estarian evaluando dos criterios distintos.
  *
  * Busqueda en espiral (anillos cuadrados de Chebyshev crecientes) desde
- * la celda de origen hasta maxRadioM. No garantiza la celda EXACTAMENTE
- * mas cercana en distancia euclidea (dentro de un mismo anillo, las
- * esquinas estan mas lejos que los bordes) -- aproximacion aceptable
- * para un snap, no para el propio A*.
+ * la celda de origen hasta agotar MAX_CELDAS_SNAP celdas visitadas.
+ * No garantiza la celda EXACTAMENTE mas cercana en distancia euclidea
+ * (dentro de un mismo anillo, las esquinas estan mas lejos que los
+ * bordes) -- aproximacion aceptable para un snap, no para el propio A*.
  *
  * @param {object} perfilCosto - { costo: {dMinM,...}, limites?: {maxDistCostaM} } -- mismo objeto que buildCostLUT()
  */
-function snapToNavigable(fila0, col0, meta, packed, perfilCosto, maxRadioM = 2000) {
+const MAX_CELDAS_SNAP = 15000;
+
+function snapToNavigable(fila0, col0, meta, packed, perfilCosto) {
   const { cols, rows, unit_m } = meta;
   const { dMinM } = perfilCosto.costo;
   const maxDistCostaM = perfilCosto.limites && perfilCosto.limites.maxDistCostaM != null
@@ -44,11 +46,17 @@ function snapToNavigable(fila0, col0, meta, packed, perfilCosto, maxRadioM = 200
   const direct = check(fila0, col0);
   if (direct) return { idx: fila0 * cols + col0, fila: fila0, col: col0, distSnapM: 0 };
 
-  const maxRadioCells = Math.ceil(maxRadioM / meta.res_m);
-  for (let r = 1; r <= maxRadioCells; r++) {
+  let celdas = 0;
+  const maxR = Math.ceil(Math.max(rows, cols) / 2);
+  for (let r = 1; r <= maxR; r++) {
     for (let dr = -r; dr <= r; dr++) {
       for (let dc = -r; dc <= r; dc++) {
         if (Math.max(Math.abs(dr), Math.abs(dc)) !== r) continue; // solo el borde del anillo
+        celdas++;
+        if (celdas > MAX_CELDAS_SNAP) {
+          console.warn(`[snap] SNAP_FAILED: no se encontró agua navegable cerca de (fila=${fila0}, col=${col0}) tras explorar ${celdas} celdas`);
+          return null;
+        }
         const res = check(fila0 + dr, col0 + dc);
         if (res) {
           const distSnapM = Math.hypot(dr * meta.res_m, dc * meta.res_m);

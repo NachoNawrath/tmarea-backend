@@ -24,17 +24,17 @@ function normalizarTexto(texto) {
 // Prioridad: TEMPORAL > MAL_TIEMPO > VARIABLE > OTRO
 // ─────────────────────────────────────────────────────────────────────────────
 function detectarCondicion(obsNorm, motivoNorm) {
-  // Prioridad 1: TEMPORAL
-  if (obsNorm.includes('TEMPORAL')) return 'TEMPORAL';
-  if (!obsNorm && motivoNorm.includes('TEMPORAL')) return 'TEMPORAL';
+  // Prioridad 1: TEMPORAL (obsNorm primero; motivoNorm como fallback incluso con obsNorm no vacía)
+  if (obsNorm.includes('TEMPORAL') || motivoNorm.includes('TEMPORAL')) return 'TEMPORAL';
 
   // Prioridad 2: MAL_TIEMPO
-  if (obsNorm.includes('MAL TIEMPO')) return 'MAL_TIEMPO';
-  if (obsNorm.includes('PUERTO CERRADO') && motivoNorm.includes('MAL TIEMPO')) return 'MAL_TIEMPO';
-  if (!obsNorm && motivoNorm.includes('MAL TIEMPO') && !motivoNorm.includes('TEMPORAL')) return 'MAL_TIEMPO';
+  if (obsNorm.includes('MAL TIEMPO') ||
+      (obsNorm.includes('PUERTO CERRADO') && motivoNorm.includes('MAL TIEMPO')) ||
+      motivoNorm.includes('MAL TIEMPO')) return 'MAL_TIEMPO';
 
-  // Prioridad 3: VARIABLE
-  if (obsNorm.includes('VARIABLE')) return 'VARIABLE';
+  // Prioridad 3: VARIABLE — BUG FIX: también revisa motivoNorm para sub-zonas donde
+  // Observacion dice "ZONA X RESTRINGIDO... ZONA Y CONDICION NORMAL" sin la palabra VARIABLE
+  if (obsNorm.includes('VARIABLE') || motivoNorm.includes('VARIABLE')) return 'VARIABLE';
 
   return 'OTRO';
 }
