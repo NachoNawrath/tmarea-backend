@@ -11,8 +11,12 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 1.4
+Versión: 1.5
 Última actualización: 2026-08-07
+Cambios v1.5: backlog ampliado — verificación de identidad login (RUT + nº licencia) como
+control de acceso separado del motor; enriquecer visual de P4 con fuentes propias existentes
+(peligros/fondeaderos del derrotero, restricciones SITPORT, ruta) con LÍMITE DURO de no
+imitar carta náutica ni agregar balizamiento IALA (INV-0.1/INV-0.2).
 Cambios v1.4: INV-4.7 ratificada — la eximición de matrícula (<5 m) se resuelve en el
 formulario de captura, no en el motor: si eslora <5 m + propulsión manual/vela/motor <10 HP,
 el formulario asigna clasificación = Bahía automáticamente, oculta el campo de clasificación
@@ -497,6 +501,21 @@ Evaluadores complementarios como reglas independientes que se SUMAN al motor de 
   pasajeros ni remolcar) — requiere capturar edad.
 - **Orto/ocaso vs ETA** para otras naves sin habilitación nocturna — requiere dato de
   certificado de navegabilidad, no capturado hoy.
+- **Verificación de identidad del usuario (login)** por RUT + número de licencia deportiva —
+  es control de ACCESO a la app, NO parte del motor de operación. Requiere definir si existe
+  fuente oficial contra la cual validar la licencia o si es captura simple. El validador de
+  habilitación deportiva (§4) usa solo el TIPO de licencia, no el número.
+- **Enriquecer visual de P4 con fuentes propias YA existentes** (para que el mapa no se vea
+  pobre) — SIN imitar una carta náutica. LÍMITE DURO (INV-0.1 + INV-0.2): NO agregar
+  balizamiento IALA (boyas laterales/cardinales, marcas de peligro, canal preferido, racon,
+  etc.) ni real (no está la fuente ENC SHOA en el stack) ni dibujado a mano (fabricaría dato
+  y haría que P4 parezca carta oficial, justo lo prohibido). Tmarea es informativa; NO
+  reemplaza la carta SHOA. SÍ se puede renderizar lo que ya es dato propio verificado:
+  peligros (240 hazards) y fondeaderos (26 anchorages) extraídos del derrotero, restricciones
+  SITPORT por bahía, y la ruta trazada sobre agua (mejora sola al cerrar los bugs de snap y
+  de recta-a-tierra, §7). Todo marcador visible con disclaimer "no reemplaza carta oficial
+  SHOA". El derrotero (`derrotero-3002`) es fuente de datos de backend, NO una capa que se
+  renderice como tal.
 
 Descartado del MVP: índice de riesgo ponderado (IRO) y arquitectura de "4 dimensiones".
 
