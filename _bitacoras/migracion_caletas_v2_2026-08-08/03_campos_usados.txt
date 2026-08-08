@@ -1,0 +1,54 @@
+=== TAREA 3: CAMPOS EXACTOS CONSUMIDOS DEL REGISTRO CALETA ===
+Fecha: 2026-08-08
+
+===============================================
+A) P2_VoyageSetup.jsx - BUSCADOR DE CALETAS (runtime)
+===============================================
+
+Campo       Donde se lee                                          Linea(s)
+----------- ----------------------------------------------------- --------
+nombre      buscarCaletasLocal: c.nombre                          18
+            CONFIG_BUSQUEDA.caladero.renderItem: c.nombre         114
+            CONFIG_BUSQUEDA.caladero.labelSeleccionado: c.nombre  118
+            CONFIG_BUSQUEDA.caladero.queryInicial: v.nombre       119
+            destinoValido: d.caladero?.nombre                     744
+
+comuna      buscarCaletasLocal: c.comuna                          19
+            CONFIG_BUSQUEDA.caladero.renderItem: c.comuna         115
+            CONFIG_BUSQUEDA.caladero.labelSeleccionado: c.comuna  118
+            CONFIG_BUSQUEDA.caladero.queryInicial: v.comuna       119
+
+region      buscarCaletasLocal: c.region                          20
+            CONFIG_BUSQUEDA.caladero.renderItem: c.region         115
+
+latitud     CONFIG_BUSQUEDA.caladero.renderItem: c.latitud        116
+
+longitud    CONFIG_BUSQUEDA.caladero.renderItem: c.longitud       116
+
+id          dropdown key: item.id                                 319
+            (usado como React key, no mostrado al usuario)
+
+TOTAL CAMPOS FRONTEND: nombre, comuna, region, latitud, longitud, id
+
+===============================================
+B) seed-nodos-maritimos.js - SEED TOOL (one-time)
+===============================================
+
+Campo       Donde se lee                                          Linea(s)
+----------- ----------------------------------------------------- --------
+latitud     c.latitud ?? c.lat                                    95
+longitud    c.longitud ?? c.lng                                   96
+nombre      c.nombre                                              101
+id          c.id                                                  104
+region      c.region                                              105
+provincia   c.provincia                                           106
+comuna      c.comuna                                              107
+
+TOTAL CAMPOS SEED: latitud, longitud, nombre, id, region, provincia, comuna
+
+===============================================
+UNION DE CAMPOS USADOS (todos los consumidores):
+===============================================
+  id, nombre, region, provincia*, comuna, latitud, longitud
+
+  * provincia: SOLO la usa el seed tool, NO el buscador de P2.

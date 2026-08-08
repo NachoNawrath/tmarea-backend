@@ -1,0 +1,69 @@
+﻿=== TAREA 5: CHEQUEO DE SANIDAD ANTES/DESPUÉS ===
+Fecha: 2026-08-08
+
+═══════════════════════════════════════════════════
+CONTEO DE REGISTROS
+═══════════════════════════════════════════════════
+
+  Archivo VIEJO (caletas_chile.json):     569 registros
+  Archivo NUEVO (caletas_chile_v2.json):  481 registros
+  Diferencia:                             -88 registros (v2 tiene MENOS)
+
+═══════════════════════════════════════════════════
+JSON PARSEABLE
+═══════════════════════════════════════════════════
+
+  v1: SÍ — parsea correctamente como array de 569 objetos
+  v2: SÍ — parsea correctamente como array de 481 objetos
+
+═══════════════════════════════════════════════════
+SCHEMA DEL PRIMER REGISTRO DEL V2
+═══════════════════════════════════════════════════
+
+  Claves del primer registro (caletas_chile_v2.json[0]):
+    1. id
+    2. nombre
+    3. region
+    4. comuna
+    5. latitud
+    6. longitud
+    7. propiedad
+    8. actividades
+    9. especies
+   10. nro_embarcaciones
+   11. nro_pescadores
+   12. entorno
+   13. fuente
+
+  Primer registro completo:
+    {
+      "id": "CAL-0170",
+      "nombre": "PLAYA CHICA DE LA HERRADURA",
+      "region": "Coquimbo",
+      "comuna": "COQUIMBO",
+      "latitud": -29.984219,
+      "longitud": -71.363497,
+      "propiedad": "FISCAL",
+      "actividades": "ACUICULTURA; AMERB; CONCESION ACUICULTURA",
+      "especies": "CHICOREA DE MAR; LECHUGUILLA; JAIBA PELUDA O PACHONA",
+      "nro_embarcaciones": 33,
+      "nro_pescadores": 100,
+      "entorno": "URBANA",
+      "fuente": "SUBPESCA_geoportal_2025"
+    }
+
+═══════════════════════════════════════════════════
+COMPARACIÓN DE SCHEMA v1 vs v2
+═══════════════════════════════════════════════════
+
+  Campos v1:  id, nombre, region, provincia, comuna, latitud, longitud, fuente
+  Campos v2:  id, nombre, region, comuna, latitud, longitud, propiedad,
+              actividades, especies, nro_embarcaciones, nro_pescadores,
+              entorno, fuente
+
+  Conservados: id, nombre, region, comuna, latitud, longitud, fuente
+  Quitados:    provincia
+  Agregados:   propiedad, actividades, especies, nro_embarcaciones,
+               nro_pescadores, entorno
+
+  COINCIDE con lo declarado en el prompt.

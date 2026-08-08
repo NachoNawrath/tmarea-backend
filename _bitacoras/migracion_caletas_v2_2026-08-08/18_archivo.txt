@@ -1,0 +1,61 @@
+=== PASO 5 CIERRE: ARCHIVADO DE HUERFANOS Y GIT STATUS POST-COMMIT ===
+Fecha: 2026-08-08
+
+===============================================
+ACCIONES EJECUTADAS
+===============================================
+
+  1. Creada carpeta _archivo\ en tmarea-backend
+  2. git mv bem_puertos_geocodificados.json -> _archivo/
+     git mv insertar_puertos_bem.sql        -> _archivo/
+  3. Creado _archivo\README.md con trazabilidad
+  4. git add _archivo/ && git commit
+
+  Commit: bbf1879
+  Mensaje: "Archiva huerfanos de sesion puertos BEM (bem_puertos_geocodificados.json,
+            insertar_puertos_bem.sql) con README de trazabilidad"
+
+===============================================
+GIT STATUS POST-COMMIT: tmarea-backend
+===============================================
+
+  Branch: main (ahead of origin/main by 1 commit — NO se hizo push)
+
+  MODIFIED (not staged):
+    caletas_chile.json               <- pendiente: migracion v1->v2
+
+  UNTRACKED:
+    _migracion_caletas/              <- reportes de esta sesion
+    scripts/diagnostico-nodos-en-tierra.sql  <- pre-existente
+    test-snap-fix.js                 <- pre-existente
+
+  CONFIRMADO: bem_puertos_geocodificados.json e insertar_puertos_bem.sql
+  ya NO estan en la raiz. Ahora viven en _archivo/ y estan commiteados.
+
+===============================================
+CONTENIDO DE _archivo\
+===============================================
+
+  bem_puertos_geocodificados.json   8912 bytes
+  insertar_puertos_bem.sql          2449 bytes
+  README.md                          902 bytes
+
+===============================================
+GIT STATUS: tmarea-pwa (sin cambios nuevos)
+===============================================
+
+  Branch: main (up to date with origin/main)
+
+  MODIFIED (not staged):
+    src/data/caletas_chile.json                          <- pendiente: migracion v1->v2
+    src/components/verification/TransitRestrictionsBlock.jsx  <- PRE-EXISTENTE, NO tocado
+
+  CONFIRMADO: TransitRestrictionsBlock.jsx sigue sin tocar.
+
+===============================================
+PENDIENTE
+===============================================
+
+  Falta commitear la migracion de caletas:
+    - tmarea-backend\caletas_chile.json (modified)
+    - tmarea-pwa\src\data\caletas_chile.json (modified, repo separado)

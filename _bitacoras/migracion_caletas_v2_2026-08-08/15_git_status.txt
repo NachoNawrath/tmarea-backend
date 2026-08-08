@@ -1,0 +1,44 @@
+=== PASO 2 CIERRE: GIT STATUS ===
+Fecha: 2026-08-08
+
+===============================================
+tmarea-backend (branch main, up to date with origin/main)
+===============================================
+
+  MODIFIED (not staged):
+    caletas_chile.json                  <- ESPERADO (migracion v1->v2)
+
+  UNTRACKED:
+    _migracion_caletas/                 <- carpeta de reportes de esta sesion
+    bem_puertos_geocodificados.json     <- PRE-EXISTENTE, no de esta sesion
+    insertar_puertos_bem.sql            <- PRE-EXISTENTE, no de esta sesion
+    scripts/diagnostico-nodos-en-tierra.sql <- PRE-EXISTENTE, no de esta sesion
+    test-snap-fix.js                    <- PRE-EXISTENTE, no de esta sesion
+
+  NOTA: caletas_chile_v2.json ya no aparece (fue eliminado en limpieza,
+  y como era untracked, git no muestra deletion).
+
+===============================================
+tmarea-pwa (branch main, up to date with origin/main)
+===============================================
+
+  MODIFIED (not staged):
+    src/data/caletas_chile.json                          <- ESPERADO (migracion v1->v2)
+    src/components/verification/TransitRestrictionsBlock.jsx  <- PRE-EXISTENTE, NO de esta sesion
+
+  UNTRACKED: ninguno
+
+===============================================
+ANALISIS
+===============================================
+
+  Cambios de ESTA SESION (migracion caletas):
+    1. tmarea-backend\caletas_chile.json        MODIFIED (v1->v2)
+    2. tmarea-pwa\src\data\caletas_chile.json   MODIFIED (v1->v2)
+
+  Archivos NO de esta sesion (pre-existentes):
+    - Backend: 4 archivos untracked (bem_puertos*, insertar_puertos*, diagnostico*, test-snap*)
+    - PWA: TransitRestrictionsBlock.jsx ya estaba modificado antes de esta sesion
+
+  CONCLUSION: Los unicos cambios de esta migracion son los 2 caletas_chile.json
+  reemplazados, como se esperaba. No hay cambios inesperados.

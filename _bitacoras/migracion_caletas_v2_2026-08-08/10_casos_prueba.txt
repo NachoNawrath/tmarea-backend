@@ -1,0 +1,43 @@
+﻿=== PASO 1 FASE 3: CASOS DE PRUEBA PARA BUSCADOR P2 ===
+Fecha: 2026-08-08
+
+Extraidos del archivo ya migrado tmarea-backend\caletas_chile.json (v2, 481 registros).
+
+===============================================
+CASO 1 - NORTE
+===============================================
+  Nombre:   CANAMO
+  Region:   Tarapaca
+  Latitud:  -20.797844
+  Longitud: -70.185156
+  Motivo:   contiene enie (n con tilde) para probar encoding
+
+===============================================
+CASO 2 - CENTRO
+===============================================
+  Nombre:   LAS PENAS
+  Region:   Biobio
+  Latitud:  -37.239319
+  Longitud: -73.428258
+  Motivo:   contiene enie (PENAS -> con enie real en el JSON) para doble
+            prueba de encoding; zona centro-sur
+
+===============================================
+CASO 3 - SUR
+===============================================
+  Nombre:   PUERTO AYSEN
+  Region:   Aysen
+  Latitud:  -45.403067
+  Longitud: -72.705254
+  Motivo:   region con acento (Aysen -> con acento real en el JSON);
+            nombre reconocible para validar resultado visual
+
+===============================================
+NOTAS
+===============================================
+  - Los nombres en el v2 estan en MAYUSCULAS (ej. "CANAMO", no "Canamo").
+    El buscador de P2 hace .toLowerCase() + normalize('NFD') + strip
+    diacriticos, asi que la busqueda deberia funcionar sin importar
+    mayusculas ni tildes del input del usuario.
+  - Al menos dos casos (CANAMO, LAS PENAS) tienen enie en el nombre
+    real del JSON, lo que prueba encoding UTF-8 end-to-end.

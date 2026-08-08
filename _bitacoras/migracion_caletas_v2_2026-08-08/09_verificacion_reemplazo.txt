@@ -1,0 +1,45 @@
+﻿=== PASO 3: VERIFICACION POST-REEMPLAZO ===
+Fecha: 2026-08-08
+
+Origen v2: C:\Users\katia\tmarea-backend\caletas_chile_v2.json
+  (NOTA: el prompt indicaba C:\Users\katia\caletas_chile_v2.json pero
+   el archivo real estaba en tmarea-backend\. Se uso la ruta correcta.)
+
+===============================================
+SHA256
+===============================================
+
+  origen_v2:       D892D0C8067B4EF4A90A24493845430C9C77AA1E4716ED8391EFE07AEFC1716B
+  destino_backend: D892D0C8067B4EF4A90A24493845430C9C77AA1E4716ED8391EFE07AEFC1716B
+  destino_pwa:     D892D0C8067B4EF4A90A24493845430C9C77AA1E4716ED8391EFE07AEFC1716B
+  Tres identicos:  SI
+
+===============================================
+CONTEO DE REGISTROS
+===============================================
+
+  backend (caletas_chile.json):  481 registros
+  pwa (caletas_chile.json):      481 registros
+  Ambos = 481:                   SI
+
+===============================================
+JSON PARSEABLE
+===============================================
+
+  backend: SI (ConvertFrom-Json exitoso, 481 objetos)
+  pwa:     SI (ConvertFrom-Json exitoso, 481 objetos)
+
+===============================================
+RESUMEN
+===============================================
+
+  Backups v1 en _migracion_caletas\:
+    caletas_chile.BACKUP_v1_backend.json  (SHA256: E6CEE549...)
+    caletas_chile.BACKUP_v1_pwa.json      (SHA256: E6CEE549...)
+
+  Archivos reemplazados:
+    tmarea-backend\caletas_chile.json     <- v2 (SHA256: D892D0C8...)
+    tmarea-pwa\src\data\caletas_chile.json <- v2 (SHA256: D892D0C8...)
+
+  Estado: REEMPLAZO EXITOSO. Los tres hashes coinciden.
+  Pendiente: verificacion funcional (Fase 3).

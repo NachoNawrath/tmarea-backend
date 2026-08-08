@@ -1,0 +1,52 @@
+=== TAREA 1-BIS A: COORDENADAS VALIDAS EN caletas_chile.json (VIEJO) ===
+Fecha: 2026-08-08
+
+Comando: ConvertFrom-Json + Where-Object { latitud -ne $null -and longitud -ne $null -and latitud -ne 0 -and longitud -ne 0 }
+
+===============================================
+RESULTADO
+===============================================
+
+  Total registros v1:             569
+  Con coordenadas VALIDAS:         21
+  Con coordenadas INVALIDAS:      548   (96.3% del archivo es basura)
+
+  Comparacion con v2:
+  Total registros v2:             481
+  Con coordenadas VALIDAS:        481   (100%)
+  Con coordenadas INVALIDAS:        0
+
+===============================================
+ANALISIS DE LOS 548 REGISTROS INVALIDOS
+===============================================
+
+TODOS los registros invalidos tienen prefijo "CAL-WIKI-*"
+(provienen del scraper de Wikipedia que fallo).
+
+Patrones de basura detectados:
+  - nombre = numeros sueltos: "1", "2", "3", ... "532"
+  - nombre = encabezados de region con encoding roto:
+      "Region De Antofagasta", "Region De Arica Y Parinacota",
+      "Region De Atacama", etc. (con tildes corruptas tipo "RegiAn")
+  - nombre = "Total" (fila de totales de una tabla HTML)
+  - Todos con latitud y longitud VACIAS (null/empty)
+
+===============================================
+LOS 21 REGISTROS CON COORDS VALIDAS (v1)
+===============================================
+
+Todos tienen prefijo "CAL-0*" (provienen del shapefile SERNAPESCA).
+Estos son los unicos registros utiles del archivo viejo.
+
+===============================================
+CONCLUSION
+===============================================
+
+La comparacion 569 vs 481 es enganosa.
+  - v1 tiene solo 21 registros UTILES (3.7%)
+  - v2 tiene 481 registros UTILES (100%)
+
+La migracion a v2 es una mejora MASIVA: se pasa de 21 caletas
+con coordenadas a 481 caletas con coordenadas.
+La "perdida" de 88 registros es en realidad una GANANCIA NETA
+de 460 caletas funcionales.

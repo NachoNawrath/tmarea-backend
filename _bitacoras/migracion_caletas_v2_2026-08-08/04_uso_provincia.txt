@@ -1,0 +1,26 @@
+﻿=== TAREA 4: ¿EL CÓDIGO USA "provincia"? ===
+Fecha: 2026-08-08
+
+═══════════════════════════════════════════════════
+RESPUESTA: SÍ, pero SOLO en el seed tool, NO en el buscador de P2.
+═══════════════════════════════════════════════════
+
+DÓNDE SE USA:
+  Archivo:  tmarea-backend\tools\seed-nodos-maritimos.js
+  Línea 48: async function insertarNodo(client, { nombre, tipo, fuente, fuente_id, region, provincia, comuna, lng, lat })
+  Línea 51: (nombre, nombre_normalizado, tipo, fuente, fuente_id, region, provincia, comuna, geom)
+  Línea 55: [nombre, nombre, tipo, fuente, fuente_id || null, region || null, provincia || null, comuna || null, lng, lat]
+  Línea 76: provincia: PROVINCIA || null,    ← para puertos MOP, no caletas
+  Línea 106: provincia: c.provincia || null, ← ESTA ES LA LÍNEA RELEVANTE (caletas SERNAPESCA)
+
+DÓNDE NO SE USA:
+  Archivo:  tmarea-pwa\src\screens\P2_VoyageSetup.jsx
+  Las referencias a ".provincia" en líneas 73 y 79 son para el config de "puerto"
+  (datos de puertos vía API /api/puertos), NO para caletas.
+  El código del buscador de caletas (tipo "caladero") NO accede a .provincia.
+
+IMPACTO DE LA MIGRACIÓN:
+  El v2 NO tiene campo "provincia". Esto significa que:
+  - El buscador de P2 NO se rompe (no usa provincia).
+  - Si se re-ejecuta el seed, la columna "provincia" de nodos_maritimos quedará
+    NULL para caletas. Evaluar si es aceptable o si se necesita mapear comuna→provincia.

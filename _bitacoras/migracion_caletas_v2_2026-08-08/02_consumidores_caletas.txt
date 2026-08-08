@@ -1,0 +1,58 @@
+=== TAREA 2: CONSUMIDORES DE DATOS DE CALETAS ===
+Fecha: 2026-08-08
+
+Busqueda por: "caletas_chile", "caletas", require/readFile de .json de caletas,
+              SELECT ... FROM ...caletas...
+
+===============================================
+A) FRONTEND - tmarea-pwa
+===============================================
+
+1. tmarea-pwa\src\screens\P2_VoyageSetup.jsx
+   Linea 3:    import caletasData from '../data/caletas_chile.json';
+   Linea 12:   // comentario "Busqueda local sobre caletas_chile.json"
+   Linea 16:   return caletasData.filter(c => { ... })
+   -> CONSUMIDOR PRINCIPAL: funcion buscarCaletasLocal() y CONFIG_BUSQUEDA.caladero
+
+2. tmarea-pwa\src\data\caletas_chile.json
+   -> El archivo de datos en si (569 registros, copia identica del backend)
+
+===============================================
+B) BACKEND - tmarea-backend
+===============================================
+
+3. tmarea-backend\caletas_chile.json
+   -> Archivo fuente (569 registros)
+
+4. tmarea-backend\tools\seed-nodos-maritimos.js
+   Linea 89:   const raw = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'caletas_chile.json'), 'utf8'));
+   Linea 90:   const caletas = Array.isArray(raw) ? raw : raw.features || [];
+   Linea 94-111: itera caletas para insertar nodos en PostGIS
+   -> CONSUMIDOR SECUNDARIO: seed tool one-time para nodos_maritimos
+
+===============================================
+C) SCRIPTS DE PROCESAMIENTO (no son runtime)
+===============================================
+
+5. tmarea-backend\procesar_caletas.py      (genera caletas_chile.json desde shapefile)
+6. tmarea-backend\procesar_caletas_v2.py   (idem, version 2)
+7. tmarea-backend\procesar_caletas_v3.py   (idem, version 3)
+8. tmarea-backend\procesar_caletas_v4.py   (idem, version 4)
+9. tmarea-backend\scraper_caletas.py       (scraper SUBPESCA + Wikipedia)
+   -> Estos scripts GENERAN el JSON. No son consumidores en runtime.
+
+===============================================
+D) DOCUMENTACION (solo mencionan caletas como concepto)
+===============================================
+
+10. tmarea-backend\CONTRATO_MOTOR.md:424
+11. tmarea-backend\docs\TMAREA_SPEC_Router_Raster_v1.md:717
+12. tmarea-backend\docs\TMAREA_Extraccion_Derrotero_SHOA.md:80
+    -> Solo texto descriptivo, no consumen datos.
+
+===============================================
+E) SQL / PostGIS
+===============================================
+
+No se encontro ningun SELECT ... FROM ...caletas... en el codigo.
+La tabla destino del seed es "nodos_maritimos", no una tabla "caletas".

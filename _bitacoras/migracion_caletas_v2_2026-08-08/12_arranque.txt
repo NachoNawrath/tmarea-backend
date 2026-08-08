@@ -1,0 +1,44 @@
+=== PASO 1 FASE 3: ARRANQUE DE SERVICIOS ===
+Fecha: 2026-08-08
+
+===============================================
+BACKEND (puerto 3000)
+===============================================
+
+  Comando: npm --prefix C:\Users\katia\tmarea-backend run dev
+  Resultado: ARRANCA SIN ERROR
+
+  Log de arranque:
+    > tmarea-backend@0.1.0 dev
+    > node --watch src/index.js
+    [CENTROS] Cargados 1323 centros
+    [concesiones] 4738 concesiones acuicolas cargadas
+    Servidor corriendo en puerto 3000
+    Boot: 806ms | RSS: 307.2MB | heapUsed: 42.3MB
+    [map-service] Conectado a PostGIS (mapa_local)
+
+  Puertos: 3000 estaba libre, no fue necesario matar procesos.
+
+===============================================
+PWA (puerto 5173)
+===============================================
+
+  Comando: npm --prefix C:\Users\katia\tmarea-pwa run dev
+  Resultado: ARRANCA SIN ERROR
+
+  Log de arranque:
+    > tmarea-pwa@0.1.0 dev
+    > vite
+    VITE v5.4.21 ready in 457 ms
+    Local: http://localhost:5173/
+
+  Puertos: 5173 estaba libre.
+
+===============================================
+CONCLUSION
+===============================================
+
+  Ambos servicios levantan sin error tras la migracion del JSON.
+  El backend carga sus datos normalmente (centros, concesiones, PostGIS).
+  Vite compila la PWA sin error (incluye el nuevo caletas_chile.json v2
+  en el bundle).

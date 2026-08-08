@@ -1,0 +1,59 @@
+=== CHECK DE ENCODING: BYTES CRUDOS UTF-8 EN caletas_chile.json (v2 migrado) ===
+Fecha: 2026-08-08
+
+Metodo: lectura con ReadAllBytes + busqueda de secuencia hexadecimal exacta.
+
+===============================================
+CASO 1: CANAMO
+===============================================
+
+  Bytes crudos alrededor del nombre:
+    20 22 43 41 C3 91 41 4D 4F 22 2C
+     _  "  C  A  --N--  A  M  O  "  ,
+
+  Nombre en el JSON: "CAÑAMO"
+  La Ñ esta codificada como C3 91 = U+00D1 (LATIN CAPITAL LETTER N WITH TILDE)
+  Encoding: UTF-8 CORRECTO
+
+===============================================
+CASO 2: LAS PENAS
+===============================================
+
+  Bytes crudos alrededor del nombre:
+    20 22 4C 41 53 20 50 45 C3 91 41 53 22 2C
+     _  "  L  A  S  _  P  E  --N--  A  S  "  ,
+
+  Nombre en el JSON: "LAS PEÑAS"
+  La Ñ esta codificada como C3 91 = U+00D1 (LATIN CAPITAL LETTER N WITH TILDE)
+  Encoding: UTF-8 CORRECTO
+
+===============================================
+CASO 3: PUERTO AYSEN
+===============================================
+
+  Bytes crudos alrededor del nombre:
+    3A 20 22 50 55 45 52 54 4F 20 41 59 53 45 4E 22 2C
+    :  _  "  P  U  E  R  T  O  _  A  Y  S  E  N  "  ,
+
+  Nombre en el JSON: "PUERTO AYSEN"
+  La E es 45 = ASCII plano, SIN acento. No es "AYSÉN" sino "AYSEN".
+  Nota: el campo "region" SI tiene acento ("Aysén"), pero el campo
+  "nombre" no lo tiene. Esto viene asi del dato fuente (SUBPESCA).
+
+===============================================
+RESUMEN ENCODING
+===============================================
+
+  Archivo:     UTF-8 correcto (sin BOM)
+  CAÑAMO:      Ñ correcta (C3 91)
+  LAS PEÑAS:   Ñ correcta (C3 91)
+  PUERTO AYSEN: sin acento en nombre (dato fuente asi), region si tiene acento
+
+  CONCLUSION: El encoding UTF-8 del JSON es correcto. Las eñes se
+  almacenan como C3 91 (Ñ mayuscula, 2 bytes UTF-8). No hay corrupcion.
+  El caso "AYSEN" sin acento no es un problema de encoding sino del
+  dato fuente de SUBPESCA (el campo region si dice "Aysen" con acento).
+
+  Para el buscador de P2 esto no es problema: buscarCaletasLocal() hace
+  normalize('NFD') + strip diacriticos, asi que buscar "aysen", "aysén"
+  o "AYSEN" encontrara el registro igualmente.

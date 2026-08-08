@@ -1,0 +1,25 @@
+﻿=== TAREA 1: FUENTE DE DATOS DEL BUSCADOR P2 ===
+Fecha: 2026-08-08
+
+RESULTADO: El buscador de caletas en P2 lee del archivo JSON, NO de PostGIS.
+
+EVIDENCIA:
+  Archivo: tmarea-pwa\src\screens\P2_VoyageSetup.jsx
+  Línea 3:  import caletasData from '../data/caletas_chile.json';
+  Línea 16: return caletasData.filter(c => { ... })
+
+  La función buscarCaletasLocal() (líneas 13-24) filtra el array importado
+  directamente en memoria. No hay fetch a API ni consulta SQL para caletas.
+
+  El JSON consumido vive en: tmarea-pwa\src\data\caletas_chile.json
+
+COPIA BACKEND vs PWA:
+  backend: tmarea-backend\caletas_chile.json
+  pwa:     tmarea-pwa\src\data\caletas_chile.json
+  Hash SHA256 idéntico: E6CEE549096183F8BF84075AFF9560A48E183847980564CEC77D4FE57E4208F3
+  → Son el MISMO archivo (copia exacta).
+
+NOTA SOBRE PostGIS:
+  El script tools\seed-nodos-maritimos.js lee caletas_chile.json para insertar
+  nodos en PostGIS (tabla nodos_maritimos), pero eso es un seed one-time, no la
+  fuente del buscador de P2. El buscador usa el JSON directamente.

@@ -1,0 +1,80 @@
+=== INSPECCION DE ARCHIVOS SUELTOS: bem_puertos* e insertar_puertos* ===
+Fecha: 2026-08-08
+
+===============================================
+ARCHIVO 1: bem_puertos_geocodificados.json
+===============================================
+
+  Tipo:                .json
+  Tamano:              8912 bytes
+  Ultima modificacion: 05-08-2026 21:01:16
+
+  Primeras 15 lineas:
+    [
+      {
+        "nombre": "Puerto de Arica",
+        "nombre_instalacion_principal": "Terminal Puerto Arica S.A.",
+        "tipo": "Puerto",
+        "autoridad_maritima": "Arica",
+        "operadores": ["Empresa Portuaria Arica", "Corpesca S.A."],
+        "seccion_bem": "8.1",
+        "eslora": ">100m",
+        "lat": -18.475,
+        "lon": -70.322,
+        "fuente_coord": "Google Earth"
+      },
+      {
+        "nombre": "Terminal Sica Sica",
+
+  Contenido: JSON array de puertos con datos del BEM (Boletin Estadistico
+  Maritimo). Cada registro tiene nombre, tipo, autoridad maritima,
+  operadores, seccion BEM, eslora, lat/lon, fuente de coordenadas.
+  Parece un producto intermedio de geocodificacion manual.
+
+  Algun codigo lo referencia por nombre: NO
+  Grep "bem_puertos_geocodificados" en tmarea-backend: 0 hits en codigo
+  (unico hit es nuestro reporte 15_git_status.txt)
+
+===============================================
+ARCHIVO 2: insertar_puertos_bem.sql
+===============================================
+
+  Tipo:                .sql
+  Tamano:              2449 bytes
+  Ultima modificacion: 05-08-2026 23:30:36
+
+  Primeras 15 lineas:
+    DO $$
+    DECLARE
+      r RECORD;
+      dup RECORD;
+      insertados INT := 0;
+      duplicados INT := 0;
+    BEGIN
+      FOR r IN
+        SELECT * FROM (VALUES
+          ('Puerto de Arica',            -70.322, -18.475),
+          ('Terminal Sica Sica',          -70.323, -18.461),
+          ('Puerto de Iquique',           -70.156, -20.201),
+          ('Puerto de Tocopilla',         -70.203, -22.085),
+          ('Puerto Angamos / Mejillones', -70.418, -23.100),
+          ('Puerto de Antofagasta',       -70.403, -23.645),
+
+  Contenido: Script SQL (PL/pgSQL con DO $$ block) que inserta puertos
+  del BEM en una tabla PostGIS, con deteccion de duplicados por
+  proximidad. Usa los mismos datos que el JSON pero en formato INSERT.
+  Parece un script one-shot ya ejecutado o por ejecutar.
+
+  Algun codigo lo referencia por nombre: NO
+  Grep "insertar_puertos_bem" en tmarea-backend: 0 hits en codigo
+  (unico hit es nuestro reporte 15_git_status.txt)
+
+===============================================
+CONCLUSION
+===============================================
+
+  Ambos archivos son productos intermedios de una sesion anterior
+  (05-08-2026) relacionada con puertos del BEM, no con caletas.
+  Ningun codigo del backend los referencia ni los importa.
+  Son archivos sueltos huerfanos — candidatos a limpieza o a moverse
+  a una carpeta de datos/scripts si se quieren conservar.
