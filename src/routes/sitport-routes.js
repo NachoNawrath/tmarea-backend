@@ -552,6 +552,7 @@ router.post('/restricciones-ruta', async (req, res) => {
   try {
     const { ruta_puntos, zarpe_id, recalada_id, nave_ab } = req.body;
 
+    // ── Validación de entrada ──────────────────────────────────────────────
     if (!Array.isArray(ruta_puntos) || ruta_puntos.length === 0) {
       return res.status(400).json({
         success: false,
@@ -562,14 +563,43 @@ router.post('/restricciones-ruta', async (req, res) => {
       });
     }
 
-    // 1. Obtener restricciones de área completa (tipo TODOS = afecta zona, no frente de atraque)
-    // No filtrar por NaveRecibe aquí — el BRE determina si aplica al perfil de la nave
-    const todasRestricciones = await sitportService.consultaRestricciones();
+    const puntosValidos = [];
+    for (const p of ruta_puntos) {
+      if (!p || typeof p.lat !== 'number' || typeof p.lng !== 'number' ||
+          !Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
+      if (p.lat < -90 || p.lat > -15 || p.lng < -120 || p.lng > -60) continue;
+      puntosValidos.push(p);
+    }
+
+    if (puntosValidos.length < 2) {
+      return res.status(400).json({
+        success: false,
+        error: 'Se requieren al menos 2 waypoints con lat/lng numéricos dentro del rango geográfico de Chile',
+        veredicto: 'Q',
+        restricciones_intermedias: [],
+        total: 0
+      });
+    }
+
+    // ── 1. Obtener restricciones SITPORT ────────────────────────────────────
+    let todasRestricciones;
+    try {
+      todasRestricciones = await sitportService.consultaRestricciones();
+    } catch (sitportError) {
+      console.warn('[sitport/restricciones-ruta] SITPORT no disponible:', sitportError.message);
+      return res.status(503).json({
+        success: false,
+        error: 'SITPORT_UNAVAILABLE',
+        error_detalle: 'No se pudo consultar el estado de restricciones de DIRECTEMAR',
+        veredicto: 'U',
+        restricciones_intermedias: [],
+        total: 0
+      });
+    }
+
     const restriccionesTransito = todasRestricciones.filter(r =>
       r.tipo && r.tipo.trim() === 'TODOS'
     );
-
-    const puntosValidos = ruta_puntos.filter(p => p && p.lat != null && p.lng != null);
 
     // 2. Matching geográfico PostGIS: qué celdas Voronoi (recortadas por costa)
     // intersectan la ruta. Reemplaza el radio de 50km — elimina falsos positivos
@@ -619,36 +649,42 @@ router.post('/restricciones-ruta', async (req, res) => {
     // Coordenadas de todas las zonas restringidas (para validar fondeadero)
     const zonasRestringidas = [...porBahia.values()].map(({ coordsBahia }) => coordsBahia);
 
-    // 5. Construir intermedias deduplicadas por bahía
+    // 5. Construir intermedias deduplicadas por bahía (aislamiento por bahía)
     const intermedias = [];
     let orden = 1;
+    let bahiasOmitidas = 0;
     for (const { idBahia, coords, rutaIdx, lista } of restriccionesEnRuta) {
       if (excluidas.has(idBahia)) continue;
 
-      const r = elegirRestriccion(lista);
-      const cap = getCapitaniaByBahiaId(idBahia);
-      const norm = normalizarRestriccion(r);
+      try {
+        const r = elegirRestriccion(lista);
+        const cap = getCapitaniaByBahiaId(idBahia);
+        const norm = normalizarRestriccion(r);
 
-      const rutaAntes = puntosValidos.slice(0, rutaIdx);
-      intermedias.push({
-        id_bahia: idBahia,
-        nombre_bahia: coords.nombre || r.GLBahia || 'Bahía',
-        lat: coords.lat,
-        lng: coords.lng,
-        restriccion: r.MotivoRestriccion || r.tiporestriccion || 'Restricción activa',
-        observacion: r.Observacion || '',
-        condicion: norm.condicion,
-        condicion_legible: derivarCondicion(r),
-        motivo: r.MotivoRestriccion || null,
-        tipo_restriccion: r.tiporestriccion || null,
-        nave_recibe: r.NaveRecibe || null,
-        capitania: cap?.capitania || null,
-        gobernacion: cap?.gobernacion || null,
-        telefono: cap?.telefono || null,
-        orden_en_ruta: orden++,
-        fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, rutaAntes, zonasRestringidas),
-        _raw: r,
-      });
+        const rutaAntes = puntosValidos.slice(0, rutaIdx);
+        intermedias.push({
+          id_bahia: idBahia,
+          nombre_bahia: coords.nombre || r.GLBahia || 'Bahía',
+          lat: coords.lat,
+          lng: coords.lng,
+          restriccion: r.MotivoRestriccion || r.tiporestriccion || 'Restricción activa',
+          observacion: r.Observacion || '',
+          condicion: norm.condicion,
+          condicion_legible: derivarCondicion(r),
+          motivo: r.MotivoRestriccion || null,
+          tipo_restriccion: r.tiporestriccion || null,
+          nave_recibe: r.NaveRecibe || null,
+          capitania: cap?.capitania || null,
+          gobernacion: cap?.gobernacion || null,
+          telefono: cap?.telefono || null,
+          orden_en_ruta: orden++,
+          fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, rutaAntes, zonasRestringidas),
+          _raw: r,
+        });
+      } catch (bahiaError) {
+        bahiasOmitidas++;
+        console.warn(`[sitport/restricciones-ruta] Bahía ${idBahia} omitida por dato malformado:`, bahiaError.message);
+      }
     }
 
     // Motor de reglas: evaluar toda la ruta contra el perfil de la nave
@@ -661,7 +697,7 @@ router.post('/restricciones-ruta', async (req, res) => {
       const estado = ev.estado || 'indeterminado';
       return {
         ...sinRaw,
-        aplica_a_mi_embarcacion: estado !== 'no_afecta',
+        aplica: estado !== 'no_afecta',
         evaluacion: {
           bloquea: ev.bloquea ?? false,
           estado,
@@ -671,6 +707,8 @@ router.post('/restricciones-ruta', async (req, res) => {
         },
       };
     });
+
+    console.log(`[sitport/restricciones-ruta] waypoints=${puntosValidos.length} bahias_matcheadas=${porBahia.size} restricciones=${intermediasEnriquecidas.length} omitidas=${bahiasOmitidas} veredicto=${evaluacion.veredicto}`);
 
     res.json({
       success: true,
@@ -687,7 +725,7 @@ router.post('/restricciones-ruta', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('[sitport/restricciones-ruta] Error:', error.message);
+    console.error('[sitport/restricciones-ruta] Error no controlado:', error.message);
     res.status(502).json({
       success: false,
       error: error.message,

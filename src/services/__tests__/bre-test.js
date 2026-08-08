@@ -151,6 +151,33 @@ describe('normalizarRestriccion', () => {
     });
     assert.equal(r.condicion, 'TEMPORAL');
   });
+
+  it('detecta VARIABLE desde MotivoRestriccion cuando Observacion no lo contiene (sub-zona NORMAL)', () => {
+    // Caso real: SITPORT reporta TIEMPO VARIABLE en MotivoRestriccion pero Observacion
+    // describe sub-zonas donde la bahía principal dice CONDICION NORMAL
+    const r = normalizarRestriccion({
+      bahia: 124,
+      GLBahia: 'MELINKA',
+      Observacion: 'GOLFO CORCOVADO RESTRINGIDO PARA NAVES MENORES DE 25 AB. BAHIA MELINKA CONDICION NORMAL.',
+      MotivoRestriccion: 'TIEMPO VARIABLE',
+      NaveRecibe: 'NAVE MENOR (<25 AB)',
+    });
+    assert.equal(r.condicion, 'VARIABLE', 'debe detectar VARIABLE desde MotivoRestriccion');
+    assert.equal(r.umbral_ab_fuera, 25, 'debe extraer umbral 25 AB de la sub-zona');
+    assert.equal(r.afecta_menores, true);
+  });
+
+  it('VARIABLE desde MotivoRestriccion — datos reales Melinka sub-zona', () => {
+    const r = normalizarRestriccion({
+      bahia: 124,
+      GLBahia: 'MELINKA',
+      Observacion: 'G.CORCOVADO RESTRINGIDO PARA NAVES MENORES DE 25 AB. B.MELINKA CONDICION NORMAL.',
+      MotivoRestriccion: 'TIEMPO VARIABLE',
+      NaveRecibe: 'NAVE MENOR (&LT;25 AB)',
+    });
+    assert.equal(r.condicion, 'VARIABLE');
+    assert.equal(r.umbral_ab_fuera, 25);
+  });
 });
 
 // ── Tests del motor de reglas ────────────────────────────────────────────────
@@ -210,6 +237,21 @@ describe('evaluarRestriccion', () => {
     assert.equal(ev.nivel, 'UV');
     assert.equal(ev.bloquea, true);
   });
+
+  it('Melinka VARIABLE sub-zona: nave AB 15 con umbral 25 → U, precaución (aplica)', async () => {
+    const norm = { condicion: 'VARIABLE', afecta_menores: true, afecta_mayores: false, umbral_ab_fuera: 25, umbral_ab_dentro: 25, bloqueo_total: false };
+    const ev = await evaluarRestriccion(norm, 15);
+    assert.equal(ev.nivel, 'U');
+    assert.equal(ev.bloquea, false);
+    assert.notEqual(ev.estado, 'no_afecta', 'debe afectar a nave de 15 AB');
+  });
+
+  it('Melinka VARIABLE sub-zona: nave AB 50 con umbral 25 → no_afecta (informativa)', async () => {
+    const norm = { condicion: 'VARIABLE', afecta_menores: true, afecta_mayores: false, umbral_ab_fuera: 25, umbral_ab_dentro: 25, bloqueo_total: false };
+    const ev = await evaluarRestriccion(norm, 50);
+    assert.equal(ev.estado, 'no_afecta');
+    assert.equal(ev.bloquea, false);
+  });
 });
 
 // ── Tests del evaluador de ruta ──────────────────────────────────────────────
@@ -259,6 +301,82 @@ describe('evaluarRuta', () => {
     const resultado = await evaluarRuta([], 15);
     assert.equal(resultado.veredicto, 'Q');
     assert.equal(resultado.restricciones.length, 0);
+  });
+
+  it('Melinka VARIABLE sub-zona con datos reales: nave 15 AB → U, nave 50 AB → Q (informativa)', async () => {
+    const melinkaRaw = {
+      bahia: 124, GLBahia: 'MELINKA', tipo: 'TODOS',
+      MotivoRestriccion: 'TIEMPO VARIABLE',
+      Observacion: 'GOLFO CORCOVADO RESTRINGIDO PARA NAVES MENORES DE 25 AB. BAHIA MELINKA CONDICION NORMAL.',
+      NaveRecibe: 'NAVE MENOR (&LT;25 AB)',
+    };
+    const intermedia = { nombre_bahia: 'Melinka', id_bahia: 124, orden_en_ruta: 1, _raw: melinkaRaw };
+
+    const res15 = await evaluarRuta([intermedia], 15);
+    assert.equal(res15.veredicto, 'U', 'nave 15 AB debe recibir veredicto U');
+    assert.notEqual(res15.restricciones[0].estado, 'no_afecta');
+
+    const res50 = await evaluarRuta([intermedia], 50);
+    assert.equal(res50.veredicto, 'Q', 'nave 50 AB (sobre umbral) → veredicto Q');
+    assert.equal(res50.restricciones[0].estado, 'no_afecta', 'se incluye como informativa');
+  });
+});
+
+// ── Test de integración: restricción no_afecta sigue presente como informativa
+// Propiedad INV-1.2: una restricción que no aplica a la embarcación NUNCA se
+// descarta; aparece en la salida con aplica:false y estado:'no_afecta'.
+// Este test habría atrapado la regresión del rename aplica_a_mi_embarcacion→aplica.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('integración: partición bloqueantes vs informativas (INV-1.2)', () => {
+  function enriquecer(intermedias, evaluacion) {
+    return intermedias.map((r, i) => {
+      const ev = evaluacion.restricciones[i] || {};
+      const { _raw, ...sinRaw } = r;
+      const estado = ev.estado || 'indeterminado';
+      return {
+        ...sinRaw,
+        aplica: estado !== 'no_afecta',
+        evaluacion: {
+          bloquea: ev.bloquea ?? false,
+          estado,
+          umbral_ab: ev.umbral_ab ?? null,
+          nivel: ev.nivel || null,
+          motivo: ev.motivo || null,
+        },
+      };
+    });
+  }
+
+  it('restricción que no aplica a la embarcación sigue presente como informativa', async () => {
+    const intermedias = [
+      { nombre_bahia: 'ZONA BLOQ', id_bahia: 1, orden_en_ruta: 1, _raw: { bahia: 1, GLBahia: 'ZONA BLOQ', Observacion: 'CONDICION DE MAL TIEMPO PARA EMBARCACIONES MENORES DE 50 AB', MotivoRestriccion: 'MAL TIEMPO', NaveRecibe: 'NAVE MENOR (<100 AB)' } },
+      { nombre_bahia: 'ZONA INFO', id_bahia: 2, orden_en_ruta: 2, _raw: { bahia: 2, GLBahia: 'ZONA INFO', Observacion: 'CONDICION DE MAL TIEMPO PARA EMBARCACIONES MENORES DE 25 AB', MotivoRestriccion: 'MAL TIEMPO', NaveRecibe: 'NAVE MENOR (<100 AB)' } },
+    ];
+
+    const evaluacion = await evaluarRuta(intermedias, 43);
+    const salida = enriquecer(intermedias, evaluacion);
+
+    assert.equal(salida.length, 2, 'ambas restricciones deben estar en la salida');
+
+    const bloq = salida.find(r => r.id_bahia === 1);
+    assert.equal(bloq.aplica, true, 'restricción que bloquea tiene aplica:true');
+    assert.equal(bloq.evaluacion.bloquea, true);
+
+    const info = salida.find(r => r.id_bahia === 2);
+    assert.equal(info.aplica, false, 'restricción que no aplica tiene aplica:false');
+    assert.equal(info.evaluacion.estado, 'no_afecta');
+    assert.equal(info.evaluacion.bloquea, false);
+  });
+
+  it('campo aplica es booleano y coincide con evaluacion.estado', async () => {
+    const intermedias = [
+      { nombre_bahia: 'Z', id_bahia: 1, orden_en_ruta: 1, _raw: { bahia: 1, GLBahia: 'Z', Observacion: 'TEMPORAL', MotivoRestriccion: 'TEMPORAL', NaveRecibe: 'NAVE MENOR (<100 AB)' } },
+    ];
+    const evaluacion = await evaluarRuta(intermedias, 15);
+    const salida = enriquecer(intermedias, evaluacion);
+
+    assert.strictEqual(typeof salida[0].aplica, 'boolean', 'aplica debe ser booleano');
+    assert.equal(salida[0].aplica, salida[0].evaluacion.estado !== 'no_afecta');
   });
 });
 
