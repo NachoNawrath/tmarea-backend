@@ -48,13 +48,13 @@ const AB_PATTERNS = [
   /EMBARCACIONES\s+MENORES?\s+DE\s+(\d+)\s+ARQUEO\s+BRUTO/,
   /EMBARCACIONES\s+MENORES?\s+A\s+(\d+)\s*A\.?B/,
   /NAVES?\s+MENORES?\s+DE\s+(\d+)\s*A\.?B/,
-  /EE\.?MM\.?\s*(?:DE\s+)?(\d+)\s*AB/,
-  /EE\.?MM\.?\s*-\s*(\d+)\s*AB/,
-  /EE\.?MM\.?\s*<\s*(\d+)\s*AB/,
-  /EE\.?MM\.?\s*(?:DE\s+)?(\d+)\s*TRG/,
+  /EE\.?MM\.?\s*(?:(?:DE|A)\s+)?(\d+)\s*A\.?B/,
+  /EE\.?MM\.?\s*-\s*(\d+)\s*A\.?B/,
+  /EE\.?MM\.?\s*<\s*(\d+)\s*A\.?B/,
+  /EE\.?MM\.?\s*(?:(?:DE|A)\s+)?(\d+)\s*TRG/,
   /NAVES?\s+MENORES?\s+DE\s+(\d+)\s+ARQUEO\s+BRUTO/,
   /NAVE\s+MENOR\s+A\s+(\d+)\s*TRG/,
-  /(\d+)\s*(?:AB|TRG)\b/,
+  /(\d+)\s*(?:A\.?B|TRG)\b/,
 ];
 
 function extraerUmbralDeTexto(textoNorm) {
@@ -71,10 +71,10 @@ function extraerUmbrales(textoNorm) {
   }
 
   // Buscar umbrales separados para DENTRO y FUERA
-  const dentroMatch = textoNorm.match(/(\d+)\s*(?:AB|TRG)\s+(?:[A-Z\s]*?)DENTRO/) ||
-                      textoNorm.match(/DENTRO[^.;]*?(\d+)\s*(?:AB|TRG)/);
-  const fueraMatch  = textoNorm.match(/(\d+)\s*(?:AB|TRG)\s+(?:[A-Z\s]*?)FUERA/) ||
-                      textoNorm.match(/FUERA[^.;]*?(\d+)\s*(?:AB|TRG)/);
+  const dentroMatch = textoNorm.match(/(\d+)\s*(?:A\.?B\.?|TRG)\s+(?:[A-Z\s]*?)DENTRO/) ||
+                      textoNorm.match(/DENTRO[^.;]*?(\d+)\s*(?:A\.?B|TRG)/);
+  const fueraMatch  = textoNorm.match(/(\d+)\s*(?:A\.?B\.?|TRG)\s+(?:[A-Z\s]*?)FUERA/) ||
+                      textoNorm.match(/FUERA[^.;]*?(\d+)\s*(?:A\.?B|TRG)/);
 
   if (dentroMatch && fueraMatch) {
     return {

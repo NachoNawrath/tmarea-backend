@@ -96,6 +96,19 @@ describe('normalizarRestriccion', () => {
     assert.equal(r.umbral_ab_fuera, 25);
   });
 
+  it('extrae umbral EE.MM. A 25 A.B. (preposición A y puntos)', () => {
+    const r = normalizarRestriccion({
+      bahia: 147,
+      GLBahia: 'TEST',
+      Observacion: 'SE ESTABLECE CONDICIÓN DE PUERTO "VARIABLE". SE SUSPENDE EL TRAFICO DE EE.MM. A 25 A.B. DENTRO Y FUERA DE LA BAHÍA.',
+      MotivoRestriccion: 'VIENTO',
+      NaveRecibe: 'NAVE MENOR (<100 AB)',
+    });
+    assert.equal(r.umbral_ab_fuera, 25);
+    assert.equal(r.umbral_ab_dentro, 25);
+    assert.equal(r.condicion, 'VARIABLE');
+  });
+
   it('detecta TODO TIPO DE NAVES como bloqueo_total', () => {
     const r = normalizarRestriccion({
       bahia: 100,
