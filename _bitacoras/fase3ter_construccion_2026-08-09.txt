@@ -1,0 +1,305 @@
+﻿================================================================
+1. ESTADO DE LAS GEOMETRIAS POR AMBITO
+================================================================
+     ambito     | total | nulas | vacias | area_cero | invalidas | validas 
+----------------+-------+-------+--------+-----------+-----------+---------
+ antartica      |     4 |     0 |      0 |         0 |         0 |       4
+ insular_remota |     2 |     2 |      0 |         0 |         0 |       0
+ lacustre       |     6 |     0 |      0 |         0 |         0 |       6
+ maritima       |    52 |     8 |      0 |         0 |         0 |      44
+(4 filas)
+
+
+================================================================
+2. AREA TOTAL POR AMBITO (km2)
+================================================================
+     ambito     | con_geom | km2_total 
+----------------+----------+-----------
+ antartica      |        4 | 1357462.8
+ insular_remota |        0 |          
+ lacustre       |        6 |    4466.3
+ maritima       |       44 | 2112999.5
+(4 filas)
+
+
+================================================================
+3. CONTEO DE NULAS POR CAUSA
+================================================================
+  estado_geometria   |                                                                                                           causa                                                                                                           | n 
+---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---
+ nula_no_determinada | falta un paralelo limite                                                                                                                                                                                                  | 3
+ nula_no_determinada | islas sin coordenadas                                                                                                                                                                                                     | 2
+ nula_declarada      | No cerrable con el decreto: el limite norte pasa por el 'hito N 26' del Canal Beagle, que el texto nombra sin coordenadas, y por 'la delimitacion existente del Canal Beagle'. Falta dato de fuente, no de transcripcion. | 1
+ nula_declarada      | El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al Sur de 36 42 25 S (limite sur declarado). El contorno de la bahia no viene con vertices. No se infiere.                                          | 1
+ nula_declarada      | Limites definidos por accidentes geograficos sin coordenadas (Cabo San Vicente, Punta Anxius). Requiere georreferenciacion externa.                                                                                       | 1
+ nula_declarada      | Limites definidos por accidentes geograficos sin coordenadas (Punta Harry, Cabo San Vicente). Requiere georreferenciacion externa.                                                                                        | 1
+ nula_declarada      | La prosa describe el contorno de la Bahia de Concepcion sin dar sus vertices. La poligonal registrada son los dos extremos explicitos.                                                                                    | 1
+(7 filas)
+
+
+================================================================
+4. DETALLE DE CADA NULA
+================================================================
+      nombre      |     ambito     |  estado_geometria   |                                          causa                                           
+------------------+----------------+---------------------+------------------------------------------------------------------------------------------
+ Hanga Roa        | insular_remota | nula_no_determinada | el decreto nombra islas sin coordenadas; requiere capa de islas
+ Juan Fernandez   | insular_remota | nula_no_determinada | el decreto nombra islas sin coordenadas; requiere capa de islas
+ Arica            | maritima       | nula_no_determinada | el decreto no entrega con que cerrar: falta limite norte. No se toma del vecino.
+ Baker            | maritima       | nula_no_determinada | el decreto no entrega con que cerrar: falta limite sur. No se toma del vecino.
+ Lirquen          | maritima       | nula_declarada      | La prosa describe el contorno de la Bahia de Concepcion sin dar sus vertices. La poligon
+ Puerto Eden      | maritima       | nula_no_determinada | el decreto no entrega con que cerrar: falta limite norte. No se toma del vecino.
+ Puerto Williams  | maritima       | nula_declarada      | No cerrable con el decreto: el limite norte pasa por el 'hito N 26' del Canal Beagle, qu
+ Punta Delgada    | maritima       | nula_declarada      | Limites definidos por accidentes geograficos sin coordenadas (Punta Harry, Cabo San Vice
+ Talcahuano       | maritima       | nula_declarada      | El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al Sur de 36 42 25
+ Tierra del Fuego | maritima       | nula_declarada      | Limites definidos por accidentes geograficos sin coordenadas (Cabo San Vicente, Punta An
+(10 filas)
+
+
+================================================================
+5. CRITERIO DE FALLO — sin geometria y NO declarada sin georreferenciar
+================================================================
+ jurisdicciones_en_fallo 
+-------------------------
+                       8
+(1 fila)
+
+
+================================================================
+6. TRASLAPES ENTRE JURISDICCIONES Y SU SUPERFICIE
+================================================================
+          a           |  amb_a   |        b         |  amb_b   |    km2    
+----------------------+----------+------------------+----------+-----------
+ Puerto Aguirre       | maritima | Puerto Chacabuco | maritima | 28325.111
+ Chonchi              | maritima | Quellon          | maritima |  6144.774
+ Castro               | maritima | Chonchi          | maritima |  3705.071
+ Castro               | maritima | Quemchi          | maritima |  1977.893
+ Puerto Aguirre       | maritima | Puerto Cisnes    | maritima |  1331.861
+ Ancud                | maritima | Maullin          | maritima |  1293.070
+ Corral               | maritima | Valdivia         | maritima |  1069.900
+ Calbuco              | maritima | Maullin          | maritima |   281.838
+ Rio Negro Hornopiren | maritima | Quemchi          | maritima |   254.866
+ Maullin              | maritima | Puerto Montt     | maritima |   202.066
+ Lago Ranco           | lacustre | Puerto Varas     | lacustre |   155.426
+ Achao                | maritima | Quemchi          | maritima |    82.289
+ Cochamo              | maritima | Maullin          | maritima |    30.316
+ Calbuco              | maritima | Puerto Montt     | maritima |    21.101
+(14 filas)
+
+
+================================================================
+7. AREA POR JURISDICCION CONSTRUIDA, POR METODO
+================================================================
+      metodo      |        nombre        |  ambito   |   km2    | vertices 
+------------------+----------------------+-----------+----------+----------
+ anillo_poligonal | Achao                | maritima  |    889.9 |     4077
+ anillo_vertices  | Bahia Paraiso        | antartica | 776121.2 |        5
+ anillo_vertices  | Puerto Soberania     | antartica | 253818.7 |        6
+ anillo_vertices  | Bahia Fildes         | antartica | 176233.1 |        6
+ anillo_vertices  | Rada Covadonga       | antartica | 151289.8 |        4
+ anillo_vertices  | Calbuco              | maritima  |    918.8 |     5948
+ anillo_vertices  | Rio Negro Hornopiren | maritima  |    316.9 |       10
+ anillo_vertices  | Puerto Montt         | maritima  |    290.7 |     2137
+ banda_paralelos  | Taltal               | maritima  | 161418.3 |      688
+ banda_paralelos  | Constitucion         | maritima  | 135075.2 |       67
+ banda_paralelos  | Caldera              | maritima  | 134710.5 |      733
+ banda_paralelos  | Punta Arenas         | maritima  | 130239.8 |   631758
+ banda_paralelos  | Los Vilos            | maritima  | 128147.4 |     1882
+ banda_paralelos  | Puerto Natales       | maritima  | 127030.6 |   566964
+ banda_paralelos  | Huasco               | maritima  | 106205.1 |     1718
+ banda_paralelos  | Antofagasta          | maritima  | 102158.0 |     3239
+ banda_paralelos  | Pichilemu            | maritima  | 101676.3 |       43
+ banda_paralelos  | Chanaral             | maritima  |  65172.9 |     1831
+ banda_paralelos  | Iquique              | maritima  |  58794.4 |    18787
+ banda_paralelos  | Papudo               | maritima  |  57098.8 |      667
+ banda_paralelos  | Tocopilla            | maritima  |  48851.0 |      414
+ banda_paralelos  | San Antonio          | maritima  |  47945.7 |     2338
+ banda_paralelos  | Valparaiso           | maritima  |  44448.3 |       63
+ banda_paralelos  | Lebu                 | maritima  |  38126.1 |      667
+ banda_paralelos  | Coquimbo             | maritima  |  36949.4 |     3012
+ banda_paralelos  | Quintero             | maritima  |  33340.3 |      314
+ banda_paralelos  | Tongoy               | maritima  |  32945.1 |       61
+ banda_paralelos  | Carahue              | maritima  |  32531.1 |     1318
+ banda_paralelos  | Patache              | maritima  |  31669.8 |      321
+ banda_paralelos  | Algarrobo            | maritima  |  31645.3 |       73
+ banda_paralelos  | Mejillones           | maritima  |  23862.4 |      235
+ banda_paralelos  | Lota                 | maritima  |  12746.4 |     9113
+ banda_paralelos  | Coronel              | maritima  |   9266.6 |       83
+ banda_paralelos  | San Vicente          | maritima  |   4094.6 |     6118
+ poligonal_rol_E  | Melinka              | maritima  |  41753.1 |   111082
+ poligonal_rol_N  | Puerto Chacabuco     | maritima  | 115088.8 |   192271
+ poligonal_rol_N  | Corral               | maritima  |  13370.6 |      826
+ poligonal_rol_NE | Quellon              | maritima  |  36130.4 |     9682
+ poligonal_rol_NE | Chonchi              | maritima  |  15852.7 |     1293
+ poligonal_rol_S  | Maullin              | maritima  |  51831.3 |    13854
+ poligonal_rol_S  | Puerto Aguirre       | maritima  |  36651.5 |   121648
+ poligonal_rol_S  | Valdivia             | maritima  |  16483.4 |      482
+ poligonal_rol_S  | Quemchi              | maritima  |  15451.6 |     8404
+ poligonal_rol_SE | Castro               | maritima  |  11387.0 |     2743
+ poligonal_rol_SE | Ancud                | maritima  |   8869.2 |     1168
+ poligonal_rol_W  | Puerto Cisnes        | maritima  |   7427.5 |    55870
+ poligonal_rol_W  | Chaiten              | maritima  |   4106.3 |    11431
+ poligonal_rol_W  | Cochamo              | maritima  |     30.3 |      351
+ union_cuerpos    | Lago General Carrera | lacustre  |   1627.1 |    11835
+ union_cuerpos    | Puerto Varas         | lacustre  |   1437.4 |     6466
+ union_cuerpos    | Lago Ranco           | lacustre  |    648.3 |     3608
+ union_cuerpos    | Lago Panguipulli     | lacustre  |    367.6 |     4348
+ union_cuerpos    | Lago Villarrica      | lacustre  |    313.1 |     2706
+ union_cuerpos    | Lago Rapel           | lacustre  |     72.8 |     2366
+(54 filas)
+
+
+================================================================
+8. INDICES Y CAPAS ANTERIORES
+================================================================
+             indexname             
+-----------------------------------
+ idx_jurisdicciones_decreto_ambito
+ idx_jurisdicciones_decreto_geom
+ jurisdicciones_decreto_pkey
+(3 filas)
+
+            relname             |  tipo   | tamano 
+--------------------------------+---------+--------
+ bahia_jurisdicciones           | matview | 296 kB
+ bahia_jurisdicciones_v1_backup | matview | 352 kB
+ jurisdicciones_decreto         | table   | 29 MB
+(3 filas)
+
+
+DROP TABLE
+psql:C:/Users/katia/tmarea-backend/scripts/fase3ter_adyacencias.sql:5: NOTICE:  la tabla «_ady» no existe, omitiendo
+CREATE TABLE
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+SELECT 82818
+CREATE INDEX
+ANALYZE
+    vecina_a    |       vecina_b       | vert_comunes |     est_a      |     est_b      | km2_traslape | km2_hueco 
+----------------+----------------------+--------------+----------------+----------------+--------------+-----------
+ Puerto Aguirre | Puerto Chacabuco     |            4 | construida     | construida     |   28325.1105 |    0.0000
+ Chonchi        | Quellon              |            4 | construida     | construida     |    6144.7742 |    7.7272
+ Castro         | Chonchi              |            4 | construida     | construida     |    3705.0707 |    1.5614
+ Puerto Aguirre | Puerto Cisnes        |            2 | construida     | construida     |    1331.8608 |    0.8769
+ Ancud          | Maullin              |            2 | construida     | construida     |    1293.0704 |    0.0002
+ Corral         | Valdivia             |            3 | construida     | construida     |    1069.9003 |    0.0000
+ Achao          | Quemchi              |            2 | construida     | construida     |      82.2889 |    0.0000
+ Calbuco        | Puerto Montt         |            3 | construida     | construida     |      21.1009 |    6.3814
+ Lirquen        | Talcahuano           |            2 | nula_declarada | nula_declarada |       0.0000 |   46.1414
+ Bahia Paraiso  | Rada Covadonga       |            2 | construida     | construida     |       0.0000 |    4.8794
+ Achao          | Castro               |            6 | construida     | construida     |       0.0000 |    3.6073
+ Bahia Paraiso  | Puerto Soberania     |            2 | construida     | construida     |       0.0000 |    3.3787
+ Bahia Fildes   | Rada Covadonga       |            2 | construida     | construida     |       0.0000 |    3.3277
+ Bahia Fildes   | Puerto Soberania     |            2 | construida     | construida     |       0.0000 |    3.1750
+ Chaiten        | Quellon              |            2 | construida     | construida     |       0.0000 |    3.1224
+ Melinka        | Puerto Cisnes        |            4 | construida     | construida     |       0.0000 |    2.6563
+ Ancud          | Calbuco              |            2 | construida     | construida     |       0.0000 |    2.3292
+ Calbuco        | Rio Negro Hornopiren |            2 | construida     | construida     |       0.0000 |    1.6649
+ Cochamo        | Puerto Montt         |            2 | construida     | construida     |       0.0000 |    1.4768
+(19 filas)
+
+
+==============================================================================
+9. QUE ES DECRETO Y QUE ES CONVENCION NUESTRA
+==============================================================================
+DECRETO: paralelos limite, poligonales completas, rol_cadena con su cita, y la
+  extension mar afuera (Art. 2: mar territorial, zona contigua, ZEE y
+  plataforma continental).
+CONVENCION NUESTRA: la separacion lateral entre Capitanias dentro de la franja
+  oceanica (cada limite se prolonga por su propio paralelo); el valor de 200 mn
+  = 370.400 m como limite exterior operativo; el cierre generoso hacia tierra
+  con resta posterior de la capa de tierra; y la aproximacion recta de los
+  tramos que el decreto describe como 'siguiendo el litoral'.
+
+==============================================================================
+10. DEFECTO CORREGIDO EN ESTA FASE — EL LIMITE EXTERIOR NO SE APLICABA
+==============================================================================
+El recorte por limite exterior venia siendo un no-op desde la Fase 3. La causa:
+se buffereaba la union de TODA la tierra de ne_land (un poligono mundial) en
+espacio geography; el resultado es una geometria degenerada que cubre el globo,
+asi que la interseccion no recortaba nada y los poligonos quedaban pegados al
+borde arbitrario de la caja (-85), no al limite del Art. 2.
+
+Sintoma que lo delato: Melinka con extent BOX(-85 ... ) pese a que el recorte
+reportaba UPDATE 44.
+
+Correccion: recortar ne_land al bbox de trabajo ANTES de unir y buffear.
+Efecto medido:
+  area maritima            2250112.3 -> 2112999.5 km2   (-137112.8)
+  hueco Melinka x Cisnes       217.36 ->      2.66 km2
+  hueco Chaiten x Quellon      137.42 ->      3.12 km2
+
+==============================================================================
+11. CONTROL DE ADYACENCIA — 19 PARES QUE COMPARTEN 2 O MAS VERTICES
+==============================================================================
+HUECO se mide como la superficie dentro de una franja de 1 km alrededor de la
+frontera compartida que no cubre ninguna de las dos y que tampoco es tierra.
+La frontera se reconstruye siguiendo el ORDEN del decreto, no ordenando los
+vertices por coordenada (eso daba un zigzag y falseaba la medicion).
+
+RESULTADO: 8 pares con traslape, 11 sin traslape. Huecos, todos menores a 8 km2
+salvo Lirquen x Talcahuano (46,14 km2), que es esperable porque las dos estan
+nulas y declaradas: la franja no la cubre nadie.
+
+LOS 8 TRASLAPES (km2):
+  Puerto Aguirre x Puerto Chacabuco   28325.111
+  Chonchi x Quellon                    6144.774
+  Castro x Chonchi                     3705.071
+  Puerto Aguirre x Puerto Cisnes       1331.861
+  Ancud x Maullin                      1293.070
+  Corral x Valdivia                    1069.900
+  Achao x Quemchi                        82.289
+  Calbuco x Puerto Montt                 21.101
+
+==============================================================================
+12. POR QUE PERSISTEN ESOS 8 TRASLAPES
+==============================================================================
+El metodo interpreta rol_cadena como 'la poligonal es ESE borde del poligono, y
+la jurisdiccion queda del lado opuesto'. Con esa lectura, dos vecinas que
+comparten frontera tienen que traer roles COMPLEMENTARIOS. En los 8 pares de
+arriba no los traen, o el rol no alcanza a expresar la geometria.
+
+CASO 1 — roles no complementarios sobre la misma frontera:
+  Chonchi rol=NE y Quellon rol=NE, sobre 4 vertices compartidos. Los dos roles
+  dejan la jurisdiccion al Weste de la misma linea, asi que las dos ocupan el
+  mismo lado. Igual Castro (SE) x Chonchi (NE): ambos al Weste.
+
+CASO 2 — rol N o S sobre una poligonal que corre de Norte a Sur:
+  Puerto Aguirre rol=S y Puerto Chacabuco rol=N comparten los mismos 4 puntos.
+  Esa poligonal corre de Norte a Sur, o sea parte el espacio en Este y Weste.
+  Un rol N o S no puede elegir entre esos dos trozos. Ademas la cita que la
+  propia fuente adjunta a Puerto Aguirre empieza 'Por el Norte el paralelo
+  44 46 54 S hasta el Islote Cayo Blanco y desde este punto la linea
+  imaginaria...', o sea introduce la poligonal bajo 'Por el Norte', mientras
+  rol_cadena dice S. Rol y cita no concuerdan.
+
+  Contraste que confirma la lectura: Melinka (rol E) y Puerto Cisnes (rol W)
+  comparten los mismos 4 puntos con roles complementarios sobre una poligonal
+  Norte-Sur, y dan traslape 0,0000 km2 y hueco 2,66 km2. El metodo funciona
+  cuando el rol es el correcto.
+
+  Calbuco x Puerto Montt (21,101 km2) es aparte: las dos son anillo y el
+  traslape viene de aproximar con rectas los tramos 'siguiendo el litoral'.
+
+NO SE CORRIGIO NINGUN rol_cadena. Cambiarlo es tocar la fuente y decidir que
+dice el decreto; es del owner, no de este script.
+
+==============================================================================
+FIN EVIDENCIA FASE 3 ter
+==============================================================================

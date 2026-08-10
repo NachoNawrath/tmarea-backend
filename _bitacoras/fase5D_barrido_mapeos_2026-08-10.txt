@@ -1,0 +1,476 @@
+================================================================================
+FASE 5 — ETAPA 0. BARRIDO DE MAPEOS POR CLAVE EN LOS SCRIPTS DE FASES 1 A 3
+Fecha: 2026-08-10   Repo: tmarea-backend   Rige CONTRATO_MOTOR.md v1.6
+================================================================================
+
+CRITERIO APLICADO
+  Ningun mapeo por clave puede tener caso por defecto silencioso. Un mapeo
+  incumple si, ante una clave ausente, entrega un valor que sigue viaje hacia
+  una decision sin que nada lo declare. NO incumple si la ausencia es un estado
+  legitimo del dato (el decreto no entrega ese limite, la jurisdiccion no esta
+  declarada sin georreferenciar) ni si el default se verifica aguas abajo y
+  aborta.
+
+ALCANCE BARRIDO: 6 scripts .py de las fases 1 a 3 y el SQL que generan.
+  scripts/fase1_ingesta_insumos.py
+  scripts/fase2_cotejo_lacustre.py
+  scripts/fase2_adjudicacion.py
+  scripts/fase3_construir_capa.py
+  scripts/fase3bis_construir_capa.py
+  scripts/fase3ter_construir_capa.py   <- de aqui deriva el constructor Etapa B
+
+Cada hallazgo se MIDE contra los insumos reales. Un hallazgo no medido es una
+opinion. 'DISPARA HOY' dice si el default se ejecuta con el dato de hoy;
+'ALCANZABLE' dice si puede ejecutarse.
+
+ETAPA 0 � BARRIDO DE MAPEOS POR CLAVE, FASES 1 A 3
+Medicion contra los insumos reales. Este script no escribe nada.
+
+insumo v1 : data/decreto/jurisdicciones_capitanias.json  (64 capitanias)
+insumo v2 : data/decreto/jurisdicciones_v2.json          (64 jurisdicciones)
+lacustre  : data/decreto/cotejo_lacustre_adjudicado.json (6 jurisdicciones)
+
+==============================================================================
+M1  fase2_adjudicacion.py:123,175,177   nombres.get(jid, jid)
+==============================================================================
+  El nombre de la jurisdiccion se toma del decreto; si el id no esta, se
+  usa el id como nombre y la entrada se escribe igual en el archivo
+  versionado que consume el constructor.
+
+  ids en CUERPOS            : 6
+  ids ausentes del decreto  : 0  
+  DISPARA HOY               : no
+  ALCANZABLE                : SI � CUERPOS es una tabla escrita a mano en
+                              otro archivo; nada ata sus claves al decreto.
+
+==============================================================================
+M2  fase2_adjudicacion.py:190-200   seleccion por nombre repetido
+==============================================================================
+  Un nombre repetido en la lista significa 'todos los registros con ese
+  nombre'. La cantidad esperada esta en el dato (len de la lista) pero no
+  se compara con la obtenida.
+
+  Laguna Icalma          esperados=2  obtenidos=2  COINCIDE
+
+  registros del shapefile con NOMBRE nulo/vacio (caen en la clave ''): 0
+
+==============================================================================
+M3  fase3/3bis/3ter   cuerpos_por_jur.get(cid, [])
+==============================================================================
+  Un id lacustre ausente del archivo de adjudicacion produce [] y de ahi
+  'sin cuerpos adjudicados' -> nula_no_determinada. Misma salida que el
+  caso legitimo 'esta en el archivo y ninguno tiene geometria'.
+
+  lacustres en v1                    : 6  ['lago_general_carrera', 'lago_panguipulli', 'lago_ranco', 'lago_rapel', 'lago_villarrica', 'puerto_varas']
+  lacustres en v2                    : 6
+  ids en el archivo de adjudicacion  : 6
+  lacustres v1 sin entrada           : ninguna
+  lacustres v2 sin entrada           : ninguna
+  entradas sin jurisdiccion lacustre : ninguna
+  DISPARA HOY                        : no
+  ALCANZABLE                         : SI � son dos archivos distintos,
+                                       nada garantiza que sus ids coincidan.
+
+==============================================================================
+M4  fase3ter_construir_capa.py:80-94   abierto_al_weste / puntos()
+==============================================================================
+  'Abierto al Weste' in (cap.get('cierre') or '')  decide a que borde se
+  resuelve un vertice de longitud nula: X_W=-85 (mar afuera) o X_E=-65
+  (tierra adentro). Si falta 'cierre', o si lo dice con otras palabras,
+  el default es el Este y el poligono sale por el lado equivocado.
+
+  capitanias sin campo 'cierre'      : 47
+  valores distintos de 'cierre'      : 18
+      [47] <ausente>
+      [ 1] Norte: paralelo 36 00 00 S. Abierto al Weste.  <-- reconocido
+      [ 1] Sur: paralelo 36 42 25 S al Weste desde Punta de Lobos (073 09 32 W). Abierto al Weste.  <-- reconocido
+      [ 1] Norte: paralelo 39 23 12 S. Abierto al Weste.  <-- reconocido
+      [ 1] Sur: paralelo 40 14 30 S. Abierto al Weste.  <-- reconocido
+      [ 1] Norte: paralelo 40 14 30 S. Abierto al Weste.  <-- reconocido
+      [ 1] Al Este contra la costa del estero. Resta de tierra define el resto.
+      [ 1] Norte: paralelo 41 44 40 S. Desde el ultimo vertice, el limite sur sigue por el paralelo  <-- reconocido
+      [ 1] Norte: paralelo 42 00 00 S al Weste del meridiano 073 00 00 W. Desde Punta Tenaun el lim  <-- reconocido
+      [ 1] Norte: paralelo 42 30 00 S desde 073 12 00 W hacia el Este hasta 072 38 00 W (costa Este
+      [ 1] Anillo cerrado. No requiere cierre externo.
+      [ 1] Norte: paralelo 42 20 00 S. Desde el ultimo vertice, hacia el Weste. Abierto al Weste.  <-- reconocido
+      [ 1] Desde el ultimo vertice, por el paralelo 42 50 00 S hacia el Weste. Abierto al Weste.  <-- reconocido
+      [ 1] Desde el ultimo vertice, hacia el Weste. Abierto al Weste.  <-- reconocido
+      [ 1] Norte: paralelo 43 44 25 S. Sur: paralelo 44 46 54 S. Abierto al Weste.  <-- reconocido
+      [ 1] Norte: paralelo 43 44 25 S. Sur: paralelo 44 57 15 S. Al Este cierra contra la costa con
+      [ 1] Norte: paralelo 44 46 54 S. Desde el ultimo vertice, por el paralelo 45 27 48 S al Weste  <-- reconocido
+      [ 1] Sur: paralelo 47 00 00 S. Abierto al Weste.  <-- reconocido
+
+  capitanias con vertices de longitud nula (dependen del default): 3
+      Valdivia                 1 vertice(s)  ->  X_W (mar afuera)   cierre=Norte: paralelo 39 23 12 S. Abierto al Weste.
+      Corral                   1 vertice(s)  ->  X_W (mar afuera)   cierre=Sur: paralelo 40 14 30 S. Abierto al Weste.
+      Castro                   1 vertice(s)  ->  X_W (mar afuera)   cierre=Norte: paralelo 42 20 00 S. Desde el ultimo ve
+
+  DISPARA HOY : no
+
+==============================================================================
+M5  fase3ter_construir_capa.py:109-122   elegir_lado(rol)
+==============================================================================
+  El rol se mapea a un lado. Un rol fuera del juego cae en 'else: return
+  None' y el llamador lo reporta como "no selecciono ningun trozo", que
+  es una causa distinta de la real ('rol desconocido').
+
+      E           1 
+      N           3 
+      NE          2 
+      None       47 
+      S           4 
+      SE          3 
+      W           3 
+      anillo      1 
+  DISPARA HOY : no
+
+==============================================================================
+M6  fase3ter_construir_capa.py:86,341-348   eleccion silenciosa de la fuente de puntos
+==============================================================================
+  puntos() usa poligonal_completa 'or' vertices. Cual de las dos se uso no
+  queda registrado en ninguna salida, y las dos difieren.
+
+  capitanias con ambos campos poblados : 18
+  ... y en las que difieren            : 8
+  capitanias con poligonal_completa=[] que caen a vertices : 0
+
+==============================================================================
+M7  fase3_construir_capa.py:154   motivo_sin_geom = cap.get('motivo_exclusion')
+==============================================================================
+  nula_declarada con causa NULL: el estado se declara y la causa se pierde.
+
+  marcadas sin_georreferenciar        : 2
+  ... sin campo motivo_exclusion      : 0  []
+  DISPARA HOY : no
+
+==============================================================================
+M8  fase2_cotejo_lacustre.py:128   c.get('tipo') == 'lacustre'
+==============================================================================
+  Si la clave del ambito cambia de nombre, el filtro no encuentra ninguna
+  y el cotejo informa 0 cuerpos sin que nada falle.
+
+  capitanias v1 con clave 'tipo'   : 64
+  capitanias v1 con clave 'ambito' : 64
+  jurisdicciones v2 con 'tipo'     : 0
+  jurisdicciones v2 con 'ambito'   : 64
+  DISPARA HOY sobre v1 : no    DISPARA si se le pasa el v2 : SI
+
+==============================================================================
+M9  fase3bis_construir_capa.py:145   cap.get('ambito', cap['tipo'])
+==============================================================================
+  capitanias v1 sin 'ambito' que caen al fallback 'tipo' : 0
+  capitanias v1 sin ninguna de las dos (KeyError ruidoso): 0
+
+==============================================================================
+M10  fase3ter_construir_capa.py:387-396   COALESCE(ST_Area(...), 0) en adyacencias
+==============================================================================
+  El control de adyacencia informa km2_traslape=0 cuando una de las dos
+  geometrias es NULL. Cero medido y cero por ausencia de dato salen
+  indistinguibles en la columna. Es el falso negativo silencioso de
+  INV-3.6 aplicado al control, no a la capa.
+
+  pares de vecinas en el control : 19
+  (los que tengan una geometria NULL se listan contra la base aparte)
+
+==============================================================================
+FIN DEL BARRIDO
+==============================================================================
+
+================================================================================
+M10 — MEDICION CONTRA LA BASE: EL UNICO DEFECTO QUE DISPARA HOY
+================================================================================
+Control de adyacencia de la Fase 3 ter, corrido sobre la capa viva.
+Columna izquierda: lo que informaba con COALESCE(...,0). Derecha: corregido.
+
+                par                |     est_a      |     est_b      | evaluable | control_viejo_km2 | control_corregido_km2 
+-----------------------------------+----------------+----------------+-----------+-------------------+-----------------------
+ lirquen x talcahuano              | nula_declarada | nula_declarada | f         |            0.0000 |                      
+ puerto_aguirre x puerto_chacabuco | construida     | construida     | t         |        28325.1105 |            28325.1105
+ chonchi x quellon                 | construida     | construida     | t         |         6144.7742 |             6144.7742
+ castro x chonchi                  | construida     | construida     | t         |         3705.0707 |             3705.0707
+ puerto_aguirre x puerto_cisnes    | construida     | construida     | t         |         1331.8608 |             1331.8608
+ ancud x maullin                   | construida     | construida     | t         |         1293.0704 |             1293.0704
+ corral x valdivia                 | construida     | construida     | t         |         1069.9003 |             1069.9003
+ achao x quemchi                   | construida     | construida     | t         |           82.2889 |               82.2889
+ calbuco x puerto_montt            | construida     | construida     | t         |           21.1009 |               21.1009
+ bahia_paraiso x puerto_soberania  | construida     | construida     | t         |            0.0000 |                0.0000
+ calbuco x hornopiren              | construida     | construida     | t         |            0.0000 |                0.0000
+ bahia_paraiso x rada_covadonga    | construida     | construida     | t         |            0.0000 |                0.0000
+ melinka x puerto_cisnes           | construida     | construida     | t         |            0.0000 |                0.0000
+ bahia_fildes x puerto_soberania   | construida     | construida     | t         |            0.0000 |                0.0000
+ bahia_fildes x rada_covadonga     | construida     | construida     | t         |            0.0000 |                0.0000
+ cochamo x puerto_montt            | construida     | construida     | t         |            0.0000 |                0.0000
+ chaiten x quellon                 | construida     | construida     | t         |            0.0000 |                0.0000
+ achao x castro                    | construida     | construida     | t         |            0.0000 |                0.0000
+ ancud x calbuco                   | construida     | construida     | t         |            0.0000 |                0.0000
+(19 filas)
+
+
+  lirquen x talcahuano tiene las DOS geometrias NULL y el control informaba
+  traslape 0.0000, exactamente el mismo numero que los 8 pares que si miden
+  cero. Cero medido y cero por falta de dato salian indistinguibles. Es el
+  falso negativo silencioso de INV-3.6 aplicado al control.
+
+================================================================================
+QUE SE CORRIGIO
+================================================================================
+
+scripts/fase3ter_construir_capa.py  — es el padre del constructor de Etapa B.
+
+  M4  abierto_al_weste() eliminada. En su lugar CIERRE_A_BORDE, tabla explicita
+      de dos entradas, y borde_abierto(), que devuelve (borde, None) o
+      (None, motivo). Un texto de cierre que no nombre el lado ya no resuelve
+      al Este: la figura queda nula_no_determinada con esa causa. Los puntos se
+      resuelven UNA vez por capitania y el error tiene rama propia, para que un
+      fallo al resolver el borde no se lea como 'no es anillo' y degrade la
+      figura a banda de paralelos en silencio.
+  M5  ROL_A_LADO, tabla explicita. Un rol fuera de ella devuelve su propia causa
+      ('no esta en la tabla de lados') en vez de la ajena ('no selecciono ningun
+      trozo'). Las dos dejan la figura nula; solo una manda a buscar el defecto
+      donde esta.
+  M3  El id lacustre se busca sin default. 'no tiene entrada en
+      cotejo_lacustre_adjudicado.json' y 'tiene entrada y ninguno de sus cuerpos
+      trae geometria' pasan a ser dos causas distintas. La primera es un
+      desacuerdo entre dos archivos; la segunda, el estado legitimo del dato.
+  M6  puntos() devuelve tambien de cual campo salieron los puntos, y la tabla de
+      diagnostico trae la columna FUENTE PUNTOS. Los dos campos difieren en 8 de
+      las 18 capitanias que tienen ambos poblados: cual se uso es trazabilidad.
+  M10 El control de adyacencia pierde los COALESCE(...,0) sobre el area y suma
+      la columna 'evaluable'. Un par con geometria NULL informa NULL, no cero.
+
+scripts/fase2_adjudicacion.py  — genera un insumo versionado que la Etapa B lee.
+
+  M1  nombres.get(jid, jid) -> nombres[jid], con verificacion previa de que todo
+      id de CUERPOS exista en el decreto. Antes, un id inventado se escribia en
+      el archivo versionado usando el id como nombre, y la Fase 3 le construia
+      geometria a una jurisdiccion que el decreto no define.
+  M2  La seleccion por nombre repetido compara la cantidad obtenida contra la
+      declarada en la adjudicacion. Icalma declara 2 partes; si el shapefile
+      devolviera 1, la union saldria de un conjunto que nadie autorizo.
+
+scripts/fase2_cotejo_lacustre.py  — provee CUERPOS, que fase2_adjudicacion importa.
+
+  M8  El campo de ambito se resuelve por la clave que el archivo trae ('ambito'
+      o 'tipo'), y se aborta si no hay ninguna o si el cotejo sale vacio. Antes,
+      pasarle el v2 —que no tiene 'tipo'— devolvia cero lacustres y el cotejo
+      informaba en orden sin haber mirado nada. Medido: v2 tiene 0 con 'tipo'.
+
+================================================================================
+PRUEBA DE QUE LAS CORRECCIONES NO MUEVEN NINGUNA GEOMETRIA
+================================================================================
+Se corrio el script ORIGINAL y el CORREGIDO contra el mismo insumo de hoy y se
+compararon los SQL generados.
+
+  diff  fase3ter_capa_jurisdicciones.sql  (original vs corregido)
+    SIN DIFERENCIAS. 64 jurisdicciones, geometria identica.
+
+  El unico cambio en el SQL es el control de adyacencia (M10), que es lo que se
+  queria cambiar:
+    36a37,40
+    > -- Un par con una geometria NULL NO se informa como traslape 0 ni hueco 0: se
+    > -- informa como no evaluable. Cero medido y cero por falta de dato son cosas
+    > -- distintas, y darlos con el mismo numero es el falso negativo silencioso que
+    > -- prohibe INV-3.6, aplicado al control en vez de a la capa.
+    39c43,44
+    <   round((COALESCE(ST_Area(ST_Intersection(a.geom, b.geom)::geography),0)
+    ---
+    >   (a.geom IS NOT NULL AND b.geom IS NOT NULL) AS evaluable,
+    >   round((ST_Area(ST_Intersection(a.geom, b.geom)::geography)
+    41c46
+    <   round((COALESCE(ST_Area((
+    ---
+    >   round((ST_Area((
+    44c49
+    <          COALESCE(ST_Union(a.geom, b.geom), ST_SetSRID('POLYGON EMPTY'::geometry, 4326))),
+    ---
+    >          ST_Union(a.geom, b.geom)),
+    48c53
+    <   )::geography),0)/1e6)::numeric, 4) AS km2_hueco
+    ---
+    >   )::geography))/1e6)::numeric, 4) AS km2_hueco
+    50c55
+    < ORDER BY km2_traslape DESC, km2_hueco DESC;
+    \ No newline at end of file
+    ---
+    > ORDER BY evaluable, km2_traslape DESC NULLS LAST, km2_hueco DESC NULLS LAST;
+    \ No newline at end of file
+
+  fase2_adjudicacion.py regenerado: cotejo_lacustre_adjudicado.json queda
+  identico en sus 32 cuerpos. Unica diferencia, el sha256 que el archivo
+  registra de su fuente:
+    14c14
+    <     "sha256": "497e03a7a36a452accf82bd7082ff748456c499cb9f04b0d1c7448df78712cfe"
+    ---
+    >     "sha256": "d6e1d48fcde08bcfa447553c702d9fcde874d24dc1f048265fe9823a37683c56"
+
+  fase4_auditoria_v2.py despues de todo lo anterior: exit=0, AUDITORIA LIMPIA.
+  97 tramos, 21 adjudicaciones, 10 familias de control. Sin cambios.
+
+================================================================================
+QUE SE DESCARTO, Y POR QUE
+================================================================================
+
+  M7  fase3_construir_capa.py:154  motivo_sin_geom = cap.get('motivo_exclusion')
+      Dejaria una nula_declarada con causa NULL. Medido: las 2 capitanias
+      marcadas sin_georreferenciar traen el campo; no dispara. NO SE TOCA porque
+      fase3 quedo reemplazada por fase3bis y esta por fase3ter, y su SQL es la
+      constancia de un metodo que se probo y se abandono. Tocarla no protege
+      nada y desincroniza la evidencia. El requisito 'toda nula con su causa'
+      viaja al constructor de la Etapa B como control de salida.
+
+  M9  fase3bis_construir_capa.py:145  cap.get('ambito', cap['tipo'])
+      Fallback silencioso entre dos esquemas. Medido: las 64 capitanias del v1
+      traen las dos claves; 0 caen al fallback. Sin ninguna de las dos habria
+      KeyError, que es ruidoso. Mismo motivo que M7: script reemplazado.
+
+  fase1_ingesta_insumos.py:158-161  candidatos[0]
+      Elige el primer campo de nombre que reconoce. No es un mapeo por clave
+      sino una eleccion por lista, y el encabezado que imprime declara cual
+      campo uso. Script de reconocimiento, de solo lectura, sin salida que
+      alimente nada. No se toca.
+
+  fase2_adjudicacion.py:180-184  clave ausente en ADJUDICADOS -> 'exacta'
+      Es un caso por defecto, pero NO silencioso: obliga a que el nombre
+      resuelva a exactamente 1 registro del shapefile y aborta con SystemExit
+      si no. Un default verificado que aborta cumple el criterio. Se deja.
+
+  fase2_adjudicacion.py:219  {'exacta':...}[resolucion]  y  tot[resolucion]
+      Indexacion directa: una resolucion desconocida levanta KeyError. Ruidoso
+      por construccion. Se deja.
+
+  fase2_cotejo_lacustre.py:136,153  CUERPOS.get(id) e idx.get(n, [])
+      Las dos ausencias se imprimen: 'no determinado (id sin transcripcion)' y
+      la rama NO con sus candidatos listados aparte. Declaradas, no silenciosas.
+
+  norm(None) -> ''  (clave vacia en los indices por nombre)
+      Medido: 0 registros del shapefile con NOMBRE nulo o vacio. No hay bolsa
+      de huerfanos bajo la clave ''. No dispara y no es alcanzable con este
+      insumo, cuyo sha queda registrado.
+
+  COALESCE del subquery de tierra en el control de adyacencia
+      Se CONSERVA. 'no hay tierra en la franja' es un estado legitimo y el
+      poligono vacio es el neutro correcto de ST_Difference. No es ausencia de
+      dato: es el dato.
+
+  cap.get('sin_georreferenciar', False), cap.get('limite_norte_dec'),
+  cap.get('vertices', [])
+      Ausencia = estado legitimo del dato: no esta declarada sin georreferenciar;
+      el decreto no entrega ese paralelo; no hay vertices transcritos. El propio
+      constructor los convierte en causa explicita. No se tocan.
+
+================================================================================
+HALLAZGO NO BUSCADO — DERIVA ENTRE LA CAPA VIVA Y SU FUENTE (INV-3.7)
+================================================================================
+
+Al regenerar fase3ter_capa_jurisdicciones.sql aparecio que NO reproduce el SQL
+que construyo la tabla jurisdicciones_decreto que hoy vive en la base. La causa
+no son las correcciones de esta etapa —quedo probado arriba que no mueven
+geometria— sino las dos correcciones que la Etapa A aplico al insumo v1 DESPUES
+de haberse generado ese SQL: el cuarto vertice de Rio Negro Hornopiren y el
+limite sur de Castro.
+
+Diferencia exacta entre lo que el insumo de hoy produce y el SQL en disco:
+
+  181c181
+  <   NULL, 'Por el Norte, desde la Punta Trentelgue (41 54 42 S / 072 53 00 W) siguiendo hacia el Sur por el litoral Weste de Chiloe Continental hasta 
+  ---
+  >   NULL, 'Por el Norte, desde la Punta Trentelgue (41 54 42 S / 072 53 00 W) siguiendo hacia el Sur por el litoral Weste de Chiloe Continental hasta 
+  205c205
+  <   NULL, 'Por el Norte el paralelo 42 20 00 S hasta el Faro Punta Tenaun (42 20 00 S / 073 21 30 W), desde alli la linea imaginaria que une la Punta 
+  ---
+  >   NULL, 'Por el Norte el paralelo 42 20 00 S hasta el Faro Punta Tenaun (42 20 00 S / 073 21 30 W), desde alli la linea imaginaria que une la Punta 
+
+  Rio Negro Hornopiren : el poligono de disco tiene 3 vertices; el insumo
+                         corregido produce 4 (aparece -73 -42.5).
+  Castro               : el limite sur corregido cambia el cierre al Weste.
+
+DECISION TOMADA: se restauro en disco el SQL ORIGINAL
+  (sha256 c743dcc7f00a7dca702c6f84b9a1c4714fd28b51c7ffdabb3aa90fc67cfad59d),
+  porque es la unica constancia de como se construyo la capa que hay que
+  CONSERVAR. Sobrescribirlo con la regeneracion habria borrado la trazabilidad
+  de la capa viva para dejar en su lugar un SQL que nunca se aplico.
+
+NO se re-aplica ni se re-construye: la capa de la Etapa B reemplaza su funcion.
+Queda anotado para el owner: si en algun momento se decide conservar la capa de
+Fase 3 ter como capa de consulta, hay que regenerarla y re-aplicarla, o su
+geometria seguira sin corresponder a la fuente.
+
+================================================================================
+PROPUESTA DE VERSIONADO — decision del owner, no se commitea nada
+================================================================================
+
+Hoy sin trackear en scripts/: fase1_ingesta_insumos.py, fase2_cotejo_lacustre.py,
+fase2_adjudicacion.py, fase3_construir_capa.py, fase3bis_construir_capa.py,
+fase3ter_construir_capa.py y los cuatro .sql que generan. Trackeados, en cambio,
+los cuatro scripts de la Fase 4.
+
+INV-3.7 dice: 'La geometria en base de datos es un derivado reproducible desde
+ese archivo, generado por script' y 'si alguien clona el repositorio, puede
+reconstruirla sin depender del disco de nadie'. Con los generadores fuera del
+repo, eso no se cumple: hoy la capa solo se puede reconstruir desde este disco.
+
+PROPUESTA, en tres grupos:
+
+  1. VERSIONAR SI O SI — son dato fuente, no herramienta.
+     scripts/fase2_cotejo_lacustre.py   La tabla CUERPOS es la transcripcion de
+         que cuerpos de agua atribuye el decreto a cada jurisdiccion lacustre,
+         con su fragmento literal. Es decreto escrito en Python. Sin este
+         archivo, cotejo_lacustre_adjudicado.json —que SI esta versionado— no
+         es reproducible por nadie.
+     scripts/fase2_adjudicacion.py      La tabla ADJUDICADOS es la adjudicacion
+         del owner con su motivo caso por caso, y TRASLAPE_DELIBERADO es la
+         decision sobre Puyehue. Mismo argumento: dato, no codigo.
+
+  2. VERSIONAR — reproducibilidad de la capa (INV-3.7).
+     scripts/fase3ter_construir_capa.py + fase3ter_capa_jurisdicciones.sql
+         + fase3ter_adyacencias.sql. Es la provenance de la capa que se conserva.
+         Con la deriva de la seccion anterior anotada en el commit, para que
+         nadie lea ese SQL como derivado exacto del insumo de hoy.
+     scripts/fase1_ingesta_insumos.py   Barato y util: es lo que deja constancia
+         del CRS de origen y de la procedencia del shapefile.
+
+  3. VERSIONAR COMO DESCARTE EXPLICITO, o no versionar.
+     scripts/fase3_construir_capa.py, fase3bis_construir_capa.py y sus .sql.
+         Son dos metodos que se probaron y se abandonaron: la banda de paralelos
+         como metodo por defecto, y el cierre sin rol declarado. Mi recomendacion
+         es versionarlos con una linea en el encabezado que diga 'SUPERSEDIDO
+         por fase3ter; se conserva como evidencia del metodo descartado', porque
+         el §7 del contrato registra POR QUE se descarto el teselado y estos
+         scripts son esa evidencia. Si el owner prefiere un repo limpio, la
+         alternativa honesta es no versionarlos y que la bitacora los describa.
+         Lo que no corresponde es dejarlos sin trackear y sin decision.
+
+  Nota aparte: las bitacoras de fases 1 a 3 (_bitacoras/fase1_*, fase2_*,
+  fase3*_*) tambien estan sin trackear, mientras que las de fase 4 y 5 si lo
+  estan. Recomiendo igualar el criterio.
+
+================================================================================
+QUE VIAJA COMO REQUISITO AL CONSTRUCTOR DE LA ETAPA B
+================================================================================
+
+  1. Ninguna tabla de mapeo con rama else que elija un valor. Toda clave fuera
+     de tabla devuelve (None, motivo) y la figura queda nula CON SU CAUSA.
+  2. El id que se busca en otro archivo se busca sin default: 'no esta en el
+     archivo' es una causa distinta de 'esta y no trae dato'.
+  3. Un error al resolver un dato no se lee como 'ese dato no existe': tiene
+     rama propia y no degrada la figura a otra receta.
+  4. Todo control que compare geometrias distingue cero medido de cero por
+     ausencia de geometria. Columna 'evaluable', nunca COALESCE(...,0).
+  5. Queda registrado de que campo del insumo salio cada figura.
+
+================================================================================
+VEREDICTO DE LA ETAPA 0
+================================================================================
+
+  mapeos por clave localizados y medidos : 10
+  incumplen el criterio                  : 6   (M1 M2 M3 M4 M5 M6 y M8, M10)
+  de esos, disparan con el dato de hoy   : 1   (M10)
+  corregidos                             : 8   en 3 scripts
+  descartados con motivo                 : 8
+  geometrias movidas por las correcciones: 0   (probado por diff)
+  auditoria del insumo tras la etapa     : exit 0, limpia
+
+  Hallazgo abierto para el owner: la capa de Fase 3 ter que vive en la base no
+  se reproduce desde el insumo corregido. No se toca; la reemplaza la Etapa B.
+
+  ALTO. La Etapa B requiere autorizacion del owner.

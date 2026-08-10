@@ -1,0 +1,103 @@
+﻿FASE 2 (cierre) — ADJUDICACION DE DUDOSOS
+Shapefile : geodata\lagos\Inventario_Lagos.shp
+Registros : 2067
+Anclaje   : FID (indice de fila 0..2066)
+NUM unico globalmente: False (78 filas con NUM duplicado) — por eso NO se usa como ancla
+
+--- Lago Rapel (lago_rapel)
+    [ADJ ] Lago Rapel               -> fid [568]
+    -> con geometria: 1  sin geometria: 0  INV-3.5: OK
+
+--- Lago Villarrica (lago_villarrica)
+    [OK  ] Lago Colico              -> fid [974]
+    [ADJ ] Lago Caburgua            -> fid [975]
+    [OK  ] Lago Huilipilun          -> fid [976]
+    [OK  ] Lago Villarrica          -> fid [977]
+    [OK  ] Laguna Conguillio        -> fid [964]
+    [NULA] Laguna Galletue          -> sin geometria
+    [ADJ ] Laguna Icalma            -> fid [966, 967]
+    [NULA] Rio Tolten               -> sin geometria
+    -> con geometria: 6  sin geometria: 2  INV-3.5: OK
+
+--- Lago Panguipulli (lago_panguipulli)
+    [OK  ] Lago Calafquen           -> fid [982]
+    [OK  ] Lago Panguipulli         -> fid [999]
+    [ADJ ] Lago Pellaifa            -> fid [993]
+    [ADJ ] Lago Pullinque           -> fid [991]
+    [OK  ] Lago Rinihue             -> fid [1029]
+    [ADJ ] Lago Neltume             -> fid [1028]
+    [OK  ] Lago Pirihueico          -> fid [1042]
+    [NULA] Rio Fuy                  -> sin geometria
+    [RECH] Rio San Pedro            -> sin geometria
+    -> con geometria: 7  sin geometria: 2  INV-3.5: OK
+
+--- Lago Ranco (lago_ranco)
+    [OK  ] Lago Ranco               -> fid [1055]
+    [OK  ] Lago Maihue              -> fid [1067]
+    [OK  ] Lago Puyehue             -> fid [1110]
+    [ADJ ] Lago Huishue             -> fid [1091]
+    [ADJ ] Lago Gris                -> fid [1102]
+    [RECH] Rio Bueno                -> sin geometria
+    -> con geometria: 5  sin geometria: 1  INV-3.5: OK
+
+--- Puerto Varas (puerto_varas)
+    [OK  ] Lago Llanquihue          -> fid [1146]
+    [OK  ] Lago Rupanco             -> fid [1127]
+    [OK  ] Lago Todos los Santos    -> fid [1147]
+    [OK  ] Lago Puyehue             -> fid [1110]
+    [ADJ ] Lago Constancia          -> fid [1107]
+    -> con geometria: 5  sin geometria: 0  INV-3.5: OK
+
+--- Lago General Carrera (lago_general_carrera)
+    [OK  ] Lago General Carrera     -> fid [1738]
+    [OK  ] Lago Cochrane            -> fid [1863]
+    [OK  ] Lago O'Higgins           -> fid [1917]
+    -> con geometria: 3  sin geometria: 0  INV-3.5: OK
+
+CONTEO FINAL
+  exacta       18
+  aceptado     9
+  rechazado    2
+  ausente      3
+  TOTAL        32
+
+INV-3.5 (ninguna lacustre vacia): OK
+
+Escrito: data\decreto\cotejo_lacustre_adjudicado.json
+
+==============================================================================
+CONTROLES SOBRE EL CONJUNTO ADJUDICADO (salida cruda)
+==============================================================================
+
+FIDs usados por las 6 jurisdicciones lacustres : 27
+FIDs con geometria invalida en el shapefile    : [1738, 1742]
+   fid 1738: LAGO GENERAL CARRERA | XI | 951.162 km2   <-- SI se usa
+   fid 1742: LAGO PRESIDENTE RIOS | XI | 311.226 km2   <-- no se usa
+Interseccion invalidas x usadas: [1738]
+
+Diagnostico de fid 1738:
+   motivo invalidez : Ring Self-intersection[282106.6137 4848648.7508]
+   tipo             : Polygon
+   area origen      : 951074705.025 m2
+   tras make_valid  : Polygon, valida=True, area=951074705.025 m2
+   diferencia area  : 0.000003 m2
+
+Consecuencia para Fase 3: la union de la jurisdiccion Lago General Carrera
+operaria sobre una geometria invalida. Reparar con ST_MakeValid es la via
+estandar y aqui no altera el area (diferencia de 3e-06 m2, ruido de punto
+flotante). NO se aplica en esta fase: requiere autorizacion.
+
+==============================================================================
+TRASLAPE DELIBERADO REGISTRADO
+==============================================================================
+LAGO PUYEHUE (fid 1110) queda asignado a lago_ranco y a puerto_varas.
+Aparecera como traslape en la evidencia de Fase 3. Es deliberado, no un fallo.
+Superficie del traslape esperada: el area completa del poligono (155.642 km2).
+
+Nota de alcance sobre INV-3.4 ('muestra de mas, nunca de menos'): la garantia
+se cumple en el consumidor de RUTA (bahiasEnRutaPostGIS devuelve el conjunto
+completo de filas que intersectan, sin LIMIT). NO se cumple en el trigger de
+PUNTO asignar_jurisdiccion_sitport(), que usa 'LIMIT 1' sin ORDER BY: ante el
+traslape devolvera UNA sola jurisdiccion, de forma no determinista. Se anota
+como hallazgo; no se toca — queda fuera del alcance de Fase 3 y de Fase 4.
+==============================================================================

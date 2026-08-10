@@ -1,0 +1,256 @@
+﻿================================================================
+1. ESTADO DE LAS GEOMETRIAS POR AMBITO
+================================================================
+     ambito     | total | nulas | vacias | area_cero | invalidas | validas 
+----------------+-------+-------+--------+-----------+-----------+---------
+ antartica      |     4 |     4 |      0 |         0 |         0 |       0
+ insular_remota |     2 |     2 |      0 |         0 |         0 |       0
+ lacustre       |     6 |     0 |      0 |         0 |         0 |       6
+ maritima       |    52 |    10 |      0 |         0 |         0 |      42
+(4 filas)
+
+
+================================================================
+2. AREA TOTAL POR AMBITO (km2)
+================================================================
+     ambito     | con_geom | km2_total 
+----------------+----------+-----------
+ antartica      |        0 |          
+ insular_remota |        0 |          
+ lacustre       |        6 |    4466.3
+ maritima       |       42 | 2401845.1
+(4 filas)
+
+
+================================================================
+3. CRITERIO DE FALLO — area cero o vacia NO declarada sin georreferenciar
+(toda fila aqui es un fallo de la fase, no un resultado)
+================================================================
+        id        |      nombre      |     ambito     |  estado_geometria   | sin_georreferenciar | condicion 
+------------------+------------------+----------------+---------------------+---------------------+-----------
+ bahia_fildes     | Bahia Fildes     | antartica      | nula_no_determinada | f                   | NULA
+ bahia_paraiso    | Bahia Paraiso    | antartica      | nula_no_determinada | f                   | NULA
+ puerto_soberania | Puerto Soberania | antartica      | nula_no_determinada | f                   | NULA
+ rada_covadonga   | Rada Covadonga   | antartica      | nula_no_determinada | f                   | NULA
+ hanga_roa        | Hanga Roa        | insular_remota | nula_no_determinada | f                   | NULA
+ juan_fernandez   | Juan Fernandez   | insular_remota | nula_no_determinada | f                   | NULA
+ ancud            | Ancud            | maritima       | nula_no_determinada | f                   | NULA
+ arica            | Arica            | maritima       | nula_no_determinada | f                   | NULA
+ baker            | Baker            | maritima       | nula_no_determinada | f                   | NULA
+ castro           | Castro           | maritima       | nula_no_determinada | f                   | NULA
+ chonchi          | Chonchi          | maritima       | nula_no_determinada | f                   | NULA
+ cochamo          | Cochamo          | maritima       | nula_no_determinada | f                   | NULA
+ puerto_eden      | Puerto Eden      | maritima       | nula_no_determinada | f                   | NULA
+ puerto_williams  | Puerto Williams  | maritima       | nula_no_determinada | f                   | NULA
+(14 filas)
+
+
+================================================================
+4. SIN GEOMETRIA DECLARADAS (esperadas, no son fallo)
+================================================================
+        id        |      nombre      |  ambito  | estado_geometria 
+------------------+------------------+----------+------------------
+ punta_delgada    | Punta Delgada    | maritima | nula_declarada
+ tierra_del_fuego | Tierra del Fuego | maritima | nula_declarada
+(2 filas)
+
+
+================================================================
+5. TRASLAPES ENTRE JURISDICCIONES Y SU SUPERFICIE
+================================================================
+      id_a      |       nombre_a       | ambito_a |       id_b       |     nombre_b     | ambito_b | km2_traslape 
+----------------+----------------------+----------+------------------+------------------+----------+--------------
+ melinka        | Melinka              | maritima | puerto_cisnes    | Puerto Cisnes    | maritima |    60157.356
+ chaiten        | Chaiten              | maritima | quellon          | Quellon          | maritima |    50184.110
+ puerto_aguirre | Puerto Aguirre       | maritima | puerto_chacabuco | Puerto Chacabuco | maritima |    28330.682
+ lirquen        | Lirquen              | maritima | talcahuano       | Talcahuano       | maritima |    15247.252
+ puerto_aguirre | Puerto Aguirre       | maritima | puerto_cisnes    | Puerto Cisnes    | maritima |     8326.430
+ corral         | Corral               | maritima | valdivia         | Valdivia         | maritima |     4731.888
+ lirquen        | Lirquen              | maritima | san_vicente      | San Vicente      | maritima |     2332.984
+ hornopiren     | Rio Negro Hornopiren | maritima | quemchi          | Quemchi          | maritima |      254.866
+ calbuco        | Calbuco              | maritima | maullin          | Maullin          | maritima |      181.636
+ lago_ranco     | Lago Ranco           | lacustre | puerto_varas     | Puerto Varas     | lacustre |      155.426
+ maullin        | Maullin              | maritima | puerto_montt     | Puerto Montt     | maritima |      136.497
+ achao          | Achao                | maritima | chaiten          | Chaiten          | maritima |       88.626
+ calbuco        | Calbuco              | maritima | puerto_montt     | Puerto Montt     | maritima |       21.101
+(13 filas)
+
+
+================================================================
+6. AREA POR JURISDICCION CONSTRUIDA (km2), por metodo
+================================================================
+     metodo      |          id          |        nombre        |  ambito  |   km2    | vertices 
+-----------------+----------------------+----------------------+----------+----------+----------
+ anillo_vertices | calbuco              | Calbuco              | maritima |    918.8 |     5948
+ anillo_vertices | achao                | Achao                | maritima |    374.5 |     1340
+ anillo_vertices | hornopiren           | Rio Negro Hornopiren | maritima |    316.9 |       10
+ anillo_vertices | puerto_montt         | Puerto Montt         | maritima |    290.7 |     2137
+ banda_paralelos | taltal               | Taltal               | maritima | 161418.3 |      688
+ banda_paralelos | punta_arenas         | Punta Arenas         | maritima | 130239.6 |   631757
+ banda_paralelos | puerto_chacabuco     | Puerto Chacabuco     | maritima | 115282.3 |   192269
+ banda_paralelos | puerto_natales       | Puerto Natales       | maritima | 110514.6 |   308877
+ banda_paralelos | coquimbo             | Coquimbo             | maritima | 104071.5 |       16
+ banda_paralelos | antofagasta          | Antofagasta          | maritima | 102158.0 |     3239
+ banda_paralelos | pichilemu            | Pichilemu            | maritima | 101676.3 |       43
+ banda_paralelos | constitucion         | Constitucion         | maritima |  92774.6 |       58
+ banda_paralelos | los_vilos            | Los Vilos            | maritima |  89201.1 |     1324
+ banda_paralelos | maullin              | Maullin              | maritima |  87601.4 |    12903
+ banda_paralelos | huasco               | Huasco               | maritima |  82597.2 |       22
+ banda_paralelos | lebu                 | Lebu                 | maritima |  80715.4 |        7
+ banda_paralelos | tongoy               | Tongoy               | maritima |  77980.3 |       18
+ banda_paralelos | puerto_cisnes        | Puerto Cisnes        | maritima |  68483.8 |    41376
+ banda_paralelos | carahue              | Carahue              | maritima |  67164.6 |        8
+ banda_paralelos | chanaral             | Chanaral             | maritima |  65172.9 |     1831
+ banda_paralelos | caldera              | Caldera              | maritima |  64170.4 |       40
+ banda_paralelos | chaiten              | Chaiten              | maritima |  63893.2 |    12452
+ banda_paralelos | melinka              | Melinka              | maritima |  60157.4 |    11143
+ banda_paralelos | iquique              | Iquique              | maritima |  59149.8 |    18791
+ banda_paralelos | tocopilla            | Tocopilla            | maritima |  59057.9 |      421
+ banda_paralelos | papudo               | Papudo               | maritima |  57098.8 |      667
+ banda_paralelos | quellon              | Quellon              | maritima |  50184.1 |     6232
+ banda_paralelos | san_antonio          | San Antonio          | maritima |  47945.7 |     2338
+ banda_paralelos | lirquen              | Lirquen              | maritima |  44700.3 |       23
+ banda_paralelos | valparaiso           | Valparaiso           | maritima |  44448.3 |       63
+ banda_paralelos | valdivia             | Valdivia             | maritima |  38323.0 |        9
+ banda_paralelos | puerto_aguirre       | Puerto Aguirre       | maritima |  36657.2 |   121648
+ banda_paralelos | quintero             | Quintero             | maritima |  33340.3 |      314
+ banda_paralelos | patache              | Patache              | maritima |  31669.8 |      321
+ banda_paralelos | algarrobo            | Algarrobo            | maritima |  31645.3 |       73
+ banda_paralelos | corral               | Corral               | maritima |  30991.5 |       12
+ banda_paralelos | lota                 | Lota                 | maritima |  28717.3 |        6
+ banda_paralelos | mejillones           | Mejillones           | maritima |  23862.4 |      235
+ banda_paralelos | coronel              | Coronel              | maritima |  19791.5 |        7
+ banda_paralelos | talcahuano           | Talcahuano           | maritima |  15247.3 |        6
+ banda_paralelos | quemchi              | Quemchi              | maritima |  13074.9 |     7481
+ banda_paralelos | san_vicente          | San Vicente          | maritima |   8765.8 |        5
+ union_cuerpos   | lago_general_carrera | Lago General Carrera | lacustre |   1627.1 |    11835
+ union_cuerpos   | puerto_varas         | Puerto Varas         | lacustre |   1437.4 |     6466
+ union_cuerpos   | lago_ranco           | Lago Ranco           | lacustre |    648.3 |     3608
+ union_cuerpos   | lago_panguipulli     | Lago Panguipulli     | lacustre |    367.6 |     4348
+ union_cuerpos   | lago_villarrica      | Lago Villarrica      | lacustre |    313.1 |     2706
+ union_cuerpos   | lago_rapel           | Lago Rapel           | lacustre |     72.8 |     2366
+(48 filas)
+
+
+================================================================
+7. INDICES DE LA CAPA
+================================================================
+             indexname             |                                               indexdef                                               
+-----------------------------------+------------------------------------------------------------------------------------------------------
+ idx_jurisdicciones_decreto_ambito | CREATE INDEX idx_jurisdicciones_decreto_ambito ON public.jurisdicciones_decreto USING btree (ambito)
+ idx_jurisdicciones_decreto_geom   | CREATE INDEX idx_jurisdicciones_decreto_geom ON public.jurisdicciones_decreto USING gist (geom)
+ jurisdicciones_decreto_pkey       | CREATE UNIQUE INDEX jurisdicciones_decreto_pkey ON public.jurisdicciones_decreto USING btree (id)
+(3 filas)
+
+
+================================================================
+8. LA CAPA ANTERIOR SE CONSERVA
+================================================================
+            relname             |  tipo   | tamano 
+--------------------------------+---------+--------
+ bahia_jurisdicciones           | matview | 296 kB
+ bahia_jurisdicciones_v1_backup | matview | 352 kB
+ jurisdicciones_decreto         | table   | 23 MB
+(3 filas)
+
+
+==============================================================================
+9. REPARACION ST_MakeValid — QUE SE REPARO Y CON QUE DIFERENCIA DE AREA
+==============================================================================
+Autorizada por el owner con dos condiciones: registrar que se reparo y con que
+diferencia de area, y aplicarla solo a las invalidas, no como pasada general.
+
+Geometrias invalidas en el shapefile de cuerpos de agua: 2 de 2067
+   fid 1738 LAGO GENERAL CARRERA  (XI, 951.162 km2)  <-- usada por la capa
+   fid 1742 LAGO PRESIDENTE RIOS  (XI, 311.226 km2)  <-- NO usada, no se toco
+
+Reparacion aplicada (una sola):
+   fid 1738 LAGO GENERAL CARRERA
+     motivo        : Ring Self-intersection[-71.838715429267 -46.4804906410751]
+     area antes    : 0.111516828410 grados2
+     area despues  : 0.111516828410 grados2
+     diferencia    : 3.469e-16 grados2
+   Ninguna geometria valida fue tocada. El paso general de saneado posterior
+   (UPDATE ... WHERE NOT ST_IsValid) afecto 0 filas.
+
+==============================================================================
+10. CORRECCION APLICADA DURANTE LA FASE — CAPA DE TIERRA
+==============================================================================
+El primer build resto solo mapa_base_multipoligonos, elegida por ser la de mayor
+densidad de vertices. Esa eleccion estaba mal y se detecto midiendo:
+
+   mayor poligono de mapa_base_multipoligonos : Isla Lemuy, 95.8 km2
+   mayor poligono de ne_land                  : 145.113.693,4 km2
+   punto en tierra firme (Santiago -70.65/-33.45):
+       contenido en mapa_base : 0 poligonos
+       contenido en ne_land   : 1 poligono
+
+mapa_base_multipoligonos es una capa de islas e islotes, no de tierra: no tiene
+el continente. Con solo esa capa restada, Santiago quedaba DENTRO de la
+jurisdiccion maritima Algarrobo (verificado, 1 fila). Area maritima total de ese
+build defectuoso: 3.538.103,6 km2.
+
+Build corregido: se restan las DOS capas. ne_land aporta el continente,
+mapa_base aporta la resolucion de los canales (876.084 vertices en el bbox de
+canales contra 16.113). Tras la correccion:
+   Santiago dentro de alguna jurisdiccion maritima : 0 filas
+   area maritima total                             : 2.401.845,1 km2
+   diferencia con el build defectuoso              : -1.136.258,5 km2
+
+==============================================================================
+11. LECTURA DE LOS TRASLAPES
+==============================================================================
+13 pares. Uno es deliberado; los otros 12 son consecuencia del metodo.
+
+DELIBERADO (1):
+   lago_ranco x puerto_varas  155.426 km2  = el Lago Puyehue completo,
+   asignado entero a las dos jurisdicciones que el decreto nombra (INV-3.4).
+
+POR EL METODO banda_paralelos (12): son pares de Capitanias LATERALES, no
+apiladas. El decreto las separa por un meridiano o una linea, no por un
+paralelo, y la banda entre paralelos no puede representar ese corte. Coinciden
+con las discontinuidades ya documentadas en data/decreto/VERIFICAR.md:
+   melinka x puerto_cisnes          60157.356 km2
+   chaiten x quellon                50184.110 km2
+   puerto_aguirre x chacabuco       28330.682 km2
+   lirquen x talcahuano             15247.252 km2
+   puerto_aguirre x puerto_cisnes    8326.430 km2
+   corral x valdivia                 4731.888 km2
+   lirquen x san_vicente             2332.984 km2
+   hornopiren x quemchi               254.866 km2
+   calbuco x maullin                  181.636 km2
+   maullin x puerto_montt             136.497 km2
+   achao x chaiten                     88.626 km2
+   calbuco x puerto_montt              21.101 km2
+
+Los 21 juegos de vertices abiertos del decreto son justamente el dato que
+resolveria estos cortes. Aplicarlos exige interpretar la prosa de cada parrafo
+y no se hizo: seria inferencia. Queda como decision pendiente.
+
+==============================================================================
+FIN EVIDENCIA FASE 3
+==============================================================================
+
+NOTA sobre las unidades de la reparacion (seccion 9): la diferencia se registro
+en grados cuadrados porque el build opera en EPSG:4326. La misma reparacion
+medida en el CRS metrico de origen del shapefile (EPSG:32719), que es la cifra
+con la que se autorizo, da:
+   area antes   : 951074705.025 m2
+   area despues : 951074705.025 m2
+   diferencia   : 0.000003 m2
+Las dos mediciones dicen lo mismo: ruido de punto flotante, no correccion de
+geometria.
+
+##############################################################################
+SUPERADA — NO USAR ESTOS NUMEROS
+##############################################################################
+Esta bitacora corresponde al metodo de BANDAS ENTRE PARALELOS (Fase 3), que el
+owner reemplazo el 2026-08-09 por el metodo de poligonal (Fase 3 bis), y a la
+version anterior del archivo fuente data-decreto-jurisdicciones_capitanias.json
+(sin campo 'ambito', sin vertices antarticos, participa_matching false en 14).
+
+Se conserva porque documenta el metodo de bandas y la correccion de la capa de
+tierra, que sigue vigente.
+
+Evidencia vigente: _bitacoras-fase3bis_construccion_2026-08-09.txt
+##############################################################################

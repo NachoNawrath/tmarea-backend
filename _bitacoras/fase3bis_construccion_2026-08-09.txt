@@ -1,0 +1,251 @@
+﻿================================================================
+1. ESTADO DE LAS GEOMETRIAS POR AMBITO
+================================================================
+     ambito     | total | nulas | vacias | area_cero | invalidas | validas 
+----------------+-------+-------+--------+-----------+-----------+---------
+ antartica      |     4 |     0 |      0 |         0 |         0 |       4
+ insular_remota |     2 |     2 |      0 |         0 |         0 |       0
+ lacustre       |     6 |     0 |      0 |         0 |         0 |       6
+ maritima       |    52 |    23 |      0 |         0 |         0 |      29
+(4 filas)
+
+
+================================================================
+2. AREA TOTAL POR AMBITO (km2)
+================================================================
+     ambito     | con_geom | km2_total 
+----------------+----------+-----------
+ antartica      |        4 | 1357462.8
+ insular_remota |        0 |          
+ lacustre       |        6 |    4466.3
+ maritima       |       29 | 1776874.2
+(4 filas)
+
+
+================================================================
+3. CONTEO DE NULAS POR CAUSA
+================================================================
+  estado_geometria   |                    causa                    | n  
+---------------------+---------------------------------------------+----
+ nula_no_determinada | cadena abierta sin rol declarado            | 10
+ nula_no_determinada | poligonal incompleta (giros no transcritos) |  8
+ nula_no_determinada | falta un paralelo limite                    |  3
+ nula_declarada      | declarada sin georreferenciar en la fuente  |  2
+ nula_no_determinada | islas sin coordenadas                       |  2
+(5 filas)
+
+
+================================================================
+4. DETALLE DE CADA NULA
+================================================================
+      nombre      |     ambito     |  estado_geometria   |                                          causa                                           
+------------------+----------------+---------------------+------------------------------------------------------------------------------------------
+ Hanga Roa        | insular_remota | nula_no_determinada | el decreto nombra islas sin coordenadas; requiere capa de islas
+ Juan Fernandez   | insular_remota | nula_no_determinada | el decreto nombra islas sin coordenadas; requiere capa de islas
+ Achao            | maritima       | nula_no_determinada | poligonal incompleta: la prosa del decreto especifica giros que el campo 'vertices' no c
+ Ancud            | maritima       | nula_no_determinada | cadena abierta sin rol declarado: el campo 'vertices' no dice que borde del poligono for
+ Arica            | maritima       | nula_no_determinada | el decreto no entrega con que cerrar: falta limite norte y la cadena tiene 0 vertice(s),
+ Baker            | maritima       | nula_no_determinada | el decreto no entrega con que cerrar: falta limite sur y la cadena tiene 0 vertice(s), i
+ Castro           | maritima       | nula_no_determinada | poligonal incompleta: la prosa del decreto especifica giros que el campo 'vertices' no c
+ Chaiten          | maritima       | nula_no_determinada | poligonal incompleta: la prosa del decreto especifica giros que el campo 'vertices' no c
+ Chonchi          | maritima       | nula_no_determinada | poligonal incompleta: la prosa del decreto especifica giros que el campo 'vertices' no c
+ Cochamo          | maritima       | nula_no_determinada | cadena abierta sin rol declarado: el campo 'vertices' no dice que borde del poligono for
+ Corral           | maritima       | nula_no_determinada | cadena abierta sin rol declarado: el campo 'vertices' no dice que borde del poligono for
+ Lirquen          | maritima       | nula_no_determinada | cadena abierta sin rol declarado: el campo 'vertices' no dice que borde del poligono for
+ Maullin          | maritima       | nula_no_determinada | cadena abierta sin rol declarado: el campo 'vertices' no dice que borde del poligono for
+ Melinka          | maritima       | nula_no_determinada | cadena abierta sin rol declarado: el campo 'vertices' no dice que borde del poligono for
+ Puerto Aguirre   | maritima       | nula_no_determinada | cadena abierta sin rol declarado: el campo 'vertices' no dice que borde del poligono for
+ Puerto Chacabuco | maritima       | nula_no_determinada | cadena abierta sin rol declarado: el campo 'vertices' no dice que borde del poligono for
+ Puerto Cisnes    | maritima       | nula_no_determinada | cadena abierta sin rol declarado: el campo 'vertices' no dice que borde del poligono for
+ Puerto Eden      | maritima       | nula_no_determinada | el decreto no entrega con que cerrar: falta limite norte y la cadena tiene 0 vertice(s),
+ Puerto Williams  | maritima       | nula_no_determinada | poligonal incompleta: la prosa del decreto especifica giros que el campo 'vertices' no c
+ Punta Delgada    | maritima       | nula_declarada      | declarada sin georreferenciar en la fuente
+ Quellon          | maritima       | nula_no_determinada | poligonal incompleta: la prosa del decreto especifica giros que el campo 'vertices' no c
+ Quemchi          | maritima       | nula_no_determinada | cadena abierta sin rol declarado: el campo 'vertices' no dice que borde del poligono for
+ Talcahuano       | maritima       | nula_no_determinada | poligonal incompleta: la prosa del decreto especifica giros que el campo 'vertices' no c
+ Tierra del Fuego | maritima       | nula_declarada      | declarada sin georreferenciar en la fuente
+ Valdivia         | maritima       | nula_no_determinada | poligonal incompleta: la prosa del decreto especifica giros que el campo 'vertices' no c
+(25 filas)
+
+
+================================================================
+5. CRITERIO DE FALLO — sin geometria y NO declarada sin georreferenciar
+================================================================
+ jurisdicciones_en_fallo 
+-------------------------
+                      23
+(1 fila)
+
+
+================================================================
+6. TRASLAPES ENTRE JURISDICCIONES Y SU SUPERFICIE
+================================================================
+     a      |  amb_a   |      b       |  amb_b   |   km2   
+------------+----------+--------------+----------+---------
+ Lago Ranco | lacustre | Puerto Varas | lacustre | 155.426
+ Calbuco    | maritima | Puerto Montt | maritima |  21.101
+(2 filas)
+
+
+================================================================
+7. AREA POR JURISDICCION CONSTRUIDA, POR METODO
+================================================================
+     metodo      |        nombre        |  ambito   |   km2    | vertices 
+-----------------+----------------------+-----------+----------+----------
+ anillo_vertices | Bahia Paraiso        | antartica | 776121.2 |        5
+ anillo_vertices | Puerto Soberania     | antartica | 253818.7 |        6
+ anillo_vertices | Bahia Fildes         | antartica | 176233.1 |        6
+ anillo_vertices | Rada Covadonga       | antartica | 151289.8 |        4
+ anillo_vertices | Calbuco              | maritima  |    918.8 |     5948
+ anillo_vertices | Rio Negro Hornopiren | maritima  |    316.9 |       10
+ anillo_vertices | Puerto Montt         | maritima  |    290.7 |     2137
+ banda_paralelos | Taltal               | maritima  | 161418.3 |      688
+ banda_paralelos | Punta Arenas         | maritima  | 130239.6 |   631757
+ banda_paralelos | Puerto Natales       | maritima  | 110514.6 |   308877
+ banda_paralelos | Coquimbo             | maritima  | 104071.5 |       16
+ banda_paralelos | Antofagasta          | maritima  | 102158.0 |     3239
+ banda_paralelos | Pichilemu            | maritima  | 101676.3 |       43
+ banda_paralelos | Constitucion         | maritima  |  92774.6 |       58
+ banda_paralelos | Los Vilos            | maritima  |  89201.1 |     1324
+ banda_paralelos | Huasco               | maritima  |  82597.2 |       22
+ banda_paralelos | Lebu                 | maritima  |  80715.4 |        7
+ banda_paralelos | Tongoy               | maritima  |  77980.3 |       18
+ banda_paralelos | Carahue              | maritima  |  67164.6 |        8
+ banda_paralelos | Chanaral             | maritima  |  65172.9 |     1831
+ banda_paralelos | Caldera              | maritima  |  64170.4 |       40
+ banda_paralelos | Iquique              | maritima  |  59149.8 |    18791
+ banda_paralelos | Tocopilla            | maritima  |  59057.9 |      421
+ banda_paralelos | Papudo               | maritima  |  57098.8 |      667
+ banda_paralelos | San Antonio          | maritima  |  47945.7 |     2338
+ banda_paralelos | Valparaiso           | maritima  |  44448.3 |       63
+ banda_paralelos | Quintero             | maritima  |  33340.3 |      314
+ banda_paralelos | Patache              | maritima  |  31669.8 |      321
+ banda_paralelos | Algarrobo            | maritima  |  31645.3 |       73
+ banda_paralelos | Lota                 | maritima  |  28717.3 |        6
+ banda_paralelos | Mejillones           | maritima  |  23862.4 |      235
+ banda_paralelos | Coronel              | maritima  |  19791.5 |        7
+ banda_paralelos | San Vicente          | maritima  |   8765.8 |        5
+ union_cuerpos   | Lago General Carrera | lacustre  |   1627.1 |    11835
+ union_cuerpos   | Puerto Varas         | lacustre  |   1437.4 |     6466
+ union_cuerpos   | Lago Ranco           | lacustre  |    648.3 |     3608
+ union_cuerpos   | Lago Panguipulli     | lacustre  |    367.6 |     4348
+ union_cuerpos   | Lago Villarrica      | lacustre  |    313.1 |     2706
+ union_cuerpos   | Lago Rapel           | lacustre  |     72.8 |     2366
+(39 filas)
+
+
+================================================================
+8. INDICES Y CAPAS ANTERIORES
+================================================================
+             indexname             
+-----------------------------------
+ idx_jurisdicciones_decreto_ambito
+ idx_jurisdicciones_decreto_geom
+ jurisdicciones_decreto_pkey
+(3 filas)
+
+            relname             |  tipo   | tamano 
+--------------------------------+---------+--------
+ bahia_jurisdicciones           | matview | 296 kB
+ bahia_jurisdicciones_v1_backup | matview | 352 kB
+ jurisdicciones_decreto         | table   | 16 MB
+(3 filas)
+
+
+==============================================================================
+9. QUE ES DECRETO Y QUE ES CONVENCION NUESTRA
+==============================================================================
+DECRETO (D.S. 991-1987, texto consolidado 12-NOV-2020):
+  - Los paralelos limite de cada jurisdiccion.
+  - Las coordenadas de los vertices.
+  - El lado que el texto asigna a cada linea divisoria.
+  - La extension mar afuera: Art. 2 declara que las jurisdicciones comprenden
+    mar territorial, zona contigua, ZEE y plataforma continental.
+
+CONVENCION NUESTRA (no esta en el decreto):
+  - COMO se separan lateralmente dos jurisdicciones dentro de la franja
+    oceanica. El decreto fija hasta donde se llega mar afuera, no como se
+    reparte ese espacio entre Capitanias vecinas. Aqui cada limite norte y sur
+    se prolonga por su propio paralelo hasta el limite exterior.
+  - El valor del limite exterior: 200 millas nauticas = 370.400 m desde la
+    costa. El Art. 2 nombra ZEE y plataforma continental sin darles geometria.
+  - El cierre generoso hacia tierra con resta posterior de la capa de tierra,
+    en vez de trazar el litoral a mano (nota_construccion del archivo fuente).
+  - La aproximacion por linea recta de los tramos que el decreto describe como
+    'siguiendo el litoral', entre los puntos con nombre que si entrega.
+
+==============================================================================
+10. COMPARACION FASE 3 (bandas) vs FASE 3 bis (poligonal)
+==============================================================================
+                                  Fase 3      Fase 3 bis
+  construidas                         46              39
+  nulas totales                       18              25
+  en fallo (nula no declarada)        14              23
+  traslapes                           13               2
+  km2 maritima                 2401845.1       1776874.2
+  km2 antartica                    (nula)       1357462.8
+  km2 lacustre                    4466.3          4466.3
+
+Los traslapes bajaron de 13 a 2, como se esperaba. Las nulas SUBIERON de 18 a
+25, que es lo contrario de lo esperado. No son dos resultados independientes:
+es el mismo cambio. En Fase 3 las jurisdicciones ambiguas se construian como
+banda y el error aparecia como traslape; en Fase 3 bis no se construyen y el
+mismo caso aparece como nula. El error no se elimino: cambio de forma, de
+geometria equivocada a ausencia declarada. Por INV-3.6 la ausencia declarada
+es el modo correcto, porque el motor puede avisar; el traslape resuelto con
+LIMIT 1 no avisa nada.
+
+GANANCIA NETA: las 4 antarticas pasaron de nulas a construidas (1.357.462,8
+km2) gracias a los vertices que el owner incorporo al campo estructurado.
+
+==============================================================================
+11. LOS 2 TRASLAPES QUE PERSISTEN
+==============================================================================
+  Lago Ranco x Puerto Varas   155.426 km2   DELIBERADO
+     El Lago Puyehue entero en las dos jurisdicciones que el decreto nombra.
+     Decision del owner apoyada en INV-3.4. Sin cambios.
+
+  Calbuco x Puerto Montt       21.101 km2   ARTEFACTO DE NUESTRA CONVENCION
+     Las dos son anillo_vertices, o sea geometria del propio decreto. El
+     traslape NO viene del decreto: viene de que ambos parrafos dicen
+     'siguiendo el litoral' (sigue_litoral=true en las dos) y nosotros
+     aproximamos esos tramos con lineas rectas entre los puntos con nombre.
+     Las dos rectas cortan por agua del Seno Reloncavi y se pisan en 21 km2.
+     Se resuelve trazando esos tramos contra la linea de costa en vez de
+     recto. No se hizo: excede el alcance autorizado de esta fase.
+
+==============================================================================
+12. QUE LE FALTA A LA FUENTE PARA CERRAR LAS 21 NULAS RECUPERABLES
+==============================================================================
+8 por POLIGONAL INCOMPLETA (Talcahuano, Valdivia, Chaiten, Achao, Castro,
+  Chonchi, Quellon, Puerto Williams): la prosa describe una travesia con giros
+  axiales ('luego hacia el Sur por este meridiano hasta la Latitud X') cuyos
+  puntos de giro NO estan en el campo 'vertices', que solo guarda los puntos
+  con nombre. Ejemplo medido en Achao: el texto sale al Este hasta el meridiano
+  073 00 00 W, baja a 42 30 00 S, vuelve al Weste hasta 073 12 00 W y sigue;
+  los 7 vertices estructurados se saltan ese lobulo completo. Construir desde
+  ellos daria un poligono mas chico que la jurisdiccion: falso negativo.
+  FALTA: transcribir la travesia completa, incluidos los puntos de giro.
+
+10 por CADENA ABIERTA SIN ROL DECLARADO (Lirquen, Corral, Maullin, Cochamo,
+  Ancud, Quemchi, Melinka, Puerto Cisnes, Puerto Aguirre, Puerto Chacabuco):
+  el campo no dice que borde del poligono forma la cadena. La prosa si lo dice
+  y varia caso a caso. Prueba: Melinka y Puerto Cisnes tienen los MISMOS cuatro
+  puntos del Canal Moraleda; Melinka dice 'Por el Este la linea imaginaria' y
+  Puerto Cisnes 'Por el Weste'. Son la misma linea repartiendo lados opuestos.
+  Cerrar todas hacia un lado fijo construye una de las dos al reves.
+  FALTA: un campo por jurisdiccion que declare el rol de la cadena, con valores
+  norte, sur, este u oeste.
+
+3 por FALTA UN PARALELO (Arica, Baker, Puerto Eden): el decreto entrega un solo
+  limite. No se toma del vecino de la cadena, por regla de la sesion.
+  FALTA: decision del owner sobre de donde sale el limite que falta.
+
+2 por ISLAS SIN COORDENADAS (Hanga Roa, Juan Fernandez): el decreto nombra las
+  islas. FALTA: una capa de islas.
+
+2 DECLARADAS sin georreferenciar (Punta Delgada, Tierra del Fuego): correctas.
+
+==============================================================================
+FIN EVIDENCIA FASE 3 bis
+==============================================================================
