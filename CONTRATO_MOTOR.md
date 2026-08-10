@@ -11,8 +11,16 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 1.5
-Última actualización: 2026-08-07
+Versión: 1.6
+Última actualización: 2026-08-09
+Cambios v1.6: nueva §3 bis — RESOLUCIÓN DE JURISDICCIÓN. Se fija el D.S. 991/1987 como
+fuente de los límites de Capitanía (INV-3.3), cerrando el vacío que permitía que el código
+resolviera jurisdicción por aproximación geométrica mientras INV-3.1 ya decía "Capitanía".
+La bahía pasa a ser etiqueta de origen de la restricción y no criterio de aplicación
+(INV-3.4). Se incorporan las jurisdicciones lacustres como jurisdicciones plenas (INV-3.5).
+Se prohíbe resolver en silencio una jurisdicción sin geometría — falso negativo silencioso
+(INV-3.6). Se fija la trazabilidad del archivo fuente de límites (INV-3.7). §7 suma dos
+bugs abiertos medidos en el reconocimiento del 09-AGO-2026.
 Cambios v1.5: backlog ampliado — verificación de identidad login (RUT + nº licencia) como
 control de acceso separado del motor; enriquecer visual de P4 con fuentes propias existentes
 (peligros/fondeaderos del derrotero, restricciones SITPORT, ruta) con LÍMITE DURO de no
@@ -55,6 +63,11 @@ estos textos o a datos SITPORT reales, no se implementa como norma.
   equipamiento de seguridad obligatorios para embarcaciones deportivas. Define la
   clasificación de nave (Alta Mar, Costera 60 MN, Costera 12 MN, Bahía). Referida como
   "CIRC A-41/014".
+- **D.S. (M.) 991/1987** — Fija la jurisdicción de las Gobernaciones Marítimas de la
+  República y establece las Capitanías de Puerto y sus respectivas jurisdicciones (texto
+  consolidado vigente 12-NOV-2020, últ. mod. D.S. 391, D.O. 12.11.2020). Referido como
+  "D.S. 991". Define 16 Gobernaciones Marítimas y 64 Capitanías de Puerto con límites
+  expresados en paralelos, meridianos y poligonales de puntos notables.
 - **Resoluciones locales de cada Capitanía** — implementan la CIRC O-41/001 en su
   jurisdicción. Definen umbrales de condición de tiempo y AB. NO son nacionales.
 
@@ -233,6 +246,92 @@ ningún `.filter()` aguas abajo dependía de él. El frontend ya leía `aplica` 
 - **Verificado real (no solo unit tests):** 36/36 tests de robustez, integration test de
   INV-1.2, respuesta real del endpoint con partición correcta, y confirmación visual en P3
   (ruta con bloqueantes e informativas renderizadas en secciones separadas).
+
+---
+
+## 3 bis. RESOLUCIÓN DE JURISDICCIÓN — INVARIANTE
+
+INV-3.1 ya establece que el motor evalúa las jurisdicciones de **Capitanía** que la ruta
+atraviesa. Esta sección fija de dónde salen esos límites y qué hacer cuando no se conocen.
+
+> **Origen (no borrar):** hasta v1.5 el contrato decía "Capitanía" pero no declaraba la
+> fuente de los límites. Sin fuente declarada, la implementación resolvió jurisdicción por
+> teselado geométrico sobre puntos de bahía. Contrato y código quedaron en desacuerdo sin
+> que ninguna verificación lo detectara. Esta sección cierra ese vacío.
+
+### INV-3.3 — La unidad de jurisdicción es la Capitanía de Puerto
+La jurisdicción que determina qué restricciones afectan a un viaje es la **Capitanía de
+Puerto**, y sus límites son los que fija el D.S. 991. NO se derivan de proximidad, teselado
+geométrico, franjas de latitud ni de ninguna aproximación calculada.
+
+- **Base:** D.S. 991 Art. 1 (fija los límites con coordenadas); Art. 2 (las jurisdicciones
+  comprenden el litoral, lagos y ríos navegables, aguas interiores, mar territorial, zona
+  contigua, ZEE y plataforma continental). Resoluciones locales que implementan la
+  CIRC O-41/001, cuyo título y articulado circunscriben expresamente sus efectos a la
+  jurisdicción de la Capitanía que las dicta.
+- **Razón operativa:** cada Capitanía mide las condiciones de SU jurisdicción, decide para
+  SU jurisdicción y publica por SITPORT. El alcance de lo que dicta es su territorio.
+- **Verificación:** ningún punto del código puede resolver jurisdicción por distancia a un
+  punto, por franja de latitud ni por celda de un teselado. Un punto resuelve su Capitanía
+  por contención en el polígono del decreto, o no la resuelve.
+
+### INV-3.4 — La bahía es etiqueta de la restricción, no criterio de aplicación
+El nombre de bahía con que SITPORT publica una restricción identifica **dónde se originó** y
+sirve para mostrárselo al patrón. NO determina si la restricción le aplica: eso lo determina
+la Capitanía que la dictó y el territorio de esa Capitanía.
+
+- **Consecuencia:** una restricción publicada bajo el nombre de una bahía aplica a toda la
+  jurisdicción de su Capitanía, salvo que el propio texto acote el área (campo
+  `AreaRestriccion`, que describe una zona *dentro* de la jurisdicción).
+- **Nota de alcance (no borrar):** las resoluciones locales pueden subdividir la jurisdicción
+  en **sectores** con condición de puerto independiente, y SITPORT puede publicar entradas a
+  nivel de sector o de canal, no solo de bahía. El motor NO implementa el nivel de sector hoy.
+  Mientras no lo haga, evalúa a nivel de Capitanía, que es el envolvente: muestra de más,
+  nunca de menos. Coherente con INV-1.2.
+- **Verificación:** el motor no puede descartar una restricción por comparación de nombre de
+  bahía contra la posición de la ruta.
+
+### INV-3.5 — Ámbito marítimo y ámbito lacustre
+Las jurisdicciones tienen ámbito **marítimo**, **lacustre** o **insular remoto**. Las
+lacustres son jurisdicciones plenas, con Capitanía, condición de puerto y usuarios reales
+(deportivos y transporte). NO se excluyen del motor.
+
+- **Base:** D.S. 991 Art. 2 (las jurisdicciones comprenden lagos y ríos navegables).
+- **Consecuencia técnica:** la geometría de las jurisdicciones lacustres NO puede construirse
+  restando tierra, porque un cuerpo de agua interior está rodeado de tierra por definición y
+  el recorte lo elimina. Se construye desde la capa de cuerpos de agua continentales.
+- **Verificación:** ninguna jurisdicción de ámbito lacustre puede quedar con geometría vacía
+  tras la construcción.
+
+### INV-3.6 — Una jurisdicción sin geometría se declara, nunca se resuelve en silencio
+Si una jurisdicción no tiene geometría cargada, el motor NO puede tratarla como inexistente.
+Debe declararlo al patrón.
+
+- **Razón:** una jurisdicción sin geometría produce un **falso negativo silencioso** — existe
+  una restricción real, la ruta la cruza, y el patrón nunca la ve. Es el modo de falla más
+  peligroso del motor, porque no hay error ni aviso.
+- **Regla dura:** toda jurisdicción cargada declara su estado de geometría. Si una ruta entra
+  en una zona sin geometría cargada, se informa: "No tenemos cargado el límite de esta
+  jurisdicción — verifica con la Capitanía [nombre]: [teléfono]".
+- **Coherencia:** es INV-0.2 (no fabricar datos) aplicado a la ausencia de dato. No inventar,
+  y tampoco esconder.
+- **Verificación:** contar geometrías nulas, vacías y de área cero por ámbito después de cada
+  reconstrucción de la capa. Toda jurisdicción con área cero que no esté declarada como sin
+  georreferenciar es un fallo, no un resultado.
+
+### INV-3.7 — Trazabilidad de los límites
+El archivo de definición de jurisdicciones es **dato fuente versionado** en el repositorio.
+Cada Capitanía conserva el texto literal del decreto que la define. La geometría en base de
+datos es un **derivado reproducible** desde ese archivo, generado por script, nunca editada a
+mano.
+
+- **Correcciones:** cuando la fuente contiene un error evidente (error de tipeo, coordenada
+  inconsistente con el párrafo vecino), la corrección se aplica en el archivo fuente
+  registrando qué dice el decreto, qué se leyó y por qué. NO se corrige en silencio ni se
+  rellena por deducción un valor que la fuente no entrega.
+- **Verificación:** regenerar la capa desde el archivo fuente debe producir el mismo
+  resultado. Si alguien clona el repositorio, puede reconstruirla sin depender del disco de
+  nadie.
 
 ---
 
@@ -483,6 +582,16 @@ Todos los perfiles van al lanzamiento inicial (día 0).
 2. **P4 traza línea recta hasta nodo en tierra.** El snap encuentra agua pero el tramo final
    dibuja hasta la coordenada del nodo en tierra en vez de la snappeada.
 3. **Encoding roto** en `especies_pesca.json` y textos SITPORT. Aplicar INV-0.3.
+4. **Resolución de jurisdicción por aproximación geométrica** (contradice INV-3.3). La capa
+   vigente resuelve jurisdicción por teselado sobre puntos de bahía, no por los límites del
+   D.S. 991. Efectos medidos en el reconocimiento del 09-AGO-2026: celdas de área cero que
+   `ST_Intersects` nunca puede devolver — falsos negativos silenciosos, INV-3.6; solape entre
+   celdas resuelto con `LIMIT 1` sin orden determinista, por lo que un mismo punto puede dar
+   distinta jurisdicción entre ejecuciones; mayoría de nodos sin jurisdicción asignada.
+5. **Resolución de capitanía por franjas de latitud** en la utilidad de capitanías, duplicada
+   en backend y frontend (contradice INV-3.3). Las Capitanías NO se apilan por latitud: desde
+   el sur de Concepción existen Capitanías laterales, separadas por longitud y no por
+   paralelo, y en la zona de canales la mayoría lo son.
 
 ---
 
