@@ -1,0 +1,133 @@
+PROCEDENCIA — CAPAS DE COSTA CANDIDATAS
+Fase 5, Etapa B. Registrado el 2026-08-10.
+
+Se buscan porque ne_land (Natural Earth 1:10m, geodata/ne_10m_land.*) es demasiado
+gruesa para cortar la tierra: 16.578 vertices en el bbox de Chile contra los
+8.646.997 de OSM en el mismo recuadro, 521 veces mas gruesa. A esa escala cierra
+bahias enteras, y restar con ella marca como tierra agua real — el falso negativo
+que prohibe INV-3.6.
+
+CRITERIO DE ACEPTACION. Ojo con este punto, porque el primero que se uso estaba
+mal. Se empezo midiendo cuantos de los 30 puntos representativos que ne_land deja
+en tierra quedan sobre agua en la capa candidata. ESE NUMERO NO MIDE LA CAPA: se
+comprobo despues que los testigos son puntos de ORILLA — 35 de 43 caen en tierra
+incluso en OSM, con mediana de 32 metros tierra adentro — de modo que cuanto mejor
+es la costa, mas ajustada queda a la orilla real donde ellos estan y PEOR sale el
+numero. OSM, la mejor de las tres, da 3 de 30; la DPA daba 4.
+
+Una capa de costa se juzga por lo que es: resolucion medida en el mismo recuadro,
+cobertura (continente e islas, no solo islas), proyeccion, validez de las
+geometrias y fidelidad al agua real — que la orilla entre en las bahias en vez de
+cerrarlas. El detalle esta en
+_bitacoras/fase5J_medicion_capa_A_2026-08-10.txt
+
+================================================================================
+CANDIDATO B — DPA 2023, division politico administrativa   [MEDIDA — DESCARTADA]
+================================================================================
+origen        https://geoportal.cl/geoportal/catalog/36391/
+descarga      https://geoportal.cl/geoportal/catalog/download/912598ad-ac92-35f6-8045-098f214bd9c2
+archivo       DPA_2023.zip
+bytes         310.992.026
+descargado    2026-08-10
+productor     SUBDERE + Instituto Geografico Militar + DIFROL + INE
+contenido     COMUNAS_v1, PROVINCIAS_v1, REGIONES_v1 (+ 5 documentos de metodologia)
+CRS           GCS_SIRGAS-Chile, EPSG:5360
+escala        1:50.000, declarada y real
+extension     -80,838 .. -66,416  /  -56,538 .. -17,498
+geometrias    344 comunas en el bbox de Chile; 0 nulas, 0 vacias, 0 invalidas
+vertices      6.767.269   (5,2 por km2)
+
+RESULTADO DE LA PRUEBA: recupera 4 de 30. Las tres divisiones dan el mismo 4 de
+30, lo que descarta que sea un problema de escala o de una comuna mal dibujada.
+
+MOTIVO DEL DESCARTE: es una division ADMINISTRATIVA, no una linea de costa. Usa la
+costa del IGM para su borde exterior, pero cierra las bahias con el poligono
+comunal — la comuna de Valparaiso incluye su bahia. Uno de los documentos del zip
+se llama "CIERRE DE POLIGONOS_v4.docx". Para una division administrativa eso es
+correcto; para nosotros es agua real marcada como tierra, el mismo defecto de
+ne_land con mejor resolucion.
+
+Se conserva el archivo: sirve como fuente de limites administrativos si alguna vez
+hacen falta, y como constancia de la medicion.
+
+================================================================================
+CANDIDATO A — OSM land polygons                            [EN DESCARGA]
+================================================================================
+origen        https://osmdata.openstreetmap.de/data/land-polygons.html
+descarga      https://osmdata.openstreetmap.de/download/land-polygons-split-4326.zip
+archivo       land-polygons-split-4326.zip
+bytes totales 925.046.449
+CRS           WGS84 (EPSG:4326) — el mismo de toda la base, sin reproyectar
+licencia      ODbL, (c) OpenStreetMap contributors
+derivacion    vias natural=coastline de OSM, ensambladas en poligonos y reparadas
+              con la herramienta osmcoastline. Incluye continentes e islas.
+Last-Modified Mon, 10 Aug 2026 03:36:54 GMT
+ETag          "372316b1-658a910c0cdc3"
+
+Se eligio la variante SPLIT y no la COMPLETE: la completa trae Sudamerica como un
+unico poligono gigante, incomodo de recortar e indexar.
+
+DESCARGA DETENIDA LIMPIAMENTE POR EL OWNER — 2026-08-10 14:15
+  bytes descargados  196.005.888 de 925.046.449   (21,2%)
+  faltan             729.040.561 bytes
+  velocidad medida   ~73 kB/s  (~4,2 MB/min), sobre muestra de 30 s
+  ETA que quedaba    ~166 min
+  archivo parcial    land-polygons-split-4326.zip  — SE CONSERVA
+  ETag al detener    "372316b1-658a910c0cdc3"   (igual al del inicio)
+
+  El parcial NO es un zip valido: abrirlo da BadZipFile. No puede confundirse con
+  una descarga completa ni usarse por accidente. Ver tambien el archivo marcador
+  land-polygons-split-4326.zip.INCOMPLETO, al lado.
+
+COMO RETOMARLA SIN EMPEZAR DE CERO
+  El servidor admite reanudacion. Verificado de las dos formas:
+    - cabecera:  Accept-Ranges: bytes
+    - prueba real: pedido del rango 1000000-1000099 -> HTTP 206, 100 bytes exactos
+  Comando para reanudar sobre el archivo parcial:
+
+    curl -C - -o geodata/costa/land-polygons-split-4326.zip \
+      https://osmdata.openstreetmap.de/download/land-polygons-split-4326.zip
+
+  OJO CON ESTO: el archivo se REGENERA A DIARIO en el origen (su Last-Modified es
+  de hoy a las 03:36 UTC). Si se reanuda despues de que el servidor publique una
+  version nueva, curl pegaria la cola de un archivo distinto sobre la cabeza del
+  anterior y el zip quedaria corrupto SIN AVISO. Antes de reanudar hay que
+  comprobar que el ETag siga siendo "372316b1-658a910c0cdc3":
+
+    curl -sI https://osmdata.openstreetmap.de/download/land-polygons-split-4326.zip \
+      | grep -i etag
+
+  Si cambio, no se reanuda: se borra el parcial y se baja de nuevo entero.
+
+DESCARGA COMPLETADA — 2026-08-10 14:35
+  reanudada tras verificar que el ETag no habia cambiado (caso bueno: el origen no
+  regenero el archivo). Se reanudo desde 196.005.888 bytes.
+  bytes finales   925.046.449   (coincide con el Content-Length declarado)
+  integridad      CRC de las 6 entradas del zip: OK
+  sha256          e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266
+  contenido       land_polygons.shp (1.316.144.028 bytes), .dbf, .shx, .prj, .cpg
+  .prj literal    GEOGCS["GCS_WGS_1984", ... ]  ->  EPSG:4326
+
+MEDICION EN EL BBOX DE CHILE (-80..-65 / -57..-17)
+  poligonos       78.584      tipos: 100% Polygon
+  geometrias      0 nulas, 0 vacias, 0 invalidas
+  extension       -79,907 .. -63,999  /  -56,538 .. -16,000
+  vertices        8.646.997
+  CRS             EPSG:4326 — el mismo de toda la base, sin reproyectar
+
+  RESOLUCION, contra la capa que se quiere reemplazar, en el MISMO recuadro:
+    ne_land   8 poligonos      16.578 vertices
+    OSM      78.584 poligonos  8.646.997 vertices     -> 521 veces mas fina
+
+RESULTADO DE LA PRUEBA QUE DECIDE: recupera 3 de 30.
+  recuperados: Achao, Chañaral, San Antonio.
+
+  Es PEOR que la DPA 2023 (4 de 30), y no porque la capa sea mala: es la mejor
+  costa de las tres. El motivo esta en el otro lado de la prueba — ver el
+  diagnostico de los testigos en _bitacoras/fase5J. Los testigos son puntos de
+  ORILLA, no de agua: 35 de los 43 testigos maritimos caen en tierra segun OSM,
+  con una mediana de 32 metros tierra adentro. Una costa mas fina abraza mejor la
+  orilla real y por eso deja AFUERA a mas de ellos, no a menos.
+
+  LA CAPA NO QUEDA DESCARTADA. Lo que queda invalidado es la prueba: medir una
+  costa por cuantos puntos de orilla deja sobre agua no mide la costa.

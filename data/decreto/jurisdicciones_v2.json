@@ -4,8 +4,8 @@
  "generado": "2026-08-09",
  "generado_por": "scripts/fase4_migrar_insumo_v2.py",
  "derivado_de": {
-  "jurisdicciones_capitanias.json": "d6e1d48fcde08bcfa447553c702d9fcde874d24dc1f048265fe9823a37683c56",
-  "cotejo_lacustre_adjudicado.json": "015e94f3e7f4c4d9e1eabbb119d0d7ee9f843d17dd033bac93e19ac4751ca08e",
+  "jurisdicciones_capitanias.json": "49672a4683d87dd213f1842f7a356125d1059b571c11e931676ef83057514d9a",
+  "cotejo_lacustre_adjudicado.json": "86f966583922c0f3c67f8d2558145e655204e8052034b42ae345f6c9b3a3cff8",
   "seed-bahias-sitport.js": "b57af4af0e9f6fefeb07e05e36518d2bb97e82bc44049f60860c70dcfa8848e8"
  },
  "nota_construccion": "Donde el decreto dice 'siguiendo el litoral', el poligono se cierra generosamente hacia tierra y se recorta con ST_Difference contra la capa de tierra. No se traza la costa a mano.",
@@ -874,6 +874,19 @@
    }
   },
   {
+   "id": "par__ancud__quemchi",
+   "tipo": "paralelo",
+   "latitud": -42.0,
+   "latitud_dms": "42 00 00 S",
+   "puntos": [],
+   "lado_norte": "ancud",
+   "lado_sur": "quemchi",
+   "citas": {
+    "ancud": null,
+    "quemchi": null
+   }
+  },
+  {
    "id": "par__quemchi__castro",
    "tipo": "paralelo",
    "latitud": -42.333333,
@@ -897,6 +910,19 @@
    "citas": {
     "castro": null,
     "chonchi": null
+   }
+  },
+  {
+   "id": "par__chonchi__quellon",
+   "tipo": "paralelo",
+   "latitud": -42.833333,
+   "latitud_dms": "42 50 00 S",
+   "puntos": [],
+   "lado_norte": "chonchi",
+   "lado_sur": "quellon",
+   "citas": {
+    "chonchi": null,
+    "quellon": null
    }
   },
   {
@@ -1618,6 +1644,41 @@
     "bahia_paraiso": null
    },
    "secuencia_coincide": true
+  },
+  {
+   "id": "pol__quemchi__hornopiren",
+   "tipo": "poligonal",
+   "latitud": null,
+   "latitud_dms": null,
+   "puntos": [
+    {
+     "lat": -42.0,
+     "lon": -73.0,
+     "lat_dms": "42 00 00 S",
+     "lon_dms": "073 00 00 W"
+    },
+    {
+     "lat": -42.5,
+     "lon": -73.0,
+     "lat_dms": "42 30 00 S",
+     "lon_dms": "073 00 00 W"
+    }
+   ],
+   "lado_a": "quemchi",
+   "lado_b": "hornopiren",
+   "citas": {
+    "quemchi": "CP Quemchi: 'Por el Norte el paralelo 42 00 00 S DESDE EL MERIDIANO 073 00 00 W hacia el Weste'. El meridiano es el extremo Este de su limite norte.",
+    "hornopiren": "CP Rio Negro Hornopiren: '...luego por el paralelo 42 30 00 S hacia el Weste hasta la Longitud 073 00 00 W, CONTINUANDO POR ESTE MERIDIANO HACIA EL NORTE HASTA LA LATITUD 42 00 00 S'. El meridiano es su borde Weste, entre esas dos latitudes."
+   },
+   "secuencia_coincide": true,
+   "origen": "declarada por transcripcion, no derivada de vertices comunes",
+   "motivo_declaracion": "Las dos mitades estan en el decreto y la derivacion automatica no las une: exige que las dos jurisdicciones transcriban los mismos vertices, y Quemchi nombra el meridiano como extremo de su limite norte, no como vertice de su cadena — su rol_cadena es 'S', o sea la cadena transcrita es su borde sur. Meter ahi un vertice del borde norte inventaria un segmento que el decreto no describe. Es el mismo patron de Ancud: la contrapartida existia y solo faltaba el lado. EXTENSION: el meridiano vale ENTRE 42 00 00 S y 42 30 00 S, que es lo unico que el parrafo de Hornopiren entrega. Fuera de esas dos latitudes esta frontera no dice nada y no puede recortar. Autorizado por la owner el 2026-08-10.",
+   "extension": {
+    "lat_min": -42.5,
+    "lat_max": -42.0,
+    "lon_min": -73.0,
+    "lon_max": -73.0
+   }
   }
  ],
  "jurisdicciones": [
@@ -4894,7 +4955,8 @@
    ],
    "puntos_no_incorporados": null,
    "fronteras": [
-    "pol__calbuco__hornopiren"
+    "pol__calbuco__hornopiren",
+    "pol__quemchi__hornopiren"
    ],
    "ancla_seleccion": {
     "lat": -42.0,
@@ -5032,8 +5094,8 @@
     "tipo": null
    },
    "limite_sur": {
-    "dms": null,
-    "dec": null,
+    "dms": "42 00 00 S",
+    "dec": -42.0,
     "tipo": null
    },
    "contorno": [
@@ -5069,6 +5131,18 @@
      "nombre": null,
      "procedencia": "poligonal_completa",
      "lon_origen": null,
+     "respaldo": "propio",
+     "respaldo_en": "ancud",
+     "usable": true
+    },
+    {
+     "lat": -42.0,
+     "lon": -85.0,
+     "lat_dms": "42 00 00 S",
+     "lon_dms": "085 00 00 W",
+     "nombre": "Paralelo 42 00 00 S hacia el Weste",
+     "procedencia": "poligonal_completa",
+     "lon_origen": "resuelta al lado abierto W (convencion, no decreto)",
      "respaldo": "propio",
      "respaldo_en": "ancud",
      "usable": true
@@ -5114,10 +5188,31 @@
      "requiere_adjudicacion": false,
      "tipo_origen": "cierto",
      "adjudicacion_motivo": null
+    },
+    {
+     "desde": {
+      "lat": -42.0,
+      "lon": -73.0,
+      "nombre": null
+     },
+     "hasta": {
+      "lat": -42.0,
+      "lon": -85.0,
+      "nombre": "Paralelo 42 00 00 S hacia el Weste"
+     },
+     "tipo": "abierto",
+     "fragmento_decreto": "Norte: paralelo 41 44 40 S. Desde el ultimo vertice, el limite sur sigue por el paralelo 42 00 00 S hacia el Weste. Abierto al Weste.",
+     "fragmento_de": "cierre",
+     "causa_indeterminado": null,
+     "fragmento_clasificado": null,
+     "requiere_adjudicacion": false,
+     "tipo_origen": "cierto",
+     "adjudicacion_motivo": null
     }
    ],
    "puntos_no_incorporados": null,
    "fronteras": [
+    "par__ancud__quemchi",
     "par__maullin__ancud",
     "pol__calbuco__ancud",
     "pol__maullin__ancud"
@@ -5139,7 +5234,7 @@
    "cuerpos_lacustres": null,
    "sectores": [],
    "texto_decreto": "Por el Norte, el paralelo 41 44 40 S hasta Punta Chocoi (41 44 40 S / 073 45 00 W), y desde alli la linea imaginaria que une Punta Chocoi con los puntos ubicados en 41 47 00 S / 073 31 30 W, 42 00 00 S / 073 00 00 W; y desde alli hacia el Weste.",
-   "correccion_aplicada": null,
+   "correccion_aplicada": "Omision de transcripcion, no error del decreto. El parrafo cierra con 'y desde alli hacia el Weste' despues de llegar a 42 00 00 S / 073 00 00 W. El vertice ya estaba en la poligonal; faltaba declarar el paralelo como limite sur y el tramo terminal. LA CONTRAPARTIDA YA ESTABA EN EL INSUMO: CP Quemchi declara 'Por el Norte el paralelo 42 00 00 S desde el meridiano 073 00 00 W hacia el Weste'. Las dos mitades de la misma frontera estan en el decreto y solo faltaba este lado, igual que en Castro faltaba el suyo y Chonchi si lo declaraba. Sin limite sur, Ancud se derramaba sobre Castro, Quemchi, Achao y Rio Negro Hornopiren: 8.957 km2 de traslape sumados, medidos el 2026-08-10. Es lectura directa del parrafo, no interpretacion. Autorizado por la owner el 2026-08-10.",
    "nota_fuente": null,
    "cierre_v1": "Norte: paralelo 41 44 40 S. Desde el ultimo vertice, el limite sur sigue por el paralelo 42 00 00 S hacia el Weste. Abierto al Weste."
   },
@@ -5226,8 +5321,10 @@
     }
    ],
    "fronteras": [
+    "par__ancud__quemchi",
     "par__quemchi__castro",
-    "pol__quemchi__achao"
+    "pol__quemchi__achao",
+    "pol__quemchi__hornopiren"
    ],
    "ancla_seleccion": {
     "lat": -42.14,
@@ -5273,6 +5370,18 @@
     "tipo": null
    },
    "contorno": [
+    {
+     "lat": -42.5,
+     "lon": -72.633333,
+     "lat_dms": "42 30 00 S",
+     "lon_dms": "072 38 00 W",
+     "nombre": "Interseccion 42 30 00 S / 072 38 00 W, costa Este estero Renihue",
+     "procedencia": "poligonal_completa",
+     "lon_origen": null,
+     "respaldo": "propio",
+     "respaldo_en": "chaiten",
+     "usable": true
+    },
     {
      "lat": -42.5,
      "lon": -73.2,
@@ -5323,6 +5432,28 @@
     }
    ],
    "tramos": [
+    {
+     "desde": {
+      "lat": -42.5,
+      "lon": -72.633333,
+      "nombre": "Interseccion 42 30 00 S / 072 38 00 W, costa Este estero Renihue"
+     },
+     "hasta": {
+      "lat": -42.5,
+      "lon": -73.2,
+      "nombre": null
+     },
+     "tipo": "frontera",
+     "fragmento_decreto": "en la costa Este del estero Renihue; por el Weste, el meridiano",
+     "fragmento_de": "propio",
+     "causa_indeterminado": null,
+     "fragmento_clasificado": "Por el Norte el paralelo 42 30 00 S desde su interseccion con Longitud 073 12 00 W hacia el Este, hasta la interseccion del paralelo 42 30 00 S con la longitud 072 38 00 W en la costa Este del estero Renihue; por el Weste, el meridiano",
+     "requiere_adjudicacion": true,
+     "tipo_origen": "adjudicado",
+     "adjudicacion_motivo": "La propuesta automatica leyo 'en la costa Este del estero Renihue', que ubica DONDE TERMINA el paralelo y no describe como se avanza por el tramo. El tramo es el paralelo 42 30 00 S entre 072 38 00 W y 073 12 00 W: una linea imaginaria, no un trazo de costa. Ademas es el MISMO SEGMENTO que CP Rio Negro Hornopiren declara como su limite sur ('luego por el paralelo 42 30 00 S hacia el Weste hasta la Longitud 073 00 00 W'), y ahi ya esta marcado frontera: marcarlo litoral aqui dejaria la misma linea con dos tipos distintos segun quien la mire. Aplica el criterio ya registrado: 'Una mencion que ubica un vertice no convierte en litoral al tramo que empieza ahi'. Autorizado por la owner el 2026-08-10.",
+     "tipo_propuesto_automatico": "litoral",
+     "adjudicacion_resolucion": "corregido"
+    },
     {
      "desde": {
       "lat": -42.5,
@@ -5392,16 +5523,6 @@
    ],
    "puntos_no_incorporados": [
     {
-     "lat": -42.5,
-     "lon": -72.633333,
-     "lat_dms": "42 30 00 S",
-     "lon_dms": "072 38 00 W",
-     "nombre": "Interseccion estero Renihue",
-     "respaldo": "propio",
-     "respaldo_en": "chaiten",
-     "motivo": "el decreto lo nombra pero el recorrido transcrito no lo incluye; incorporarlo exige decidir por donde pasa el trazo, y eso es del owner"
-    },
-    {
      "lat": -43.008333,
      "lon": -73.325,
      "lat_dms": "43 00 30 S",
@@ -5437,7 +5558,7 @@
    "cuerpos_lacustres": null,
    "sectores": [],
    "texto_decreto": "Por el Norte el paralelo 42 30 00 S desde su interseccion con Longitud 073 12 00 W hacia el Este, hasta la interseccion del paralelo 42 30 00 S con la longitud 072 38 00 W en la costa Este del estero Renihue; por el Weste, el meridiano 073 12 00 W entre los paralelos 42 30 00 S y 43 00 30 S, incluyendo las Islas Desertores, siguiendo el paralelo 43 00 30 S hacia el Weste hasta su interseccion con el Meridiano 073 15 00 W, luego hacia el Sur hasta el Paralelo 43 44 25 S y desde alli hacia el Este. Incluye el Lago Yelcho y el Lago Palena.",
-   "correccion_aplicada": null,
+   "correccion_aplicada": "Omision de transcripcion, no error del decreto. El parrafo describe el limite norte corriendo por el paralelo 42 30 00 S desde 073 12 00 W hacia el Este hasta 072 38 00 W, y la poligonal arrancaba en el extremo Weste sin el extremo Este. El punto que faltaba, 42 30 00 S / 072 38 00 W, YA ESTABA TRANSCRITO en la poligonal de CP Rio Negro Hornopiren, que comparte ese mismo vertice: no hubo que leerlo de nuevo, solo ponerlo tambien aqui. Se agrega al comienzo del recorrido, que queda Norte y despues Weste. Es lectura directa del parrafo, no interpretacion. Autorizado por la owner el 2026-08-10. NO SE TRANSCRIBE el cierre sur 'y desde alli hacia el Este': el propio campo cierre dice que al Este cierra contra la costa continental, y una costa no es una coordenada. Queda como los casos de Cochamo y Maullin, que dependen de la capa de costa.",
    "nota_fuente": null,
    "cierre_v1": "Norte: paralelo 42 30 00 S desde 073 12 00 W hacia el Este hasta 072 38 00 W (costa Este estero Renihue). Desde el ultimo vertice, hacia el Este. Al Este cierra contra la costa continental."
   },
@@ -6249,8 +6370,8 @@
     "tipo": null
    },
    "limite_sur": {
-    "dms": null,
-    "dec": null,
+    "dms": "42 50 00 S",
+    "dec": -42.833333,
     "tipo": null
    },
    "contorno": [
@@ -6370,6 +6491,18 @@
      "nombre": null,
      "procedencia": "poligonal_completa",
      "lon_origen": null,
+     "respaldo": "propio",
+     "respaldo_en": "chonchi",
+     "usable": true
+    },
+    {
+     "lat": -42.833333,
+     "lon": -85.0,
+     "lat_dms": "42 50 00 S",
+     "lon_dms": "085 00 00 W",
+     "nombre": "Paralelo 42 50 00 S hacia el Weste",
+     "procedencia": "poligonal_completa",
+     "lon_origen": "resuelta al lado abierto W (convencion, no decreto)",
      "respaldo": "propio",
      "respaldo_en": "chonchi",
      "usable": true
@@ -6555,11 +6688,32 @@
      "requiere_adjudicacion": false,
      "tipo_origen": "cierto",
      "adjudicacion_motivo": null
+    },
+    {
+     "desde": {
+      "lat": -42.833333,
+      "lon": -73.75,
+      "nombre": null
+     },
+     "hasta": {
+      "lat": -42.833333,
+      "lon": -85.0,
+      "nombre": "Paralelo 42 50 00 S hacia el Weste"
+     },
+     "tipo": "abierto",
+     "fragmento_decreto": "Desde el ultimo vertice, por el paralelo 42 50 00 S hacia el Weste. Abierto al Weste.",
+     "fragmento_de": "cierre",
+     "causa_indeterminado": null,
+     "fragmento_clasificado": null,
+     "requiere_adjudicacion": false,
+     "tipo_origen": "cierto",
+     "adjudicacion_motivo": null
     }
    ],
    "puntos_no_incorporados": null,
    "fronteras": [
     "par__castro__chonchi",
+    "par__chonchi__quellon",
     "pol__castro__chonchi",
     "pol__chonchi__quellon"
    ],
@@ -6580,7 +6734,7 @@
    "cuerpos_lacustres": null,
    "sectores": [],
    "texto_decreto": "Desde el paralelo 42 35 00 S por el Norte, hasta su interseccion con el meridiano 073 37 00 W, desde alli hacia el Norte hasta la Latitud 42 33 30 S, luego hacia el Este hasta la Longitud 073 33 30 W, luego hacia el Sur hasta la Latitud 42 39 40 S, desde este punto hacia el Este hasta su interseccion con la Longitud 073 12 00 W, continuando por este meridiano hacia el Sur hasta la Latitud 43 00 30 S, desde alli hacia el Weste hasta la Punta Centinela (43 00 30 S / 073 19 30 W), luego la diagonal hasta el punto ubicado en 42 55 20 S / 073 36 10 W, luego hacia el Norte por esta longitud hasta la Latitud 42 53 10 S, desde este punto la diagonal hasta el punto ubicado en 42 50 00 S / 073 45 00 W, siguiendo por esta Latitud hacia el Weste. Incluye la Isla Lemuy y el borde NE de la Isla Tranqui.",
-   "correccion_aplicada": null,
+   "correccion_aplicada": "Omision de transcripcion, no error del decreto. El parrafo cierra con 'siguiendo por esta Latitud hacia el Weste' despues de llegar a 42 50 00 S / 073 45 00 W. Ese punto ya estaba en la poligonal, pero el tramo terminal quedo solo como prosa en el campo cierre y el paralelo no se declaro como limite sur. Sin limite sur, la figura se derramaba hacia el Sur: 5.997 km2 de traslape con Chaiten y 3,4 km2 con Achao, medidos el 2026-08-10. Se declara limite_sur 42 50 00 S y se agrega el vertice terminal por ese paralelo hacia el lado abierto W. Es lectura directa del parrafo, no interpretacion. Autorizado por la owner el 2026-08-10.",
    "nota_fuente": null,
    "cierre_v1": "Desde el ultimo vertice, por el paralelo 42 50 00 S hacia el Weste. Abierto al Weste."
   },
@@ -6784,6 +6938,7 @@
    ],
    "puntos_no_incorporados": null,
    "fronteras": [
+    "par__chonchi__quellon",
     "par__quellon__melinka",
     "par__quellon__puerto_cisnes",
     "pol__chaiten__quellon",

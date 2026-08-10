@@ -1,0 +1,144 @@
+================================================================================
+FASE 5 — MEDICION DE LA CAPA A (OSM land polygons). LA MEDICION INVIERTE MI
+DIAGNOSTICO ANTERIOR SOBRE LOS TESTIGOS
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+================================================================================
+
+================================================================================
+1. LA DESCARGA
+================================================================================
+
+VERIFICACION PREVIA DEL ETag — el caso bueno
+  anotado al detener  "372316b1-658a910c0cdc3"
+  en el origen ahora  "372316b1-658a910c0cdc3"
+  Last-Modified       Mon, 10 Aug 2026 03:36:54 GMT   (identico)
+  Content-Length      925.046.449                     (identico)
+  El archivo NO se regenero. Reanudar era seguro; no habia riesgo de pegar la cola
+  de una version nueva sobre esta cabeza.
+
+REANUDACION
+  desde           196.005.888 bytes
+  bytes finales   925.046.449   = el Content-Length declarado, exacto
+  integridad      CRC de las 6 entradas del zip: OK
+  sha256          e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266
+
+UN ERROR MIO EN EL CAMINO, PARA QUE QUEDE
+  Medi la velocidad con 'stat' sobre el archivo en descarga y me dio 57 y luego 79
+  kB/s. Con eso concluí que la conexion iba lenta y corte curl para reabrir una
+  sesion nueva. Al cortarla, el archivo tenia 529 MB y no los 198 MB que 'stat'
+  venia informando: en Windows el tamaño de un archivo con handle de escritura
+  abierto se actualiza con retraso, asi que la medicion venia subestimada y la
+  descarga iba bien. Corte una descarga sana por una medicion mala. No se perdio
+  nada — la reanudacion funciona — pero la leccion queda: 'stat' no sirve para
+  medir una descarga en curso en este sistema. Para eso esta el -w de curl, que es
+  lo que se uso despues.
+
+================================================================================
+2. LA CAPA, MEDIDA
+================================================================================
+
+  .prj literal    GEOGCS["GCS_WGS_1984", DATUM["D_WGS_1984", ...]]
+  CRS             EPSG:4326 — el mismo de toda la base. No hay que reproyectar.
+  licencia        ODbL, (c) OpenStreetMap contributors
+  derivacion      vias natural=coastline ensambladas y reparadas con osmcoastline
+  contenido       continentes E islas (a diferencia de mapa_base_multipoligonos,
+                  que solo tiene islas)
+
+  EN EL BBOX DE CHILE (-80..-65 / -57..-17)
+    poligonos     78.584,  100% Polygon
+    geometrias    0 nulas, 0 vacias, 0 invalidas
+    extension     -79,907 .. -63,999  /  -56,538 .. -16,000
+    vertices      8.646.997
+
+  RESOLUCION CONTRA LA CAPA QUE SE QUIERE REEMPLAZAR, EN EL MISMO RECUADRO
+    ne_land        8 poligonos       16.578 vertices
+    OSM       78.584 poligonos    8.646.997 vertices
+    -> 521 VECES MAS FINA
+
+  Como costa, es netamente la mejor de las tres candidatas.
+
+================================================================================
+3. LA PRUEBA QUE DECIDE: 3 DE 30. Y LO QUE ESO SIGNIFICA NO ES LO QUE PARECE
+================================================================================
+
+  recupera 3 de 30    (Achao, Chañaral, San Antonio)
+  la DPA 2023 recuperaba 4 de 30
+  o sea: la capa MAS FINA recupera MENOS testigos.
+
+  Eso no tiene sentido si la hipotesis era "ne_land es gruesa y por eso se traga
+  bahias reales". Una capa 521 veces mas fina tendria que recuperar casi todas. Se
+  midio la causa en vez de suponerla.
+
+DIAGNOSTICO: LOS TESTIGOS SON PUNTOS DE ORILLA, NO DE AGUA
+
+  Se midio, para cada testigo, si cae en tierra segun OSM y a que distancia de la
+  orilla:
+
+    testigos maritimos                     43
+      sobre tierra segun OSM               35
+      sobre agua segun OSM                  8
+
+    de los 35 que caen en tierra, cuanto se meten:
+      mediana                              32 m
+      minimo                                2 m
+      maximo                            4.407 m   (Valdivia, fluvial)
+      a menos de   100 m de la orilla        24 de 35
+      a menos de   500 m de la orilla        28 de 35
+      a mas de   2.000 m de la orilla         1 de 35
+
+  Huasco 2 m, Quellon 3 m, Lota 3 m, Corral 5 m, Maullin 5 m, Caldera 7 m,
+  Quemchi 12 m, Ancud 16 m... Son puntos de muelle, de sede o de borde de puerto,
+  puestos por SITPORT unas decenas de metros del lado de la tierra.
+
+  DE AHI SE SIGUE, y es lo importante:
+
+  a) NINGUNA capa de costa, a ninguna resolucion, puede satisfacer el criterio
+     "cada jurisdiccion contiene su punto representativo" mientras se reste tierra.
+     Y cuanto MEJOR sea la costa, PEOR sale el numero, porque abraza mejor la
+     orilla real donde estan los puntos. Por eso OSM da 3 y ne_land daba mas.
+
+  b) MI DIAGNOSTICO DEL 2026-08-10 ESTABA MAL ARGUMENTADO. Dije que ne_land era
+     inepta PORQUE expulsaba 30 testigos, y de ahi que hiciera falta otra capa. La
+     conclusion sobre ne_land sigue en pie por otro motivo — es 521 veces mas
+     gruesa y cierra bahias enteras —, pero el argumento del que colgue esa
+     conclusion no era valido. Lo que probaba el conteo de testigos no era la
+     calidad de la capa.
+
+  c) LA PRUEBA QUE USE PARA DESCARTAR LA DPA TAMBIEN QUEDA TOCADA. La DPA sigue
+     descartada, pero por su motivo propio y verificable — es una division
+     administrativa que cierra las bahias por diseño, y su propio zip trae un
+     documento llamado "CIERRE DE POLIGONOS_v4.docx" —, no por el 4 de 30.
+
+================================================================================
+4. QUE HAY QUE DECIDIR AHORA, Y NO LO DECIDE EL INGENIERO
+================================================================================
+
+El criterio "cada jurisdiccion debe contener su punto representativo" y el dato
+que lo encarna no son compatibles hoy. Tres caminos:
+
+  A. CORREGIR LOS TESTIGOS. El propio insumo declara que el punto representativo
+     es "el testigo SOBRE AGUA que la geometria final debe contener" y que "su
+     eleccion es nuestra". Si 35 de 43 no estan sobre agua, el dato no cumple lo
+     que el insumo dice de el, y corregirlo cae dentro de lo que ya esta
+     declarado como convencion nuestra. En la practica: correr cada testigo al
+     agua mas cercana segun la capa de costa elegida, dejando registrado el
+     desplazamiento. La mediana seria de unas decenas de metros.
+     Es el camino que recomiendo: deja el criterio intacto y arregla el dato que
+     no cumplia su propia definicion.
+
+  B. AFLOJAR EL CRITERIO a "la figura contiene el testigo O pasa a menos de N
+     metros", con N declarado como convencion. Es menos trabajo y esconde el
+     problema: seguiriamos llamando "testigo sobre agua" a un punto en tierra.
+
+  C. NO RESTAR TIERRA, que es donde estamos hoy. Entonces el criterio se cumple
+     solo, pero la figura no representa agua y aparecen los traslapes con las
+     lacustres que ya estan medidos.
+
+NADA SE APLICO. La capa A queda descargada, integra y medida, sin cargar en la
+base. No se reconstruyo. La capa anterior sigue marcada PROVISIONAL, NO APTA, NO
+CONSULTAR, y el motor sigue resolviendo por bahia_jurisdicciones.
+
+Valdivia sigue siendo caso aparte: 4.407 m rio arriba, y eso si es un punto
+genuinamente interior que ninguna costa alcanza. Frente aparte, no se abre.
+
+  ALTO.

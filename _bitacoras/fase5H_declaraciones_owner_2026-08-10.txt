@@ -1,0 +1,106 @@
+================================================================================
+FASE 5 — LAS DOS DECISIONES DEL OWNER, APLICADAS. EL AUDITOR CAZO ALGO NUEVO
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+================================================================================
+
+Script: scripts/fase5_declaraciones_owner.py, idempotente, con las citas.
+
+--------------------------------------------------------------------------------
+1. CHAITEN — el tramo del paralelo 42 30 00 S es FRONTERA
+--------------------------------------------------------------------------------
+  Registrado en data/decreto/adjudicacion_tramos.json.
+  desde (-42.5, -72.633333) hasta (-42.5, -73.2)   litoral -> frontera
+  resolucion: corregido.   adjudicaciones: 21 -> 22
+  Motivo registrado: la mencion 'en la costa Este del estero Renihue' ubica
+  DONDE TERMINA el paralelo, no describe como se avanza. Ademas es el mismo
+  segmento que Rio Negro Hornopiren declara como su limite sur, donde ya estaba
+  marcado frontera: marcarlo litoral aqui dejaria la misma linea con dos tipos
+  segun quien la mire.
+  RESULTADO: control B8 del auditor, LIMPIO. 'las 22 adjudicaciones registradas
+  se aplicaron todas'.
+
+--------------------------------------------------------------------------------
+2. QUEMCHI x RIO NEGRO HORNOPIREN — frontera del meridiano, camino (b)
+--------------------------------------------------------------------------------
+  Hizo falta un mecanismo que no existia: la derivacion automatica solo une dos
+  jurisdicciones cuando las DOS transcriben los mismos vertices, y aqui Quemchi
+  nombra el meridiano como extremo de su limite norte, no como vertice de su
+  cadena. Se agrego al insumo v1 el campo 'fronteras_declaradas' y al migrador
+  la funcion fronteras_declaradas(), que las mezcla con las derivadas. Sin caso
+  por defecto: sin las dos citas, sin ambos lados existentes, o con id repetido,
+  la migracion se detiene.
+
+  VERIFICACION DE EXTENSION — lo que pidio el owner
+    longitudes distintas en la frontera : [-73.0]   un unico meridiano
+    latitud minima declarada            : -42.5     (42 30 00 S)
+    latitud maxima declarada            : -42.0     (42 00 00 S)
+    Es el meridiano ENTRE esas dos latitudes, no el meridiano completo.
+    La extension queda persistida en el propio objeto frontera del v2.
+
+  QUE ALCANZA A RECORTAR
+    Quemchi vive entre -42.0 y -42.333333: su banda entera cae DENTRO de la
+    extension declarada, asi que sobre Quemchi esta frontera no puede recortar
+    de mas — no existe Quemchi fuera del tramo declarado.
+    Rio Negro Hornopiren llega hasta -41.911667, o sea 0,088 grados AL NORTE
+    del extremo de la frontera. Ahi la frontera ya no dice nada.
+
+  LA FRONTERA ES SANA: el segmento declarado, SIN prolongar, separa las dos
+  sedes (Quemchi -42.14/-73.5, Hornopiren -42.0/-72.7). Medido: True.
+
+================================================================================
+HALLAZGO NUEVO — EL AUDITOR QUEDO EN exit=1, Y TIENE RAZON
+================================================================================
+
+  [B2] Quemchi y Rio Negro Hornopiren: una excluye la sede de la otra y la otra
+       no (False / True). Las dos vecinas no describen la misma frontera
+
+  DIAGNOSTICO. B2 comprueba que dos vecinas queden en lados opuestos evaluando
+  cada FIGURA — receta, banda de paralelos y contorno propio — y pidiendo que
+  cada una excluya la sede de la otra. Antes de esta declaracion, Quemchi y
+  Hornopiren no eran vecinas para el auditor y el par nunca se probaba.
+
+  Lo que B2 esta viendo es CIERTO: la figura de Quemchi, que por el Este no la
+  acota nada, contiene la sede de Hornopiren (-42.0 / -72.7). Ese es exactamente
+  el defecto que la frontera viene a arreglar.
+
+  PERO EL SUPUESTO DE B2 NO SE SOSTIENE PARA UNA FRONTERA DECLARADA. B2 asume
+  que dos vecinas se separan por sus contornos transcritos. El motivo mismo de
+  declarar esta frontera es que NINGUNO de los dos contornos las separa: la
+  separacion la aporta la frontera. Para un par asi, la pregunta correcta es la
+  que ya esta medida arriba — ¿el segmento declarado separa las dos sedes? — y
+  la respuesta es que si.
+
+  DE FONDO HAY UNA DIVERGENCIA QUE CONVIENE NO DEJAR PASAR: el auditor modela la
+  figura SIN el recorte por fronteras, y el constructor SI lo aplica. Los dos
+  estan hablando de figuras distintas. Mientras eso siga asi, un defecto puede
+  pasar el auditor y morir en el constructor, o al reves, que es lo que acaba de
+  ocurrir.
+
+  NO TOQUE EL AUDITOR. Es el que caza los defectos; ablandarlo para que pase
+  esta declaracion seria justo lo contrario de para que existe. Que B2 aprenda a
+  distinguir una frontera declarada de una derivada es decision del owner.
+
+================================================================================
+REQUISITO QUE ESTE HALLAZGO LE DEJA AL CONSTRUCTOR
+================================================================================
+
+  recortar_por_fronteras() prolonga hoy toda frontera poligonal 60 grados por
+  cada punta, para garantizar que el corte cruce la figura entera. Sobre una
+  frontera CON extension declarada eso da mas de lo que el decreto entrega:
+  el meridiano 073 00 00 W recortaria a Hornopiren tambien al Norte de
+  42 00 00 S, donde el decreto no dice nada. Son 0,088 grados de figura.
+  El constructor tiene que respetar 'extension': recortar SOLO dentro de ella y
+  dejar intacto lo de afuera. Queda anotado como requisito, no aplicado: el
+  owner mando alto antes de reconstruir.
+
+================================================================================
+ESTADO
+================================================================================
+  auditor            exit=1, un solo fallo, B2, el descrito arriba
+  adjudicaciones     22, todas aplicadas (B8 limpio)
+  fronteras          61 (60 derivadas + 1 declarada)
+  tramos             100
+  capa               jurisdicciones_ds991 sigue PROVISIONAL, NO APTA, NO CONSULTAR
+  descarga A         en curso, ver abajo
+
+  ALTO.

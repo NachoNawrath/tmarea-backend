@@ -44,3 +44,13 @@ tools/derrotero/muestras/
 # regeneran con scripts/download_uhslc_data.py y download_ioc_data.py.
 # tidal-constants.json (derivado liviano) SÍ se versiona.
 src/services/data/tide-obs/
+
+# Capas de costa crudas (zip + shapefile, cientos de MB) — regenerables desde su
+# origen. Su procedencia con URL, ETag y sha256 esta versionada en
+# geodata/costa/PROCEDENCIA.txt, igual que el shapefile de lagos.
+geodata/costa/*.zip
+geodata/costa/*_x/
+
+# SQL generado por el constructor de la Fase 5 (2,5 MB). Se regenera en un comando
+# desde el insumo versionado. Se versionara cuando corresponda a una capa viva.
+scripts/fase5_capa_ds991.sql

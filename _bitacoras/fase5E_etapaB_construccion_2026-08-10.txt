@@ -1,0 +1,345 @@
+================================================================================
+FASE 5 — ETAPA B. CONSTRUCCION DE LA CAPA DE JURISDICCIONES. ALTO POR HALLAZGO
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+================================================================================
+
+La construccion corrio entera. La capa NO cumple dos de los criterios que fijo
+el owner, y la causa de los dos esta fuera del constructor. Se detiene aqui en
+vez de seguir ajustando: lo que falta lo decide el owner.
+
+  script    : scripts/fase5_construir_capa_ds991.py
+  SQL       : scripts/fase5_capa_ds991.sql   (2,5 MB, generado, no editar)
+  tabla     : public.jurisdicciones_ds991    MARCADA PROVISIONAL, NO APTA
+  tiempo    : 11 min 18 s de aplicacion
+
+================================================================================
+LO QUE SI CUMPLE
+================================================================================
+
+     ambito     | total | construidas | vacias | invalidas | area_cero 
+----------------+-------+-------------+--------+-----------+-----------
+ antartica      |     4 |           4 |      0 |         0 |         0
+ insular_remota |     2 |           0 |      0 |         0 |         0
+ lacustre       |     6 |           6 |      0 |         0 |         0
+ maritima       |    52 |          44 |      0 |         0 |         0
+(4 filas)
+
+  54 construidas de 54 cerrables. Cero vacias, cero invalidas, cero de area cero.
+
+  Toda nula, declarada con su causa (10 de 10, restriccion CHECK en la tabla):
+      nombre      |     ambito     |                                  causa                                   
+------------------+----------------+--------------------------------------------------------------------------
+ Arica            | maritima       | el decreto no entrega con que cerrar: falta el limite norte, y no hay co
+ Baker            | maritima       | el decreto no entrega con que cerrar: falta el limite sur, y no hay cont
+ Hanga Roa        | insular_remota | el decreto nombra las islas sin coordenadas y el insumo no trae capa de 
+ Juan Fernandez   | insular_remota | el decreto nombra las islas sin coordenadas y el insumo no trae capa de 
+ Lirquen          | maritima       | La prosa describe el contorno de la Bahia de Concepcion sin dar sus vert
+ Puerto Eden      | maritima       | el decreto no entrega con que cerrar: falta el limite norte, y no hay co
+ Puerto Williams  | maritima       | el contorno parte el espacio en dos y no hay ancla que diga cual de los 
+ Punta Delgada    | maritima       | El decreto define sus limites solo por accidentes geograficos sin coorde
+ Talcahuano       | maritima       | El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al
+ Tierra del Fuego | maritima       | El decreto define sus limites solo por accidentes geograficos sin coorde
+(10 filas)
+
+  Nulas sin causa:
+0
+
+  Indice espacial:
+idx_jurisdicciones_ds991_ambito
+idx_jurisdicciones_ds991_estado
+idx_jurisdicciones_ds991_geom
+jurisdicciones_ds991_pkey
+
+  Convenciones registradas junto a la capa (tabla jurisdicciones_ds991_convenciones):
+1  [insumo v2]  El lado de una poligonal lo decide 'ancla_seleccion' (la sede de la Capitania), no una
+2  [insumo v2]  Cada tramo del contorno lleva su tipo — litoral, frontera o abierto — transcrito del p
+3  [insumo v2]  Donde el decreto describe un tramo del limite como 'el litoral' (sigue_litoral: true),
+4  [insumo v2]  'punto_representativo' es el testigo sobre agua que la geometria final debe contener. 
+5  [insumo v2]  Un punto del contorno con 'respaldo_textual: false' no aparece en el texto del decreto
+6  [insumo v2]  La separacion lateral entre Capitanias en la franja oceanica, el limite exterior de 20
+7  [constructor]  El limite exterior del espacio maritimo se materializa como 200 millas nauticas (370.4
+8  [constructor]  La separacion lateral entre Capitanias dentro de la franja oceanica: el decreto fija h
+9  [constructor]  Donde el decreto dice 'el litoral', el poligono se cierra generosamente hacia tierra c
+10  [constructor]  Del corredor de ensanche solo se conserva el agua que queda conectada con la figura ba
+11  [constructor]  Ninguna figura cruza las fronteras que el insumo le declara: se recorta al lado donde 
+12  [constructor]  La caja de trabajo (-85..-65 de longitud, -60..-17 de latitud) es un artificio de calc
+13  [constructor]  El ambito antartico no resta tierra ni se acota al limite exterior: el decreto lo defi
+
+  El ensanche se aplico SOLO a los 4 tramos marcados litoral, nunca al contorno
+  completo. Ninguna jurisdiccion sin tramo litoral recibio ensanche.
+        nombre        | tramos_litoral | sigue_litoral | km2_ensanche | km2_total 
+----------------------+----------------+---------------+--------------+-----------
+ Calbuco              |              1 | t             |         0.00 |     690.9
+ Puerto Montt         |              2 | t             |       455.27 |     476.4
+ Rio Negro Hornopiren |              1 | t             |       682.02 |    1762.6
+(3 filas)
+
+
+================================================================================
+LOS DOS PENDIENTES QUE LA ETAPA A DEJO ABIERTOS — RESPUESTA
+================================================================================
+
+PENDIENTE 1 — ¿el ensanche de litoral captura los testigos de Puerto Montt y
+              Rio Negro Hornopiren?
+
+        nombre        | tramos_litoral | km2_ensanche | testigo_dentro | m_afuera 
+----------------------+----------------+--------------+----------------+----------
+ Calbuco              |              1 |         0.00 | t              |        0
+ Puerto Montt         |              2 |       455.27 | f              |       91
+ Rio Negro Hornopiren |              1 |       682.02 | t              |        0
+(3 filas)
+
+  RIO NEGRO HORNOPIREN : SI. El ensanche agrega 682 km2 y su testigo, que estaba
+                         a 27,9 km de la cuerda, queda dentro.
+  PUERTO MONTT         : NO, pero el ensanche NO es la causa. Agrego 455 km2 y
+                         acerco el testigo a 91 m. Lo que lo deja afuera es que
+                         ese testigo cae sobre ISLA TENGLO segun la capa de costa
+                         de alta resolucion — es el UNICO de los 53 testigos que
+                         cae dentro de mapa_base_multipoligonos:
+    nombre    |        testigo         
+--------------+------------------------
+ Puerto Montt | POINT(-72.95 -41.4833)
+(1 fila)
+
+                         El testigo salio de la bahia SITPORT 216 'Canal Tenglo'.
+                         SITPORT lo ubica sobre la isla y no sobre el canal. Es un
+                         problema de ubicacion del testigo, no del ensanche.
+
+PENDIENTE 2 — ¿el traslape Calbuco x Puerto Montt se resuelve solo?
+
+ km2_traslape 
+--------------
+     0.000000
+(1 fila)
+
+  SI, SE RESUELVE SOLO. Cero. Lo resuelve la frontera declarada
+  'pol__puerto_montt__calbuco', de 3 puntos: cada figura se recorta al lado donde
+  esta su ancla. No hizo falta ninguna regla especial para este par.
+
+================================================================================
+HALLAZGO 1 — 13 TRASLAPES NO DELIBERADOS. LA CAUSA ESTA EN EL INSUMO
+================================================================================
+
+        jur_a         |        jur_b         |  amb_a   |   km2    
+----------------------+----------------------+----------+----------
+ Chaiten              | Chonchi              | maritima | 5997.124
+ Ancud                | Castro               | maritima | 5512.206
+ Cochamo              | Maullin              | maritima | 2949.637
+ Ancud                | Quemchi              | maritima | 1990.589
+ Cochamo              | Quemchi              | maritima | 1580.253
+ Ancud                | Rio Negro Hornopiren | maritima | 1232.163
+ Rio Negro Hornopiren | Quemchi              | maritima | 1186.043
+ Cochamo              | Rio Negro Hornopiren | maritima |  509.138
+ Maullin              | Puerto Montt         | maritima |  383.858
+ Achao                | Ancud                | maritima |  222.042
+ Ancud                | Cochamo              | maritima |  178.773
+ Lago Ranco           | Puerto Varas         | lacustre |  155.426
+ Calbuco              | Maullin              | maritima |   46.276
+ Achao                | Chonchi              | maritima |    3.415
+(14 filas)
+
+  El unico deliberado es Lago Ranco x Puerto Varas (155,4 km2): es Puyehue,
+  declarado en cotejo_lacustre_adjudicado.json. Sale exacto. Los otros 13 no.
+
+  CRUCE DECISIVO: NINGUNO de los 13 pares declara frontera compartida en el
+  insumo. La regla del constructor —ninguna figura cruza sus propias fronteras
+  declaradas— funciona donde hay frontera (Calbuco x Puerto Montt da cero) y no
+  tiene con que actuar donde no la hay.
+
+  Limites que el insumo declara para los involucrados:
+    Chonchi   N=-42.583333  S=NINGUNO     Ancud   N=-41.744444  S=NINGUNO
+    Cochamo   N=NINGUNO     S=NINGUNO     (2 puntos de contorno, 1 frontera)
+    Achao, Puerto Montt, Rio Negro Hornopiren, Calbuco: sin paralelos declarados
+
+  Sin limite sur declarado y sin frontera lateral con su vecina, la caja de la
+  receta corte_y_ancla se extiende hasta donde llega el contorno y nada la
+  separa lateralmente. Cochamo es el caso extremo: sin ningun paralelo y con
+  una sola frontera, su figura cruza el ancho util de la caja de trabajo y pisa
+  a Maullin, Quemchi, Ancud y Rio Negro Hornopiren.
+
+  ESTO YA ESTABA ANOTADO. La bitacora fase5A registro la incidencia al derivar
+  fronteras: 'el paralelo -43.740278 lo comparten 2 por el Sur y 2 por el Norte:
+  son Capitanias laterales, no apiladas, y el paralelo solo no las separa'. La
+  Etapa A la dejo abierta y reaparece aqui, que es donde muerde.
+
+  NO SE INVENTA LA SEPARACION. Fabricar una frontera lateral que el decreto no
+  da seria resolver por aproximacion geometrica, que es justo lo que INV-3.3
+  prohibe y lo que el §7 registra como bug de la capa vigente.
+
+================================================================================
+HALLAZGO 2 — 30 DE 53 TESTIGOS CAEN FUERA. LA CAPA DE COSTA NO SIRVE PARA CORTAR
+================================================================================
+
+ dentro | fuera 
+--------+-------
+     23 |    30
+(1 fila)
+
+  El auditor de la Etapa A daba los 51 testigos dentro de su figura. Lo que los
+  expulsa no es la figura: es la RESTA DE TIERRA.
+
+  Los 30 caen dentro de ne_land y NINGUNO dentro de mapa_base_multipoligonos.
+  ne_land es Natural Earth 1:10m y a esa resolucion las bahias y los puertos
+  fluviales estan dibujados como tierra firme.
+
+ m_tierra_adentro_en_ne_land |      nombre      
+-----------------------------+------------------
+                       11854 | Valdivia
+                        4662 | Puerto Chacabuco
+                        2760 | San Antonio
+                        2659 | Lebu
+                        2501 | Taltal
+                        2326 | Chaiten
+                        2274 | Constitucion
+                        2193 | Puerto Cisnes
+                        1869 | Lota
+                        1769 | Corral
+                        1550 | Caldera
+                        1486 | Valparaiso
+                        1277 | Iquique
+                        1218 | Quintero
+                        1109 | Achao
+                        1014 | Coquimbo
+                         898 | Cochamo
+                         674 | Chanaral
+                         558 | Ancud
+                         527 | Tongoy
+                         505 | Castro
+                         492 | Antofagasta
+                         333 | Mejillones
+                         293 | Los Vilos
+                         242 | Algarrobo
+                         137 | Maullin
+                         100 | San Vicente
+                          52 | Pichilemu
+                          11 | Huasco
+(29 filas)
+
+
+  Profundidad de esos testigos dentro de la costa gruesa de ne_land:
+    hasta 1 km : 15 casos      1 a 3 km : 12 casos
+    4,7 km     : Puerto Chacabuco
+    11,9 km    : Valdivia — es puerto fluvial y ne_land no trae el rio
+
+  NO TIENE ARREGLO POR PARAMETRO. Erosionar ne_land 3 km recupera 27 de 29;
+  Chacabuco necesita 5 km y Valdivia 12 km, y una erosion de 12 km borraria
+  istmos completos y crearia traslapes nuevos donde hoy no hay.
+
+  Las 6 lacustres NO estan afectadas: su receta no resta tierra (INV-3.5), y por
+  eso sus testigos, que estan de 39 a 97 km tierra adentro, quedan dentro.
+
+  POR QUE IMPORTA: un punto sobre agua real que la capa da por tierra es una
+  bahia sin jurisdiccion. Es el falso negativo silencioso de INV-3.6, y la
+  bahia de Valparaiso, la de Iquique y el puerto de San Antonio estan entre los
+  30. Entregar la capa asi seria peor que no entregarla.
+
+================================================================================
+LO QUE NO SE MIDIO, Y POR QUE
+================================================================================
+
+  HUECOS ENTRE VECINAS. No se miden todavia. Cualquier hueco que se mida ahora
+  cambia cuando se resuelvan los 13 traslapes, porque cinco de las figuras
+  involucradas van a cambiar de forma. Medirlo ahora daria un numero que no
+  sobrevive a la correccion. Queda para despues de la decision del owner.
+
+  LA REESTRUCTURACION DEL SCRIPT que el owner pidio a mitad de la etapa
+  —verificacion adentro que detenga la corrida, sin casos particulares en el
+  codigo, listo para que la fuente cambie— NO esta hecha. Se midio con la
+  primera version y se paro al ver que el resultado no cierra. Hacerla ahora
+  seria escribir controles sobre una construccion que va a cambiar de forma
+  cuando el owner decida los dos puntos de arriba.
+
+================================================================================
+QUE NECESITA DECIDIR EL OWNER
+================================================================================
+
+  A. SEPARACION LATERAL de las 8 jurisdicciones de la zona de canales que hoy
+     se pisan. Es dato del decreto que el insumo no tiene. Tres caminos:
+       A1. Transcribir del decreto los limites que faltan (limite sur de Ancud
+           y de Chonchi, limites de Cochamo) y las fronteras laterales que el
+           texto describa. Es trabajo de fuente, no de codigo.
+       A2. Declarar una convencion explicita de separacion lateral, registrada
+           como convencion nuestra y no como decreto.
+       A3. Declarar no_cerrables las que el decreto no separa, y que la capa
+           las informe como jurisdiccion sin geometria (INV-3.6) en vez de
+           darles una figura que pisa a la vecina.
+
+  B. CON QUE CAPA SE CORTA LA TIERRA, o si se corta.
+       B1. Conseguir una linea de costa de resolucion real que incluya el
+           continente. mapa_base_multipoligonos solo trae islas: su poligono
+           mas grande es Isla Lemuy, 95,8 km2.
+       B2. No restar tierra: la jurisdiccion incluye su franja costera. El
+           Art. 2 dice que comprende el litoral, lagos y rios navegables, e
+           INV-3.4 fija 'muestra de mas, nunca de menos'. Restar tierra es
+           convencion nuestra, no decreto. Habria que cerrar el lado de tierra
+           de otra forma y restar los cuerpos lacustres adjudicados, que si
+           tienen dueño declarado.
+       B3. Restar ne_land erosionada N km. Recupera casi todo pero no Valdivia
+           ni Chacabuco, y hay que medir que no abra traslapes nuevos.
+
+  C. EL TESTIGO DE PUERTO MONTT. SITPORT lo pone sobre Isla Tenglo. O se corrige
+     su ubicacion al canal, o se declara que ese testigo no sirve como prueba.
+
+================================================================================
+VEREDICTO DE LA ETAPA B
+================================================================================
+
+  construidas / cerrables            : 54 / 54
+  vacias, de area cero, invalidas    : 0
+  nulas declaradas con causa         : 10 / 10
+  indice espacial                    : si
+  convenciones registradas           : 13
+  ensanche solo en tramos litoral    : si, 4 tramos en 3 jurisdicciones
+  traslape Calbuco x Puerto Montt    : 0 — se resolvio solo
+  testigo de Rio Negro Hornopiren    : capturado por el ensanche
+  testigo de Puerto Montt            : no, por ubicacion del testigo
+  traslapes no deliberados           : 13   NO CUMPLE
+  testigos fuera de su figura        : 30   NO CUMPLE
+  huecos entre vecinas               : no medido, prematuro
+
+  LA CAPA NO SE ENTREGA. Queda en la base marcada PROVISIONAL, NO APTA, NO
+  CONSULTAR, y el motor sigue resolviendo por bahia_jurisdicciones.
+  ALTO. Los dos puntos que faltan no los decide el ingeniero.
+
+
+################################################################################
+NOTA DE CORRECCION — agregada el 2026-08-10, despues de medir la capa OSM
+################################################################################
+
+ESTE INFORME CONTIENE UN ARGUMENTO INVALIDO. Se deja el texto original intacto,
+porque borrarlo seria borrar la evidencia de como se razono, y se corrige aca.
+
+LO QUE DICE MAL
+  Que ne_land no sirve PORQUE expulsa 30 de 53 puntos representativos, y que ese
+  conteo mide la calidad de una capa de costa. Sobre esa base se pidio buscar otra
+  capa, se descarto la DPA 2023 por recuperar 4 de 30, y se hablo de "recuperar
+  los 29 testigos costeros" con una costa mejor.
+
+POR QUE ES INVALIDO
+  Se midio despues, contra la capa OSM (521 veces mas fina que ne_land en el mismo
+  recuadro): recupera 3 de 30. MENOS que la DPA. Una capa mucho mejor da un numero
+  peor, asi que el numero no estaba midiendo la capa.
+  La causa real: los testigos son puntos de ORILLA, no de agua. 35 de los 43
+  testigos maritimos caen en tierra segun OSM, con MEDIANA DE 32 METROS tierra
+  adentro y 24 de 35 a menos de 100 m de la orilla. Son puntos de muelle o de sede
+  puestos por SITPORT del lado de la tierra. Cuanto mejor es la costa, mas ajustada
+  queda a la orilla real donde ellos estan, y mas de ellos deja afuera.
+
+EL MOTIVO CORRECTO DE CADA DESCARTE
+  ne_land   Se descarta por resolucion, no por el conteo de testigos: 16.578
+            vertices contra los 8.646.997 de OSM en el mismo recuadro, 521 veces
+            mas gruesa, y a esa escala cierra bahias enteras.
+  DPA 2023  Se descarta por construccion, no por el conteo: es una division
+            ADMINISTRATIVA que cierra las bahias con el poligono comunal. Su
+            propio zip trae el documento "CIERRE DE POLIGONOS_v4.docx". La comuna
+            de Valparaiso incluye su bahia, y eso para una division administrativa
+            es correcto y para nosotros es agua marcada como tierra.
+  OSM       NO queda descartada. Es la mejor costa de las tres.
+
+QUE SIGUE EN PIE DE ESTE INFORME
+  Todo lo demas: los traslapes medidos, la separacion lateral sin resolver, las
+  transcripciones, el analisis de los parrafos del decreto y la condicion de
+  Cochamo. Solo cae el argumento que ligaba el conteo de testigos a la calidad de
+  la capa.
+
+  Medicion completa y diagnostico: _bitacoras/fase5J_medicion_capa_A_2026-08-10.txt

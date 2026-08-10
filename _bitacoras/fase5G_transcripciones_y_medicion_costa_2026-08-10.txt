@@ -1,0 +1,219 @@
+================================================================================
+FASE 5 — TRANSCRIPCIONES APLICADAS Y MEDICION DE LAS CAPAS DE COSTA
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+================================================================================
+
+================================================================================
+PARTE 1 — LAS TRANSCRIPCIONES. TRES APLICADAS, UNA NO
+================================================================================
+
+Aplicadas sobre data/decreto/jurisdicciones_capitanias.json, que es la FUENTE.
+El v2 es derivado y se regenero con fase4_migrar_insumo_v2.py. Corregir el v2 a
+mano habria perdido las correcciones en la proxima migracion.
+Script: scripts/fase5_correcciones_transcripcion.py, idempotente.
+
+  CHONCHI   limite_sur 42 50 00 S (-42.833333) + vertice terminal al Weste.
+            Cita: '...desde este punto la diagonal hasta el punto ubicado en
+            42 50 00 S / 073 45 00 W, SIGUIENDO POR ESTA LATITUD HACIA EL WESTE.'
+
+  ANCUD     limite_sur 42 00 00 S (-42.0) + vertice terminal al Weste.
+            Cita: '...42 00 00 S / 073 00 00 W; Y DESDE ALLI HACIA EL WESTE.'
+
+  CHAITEN   vertice 42 30 00 S / 072 38 00 W al comienzo del recorrido.
+            Cita: 'Por el Norte el paralelo 42 30 00 S desde su interseccion con
+            Longitud 073 12 00 W hacia el Este, HASTA LA INTERSECCION DEL
+            PARALELO 42 30 00 S CON LA LONGITUD 072 38 00 W EN LA COSTA ESTE DEL
+            ESTERO RENIHUE.'
+
+EFECTO MEDIDO SOBRE EL INSUMO DERIVADO
+  fronteras declaradas: 58 -> 60. Las dos nuevas las derivo sola la migracion:
+    par__ancud__quemchi    La contrapartida ya estaba: Quemchi declaraba ese
+                           mismo paralelo como su limite norte y solo faltaba
+                           el lado de Ancud. Es el punto que hizo el owner.
+    par__chonchi__quellon  De yapa: Quellon ya declaraba el paralelo
+                           42 50 00 S como su limite norte.
+  tramos: 97 -> 100   (litoral 4->5, frontera 90->90, abierto 3->5)
+
+LA CUARTA NO SE APLICO — QUEMCHI
+  El decreto le da el vertice 42 00 00 S / 073 00 00 W como extremo ESTE de su
+  limite norte: 'Por el Norte el paralelo 42 00 00 S DESDE EL MERIDIANO
+  073 00 00 W hacia el Weste'. Pero ese vertice NO puede entrar en su poligonal:
+  su rol_cadena es 'S', o sea la cadena transcrita es su borde SUR, y meter ahi
+  un vertice del borde norte inventa un segmento que el decreto no describe.
+  Expresarlo bien exige una de dos cosas, y las dos son decision del owner:
+    (a) extender el contorno de Quemchi a un recorrido completo (norte por el
+        paralelo desde 073 00 00 W hacia el lado abierto, y de vuelta por el sur),
+        que cambia su receta de cadena a contorno; o
+    (b) declarar la frontera del meridiano 073 00 00 W con Rio Negro Hornopiren,
+        cuyo parrafo SI describe ese meridiano como su borde Weste entre
+        42 30 00 S y 42 00 00 S. Las dos mitades estarian en el decreto, igual
+        que en el caso de Ancud.
+  No elijo por mi cuenta: no es transcribir una linea, es cambiar como se
+  describe la jurisdiccion.
+
+PENDIENTE QUE ABRIO LA CORRECCION DE CHAITEN
+  El auditor quedo en exit=1 con un solo fallo, y es el fallo correcto:
+    [B8] Chaiten: tramo 'Interseccion 42 30 00 S / 072 38 00 W' -> (-42.5, -73.2)
+         necesita adjudicacion del owner y no la tiene registrada
+  El tramo nuevo es el limite norte corriendo por el paralelo 42 30 00 S. La
+  propuesta automatica lo marco 'litoral' porque el parrafo dice 'costa Este del
+  estero Renihue'. Mi lectura es que esa mencion dice DONDE TERMINA el paralelo,
+  no que el tramo siga la costa: el tramo es un paralelo, o sea 'frontera' — y de
+  hecho es el mismo segmento que Rio Negro Hornopiren declara como su limite sur.
+  Es el mismo motivo ya registrado en 21 adjudicaciones: 'El fragmento describe
+  una linea imaginaria, un paralelo o un meridiano. La mencion de litoral en el
+  parrafo corresponde a otro tramo.' NO LA ESCRIBI: la adjudicacion es del owner.
+
+================================================================================
+PARTE 2 — MEDICION DE LA CAPA B. NO SIRVE. MI RECOMENDACION ERA EQUIVOCADA
+================================================================================
+
+Descargada de geoportal.cl, 310.992.026 bytes, nombre DPA_2023.zip.
+Contiene COMUNAS_v1, PROVINCIAS_v1 y REGIONES_v1, mas 5 documentos de
+metodologia. Uno de ellos se llama 'CIERRE DE POLIGONOS_v4.docx', y el nombre
+ya adelanta el problema.
+
+    COMUNAS/COMUNAS_v1.shp
+    COMUNAS/COMUNAS_v1.shx
+    DOCUMENTACION/CAMBIOS_DPA_2023_v1.docx
+    DOCUMENTACION/CIERRE DE POL╓GONOS_v4.docx
+    DOCUMENTACION/DESCRIPCION_DPA2023_v1.docx
+    DOCUMENTACION/Metadato_DPA2023_SIRGASCHILE_v2.docx
+    DOCUMENTACION/METODOLOGIA_CALCULO_SUPERFICIES_2023_v3.docx
+    PROVINCIAS/PROVINCIAS_v1.cpg
+    PROVINCIAS/PROVINCIAS_v1.dbf
+    PROVINCIAS/PROVINCIAS_v1.prj
+    PROVINCIAS/PROVINCIAS_v1.shp
+    PROVINCIAS/PROVINCIAS_v1.shx
+    REGIONES/REGIONES_v1.cpg
+    REGIONES/REGIONES_v1.dbf
+
+  La proyeccion es la declarada: GCS_SIRGAS-Chile, EPSG:5360. Reproyectar a
+  4326 es trivial. La extension cubre el pais entero, -80,8..-66,4 /
+  -56,5..-17,5. Geometrias: 0 nulas, 0 vacias, 0 invalidas. 6,8 millones de
+  vertices y 5,2 vertices por km2 — es fina, la escala 1:50.000 es real.
+
+  Y NO SIRVE IGUAL.
+
+PRUEBA QUE DECIDE: de los 30 testigos que ne_land expulsa, cuantos quedan
+sobre agua en esta capa.
+
+    COMUNAS     recupera 4 de 30
+    PROVINCIAS  recupera 4 de 30
+    REGIONES    recupera 4 de 30
+
+  Los 26 que siguen adentro de la tierra: Algarrobo, Ancud, Antofagasta,
+  Caldera, Chaiten, Cochamo, Constitucion, Coquimbo, Corral, Huasco, Iquique,
+  Lebu, Los Vilos, Lota, Maullin, Mejillones, Pichilemu, Puerto Chacabuco,
+  Puerto Cisnes, Puerto Montt, Quintero, San Vicente, Taltal, Tongoy, Valdivia
+  y Valparaiso.
+
+  POR QUE. La DPA es una division ADMINISTRATIVA, no una linea de costa. Usa la
+  costa del IGM para su borde exterior, pero las bahias quedan CERRADAS por el
+  poligono comunal: la comuna de Valparaiso incluye la Bahia de Valparaiso, la
+  de Iquique incluye su bahia. Para una division administrativa eso es correcto
+  — el municipio manda sobre su borde costero. Para nosotros es exactamente el
+  mismo defecto que ne_land, con mejor resolucion: agua real marcada como tierra.
+
+  Que las tres divisiones den el mismo 4 de 30 lo confirma: no es un problema de
+  escala ni de una comuna mal dibujada, es como esta construida la capa.
+
+  ME EQUIVOQUE AL RECOMENDARLA. El argumento de que la costa del Estado es la
+  fuente que corresponde para una capa derivada de un decreto del Estado sigue
+  siendo bueno, pero la DPA no es esa costa: es la division administrativa que
+  la usa por fuera. Por eso el owner pidio medir antes de dar por buena.
+
+================================================================================
+PARTE 3 — CAPA A, EN DESCARGA
+================================================================================
+
+  land-polygons-split-4326.zip, 925.046.449 bytes, Last-Modified 2026-08-10
+  (se regenera a diario). Bajando a ~4,8 MB/min: unas 3 horas.
+
+  Es la que ahora importa, y por una razon medible: OSM traza natural=coastline
+  siguiendo la orilla real hacia adentro de cada bahia, no cerrando su boca. Si
+  eso se cumple, recupera los 29 testigos costeros. Se medira con la misma
+  prueba, sin excepciones.
+
+  Dato a favor ya medido: de los 30 testigos, NINGUNO cae dentro de
+  mapa_base_multipoligonos, que es un extracto OSM de la misma familia. Es
+  indicio, no prueba: esa capa solo tiene islas y el continente no esta.
+
+================================================================================
+PARTE 4 — REGISTRADO Y PENDIENTE
+================================================================================
+
+REGISTRADO, por instruccion del owner, en la lista de convenciones que el
+constructor persiste junto a la capa:
+
+  'RESTAR LA TIERRA ES CONVENCION NUESTRA, NO DECRETO. El Art. 2 dice que la
+   jurisdiccion comprende el litoral, los lagos y rios navegables, las aguas
+   interiores, el mar territorial, la zona contigua, la ZEE y la plataforma
+   continental: el decreto NO pone un limite por el lado de tierra, y de hecho
+   43 de las 44 jurisdicciones maritimas cerrables no tienen ninguno. El corte
+   contra la costa se hace para que la FIGURA REPRESENTE AGUA, no para acotar
+   la jurisdiccion. De ahi se siguen dos cosas: que la capa de costa se elige
+   por su fidelidad al agua real y no por su autoridad administrativa, y que
+   ante la duda se yerra hacia incluir de mas, nunca hacia excluir.'
+
+  Esa convencion es la que acaba de decidir el descarte de la DPA: es mas
+  autoritativa y menos fiel al agua, y aqui manda la fidelidad al agua.
+
+PENDIENTES ABIERTOS, NINGUNO TOCADO
+  1. Quemchi: como se expresa su acotacion por el Este. Dos caminos, arriba.
+  2. Chaiten: adjudicacion del tramo nuevo del paralelo 42 30 00 S.
+  3. Valdivia fluvial: su testigo esta 11,9 km rio arriba y ninguna capa de
+     costa lo alcanza. El Art. 2 incluye los rios navegables, asi que hace
+     falta hidrografia. FRENTE APARTE, no se abre ahora.
+  4. La salida intermedia de restar solo los cuerpos lacustres: NO se aplico,
+     por instruccion del owner.
+
+NO SE RECONSTRUYO NADA. jurisdicciones_ds991 sigue marcada PROVISIONAL, NO APTA,
+NO CONSULTAR, y el motor sigue resolviendo por bahia_jurisdicciones.
+El auditor esta en exit=1 por el pendiente 2, asi que ademas no corresponde
+construir: no se construye nada que no haya sido auditado antes.
+
+ALTO.
+
+
+################################################################################
+NOTA DE CORRECCION — agregada el 2026-08-10, despues de medir la capa OSM
+################################################################################
+
+ESTE INFORME CONTIENE UN ARGUMENTO INVALIDO. Se deja el texto original intacto,
+porque borrarlo seria borrar la evidencia de como se razono, y se corrige aca.
+
+LO QUE DICE MAL
+  Que ne_land no sirve PORQUE expulsa 30 de 53 puntos representativos, y que ese
+  conteo mide la calidad de una capa de costa. Sobre esa base se pidio buscar otra
+  capa, se descarto la DPA 2023 por recuperar 4 de 30, y se hablo de "recuperar
+  los 29 testigos costeros" con una costa mejor.
+
+POR QUE ES INVALIDO
+  Se midio despues, contra la capa OSM (521 veces mas fina que ne_land en el mismo
+  recuadro): recupera 3 de 30. MENOS que la DPA. Una capa mucho mejor da un numero
+  peor, asi que el numero no estaba midiendo la capa.
+  La causa real: los testigos son puntos de ORILLA, no de agua. 35 de los 43
+  testigos maritimos caen en tierra segun OSM, con MEDIANA DE 32 METROS tierra
+  adentro y 24 de 35 a menos de 100 m de la orilla. Son puntos de muelle o de sede
+  puestos por SITPORT del lado de la tierra. Cuanto mejor es la costa, mas ajustada
+  queda a la orilla real donde ellos estan, y mas de ellos deja afuera.
+
+EL MOTIVO CORRECTO DE CADA DESCARTE
+  ne_land   Se descarta por resolucion, no por el conteo de testigos: 16.578
+            vertices contra los 8.646.997 de OSM en el mismo recuadro, 521 veces
+            mas gruesa, y a esa escala cierra bahias enteras.
+  DPA 2023  Se descarta por construccion, no por el conteo: es una division
+            ADMINISTRATIVA que cierra las bahias con el poligono comunal. Su
+            propio zip trae el documento "CIERRE DE POLIGONOS_v4.docx". La comuna
+            de Valparaiso incluye su bahia, y eso para una division administrativa
+            es correcto y para nosotros es agua marcada como tierra.
+  OSM       NO queda descartada. Es la mejor costa de las tres.
+
+QUE SIGUE EN PIE DE ESTE INFORME
+  Todo lo demas: los traslapes medidos, la separacion lateral sin resolver, las
+  transcripciones, el analisis de los parrafos del decreto y la condicion de
+  Cochamo. Solo cae el argumento que ligaba el conteo de testigos a la calidad de
+  la capa.
+
+  Medicion completa y diagnostico: _bitacoras/fase5J_medicion_capa_A_2026-08-10.txt

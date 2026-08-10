@@ -792,6 +792,82 @@ def lado_abierto(cap):
     return None
 
 
+def fronteras_declaradas(v1, caps, ya_derivadas):
+    """Fronteras que el decreto describe desde los dos lados y que la derivacion
+    automatica no puede ver.
+
+    La derivacion exige que las DOS jurisdicciones transcriban los mismos vertices.
+    Hay casos en que el decreto describe la misma linea desde ambos parrafos pero
+    solo uno de los dos la lleva a coordenadas, porque para el otro es el extremo
+    de otro limite. Ahi la frontera existe en el decreto y no en los vertices, y
+    transcribirla del lado que no la tiene obligaria a reescribir como el decreto
+    describe esa jurisdiccion — que es mas que transcribir.
+
+    Se declaran en el campo 'fronteras_declaradas' del insumo v1, con la cita de
+    los dos parrafos y su extension EXACTA. No hay caso por defecto: todo lo que
+    no cuadre detiene la migracion.
+    """
+    decl = v1.get("fronteras_declaradas")
+    if decl is None:
+        return []
+    if not isinstance(decl, list):
+        raise Alto("'fronteras_declaradas' tiene que ser una lista")
+
+    ids_cap = {c["id"] for c in caps}
+    ids_ya = {f["id"] for f in ya_derivadas}
+    salida = []
+    for d in decl:
+        fid = d.get("id")
+        if not fid:
+            raise Alto("una frontera declarada viene sin id")
+        if fid in ids_ya:
+            raise Alto(f"la frontera declarada '{fid}' ya la deriva el automatico; "
+                       f"declararla otra vez la duplicaria")
+        lados = [d.get("lado_a"), d.get("lado_b")]
+        faltan = [x for x in lados if x not in ids_cap]
+        if faltan:
+            raise Alto(f"la frontera declarada '{fid}' nombra {faltan}, que no "
+                       f"existe(n) entre las jurisdicciones")
+        pts = d.get("puntos") or []
+        if len(pts) < 2:
+            raise Alto(f"la frontera declarada '{fid}' trae {len(pts)} punto(s); "
+                       f"una frontera necesita 2 para tener extension")
+        if any(p.get("lat") is None or p.get("lon") is None for p in pts):
+            raise Alto(f"la frontera declarada '{fid}' trae un punto sin coordenadas")
+        for k in ("cita_lado_a", "cita_lado_b", "motivo_declaracion"):
+            if not d.get(k):
+                raise Alto(f"la frontera declarada '{fid}' no trae '{k}'. Una "
+                           f"frontera sin las dos citas no esta transcrita, esta "
+                           f"supuesta")
+        salida.append({
+            "id": fid,
+            "tipo": "poligonal",
+            "latitud": None,
+            "latitud_dms": None,
+            "puntos": [{"lat": p["lat"], "lon": p["lon"],
+                        "lat_dms": p.get("lat_dms") or dms(p["lat"], "lat"),
+                        "lon_dms": p.get("lon_dms") or dms(p["lon"], "lon")}
+                       for p in pts],
+            "lado_a": d["lado_a"],
+            "lado_b": d["lado_b"],
+            "citas": {d["lado_a"]: d["cita_lado_a"], d["lado_b"]: d["cita_lado_b"]},
+            "secuencia_coincide": True,
+            "origen": "declarada por transcripcion, no derivada de vertices comunes",
+            "motivo_declaracion": d["motivo_declaracion"],
+            # La extension es parte del dato: esta frontera vale ENTRE estos
+            # limites y no mas alla. Quien la use para recortar tiene que
+            # respetarlos; prolongarla de punta a punta daria mas de lo que el
+            # decreto entrega.
+            "extension": {
+                "lat_min": min(p["lat"] for p in pts),
+                "lat_max": max(p["lat"] for p in pts),
+                "lon_min": min(p["lon"] for p in pts),
+                "lon_max": max(p["lon"] for p in pts),
+            },
+        })
+    return salida
+
+
 def derivar_fronteras(caps, contornos, cerrados):
     """Las fronteras del insumo, cada una como UNA entidad con sus dos lados.
 
@@ -1015,6 +1091,7 @@ def main():
     # deciden despues que respaldo ajeno vale. Derivar con los puntos ya filtrados
     # seria circular.
     fronteras, incidencias = derivar_fronteras(caps, contornos, cerrados)
+    fronteras += fronteras_declaradas(v1, caps, fronteras)
 
     # Un punto respaldado solo por el parrafo de otra jurisdiccion vale si las dos
     # comparten esa frontera: el decreto describe una misma linea desde los dos

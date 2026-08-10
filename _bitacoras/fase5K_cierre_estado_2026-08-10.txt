@@ -1,0 +1,144 @@
+================================================================================
+FASE 5 — ESTADO DE CIERRE. PARA RETOMAR SIN RE-DERIVAR NADA
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+================================================================================
+
+Esto es el punto de retomada. Lo que sigue esta medido, no supuesto, y cada
+afirmacion tiene su bitacora detras.
+
+================================================================================
+LA CAPA DE COSTA
+================================================================================
+
+ELEGIDA: OSM land polygons. Descargada, integra y medida. NO CARGADA EN LA BASE.
+
+  archivo    geodata/costa/land-polygons-split-4326.zip   925.046.449 bytes
+             NO va al repo por tamaño. Su procedencia completa — URL, ETag,
+             sha256, licencia, mediciones — esta en geodata/costa/PROCEDENCIA.txt,
+             igual que se hizo con el shapefile de lagos.
+  sha256     e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266
+  CRS        EPSG:4326, el mismo de la base. No hay que reproyectar.
+  licencia   ODbL, (c) OpenStreetMap contributors
+  medido     78.584 poligonos en el bbox de Chile; 0 nulas, 0 vacias, 0 invalidas;
+             8.646.997 vertices. Contra ne_land en el MISMO recuadro: 16.578
+             vertices. 521 veces mas fina.
+
+  DESCARTADAS Y POR QUE — el motivo correcto, no el que se uso primero:
+    ne_land    por resolucion: 521 veces mas gruesa; a esa escala cierra bahias.
+    DPA 2023   por construccion: es una division ADMINISTRATIVA que cierra las
+               bahias con el poligono comunal. Su zip trae "CIERRE DE
+               POLIGONOS_v4.docx". Se conserva el archivo por si hacen falta
+               limites administrativos.
+    MMA Linea Litoral  metadato pobre, escala de referencia "comuna", origen no
+               cartografico. No se descargo.
+
+================================================================================
+EL DIAGNOSTICO DE LOS TESTIGOS
+================================================================================
+
+LOS PUNTOS REPRESENTATIVOS SON PUNTOS DE ORILLA, NO DE AGUA.
+
+  testigos maritimos                    43
+    caen en tierra segun OSM            35
+    caen sobre agua segun OSM            8
+
+  de los 35 que caen en tierra, cuanto se meten tierra adentro:
+    mediana                             32 m
+    minimo                               2 m   (Huasco)
+    maximo                           4.407 m   (Valdivia, fluvial)
+    a menos de   100 m de la orilla     24 de 35
+    a menos de   500 m de la orilla     28 de 35
+    a mas de   2.000 m de la orilla      1 de 35
+
+  Huasco 2 m, Quellon 3 m, Lota 3 m, Corral 5 m, Maullin 5 m, Caldera 7 m,
+  Quemchi 12 m, Ancud 16 m, Pichilemu 19 m, Cochamo 21 m, Calbuco 23 m...
+  Son puntos de muelle o de sede que SITPORT coloco del lado de la tierra.
+
+  CONSECUENCIA: ninguna capa de costa, a ninguna resolucion, puede cumplir "cada
+  jurisdiccion contiene su punto representativo" mientras se reste tierra. Y
+  cuanto MEJOR es la costa, PEOR sale el numero.
+
+  ARGUMENTO INVALIDO YA CORREGIDO: el conteo de testigos no medía la calidad de la
+  capa. Las bitacoras fase5E, fase5F y fase5G llevan su nota de correccion al pie;
+  el texto original se dejo intacto porque borrarlo seria borrar la evidencia de
+  como se razono.
+
+================================================================================
+CAMINO 1 AUTORIZADO — CORREGIR LOS TESTIGOS. NO EMPEZADO
+================================================================================
+
+El owner autorizo el camino 1: correr cada testigo al agua mas cercana segun la
+capa de costa elegida, dejando registrado el desplazamiento. Se apoya en lo que el
+propio insumo ya declara: el punto representativo es "el testigo SOBRE AGUA que la
+geometria final debe contener" y "su eleccion es nuestra". Si 35 de 43 no estan
+sobre agua, el dato no cumple su propia definicion.
+
+NO SE AVANZO: queda para el regreso del owner.
+
+DOS CONDICIONES QUE FIJO EL OWNER:
+  1. EL UMBRAL LO DEFINE Y LO REGISTRA EL INGENIERO. Cuanto se admite mover un
+     testigo antes de que deje de ser el mismo punto y pase a ser un dato
+     inventado. Tiene que quedar declarado como convencion, con su justificacion
+     medida — la distribucion de arriba es el insumo para elegirlo — y un testigo
+     que exija mas que el umbral no se mueve: se declara.
+  2. VALDIVIA ES FRENTE APARTE y no entra en esta correccion. Su testigo esta
+     4.407 m rio arriba: no es un punto de orilla mal puesto, es un puerto
+     fluvial. Ninguna costa lo alcanza.
+
+================================================================================
+LOS TRES PENDIENTES ABIERTOS
+================================================================================
+
+  1. FAMILIA B9 DE LA PRUEBA DE MORDIDA.
+     El auditor ya modela la misma figura que el constructor, con recorte por
+     fronteras declaradas y respeto de su alcance. Las diez familias existentes
+     siguen cazando (10/10, insumo restaurado byte por byte). Pero el camino nuevo
+     NO tiene familia propia: nada comprueba que el auditor note si alguien altera
+     la extension de una frontera declarada. Un control que nadie probo no
+     garantiza nada.
+
+  2. SEPARACION LATERAL DE SEIS PARES MARITIMOS.
+     Es lo unico que la capa de costa NO va a resolver. Medido sin ensanche:
+       Cochamo x Maullin ..................... 43.587,7 km2
+       Chaiten x Chonchi ..................... 35.611,1
+       Castro x Chonchi ......................    975,7
+       Calbuco x Maullin .....................    341,2
+       Maullin x Puerto Montt ................    180,4
+       Cochamo x Rio Negro Hornopiren ........     27,0
+     Cochamo y Maullin no tienen limite por el Este en el decreto: su borde es la
+     costa. Los demas dependen de si el decreto entrega la separacion o no. El
+     camino ya usado y que funciona es el de Ancud: buscar la contrapartida en el
+     parrafo de la vecina.
+
+  3. VALDIVIA FLUVIAL.
+     El Art. 2 incluye los rios navegables. Hace falta hidrografia, que es un
+     tercer dato, no una costa. No se abre.
+
+================================================================================
+DONDE QUEDO TODO LO DEMAS
+================================================================================
+
+  INSUMO      auditoria limpia, exit=0. 100 tramos, 22 adjudicaciones, 61
+              fronteras (60 derivadas + 1 declarada), 10/10 familias muerden.
+              Tres transcripciones aplicadas con su cita (Chonchi, Ancud,
+              Chaiten) y dos decisiones del owner registradas (tramo de Chaiten
+              como frontera; frontera declarada Quemchi x Hornopiren, meridiano
+              073 00 00 W ENTRE 42 00 00 S y 42 30 00 S, con su extension
+              persistida).
+
+  AUDITOR     modela la misma figura que el constructor, implementacion
+              independiente (paridad de cruces vs. corte de poligonos).
+
+  CONSTRUCTOR reestructurado y corriendo: un comando construye, aplica y verifica;
+              siete controles dentro de la misma transaccion terminando en RAISE.
+              Hoy se detiene solo, como debe, en C3 (13 traslapes) y C4 (2
+              testigos fuera). NO deja capa a medias: la transaccion se deshace.
+
+  BASE        jurisdicciones_ds991 NO existe (la transaccion se deshizo).
+              jurisdicciones_decreto sigue marcada SUPERSEDIDA Y DESACTUALIZADA.
+              bahia_jurisdicciones sigue siendo la que el motor consulta, marcada
+              como contradictoria con INV-3.3 (§7 punto 4).
+
+  MOTOR       intocado.
+
+  ALTO.

@@ -306,8 +306,131 @@ def recalcular_estado(j, cuerpos):
     return "cerrable" if (n is not None and s is not None) else "no_cerrable"
 
 
+def separa_sin_prolongar(pts, p, q):
+    """Como separa(), pero SIN prolongar los extremos de la linea.
+
+    Para una frontera, prolongar es hacerle decir lo que el decreto no dice mas
+    alla de sus extremos. Si el segmento p-q no cruza el trazo REAL, no hay
+    frontera cruzada, y ante la duda la jurisdiccion incluye — errar hacia 'de
+    mas' es lo que corresponde cuando lo que esta en juego es excluir agua.
+    p y q en (lat, lon).
+    """
+    seg = ((p[1], p[0]), (q[1], q[0]))
+    n = sum(1 for a, b in zip(pts, pts[1:])
+            if _corta_segmentos(a, b, seg[0], seg[1]))
+    return n % 2 == 1
+
+
+# Fronteras del insumo, por id. Las puebla main(). El modelo de figura las
+# necesita: la figura que el constructor produce esta recortada por ellas, y un
+# auditor que modele una figura distinta de la que se construye no audita nada.
+FRONTERAS = {}
+
+
+def alcance_de(f):
+    """Hasta donde decide una frontera poligonal: (lat_min, lat_max, lon_min, lon_max).
+
+    Usa la 'extension' que la frontera declare; si no la trae, la deduce de sus
+    propios puntos. Una frontera dice lo que dice ENTRE SUS EXTREMOS y nada fuera
+    de ellos: prolongarla de punta a punta le hace decir mas de lo que el decreto
+    entrega.
+    """
+    e = f.get("extension")
+    if e:
+        return e["lat_min"], e["lat_max"], e["lon_min"], e["lon_max"]
+    lats = [p["lat"] for p in f["puntos"]]
+    lons = [p["lon"] for p in f["puntos"]]
+    return min(lats), max(lats), min(lons), max(lons)
+
+
+def dentro_del_alcance(f, lat, lon):
+    """¿Esta frontera tiene algo que decir sobre este punto?
+
+    Regla unica, sin casos por jurisdiccion: la frontera decide sobre los puntos
+    cuya proyeccion SOBRE SU PROPIA DIRECCION cae dentro del tramo declarado. O
+    sea, se extiende perpendicularmente a si misma, nunca a lo largo. Para un
+    meridiano eso es su franja de latitudes; para un paralelo, su franja de
+    longitudes; para una cadena diagonal, el tramo de su cuerda.
+    """
+    la0, la1, lo0, lo1 = alcance_de(f)
+    pts = f["puntos"]
+    ax, ay = pts[0]["lon"], pts[0]["lat"]
+    bx, by = pts[-1]["lon"], pts[-1]["lat"]
+    vx, vy = bx - ax, by - ay
+    den = vx * vx + vy * vy
+    if den == 0:                      # frontera degenerada: cae al rectangulo
+        return (la0 - TOL_BORDE <= lat <= la1 + TOL_BORDE
+                and lo0 - TOL_BORDE <= lon <= lo1 + TOL_BORDE)
+    t = ((lon - ax) * vx + (lat - ay) * vy) / den
+    margen = TOL_BORDE / math.sqrt(den)
+    return -margen <= t <= 1 + margen
+
+
+def fuera_por_frontera(j, lat, lon):
+    """(True, motivo) si alguna frontera declarada deja este punto del lado ajeno.
+
+    Es la misma definicion de figura que aplica el constructor — ninguna
+    jurisdiccion cruza las fronteras que el insumo le declara — resuelta por
+    paridad de cruces en vez de por corte de poligonos. Dos implementaciones de
+    una misma definicion: si una se equivoca, la otra no la acompaña.
+    """
+    a = ancla(j)
+    for fid in j.get("fronteras") or []:
+        f = FRONTERAS.get(fid)
+        if f is None:
+            continue                                  # B7 lo caza por su cuenta
+        # Las fronteras por paralelo NO se aplican aqui: ya las aplica banda(), y
+        # las aplica bien. banda() deja que las latitudes del contorno EXTIENDAN la
+        # franja mas alla del paralelo declarado, nunca que la encojan. Volver a
+        # imponer el paralelo crudo aqui encogeria la figura y dejaria fuera
+        # superficie decretada — el falso negativo que prohibe INV-3.6. Castro cita
+        # 42 35 12 S, doce segundos al Sur de su propio limite declarado, y ese
+        # punto es suyo.
+        if f["tipo"] == "paralelo":
+            continue
+        if len(f.get("puntos") or []) < 2 or a is None:
+            continue
+        if not dentro_del_alcance(f, lat, lon):
+            continue                                  # fuera del tramo declarado
+        pts = [(p["lon"], p["lat"]) for p in f["puntos"]]
+        # Un punto SOBRE la frontera pertenece a las dos vecinas, no a ninguna
+        # menos. Los vertices que el decreto cita son justamente los de la
+        # frontera: excluirlos declararia que la jurisdiccion no contiene los
+        # puntos con que el propio decreto la describe.
+        if sobre_el_contorno(pts, lat, lon):
+            continue
+        if separa_sin_prolongar(pts, a, (lat, lon)):
+            return True, (f"del otro lado de la frontera '{fid}' respecto de la sede "
+                          f"que define la jurisdiccion")
+    return False, None
+
+
 def dentro_de_la_figura(j, lat, lon):
-    """('dentro' | 'fuera' | 'no_evaluable', motivo)."""
+    """('dentro' | 'fuera' | 'pendiente_litoral' | 'no_evaluable', motivo).
+
+    LA FIGURA ES LA MISMA QUE CONSTRUYE EL CONSTRUCTOR: receta, franja de
+    paralelos, contorno, Y recorte por las fronteras declaradas dentro del alcance
+    de cada una. Antes este auditor modelaba la figura SIN el recorte, o sea otro
+    objeto distinto del que se construye, y por ahi un defecto podia pasar el
+    control y morir en la construccion.
+
+    La implementacion es independiente de la del constructor a proposito: aqui se
+    resuelve por paridad de cruces sobre coordenadas, alla por corte de poligonos
+    con shapely. Si el auditor llamara al codigo del constructor dejaria de ser un
+    control y seria un espejo: compartirian el error y ninguno lo cazaria.
+    """
+    v, motivo = _figura_por_receta(j, lat, lon)
+    if v not in ("dentro", "pendiente_litoral"):
+        return v, motivo
+    fuera, por_que = fuera_por_frontera(j, lat, lon)
+    if fuera:
+        return "fuera", por_que
+    return v, motivo
+
+
+def _figura_por_receta(j, lat, lon):
+    """La figura que dan la receta, la franja y el contorno, ANTES del recorte por
+    fronteras."""
     receta = j.get("receta")
     if receta == "union_cuerpos":
         return "no_evaluable", "figura lacustre: se verifica contra el cuerpo de agua"
@@ -390,6 +513,10 @@ def main():
     J = v2["jurisdicciones"]
     F = v2["fronteras"]
     idx = {j["id"]: j for j in J}
+    # El modelo de figura recorta por fronteras; sin este indice modelaria otra
+    # figura que la que se construye.
+    FRONTERAS.clear()
+    FRONTERAS.update({f["id"]: f for f in F})
     cuerpos_lac = {x["id"]: x["cuerpos"] for x in lac["jurisdicciones"]}
 
     inf.p("FASE 4 — ETAPA A, SEGUNDA PASADA. AUDITORIA DEL INSUMO v2")

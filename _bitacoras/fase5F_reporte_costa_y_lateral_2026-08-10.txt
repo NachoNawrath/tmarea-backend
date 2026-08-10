@@ -1,0 +1,291 @@
+================================================================================
+FASE 5 — REPORTE: CAPA DE COSTA Y SEPARACION LATERAL. NO SE TOCO LA CONSTRUCCION
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+================================================================================
+
+Dos frentes, en el orden que fijo el owner: primero con que se corta la tierra,
+porque condiciona lo demas.
+
+Correccion al reporte anterior: son ONCE jurisdicciones las que se pisan, no ocho.
+Conte mal los distintos de los 13 pares. La lista es Chaiten, Chonchi, Ancud,
+Castro, Cochamo, Maullin, Quemchi, Rio Negro Hornopiren, Achao, Puerto Montt y
+Calbuco.
+
+
+================================================================================
+FRENTE 1 — CON QUE CAPA SE CORTA LA TIERRA
+================================================================================
+
+QUE HAY HOY EN LA BASE, MEDIDO
+--------------------------------------------------------------------------------
+
+  ne_land                     Natural Earth 1:10m. Es la que expulsa los 30
+                              testigos. Descartada por el owner.
+
+  mapa_base_multipoligonos    76.196 filas, extension -109,5..-66,4 / -56,5..-17,9
+                              superficie total ......... 5.102 km2
+                              poligono mas grande ...... 95,8 km2
+                              Chile continental mide unos 756.000 km2: esta capa
+                              tiene el 0,7%. Sus columnas (osm_id, osm_way_id,
+                              natural, other_tags) delatan que es un extracto de
+                              OpenStreetMap. Trae solo poligonos ya cerrados —
+                              islas. El continente en OSM son vias abiertas
+                              natural=coastline que este extracto nunca ensamblo.
+
+  CONCLUSION: el dato fino que falta ya es del mismo origen que el que tenemos.
+  No hay que cambiar de familia de dato, hay que traerlo bien derivado.
+
+
+CANDIDATO A — OSM land polygons
+--------------------------------------------------------------------------------
+  https://osmdata.openstreetmap.de/data/land-polygons.html
+
+  Que es      "Polygons for all land areas in the world, ie. continents and
+              islands", derivado de las vias natural=coastline de OSM, ensamblado
+              en poligonos y reparado con la herramienta osmcoastline.
+  CRS         WGS84 disponible — es el 4326 de toda nuestra base, sin reproyectar.
+  Licencia    ODbL, OpenStreetMap contributors.
+  A favor     Mismo linaje que mapa_base_multipoligonos: las islas finas que ya
+              tenemos coinciden en vez de contradecirse. Formato shapefile, que
+              es lo que ya sabemos ingerir (Fase 1).
+  En contra   La descarga es global, no hay recorte por pais: hay que bajar el
+              mundo y recortar al bbox de Chile. La pagina no publica tamaños de
+              archivo ni fecha de la ultima actualizacion; eso habria que
+              verificarlo al descargar.
+
+
+CANDIDATO B — Division Politica Administrativa 2023, IGM
+--------------------------------------------------------------------------------
+  https://geoportal.cl/geoportal/catalog/36391/Division Politica Administrativa 2023
+  descarga: https://geoportal.cl/geoportal/catalog/download/912598ad-ac92-35f6-8045-098f214bd9c2
+
+  Que es      Poligonos de comunas, provincias y regiones que incorporan la linea
+              de costa e islas del Instituto Geografico Militar, para todo el
+              pais, a escala 1:50.000.
+  CRS         SIRGAS Chile. Reproyeccion a 4326 trivial.
+  Quien       SUBDERE + IGM + DIFROL + INE, coordinados por la mesa de trabajo de
+              DPA de IDE Chile.
+  A favor     Es la costa del propio Estado. Para una capa derivada de un decreto
+              del Estado, eso pesa mas que cualquier otra consideracion. 1:50.000
+              contra el 1:10.000.000 de Natural Earth: doscientas veces mas fina.
+  En contra   Son poligonos administrativos: la costa es el borde exterior de su
+              union y hay que derivarla, no viene como capa de costa suelta.
+              Excluye el Territorio Antartico — no molesta: las 4 antarticas no
+              restan tierra por receta.
+
+
+CANDIDATO C — Linea Litoral, Ministerio del Medio Ambiente
+--------------------------------------------------------------------------------
+  https://geoportal.cl/geoportal/catalog/35650/Linea Litoral
+
+  Escala de referencia "comuna", publicada 2020-06-17, generada dentro de un
+  estudio de impacto de cambio climatico 2018-2019. Geometria lineal. Metadato
+  menos preciso que el de B y origen no cartografico. NO la recomiendo como
+  primaria.
+
+  IGM directo (igm.cl, descargas gratuitas): devuelve HTTP 403. No pude
+  verificarla. Queda como pendiente si se quiere ir a la fuente.
+
+
+RECOMENDACION
+--------------------------------------------------------------------------------
+  B como primaria, por autoritativa y por escala. A como contraste, sobre todo
+  para las islas del archipielago, donde OSM suele tener mas detalle que la
+  cartografia administrativa. Ninguna se descarga sin autorizacion del owner.
+
+
+LO QUE NINGUNA DE LAS DOS ARREGLA — MEDIDO, NO SUPUESTO
+--------------------------------------------------------------------------------
+  De los 30 testigos expulsados, 29 salen de bahias costeras: Bahia de
+  Valparaiso, Bahia de Iquique, Puerto de San Antonio, Bahia de Quintero, Bahia
+  Caldera, Bahia Moreno, Bahia Corral, Lota, Lebu, Tal Tal, Pichilemu, Tongoy...
+  Una costa a 1:50.000 los recupera: estan sobre agua a menos de 3 km del borde
+  grueso de Natural Earth, y 15 de ellos a menos de 1 km.
+
+  UNO NO: Valdivia. Su testigo sale de la bahia SITPORT 'Valdivia Fluvial' y esta
+  11,9 km rio arriba. Ni una linea de costa ni una capa administrativa lo
+  resuelven, porque las dos tratan el rio como tierra. Para un puerto fluvial
+  hace falta hidrografia, no costa — y el Art. 2 del decreto dice expresamente
+  que la jurisdiccion comprende los rios navegables. Es un tercer dato, aparte.
+  Queda planteado, no resuelto.
+
+  Puerto Montt es caso aparte y ya reportado: su testigo cae sobre Isla Tenglo
+  segun la capa fina. Es ubicacion del testigo, no de la costa.
+
+
+================================================================================
+LA CONDICION DE COCHAMO — ¿HAY OTRAS? SI: CASI TODAS
+================================================================================
+
+Medido sobre las 44 jurisdicciones maritimas cerrables:
+
+   la acotan paralelos y/o una cadena, nunca un limite de tierra ....... 40
+   anillo que cierra POR EL LITORAL (Puerto Montt, Calbuco, Hornopiren) .. 3
+   anillo cerrado solo por coordenadas (Achao) .......................... 1
+
+  43 de 44 tienen la costa como limite por el lado de tierra. COCHAMO NO ES LA
+  EXCEPCION: ES EL CASO MAS CLARO DE LA REGLA. El decreto nunca entrega una linea
+  de cierre por tierra para una jurisdiccion costera, porque no le hace falta —
+  la Capitania manda sobre el agua y el litoral, y el litoral es donde termina.
+
+  Cochamo lo dice sin rodeos y sin una sola coordenada de cierre:
+    "Las aguas y el litoral del Estero Reloncavi, desde la linea imaginaria que
+     une Morro Chico (41 44 00 S / 072 39 04 W) y Caleta El Milagro (41 42 15 S /
+     072 38 30 W). Incluye los Farellones Marimelli y los Lagos Tagua-Tagua e
+     Inferior."
+
+  Maullin es el mismo caso por el Este:
+    "Por el norte el paralelo 40 14 30 S ... y por el sur el paralelo 41 44 40 S,
+     luego desde el punto ubicado en 41 44 40 S / 073 45 00 W (Punta Chocoi) una
+     linea imaginaria hasta el punto en 41 47 00 S / 073 31 30 W."
+  Norte y sur completos; por el Este, nada. Es costa abierta del Pacifico.
+
+
+CONSECUENCIA DE NO RESTAR TIERRA MIENTRAS TANTO — HAY QUE DECIRLA
+--------------------------------------------------------------------------------
+  Si no se resta tierra, las 26 bandas de paralelos se extienden hasta el borde
+  Este de la caja de trabajo (-65 grados), cruzan el continente y entran en
+  Argentina, y pisan a las 6 jurisdicciones lacustres, que estan tierra adentro
+  por definicion. Eso choca de frente con el criterio 'cero traslapes salvo
+  Puyehue'. Las dos instrucciones no se pueden cumplir a la vez sin la capa de
+  costa.
+
+  Salida intermedia posible, para que el owner la evalue: no restar tierra pero
+  SI restar los cuerpos lacustres adjudicados. Tienen dueño declarado por el
+  decreto y estan en cotejo_lacustre_adjudicado.json, asi que no es convencion
+  inventada. Con eso el 'de mas' queda solo sobre tierra sin agua adjudicada, que
+  es inofensivo para el motor, y desaparece el choque con las 6 lacustres.
+
+
+================================================================================
+FRENTE 2 — LAS ONCE, CONTRA SU PROPIO PARRAFO DEL DECRETO
+================================================================================
+
+Metodo: se leyo el texto_decreto de cada una y se comparo contra lo transcrito,
+igual que se hizo con Castro en la Etapa A.
+
+--------------------------------------------------------------------------------
+EL DECRETO SI LO ENTREGA — 4 CASOS, TODOS PATRON CASTRO
+--------------------------------------------------------------------------------
+
+1. CHONCHI — falta declarar el limite sur.
+   CITA: "...luego la diagonal hasta el punto ubicado en 42 55 20 S / 073 36 10 W,
+   luego hacia el Norte por esta longitud hasta la Latitud 42 53 10 S, desde este
+   punto la diagonal hasta el punto ubicado en 42 50 00 S / 073 45 00 W,
+   SIGUIENDO POR ESTA LATITUD HACIA EL WESTE."
+   ESTADO: el punto 42 50 00 S / 073 45 00 W ya esta transcrito como ultimo punto
+   del contorno (-42.833333, -73.75). Lo que falta es declarar
+   limite_sur = -42.833333 y agregar el vertice terminal por ese paralelo hacia
+   el lado abierto W. Identico a lo que se hizo con Castro.
+
+2. ANCUD — falta declarar el limite sur.
+   CITA: "Por el Norte, el paralelo 41 44 40 S hasta Punta Chocoi ..., y desde
+   alli la linea imaginaria que une Punta Chocoi con los puntos ubicados en
+   41 47 00 S / 073 31 30 W, 42 00 00 S / 073 00 00 W; Y DESDE ALLI HACIA EL
+   WESTE."
+   ESTADO: el vertice (-42.0, -73.0) ya esta en el contorno. Falta
+   limite_sur = -42.0 y el vertice terminal hacia el Weste.
+   CONTRAPARTIDA: Quemchi declara "Por el Norte el paralelo 42 00 00 S desde el
+   meridiano 073 00 00 W hacia el Weste". Las dos mitades de la misma frontera
+   estan en el decreto; falta una sola de las dos transcripciones. Es exactamente
+   el caso de Castro, donde Chonchi si declaraba su contrapartida.
+
+3. QUEMCHI — falta el vertice que lo acota por el Este, y el terminal del sur.
+   CITA: "Por el Norte el paralelo 42 00 00 S DESDE EL MERIDIANO 073 00 00 W hacia
+   el Weste y por el Sur, la linea imaginaria que parte desde el punto ubicado en
+   42 23 30 S / 073 17 00 W, Punta NE de isla Meulin; la Punta Tenaun
+   (42 20 00 S / 073 21 30 W), CONTINUANDO POSTERIORMENTE POR EL PARALELO
+   42 20 00 S HACIA EL WESTE."
+   ESTADO: su contorno trae 2 puntos, los dos de la linea sur. Falta el vertice
+   (42 00 00 S / 073 00 00 W), que es el que le pone tope por el Este, y falta el
+   vertice terminal del paralelo 42 20 00 S hacia el lado abierto.
+
+4. CHAITEN — falta el extremo Este de su limite norte.
+   CITA: "Por el Norte el paralelo 42 30 00 S desde su interseccion con Longitud
+   073 12 00 W hacia el Este, HASTA LA INTERSECCION DEL PARALELO 42 30 00 S CON LA
+   LONGITUD 072 38 00 W EN LA COSTA ESTE DEL ESTERO RENIHUE."
+   ESTADO: su contorno arranca en (-42.5, -73.2) y no llega al Este. El punto que
+   falta, (-42.5, -72.633333), YA ESTA TRANSCRITO en el contorno de Rio Negro
+   Hornopiren, que comparte ese mismo vertice. No hay que leerlo de nuevo: hay que
+   ponerlo tambien en Chaiten.
+
+--------------------------------------------------------------------------------
+NO TIENEN DEFECTO PROPIO — 5 CASOS
+--------------------------------------------------------------------------------
+   CASTRO                 Corregido en la Etapa A, con cita y autorizacion.
+   ACHAO                  Anillo de 11 puntos, cerrado integramente por
+                          coordenadas del decreto. Nada falta.
+   PUERTO MONTT           Anillo cerrado de 5 puntos. Sus dos tramos "por el
+                          litoral" dependen de la costa, no de coordenadas.
+   CALBUCO                Anillo cerrado de 5 puntos. Un tramo "el litoral".
+   RIO NEGRO HORNOPIREN   Anillo cerrado, corregido en la Etapa A.
+
+   Estas cinco se pisan porque las OTRAS se derraman sobre ellas, no por un
+   defecto suyo. Corregidas las cuatro de arriba y con la capa de costa, deberian
+   quedar limpias sin tocarles nada. Hay que verificarlo, no darlo por hecho.
+
+--------------------------------------------------------------------------------
+EL DECRETO NO LO ENTREGA — 2 CASOS
+--------------------------------------------------------------------------------
+   COCHAMO    Define por el cuerpo de agua y la linea de su boca. Cero paralelos,
+              cero meridianos de cierre. No es transcribible: o se construye con
+              la capa de costa, o se declara no cerrable.
+   MAULLIN    Norte y sur completos; por el Este, nada. Costa abierta del
+              Pacifico. Mismo tratamiento.
+
+   Las dos dependen del Frente 1. Si llega la capa de costa, se construyen. Si no
+   llega, se declaran no cerrables y la capa las informa sin geometria (INV-3.6),
+   que es lo que el owner ya fijo.
+
+================================================================================
+LO QUE NO SE HIZO
+================================================================================
+  No se transcribio ninguna correccion: cada una necesita autorizacion del owner
+  con su cita, como las dos de la Etapa A. No se descargo ninguna capa. No se
+  toco la construccion ni el insumo. La tabla jurisdicciones_ds991 sigue marcada
+  PROVISIONAL, NO APTA, NO CONSULTAR.
+
+  ALTO.
+
+
+################################################################################
+NOTA DE CORRECCION — agregada el 2026-08-10, despues de medir la capa OSM
+################################################################################
+
+ESTE INFORME CONTIENE UN ARGUMENTO INVALIDO. Se deja el texto original intacto,
+porque borrarlo seria borrar la evidencia de como se razono, y se corrige aca.
+
+LO QUE DICE MAL
+  Que ne_land no sirve PORQUE expulsa 30 de 53 puntos representativos, y que ese
+  conteo mide la calidad de una capa de costa. Sobre esa base se pidio buscar otra
+  capa, se descarto la DPA 2023 por recuperar 4 de 30, y se hablo de "recuperar
+  los 29 testigos costeros" con una costa mejor.
+
+POR QUE ES INVALIDO
+  Se midio despues, contra la capa OSM (521 veces mas fina que ne_land en el mismo
+  recuadro): recupera 3 de 30. MENOS que la DPA. Una capa mucho mejor da un numero
+  peor, asi que el numero no estaba midiendo la capa.
+  La causa real: los testigos son puntos de ORILLA, no de agua. 35 de los 43
+  testigos maritimos caen en tierra segun OSM, con MEDIANA DE 32 METROS tierra
+  adentro y 24 de 35 a menos de 100 m de la orilla. Son puntos de muelle o de sede
+  puestos por SITPORT del lado de la tierra. Cuanto mejor es la costa, mas ajustada
+  queda a la orilla real donde ellos estan, y mas de ellos deja afuera.
+
+EL MOTIVO CORRECTO DE CADA DESCARTE
+  ne_land   Se descarta por resolucion, no por el conteo de testigos: 16.578
+            vertices contra los 8.646.997 de OSM en el mismo recuadro, 521 veces
+            mas gruesa, y a esa escala cierra bahias enteras.
+  DPA 2023  Se descarta por construccion, no por el conteo: es una division
+            ADMINISTRATIVA que cierra las bahias con el poligono comunal. Su
+            propio zip trae el documento "CIERRE DE POLIGONOS_v4.docx". La comuna
+            de Valparaiso incluye su bahia, y eso para una division administrativa
+            es correcto y para nosotros es agua marcada como tierra.
+  OSM       NO queda descartada. Es la mejor costa de las tres.
+
+QUE SIGUE EN PIE DE ESTE INFORME
+  Todo lo demas: los traslapes medidos, la separacion lateral sin resolver, las
+  transcripciones, el analisis de los parrafos del decreto y la condicion de
+  Cochamo. Solo cae el argumento que ligaba el conteo de testigos a la calidad de
+  la capa.
+
+  Medicion completa y diagnostico: _bitacoras/fase5J_medicion_capa_A_2026-08-10.txt

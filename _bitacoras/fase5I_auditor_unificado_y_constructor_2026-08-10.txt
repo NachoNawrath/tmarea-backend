@@ -1,0 +1,167 @@
+================================================================================
+FASE 5 — AUDITOR UNIFICADO, CONSTRUCTOR REESTRUCTURADO, DESCARGA DETENIDA
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+================================================================================
+
+================================================================================
+1. EL AUDITOR YA MODELA LA MISMA FIGURA QUE EL CONSTRUCTOR
+================================================================================
+
+El arreglo no fue B2. Se cerro la divergencia de fondo: dentro_de_la_figura()
+aplica ahora el recorte por fronteras declaradas, respetando el alcance de cada
+una. B2 se corrigio solo — Quemchi x Rio Negro Hornopiren pasa a "opuestos".
+
+IMPLEMENTACION INDEPENDIENTE, como exigio el owner:
+  auditor      paridad de cruces sobre coordenadas, stdlib pura
+  constructor  corte de poligonos con shapely
+Misma definicion de figura, dos implementaciones. El auditor NO llama al codigo
+del constructor: seria un espejo y compartirian el error.
+
+REGLA DEL ALCANCE, una sola y sin casos particulares: una frontera decide sobre
+los puntos cuya proyeccion sobre su propia direccion cae dentro del tramo
+declarado. Se extiende perpendicular a si misma, nunca a lo largo.
+
+EL AUDITOR ME CAZO DOS VECES AL HACERLO, y las dos tenia razon:
+  - Volvi a imponer el paralelo crudo en las fronteras por paralelo, encogiendo la
+    figura contra la regla de banda(), que solo permite EXTENDER, nunca encoger.
+    Castro cita 42 35 12 S, doce segundos al Sur de su propio limite declarado, y
+    ese punto es suyo.
+  - Deje fuera los puntos que caen SOBRE la frontera, que son justamente los
+    vertices con que el decreto describe la jurisdiccion.
+Corregidas las dos: AUDITORIA LIMPIA, exit=0.
+
+PRUEBA DE MORDIDA COMPLETA TRAS EL CAMBIO DE MODELO
+  familias probadas : 10
+  que cazan         : 10
+  que NO cazan      : 0
+  insumo restaurado byte por byte, auditoria final exit=0.
+
+GRIETA QUE QUEDA ABIERTA: el camino nuevo — frontera declarada, y respeto del
+alcance — NO tiene familia propia en la prueba de mordida. Las diez que hay
+siguen cazando, pero ninguna comprueba que el auditor note si alguien altera la
+extension de una frontera declarada. Un control que nadie probo no garantiza
+nada: corresponde una familia B9. No la escribi porque no estaba pedida, y la
+dejo anotada en vez de darla por hecha.
+
+================================================================================
+2. EL CONSTRUCTOR REESTRUCTURADO
+================================================================================
+
+scripts/fase5_construir_capa_ds991.py — un solo comando construye, aplica y se
+verifica.
+
+  REPRODUCIBLE      Rutas derivadas de la ubicacion del script, conexion desde el
+                    .env del repo, psql buscado en PATH / variable PSQL / lugar de
+                    instalacion. Nada apunta al disco de nadie. El sha256 y la
+                    version del insumo quedan persistidos en la tabla
+                    jurisdicciones_ds991_procedencia.
+  FALLA RUIDOSO     Una cerrable que no se puede construir NO se degrada a nula:
+                    levanta Alto y corta la corrida. Ya ocurrio en la practica: un
+                    corte devolvio una coleccion mixta y el script se detuvo con el
+                    motivo en vez de seguir con un resultado degradado.
+  AUTOVERIFICADO    Los siete controles viajan DENTRO del SQL que construye, en la
+                    misma transaccion, y terminan en un RAISE. No hay revision
+                    aparte que alguien pueda saltarse.
+  FUENTE CAMBIANTE  La via de los sectores se construye por el mismo camino que las
+                    jurisdicciones; hoy da 0 filas y la tabla queda vacia, no
+                    ausente. La capa de tierra es un insumo declarado que se cambia
+                    en un solo lugar.
+  SIN CASOS         Ninguna jurisdiccion se nombra en el codigo. Los traslapes
+  PARTICULARES      permitidos salen de traslape_deliberado, el ensanche de
+                    tramos_litoral, el alcance de la extension de cada frontera.
+
+LA VERIFICACION FUNCIONA. La corrida termino en:
+    ERROR: LA CAPA NO CUMPLE SUS PROPIOS CONTROLES
+y la transaccion se deshizo entera. NO QUEDO CAPA A MEDIAS.
+
+================================================================================
+3. HALLAZGO DE DISEÑO PROPIO: EL ENSANCHE EXIGE CAPA DE TIERRA
+================================================================================
+
+Al aislar las causas de los traslapes de la primera corrida aparecio que cuatro
+pares que en la figura BASE dan traslape CERO se pisaban unicamente por los
+corredores de ensanche (km2 Mercator, referenciales):
+
+  PAR                                    BASE   +ENSANCHE
+  Rio Negro Hornopiren x Maullin         0.00      203.36
+  Calbuco x Puerto Montt                 0.00       47.99
+  Calbuco x Quemchi                      0.00       18.37
+  Calbuco x Rio Negro Hornopiren         0.00        0.17
+
+El corredor existe para capturar el agua que la cuerda recta deja entre ella y la
+costa, y quien lo recorta a esa agua es la resta de tierra mas la conectividad.
+SIN CAPA DE TIERRA no hay ensanche: hay una losa de 60 km que solo pisa a las
+vecinas. Ahora el ensanche solo se aplica si hay capa de tierra declarada, y la
+omision queda escrita en la procedencia de la capa. No es una omision silenciosa.
+
+CONTRAPESO EXACTO, y hay que decirlo: sin ensanche, Puerto Montt y Rio Negro
+Hornopiren dejan de contener su punto representativo. Son justo los dos que
+dependian del ensanche para alcanzarlo. El control C4 los caza.
+
+================================================================================
+4. QUE DICE HOY LA CAPA, MEDIDO
+================================================================================
+
+Traslapes: 18 con ensanche  ->  13 sin ensanche.
+
+SIETE son maritima x lacustre, consecuencia directa de no restar tierra:
+  Maullin x Puerto Varas ................ 1.437,4 km2
+  Lago General Carrera x Pto Chacabuco ..   950,4
+  Lago Ranco x Maullin ..................   424,3
+  Lago Panguipulli x Valdivia ...........   334,3
+  Carahue x Lago Villarrica .............   313,1
+  Lago Rapel x Pichilemu ................    72,8
+  Cochamo x Puerto Varas ................     4,7
+
+SEIS son maritima x maritima, la separacion lateral que sigue sin resolverse:
+  Cochamo x Maullin ..................... 43.587,7 km2
+  Chaiten x Chonchi ..................... 35.611,1
+  Castro x Chonchi ......................    975,7
+  Calbuco x Maullin .....................    341,2
+  Maullin x Puerto Montt ................    180,4
+  Cochamo x Rio Negro Hornopiren ........     27,0
+
+El traslape deliberado de Puyehue (Lago Ranco x Puerto Varas) NO aparece en la
+lista: el control lo excluye leyendolo de traslape_deliberado, que es donde el
+dato lo declara. Funciona como debe.
+
+Testigos fuera de su figura: 2 — Puerto Montt y Rio Negro Hornopiren.
+
+TODO ESTO CONVERGE EN UN UNICO INSUMO FALTANTE: la capa de costa. Con ella
+vuelven el ensanche y los dos testigos, y desaparecen los siete traslapes con
+lacustres. Los seis maritimos siguen dependiendo de la separacion lateral, que es
+decision de decreto y no de codigo.
+
+================================================================================
+5. DESCARGA DE LA CAPA A — DETENIDA LIMPIAMENTE
+================================================================================
+
+  URL        https://osmdata.openstreetmap.de/download/land-polygons-split-4326.zip
+  bajados    196.005.888 de 925.046.449 bytes   (21,2%)
+  faltan     729.040.561 bytes   (~166 min a la velocidad medida, ~73 kB/s)
+  reanudar   SI. Accept-Ranges: bytes, y prueba real del rango 1000000-1000099
+             que devolvio HTTP 206 con 100 bytes exactos.
+  archivo    SE CONSERVA. No es un zip valido (BadZipFile al abrirlo): no puede
+             confundirse con una descarga completa ni usarse por accidente.
+  marcador   geodata/costa/land-polygons-split-4326.zip.INCOMPLETO, con el comando
+             de reanudacion y la comprobacion previa.
+  TRAMPA     el origen REGENERA el archivo a diario. Reanudar despues de que
+             publiquen una version nueva pega la cola de otro archivo sobre esta
+             cabeza y corrompe el zip SIN AVISO. Antes de reanudar hay que
+             verificar que el ETag siga siendo "372316b1-658a910c0cdc3".
+
+Procedencia completa de las dos capas, incluida la medicion que descarto la DPA
+2023 del IGM (recuperaba 4 de 30 testigos): geodata/costa/PROCEDENCIA.txt
+
+================================================================================
+ESTADO
+================================================================================
+  auditor            exit=0, limpio, 10/10 familias muerden
+  constructor        corre entero y se detiene en sus propios controles
+  capa en la base    NO existe: la transaccion se deshizo. La anterior sigue
+                     marcada PROVISIONAL, NO APTA, NO CONSULTAR
+  motor              sigue resolviendo por bahia_jurisdicciones
+  bloqueante         la capa de costa, mas la separacion lateral de seis pares
+                     maritimos, que es decision de decreto
+
+  ALTO.
