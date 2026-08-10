@@ -41,6 +41,14 @@ B6  Adjudicacion lacustre y traslape deliberado.
 
 B7  Integridad del grafo de fronteras.
 
+B8  Tramos del contorno. El constructor lee el tipo de cada tramo para saber cual
+    ensancha hacia tierra, asi que el marcado se audita entero: tipo valido y
+    ninguno indeterminado, ninguno sin la adjudicacion que necesita, tantos tramos
+    como puntos exige el contorno, respaldo literal en cada uno, coherencia con el
+    resumen sigue_litoral, y el CONTROL CRUZADO — un tramo de litoral no puede ser
+    a la vez la frontera que se comparte con una vecina, porque ensanchar ahi le
+    comeria territorio.
+
 Los controles B0 de campos obligatorios, ambito geografico y puntos notables, y
 los B2.0 de franjas oceanicas y cobertura del litoral, vienen de la primera
 pasada. Se habian perdido al reescribir el auditor para el modelo v2 y se
@@ -83,6 +91,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 V1 = os.path.join(REPO, "data", "decreto", "jurisdicciones_capitanias.json")
 V2 = os.path.join(REPO, "data", "decreto", "jurisdicciones_v2.json")
 LACUSTRE = os.path.join(REPO, "data", "decreto", "cotejo_lacustre_adjudicado.json")
+ADJUDICACION = os.path.join(REPO, "data", "decreto", "adjudicacion_tramos.json")
 
 TOL_GRADOS = 1e-6
 TOL_BORDE = 1e-4
@@ -381,7 +390,7 @@ def main():
     J = v2["jurisdicciones"]
     F = v2["fronteras"]
     idx = {j["id"]: j for j in J}
-    cuerpos_lac = {x["id"]: x.get("cuerpos", []) for x in lac["jurisdicciones"]}
+    cuerpos_lac = {x["id"]: x["cuerpos"] for x in lac["jurisdicciones"]}
 
     inf.p("FASE 4 — ETAPA A, SEGUNDA PASADA. AUDITORIA DEL INSUMO v2")
     inf.p(f"insumo   : {os.path.relpath(V2, REPO)}")
@@ -389,8 +398,9 @@ def main():
     inf.p(f"generado : {v2.get('generado')} por {v2.get('generado_por')}")
     inf.p("No escribe en la base de datos ni deja geometria persistida.")
     inf.p("")
-    for ruta in (V2, V1, LACUSTRE, os.path.abspath(__file__)):
-        inf.p(f"  sha256[:16] {sha(ruta)[:16]}  {os.path.relpath(ruta, REPO)}")
+    for ruta in (V2, V1, LACUSTRE, ADJUDICACION, os.path.abspath(__file__)):
+        if os.path.exists(ruta):
+            inf.p(f"  sha256[:16] {sha(ruta)[:16]}  {os.path.relpath(ruta, REPO)}")
 
     # ── B0 ───────────────────────────────────────────────────────────────────
     inf.h("B0 — FIDELIDAD DE LA MIGRACION: la estructura cambio, el contenido no")
@@ -442,6 +452,26 @@ def main():
         inf.ok("todo punto del v1 esta en el contorno del v2")
     if not textos:
         inf.ok("textos del decreto y correcciones, identicos al v1")
+
+    # Prerequisito estructural: toda frontera tiene que apuntar a jurisdicciones
+    # que existen. Se comprueba ACA, antes que nada, porque los controles que
+    # vienen despues indexan por esos ids: con uno roto, el auditor moria con
+    # KeyError y el fallo real quedaba tapado por el crash.
+    huerf = [f"{f['id']}: {k}='{f[k]}' no existe entre las jurisdicciones"
+             for f in F for k in ("lado_a", "lado_b", "lado_norte", "lado_sur")
+             if f.get(k) and f[k] not in idx]
+    for d in huerf:
+        inf.fallo("B0", d)
+    if huerf:
+        inf.h("VEREDICTO — AUDITORIA ABORTADA")
+        inf.p("  El grafo de fronteras apunta a jurisdicciones que no existen. No se")
+        inf.p("  sigue auditando: todo lo que viene despues indexa por esos ids y")
+        inf.p("  daria un error de ejecucion en vez de un hallazgo.")
+        inf.p("")
+        for d in huerf:
+            inf.p(f"  [B0] {d}")
+        return 1
+    inf.ok("toda frontera apunta a jurisdicciones existentes")
 
     des = []
     for j in J:
@@ -542,7 +572,11 @@ def main():
             if a is None:
                 inf.fallo("B1", f"{j['nombre']}: receta de corte y no trae ancla")
                 continue
-            n = trozos_de.get(j["id"], 0)
+            if j["id"] not in trozos_de:
+                inf.fallo("B1", f"{j['nombre']}: receta de corte y no se llego a contar "
+                                f"en cuantos trozos parte la caja")
+                continue
+            n = trozos_de[j["id"]]
             if n != 2:
                 inf.fallo("B1", f"{j['nombre']}: el contorno prolongado cruza el borde "
                                 f"de la caja {n} veces; con {n} cruces deja "
@@ -841,6 +875,18 @@ def main():
     # ── B6 ───────────────────────────────────────────────────────────────────
     inf.h("B6 — ADJUDICACION LACUSTRE Y TRASLAPE DELIBERADO")
 
+    ids_v2 = {j["id"] for j in J}
+    ids_lac_v2 = {j["id"] for j in J if j["ambito"] == "lacustre"}
+    sobran = sorted(set(cuerpos_lac) - ids_v2)
+    faltan = sorted(ids_lac_v2 - set(cuerpos_lac))
+    if sobran or faltan:
+        inf.fallo("B6", f"ids del cotejo lacustre sin jurisdiccion: {sobran}; "
+                        f"lacustres sin entrada en el cotejo: {faltan}. Con un caso por "
+                        f"defecto, esto quedaba como 'sin cuerpos adjudicados', que es "
+                        f"una causa falsa")
+    else:
+        inf.ok("los ids del cotejo lacustre y las jurisdicciones lacustres coinciden")
+
     delib = lac.get("traslape_deliberado") or {}
     inf.p(f"  traslapes declarados como deliberados: {len(delib)}")
     for nombre, d in delib.items():
@@ -874,15 +920,8 @@ def main():
         inf.fallo("B7", "hay ids de frontera repetidos")
     else:
         inf.ok(f"{len(F)} ids de frontera unicos")
-    huerf = []
-    for f in F:
-        for k in ("lado_a", "lado_b", "lado_norte", "lado_sur"):
-            if f.get(k) and f[k] not in idx:
-                huerf.append(f"{f['id']}: {k}='{f[k]}' no existe")
-    for d in huerf:
-        inf.fallo("B7", d)
-    if not huerf:
-        inf.ok("toda frontera apunta a jurisdicciones existentes")
+    inf.p("  (la existencia de los lados de cada frontera se comprueba en B0, antes")
+    inf.p("   de que cualquier control indexe por esos ids)")
     inconsist = []
     for j in J:
         for fid in j["fronteras"]:
@@ -902,6 +941,171 @@ def main():
              and j["ambito"] == "maritima"]
     if sin_f:
         inf.aviso(f"maritimas cerrables sin ninguna frontera declarada: {sin_f}")
+
+    # ── B8 ───────────────────────────────────────────────────────────────────
+    inf.h("B8 — TRAMOS DEL CONTORNO")
+    inf.p("  El constructor lee el tipo de cada tramo para saber cual ensancha hacia")
+    inf.p("  tierra. Un tramo mal marcado mueve un limite sin que nada avise, asi que")
+    inf.p("  el marcado se audita entero, no por muestreo.")
+    inf.p("")
+
+    def etiq(e):
+        """Nombre del vertice, o sus coordenadas cuando el decreto no lo nombra."""
+        return e.get("nombre") or f"({e['lat']:.4f}, {e['lon']:.4f})"
+
+    TIPOS = ("litoral", "frontera", "abierto")
+    total_tr = sum(len(j.get("tramos") or []) for j in J)
+    cuenta = defaultdict(int)
+    origen = defaultdict(int)
+    for j in J:
+        for t in (j.get("tramos") or []):
+            cuenta[t.get("tipo")] += 1
+            origen[t.get("tipo_origen")] += 1
+    inf.p(f"  {total_tr} tramos: " + ", ".join(f"{k}={cuenta[k]}" for k in TIPOS)
+          + f", otros={total_tr - sum(cuenta[k] for k in TIPOS)}")
+    inf.p(f"  origen de la marca: " + ", ".join(f"{k}={v}" for k, v in sorted(origen.items())))
+    inf.p("")
+
+    # B8.1 — el tipo tiene que ser uno de los tres, y ninguno indeterminado.
+    malos = [(j["nombre"], t) for j in J for t in (j.get("tramos") or [])
+             if t.get("tipo") not in TIPOS]
+    for n, t in malos:
+        inf.fallo("B8", f"{n}: tramo ({t['desde']['lat']}, {t['desde']['lon']}) -> "
+                        f"({t['hasta']['lat']}, {t['hasta']['lon']}) con tipo "
+                        f"'{t.get('tipo')}' — {t.get('causa_indeterminado') or 'sin causa'}")
+    if not malos:
+        inf.ok("todo tramo tiene un tipo de los tres; ninguno indeterminado")
+
+    # B8.2 — ninguno puede quedar sin la decision que necesita.
+    sin_adj = [(j["nombre"], t) for j in J for t in (j.get("tramos") or [])
+               if t.get("tipo_origen") == "sin_adjudicar"]
+    for n, t in sin_adj:
+        inf.fallo("B8", f"{n}: tramo {etiq(t['desde'])} -> "
+                        f"{etiq(t['hasta'])} necesita adjudicacion del owner y "
+                        f"no la tiene registrada")
+    if not sin_adj:
+        inf.ok("ningun tramo quedo sin adjudicar")
+
+    # B8.3 — cada jurisdiccion tiene tantos tramos como su contorno exige.
+    desc = []
+    for j in J:
+        pts = usables(j)
+        if len(pts) < 2:
+            if j.get("tramos"):
+                desc.append(f"{j['nombre']}: {len(pts)} punto(s) usables y "
+                            f"{len(j['tramos'])} tramo(s)")
+            continue
+        esperados = len(pts) if j.get("contorno_cerrado") and pts[0] != pts[-1] \
+            else len(pts) - 1
+        if len(j.get("tramos") or []) != esperados:
+            desc.append(f"{j['nombre']}: {len(pts)} puntos exigen {esperados} tramos y "
+                        f"trae {len(j.get('tramos') or [])}")
+    for d in desc:
+        inf.fallo("B8", d)
+    if not desc:
+        inf.ok("cada contorno trae exactamente los tramos que sus puntos exigen")
+
+    # B8.4 — CONTROL CRUZADO. Un tramo de litoral no puede ser, a la vez, la
+    # frontera que comparte con una vecina. El litoral separa agua de tierra; una
+    # frontera compartida separa dos jurisdicciones. Si el dato dice las dos cosas
+    # del mismo trazo, una de las dos esta mal — y ensanchar hacia tierra sobre la
+    # frontera de la vecina le comeria territorio.
+    pares_frontera = set()
+    for f in F:
+        if f["tipo"] != "poligonal":
+            continue
+        pf = [(p["lon"], p["lat"]) for p in f["puntos"]]
+        for a, b in zip(pf, pf[1:]):
+            for lado in (f.get("lado_a"), f.get("lado_b")):
+                pares_frontera.add((lado, a, b))
+                pares_frontera.add((lado, b, a))
+    choques = []
+    for j in J:
+        for t in (j.get("tramos") or []):
+            if t.get("tipo") != "litoral":
+                continue
+            a = (t["desde"]["lon"], t["desde"]["lat"])
+            b = (t["hasta"]["lon"], t["hasta"]["lat"])
+            if (j["id"], a, b) in pares_frontera:
+                choques.append(f"{j['nombre']}: el tramo {etiq(t['desde'])} -> "
+                               f"{etiq(t['hasta'])} esta marcado litoral y es "
+                               f"tambien una frontera compartida con una vecina. "
+                               f"Ensanchar ahi le comeria territorio a la vecina")
+    for d in choques:
+        inf.fallo("B8", d)
+    if not choques:
+        inf.ok("ningun tramo de litoral coincide con una frontera compartida")
+
+    # B8.5 — respaldo literal. Un tramo clasificado sin fragmento del decreto es
+    # una marca sin fuente.
+    sin_frag = [(j["nombre"], t) for j in J for t in (j.get("tramos") or [])
+                if t.get("tipo") in ("litoral", "frontera")
+                and not (t.get("fragmento_decreto") or "").strip()]
+    for n, t in sin_frag:
+        inf.fallo("B8", f"{n}: tramo {etiq(t['desde'])} -> "
+                        f"{etiq(t['hasta'])} marcado '{t['tipo']}' sin fragmento "
+                        f"del decreto que lo respalde")
+    if not sin_frag:
+        inf.ok("todo tramo clasificado trae el fragmento del decreto que lo respalda")
+
+    # B8.6 — el resumen de la jurisdiccion no puede contradecir a sus tramos.
+    incoh = []
+    for j in J:
+        tiene = any(t.get("tipo") == "litoral" for t in (j.get("tramos") or []))
+        if bool(j.get("sigue_litoral")) != tiene:
+            incoh.append(f"{j['nombre']}: sigue_litoral={j.get('sigue_litoral')} y "
+                         f"{'si' if tiene else 'no'} tiene tramos de litoral")
+    for d in incoh:
+        inf.fallo("B8", d)
+    if not incoh:
+        inf.ok("sigue_litoral coincide con los tramos en toda jurisdiccion")
+
+    # B8.7 — un tramo 'abierto' tiene que tocar el lado abierto de verdad.
+    mal_ab = []
+    for j in J:
+        resueltos = {(round(p["lat"], 6), round(p["lon"], 6))
+                     for p in j["contorno"] if p.get("lon_origen")}
+        for t in (j.get("tramos") or []):
+            if t.get("tipo") != "abierto":
+                continue
+            ex = {(round(t[e]["lat"], 6), round(t[e]["lon"], 6)) for e in ("desde", "hasta")}
+            if not (ex & resueltos):
+                mal_ab.append(f"{j['nombre']}: tramo marcado 'abierto' y ninguno de sus "
+                              f"extremos es un punto resuelto al lado abierto")
+    for d in mal_ab:
+        inf.fallo("B8", d)
+    if not mal_ab:
+        inf.ok("todo tramo 'abierto' toca un punto resuelto al lado abierto")
+
+    # B8.8 — la adjudicacion registrada tiene que aplicarse entera. Una entrada
+    # que no encuentra su tramo es una decision del owner que no llego al dato.
+    if os.path.exists(ADJUDICACION):
+        adj = json.load(open(ADJUDICACION, encoding="utf-8"))
+        vistos = {(j["id"], round(t["desde"]["lat"], 6), round(t["desde"]["lon"], 6),
+                   round(t["hasta"]["lat"], 6), round(t["hasta"]["lon"], 6))
+                  for j in J for t in (j.get("tramos") or [])
+                  if t.get("tipo_origen") == "adjudicado"}
+        huerf = [r for r in adj.get("tramos", [])
+                 if (r["jurisdiccion"], round(r["desde"]["lat"], 6),
+                     round(r["desde"]["lon"], 6), round(r["hasta"]["lat"], 6),
+                     round(r["hasta"]["lon"], 6)) not in vistos]
+        for r in huerf:
+            inf.fallo("B8", f"la adjudicacion registra un tramo de {r['nombre']} "
+                            f"({r['desde'].get('nombre')} -> {r['hasta'].get('nombre')}) "
+                            f"que no se aplico a ningun tramo del insumo")
+        if not huerf:
+            inf.ok(f"las {len(adj.get('tramos', []))} adjudicaciones registradas se "
+                   f"aplicaron todas")
+        rev = [r for r in adj.get("tramos", []) if r.get("resolucion") == "corregido"]
+        if rev:
+            inf.p("")
+            inf.p("  Adjudicaciones que revierten la propuesta automatica:")
+            for r in rev:
+                inf.p(f"    {r['nombre']:<22} {r['tipo_propuesto']} -> "
+                      f"{r['tipo_adjudicado']}")
+    else:
+        inf.fallo("B8", f"no existe {os.path.relpath(ADJUDICACION, REPO)} y hay tramos "
+                        f"que requieren adjudicacion")
 
     # ── veredicto ────────────────────────────────────────────────────────────
     inf.h("VEREDICTO DE LA SEGUNDA PASADA")
@@ -924,4 +1128,17 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Exception as e:                                        # noqa: BLE001
+        import traceback
+        traceback.print_exc()
+        print("")
+        print("=" * 78)
+        print("AUDITORIA ROTA — no es un veredicto")
+        print("=" * 78)
+        print(f"  El auditor se detuvo con un error de ejecucion: {type(e).__name__}: {e}")
+        print("  Esto NO significa que el insumo tenga un hallazgo, ni que este limpio:")
+        print("  significa que el auditor no llego a mirar. Codigo de salida 2 para que")
+        print("  nadie lo confunda con el 1 de 'auditoria con hallazgos'.")
+        sys.exit(2)
