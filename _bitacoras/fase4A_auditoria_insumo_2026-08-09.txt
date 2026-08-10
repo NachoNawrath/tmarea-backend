@@ -1,0 +1,401 @@
+FASE 4 — ETAPA A. AUDITORIA DEL INSUMO DE JURISDICCIONES
+insumo   : data\decreto\jurisdicciones_capitanias.json
+lacustre : data\decreto\cotejo_lacustre_adjudicado.json
+fuente   : D.S. (M.) N 991, de 26 de octubre de 1987, Ministerio de Defensa Nacional, Subsecretaria de Marina. Texto consolidado, ultima version 12-NOV-2020 (mod. D.S. 391, D.O. 12.11.2020). Fuente: BCN Ley Chile, idNorma=142425.
+generado : 2026-08-09
+No escribe en la base de datos ni deja geometria persistida.
+
+Huellas de lo auditado, para que este informe se pueda volver a producir
+identico y se sepa contra que version del dato se dijo lo que se dice:
+  sha256[:16] 88cf8489fff1432b  data\decreto\jurisdicciones_capitanias.json
+  sha256[:16] 015e94f3e7f4c4d9  data\decreto\cotejo_lacustre_adjudicado.json
+  sha256[:16] dbc70d33a1889672  scripts\fase4_auditoria_insumo.py
+
+==============================================================================
+A0 — INTEGRIDAD DE LA TRANSCRIPCION
+==============================================================================
+  ok     64 ids unicos
+  ok     todas traen los campos obligatorios
+  ok     DMS y decimal coinciden en toda coordenada que trae ambos
+  ok     todo vertice cae en el ambito geografico esperado
+  ok     los vertices que nombran un punto notable coinciden con el catalogo
+  aviso  anillos transcritos sin repetir el primer punto al final: ['Bahia Paraiso']. Cierran igual, pero conviven con otros que si lo repiten: transcripcion no uniforme.
+  FALLA  Talcahuano: el vertice 'Punta de Lobos (Talcahuano)' (-36.706944, -73.158889) esta en 'vertices' pero NO en 'poligonal_completa'; dista 13.4 km del punto mas cercano de la poligonal. La construccion lee poligonal_completa: ese punto se pierde en silencio.
+  FALLA  Quemchi: el vertice 'Vertice 42S/73W' (-42.000000, -73.000000) esta en 'vertices' pero NO en 'poligonal_completa'; dista 47.3 km del punto mas cercano de la poligonal. La construccion lee poligonal_completa: ese punto se pierde en silencio.
+  FALLA  Chaiten: el vertice 'Interseccion estero Renihue' (-42.500000, -72.633333) esta en 'vertices' pero NO en 'poligonal_completa'; dista 46.0 km del punto mas cercano de la poligonal. La construccion lee poligonal_completa: ese punto se pierde en silencio.
+  FALLA  Chaiten: el vertice 'Punta Centinela' (-43.008333, -73.325000) esta en 'vertices' pero NO en 'poligonal_completa'; dista 6.1 km del punto mas cercano de la poligonal. La construccion lee poligonal_completa: ese punto se pierde en silencio.
+
+==============================================================================
+A1 — CIERRE DETERMINADO
+==============================================================================
+  JURISDICCION           AMBITO          RECETA             ESTADO
+  --------------------------------------------------------------------------
+  Arica                  maritima        -                  no_cerrable
+  Iquique                maritima        banda_paralelos    cerrable
+  Patache                maritima        banda_paralelos    cerrable
+  Tocopilla              maritima        banda_paralelos    cerrable
+  Mejillones             maritima        banda_paralelos    cerrable
+  Antofagasta            maritima        banda_paralelos    cerrable
+  Taltal                 maritima        banda_paralelos    cerrable
+  Chanaral               maritima        banda_paralelos    cerrable
+  Caldera                maritima        banda_paralelos    cerrable
+  Huasco                 maritima        banda_paralelos    cerrable
+  Hanga Roa              insular_remota  -                  no_cerrable
+  Coquimbo               maritima        banda_paralelos    cerrable
+  Tongoy                 maritima        banda_paralelos    cerrable
+  Los Vilos              maritima        banda_paralelos    cerrable
+  Papudo                 maritima        banda_paralelos    cerrable
+  Quintero               maritima        banda_paralelos    cerrable
+  Valparaiso             maritima        banda_paralelos    cerrable
+  Juan Fernandez         insular_remota  -                  no_cerrable
+  Algarrobo              maritima        banda_paralelos    cerrable
+  San Antonio            maritima        banda_paralelos    cerrable
+  Pichilemu              maritima        banda_paralelos    cerrable
+  Lago Rapel             lacustre        union_cuerpos      cerrable
+  Constitucion           maritima        banda_paralelos    cerrable
+  Lirquen                maritima        rol_SE             cerrable
+  Talcahuano             maritima        rol_N              ambiguo
+  San Vicente            maritima        banda_paralelos    cerrable
+  Coronel                maritima        banda_paralelos    cerrable
+  Lota                   maritima        banda_paralelos    cerrable
+  Lebu                   maritima        banda_paralelos    cerrable
+  Carahue                maritima        banda_paralelos    cerrable
+  Lago Villarrica        lacustre        union_cuerpos      cerrable
+  Lago Panguipulli       lacustre        union_cuerpos      cerrable
+  Lago Ranco             lacustre        union_cuerpos      cerrable
+  Valdivia               maritima        rol_S              ambiguo
+  Corral                 maritima        rol_N              ambiguo
+  Puerto Varas           lacustre        union_cuerpos      cerrable
+  Puerto Montt           maritima        anillo             cerrable
+  Maullin                maritima        rol_S              cerrable
+  Calbuco                maritima        anillo             cerrable
+  Rio Negro Hornopiren   maritima        anillo             cerrable
+  Cochamo                maritima        rol_W              cerrable
+  Ancud                  maritima        rol_SE             ambiguo
+  Quemchi                maritima        rol_S              ambiguo
+  Chaiten                maritima        rol_W              cerrable
+  Achao                  maritima        anillo             cerrable
+  Castro                 maritima        rol_SE             ambiguo
+  Chonchi                maritima        rol_NE             ambiguo
+  Quellon                maritima        rol_NE             cerrable
+  Melinka                maritima        rol_E              cerrable
+  Puerto Cisnes          maritima        rol_W              cerrable
+  Puerto Aguirre         maritima        rol_S              ambiguo
+  Puerto Chacabuco       maritima        rol_N              ambiguo
+  Lago General Carrera   lacustre        union_cuerpos      cerrable
+  Baker                  maritima        -                  no_cerrable
+  Puerto Eden            maritima        -                  no_cerrable
+  Puerto Natales         maritima        banda_paralelos    cerrable
+  Punta Arenas           maritima        banda_paralelos    cerrable
+  Punta Delgada          maritima        -                  no_cerrable
+  Tierra del Fuego       maritima        -                  no_cerrable
+  Puerto Williams        maritima        -                  no_cerrable
+  Bahia Fildes           antartica       anillo             cerrable
+  Puerto Soberania       antartica       anillo             cerrable
+  Rada Covadonga         antartica       anillo             cerrable
+  Bahia Paraiso          antartica       anillo             cerrable
+
+  [no_cerrable ] Arica: el decreto no entrega con que cerrar: falta limite norte
+  [no_cerrable ] Hanga Roa: el decreto nombra islas sin coordenadas y el insumo no trae geometria de islas
+  [no_cerrable ] Juan Fernandez: el decreto nombra islas sin coordenadas y el insumo no trae geometria de islas
+  [ambiguo     ] Talcahuano: el rol 'N' apunta a 0° de la propia cadena (seno 0.0000, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [ambiguo     ] Valdivia: el rol 'S' apunta a 43° de la propia cadena (seno 0.6874, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [ambiguo     ] Corral: el rol 'N' apunta a 43° de la propia cadena (seno 0.6874, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [ambiguo     ] Ancud: el rol 'SE' apunta a 25° de la propia cadena (seno 0.4159, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [ambiguo     ] Quemchi: el rol 'S' apunta a 44° de la propia cadena (seno 0.6887, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [ambiguo     ] Castro: la poligonal se devuelve sobre su eje meridional (cadena en escalera): no define 'un lado', y el rol 'SE' no basta para decidir que trozo es la jurisdiccion
+  [ambiguo     ] Chonchi: la poligonal se devuelve sobre su eje meridional (cadena en escalera): no define 'un lado', y el rol 'NE' no basta para decidir que trozo es la jurisdiccion
+  [ambiguo     ] Puerto Aguirre: el rol 'S' apunta a 1° de la propia cadena (seno 0.0106, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [ambiguo     ] Puerto Chacabuco: el rol 'N' apunta a 15° de la propia cadena (seno 0.2551, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [no_cerrable ] Baker: el decreto no entrega con que cerrar: falta limite sur
+  [no_cerrable ] Puerto Eden: el decreto no entrega con que cerrar: falta limite norte
+  [no_cerrable ] Punta Delgada: el decreto no entrega con que cerrar: falta ambos paralelos
+  [no_cerrable ] Tierra del Fuego: el decreto no entrega con que cerrar: falta ambos paralelos
+  [no_cerrable ] Puerto Williams: trae 2 vertice(s) pero ni anillo cerrado ni rol_cadena que diga de que lado queda la jurisdiccion; ademas falta ambos paralelos
+
+  cerrables    : 47
+  ambiguas     : 9
+  no cerrables : 8
+
+  FALLA  Talcahuano: cierre ambiguo — el rol 'N' apunta a 0° de la propia cadena (seno 0.0000, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  FALLA  Valdivia: cierre ambiguo — el rol 'S' apunta a 43° de la propia cadena (seno 0.6874, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  FALLA  Corral: cierre ambiguo — el rol 'N' apunta a 43° de la propia cadena (seno 0.6874, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  FALLA  Ancud: cierre ambiguo — el rol 'SE' apunta a 25° de la propia cadena (seno 0.4159, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  FALLA  Quemchi: cierre ambiguo — el rol 'S' apunta a 44° de la propia cadena (seno 0.6887, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  FALLA  Castro: cierre ambiguo — la poligonal se devuelve sobre su eje meridional (cadena en escalera): no define 'un lado', y el rol 'SE' no basta para decidir que trozo es la jurisdiccion
+  FALLA  Chonchi: cierre ambiguo — la poligonal se devuelve sobre su eje meridional (cadena en escalera): no define 'un lado', y el rol 'NE' no basta para decidir que trozo es la jurisdiccion
+  FALLA  Puerto Aguirre: cierre ambiguo — el rol 'S' apunta a 1° de la propia cadena (seno 0.0106, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  FALLA  Puerto Chacabuco: cierre ambiguo — el rol 'N' apunta a 15° de la propia cadena (seno 0.2551, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+
+  A1.2 — capacidad del rol para elegir lado (seno del angulo entre la
+         cadena y el eje del rol; 1 = transversal, 0 = no elige)
+  JURISDICCION           ROL    SENO     EJE CADENA   MONOTONA  LECTURA
+  ------------------------------------------------------------------------------------
+  Lirquen                SE     1.0000   meridional   si        transversal (90°)
+  Talcahuano             N      0.0000   meridional   si        NO NOMBRA ESTE BORDE: 0° de la cadena
+  Valdivia               S      0.6874   meridional   si        NO NOMBRA ESTE BORDE: 43° de la cadena
+  Corral                 N      0.6874   meridional   si        NO NOMBRA ESTE BORDE: 43° de la cadena
+  Maullin                S      0.9742   zonal        si        transversal (77°)
+  Cochamo                W      0.9720   meridional   si        transversal (76°)
+  Ancud                  SE     0.4159   zonal        si        NO NOMBRA ESTE BORDE: 25° de la cadena
+  Quemchi                S      0.6887   meridional   si        NO NOMBRA ESTE BORDE: 44° de la cadena
+  Chaiten                W      0.9996   meridional   si        transversal (88°)
+  Castro                 SE     0.7956   meridional   NO        transversal (53°)
+  Chonchi                NE     0.9312   meridional   NO        transversal (69°)
+  Quellon                NE     0.9276   meridional   si        transversal (68°)
+  Melinka                E      0.9996   meridional   si        transversal (88°)
+  Puerto Cisnes          W      0.9967   meridional   si        transversal (85°)
+  Puerto Aguirre         S      0.0106   meridional   si        NO NOMBRA ESTE BORDE: 1° de la cadena
+  Puerto Chacabuco       N      0.2551   meridional   si        NO NOMBRA ESTE BORDE: 15° de la cadena
+
+  A1.3 — poligonales que desbordan su paralelo limite declarado
+         El paralelo rige un lado y la poligonal otro; que la poligonal lo
+         cruce suele ser correcto. Pero la construccion estira la caja hasta
+         el extremo de la poligonal, de modo que la figura queda mas grande
+         que el paralelo declarado. Es 'de mas', no 'de menos' (INV-3.4), y
+         por eso es aviso y no fallo — pero es convencion nuestra y tiene
+         que quedar registrada como tal, no ocurrir en silencio.
+  aviso  Talcahuano: la poligonal llega a -36.736111 y el limite sur declarado es -36.706944 ('36 42 25 S')
+  aviso  Maullin: la poligonal llega a -41.783333 y el limite sur declarado es -41.744444 ('41 44 40 S')
+  aviso  Quemchi: la poligonal llega a -42.391667 y el limite sur declarado es -42.333333 ('42 20 00 S')
+  aviso  Chonchi: la poligonal llega a -42.558333 y el limite norte declarado es -42.583333 ('42 35 00 S')
+
+  A1.4 — rol_cadena contra el cardinal que usa su propia cita
+  FALLA  Ancud: rol_cadena='SE' pero su cita introduce la poligonal con 'Por el Norte' (=> 'N'). Rol y cita no concuerdan.
+  FALLA  Castro: rol_cadena='SE' pero su cita introduce la poligonal con 'Por el Norte' (=> 'N'). Rol y cita no concuerdan.
+  FALLA  Puerto Aguirre: rol_cadena='S' pero su cita introduce la poligonal con 'Por el Norte' (=> 'N'). Rol y cita no concuerdan.
+
+==============================================================================
+A2 — VECINAS EN LADOS OPUESTOS DE LA FRONTERA QUE COMPARTEN
+==============================================================================
+  A2.1 — dos que ocupan la franja oceanica completa no pueden solaparse
+         en latitud
+  ok     26 jurisdicciones de banda, ninguna se solapa en latitud
+
+  A2.1 bis — cobertura en latitud del litoral continental, sumando TODA
+             jurisdiccion maritima con franja determinable
+  ok     cobertura continua entre -19.216667 y -58.351667
+
+  A2.2 — pares que comparten 2 o mas vertices
+  19 pares comparten frontera explicita en el insumo
+
+  VECINA A              VECINA B              V   ROL A   ROL B   POR ROL        POR PUNTO
+  ----------------------------------------------------------------------------------------------------
+  Lirquen               Talcahuano            2   SE      N       NO NOMBRA      opuestos
+  Valdivia              Corral                3   S       N       NO NOMBRA      opuestos
+  Puerto Montt          Calbuco               3   None    None    n/a            opuestos
+  Puerto Montt          Cochamo               2   None    W       n/a            opuestos
+  Maullin               Ancud                 2   S       SE      NO NOMBRA      opuestos
+  Calbuco               Rio Negro Hornopiren  2   None    None    n/a            opuestos
+  Calbuco               Ancud                 2   None    SE      n/a            opuestos
+  Quemchi               Achao                 2   S       anillo  n/a            opuestos
+  Chaiten               Quellon               2   W       NE      opuestos       opuestos
+  Achao                 Castro                6   anillo  SE      n/a            MISMO LADO
+  Castro                Chonchi               4   SE      NE      MISMO LADO     MISMO LADO
+  Chonchi               Quellon               4   NE      NE      NO NOMBRA      opuestos
+  Melinka               Puerto Cisnes         4   E       W       opuestos       opuestos
+  Puerto Cisnes         Puerto Aguirre        2   W       S       NO NOMBRA      opuestos
+  Puerto Aguirre        Puerto Chacabuco      4   S       N       NO NOMBRA      opuestos
+  Bahia Fildes          Puerto Soberania      2   None    None    n/a            n/a (sin punto)
+  Bahia Fildes          Rada Covadonga        2   None    None    n/a            n/a (sin punto)
+  Puerto Soberania      Bahia Paraiso         2   None    None    n/a            n/a (sin punto)
+  Rada Covadonga        Bahia Paraiso         2   None    None    n/a            n/a (sin punto)
+
+  FALLA  Lirquen y Talcahuano comparten 2 vertices y al menos uno de sus roles ('SE' a 1.00, 'N' a 0.00 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  FALLA  Valdivia y Corral comparten 3 vertices y al menos uno de sus roles ('S' a 0.69, 'N' a 0.69 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  FALLA  Maullin y Ancud comparten 2 vertices y al menos uno de sus roles ('S' a 0.97, 'SE' a 0.23 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  FALLA  Achao y Castro comparten 6 vertices y sus puntos representativos caen del MISMO lado de esa frontera
+  FALLA  Castro y Chonchi comparten 4 vertices y sus roles ('SE' y 'NE') las dejan del MISMO lado de esa frontera
+  FALLA  Castro y Chonchi comparten 4 vertices y sus puntos representativos caen del MISMO lado de esa frontera
+  FALLA  Chonchi y Quellon comparten 4 vertices y al menos uno de sus roles ('NE' a 0.49, 'NE' a 0.49 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  FALLA  Puerto Cisnes y Puerto Aguirre comparten 2 vertices y al menos uno de sus roles ('W' a 0.80, 'S' a 0.60 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  FALLA  Puerto Aguirre y Puerto Chacabuco comparten 4 vertices y al menos uno de sus roles ('S' a 0.26, 'N' a 0.26 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+
+==============================================================================
+A3 — NINGUNA MAS CHICA QUE SU DESCRIPCION EN EL DECRETO
+==============================================================================
+  Toda coordenada que el texto nombra como propia tiene que caer dentro de
+  la figura que el insumo manda construir. La que queda afuera es superficie
+  decretada que la capa no cubriria: falso negativo silencioso.
+
+  FALLA  Rio Negro Hornopiren: el decreto cita '42 30 00 S / 073 00 00 W' y la figura lo deja afuera — fuera del anillo de vertices
+
+  Citas fuera de la figura amparadas por una correccion registrada (INV-3.7):
+    Mejillones — '22 30 00 S': El decreto escribe 22 30 00 S. Se corrige a 22 39 00 S: Punta Tames esta en 22 39 22 S (verificacion en terreno, Google Earth, 2026-08-09) y el parrafo de CP Tocopilla usa 22 39 00 S para el mismo punto.
+
+  Citas que no se pueden evaluar porque el cierre es ambiguo (ver A1):
+    Talcahuano — '36 31 00 S / 073 00 48 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Talcahuano — '36 42 25 S / 073 09 32 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Valdivia — '39 51 55 S / 073 24 18 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Valdivia — '39 52 18 S / 073 24 18 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Valdivia — '39 53 25 S / 073 22 27 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Corral — '39 52 18 S / 073 24 18 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Ancud — '41 44 40 S / 073 45 00 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Ancud — '41 47 00 S / 073 31 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Ancud — '42 00 00 S / 073 00 00 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Quemchi — '42 00 00 S / 073 00 00 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Quemchi — '42 23 30 S / 073 17 00 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Quemchi — '42 20 00 S / 073 21 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Castro — '42 20 00 S / 073 21 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Castro — '42 23 30 S / 073 39 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Castro — '42 28 00 S / 073 38 40 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Castro — '42 32 50 S / 073 30 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Castro — '42 35 12 S / 073 23 50 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Castro — '42 39 40 S / 073 33 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Castro — '42 33 30 S / 073 37 00 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Chonchi — '42 35 00 S / 073 37 00 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Chonchi — '42 33 30 S / 073 33 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Chonchi — '42 39 40 S / 073 12 00 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Chonchi — '43 00 30 S / 073 19 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Chonchi — '42 55 20 S / 073 36 10 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Chonchi — '42 50 00 S / 073 45 00 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Puerto Aguirre — '44 46 54 S / 073 32 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Puerto Aguirre — '44 57 15 S / 073 21 40 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Puerto Aguirre — '45 14 45 S / 073 16 24 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Puerto Aguirre — '45 22 18 S / 073 29 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Puerto Aguirre — '45 27 48 S / 073 33 07 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Puerto Chacabuco — '44 57 15 S / 073 21 40 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Puerto Chacabuco — '45 14 45 S / 073 16 24 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Puerto Chacabuco — '45 22 18 S / 073 29 30 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+    Puerto Chacabuco — '45 27 48 S / 073 33 07 W': el cierre de esta jurisdiccion es ambiguo (ver A1)
+
+  Texto literal de las afectadas, para que el owner adjudique:
+    Rio Negro Hornopiren: Por el Norte, desde la Punta Trentelgue (41 54 42 S / 072 53 00 W) siguiendo hacia el Sur por el litoral Weste de Chiloe Continental hasta la interseccion del paralelo 42 30 00 S con la longitud 072 38 00 W en la costa Este del estero Renihue, luego por el paralelo 42 30 00 S hacia el Weste hasta la Longitud 073 00 00 W, continuando por este meridiano hacia el Norte hasta la Latitud 42 00 00 S y desde alli hasta Punta Trentelgue. Incluye las islas Malomacun, Toro, Linguar, Llanchid, Cuchillo, Lobos, Cabras, Pelada, Llancahue, Liliguapi e isla Ica (a traves peninsula Huequi).
+
+==============================================================================
+A4 — LAS DECLARADAS SIN GEOMETRIA SON EXACTAMENTE LAS NO CERRABLES
+==============================================================================
+  declaradas sin georreferenciar :  2  ['punta_delgada', 'tierra_del_fuego']
+  no cerrables desde la fuente   :  8  ['arica', 'baker', 'hanga_roa', 'juan_fernandez', 'puerto_eden', 'puerto_williams', 'punta_delgada', 'tierra_del_fuego']
+  ambiguas (cierre no unico)     :  9  ['ancud', 'castro', 'chonchi', 'corral', 'puerto_aguirre', 'puerto_chacabuco', 'quemchi', 'talcahuano', 'valdivia']
+
+  FALLA  Arica: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: el decreto no entrega con que cerrar: falta limite norte
+  FALLA  Baker: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: el decreto no entrega con que cerrar: falta limite sur
+  FALLA  Hanga Roa: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: el decreto nombra islas sin coordenadas y el insumo no trae geometria de islas
+  FALLA  Juan Fernandez: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: el decreto nombra islas sin coordenadas y el insumo no trae geometria de islas
+  FALLA  Puerto Eden: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: el decreto no entrega con que cerrar: falta limite norte
+  FALLA  Puerto Williams: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: trae 2 vertice(s) pero ni anillo cerrado ni rol_cadena que diga de que lado queda la jurisdiccion; ademas falta ambos paralelos
+
+  Banderas de una jurisdiccion que quedara sin geometria (INV-3.6):
+  FALLA  Arica: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  FALLA  Baker: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  FALLA  Hanga Roa: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  FALLA  Juan Fernandez: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  FALLA  Puerto Eden: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  FALLA  Puerto Williams: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+
+==============================================================================
+A5 — PUNTO REPRESENTATIVO
+==============================================================================
+  Sin punto no hay con que comprobar, en la Etapa B, que cada jurisdiccion
+  contiene al punto que la representa.
+
+  FALLA  Lago Rapel (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  FALLA  Lago Villarrica (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  FALLA  Lago Panguipulli (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  FALLA  Lago Ranco (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  FALLA  Puerto Varas (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  FALLA  Lago General Carrera (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  FALLA  Bahia Fildes (antartica, receta anillo): tendra geometria y no trae punto_interior
+  FALLA  Puerto Soberania (antartica, receta anillo): tendra geometria y no trae punto_interior
+  FALLA  Rada Covadonga (antartica, receta anillo): tendra geometria y no trae punto_interior
+  FALLA  Bahia Paraiso (antartica, receta anillo): tendra geometria y no trae punto_interior
+  FALLA  Lirquen: su punto representativo (-36.71, -72.98) cae fuera de su propia figura — del lado opuesto de la poligonal al que el rol 'SE' asigna la jurisdiccion (hacia el Weste)
+  FALLA  Puerto Montt: su punto representativo (-41.5, -72.95) cae fuera de su propia figura — fuera del anillo de vertices
+  FALLA  Rio Negro Hornopiren: su punto representativo (-42.0, -72.7) cae fuera de su propia figura — fuera del anillo de vertices
+  FALLA  Cochamo: su punto representativo (-41.5, -72.31) cae fuera de su propia figura — al Norte del limite norte de la figura (-41.704167)
+
+  aviso  Talcahuano: punto (-36.7, -73.13) no evaluable — el cierre de esta jurisdiccion es ambiguo (ver A1)
+  aviso  Valdivia: punto (-39.81, -73.25) no evaluable — el cierre de esta jurisdiccion es ambiguo (ver A1)
+  aviso  Corral: punto (-39.9, -73.44) no evaluable — el cierre de esta jurisdiccion es ambiguo (ver A1)
+  aviso  Ancud: punto (-41.9, -73.87) no evaluable — el cierre de esta jurisdiccion es ambiguo (ver A1)
+  aviso  Quemchi: punto (-42.14, -73.5) no evaluable — el cierre de esta jurisdiccion es ambiguo (ver A1)
+  aviso  Castro: punto (-42.48, -73.79) no evaluable — el cierre de esta jurisdiccion es ambiguo (ver A1)
+  aviso  Chonchi: punto (-42.64, -73.8) no evaluable — el cierre de esta jurisdiccion es ambiguo (ver A1)
+  aviso  Puerto Aguirre: punto (-45.16, -73.52) no evaluable — el cierre de esta jurisdiccion es ambiguo (ver A1)
+  aviso  Puerto Chacabuco: punto (-45.46, -72.83) no evaluable — el cierre de esta jurisdiccion es ambiguo (ver A1)
+
+  Origen declarado de los puntos representativos:
+     51  CONVENCION, no decreto. Sede de la Capitania. La construccion se queda
+
+==============================================================================
+A6 — ADJUDICACION LACUSTRE Y TRASLAPE DELIBERADO
+==============================================================================
+  traslapes declarados como deliberados: 1
+    LAGO PUYEHUE -> ['lago_ranco', 'puerto_varas']
+      motivo: El decreto lo parte por limite regional ('hasta el limite con la Region de Los Lagos' / 'de Los Rios'); el shapefile trae un unico poligono y el criterio de particion no esta determinado. Se asigna entero a ambas: INV-3.4 fija que el motor muestra de mas, nunca de menos.
+  ok     los 1 cuerpo(s) compartido(s) estan todos declarados
+
+  cuerpos nombrados por el decreto sin geometria adjudicada: 5
+  ok     lago_villarrica: 'Laguna Galletue' — ausente
+  ok     lago_villarrica: 'Rio Tolten' — ausente
+  ok     lago_panguipulli: 'Rio Fuy' — ausente
+  ok     lago_panguipulli: 'Rio San Pedro' — rechazado
+  ok     lago_ranco: 'Rio Bueno' — rechazado
+
+==============================================================================
+VEREDICTO DE LA ETAPA A
+==============================================================================
+  A0: 4 fallo(s)
+  A1: 12 fallo(s)
+  A2: 9 fallo(s)
+  A3: 1 fallo(s)
+  A4: 12 fallo(s)
+  A5: 14 fallo(s)
+
+  AUDITORIA NO LIMPIA — 52 fallo(s) en 6 control(es).
+  NO se construye. Los fallos que implican decidir que dice el decreto son
+  del owner; este script no corrige la fuente.
+
+  [A0] Talcahuano: el vertice 'Punta de Lobos (Talcahuano)' (-36.706944, -73.158889) esta en 'vertices' pero NO en 'poligonal_completa'; dista 13.4 km del punto mas cercano de la poligonal. La construccion lee poligonal_completa: ese punto se pierde en silencio.
+  [A0] Quemchi: el vertice 'Vertice 42S/73W' (-42.000000, -73.000000) esta en 'vertices' pero NO en 'poligonal_completa'; dista 47.3 km del punto mas cercano de la poligonal. La construccion lee poligonal_completa: ese punto se pierde en silencio.
+  [A0] Chaiten: el vertice 'Interseccion estero Renihue' (-42.500000, -72.633333) esta en 'vertices' pero NO en 'poligonal_completa'; dista 46.0 km del punto mas cercano de la poligonal. La construccion lee poligonal_completa: ese punto se pierde en silencio.
+  [A0] Chaiten: el vertice 'Punta Centinela' (-43.008333, -73.325000) esta en 'vertices' pero NO en 'poligonal_completa'; dista 6.1 km del punto mas cercano de la poligonal. La construccion lee poligonal_completa: ese punto se pierde en silencio.
+  [A1] Talcahuano: cierre ambiguo — el rol 'N' apunta a 0° de la propia cadena (seno 0.0000, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [A1] Valdivia: cierre ambiguo — el rol 'S' apunta a 43° de la propia cadena (seno 0.6874, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [A1] Corral: cierre ambiguo — el rol 'N' apunta a 43° de la propia cadena (seno 0.6874, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [A1] Ancud: cierre ambiguo — el rol 'SE' apunta a 25° de la propia cadena (seno 0.4159, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [A1] Quemchi: cierre ambiguo — el rol 'S' apunta a 44° de la propia cadena (seno 0.6887, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [A1] Castro: cierre ambiguo — la poligonal se devuelve sobre su eje meridional (cadena en escalera): no define 'un lado', y el rol 'SE' no basta para decidir que trozo es la jurisdiccion
+  [A1] Chonchi: cierre ambiguo — la poligonal se devuelve sobre su eje meridional (cadena en escalera): no define 'un lado', y el rol 'NE' no basta para decidir que trozo es la jurisdiccion
+  [A1] Puerto Aguirre: cierre ambiguo — el rol 'S' apunta a 1° de la propia cadena (seno 0.0106, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [A1] Puerto Chacabuco: cierre ambiguo — el rol 'N' apunta a 15° de la propia cadena (seno 0.2551, umbral 0.7071 = 45°): la poligonal corre mas cerca del eje que el rol NO nombra, asi que la letra no identifica el borde y el lado que salga depende de como lo lea el constructor, no del decreto
+  [A1] Ancud: rol_cadena='SE' pero su cita introduce la poligonal con 'Por el Norte' (=> 'N'). Rol y cita no concuerdan.
+  [A1] Castro: rol_cadena='SE' pero su cita introduce la poligonal con 'Por el Norte' (=> 'N'). Rol y cita no concuerdan.
+  [A1] Puerto Aguirre: rol_cadena='S' pero su cita introduce la poligonal con 'Por el Norte' (=> 'N'). Rol y cita no concuerdan.
+  [A2] Lirquen y Talcahuano comparten 2 vertices y al menos uno de sus roles ('SE' a 1.00, 'N' a 0.00 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  [A2] Valdivia y Corral comparten 3 vertices y al menos uno de sus roles ('S' a 0.69, 'N' a 0.69 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  [A2] Maullin y Ancud comparten 2 vertices y al menos uno de sus roles ('S' a 0.97, 'SE' a 0.23 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  [A2] Achao y Castro comparten 6 vertices y sus puntos representativos caen del MISMO lado de esa frontera
+  [A2] Castro y Chonchi comparten 4 vertices y sus roles ('SE' y 'NE') las dejan del MISMO lado de esa frontera
+  [A2] Castro y Chonchi comparten 4 vertices y sus puntos representativos caen del MISMO lado de esa frontera
+  [A2] Chonchi y Quellon comparten 4 vertices y al menos uno de sus roles ('NE' a 0.49, 'NE' a 0.49 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  [A2] Puerto Cisnes y Puerto Aguirre comparten 2 vertices y al menos uno de sus roles ('W' a 0.80, 'S' a 0.60 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  [A2] Puerto Aguirre y Puerto Chacabuco comparten 4 vertices y al menos uno de sus roles ('S' a 0.26, 'N' a 0.26 de transversalidad) no nombra el borde que esa frontera forma: no puede elegir lado sobre ella
+  [A3] Rio Negro Hornopiren: el decreto cita '42 30 00 S / 073 00 00 W' y la figura lo deja afuera — fuera del anillo de vertices
+  [A4] Arica: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: el decreto no entrega con que cerrar: falta limite norte
+  [A4] Baker: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: el decreto no entrega con que cerrar: falta limite sur
+  [A4] Hanga Roa: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: el decreto nombra islas sin coordenadas y el insumo no trae geometria de islas
+  [A4] Juan Fernandez: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: el decreto nombra islas sin coordenadas y el insumo no trae geometria de islas
+  [A4] Puerto Eden: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: el decreto no entrega con que cerrar: falta limite norte
+  [A4] Puerto Williams: no cierra con la fuente y NO esta declarada (sin_georreferenciar=false, participa_matching=true). Falso negativo silencioso — INV-3.6. Causa: trae 2 vertice(s) pero ni anillo cerrado ni rol_cadena que diga de que lado queda la jurisdiccion; ademas falta ambos paralelos
+  [A4] Arica: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  [A4] Baker: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  [A4] Hanga Roa: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  [A4] Juan Fernandez: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  [A4] Puerto Eden: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  [A4] Puerto Williams: quedara sin geometria y participa_matching=true, sin motivo_exclusion que declarar al patron
+  [A5] Lago Rapel (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  [A5] Lago Villarrica (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  [A5] Lago Panguipulli (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  [A5] Lago Ranco (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  [A5] Puerto Varas (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  [A5] Lago General Carrera (lacustre, receta union_cuerpos): tendra geometria y no trae punto_interior
+  [A5] Bahia Fildes (antartica, receta anillo): tendra geometria y no trae punto_interior
+  [A5] Puerto Soberania (antartica, receta anillo): tendra geometria y no trae punto_interior
+  [A5] Rada Covadonga (antartica, receta anillo): tendra geometria y no trae punto_interior
+  [A5] Bahia Paraiso (antartica, receta anillo): tendra geometria y no trae punto_interior
+  [A5] Lirquen: su punto representativo (-36.71, -72.98) cae fuera de su propia figura — del lado opuesto de la poligonal al que el rol 'SE' asigna la jurisdiccion (hacia el Weste)
+  [A5] Puerto Montt: su punto representativo (-41.5, -72.95) cae fuera de su propia figura — fuera del anillo de vertices
+  [A5] Rio Negro Hornopiren: su punto representativo (-42.0, -72.7) cae fuera de su propia figura — fuera del anillo de vertices
+  [A5] Cochamo: su punto representativo (-41.5, -72.31) cae fuera de su propia figura — al Norte del limite norte de la figura (-41.704167)

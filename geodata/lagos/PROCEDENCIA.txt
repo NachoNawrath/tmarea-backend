@@ -1,0 +1,45 @@
+PROCEDENCIA DEL SHAPEFILE DE CUERPOS DE AGUA CONTINENTALES
+==========================================================
+
+Copiado al repo el : 2026-08-09
+Origen (disco del owner, fuera del repo) : C:\Users\katia\Lagos\
+Destino en el repo : geodata/lagos/
+
+Motivo del copiado: el proyecto debe quedar reproducible. Los insumos se leen
+siempre desde el repo, nunca desde la carpeta personal del owner. Se versiona
+siguiendo el precedente ya existente de geodata/ne_10m_land.* (shapefile de
+7,1 MB versionado en este mismo repo); el conjunto completo aquí pesa 4,5 MB.
+
+CRS de origen declarado en Inventario_Lagos.prj:
+  WGS_1984_UTM_Zone_19S (Transverse Mercator, unidad metro,
+  meridiano central -69, false northing 10.000.000) = EPSG:32719
+
+Proyección de trabajo del resto de las capas de la base: EPSG:4326
+(verificado contra public.geometry_columns — bahias_sitport, batimetria,
+ne_land, nodos_maritimos, seamarks_puntos, mapa_base_multipoligonos).
+La reproyección la hace scripts/fase1_ingesta_insumos.py en tiempo de lectura;
+los archivos aquí se conservan tal cual salieron del origen, sin modificar.
+
+Fecha de emisión, organismo emisor y versión del shapefile: no determinado.
+El archivo no trae metadatos de origen (no hay .xml de metadatos ni README en
+la carpeta de origen) y no se infiere.
+
+Archivos, tamaños y sha256 — verificados idénticos entre origen y destino:
+
+  Inventario_Lagos.CPG        5 bytes   mtime 2026-08-09 17:29:30
+    sha256 3AD3031F5503A4404AF825262EE8232CC04D4EA6683D42C5DD0A2F2A27AC9824  [OK]
+  Inventario_Lagos.dbf  1420735 bytes   mtime 2026-08-09 17:29:30
+    sha256 27ED6C38A2866EC3243103EC549D1C83BE811A08AE35E38A903721F6BB050E11  [OK]
+  Inventario_Lagos.prj      409 bytes   mtime 2026-08-09 17:29:30
+    sha256 F483310289839D4AC0ABCDC3A974D7C1C374E072433EA1F3ACA6617282250C04  [OK]
+  Inventario_Lagos.sbn    21756 bytes   mtime 2026-08-09 17:29:30
+    sha256 BAA09076D87659875C60737E1D3FC748300EE16F8353068DD3A3CD4DC3D46468  [OK]
+  Inventario_Lagos.sbx     1164 bytes   mtime 2026-08-09 17:29:31
+    sha256 B613563C7B159AB821B81AD177E3A8969F93E0B1171246DA094914A9E9D4DC64  [OK]
+  Inventario_Lagos.shp  3057540 bytes   mtime 2026-08-09 17:22:16
+    sha256 0692F9B2D6193D211854FFAC7E0521C56C19A2DE35B9870EABC436D0695A8154  [OK]
+  Inventario_Lagos.shx    16636 bytes   mtime 2026-08-09 17:29:31
+    sha256 6C519800C85EF24CFAB92CAD7FA0CFE2F4B39C90CB3C8AE1C5216E6FF3D60B4C  [OK]
+
+Nota factual: el .shp tiene mtime 17:22:16 y los demás 17:29:30-31. Se registra
+tal cual se observó en el origen; no se altera.

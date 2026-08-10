@@ -1,0 +1,638 @@
+{
+  "generado": "2026-08-09",
+  "fase": "2 — cotejo cerrado con adjudicacion del owner",
+  "insumo_shapefile": {
+    "ruta": "geodata/lagos/Inventario_Lagos.shp",
+    "sha256_shp": "0692f9b2d6193d211854ffac7e0521c56c19a2de35b9870eabc436d0695a8154",
+    "campo_identificador": "FID (indice de fila, 0-based)",
+    "nota_identificador": "NUM no es unico en el shapefile (78 filas con NUM duplicado); no se usa como ancla. El FID es estable para el archivo cuyo sha256 se registra aqui.",
+    "crs_origen": "EPSG:32719",
+    "crs_trabajo": "EPSG:4326"
+  },
+  "insumo_decreto": {
+    "ruta": "data/decreto/jurisdicciones_capitanias.json",
+    "sha256": "497e03a7a36a452accf82bd7082ff748456c499cb9f04b0d1c7448df78712cfe"
+  },
+  "criterios_adjudicacion": [
+    "lago/laguna es nomenclatura, no identidad: decreto y catastro usan palabras distintas para el mismo cuerpo.",
+    "Caburgua/Caburga y Pullinque/Pullingue son diferencias de grafia.",
+    "Rapel se acepta como embalse porque efectivamente lo es.",
+    "Se rechazan los candidatos de otra region que solo comparten una palabra (Rio San Pedro, Rio Bueno).",
+    "Icalma: union de sus dos poligonos.",
+    "Puyehue: entero a las dos jurisdicciones que lo nombran (INV-3.4).",
+    "Rios y Galletue: geometria nula, declarados (INV-3.6)."
+  ],
+  "traslape_deliberado": {
+    "LAGO PUYEHUE": {
+      "jurisdicciones": [
+        "lago_ranco",
+        "puerto_varas"
+      ],
+      "motivo": "El decreto lo parte por limite regional ('hasta el limite con la Region de Los Lagos' / 'de Los Rios'); el shapefile trae un unico poligono y el criterio de particion no esta determinado. Se asigna entero a ambas: INV-3.4 fija que el motor muestra de mas, nunca de menos."
+    }
+  },
+  "jurisdicciones": [
+    {
+      "id": "lago_rapel",
+      "nombre": "Lago Rapel",
+      "ambito": "lacustre",
+      "cuerpos": [
+        {
+          "nombre_decreto": "Lago Rapel",
+          "fragmento_decreto": "el lago Rapel",
+          "resolucion": "aceptado",
+          "shapefile_fid": [
+            568
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 568,
+              "num": 569,
+              "nombre": "EMBALSE RAPEL",
+              "region": "VI",
+              "area_km2": 72.842
+            }
+          ],
+          "motivo": "El decreto dice 'lago'; el catastro lo clasifica como embalse, que es lo que efectivamente es. Mismo cuerpo."
+        }
+      ],
+      "cuerpos_con_geometria": 1,
+      "cuerpos_sin_geometria": 0,
+      "cumple_inv_3_5": true
+    },
+    {
+      "id": "lago_villarrica",
+      "nombre": "Lago Villarrica",
+      "ambito": "lacustre",
+      "cuerpos": [
+        {
+          "nombre_decreto": "Lago Colico",
+          "fragmento_decreto": "Lagos Colico",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            974
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 974,
+              "num": 975,
+              "nombre": "LAGO COLICO",
+              "region": "IX",
+              "area_km2": 54.955
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Caburgua",
+          "fragmento_decreto": "Lagos ... Caburgua",
+          "resolucion": "aceptado",
+          "shapefile_fid": [
+            975
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 975,
+              "num": 976,
+              "nombre": "LAGO CABURGA",
+              "region": "IX",
+              "area_km2": 52.274
+            }
+          ],
+          "motivo": "Diferencia de grafia del mismo toponimo."
+        },
+        {
+          "nombre_decreto": "Lago Huilipilun",
+          "fragmento_decreto": "Lagos ... Huilipilun",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            976
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 976,
+              "num": 977,
+              "nombre": "LAGO HUILIPILUN",
+              "region": "IX",
+              "area_km2": 11.328
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Villarrica",
+          "fragmento_decreto": "Lagos ... y Villarrica",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            977
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 977,
+              "num": 978,
+              "nombre": "LAGO VILLARRICA",
+              "region": "IX",
+              "area_km2": 174.971
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Laguna Conguillio",
+          "fragmento_decreto": "lagunas Conguillio",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            964
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 964,
+              "num": 965,
+              "nombre": "LAGUNA CONGUILLIO",
+              "region": "IX",
+              "area_km2": 8.026
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Laguna Galletue",
+          "fragmento_decreto": "lagunas ... Galletue",
+          "resolucion": "ausente",
+          "shapefile_fid": [],
+          "shapefile_detalle": [],
+          "motivo": "Sin ninguna coincidencia ni candidato en el shapefile. Queda sin geometria, declarado (INV-3.6)."
+        },
+        {
+          "nombre_decreto": "Laguna Icalma",
+          "fragmento_decreto": "lagunas ... e Icalma",
+          "resolucion": "aceptado",
+          "shapefile_fid": [
+            966,
+            967
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 966,
+              "num": 967,
+              "nombre": "LAGUNA DE ICALMA",
+              "region": "IX",
+              "area_km2": 9.901
+            },
+            {
+              "fid": 967,
+              "num": 968,
+              "nombre": "LAGUNA DE ICALMA",
+              "region": "IX",
+              "area_km2": 1.932
+            }
+          ],
+          "motivo": "Un cuerpo con dos partes en el catastro (9.901 y 1.932 km2). La jurisdiccion cubre las dos: se unen."
+        },
+        {
+          "nombre_decreto": "Rio Tolten",
+          "fragmento_decreto": "y el Rio Tolten",
+          "resolucion": "ausente",
+          "shapefile_fid": [],
+          "shapefile_detalle": [],
+          "motivo": "Cuerpo fluvial. El shapefile no contiene rios. Sin geometria, declarado (INV-3.6)."
+        }
+      ],
+      "cuerpos_con_geometria": 6,
+      "cuerpos_sin_geometria": 2,
+      "cumple_inv_3_5": true
+    },
+    {
+      "id": "lago_panguipulli",
+      "nombre": "Lago Panguipulli",
+      "ambito": "lacustre",
+      "cuerpos": [
+        {
+          "nombre_decreto": "Lago Calafquen",
+          "fragmento_decreto": "Lagos Calafquen",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            982
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 982,
+              "num": 983,
+              "nombre": "LAGO CALAFQUEN",
+              "region": "X",
+              "area_km2": 114.886
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Panguipulli",
+          "fragmento_decreto": "Lagos ... Panguipulli",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            999
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 999,
+              "num": 1000,
+              "nombre": "LAGO PANGUIPULLI",
+              "region": "X",
+              "area_km2": 112.845
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Pellaifa",
+          "fragmento_decreto": "Lagos ... Pellaifa",
+          "resolucion": "aceptado",
+          "shapefile_fid": [
+            993
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 993,
+              "num": 994,
+              "nombre": "LAGUNA PELLAIFA",
+              "region": "X",
+              "area_km2": 7.677
+            }
+          ],
+          "motivo": "lago/laguna es nomenclatura, no identidad. Mismo cuerpo (X, Panguipulli)."
+        },
+        {
+          "nombre_decreto": "Lago Pullinque",
+          "fragmento_decreto": "Lagos ... Pullinque",
+          "resolucion": "aceptado",
+          "shapefile_fid": [
+            991
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 991,
+              "num": 992,
+              "nombre": "LAGUNA PULLINGUE",
+              "region": "X",
+              "area_km2": 5.99
+            }
+          ],
+          "motivo": "Diferencia de grafia del mismo toponimo, mas lago/laguna. Mismo cuerpo (X, Panguipulli)."
+        },
+        {
+          "nombre_decreto": "Lago Rinihue",
+          "fragmento_decreto": "Lagos ... Rinihue",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1029
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1029,
+              "num": 1030,
+              "nombre": "LAGO RINIHUE",
+              "region": "X",
+              "area_km2": 87.928
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Neltume",
+          "fragmento_decreto": "Lagos ... Neltume",
+          "resolucion": "aceptado",
+          "shapefile_fid": [
+            1028
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1028,
+              "num": 1029,
+              "nombre": "LAGUNA NELTUME",
+              "region": "X",
+              "area_km2": 9.194
+            }
+          ],
+          "motivo": "lago/laguna es nomenclatura, no identidad. Mismo cuerpo (X, Panguipulli)."
+        },
+        {
+          "nombre_decreto": "Lago Pirihueico",
+          "fragmento_decreto": "Lagos ... Pirihueico",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1042
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1042,
+              "num": 1043,
+              "nombre": "LAGO PIRIHUEICO",
+              "region": "X",
+              "area_km2": 29.511
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Rio Fuy",
+          "fragmento_decreto": "los rios Fuy",
+          "resolucion": "ausente",
+          "shapefile_fid": [],
+          "shapefile_detalle": [],
+          "motivo": "Cuerpo fluvial. El shapefile no contiene rios. Sin geometria, declarado (INV-3.6)."
+        },
+        {
+          "nombre_decreto": "Rio San Pedro",
+          "fragmento_decreto": "los rios ... y San Pedro",
+          "resolucion": "rechazado",
+          "shapefile_fid": [],
+          "shapefile_detalle": [],
+          "motivo": "El candidato LAGUNA GRANDE DE SAN PEDRO esta en la Region VIII (San Pedro de la Paz): es otro cuerpo que comparte palabra. Se rechaza. Sin geometria (INV-3.6)."
+        }
+      ],
+      "cuerpos_con_geometria": 7,
+      "cuerpos_sin_geometria": 2,
+      "cumple_inv_3_5": true
+    },
+    {
+      "id": "lago_ranco",
+      "nombre": "Lago Ranco",
+      "ambito": "lacustre",
+      "cuerpos": [
+        {
+          "nombre_decreto": "Lago Ranco",
+          "fragmento_decreto": "Lagos Ranco",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1055
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1055,
+              "num": 1056,
+              "nombre": "LAGO RANCO",
+              "region": "X",
+              "area_km2": 424.586
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Maihue",
+          "fragmento_decreto": "Lagos ... Maihue",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1067
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1067,
+              "num": 1068,
+              "nombre": "LAGO MAIHUE",
+              "region": "X",
+              "area_km2": 45.675
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Puyehue",
+          "fragmento_decreto": "Lagos ... Puyehue (hasta el limite con la Region de Los Lagos)",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1110
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1110,
+              "num": 1111,
+              "nombre": "LAGO PUYEHUE",
+              "region": "X",
+              "area_km2": 155.642
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Huishue",
+          "fragmento_decreto": "Lagos ... Huishue",
+          "resolucion": "aceptado",
+          "shapefile_fid": [
+            1091
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1091,
+              "num": 1092,
+              "nombre": "LAGUNA HUISHUE",
+              "region": "X",
+              "area_km2": 13.279
+            }
+          ],
+          "motivo": "lago/laguna es nomenclatura, no identidad. Mismo cuerpo (X, Lago Ranco)."
+        },
+        {
+          "nombre_decreto": "Lago Gris",
+          "fragmento_decreto": "Lagos ... y Gris",
+          "resolucion": "aceptado",
+          "shapefile_fid": [
+            1102
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1102,
+              "num": 1103,
+              "nombre": "LAGUNA GRIS",
+              "region": "X",
+              "area_km2": 9.992
+            }
+          ],
+          "motivo": "lago/laguna es nomenclatura, no identidad. Mismo cuerpo (X, Lago Ranco)."
+        },
+        {
+          "nombre_decreto": "Rio Bueno",
+          "fragmento_decreto": "Incluye el rio Bueno en los sectores Los Patos, La Goleta y El Manzanito",
+          "resolucion": "rechazado",
+          "shapefile_fid": [],
+          "shapefile_detalle": [],
+          "motivo": "El candidato LAGUNA ACHIBUENO esta en la Region VII: es otro cuerpo que comparte palabra. Se rechaza. Sin geometria (INV-3.6)."
+        }
+      ],
+      "cuerpos_con_geometria": 5,
+      "cuerpos_sin_geometria": 1,
+      "cumple_inv_3_5": true
+    },
+    {
+      "id": "puerto_varas",
+      "nombre": "Puerto Varas",
+      "ambito": "lacustre",
+      "cuerpos": [
+        {
+          "nombre_decreto": "Lago Llanquihue",
+          "fragmento_decreto": "Lagos Llanquihue",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1146
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1146,
+              "num": 1147,
+              "nombre": "LAGO LLANQUIHUE",
+              "region": "X",
+              "area_km2": 864.084
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Rupanco",
+          "fragmento_decreto": "Lagos ... Rupanco",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1127
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1127,
+              "num": 1128,
+              "nombre": "LAGO RUPANCO",
+              "region": "X",
+              "area_km2": 230.195
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Todos los Santos",
+          "fragmento_decreto": "Lagos ... Todos los Santos",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1147
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1147,
+              "num": 1148,
+              "nombre": "LAGO TODOS LOS SANTOS",
+              "region": "X",
+              "area_km2": 172.04
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Puyehue",
+          "fragmento_decreto": "Lagos ... Puyehue (hasta el limite con la Region de Los Rios)",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1110
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1110,
+              "num": 1111,
+              "nombre": "LAGO PUYEHUE",
+              "region": "X",
+              "area_km2": 155.642
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Constancia",
+          "fragmento_decreto": "Lagos ... y Constancia",
+          "resolucion": "aceptado",
+          "shapefile_fid": [
+            1107
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1107,
+              "num": 1108,
+              "nombre": "LAGUNA CONSTANCIA",
+              "region": "X",
+              "area_km2": 17.719
+            }
+          ],
+          "motivo": "lago/laguna es nomenclatura, no identidad. Mismo cuerpo (X)."
+        }
+      ],
+      "cuerpos_con_geometria": 5,
+      "cuerpos_sin_geometria": 0,
+      "cumple_inv_3_5": true
+    },
+    {
+      "id": "lago_general_carrera",
+      "nombre": "Lago General Carrera",
+      "ambito": "lacustre",
+      "cuerpos": [
+        {
+          "nombre_decreto": "Lago General Carrera",
+          "fragmento_decreto": "Lagos General Carrera",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1738
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1738,
+              "num": 1739,
+              "nombre": "LAGO GENERAL CARRERA",
+              "region": "XI",
+              "area_km2": 951.162
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago Cochrane",
+          "fragmento_decreto": "Lagos ... Cochrane",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1863
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1863,
+              "num": 1864,
+              "nombre": "LAGO COCHRANE",
+              "region": "XI",
+              "area_km2": 178.289
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        },
+        {
+          "nombre_decreto": "Lago O'Higgins",
+          "fragmento_decreto": "Lagos ... y O'Higgins",
+          "resolucion": "exacta",
+          "shapefile_fid": [
+            1917
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 1917,
+              "num": 1918,
+              "nombre": "LAGO OHIGGINS",
+              "region": "XI",
+              "area_km2": 499.224
+            }
+          ],
+          "motivo": "Coincidencia exacta de nombre normalizado."
+        }
+      ],
+      "cuerpos_con_geometria": 3,
+      "cuerpos_sin_geometria": 0,
+      "cumple_inv_3_5": true
+    }
+  ],
+  "conteo": {
+    "exacta": 18,
+    "aceptado": 9,
+    "rechazado": 2,
+    "ausente": 3
+  },
+  "total_cuerpos": 32,
+  "total_con_geometria": 27
+}
