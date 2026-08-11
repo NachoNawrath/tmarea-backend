@@ -1,0 +1,245 @@
+﻿RECONOCIMIENTO E0.2 — EL REGISTRO DE AMBITOS PUBLICADOS
+fecha de ejecucion: 2026-08-11T16:10:11.088Z
+insumo: data/decreto/jurisdicciones_v2.json v2 generado 2026-08-09
+capa declarada: bahia_jurisdicciones (recorte: ne_land)
+shell del agente: Git Bash / PowerShell (Windows). Comandos reproducibles: PowerShell.
+
+══════════════════════════════════════════════════════════════════════════════
+1. QUE AMBITOS EXISTEN EN EL INSUMO DEL DECRETO
+══════════════════════════════════════════════════════════════════════════════
+
+ambito           n   participa_matching  estado_geometria
+──────────────────────────────────────────────────────────────────────────────
+antartica         4    4 si /  0 no    cerrable=4
+insular_remota    2    0 si /  2 no    no_cerrable=2
+lacustre          6    6 si /  0 no    cerrable=6
+maritima         52   44 si /  8 no    no_cerrable=8  cerrable=44
+
+Detalle por ambito — recetas y jurisdicciones:
+
+  antartica (4):
+    recetas: anillo=4
+    - bahia_fildes             matching=true  estado=cerrable             
+    - puerto_soberania         matching=true  estado=cerrable             
+    - rada_covadonga           matching=true  estado=cerrable             
+    - bahia_paraiso            matching=true  estado=cerrable             
+
+  insular_remota (2):
+    recetas: -=2
+    - hanga_roa                matching=false estado=no_cerrable          causa=el decreto nombra las islas sin coordenadas y el insumo no t
+    - juan_fernandez           matching=false estado=no_cerrable          causa=el decreto nombra las islas sin coordenadas y el insumo no t
+
+  lacustre (6):
+    recetas: union_cuerpos=6
+    - lago_rapel               matching=true  estado=cerrable             
+    - lago_villarrica          matching=true  estado=cerrable             
+    - lago_panguipulli         matching=true  estado=cerrable             
+    - lago_ranco               matching=true  estado=cerrable             
+    - puerto_varas             matching=true  estado=cerrable             
+    - lago_general_carrera     matching=true  estado=cerrable             
+
+  maritima (52):
+    recetas: -=5, banda_paralelos=26, corte_y_ancla=17, anillo=4
+    - arica                    matching=false estado=no_cerrable          causa=el decreto no entrega con que cerrar: falta el limite norte,
+    - iquique                  matching=true  estado=cerrable             
+    - patache                  matching=true  estado=cerrable             
+    - tocopilla                matching=true  estado=cerrable             
+    - mejillones               matching=true  estado=cerrable             
+    - antofagasta              matching=true  estado=cerrable             
+    - taltal                   matching=true  estado=cerrable             
+    - chanaral                 matching=true  estado=cerrable             
+    - caldera                  matching=true  estado=cerrable             
+    - huasco                   matching=true  estado=cerrable             
+    - coquimbo                 matching=true  estado=cerrable             
+    - tongoy                   matching=true  estado=cerrable             
+    - los_vilos                matching=true  estado=cerrable             
+    - papudo                   matching=true  estado=cerrable             
+    - quintero                 matching=true  estado=cerrable             
+    - valparaiso               matching=true  estado=cerrable             
+    - algarrobo                matching=true  estado=cerrable             
+    - san_antonio              matching=true  estado=cerrable             
+    - pichilemu                matching=true  estado=cerrable             
+    - constitucion             matching=true  estado=cerrable             
+    - lirquen                  matching=false estado=no_cerrable          causa=La prosa describe el contorno de la Bahia de Concepcion sin 
+    - talcahuano               matching=false estado=no_cerrable          causa=El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Co
+    - san_vicente              matching=true  estado=cerrable             
+    - coronel                  matching=true  estado=cerrable             
+    - lota                     matching=true  estado=cerrable             
+    - lebu                     matching=true  estado=cerrable             
+    - carahue                  matching=true  estado=cerrable             
+    - valdivia                 matching=true  estado=cerrable             
+    - corral                   matching=true  estado=cerrable             
+    - puerto_montt             matching=true  estado=cerrable             
+    - maullin                  matching=true  estado=cerrable             
+    - calbuco                  matching=true  estado=cerrable             
+    - hornopiren               matching=true  estado=cerrable             
+    - cochamo                  matching=true  estado=cerrable             
+    - ancud                    matching=true  estado=cerrable             
+    - quemchi                  matching=true  estado=cerrable             
+    - chaiten                  matching=true  estado=cerrable             
+    - achao                    matching=true  estado=cerrable             
+    - castro                   matching=true  estado=cerrable             
+    - chonchi                  matching=true  estado=cerrable             
+    - quellon                  matching=true  estado=cerrable             
+    - melinka                  matching=true  estado=cerrable             
+    - puerto_cisnes            matching=true  estado=cerrable             
+    - puerto_aguirre           matching=true  estado=cerrable             
+    - puerto_chacabuco         matching=true  estado=cerrable             
+    - baker                    matching=false estado=no_cerrable          causa=el decreto no entrega con que cerrar: falta el limite sur, y
+    - puerto_eden              matching=false estado=no_cerrable          causa=el decreto no entrega con que cerrar: falta el limite norte,
+    - puerto_natales           matching=true  estado=cerrable             
+    - punta_arenas             matching=true  estado=cerrable             
+    - punta_delgada            matching=false estado=no_cerrable          causa=falta UNICAMENTE el limite maritimo internacional por el Ori
+    - tierra_del_fuego         matching=false estado=no_cerrable          causa=faltan DOS cosas, y ya no es la falta de coordenadas de sus 
+    - puerto_williams          matching=false estado=no_cerrable          causa=el contorno parte el espacio en dos y no hay ancla que diga 
+
+══════════════════════════════════════════════════════════════════════════════
+2. QUE AMBITOS ESTAN EFECTIVAMENTE EN LA BASE HOY
+══════════════════════════════════════════════════════════════════════════════
+
+2.a — Relaciones de la base que llevan una columna "ambito":
+──────────────────────────────────────────────────────────────────────────────
+┌─────────┬──────────────────────────┬─────────┐
+│ (index) │ relacion                 │ tipo    │
+├─────────┼──────────────────────────┼─────────┤
+│ 0       │ 'jurisdicciones_decreto' │ 'tabla' │
+└─────────┴──────────────────────────┴─────────┘
+La capa que el motor consulta es 'bahia_jurisdicciones'.
+¿Lleva columna 'ambito'?  NO
+
+2.b — Cobertura de cada ambito por la capa VIGENTE.
+El area de referencia de cada ambito sale de jurisdicciones_decreto, que es
+la unica relacion de la base con geometria Y ambito. Esta marcada SUPERSEDIDA:
+sirve como referencia de DONDE cae cada ambito, no como capa correcta.
+──────────────────────────────────────────────────────────────────────────────
+┌─────────┬─────────────┬────────────┬──────────────┬──────────────┐
+│ (index) │ ambito      │ km2_ambito │ km2_cubierto │ pct_cubierto │
+├─────────┼─────────────┼────────────┼──────────────┼──────────────┤
+│ 0       │ 'antartica' │ '1357463'  │ '0'          │ '0.000'      │
+│ 1       │ 'lacustre'  │ '4311'     │ '0'          │ '0.000'      │
+│ 2       │ 'maritima'  │ '2068192'  │ '259148'     │ '12.530'     │
+└─────────┴─────────────┴────────────┴──────────────┴──────────────┘
+
+Ambitos del insumo que NO se pueden medir asi: insular_remota
+Motivo: ninguna de sus jurisdicciones tiene geometria en jurisdicciones_decreto,
+asi que no hay area de referencia contra la cual medir. No determinado.
+
+2.c — Las celdas de la capa vigente, por si la geometria esta o no:
+──────────────────────────────────────────────────────────────────────────────
+┌─────────┬────────┬───────────┬────────────┬──────────┐
+│ (index) │ celdas │ geom_nula │ geom_vacia │ con_area │
+├─────────┼────────┼───────────┼────────────┼──────────┤
+│ 0       │ '163'  │ '0'       │ '33'       │ '130'    │
+└─────────┴────────┴───────────┴────────────┴──────────┘
+
+2.d — Las bahias del catalogo cuyo nombre las ubica en un lago o en la Antartica:
+──────────────────────────────────────────────────────────────────────────────
+┌─────────┬──────────┬─────────────────────────────────────┬──────────┬──────────┬───────────┬─────────────┐
+│ (index) │ bahia_id │ nombre                              │ lat      │ lng      │ km2_celda │ celda_vacia │
+├─────────┼──────────┼─────────────────────────────────────┼──────────┼──────────┼───────────┼─────────────┤
+│ 0       │ 96       │ 'Lago Rapel'                        │ -34.1667 │ -71.5833 │ '92.51'   │ false       │
+│ 1       │ 105      │ 'Lago Villarrica'                   │ -39.2667 │ -72.0833 │ '0.00'    │ true        │
+│ 2       │ 111      │ 'Lago Llanquihue'                   │ -41.15   │ -72.8    │ '0.00'    │ true        │
+│ 3       │ 128      │ 'Lago General Carrera'              │ -46.5    │ -72.1    │ '0.00'    │ true        │
+│ 4       │ 142      │ 'Carahue - Sector Lago'             │ -38.7    │ -73.1    │ '0.00'    │ true        │
+│ 5       │ 144      │ 'Lago Ranco'                        │ -40.2133 │ -72.3883 │ '0.00'    │ true        │
+│ 6       │ 145      │ 'Lago Maihue'                       │ -40.25   │ -72.0833 │ '0.00'    │ true        │
+│ 7       │ 153      │ 'Lago Tagua Tagua'                  │ -41.5333 │ -72.2    │ '0.00'    │ true        │
+│ 8       │ 159      │ 'Lago Todos los Santos'             │ -41.1    │ -72.1    │ '0.00'    │ true        │
+│ 9       │ 160      │ 'Lago Puyehue'                      │ -40.6833 │ -72.3167 │ '0.00'    │ true        │
+│ 10      │ 161      │ 'Lago Rupanco'                      │ -40.7833 │ -72.45   │ '0.00'    │ true        │
+│ 11      │ 162      │ 'Lago Chapo'                        │ -41.4333 │ -72.5167 │ '0.00'    │ true        │
+│ 12      │ 203      │ "Lago O'Higgins"                    │ -48.5    │ -72.8333 │ '0.00'    │ true        │
+│ 13      │ 209      │ 'Lago Villarrica Sector Pucón'      │ -39.2833 │ -71.9667 │ '0.00'    │ true        │
+│ 14      │ 210      │ 'Lago Villarrica Sector Villarrica' │ -39.2883 │ -72.2195 │ '0.00'    │ true        │
+│ 15      │ 229      │ 'Lago Vichuquén'                    │ -34.8333 │ -71.0833 │ '0.00'    │ true        │
+│ 16      │ 245      │ 'Lago Pellaifa'                     │ -39.55   │ -71.9833 │ '0.00'    │ true        │
+│ 17      │ 246      │ 'Lago Pullinque'                    │ -39.5833 │ -72.0833 │ '0.00'    │ true        │
+│ 18      │ 247      │ 'Lago Calafquén'                    │ -39.55   │ -72.15   │ '0.00'    │ true        │
+│ 19      │ 248      │ 'Lago Riñihue'                      │ -39.8    │ -72.3333 │ '0.00'    │ true        │
+│ 20      │ 249      │ 'Lago Neltume'                      │ -39.8    │ -71.9667 │ '0.00'    │ true        │
+│ 21      │ 250      │ 'Lago Pirehuico'                    │ -39.8667 │ -71.7833 │ '0.00'    │ true        │
+│ 22      │ 139      │ 'Bahía Fildes'                      │ -62.2    │ -58.9667 │ '0.00'    │ true        │
+│ 23      │ 140      │ 'Bahía Paraíso'                     │ -64.8167 │ -63      │ '0.00'    │ true        │
+│ 24      │ 231      │ 'Bahía Chile'                       │ -62.4667 │ -59.6833 │ '0.00'    │ true        │
+└─────────┴──────────┴─────────────────────────────────────┴──────────┴──────────┴───────────┴─────────────┘
+
+══════════════════════════════════════════════════════════════════════════════
+3. COMO SE COMPORTA EL MOTOR CUANDO LA RUTA CAE EN UN AMBITO QUE NO ESTA
+══════════════════════════════════════════════════════════════════════════════
+
+Se ejecuta el codigo del motor, no se describe:
+  - matching geografico  = sitport-routes.js:557  bahiasEnRutaPostGIS
+  - aviso de cobertura   = cobertura-jurisdiccional.js  medirCoberturaRuta + componerAvisos
+
+zonas_aviso.json cargado: 10 zonas declaradas, 0 con ambito (o sea, capaces de reclamar un tramo).
+ambito de jurisdiccion de las zonas declaradas: {"maritima":8,"insular_remota":2}
+──────────────────────────────────────────────────────────────────────────────
+
+RUTA lacustre_villarrica  [ambito esperado: lacustre]
+  Lago Villarrica: bahia 210 (Sector Villarrica) -> bahia 209 (Sector Pucon)
+  waypoints: [{"lat":-39.2883,"lng":-72.2195},{"lat":-39.2833,"lng":-71.9667}]
+
+  [matching] bahias que la capa vigente hace matchear: (NINGUNA)
+  [matching] consecuencia: toda restriccion SITPORT cuya bahia no este en ese set se descarta
+             (sitport-routes.js, filtro por bahiaIdsEnRuta).
+
+  [cobertura] largo de ruta: 21.818 km
+  [cobertura] piezas sin jurisdiccion: 1
+      largo=21.8178km  clasificacion=aviso  dentro_del_recorte=true  pegada_a_cobertura=false
+  [cobertura] bandera: U
+  [cobertura] avisos: 1   defectos registrados: 1
+      causa='hueco_de_capa'  bandera=U  jurisdicciones_probables=[]
+      capitanias=[]
+      capa_1: No tenemos cargado el límite de esta jurisdicción.
+      capa_2: Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.
+      DEFECTO tipo='hueco_de_capa' largo=21.8178km
+              Ninguna jurisdiccion de 'bahia_jurisdicciones' reclama este trozo y ninguna zona de aviso declarada lo cubre. Se muestra al patron y queda registrado como defecto de construccion.
+──────────────────────────────────────────────────────────────────────────────
+
+RUTA antartica_fildes_chile  [ambito esperado: antartica]
+  Antartica: bahia 139 (Fildes) -> bahia 231 (Bahia Chile)
+  waypoints: [{"lat":-62.2,"lng":-58.9667},{"lat":-62.4667,"lng":-59.6833}]
+
+  [matching] bahias que la capa vigente hace matchear: (NINGUNA)
+  [matching] consecuencia: toda restriccion SITPORT cuya bahia no este en ese set se descarta
+             (sitport-routes.js, filtro por bahiaIdsEnRuta).
+
+  [cobertura] largo de ruta: 47.568 km
+  [cobertura] piezas sin jurisdiccion: 1
+      largo=47.5676km  clasificacion=aviso  dentro_del_recorte=false  pegada_a_cobertura=false
+  [cobertura] bandera: U
+  [cobertura] avisos: 1   defectos registrados: 1
+      causa='hueco_de_capa'  bandera=U  jurisdicciones_probables=[]
+      capitanias=[]
+      capa_1: No tenemos cargado el límite de esta jurisdicción.
+      capa_2: Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.
+      DEFECTO tipo='hueco_de_capa' largo=47.5676km
+              Ninguna jurisdiccion de 'bahia_jurisdicciones' reclama este trozo y ninguna zona de aviso declarada lo cubre. Se muestra al patron y queda registrado como defecto de construccion.
+──────────────────────────────────────────────────────────────────────────────
+
+RUTA maritima_control  [ambito esperado: maritima]
+  CONTROL maritimo: bahia 254 (Canal Chaffers Sur) -> bahia 126 (Bahia Chacabuco)
+  waypoints: [{"lat":-43.8,"lng":-73.6},{"lat":-45.4667,"lng":-72.8}]
+
+  [matching] bahias que la capa vigente hace matchear: 238, 239, 254
+  [matching] consecuencia: toda restriccion SITPORT cuya bahia no este en ese set se descarta
+             (sitport-routes.js, filtro por bahiaIdsEnRuta).
+
+  [cobertura] largo de ruta: 195.785 km
+  [cobertura] piezas sin jurisdiccion: 2
+      largo=65.0294km  clasificacion=defecto_recorte  dentro_del_recorte=true  pegada_a_cobertura=true
+      largo=40.0413km  clasificacion=defecto_recorte  dentro_del_recorte=true  pegada_a_cobertura=true
+  [cobertura] bandera: Q
+  [cobertura] avisos: 0   defectos registrados: 2
+      DEFECTO tipo='hueco_atribuible_al_recorte' largo=65.0294km
+              El trozo cae entero dentro de 'ne_land', la capa de tierra con que se recorto 'bahia_jurisdicciones', y esta pegado a jurisdiccion que la ruta si resolvio. Es un desacuerdo entre dos lineas de costa, no un hueco de jurisdiccion.
+      DEFECTO tipo='hueco_atribuible_al_recorte' largo=40.0413km
+              El trozo cae entero dentro de 'ne_land', la capa de tierra con que se recorto 'bahia_jurisdicciones', y esta pegado a jurisdiccion que la ruta si resolvio. Es un desacuerdo entre dos lineas de costa, no un hueco de jurisdiccion.
+──────────────────────────────────────────────────────────────────────────────
+
+NOTA sobre el alcance de lo medido en el bloque 3: el aviso de cobertura se
+calcula y se devuelve en su propio campo del endpoint, pero NO compone el
+veredicto — asi esta escrito en sitport-routes.js:852 ("Todavia NO compone el
+veredicto — esa es la pieza 4"). Lo que se mide arriba es lo que el backend
+produce, no lo que el patron ve hoy en pantalla.

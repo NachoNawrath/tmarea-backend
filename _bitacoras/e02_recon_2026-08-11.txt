@@ -1,0 +1,252 @@
+================================================================================
+E0.2 — EL REGISTRO DE AMBITOS PUBLICADOS
+RECONOCIMIENTO. No se propuso ni se construyo nada. Fecha: 2026-08-11.
+================================================================================
+
+SHELL (CLAUDE.md §7.3)
+  Ejecutado por el agente en: PowerShell 5.1 sobre Windows 10, y Node
+  invocado desde ahi. Los comandos que se transcriben abajo para que el owner
+  los repita estan en sintaxis PowerShell, que es la forma ejecutada.
+
+COMO SE REGENERA TODO ESTO
+  cd C:\Users\katia\tmarea-backend
+  node scripts/fase5_recon_e02_ambitos.js
+  $env:PGPASSWORD='<clave>'
+  & 'C:\Program Files\PostgreSQL\16\bin\psql.exe' -U postgres -d mapa_navegacion -f "_bitacoras\e02_recon_2026-08-11\02_cobertura_por_jurisdiccion.sql"
+
+EVIDENCIA CRUDA
+  _bitacoras/e02_recon_2026-08-11/01_recon_ambitos.txt          salida literal del script
+  _bitacoras/e02_recon_2026-08-11/02_cobertura_por_jurisdiccion.sql   consulta versionada
+  _bitacoras/e02_recon_2026-08-11/02_cobertura_por_jurisdiccion.txt   su salida literal
+
+  El script scripts/fase5_recon_e02_ambitos.js NO escribe en la base. Solo lee
+  y mide, y ejecuta el codigo del propio motor para el bloque 3.
+
+--------------------------------------------------------------------------------
+1. QUE AMBITOS EXISTEN EN EL INSUMO
+--------------------------------------------------------------------------------
+
+data/decreto/jurisdicciones_v2.json, v2, generado 2026-08-09. Cuatro ambitos:
+
+  ambito           n    participa_matching   estado_geometria
+  maritima         52   44 si /  8 no        44 cerrable / 8 no_cerrable
+  lacustre          6    6 si /  0 no         6 cerrable
+  antartica         4    4 si /  0 no         4 cerrable
+  insular_remota    2    0 si /  2 no         2 no_cerrable
+  ----------------------------------------------------------------
+  total            64   54 si / 10 no
+
+  Recetas por ambito:
+    maritima        banda_paralelos 26 · corte_y_ancla 17 · anillo 4 · sin receta 5
+    lacustre        union_cuerpos 6   (los seis, la misma receta)
+    antartica       anillo 4          (los cuatro, la misma receta)
+    insular_remota  sin receta 2
+
+  Los cuatro valores coinciden exactamente con el CHECK que ya lleva
+  jurisdicciones_decreto en la base:
+    CHECK (ambito = ANY (ARRAY['maritima','lacustre','antartica','insular_remota']))
+  O sea que el vocabulario de ambitos ya existe en dos lugares y coincide. No
+  hay que inventarlo.
+
+  DATO QUE IMPORTA PARA EL DISENO: los dos unicos miembros de insular_remota
+  (hanga_roa, juan_fernandez) son tambien dos de las diez zonas ya declaradas
+  en zonas_aviso.json. Ese ambito esta cubierto hoy, entero, por jurisdiccion.
+  Lacustre y antartica no tienen ni una sola entrada ahi: sus diez
+  jurisdicciones son todas participa_matching=true.
+
+    ambito de jurisdiccion de las 10 zonas de zonas_aviso.json:
+      maritima 8 · insular_remota 2 · lacustre 0 · antartica 0
+
+--------------------------------------------------------------------------------
+2. QUE AMBITOS ESTAN EFECTIVAMENTE EN LA BASE HOY
+--------------------------------------------------------------------------------
+
+2.a — La capa que el motor consulta no sabe lo que es un ambito.
+
+  capa_consultada.json declara:  capa_jurisdicciones = bahia_jurisdicciones
+                                 capa_recorte_tierra = ne_land
+
+  Relaciones de public que llevan columna 'ambito':  UNA SOLA
+      jurisdicciones_decreto   (tabla)   — con indice btree por ambito
+
+  bahia_jurisdicciones (matview, la capa VIGENTE) tiene columnas
+  (bahia_id, nombre, geom). No lleva ambito y no puede llevarlo: su unidad es
+  la bahia, no la jurisdiccion. La pregunta "que ambitos estan publicados" no
+  se le puede hacer a la capa vigente. Hoy no hay dato que la conteste.
+
+2.b — Medida la cobertura, los numeros no dejan lugar a interpretacion.
+
+  Area de referencia de cada ambito tomada de jurisdicciones_decreto, que es la
+  unica relacion con geometria Y ambito. Esta marcada SUPERSEDIDA: se usa para
+  saber DONDE cae cada ambito, no como capa correcta.
+
+  ambito       km2_ambito   km2_cubierto   pct_cubierto
+  antartica     1.357.463              0          0,000
+  lacustre          4.311              0          0,000
+  maritima      2.068.192        259.148         12,530
+  insular_remota      —              —      NO DETERMINADO
+
+  insular_remota no se puede medir asi: ninguna de sus dos jurisdicciones tiene
+  geometria en jurisdicciones_decreto, asi que no hay area de referencia. No se
+  sustituye por una estimacion.
+
+2.c — Jurisdiccion por jurisdiccion, para que "0%" no se lea como un artefacto
+      de sumar areas grandes.
+
+  LACUSTRE — las seis, con la distancia a la cobertura mas cercana:
+    id                       km2    km2_cubierto   dist_a_cobertura_m
+    lago_general_carrera  1627,11         0,0000               33.045
+    lago_panguipulli       367,62         0,0000               72.428
+    lago_ranco             648,33         0,0000               72.186
+    lago_rapel              72,80         0,0000               28.786
+    lago_villarrica        313,10         0,0000               84.178
+    puerto_varas          1437,39         0,0000               16.178
+
+  ANTARTICA — las cuatro:
+    bahia_fildes        176.233,09        0,0000              453.509
+    bahia_paraiso       776.121,20        0,0000              793.090
+    puerto_soberania    253.818,71        0,0000              352.416
+    rada_covadonga      151.289,85        0,0000              806.793
+
+  No es cobertura parcial ni cobertura mala: es cero, y la cobertura mas cercana
+  esta entre 16 km y 807 km de distancia.
+
+2.d — Las celdas vacias, y la unica excepcion aparente.
+
+  bahia_jurisdicciones: 163 celdas · 0 con geom nula · 33 vacias · 130 con area.
+
+  De las 22 bahias del catalogo cuyo nombre las pone en un lago, 21 tienen celda
+  vacia. La numero 22 es la que hay que mirar:
+
+    bahia 96 'Lago Rapel'   km2_celda = 92,51   NO vacia
+      punto_dentro_de_su_celda = false
+      dist_punto_a_su_celda_m  = 34.562
+
+  La unica geometria del catalogo que lleva el nombre de un lago esta a 34,5 km
+  de su propio lago: es mar. La celda de Voronoi de Rapel sobrevivio al recorte
+  contra ne_land quedandose con oceano, porque el lago esta cerca de la costa.
+  Concuerda con 2.c: lago_rapel tiene 0,0000 km2 cubiertos.
+
+  Las tres bahias antarticas del catalogo (139 Fildes, 140 Paraiso, 231 Chile)
+  tienen las tres celda vacia.
+
+--------------------------------------------------------------------------------
+3. COMO SE COMPORTA EL MOTOR CUANDO LA RUTA CAE EN UN AMBITO QUE NO ESTA
+--------------------------------------------------------------------------------
+
+Se ejecuto el codigo del motor, no se leyo. Todos los extremos de las rutas son
+coordenadas publicadas por SITPORT y presentes en bahias_sitport: no se invento
+ninguna posicion (INV-0.2, CLAUDE.md §3.2).
+
+RUTA LACUSTRE — Lago Villarrica, bahia 210 -> bahia 209. 21,818 km.
+  [matching]   bahias matcheadas por la capa vigente: NINGUNA
+               consecuencia: toda restriccion SITPORT publicada bajo 105, 209 o
+               210 se descarta.
+  [cobertura]  1 pieza, 21,8178 km, clasificacion='aviso'
+               dentro_del_recorte=TRUE   pegada_a_cobertura=false
+               bandera U · 1 aviso · 1 defecto registrado
+               causa = 'hueco_de_capa'
+               jurisdicciones_probables = []      capitanias = []
+               texto: "No tenemos cargado el limite de esta jurisdiccion." +
+                      derivacion generica a VHF Canal 16.
+               defecto: "Ninguna jurisdiccion de 'bahia_jurisdicciones' reclama
+                        este trozo ... queda registrado como defecto de
+                        construccion."
+
+RUTA ANTARTICA — bahia 139 Fildes -> bahia 231 Chile. 47,568 km.
+  [matching]   bahias matcheadas: NINGUNA
+  [cobertura]  1 pieza, 47,5676 km, clasificacion='aviso'
+               dentro_del_recorte=false  pegada_a_cobertura=false
+               bandera U · 1 aviso · 1 defecto · causa = 'hueco_de_capa'
+               jurisdicciones_probables = []      capitanias = []
+               Mismo texto generico que la lacustre.
+
+RUTA DE CONTROL, MARITIMA — bahia 254 -> bahia 126. 195,785 km.
+  [matching]   bahias matcheadas: 238, 239, 254
+  [cobertura]  2 piezas, 65,03 km y 40,04 km, las dos clasificacion=
+               'defecto_recorte' -> SILENCIADAS
+               bandera Q · 0 avisos · 2 defectos registrados
+  El control se comporta distinto del caso ausente, que es lo que lo hace util.
+
+TRES COSAS QUE SALEN DE ESTAS TRES CORRIDAS
+--------------------------------------------
+
+(i) El backend HOY no calla del todo, y eso corrige el enunciado de partida.
+    Una ruta lacustre no devuelve simplemente vacio: produce un aviso con
+    bandera U. Lo que pasa es peor de diagnosticar que el silencio: dice la
+    causa equivocada. Declara 'hueco_de_capa' — "defecto de construccion de
+    nuestra capa" — cuando el hecho es que el ambito entero nunca se construyo.
+    Son dos estados del mundo distintos con la misma etiqueta.
+
+    Al patron, ademas, hoy no le llega: el aviso se devuelve en su propio campo
+    y NO compone el veredicto (sitport-routes.js:852 lo dice con todas las
+    letras: "Todavia NO compone el veredicto — esa es la pieza 4"). O sea que
+    en pantalla el enunciado de partida SI se cumple; lo que no se cumple es la
+    explicacion de por que.
+
+(ii) El aviso sale sin Capitania aunque la Capitania se sepa.
+    Para el Lago Villarrica el decreto da la jurisdiccion 'lago_villarrica',
+    con participa_matching=true. El aviso salio con jurisdicciones_probables=[]
+    y capitanias=[], y derivo a VHF Canal 16. El motivo es mecanico: solo
+    reclama un tramo una zona de zonas_aviso.json que tenga 'ambito' declarado,
+    y las diez tienen ambito nulo. Ninguna zona lacustre existe siquiera,
+    porque el validador de zonas_aviso.json exige participa_matching=false
+    (zonas-aviso.js:191) — y las seis lacustres son true.
+
+    ESTO ES LO QUE CIERRA EL DISENO: el registro de ambitos NO puede ser una
+    fila mas de zonas_aviso.json. Ese archivo declara jurisdicciones que el
+    decreto no permite construir; un ambito no publicado es lo contrario —
+    jurisdicciones perfectamente construibles que todavia no se construyeron.
+    Meterlas ahi obligaria a aflojar la comprobacion que le da valor al archivo
+    (CLAUDE.md §0.3: no se afloja un control).
+
+(iii) A3 (D7) no cubre este caso, y conviene no confundirlos.
+    A3 dispara sobre registros cuya bahia no esta en BAHIA_COORDS
+    (sitport-routes.js:585). Las bahias lacustres y antarticas SI estan en
+    BAHIA_COORDS — verificado para 105, 111, 209, 210, 139 y 231. Una
+    restriccion publicada bajo Lago Villarrica pasa el filtro de A3 sin
+    activarlo y muere despues, en el matching geografico, por celda vacia. Son
+    dos falsos negativos distintos: A3 es "no conozco esta bahia"; este es
+    "conozco la bahia y no tengo el ambito donde vive".
+
+--------------------------------------------------------------------------------
+4. LIMITES DE LO MEDIDO — lo que este reconocimiento NO establece
+--------------------------------------------------------------------------------
+
+- La cobertura por ambito se midio contra jurisdicciones_decreto, que esta
+  marcada SUPERSEDIDA. Sirve para ubicar donde cae cada ambito; los 12,53% del
+  maritimo NO son una medida de calidad de la capa vigente.
+- insular_remota quedo NO DETERMINADO por falta de area de referencia.
+- No se midio si la regla de silenciamiento ('defecto_recorte') podria tragarse
+  una ruta lacustre. Hoy no puede, y por una razon medida y no por diseno: la
+  cobertura mas cercana a cualquier lago esta a 16 km o mas, asi que un tramo
+  lacustre nunca queda pegado a cobertura. Es una propiedad de las distancias
+  de hoy, no una garantia de la regla.
+- La ruta lacustre de prueba resulto con dentro_del_recorte=TRUE, que es
+  esperable — un lago esta rodeado de tierra y ne_land no lo recorta. La salvo
+  del silenciamiento unicamente pegada_a_cobertura=false.
+- No se midio nada del lado de la PWA. Que el aviso no llegue a pantalla se
+  apoya en el comentario de sitport-routes.js:852 y en que la pieza 4 no esta
+  escrita, no en una corrida del frontend.
+
+--------------------------------------------------------------------------------
+5. ESTADO DEL REPO AL MOMENTO DEL RECONOCIMIENTO
+--------------------------------------------------------------------------------
+
+git log: 08255e7 (A3) y 01d3901 (drift + bahia 257) son E0.1, ya en el remoto.
+
+Hay trabajo SIN COMMITEAR anterior a E0.1, de las Etapas 1-3 de la capa:
+  M data/decreto/jurisdicciones_v2.json      (+1054 / -151)
+  M scripts/fase4_auditoria_v2.py            (+210)
+  M scripts/fase4_prueba_mordida_auditor.py  (+41)
+  M scripts/fase5_construir_capa_ds991.py    (+379)
+  M data/catalogo/estado_drift.json          (1 linea)
+  M tools/raster-build/requirements.txt      (1 linea)
+  + varias bitacoras fase5L..fase5U y scripts fase5_* sin trackear
+
+No se toco nada de eso. Se anota porque el insumo sobre el que se midio este
+reconocimiento es el de disco, que no es el del ultimo commit.
+
+================================================================================
+FIN DEL RECONOCIMIENTO. Alto acordado: no se propone nada en este archivo.
+================================================================================
