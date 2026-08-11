@@ -11,8 +11,22 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 1.6
-Última actualización: 2026-08-09
+Versión: 1.7
+Última actualización: 2026-08-10
+Cambios v1.7: INV-3.6 cierra el hueco que dejaba abierto — mandaba informar la jurisdicción
+sin límite cargado pero callaba sobre la severidad, así que cada implementación habría
+elegido su bandera y el contrato no podría arbitrar. Se fija: escala a **U**, nunca a U+V.
+La ausencia de dato no es una prohibición. Se agrega también la distinción entre las dos
+causas de "no resuelve jurisdicción" — carencia declarada del mundo (a) contra hueco de
+nuestra propia capa (b) —: al patrón se le dice lo mismo, internamente (b) queda registrado
+como defecto, porque si no se separan los huecos de construcción se esconden detrás de un
+mensaje que parece explicarlos. §10 suma su primera fila sin cita, con la excepción declarada
+en el preámbulo.
+**INV-1.1 NO se tocó**, y conviene registrar por qué para que no se vuelva a plantear: dice
+"el MÁXIMO de severidad de TODAS las fuentes", no de dos. `banderaFinal = max(restricción,
+deportivo)` es la implementación de hoy; agregar cobertura como tercera fuente es exactamente
+lo que INV-1.1 ya describe. Lo que parecía un cambio de regla resultó ser el invariante
+cumpliéndose.
 Cambios v1.6: nueva §3 bis — RESOLUCIÓN DE JURISDICCIÓN. Se fija el D.S. 991/1987 como
 fuente de los límites de Capitanía (INV-3.3), cerrando el vacío que permitía que el código
 resolviera jurisdicción por aproximación geométrica mientras INV-3.1 ya decía "Capitanía".
@@ -313,11 +327,30 @@ Debe declararlo al patrón.
 - **Regla dura:** toda jurisdicción cargada declara su estado de geometría. Si una ruta entra
   en una zona sin geometría cargada, se informa: "No tenemos cargado el límite de esta
   jurisdicción — verifica con la Capitanía [nombre]: [teléfono]".
+- **Bandera:** una jurisdicción sin geometría cargada que la ruta cruza escala el veredicto
+  a **U**, y NUNCA a **U+V**. La ausencia de dato no es una prohibición: llevarla a U+V sería
+  fabricar una restricción que no existe, y dejarla en Q sería afirmar una condición que el
+  motor no puede respaldar. U dice lo que efectivamente pasa — falta información, hay que
+  consultar —, que es el mismo criterio que ya rige para una restricción sin umbral. El aviso
+  es una **fuente más** del máximo de INV-1.1, no una restricción: su aporte al máximo está
+  topado en U por construcción, y no se renderiza entre las restricciones de INV-1.2, porque
+  mezclar un "no sabemos" con las restricciones reales de la ruta le daría una autoridad que
+  no tiene. Decisión del dueño del producto, 2026-08-10.
+- **Dos causas, un mensaje, dos registros:** un punto de la ruta que no resuelve jurisdicción
+  puede venir de (a) una jurisdicción declarada sin geometría — la carencia que este
+  invariante describe — o de (b) un **hueco de la propia capa**, una zona que ninguna
+  jurisdicción reclama. Al patrón se le dice **lo mismo** en los dos casos, porque para él la
+  consecuencia es idéntica: no sabemos, consulte. Internamente NO son lo mismo: (a) es el
+  estado del mundo y (b) es un defecto de construcción nuestro, y debe quedar registrado como
+  defecto además de mostrarse. Sin esa separación, los huecos de la capa se esconden detrás de
+  un mensaje que parece explicarlos.
 - **Coherencia:** es INV-0.2 (no fabricar datos) aplicado a la ausencia de dato. No inventar,
   y tampoco esconder.
 - **Verificación:** contar geometrías nulas, vacías y de área cero por ámbito después de cada
   reconstrucción de la capa. Toda jurisdicción con área cero que no esté declarada como sin
-  georreferenciar es un fallo, no un resultado.
+  georreferenciar es un fallo, no un resultado. Además: ninguna zona de la ruta que no
+  resuelva jurisdicción puede quedar sin clasificar en (a) o (b), y ninguna pantalla puede
+  mostrar Q mientras exista, en esa misma pantalla, un aviso de límite no cargado.
 
 ### INV-3.7 — Trazabilidad de los límites
 El archivo de definición de jurisdicciones es **dato fuente versionado** en el repositorio.
@@ -642,6 +675,11 @@ viven en la lista de pendientes de UI del dueño de producto. No van en este con
 Fuente única de mensajes que Claude Code debe usar. Cada uno: Capa 1 (estado) + Capa 2
 (vía normativa con cita). NO inventar citas fuera de este catálogo.
 
+**Excepción declarada:** la última fila es la única del catálogo que **no nace de un
+reglamento sino de una carencia nuestra**, y por eso es la única que no lleva cita. No hay
+artículo que citar porque no hay norma en juego: hay un dato que nos falta. Que no haya cita
+es, precisamente, lo que esa fila comunica.
+
 | Situación | Capa 1 (estado) | Capa 2 (vía normativa + cita) |
 |---|---|---|
 | **Zarpe cerrado** | 🔴 U+V "Puerto de zarpe cerrado. Navegación no recomendada." | "Según D.S. 364 (RRDN) Art. 36, en caso de mal tiempo con puerto cerrado la Autoridad Marítima puede autorizar el zarpe a la gira hacia un puerto próximo del litoral, si aseguras que la nave está en condiciones y te responsabilizas. Coordina con la Capitanía [nombre]: [tel]." |
@@ -652,6 +690,7 @@ Fuente única de mensajes que Claude Code debe usar. Cada uno: Capa 1 (estado) +
 | **Zarpe sin despacho (comercial)** | ℹ️ recordatorio | "Según D.L. 2222 Art. 23, zarpar sin despacho se sanciona hasta con la cancelación del título. Gestiona tu despacho antes de navegar." |
 | **Deportivo — sin zarpe** | ℹ️ informativo | "Según RGDN (TM-002) Art. 34, tu navegación deportiva nacional no requiere autorización de zarpe. Informa tu intención de movimiento al club náutico o, en su defecto, a la Autoridad Marítima local." |
 | **Moto de agua nocturna** | 🟡 U | "Según RGDN Art. 26, las motos de agua solo pueden navegar entre el orto y el ocaso de sol. Tu horario estimado excede la luz diurna." |
+| **Jurisdicción sin límite cargado** | 🟡 U "No tenemos cargado el límite de esta jurisdicción." | "Verifica con la Capitanía [nombre]: [tel] antes de zarpar. **Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro** (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona." |
 
 **Regla de uso:** Capa 2 nunca cambia la bandera de Capa 1. Todos los teléfonos provienen
 de `bahia-capitania-map.json`, clickeables (`tel:`).
