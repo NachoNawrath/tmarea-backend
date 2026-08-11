@@ -1,0 +1,223 @@
+================================================================================
+E0.1 (CONTINUACIÓN) — D7 POR ÁMBITO · LA BAHÍA 108 · LAS COPIAS DEL CATÁLOGO
+fecha: 2026-08-11
+shell del agente: Git Bash. Los comandos para el owner, en PowerShell (§7.3).
+evidencia cruda: _bitacoras/e01b_continuacion_2026-08-11/
+================================================================================
+
+--------------------------------------------------------------------------------
+1. D7 ESTABA MAL PLANTEADA — Y LA CORRECCIÓN NO ES LA QUE SE ESPERABA
+--------------------------------------------------------------------------------
+
+Se pidió medir si el tratamiento debe partirse por ámbito, con esta lectura de
+partida: restricciones = falso negativo de seguridad, pronóstico = degradación
+informativa, catálogo = desalineación.
+
+**La medición confirma que hay que partir, y corrige la segunda de las tres.**
+Salida cruda en 01_mediciones.txt §A.
+
+1.1 EL CAMINO DE CADA ENDPOINT HASTA LA BANDERA, SEGUIDO EN EL CÓDIGO
+
+  consultaRestricciones
+    sitport-routes.js:664/666 -> route-restriction-evaluator -> veredictoTransito
+    -> maxVeredicto (useVoyageVerification.js:174). Puede valer U+V.
+
+  Totalpronostico
+    sitport-routes.js:383 -> peorTramo = MÁXIMO viento de las bahías matcheadas
+    (:429-441) -> condicion_puerto por umbral (:441-446) -> PWA
+    useVoyageVerification.js:165-169:
+        veredictoClima = condicion_puerto==='temporal' ? 'UV'
+                       : condicion_puerto==='mal_tiempo' || alerta_nivel==='alto' ? 'U'
+                       : 'Q'
+    -> maxVeredicto. **También puede valer U+V.**
+
+  consultaBahias
+    No participa de ningún flujo de veredicto. Solo GET /api/sitport/bahias, de
+    diagnóstico. Es el único endpoint que trae el NOMBRE junto al id.
+
+1.2 LA CORRECCIÓN: EL PRONÓSTICO NO ES DEGRADACIÓN INFORMATIVA
+
+  `peorTramo` es un MÁXIMO sobre las bahías matcheadas. Descartar una bahía solo
+  puede QUITAR un candidato al máximo, nunca agregarlo. O sea que el descarte
+  **solo puede bajar la bandera, nunca subirla**. Umbrales: >=30 kt da 'temporal'
+  y con eso U+V; >=26 kt da U.
+
+  Es la misma dirección de falla que el descarte de restricciones: el patrón ve
+  menos severidad de la que la fuente publica. No es informativo: es un falso
+  negativo de seguridad con un camino distinto.
+
+  **Lo que hoy lo hace inofensivo es el clima, no el diseño.** En la captura del
+  2026-08-11: 48 registros, máximo 10,2 kt, mediana 2,8 kt, y **cero** registros
+  por encima de cualquiera de los tres umbrales. El id 108 marca 4,5 kt. Con este
+  mar, descartar la bahía 108 no cambia ninguna bandera. Con 30 kt en esa bahía,
+  cuesta un U+V.
+
+  Medir "hoy no pasa nada" y concluir "es informativo" es exactamente el error
+  que CLAUDE.md §2 lista como caso real de este repositorio. La conclusión sale
+  del mecanismo, que es estable, no de la meteorología de hoy.
+
+1.3 LO QUE SÍ SE SOSTIENE
+
+  - **restricciones = falso negativo de seguridad.** Confirmado. Hoy hay 20
+    restricciones de tipo TODOS sobre 20 bahías. Ninguna con paralizar/nzarpe/
+    nrecalada en 1, pero el escalamiento no sale de esas banderas sino del motor
+    de reglas sobre el texto y el AB, así que "0 bloqueantes" no es "0 riesgo".
+  - **catálogo = desalineación.** Confirmado, y más flojo de lo que parecía: 103
+    de los 164 ids de consultaBahias no tienen hoy ningún dato asociado en los
+    otros dos endpoints. Perder uno no le quita nada al patrón **hoy**; le quita
+    la única fuente del nombre y el aviso temprano.
+
+1.4 TABLA CORREGIDA — DOS ÁMBITOS, NO TRES
+
+  ámbito              endpoints                     qué es el descarte          peor costo
+  ------------------- ----------------------------- --------------------------- ----------
+  A · SEGURIDAD       consultaRestricciones         falso negativo: el patrón   U+V que
+                      Totalpronostico               ve menos severidad de la    no se ve
+                                                    que la fuente publica
+  B · ALINEACIÓN      consultaBahias                el catálogo se corre; no    ninguno hoy;
+                                                    se pierde dato del viaje    aviso perdido
+
+  La partición no es por endpoint sino por **si el dato descartado puede bajar la
+  bandera**. Los dos endpoints de dato caen del mismo lado; el de catálogo, no.
+
+1.5 LO QUE SUBE AL OWNER — LA POLÍTICA, NO LA ESTRUCTURA
+
+  La estructura la resolví: dos ámbitos, el criterio es si el descarte puede bajar
+  la bandera, y el control ya los distingue por clase de divergencia.
+
+  Lo que no me corresponde:
+
+  ÁMBITO A (seguridad) — ¿qué debe sentir el patrón cuando la ruta cruza una
+  bahía cuyo dato el motor no pudo leer?
+    A1. Nada. Se registra y se corrige por fuera.
+    A2. Un aviso propio, sin bandera: "hay una zona sobre la que no pudimos leer
+        el estado". Informativo, separado de las restricciones.
+    A3. Aviso propio Y escalamiento a U, con tope duro en U — la forma exacta que
+        INV-3.6 ya fija para la jurisdicción sin geometría.
+  Recomiendo **A3**. Motivo: la causa es la misma que INV-3.6 describe —el motor
+  no puede responder por esa zona— y el invariante ya resolvió la pregunta de la
+  bandera para ese caso, incluida la razón de por qué no puede ser U+V. Tratar
+  distinto a dos ausencias con la misma consecuencia obligaría a explicar por qué.
+
+  ÁMBITO B (alineación) — ¿el patrón tiene que enterarse?
+    B1. No. Es deuda interna: se detecta, se registra, se corrige.
+    B2. Sí, con un aviso de cobertura del catálogo.
+  Recomiendo **B1**. Motivo: no hay nada que el patrón pueda hacer con esa
+  información y no le falta ningún dato de su viaje. Decírselo sería ruido, y el
+  ruido come la atención que INV-3.6 necesita para lo que sí importa.
+
+  **Lo que la respuesta cambia:** A3 obliga a tocar sitport-routes.js y el
+  compositor de veredicto (flujo de producción, no se hace sin autorización). A1,
+  A2 y B1 no tocan nada de eso.
+
+--------------------------------------------------------------------------------
+2. LA BAHÍA 108 — RECONOCIMIENTO
+--------------------------------------------------------------------------------
+
+Salida cruda en 01_mediciones.txt §B.
+
+2.1 ¿Totalpronostico entrega coordenadas? **NO.**
+  Unión de campos sobre los 48 registros, sin excepción:
+    idBahia | cdReparticion | fecha | temperatura | presion | velocidadViento |
+    direccionViento | lluviaUltimaHora | unidadTemperatura | unidadViento |
+    unidadLluvia | unidadPresion | textoDireccionViento | direccionVientoAprox
+  Campos de posición: ninguno. Tampoco entrega nombre de bahía.
+  (`direccionViento` y `direccionVientoAprox` son rumbo del viento en grados, no
+  posición.)
+
+2.2 ¿Hay puente por cdReparticion? **NO.**
+  consultaBahias.CdReparticion  : 63 valores, rango 2–663
+  Totalpronostico.cdReparticion : 43 valores, rango 1205–9132
+  valores en común: **0**. El 108 trae cdReparticion 2169, y ninguna bahía del
+  catálogo tiene ese CdReparticion. Son dos espacios de numeración distintos.
+
+2.3 ¿El orden de los ids permite acotarla? **NO — hipótesis medida y descartada.**
+  108 cae entre 107 BAHÍA CORRAL (lat −39,89) y 109 PUERTO MONTT (lat −41,47), lo
+  que invita a acotarla ahí. Medí si el id ordena por geografía sobre las 163
+  bahías con coordenada: **Spearman rho = 0,3946**, con **55 inversiones de 162**
+  pares consecutivos. No ordena. La adyacencia 107/109 no acota nada y no la uso.
+
+2.4 Contexto: 108 es uno de **23 huecos** en la secuencia 71–257 de consultaBahias.
+  No es raro como hueco. Es el único hueco que además publica dato.
+
+2.5 CONCLUSIÓN
+  **Con las fuentes que el proyecto consume hoy, la bahía 108 no es identificable.**
+  No se le inventa nombre ni posición (INV-0.2). Queda declarada como divergencia
+  abierta y el control la reporta en cada corrida.
+
+2.6 CAMINO PROPUESTO — tres, por costo creciente
+  C1. **Esperar a que se nombre sola.** `consultaRestricciones` SÍ trae `GLBahia`.
+      El día que la 108 publique una restricción, queda identificada por nombre.
+      Costo: cero. Es el camino que ya está andando, porque el control corre y la
+      lista. Límite: puede no ocurrir nunca, y el caso en que ocurre es justo el
+      caso de seguridad del §1.
+  C2. **Sonda periódica con histórico** (O4 de la propuesta original): guardar los
+      tres endpoints cada N horas y versionarlos. Fecha la aparición y la baja de
+      cada id, y captura el `GLBahia` de C1 aunque nadie esté mirando. Costo: un
+      job y disco. Es lo que hoy falta para poder decir desde cuándo existe la 108.
+  C3. **Preguntar a DIRECTEMAR** por el catálogo completo con coordenadas.
+      Es la única vía que da respuesta autoritativa y la única que arregla la causa
+      —que consultaBahias no cubra los ids que la propia fuente usa— en vez de
+      rodearla. Costo: tiempo de gestión, fuera de mi alcance.
+
+  Recomiendo **C1 + C2** ya, y **C3** en paralelo. C2 no es un adorno: sin él la
+  pregunta "¿desde cuándo?" seguirá sin respuesta la próxima vez.
+
+--------------------------------------------------------------------------------
+3. LAS CUATRO COPIAS DEL CATÁLOGO
+--------------------------------------------------------------------------------
+
+3.1 CORRECCIÓN DE UNA PREMISA
+  El control **sí** comparaba las copias entre sí desde la primera entrega: la
+  clase `incoherencia_interna` cruza F1/F2/F3/F4 y su familia de mordida (M4) la
+  prueba. Lo que comparaba era **la membresía**: qué ids tiene cada una.
+
+  El hueco real era otro, y es peor: **comparaba QUÉ bahías hay, no DÓNDE ni CÓMO
+  se llaman.** Dos copias podían coincidir en los 163 ids y tener una de ellas en
+  otra coordenada, y el control salía limpio. Ese es exactamente el caso que
+  describe el encargo — el control aprueba una cosa mientras el runtime usa otra —
+  y estaba abierto.
+
+3.2 QUÉ HICE, Y POR QUÉ AHORA
+  Lo resolví dentro de E0.1, porque es el mismo control y el cambio es chico:
+
+  - **Comparación de contenido.** Cada fuente declara qué campos aporta; los que
+    más de una declara tienen que coincidir. Nueva clase `contenido_divergente`,
+    identificada por id **y campo** —declarar que diverge la latitud no puede tapar
+    que mañana cambie el nombre.
+  - **Sin tolerancia, y está medido.** F1 contra F4 da max|Δlat| = max|Δlng| = 0 y
+    0 nombres distintos. La igualdad exacta no es una elección cómoda: es lo que el
+    dato permite hoy. Queda escrito que si alguna copia pasa a derivarse por cálculo,
+    la tolerancia vuelve a ser una pregunta que hay que medir antes de fijar.
+  - **Entró F5**, `bahia_jurisdicciones` — la matview que el motor consulta para
+    resolver qué bahías cruza la ruta. Era la fuente que más importaba y no estaba.
+    Compara ids y nombres. Sus 33 celdas de geometría vacía son defecto de otro
+    frente (E3/E4) y este control no las mide, a propósito.
+
+  Resultado hoy: cinco fuentes, 163 ids cada una, cero divergencias de contenido.
+  Mordida **20/20** + control negativo (02_prueba_mordida_20.txt), cuatro familias
+  nuevas: coordenada distinta entre copias, nombre distinto entre copias, y las dos
+  formas de declarar mal una divergencia de contenido.
+
+3.3 LO QUE NO HICE, Y DÓNDE LO PUSE
+  **Declarar una fuente autoritativa y derivar las demás es la cura; el control es
+  el detector.** No la adelanté acá por dos razones: `BAHIA_COORDS` ya está agendada
+  para retirarse (E8, y E2 la toca al resolver `orden_en_ruta`/`fondeadero_previo`),
+  y hacerlo implica tocar `sitport-routes.js`, que es flujo de producción.
+
+  **Criterio que usé para repartir:** lo que hace visible una divergencia entra
+  ahora, porque no cambia comportamiento; lo que cambia de dónde lee el runtime
+  espera a la etapa que ya lo tenía agendado. Queda anotado en el plan como parte
+  de E8, no como hallazgo suelto.
+
+--------------------------------------------------------------------------------
+4. CÓMO SE REPRODUCE (PowerShell, terminal del owner)
+--------------------------------------------------------------------------------
+
+  cd C:\Users\katia\tmarea-backend
+  node _bitacoras\e01b_continuacion_2026-08-11\medir.js
+  node scripts\e01_prueba_mordida_drift.js
+  node scripts\e01_control_drift_catalogo.js
+
+  El primero y el segundo no necesitan red ni base. El tercero necesita las dos,
+  porque la declaración exige comparar F4 y F5.

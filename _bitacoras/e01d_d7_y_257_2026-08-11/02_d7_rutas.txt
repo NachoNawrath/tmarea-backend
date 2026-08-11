@@ -1,0 +1,88 @@
+==============================================================================
+D7 — RUTAS DEL CORREDOR DE DÍA 0 CONTRA LAS BAHÍAS EN DRIFT
+fecha: 2026-08-11T14:54:19.557Z
+motor de ruteo: raster-router-service (el de producción)
+matching      : la misma consulta que usa restricciones-ruta (ST_Intersects
+                contra bahia_jurisdicciones)
+==============================================================================
+
+BAHÍAS EN DRIFT Y SU CAPITANÍA SEGÚN SITPORT
+  id 257  RÍO COCHRANE             rep 235 → CAPITANÍA DE PUERTO LAGO GRAL.CARRERA
+  id 108  (sin nombre publicado)   rep 190 → CAPITANÍA DE PUERTO CARAHUE
+  Ninguna de las dos tiene coordenada en ninguna fuente. Ninguna tiene celda
+  en bahia_jurisdicciones: ST_Intersects NO PUEDE devolverlas, por construcción.
+
+warmup tile AUSTRAL_N: 297ms
+
+---- Anahuac -> Melinka  [corredor dia 0] ----
+  165.64 mn · 21 waypoints
+  bahías matcheadas: 11  → 110,113,121,124,184,186,216,252,253,254,256
+  Capitanías distintas en la ruta: 5  → Puerto Montt, Calbuco, Chaitén, Cisnes, Hornopirén
+  toca una bahía EN DRIFT por celda      : NO
+  toca la CAPITANÍA de una bahía en drift: NO
+
+---- Anahuac -> Quellon  [corredor dia 0] ----
+  117.63 mn · 40 waypoints
+  bahías matcheadas: 8  → 113,117,120,122,155,216,232,235
+  Capitanías distintas en la ruta: 6  → Calbuco, Quellón, Quemchi, Achao, Chonchi, Puerto Montt
+  toca una bahía EN DRIFT por celda      : NO
+  toca la CAPITANÍA de una bahía en drift: NO
+
+---- Anahuac -> Chacabuco  [corredor dia 0] ----
+  270.02 mn · 59 waypoints
+  bahías matcheadas: 16  → 110,113,121,125,184,186,216,220,226,227,238,239,240,241,244,252
+  Capitanías distintas en la ruta: 6  → Puerto Montt, Calbuco, Chaitén, Cisnes, Hornopirén, Chacabuco
+  toca una bahía EN DRIFT por celda      : NO
+  toca la CAPITANÍA de una bahía en drift: NO
+
+---- Ancud -> Castro  [corredor dia 0] ----
+  87.56 mn · 31 waypoints
+  bahías matcheadas: 11  → 114,116,118,119,120,122,149,205,213,214,235
+  Capitanías distintas en la ruta: 7  → Calbuco, Castro, Ancud, Chonchi, Quemchi, Achao, Maullín
+  toca una bahía EN DRIFT por celda      : NO
+  toca la CAPITANÍA de una bahía en drift: NO
+
+---- Chonchi -> Chaiten  [corredor dia 0] ----
+  50.24 mn · 11 waypoints
+  bahías matcheadas: 4  → 119,121,155,205
+  Capitanías distintas en la ruta: 2  → Chonchi, Chaitén
+  toca una bahía EN DRIFT por celda      : NO
+  toca la CAPITANÍA de una bahía en drift: NO
+
+---- Arica -> Iquique  [fuera corredor] ----
+  108.33 mn · 21 waypoints
+  bahías matcheadas: 3  → 71,72,204
+  Capitanías distintas en la ruta: 2  → Arica, Iquique
+  toca una bahía EN DRIFT por celda      : NO
+  toca la CAPITANÍA de una bahía en drift: NO
+
+---- Valparaiso -> San Antonio  [fuera corredor] ----
+  40.04 mn · 30 waypoints
+  bahías matcheadas: 5  → 92,93,94,174,215
+  Capitanías distintas en la ruta: 2  → Valparaíso, San Antonio
+  toca una bahía EN DRIFT por celda      : NO
+  toca la CAPITANÍA de una bahía en drift: NO
+
+---- Punta Arenas -> Pto Williams  [fuera corredor] ----
+  282.71 mn · 117 waypoints
+  bahías matcheadas: 3  → 134,137,138
+  Capitanías distintas en la ruta: 2  → Punta Arenas, Puerto Williams
+  toca una bahía EN DRIFT por celda      : NO
+  toca la CAPITANÍA de una bahía en drift: NO
+
+==============================================================================
+RESUMEN
+==============================================================================
+rutas medidas: 8 de 8 (5 del corredor de día 0)
+
+  del corredor que tocan una bahía en drift POR CELDA        : 0 de 5
+  del corredor que tocan la CAPITANÍA de una bahía en drift   : 0 de 5
+  fuera del corredor, por Capitanía                           : 0 de 3
+
+DENOMINADOR DE RUIDO — cuánto muestra hoy cada ruta del corredor
+  Anahuac -> Melinka        11 bahías · 5 Capitanías
+  Anahuac -> Quellon         8 bahías · 6 Capitanías
+  Anahuac -> Chacabuco      16 bahías · 6 Capitanías
+  Ancud -> Castro           11 bahías · 7 Capitanías
+  Chonchi -> Chaiten         4 bahías · 2 Capitanías
+  promedio: 10.0 bahías por ruta del corredor

@@ -1,0 +1,42 @@
+==============================================================================
+RECONOCIMIENTO E0.1 — CATÁLOGO DE BAHÍAS: FUENTES, COMPARACIÓN Y DESCARTE
+fecha de ejecución: 2026-08-11T13:39:21.462Z
+==============================================================================
+
+## 1. FUENTES INTERNAS DE CATÁLOGO
+   F1 src/routes/sitport-routes.js  BAHIA_COORDS      : 163 ids
+   F2 scripts/seed-bahias-sitport.js BAHIA_COORDS     : 163 ids (copia literal, siembra la tabla)
+   F3 src/data/bahia-capitania-map.json                : 163 ids
+   F1 vs F2 (duplicado literal)                        : idénticas
+   F1 \ F3                                            : vacío
+   F3 \ F1                                            : vacío
+   F4 postgres bahias_sitport (derivada de F2)         : 163 ids
+   F4 \ F1                                            : vacío
+   F1 \ F4                                            : vacío
+   F5 bahia_jurisdicciones (celdas que consulta el motor): 163 filas, 33 con geometría vacía
+
+## 2. LO QUE SITPORT PUBLICA HOY (consulta en vivo)
+[SITPORT] consultaBahias: 164 registros obtenidos
+   consultaBahias        : 164 registros  → sitport_consultaBahias.json
+   campos del registro   : IDBahia, CdReparticion, NMBahia, color, valor, Nom
+[SITPORT] consultaRestricciones: 39 registros obtenidos
+   consultaRestricciones : 39 registros  → sitport_consultaRestricciones.json
+[SITPORT] totalPronostico: 48 registros obtenidos
+   Totalpronostico       : 48 registros  → sitport_totalPronostico.json
+   campos del registro   : idBahia, cdReparticion, fecha, temperatura, presion, velocidadViento, direccionViento, lluviaUltimaHora, unidadTemperatura, unidadViento, unidadLluvia, unidadPresion, textoDireccionViento, direccionVientoAprox
+
+## 3. DIVERGENCIA MEDIDA
+   catálogo SITPORT      : 164 ids distintos (de 164 registros)
+   EN SITPORT Y NO EN F1 (falso negativo estructural) : 257
+        id=257  {"IDBahia":257,"CdReparticion":235,"NMBahia":"RÍO COCHRANE","color":"default","valor":0,"Nom":"RÍOCOCHRANE257"}
+   EN F1 Y NO EN SITPORT (fila nuestra sin respaldo)  : ninguno
+
+   restricciones publicadas hoy sobre 24 bahías distintas
+   con bahía que F1 no conoce (se descartan en silencio): ninguna
+   con bahía que la tabla bahias_sitport no conoce     : ninguna
+
+   pronóstico publicado sobre 46 bahías distintas
+   con bahía que F1 no conoce (se descartan en silencio): 108
+        id=108 undefined
+
+FIN DEL RECONOCIMIENTO

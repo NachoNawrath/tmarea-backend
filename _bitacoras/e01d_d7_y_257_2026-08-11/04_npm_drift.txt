@@ -1,0 +1,59 @@
+$ npm run drift
+
+> tmarea-backend@0.1.0 drift
+> node scripts/e01_control_drift_catalogo.js --estado data/catalogo/estado_drift.json
+
+[SITPORT] totalPronostico: 48 registros obtenidos
+[SITPORT] consultaBahias: 164 registros obtenidos
+[SITPORT] consultaRestricciones: 37 registros obtenidos
+================================================================================
+CONTROL DE DRIFT DEL CATÁLOGO DE BAHÍAS — E0.1
+corrida        : 2026-08-11T14:58:41.408Z
+origen SITPORT : consulta en vivo a orion.directemar.cl
+declaración    : C:\Users\katia\tmarea-backend\data\catalogo\divergencias_declaradas.json
+================================================================================
+
+FUENTES INTERNAS COMPARADAS
+  F1   163 ids   src/routes/sitport-routes.js :: BAHIA_COORDS
+      la que usa el runtime — el descarte de restricciones-ruta y weather-ruta se decide acá
+      campos comparables que declara: lat, lng, nombre
+  F2   163 ids   scripts/seed-bahias-sitport.js :: BAHIA_COORDS
+      copia literal de F1; siembra la tabla bahias_sitport
+      campos comparables que declara: lat, lng, nombre
+  F3   163 ids   src/data/bahia-capitania-map.json
+      id → Capitanía y teléfono; no declara ninguno de los campos comparables
+      campos comparables que declara: (ninguno)
+  F4   163 ids   postgres mapa_navegacion :: bahias_sitport
+      la tabla de puntos sobre la que se teselan las celdas
+      campos comparables que declara: lat, lng, nombre
+  F5   163 ids   postgres mapa_navegacion :: bahia_jurisdicciones (matview)
+      las celdas que el motor consulta para resolver qué bahías cruza la ruta
+      campos comparables que declara: nombre
+
+LO QUE SITPORT PUBLICA
+  consultaBahias           164 registros   164 ids distintos
+  consultaRestricciones     37 registros    22 ids distintos
+  totalPronostico           48 registros    46 ids distintos
+  UNIÓN de los tres                       165 ids — el universo contra el que se compara
+
+DIVERGENCIAS
+
+  [sitport_sin_catalogo] SITPORT publica un id que ninguna fuente interna conoce — falso negativo estructural
+    id  108  (sin nombre en la fuente) ABIERTA
+             visto en totalPronostico
+             declarada desde 2026-08-11: Totalpronostico publica dato meteorológico del id 108 y ninguna fuente interna lo tiene, así que /weather-ruta lo descarta en cada llamada. Qué bahía es no está determinado: el registro de pronóstico no trae nombre y consultaBahias tampoco lo lista. No se le inventa uno.
+    id  257  RÍO COCHRANE             ABIERTA
+             visto en consultaBahias
+             declarada desde 2026-08-10: SITPORT publica la bahía 257 en consultaBahias y ninguna de nuestras cuatro fuentes internas la tiene. Incorporarla exige atribuirle una Capitanía, que es adjudicación sobre el D.S. 991 y decisión del owner (D1 del plan). Hasta que se adjudique, toda restricción o pronóstico que SITPORT publique bajo este id se descarta en sitport-routes.js:666 y :383.
+
+  [endpoint_fuera_de_catalogo] SITPORT publica dato de un id que su propio endpoint de catálogo no lista
+    id  108  (sin nombre en la fuente) ABIERTA
+             publicado por totalPronostico y ausente de consultaBahias
+             declarada desde 2026-08-11: Divergencia interna de la propia fuente: consultaBahias, que es su endpoint de catálogo, no lista el id 108 que Totalpronostico sí usa. Es la evidencia de que SITPORT no garantiza que su catálogo cubra los ids de sus endpoints de dato, y el motivo por el que este control compara contra la UNIÓN de los tres endpoints y no contra el catálogo.
+
+--------------------------------------------------------------------------------
+total 3 · no declaradas 0 · abiertas 3 · adjudicadas 0 · vencidas 0
+VEREDICTO: DRIFT_DECLARADO_ABIERTO  (salida 3)
+Salida 3 NO es verde. Es drift conocido esperando decisión.
+--------------------------------------------------------------------------------
+EXIT=3

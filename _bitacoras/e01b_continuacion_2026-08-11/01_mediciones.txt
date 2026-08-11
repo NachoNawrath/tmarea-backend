@@ -1,0 +1,65 @@
+==============================================================================
+E0.1 (continuación) — MEDICIONES
+insumo congelado: _bitacoras/e01_drift_catalogo_2026-08-11/insumo_2026-08-11
+==============================================================================
+
+## A. QUÉ SE PIERDE EN CADA ENDPOINT
+
+A.1 consultaRestricciones — lo que hay publicado hoy
+    39 registros por tipo: {"FRENTE ATRAQUE":16,"INSTALACION":2,"-":1,"TODOS":20}
+    tipo TODOS (las únicas que restricciones-ruta mira): 20 sobre 20 bahías
+    con paralizar/nzarpe/nrecalada = 1: 0
+    motivos publicados: OLA - MAREJADA | VIENTO | MAL TIEMPO, VIENTO
+    camino hasta la bandera: restricciones-ruta -> route-restriction-evaluator
+                             -> veredictoTransito -> maxVeredicto (PWA). Puede dar UV.
+
+A.2 Totalpronostico — lo que hay publicado hoy
+    48 registros con viento · max 10.2 kt · mediana 2.8 · min 0
+    >= 30 kt (=> condicion_puerto 'temporal'):     0
+    >= 26 kt (=> 'mal_tiempo'):                    0
+    >= 15 kt (=> 'tiempo_variable'):               0
+    camino hasta la bandera: weather-ruta calcula peorTramo = MÁXIMO viento de
+                             las bahías matcheadas (sitport-routes.js:429-441)
+                             -> condicion_puerto -> useVoyageVerification.js:165
+                             veredictoClima = 'temporal' ? UV : 'mal_tiempo' ? U
+                             -> maxVeredicto. UN DESCARTE SOLO PUEDE BAJAR EL MÁXIMO.
+
+A.3 consultaBahias — qué se pierde
+    164 registros. Es el único endpoint que trae el NOMBRE de la bahía
+    junto a su id (NMBahia). No alimenta ninguna bandera: el motor no lo consulta
+    en ningún flujo de veredicto (solo GET /api/sitport/bahias, de diagnóstico).
+    ids que hoy SOLO aparecen en consultaBahias (sin dato asociado): 103 de 164
+
+## B. LA BAHÍA 108
+
+B.1 ¿Totalpronostico entrega coordenadas?
+    unión de campos sobre los 48 registros:
+      idBahia | cdReparticion | fecha | temperatura | presion | velocidadViento | direccionViento | lluviaUltimaHora | unidadTemperatura | unidadViento | unidadLluvia | unidadPresion | textoDireccionViento | direccionVientoAprox
+    campos de posición: NINGUNO
+    => NO entrega coordenadas. Tampoco entrega nombre de bahía.
+
+B.2 ¿cdReparticion sirve de puente hacia consultaBahias?
+    consultaBahias.CdReparticion : 63 valores, rango 2–663
+    Totalpronostico.cdReparticion: 43 valores, rango 1205–9132
+    valores en común: 0
+    cdReparticion del id 108: 2169
+    bahías de consultaBahias con ese CdReparticion: 0
+    => son dos espacios de numeración distintos, sin intersección. NO es puente.
+
+B.3 ¿El orden de los ids permite acotar dónde está?
+    Spearman rho(id, latitud norte->sur) sobre las 163 bahías = 0.3946
+    pares consecutivos por id donde la latitud NO baja: 55 de 162
+    vecinos de 108 en el catálogo de SITPORT:
+       106  PANGUIPULLI          lat -39.6438
+       107  BAHÍA CORRAL         lat -39.8874
+       109  PUERTO MONTT         lat -41.47
+       110  BAHÍA CHINCUI        lat -41.5
+    => rho 0,39 con 55 inversiones: el id NO ordena por geografía de forma
+       confiable. La adyacencia 107/109 NO acota nada. Hipótesis descartada.
+
+B.4 108 es uno de 23 huecos en la secuencia 71–257 de consultaBahias:
+    108, 164, 166, 167, 168, 169, 171, 177, 178, 179, 188, 189, 190, 191, 192, 193, 194, 201, 211, 212, 217, 230, 237
+    Un hueco del catálogo que un endpoint de dato sí usa. No es único como hueco;
+    sí es único como hueco que publica dato.
+
+FIN

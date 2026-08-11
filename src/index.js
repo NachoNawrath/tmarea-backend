@@ -70,5 +70,10 @@ app.listen(PORT, () => {
   const mem = process.memoryUsage();
   console.log(`Servidor corriendo en puerto ${PORT}`);
   console.log(`Boot: ${Date.now() - BOOT_T0}ms | RSS: ${(mem.rss / 1048576).toFixed(1)}MB | heapUsed: ${(mem.heapUsed / 1048576).toFixed(1)}MB`);
+
+  // Drift del catálogo de bahías (E0.1). Corre desacoplado: no bloquea el
+  // arranque, no toca ningún flujo de veredicto y no cambia ninguna respuesta.
+  // Solo deja rastro para el equipo — condición del owner sobre D8.
+  require('./services/drift-arranque').revisarDriftEnArranque();
 });
 

@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "actualizado": "2026-08-11",
+  "procedencia": "E0.1 del PLAN_JURISDICCION.md. Cada entrada nace de una divergencia MEDIDA contra SITPORT en vivo, con su evidencia cruda en _bitacoras/e01_drift_catalogo_2026-08-11/. Declarar una divergencia NO la resuelve ni la silencia: la saca de 'nadie la vio' y la deja en 'conocida y pendiente'. El informe la sigue listando siempre.",
+  "fuentes_internas": ["F1", "F2", "F3", "F4", "F5"],
+  "divergencias": [
+    {
+      "id_bahia": 257,
+      "clase": "incoherencia_interna",
+      "nombre_sitport": "RÍO COCHRANE",
+      "visto_desde": "2026-08-11",
+      "estado": "abierta",
+      "causa": "ADJUDICADA la Capitanía, NO la posición. El owner adjudicó el 2026-08-11 la bahía 257 a la Capitanía de Puerto Lago General Carrera (fundamento en el registro de decisiones del plan, D1), y por eso la entrada existe en F3. Sigue faltando en F1, F2, F4 y F5 porque esas cuatro exigen lat/lng y SITPORT no entrega posición por ninguno de sus trece endpoints: rellenarla sería fabricar una coordenada (INV-0.2). La divergencia se cierra cuando haya posición, no antes. Mientras tanto A3 la cubre: una ruta que cruce la Capitanía de Lago General Carrera recibe el aviso y escala a U."
+    },
+    {
+      "id_bahia": 108,
+      "clase": "sitport_sin_catalogo",
+      "nombre_sitport": null,
+      "visto_desde": "2026-08-11",
+      "estado": "abierta",
+      "causa": "Totalpronostico publica dato meteorológico del id 108 y ninguna fuente interna lo tiene, así que /weather-ruta lo descarta en cada llamada. Qué bahía es no está determinado: el registro de pronóstico no trae nombre y consultaBahias tampoco lo lista. No se le inventa uno."
+    },
+    {
+      "id_bahia": 108,
+      "clase": "endpoint_fuera_de_catalogo",
+      "nombre_sitport": null,
+      "visto_desde": "2026-08-11",
+      "estado": "abierta",
+      "causa": "Divergencia interna de la propia fuente: consultaBahias, que es su endpoint de catálogo, no lista el id 108 que Totalpronostico sí usa. Es la evidencia de que SITPORT no garantiza que su catálogo cubra los ids de sus endpoints de dato, y el motivo por el que este control compara contra la UNIÓN de los tres endpoints y no contra el catálogo."
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+================================================================================
+E0.1 (cierre) — D8 APLICADA · D7 MEDIDA · BAHÍA 257 · §0.4
+fecha: 2026-08-11
+shell del agente: Git Bash. Comandos para el owner, en PowerShell (§7.3).
+evidencia cruda: _bitacoras/e01d_d7_y_257_2026-08-11/
+================================================================================
+
+--------------------------------------------------------------------------------
+0. HALLAZGO QUE CAMBIA LOS TRES PUNTOS: SITPORT TIENE TRECE ENDPOINTS
+--------------------------------------------------------------------------------
+
+Buscando posición para la 257 fui al bundle del frontend de SITPORT
+(https://orion.directemar.cl/sitport/main.js) y extraje la lista de rutas que
+llama. Son **trece**; el proyecto consume **tres**. Lista completa en
+00_endpoints_sitport.txt:
+
+  FichaNave · Totalgeneral · Totalpronostico · avisos · consultaBahias ·
+  consultaCapuertoRestriccion · consultaNavePuerto · consultaNaveRecalando ·
+  consultaNavezarpe · consultaRestricciones · consultaZonas · consultareparzona ·
+  external
+
+Probé los cinco que podían traer posición o jerarquía. Crudo guardado:
+
+  consultaZonas                POST {}  200  5 zonas navales
+  consultareparzona            POST {}  200  repartición → zona
+  consultaCapuertoRestriccion  POST {}  200  **64 filas: repartición → Capitanía**
+  Totalgeneral                 GET      200  **64 elementos: Capitanía + su bahía de medición**
+  avisos                       GET      200  [] (vacío ahora)
+
+**Ninguno entrega coordenadas.** Pero `consultaCapuertoRestriccion` y
+`Totalgeneral` entregan algo que resulta más útil para el contrato que la
+coordenada: **la Capitanía de cada bahía**, que es la unidad que INV-3.3 manda.
+
+  consultaCapuertoRestriccion : { Cdreparticion, NMBahia (= nombre de la
+                                  Capitanía), SiglaReparticion, CDZona,
+                                  CDRepPersonal, Totalcapuerto, TotalRestri }
+  Totalgeneral                : { reparticion:{id,nombre,codigo},
+                                  medicionMeteo:{idBahia,...}, restricciones:{...} }
+
+Y cierran el puente que en la bitácora anterior quedó declarado como inexistente:
+`Totalpronostico.cdReparticion` **no** vive en el espacio de
+`consultaBahias.CdReparticion` — vive en el de **`CDRepPersonal`**. Medido:
+**38 de 43** valores del pronóstico calzan con `CDRepPersonal`, y **62 de 63** de
+consultaBahias calzan con `Cdreparticion`.
+
+  > Corrección al pie de e01b §2.2 (CLAUDE.md §3.3, no se reescribe el original):
+  > allí concluí "son dos espacios de numeración distintos, sin intersección, NO
+  > es puente". Los dos espacios distintos están bien medidos; lo que faltaba era
+  > la tabla que los une, que está en un endpoint que no estábamos consumiendo.
+  > La conclusión operativa se invierte: **sí hay puente**.
+
+--------------------------------------------------------------------------------
+1. BAHÍA 257 — HAY POSICIÓN? NO. HAY ALGO MEJOR.
+--------------------------------------------------------------------------------
+
+1.1 POSICIÓN: **NO**, por ninguno de los trece endpoints.
+  Ninguno de los cinco probados trae lat/lon/coord/geo. Los tres que ya
+  consumíamos tampoco (medido en e01b §2.1). El registro completo de la 257 es:
+
+    {"IDBahia":257,"CdReparticion":235,"NMBahia":"RÍO COCHRANE",
+     "color":"default","valor":0,"Nom":"RÍOCOCHRANE257"}
+
+1.2 CAPITANÍA: **sí, y coincide con el decreto.**
+
+    consultaCapuertoRestriccion[Cdreparticion = 235]
+      = "CAPITANÍA DE PUERTO LAGO GRAL.CARRERA", sigla CAPUERTO LGC, CDZona 6
+
+  Y esa misma repartición 235 agrupa, en consultaBahias, exactamente tres bahías:
+    128 LAGO GENERAL CARRERA · 203 LAGO O'HIGGINS · 257 RÍO COCHRANE
+
+  O sea: **SITPORT atribuye Río Cochrane a la Capitanía de Puerto Lago General
+  Carrera**, que es la misma que el decreto adjudica al lago Cochrane y la misma
+  que Baker excluye expresamente.
+
+1.3 QUÉ CIERRA ESTO Y QUÉ NO — y esto es lo que le toca decidir al owner
+
+  **No cierra la lectura del texto.** El decreto nombra lagos y no el río; SITPORT
+  es la fuente operativa y **el mapa operativo no revoca al decreto** (regla ya
+  registrada, fase5R). Que SITPORT diga "Lago Gral. Carrera" no es que el decreto
+  lo diga.
+
+  **Lo que sí cambia es que ya no hay conflicto.** Las dos únicas fuentes
+  disponibles apuntan al mismo lado: el decreto por el lago Cochrane, SITPORT por
+  la bahía Río Cochrane. La adjudicación deja de ser "elegir entre dos" y pasa a
+  ser "confirmar una", con corroboración externa e independiente.
+
+  **No la tomo yo igual**, porque sigue siendo interpretar el D.S. 991 (§0). Lo que
+  aporto es que ya no se decide sobre un vacío.
+
+1.4 LO ÚNICO QUE HAY DE POSICIÓN, Y POR QUÉ NO SIRVE
+  `nodos_maritimos` id 475 = "Embarcadero Muelle Lago Cochrane" (fuente MOP),
+  en −47,2666 / −72,4737. **Es del lago, no del río.** El río Cochrane desagua el
+  lago hacia el Baker, así que esa coordenada no es la de la bahía. No la uso y no
+  la propongo como posición de la 257.
+
+--------------------------------------------------------------------------------
+2. BAHÍA 108 — IDENTIFICADA A NIVEL DE CAPITANÍA
+--------------------------------------------------------------------------------
+
+  Totalgeneral, elemento cuyo medicionMeteo.idBahia = 108:
+    reparticion = { id: 190, nombre: "CAPITANÍA DE PUERTO CARAHUE", codigo: 2169 }
+
+  El `codigo` 2169 es exactamente el `cdReparticion` que el pronóstico traía y que
+  no se podía resolver. **La bahía 108 pertenece a la Capitanía de Puerto Carahue**
+  (Araucanía, Gobernación Talcahuano).
+
+  La repartición 190 tiene en consultaBahias tres bahías, y **las tres las tenemos**:
+    141 Carahue - Sector Río · 142 Carahue - Sector Lago · 143 Carahue - Borde Costero
+
+  O sea que la 108 es una **cuarta bahía de Carahue** que publica pronóstico y que
+  el catálogo de la propia fuente no lista. Sigue sin nombre y sin coordenada:
+  **qué bahía es, no determinado.** Qué Capitanía la dicta, determinado.
+
+  Esto reordena el camino propuesto en e01b §2.6: **C1 y C2 siguen valiendo, C3
+  (preguntar a DIRECTEMAR) se vuelve más barata y más precisa** — la pregunta ya
+  no es "¿qué es la bahía 108?" sino "¿qué bahía de la Capitanía de Carahue es el
+  id 108?", que es una pregunta con tres candidatas conocidas.
+
+--------------------------------------------------------------------------------
+3. D7 — EL NÚMERO PEDIDO
+--------------------------------------------------------------------------------
+
+Medición: 02_d7_rutas.txt. Rutas y puntos: los mismos de
+`scripts/fase5_medir_cobertura_ruta.js`, que a su vez los toma de los tests del
+router. Motor de ruteo de producción. Matching con la misma consulta que usa
+`restricciones-ruta`.
+
+3.1 **CUÁNTAS RUTAS DEL CORREDOR DE DÍA 0 TOCARÍAN HOY UNA BAHÍA EN DRIFT: 0 de 5.**
+    Y 0 de 8 contando las tres de fuera del corredor.
+
+    Medido en dos niveles, porque uno solo no alcanzaba:
+      · por celda: 0 de 5 — y esto es tautológico, una bahía sin coordenada no
+        tiene celda y ST_Intersects no puede devolverla. Lo reporto para que se
+        vea que no prueba nada.
+      · **por Capitanía: 0 de 5** — esta sí prueba algo, y solo se puede medir
+        gracias al §0. Carahue está en la Araucanía y Lago Gral. Carrera es
+        lacustre de Aysén; ninguna de las cinco rutas del corredor las cruza.
+        Las Capitanías que sí cruzan: Puerto Montt, Calbuco, Chaitén, Cisnes,
+        Hornopirén, Chacabuco, Castro, Ancud, Chonchi, Quemchi, Achao, Maullín,
+        Melinka, Quellón.
+
+3.2 DENOMINADOR DE RUIDO — cuánto muestra hoy cada ruta del corredor
+      Anahuac -> Melinka        11 bahías · 5 Capitanías
+      Anahuac -> Quellon         8 bahías · 6 Capitanías
+      Anahuac -> Chacabuco      16 bahías · 6 Capitanías
+      Ancud -> Castro           11 bahías · 7 Capitanías
+      Chonchi -> Chaiten         4 bahías · 2 Capitanías
+      promedio: 10,0 bahías por ruta
+
+3.3 LECTURA — escalar a U es barato, y ahora además es *dirigible*
+
+  Con el drift de hoy, un aviso de ámbito A **se dispararía cero veces** en el
+  corredor de día 0. No hay ruido que medir porque no hay aviso.
+
+  Y lo que hace que eso sea afirmable en vez de indecidible es el §0: **las dos
+  bahías en drift ahora se ubican a nivel de Capitanía**, que es la unidad que
+  INV-3.3 manda. Sin eso, el aviso no se podía acotar por ruta —una bahía sin
+  posición podría estar en cualquier parte— y la única implementación honesta
+  habría sido dispararlo en TODAS las rutas mientras hubiera drift con dato
+  publicado: 5 de 5, permanente, desde un solo id no identificado. Ese era el
+  escenario caro, y ya no es el que hay.
+
+3.4 LO QUE ESTE NÚMERO NO DICE
+  Es el drift de HOY sobre el corredor de HOY. No acota el drift futuro. Lo que sí
+  queda instalado es que la pregunta "¿esta ruta toca la Capitanía de una bahía en
+  drift?" es **contestable por evento**, gracias al puente del §0 — así que el
+  ruido de un drift futuro se mide cuando aparezca, sin volver a esta discusión.
+
+--------------------------------------------------------------------------------
+4. D8 — APLICADA (B1 + la condición)
+--------------------------------------------------------------------------------
+
+Al patrón no se le avisa. Del lado del equipo, la divergencia deja **dos rastros**
+sin que nadie corra nada a mano:
+
+4.1 **Aviso en el arranque del backend.** `src/services/drift-arranque.js`, llamado
+    desde `src/index.js` dentro del callback de `app.listen`. Dispara el control en
+    un proceso aparte y escribe una línea:
+
+      [drift] drift conocido y declarado, pendiente de decisión :: total 3 ·
+      no declaradas 0 · abiertas 3 · adjudicadas 0 · vencidas 0 (991ms, salida 3)
+      — detalle en data\catalogo\estado_drift.json
+
+    Medido en un arranque real: boot 1164 ms, el control tarda 991 ms **después**
+    de que el servidor ya escucha. No bloquea, no toca ningún flujo de veredicto y
+    no cambia ninguna respuesta — D7 sigue sin decidir y esto no la adelanta.
+    Si el control no puede correr, lo dice con esas palabras: "eso NO es sin drift".
+
+4.2 **Archivo de estado versionado.** `data/catalogo/estado_drift.json`, escrito en
+    cada corrida. Un cambio en el drift cambia el archivo y **aparece como diff de
+    git** aunque nadie haya leído la consola. La fecha de corrida va en un campo
+    aparte y NO entra en la huella: si entrara, cada corrida produciría un diff y
+    el diff dejaría de significar "esto cambió".
+
+4.3 **`npm run drift`** y **`npm run drift:mordida`** para la vía manual y para
+    cuando haya CI. `npm test` se dejó intacto a propósito: meterle una llamada de
+    red y una base convertiría la suite unitaria en algo que falla por causas
+    ajenas.
+
+4.4 **Probado que puede fallar** (§4.6, y era obligatorio: es una superficie de
+    control nueva). `scripts/e01_prueba_mordida_arranque.js`, salida en
+    03_mordida_arranque.txt:
+
+      M0  control negativo — insumo intacto : NO grita. [drift] drift conocido...
+      M1  insumo alterado a propósito       : grita. [drift] DRIFT NO DECLARADO...
+
+4.5 **Criterio declarado** (§0.4): el aviso grita con salida 1 (drift nuevo) y 2
+    (no se pudo medir), y no grita con 0 y 3 (estados conocidos). Es una distinción
+    interna del equipo, no decide nada de lo que ve el patrón, así que la tomé yo.
+
+4.6 **Límite declarado.** Un proceso de producción arranca rara vez: un drift que
+    aparece a media semana no se ve hasta el próximo reinicio. La cura es la sonda
+    periódica (C2 de e01b §2.6), no esto. Está escrito en el encabezado del módulo.
+
+--------------------------------------------------------------------------------
+5. HALLAZGO LATERAL QUE LE SIRVE A E0.3 — resuelto y reportado, no consultado
+--------------------------------------------------------------------------------
+
+`consultaCapuertoRestriccion` da la Capitanía de las 64 reparticiones, y
+`consultaBahias.CdReparticion` agrupa las bahías bajo ellas. Eso es exactamente el
+join que E0.3 tiene que reparar: **24 bahías sin Capitanía atribuida** en
+`bahia-capitania-map.json`.
+
+Comprobado sobre dos de ellas: las bahías 128 (Lago General Carrera) y 203 (Lago
+O'Higgins) tienen `capitania: null` en nuestro mapa, y SITPORT las pone bajo la
+repartición 235 = Capitanía de Puerto Lago Gral. Carrera.
+
+No lo apliqué —E0.3 no es esta sub-etapa y el mapa operativo no revoca al decreto,
+así que cada atribución se coteja igual—. Queda registrado en el plan como insumo
+de E0.3, con la advertencia de que es fuente operativa y no normativa.
+
+--------------------------------------------------------------------------------
+6. CÓMO SE REPRODUCE (PowerShell, terminal del owner)
+--------------------------------------------------------------------------------
+
+  cd C:\Users\katia\tmarea-backend
+  node _bitacoras\e01d_d7_y_257_2026-08-11\medir_d7.js
+  node scripts\e01_prueba_mordida_arranque.js
+  npm run drift
+
+  Los tres necesitan base; el segundo y el tercero, además, red. El primero
+  necesita el tile AUSTRAL_N del router.
+
+  Los cuatro endpoints nuevos, tal como se consultaron:
+
+  curl.exe -s -X POST -H "Content-Type: application/json" -d "{}" `
+    https://orion.directemar.cl/sitport/back/users/consultaCapuertoRestriccion
+  curl.exe -s -H "Accept: application/json" -H "Referer: https://orion.directemar.cl/sitport/" `
+    https://orion.directemar.cl/sitport/back/users/Totalgeneral

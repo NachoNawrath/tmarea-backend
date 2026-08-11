@@ -5,7 +5,9 @@
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
     "build": "echo 'Backend ready'",
-    "test": "node --test src/services/__tests__/*.test.js"
+    "test": "node --test src/services/__tests__/*.test.js",
+    "drift": "node scripts/e01_control_drift_catalogo.js --estado data/catalogo/estado_drift.json",
+    "drift:mordida": "node scripts/e01_prueba_mordida_drift.js"
   },
   "dependencies": {
     "@turf/turf": "^7.3.5",

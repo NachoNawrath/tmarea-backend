@@ -1,0 +1,71 @@
+{
+  "ultima_corrida": "2026-08-11T15:35:28.443Z",
+  "origen": "insumo en disco: C:\\Users\\katia\\tmarea-backend\\_bitacoras\\e01_drift_catalogo_2026-08-11\\insumo_alterado_2026-08-11",
+  "veredicto": "DRIFT_NO_DECLARADO",
+  "fuentes_internas": [
+    {
+      "clave": "F1",
+      "n": 163
+    },
+    {
+      "clave": "F2",
+      "n": 163
+    },
+    {
+      "clave": "F3",
+      "n": 164
+    },
+    {
+      "clave": "F4",
+      "n": 163
+    },
+    {
+      "clave": "F5",
+      "n": 163
+    }
+  ],
+  "universo_sitport": 165,
+  "divergencias": [
+    {
+      "clase": "sitport_sin_catalogo",
+      "id_bahia": 108,
+      "campo": null,
+      "nombre_sitport": null,
+      "detalle": "visto en totalPronostico",
+      "estado": "abierta"
+    },
+    {
+      "clase": "sitport_sin_catalogo",
+      "id_bahia": 999,
+      "campo": null,
+      "nombre_sitport": "CALETA ALTERADA A PROPOSITO",
+      "detalle": "visto en consultaBahias, consultaRestricciones",
+      "estado": "no_declarada"
+    },
+    {
+      "clase": "catalogo_sin_sitport",
+      "id_bahia": 71,
+      "campo": null,
+      "nombre_sitport": null,
+      "detalle": "presente en F1, F2, F3, F4, F5",
+      "estado": "no_declarada"
+    },
+    {
+      "clase": "incoherencia_interna",
+      "id_bahia": 257,
+      "campo": null,
+      "nombre_sitport": "RÍO COCHRANE",
+      "detalle": "está en F3 y falta en F1, F2, F4, F5",
+      "estado": "abierta"
+    },
+    {
+      "clase": "endpoint_fuera_de_catalogo",
+      "id_bahia": 108,
+      "campo": null,
+      "nombre_sitport": null,
+      "detalle": "publicado por totalPronostico y ausente de consultaBahias",
+      "estado": "abierta"
+    }
+  ],
+  "declaraciones_vencidas": []
+}

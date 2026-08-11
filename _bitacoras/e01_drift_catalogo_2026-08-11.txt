@@ -1,0 +1,147 @@
+================================================================================
+E0.1 — RECONOCIMIENTO: DRIFT DEL CATÁLOGO SITPORT
+fecha: 2026-08-11
+shell del agente: Git Bash (POSIX). Los comandos reproducibles para el owner van
+                  al pie en sintaxis PowerShell (CLAUDE.md §7.3).
+evidencia cruda:  _bitacoras/e01_drift_catalogo_2026-08-11/
+================================================================================
+
+Esta bitácora es SOLO el reconocimiento. No propone nada y no cambia nada.
+
+--------------------------------------------------------------------------------
+1. DÓNDE VIVE CADA FUENTE
+--------------------------------------------------------------------------------
+
+FUENTE EXTERNA — SITPORT / DIRECTEMAR
+  src/services/sitport-service.js
+    · consultaRestricciones  POST https://orion.directemar.cl/sitport/back/users/consultaRestricciones
+    · consultaBahias         POST .../consultaBahias
+    · Totalpronostico        GET  .../Totalpronostico
+  Cache en memoria, TTL 10 min. Los tres devuelven el catálogo por id numérico de
+  bahía, con nombres de campo DISTINTOS en cada endpoint:
+    consultaBahias        → IDBahia   (y NMBahia, CdReparticion, color, valor, Nom)
+    consultaRestricciones → bahia     (y GLBahia)
+    Totalpronostico       → idBahia   (sin nombre de bahía en el registro)
+
+CATÁLOGO INTERNO — cuatro copias, ninguna declarada como la autoritativa
+  F1  src/routes/sitport-routes.js  const BAHIA_COORDS   163 ids   ← la que usa el runtime
+  F2  scripts/seed-bahias-sitport.js const BAHIA_COORDS  163 ids   ← copia literal de F1
+  F3  src/data/bahia-capitania-map.json                   163 ids   ← id → Capitanía + teléfono
+  F4  postgres  bahias_sitport (sembrada por F2)          163 ids
+  F5  postgres  bahia_jurisdicciones (matview, celdas Voronoi)  163 filas, 33 vacías
+
+  F1 y F2 son idénticas byte a byte en las 163 entradas (lat, lng, nombre).
+  F1 = F3 = F4 en el conjunto de ids. Hoy no hay incoherencia interna.
+  El comentario de F1 dice "Cubre las 163 bahías del catálogo SITPORT". Ese número
+  está escrito a mano y nada lo verifica contra la fuente.
+
+--------------------------------------------------------------------------------
+2. CÓMO SE COMPARAN HOY
+--------------------------------------------------------------------------------
+
+No se comparan. No existe ningún control, test ni arranque que contraste el
+catálogo interno contra el de SITPORT. Lo único que se le parece:
+
+  scripts/fase5_inventario_insumos.js:173
+    imprime qué ids de consultaRestricciones no están en bahias_sitport.
+  Sus tres límites, medidos:
+    · es un informe, no un control: no tiene código de salida por hallazgo;
+    · compara SOLO contra bahias_sitport (F4), no contra F1 que es la que descarta;
+    · mira SOLO consultaRestricciones. No mira consultaBahias ni Totalpronostico,
+      que es donde hoy está la divergencia viva (ver §4).
+  Y se corre a mano, cuando alguien se acuerda.
+
+--------------------------------------------------------------------------------
+3. EN QUÉ PUNTO DEL FLUJO SE PRODUCE EL DESCARTE, Y SI DEJA RASTRO
+--------------------------------------------------------------------------------
+
+D1  src/routes/sitport-routes.js:664   POST /api/sitport/restricciones-ruta
+      const bahiaId = restriccion.bahia;
+      if (!bahiaIdsEnRuta.has(bahiaId)) continue;
+    Filtro jurisdiccional por celda Voronoi. Una bahía ausente del catálogo NO
+    tiene celda, así que nunca puede estar en el set: queda descartada acá antes
+    de llegar a D2. RASTRO: ninguno. Sin log, sin contador, sin campo de salida.
+    (Este es además el bug 4 del contrato §7 — contradice INV-3.3/INV-3.4.)
+
+D2  src/routes/sitport-routes.js:666   POST /api/sitport/restricciones-ruta
+      const coordsBahia = BAHIA_COORDS[bahiaId];
+      if (!coordsBahia) continue;
+    Descarte por catálogo: la bahía existe en SITPORT y no en F1.
+    RASTRO: ninguno.
+
+D3  src/routes/sitport-routes.js:383   POST /api/sitport/weather-ruta
+      const coords = BAHIA_COORDS[p.idBahia];
+      if (!coords) return null;      ... .filter(Boolean)
+    Mismo descarte sobre el pronóstico.
+    RASTRO: ninguno. Este es el que está descartando dato HOY (ver §4).
+
+D4  src/utils/capitanias.js:getCapitaniaByBahiaId
+      if (!entry) return { capitania: 'Desconocida', gobernacion: 'Desconocida', telefono: null };
+    Caso por defecto silencioso, prohibido por CLAUDE.md §4.2. Una bahía fuera del
+    catálogo que llegara hasta acá se renderiza como "Desconocida" sin teléfono.
+    RASTRO: ninguno.
+
+El único contador que existe en todo el flujo, `bahiasOmitidas` (línea 704/734),
+NO cuenta esto: cuenta el try/catch por dato malformado. Y ni siquiera ese sale en
+la respuesta: solo aparece en una línea de consola del servidor (línea 781).
+
+Conclusión del punto: los cuatro descartes son silenciosos por construcción. No es
+que el rastro se pierda; es que no se escribe.
+
+--------------------------------------------------------------------------------
+4. LA DIVERGENCIA, MEDIDA EN VIVO — 2026-08-11 13:39 UTC
+--------------------------------------------------------------------------------
+
+Salida literal en 01_recon.txt. Crudo en sitport_consultaBahias.json,
+sitport_consultaRestricciones.json, sitport_totalPronostico.json.
+
+  consultaBahias        164 registros, 164 ids distintos
+  consultaRestricciones  39 registros sobre 24 bahías distintas
+  Totalpronostico        48 registros sobre 46 bahías distintas
+
+  EN SITPORT Y NO EN NUESTRO CATÁLOGO:
+    257  RÍO COCHRANE   {"IDBahia":257,"CdReparticion":235,"NMBahia":"RÍO COCHRANE",
+                         "color":"default","valor":0,"Nom":"RÍOCOCHRANE257"}
+    Confirmado vivo. Hoy no publica restricción (0 de 39), lo que no salva nada:
+    entre el inventario del 10-AGO (52 registros / 36 bahías) y hoy (39 / 24) el
+    feed se movió entero en un día.
+
+  EN NUESTRO CATÁLOGO Y NO EN SITPORT: ninguno.
+
+  HALLAZGO NO PREVISTO EN EL PLAN — la divergencia no es de una entrada:
+    Totalpronostico publica el id 108, que NO está en nuestro catálogo Y TAMPOCO
+    está en consultaBahias, el propio endpoint de catálogo de SITPORT.
+      {"idBahia":108,"cdReparticion":2169,"fecha":"2026-08-11T13:32:20.000Z",
+       "temperatura":6.6,"presion":1019.81,"velocidadViento":4.6,...}
+    Consecuencia inmediata: ese dato meteorológico se descarta hoy en D3, en cada
+    llamada a /weather-ruta, sin dejar rastro. Es un falso negativo silencioso
+    ACTIVO, distinto del de Río Cochrane y no registrado en ninguna parte.
+    Consecuencia de diseño: un control que compare nuestro catálogo contra
+    consultaBahias NO habría cazado el 108. consultaBahias no es el superconjunto
+    de los ids que SITPORT usa.
+
+    NO DETERMINADO: desde cuándo aparece el 108, y qué bahía es. El registro de
+    pronóstico no trae nombre y consultaBahias no lo lista. No hay captura previa
+    de Totalpronostico en el repositorio contra la cual fechar su aparición.
+    No se sustituye por una suposición.
+
+--------------------------------------------------------------------------------
+5. QUÉ QUEDA DEMOSTRADO
+--------------------------------------------------------------------------------
+
+  a) Las dos fuentes ya divergen, en dos ids y por dos caminos distintos.
+  b) La divergencia no se compara en ninguna parte del flujo.
+  c) Los cuatro puntos de descarte son silenciosos por construcción.
+  d) El endpoint de catálogo de SITPORT no cubre los ids que sus propios endpoints
+     de dato usan, así que "compararse contra el catálogo" es insuficiente.
+
+--------------------------------------------------------------------------------
+6. CÓMO SE REPRODUCE (PowerShell, terminal del owner)
+--------------------------------------------------------------------------------
+
+  cd C:\Users\katia\tmarea-backend
+  node _bitacoras\e01_drift_catalogo_2026-08-11\recon_fuentes.js
+
+  Requiere .env con DB_* y salida a internet. Vuelca de nuevo los tres JSON crudos
+  y reimprime 01_recon.txt. Los números de §4 son de la corrida de las 13:39 UTC;
+  el feed de restricciones cambia por hora y no van a coincidir exactamente.
