@@ -1,0 +1,29 @@
+FASE 5 — CARGA DE LA CAPA DE COSTA
+manifiesto : geodata\costa\capas_costa.json
+             sha256[:16] b06baaddecaefa86
+rol tierra : osm_land_polygons  ->  costa_osm / costa_osm_sub
+recorte    : x -85.0..-65.0  y -60.0..-17.0
+
+A1 el rol y la capa son compatibles: ok
+A2/A3 huella y geometria de la fuente
+  tierra 'osm_land_polygons': sha256 coincide con el manifiesto
+  tierra 'osm_land_polygons': 78653 poligonos; 8638787 vertices recortados a la caja (8653455 sin recortar); 0 nulas, 0 vacias, 0 invalidas
+  limite_exterior 'ne_10m_land': sha256 coincide con el manifiesto
+  limite_exterior 'ne_10m_land': 8 poligonos; 16599 vertices recortados a la caja (421693 sin recortar); 0 nulas, 0 vacias, 0 invalidas
+
+Cargando 78653 poligonos en costa_osm y partiendolos en costa_osm_sub...
+  costa_osm_sub: 130537 trozos de hasta 256 vertices
+
+CONTROLES, dentro de la misma transaccion
+  [ok  ] A4 la capa cargada es la que se leyo de la fuente
+           78653 filas, 0 rotas, SRID 4326 | leidas de la fuente 78653
+  [ok  ] A4b el recorte cubre todo punto declarado de las jurisdicciones a las que se les resta tierra
+           195 de 195 puntos dentro del recorte; extension cargada x -80.8378..-63.9993 y -56.5383..-15.9995
+  [ok  ] A5 el traslape entre poligonos coincide con lo declarado (poligonos_disjuntos=False)
+           2116 pares con traslape de area, 6219.2 km2 en total | una capa que se pisa exige ST_UnaryUnion; ST_Collect daria un MultiPolygon invalido
+  [ok  ] A6 resolucion contra 'ne_10m_land', vertices recortados a la misma caja, minimo 10x
+           8638787 vs 16599 vertices = 520x
+  [ok  ] A7 las aguas interiores son tierra para esta capa
+           27 de 27 cuerpos lacustres caen dentro de la capa de tierra
+
+Capa cargada y verificada. costa_osm (78653 poligonos, 8638787 vertices) y costa_osm_sub.

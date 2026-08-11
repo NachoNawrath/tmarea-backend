@@ -1,0 +1,97 @@
+FASE 5, ETAPA B — CONSTRUCCION
+  salida   : scripts\fase5_capa_ds991.sql
+  tierra   : costa_osm_sub   [osm_land_polygons, sha e3570af698dd]
+  ext.     : ne_land, buffer de 370400 m
+  ensanche : 60 km, solo en tramos litoral
+
+NOMBRE                   AMBITO          RECETA           LIT ESTADO           FRONTERAS
+--------------------------------------------------------------------------------------------------------------------------
+Arica                    maritima        -                  0 nula_declarada   
+Iquique                  maritima        banda_paralelos    0 construida       
+Patache                  maritima        banda_paralelos    0 construida       
+Tocopilla                maritima        banda_paralelos    0 construida       
+Mejillones               maritima        banda_paralelos    0 construida       
+Antofagasta              maritima        banda_paralelos    0 construida       
+Taltal                   maritima        banda_paralelos    0 construida       
+Chanaral                 maritima        banda_paralelos    0 construida       
+Caldera                  maritima        banda_paralelos    0 construida       
+Huasco                   maritima        banda_paralelos    0 construida       
+Hanga Roa                insular_remota  -                  0 nula_declarada   
+Coquimbo                 maritima        banda_paralelos    0 construida       
+Tongoy                   maritima        banda_paralelos    0 construida       
+Los Vilos                maritima        banda_paralelos    0 construida       
+Papudo                   maritima        banda_paralelos    0 construida       
+Quintero                 maritima        banda_paralelos    0 construida       
+Valparaiso               maritima        banda_paralelos    0 construida       
+Juan Fernandez           insular_remota  -                  0 nula_declarada   
+Algarrobo                maritima        banda_paralelos    0 construida       
+San Antonio              maritima        banda_paralelos    0 construida       
+Pichilemu                maritima        banda_paralelos    0 construida       
+Lago Rapel               lacustre        union_cuerpos      0 construida       
+Constitucion             maritima        banda_paralelos    0 construida       
+Lirquen                  maritima        corte_y_ancla      0 nula_declarada   
+Talcahuano               maritima        corte_y_ancla      0 nula_declarada   
+San Vicente              maritima        banda_paralelos    0 construida       
+Coronel                  maritima        banda_paralelos    0 construida       
+Lota                     maritima        banda_paralelos    0 construida       
+Lebu                     maritima        banda_paralelos    0 construida       
+Carahue                  maritima        banda_paralelos    0 construida       
+Lago Villarrica          lacustre        union_cuerpos      0 construida       
+Lago Panguipulli         lacustre        union_cuerpos      0 construida       
+Lago Ranco               lacustre        union_cuerpos      0 construida       
+Valdivia                 maritima        corte_y_ancla      0 construida       pol__valdivia__corral
+Corral                   maritima        corte_y_ancla      0 construida       pol__valdivia__corral
+Puerto Varas             lacustre        union_cuerpos      0 construida       
+Puerto Montt             maritima        anillo             2 construida       pol__puerto_montt__calbuco,pol__puerto_m
+Maullin                  maritima        corte_y_ancla      0 construida       pol__maullin__ancud
+Calbuco                  maritima        anillo             1 construida       pol__calbuco__ancud,pol__calbuco__hornop
+Rio Negro Hornopiren     maritima        anillo             1 construida       pol__calbuco__hornopiren,pol__quemchi__h
+Cochamo                  maritima        corte_y_ancla      0 construida       pol__puerto_montt__cochamo
+Ancud                    maritima        corte_y_ancla      0 construida       pol__calbuco__ancud,pol__maullin__ancud
+Quemchi                  maritima        corte_y_ancla      0 construida       pol__quemchi__achao,pol__quemchi__hornop
+Chaiten                  maritima        corte_y_ancla      0 construida       pol__chaiten__quellon
+Achao                    maritima        anillo             0 construida       pol__achao__castro,pol__quemchi__achao
+Castro                   maritima        corte_y_ancla      0 construida       pol__achao__castro,pol__castro__chonchi
+Chonchi                  maritima        corte_y_ancla      0 construida       pol__castro__chonchi,pol__chonchi__quell
+Quellon                  maritima        corte_y_ancla      0 construida       pol__chaiten__quellon,pol__chonchi__quel
+Melinka                  maritima        corte_y_ancla      0 construida       pol__melinka__puerto_cisnes
+Puerto Cisnes            maritima        corte_y_ancla      0 construida       pol__melinka__puerto_cisnes,pol__puerto_
+Puerto Aguirre           maritima        corte_y_ancla      0 construida       pol__puerto_aguirre__puerto_chacabuco,po
+Puerto Chacabuco         maritima        corte_y_ancla      0 construida       pol__puerto_aguirre__puerto_chacabuco
+Lago General Carrera     lacustre        union_cuerpos      0 construida       
+Baker                    maritima        -                  0 nula_declarada   
+Puerto Eden              maritima        -                  0 nula_declarada   
+Puerto Natales           maritima        banda_paralelos    0 construida       
+Punta Arenas             maritima        banda_paralelos    0 construida       
+Punta Delgada            maritima        -                  0 nula_declarada   
+Tierra del Fuego         maritima        -                  0 nula_declarada   
+Puerto Williams          maritima        corte_y_ancla      0 nula_declarada   
+Bahia Fildes             antartica       anillo             0 construida       
+Puerto Soberania         antartica       anillo             0 construida       
+Rada Covadonga           antartica       anillo             0 construida       
+Bahia Paraiso            antartica       anillo             0 construida       
+
+CONTEO POR RECETA
+  -                        7
+  anillo                   8
+  banda_paralelos          26
+  corte_y_ancla            17
+  union_cuerpos            6
+CONTEO POR ESTADO
+  construida               54
+  nula_declarada           10
+
+SECTORES construidos: 0
+NULAS DECLARADAS, CON SU CAUSA
+  Arica                    el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno q
+  Hanga Roa                el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; r
+  Juan Fernandez           el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; r
+  Lirquen                  La prosa describe el contorno de la Bahia de Concepcion sin dar sus vertices. La
+  Talcahuano               El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al Sur de 
+  Baker                    el decreto no entrega con que cerrar: falta el limite sur, y no hay contorno que
+  Puerto Eden              el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno q
+  Punta Delgada            El decreto define sus limites solo por accidentes geograficos sin coordenadas. P
+  Tierra del Fuego         El decreto define sus limites solo por accidentes geograficos sin coordenadas. P
+  Puerto Williams          el contorno parte el espacio en dos y no hay ancla que diga cual de los dos troz
+
+--solo-generar: no se toco la base.

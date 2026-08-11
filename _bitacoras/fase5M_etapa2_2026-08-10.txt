@@ -1,0 +1,193 @@
+================================================================================
+FASE 5 — ETAPA 2. COSTA PRIMARIA DECLARADA, AUDITORIA COMPLETA, MORDIDA Y B9.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+Evidencia cruda: _bitacoras/fase5M_etapa2_2026-08-10/  (00 a 05)
+================================================================================
+
+VEREDICTO, ARRIBA Y EXPLICITO
+  AUDITORIA LIMPIA, exit 0. Prueba de mordida 12 de 12 familias cazando, insumo
+  restaurado byte por byte. La familia B9 esta escrita y muerde. El control C0 del
+  constructor esta escrito y muerde en sus tres modos de falla.
+  SALE LIMPIO. Se puede construir.
+  NO SE CONSTRUYO: la Etapa 3 es aparte y este es el alto.
+
+================================================================================
+1. LA COSTA OSM QUEDA COMO PRIMARIA. LO QUE ESO SIGNIFICO EN EL CODIGO
+================================================================================
+
+Hasta hoy el constructor traia CAPAS_TIERRA = [] — una lista vacia con un comentario
+que explicaba por que no se restaba tierra. La eleccion de la costa vivia en el
+codigo. Ahora no:
+
+  ANTES   CAPAS_TIERRA = []                      constante en el constructor
+          ... ST_Buffer(...) FROM ne_land        nombre de tabla incrustado en el SQL
+
+  AHORA   capas_declaradas() lee geodata/costa/capas_costa.json y toma la capa del
+          rol 'tierra' y la del rol 'limite_exterior'. El constructor NO nombra
+          ninguna capa. Cambiar de costa el dia que llegue una linea oficial del
+          SHOA es cambiar roles.tierra en el manifiesto y volver a correr.
+
+  tierra           costa_osm_sub   [osm_land_polygons, sha e3570af698dd]
+  limite exterior  ne_land, buffer de 370.400 m — grueso A PROPOSITO, ver el
+                   manifiesto: el error de una costa 1:10m son cientos de metros,
+                   cuatro ordenes por debajo de las 200 millas.
+
+DOS CONTROLES NUEVOS QUE VIENEN CON ESTO:
+
+  EL RECORTE TIENE QUE CUBRIR LA CAJA DE TRABAJO. capas_declaradas() compara el
+  recorte con que se cargo la costa contra la caja del constructor y se detiene si
+  no la cubre. Si la caja creciera y el recorte no, se restaria tierra contra una
+  capa que no llega hasta ahi: quedaria tierra adentro de una figura marina sin que
+  nada avise. Es INV-3.6 exactamente.
+
+  C0, DENTRO DE LA TRANSACCION Y PRIMERO DE TODO. Comprueba, antes de construir
+  nada, que la capa de costa cargada sea la que el manifiesto declara — por sha256,
+  no por nombre — y que sus propios controles hayan pasado. El sha se incrusta al
+  GENERAR el SQL, asi que el SQL tambien queda atado a la costa que declara: un SQL
+  viejo aplicado sobre una costa nueva no corre.
+
+  C0 MUERDE — probado, no afirmado [evidencia 04]. El bloque C0 se corrio dentro de
+  transacciones que se deshacen, contra cuatro estados:
+    estado bueno            pasa
+    sha alterado            CORTA: "la costa cargada no es la que declara el manifiesto"
+    un control A7 en falla  CORTA: "la costa cargada tiene controles en falla"
+    capa ausente            CORTA: "no esta cargada la capa de costa costa_osm_sub"
+
+EL ENSANCHE DE LITORAL VOLVIO. Con la capa de tierra declarada, los corredores de
+60 km sobre tramos 'litoral' se aplican de nuevo — estaban desactivados porque sin
+costa que los recortara eran una losa que solo pisaba a las vecinas. Cuanta
+superficie agregan y si reaparecen traslapes por ahi es medicion de la Etapa 3: aca
+solo se genero el SQL, no se aplico.
+
+================================================================================
+2. LA FAMILIA B9. PRIMERO SE MIDIO EL AGUJERO
+================================================================================
+
+Antes de escribir un control, se comprobo que hiciera falta. Se mutó el alcance de
+la unica frontera declarada — pol__quemchi__hornopiren, el meridiano 073 00 00 W
+entre 42 00 00 S y 42 30 00 S — de seis maneras, corriendo la auditoria completa
+en cada una:
+
+                                                       ANTES        DESPUES DE B9
+  ensanchar el alcance al Sur (lat_min a -44)          exit=0 nadie   exit=1 B9
+  ensanchar el alcance al Norte (lat_max a -40)        exit=0 nadie   exit=1 B9
+  ensanchar los dos lados (-44 .. -40)                 exit=0 nadie   exit=1 B9
+  borrar el alcance entero                             exit=0 nadie   exit=1 B9
+  encoger el alcance a un punto (-42 .. -42)           exit=0 nadie   exit=1 B9
+  mover el meridiano de 073W a 072W                    exit=1 B2      exit=1 B2,B9
+
+El agujero era exactamente el que estaba anotado: se cazaba MOVER la frontera, no
+ENSANCHAR su alcance. Con el alcance ensanchado a cuatro grados de latitud, el
+meridiano recorta donde el decreto no dice nada, las figuras vecinas salen mas
+chicas, y no aparece ningun error en ningun lado. Falso negativo silencioso.
+
+Las seis mutaciones quedan cazadas. La tabla completa, con la lectura de cual
+sub-control caza cada una, esta en la evidencia 05.
+
+QUE COMPRUEBA B9, cuatro cosas y ninguna nombra una jurisdiccion:
+
+  B9.1  Una frontera declarada trae su motivo, la CITA del decreto de sus DOS lados,
+        y su alcance ESCRITO. Lo primero es lo unico que distingue una frontera
+        transcrita de un limite que alguien aserto. Lo del alcance escrito se agrego
+        despues de mirar la tabla de mediciones: borrar el alcance entero no lo
+        cazaba nadie, y la primera lectura fue que estaba bien porque la figura no
+        cambia — alcance_de() cae al rectangulo de los puntos, que aca coincide. El
+        hueco era a plazo: sin el alcance escrito, mover un vertice mueve calladamente
+        hasta donde la frontera decide, y se pierde la constancia de hasta donde se
+        autorizo que dijera. Ahora se exige.
+  B9.2  Cada borde del alcance aparece LITERALMENTE como coordenada citada en el
+        texto del decreto de esa frontera. Es INV-3.7 aplicado al alcance: la
+        geometria se deriva del texto fuente, y el texto fuente esta ahi al lado, en
+        'citas'. Un borde que no aparece en ninguna cita es un numero que alguien
+        puso.
+  B9.3  El alcance contiene a la propia frontera. Una frontera no puede decidir
+        sobre menos que el segmento que es.
+  B9.4  El alcance acota el eje que corresponde. Un meridiano se extiende
+        perpendicular a si mismo: acota latitudes, no longitudes. Un alcance que
+        abre franja en el eje a lo largo del cual la frontera corre no acota nada.
+
+  Y si algun dia no hay ninguna frontera declarada ni ningun alcance, B9 FALLA en
+  vez de quedar limpio. Un control sin nada que mirar no es una garantia: significa
+  que el camino que debia cubrir desaparecio y hay que saberlo.
+
+SOBRE EL DATO REAL, B9 pasa:
+  fronteras declaradas por transcripcion : 1
+  fronteras con alcance declarado        : 1
+  pol__quemchi__hornopiren: lat -42.5 .. -42.0   lon -73.0 .. -73.0
+  Los cuatro bordes estan respaldados: 42 00 00 S y 42 30 00 S en la cita de
+  Hornopiren, 073 00 00 W en las dos citas.
+
+================================================================================
+3. LA PRUEBA DE MORDIDA: 12 DE 12   [evidencia 02]
+================================================================================
+
+  ok  B0  fidelidad de la migracion
+  ok  B1  cierre determinado
+  ok  B2  vecinas en lados opuestos
+  ok  B3  ninguna mas chica que su descripcion
+  ok  B4  declaradas == no cerrables
+  ok  B5  punto representativo
+  ok  B6  adjudicacion lacustre
+  ok  B0  integridad referencial de los lados
+  ok  B7  grafo de fronteras
+  ok  B8  tramos del contorno
+  ok  B9  alcance de una frontera declarada          <- nueva
+  ok  B9  respaldo del decreto en la frontera declarada  <- nueva
+
+  insumo restaurado, auditoria final exit=0, los tres archivos byte por byte.
+
+SOBRE LA PREGUNTA DE SI EL AUDITOR CAMBIO SU MODELO DE FIGURA: no lo cambio.
+dentro_de_la_figura, fuera_por_frontera y dentro_del_alcance quedaron como estaban.
+B9 es un control ESTRUCTURAL sobre la declaracion de la frontera — mira el dato, no
+la figura — y por eso no podia mover a las diez familias anteriores. Se corrio la
+prueba igual, antes y despues de escribirlo, y las diez siguen cazando en los dos
+casos. La confirmacion estaba pedida y esta hecha; el resultado es que no hacia
+falta, y eso tambien es un resultado.
+
+================================================================================
+4. LA AUDITORIA COMPLETA, CON LOS TESTIGOS CORREGIDOS Y LA COSTA CARGADA
+================================================================================
+
+  exit 0, AUDITORIA LIMPIA.   [evidencia 01]
+
+  B5  46 testigos dentro de su figura, 0 fuera, 2 pendientes de la costa, 6
+      cerrables sin testigo con causa declarada. Los 2 pendientes son Puerto Montt y
+      Rio Negro Hornopiren, que caen en el ensanche hacia tierra: el auditor no
+      tiene con que resolverlos porque no modela la costa, y los resuelve la
+      construccion. Son los mismos dos de siempre.
+  B8  100 tramos: litoral 4, frontera 91, abierto 5. Las 22 adjudicaciones aplicadas.
+  B9  1 frontera declarada, 1 alcance, todo respaldado.
+
+================================================================================
+5. LO QUE ESTA EN LA BASE AL CERRAR ESTA ETAPA
+================================================================================
+
+  costa_osm            78.653 poligonos, cargada y verificada
+  costa_osm_sub        130.537 trozos, GIST
+  costa_osm_verificacion   0 controles en falla
+  costa_osm_procedencia    sha256 e3570af6...  == el del manifiesto
+
+  jurisdicciones_ds991     NO EXISTE. Borrada con
+                           scripts/fase5_descartar_build_provisional.sql
+                           [evidencia 00]. El nombre canonico quedo libre, asi que
+                           cualquier consulta contra el falla ruidoso en vez de
+                           devolver 64 filas de un build que no paso los controles.
+                           Constancia del descarte en jurisdicciones_ds991_descartes.
+  jurisdicciones_decreto   sigue marcada SUPERSEDIDA Y DESACTUALIZADA
+  bahia_jurisdicciones     sigue siendo la que el motor consulta
+
+  MOTOR    intocado.
+  SQL      scripts/fase5_capa_ds991.sql regenerado con la costa declarada y el
+           control C0. NO aplicado.
+  COMMITS  ninguno.
+
+================================================================================
+6. VEREDICTO
+================================================================================
+
+  SALE LIMPIO. Auditoria exit 0, mordida 12/12, B9 escrita y mordiendo, C0 escrito
+  y mordiendo, costa cargada y verificada, testigos corregidos.
+
+  Se puede construir. NO se construyo: la Etapa 3 requiere el paso del owner.
+
+  ALTO.

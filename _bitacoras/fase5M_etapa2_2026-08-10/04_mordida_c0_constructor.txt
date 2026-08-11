@@ -1,0 +1,14 @@
+PRUEBA DE MORDIDA DEL CONTROL C0 DEL CONSTRUCTOR
+Se corre el bloque C0 del SQL generado dentro de una transaccion que se
+deshace, contra cuatro estados de la capa de costa. Un control que nadie
+probo no garantiza nada.
+
+  sano               pasa (es el estado bueno)
+  sha_alterado       CORTA
+      ERROR:  la costa cargada no es la que declara el manifiesto:
+  control_en_falla   CORTA
+      ERROR:  la costa cargada tiene controles en falla: A7 las aguas interiores son tierra para esta capa
+  capa_ausente       CORTA
+      ERROR:  no esta cargada la capa de costa costa_osm_sub. Corre antes scripts/fase5_cargar_costa.py
+
+Estado de la base tras la prueba: las cuatro corridas terminaron en ROLLBACK.

@@ -1,0 +1,393 @@
+================================================================================
+FASE 5 — ETAPA 1. CORRECCION DE LOS TESTIGOS. CERRADA.
+Antes del resultado, la seccion 0 con tres cosas que no coincidian con lo
+registrado, y la seccion 1 con un desvio de orden que decidi por mi cuenta.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+Evidencia cruda: _bitacoras/fase5L_etapa1_2026-08-10/  (00 a 06)
+================================================================================
+
+RESULTADO EN UNA LINEA
+  30 testigos corridos al agua, 8 ya estaban sobre agua, 5 declarados sin testigo
+  con su causa. Auditor: LIMPIA, exit 0. La correccion es idempotente, comprobado
+  byte por byte.
+
+================================================================================
+0. TRES COSAS QUE NO COINCIDIAN CON LO REGISTRADO. LAS TRES MEDIDAS.
+================================================================================
+
+0.1 LA TABLA jurisdicciones_ds991 SI EXISTE EN LA BASE. La bitacora fase5K dice
+    "NO existe (la transaccion se deshizo)". Existe, con 64 filas — 54 construidas
+    y 10 nulas declaradas — y su ultimo ANALYZE es de las 12:55 del 2026-08-10.
+
+    QUE PASO, y no es un misterio: hubo una corrida que SI cerro, a las 12:55, con
+    una version anterior del constructor. La corrida posterior — la del constructor
+    reestructurado, 14:18 — empieza con DROP TABLE IF EXISTS dentro de la
+    transaccion, se cayo en el RAISE de los controles, y al deshacerse la
+    transaccion RESTAURO la tabla vieja. Quien escribio la bitacora dedujo del
+    rollback que no habia quedado tabla; lo que el rollback hizo fue devolver la
+    anterior.
+
+    NO ES INOCUO: es una capa que aparenta estar construida y no paso los controles
+    de hoy. Lo confirma que le faltan las tablas hermanas que el SQL actual crea en
+    la misma transaccion — _procedencia, _verificacion, _sectores no existen; solo
+    estan _convenciones y la tabla principal. Queda como esta, sin tocar, hasta la
+    Etapa 3, que la va a reemplazar entera. El motor no la consulta: sigue
+    resolviendo por bahia_jurisdicciones.
+
+0.2 EL "521 VECES MAS FINA" ES CORRECTO, PERO SE MIDE DE UNA SOLA MANERA.
+    Al escribir el control de resolucion del cargador lo medi mal y dio 21x. El
+    filtro por bbox devuelve los poligonos ENTEROS que tocan la caja, y ne_land trae
+    Sudamerica y la Antartica completas en dos poligonos: contarle los vertices sin
+    recortar mide cuanto mundo cuelga afuera, no la resolucion adentro.
+
+      ne_land, vertices sin recortar a la caja  421.693   -> razon 21x
+      ne_land, vertices RECORTADOS a la caja     16.599   -> razon 520x
+      OSM, recortados                         8.638.787
+
+    520x contra el 521x de fase5J: coincide. La conclusion estaba bien; la medicion
+    nueva estaba mal. El control quedo arreglado y el manifiesto declara COMO se
+    mide, para que no vuelva a medirse del otro modo.
+
+0.3 LA CAPA OSM NO ES UNA PARTICION. Sus poligonos SE PISAN.
+      2.116 pares con traslape de AREA (no de borde)
+      6.219 km2 en total sobre ~2,8 millones de km2 de tierra = 0,22%
+      maximo 12,4 km2 por par, repartidos parejo en toda la latitud
+      208 poligonos con un duplicado exacto
+    Es la variante 'split': parte la costa en una grilla y las piezas se pisan en
+    las costuras. NO invalida la capa — tierra sobre tierra no inventa agua ni la
+    tapa — pero PROHIBE UN ATAJO: la union de la capa exige ST_UnaryUnion, porque
+    ST_Collect daria un MultiPolygon invalido, y sumar areas de la capa cuenta
+    doble. El constructor ya usa ST_UnaryUnion, asi que no hay nada que arreglar
+    ahi; lo que habia que arreglar era mi control, que exigia una particion.
+
+    Como quedo: el hecho esta DECLARADO en el manifiesto (poligonos_disjuntos:
+    false, con la medicion al lado) y el control compara lo declarado contra lo
+    medido. Si una capa futura fuera disjunta, o dejara de serlo, el cargador lo
+    dice. Un control que exige algo falso no detecta nada.
+
+================================================================================
+1. DESVIO DE ORDEN: LA COSTA SE CARGO EN LA ETAPA 1, NO EN LA 2
+================================================================================
+
+El encargo pone la carga de la costa en la Etapa 2. No se puede: la Etapa 1 dice
+"corre cada testigo al agua mas cercana SEGUN LA CAPA OSM", y sin la capa cargada
+no hay agua contra la cual medir. Habia dos caminos y elegi el segundo:
+
+  a) que el corrector leyera el zip por su cuenta, como se hizo para medir en
+     fase5J. Deja DOS caminos distintos leyendo la misma costa — el del corrector y
+     el de la construccion — y esa es exactamente la divergencia que ya costo
+     trabajo cerrar entre auditor y constructor.
+  b) cargarla una vez, y que el corrector y la construccion usen LA MISMA capa
+     cargada, con la misma huella.
+
+Se hizo (b). La Etapa 2 conserva todo lo demas que pedia: declarar OSM como
+primaria en la construccion, correr el auditor completo, la prueba de mordida y
+escribir la familia B9.
+
+================================================================================
+2. LA CAPA DE COSTA, CARGADA Y VERIFICADA   [evidencia 01]
+================================================================================
+
+  scripts/fase5_cargar_costa.py
+  geodata/costa/capas_costa.json   <- NUEVO. Manifiesto de capas.
+
+QUE CAMBIA DE FONDO: la capa de tierra deja de ser una constante en el codigo
+(CAPAS_TIERRA = [] en el constructor) y pasa a ser INSUMO DECLARADO. El manifiesto
+declara los ROLES — 'tierra' y 'limite_exterior' —, que capa cumple cada uno, con
+que huella, con que licencia, y las EXIGENCIAS que un rol le impone a su capa.
+Cambiar de costa, el dia que llegue una linea oficial del SHOA, es cambiar el valor
+de roles.tierra y volver a correr. Ninguna capa se nombra en el codigo.
+
+  rol tierra          osm_land_polygons  ->  costa_osm (78.653 poligonos crudos)
+                                             costa_osm_sub (130.537 trozos, GIST)
+  rol limite_exterior ne_10m_land -> ne_land. Se conserva A PROPOSITO: el limite
+                      exterior es un buffer de 200 millas, y el error de una costa
+                      1:10m esta cuatro ordenes de magnitud por debajo. Usar la capa
+                      fina ahi seria pagar horas de calculo por nada.
+
+LOS SIETE CONTROLES, dentro de la transaccion, terminando en rollback:
+  A1  el rol y la capa son compatibles          ok
+  A2  sha256 del archivo == el del manifiesto   ok  e3570af6...
+  A3  CRS, tipos y validez de la fuente         ok  0 nulas, 0 vacias, 0 invalidas
+  A4  lo cargado == lo leido                    ok  78.653 filas, SRID 4326
+  A4b el recorte cubre todo punto declarado     ok  195 de 195
+  A5  traslape medido == traslape declarado     ok  2.116 pares / 6.219 km2
+  A6  resolucion >= 10x el limite_exterior      ok  520x
+  A7  las aguas interiores son tierra           ok  27 de 27 cuerpos lacustres
+
+A7 ES EL QUE HABILITA LA ETAPA 1, y por eso esta. "Agua" en este trabajo es el
+complemento de la capa de tierra. Si un lago fuera un hueco de la capa, correr un
+testigo al agua mas cercana podria meterlo en agua DULCE sin salida al mar, y ese
+testigo pasaria despues el control de contencion siendo un punto al que no se llega
+navegando. A7 comprueba, cuerpo por cuerpo, que los 27 cuerpos lacustres adjudicados
+caen DENTRO de la capa de tierra — o sea que para esta capa son tierra — y por lo
+tanto que su complemento es mar. Se apoya en el inventario de lagos que ya usa el
+constructor: no hace falta un dato nuevo.
+
+A4b MERECE UNA NOTA porque su primera version estaba mal. Exigia que la tierra
+llegara a los cuatro lados de la caja de trabajo, y al Oeste y al Sur de la caja hay
+oceano abierto: pedia algo que no puede ser cierto. Lo que de verdad importa no es
+la extension de la capa sino que CUBRA LA ZONA DONDE SE LA VA A USAR, y esa zona la
+define el propio insumo. Ahora comprueba que los 195 puntos declarados de las
+jurisdicciones a las que se les resta tierra caigan dentro del recorte.
+
+================================================================================
+3. EL UMBRAL. 500 METROS, UNO SOLO PARA TODOS   [evidencia 02]
+================================================================================
+
+Convencion nuestra, no decreto. Persistida en el insumo (convenciones y
+correccion_testigos) y en el encabezado de scripts/fase5_corregir_testigos.py.
+
+(1) LO QUE CUESTA ARREGLAR EL DATO — distancia al agua de los 35 que caen en tierra
+      mediana 28 m    minimo 3 m    maximo 3.380 m
+      a menos de   100 m : 25 de 35
+      a menos de   250 m : 27 de 35
+      a menos de   500 m : 30 de 35
+      a menos de 1.000 m : 32 de 35
+      a menos de 2.000 m : 34 de 35
+    500 m cubre 30 de 35. Numero redondo por encima del percentil 85, NO el maximo
+    que se queria hacer pasar: un umbral fijado en el valor que salva a todos es una
+    descripcion de la costa de hoy, se mueve solo cuando cambia la capa y no puede
+    fallar nunca. Este puede dejar puntos afuera, y deja cuatro.
+
+(2) LO QUE SE PONE EN RIESGO AL MOVER — distancia al testigo de OTRA jurisdiccion
+      minimo 7.654 m (Coronel)     mediana 57.920 m
+    El mayor desplazamiento aplicado es de 500 m. Y NO queda como observacion: por
+    cada punto movido se exige que el testigo vecino este al menos 10 veces mas
+    lejos que el desplazamiento, y si no se cumple la corrida SE DETIENE. El caso
+    mas apretado de los que se movieron es San Vicente: 497 m con el vecino a
+    25.069 m, 50x.
+    Segunda medida del mismo lado: la eleccion del testigo YA se habia tomado la
+    libertad de apartarse de la sede de su Capitania — mediana 1,8 km, maximo
+    25,2 km. Correrlo unos cientos de metros es chico contra esa libertad ya tomada.
+
+(3) UN UMBRAL POR PRECISION DEL PUNTO: LO INTENTE Y LA MEDICION LO DESCARTO.
+    Lo dejo escrito porque la idea es razonable y alguien la va a volver a tener.
+
+    LA IDEA. Un punto escrito '-72.8' no afirma nada mas fino que unos kilometros;
+    medirle 1.007 m y declararlo inservible seria juzgarlo con una vara que su
+    fuente nunca pretendio. De ahi: umbral = el mayor entre 500 m y la precision del
+    propio punto. Contando decimales sobre el insumo salian 32 puntos con 4
+    decimales (±6 m) y once con 3, 2, 1 y hasta 0 decimales, hasta ±55 km. Llegue a
+    implementarla. Con ella, Puerto Chacabuco conservaba su testigo.
+
+    POR QUE NO SIRVE. Esa distribucion de precisiones NO EXISTE. Fui a la fuente de
+    los puntos — scripts/seed-bahias-sitport.js, de donde salen las 163 bahias
+    SITPORT — y las 163 coordenadas estan escritas con CUATRO decimales, todas.
+    Bahia Chacabuco es '-45.4667, -72.8000' y Bahia Moreno es '-23.6500, -70.4000'.
+    Los decimales se perdieron al serializar el JSON: -70.4000 y -70.4 son el MISMO
+    numero de punto flotante y los ceros finales desaparecen al reescribir. Estaba
+    midiendo el formato de un archivo derivado, no la precision del dato.
+
+    LO QUE SIGNIFICA. La fuente tiene precision UNIFORME de ±6 m. No hay variacion
+    sobre la que apoyar umbrales distintos, y Puerto Chacabuco, a 1.007 m del agua
+    con una coordenada precisa a ±6 m, no tiene excusa de coordenada gruesa.
+
+    ES LA MISMA TRAMPA QUE YA COSTO UNA VEZ — el conteo de testigos usado para
+    juzgar una capa. Un argumento se apoyaba en una medicion y la medicion no medía
+    lo que el argumento decia. Lo que la corto fue ir a la fuente del dato en vez de
+    quedarse con el archivo derivado que estaba a mano.
+
+OTRAS DOS CONVENCIONES, chicas:
+  MARGEN DENTRO DEL AGUA = 1 m. El punto corregido no se deja SOBRE la linea de
+  costa, que pertenece a los dos lados y haria que el control de contencion lo
+  decidiera el redondeo. 1 m esta tres ordenes por encima de la precision con que la
+  construccion reduce coordenadas (1e-8 grados, ~1 mm) y dos por debajo de la
+  mediana del desplazamiento: no mueve la distribucion ni empuja a nadie sobre el
+  umbral.
+  MARGEN DE IDENTIDAD = 10x, el del punto (2).
+
+================================================================================
+4. TESTIGO POR TESTIGO   [evidencia 03, completo]
+================================================================================
+
+LOS 30 QUE SE MOVIERON. Generado desde el insumo ya escrito, no transcrito a
+mano — la primera version de este cuadro lo estaba y catorce valores no
+coincidian con la corrida. Copia aparte en la evidencia 06.
+
+  jurisdiccion         despl. m           punto original  ->         punto corregido
+  Antofagasta             499.5   ( -23.6500, -70.4000)  ->  (-23.64980,-70.40489)
+  San Vicente             497.3   ( -36.7833, -73.1833)  ->  (-36.78674,-73.18687)
+  Iquique                 396.9   ( -20.2133, -70.1503)  ->  (-20.21055,-70.15274)
+  Mejillones              192.6   ( -23.1000, -70.4500)  ->  (-23.09827,-70.45023)
+  Carahue                 179.2   ( -38.7500, -73.4333)  ->  (-38.75095,-73.43497)
+  Puerto Montt             87.7   ( -41.4833, -72.9500)  ->  (-41.48264,-72.94943)
+  Coquimbo                 43.5   ( -29.9668, -71.3499)  ->  (-29.96713,-71.35014)
+  Quintero                 43.0   ( -32.7833, -71.5333)  ->  (-32.78303,-71.53363)
+  Castro                   36.7   ( -42.4808, -73.7591)  ->  (-42.48112,-73.75901)
+  Chaiten                  36.2   ( -42.9112, -72.7187)  ->  (-42.91153,-72.71870)
+  Coronel                  34.7   ( -37.0092, -73.1833)  ->  (-37.00941,-73.18359)
+  Tongoy                   31.2   ( -30.2558, -71.4969)  ->  (-30.25594,-71.49718)
+  Los Vilos                27.6   ( -32.1362, -71.5298)  ->  (-32.13599,-71.52965)
+  Algarrobo                27.0   ( -33.3634, -71.6726)  ->  (-33.36322,-71.67279)
+  Taltal                   25.2   ( -25.4089, -70.4911)  ->  (-25.40870,-70.49121)
+  Melinka                  24.9   ( -43.8987, -73.7462)  ->  (-43.89883,-73.74645)
+  Calbuco                  22.7   ( -41.7763, -73.1304)  ->  (-41.77650,-73.13040)
+  Puerto Natales           21.0   ( -51.7319, -72.5136)  ->  (-51.73209,-72.51366)
+  Punta Arenas             20.5   ( -53.1358, -70.8625)  ->  (-53.13597,-70.86238)
+  Cochamo                  17.2   ( -41.4950, -72.3106)  ->  (-41.49515,-72.31065)
+  Pichilemu                16.7   ( -34.3829, -72.0144)  ->  (-34.38276,-72.01432)
+  Ancud                    13.2   ( -41.8665, -73.8313)  ->  (-41.86655,-73.83144)
+  Puerto Cisnes            12.9   ( -44.7352, -72.6826)  ->  (-44.73520,-72.68276)
+  Quemchi                  10.1   ( -42.1448, -73.4725)  ->  (-42.14488,-73.47245)
+  Caldera                   7.0   ( -27.0637, -70.8237)  ->  (-27.06367,-70.82376)
+  Corral                    5.1   ( -39.8874, -73.4274)  ->  (-39.88736,-73.42738)
+  Maullin                   4.9   ( -41.6156, -73.5966)  ->  (-41.61560,-73.59654)
+  Lota                      3.6   ( -37.0735, -73.1522)  ->  (-37.07347,-73.15220)
+  Quellon                   3.3   ( -43.1208, -73.6232)  ->  (-43.12083,-73.62321)
+  Huasco                    2.7   ( -28.4609, -71.2241)  ->  (-28.46090,-71.22407)
+
+  los 8 que ya estaban sobre agua, no se tocaron:
+    Achao, Chanaral, Chonchi, Patache, Puerto Aguirre, Rio Negro Hornopiren, San Antonio, Tocopilla
+
+  ANTOFAGASTA QUEDO DENTRO POR MEDIO METRO. 499,5 contra un umbral de 500. Lo
+  digo porque es el tipo de cosa que no se puede descubrir despues: si la capa
+  de costa se actualiza y ese punto se corre un metro, Antofagasta pasa a
+  declararse sin testigo sin que nadie haya cambiado nada. Esta bien que asi
+  sea — el umbral tiene que morder en algun lado —, pero que quede visto.
+
+LOS 5 DECLARADOS SIN TESTIGO, con su causa y su medicion:
+
+  Valdivia          3.380 m   EXCLUIDO POR DECLARACION EN EL DATO, no por el umbral.
+                              Owner, 2026-08-10: frente aparte, puerto FLUVIAL. El
+                              Art. 2 incluye los rios navegables pero una capa de
+                              costa no los trae; correrlo al mar mas cercano lo
+                              sacaria del rio que es su jurisdiccion. Se midio igual
+                              para que la declaracion tenga su numero al lado.
+  Constitucion      1.412 m   pasa el umbral
+  Puerto Chacabuco  1.007 m   pasa el umbral
+  Valparaiso          580 m   pasa el umbral
+  Lebu                565 m   pasa el umbral
+
+  DECISION QUE TOME Y HAY QUE MIRAR: el owner dijo "Valdivia queda fuera". Fuera de
+  la CORRECCION, si — no se movio. Pero un testigo que queda 3.380 m tierra adentro
+  hace fallar el control C4 de la construccion en cuanto se reste tierra, y con eso
+  no hay capa. Lo resolvi declarandolo SIN TESTIGO con la causa fluvial, que es
+  literalmente lo que el owner dijo de el. La jurisdiccion se construye igual; lo
+  que pierde es la comprobacion independiente. Si la intencion era otra, esto se
+  deshace cambiando una declaracion en el dato.
+
+  VALPARAISO Y LEBU SON EL COSTO DEL UMBRAL, y hay que verlo de frente: quedan
+  afuera por 80 y 65 metros. Valparaiso es uno de los puertos principales del pais y
+  pierde su comprobacion independiente por 80 m. No lo cambio por mi cuenta —
+  mover el umbral para que un caso entre es exactamente lo que el punto (1) prohibe
+  —, pero es una decision que el owner puede querer tomar. Con umbral 700 m entran
+  los dos y siguen quedando afuera Chacabuco y Constitucion.
+
+LAS 9 SIN TESTIGO DE ANTES siguen igual. Ocho son NO CERRABLES — no van a tener
+figura, asi que no hay nada que un testigo compruebe: Arica, Lirquen, Talcahuano,
+Baker, Puerto Eden, Punta Delgada, Tierra del Fuego, Puerto Williams. La novena es
+Papudo, cerrable y con su causa ya declarada.
+
+================================================================================
+5. COMO QUEDO HECHO
+================================================================================
+
+  scripts/fase5_corregir_testigos.py    --medir  |  --aplicar
+
+REPRODUCIBLE E IDEMPOTENTE, comprobado y no afirmado: la correccion es funcion del
+punto ORIGINAL y de la capa de costa, y el original queda guardado en el insumo
+(punto_representativo.correccion.original, o punto_representativo_descartado). La
+segunda corrida de --aplicar dejo el archivo BYTE POR BYTE identico — sha256
+dcd18b13cf5c1cd9..., evidencia 04. Correr esto despues de cambiar la costa
+recalcula todo desde los originales, nunca sobre un punto ya movido: no acumula.
+
+AUTOVERIFICADO: despues de escribir, se vuelve a preguntar A LA BASE sobre el
+archivo ya guardado — que ningun testigo corregido interseque la tierra, que el
+desplazamiento registrado sea el que se mide entre original y corregido, que
+ninguno supere el umbral, que todo descartado traiga causa. No confia en el calculo
+que produjo los puntos.
+
+FALLA RUIDOSO: si la capa cargada no es la que el manifiesto declara, si sus
+controles no pasaron, si un punto no se resuelve, si el margen de identidad no se
+cumple — se detiene sin escribir.
+
+SIN CASOS PARTICULARES: ninguna jurisdiccion se nombra en el codigo. Valdivia sale
+por una declaracion EN EL DATO (punto_representativo.correccion_al_agua, con motivo,
+autor y referencia); el codigo lee la declaracion y la reporta, y si el campo esta
+pero le falta el motivo, se detiene.
+
+UN ARREGLO QUE VALE LA PENA ANOTAR: la busqueda del agua tardaba 40 s por punto.
+No era la union de la costa: era que ST_DWithin sobre ::geography no puede usar el
+indice GIST, construido sobre la geometria, y barria las 130.537 piezas por cada
+punto. Con un prefiltro por envolvente antes del refinamiento exacto: 0,02 s, mismo
+resultado.
+
+================================================================================
+6. ESTADO Y VEREDICTO
+================================================================================
+
+  INSUMO     sha256 dcd18b13cf5c1cd9...  auditoria LIMPIA, exit 0  [evidencia 05]
+             B5: 46 testigos dentro de su figura, 0 fuera, 2 pendientes de la costa
+             (Puerto Montt y Rio Negro Hornopiren, los de siempre), 6 cerrables sin
+             testigo, todas con causa declarada.
+  BASE       costa_osm y costa_osm_sub cargadas y verificadas.
+             jurisdicciones_ds991: la vieja del 12:55, ver 0.1. Sin tocar.
+             bahia_jurisdicciones sigue siendo la que el motor consulta.
+  MOTOR      intocado.
+  COMMITS    ninguno. Nada commiteado sin autorizacion.
+
+================================================================================
+7. CUANTA COBERTURA DE VERIFICACION SE PERDIO. LA CIFRA.
+================================================================================
+
+Un testigo es la unica comprobacion INDEPENDIENTE de que una figura cubre el agua
+que le toca: no sale del contorno ni del poligono, sale de una bahia SITPORT. Una
+jurisdiccion sin testigo se construye igual, pero nadie la contrasta contra nada
+externo. Por eso la cifra importa y va aca:
+
+  jurisdicciones cerrables — las que van a tener figura ...... 54
+    CON testigo .............................................. 48   88,9%
+    SIN testigo .............................................. 6    11,1%
+
+  por ambito:   maritima   38 de 44        lacustre  6 de 6
+                antartica   4 de  4
+
+LAS SEIS, con lo que le pasa a cada una:
+
+  Papudo              nunca tuvo testigo. Ninguna bahia SITPORT tiene a esta
+                      Capitania como su sede mas cercana. No lo perdio esta etapa.
+  Valdivia            3.380 m del agua. Declarado fluvial en el dato por el owner:
+                      frente aparte, necesita hidrografia. INV-3.6 se cumple —
+                      pierde la comprobacion, no la geometria, y la causa esta
+                      registrada.
+  Constitucion        1.412 m del agua. Pasa el umbral.
+  Puerto Chacabuco    1.007 m del agua. Pasa el umbral. Su coordenada es precisa a
+                      ±6 m como todas las demas: no tiene excusa de dato grueso.
+  Valparaiso            580 m del agua. Pasa el umbral por 80 m.
+  Lebu                  565 m del agua. Pasa el umbral por 65 m.
+
+DECISION DEL OWNER, 2026-08-10: el umbral NO se mueve. Valparaiso y Lebu quedan sin
+testigo. Motivo dado, y queda escrito porque es la regla general y no una respuesta
+a este caso: 700 m seria tan arbitrario como 500 y ademas elegido para salvar a
+alguien. Que Valparaiso sea puerto principal no cambia el argumento — pierde su
+verificacion independiente, no su poligono, y queda declarado.
+
+Las cuatro que pasan el umbral son maritimas y las cuatro estan sobre la costa
+central y sur del continente. Ninguna es de la zona de canales, que es donde la
+geometria es dificil: ahi la cobertura de testigos quedo entera.
+
+================================================================================
+8. LAS OTRAS TRES RESPUESTAS DEL OWNER, 2026-08-10
+================================================================================
+
+VALDIVIA — aprobado como quedo. "Dije que queda fuera de la correccion y eso es lo
+que hiciste. Pierde la comprobacion independiente, no la geometria, y la causa
+fluvial esta registrada. Es exactamente INV-3.6."
+
+EL DESVIO DE ORDEN — APROBADO, y queda registrado como decision con su motivo:
+cargar la costa en la Etapa 1 y no en la 2 es lo correcto porque dos caminos
+distintos leyendo la misma costa es la divergencia que ya costo cerrar entre
+auditor y constructor. Ver seccion 1.
+
+jurisdicciones_ds991 — BORRADA. scripts/fase5_descartar_build_provisional.sql,
+corrido el 2026-08-10 17:22. Ya estaba marcada con un COMMENT que decia "NO APTA,
+NO CONSULTAR", y no alcanzaba: un COMMENT no lo ve quien hace un SELECT, y la tabla
+ocupaba el NOMBRE CANONICO de la capa buena con 64 filas plausibles. Ahora el
+nombre esta libre y cualquier consulta contra el falla ruidoso. No se perdio nada
+registrable: era el build contra ne_land, sus mediciones estan en fase5E, y no era
+reproducible — el script que la genero se reescribio a las 14:18. Queda constancia
+del descarte en la tabla jurisdicciones_ds991_descartes, que es una nota y no una
+capa. Se comprobo despues: to_regclass devuelve NULL.
+
+  ETAPA 1 CERRADA Y ACEPTADA. Sigue la Etapa 2.

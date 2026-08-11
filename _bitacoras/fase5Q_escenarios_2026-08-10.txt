@@ -1,0 +1,253 @@
+================================================================================
+FASE 5 — ESCENARIOS ABIERTOS SOBRE LA PROPUESTA. RESPUESTAS MEDIDAS.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+No se aplico nada.
+================================================================================
+
+CAMBIO DE RECOMENDACION, ARRIBA PORQUE ES LO IMPORTANTE
+  RETIRO P4 tal como estaba propuesto. "El anillo cerrado prevalece" no resuelve el
+  caso correcto: tapa el conflicto en vez de arreglar la figura. La reemplazo por
+  P4', que es la regla que el owner planteo. El argumento completo en la seccion 2.
+
+================================================================================
+1. P1 — VERIFICACION DEL BORDE DE LA DPA MAR ADENTRO
+================================================================================
+
+El escenario era: la DPA incluye territorio insular y aguas interiores como parte de
+la comuna, asi que en canales su borde exterior podria estar ya mar adentro, y el
+buffer de 200 millas arrancaria desde mas afuera.
+
+MEDIDO, comparando el borde Weste de la DPA contra el de la tierra OSM en la misma
+caja:
+
+  canales 45-50 S   DPA -75,7232   OSM -75,7527   la DPA queda 2,8 km POR DETRAS
+  Chiloe 41-44 S    DPA -74,8485   OSM -74,8480   diferencia 0,0 km
+  norte 20-25 S     DPA -70,6289   OSM -70,6286   diferencia 0,0 km
+
+  NO SE ADELANTA. Donde mas difiere queda 2,8 km por DENTRO de la tierra OSM, o sea
+  que el limite exterior se correria hacia adentro, nunca hacia afuera, y por 2,8 km
+  contra 370: 0,8%. El escenario no se cumple.
+
+  Ojo con lo que si aparecio: dentro de la caja de canales hay 5.503 km2 de tierra
+  OSM que la DPA no cubre, y 700 km2 de territorio DPA que OSM da por agua. Son
+  islotes y el cierre administrativo de canales. Para el limite exterior no molesta
+  mientras esa tierra este cerca de tierra que la DPA si cubre — su circulo de 200
+  millas queda contenido en el de la vecina.
+
+COBERTURA DE LAS ISLAS OCEANICAS, que es el riesgo que si importa:
+
+  Juan Fernandez (Robinson Crusoe)   DENTRO
+  Isla de Pascua                     DENTRO
+  Diego Ramirez                      DENTRO
+  Isla Wellington                    DENTRO
+  Desventuradas (San Felix)          AL FILO — a 0 km del borde, no concluyente
+
+  Desventuradas queda por verificar antes de aceptar la capa. Si no estuviera, se
+  perderian sus 200 millas: falso negativo de INV-3.6.
+
+CONTROL QUE PROPONGO PARA LA CARGA, ademas del A4b que ya existe: medir la
+superficie que el limite exterior PIERDE al cambiar de capa, jurisdiccion por
+jurisdiccion, y exigir que ninguna pierda area que contenga uno de sus propios
+puntos declarados o su testigo. La medicion total queda en la bitacora para revision
+humana una vez; el control por puntos queda permanente.
+
+================================================================================
+2. P4 — LOS TRES ESCENARIOS. RETIRO LA REGLA DE PREVALENCIA.
+================================================================================
+
+2.1 DOS ANILLOS CERRADOS QUE SE PISAN ENTRE SI
+    La regla NO DICE NADA. Las dos descripciones son exhaustivas y ninguna prevalece.
+    Una regla que resuelve algunos conflictos y calla en otros no es una regla: es un
+    parche con forma de regla. Y el caso no es hipotetico — Puerto Montt, Calbuco y
+    Rio Negro Hornopiren son los tres anillos cerrados y son vecinos entre si; hoy no
+    se pisan con area, pero se tocan por el borde en cuatro pares.
+
+2.2 SI MAÑANA SE CORRIGE EL CONTORNO DE MAULLIN Y DEJA DE SER ABIERTO
+    Bajo la regla de prevalencia, el desempate DESAPARECE y el traslape vuelve. O sea
+    que la extension de Calbuco dependeria de un campo de METADATO de Maullin. Un
+    arreglo en el dato de una jurisdiccion cambiaria el territorio de otra, sin que
+    nada en el decreto hubiera cambiado. Eso es exactamente lo que no puede pasar en
+    una capa que "se construye una vez y queda".
+    Bajo P4', cerrar el contorno de Maullin hace que su propio contorno la defina, y
+    el resultado cambia porque cambio EL DATO, no porque cambio un desempate.
+
+2.3 ¿RESUELVE EL CASO CORRECTO? NO. El owner tiene razon y este es el punto que
+    decide.
+    El decreto dice que Maullin llega hasta 41 47 00 S / 073 31 30 W y ahi se acaba.
+    Que su figura este en el mar interior es un error de la figura, no un empate con
+    Calbuco. La prevalencia resuelve el sintoma medible — el traslape — y deja el
+    error: donde Maullin cubra mar interior que ningun anillo cerrado reclame, se
+    queda. Y hay: el Golfo de Ancud tiene agua que ni Calbuco ni Puerto Montt
+    describen.
+
+P4' — EL CONTORNO ABIERTO NO SE EXTIENDE MAS ALLA DE SU PROPIO TRAZO, SALVO POR EL
+LADO QUE DECLARA ABIERTO.
+
+  Una jurisdiccion de contorno abierto se extiende indefinidamente SOLO por el lado
+  que el insumo declara abierto (lado_abierto). Por los demas lados queda acotada por
+  la extension de su propio trazo declarado. Es la lectura literal del decreto: "por
+  el sur el paralelo 41 44 40 S, luego... hasta el punto en 41 47 00 S / 073 31 30 W"
+  y no dice mas — entonces no hay mas.
+
+  VENTAJAS SOBRE LA PREVALENCIA
+    - arregla la figura, no el conflicto. Maullin deja de estar donde el decreto no
+      la puso, se pise con quien se pise.
+    - no depende de metadatos de la vecina: cada figura se define con SU dato.
+    - no necesita un desempate, asi que 2.1 no existe como problema.
+    - se lleva los tres pares de Maullin de una sola vez.
+
+  LO QUE HAY QUE MIRAR ANTES DE APLICARLA
+    - REINTRODUCE UNA LETRA CARDINAL. lado_abierto vale 'W' y hasta ahora el proyecto
+      resolvia lados por ancla justamente para no depender de letras. Aca la letra
+      esta EN EL DATO y no en el codigo, que es la diferencia que importa, pero hay
+      que auditarla: si lado_abierto dijera lo contrario de lo que el contorno
+      muestra, la figura se cerraria del lado equivocado y quedaria vacia o gigante.
+      Propongo un control que compruebe lado_abierto contra los puntos que el v2
+      resolvio al borde de la caja.
+    - hay que medir que ninguna figura pierda su testigo. El de Maullin esta en
+      -73,5966, al Weste de su ultimo vertice declarado (-73,525): sobrevive. Pero eso
+      hay que comprobarlo en las 22 de contorno abierto, no en una.
+    - las de receta banda_paralelos NO tienen contorno y no les aplica: quedan
+      acotadas por sus paralelos y por el limite exterior, que es lo correcto.
+
+================================================================================
+3. P3 — LAS DOS CONDICIONES
+================================================================================
+
+3.1 QUE NO SEA UNA EXCEPCION PARA COCHAMO
+    El campo es una propiedad declarada, no un caso. Cualquier jurisdiccion que se
+    defina por un cuerpo de agua nombrado lo declara y entra sin tocar codigo, igual
+    que hoy funciona correccion_al_agua para Valdivia. El constructor lo lee
+    generico, y si el campo esta pero mal formado — sin cita, sin motivo — SE
+    DETIENE, porque una excepcion sin fundamento no es una excepcion.
+
+3.2 QUE PASA SI EL ANCLA CAE EN EL TROZO EQUIVOCADO POR METROS
+    Hoy: se quedaria callada con medio pais, que es inaceptable. Con P3 hay que
+    exigir tres cosas, las tres ruidosas:
+
+    (i)   EL ANCLA Y EL TESTIGO TIENEN QUE CAER EN EL MISMO TROZO. Son dos puntos de
+          origen distinto — el ancla es la sede, el testigo sale de una bahia SITPORT
+          — y que coincidan es una comprobacion independiente. Si caen en trozos
+          distintos, no hay figura y se detiene.
+    (ii)  EL ANCLA TIENE QUE ESTAR HOLGADA DENTRO DE SU TROZO. Si esta a menos de un
+          margen declarado del borde del agua, la eleccion del trozo la decide el
+          redondeo de la costa y no el dato: se detiene diciendo que el ancla esta
+          demasiado cerca de la orilla para decidir.
+    (iii) UN SOLO TROZO PUEDE CONTENER AL ANCLA. Si ninguno la contiene — porque el
+          ancla cayo en tierra — se detiene.
+
+    Con eso, el modo de falla "se quedo con el trozo equivocado" es imposible de
+    pasar en silencio: o coincide con el testigo y esta holgada, o no hay capa.
+
+================================================================================
+4. ORDEN — DE ACUERDO, Y CORRIJO LO QUE PROYECTE
+================================================================================
+
+Aceptado: una por una, con auditoria entre cada una. Y hay que decirlo claro: las
+superficies que proyecte en fase5P estan medidas sobre el estado de HOY. Cada
+propuesta cambia las figuras, asi que esos numeros son ordenes de magnitud para
+priorizar, no pronosticos. En particular P1 achica todas las figuras oceanicas, con
+lo que lo que quede para P2 y P4' va a ser menor de lo proyectado.
+
+  Orden: P1 -> auditar y medir -> P5 -> auditar y medir -> P4' -> ... -> P2 -> P3.
+  P4' antes que P2 y P3 porque es la que mas mueve y conviene medir lo demas sobre
+  las figuras ya corregidas.
+
+================================================================================
+5. LAS QUE QUEDAN SIN GEOMETRIA — SON DIEZ, NO SEIS
+================================================================================
+
+Ninguna propuesta las toca. Y son diez:
+
+  Arica              maritima         falta el limite norte
+  Lirquen            maritima         prosa sin vertices (Bahia de Concepcion)
+  Talcahuano         maritima         prosa sin vertices (Bahia de Concepcion)
+  Baker              maritima         falta el limite sur
+  Puerto Eden        maritima         falta el limite norte
+  Punta Delgada      maritima         solo accidentes geograficos, pendiente SHOA
+  Tierra del Fuego   maritima         solo accidentes geograficos, pendiente SHOA
+  Puerto Williams    maritima         contorno sin ancla que diga cual trozo es
+  Hanga Roa          insular remota   islas sin coordenadas, requiere fuente externa
+  Juan Fernandez     insular remota   islas sin coordenadas, requiere fuente externa
+
+QUE VE HOY UN PATRON QUE NAVEGA AHI: las diez tienen participa_matching = false, o
+sea que el motor no las evalua. Si la capa nueva se consulta por contencion, una
+ruta que pase por Arica NO DEVUELVE NADA. Eso es el falso negativo silencioso que
+INV-3.6 declara el modo de falla mas peligroso del motor, y hoy esta abierto.
+
+  Arica no es zona marginal: es una Gobernacion completa con trafico real.
+
+LO QUE RECOMIENDO, y es independiente de las cinco propuestas:
+
+  R1. ZONA DE AVISO DECLARADA, que NO es geometria de jurisdiccion. A cada nula se le
+      declara un envolvente con estado 'sin limite cargado'. El motor, al no
+      encontrar jurisdiccion por contencion, consulta esos envolventes y responde lo
+      que INV-3.6 manda decir: "No tenemos cargado el limite de esta jurisdiccion —
+      verifica con la Capitania [nombre]: [telefono]".
+      La distincion es la que hace legitimo el envolvente: NO resuelve jurisdiccion
+      — eso lo prohibe INV-3.3 —, dispara un aviso. Son dos cosas distintas y el
+      contrato solo prohibe la primera.
+      El insumo para esto YA EXISTE: las franjas de latitud de GOBERNACIONES en
+      src/utils/capitanias.js, que el frontend usa como aproximacion legacy. Como
+      resolutor son ilegitimas; como disparador de aviso, sirven y no hay que
+      inventar nada. Habria que declararlas explicitamente con ese rol.
+
+  R2. ARICA MERECE MIRARSE APARTE. Su causa es "falta el limite norte". El limite
+      norte de Arica es el limite norte de Chile — la linea de la Concordia. El
+      decreto probablemente lo da por supuesto porque no hay vecino que declarar. Si
+      el owner acepta que el limite norte del pais es el limite norte de Arica, esa
+      jurisdiccion pasa de nula a construible, y es la mas importante de las diez.
+      Es decision de decreto, no mia.
+
+  R3. LIRQUEN Y TALCAHUANO son el mismo problema: el decreto describe el contorno de
+      la Bahia de Concepcion en prosa, sin vertices. Es el mismo tipo de caso que
+      Cochamo — cuerpo de agua nombrado — y P3 podria alcanzarles si la bahia queda
+      determinada por su boca. Vale la pena mirarlo cuando P3 este hecho.
+
+================================================================================
+6. ¿CORRECTA O SOLO PASA LOS CONTROLES? CON QUE SE COMPRUEBA
+================================================================================
+
+Son cosas distintas y hoy solo tenemos la segunda. Los ocho controles son de
+COHERENCIA INTERNA: comprueban que la capa no se contradiga a si misma ni al insumo.
+Ninguno la compara con el mundo. Una capa puede pasar los ocho y estar corrida
+cincuenta kilometros.
+
+HAY UNA VERDAD EXTERNA EN EL REPOSITORIO Y NUNCA SE USO PARA ESTO:
+
+    src/data/bahia-capitania-map.json — 163 bahias SITPORT, cada una con la
+    Capitania que le corresponde, 39 Capitanias distintas.
+
+  Es independiente del decreto: viene de la operacion, no de la derivacion de los
+  parrafos. Y las coordenadas de esas 163 bahias estan en la tabla bahias_sitport.
+
+  LA PRUEBA QUE PROPONGO, y es la mas fuerte que se puede armar hoy:
+    para cada una de las 163 bahias, preguntarle a la capa nueva que jurisdiccion la
+    contiene, y comparar con la Capitania que el mapa le atribuye.
+
+    Mide tres cosas de una vez: cobertura (¿alguna bahia no cae en ninguna?),
+    unicidad (¿alguna cae en dos?) y ACIERTO (¿cae en la que corresponde?).
+
+  ADVERTENCIA DE INDEPENDENCIA, para no repetir el error del conteo de testigos: 43
+  de esas 163 bahias SON los puntos representativos, elegidos justamente de ahi. Para
+  esas 43 la prueba esta acoplada y no prueba nada nuevo — es C4 con otro nombre. Las
+  otras ~120 SI son independientes, y el resultado hay que reportarlo separando los
+  dos grupos. Si se informa el 163 junto, se estaria usando una medicion acoplada
+  para afirmar independencia, que es exactamente la trampa de fase5J.
+
+  SEGUNDA PRUEBA, mas cerca del uso real: las rutas de prueba que ya existen
+  (test-anahuac-quemchi.js y los casos del router). Para cada ruta, que jurisdicciones
+  atraviesa segun la capa nueva y si son las que corresponden. Es debil como control
+  automatico — no hay respuesta esperada escrita — pero es la unica que ejercita el
+  camino completo del motor.
+
+  TERCERA, de contraste: enumerar donde la capa nueva y bahia_jurisdicciones — la
+  Voronoi que el motor consulta hoy — dan Capitanias distintas. No para decidir cual
+  tiene razon, sino para tener la lista de diferencias y mirarlas una por una antes
+  de cambiar la que manda. Un cambio de capa sin esa lista es un cambio a ciegas.
+
+  LO QUE NINGUNA DE LAS TRES PRUEBA: que los poligonos coincidan con los del decreto
+  donde no hay bahias ni rutas. Para eso haria falta cartografia oficial de limites
+  de Capitania, que es justamente lo que no existe y por lo que se emprendio todo
+  esto. Conviene decirlo: la capa se va a poder verificar donde hay actividad, y no
+  en el resto.

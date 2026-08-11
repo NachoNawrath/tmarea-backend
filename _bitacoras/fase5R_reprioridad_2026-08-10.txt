@@ -1,0 +1,182 @@
+================================================================================
+FASE 5 — REPRIORIZACION DESDE PRODUCTO. R1 AL FRENTE, P1 AL FINAL.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+No se aplico nada.
+================================================================================
+
+LO QUE CAMBIA RESPECTO DE FASE5P, Y POR QUE
+
+  Mi orden anterior era de correccion, no de producto: puse primero P1 porque es lo
+  unico que arregla algo INCORRECTO. Medido contra usuarios, P1 es lo unico de las
+  cinco que NO SIRVE A NADIE HOY. Todo su beneficio esta en lon -66..-64, agua del
+  lado atlantico donde no navega ninguno de nuestros usuarios. Baja a ultima.
+
+  Y R1 no era una recomendacion aparte: es lo primero. Es la unica pieza que NO
+  DEPENDE de que la capa se construya. Corre contra lo que el motor consulta hoy.
+  Mientras las cinco propuestas siguen sin capa, R1 se puede entregar.
+
+================================================================================
+1. EL CORREDOR AUSTRAL: CUALES DE LAS CINCO HACEN FALTA
+================================================================================
+
+Corredor de dia 0: Puerto Montt - Melinka. Atraviesa Puerto Montt, Calbuco, Ancud,
+Quemchi, Castro, Chonchi, Quellon, Rio Negro Hornopiren, Chaiten y Melinka.
+
+  P4'  NECESARIA. Maullin cubre hoy el Seno de Reloncavi y el Golfo de Ancud sin que
+       el decreto se los de. Una ruta que sale de Puerto Montt devuelve MAULLIN como
+       Capitania atravesada. Es una Capitania de mas en la cara del patron, en el
+       primer tramo del corredor. Se lleva Maullin x Puerto Montt (860) y Calbuco x
+       Maullin (41).
+
+  P3   NECESARIA. Cochamo cubre hoy medio pais, incluido lo de Hornopiren, que esta
+       sobre la traza. Mismo defecto: Capitania de mas. Se lleva Cochamo x
+       Hornopiren (532).
+
+  P2   NECESARIA Y LA MAS BARATA. El pedazo de mar interior de Chaiten x Chonchi
+       cae en el Golfo de Corcovado, que es por donde pasa el tramo Chiloe-Melinka.
+       Y no toca codigo: es declarar una frontera en el insumo, como se hizo con
+       Quemchi x Hornopiren.
+
+  P5   CORREDOR, PERO MENOR. Los 28 km2 de Castro x Chonchi estan en el interior de
+       Chiloe, sobre la traza, pero son 28 km2 y el efecto en el patron es que en
+       una franja chica vería dos Capitanias en vez de una. Hace falta para que C3
+       pase, no para que el producto sirva.
+
+  P1   NO SIRVE AL CORREDOR. Cero. Su beneficio esta integramente en el borde
+       oriental de la caja y en la franja oceanica de las jurisdicciones del norte,
+       donde hoy no hay usuarios. Sigue siendo correcta y sigue habiendo que
+       hacerla; no es lo que desbloquea producto.
+
+  IMPORTANTE — P3 y P4' se llevan tambien el artificio del borde de la caja de SUS
+  pares, porque al acotar a Cochamo y a Maullin dejan de llegar a lon -65. Y P4'
+  hace lo mismo con Chaiten. O sea que buena parte de lo que P1 iba a limpiar en los
+  seis pares lo limpian igual P3 y P4'. Lo que P1 arregla y nadie mas es la franja
+  oceanica de las jurisdicciones de receta banda_paralelos, que son las del norte.
+
+  ORDEN QUE PROPONGO AHORA
+      R1  ->  P2  ->  P4'  ->  P3  ->  P5  ->  medir C3  ->  P1
+  con auditoria y medicion entre cada una, como quedo acordado.
+
+  R1 primero porque entrega sin depender de nada. P2 segundo porque es declarar un
+  campo y ya. P4' y P3 despues, que son las dos que limpian el corredor. P5 para
+  cerrar C3. P1 al final, como deuda declarada y no como olvido.
+
+================================================================================
+2. R1 — LO QUE FALTABA: DONDE APARECE EL AVISO
+================================================================================
+
+Tenia razon el owner: sin interfaz, R1 esta a medias. Son TRES piezas y solo las
+tres juntas cumplen INV-3.6.
+
+  (a) BACKEND. Cuando la resolucion por contencion no devuelve jurisdiccion, hoy se
+      devuelve vacio. Tiene que devolver el aviso declarado: nombre de la Capitania
+      probable, telefono, y el estado 'sin limite cargado'. El dato ya existe —
+      src/utils/capitanias.js tiene las franjas y los telefonos —, lo que falta es
+      declararlo con ese rol y que el endpoint lo use cuando no hay respuesta.
+
+  (b) FRONTEND, en P3. El bloque existe y hasta tiene el estilo listo:
+      src/components/verification/TransitRestrictionsBlock.jsx ya maneja estados y
+      trae 'indeterminado' en ambar. El aviso entra ahi como una tarjeta mas, con el
+      mismo layout de cuatro lineas que ya usan las restricciones:
+         linea 1  el tramo o la zona
+         linea 2  la Capitania probable + telefono clickeable (tel:)
+         linea 3  "No tenemos cargado el limite de esta jurisdiccion"
+         linea 4  "Verifica con la Capitania antes de zarpar"
+      Se ve igual que lo demas y no inventa un lenguaje nuevo.
+
+  (c) EL VEREDICTO. Esta es la pieza que hace la diferencia entre honesto y
+      decorativo, y es la que hay que discutir con el owner porque toca el motor:
+      si la ruta cruza una zona sin limite cargado, el veredicto NO PUEDE decir que
+      esta todo despejado. Una tarjeta ambar debajo de un veredicto verde la anula.
+      Lo minimo coherente con INV-3.6 es que ese tramo empuje el veredicto a
+      consultar. Como se expresa exactamente en la escala Q/U/UV lo decide el owner:
+      es una regla del motor y el motor no se toca sin autorizacion.
+
+  SIN (c), R1 es una tarjeta que nadie mira. Con (c), es la promesa de INV-3.6
+  cumplida.
+
+  ALCANCE REAL DE R1, mas grande de lo que parecia: no cubre solo a las diez sin
+  geometria. Cubre CUALQUIER punto de la ruta donde la capa no resuelva — un hueco
+  entre poligonos, una zona que ninguna jurisdiccion reclama, la faja del Golfo de
+  Corcovado que quedo sin dueño en el analisis de P2. Hoy todos esos casos devuelven
+  silencio.
+
+================================================================================
+3. LA PRUEBA DE LAS 163 BAHIAS: QUE SIGNIFICA CADA DISCREPANCIA
+================================================================================
+
+La critica es correcta: una prueba cuyo resultado no se sabe interpretar no es una
+prueba. Antes de correrla, lo medido y la interpretacion declarada.
+
+LO QUE HAY, MEDIDO
+  163 bahias en src/data/bahia-capitania-map.json
+    139 con Capitania atribuida, 24 sin ninguna
+     38 nombres distintos de Capitania; 37 matchean una jurisdiccion del insumo
+        el que no: 'Guayacan' — hay que resolver que es antes de correr nada
+      8 bahias atribuidas a una jurisdiccion SIN GEOMETRIA
+     38 bahias SON el punto representativo de alguna jurisdiccion -> ACOPLADAS
+    ~93 bahias verdaderamente independientes
+
+  Las 38 acopladas no prueban nada nuevo: para ellas la prueba es C4 con otro
+  nombre. Van reportadas aparte SIEMPRE. Informar las 163 juntas seria usar una
+  medicion acoplada para afirmar independencia — la trampa de fase5J otra vez.
+
+LAS TRES CLASES, CON SU SIGNIFICADO Y SU ACCION, DECLARADAS DE ANTEMANO
+
+  CLASE A — la bahia no cae en NINGUNA jurisdiccion.
+    A1  su Capitania atribuida es una de las diez sin geometria (8 casos esperados).
+        No es defecto: es la carencia ya declarada, y es la confirmacion de que R1
+        hace falta.
+    A2  su Capitania atribuida SI tiene geometria construida.
+        DEFECTO DE LA CAPA, sin ambiguedad posible: el poligono no cubre agua que su
+        propia Capitania opera. No hay lectura alternativa — el mapa no esta
+        opinando sobre limites, esta diciendo que ahi hay una bahia operativa.
+        PASS/FAIL: tiene que ser CERO.
+
+  CLASE B — la bahia cae en DOS O MAS jurisdicciones.
+    Traslape. Tiene que estar entre los declarados deliberados; si no, es defecto de
+    construccion, que es lo mismo que ya audita C3.
+    PASS/FAIL: cero fuera de los declarados.
+
+  CLASE C — cae en UNA, pero distinta de la atribuida. LA AMBIGUA.
+    REGLA DECLARADA DE ANTEMANO: el mapa NO revoca a la capa. La capa se deriva del
+    D.S. 991, que es la fuente que INV-3.3 fija; el mapa es una conveniencia
+    operativa sin fuente citada, y ya se sabe que en su version anterior tenia
+    errores — se construyo justamente para arreglar los falsos match de
+    Calbuco->Puerto Montt.
+    PERO la discrepancia es SEÑAL, y se trabaja una por una:
+      - se lee el parrafo del decreto de las DOS Capitanias en juego;
+      - si el texto respalda al MAPA, encontramos un error en NUESTRA transcripcion:
+        se corrige el insumo con su cita, como manda INV-3.7;
+      - si el texto respalda a la CAPA, el mapa esta desactualizado o es operativo y
+        se registra la diferencia con su motivo.
+    NO ES PASS/FAIL, y no le pongo umbral numerico: cualquier numero seria
+    arbitrario. La condicion para promover la capa es que TODA discrepancia de clase
+    C este adjudicada con cita del decreto. Cero sin mirar, no cero de resultado.
+
+  LO QUE LA PRUEBA NO PUEDE DECIR, y conviene escribirlo antes de verla: nada sobre
+  las zonas donde no hay bahias. La capa se va a poder verificar donde hay
+  actividad; en el resto queda sin verificar, y eso es una propiedad del problema,
+  no del metodo.
+
+================================================================================
+4. LO QUE ESTO SIGNIFICA PARA EL ALCANCE
+================================================================================
+
+  HAY PRODUCTO CUANDO: R1 entregado con sus tres piezas, y P2 + P4' + P3 aplicadas y
+  auditadas. Ahi el corredor austral resuelve bien y el resto del territorio, sin
+  capa o con capa incompleta, AVISA en vez de callar.
+
+  P5 hace falta para que C3 pase y con eso para que la capa exista como tal. Si se
+  quisiera producto antes de que C3 pase, habria que decidir que hacer con la capa a
+  medio construir, y eso es otra conversacion — no la abro por mi cuenta.
+
+  P1 queda como deuda declarada, con su motivo escrito: la capa contiene agua del
+  lado atlantico en las figuras oceanicas del norte. Esta medido, esta dicho, y no
+  toca a ningun usuario de hoy.
+
+  LAS DIEZ SIN GEOMETRIA no se resuelven con ninguna de las cinco y no se van a
+  resolver pronto: seis necesitan carta SHOA o fuente externa. R1 es lo que hace que
+  eso sea aceptable en vez de peligroso. Arica es la excepcion que conviene mirar
+  aparte (R2): su limite norte es el del pais, y si el owner lo acepta pasa de nula
+  a construible.

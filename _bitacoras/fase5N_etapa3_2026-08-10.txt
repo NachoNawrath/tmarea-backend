@@ -1,0 +1,233 @@
+================================================================================
+FASE 5 — ETAPA 3. CONSTRUCCION. LA CAPA NO QUEDO, Y EL MOTIVO ES EXACTAMENTE EL
+QUE EL OWNER DIJO QUE NO SE RESOLVIA EN ESTA SESION.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+Evidencia cruda: _bitacoras/fase5N_etapa3_2026-08-10/  (00 a 01)
+================================================================================
+
+RESULTADO EN UNA LINEA
+  Siete de los ocho controles PASAN. Falla C3, y falla con los SEIS PARES de
+  separacion lateral — ni uno mas, ni uno distinto. La transaccion se deshizo
+  entera: jurisdicciones_ds991 NO EXISTE. No hay capa a medias.
+
+LA TENSION QUE HAY QUE RESOLVER, Y NO ES MIA
+  Los criterios de resultado dicen "cero traslapes salvo Puyehue". El encargo dice
+  tambien que los seis pares de separacion lateral NO se resuelven en esta sesion y
+  que se reporten. Las dos cosas juntas no se pueden: mientras los seis esten sin
+  resolver, C3 falla y no hay capa.
+  NO lo destrabé por mi cuenta. Declararlos "traslape deliberado" en el dato los
+  haria pasar, pero eso es cambiar el criterio acordado y ademas anticipar una
+  decision de decreto que el owner se reservo. Lo que se puede hacer esta al final,
+  en la seccion 5, para que sea una linea de decision y no un trabajo.
+
+================================================================================
+1. LOS OCHO CONTROLES
+================================================================================
+
+  [ok   ] C1 sin geometria vacia, de area cero o invalida .......... 0
+  [ok   ] C2 toda nula declarada con su causa ..................... 0
+  [FALLA] C3 cero traslapes fuera de los declarados deliberados ... 6
+  [ok   ] C4 cada jurisdiccion contiene su punto representativo .... 0
+  [ok   ] C5 construida sin testigo trae su causa declarada ........ 0
+  [ok   ] C6 el ensanche solo donde hay tramo litoral .............. 0
+  [ok   ] C7 indice espacial presente ............................. 1
+  [ok   ] C8 el ensanche no crea traslapes que no existieran sin el  0   <- nuevo
+
+  C4 = 0 CONTESTA LA PREGUNTA DE LOS DOS TESTIGOS PENDIENTES. Puerto Montt y Rio
+  Negro Hornopiren ESTAN DENTRO de su figura. Eran los dos que el auditor dejaba en
+  'pendiente de la costa' desde el principio, porque caian en el ensanche hacia
+  tierra y sin capa de costa no habia con que resolverlos. Con la costa cargada y el
+  ensanche aplicado, los dos entran. Y no es que el control los ignore: C4 cuenta
+  los testigos que caen FUERA, y conto cero sobre 48 jurisdicciones con testigo.
+
+  Puyehue quedo exento como corresponde: Lago Ranco x Puerto Varas = 155,426 km2
+  aparece en la lista de traslapes y NO en los que C3 reprueba, porque el traslape
+  deliberado sale del dato (cotejo_lacustre_adjudicado.json) y no de una lista en el
+  codigo.
+
+================================================================================
+2. EL ENSANCHE DE LITORAL, MEDIDO TRAMO POR TRAMO
+================================================================================
+
+Los cuatro tramos litoral estan en tres jurisdicciones. Medido comparando la figura
+final contra la figura base — la misma figura sin el corredor —, con la tierra ya
+restada en las dos:
+
+  Puerto Montt          2 tramos   sin ensanche   268,12 km2
+                                   con ensanche 1.003,01 km2   AGREGA  734,89 km2
+  Rio Negro Hornopiren  1 tramo    sin ensanche 1.116,49 km2
+                                   con ensanche 1.847,16 km2   AGREGA  730,67 km2
+  Calbuco               1 tramo    sin ensanche   658,92 km2
+                                   con ensanche   658,83 km2   AGREGA   -0,09 km2
+
+  CALBUCO NO GANA NADA, y el -0,09 es ruido de calculo, no una superficie negativa:
+  es 0,014% de su area, la diferencia entre medir el area de la figura y el area de
+  su interseccion con la base. Lo que dice el numero es que el corredor de Calbuco
+  no aporta agua: o cae sobre tierra, o cae sobre agua que la figura base ya tenia,
+  o queda desconectado y lo descarta la regla de conectividad. Un tramo litoral
+  marcado que no agrega nada no es un error — el marcado describe el decreto, no el
+  resultado — pero conviene saber que ahi el corredor es inerte.
+
+SE COMPORTA COMO ENSANCHE, NO COMO LOSA. Esa era la pregunta y esta contestada por
+medicion, no por argumento:
+
+  C8 = 0. El corredor NO CREA ningun traslape que no existiera sin el.
+
+  Se compararon los doce pares donde interviene una jurisdiccion con ensanche:
+    Maullin x Puerto Montt            final 860,150   sin ensanche 179,193   AGRANDA 4,8x
+    Cochamo x Rio Negro Hornopiren    final 531,757   sin ensanche  26,969   AGRANDA 19,7x
+    Calbuco x Maullin                 final 100,147   sin ensanche 100,146   no lo mueve
+    los otros nueve pares             final 0,000     sin ensanche 0,000     solo se tocan
+                                                                             por el borde
+
+  O SEA: el corredor no abre traslapes nuevos, pero AGRANDA dos de los que ya
+  existian por separacion lateral, uno de ellos casi veinte veces. Eso no lo
+  convierte en losa — sin separacion lateral previa no habria nada que agrandar —,
+  pero significa que la superficie de dos de los seis pares depende de la
+  profundidad del corredor. Cuando el decreto entregue esa separacion, los dos
+  numeros van a bajar solos.
+
+  UNA CORRECCION MIA EN ESTA MEDICION, para que quede. La primera version del
+  reporte etiquetaba "LO CREA EL ENSANCHE" a nueve pares. Era falso: esos nueve
+  tienen interseccion de AREA CERO — figuras que se tocan por el borde, que es lo
+  que ST_Intersects devuelve verdadero sin que haya traslape. Mi veredicto tenia dos
+  casos donde hacian falta tres, y decia que el ensanche creaba nueve traslapes
+  cuando no creaba ninguno. El control C8 estaba bien desde el principio — exige
+  area por encima de la tolerancia —, el que mentia era el texto que lo acompañaba.
+
+================================================================================
+3. LOS SEIS PARES DE SEPARACION LATERAL, CON SU SUPERFICIE Y SU CAUSA
+================================================================================
+
+No se resuelven aca. Se reportan. La causa NO es la misma en los seis: son tres
+causas distintas, y la diferencia importa porque no se arreglan igual.
+
+CAUSA A — EL DECRETO NO LES DA LIMITE POR EL ESTE. El traslape corre hasta el borde
+de la caja de trabajo (lon -64,5), que es un artificio nuestro: lo que las acota ahi
+no es el decreto, somos nosotros.
+
+  Chaiten x Chonchi ................. 3.168,10 km2
+      lon -73,200 .. -64,500   lat -43,008 .. -42,558
+      no declaran frontera compartida
+  Cochamo x Maullin ................. 3.129,83 km2
+      lon -72,654 .. -64,500   lat -41,783 .. -41,204
+      no declaran frontera compartida
+
+  LOS DOS BAJARON MUCHISIMO CON LA COSTA. Medidos sin costa el 2026-08-10 daban
+  43.587,7 y 35.611,1 km2. Ahora dan 3.129,8 y 3.168,1: la costa se llevo el 93% y
+  el 91%. Lo que queda es franja de agua de verdad, no tierra contada como mar.
+
+CAUSA B — LA FRANJA SOLO SE EXTIENDE, NUNCA SE ENCOGE. Esta no es un vacio del
+decreto: es consecuencia de una convencion nuestra, y por eso se puede decidir.
+
+  Castro x Chonchi .................... 882,59 km2
+      lon -77,855 .. -73,617   lat -42,583 .. -42,558
+      SI declaran frontera compartida: par__castro__chonchi y pol__castro__chonchi
+
+      Es el unico de los seis que comparte frontera declarada y aun asi se pisa. El
+      motivo esta medido: Castro declara su limite sur en 42 35 00 S (-42,5833) y su
+      contorno cita coordenadas hasta -42,6611; Chonchi declara su limite norte en el
+      MISMO paralelo y su contorno llega hasta -42,5583. La convencion banda() deja
+      que las latitudes citadas EXTIENDAN la franja y nunca la encojan — encogerla
+      dejaria fuera superficie que el decreto nombra, que es INV-3.6 —, asi que las
+      dos franjas incluyen la tira entre -42,583 y -42,558. Son 2,8 km de alto por
+      350 km de largo mar afuera: 882 km2.
+      Su frontera poligonal compartida no lo tapa porque su alcance es local, cuatro
+      vertices entre lon -73,56 y -73,62, pegados a la costa; mar afuera no dice
+      nada, y prolongarla seria hacerle decir lo que el decreto no dice ahi. Y la
+      frontera por paralelo no recorta por diseño: la aplica banda(), que es
+      justamente la que no encoge.
+      Por el Oeste no llega al borde de la caja (-77,855 contra -85,5): ahi la acota
+      el limite exterior de 200 millas, que es convencion nuestra declarada.
+
+CAUSA C — SEPARACION LATERAL EN EL MAR INTERIOR. Manchas compactas en aguas
+interiores, no franjas oceanicas. Ninguna declara frontera compartida.
+
+  Maullin x Puerto Montt .............. 860,15 km2
+      lon -73,098 .. -72,641   lat -41,783 .. -41,473
+      el ensanche la agranda 4,8x: sin corredor serian 179,19 km2
+  Cochamo x Rio Negro Hornopiren ...... 531,76 km2
+      lon -72,813 .. -72,345   lat -42,233 .. -41,965
+      el ensanche la agranda 19,7x: sin corredor serian 26,97 km2
+  Calbuco x Maullin ................... 100,15 km2
+      lon -73,525 .. -72,972   lat -41,783 .. -41,656
+      el ensanche no la mueve
+
+EL CAMINO QUE YA FUNCIONO, y sigue siendo el mismo: el de Ancud — buscar la
+contrapartida en el parrafo de la vecina. Sirve para las de causa A y C, donde el
+decreto podria estar entregando la separacion en el texto de una de las dos sin que
+la derivacion automatica las una. Para la de causa B no hace falta el decreto: hace
+falta decidir si el paralelo compartido separa tambien en la franja oceanica.
+
+================================================================================
+4. DOS ARREGLOS DE INGENIERIA QUE SALIERON DE ESTA ETAPA
+================================================================================
+
+4.1 LA RESTA DE TIERRA PASO DE 18 MINUTOS SIN TERMINAR A 3 MINUTOS.
+    El primer intento corrio la resta como UNA sola sentencia sobre las 44
+    maritimas. A los 18 minutos seguia corriendo sin decir nada: no se podia saber
+    si avanzaba, por cual iba, ni cual era la cara. Se corto — la transaccion se
+    deshace sola, eso funciono — y se partio en un bucle que resta jurisdiccion por
+    jurisdiccion informando cada una con su tiempo.
+    La semantica es identica: cada figura se resta contra la misma tierra y las
+    filas no dependen entre si. Todo sigue dentro de la misma transaccion.
+    El resultado no fue solo visibilidad: las 44 terminaron en ~3 minutos, y la
+    mayoria en fracciones de segundo. La sentencia unica no era lenta por el
+    trabajo, era lenta por su plan. Evidencia 00 contra 01.
+
+4.2 LAS MEDICIONES AHORA SOBREVIVEN AL ROLLBACK.
+    Todo lo de las secciones 2 y 3 se calcula DENTRO de la transaccion que despues
+    se deshace. Si se guardara solo en tablas, una corrida que falla no dejaria
+    ninguna medicion — justo cuando mas se necesita. Salen como NOTICE de psql, que
+    se emiten al ocurrir y no se deshacen.
+    Dos cosas hubo que arreglar para eso: los NOTICE de psql van por stderr, y el
+    constructor solo mostraba stderr cuando la corrida fallaba, o sea que al salir
+    bien se perdian; y capturaba la salida en vez de transmitirla, asi que el
+    progreso no se veia hasta el final. Ahora transmite en vivo con stderr mezclado.
+    Se agrego tambien el volcado del estado de LOS OCHO controles, no solo de los
+    que fallan: una corrida que se cae por uno no dejaba constancia de que los otros
+    siete habian pasado, que es la mitad de lo que hace falta para decidir.
+
+================================================================================
+5. QUE SE PUEDE HACER, PARA QUE SEA UNA DECISION Y NO UN TRABAJO
+================================================================================
+
+La capa esta a un solo control de existir, y ese control falla por una cuestion de
+decreto. Tres caminos, y los tres son del owner:
+
+  A. RESOLVER LA SEPARACION donde el decreto la entregue, con el camino de Ancud —
+     buscar la contrapartida en el parrafo de la vecina. Es lo unico que hace
+     desaparecer el traslape de verdad. Aplica a las causas A y C.
+
+  B. DECIDIR EL CASO CASTRO x CHONCHI, que no necesita decreto nuevo: solo hay que
+     decir si el paralelo 42 35 00 S que las dos citan separa tambien mar afuera.
+     Si la respuesta es si, ese par se va solo y quedan cinco.
+
+  C. DECLARAR LOS QUE QUEDEN como traslape conocido y no resuelto, con su causa, del
+     mismo modo que ya esta declarado Puyehue. La capa se construiria y el motor
+     mostraria de mas en esas zonas, nunca de menos, que es lo que INV-3.4 admite
+     expresamente. Es un cambio del criterio acordado, y por eso no lo tomo yo.
+
+  Lo que NO recomiendo es aflojar C3 a una tolerancia mas alta: los seis van de 100
+  a 3.168 km2, no hay tolerancia que los deje pasar sin dejar pasar tambien
+  cualquier defecto real de construccion.
+
+================================================================================
+6. ESTADO Y VEREDICTO
+================================================================================
+
+  BASE       jurisdicciones_ds991  NO EXISTE. Comprobado despues de la corrida.
+             La transaccion se deshizo entera; no quedo capa a medias ni tablas
+             sueltas.
+             costa_osm / costa_osm_sub cargadas y verificadas, sin cambios.
+             bahia_jurisdicciones sigue siendo la que el motor consulta.
+  MOTOR      intocado.
+  SQL        scripts/fase5_capa_ds991.sql regenerado. Corre entero y se detiene solo
+             en C3.
+  COMMITS    ninguno.
+
+  VEREDICTO: la construccion NO paso sus propios controles y no dejo capa. Siete de
+  ocho pasan. El unico que falla es el que depende de una decision de decreto que el
+  owner se reservo expresamente.
+
+  ALTO.

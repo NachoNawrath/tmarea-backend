@@ -1,0 +1,36 @@
+EL AGUJERO DEL ALCANCE: LA MEDICION QUE JUSTIFICO ESCRIBIR B9
+
+Se muta el alcance de la unica frontera declarada (pol__quemchi__hornopiren,
+meridiano 073 00 00 W entre 42 00 00 S y 42 30 00 S) y se corre la auditoria
+completa. La columna ANTES es la medicion con el auditor de diez familias,
+hecha antes de escribir B9. La columna AHORA se mide en esta misma corrida.
+
+  mutacion                                       ANTES            AHORA
+  ---------------------------------------------- --------------- ---------------
+  ensanchar el alcance al Sur (lat_min -44)      exit=0  nadie    exit=1  B9
+  ensanchar el alcance al Norte (lat_max -40)    exit=0  nadie    exit=1  B9
+  ensanchar los dos lados (-44 .. -40)           exit=0  nadie    exit=1  B9
+  borrar el alcance entero                       exit=0  nadie    exit=1  B9
+  encoger el alcance a un punto (-42 .. -42)     exit=0  nadie    exit=1  B9
+  mover el meridiano de 073W a 072W              exit=1  B2       exit=1  B2,B9
+
+  insumo restaurado byte por byte: True
+
+LECTURA, mutacion por mutacion:
+  ensanchar (los tres casos)  B9.2 lo caza: el borde nuevo no aparece como
+                              coordenada citada en el decreto de la frontera.
+  borrar el alcance           B9.1 lo caza. En la primera version de B9 no lo
+                              cazaba nadie, y con razon aparente: alcance_de()
+                              cae al rectangulo de los puntos, que aca coincide
+                              con el alcance declarado, asi que la figura no
+                              cambia. Pero el hueco era real a plazo — sin el
+                              alcance escrito, mover un vertice mueve calladamente
+                              hasta donde la frontera decide, y se pierde la
+                              constancia de hasta donde se autorizo que dijera.
+                              B9.1 ahora exige que una declarada lo traiga escrito.
+  encoger a un punto          B9.3 lo caza: el alcance -42..-42 deja fuera el
+                              vertice de -42.5, y una frontera no puede decidir
+                              sobre menos que el segmento que es.
+  mover el meridiano          lo cazan B2 y B9. B2 porque las vecinas dejan de
+                              quedar en lados opuestos; B9.3 porque el alcance
+                              declarado ya no contiene los vertices movidos.

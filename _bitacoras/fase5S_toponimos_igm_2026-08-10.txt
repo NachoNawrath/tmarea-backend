@@ -1,0 +1,178 @@
+================================================================================
+FASE 5 — VERIFICACION DE LAS TRES COORDENADAS IGM Y EVALUACION DE CIERRE.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+NO se escribio nada en el insumo: las dos jurisdicciones NO quedan cerrables.
+================================================================================
+
+FUENTE CONSULTADA POR MI CUENTA, no transcrita
+  https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0
+  capa SECCION_L, puntos, campos [fid, objectid, texto, dof], SR nativo 3857.
+  Consultas con outSR=4326 y where=UPPER(texto) LIKE UPPER('%...%'). HTTP 200.
+
+================================================================================
+1. LAS TRES COORDENADAS: CONFIRMADAS
+================================================================================
+
+  PUNTA ANXIOUS          owner  54 07 01 S / 070 56 04 W
+                         IGM    54 07 00.8 S / 070 56 03.7 W   (-54.116886,-70.934365)
+    Un solo 'Punta Anxious' en toda la capa. Confirmado tambien lo de la grafia:
+    la consulta por 'Anxius' — como lo escribe el decreto — devuelve CERO
+    resultados; 'Anxious' devuelve tres, y los otros dos son 'Islotes Anxious'
+    (54 06 58.1 S / 070 57 04.1 W) y 'Faro Islotes Anxious' (54 07 04.4 S /
+    070 57 16.0 W), los dos a menos de 1,5 km. El razonamiento del owner se sostiene.
+
+  FARO PENINSULA BRECKNOCK  owner  54 37 30 S / 071 45 46 W
+                            IGM    54 37 30.4 S / 071 45 46.5 W  (-54.625114,-71.762919)
+    Confirmado como coordenada. Sobre la ELECCION, ver la seccion 3: tengo una
+    objecion medida.
+
+  PUNTA HARRY            owner  52 43 01 S / 070 34 17 W
+                         IGM    52 43 01.2 S / 070 34 16.7 W   (-52.717013,-70.571306)
+    Confirmado, y confirmada la ambiguedad: hay exactamente dos 'Punta Harry'. La
+    otra esta en 53 19 22.7 S / 073 11 20.6 W, que es la que el owner descarta.
+    Verificada la distancia que motiva la eleccion: de la elegida a Cabo San Vicente
+    hay 11,7 km; de la descartada, 197 km. El criterio se sostiene.
+
+================================================================================
+2. FALTA UNA COORDENADA, Y LA NECESITAN LAS DOS: CABO SAN VICENTE
+================================================================================
+
+Los dos textos a destrabar la citan y no venia entre las tres. La consulte:
+
+  'Cabo San Vicente'        52 46 49.2 S / 070 25 57.0 W   (-52.780330,-70.432513)
+  'Faro Cabo San Vicente'   52 46 31.0 S / 070 26 34.1 W   (-52.775275,-70.442805)
+
+  El decreto dice "Cabo San Vicente", no el faro: corresponde el cabo. Los dos estan
+  a 600 m, asi que la eleccion no mueve casi nada, pero se declara igual.
+
+================================================================================
+3. OBJECION A LA ELECCION DE BRECKNOCK
+================================================================================
+
+Hay 19 toponimos con 'Brecknock', y NUEVE de ellos se llaman 'PENÍNSULA BRECKNOCK'
+— la peninsula esta representada por varios puntos, no por uno.
+
+El decreto (CP Punta Arenas) dice:
+  "...y la totalidad de las aguas de los senos adyacentes HASTA LA PENINSULA
+   BRECKNOCK y luego POR EL PARALELO 54 33 00 S hacia el Oceano Pacifico"
+
+  El paralelo 54 33 00 S es -54,5500.
+  El 'PENÍNSULA BRECKNOCK' mas cercano a ese paralelo esta en 54 33 41.7 S
+  (-54,561585): a 1,3 km.
+  El 'Faro Península Brecknock' elegido esta en 54 37 30.4 S (-54,625114): a
+  8,3 km AL SUR del paralelo.
+
+  CON EL FARO, el recorrido costero termina 8,3 km al Sur del paralelo por el que
+  el decreto dice que sigue: queda un salto. Con el punto de peninsula mas al Norte,
+  el empalme es continuo.
+
+  El criterio "marca de navegacion" es bueno en general, pero aca el decreto NO usa
+  Brecknock como marca: lo usa como fin de un recorrido que empalma con un paralelo.
+  RECOMIENDO revisar la eleccion. No la cambio por mi cuenta: la eleccion de
+  toponimo entre homonimos es del owner, igual que las tres anteriores.
+
+================================================================================
+4. ¿QUEDAN CERRABLES? NO. A LAS DOS LES FALTA EL LIMITE ORIENTAL.
+================================================================================
+
+  PUNTA DELGADA
+    "El Estrecho de Magallanes desde la linea imaginaria que une punta Harry y Cabo
+     San Vicente, HASTA EL LIMITE MARITIMO INTERNACIONAL POR EL ORIENTE."
+    Con Punta Harry y Cabo San Vicente ya tiene su linea del Weste. Le falta el
+    limite oriental, que es la linea del Tratado de 1881 entre Punta Dungeness y
+    Cabo del Espiritu Santo.
+      IGM tiene 'Punta Dungeness'  52 23 53.1 S / 068 26 35.9 W.
+      IGM NO tiene 'Espiritu Santo': cero resultados. Es costa ARGENTINA y esta capa
+      es del IGM chileno. El otro extremo de esa linea no sale de esta fuente.
+
+  TIERRA DEL FUEGO
+    "El area oriental de la linea imaginaria que une Cabo San Vicente por el Norte,
+     hasta Punta Anxius por el Sur."
+    Con las dos coordenadas ya tiene su linea. Le faltan DOS cosas:
+      a) limite oriental. No lo declara. Su figura se iria al borde de la caja, y
+         por el Estrecho llega al Atlantico: el mismo defecto de Maullin.
+      b) ANCLA. Es corte_y_ancla y no tiene. El decreto dice "el area oriental",
+         pero el proyecto no decide lados por letra cardinal. Lo limpio seria anclar
+         en uno de los cuerpos que el propio decreto le enumera — Bahia Gente
+         Grande, Bahia Inutil, Canal Whiteside, Canal Gabriel, Seno Almirantazgo —,
+         que sale del decreto y no de una sede.
+
+  LO QUE SI APORTA LA DPA, medido: su borde Este en Magallanes es -68,6066 a lat
+  -53,5 y -68,6083 a lat -54,4, que es el meridiano 68 36 38 W del Tratado de 1881,
+  el limite terrestre en Tierra del Fuego. A la latitud de la boca del Estrecho
+  llega a -68,4184, o sea Punta Dungeness. Trae el limite TERRESTRE donde el decreto
+  lo invoca. Lo que no trae es la linea MARITIMA que cruza la boca del Estrecho,
+  porque es agua y la DPA son poligonos de tierra.
+
+================================================================================
+5. EL HALLAZGO QUE CAMBIA EL ORDEN: PUNTA ARENAS ES HOY UNA FRANJA CRUDA
+================================================================================
+
+  Punta Arenas    receta = banda_paralelos, contorno = 0 puntos
+                  franja 52 30 30 S .. 54 33 00 S, y nada mas.
+
+  O SEA QUE SU FIGURA IGNORA LOS CUATRO TOPONIMOS DE SU PROPIO PARRAFO. El decreto
+  le describe un limite oriental — la linea Punta Harry/Cabo San Vicente, de alli a
+  Punta Anxius, la costa Weste de la Isla Dawson, los Canales Magdalena y Cockburn,
+  hasta la Peninsula Brecknock — y la construccion no usa nada de eso: la cierra
+  como una banda de latitud que barre de -85 a -65.
+
+  CONSECUENCIA DIRECTA, y es lo importante: Tierra del Fuego (lat -52,78 a -54,12) y
+  Punta Delgada (lat ~-52,4 a -52,8) caen ENTERAS dentro de esa franja. Cerrarlas sin
+  rehacer Punta Arenas garantiza traslapes nuevos y grandes contra ella, y C3 se
+  caeria por ahi.
+
+  ASI QUE BRECKNOCK SI IMPORTA, aunque no aparezca en los dos textos a destrabar:
+  es parte del limite oriental de Punta Arenas, y rehacer Punta Arenas es la
+  PRECONDICION para que las otras dos puedan existir. Me corrijo: mi primera lectura
+  fue que Brecknock no destrababa nada. Destraba, en el orden correcto.
+
+  PARA REHACER PUNTA ARENAS haria falta, y ahora esta casi todo:
+      paralelo 52 30 30 S                        ya en el insumo
+      Punta Harry + Cabo San Vicente             VERIFICADAS aca
+      Punta Anxius                               VERIFICADA aca
+      Peninsula Brecknock                        VERIFICADA, con la objecion del 3
+      paralelo 54 33 00 S                        ya en el insumo
+      "la costa Weste de la Isla Dawson"         tramo litoral: lo resuelve la capa
+                                                 de costa, que ya esta cargada
+      "los Canales Magdalena y Cockburn"         cuerpos nombrados: es el mecanismo
+                                                 de P3, todavia sin hacer
+
+================================================================================
+6. QUE RECOMIENDO
+================================================================================
+
+  NO escribo nada en el insumo todavia. El owner condiciono la escritura a que
+  quedaran cerrables, y no quedan.
+
+  Lo que propongo, en orden:
+
+  1. REGISTRAR LAS CUATRO COORDENADAS igual — las tres verificadas mas Cabo San
+     Vicente — como puntos notables con su fuente, su fecha de consulta y su motivo
+     de eleccion. No cierran nada hoy pero son dato verificado contra fuente oficial
+     y no conviene perderlo. Requiere decision del owner sobre Brecknock (seccion 3).
+
+  2. ACTUALIZAR LA CAUSA de las dos nulas. Hoy dicen "el decreto define sus limites
+     solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA". Eso
+     ya no es cierto: los accidentes tienen coordenada oficial. La causa correcta
+     pasa a ser "falta el limite maritimo internacional por el Oriente", que es un
+     pendiente distinto y mucho mas chico. Registrar eso ES progreso aunque sigan
+     nulas, y evita que alguien vuelva a buscar lo que ya esta.
+
+  3. DECIDIR EL LIMITE ORIENTAL. Es del owner y es de tratado, no de decreto:
+     ¿se acepta la linea Punta Dungeness - Cabo del Espiritu Santo del Tratado de
+     1881 como el "limite maritimo internacional por el Oriente"? Si si, hay que
+     conseguir el extremo argentino de otra fuente, porque el IGM chileno no lo trae.
+
+  4. REHACER PUNTA ARENAS antes que cerrar las otras dos. Es la precondicion, y
+     ademas es un defecto en si mismo: hoy es una franja que se lleva de -85 a -65
+     dos grados enteros de latitud austral sin respetar el limite que su propio
+     parrafo le describe.
+
+  ORDEN DENTRO DEL PLAN GENERAL: esto NO desplaza a R1 ni al corredor austral. Punta
+  Arenas, Punta Delgada y Tierra del Fuego estan al Sur del corredor de dia 0. Va
+  despues de R1 + P2 + P4' + P3, y se beneficia de P3 — los Canales Magdalena y
+  Cockburn son cuerpos nombrados, el mismo mecanismo que Cochamo.
+
+  PUERTO WILLIAMS sigue nula, como dijo el owner: el Hito 26 del Canal Beagle no
+  tiene fuente. Confirmado que no sale de esta capa.

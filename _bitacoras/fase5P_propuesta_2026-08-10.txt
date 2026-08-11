@@ -1,0 +1,234 @@
+================================================================================
+FASE 5 — PROPUESTA DE RESOLUCION DE LOS SEIS PARES. RECOMENDACION PRIORIZADA.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+No se aplico nada de esto. Es propuesta.
+================================================================================
+
+RESUMEN EJECUTIVO — QUE RESUELVE MAS CON MENOS
+
+  #   propuesta                              quita      insumo nuevo   decide
+  P1  limite exterior desde tierra CHILENA   ~4.600 km2  NO (ya esta)  ingeniero
+  P2  frontera declarada Chaiten x Chonchi     ~125 km2  NO            OWNER
+  P3  cierre por cuerpo de agua nombrado       ~700 km2  NO            OWNER
+  P4  el anillo cerrado prevalece sobre el     ~800 km2  NO            OWNER
+      contorno abierto
+  P5  alcance de la poligonal por la cadena      28 km2  NO            ingeniero
+      entera y no por su cuerda
+
+  Las cinco juntas dejan el traslape en cero sin un solo dato nuevo. NINGUNA
+  necesita insumo que no tengamos. La que mas quita es la mas barata y no es de
+  decreto: es un error nuestro.
+
+================================================================================
+P1. EL LIMITE EXTERIOR SE MIDE DESDE TIERRA CHILENA. Prioridad maxima.
+================================================================================
+
+EL PROBLEMA, dicho sin rodeos: hoy el limite exterior se construye asi
+
+    ST_Buffer( union de TODA la tierra de ne_land en la caja , 370.400 m )
+
+y eso incluye la costa ATLANTICA de Argentina. Le estamos dando 200 millas de ZEE
+a la costa argentina y despues repartiendo esa agua entre Capitanias chilenas. De
+ahi salen los 4.631 km2 que estan en lon -66..-64 — el 53% de todo el traslape
+medido — y por eso Cochamo x Maullin es 95% agua del otro oceano.
+
+  Esto no es una cuestion de decreto ni una convencion discutible: es incorrecto.
+  Chile no mide su ZEE desde la costa argentina.
+
+LA SOLUCION, y no necesita nada nuevo: cambiar el rol 'limite_exterior' del
+manifiesto de ne_land a la DPA 2023, que es la division administrativa de Chile y
+por lo tanto SU TIERRA. Ya esta descargada (geodata/costa/DPA_2023.zip, 311 MB) y
+ya esta declarada en geodata/costa/capas_costa.json.
+
+  POR QUE LA DPA SIRVE ACA SI SE DESCARTO COMO COSTA. Se descarto porque cierra las
+  bahias con el poligono comunal, y eso arruina una linea de costa. Para un buffer
+  de 200 millas es irrelevante: es el mismo argumento por el que ne_land sigue
+  sirviendo para este rol — el error de cierre son cientos de metros contra 370 km.
+  Lo que la DPA aporta y ne_land no es lo unico que hace falta aca: sabe donde
+  termina Chile.
+
+  COSTO: el cargador ya lee el manifiesto. Hay que agregarle reproyeccion — la DPA
+  viene en EPSG:5360 y la base es 4326 — y correr la carga. Una tarde.
+
+  RIESGO QUE HAY QUE MEDIR ANTES: que la DPA no traiga las islas oceanicas como
+  poligono. Si Juan Fernandez o las Desventuradas faltan, se perderia ZEE legitima,
+  que es exactamente el falso negativo que prohibe INV-3.6. Se comprueba en el
+  cargador antes de aceptar la capa: todo punto declarado del insumo tiene que caer
+  dentro del buffer. Si falla, la capa no entra.
+
+  ALTERNATIVA DESCARTADA — recortar por conectividad, quedandose con el trozo de
+  agua que contiene al testigo. Es elegante, no necesita ningun insumo, y RESUELVE
+  CINCO DE LOS SEIS PARES: medido, los deja todos en cero salvo Castro x Chonchi.
+  Se descarta igual, porque la misma medicion muestra lo que rompe:
+      Corral        12.424,8 km2  ->      27,7 km2
+      Taltal       161.479,1      ->  57.480,9   (pierde 103.998)
+      Caldera      134.756,8      ->  48.384,7
+  Lo que se lleva no es artificio: es la ZEE de las islas oceanicas, que queda
+  separada del cordon costero por el hueco entre las 200 millas de la costa y las
+  200 millas de la isla. Es area maritima legitima y borrarla es un falso negativo.
+  La conectividad no distingue "agua de otro oceano" de "agua chilena de una isla":
+  las dos estan desconectadas. Por eso se ataca la causa — de donde se mide la ZEE —
+  y no el sintoma.
+
+================================================================================
+P2. CHAITEN x CHONCHI: SI, APLICAR LA FRONTERA DECLARADA. Decide el owner.
+================================================================================
+
+RECOMIENDO APLICARLA. Es el mismo caso de Quemchi x Hornopiren, con la misma forma
+de evidencia: las dos mitades estan en el decreto y solo falta el campo.
+
+    meridiano 073 12 00 W, extension entre 42 39 40 S y 43 00 30 S
+
+POR QUE ESE TRAMO Y NO OTRO — que es la parte que hay que argumentar, porque el
+alcance es lo que decide cuanta superficie recorta (es lo que audita B9):
+
+  43 00 30 S, el borde Sur. Lo citan LAS DOS: Chaiten "siguiendo el paralelo
+  43 00 30 S", Chonchi "hasta la Latitud 43 00 30 S". Ahi las dos coinciden en que
+  el meridiano termina. No hay discusion.
+
+  42 39 40 S, el borde Norte. Lo cita Chonchi: es la latitud a la que su contorno
+  LLEGA al meridiano ("luego hacia el Sur hasta la Latitud 42 39 40 S, desde este
+  punto hacia el Este hasta su interseccion con la Longitud 073 12 00 W"). Al Norte
+  de esa latitud el borde Este de Chonchi ya no es 073 12 00 W sino 073 33 30 W.
+
+  POR QUE NO 42 30 00 S, que es lo que Chaiten reclama para su propio borde Weste.
+  Porque una frontera tiene DOS lados, y entre 42 30 00 S y 42 39 40 S la vecina de
+  Chaiten por el Weste NO ES CHONCHI: ahi estan Castro (hasta 42 35 00 S) y despues
+  el borde de Chonchi que corre por otro meridiano. Declarar la frontera hasta
+  42 30 00 S la haria decidir sobre un tramo donde esas dos no se tocan, y ademas
+  pasaria el control B9 sin chistar, porque 42 30 00 S SI esta citado. El control
+  comprueba que el borde tenga respaldo textual; no puede comprobar que el tramo
+  corresponda a esa pareja. Eso lo tiene que argumentar quien la declara, y por eso
+  queda escrito aca.
+
+  LO QUE DEJA SIN RESOLVER, y conviene no taparlo: entre 42 35 00 S y 42 39 40 S,
+  entre los meridianos 073 33 30 W y 073 12 00 W, queda una faja de agua del Golfo
+  de Corcovado que ninguna de las dos reclama en su parrafo. Puede ser de un tercero
+  o puede ser cobertura que falta. Es una pregunta aparte y NO se resuelve estirando
+  esta frontera, que es justamente lo que la regla del alcance prohibe.
+
+  EFECTO ESPERADO: quita la parte de mar interior de este par, ~125 km2 de los
+  1.798 que quedan hoy. El resto — ~1.673 — se lo lleva P1.
+
+================================================================================
+P3. COCHAMO: CIERRE POR CUERPO DE AGUA NOMBRADO. Decide el owner.
+================================================================================
+
+EL DECRETO LO DELIMITA BIEN: "las aguas y el litoral del Estero Reloncavi, desde la
+linea imaginaria que une Morro Chico y Caleta El Milagro". Da la boca con dos
+coordenadas y la extension con un nombre. Falta el mecanismo, no el dato.
+
+COMO SERIA EL MECANISMO MARINO, y la buena noticia es que NO necesita insumo nuevo.
+
+  Para los lagos hizo falta un inventario porque un lago es agua rodeada de tierra
+  que hay que identificar por nombre entre cientos. Un estero NO: es agua rodeada de
+  tierra salvo por su boca, y el decreto NOS DA LA BOCA. Entonces la receta es:
+
+      1. cortar por la linea de la boca, que ya se hace (corte_y_ancla)
+      2. restar la tierra, que ya se hace
+      3. quedarse con el trozo de agua que contiene el ancla
+
+  El paso 3 es la conectividad — la misma que P1 descarta como regla GLOBAL. Aca no
+  es global: se aplica solo a las jurisdicciones que DECLAREN en el dato que su
+  extension la da un cuerpo de agua cerrado. Eso es lo que la hace segura. Corral y
+  Taltal no la declararian y no les pasa nada; Cochamo si, y su figura pasa de medio
+  pais al Estero Reloncavi, que es lo que el decreto dice.
+
+  COMO SE DECLARA, sin nombrar a nadie en el codigo: un campo en la jurisdiccion,
+      "cierre_por_cuerpo_de_agua": {
+         "aplica": true,
+         "cuerpo": "Estero Reloncavi",
+         "cita": "Las aguas y el litoral del Estero Reloncavi, desde la linea
+                  imaginaria que une Morro Chico y Caleta El Milagro",
+         "motivo": "el decreto da la extension por nombre y la boca por coordenadas"
+      }
+  y el constructor lo lee igual que lee 'receta' o 'correccion_al_agua'.
+
+  COSTO: un campo en el insumo, unas veinte lineas en el constructor y su espejo en
+  el auditor, y una familia de mordida que lo pruebe. Un dia.
+
+  EFECTO: quita los dos pares de Cochamo. Hoy suman 3.479 km2; despues de P1 quedan
+  ~704 (172 con Maullin, 532 con Hornopiren) y P3 se los lleva.
+
+  ALTERNATIVA DESCARTADA — buscar un inventario de cuerpos de agua marinos
+  nombrados (OSM natural=bay, cartografia SHOA). Es un tercer insumo, hay que
+  evaluarlo, descargarlo, medirlo y declararlo, y no hace falta: el decreto ya da la
+  boca, que es la unica parte que un inventario aportaria.
+
+  ALTERNATIVA DESCARTADA — declarar a mano el contorno del estero desde la costa.
+  Seria geometria editada a mano, que es exactamente lo que INV-3.7 prohibe.
+
+================================================================================
+P4. MAULLIN SIN LIMITE ORIENTAL: UN SOLO PROBLEMA. Decide el owner.
+================================================================================
+
+SI, ES UNO SOLO Y TIENE UNA SOLA SOLUCION. Maullin aparece en tres de los seis
+pares — con Calbuco, con Puerto Montt y con Cochamo — y la raiz es la misma: su
+contorno son DOS puntos y el decreto no le da limite por el Este. Al restar la
+tierra, su agua entra al mar interior por el Canal Chacao, que es agua conectada de
+verdad, asi que ni P1 ni la conectividad la paran.
+
+LA SOLUCION QUE RECOMIENDO: el anillo cerrado prevalece sobre el contorno abierto.
+
+  Una jurisdiccion descrita como ANILLO CERRADO — Puerto Montt, Calbuco, Rio Negro
+  Hornopiren — tiene una descripcion EXHAUSTIVA: el decreto dice donde empieza y
+  donde termina, sin lado abierto. Una descrita por contorno abierto dice "al menos
+  esto". Donde las dos se pisan, la exhaustiva es la afirmacion mas fuerte y manda.
+
+  No es una preferencia estetica: es la lectura del propio dato. El insumo ya
+  distingue las dos cosas en el campo contorno_cerrado, asi que la regla se escribe
+  sin nombrar a nadie.
+
+  POR QUE NO ROMPE INV-3.4 (mostrar de mas, nunca de menos): el agua que se le quita
+  a Maullin NO queda sin dueño — se la queda Calbuco o Puerto Montt, que la
+  describen enteros. El patron sigue viendo la restriccion; la ve atribuida a la
+  Capitania correcta, que es lo que INV-3.3 exige.
+
+  EFECTO: quita Calbuco x Maullin (40,8) y Maullin x Puerto Montt (755,5). Con P3 ya
+  aplicado, tambien lo que quede de Cochamo x Maullin.
+
+  ALTERNATIVA DESCARTADA — estirar el alcance de pol__maullin__ancud para que corte
+  mas al Este. Es prolongar una frontera a lo largo de si misma, que es precisamente
+  lo que la regla del alcance prohibe y lo que B9 caza.
+
+  ALTERNATIVA DESCARTADA — declarar un limite oriental para Maullin en el Canal
+  Chacao. El decreto no lo dice. Seria inventar dato.
+
+================================================================================
+P5. CASTRO x CHONCHI, LOS 28 km2 QUE QUEDAN. Lo decide el ingeniero.
+================================================================================
+
+Despues de la convencion del paralelo quedan 28,254 km2, dentro del trazo local.
+Diagnostico: pol__castro__chonchi tiene CUATRO vertices, y el corte usa la cadena
+entera pero su ALCANCE se calcula con la cuerda del primero al ultimo. Una cadena en
+escalera no queda cubierta por la banda de su cuerda, y por ahi se cuela la parte
+que no se recorta.
+
+  SOLUCION: calcular el alcance como la union de las bandas de CADA TRAMO de la
+  cadena, en vez de una sola banda sobre la cuerda. Es mas fiel a la regla que ya
+  esta escrita — "se extiende perpendicular a si misma" — porque una cadena en
+  escalera tiene varias perpendiculares, no una.
+
+  Es un arreglo de implementacion, no de criterio, y toca a las 20 fronteras
+  poligonales. Hay que medirlo antes de aplicarlo: puede mover otros pares.
+
+================================================================================
+ORDEN QUE RECOMIENDO, Y POR QUE
+================================================================================
+
+  1. P1 primero, siempre. Es el unico que corrige algo INCORRECTO y no algo
+     indeterminado, no necesita autorizacion de decreto, y se lleva el 53% del
+     problema. Ademas achica todas las figuras oceanicas a su extension real, con lo
+     que todo lo que se mida despues se mide sobre algo que ya no esta inflado.
+  2. P5 despues, porque es del ingeniero y porque conviene tener el alcance bien
+     calculado ANTES de declarar la frontera de P2.
+  3. P2, P3 y P4 en cualquier orden: son independientes entre si y las tres son
+     tuyas. Si hubiera que elegir una sola, P4, que se lleva tres pares con una regla.
+
+  DESPUES DE LAS CINCO el traslape esperado es cero y C3 pasa. Si al aplicarlas
+  quedara algo, es un hallazgo nuevo y se reporta; no se afloja C3.
+
+  LO QUE NO RECOMIENDO, y lo repito porque es tentador: declarar los seis como
+  traslape deliberado para que la capa se construya. Cinco de los seis tienen
+  solucion sin insumo nuevo y sin tocar el decreto. Declararlos seria congelar como
+  intencion lo que es un defecto de construccion.

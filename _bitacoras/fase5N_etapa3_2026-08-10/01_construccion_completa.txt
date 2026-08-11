@@ -1,0 +1,187 @@
+FASE 5, ETAPA B — CONSTRUCCION
+  salida   : scripts\fase5_capa_ds991.sql
+  tierra   : costa_osm_sub   [osm_land_polygons, sha e3570af698dd]
+  ext.     : ne_land, buffer de 370400 m
+  ensanche : 60 km, solo en tramos litoral
+
+NOMBRE                   AMBITO          RECETA           LIT ESTADO           FRONTERAS
+--------------------------------------------------------------------------------------------------------------------------
+Arica                    maritima        -                  0 nula_declarada   
+Iquique                  maritima        banda_paralelos    0 construida       
+Patache                  maritima        banda_paralelos    0 construida       
+Tocopilla                maritima        banda_paralelos    0 construida       
+Mejillones               maritima        banda_paralelos    0 construida       
+Antofagasta              maritima        banda_paralelos    0 construida       
+Taltal                   maritima        banda_paralelos    0 construida       
+Chanaral                 maritima        banda_paralelos    0 construida       
+Caldera                  maritima        banda_paralelos    0 construida       
+Huasco                   maritima        banda_paralelos    0 construida       
+Hanga Roa                insular_remota  -                  0 nula_declarada   
+Coquimbo                 maritima        banda_paralelos    0 construida       
+Tongoy                   maritima        banda_paralelos    0 construida       
+Los Vilos                maritima        banda_paralelos    0 construida       
+Papudo                   maritima        banda_paralelos    0 construida       
+Quintero                 maritima        banda_paralelos    0 construida       
+Valparaiso               maritima        banda_paralelos    0 construida       
+Juan Fernandez           insular_remota  -                  0 nula_declarada   
+Algarrobo                maritima        banda_paralelos    0 construida       
+San Antonio              maritima        banda_paralelos    0 construida       
+Pichilemu                maritima        banda_paralelos    0 construida       
+Lago Rapel               lacustre        union_cuerpos      0 construida       
+Constitucion             maritima        banda_paralelos    0 construida       
+Lirquen                  maritima        corte_y_ancla      0 nula_declarada   
+Talcahuano               maritima        corte_y_ancla      0 nula_declarada   
+San Vicente              maritima        banda_paralelos    0 construida       
+Coronel                  maritima        banda_paralelos    0 construida       
+Lota                     maritima        banda_paralelos    0 construida       
+Lebu                     maritima        banda_paralelos    0 construida       
+Carahue                  maritima        banda_paralelos    0 construida       
+Lago Villarrica          lacustre        union_cuerpos      0 construida       
+Lago Panguipulli         lacustre        union_cuerpos      0 construida       
+Lago Ranco               lacustre        union_cuerpos      0 construida       
+Valdivia                 maritima        corte_y_ancla      0 construida       pol__valdivia__corral
+Corral                   maritima        corte_y_ancla      0 construida       pol__valdivia__corral
+Puerto Varas             lacustre        union_cuerpos      0 construida       
+Puerto Montt             maritima        anillo             2 construida       pol__puerto_montt__calbuco,pol__puerto_m
+Maullin                  maritima        corte_y_ancla      0 construida       pol__maullin__ancud
+Calbuco                  maritima        anillo             1 construida       pol__calbuco__ancud,pol__calbuco__hornop
+Rio Negro Hornopiren     maritima        anillo             1 construida       pol__calbuco__hornopiren,pol__quemchi__h
+Cochamo                  maritima        corte_y_ancla      0 construida       pol__puerto_montt__cochamo
+Ancud                    maritima        corte_y_ancla      0 construida       pol__calbuco__ancud,pol__maullin__ancud
+Quemchi                  maritima        corte_y_ancla      0 construida       pol__quemchi__achao,pol__quemchi__hornop
+Chaiten                  maritima        corte_y_ancla      0 construida       pol__chaiten__quellon
+Achao                    maritima        anillo             0 construida       pol__achao__castro,pol__quemchi__achao
+Castro                   maritima        corte_y_ancla      0 construida       pol__achao__castro,pol__castro__chonchi
+Chonchi                  maritima        corte_y_ancla      0 construida       pol__castro__chonchi,pol__chonchi__quell
+Quellon                  maritima        corte_y_ancla      0 construida       pol__chaiten__quellon,pol__chonchi__quel
+Melinka                  maritima        corte_y_ancla      0 construida       pol__melinka__puerto_cisnes
+Puerto Cisnes            maritima        corte_y_ancla      0 construida       pol__melinka__puerto_cisnes,pol__puerto_
+Puerto Aguirre           maritima        corte_y_ancla      0 construida       pol__puerto_aguirre__puerto_chacabuco,po
+Puerto Chacabuco         maritima        corte_y_ancla      0 construida       pol__puerto_aguirre__puerto_chacabuco
+Lago General Carrera     lacustre        union_cuerpos      0 construida       
+Baker                    maritima        -                  0 nula_declarada   
+Puerto Eden              maritima        -                  0 nula_declarada   
+Puerto Natales           maritima        banda_paralelos    0 construida       
+Punta Arenas             maritima        banda_paralelos    0 construida       
+Punta Delgada            maritima        -                  0 nula_declarada   
+Tierra del Fuego         maritima        -                  0 nula_declarada   
+Puerto Williams          maritima        corte_y_ancla      0 nula_declarada   
+Bahia Fildes             antartica       anillo             0 construida       
+Puerto Soberania         antartica       anillo             0 construida       
+Rada Covadonga           antartica       anillo             0 construida       
+Bahia Paraiso            antartica       anillo             0 construida       
+
+CONTEO POR RECETA
+  -                        7
+  anillo                   8
+  banda_paralelos          26
+  corte_y_ancla            17
+  union_cuerpos            6
+CONTEO POR ESTADO
+  construida               54
+  nula_declarada           10
+
+SECTORES construidos: 0
+NULAS DECLARADAS, CON SU CAUSA
+  Arica                    el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno q
+  Hanga Roa                el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; r
+  Juan Fernandez           el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; r
+  Lirquen                  La prosa describe el contorno de la Bahia de Concepcion sin dar sus vertices. La
+  Talcahuano               El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al Sur de 
+  Baker                    el decreto no entrega con que cerrar: falta el limite sur, y no hay contorno que
+  Puerto Eden              el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno q
+  Punta Delgada            El decreto define sus limites solo por accidentes geograficos sin coordenadas. P
+  Tierra del Fuego         El decreto define sus limites solo por accidentes geograficos sin coordenadas. P
+  Puerto Williams          el contorno parte el espacio en dos y no hay ancla que diga cual de los dos troz
+
+Aplicando con C:\Program Files\PostgreSQL\16\bin\psql.exe sobre mapa_navegacion@localhost...
+la tabla «jurisdicciones_ds991_convenciones» no existe, omitiendo
+la tabla «jurisdicciones_ds991_procedencia» no existe, omitiendo
+la tabla «jurisdicciones_ds991_sectores» no existe, omitiendo
+la tabla «jurisdicciones_ds991» no existe, omitiendo
+tierra restada 1/44 Achao en 00:00:00.06254
+tierra restada 2/44 Algarrobo en 00:00:00.028733
+tierra restada 3/44 Ancud en 00:00:00.18732
+tierra restada 4/44 Antofagasta en 00:00:00.185374
+tierra restada 5/44 Calbuco en 00:00:00.1103
+tierra restada 6/44 Caldera en 00:00:00.04914
+tierra restada 7/44 Carahue en 00:00:00.119646
+tierra restada 8/44 Castro en 00:00:00.042883
+tierra restada 9/44 Chaiten en 00:00:00.455505
+tierra restada 10/44 Chanaral en 00:00:00.118354
+tierra restada 11/44 Chonchi en 00:00:00.451199
+tierra restada 12/44 Cochamo en 00:00:00.420696
+tierra restada 13/44 Constitucion en 00:00:00.043207
+tierra restada 14/44 Coquimbo en 00:00:00.170145
+tierra restada 15/44 Coronel en 00:00:00.011658
+tierra restada 16/44 Corral en 00:00:00.381641
+tierra restada 17/44 Rio Negro Hornopiren en 00:00:00.459242
+tierra restada 18/44 Huasco en 00:00:00.073497
+tierra restada 19/44 Iquique en 00:00:01.406725
+tierra restada 20/44 Lebu en 00:00:00.027065
+tierra restada 21/44 Los Vilos en 00:00:00.148569
+tierra restada 22/44 Lota en 00:00:00.36978
+tierra restada 23/44 Maullin en 00:00:01.44054
+tierra restada 24/44 Mejillones en 00:00:00.031984
+tierra restada 25/44 Melinka en 00:00:04.149056
+tierra restada 26/44 Papudo en 00:00:00.157227
+tierra restada 27/44 Patache en 00:00:00.076815
+tierra restada 28/44 Pichilemu en 00:00:00.0455
+tierra restada 29/44 Puerto Aguirre en 00:00:05.073464
+tierra restada 30/44 Puerto Chacabuco en 00:00:10.499741
+tierra restada 31/44 Puerto Cisnes en 00:00:05.179193
+tierra restada 32/44 Puerto Montt en 00:00:00.209519
+tierra restada 33/44 Puerto Natales en 00:01:00.982729
+tierra restada 34/44 Punta Arenas en 00:01:20.955051
+tierra restada 35/44 Quellon en 00:00:00.532617
+tierra restada 36/44 Quemchi en 00:00:00.143124
+tierra restada 37/44 Quintero en 00:00:00.048568
+tierra restada 38/44 San Antonio en 00:00:00.109485
+tierra restada 39/44 San Vicente en 00:00:00.301576
+tierra restada 40/44 Taltal en 00:00:00.090236
+tierra restada 41/44 Tocopilla en 00:00:00.049813
+tierra restada 42/44 Tongoy en 00:00:00.016546
+tierra restada 43/44 Valdivia en 00:00:00.27043
+tierra restada 44/44 Valparaiso en 00:00:00.328235
+la tabla «jurisdicciones_ds991_ensanche» no existe, omitiendo
+la tabla «jurisdicciones_ds991_traslape_ensanche» no existe, omitiendo
+--- ENSANCHE DE LITORAL, SUPERFICIE QUE AGREGA ---
+  Puerto Montt (2 tramo(s) litoral): sin ensanche 268.12 km2, con ensanche 1003.01 km2, agrega 734.89 km2
+  Rio Negro Hornopiren (1 tramo(s) litoral): sin ensanche 1116.49 km2, con ensanche 1847.16 km2, agrega 730.67 km2
+  Calbuco (1 tramo(s) litoral): sin ensanche 658.92 km2, con ensanche 658.83 km2, agrega -0.09 km2
+--- TRASLAPES DONDE INTERVIENE UNA CON ENSANCHE ---
+  Maullin x Puerto Montt: final 860.150 km2, sin ensanche 179.193 km2 -> ya existia sin el, y el ensanche lo AGRANDA 4.8x
+  Cochamo x Rio Negro Hornopiren: final 531.757 km2, sin ensanche 26.969 km2 -> ya existia sin el, y el ensanche lo AGRANDA 19.7x
+  Calbuco x Maullin: final 100.147 km2, sin ensanche 100.146 km2 -> ya existia sin el, el ensanche no lo mueve
+  Chaiten x Rio Negro Hornopiren: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+  Cochamo x Puerto Montt: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+  Calbuco x Rio Negro Hornopiren: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+  Calbuco x Puerto Montt: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+  Calbuco x Quemchi: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+  Achao x Rio Negro Hornopiren: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+  Rio Negro Hornopiren x Quemchi: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+  Ancud x Calbuco: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+  Ancud x Rio Negro Hornopiren: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+--- TODOS LOS TRASLAPES ENTRE FIGURAS FINALES ---
+  Chaiten (maritima) x Chonchi (maritima) = 3168.101 km2  |  lon -73.200 .. -64.500  lat -43.008 .. -42.558
+  Cochamo (maritima) x Maullin (maritima) = 3129.828 km2  |  lon -72.654 .. -64.500  lat -41.783 .. -41.204
+  Castro (maritima) x Chonchi (maritima) = 882.589 km2  |  lon -77.855 .. -73.617  lat -42.583 .. -42.558
+  Maullin (maritima) x Puerto Montt (maritima) = 860.150 km2  |  lon -73.098 .. -72.641  lat -41.783 .. -41.473
+  Cochamo (maritima) x Rio Negro Hornopiren (maritima) = 531.757 km2  |  lon -72.813 .. -72.345  lat -42.233 .. -41.965
+  Lago Ranco (lacustre) x Puerto Varas (lacustre) = 155.426 km2  |  lon -72.605 .. -72.327  lat -40.725 .. -40.623
+  Calbuco (maritima) x Maullin (maritima) = 100.147 km2  |  lon -73.525 .. -72.972  lat -41.783 .. -41.656
+la tabla «jurisdicciones_ds991_verificacion» no existe, omitiendo
+la tabla «jurisdicciones_ds991_traslapes_ok» no existe, omitiendo
+--- ESTADO DE TODOS LOS CONTROLES ---
+  [ok   ] C1 sin geometria vacia, de area cero o invalida (obtenido 0)
+  [ok   ] C2 toda nula declarada con su causa (obtenido 0)
+  [FALLA] C3 cero traslapes fuera de los declarados deliberados (obtenido 6): Castro x Chonchi = 882.589; Chaiten x Chonchi = 3168.101; Cochamo x Rio Negro Hornopiren = 531.757; Cochamo x Maullin = 3129.828; Maullin x Puerto Montt = 860.150; Calbuco x Maullin = 100.147
+  [ok   ] C4 cada jurisdiccion contiene su punto representativo (obtenido 0)
+  [ok   ] C5 construida sin testigo trae su causa declarada (obtenido 0)
+  [ok   ] C6 el ensanche solo donde hay tramo litoral (obtenido 0)
+  [ok   ] C7 indice espacial presente (obtenido 1)
+  [ok   ] C8 el ensanche no crea traslapes que no existieran sin el (obtenido 0)
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:994: ERROR:  LA CAPA NO CUMPLE SUS PROPIOS CONTROLES:
+  C3 cero traslapes fuera de los declarados deliberados [obtenido=6: Castro x Chonchi = 882.589; Chaiten x Chonchi = 3168.101; Cochamo x Rio Negro Hornopiren = 531.757; Cochamo x Maullin = 3129.828; Maullin x Puerto Montt = 860.150; Calbuco x Maullin = 100.147]
+CONTEXTO:  función PL/pgSQL inline_code_block en la línea 13 en RAISE
+la construccion no paso sus propios controles. No hay capa: la transaccion se deshizo entera. El detalle esta arriba, y las mediciones que alcanzaron a salir como NOTICE tambien: sobreviven al rollback.
