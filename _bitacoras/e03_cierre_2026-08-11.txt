@@ -1,0 +1,171 @@
+================================================================================
+CIERRE — LA PRUEBA DE UN CONTROL YA NO PUEDE ESCRIBIR EL ESTADO PUBLICADO
+Fecha: 2026-08-11.
+Reconocimiento: e03_recon_estado_drift_2026-08-11.txt
+Medicion:       e03_medicion_arg_2026-08-11.txt
+================================================================================
+
+SHELL (CLAUDE.md §7.3): PowerShell 5.1 / Windows. Los comandos de abajo estan en
+sintaxis PowerShell, que es la forma ejecutada.
+
+REGENERAR LA EVIDENCIA
+  cd C:\Users\katia\tmarea-backend
+  node scripts/e03_prueba_mordida_guarda.js
+  node scripts/e01_prueba_mordida_arranque.js
+  node scripts/e01_prueba_mordida_drift.js
+  npm test
+
+EVIDENCIA CRUDA
+  _bitacoras/e03_construccion_2026-08-11/01_mordida_guarda.txt
+  _bitacoras/e03_construccion_2026-08-11/02_mordida_arranque.txt
+  _bitacoras/e03_construccion_2026-08-11/03_mordida_drift.txt
+
+--------------------------------------------------------------------------------
+1. LAS CUATRO PIEZAS
+--------------------------------------------------------------------------------
+
+P1 · arg() reescrito — scripts/e01_control_drift_catalogo.js
+
+  Se recorre el argv UNA vez, de izquierda a derecha, tomando cada --flag con el
+  token siguiente como su valor y saltandolo. Dos propiedades que antes no habia:
+
+    · GANA LA ULTIMA ocurrencia. Antes indexOf devolvia la primera, mientras
+      drift-arranque.js compone --estado REAL y agrega los argumentos de prueba
+      al final. Quien agrega al final espera ganar y obtenia lo contrario.
+    · UN VALOR NUNCA SE LEE COMO FLAG, porque el valor se saltea.
+
+  Y un flag desconocido detiene el control: un --estato mal tipeado se ignoraba
+  entero y la corrida seguia como si nada, que es la misma familia de falla.
+
+  La medicion autorizo tocarlo: cero consumidores de arg() fuera de este archivo,
+  cero caminos que dependieran de la primera ocurrencia, cero tests que la
+  fijaran, y la unica suposicion escrita en el repo pedia lo contrario.
+
+P2 · LA GUARDA — la pieza que cierra la causa
+
+    const ESCRIBE_ESTADO = ESTADO !== null && INSUMO === null;
+
+  Una linea. Una corrida con --insumo lee capturas de disco: es un ORIGEN DE
+  PRUEBA, y no escribe el estado publicado aunque se le pase --estado, con
+  ninguna combinacion de flags.
+
+  NO ES "escribirlo en otro lado". Es no escribirlo. Redirigir a un temporal
+  obliga a acordarse de redirigir, y acordarse ya fallo una vez: la redireccion
+  existia, estaba escrita, estaba documentada, y no funcionaba. Lo que no se
+  puede hacer no hay que recordarlo — que es el criterio que fijo el owner.
+
+  La guarda no actua en silencio: cuando descarta la escritura lo dice por
+  consola con el motivo. Una guarda muda seria otra forma del mismo problema.
+
+P3 · La prueba de arranque — scripts/e01_prueba_mordida_arranque.js
+
+  Deja de pasar --estado temporal: ya no hace falta, porque la proteccion es una
+  propiedad del control y no una precaucion de la prueba. Se borro el temporal y
+  la dependencia de os/mkdtemp.
+
+  Su cabecera llevaba DOS frases falsas —"se redirige a un temporal" y "el ultimo
+  --estado gana"—. Se conservan citadas al pie, con la correccion y su medicion,
+  en vez de borrarlas (§3.3): como se razono importa tanto como la conclusion.
+
+  Y suma M2: la prueba comprueba su propia inocuidad comparando el sha256 del
+  estado publicado antes y despues. Antes lo AFIRMABA en un comentario; ahora lo
+  MIDE. Es la diferencia exacta entre lo que fallo y lo que se pide.
+
+P4 · scripts/e03_prueba_mordida_guarda.js — la mordida de la guarda misma
+
+  Seis intentos de ensuciar el estado publicado por vias distintas, mas control
+  negativo.
+
+--------------------------------------------------------------------------------
+2. LA DEMOSTRACION — SALIDA CRUDA
+--------------------------------------------------------------------------------
+
+2.a — LA GUARDA MUERDE: 6/6 + control negativo. Exit 0.
+
+  sha256 de partida: 261864d56f5266307bae289b44804b0755bf355bfc702c8618d5d041e13cee27
+
+  G1  --insumo alterado + --estado real (la forma que contamino 01d3901)
+      intacto. salida 1. [estado] NO se escribe ... esta corrida usa --insumo
+  G2  --estado real PRIMERO y --insumo despues (el orden de drift-arranque)
+      intacto. salida 1.
+  G3  --estado repetido, real primero y temporal despues (el caso de la prueba)
+      intacto. salida 1.
+  G4  --estado repetido al reves, temporal primero y real despues
+      intacto. salida 1.
+  G5  --insumo repetido, intacto y despues alterado
+      intacto. salida 1.
+  G6  insumo INTACTO + --estado real (origen de prueba aunque el dato este sano)
+      intacto. salida 3.
+
+  Los seis rechazados y los seis diciendo por que. G5 y G6 prueban ademas que
+  arg() ya toma la ULTIMA: G5 sale 1 porque gano el insumo alterado, que va
+  segundo, y G6 sale 3 porque el insumo intacto solo trae drift declarado.
+
+  CONTROL NEGATIVO — la corrida REAL sin --insumo:
+      escribe. salida 3. origen registrado: "consulta en vivo a orion.directemar.cl"
+
+  Una guarda que bloquea todo no sirve: el archivo que D8 exige versionado sigue
+  actualizandose solo en la corrida real.
+
+2.b — EL ESTADO PUBLICADO QUEDA INTACTO TRAS CORRER LA PRUEBA. Exit 0.
+
+  Salida literal de scripts/e01_prueba_mordida_arranque.js:
+
+    estado publicado ANTES : data\catalogo\estado_drift.json
+                    sha256 : 48b37f9c4ecb95f2a2ffd78dc698ae072c8cf5792c000f4afb5dd88e2669dd56
+    M0  control negativo — insumo intacto : NO grita.
+    M1  insumo alterado a proposito       : grita. DRIFT NO DECLARADO
+    estado publicado DESPUES: sha256 48b37f9c4ecb95f2a2ffd78dc698ae072c8cf5792c000f4afb5dd88e2669dd56
+    M2  el estado publicado               : INTACTO tras las dos corridas.
+
+  ES EXACTAMENTE LA PRUEBA QUE ANTES DEL ARREGLO CAMBIABA EL ARCHIVO. Antes:
+  origen pasaba a "insumo en disco: ...insumo_alterado_2026-08-11" y veredicto a
+  DRIFT_NO_DECLARADO. Ahora el sha256 es el mismo antes y despues.
+
+2.c — EL CONTROL SIGUE MORDIENDO: 20/20 + control negativo. Exit 0.
+
+  Las veinte familias M1..M20 de e01_prueba_mordida_drift.js cazan, y M0 no
+  muerde con el insumo intacto. El cambio de arg() no le saco capacidad al
+  control, que era el riesgo de tocarlo.
+
+2.d — SUITE UNITARIA: 76/76, 7 suites, 0 fallos.
+
+--------------------------------------------------------------------------------
+3. LO QUE ESTE CIERRE NO ESTABLECE
+--------------------------------------------------------------------------------
+
+- No se puede reconstruir si el rastro de 01d3901 vino de la prueba de arranque o
+  de una corrida a mano con --insumo y --estado. Los dos producen contenido
+  identico y no hay registro. NO DETERMINADO. Los dos quedan cerrados por la
+  misma guarda — G1 cubre el segundo y G3 el primero.
+- La guarda decide por el ORIGEN (--insumo si o no), no por el contenido. Una
+  corrida en vivo contra un SITPORT que devolviera basura escribiria esa basura
+  al estado. Eso NO es lo que esta etapa cierra: para eso estan las 20 familias
+  del control, que corren sobre el dato. Se dice para que la guarda no se lea
+  como mas de lo que es.
+- Efecto secundario benigno, medido: correr e03_prueba_mordida_guarda.js deja el
+  arbol con un diff de una linea en estado_drift.json, porque su control negativo
+  hace una corrida REAL y esa corrida bumpea ultima_corrida. La huella no cambia
+  —la fecha va aparte y no entra en ella, por diseño de D8—, asi que el diff no
+  significa "cambio el drift". Se restaura con:
+      git checkout -- data/catalogo/estado_drift.json
+
+--------------------------------------------------------------------------------
+4. LA CORRECCION QUE ESTE CIERRE ARRASTRA
+--------------------------------------------------------------------------------
+
+Afirme en el commit f1da328, en e02_construccion_2026-08-11.txt §6 y al reportar
+E0.2 que "npm run drift:mordida escribe sobre el mismo estado_drift.json que npm
+run drift". ES FALSO: esa mordida corre en memoria y nunca escribio el estado.
+
+La conclusion —el archivo publicado traia el resultado de una prueba— era
+correcta. La causa, no. La correccion quedo escrita al pie del §6 de
+e02_construccion_2026-08-11.txt, sin borrar el texto original (§3.3).
+
+El mensaje del commit f1da328 no se puede corregir sin reescribir historia y no
+se reescribe: esta bitacora es su erratum, y el commit de este cierre la cita.
+
+================================================================================
+CERRADO. El hallazgo enrutado en E0.2 queda cerrado. Sin commitear: espera
+autorizacion (§6).
+================================================================================

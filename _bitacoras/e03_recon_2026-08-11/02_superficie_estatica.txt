@@ -1,0 +1,29 @@
+﻿SUPERFICIE ESTATICA DE arg() — evidencia cruda (git grep sobre el arbol en HEAD)
+fecha: 2026-08-11T14:05:07.1983988-04:00
+
+== A. quien usa process.argv.indexOf (la semantica en cuestion) ==
+scripts/e01_control_drift_catalogo.js:39:  const i = process.argv.indexOf(nombre);
+
+== B. los otros lectores de argv del repo, para ver si comparten la funcion ==
+scripts/e01_control_drift_catalogo.js:39:  const i = process.argv.indexOf(nombre);
+scripts/e01_control_drift_catalogo.js:41:  const v = process.argv[i + 1];
+tools/detectar-chokepoints.js:285:  const args = parseArgs(process.argv.slice(2));
+tools/detectar-estructuras-artificiales.js:133:const inputPath = process.argv[2];
+tools/detectar-estructuras-artificiales.js:138:const umbralArg = process.argv.find((a) => a.startsWith('--umbral='));
+
+== C. quien invoca el control ==
+package.json:9:    "drift": "node scripts/e01_control_drift_catalogo.js --estado data/catalogo/estado_drift.json",
+scripts/e01_control_drift_catalogo.js:4:// e01_control_drift_catalogo.js — E0.1 del PLAN_JURISDICCION.md
+scripts/e01_control_drift_catalogo.js:14://   node scripts/e01_control_drift_catalogo.js
+scripts/e01_control_drift_catalogo.js:15://   node scripts/e01_control_drift_catalogo.js --insumo <dir con los 3 JSON>
+scripts/e01_control_drift_catalogo.js:16://   node scripts/e01_control_drift_catalogo.js --raiz <dir> --declaracion <archivo>
+src/services/drift-arranque.js:27:const CONTROL = path.join(RAIZ, 'scripts/e01_control_drift_catalogo.js');
+
+== D. arranque de produccion: con que argsExtra ==
+scripts/e01_prueba_mordida_arranque.js:36:    modulo.revisarDriftEnArranque({ log, argsExtra: ['--estado', ESTADO_TMP, '--insumo', insumo] });
+src/index.js:77:  require('./services/drift-arranque').revisarDriftEnArranque();
+src/services/drift-arranque.js:43:function revisarDriftEnArranque({ log = console, argsExtra = [] } = {}) {
+src/services/drift-arranque.js:68:module.exports = { revisarDriftEnArranque, ESTADO, CONTROL };
+
+== E. unica suposicion sobre el orden escrita en el repo ==
+scripts/e01_prueba_mordida_arranque.js:27:// por argumento, que el control toma porque el último --estado gana.

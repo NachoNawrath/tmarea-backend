@@ -1,0 +1,29 @@
+﻿==============================================================================
+PRUEBA DE MORDIDA — LA GUARDA DEL ESTADO PUBLICADO
+estado publicado: data\catalogo\estado_drift.json
+==============================================================================
+
+sha256 de partida: 261864d56f5266307bae289b44804b0755bf355bfc702c8618d5d041e13cee27
+
+G1  --insumo alterado + --estado real (la forma que contamino 01d3901)    
+    intacto. salida 1. [estado] NO se escribe data\catalogo\estado_drift.json: esta corrida usa --insumo, o sea un origen de prueba. El estado publicado solo lo escribe una corrida en vivo.
+G2  --estado real PRIMERO y --insumo despues (el orden de drift-arranque) 
+    intacto. salida 1. [estado] NO se escribe data\catalogo\estado_drift.json: esta corrida usa --insumo, o sea un origen de prueba. El estado publicado solo lo escribe una corrida en vivo.
+G3  --estado repetido, real primero y temporal despues (el caso de la prueba de arranque)
+    intacto. salida 1. [estado] NO se escribe ..\AppData\Local\Temp\e03-guarda-L6gNy9\estado.json: esta corrida usa --insumo, o sea un origen de prueba. El estado publicado solo lo escribe una corrida en vivo.
+G4  --estado repetido al reves, temporal primero y real despues           
+    intacto. salida 1. [estado] NO se escribe data\catalogo\estado_drift.json: esta corrida usa --insumo, o sea un origen de prueba. El estado publicado solo lo escribe una corrida en vivo.
+G5  --insumo repetido, intacto y despues alterado                         
+    intacto. salida 1. [estado] NO se escribe data\catalogo\estado_drift.json: esta corrida usa --insumo, o sea un origen de prueba. El estado publicado solo lo escribe una corrida en vivo.
+G6  insumo INTACTO + --estado real (origen de prueba aunque el dato este sano)
+    intacto. salida 3. [estado] NO se escribe data\catalogo\estado_drift.json: esta corrida usa --insumo, o sea un origen de prueba. El estado publicado solo lo escribe una corrida en vivo.
+
+------------------------------------------------------------------------------
+CONTROL NEGATIVO — la corrida REAL (sin --insumo) tiene que escribir el estado
+------------------------------------------------------------------------------
+escribe. salida 3. origen registrado: "consulta en vivo a orion.directemar.cl"
+
+==============================================================================
+RESULTADO: 6/6 intentos rechazados + control negativo.
+Ninguna combinacion de flags deja que un origen de prueba escriba el estado,
+y la corrida real lo sigue escribiendo.

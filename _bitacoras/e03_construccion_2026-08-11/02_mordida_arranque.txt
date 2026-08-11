@@ -1,0 +1,16 @@
+﻿==============================================================================
+PRUEBA DE MORDIDA — AVISO DE DRIFT EN EL ARRANQUE
+==============================================================================
+
+estado publicado ANTES : data\catalogo\estado_drift.json
+                sha256 : 48b37f9c4ecb95f2a2ffd78dc698ae072c8cf5792c000f4afb5dd88e2669dd56
+
+M0  control negativo — insumo intacto : NO grita. [drift] drift conocido y declarado, pendiente de decisión :: total 3 · no declaradas 0 · abierta
+M1  insumo alterado a propósito       : grita. [drift] DRIFT NO DECLARADO — apareció una divergencia que nadie había visto :: total 5 · no decl
+
+estado publicado DESPUÉS: sha256 48b37f9c4ecb95f2a2ffd78dc698ae072c8cf5792c000f4afb5dd88e2669dd56
+M2  el estado publicado                : INTACTO tras las dos corridas.
+
+==============================================================================
+RESULTADO: el aviso de arranque grita con drift no declarado, calla sin él,
+           y no toca el estado publicado.

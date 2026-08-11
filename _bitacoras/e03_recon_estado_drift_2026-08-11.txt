@@ -1,0 +1,183 @@
+================================================================================
+RECONOCIMIENTO — LA PRUEBA DE UN CONTROL ESCRIBIENDO EL ESTADO PUBLICADO
+Fecha: 2026-08-11. Hallazgo enrutado en E0.2, retomado antes de E0.3.
+================================================================================
+
+SHELL (CLAUDE.md §7.3): PowerShell 5.1 / Windows. Los comandos de abajo estan en
+sintaxis PowerShell, que es la forma ejecutada.
+
+ALTO. Este reconocimiento CAMBIA EL ALCANCE y ademas CORRIGE UNA AFIRMACION MIA
+YA PUBLICADA. No se construyo nada.
+
+--------------------------------------------------------------------------------
+0. LA CORRECCION, PRIMERO (CLAUDE.md §2)
+--------------------------------------------------------------------------------
+
+En el commit f1da328, en _bitacoras/e02_construccion_2026-08-11.txt §6 y en el
+§8 del plan escribi esto:
+
+    "npm run drift:mordida escribe sobre el MISMO data/catalogo/estado_drift.json
+     que npm run drift."
+
+ES FALSO. Medido: scripts/e01_prueba_mordida_drift.js NO escribe el estado, ni
+puede. Sus unicas escrituras a disco son a directorios temporales creados con
+fs.mkdtempSync (lineas 54-57, 105, 114); corre entero en memoria contra un insumo
+congelado, sin red y sin base. Nunca toco estado_drift.json.
+
+La conclusion —que el archivo publicado traia el resultado de una prueba— era
+correcta y sigue en pie. La causa que le atribui, no. Y la diferencia importa
+porque el arreglo cae en otro lado.
+
+--------------------------------------------------------------------------------
+1. QUE ESCRIBE CADA COSA
+--------------------------------------------------------------------------------
+
+Buscado sobre todo el repositorio excluyendo _bitacoras.
+
+HAY UN SOLO ESCRITOR de data/catalogo/estado_drift.json:
+
+  scripts/e01_control_drift_catalogo.js:215   fs.writeFileSync(ESTADO, ...)
+  guardado por `if (ESTADO)`, y ESTADO sale del argumento --estado.
+
+Y HAY UN SOLO LECTOR:
+
+  src/services/drift-arranque.js:28  (lo nombra para el mensaje de log; el archivo
+  lo consume el humano por diff de git, que es la condicion de D8)
+
+LOS TRES CAMINOS QUE INVOCAN ESE ESCRITOR:
+
+  (1) npm run drift
+      -> e01_control_drift_catalogo.js --estado data/catalogo/estado_drift.json
+      Corrida REAL: sin --insumo, consulta en vivo a orion.directemar.cl.
+      Escribe el estado publicado. Es lo que tiene que hacer.
+
+  (2) src/services/drift-arranque.js:45  (produccion, en cada arranque)
+      -> execFile(node, [CONTROL, '--estado', ESTADO, ...argsExtra])
+      Corrida REAL. Escribe el estado publicado. Correcto.
+
+  (3) scripts/e01_prueba_mordida_arranque.js:36  (PRUEBA)
+      -> revisarDriftEnArranque({ argsExtra: ['--estado', ESTADO_TMP,
+                                              '--insumo', ALTERADO] })
+
+  Y una cuarta forma, a mano, que es la que dejo el rastro en 01d3901:
+  (4) node scripts/e01_control_drift_catalogo.js --insumo <alterado> --estado <real>
+
+--------------------------------------------------------------------------------
+2. POR DONDE COMPARTEN DESTINO — Y POR QUE NO ES UNA CUESTION DE ACORDARSE
+--------------------------------------------------------------------------------
+
+El camino (3) es una PRUEBA y cree que esta protegida. Su cabecera dice:
+
+    "El archivo de estado se redirige a un temporal: esta prueba no pisa
+     data/catalogo/estado_drift.json."
+
+y su linea 26-27 explica el mecanismo:
+
+    "El modulo escribe siempre en su ESTADO fijo; para la prueba se le pasa otro
+     por argumento, que el control toma porque el ultimo --estado gana."
+
+ESA ULTIMA FRASE ES FALSA. El lector de argumentos del control es:
+
+    function arg(nombre, porDefecto) {
+      const i = process.argv.indexOf(nombre);      // <- PRIMERA ocurrencia
+      ...
+    }
+
+Array.prototype.indexOf devuelve la PRIMERA coincidencia, no la ultima.
+Comprobado:
+
+    argv = ['node','x','--estado','REAL','--estado','TMP','--insumo','ALT']
+    indexOf('--estado')     = 2  -> valor: REAL
+    lastIndexOf('--estado') = 4  -> valor: TMP
+
+Y drift-arranque.js:45 arma los argumentos poniendo el --estado REAL PRIMERO:
+
+    [CONTROL, '--estado', ESTADO, ...argsExtra]
+
+O sea que el --estado temporal de la prueba llega SEGUNDO y no gana nunca. La
+prueba escribe el archivo real, con el insumo alterado adentro, mientras su
+propia cabecera afirma que no lo hace.
+
+Esto no es "alguien se olvido de redirigir el estado". Es una redireccion escrita,
+intencional y documentada, que NO FUNCIONA — y que ademas no falla ruidosamente:
+la prueba pasa, informa que el aviso muerde, y el unico rastro es un archivo
+versionado que quedo con otro contenido.
+
+--------------------------------------------------------------------------------
+3. REPRODUCIDO, CON SALIDA CRUDA
+--------------------------------------------------------------------------------
+
+Comandos (PowerShell), ejecutados sobre el arbol limpio en HEAD:
+
+  $h0 = (Get-FileHash data\catalogo\estado_drift.json -Algorithm SHA256).Hash
+  node scripts/e01_prueba_mordida_arranque.js
+  $h1 = (Get-FileHash data\catalogo\estado_drift.json -Algorithm SHA256).Hash
+
+Salida literal:
+
+  ANTES  sha256=E04BA1195CA7C0035122D6317D77C4AC83CB2A5A71A721DC51B74BB0317D2DA3
+  ANTES  origen  =consulta en vivo a orion.directemar.cl
+  ANTES  veredicto=DRIFT_DECLARADO_ABIERTO
+
+  --- corriendo: node scripts/e01_prueba_mordida_arranque.js ---
+  M0  control negativo — insumo intacto : NO grita. [...] total 3 · no declaradas 0
+  M1  insumo alterado a proposito       : grita. [...] total 5 · no decl
+  RESULTADO: el aviso de arranque grita con drift no declarado y calla sin el.
+
+  DESPUES sha256=ACE02E10BCB155CB5BBEBE16EC9513007F34A54E0D913F1A3021D13992FE2387
+  DESPUES origen  =insumo en disco: C:\Users\katia\tmarea-backend\_bitacoras\
+                   e01_drift_catalogo_2026-08-11\insumo_alterado_2026-08-11
+  DESPUES veredicto=DRIFT_NO_DECLARADO
+
+  RESULTADO: EL ESTADO PUBLICADO CAMBIO. La prueba piso el archivo real.
+
+ESE "DESPUES" ES, PALABRA POR PALABRA, LO QUE 01d3901 SUBIO AL REMOTO. El mismo
+origen apuntando al mismo directorio de insumo alterado y el mismo veredicto. La
+prueba de mordida del arranque es el camino que contamino el archivo, y basta
+correrla una vez para reproducirlo.
+
+Archivo restaurado despues de la prueba:
+  git checkout -- data/catalogo/estado_drift.json
+  git diff --stat HEAD -- data/catalogo/estado_drift.json   -> vacio (identico a HEAD)
+
+Nota de honestidad sobre los hashes: el sha256 tras restaurar no coincide con el
+"ANTES" de arriba porque el checkout normaliza fin de linea. La comprobacion que
+vale es `git diff` contra HEAD, que sale vacia.
+
+--------------------------------------------------------------------------------
+4. EN QUE CAMBIA EL ALCANCE
+--------------------------------------------------------------------------------
+
+Lo que NO cambia: el objetivo. Que una prueba no PUEDA escribir el estado real.
+
+Lo que SI cambia:
+
+  a) El archivo a tocar. No es e01_prueba_mordida_drift.js —que ya es inocuo—
+     sino el contrato de argumentos de e01_control_drift_catalogo.js y la forma
+     en que drift-arranque.js los compone.
+
+  b) Aparece un segundo defecto que no estaba en el encargo: el lector de
+     argumentos toma la PRIMERA ocurrencia y hay codigo que asume la ultima. Eso
+     es un bug propio, independiente del estado, y afecta a los cuatro argumentos
+     (--raiz, --insumo, --estado, --declaracion), no solo a --estado.
+
+  c) La superficie es mas chica de lo que yo habia dicho pero mas peligrosa: no
+     hay que "separar dos destinos que se comparten", hay que hacer imposible que
+     un origen de prueba escriba un destino de produccion. Son dos guardas
+     distintas y la segunda es la que el owner pidio.
+
+--------------------------------------------------------------------------------
+5. LO QUE NO ESTA DETERMINADO
+--------------------------------------------------------------------------------
+
+- No se puede reconstruir si el rastro de 01d3901 vino del camino (3) o del (4)
+  hecho a mano. Los dos producen el mismo contenido y no hay registro de cual se
+  corrio. NO DETERMINADO, y no cambia el arreglo: los dos quedan cerrados por la
+  misma guarda.
+- No se midio si otros scripts del repositorio dependen de que arg() tome la
+  primera ocurrencia. Hay que mirarlo antes de cambiar esa semantica.
+
+================================================================================
+ALTO. Cambio de alcance reportado y correccion de una afirmacion publicada.
+No se propuso ni se construyo nada.
+================================================================================

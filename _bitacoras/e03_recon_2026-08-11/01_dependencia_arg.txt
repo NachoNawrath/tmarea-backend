@@ -1,0 +1,41 @@
+﻿MEDICION — ¿ALGO DEPENDE DE QUE arg() TOME LA PRIMERA OCURRENCIA?
+fecha: 2026-08-11T18:04:48.971Z
+shell: PowerShell 5.1 / Windows. Reproducible: node scripts/e03_medir_dependencia_arg.js
+==============================================================================
+
+C1  [CORRIDA REAL]  package.json:9  ("npm run drift")
+    argv: --estado .\data\catalogo\estado_drift.json
+    flags repetidos: ninguno
+    -> indiferente al orden: ningun flag aparece dos veces.
+
+C2  [CORRIDA REAL]  src/index.js:77 -> drift-arranque.js:45, argsExtra = [] (arranque de produccion)
+    argv: --estado .\data\catalogo\estado_drift.json
+    flags repetidos: ninguno
+    -> indiferente al orden: ningun flag aparece dos veces.
+
+C3  [PRUEBA]  e01_prueba_mordida_arranque.js:36 -> drift-arranque.js:45 con argsExtra
+    argv: --estado .\data\catalogo\estado_drift.json --estado /tmp/e01-arranque-XXXX/estado.json --insumo .\_bitacoras\e01_drift_catalogo_2026-08-11\insumo_alterado_2026-08-11
+    flags repetidos: --estado
+    --estado:
+        con PRIMERA (hoy)     -> .\data\catalogo\estado_drift.json
+        con ULTIMA  (asumida) -> /tmp/e01-arranque-XXXX/estado.json
+        quien llama ASUME la ultima (e01_prueba_mordida_arranque.js:27) -> HOY FALLA
+
+C4  [PRUEBA o REAL segun se escriba]  a mano en la terminal (la forma documentada en la cabecera del control)
+    argv: --insumo .\_bitacoras\e01_drift_catalogo_2026-08-11\insumo_alterado_2026-08-11 --estado .\data\catalogo\estado_drift.json
+    flags repetidos: ninguno
+    -> indiferente al orden: ningun flag aparece dos veces.
+
+==============================================================================
+RESUMEN
+==============================================================================
+Caminos de invocacion enumerados        : 4
+Caminos con algun flag repetido         : 1   (solo C3)
+Casos donde primera y ultima difieren   : 1
+Caminos que DEPENDEN de la PRIMERA      : 0
+
+C1, C2 y C4 pasan cada flag UNA sola vez: primera y ultima devuelven lo
+mismo y el cambio de semantica no los toca. C3 es el unico con repeticion
+y asume explicitamente la ULTIMA, que es lo contrario de lo que hay.
+
+Conclusion: NINGUN camino depende del comportamiento actual.

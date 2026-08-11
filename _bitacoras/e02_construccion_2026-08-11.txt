@@ -225,6 +225,28 @@ limpio el sintoma con una corrida en vivo; la causa sigue viva y va a volver a
 morder en la proxima corrida de esa mordida. Es cambio de codigo y no entro en
 E0.2. Sigue abierto.
 
+  ── CORRECCION AL PIE, 2026-08-11 (CLAUDE.md §3.3: se agrega, no se reescribe).
+  EL PARRAFO DE ARRIBA ATRIBUYE MAL LA CAUSA. Medido despues, al cerrar el
+  hallazgo:
+
+  scripts/e01_prueba_mordida_drift.js —lo que corre npm run drift:mordida— NO
+  escribe el estado, ni puede: sus unicas escrituras van a directorios
+  temporales de fs.mkdtempSync y corre entero en memoria.
+
+  Quien escribia el archivo real era scripts/e01_prueba_mordida_arranque.js, la
+  mordida del aviso de arranque. Creia estar redirigiendo el estado a un
+  temporal —lo decia en su cabecera— y no lo lograba, porque arg() del control
+  usaba indexOf, que devuelve la PRIMERA ocurrencia, mientras drift-arranque.js
+  pone su --estado real ANTES de los argumentos de prueba.
+
+  La conclusion del parrafo —que el archivo publicado traia el resultado de una
+  prueba— era correcta y se sostiene. La causa, no.
+
+  Reconocimiento y reproduccion: _bitacoras/e03_recon_estado_drift_2026-08-11.txt
+  Medicion de dependencias:      _bitacoras/e03_medicion_arg_2026-08-11.txt
+  Cierre:                        _bitacoras/e03_cierre_2026-08-11.txt
+  CERRADO el 2026-08-11.
+
 ================================================================================
 E0.2 CERRADA. PLAN_JURISDICCION.md actualizado a v1.7: §7 con la fila de E0.2,
 §5 con D9 y D10, §8 con la entrada de version. Sin commitear: espera

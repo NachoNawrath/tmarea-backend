@@ -1,0 +1,133 @@
+================================================================================
+MEDICION — ¿ALGO DEPENDE DE QUE arg() TOME LA PRIMERA OCURRENCIA?
+Fecha: 2026-08-11. Reconocimiento previo: e03_recon_estado_drift_2026-08-11.txt
+================================================================================
+
+SHELL (CLAUDE.md §7.3): PowerShell 5.1 / Windows. Los comandos de abajo estan en
+sintaxis PowerShell, que es la forma ejecutada.
+
+REGENERAR
+  cd C:\Users\katia\tmarea-backend
+  node scripts/e03_medir_dependencia_arg.js
+
+EVIDENCIA CRUDA
+  _bitacoras/e03_recon_2026-08-11/01_dependencia_arg.txt    enumeracion de caminos
+  _bitacoras/e03_recon_2026-08-11/02_superficie_estatica.txt  git grep sobre HEAD
+
+No se toco nada. Esto es medicion.
+
+--------------------------------------------------------------------------------
+1. LA SUPERFICIE: arg() NO SE COMPARTE CON NADIE
+--------------------------------------------------------------------------------
+
+process.argv.indexOf aparece UNA sola vez en todo el repositorio:
+
+  scripts/e01_control_drift_catalogo.js:39
+
+Los otros dos lectores de argumentos del repositorio usan patrones propios e
+independientes, y no pasan por arg():
+
+  tools/detectar-chokepoints.js:285            parseArgs(process.argv.slice(2))
+  tools/detectar-estructuras-artificiales.js:133  process.argv[2]
+  tools/detectar-estructuras-artificiales.js:138  argv.find(a => a.startsWith('--umbral='))
+
+O sea que cambiar la semantica de arg() toca exactamente UN archivo y ningun
+otro consumidor del repositorio.
+
+Invocadores del control: DOS.
+  package.json:9              npm run drift
+  src/services/drift-arranque.js:27/45   el arranque
+
+--------------------------------------------------------------------------------
+2. LOS CUATRO CAMINOS, CON SU argv EXACTO
+--------------------------------------------------------------------------------
+
+  C1 [REAL]   package.json:9 — npm run drift
+              argv: --estado ./data/catalogo/estado_drift.json
+              flags repetidos: NINGUNO
+
+  C2 [REAL]   src/index.js:77 -> drift-arranque.js:45 con argsExtra = []
+              argv: --estado ./data/catalogo/estado_drift.json
+              flags repetidos: NINGUNO
+
+  C3 [PRUEBA] e01_prueba_mordida_arranque.js:36 -> drift-arranque.js:45
+              argv: --estado ./data/catalogo/estado_drift.json
+                    --estado /tmp/e01-arranque-XXXX/estado.json
+                    --insumo ./_bitacoras/.../insumo_alterado_2026-08-11
+              flags repetidos: --estado
+                con PRIMERA (hoy)     -> ./data/catalogo/estado_drift.json
+                con ULTIMA  (asumida) -> /tmp/e01-arranque-XXXX/estado.json
+
+  C4 [a mano] node scripts/e01_control_drift_catalogo.js --insumo <dir> --estado <archivo>
+              argv: --insumo ... --estado ...
+              flags repetidos: NINGUNO
+
+  Caminos enumerados                    : 4
+  Caminos con algun flag repetido       : 1  (solo C3)
+  Casos donde primera y ultima difieren : 1
+  Caminos que DEPENDEN de la PRIMERA    : 0
+
+--------------------------------------------------------------------------------
+3. LA UNICA SUPOSICION SOBRE EL ORDEN ESCRITA EN EL REPOSITORIO
+--------------------------------------------------------------------------------
+
+Buscada en todo el arbol. Hay una, y va en contra de lo que el codigo hace:
+
+  scripts/e01_prueba_mordida_arranque.js:27
+  "por argumento, que el control toma porque el ultimo --estado gana."
+
+Nadie asume la primera. Ningun test fija la semantica actual. Ninguna bitacora la
+invoca como comportamiento deseado.
+
+--------------------------------------------------------------------------------
+4. EL NUMERO QUE DECIDE
+--------------------------------------------------------------------------------
+
+  Consumidores de arg() fuera del control ................ 0
+  Caminos que pasan un flag dos veces .................... 1 de 4
+  Caminos que dependen de la PRIMERA ocurrencia .......... 0
+  Caminos que dependen de la ULTIMA ...................... 1  (y hoy esta roto)
+  Tests que fijan la semantica actual .................... 0
+
+  El comportamiento actual no lo usa NADIE. El unico llamador que repite un flag
+  quiere lo contrario y no lo obtiene.
+
+--------------------------------------------------------------------------------
+5. UN SEGUNDO DEFECTO DE arg(), MEDIDO DE PASO Y NO EXPLOTADO HOY
+--------------------------------------------------------------------------------
+
+arg() busca el nombre del flag en TODO el argv, sin distinguir posicion de flag
+de posicion de valor. Si el valor de un flag fuera literalmente el nombre de otro
+flag, lo tomaria como flag. Hoy no ocurre en ninguno de los cuatro caminos —
+todos los valores son rutas—, asi que NO es un defecto vivo. Se registra porque
+cae en la misma funcion y conviene cerrarlo de una vez, no porque este mordiendo.
+
+--------------------------------------------------------------------------------
+6. CONCLUSION, CONTRA EL CRITERIO QUE FIJO EL OWNER
+--------------------------------------------------------------------------------
+
+El criterio: "un lector de argumentos que se comporta al reves de como lo asume
+quien lo llama no es deuda de un caso, es la causa. Si la medicion no muestra
+dependencia real del comportamiento actual, se arregla aca."
+
+La medicion no muestra dependencia real: cero consumidores externos, cero caminos
+que dependan de la primera ocurrencia, cero tests que la fijen, y la unica
+suposicion escrita pide lo contrario.
+
+=> arg() SE ARREGLA ACA, junto con la guarda de --estado. No queda como deuda.
+
+Y conviene notar como se ordenan las dos cosas, porque no son la misma:
+
+  - Arreglar arg() para que gane la ULTIMA ocurrencia hace que C3 redirija el
+    estado como su autor quiso. Eso CORRIGE el sintoma.
+  - La guarda de --estado hace que un origen de prueba NO PUEDA escribir el
+    destino de produccion, aunque el redireccionamiento se olvide o se rompa otra
+    vez. Eso cierra la CAUSA que el owner nombro: "no que se acuerde de no
+    hacerlo — que no pueda".
+
+  Las dos, no una. Si solo se arregla arg(), C3 pasa a funcionar y el sistema
+  vuelve a depender de que alguien se acuerde de pasar el --estado temporal.
+
+================================================================================
+ALTO CON LA MEDICION. No se toco nada.
+================================================================================
