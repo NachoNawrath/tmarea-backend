@@ -1,0 +1,249 @@
+================================================================================
+E0.3 — EL JOIN BAHIA -> CAPITANIA. RECONOCIMIENTO.
+Fecha: 2026-08-11
+Etapa: E0.3 del PLAN_JURISDICCION.md v1.7 (ultima sub-etapa de E0)
+Estado al cerrar esta bitacora: reconocimiento CERRADO. No se modifico ningun
+                                archivo de dato ni de servicio. Alto para
+                                autorizacion antes de construir.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Los comandos de esta bitacora los ejecuto el agente en Git Bash (POSIX sh) sobre
+Windows. Forma reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts/e03join_reconocimiento.js
+
+La salida cruda completa esta en:
+    _bitacoras/e03join_recon_2026-08-11/01_reconocimiento.txt   (547 lineas)
+
+Prefijo `e03join` y no `e03`: `e03_*` ya lo ocupa el frente del estado_drift
+contaminado (e03_recon / e03_construccion / e03_cierre del 2026-08-11), que no es
+esta sub-etapa. Mismo motivo para el script.
+
+
+0. QUE SE MIDIO Y CONTRA QUE
+--------------------------------------------------------------------------------
+Cuatro fuentes, con su sha256 truncado impreso en la cabecera de la salida cruda:
+
+  mapa      src/data/bahia-capitania-map.json          164 entradas
+  insumo    data/decreto/jurisdicciones_v2.json         64 jurisdicciones
+  cotejo    data/decreto/cotejo_lacustre_adjudicado.json 32 cuerpos en 6 jurisd.
+  SITPORT   capturas versionadas de E0.1 (2026-08-11):
+            consultaBahias 164 · consultaCapuertoRestriccion 64 ·
+            Totalgeneral 64 · consultaRestricciones 39
+
+Coordenadas: leidas de BAHIA_COORDS en src/routes/sitport-routes.js, que es la
+FUENTE. No del seed ni de la tabla. Medir el derivado en vez de la fuente ya
+costo una correccion en esta fase (fase5L). El parser aborta si lee menos de 160.
+
+El reconocimiento no toca la red: corre contra las capturas versionadas, asi que
+es reproducible sin SITPORT arriba (CLAUDE.md §3.4). La frescura del catalogo la
+cubre el control de drift de E0.1, no este script.
+
+
+1. EL INSUMO NUEVO DE E0.1, VERIFICADO
+--------------------------------------------------------------------------------
+`consultaBahias.CdReparticion` x `consultaCapuertoRestriccion.Cdreparticion`
+atribuye Capitania a 163 de las 164 bahias del catalogo. Se sostiene.
+
+Lo que NO cierra, y queda declarado:
+
+  - La bahia 146 (RIO BUENO) apunta a la reparticion 189, que no tiene fila en
+    `consultaCapuertoRestriccion` ni aparece en `consultareparzona`. Es la unica
+    bahia que SITPORT no atribuye. La resuelve el decreto (ver §4).
+  - `Totalgeneral` coincide con `consultaBahias` en la reparticion de la bahia en
+    28 casos; los otros 36 no se pueden comparar porque `medicionMeteo` viene
+    nulo. El unico choque real es la bahia 108, ya declarada en E0.1
+    (`Totalgeneral` la pone en la reparticion 190 = Carahue y `consultaBahias` no
+    la tiene). O sea: los dos endpoints no se contradicen en ningun caso medible.
+
+Sigue valiendo lo de fase5R: es fuente OPERATIVA. Cotejar, no adjudicar.
+
+
+2. LO QUE ROMPE MI PROPIO FUNDAMENTO, MEDIDO PRIMERO (CLAUDE.md §1.2)
+--------------------------------------------------------------------------------
+El fundamento tentador era "SITPORT distingue mejor que nuestro mapa, luego
+SITPORT manda". Lo mate midiendo los casos que lo contradicen:
+
+  - 151 BARNES        (lat -30,0500): la banda del decreto de `coquimbo` (el
+                      mapa) lo contiene y la de `tongoy` (SITPORT) lo deja fuera.
+  - 234 RIO PALENA    (lat -43,6333): `chaiten` (mapa) lo contiene, `puerto_cisnes`
+                      (SITPORT) no.
+  - 238 y 240         (Canal Moraleda / Canal Pilcomayo): `puerto_cisnes` (mapa)
+                      los contiene, `puerto_aguirre` (SITPORT) no.
+  - 251, 252, 253     (Corcovado Norte, Moraleda Este, Chaffers Norte): NINGUNA
+                      de las dos bandas los contiene. Las dos fuentes estan fuera.
+
+Son 4 casos al reves y 3 donde las dos fallan. SITPORT tampoco manda. Lo unico
+que manda es el decreto, y en el interior de Aysen el decreto no delimita por
+paralelos, asi que ahi no decide nada por si solo.
+
+Y el instrumento tiene su alcance medido: 41 de las 64 jurisdicciones declaran
+sus dos latitudes; de los 820 pares posibles, 9 se pisan en latitud. La banda
+ACOTA — sirve para EXCLUIR, no para adjudicar.
+
+
+3. EL REPARTO — LAS 164 BAHIAS, CADA UNA EN UN SOLO CAJON
+--------------------------------------------------------------------------------
+Particion con prioridad: primero se pregunta si la ATRIBUCION esta en disputa y
+recien despues si el nombre calza. Al reves, arreglar la variante 'Cisnes' ->
+puerto_cisnes contaria como resueltas 16 bahias que SITPORT atribuye a Melinka y
+a Aguirre: el nombre calzaria y la atribucion seguiria mal. El script verifica
+que la particion suma 164 y aborta si no.
+
+   69   A1  sin disputa, el nombre calza exacto
+   18   A2  sin disputa, variante ESTABLECIDA por igualdad de conjunto
+    1   A3  sin disputa, el nombre difiere solo en el prefijo "Puerto "
+   ---
+   88       sanas o de puro nombre
+
+   25   B   en disputa, y la banda del decreto la decide CONTRA el mapa
+    4   C   en disputa, y la identidad del cuerpo de agua la decide
+   13   D   sin atribuir, y la identidad del cuerpo de agua la resuelve
+   ---
+   42       las decide el decreto por si mismo -> lado de la ingenieria
+
+   11   E   sin atribuir y sin identidad de cuerpo   -> ADJUDICACION
+   22   F   en disputa y el decreto no la decide     -> ADJUDICACION
+    1   G   'Guayacan' no existe en el decreto       -> ADJUDICACION
+   ---
+   34       suben al owner, agrupadas
+
+  164       TOTAL
+
+
+4. EL CRITERIO QUE ESTABLECE UNA VARIANTE DE NOMBRE (y no es parecido de texto)
+--------------------------------------------------------------------------------
+Un nombre del mapa es variante de una jurisdiccion cuando el CONJUNTO de bahias
+que el mapa le cuelga es exactamente el que SITPORT le atribuye a esa
+jurisdiccion. Igualdad de conjuntos, no similitud de strings: dos fuentes
+independientes agrupando las mismas bahias bajo dos etiquetas distintas es
+evidencia de que lo que cambia es la etiqueta. Medido sobre los 4 nombres que no
+calzan:
+
+  'Chacabuco'  == puerto_chacabuco : los mismos 10 ids.  VARIANTE establecida.
+  'Hornopiren' == hornopiren       : los mismos 8 ids.   VARIANTE establecida.
+  'Cisnes'     : el mapa le cuelga 18 y SITPORT le da 2. NO es solo el nombre.
+  'Guayacan'   : 1 bahia, sin contrapartida en el decreto. NO es solo el nombre.
+
+Esto corrige por medicion lo que el §1.3 del plan daba por sentado: las "3
+variantes de nombre (36 bahias)" no son tres. Son DOS variantes (18 bahias) y un
+tercer caso — 'Cisnes' — que es una SOBRE-ATRIBUCION: 16 de sus 18 bahias son de
+Melinka y de Puerto Aguirre segun SITPORT, y de esas 16 la banda del decreto
+decide 2 (243, 244) y deja 14 sin decidir. Renombrar 'Cisnes' habria dejado 16
+bahias mal atribuidas con el nombre correcto, que es peor que hoy: hoy al menos
+el nombre no calza y salta.
+
+
+5. LA PREGUNTA QUE EL PLAN DEJO ABIERTA EN §9, CONTESTADA
+--------------------------------------------------------------------------------
+"Cuantas de las 30 jurisdicciones sin bahia atribuida son un problema real y
+cuantas son jurisdicciones donde SITPORT simplemente no publica."
+
+Son 29 hoy (no 30: la 257 movio el numero). De esas 29, SITPORT SI les atribuye
+bahias a 27. Solo 2 no tienen bahia por ninguna de las dos fuentes:
+`papudo` (maritima, participa_matching=true) y `rada_covadonga` (antartica).
+
+O sea: la hipotesis "SITPORT no publica ahi" explica 2 de 29. Las otras 27 son
+que el mapa las COLAPSA en la Capitania vecina — patache en Iquique, tocopilla y
+taltal en Antofagasta, chanaral en Caldera, tongoy en Coquimbo, algarrobo y
+pichilemu en San Antonio, lirquen y san_vicente en Talcahuano, lota en Coronel,
+melinka y puerto_aguirre en 'Cisnes', punta_delgada y tierra_del_fuego en Punta
+Arenas, y las lacustres en null.
+
+Esto no es cosmetico. Cuando el motor filtre por Capitania (E6), una restriccion
+publicada bajo una bahia de Patache se le atribuiria a Iquique y le llegaria a
+toda la jurisdiccion equivocada: de mas a quien no corresponde y de menos a quien
+si. Es INV-3.4 al reves.
+
+
+6. IMPACTO MEDIDO SOBRE LAS RESTRICCIONES DE HOY
+--------------------------------------------------------------------------------
+De las 39 restricciones vigentes en la captura, publicadas por 24 bahias
+distintas, HOY no resuelven a ninguna jurisdiccion del decreto 4 bahias:
+86 (Guayacan), 106 (Panguipulli), 153 (Lago Tagua Tagua) y 239 (Canal Ferronave).
+
+Repartidas por cajon, las bahias con restriccion publicada hoy caen asi:
+  11 en A1 (sanas) · 7 en B · 1 en D · 1 en E · 3 en F · 1 en G.
+O sea 13 de 24 con restriccion viva estan en un cajon que hay que arreglar, y 5
+de esas 13 son adjudicacion del owner (cajones E, F y G).
+
+
+7. LO LACUSTRE SE RESUELVE SOLO, Y NO POR SITPORT
+--------------------------------------------------------------------------------
+`cotejo_lacustre_adjudicado.json` ya trae ADJUDICADO que cuerpo de agua nombra
+cada jurisdiccion lacustre, con el fragmento literal del decreto. 18 bahias del
+catalogo tienen por nombre uno de esos cuerpos; 13 de ellas estan hoy sin
+atribuir. Esas 13 no necesitan interpretacion: el nombre de la bahia ES el cuerpo
+que el decreto nombra.
+
+Dos cosas para no leer mal:
+
+  a) El campo `resolucion` del cotejo NO califica el nombre: dice si ese cuerpo
+     encontro geometria en el shapefile. "rechazado" para Rio Bueno significa que
+     se rechazo el poligono candidato (LAGUNA ACHIBUENO, otra region), no que el
+     decreto no lo nombre — lo nombra, literal: "Incluye el rio Bueno en los
+     sectores Los Patos, La Goleta y El Manzanito". Por eso la bahia 146, la
+     unica que SITPORT no atribuye, la resuelve el decreto.
+  b) LAGO PUYEHUE (bahia 160) lo nombran DOS jurisdicciones, lago_ranco y
+     puerto_varas, y el cotejo ya declara ese traslape como deliberado. El mapa
+     de hoy tiene UNA Capitania por bahia. Es un problema de ESTRUCTURA del dato,
+     no de contenido: el join es 1:1 y el decreto puede ser 1:N. Hay que
+     resolverlo al construir, no adjudicarlo.
+
+
+8. LA DEUDA DE E0.2, LOCALIZADA
+--------------------------------------------------------------------------------
+  src/services/zonas-aviso.js:39        definicion, usada en :65 :66 :94 :108
+  src/services/ambitos-publicados.js:41 definicion, usada en :289
+
+Los dos textos NO son identicos: uno normaliza los argumentos crudos y el otro
+los pasa por `|| ''` antes. Hoy dan el mismo resultado porque `normalizarTexto`
+ya trata null como vacio — o sea que la diferencia es exactamente del tipo que no
+se nota hasta que uno de los dos cambia. Es la deuda que E0.3 tiene que saldar.
+
+
+9. LO QUE SUBE AL OWNER — 34 BAHIAS, AGRUPADAS, NO DE A UNA
+--------------------------------------------------------------------------------
+No se listan aca una por una: la lista completa con su evidencia esta en la
+salida cruda §12. Las familias son cinco:
+
+  F1 · Las 6 discrepancias de clase C que R1 pieza 1 ya dejo sin contacto
+       (bahias 90, 97, 129, 131, 132, 137). NUEVO: SITPORT corrobora al DECRETO
+       en 5 de las 6 — 90 Juan Fernandez, 97 Lirquen, 129 Puerto Eden (una vez
+       resuelto que su etiqueta 'EDEN' es la misma jurisdiccion), 131 Punta
+       Delgada y 137 Tierra del Fuego. La sexta, 132 Bahia Clarencia, es la unica
+       donde SITPORT dice una tercera cosa: el decreto la pone en Punta Delgada,
+       el mapa en Punta Arenas y SITPORT en Tierra del Fuego.
+  F2 · Los 14 sectores de canal del interior de Aysen que el mapa cuelga de
+       'Cisnes' y SITPORT reparte entre Melinka y Puerto Aguirre, y donde la
+       banda del decreto no decide. Incluye los 3 que ninguna banda contiene.
+  F3 · Las 4 de Magallanes (131, 132, 137, 156) donde punta_delgada y
+       tierra_del_fuego no declaran sus dos paralelos. Se cruza con F1.
+  F4 · Las 11 sin atribuir cuyo nombre no es un cuerpo que el decreto nombre:
+       Baker, Puerto Eden, Isla Guarello, los 4 antarticos y los sectores de
+       lago (Pucon, Villarrica, Vichuquen, Pirehuico, Tagua Tagua).
+  F5 · 'Guayacan' (bahia 86), que no existe como Capitania en el decreto y que
+       tiene restriccion publicada hoy.
+
+
+10. OBJECIONES Y LO NO DETERMINADO (CLAUDE.md §8.3 y §8.5)
+--------------------------------------------------------------------------------
+  - El cajon B (25 bahias) lo resuelvo del lado de la ingenieria con criterio
+    declarado (CLAUDE.md §0.4): aplicar los paralelos que el propio decreto
+    escribe no es interpretarlo. Pero lo digo explicito para que el owner lo
+    revoque si no comparte el criterio: son 25 bahias que cambian de Capitania
+    sin que el owner las haya mirado una por una.
+  - No esta determinado que bahia es la 108 (viene de E0.1) ni que reparticion es
+    la 189 (nueva, de aca).
+  - No se midio si alguna de estas re-atribuciones cambia una bandera hoy. Se
+    puede medir con el mismo andamio que uso E0.2 sobre 10 rutas, y hay que
+    hacerlo ANTES de aplicar nada, no despues.
+  - El join 1:1 contra un decreto 1:N (Puyehue) no tiene todavia forma de dato
+    propuesta.
+
+================================================================================
+FIN. Alto para autorizacion. Nada se modifico.
+================================================================================

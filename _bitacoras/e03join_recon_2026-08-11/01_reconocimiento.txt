@@ -1,0 +1,547 @@
+==============================================================================
+E0.3 — RECONOCIMIENTO DEL JOIN BAHIA -> CAPITANIA
+fecha de ejecucion: 2026-08-11T20:44:57.949Z
+==============================================================================
+
+INSUMOS (sha256 truncado a 16, para que el reporte sea rastreable)
+  mapa      bbf2fe4a7d419674  src\data\bahia-capitania-map.json
+  insumo    13c5561486fd0088  data\decreto\jurisdicciones_v2.json
+  zonas     b0d5878d713ba5e2  data\decreto\zonas_aviso.json
+  bahias    35990acbca7c229f  _bitacoras\e01_drift_catalogo_2026-08-11\sitport_consultaBahias.json
+  restric   5e21ee27b50c3c96  _bitacoras\e01_drift_catalogo_2026-08-11\sitport_consultaRestricciones.json
+  capuerto  fa4579c6c52cd8ed  _bitacoras\e01d_d7_y_257_2026-08-11\sitport_consultaCapuertoRestriccion.json
+  totalgen  94ba28936c18aa14  _bitacoras\e01d_d7_y_257_2026-08-11\sitport_Totalgeneral.json
+
+  Las capturas de SITPORT son las versionadas de E0.1 (2026-08-11).
+  Fuente OPERATIVA: cotejan, no adjudican (INV-3.3, el mapa no revoca al decreto).
+
+──────────────────────────────────────────────────────────────────────────────
+1. EL MAPA OPERATIVO — QUE HAY
+──────────────────────────────────────────────────────────────────────────────
+entradas en el mapa            : 164
+bahias sin Capitania atribuida : 24
+bahias sin telefono            : 0
+nombres de Capitania distintos : 39
+
+──────────────────────────────────────────────────────────────────────────────
+2. NOMBRES DEL MAPA CONTRA NOMBRES DEL DECRETO
+──────────────────────────────────────────────────────────────────────────────
+nombres del mapa que calzan exacto con el insumo : 35
+nombres del mapa que NO calzan                   : 4
+
+  mapa 'Cisnes'  (18 bahias: 123, 124, 125, 175, 176, 238, 239, 240, 241, 242, 243, 244, 251, 252, 253, 254, 255, 256)
+      candidatos en el insumo: puerto_cisnes "Puerto Cisnes"
+  mapa 'Chacabuco'  (10 bahias: 126, 220, 221, 222, 223, 224, 225, 226, 227, 228)
+      candidatos en el insumo: puerto_chacabuco "Puerto Chacabuco"
+  mapa 'Hornopirén'  (8 bahias: 115, 181, 182, 183, 184, 185, 186, 187)
+      candidatos en el insumo: hornopiren "Rio Negro Hornopiren"
+  mapa 'Guayacán'  (1 bahias: 86)
+      candidatos en el insumo: NINGUNO
+
+──────────────────────────────────────────────────────────────────────────────
+3. JURISDICCIONES DEL DECRETO SIN NINGUNA BAHIA ATRIBUIDA
+──────────────────────────────────────────────────────────────────────────────
+jurisdicciones del insumo                  : 64
+sin ninguna bahia atribuida (nombre exacto): 29
+
+  Desglose por ambito y por si participa del matching:
+     4  antartica: bahia_fildes, puerto_soberania, rada_covadonga, bahia_paraiso
+     1  insular_remota (sin geometria): juan_fernandez
+     4  lacustre: lago_rapel, lago_villarrica, lago_panguipulli, lago_ranco
+     5  maritima (sin geometria): lirquen, baker, puerto_eden, punta_delgada, tierra_del_fuego
+    15  maritima: patache, tocopilla, taltal, chanaral, tongoy, papudo, algarrobo, pichilemu, san_vicente, lota, hornopiren, melinka, puerto_cisnes, puerto_aguirre, puerto_chacabuco
+
+──────────────────────────────────────────────────────────────────────────────
+4. LA ATRIBUCION OPERATIVA DE SITPORT (insumo nuevo de E0.1)
+──────────────────────────────────────────────────────────────────────────────
+reparticiones en consultaCapuertoRestriccion : 64
+bahias en consultaBahias                     : 164
+elementos en Totalgeneral                    : 64
+  Totalgeneral coincide con consultaBahias en la reparticion: 28 de 64
+  CHOQUES (1):
+    bahia 108: Totalgeneral=190 consultaBahias=undefined
+  reparticiones citadas por consultaBahias sin fila en capuerto: 1 -> 189
+  bahias con Capitania atribuida por SITPORT: 163 de 164
+  nombres de Capitania de SITPORT distintos : 62
+    calzan exacto con el insumo del decreto : 54
+    NO calzan                               : 8
+      'AGUIRRE' (8 bahias) -> candidatos: puerto_aguirre "Puerto Aguirre"
+      'CHACABUCO' (10 bahias) -> candidatos: puerto_chacabuco "Puerto Chacabuco"
+      'CISNES' (2 bahias) -> candidatos: puerto_cisnes "Puerto Cisnes"
+      'EDEN' (2 bahias) -> candidatos: puerto_eden "Puerto Eden"
+      'LAGO GRAL.CARRERA' (3 bahias) -> candidatos: NINGUNO
+      'PANGUIPULLI' (1 bahias) -> candidatos: lago_panguipulli "Lago Panguipulli"
+      'SOBERANIA' (1 bahias) -> candidatos: puerto_soberania "Puerto Soberania"
+      'VILLARRICA' (9 bahias) -> candidatos: lago_villarrica "Lago Villarrica"
+
+──────────────────────────────────────────────────────────────────────────────
+5. MAPA CONTRA SITPORT — DONDE COINCIDEN Y DONDE NO
+──────────────────────────────────────────────────────────────────────────────
+coinciden (nombre normalizado)                 : 80
+el mapa dice null y SITPORT si atribuye        : 23
+discrepan                                      : 60
+SITPORT no atribuye (o la bahia no esta en el) : 1 -> 146
+
+  Las 24 sin atribuir, con lo que dice SITPORT y si ese nombre existe en el decreto:
+    96  LAGO RAPEL                         SITPORT: LAGO RAPEL                   decreto: lago_rapel
+   105  LAGO VILLARRICA                    SITPORT: VILLARRICA                   decreto: — NO CALZA —
+   106  PANGUIPULLI                        SITPORT: PANGUIPULLI                  decreto: — NO CALZA —
+   127  BAKER                              SITPORT: BAKER                        decreto: baker
+   128  LAGO GENERAL CARRERA               SITPORT: LAGO GRAL.CARRERA            decreto: — NO CALZA —
+   129  PUERTO EDÉN                        SITPORT: EDEN                         decreto: — NO CALZA —
+   139  BAHÍA FILDES                       SITPORT: BAHIA FILDES                 decreto: bahia_fildes
+   140  BAHÍA PARAÍSO                      SITPORT: BAHIA PARAISO                decreto: bahia_paraiso
+   144  LAGO RANCO                         SITPORT: LAGO RANCO                   decreto: lago_ranco
+   145  LAGO MAIHUE                        SITPORT: LAGO RANCO                   decreto: lago_ranco
+   153  LAGO TAGUA TAGUA                   SITPORT: COCHAMO                      decreto: cochamo
+   154  ISLA GUARELLO                      SITPORT: EDEN                         decreto: — NO CALZA —
+   203  LAGO O'HIGGINS                     SITPORT: LAGO GRAL.CARRERA            decreto: — NO CALZA —
+   209  LAGO VILLARRICA SECTOR PUCÓN       SITPORT: VILLARRICA                   decreto: — NO CALZA —
+   210  LAGO VILLARRICA SECTOR VILLARRICA  SITPORT: VILLARRICA                   decreto: — NO CALZA —
+   229  LAGO VICHUQUEN                     SITPORT: CONSTITUCION                 decreto: constitucion
+   231  BAHÍA CHILE                        SITPORT: SOBERANIA                    decreto: — NO CALZA —
+   245  LAGO PELLAIFA                      SITPORT: VILLARRICA                   decreto: — NO CALZA —
+   246  LAGO PULLINQUE                     SITPORT: VILLARRICA                   decreto: — NO CALZA —
+   247  LAGO CALAFQUEN                     SITPORT: VILLARRICA                   decreto: — NO CALZA —
+   248  LAGO RIÑIHUE                       SITPORT: VILLARRICA                   decreto: — NO CALZA —
+   249  LAGO NELTUME                       SITPORT: VILLARRICA                   decreto: — NO CALZA —
+   250  LAGO PIREHUICO                     SITPORT: VILLARRICA                   decreto: — NO CALZA —
+
+  Sin atribuir y SITPORT tampoco las cubre:
+   146  RIO BUENO
+
+  Discrepancias mapa vs SITPORT:
+    73  PATACHE                            mapa: Iquique                  SITPORT: PATACHE
+    74  BAHÍA ALGODONALES                  mapa: Antofagasta              SITPORT: TOCOPILLA
+    76  CALETA MICHILLA                    mapa: Antofagasta              SITPORT: MEJILLONES
+    79  TAL TAL                            mapa: Antofagasta              SITPORT: TALTAL
+    80  BAHÍA CHAÑARAL                     mapa: Caldera                  SITPORT: CHANARAL
+    86  BAHÍA HERRADURA DE GUAYACÁN        mapa: Guayacán                 SITPORT: COQUIMBO
+    87  TONGOY                             mapa: Coquimbo                 SITPORT: TONGOY
+    90  ISLA ROBINSON CRUSOE               mapa: Valparaíso               SITPORT: JUAN FERNANDEZ
+    94  BAHÍA ALGARROBO                    mapa: San Antonio              SITPORT: ALGARROBO
+    95  PICHILEMU                          mapa: San Antonio              SITPORT: PICHILEMU
+    97  BAHÍA CONCEPCIÓN - LIRQUÉN         mapa: Talcahuano               SITPORT: LIRQUEN
+    99  BAHÍA SAN VICENTE                  mapa: Talcahuano               SITPORT: SAN VICENTE
+   102  LOTA                               mapa: Coronel                  SITPORT: LOTA
+   115  CANAL HORNOPIRÉN                   mapa: Hornopirén               SITPORT: RIO NEGRO HORNOPIREN
+   124  MELINKA                            mapa: Cisnes                   SITPORT: MELINKA
+   125  SECTOR BAHÍA DE PUERTO AGUIRRE     mapa: Cisnes                   SITPORT: AGUIRRE
+   131  BAHÍA GREGORIO                     mapa: Punta Arenas             SITPORT: PUNTA DELGADA
+   132  BAHÍA CLARENCIA                    mapa: Punta Arenas             SITPORT: TIERRA DEL FUEGO
+   137  BAHÍA CHILOTA                      mapa: Punta Arenas             SITPORT: TIERRA DEL FUEGO
+   150  GUANAQUEROS                        mapa: Coquimbo                 SITPORT: TONGOY
+   151  BARNES                             mapa: Coquimbo                 SITPORT: TONGOY
+   156  PRIMERA ANGOSTURA                  mapa: Punta Arenas             SITPORT: PUNTA DELGADA
+   157  PUERTO CARRIZAL BAJO               mapa: Caldera                  SITPORT: HUASCO
+   158  CALETA CHAÑARAL Y ENSENADA GAVIOTA mapa: Coquimbo                 SITPORT: HUASCO
+   159  LAGO TODOS LOS SANTOS              mapa: Puerto Montt             SITPORT: PUERTO VARAS
+   160  LAGO PUYEHUE                       mapa: Puerto Montt             SITPORT: PUERTO VARAS
+   161  LAGO RUPANCO                       mapa: Puerto Montt             SITPORT: PUERTO VARAS
+   172  BAHÍA PAN DE AZÚCAR                mapa: Caldera                  SITPORT: CHANARAL
+   175  SECTOR REPOLLA ALTO                mapa: Cisnes                   SITPORT: MELINKA
+   176  SECTOR REPOLLA BAJO                mapa: Cisnes                   SITPORT: MELINKA
+   181  CANAL CHOLGO                       mapa: Hornopirén               SITPORT: RIO NEGRO HORNOPIREN
+   182  ESTERO COMAU                       mapa: Hornopirén               SITPORT: RIO NEGRO HORNOPIREN
+   183  ESTERO PICHICOLO                   mapa: Hornopirén               SITPORT: RIO NEGRO HORNOPIREN
+   184  ENSENADA HUALAIHUÉ                 mapa: Hornopirén               SITPORT: RIO NEGRO HORNOPIREN
+   185  ENSENADA ROLECHA                   mapa: Hornopirén               SITPORT: RIO NEGRO HORNOPIREN
+   186  SECTOR AYACARA                     mapa: Hornopirén               SITPORT: RIO NEGRO HORNOPIREN
+   187  SECTOR BUILL                       mapa: Hornopirén               SITPORT: RIO NEGRO HORNOPIREN
+   195  PATILLO                            mapa: Iquique                  SITPORT: PATACHE
+   196  BORDE COSTERO NORTE PATACHE        mapa: Iquique                  SITPORT: PATACHE
+   197  BORDE COSTERO SUR PATACHE          mapa: Iquique                  SITPORT: PATACHE
+   198  SECTOR COSTERO PENINSULA DE HUALPEN mapa: Talcahuano               SITPORT: SAN VICENTE
+   215  EL QUISCO                          mapa: San Antonio              SITPORT: ALGARROBO
+   219  SECTOR NORTE QUINTERO              mapa: Valparaíso               SITPORT: QUINTERO
+   234  RÍO PALENA                         mapa: Chaitén                  SITPORT: CISNES
+   235  CHEQUIAN                           mapa: Quemchi                  SITPORT: ACHAO
+   236  CALETA VIUDA                       mapa: Antofagasta              SITPORT: TOCOPILLA
+   238  SECTOR CANAL MORALEDA              mapa: Cisnes                   SITPORT: AGUIRRE
+   239  SECTOR CANAL FERRONAVE Y CANAL DEVIA mapa: Cisnes                   SITPORT: AGUIRRE
+   240  SECTOR CANAL PILCOMAYO Y CANAL RODRIGUEZ mapa: Cisnes                   SITPORT: AGUIRRE
+   241  SECTOR CANAL GOÑI Y CANAL NINUALAC mapa: Cisnes                   SITPORT: AGUIRRE
+   242  SECTOR CANAL CARRERA DEL CHIVATO Y CANAL CUCHI mapa: Cisnes                   SITPORT: AGUIRRE
+   243  SECTOR CANAL DARWIN                mapa: Cisnes                   SITPORT: AGUIRRE
+   244  SECTOR CANAL TRANSITO              mapa: Cisnes                   SITPORT: AGUIRRE
+   251  CANAL GOLFO CORCOVADO (NORTE)      mapa: Cisnes                   SITPORT: MELINKA
+   252  CANAL MORALEDA (ESTE)              mapa: Cisnes                   SITPORT: MELINKA
+   253  CANAL CHAFFERS NORTE               mapa: Cisnes                   SITPORT: MELINKA
+   254  CANAL CHAFFERS SUR                 mapa: Cisnes                   SITPORT: MELINKA
+   255  CANAL PÉREZ NORTE                  mapa: Cisnes                   SITPORT: MELINKA
+   256  CANAL PÉREZ SUR                    mapa: Cisnes                   SITPORT: MELINKA
+   257  RÍO COCHRANE                       mapa: Lago General Carrera     SITPORT: LAGO GRAL.CARRERA
+
+──────────────────────────────────────────────────────────────────────────────
+6. LAS DISCREPANCIAS DE CLASE C YA DECLARADAS (zonas_aviso.json)
+──────────────────────────────────────────────────────────────────────────────
+Son las que R1 pieza 1 dejo sin contacto porque el mapa las atribuye a una
+Capitania vecina. Aca se mira que dice SITPORT de cada una: si corrobora al
+mapa o al decreto. Corroborar NO adjudica — el decreto manda (INV-3.3).
+
+  juan_fernandez     bahia  90 ISLA ROBINSON CRUSOE          
+      decreto: Juan Fernandez           mapa: Valparaíso               SITPORT: JUAN FERNANDEZ
+      >> SITPORT corrobora al DECRETO
+  lirquen            bahia  97 BAHÍA CONCEPCIÓN - LIRQUÉN    
+      decreto: Lirquen                  mapa: Talcahuano               SITPORT: LIRQUEN
+      >> SITPORT corrobora al DECRETO
+  puerto_eden        bahia 129 PUERTO EDÉN                   
+      decreto: Puerto Eden              mapa: null                     SITPORT: EDEN
+         SITPORT dice una TERCERA cosa
+  punta_delgada      bahia 131 BAHÍA GREGORIO                
+      decreto: Punta Delgada            mapa: Punta Arenas             SITPORT: PUNTA DELGADA
+      >> SITPORT corrobora al DECRETO
+  punta_delgada      bahia 132 BAHÍA CLARENCIA               
+      decreto: Punta Delgada            mapa: Punta Arenas             SITPORT: TIERRA DEL FUEGO
+         SITPORT dice una TERCERA cosa
+  tierra_del_fuego   bahia 137 BAHÍA CHILOTA                 
+      decreto: Tierra del Fuego         mapa: Punta Arenas             SITPORT: TIERRA DEL FUEGO
+      >> SITPORT corrobora al DECRETO
+
+──────────────────────────────────────────────────────────────────────────────
+7. QUE PASA CON LAS RESTRICCIONES DE HOY SI EL JOIN NO RESUELVE
+──────────────────────────────────────────────────────────────────────────────
+restricciones vigentes en la captura   : 39
+bahias distintas que las publican      : 24
+de esas, que HOY no resuelven a una jurisdiccion del decreto: 4
+    86  BAHÍA HERRADURA DE GUAYACÁN      mapa: Guayacán               restricciones: 1
+   106  PANGUIPULLI                      mapa: null                   restricciones: 1
+   153  LAGO TAGUA TAGUA                 mapa: null                   restricciones: 1
+   239  SECTOR CANAL FERRONAVE Y CANAL DEVIA mapa: Cisnes                 restricciones: 1
+
+──────────────────────────────────────────────────────────────────────────────
+8. LAS JURISDICCIONES SIN BAHIA, VISTAS POR SITPORT
+──────────────────────────────────────────────────────────────────────────────
+§3 cuenta las que el MAPA deja sin bahia. La pregunta que separa un problema
+nuestro de una jurisdiccion donde SITPORT no publica es otra: ¿SITPORT le
+atribuye bahias a esa jurisdiccion? Se compara con el nombre de reparticion,
+admitiendo la falta del prefijo "Puerto "/"Lago " que SITPORT recorta.
+
+de las 29 sin bahia en el mapa, SITPORT SI les atribuye bahias : 27
+de las 29 sin bahia en el mapa, SITPORT tampoco                : 2
+
+  El mapa las colapsa en la vecina (SITPORT si las distingue):
+   patache               4 bahias -> el mapa las pone en: 'Iquique'
+   tocopilla             2 bahias -> el mapa las pone en: 'Antofagasta'
+   taltal                1 bahias -> el mapa las pone en: 'Antofagasta'
+   chanaral              2 bahias -> el mapa las pone en: 'Caldera'
+   tongoy                3 bahias -> el mapa las pone en: 'Coquimbo'
+   juan_fernandez        1 bahias -> el mapa las pone en: 'Valparaíso'
+   algarrobo             2 bahias -> el mapa las pone en: 'San Antonio'
+   pichilemu             1 bahias -> el mapa las pone en: 'San Antonio'
+   lago_rapel            1 bahias -> el mapa las pone en: (null)
+   lirquen               1 bahias -> el mapa las pone en: 'Talcahuano'
+   san_vicente           2 bahias -> el mapa las pone en: 'Talcahuano'
+   lota                  1 bahias -> el mapa las pone en: 'Coronel'
+   lago_villarrica       9 bahias -> el mapa las pone en: (null)
+   lago_panguipulli      1 bahias -> el mapa las pone en: (null)
+   lago_ranco            2 bahias -> el mapa las pone en: (null)
+   hornopiren            8 bahias -> el mapa las pone en: 'Hornopirén'
+   melinka               9 bahias -> el mapa las pone en: 'Cisnes'
+   puerto_cisnes         2 bahias -> el mapa las pone en: 'Cisnes', 'Chaitén'
+   puerto_aguirre        8 bahias -> el mapa las pone en: 'Cisnes'
+   puerto_chacabuco     10 bahias -> el mapa las pone en: 'Chacabuco'
+   baker                 1 bahias -> el mapa las pone en: (null)
+   puerto_eden           2 bahias -> el mapa las pone en: (null)
+   punta_delgada         2 bahias -> el mapa las pone en: 'Punta Arenas'
+   tierra_del_fuego      2 bahias -> el mapa las pone en: 'Punta Arenas'
+   bahia_fildes          1 bahias -> el mapa las pone en: (null)
+   puerto_soberania      1 bahias -> el mapa las pone en: (null)
+   bahia_paraiso         1 bahias -> el mapa las pone en: (null)
+
+  Ni el mapa ni SITPORT les atribuyen bahia:
+   papudo               ambito=maritima  participa_matching=true
+   rada_covadonga       ambito=antartica  participa_matching=true
+
+──────────────────────────────────────────────────────────────────────────────
+9. EL INSTRUMENTO DE COTEJO — LA BANDA DE LATITUD QUE DECLARA EL DECRETO
+──────────────────────────────────────────────────────────────────────────────
+coordenadas leidas de src\routes\sitport-routes.js: 163
+jurisdicciones con las DOS latitudes declaradas en el decreto: 41 de 64
+pares de bandas que se pisan en latitud: 9 de 820
+  -> la banda ACOTA, no adjudica: donde varias se pisan, contener no decide.
+
+discrepancias mapa/SITPORT cotejadas contra la banda del decreto: 60
+  el decreto EXCLUYE al mapa e incluye a SITPORT      : 25
+  las dos bandas lo contienen, o solo la del mapa     : 13
+  ninguna banda lo contiene                           : 3
+  no medible — una de las dos no declara sus paralelos: 9
+  no medible — el nombre no calza con ninguna jurisd. : 10
+  no medible — la bahia no tiene coordenada           : 0
+
+    73  lat  -20.8000  mapa=iquique            sitport=patache              el decreto EXCLUYE al mapa e incluye a SITPORT
+    74  lat  -22.1000  mapa=antofagasta        sitport=tocopilla            el decreto EXCLUYE al mapa e incluye a SITPORT
+    76  lat  -22.7167  mapa=antofagasta        sitport=mejillones           el decreto EXCLUYE al mapa e incluye a SITPORT
+    79  lat  -25.4089  mapa=antofagasta        sitport=taltal               el decreto EXCLUYE al mapa e incluye a SITPORT
+    80  lat  -26.3500  mapa=caldera            sitport=chanaral             el decreto EXCLUYE al mapa e incluye a SITPORT
+    86  lat         —  mapa=Guayacán           sitport=COQUIMBO             no medible: el nombre del mapa no calza con ninguna jurisdiccion
+    87  lat  -30.2558  mapa=coquimbo           sitport=tongoy               el decreto EXCLUYE al mapa e incluye a SITPORT
+    90  lat  -33.6333  mapa=valparaiso         sitport=juan_fernandez       no medible: 'juan_fernandez' no declara las dos latitudes
+    94  lat  -33.3634  mapa=san_antonio        sitport=algarrobo            el decreto EXCLUYE al mapa e incluye a SITPORT
+    95  lat  -34.3829  mapa=san_antonio        sitport=pichilemu            el decreto EXCLUYE al mapa e incluye a SITPORT
+    97  lat  -36.7104  mapa=talcahuano         sitport=lirquen              el decreto EXCLUYE al mapa e incluye a SITPORT
+    99  lat  -36.7251  mapa=talcahuano         sitport=san_vicente          el decreto EXCLUYE al mapa e incluye a SITPORT
+   102  lat  -37.0735  mapa=coronel            sitport=lota                 el decreto EXCLUYE al mapa e incluye a SITPORT
+   115  lat         —  mapa=Hornopirén         sitport=RIO NEGRO HORNOPIREN no medible: el nombre del mapa no calza con ninguna jurisdiccion
+   124  lat  -43.8987  mapa=puerto_cisnes      sitport=melinka              las dos bandas lo contienen (no decide)
+   125  lat  -45.1667  mapa=puerto_cisnes      sitport=puerto_aguirre       el decreto EXCLUYE al mapa e incluye a SITPORT
+   131  lat  -52.5833  mapa=punta_arenas       sitport=punta_delgada        no medible: 'punta_delgada' no declara las dos latitudes
+   132  lat  -52.3500  mapa=punta_arenas       sitport=tierra_del_fuego     no medible: 'tierra_del_fuego' no declara las dos latitudes
+   137  lat  -53.3036  mapa=punta_arenas       sitport=tierra_del_fuego     no medible: 'tierra_del_fuego' no declara las dos latitudes
+   150  lat  -30.1938  mapa=coquimbo           sitport=tongoy               el decreto EXCLUYE al mapa e incluye a SITPORT
+   151  lat  -30.0500  mapa=coquimbo           sitport=tongoy               >> AL REVES: solo la banda del mapa lo contiene, SITPORT queda fuera
+   156  lat  -52.5000  mapa=punta_arenas       sitport=punta_delgada        no medible: 'punta_delgada' no declara las dos latitudes
+   157  lat  -28.0797  mapa=caldera            sitport=huasco               el decreto EXCLUYE al mapa e incluye a SITPORT
+   158  lat  -29.0773  mapa=coquimbo           sitport=huasco               el decreto EXCLUYE al mapa e incluye a SITPORT
+   159  lat  -41.1000  mapa=puerto_montt       sitport=puerto_varas         no medible: 'puerto_montt' no declara las dos latitudes
+   160  lat  -40.6833  mapa=puerto_montt       sitport=puerto_varas         no medible: 'puerto_montt' no declara las dos latitudes
+   161  lat  -40.7833  mapa=puerto_montt       sitport=puerto_varas         no medible: 'puerto_montt' no declara las dos latitudes
+   172  lat  -26.1414  mapa=caldera            sitport=chanaral             el decreto EXCLUYE al mapa e incluye a SITPORT
+   175  lat  -43.7833  mapa=puerto_cisnes      sitport=melinka              las dos bandas lo contienen (no decide)
+   176  lat  -43.8333  mapa=puerto_cisnes      sitport=melinka              las dos bandas lo contienen (no decide)
+   181  lat         —  mapa=Hornopirén         sitport=RIO NEGRO HORNOPIREN no medible: el nombre del mapa no calza con ninguna jurisdiccion
+   182  lat         —  mapa=Hornopirén         sitport=RIO NEGRO HORNOPIREN no medible: el nombre del mapa no calza con ninguna jurisdiccion
+   183  lat         —  mapa=Hornopirén         sitport=RIO NEGRO HORNOPIREN no medible: el nombre del mapa no calza con ninguna jurisdiccion
+   184  lat         —  mapa=Hornopirén         sitport=RIO NEGRO HORNOPIREN no medible: el nombre del mapa no calza con ninguna jurisdiccion
+   185  lat         —  mapa=Hornopirén         sitport=RIO NEGRO HORNOPIREN no medible: el nombre del mapa no calza con ninguna jurisdiccion
+   186  lat         —  mapa=Hornopirén         sitport=RIO NEGRO HORNOPIREN no medible: el nombre del mapa no calza con ninguna jurisdiccion
+   187  lat         —  mapa=Hornopirén         sitport=RIO NEGRO HORNOPIREN no medible: el nombre del mapa no calza con ninguna jurisdiccion
+   195  lat  -20.7500  mapa=iquique            sitport=patache              el decreto EXCLUYE al mapa e incluye a SITPORT
+   196  lat  -20.7833  mapa=iquique            sitport=patache              el decreto EXCLUYE al mapa e incluye a SITPORT
+   197  lat  -20.8167  mapa=iquique            sitport=patache              el decreto EXCLUYE al mapa e incluye a SITPORT
+   198  lat  -36.7833  mapa=talcahuano         sitport=san_vicente          el decreto EXCLUYE al mapa e incluye a SITPORT
+   215  lat  -33.3949  mapa=san_antonio        sitport=algarrobo            el decreto EXCLUYE al mapa e incluye a SITPORT
+   219  lat  -32.7500  mapa=valparaiso         sitport=quintero             el decreto EXCLUYE al mapa e incluye a SITPORT
+   234  lat  -43.6333  mapa=chaiten            sitport=puerto_cisnes        >> AL REVES: solo la banda del mapa lo contiene, SITPORT queda fuera
+   235  lat  -42.3833  mapa=quemchi            sitport=achao                no medible: 'achao' no declara las dos latitudes
+   236  lat  -22.0500  mapa=antofagasta        sitport=tocopilla            el decreto EXCLUYE al mapa e incluye a SITPORT
+   238  lat  -44.5000  mapa=puerto_cisnes      sitport=puerto_aguirre       >> AL REVES: solo la banda del mapa lo contiene, SITPORT queda fuera
+   239  lat  -44.8000  mapa=puerto_cisnes      sitport=puerto_aguirre       las dos bandas lo contienen (no decide)
+   240  lat  -44.7333  mapa=puerto_cisnes      sitport=puerto_aguirre       >> AL REVES: solo la banda del mapa lo contiene, SITPORT queda fuera
+   241  lat  -44.9333  mapa=puerto_cisnes      sitport=puerto_aguirre       las dos bandas lo contienen (no decide)
+   242  lat  -44.8667  mapa=puerto_cisnes      sitport=puerto_aguirre       las dos bandas lo contienen (no decide)
+   243  lat  -45.0333  mapa=puerto_cisnes      sitport=puerto_aguirre       el decreto EXCLUYE al mapa e incluye a SITPORT
+   244  lat  -45.1000  mapa=puerto_cisnes      sitport=puerto_aguirre       el decreto EXCLUYE al mapa e incluye a SITPORT
+   251  lat  -43.3000  mapa=puerto_cisnes      sitport=melinka              ninguna banda lo contiene
+   252  lat  -43.5000  mapa=puerto_cisnes      sitport=melinka              ninguna banda lo contiene
+   253  lat  -43.7000  mapa=puerto_cisnes      sitport=melinka              ninguna banda lo contiene
+   254  lat  -43.8000  mapa=puerto_cisnes      sitport=melinka              las dos bandas lo contienen (no decide)
+   255  lat  -43.7500  mapa=puerto_cisnes      sitport=melinka              las dos bandas lo contienen (no decide)
+   256  lat  -43.8500  mapa=puerto_cisnes      sitport=melinka              las dos bandas lo contienen (no decide)
+   257  lat         —  mapa=Lago General Carrera sitport=LAGO GRAL.CARRERA    no medible: el nombre de SITPORT no calza con ninguna jurisdiccion
+
+──────────────────────────────────────────────────────────────────────────────
+10. LO LACUSTRE — IDENTIDAD LITERAL CONTRA LOS CUERPOS QUE EL DECRETO NOMBRA
+──────────────────────────────────────────────────────────────────────────────
+`cotejo_lacustre_adjudicado.json` ya trae, adjudicado, QUE CUERPO DE AGUA NOMBRA
+cada jurisdiccion lacustre, con el fragmento literal del decreto. Si el nombre de
+la bahia de SITPORT ES uno de esos cuerpos, la atribucion es identidad de nombre y
+no interpretacion.
+
+OJO — el campo `resolucion` del cotejo NO califica el nombre: dice si ese cuerpo
+encontro GEOMETRIA en el shapefile. "rechazado" significa que se rechazo el
+poligono candidato, no que el decreto no lo nombre. Para el join importa el
+nombre; la geometria es asunto de E3.
+
+cuerpos nombrados por el decreto en el cotejo: 32 (31 nombres distintos) en 6 jurisdicciones
+
+  bahia                                  mapa                  SITPORT             el decreto la nombra en
+    96 LAGO RAPEL                         (null)                LAGO RAPEL          lago_rapel [geom:aceptado]
+   105 LAGO VILLARRICA                    (null)                VILLARRICA          lago_villarrica
+   106 PANGUIPULLI                        (null)                PANGUIPULLI         lago_panguipulli
+   111 LAGO LLANQUIHUE                    Puerto Varas          PUERTO VARAS        puerto_varas   (el mapa ya coincide)
+   128 LAGO GENERAL CARRERA               (null)                LAGO GRAL.CARRERA   lago_general_carrera
+   144 LAGO RANCO                         (null)                LAGO RANCO          lago_ranco
+   145 LAGO MAIHUE                        (null)                LAGO RANCO          lago_ranco
+   146 RIO BUENO                          (null)                —                   lago_ranco [geom:rechazado]
+   159 LAGO TODOS LOS SANTOS              Puerto Montt          PUERTO VARAS        puerto_varas
+   160 LAGO PUYEHUE                       Puerto Montt          PUERTO VARAS        lago_ranco + puerto_varas
+   161 LAGO RUPANCO                       Puerto Montt          PUERTO VARAS        puerto_varas
+   203 LAGO O'HIGGINS                     (null)                LAGO GRAL.CARRERA   lago_general_carrera
+   245 LAGO PELLAIFA                      (null)                VILLARRICA          lago_panguipulli [geom:aceptado]
+   246 LAGO PULLINQUE                     (null)                VILLARRICA          lago_panguipulli [geom:aceptado]
+   247 LAGO CALAFQUEN                     (null)                VILLARRICA          lago_panguipulli
+   248 LAGO RIÑIHUE                       (null)                VILLARRICA          lago_panguipulli
+   249 LAGO NELTUME                       (null)                VILLARRICA          lago_panguipulli [geom:aceptado]
+   257 RÍO COCHRANE                       Lago General Carrera  LAGO GRAL.CARRERA   lago_general_carrera   (el mapa ya coincide)
+
+  bahias del catalogo cuyo nombre ES un cuerpo que el decreto nombra: 18
+    de ellas, hoy sin Capitania atribuida en el mapa                : 13
+    de ellas, nombradas por MAS DE UNA jurisdiccion (traslape)      : 1
+
+  Sin atribuir y cuyo nombre NO es un cuerpo nombrado por el decreto:
+   127  BAKER                              SITPORT: BAKER
+   129  PUERTO EDÉN                        SITPORT: EDEN
+   139  BAHÍA FILDES                       SITPORT: BAHIA FILDES
+   140  BAHÍA PARAÍSO                      SITPORT: BAHIA PARAISO
+   153  LAGO TAGUA TAGUA                   SITPORT: COCHAMO
+   154  ISLA GUARELLO                      SITPORT: EDEN
+   209  LAGO VILLARRICA SECTOR PUCÓN       SITPORT: VILLARRICA
+   210  LAGO VILLARRICA SECTOR VILLARRICA  SITPORT: VILLARRICA
+   229  LAGO VICHUQUEN                     SITPORT: CONSTITUCION
+   231  BAHÍA CHILE                        SITPORT: SOBERANIA
+   250  LAGO PIREHUICO                     SITPORT: VILLARRICA
+  -> 11 de las 24. Estas no las resuelve la identidad de nombre.
+
+──────────────────────────────────────────────────────────────────────────────
+11. LA DEUDA DE E0.2 — LA REGLA DE COINCIDENCIA DUPLICADA
+──────────────────────────────────────────────────────────────────────────────
+  src/services/zonas-aviso.js
+     definicion  :39  const mismoNombre = (a, b) => normalizarTexto(a) === normalizarTexto(b) && normalizarTexto(a) !== '';
+     usos        : :65 :66 :94 :108
+  src/services/ambitos-publicados.js
+     definicion  :41  const mismoNombre = (a, b) => normalizarTexto(a || '') === normalizarTexto(b || '') && normalizarTexto(a || '') !== '';
+     usos        : :289
+
+  Las dos definiciones NO son iguales: zonas-aviso.js normaliza los argumentos
+  crudos y ambitos-publicados.js los pasa por `|| ''` antes. Mismo resultado hoy
+  porque normalizarTexto ya trata null como vacio, pero son dos textos que hay
+  que mantener sincronizados a mano — que es lo que E0.3 tiene que saldar.
+
+──────────────────────────────────────────────────────────────────────────────
+12. EL REPARTO — LAS 164 BAHIAS, CADA UNA EN UN SOLO CAJON
+──────────────────────────────────────────────────────────────────────────────
+Particion completa y con prioridad: primero se pregunta si la atribucion esta
+EN DISPUTA, y recien despues si el nombre calza. Al reves, arreglar la variante
+de nombre "Cisnes" -> puerto_cisnes contaria como resueltas 16 bahias que SITPORT
+atribuye a Melinka y a Aguirre: el nombre calzaria y la atribucion seguiria mal.
+
+  Nombres del mapa que NO calzan, contra el criterio de igualdad de conjunto:
+     'Cisnes': el mapa le cuelga 18 bahias y SITPORT le da 2 a 'puerto_cisnes'. NO es solo el nombre.
+     'Chacabuco' == puerto_chacabuco: los dos conjuntos son los mismos 10 ids. VARIANTE establecida.
+     'Hornopirén' == hornopiren: los dos conjuntos son los mismos 8 ids. VARIANTE establecida.
+     'Guayacán': el mapa le cuelga 1 bahias y no hay jurisdiccion parecida. NO es solo el nombre.
+
+   69  A1 · sin disputa y el nombre calza exacto
+   18  A2 · sin disputa; variante ESTABLECIDA por igualdad de conjunto
+    1  A3 · sin disputa; el nombre difiere solo en el prefijo "Puerto "/"Lago "
+   25  B · en disputa, y la banda del decreto la decide contra el mapa
+    4  C · en disputa, y la identidad de cuerpo de agua la decide
+   13  D · sin atribuir, la resuelve la identidad de cuerpo de agua del decreto
+   11  E · sin atribuir y sin identidad de cuerpo -> ADJUDICACION
+   22  F · en disputa y el decreto no la decide con lo medido -> ADJUDICACION
+    1  G · el nombre del mapa no existe en el decreto -> ADJUDICACION
+  164  TOTAL (contra 164 entradas del mapa)
+
+  A2 · sin disputa; variante ESTABLECIDA por igualdad de conjunto
+     115 CANAL HORNOPIRÉN                   'Hornopirén' -> hornopiren
+     126 BAHÍA CHACABUCO                    'Chacabuco' -> puerto_chacabuco
+     181 CANAL CHOLGO                       'Hornopirén' -> hornopiren
+     182 ESTERO COMAU                       'Hornopirén' -> hornopiren
+     183 ESTERO PICHICOLO                   'Hornopirén' -> hornopiren
+     184 ENSENADA HUALAIHUÉ                 'Hornopirén' -> hornopiren
+     185 ENSENADA ROLECHA                   'Hornopirén' -> hornopiren
+     186 SECTOR AYACARA                     'Hornopirén' -> hornopiren
+     187 SECTOR BUILL                       'Hornopirén' -> hornopiren
+     220 FIORDO AYSEN                       'Chacabuco' -> puerto_chacabuco
+     221 ESTERO QUITRALCO                   'Chacabuco' -> puerto_chacabuco
+     222 ESTERO CUPQUELAN                   'Chacabuco' -> puerto_chacabuco
+     223 CANAL COSTA Y ELEFANTES            'Chacabuco' -> puerto_chacabuco
+     224 CANAL ERRAZURIZ                    'Chacabuco' -> puerto_chacabuco
+     225 CANAL UTARUPA                      'Chacabuco' -> puerto_chacabuco
+     226 BOCA WICKHAM                       'Chacabuco' -> puerto_chacabuco
+     227 CANAL WILLIAMS                     'Chacabuco' -> puerto_chacabuco
+     228 CANAL VICUÑA                       'Chacabuco' -> puerto_chacabuco
+
+  A3 · sin disputa; el nombre difiere solo en el prefijo "Puerto "/"Lago "
+     123 PUERTO CISNES                      'Cisnes' -> puerto_cisnes
+
+  B · en disputa, y la banda del decreto la decide contra el mapa
+      73 PATACHE                            -> patache
+      74 BAHÍA ALGODONALES                  -> tocopilla
+      76 CALETA MICHILLA                    -> mejillones
+      79 TAL TAL                            -> taltal
+      80 BAHÍA CHAÑARAL                     -> chanaral
+      87 TONGOY                             -> tongoy
+      94 BAHÍA ALGARROBO                    -> algarrobo
+      95 PICHILEMU                          -> pichilemu
+      97 BAHÍA CONCEPCIÓN - LIRQUÉN         -> lirquen
+      99 BAHÍA SAN VICENTE                  -> san_vicente
+     102 LOTA                               -> lota
+     125 SECTOR BAHÍA DE PUERTO AGUIRRE     -> puerto_aguirre
+     150 GUANAQUEROS                        -> tongoy
+     157 PUERTO CARRIZAL BAJO               -> huasco
+     158 CALETA CHAÑARAL Y ENSENADA GAVIOTA -> huasco
+     172 BAHÍA PAN DE AZÚCAR                -> chanaral
+     195 PATILLO                            -> patache
+     196 BORDE COSTERO NORTE PATACHE        -> patache
+     197 BORDE COSTERO SUR PATACHE          -> patache
+     198 SECTOR COSTERO PENINSULA DE HUALPEN -> san_vicente
+     215 EL QUISCO                          -> algarrobo
+     219 SECTOR NORTE QUINTERO              -> quintero
+     236 CALETA VIUDA                       -> tocopilla
+     243 SECTOR CANAL DARWIN                -> puerto_aguirre
+     244 SECTOR CANAL TRANSITO              -> puerto_aguirre
+
+  C · en disputa, y la identidad de cuerpo de agua la decide
+     159 LAGO TODOS LOS SANTOS              puerto_varas
+     160 LAGO PUYEHUE                       lago_ranco + puerto_varas
+     161 LAGO RUPANCO                       puerto_varas
+     257 RÍO COCHRANE                       lago_general_carrera
+
+  D · sin atribuir, la resuelve la identidad de cuerpo de agua del decreto
+      96 LAGO RAPEL                         lago_rapel
+     105 LAGO VILLARRICA                    lago_villarrica
+     106 PANGUIPULLI                        lago_panguipulli
+     128 LAGO GENERAL CARRERA               lago_general_carrera
+     144 LAGO RANCO                         lago_ranco
+     145 LAGO MAIHUE                        lago_ranco
+     146 RIO BUENO                          lago_ranco
+     203 LAGO O'HIGGINS                     lago_general_carrera
+     245 LAGO PELLAIFA                      lago_panguipulli
+     246 LAGO PULLINQUE                     lago_panguipulli
+     247 LAGO CALAFQUEN                     lago_panguipulli
+     248 LAGO RIÑIHUE                       lago_panguipulli
+     249 LAGO NELTUME                       lago_panguipulli
+
+  E · sin atribuir y sin identidad de cuerpo -> ADJUDICACION
+     127 BAKER                              SITPORT: BAKER
+     129 PUERTO EDÉN                        SITPORT: EDEN
+     139 BAHÍA FILDES                       SITPORT: BAHIA FILDES
+     140 BAHÍA PARAÍSO                      SITPORT: BAHIA PARAISO
+     153 LAGO TAGUA TAGUA                   SITPORT: COCHAMO
+     154 ISLA GUARELLO                      SITPORT: EDEN
+     209 LAGO VILLARRICA SECTOR PUCÓN       SITPORT: VILLARRICA
+     210 LAGO VILLARRICA SECTOR VILLARRICA  SITPORT: VILLARRICA
+     229 LAGO VICHUQUEN                     SITPORT: CONSTITUCION
+     231 BAHÍA CHILE                        SITPORT: SOBERANIA
+     250 LAGO PIREHUICO                     SITPORT: VILLARRICA
+
+  F · en disputa y el decreto no la decide con lo medido -> ADJUDICACION
+      90 ISLA ROBINSON CRUSOE               mapa=valparaiso sitport=JUAN FERNANDEZ · no medible: 'juan_fernandez' no declara las dos latitudes
+     124 MELINKA                            mapa=puerto_cisnes sitport=MELINKA · las dos bandas lo contienen (no decide)
+     131 BAHÍA GREGORIO                     mapa=punta_arenas sitport=PUNTA DELGADA · no medible: 'punta_delgada' no declara las dos latitudes
+     132 BAHÍA CLARENCIA                    mapa=punta_arenas sitport=TIERRA DEL FUEGO · no medible: 'tierra_del_fuego' no declara las dos latitudes
+     137 BAHÍA CHILOTA                      mapa=punta_arenas sitport=TIERRA DEL FUEGO · no medible: 'tierra_del_fuego' no declara las dos latitudes
+     151 BARNES                             mapa=coquimbo sitport=TONGOY · >> AL REVES: solo la banda del mapa lo contiene, SITPORT queda fuera
+     156 PRIMERA ANGOSTURA                  mapa=punta_arenas sitport=PUNTA DELGADA · no medible: 'punta_delgada' no declara las dos latitudes
+     175 SECTOR REPOLLA ALTO                mapa=puerto_cisnes sitport=MELINKA · las dos bandas lo contienen (no decide)
+     176 SECTOR REPOLLA BAJO                mapa=puerto_cisnes sitport=MELINKA · las dos bandas lo contienen (no decide)
+     234 RÍO PALENA                         mapa=chaiten sitport=CISNES · >> AL REVES: solo la banda del mapa lo contiene, SITPORT queda fuera
+     235 CHEQUIAN                           mapa=quemchi sitport=ACHAO · no medible: 'achao' no declara las dos latitudes
+     238 SECTOR CANAL MORALEDA              mapa=puerto_cisnes sitport=AGUIRRE · >> AL REVES: solo la banda del mapa lo contiene, SITPORT queda fuera
+     239 SECTOR CANAL FERRONAVE Y CANAL DEVIA mapa=puerto_cisnes sitport=AGUIRRE · las dos bandas lo contienen (no decide)
+     240 SECTOR CANAL PILCOMAYO Y CANAL RODRIGUEZ mapa=puerto_cisnes sitport=AGUIRRE · >> AL REVES: solo la banda del mapa lo contiene, SITPORT queda fuera
+     241 SECTOR CANAL GOÑI Y CANAL NINUALAC mapa=puerto_cisnes sitport=AGUIRRE · las dos bandas lo contienen (no decide)
+     242 SECTOR CANAL CARRERA DEL CHIVATO Y CANAL CUCHI mapa=puerto_cisnes sitport=AGUIRRE · las dos bandas lo contienen (no decide)
+     251 CANAL GOLFO CORCOVADO (NORTE)      mapa=puerto_cisnes sitport=MELINKA · ninguna banda lo contiene
+     252 CANAL MORALEDA (ESTE)              mapa=puerto_cisnes sitport=MELINKA · ninguna banda lo contiene
+     253 CANAL CHAFFERS NORTE               mapa=puerto_cisnes sitport=MELINKA · ninguna banda lo contiene
+     254 CANAL CHAFFERS SUR                 mapa=puerto_cisnes sitport=MELINKA · las dos bandas lo contienen (no decide)
+     255 CANAL PÉREZ NORTE                  mapa=puerto_cisnes sitport=MELINKA · las dos bandas lo contienen (no decide)
+     256 CANAL PÉREZ SUR                    mapa=puerto_cisnes sitport=MELINKA · las dos bandas lo contienen (no decide)
+
+  G · el nombre del mapa no existe en el decreto -> ADJUDICACION
+      86 BAHÍA HERRADURA DE GUAYACÁN        mapa: 'Guayacán' / SITPORT: COQUIMBO
+
+  Con restriccion publicada en la captura de hoy, por cajon:
+    11  A1 · sin disputa y el nombre calza exacto  -> bahias 71, 112, 113, 117, 121, 138, 148, 152, 155, 208, 233
+     7  B · en disputa, y la banda del decreto la decide contra el mapa  -> bahias 74, 76, 80, 97, 158, 172, 236
+     1  D · sin atribuir, la resuelve la identidad de cuerpo de agua del decreto  -> bahias 106
+     1  E · sin atribuir y sin identidad de cuerpo -> ADJUDICACION  -> bahias 153
+     3  F · en disputa y el decreto no la decide con lo medido -> ADJUDICACION  -> bahias 131, 156, 239
+     1  G · el nombre del mapa no existe en el decreto -> ADJUDICACION  -> bahias 86
+
+==============================================================================
+FIN DEL RECONOCIMIENTO — no se modifico ningun archivo.
+==============================================================================
