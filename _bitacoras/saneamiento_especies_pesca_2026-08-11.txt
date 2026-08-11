@@ -1,0 +1,414 @@
+================================================================================
+BITÁCORA — SANEAMIENTO DE especies_pesca.json
+Fecha: 11-AGO-2026
+Objetivo único de la sesión: sanear especies_pesca.json (CLAUDE.md §5.5)
+================================================================================
+
+DECLARACIÓN DE SHELL (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Los comandos se EJECUTARON en dos shells:
+  - PowerShell 5.1  -> inspección de bytes, modificación y verificación (scripts)
+  - Git Bash        -> `diff -u` y el smoke test de `node -e`
+
+Los comandos REPRODUCIBLES para el owner van al final, en sintaxis PowerShell.
+Donde la forma ejecutada y la reproducible difieren, se indica cuál es cuál.
+
+
+================================================================================
+1. RECONOCIMIENTO — QUÉ SE ENCONTRÓ
+================================================================================
+
+1.1 HALLAZGO PRINCIPAL: EL SUPUESTO DE PARTIDA ERA FALSO
+--------------------------------------------------------------------------------
+La instrucción de sesión afirmaba que el archivo estaba en DOBLE UTF-8 y que
+había que corregir la codificación. SE MIDIÓ Y NO ERA ASÍ (CLAUDE.md §0.1).
+
+El archivo estaba —y sigue estando— en UTF-8 simple, correcto, sin BOM.
+
+Evidencia. Enumeración de TODA secuencia de bytes no-ASCII del archivo original:
+
+    === Secuencias de bytes no-ASCII (hex) y su frecuencia ===
+    C3 B3          x34  UTF8='ó'  Latin1='Ã³'
+    C3 A1          x25  UTF8='á'  Latin1='Ã¡'
+    C3 AD          x25  UTF8='í'  Latin1='Ã­'
+    C3 A9          x9   UTF8='é'  Latin1='Ã©'
+    C3 BA          x5   UTF8='ú'  Latin1='Âº'
+    C3 B1          x5   UTF8='ñ'  Latin1='Ã±'
+    C2 B0          x3   UTF8='°'  Latin1='Â°'
+    C3 81          x2   UTF8='Á'  Latin1='Ã'
+
+Las 216 bytes no-ASCII forman 8 secuencias distintas, TODAS de 2 bytes, TODAS
+UTF-8 válido. Un archivo en doble UTF-8 mostraría secuencias de 4 bytes: la 'ó'
+doble-codificada sería `C3 83 C2 B3`, no `C3 B3`. No había ni una.
+
+Confirmación independiente:
+
+    Decodificacion UTF-8 ESTRICTA: OK (sin bytes invalidos)
+    Caracter U+FFFD (replacement) presente: False
+    Marcadores tipicos de mojibake presentes en el texto decodificado:
+      'Ã'   -> 0 ocurrencias
+      'Â'   -> 0 ocurrencias
+      'â€'  -> 0 ocurrencias
+      'ï»¿' -> 0 ocurrencias
+    Fin de linea: CRLF=99  LF solo=0
+
+CONSECUENCIA: aplicar la "corrección" de doble UTF-8 (decodificar como Latin-1 y
+re-codificar) habría ROTO un archivo sano — habría dejado 'Ã³' donde había 'ó',
+en los 7 registros. El efecto está medido, no proyectado.
+
+Se reportó al owner ANTES de ejecutar. El owner ANULÓ el paso 2(a) y confirmó que
+el diagnóstico original venía de un error de lectura por consola, no del archivo.
+
+
+1.2 ESTADO DEL ARCHIVO ORIGINAL
+--------------------------------------------------------------------------------
+    Tamano en bytes: 9534
+    Primeros 8 bytes (hex): 5B 0D 0A 20 20 7B 0D 0A
+    BOM UTF-8 (EF BB BF): False
+    Bytes no-ASCII: 216
+
+  - Codificación : UTF-8 SIN BOM, válido en decodificación estricta
+  - Fin de línea : CRLF en las 99 líneas (0 LF sueltos)
+  - JSON         : válido, array de 7 elementos
+  - SHA256       : B3FD21B4196F120E71A761ECDCC4AE0A000CCD353047DFBF1BB1BB5B3805EE57
+
+
+1.3 ESTRUCTURA — LOS 7 OBJETOS ERAN HOMOGÉNEOS
+--------------------------------------------------------------------------------
+    JSON valido. Elementos: 7
+
+    id=1  campos=12  identico_al_id1=True  especie='Merluza del Sur'
+    id=2  campos=12  identico_al_id1=True  especie='Reineta'
+    id=3  campos=12  identico_al_id1=True  especie='Congrio Dorado'
+    id=4  campos=12  identico_al_id1=True  especie='Erizo rojo'
+    id=5  campos=12  identico_al_id1=True  especie='Pez Espada / Albacora'
+    id=6  campos=12  identico_al_id1=True  especie='Loco'
+    id=7  campos=12  identico_al_id1=True  especie='Sardina Común / Anchoveta'
+
+    === Lista de campos del id=1 (orden exacto) ===
+      1. id
+      2. especie
+      3. nombre_cientifico
+      4. temp_min_optima
+      5. temp_max_optima
+      6. clorofila_min_optima
+      7. clorofila_max_optima
+      8. consejo_productivo_optimo
+      9. consejo_productivo_adverso
+     10. normativa_sernapesca
+     11. regulacion_minsal
+     12. seguridad_navegacion
+
+ids 1–7, sin huecos ni duplicados. Ninguno tenía `grupo_ecologico`.
+
+
+1.4 DEPENDENCIAS — QUIÉN LEE O ESCRIBE EL ARCHIVO
+--------------------------------------------------------------------------------
+Búsqueda por nombre de archivo en todo el repositorio.
+DOS consumidores, AMBOS de solo lectura. NINGÚN escritor.
+
+  src/services/marine-weather-service.js:20
+      require(path.join(process.cwd(),'especies_pesca.json'))
+      Cachea el array completo en _especiesCache.
+
+  src/routes/marine-weather-routes.js:93
+      require(...) y proyecta SOLO {id, especie, nombre_cientifico} para el
+      dropdown del frontend (GET /api/marine-weather/especies).
+
+Verificación de escritores (grep de writeFile|writeFileSync|createWriteStream|
+WriteAllText cruzado con 'especie'): VACÍO. Nadie escribe el archivo.
+
+IMPACTO DE AGREGAR UN CAMPO: nulo para ambos consumidores. La ruta destructura
+tres campos fijos e ignora el resto; el service lee campos por nombre.
+
+Ninguno de los dos pertenece al motor BRE (sitport-parser.js,
+restriction-rules-engine.js, route-restriction-evaluator.js). No se tocó el motor.
+
+
+1.5 HALLAZGO SECUNDARIO — CONTRATO_MOTOR.md DESACTUALIZADO  [PENDIENTE, DEL OWNER]
+--------------------------------------------------------------------------------
+El contrato afirma en dos lugares que este archivo tiene el encoding roto:
+
+  línea 544: | Conocimiento de especies | `especies_pesca.json` | OK (encoding
+             roto, cosmético) |
+  línea 617: 3. **Encoding roto** en `especies_pesca.json` y textos SITPORT.
+             Aplicar INV-0.3.
+
+Ambas afirmaciones son FALSAS respecto de especies_pesca.json, según la medición
+de §1.1 de esta bitácora. Probablemente son el origen del supuesto equivocado de
+la instrucción de sesión.
+
+NO SE EDITÓ: CLAUDE.md §6 reserva la escritura de CONTRATO_MOTOR.md al owner.
+
+ALCANCE DE LA REFUTACIÓN: se midió únicamente especies_pesca.json. La parte de
+"textos SITPORT" de esas dos líneas NO se midió y queda como NO DETERMINADO
+(CLAUDE.md §3.2) — puede seguir siendo cierta.
+
+
+================================================================================
+2. MODIFICACIÓN — QUÉ SE MODIFICÓ
+================================================================================
+
+ALCANCE EJECUTADO: solo el paso 2(b). El 2(a) quedó anulado por el owner.
+
+2.1 RESPALDO
+--------------------------------------------------------------------------------
+    RESPALDO OK -> C:\Users\katia\tmarea-backend\especies_pesca.json.bak-2026-08-11
+      SHA256 original = B3FD21B4196F120E71A761ECDCC4AE0A000CCD353047DFBF1BB1BB5B3805EE57
+      SHA256 respaldo = B3FD21B4196F120E71A761ECDCC4AE0A000CCD353047DFBF1BB1BB5B3805EE57
+
+Hashes idénticos: copia byte a byte. El script aborta si el respaldo ya existe,
+de modo que no puede pisar uno previo.
+
+
+2.2 INSERCIÓN
+--------------------------------------------------------------------------------
+Una línea por objeto, inmediatamente después de `nombre_cientifico`, con los
+valores ADJUDICADOS POR EL OWNER (no inferidos del contenido de cada registro):
+
+    INSERCIONES REALIZADAS:
+      id=1 -> demersal
+      id=2 -> pelagico
+      id=3 -> demersal
+      id=4 -> bentonico
+      id=5 -> pelagico
+      id=6 -> bentonico
+      id=7 -> pelagico
+
+    JSON resultante valido en memoria: 7 elementos
+    ESCRITO con [System.IO.File]::WriteAllText + UTF8Encoding($false)
+
+    Bytes antes   : 9534
+    Bytes despues : 9788
+    Delta         : 254
+    Bytes no-ASCII antes   : 216
+    Bytes no-ASCII despues : 216
+
+El delta de 254 bytes cuadra EXACTAMENTE con las 7 líneas:
+  4 (indent) + 20 ("grupo_ecologico": ") + len(valor) + 2 (",) + 2 (CRLF)
+  = 2 x 36 (demersal) + 3 x 36 (pelagico) + 2 x 37 (bentonico) = 254
+No hay un solo byte de más.
+
+Los 216 bytes no-ASCII quedaron intactos: garantía de que no se aplicó ninguna
+conversión de codificación.
+
+
+2.3 DIFF CONTRA EL RESPALDO (ejecutado en Git Bash: diff -u)
+--------------------------------------------------------------------------------
+7 líneas agregadas, 0 eliminadas, 0 modificadas. Los 7 hunks son de esta forma:
+
+    @@ -3,6 +3,7 @@
+         "id": 1,
+         "especie": "Merluza del Sur",
+         "nombre_cientifico": "Merluccius australis",
+    +    "grupo_ecologico": "demersal",
+         "temp_min_optima": 10.5,
+         "temp_max_optima": 13.0,
+         "clorofila_min_optima": 1.0,
+
+Ningún campo, valor numérico ni orden fue tocado.
+
+
+2.4 CÓMO SE CUMPLIERON LAS RESTRICCIONES
+--------------------------------------------------------------------------------
+  - Sin conversión de encoding : se leyó con UTF8Encoding($false,$true) (estricto)
+        y se reescribió el mismo string; solo se concatenaron líneas ASCII nuevas.
+  - Sin BOM (CLAUDE.md §7.2)   : [System.IO.File]::WriteAllText($p, $nuevo,
+        (New-Object System.Text.UTF8Encoding($false)))
+        NOTA: la restricción original del prompt pedía [System.Text.Encoding]::UTF8,
+        que SÍ emite BOM. Se reportó al owner y él corrigió la restricción a
+        UTF8Encoding($false). Manda CLAUDE.md §7.2.
+  - CRLF preservado            : las líneas insertadas terminan en `r`n explícito;
+        el resto del texto nunca se re-dividió por líneas.
+  - Inserción quirúrgica       : regex con MatchEvaluator sobre el texto existente.
+        NO se usó ConvertTo-Json (habría reordenado campos y convertido 13.0 -> 13).
+  - Sin default silencioso (§4.2): el evaluador LANZA si un id no está en el mapa;
+        el script ABORTA si las inserciones != 7.
+  - Validar antes de escribir  : el JSON se parseó EN MEMORIA y se comprobó que da
+        7 elementos ANTES de tocar el disco (§4.1, falla ruidoso).
+  - Sin commits (§6)           : no se ejecutó git add ni git commit.
+
+
+================================================================================
+3. VERIFICACIÓN — SALIDA CRUDA
+================================================================================
+
+NOTA METODOLÓGICA: dado que el diagnóstico erróneo original se originó en un
+error de lectura por consola, la verificación imprime el GLIFO Y SU CODE POINT.
+El code point no depende de cómo renderice la terminal.
+
+    === A. ARCHIVO EN DISCO ===
+    Ruta            : C:\Users\katia\tmarea-backend\especies_pesca.json
+    Tamano          : 9788 bytes
+    Primeros 8 bytes: 5B 0D 0A 20 20 7B 0D 0A
+    BOM presente    : False   (esperado: False)
+    Decode UTF-8 estricto: OK (sin bytes invalidos)
+    Fin de linea    : CRLF=106  LF-solo=0   (esperado: LF-solo=0)
+
+    === B. JSON PARSEADO: id / especie / grupo_ecologico ===
+    JSON valido. Elementos: 7
+    id   especie                      grupo_ecologico
+    ---- ---------------------------- ---------------
+    1    Merluza del Sur              demersal
+    2    Reineta                      pelagico
+    3    Congrio Dorado               demersal
+    4    Erizo rojo                   bentonico
+    5    Pez Espada / Albacora        pelagico
+    6    Loco                         bentonico
+    7    Sardina Común / Anchoveta    pelagico
+
+    === C. FRAGMENTO CON CARACTERES NO-ASCII, UNO POR REGISTRO ===
+    (se muestra el glifo Y su code point: el code point no depende de la consola)
+
+    id=1 [consejo_productivo_optimo]
+       ...Temperatura y alimentación excelentes para la Merluza del ...
+       code points no-ASCII: 'ó'=U+00F3
+
+    id=2 [consejo_productivo_optimo]
+       ...Condiciones térmicas ideales para la Reineta. Monitorea fr...
+       code points no-ASCII: 'é'=U+00E9
+
+    id=3 [consejo_productivo_adverso]
+       ...ongrio prefiere aguas subantárticas frías y estables; si l...
+       code points no-ASCII: 'á'=U+00E1  'í'=U+00ED
+
+    id=4 [consejo_productivo_optimo]
+       ...uas estables en la zona bentónica. Las condiciones de visi...
+       code points no-ASCII: 'ó'=U+00F3
+
+    id=5 [consejo_productivo_optimo]
+       ...Frentes térmicos oceánicos ideales. Busca zonas de transic...
+       code points no-ASCII: 'é'=U+00E9  'á'=U+00E1
+
+    id=6 [consejo_productivo_optimo]
+       ...Condiciones costeras óptimas. Los fondos rocosos someros p...
+       code points no-ASCII: 'ó'=U+00F3
+
+    id=7 [especie]
+       ...Sardina Común / Anchoveta...
+       code points no-ASCII: 'ú'=U+00FA
+
+    === D. CAMPOS POR OBJETO ===
+    id=1  campos=13  orden_esperado=True
+    id=2  campos=13  orden_esperado=True
+    id=3  campos=13  orden_esperado=True
+    id=4  campos=13  orden_esperado=True
+    id=5  campos=13  orden_esperado=True
+    id=6  campos=13  orden_esperado=True
+    id=7  campos=13  orden_esperado=True
+    Los 7 con los 13 campos en el orden esperado: True
+
+    === E. REVERSIBILIDAD: el archivo menos las 7 lineas nuevas == original ? ===
+    SHA256 (actual - 7 lineas) : B3FD21B4196F120E71A761ECDCC4AE0A000CCD353047DFBF1BB1BB5B3805EE57
+    SHA256 (respaldo original) : B3FD21B4196F120E71A761ECDCC4AE0A000CCD353047DFBF1BB1BB5B3805EE57
+    COINCIDEN                  : True
+
+    === F. SECUENCIAS NO-ASCII: ACTUAL vs RESPALDO ===
+    hex        caracter respaldo  actual   igual
+    C2 B0      °        3         3        True
+    C3 81      Á        2         2        True
+    C3 A1      á        25        25       True
+    C3 A9      é        9         9        True
+    C3 AD      í        25        25       True
+    C3 B1      ñ        5         5        True
+    C3 B3      ó        34        34       True
+    C3 BA      ú        5         5        True
+    Secuencias con diferencia: 0   (esperado: 0)
+
+SMOKE TEST DEL CONSUMIDOR REAL (ejecutado en Git Bash: node -e)
+--------------------------------------------------------------------------------
+    require() OK — especies cargadas: 7
+    conteo por grupo: {"demersal":2,"pelagico":3,"bentonico":2}
+    registros sin grupo_ecologico: ninguno
+    proyeccion del dropdown (ruta /especies):
+        1 | Merluza del Sur | Merluccius australis
+        2 | Reineta | Brama australis
+        3 | Congrio Dorado | Genypterus blacodes
+        4 | Erizo rojo | Loxechinus albus
+        5 | Pez Espada / Albacora | Xiphias gladius
+        6 | Loco | Concholepas concholepas
+        7 | Sardina Común / Anchoveta | Strangomera bentincki / Engraulis ringens
+
+LECTURA DE LA PRUEBA E (la más fuerte)
+--------------------------------------------------------------------------------
+Quitar del archivo actual las 7 líneas de `grupo_ecologico` reproduce el original
+BYTE POR BYTE (mismo SHA256). Eso prueba que la inserción fue lo ÚNICO que ocurrió:
+ni un espacio, ni un decimal, ni un acento, ni un fin de línea se movió.
+
+CRLF pasó de 99 a 106 = +7, consistente con las 7 líneas agregadas.
+
+
+================================================================================
+4. QUÉ QUEDÓ PENDIENTE
+================================================================================
+
+4.1 DEL OWNER — CONTRATO_MOTOR.md líneas 544 y 617
+    Afirman "encoding roto" en especies_pesca.json. Refutado con medición (§1.1
+    y §3.F de esta bitácora). No se editó porque CLAUDE.md §6 reserva ese archivo
+    al owner. Se propone reemplazar el estado de la línea 544 por "OK" y sacar
+    especies_pesca.json de la línea 617, dejando ahí solo los textos SITPORT.
+
+4.2 NO DETERMINADO — "textos SITPORT" del mismo hallazgo 3 del contrato
+    No se midió; queda fuera del alcance de esta sesión (§5.5, un objetivo por
+    sesión). Puede seguir siendo cierto.
+
+4.3 DECISIÓN MENOR DEL OWNER — el archivo de respaldo
+    especies_pesca.json.bak-2026-08-11 quedó en la raíz del backend porque así lo
+    pedía la instrucción. Si esa raíz está versionada, aparecerá sin trackear. No
+    se movió ni se agregó a .gitignore.
+
+4.4 NO SE HIZO, POR DISEÑO
+    - No se agregó grupo_ecologico a ningún otro archivo ni se extendió la lógica
+      a ninguna otra parte del código (instrucción explícita del owner).
+    - No se tocó el motor BRE. Ningún hallazgo apuntó a él.
+    - No se commiteó nada. No se usó git add.
+
+
+================================================================================
+5. OBJECIONES QUE SE TUVIERON A LO PEDIDO (CLAUDE.md §8.5)
+================================================================================
+
+5.1 El paso 2(a) se apoyaba en un supuesto falso. Se midió antes de ejecutar y se
+    reportó. Ejecutarlo habría corrompido los 216 bytes que estaban sanos.
+    -> El owner anuló 2(a). Objeción aceptada.
+
+5.2 La restricción dura "[System.Text.Encoding]::UTF8" contradecía CLAUDE.md §7.2:
+    esa sobrecarga emite BOM, y el archivo no tenía. Se reportó antes de escribir.
+    -> El owner corrigió la restricción a UTF8Encoding($false). Objeción aceptada.
+
+5.3 Se descartó explícitamente reserializar con ConvertTo-Json: habría reordenado
+    campos, alterado el escapado de '/' y convertido 13.0 en 13, violando "no
+    reformatear más allá de lo necesario". Descarte declarado, no silencioso (§0.2).
+
+Ninguna objeción quedó sin reportar.
+
+
+================================================================================
+6. COMANDOS REPRODUCIBLES — SINTAXIS POWERSHELL (CLAUDE.md §7.3)
+================================================================================
+Para que el owner repita la verificación en su terminal. Sin operador && .
+Los scripts ejecutados vivieron en scratchpad de sesión y NO se versionaron; lo
+que sigue es la forma reproducible mínima, equivalente a las pruebas A, B y F.
+
+  # A — encoding, BOM y fin de línea
+  $p = 'C:\Users\katia\tmarea-backend\especies_pesca.json'
+  $b = [System.IO.File]::ReadAllBytes($p)
+  "Bytes: $($b.Length)"
+  "BOM  : " + ($b[0] -eq 0xEF -and $b[1] -eq 0xBB -and $b[2] -eq 0xBF)
+  $txt = (New-Object System.Text.UTF8Encoding($false,$true)).GetString($b)
+  "CRLF : " + ([regex]::Matches($txt,"`r`n")).Count
+
+  # B — los 7 registros con su grupo
+  $j = $txt | ConvertFrom-Json
+  $j | Select-Object id, especie, grupo_ecologico | Format-Table -AutoSize
+
+  # F — reversibilidad contra el respaldo
+  $bak = 'C:\Users\katia\tmarea-backend\especies_pesca.json.bak-2026-08-11'
+  $rev = [regex]::Replace($txt,'(?m)^\s*"grupo_ecologico": "[a-z]+",\r\n','')
+  $hR = [System.BitConverter]::ToString(([System.Security.Cryptography.SHA256]::Create()).ComputeHash((New-Object System.Text.UTF8Encoding($false)).GetBytes($rev))).Replace('-','')
+  "Revertido: $hR"
+  "Respaldo : " + (Get-FileHash -LiteralPath $bak -Algorithm SHA256).Hash
+
+================================================================================
+FIN DE BITÁCORA
+================================================================================
