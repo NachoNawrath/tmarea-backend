@@ -9,6 +9,9 @@ const { validarHabilitacionDeportiva } = require('../services/deportivo-validato
 const {
   medirCoberturaRuta, componerAvisos, capaJurisdiccionesVigente,
 } = require('../services/cobertura-jurisdiccional');
+const {
+  construirResolutorCapitania, evaluarDriftEnRuta, noEvaluado, componerConDrift,
+} = require('../services/drift-ambito-a');
 const router = express.Router();
 
 const pool = new Pool({
@@ -377,7 +380,9 @@ router.post('/weather-ruta', async (req, res) => {
       });
     }
 
-    // 2. Enriquecer cada pronóstico con coordenadas del mapa estático
+    // 2. Enriquecer cada pronóstico con coordenadas del mapa estático.
+    // Los que no tienen entrada en el catálogo NO se pierden en silencio: van al
+    // detector de drift de abajo (A3). Ver drift-ambito-a.js.
     const enriquecidos = pronosticos
       .map(p => {
         const coords = BAHIA_COORDS[p.idBahia];
@@ -424,6 +429,13 @@ router.post('/weather-ruta', async (req, res) => {
     }
 
     const bahias = Array.from(bahiasEnRuta.values());
+
+    // 3 bis. Drift del catálogo (A3): pronósticos publicados bajo una bahía que
+    // no conocemos. Se acota por Capitanía contra las bahías que sí matchearon.
+    const driftCatalogo = await evaluarDriftCatalogo(
+      pronosticos.map(p => ({ id_bahia: Number(p.idBahia), origen: 'totalPronostico', nombre: null })),
+      new Set(bahias.map(b => b.idBahia))
+    );
 
     // 4. Peor tramo = mayor velocidad de viento
     const peorTramo = bahias.length > 0
@@ -479,6 +491,11 @@ router.post('/weather-ruta', async (req, res) => {
       } : null,
       condicion_puerto,
       alerta_nivel,
+      // A3. `condicion_puerto` NO se toca: no sabemos qué viento hacía en la
+      // bahía que no pudimos leer, y ponerle uno sería fabricar dato (INV-0.2).
+      // Lo que sí se dice es que hubo un pronóstico que no se pudo leer, con su
+      // bandera topada en U.
+      drift_catalogo: driftCatalogo,
       fuente:    'SITPORT/DIRECTEMAR',
       normativa: 'A-41/013 DGTM',
       timestamp: new Date().toISOString()
@@ -549,6 +566,52 @@ async function bahiasEnRutaPostGIS(waypoints) {
     [rutaGeoJSON]
   );
   return new Set(rows.map(r => r.bahia_id));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Drift del catálogo, ámbito A (D7 = A3, owner 2026-08-11).
+//
+// Un registro de SITPORT cuya bahía no está en BAHIA_COORDS hoy se descarta en
+// silencio. Acá se detecta ANTES de los dos descartes (:664 y :666), porque una
+// bahía sin celda tampoco puede aparecer en el matching geográfico y se perdería
+// antes de llegar al segundo.
+//
+// El aviso se acota por Capitanía —la unidad de INV-3.3— comparando el código de
+// repartición que publica la propia fuente, y su bandera está topada en U por
+// construcción en drift-ambito-a.js. Nunca U+V.
+// ─────────────────────────────────────────────────────────────────────────────
+async function evaluarDriftCatalogo(registrosSitport, bahiaIdsEnRuta) {
+  try {
+    const desconocidas = registrosSitport.filter(r => !BAHIA_COORDS[r.id_bahia]);
+    if (desconocidas.length === 0) {
+      return { estado: 'evaluado', motivo: null, bandera: 'Q', avisos: [], total: 0, defectos_registrados: 0, defectos: [] };
+    }
+
+    const [bahias, capuerto, general] = await Promise.all([
+      sitportService.consultaBahias(),
+      sitportService.consultaCapuertoRestriccion(),
+      sitportService.totalGeneral(),
+    ]);
+    const resolver = construirResolutorCapitania({
+      consultaBahias: bahias, consultaCapuertoRestriccion: capuerto, totalGeneral: general,
+    });
+
+    const r = evaluarDriftEnRuta({
+      registros: desconocidas,
+      idsEnRuta: bahiaIdsEnRuta,
+      resolver,
+    });
+    for (const d of r.defectos) {
+      console.warn(`[drift-ruta] defecto ${d.tipo} bahia=${d.id_bahia} ` +
+        `origen=${d.origenes.join('+')} capitania=${d.capitania_sitport || 'NO RESUELTA'}` +
+        `${d.fuera_de_ruta ? ' (fuera de la ruta)' : ''}`);
+    }
+    return r;
+  } catch (error) {
+    // Un fallo acá NO puede leerse como "no hay drift" (INV-3.6, INV-0.2).
+    console.error('[drift-ruta] no se pudo evaluar:', error.message);
+    return noEvaluado(error.message);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -654,6 +717,14 @@ router.post('/restricciones-ruta', async (req, res) => {
     // intersectan la ruta. Reemplaza el radio de 50km — elimina falsos positivos
     // en geografía de fiordos (ej: Maullín no matchea rutas por el Golfo de Ancud).
     const bahiaIdsEnRuta = await bahiasEnRutaPostGIS(puntosValidos);
+
+    // 2 bis. Drift del catálogo (A3): qué publica SITPORT bajo una bahía que no
+    // conocemos. Se mide sobre TODAS las restricciones de tránsito, antes de los
+    // dos descartes de abajo.
+    const driftCatalogo = await evaluarDriftCatalogo(
+      restriccionesTransito.map(r => ({ id_bahia: Number(r.bahia), origen: 'consultaRestricciones', nombre: r.GLBahia || null })),
+      bahiaIdsEnRuta
+    );
 
     // 3. Agrupar restricciones por bahía y calcular posición en ruta para ordenar.
     // La posición se estima como el índice del waypoint más cercano al punto de la bahía.
@@ -771,6 +842,9 @@ router.post('/restricciones-ruta', async (req, res) => {
       }
     }
 
+    // El drift entra al máximo de INV-1.1 como una fuente más, topado en U.
+    banderaFinal = componerConDrift(banderaFinal, driftCatalogo.bandera);
+
     // ─── Cobertura jurisdiccional (INV-3.6) ──────────────────────────────
     // Se calcula y se devuelve en su PROPIO campo. NO entra en
     // restricciones_intermedias: un "no sabemos" mezclado entre las
@@ -778,13 +852,14 @@ router.post('/restricciones-ruta', async (req, res) => {
     // (INV-1.2). Todavía NO compone el veredicto — esa es la pieza 4.
     const cobertura = await evaluarCobertura(puntosValidos);
 
-    console.log(`[sitport/restricciones-ruta] waypoints=${puntosValidos.length} bahias_matcheadas=${porBahia.size} restricciones=${intermediasEnriquecidas.length} omitidas=${bahiasOmitidas} veredicto=${evaluacion.veredicto} deportivo=${veredictoDep?.bandera || '-'} final=${banderaFinal} cobertura=${cobertura.estado}/${cobertura.bandera || '-'} avisos=${cobertura.total} defectos=${cobertura.defectos_registrados}`);
+    console.log(`[sitport/restricciones-ruta] waypoints=${puntosValidos.length} bahias_matcheadas=${porBahia.size} restricciones=${intermediasEnriquecidas.length} omitidas=${bahiasOmitidas} veredicto=${evaluacion.veredicto} deportivo=${veredictoDep?.bandera || '-'} final=${banderaFinal} cobertura=${cobertura.estado}/${cobertura.bandera || '-'} avisos=${cobertura.total} defectos=${cobertura.defectos_registrados} drift=${driftCatalogo.estado}/${driftCatalogo.bandera || '-'} avisos_drift=${driftCatalogo.total} defectos_drift=${driftCatalogo.defectos_registrados}`);
 
     res.json({
       success: true,
       veredicto: evaluacion.veredicto,
       bandera_final: banderaFinal,
       cobertura_jurisdiccional: cobertura,
+      drift_catalogo: driftCatalogo,
       veredicto_deportivo: veredictoDep,
       motivo_principal: evaluacion.motivo_principal,
       ultimo_tramo_seguro: evaluacion.ultimo_tramo_seguro,

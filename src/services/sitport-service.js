@@ -93,6 +93,50 @@ async function consultaBahias() {
   }
 }
 
+// Las dos consultas que resuelven la Capitanía de un idBahia que nuestro catálogo
+// no conoce. Sin ellas, una bahía en drift no se puede ubicar ni siquiera a nivel
+// de Capitanía, y el aviso de INV-3.6 no se puede acotar a la ruta.
+//   consultaCapuertoRestriccion : Cdreparticion -> nombre de Capitanía
+//   Totalgeneral                : Capitanía -> la bahía con que se mide
+// Descubiertas el 2026-08-11; procedencia en _bitacoras/e01d_d7_y_257_2026-08-11.txt
+async function consultaCapuertoRestriccion() {
+  const cacheKey = 'capuerto';
+  const cached = getFromCache(cacheKey);
+  if (cached) return cached;
+
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/consultaCapuertoRestriccion`,
+      {},
+      { timeout: TIMEOUT_MS }
+    );
+    const data = unwrapRecordset(response.data);
+    setCache(cacheKey, data);
+    console.log(`[SITPORT] consultaCapuertoRestriccion: ${data.length} registros obtenidos`);
+    return data;
+  } catch (error) {
+    throw normalizeError(error, 'consultaCapuertoRestriccion');
+  }
+}
+
+async function totalGeneral() {
+  const cacheKey = 'totalgeneral';
+  const cached = getFromCache(cacheKey);
+  if (cached) return cached;
+
+  try {
+    const response = await axios.get(`${BASE_URL}/Totalgeneral`, {
+      timeout: TIMEOUT_MS,
+      headers: { Accept: 'application/json', Referer: 'https://orion.directemar.cl/sitport/' },
+    });
+    setCache(cacheKey, response.data);
+    console.log(`[SITPORT] Totalgeneral: ${response.data.length} registros obtenidos`);
+    return response.data;
+  } catch (error) {
+    throw normalizeError(error, 'Totalgeneral');
+  }
+}
+
 async function totalPronostico() {
   const cacheKey = 'pronostico';
   const cached = getFromCache(cacheKey);
@@ -120,5 +164,7 @@ async function totalPronostico() {
 module.exports = {
   consultaRestricciones,
   consultaBahias,
+  consultaCapuertoRestriccion,
+  totalGeneral,
   totalPronostico,
 };

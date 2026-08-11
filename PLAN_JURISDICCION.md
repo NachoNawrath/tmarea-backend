@@ -7,8 +7,8 @@
 > Rige `CONTRATO_MOTOR.md` v1.7. Este documento **no crea reglas**: donde una regla es
 > del contrato, se cita; donde es de producto, se dice que lo es.
 
-**Versión del documento:** 1.2 · **Escrito:** 2026-08-10 · **Última actualización:** 2026-08-10
-**Estado:** plan aprobado. Especificación aprobada (S5 abierta como D4). **Punto de entrada: E0.1.**
+**Versión del documento:** 1.6 · **Escrito:** 2026-08-10 · **Última actualización:** 2026-08-11
+**Estado:** plan aprobado. Especificación aprobada (S5 abierta como D4). **E0.1 cerrada; sigue E0.2/E0.3.**
 
 **Objetivo:** que la app resuelva jurisdicción por **Capitanía de Puerto**, con la capa
 derivada del **D.S. 991**, y con **R1** (el aviso de jurisdicción sin límite cargado)
@@ -152,6 +152,17 @@ descarta en silencio: no tiene celda, no tiene entrada en `BAHIA_COORDS`, y el `
 elimina sin dejar rastro. **Es un falso negativo silencioso vivo, verificado.**
 *¿Cómo se corrige?* E0: detección de drift del catálogo, no una resincronización de una vez.
 
+> **Corrección medida el 2026-08-11 (E0.1) — el párrafo de arriba se queda corto y no se
+> borra (CLAUDE.md §3.3).** La divergencia **no es de una entrada**. `Totalpronostico`
+> publica el id **108**, que no está en ninguna de nuestras cuatro fuentes internas **ni en
+> `consultaBahias`**, el propio endpoint de catálogo de SITPORT. O sea que el catálogo de la
+> fuente **no es el superconjunto de los ids que la fuente usa**, y compararse contra él deja
+> pasar el caso que hoy está vivo: el 108 trae pronóstico ahora mismo y `/weather-ruta` lo
+> descarta en cada llamada (`sitport-routes.js:383`), mientras que la 257 hoy no publica nada.
+> Por eso el control compara contra la **unión de los tres endpoints**. Qué bahía es el 108 y
+> desde cuándo aparece **no está determinado**: el pronóstico no trae nombre y no hay captura
+> previa de ese endpoint en el repositorio. Evidencia: `_bitacoras/e01_drift_catalogo_2026-08-11.txt`.
+
 `AreaRestriccion` existe en la fuente y el motor no lo lee. Es el campo que INV-3.4 nombra
 para acotar el área dentro de la jurisdicción.
 
@@ -270,6 +281,17 @@ cada uno con su causa. Sin dependencias, y es lo que le permite a INV-3.6 avisar
 separar cuáles de las 30 jurisdicciones sin bahía son un problema y cuáles son jurisdicciones
 donde SITPORT no publica.
 
+> **Insumo nuevo, encontrado en E0.1 (2026-08-11).** SITPORT expone **13 endpoints** y el
+> proyecto consumía 3. Dos de los otros dan el join que esta sub-etapa tiene que reparar:
+> `consultaCapuertoRestriccion` (64 filas: repartición → nombre de Capitanía) y
+> `Totalgeneral` (64 elementos: Capitanía + su bahía de medición). Cruzados con
+> `consultaBahias.CdReparticion` atribuyen Capitanía a **cada** bahía del catálogo.
+> Comprobado sobre dos de las 24 sin atribuir: 128 Lago General Carrera y 203 Lago O'Higgins
+> caen bajo la repartición 235 = Capitanía de Puerto Lago Gral. Carrera.
+> **Es fuente operativa, no normativa**: el mapa no revoca al decreto (fase5R), así que cada
+> atribución se coteja igual. Lo que cambia es que ahora hay contra qué cotejar.
+> Crudo en `_bitacoras/e01d_d7_y_257_2026-08-11/`.
+
 **Aceptación:** toda bahía del catálogo resuelve a una jurisdicción del insumo o declara por
 qué no; el validador muerde si deja de calzar; el drift del catálogo SITPORT se detecta y se
 reporta en vez de descartarse (S9); el registro de ámbitos coincide con lo que hay en la base
@@ -369,7 +391,12 @@ sobra, se borra. Después piezas 3 y 4.
 
 ### E8 · Deudas declaradas
 Art. 2 del decreto (D6) · P1 si no entró en E4 · sectores y `AreaRestriccion` · `DPA_2023`
-cargada · retirar `BAHIA_COORDS` · retirar `bahia_jurisdicciones` y su backup.
+cargada · retirar `BAHIA_COORDS` · retirar `bahia_jurisdicciones` y su backup ·
+**declarar UNA fuente autoritativa del catálogo de bahías y derivar las demás** — hoy son
+cinco copias sin jerarquía; E0.1 dejó el detector de divergencia entre ellas (incluido el
+contenido, no solo los ids), pero el detector no es la cura. Se resuelve al retirar
+`BAHIA_COORDS`, que ya está en esta lista y que E2 toca al reemplazar `orden_en_ruta` y
+`fondeadero_previo`.
 
 ---
 
@@ -394,12 +421,43 @@ eso D3 (partir el gate) es lo que las vuelve verdaderamente paralelas.
 
 | id | decisión | estado | qué se necesita para decidir |
 |---|---|---|---|
-| D1 | Join bahía→Capitanía: 5 clase C, `Guayacán`, 3 variantes, 24 sin atribuir, bahía 257 | **abierta** | el párrafo del decreto de cada par; se prepara en E0 |
+| D1 | Join bahía→Capitanía: 5 clase C, `Guayacán`, 3 variantes, 24 sin atribuir | **abierta** — la **bahía 257 salió: adjudicada el 2026-08-11**, ver abajo | el párrafo del decreto de cada par; se prepara en E0 |
 | D2 | P2 — frontera declarada Chaitén × Chonchi | **DECIDIDA 2026-08-10: autorizada** | — |
 | D3 | Partir el gate de construcción por ámbito | **DECIDIDA 2026-08-10: sí** — ver abajo | — |
 | D4 | Zarpe y recalada bajo unidad Capitanía — **resuelve S5**, el único punto de la especificación que quedó abierto | **abierta** | la medición de volumen de E2 |
 | D5 | Cuánto "de más" es aceptable en la lista de restricciones | **abierta** | la medición de volumen de E2 |
 | D6 | Art. 2 del D.S. 991: incorporarlo al insumo o declararlo no reproducible | **abierta** | — |
+| D7 | **Ámbito A — seguridad** (`consultaRestricciones` y `Totalpronostico`) | **DECIDIDA 2026-08-11: A3** — aviso + escalamiento a **U**, tope duro, nunca U+V. **Implementada.** | El 0 de 5 la sostiene. Rige mientras no esté la consulta formal a DIRECTEMAR, que el owner gestiona por fuera: A3 es lo provisorio hecho bien, no la solución de fondo. `e01e_a3_2026-08-11.txt` |
+| D8 | **Ámbito B — alineación** (`consultaBahias`): ¿el patrón se entera? | **DECIDIDA 2026-08-11: B1** — no se le avisa | condición cumplida: la divergencia deja rastro del lado del equipo sin correr nada a mano — aviso en el arranque + `data/catalogo/estado_drift.json` versionado. `e01d §4` |
+
+### D7/D8 — por qué son dos y no una. Medido el 2026-08-11.
+
+La partición no es por endpoint: es por **si el dato descartado puede bajar la bandera**.
+`Totalpronostico` **no es degradación informativa** — `peorTramo` es un máximo sobre las
+bahías matcheadas, así que un descarte solo puede quitarle un candidato y **bajar** el
+veredicto; con ≥30 kt eso vale un U+V que el patrón no ve (`useVoyageVerification.js:165-169`).
+Cae del mismo lado que `consultaRestricciones`. `consultaBahias` no alimenta ninguna
+bandera y 103 de sus 164 ids no traen hoy dato asociado: su descarte no le quita nada al
+viaje, solo corre el catálogo.
+
+### Bahía 257 Río Cochrane — adjudicada el 2026-08-11 por el dueño del producto
+
+**A la Capitanía de Puerto Lago General Carrera.** Fundamento del owner: el D.S. 991
+le atribuye a esa Capitanía los lagos General Carrera, Cochrane y O'Higgins, y excluye
+expresamente los dos últimos de Baker. **El río Cochrane se lee como continuidad del lago
+adjudicado.** La agrupación de SITPORT —que pone 128, 203 y 257 bajo la misma repartición
+235— **corrobora de forma independiente y no es el fundamento**: el mapa operativo no
+revoca al decreto.
+
+Aplicada en `src/data/bahia-capitania-map.json`. **No se agregó a las otras cuatro fuentes
+del catálogo**: exigen lat/lng y SITPORT no entrega posición por ninguno de sus trece
+endpoints; rellenarla sería fabricar una coordenada (INV-0.2). Queda declarada como
+`incoherencia_interna` abierta hasta que haya posición, y **A3 la cubre mientras tanto**.
+
+> **Lo primero que E0.3 tiene servido:** el mismo párrafo del decreto nombra los otros dos
+> lagos, que son las bahías **128** (Lago General Carrera) y **203** (Lago O'Higgins), hoy
+> con `capitania: null` entre las 24 sin atribuir. No se tocaron acá porque lo adjudicado
+> fue la 257.
 
 ### D3 — el gate se parte por ámbito. Decidida el 2026-08-10.
 
@@ -458,7 +516,10 @@ Se actualiza al cerrar cada etapa. "Cerrada" exige evidencia citada.
 
 | etapa | estado | cerrada el | evidencia |
 |---|---|---|---|
-| E0 Higiene del dato de identidad | no iniciada — E0.1 Río Cochrane va primero | — | — |
+| E0 Higiene del dato de identidad | **E0.1 cerrada**; E0.2 y E0.3 no iniciadas | — | `e01_drift_catalogo_2026-08-11` |
+| — E0.1 · A3, 257 y §0.4 | **cerrada** — A3 implementada de punta a punta (backend + PWA), mordida **10/10** + control negativo, y **verificada disparando contra SITPORT real**: una ruta por la costa de Carahue escala a **U** y nombra la Capitanía. Bahía 257 adjudicada y aplicada. §0.4 escrita en `CLAUDE.md`. | 2026-08-11 | `_bitacoras/e01e_a3_2026-08-11.txt` + `01_mordida_a3`, `02_control_tras_adjudicacion`, `respuesta_weather_ruta_carahue.json` |
+| — E0.1 · cierre (D8 aplicada, D7 medida, 257) | **cerrada** — SITPORT tiene **13 endpoints** y consumíamos 3; dos de los nuevos dan la Capitanía de cada bahía. **257 → Capitanía de Puerto Lago Gral. Carrera** según SITPORT, que coincide con el decreto: la adjudicación del owner ya no es sobre un vacío. **108 → Capitanía de Puerto Carahue**; qué bahía es, no determinado. **Posición: no la entrega ningún endpoint.** D8 aplicada con su condición, probada contra insumo alterado. | 2026-08-11 | `_bitacoras/e01d_d7_y_257_2026-08-11.txt` + `00_endpoints_sitport`, `02_d7_rutas`, `03_mordida_arranque`, `04_npm_drift` |
+| — E0.1 Drift del catálogo SITPORT | **cerrada** — cinco fuentes internas comparadas entre sí (ids **y** contenido) y contra la unión de los tres endpoints de SITPORT; cinco clases de divergencia; mordida **20/20** + control negativo. La bahía 257 **no se agregó**: exige atribuir Capitanía (D1). La **108 no es identificable** con las fuentes de hoy. Sube al owner solo la política: **D7** (ámbito seguridad) y **D8** (ámbito alineación). | 2026-08-11 | `_bitacoras/e01_drift_catalogo_2026-08-11.txt` + `.../propuesta_e01.md` · `_bitacoras/e01b_continuacion_2026-08-11.txt` + `01_mediciones`, `02_prueba_mordida_20`, `03_control_en_vivo` |
 | E1 Andamio de medición | no iniciada | — | — |
 | E2 Diseño y medición del cambio de unidad | no iniciada | — | — |
 | E3 Ámbito lacustre | no iniciada — **desbloqueada, D3 decidida** | — | — |
@@ -479,6 +540,10 @@ re-ejecutable de §1.
 
 | versión | fecha | qué cambió |
 |---|---|---|
+| 1.6 | 2026-08-11 | **D7 decidida (A3) e implementada**: aviso propio + escalamiento a U con tope duro en el código, en `restricciones-ruta` y `weather-ruta`, con su bloque en P3. Verificada disparando contra SITPORT real por la costa de Carahue. **Bahía 257 adjudicada** a Capitanía de Puerto Lago General Carrera y aplicada en el mapa operativo; sin posición, así que queda como `incoherencia_interna` declarada y A3 la cubre. **§0.4 escrita en `CLAUDE.md`.** E0.3 hereda 128 y 203 como lo primero servido. |
+| 1.5 | 2026-08-11 | Cierre de E0.1. **D8 decidida (B1) y aplicada** con su condición: aviso de drift en el arranque + `estado_drift.json` versionado, probado contra insumo alterado. **D7 medida: 0 de 5 rutas del corredor**. Hallazgo que reordena varias cosas: **SITPORT expone 13 endpoints y consumíamos 3**; `consultaCapuertoRestriccion` y `Totalgeneral` dan la Capitanía de cada bahía y el puente que faltaba entre los espacios de `cdReparticion` — **257 → Lago Gral. Carrera** (coincide con el decreto), **108 → Carahue**. Ninguno entrega coordenadas. E0.3 suma ese insumo. |
+| 1.4 | 2026-08-11 | Continuación de E0.1. **D7 se parte en D7 y D8**, y no por endpoint sino por si el descarte puede bajar la bandera: `Totalpronostico` resultó ser falso negativo de seguridad, no degradación informativa (`peorTramo` es un máximo; descartar solo baja). **La bahía 108 no es identificable** — el pronóstico no trae coordenadas ni nombre, `cdReparticion` vive en otro espacio de numeración (0 valores en común) y el id no ordena por geografía (rho 0,39, 55 inversiones). El control pasa a comparar **contenido** entre copias, no solo membresía, y suma **F5** (`bahia_jurisdicciones`). E8 suma la fuente autoritativa del catálogo. |
+| 1.3 | 2026-08-11 | E0.1 cerrada: control de drift del catálogo SITPORT, con prueba de mordida contra insumo alterado. Dos hallazgos que corrigen el §1.4 de este documento — la divergencia **no es de una entrada**: además de la 257, `Totalpronostico` publica el id **108** que ni nuestro catálogo ni `consultaBahias` conocen, y ese sí está descartando dato hoy en `/weather-ruta`. De ahí que el control compare contra la **unión de los tres endpoints** y no contra `consultaBahias`. Se registra **D7**. |
 | 1.2 | 2026-08-10 | El dueño del producto aprueba el plan y los nueve puntos de la especificación; S5 queda abierta como D4. Punto de entrada fijado en E0.1. |
 | 1.1 | 2026-08-10 | D3 decidida: el gate se parte por ámbito y "la capa existe" pasa a ser por ámbito, con registro explícito de ámbitos publicados para que INV-3.6 avise sobre el que falte. Río Cochrane sube a E0.1. E3 desbloqueada. |
 | 1.0 | 2026-08-10 | Primera versión. Inventario medido, especificación y ocho etapas. Respecto de la propuesta previa: se separa y adelanta el ámbito lacustre (hallazgo de las 33 celdas vacías); el andamio pasa a usar `jurisdicciones_decreto`; E1 pasa a depender de E0; D2 queda registrada como decidida. Verificado en el constructor que el ámbito ya se trata por separado, lo que abarata E3 y acota D3 al gate. |

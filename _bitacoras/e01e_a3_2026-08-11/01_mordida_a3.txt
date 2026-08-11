@@ -1,0 +1,21 @@
+$ node scripts/e01_prueba_mordida_a3.js
+================================================================================
+PRUEBA DE MORDIDA — A3, AVISO DE DRIFT EN RUTA
+insumo congelado 2026-08-11 · tope duro declarado: U
+================================================================================
+
+M0  control negativo — ninguna bahía desconocida              : NO avisa, bandera Q. OK
+M1  drift en una Capitanía QUE la ruta cruza                  : avisa. bandera U · CAPITANÍA DE PUERTO LAGO GRAL.CARRERA · vía consultaBahias
+M2  drift en OTRA Capitanía — no avisa pero no calla          : sin aviso, bandera Q, 1 defecto registrado fuera de ruta
+M3  drift NO ubicable — avisa por el lado conservador         : avisa. bandera U · no se pudo resolver de qué Capitanía es la bahía
+M4  la 108 resuelta SOLO por Totalgeneral                     : avisa. CAPITANÍA DE PUERTO CARAHUE · vía Totalgeneral
+M5  sin resolutor — no se degrada a "no hay drift"            : avisa como no ubicable
+M6  tope duro — el drift nunca puede producir UV              : Q+UV=U · U+UV=U · Q+U=U · UV previa se respeta
+M7  el drift no baja una bandera previa más alta              : UV + drift U = UV
+M8  no evaluado — se declara, no se lee como "sin drift"      : estado=no_evaluado motivo="SITPORT no respondió"
+M9  un id por dos endpoints = un aviso                        : 1 aviso, orígenes consultaRestricciones+totalPronostico
+M10 pertenencia por repartición, no por nombre                : 257 y 128 → repartición 235 ("CAPITANÍA DE PUERTO LAGO GRAL.CARRERA")
+
+================================================================================
+RESULTADO: mordida 10/10 + control negativo. A3 puede fallar y falla donde debe.
+EXIT=0

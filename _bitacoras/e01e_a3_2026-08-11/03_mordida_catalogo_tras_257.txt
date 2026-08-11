@@ -1,0 +1,31 @@
+$ node scripts/e01_prueba_mordida_drift.js
+================================================================================
+PRUEBA DE MORDIDA — CONTROL DE DRIFT DEL CATÁLOGO (E0.1)
+insumo congelado: _bitacoras\e01_drift_catalogo_2026-08-11\insumo_2026-08-11
+================================================================================
+
+M0  control negativo — insumo intacto                     : NO muerde. 3 divergencias, las 3 declaradas. OK
+M1  SITPORT suma una bahía que no tenemos                 : muerde. sitport_sin_catalogo id 999 — visto en consultaBahias
+M2  SITPORT retira una bahía que sí tenemos               : muerde. catalogo_sin_sitport id 71 — presente en F1, F2, F3
+M3  un endpoint de dato usa un id fuera del catálogo de la fuente: muerde. endpoint_fuera_de_catalogo id 998 — publicado por consultaRestricciones y ausente de consultaBahias
+M4  nuestras fuentes internas se desincronizan entre sí   : muerde. incoherencia_interna id 71 — está en F1, F2 y falta en F3
+M5  una declaración sobrevive a su divergencia            : muerde. DRIFT_NO_DECLARADO, 1 declaración vencida
+M6  la fuente interna cambia de forma y no se puede leer  : muerde. C:\Users\katia\AppData\Local\Temp\e01-mordida-froaoP\src\routes\sitport-routes.js no decla
+M7  la fuente interna repite una clave                    : muerde. C:\Users\katia\AppData\Local\Temp\e01-mordida-JWX50V\src\data\bahia-capitania-map.json: la
+M8  la declaración usa una clase que no existe            : muerde. id 257: clase "divergencia_menor" desconocida — las válidas son sitport_sin_catalogo, cata
+M9  una divergencia se declara sin causa escrita          : muerde. id 257: una divergencia declarada sin causa escrita es un descarte silencioso con otro nom
+M10 la declaración se da por adjudicada sin cita          : muerde. id 257: estado "adjudicada" sin bloque "adjudicacion"
+M11 un campo de la declaración está mal escrito           : muerde. id 257: campo "caussa" no reconocido — un campo mal escrito no se ignora
+M12 se compara menos fuentes de las declaradas            : muerde. las fuentes internas comparadas no son las declaradas: falta(n) F4
+M13 dos copias tienen la misma bahía en otra coordenada   : muerde. contenido_divergente id 71/lat — F1=-18.4746 vs F2=-18.9999
+M14 dos copias llaman distinto a la misma bahía           : muerde. contenido_divergente id 72/nombre — F1="Bahía de Iquique" vs F2="Bahía Renombrada"
+M15 una divergencia de contenido se declara sin decir en qué campo: muerde. id 71: una divergencia de contenido tiene que declarar en qué campo — los comparables son 
+M16 se declara un campo en una clase que no lo admite     : muerde. id 257: "campo" solo tiene sentido en contenido_divergente, no en incoherencia_interna
+M17 una fuente declara campos y no trae con qué compararlos: muerde. la fuente interna F3 declara campos (nombre) pero no trae contenido con qué compararlos
+M18 una fuente olvida declarar qué campos aporta          : muerde. la fuente interna F1 no declara "campos" — si no aporta ninguno tiene que decirlo con []
+M19 una captura de SITPORT llega vacía de ids             : muerde. totalPronostico: un registro llegó sin id de bahía — {"cdReparticion":5027,"fecha":"2026-0
+M20 falta una captura entera                              : muerde. la captura de consultaBahias no es un array — sin ella la comparación sería parcial y se l
+
+================================================================================
+RESULTADO: mordida 20/20 + control negativo. El control puede fallar.
+EXIT=0

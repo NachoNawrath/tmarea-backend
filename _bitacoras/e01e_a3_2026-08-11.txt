@@ -1,0 +1,193 @@
+================================================================================
+E0.1 — A3 IMPLEMENTADA · BAHÍA 257 ADJUDICADA · §0.4 ESCRITA
+fecha: 2026-08-11
+shell del agente: Git Bash. Comandos para el owner, en PowerShell (§7.3).
+evidencia cruda: _bitacoras/e01e_a3_2026-08-11/
+================================================================================
+
+--------------------------------------------------------------------------------
+1. A3 — QUÉ SE CONSTRUYÓ
+--------------------------------------------------------------------------------
+
+Cuando SITPORT publica un dato de viaje bajo una bahía que el catálogo no conoce,
+ya no se descarta en silencio: se avisa, y el aviso escala el veredicto a **U,
+nunca a U+V**.
+
+  src/services/drift-ambito-a.js     lógica pura: resolutor de Capitanía,
+                                     detector, composición con tope duro
+  src/services/sitport-service.js    + consultaCapuertoRestriccion y Totalgeneral
+  src/routes/sitport-routes.js       detección en restricciones-ruta y weather-ruta,
+                                     campo `drift_catalogo` en las dos respuestas,
+                                     composición de `bandera_final`
+  scripts/e01_prueba_mordida_a3.js   10 familias + control negativo
+  (PWA) DriftCatalogoBlock.jsx       el bloque que lo muestra
+  (PWA) useVoyageVerification.js     `escalarPorDrift` entra al máximo
+
+**El tope es duro y está en el código, no en configuración**: `BANDERA_MAXIMA = 'U'`
+en drift-ambito-a.js, y `componerConDrift` no puede devolver UV por causa del
+drift aunque le llegue UV. Probado en M6.
+
+**Dónde se detecta.** Antes de los dos descartes (`sitport-routes.js:664` y `:666`),
+no en ellos: una bahía sin celda tampoco aparece en el matching geográfico, así que
+si se esperara al segundo descarte ya se habría perdido en el primero.
+
+**El motor de reglas quedó intocado** (§6): parser SITPORT, motor de reglas y
+evaluador de ruta no se tocaron. El drift entra al máximo de INV-1.1 como una
+fuente más, por fuera de ellos.
+
+--------------------------------------------------------------------------------
+2. LA TRAMPA QUE CAZÓ LA PRUEBA DE MORDIDA — vale registrarla
+--------------------------------------------------------------------------------
+
+La primera versión decidía "¿la bahía en drift es de una Capitanía que la ruta
+cruza?" **comparando nombres**. SITPORT dice "CAPITANÍA DE PUERTO LAGO
+GRAL.CARRERA" y el mapa operativo dice "Lago General Carrera". No calzan como
+texto.
+
+Y el modo de falla iba para el lado peligroso: al no calzar, la bahía quedaba
+clasificada **fuera de la ruta** y el aviso **no se emitía**. Una abreviatura
+apagaba un aviso de seguridad.
+
+Se reemplazó por comparación de **código de repartición**: entero, publicado por la
+propia fuente para los dos lados, sin abreviaturas. La familia M10 existe para que
+eso no vuelva.
+
+--------------------------------------------------------------------------------
+3. LA PRUEBA — 01_mordida_a3.txt
+--------------------------------------------------------------------------------
+
+  M0  control negativo — ninguna bahía desconocida    : NO avisa, bandera Q
+  M1  drift en una Capitanía QUE la ruta cruza        : avisa, bandera U
+  M2  drift en OTRA Capitanía                         : sin aviso, PERO 1 defecto registrado
+  M3  drift NO ubicable                               : avisa (lado conservador)
+  M4  la 108, resoluble solo por Totalgeneral         : avisa, vía Totalgeneral
+  M5  sin resolutor                                   : avisa, no se degrada a "sin drift"
+  M6  TOPE DURO — el drift nunca produce UV           : Q+UV=U · U+UV=U · Q+U=U
+  M7  el drift no baja una bandera previa más alta    : UV + drift U = UV
+  M8  no evaluado — se declara                        : estado explícito, sin bandera
+  M9  un id por dos endpoints = un aviso              : orígenes unidos
+  M10 pertenencia por repartición, no por nombre      : 257 y 128 → repartición 235
+
+  mordida 10/10 + control negativo.
+
+--------------------------------------------------------------------------------
+4. A3 DISPARANDO EN VIVO — no en test: contra SITPORT real
+--------------------------------------------------------------------------------
+
+Crudo: respuesta_weather_ruta_carahue.json.
+
+  POST /api/sitport/weather-ruta con tres puntos por la costa de Carahue
+  (−38,75/−73,45 → −38,70/−73,15)
+
+  bahias_en_ruta      : 143 Carahue - Borde Costero
+  condicion_puerto    : normal
+  drift_catalogo      : bandera **U**, 1 aviso
+      id_bahia            108
+      capitania_sitport   CAPITANÍA DE PUERTO CARAHUE
+      reparticion         190
+      via_resolucion      Totalgeneral
+      causa               en_ruta
+
+  log del servidor:
+  [drift-ruta] defecto bahia_publicada_fuera_del_catalogo bahia=108
+               origen=totalPronostico capitania=CAPITANÍA DE PUERTO CARAHUE
+
+**Ese es el falso negativo que estaba vivo y mudo desde antes de que lo
+midiéramos.** Hoy una ruta por Carahue escala a U y dice por qué.
+
+Y en la ruta de Chiloé (respuesta_restricciones_ruta_chiloe.json), el mismo motor
+devuelve `drift_catalogo` con bandera Q y cero avisos, que es el resultado que la
+medición de D7 anticipaba: 0 de 5 en el corredor de día 0.
+
+  [sitport/restricciones-ruta] ... cobertura=evaluada/Q avisos=0 defectos=6
+                               drift=evaluado/Q avisos_drift=0 defectos_drift=0
+
+**Nota de método, para que no se repita**: la primera corrida de esta verificación
+midió contra un backend viejo que había quedado escuchando en el puerto — la
+respuesta no traía `drift_catalogo` y parecía que el cambio no había entrado. El
+proceso anterior no había muerto porque se mató el job de la shell y no el PID.
+CLAUDE.md §7.1 ya lo dice; acá costó una medición equivocada. Se mató por PID y se
+repitió sobre un puerto limpio.
+
+--------------------------------------------------------------------------------
+5. LO QUE VE EL PATRÓN
+--------------------------------------------------------------------------------
+
+`DriftCatalogoBlock.jsx`, en P3, **después** de las restricciones de tránsito y en
+su propio bloque. Nunca entre las restricciones: mezclar un "no sabemos" con las
+restricciones reales de la ruta le daría una autoridad que no tiene — el mismo
+criterio que INV-3.6 fija para la jurisdicción sin límite cargado.
+
+Dice tres cosas, en este orden: qué pasó ("hay un dato de la Capitanía de Carahue
+que no pudimos leer"), qué NO significa ("no significa que exista una restricción,
+ni que no exista"), y qué hacer (consultar a la Autoridad Marítima / VHF 16). Lleva
+la nota de que no hay cita legal porque no hay norma en juego sino un dato que nos
+falta — la fila sin cita del §10 del contrato.
+
+Si la comprobación no se pudo hacer, el bloque **lo dice** en vez de no aparecer.
+
+--------------------------------------------------------------------------------
+6. BAHÍA 257 — ADJUDICADA
+--------------------------------------------------------------------------------
+
+`src/data/bahia-capitania-map.json` suma:
+
+  "257": { "capitania": "Lago General Carrera", "gobernacion": "Aysén",
+           "telefono": "+56 67 233 1405" }
+
+El nombre calza literalmente con el del insumo del decreto
+(`jurisdicciones_v2.json` → `lago_general_carrera`, nombre "Lago General Carrera",
+ámbito lacustre), así que el join de E0.3 no hereda una variante más.
+
+**No se agregó a F1, F2, F4 ni F5**, y no es un olvido: esas cuatro exigen lat/lng
+y **SITPORT no entrega posición por ninguno de sus trece endpoints**. Rellenarla
+sería fabricar una coordenada (INV-0.2).
+
+Por eso el control ahora reporta la 257 como `incoherencia_interna` —"está en F3 y
+falta en F1, F2, F4, F5"— en vez de `sitport_sin_catalogo`, con su declaración
+actualizada. La divergencia se cierra cuando haya posición, no antes.
+**Mientras tanto la cubre A3**: una ruta que cruce la Capitanía de Lago General
+Carrera recibe el aviso y escala a U, sin necesidad de saber dónde está la bahía.
+
+  Verificado tras la adjudicación (02_control_tras_adjudicacion.txt):
+  total 3 · no declaradas 0 · abiertas 3 · adjudicadas 0 · **vencidas 0**
+
+--------------------------------------------------------------------------------
+7. LO QUE NO HICE, Y POR QUÉ
+--------------------------------------------------------------------------------
+
+**Las bahías 128 y 203 siguen con `capitania: null`.** El fundamento que el owner
+escribió para la 257 nombra los tres lagos —General Carrera, Cochrane y O'Higgins—
+y esos dos ids son exactamente Lago General Carrera y Lago O'Higgins. Atribuirlos
+sería la misma adjudicación extendida a dos entradas más, y lo adjudicado fue la
+257. Queda señalado acá y en el plan como lo primero que E0.3 tiene servido.
+
+**No toqué `getCapitaniaByBahiaId`**, que sigue devolviendo 'Desconocida' en
+silencio (§4.2). Está agendado en E2.
+
+--------------------------------------------------------------------------------
+8. §0.4 — ESCRITA
+--------------------------------------------------------------------------------
+
+`CLAUDE.md` queda con la nueva **§0.4** entre §0.3 y §1, con la línea de umbrales
+en la forma que el owner aprobó, y con el párrafo al pie de **§5.2** que la acota.
+El texto propuesto y su historia quedan en
+`_bitacoras/e01c_texto_propuesto_claudemd_2026-08-11.md`.
+
+--------------------------------------------------------------------------------
+9. CÓMO SE REPRODUCE (PowerShell, terminal del owner)
+--------------------------------------------------------------------------------
+
+  cd C:\Users\katia\tmarea-backend
+  node scripts\e01_prueba_mordida_a3.js
+  npm run drift
+
+  Y para ver A3 disparar contra SITPORT real (dos ventanas):
+
+  npm start
+  curl.exe -s -X POST -H "Content-Type: application/json" `
+    -d '{\"ruta_puntos\":[{\"lat\":-38.75,\"lng\":-73.45},{\"lat\":-38.70,\"lng\":-73.15}]}' `
+    http://localhost:3000/api/sitport/weather-ruta
+
+  Si el puerto 3000 quedó ocupado: netstat -ano | findstr :3000 y taskkill /PID [n] /F.
+  Nunca Stop-Process -Name node.
