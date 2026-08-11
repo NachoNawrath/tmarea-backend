@@ -1,0 +1,344 @@
+================================================================================
+E0.2 — EL REGISTRO DE AMBITOS PUBLICADOS. PROPUESTA.
+Fecha: 2026-08-11. Reconocimiento previo: _bitacoras/e02_recon_2026-08-11.txt
+================================================================================
+
+SHELL (CLAUDE.md §7.3): ejecutado en PowerShell 5.1 / Windows. Los comandos
+reproducibles de abajo estan en sintaxis PowerShell, que es la forma ejecutada.
+
+REGENERAR LA EVIDENCIA
+  cd C:\Users\katia\tmarea-backend
+  node scripts/fase5_medir_e02_causas.js
+  node scripts/fase5_medir_e02_contacto.js
+
+EVIDENCIA CRUDA
+  _bitacoras/e02_propuesta_2026-08-11/01_causas_por_ambito.txt
+  _bitacoras/e02_propuesta_2026-08-11/02_contacto_por_ambito.txt
+
+Esta propuesta toca el criterio de una verificacion (la clasificacion de causas
+de INV-3.6), asi que llega con las tres obligaciones del §1 por separado.
+
+================================================================================
+§1.1 — QUE DICE LA NORMA
+================================================================================
+
+1.1.a — INV-3.6 YA TIENE LA CAUSA QUE HACE FALTA. NO HAY QUE INVENTAR UNA TERCERA.
+
+  Texto literal del contrato (CONTRATO_MOTOR.md:339-346):
+
+    "un punto de la ruta que no resuelve jurisdiccion puede venir de (a) una
+     jurisdiccion declarada sin geometria [...] o de (b) un hueco de la propia
+     capa, una zona que ninguna jurisdiccion reclama. [...] (a) es el estado del
+     mundo y (b) es un defecto de construccion nuestro"
+
+  Y la verificacion (CONTRATO_MOTOR.md:351-353): "ninguna zona de la ruta que no
+  resuelva jurisdiccion puede quedar sin clasificar en (a) o (b)".
+
+  Hoy una ruta lacustre sale clasificada (b). Las dos mitades de esa etiqueta son
+  falsas contra el propio texto del contrato:
+
+    - (b) dice "una zona que NINGUNA jurisdiccion reclama". El decreto SI le da
+      jurisdiccion al Lago Villarrica: 'lago_villarrica', con participa_matching
+      = true y receta union_cuerpos. Medido: el trozo de esa ruta es reclamado por
+      1 jurisdiccion lacustre en 17.706,9 de sus 21.818 m.
+    - (b) dice "defecto de construccion nuestro". No lo es: el ambito lacustre no
+      esta mal construido, no esta construido. Son cosas distintas y el registro
+      de defectos se llena hoy con la que no corresponde.
+
+  Y la definicion de (a) encaja exactamente. INV-3.6, primera linea:
+
+    "Si una jurisdiccion NO TIENE GEOMETRIA CARGADA, el motor NO puede tratarla
+     como inexistente."
+
+  "Cargada" es un hecho de LA BASE. La implementacion, en cambio, decide (a)
+  preguntandole al INSUMO: zonas-aviso.js:191 exige participa_matching === false,
+  que significa "el decreto no permite construirla". Son dos cosas distintas y el
+  codigo usa la segunda para responder por la primera.
+
+  CONCLUSION DE §1.1: el desfase esta en la implementacion, no en el contrato. Un
+  ambito no publicado ya es causa (a) por el texto vigente de INV-3.6. NO se
+  propone tocar el contrato, ni agregar una tercera causa, ni una fila al §10.
+
+1.1.b — EL §10 YA TIENE LA FILA Y NO HACE FALTA CITA NUEVA.
+
+  CONTRATO_MOTOR.md:693, fila "Jurisdiccion sin limite cargado", declarada en el
+  preambulo del §10 como la unica fila sin cita porque "no nace de un reglamento
+  sino de una carencia nuestra". Un ambito no construido es exactamente eso. El
+  mensaje que hoy usa zonas_aviso.json se transcribe de ahi y sirve sin cambios.
+
+1.1.c — LA NORMA NO DICE NADA SOBRE "AMBITO PUBLICADO". SE DECLARA.
+
+  Ni el D.S. 991 ni el contrato hablan de que un ambito este publicado o no: es
+  un concepto NUESTRO, de estado de construccion. Por §1.1 del CLAUDE.md eso lo
+  vuelve regla de producto/ingenieria y su texto debe declararlo. El archivo que
+  se propone lo dice en su cabecera, sin fabricar autoridad normativa.
+
+1.1.d — HALLAZGO: EL CONTRATO NOMBRA TRES AMBITOS Y EL INSUMO TIENE CUATRO.
+
+  INV-3.5 (CONTRATO_MOTOR.md:308-309): "Las jurisdicciones tienen ambito
+  MARITIMO, LACUSTRE o INSULAR REMOTO."
+
+  El insumo tiene un cuarto: 'antartica', 4 jurisdicciones (bahia_fildes,
+  puerto_soberania, rada_covadonga, bahia_paraiso), todas participa_matching =
+  true, receta anillo, y con geometria construida en jurisdicciones_decreto por
+  1.357.463 km2. La palabra "antartic*" NO aparece en ninguna parte del contrato
+  — verificado por busqueda sobre el archivo completo.
+
+  El registro tiene que declarar un estado para cada ambito del insumo. Declarar
+  uno que el contrato no reconoce es fijar categoria normativa, y eso no es mio
+  (CLAUDE.md §0.4 y §6). ES LA PREGUNTA PARA EL OWNER. Va al final.
+
+================================================================================
+§1.2 — QUE MIDE EL DATO
+================================================================================
+
+Medido sobre las OCHO rutas reales del motor de ruteo —las mismas de
+fase5_medir_cobertura_ruta.js, para que sea comparable con R1— mas una ruta
+lacustre y una antartica entre puntos publicados por SITPORT.
+
+Geografia de reclamo usada: jurisdicciones_decreto filtrada por ambito. Es la
+unica relacion de la base con geometria Y ambito. Esta marcada SUPERSEDIDA y no
+resuelve jurisdiccion (INV-3.3): se usa solo para saber EN QUE AMBITO cae un
+trozo, que es lo mismo que zonas_aviso.json ya hace con banda_latitud.
+
+1.2.a — EL CASO QUE ROMPERIA EL FUNDAMENTO, MEDIDO PRIMERO.
+
+  Mi fundamento es: "un trozo que cae en un ambito no construido es distinguible
+  de un hueco de nuestra capa". Lo que lo rompe es un trozo que NINGUN ambito
+  reclame —ahi (b) es correcta y el registro no aporta nada— o un trozo que DOS
+  ambitos reclamen —ahi la causa seria ambigua y el diseño estaria adivinando.
+
+  Trozos que NINGUN ambito reclama : 33
+  Trozos que DOS O MAS reclaman    : 0
+
+  Los 33 son TODOS de las ocho rutas maritimas y TODOS estan hoy silenciados como
+  defecto_recorte. O sea: el caso que rompe el fundamento existe, es mayoria por
+  conteo, y no cambia con esta propuesta — para esos 33, (b) sigue siendo la
+  etiqueta correcta y asi se quedan. La propuesta no los toca.
+
+  Que la ambiguedad de dos ambitos sea 0 no es suerte: los ambitos del decreto no
+  se solapan entre si. Pero se midio en vez de suponerlo, y el validador va a
+  exigir que siga siendo 0.
+
+1.2.b — LO QUE SI CAMBIA, MEDIDO.
+
+  Trozos sin jurisdiccion agrupados por el ambito que los reclama:
+    antartica    1 trozo  ·  47,57 km  ·  0 silenciados
+    lacustre     1 trozo  ·  21,82 km  ·  0 silenciados
+    maritima     3 trozos · 368,36 km  ·  1 silenciado
+
+  Los dos primeros son los que hoy salen mal etiquetados: bandera U, causa
+  hueco_de_capa, jurisdicciones_probables vacio, capitanias vacio, y un defecto de
+  construccion registrado que no es un defecto de construccion.
+
+1.2.c — EFECTO SOBRE LA BANDERA: CERO EN LAS OCHO RUTAS REALES.
+
+  Es el numero que mas importa porque es lo que el patron ve.
+
+    Anahuac -> Melinka              Q hoy   Q despues
+    Anahuac -> Quellon              Q hoy   Q despues
+    Anahuac -> Chacabuco            Q hoy   Q despues
+    Ancud -> Castro                 Q hoy   Q despues
+    Chonchi -> Chaiten              Q hoy   Q despues
+    Arica -> Iquique                Q hoy   Q despues
+    Valparaiso -> San Antonio       Q hoy   Q despues
+    Punta Arenas -> Pto Williams    U hoy   U despues
+
+  Motivo medido: los unicos trozos maritimos que hoy producen aviso ya estan en
+  la unica ruta que ya es U. Los otros 33 estan silenciados por defecto_recorte y
+  esta propuesta NO toca esa regla — es la regla cuyo fundamento ya se cayo en
+  fase5Y y que E7 tiene que revisar. Cambiar dos cosas a la vez haria imposible
+  atribuir el efecto.
+
+  Lo que si cambia para el patron: en la ruta lacustre y en la antartica el
+  mensaje pasa a poder nombrar la Capitania donde se puede nombrar, en vez de
+  derivar siempre al generico.
+
+1.2.d — CUANTO SE PUEDE NOMBRAR, MEDIDO.
+
+  Regla aplicada: la misma de zonas-aviso.js — el nombre de Capitania del decreto
+  tiene que coincidir con el que el mapa operativo atribuye. Sin coincidencia no
+  se usa el contacto (INV-3.3: el mapa no revoca al decreto).
+
+    lacustre        6 jur ·  2 Capitania ·  4 solo Gobernacion ·  0 sin contacto
+    antartica       4 jur ·  0 Capitania ·  0 solo Gobernacion ·  4 sin contacto
+    insular_remota  2 jur ·  1 Capitania ·  0 solo Gobernacion ·  1 sin contacto
+    maritima       52 jur · 32 Capitania · 11 solo Gobernacion ·  9 sin contacto
+
+  Se reporta completa, incluida la parte que va en contra: en el ambito antartico
+  NO se puede nombrar ninguna Capitania, asi que su aviso deriva al generico igual
+  que hoy. La mejora de mensaje es real en lo lacustre y nula en lo antartico.
+
+================================================================================
+§1.3 — QUE OPCIONES HAY, CON EFECTO MEDIDO
+================================================================================
+
+O1 — RECOMENDADA. Registro declarado + causa (a) leida de la BASE, no del insumo.
+
+  El registro es un archivo nuevo, hermano de zonas_aviso.json en MECANICA y no
+  en archivo: mismo patron de validacion adentro de la carga, mismo retiro
+  automatico, misma prohibicion de caso por defecto. Archivo aparte porque
+  zonas_aviso.json exige participa_matching === false y las 6 lacustres son true:
+  meterlas ahi obligaria a aflojar el control que le da valor, y §0.3 lo prohibe.
+
+  La causa (a) pasa a decidirse por el hecho que el contrato nombra —no hay
+  geometria cargada— con dos origenes internos distintos:
+      origen = jurisdiccion_no_cerrable  (las 10 de zonas_aviso.json, sin cambio)
+      origen = ambito_no_publicado       (nuevo, del registro)
+  Mismo mensaje al patron, misma bandera U topada, distinto registro interno.
+  Es exactamente la asimetria que INV-3.6 ya establece entre (a) y (b).
+
+  Efecto medido: 0 cambios de bandera en las 8 rutas · 21,82 km lacustres y
+  47,57 km antarticos dejan de contarse como defecto de construccion · el
+  mensaje gana Capitania en 2 de 6 lacustres · los 33 trozos sin reclamo no se
+  tocan · contrato intocado · motor de reglas intocado (§6).
+
+O2 — Tercera causa nueva 'ambito_no_publicado' al mismo nivel que (a) y (b).
+
+  Exige adicion a INV-3.6, que hoy dice "en (a) o (b)" y ademas exige que ninguna
+  zona quede sin clasificar en esas dos. Yo propondria el texto y lo escribiria el
+  owner (§6).
+  Efecto medido: identico al de O1 en las 8 rutas y en los km. La diferencia es
+  toda de costo: un cambio de contrato para expresar algo que el contrato ya
+  expresa. Por §1.1, presentar como necesaria una adicion que no lo es seria
+  fabricar autoridad. DESCARTADA por eso, no por su efecto.
+
+O3 — Extender zonas_aviso.json a los ambitos, aflojando su comprobacion.
+
+  Efecto medido: mismos km. Costo: el validador de zonas_aviso.json pierde la
+  comprobacion de participa_matching === false, que es la que hace imposible que
+  un aviso sobreviva a su causa. DESCARTADA por §0.3 — bajar la severidad de un
+  control para que algo entre esta prohibido.
+
+O4 — No hacer nada y esperar a que E3 construya lo lacustre.
+
+  Efecto medido: 21,82 km lacustres + 47,57 km antarticos siguen etiquetados como
+  defecto de construccion nuestro, y el ambito antartico sigue asi despues de E3
+  porque E3 no lo toca. DESCARTADA: deja vivo el estado indistinguible que E0.2
+  existe para cerrar, y lo deja vivo indefinidamente para un ambito entero.
+
+DESCARTES DECLARADOS, con su motivo:
+  - Derivar el ambito de un trozo desde el nombre de la bahia mas cercana:
+    descartado, es resolver por proximidad y INV-3.3 lo prohibe expresamente.
+  - Construir la geometria lacustre dentro de E0.2 para no depender de
+    jurisdicciones_decreto: descartado, eso es E3 y E0.2 se declaro sin
+    dependencias en el plan.
+  - Tocar la regla de silenciamiento defecto_recorte en esta etapa: descartado,
+    su fundamento ya cayo en fase5Y y es trabajo de E7; mezclarlo haria
+    inatribuible el efecto medido en 1.2.c.
+
+================================================================================
+LO QUE SE CONSTRUYE, SI SE APRUEBA
+================================================================================
+
+A · data/decreto/ambitos_publicados.json — dato declarado, no inferido.
+    Una entrada por ambito del insumo, cada una con:
+      publicado (bool) · causa escrita si es false · jurisdicciones_esperadas ·
+      geografia_de_reclamo (relacion + filtro, marcada no_resuelve_jurisdiccion)
+      con su procedencia.
+
+B · src/services/ambitos-publicados.js — la validacion vive DENTRO de la carga,
+    como en zonas-aviso.js. No hay forma de consumir la declaracion sin que se
+    haya comprobado. Sin caso por defecto (§4.2). Muerde en LAS DOS DIRECCIONES:
+
+      1. ambito del insumo sin entrada en el registro          -> se detiene
+      2. entrada del registro que no es ambito del insumo      -> se detiene
+      3. publicado=false pero la base SI tiene geometria       -> se detiene
+         (ESTE ES EL RETIRO AUTOMATICO: cuando E3 publique lo lacustre, la carga
+          se detiene y obliga a retirar la entrada. Nadie tiene que acordarse.)
+      4. publicado=true pero la base NO tiene geometria        -> se detiene
+      5. publicado=false sin causa escrita                     -> se detiene
+      6. geografia_de_reclamo que no existe o sin columna ambito -> se detiene
+      7. un trozo reclamado por dos ambitos a la vez           -> se detiene
+         (hoy medido en 0; el control existe para que siga siendo 0)
+
+C · cobertura-jurisdiccional.js — la causa (a) deja de leerse del insumo y pasa a
+    leerse de la base, con los dos origenes. La bandera sigue siendo la constante
+    BANDERA_AVISO = 'U'. El tope duro no se toca ni se parametriza.
+
+D · Prueba de mordida contra insumo alterado, con salida cruda, sobre los 7
+    controles y con control negativo. Sin eso no se cierra la etapa (§4.6).
+
+================================================================================
+LA PREGUNTA PARA EL OWNER — UNA SOLA
+================================================================================
+
+EL AMBITO ANTARTICO NO EXISTE EN EL CONTRATO Y EL REGISTRO TIENE QUE DECLARARLO.
+
+  INV-3.5 nombra tres ambitos: maritimo, lacustre, insular remoto. El insumo tiene
+  cuatro: los tres mas 'antartica', con 4 jurisdicciones y 1.357.463 km2 de
+  geometria construida. "antartic*" no aparece en el contrato.
+
+  No lo resuelvo de este lado porque fijar la categoria normativa de un territorio
+  es interpretar la fuente, no elegir estructura de dato (§0.4).
+
+  Caminos, con su efecto medido:
+
+  P1 · INV-3.5 suma el ambito antartico como cuarto. El registro lo declara no
+       publicado con su causa. Efecto: la ruta antartica medida (47,57 km) pasa de
+       defecto de construccion a carencia declarada; el mensaje deriva al generico
+       porque no hay Capitania nombrable (0 de 4, medido). Requiere que el owner
+       escriba el texto de INV-3.5; yo lo propongo.
+
+  P2 · Las cuatro antarticas se declaran fuera del alcance del motor. Efecto: hay
+       que decir que pasa cuando una ruta cae ahi igual — hoy caen 47,57 km — y la
+       respuesta honesta sigue siendo un aviso, asi que el registro las necesita de
+       todos modos. Mas costo, mismo resultado operativo.
+
+  P3 · Se pliegan a 'insular remoto', que el contrato si tiene. Efecto: el registro
+       no cambia de forma, pero el insumo pasa de 4 ambitos a 3 y hay que reescribir
+       el campo en 4 jurisdicciones. Objecion mia: una base antartica continental no
+       es una isla remota, y forzar la categoria para no tocar el contrato mete una
+       imprecision en el dato fuente, que es lo que INV-3.7 persigue.
+
+  RECOMIENDO P1. Es la que deja el dato diciendo lo que es. P3 es la barata y la
+  que menos me gusta, por lo que digo arriba.
+
+  MIENTRAS NO SE DECIDA: el registro se construye con los tres ambitos que el
+  contrato si reconoce, y el antartico queda como entrada explicitamente pendiente
+  de la decision, no omitido. Omitirlo lo devolveria al silencio, que es lo que
+  esta etapa existe para terminar. La carga se detiene si esa entrada sigue
+  pendiente despues de la fecha que el owner fije, o de inmediato si el owner
+  prefiere que no arranque sin decision.
+
+================================================================================
+RESUELTO DE ESTE LADO, Y DECLARADO (CLAUDE.md §0.4)
+================================================================================
+
+R1 · EL AMBITO MARITIMO ENTRA AL REGISTRO COMO NO PUBLICADO.
+
+  Se podia dudar: la capa vigente tiene 12,53 por ciento de cobertura maritima, y
+  declararla "no publicada" suena a cambio grande de lo que el patron ve.
+  MEDIDO: 0 cambios de bandera en las 8 rutas reales (1.2.c). El motivo es que
+  esta propuesta no toca la regla de silenciamiento, asi que los 33 trozos
+  maritimos silenciados siguen silenciados.
+
+  CRITERIO QUE USE: "publicado" describe si la capa del D.S. 991 de ese ambito
+  paso sus controles y esta en la base, que es la definicion que D3 ya fijo el
+  2026-08-10 ("el maritimo existe cuando pasa sus controles"). Hoy C3 falla y
+  jurisdicciones_ds991 no existe: el maritimo NO esta publicado, y decir otra cosa
+  seria que el registro mienta desde el primer dia. Lo que el motor consulta
+  mientras tanto es bahia_jurisdicciones, que el propio contrato ya marca como
+  contradictoria con INV-3.3 (§7 bug 4).
+
+  Lo enruto como mio porque el efecto sobre lo que el patron ve esta medido en
+  cero. Si el owner considera que declarar el maritimo no publicado tiene un costo
+  que la medicion no captura, lo revoca y el registro nace con el maritimo
+  publicado y una causa escrita.
+
+R2 · LA GEOGRAFIA DE RECLAMO ES jurisdicciones_decreto, DECLARADA EN EL DATO.
+
+  Es estructura de dato y metodo, del §0.4 para este lado. Va marcada en el propio
+  archivo con no_resuelve_jurisdiccion = true y su procedencia, para que nadie la
+  confunda con la capa de INV-3.3. El dia que E3 construya lo lacustre, la entrada
+  cambia de relacion y el control 3 obliga a hacerlo.
+
+  Solapamiento declarado con E1: E1 va a declarar jurisdicciones_decreto como
+  andamio en capa_consultada.json con un guard que impida promoverla. Son dos usos
+  distintos del mismo insumo y no chocan, pero cuando E1 se haga hay que revisar
+  que los dos guards digan lo mismo. Queda anotado.
+
+================================================================================
+FIN DE LA PROPUESTA. No se construyo nada: esto es propuesta y espera
+autorizacion (§5.1).
+================================================================================
