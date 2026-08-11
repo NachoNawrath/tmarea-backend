@@ -1,0 +1,161 @@
+================================================================================
+E0.3 — ¿LA RE-ATRIBUCION MUEVE ALGO HOY? MEDICION ANTES DE APLICAR.
+Fecha: 2026-08-11
+Pedido explicito del owner: "antes de aplicar cualquier re-atribucion, medi si
+alguna cambia una bandera hoy. Eso va antes, no despues."
+Estado: MEDIDO. Nada aplicado. El mapa vuelve a su sha256 original.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Ejecutado por el agente en Git Bash sobre Windows. Forma reproducible para el
+owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts/e03join_reconocimiento.js --json _bitacoras/e03join_recon_2026-08-11/particion.json
+    node scripts/e03join_medir_reatribucion.js
+    node scripts/e03join_medir_reatribucion.js --excluir 97
+
+Crudo:
+    _bitacoras/e03join_medicion_2026-08-11/00_medicion.txt          (corrida completa)
+    _bitacoras/e03join_medicion_2026-08-11/01_medicion_sin_97.txt   (aislando la 97)
+    _bitacoras/e03join_medicion_2026-08-11/{e02_verificacion_e2e,suite_unitaria,drift_origen_de_prueba_}.txt
+
+
+0. COMO SE MIDIO SIN APLICAR
+--------------------------------------------------------------------------------
+El medidor construye el mapa re-atribuido, lo deja puesto el tiempo que duran
+las corridas y lo restaura en `finally`, comprobando que vuelve al sha256
+original; si no volviera, termina en error diciendo donde quedo el respaldo.
+Comprobado despues de las tres corridas: `git status src/data/` limpio y
+sha256 bbf2fe4a7d4196748e658c4d9d6055a0f4de3853074467d92775cce3f0c5eb5f.
+
+La clasificacion NO se reimplementa aca: el reconocimiento emite la particion
+como artefacto (`--json`) y el medidor la consume. Una sola implementacion de la
+regla — duplicarla es justamente la deuda que esta etapa vino a saldar.
+
+Lo medido es la re-atribucion de los cajones B, C y D: 42 bahias, las que decide
+el propio decreto. E, F y G no se tocan, son del owner.
+
+
+1. LA RESPUESTA A LA PREGUNTA: NINGUNA BANDERA SE MUEVE
+--------------------------------------------------------------------------------
+Sobre las mismas 10 rutas del arnes de E0.2:
+
+    Anahuac -> Melinka                         Q -> Q  igual
+    Anahuac -> Quellon                         Q -> Q  igual
+    Anahuac -> Chacabuco                       Q -> Q  igual
+    Ancud -> Castro (mar interior)             Q -> Q  igual
+    Chonchi -> Chaiten (Corcovado)             Q -> Q  igual
+    Arica -> Iquique (norte)                   Q -> Q  igual
+    Valparaiso -> San Antonio                  Q -> Q  igual
+    Punta Arenas -> Pto Williams               U -> U  igual
+    Lago Villarrica: bahia 210 -> 209          U -> U  igual
+    Antartica: bahia 139 Fildes -> 231 Chile   U -> U  igual
+
+    banderas movidas: 0    suite unitaria: 76 pass / 0 fail
+    control de drift: DRIFT_DECLARADO_ABIERTO, el mismo veredicto y las mismas
+    3 divergencias que con el mapa intacto (257, y 108 por dos vias).
+
+Por que no se mueve, y por que la medicion no sobra igual: `bandera_cobertura`
+sale de si hay o no trozos de ruta sin jurisdiccion resuelta, que depende de la
+capa geometrica, no del mapa bahia->Capitania; y el motor todavia filtra las
+restricciones por `bahia_id`, no por Capitania. O sea que hoy el join es
+cosmetico para la bandera. Lo dejo escrito porque deja de serlo en E6: esta
+medicion vale para HOY y hay que rehacerla despues del cambio de unidad.
+
+
+2. LO QUE SI SE MUEVE, Y NO ES CHICO: 41 TARJETAS DE 164
+--------------------------------------------------------------------------------
+`getCapitaniaByBahiaId` devuelve distinto para 41 de las 164 bahias. Eso es lo
+que el patron ve hoy en la tarjeta: nombre de Capitania y telefono.
+
+Ejemplos literales de la corrida:
+
+    73  antes {"capitania":"Iquique","gobernacion":"Iquique","telefono":"+56 57 240 1902"}
+        ahora {"capitania":"Patache","gobernacion":"Iquique","telefono":"+56 57 240 1902"}
+    74  antes {"capitania":"Antofagasta",...,"telefono":"+56 55 263 0000"}
+        ahora {"capitania":"Tocopilla",...,"telefono":"+56 55 263 0000"}
+
+
+3. EL HALLAZGO QUE DECIDE LA FORMA DEL ARREGLO — EL TELEFONO
+--------------------------------------------------------------------------------
+De las 42 bahias re-atribuidas:
+
+    33  su Capitania de destino NO tiene ningun telefono en el mapa
+     1  arrastraria un telefono que no es de su Capitania de destino
+     8  quedan con telefono coherente
+
+O sea que 34 de 42 mostrarian el nombre de una Capitania con el telefono de
+otra. Y no es un descuido del dato: esas 33 Capitanias no tienen telefono
+porque no tienen NINGUNA bahia en el mapa — son justamente las que el mapa
+colapsa en la vecina. El agujero del contacto y el agujero del join son el mismo
+agujero visto de dos lados.
+
+De ahi se sigue lo que hay que construir, y no es "corregir el campo":
+`bahia-capitania-map.json` mezcla dos cosas de naturaleza distinta —
+QUIEN TIENE JURISDICCION (normativo, sale del decreto, es el join) y
+A QUIEN SE LLAMA (operativo, sale de DIRECTEMAR, es contacto). Arreglar el join
+encima del contacto arregla lo primero y rompe lo segundo, y deja peor que hoy:
+hoy nombre y telefono son coherentes entre si aunque la atribucion sea gruesa.
+
+Fabricar el telefono faltante esta prohibido (INV-0.2). Dejarlo vacio es un
+estado legitimo del dato y ya hay mecanica escrita para eso: el `sin_contacto`
+con motivo de `zonas_aviso.json`.
+
+
+4. EL CONTROL MORDIO, Y ES LA BUENA NOTICIA
+--------------------------------------------------------------------------------
+La corrida completa (las 42) NO llego a medir banderas: aborto en la carga.
+
+    [zonas_aviso] zona 'lirquen': la bahia 97 SI coincide hoy con el decreto
+    (mapa: capitania='Lirquen', gobernacion='Talcahuano'). La discrepancia que
+    declara el motivo ya no existe: hay contacto que se puede dar y este
+    'sin_contacto' lo estaria escondiendo.
+
+Los 14 tests que fallaron en esa corrida tienen esa UNA causa (medido: "causas
+distintas: 1"). Es el retiro automatico de R1 pieza 1 funcionando exactamente
+como se diseño: re-atribuir la bahia 97 a Lirquen borra la discrepancia que
+justificaba declarar `lirquen` sin contacto, y la carga se detiene en vez de
+seguir con una declaracion que quedo mintiendo.
+
+Consecuencia para la construccion: la re-atribucion de la 97 tiene un cambio
+COMPAÑERO obligatorio en `zonas_aviso.json`, y no se puede aplicar suelta. La
+medicion de banderas de §1 se hizo con `--excluir 97` para aislar ese
+acoplamiento — no para esconderlo: la corrida completa esta en 00_medicion.txt
+con su aborto entero.
+
+Nota: el `sin_contacto` de lirquen no se puede reemplazar por un contacto de
+Capitania sin resolver antes el §3, porque el telefono de la bahia 97 es el de
+Talcahuano.
+
+
+5. UN ERROR MIO EN EL CAMINO, CORREGIDO (CLAUDE.md §2)
+--------------------------------------------------------------------------------
+La primera corrida del medidor reporto "suite 62 pass / 14 fail" y "drift exit
+!= 0" con el arnes roto por MI harness, no por el dato: lanzaba los procesos con
+`shell: true` y la ruta de node en Windows ("C:\Program Files\...") se partia en
+dos, y `npm.cmd` no se puede spawnear sin shell (devolvia exit null, o sea "no
+arranco", que yo habria leido como "fallaron tests"). Corregido: los procesos se
+lanzan sin shell y la suite se corre con `node --test` sobre los archivos
+expandidos con readdir. Los numeros de §1 y §4 son de las corridas ya corregidas.
+
+Y una afirmacion que estuvo a punto de quedar mal fundada: "el control de drift
+no lo mueve la re-atribucion". Salida 3 tambien es la del baseline. Se comprobo
+corriendo el control con el mapa intacto y comparando veredicto y divergencias,
+no leyendo el codigo.
+
+
+6. LO QUE ESTA MEDICION NO CONTESTA
+--------------------------------------------------------------------------------
+- No mide el efecto DESPUES del cambio de unidad (E6). Ahi el join deja de ser
+  cosmetico y esta medicion hay que rehacerla.
+- No mide las 10 rutas contra restricciones reales de SITPORT en vivo: usa el
+  arnes de E0.2, que mide cobertura jurisdiccional.
+- No dice si las 41 tarjetas que cambian estan MEJOR. Dicen una Capitania mas
+  precisa con un telefono que en 34 casos no le corresponde: mejor en un campo,
+  peor en el otro. Por eso el arreglo no va encima de este archivo.
+
+================================================================================
+FIN. Nada aplicado. Alto para autorizacion de la construccion.
+================================================================================

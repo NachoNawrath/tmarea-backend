@@ -1,0 +1,106 @@
+VERIFICACION DE PUNTA A PUNTA — E0.2
+fecha: 2026-08-11T21:06:59.545Z
+shell: PowerShell 5.1 / Windows. Reproducible: node scripts/e02_verificacion_e2e.js
+
+==============================================================================
+LAS OCHO RUTAS REALES
+==============================================================================
+
+──────────────────────────────────────────────────────────────────────────────
+Anahuac -> Melinka
+  bandera ANTES Q  ->  AHORA Q   (sin cambio)
+  avisos 0 · defectos de construccion registrados 4
+
+──────────────────────────────────────────────────────────────────────────────
+Anahuac -> Quellon
+  bandera ANTES Q  ->  AHORA Q   (sin cambio)
+  avisos 0 · defectos de construccion registrados 3
+
+──────────────────────────────────────────────────────────────────────────────
+Anahuac -> Chacabuco
+  bandera ANTES Q  ->  AHORA Q   (sin cambio)
+  avisos 0 · defectos de construccion registrados 12
+
+──────────────────────────────────────────────────────────────────────────────
+Ancud -> Castro (mar interior)
+  bandera ANTES Q  ->  AHORA Q   (sin cambio)
+  avisos 0 · defectos de construccion registrados 5
+
+──────────────────────────────────────────────────────────────────────────────
+Chonchi -> Chaiten (Corcovado)
+  bandera ANTES Q  ->  AHORA Q   (sin cambio)
+  avisos 0 · defectos de construccion registrados 1
+
+──────────────────────────────────────────────────────────────────────────────
+Arica -> Iquique (norte)
+  bandera ANTES Q  ->  AHORA Q   (sin cambio)
+  avisos 0 · defectos de construccion registrados 4
+
+──────────────────────────────────────────────────────────────────────────────
+Valparaiso -> San Antonio
+  bandera ANTES Q  ->  AHORA Q   (sin cambio)
+  avisos 0 · defectos de construccion registrados 4
+
+──────────────────────────────────────────────────────────────────────────────
+Punta Arenas -> Pto Williams
+  bandera ANTES U  ->  AHORA U   (sin cambio)
+  avisos 2 · defectos de construccion registrados 1
+    aviso 352.6549 km
+      causa  = jurisdiccion_sin_geometria
+      origen = ambito_no_publicado
+      ambito_no_publicado = maritima
+      jurisdicciones_probables = ["punta_arenas"]
+      capitanias = [{"jurisdiccion_id":"punta_arenas","nombre":"Punta Arenas","telefono":"+56 61 220 1102","tipo":"capitania","bahia_id":131}]
+      capa_2 -> Verifica con la Capitanía Punta Arenas: +56 61 220 1102 antes de zarpar. Sin cita: esta si...
+    aviso 5.0246 km
+      causa  = jurisdiccion_sin_geometria
+      origen = ambito_no_publicado
+      ambito_no_publicado = maritima
+      jurisdicciones_probables = ["punta_arenas"]
+      capitanias = [{"jurisdiccion_id":"punta_arenas","nombre":"Punta Arenas","telefono":"+56 61 220 1102","tipo":"capitania","bahia_id":131}]
+      capa_2 -> Verifica con la Capitanía Punta Arenas: +56 61 220 1102 antes de zarpar. Sin cita: esta si...
+
+==============================================================================
+LAS DOS RUTAS DE AMBITO NO PUBLICADO
+==============================================================================
+
+──────────────────────────────────────────────────────────────────────────────
+Lago Villarrica: bahia 210 -> 209
+  bandera ANTES U  ->  AHORA U   (sin cambio)
+  avisos 1 · defectos de construccion registrados 0
+    aviso 21.8178 km
+      causa  = jurisdiccion_sin_geometria
+      origen = ambito_no_publicado
+      ambito_no_publicado = lacustre
+      jurisdicciones_probables = ["lago_villarrica"]
+      capitanias = [{"jurisdiccion_id":"lago_villarrica","nombre":"Lago Villarrica","telefono":"+56 63 227 6905","tipo":"capitania","bahia_id":105}]
+      capa_2 -> Verifica con la Capitanía Lago Villarrica: +56 63 227 6905 antes de zarpar. Sin cita: esta...
+
+──────────────────────────────────────────────────────────────────────────────
+Antartica: bahia 139 Fildes -> 231 Chile
+  bandera ANTES U  ->  AHORA U   (sin cambio)
+  avisos 1 · defectos de construccion registrados 0
+    aviso 47.5676 km
+      causa  = jurisdiccion_sin_geometria
+      origen = ambito_no_publicado
+      ambito_no_publicado = antartica
+      jurisdicciones_probables = ["bahia_fildes","puerto_soberania"]
+      capitanias = []
+      capa_2 -> Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situac...
+
+==============================================================================
+RESUMEN DE BANDERAS
+==============================================================================
+  Anahuac -> Melinka                         Q -> Q  igual
+  Anahuac -> Quellon                         Q -> Q  igual
+  Anahuac -> Chacabuco                       Q -> Q  igual
+  Ancud -> Castro (mar interior)             Q -> Q  igual
+  Chonchi -> Chaiten (Corcovado)             Q -> Q  igual
+  Arica -> Iquique (norte)                   Q -> Q  igual
+  Valparaiso -> San Antonio                  Q -> Q  igual
+  Punta Arenas -> Pto Williams               U -> U  igual
+  Lago Villarrica: bahia 210 -> 209          U -> U  igual
+  Antartica: bahia 139 Fildes -> 231 Chile   U -> U  igual
+
+Rutas medidas: 10 · cambios de bandera: 0
+La promesa de la propuesta se cumple: 0 cambios de bandera.

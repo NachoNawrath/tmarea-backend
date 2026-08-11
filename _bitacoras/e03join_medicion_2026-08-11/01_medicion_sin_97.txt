@@ -1,0 +1,130 @@
+==============================================================================
+E0.3 — ¿LA RE-ATRIBUCION MUEVE ALGO HOY? MEDICION ANTES DE APLICAR
+fecha: 2026-08-11T21:06:59.431Z
+==============================================================================
+particion : _bitacoras\e03join_recon_2026-08-11\particion.json  (generada 2026-08-11T21:02:15.105Z)
+mapa      : sha256 bbf2fe4a7d4196748e658c4d9d6055a0f4de3853074467d92775cce3f0c5eb5f
+
+──────────────────────────────────────────────────────────────────────────────
+1. QUE CAMBIARIA — Y EL PROBLEMA DEL TELEFONO
+──────────────────────────────────────────────────────────────────────────────
+EXCLUIDAS de esta corrida (y por que, en la bitacora): 97
+bahias que la re-atribucion tocaria: 41 (B 24 · C 4 · D 13)
+
+  quedarian con el telefono de su Capitania ANTERIOR      : 1
+  cuya Capitania de destino no tiene telefono en el mapa  : 32
+  con telefono coherente con el destino                   : 8
+
+  Este es el hallazgo que decide la FORMA del arreglo, no un detalle:
+  `bahia-capitania-map.json` mezcla dos cosas — QUIEN TIENE JURISDICCION
+  (normativo, es el join) y A QUIEN SE LLAMA (operativo, es contacto).
+  Arreglar el join encima del contacto arregla lo primero y rompe lo
+  segundo: nombre de una Capitania con telefono de otra, que es peor que
+  hoy porque hoy al menos son coherentes entre si.
+
+    73 PATACHE                            Iquique                -> Patache                  la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+    74 BAHÍA ALGODONALES                  Antofagasta            -> Tocopilla                la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+    76 CALETA MICHILLA                    Antofagasta            -> Mejillones               tel ok
+    79 TAL TAL                            Antofagasta            -> Taltal                   la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+    80 BAHÍA CHAÑARAL                     Caldera                -> Chanaral                 la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+    87 TONGOY                             Coquimbo               -> Tongoy                   la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+    94 BAHÍA ALGARROBO                    San Antonio            -> Algarrobo                la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+    95 PICHILEMU                          San Antonio            -> Pichilemu                la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+    96 LAGO RAPEL                         (null)                 -> Lago Rapel               la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+    99 BAHÍA SAN VICENTE                  Talcahuano             -> San Vicente              la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   102 LOTA                               Coronel                -> Lota                     la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   105 LAGO VILLARRICA                    (null)                 -> Lago Villarrica          la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   106 PANGUIPULLI                        (null)                 -> Lago Panguipulli         la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   125 SECTOR BAHÍA DE PUERTO AGUIRRE     Cisnes                 -> Puerto Aguirre           la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   128 LAGO GENERAL CARRERA               (null)                 -> Lago General Carrera     tel ok
+   144 LAGO RANCO                         (null)                 -> Lago Ranco               la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   145 LAGO MAIHUE                        (null)                 -> Lago Ranco               la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   146 RIO BUENO                          (null)                 -> Lago Ranco               la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   150 GUANAQUEROS                        Coquimbo               -> Tongoy                   la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   157 PUERTO CARRIZAL BAJO               Caldera                -> Huasco                   tel ok
+   158 CALETA CHAÑARAL Y ENSENADA GAVIOTA Coquimbo               -> Huasco                   el telefono que arrastra no es de Huasco
+   159 LAGO TODOS LOS SANTOS              Puerto Montt           -> Puerto Varas             tel ok
+   160 LAGO PUYEHUE                       Puerto Montt           -> Lago Ranco               la Capitania de destino no tiene NINGUN telefono conocido en el mapa  [el decreto lo nombra tambien en: Puerto Varas]
+   161 LAGO RUPANCO                       Puerto Montt           -> Puerto Varas             tel ok
+   172 BAHÍA PAN DE AZÚCAR                Caldera                -> Chanaral                 la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   195 PATILLO                            Iquique                -> Patache                  la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   196 BORDE COSTERO NORTE PATACHE        Iquique                -> Patache                  la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   197 BORDE COSTERO SUR PATACHE          Iquique                -> Patache                  la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   198 SECTOR COSTERO PENINSULA DE HUALPEN Talcahuano             -> San Vicente              la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   203 LAGO O'HIGGINS                     (null)                 -> Lago General Carrera     tel ok
+   215 EL QUISCO                          San Antonio            -> Algarrobo                la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   219 SECTOR NORTE QUINTERO              Valparaíso             -> Quintero                 tel ok
+   236 CALETA VIUDA                       Antofagasta            -> Tocopilla                la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   243 SECTOR CANAL DARWIN                Cisnes                 -> Puerto Aguirre           la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   244 SECTOR CANAL TRANSITO              Cisnes                 -> Puerto Aguirre           la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   245 LAGO PELLAIFA                      (null)                 -> Lago Panguipulli         la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   246 LAGO PULLINQUE                     (null)                 -> Lago Panguipulli         la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   247 LAGO CALAFQUEN                     (null)                 -> Lago Panguipulli         la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   248 LAGO RIÑIHUE                       (null)                 -> Lago Panguipulli         la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   249 LAGO NELTUME                       (null)                 -> Lago Panguipulli         la Capitania de destino no tiene NINGUN telefono conocido en el mapa
+   257 RÍO COCHRANE                       Lago General Carrera   -> Lago General Carrera     tel ok
+
+──────────────────────────────────────────────────────────────────────────────
+2. LO QUE EL PATRON VE HOY — getCapitaniaByBahiaId SOBRE LAS 164
+──────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────
+3. CON EL MAPA RE-ATRIBUIDO PUESTO — BANDERAS, SUITE, CARGAS Y DRIFT
+──────────────────────────────────────────────────────────────────────────────
+  (el mapa vuelve a su sha original al terminar, pase lo que pase)
+
+  BANDERAS — rutas medidas: 10
+    Anahuac -> Melinka                         Q -> Q  igual
+    Anahuac -> Quellon                         Q -> Q  igual
+    Anahuac -> Chacabuco                       Q -> Q  igual
+    Ancud -> Castro (mar interior)             Q -> Q  igual
+    Chonchi -> Chaiten (Corcovado)             Q -> Q  igual
+    Arica -> Iquique (norte)                   Q -> Q  igual
+    Valparaiso -> San Antonio                  Q -> Q  igual
+    Punta Arenas -> Pto Williams               U -> U  igual
+    Lago Villarrica: bahia 210 -> 209          U -> U  igual
+    Antartica: bahia 139 Fildes -> 231 Chile   U -> U  igual
+  banderas movidas: 0 (el propio arnes declara 0)
+  el arnes termino OK
+
+  SUITE UNITARIA: pass 76 · fail 0 — proceso OK
+    (es la que ejerce la carga de zonas_aviso y de ambitos_publicados:
+     si el mapa dejara de coincidir con el decreto, esa carga se detiene)
+
+  CONTROL DE DRIFT (con --insumo, o sea SIN escribir estado): VEREDICTO: DRIFT_DECLARADO_ABIERTO  (salida 3)
+    Con el mapa intacto da el MISMO veredicto y las mismas 3 divergencias
+    declaradas y abiertas (257 y 108, esta ultima por dos vias). O sea que
+    la re-atribucion no lo mueve, que es lo que habia que comprobar.
+    F3 declara `campos: []` en catalogo-bahias.js: aporta ids, no contenido
+    comparable, asi que cambiar la Capitania no puede moverlo. Se corre igual.
+
+──────────────────────────────────────────────────────────────────────────────
+4. LO QUE CAMBIA EN LA TARJETA
+──────────────────────────────────────────────────────────────────────────────
+bahias cuya tarjeta cambiaria: 40 de 164
+   73
+     antes: {"capitania":"Iquique","gobernacion":"Iquique","telefono":"+56 57 240 1902"}
+     ahora: {"capitania":"Patache","gobernacion":"Iquique","telefono":"+56 57 240 1902"}
+   74
+     antes: {"capitania":"Antofagasta","gobernacion":"Antofagasta","telefono":"+56 55 263 0000"}
+     ahora: {"capitania":"Tocopilla","gobernacion":"Antofagasta","telefono":"+56 55 263 0000"}
+   76
+     antes: {"capitania":"Antofagasta","gobernacion":"Antofagasta","telefono":"+56 55 263 0000"}
+     ahora: {"capitania":"Mejillones","gobernacion":"Antofagasta","telefono":"+56 55 263 0000"}
+   79
+     antes: {"capitania":"Antofagasta","gobernacion":"Antofagasta","telefono":"+56 55 263 0000"}
+     ahora: {"capitania":"Taltal","gobernacion":"Antofagasta","telefono":"+56 55 263 0000"}
+   80
+     antes: {"capitania":"Caldera","gobernacion":"Caldera","telefono":"+56 52 231 5276"}
+     ahora: {"capitania":"Chanaral","gobernacion":"Caldera","telefono":"+56 52 231 5276"}
+   87
+     antes: {"capitania":"Coquimbo","gobernacion":"Coquimbo","telefono":"+56 51 255 8100"}
+     ahora: {"capitania":"Tongoy","gobernacion":"Coquimbo","telefono":"+56 51 255 8100"}
+   ... y 34 mas (todas en la lista de §1)
+
+RESTAURADO: src\data\bahia-capitania-map.json vuelve a sha256 bbf2fe4a7d4196748e658c4d9d6055a0f4de3853074467d92775cce3f0c5eb5f
+Salidas crudas de las 3 corridas en _bitacoras\e03join_medicion_2026-08-11/
+
+==============================================================================
+FIN DE LA MEDICION — nada quedo aplicado.
+==============================================================================

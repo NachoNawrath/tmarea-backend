@@ -605,7 +605,42 @@ for (const k of orden) {
   if (conR.length) console.log(`   ${String(conR.length).padStart(3)}  ${k}  -> bahias ${conR.map(x => x.id).join(', ')}`);
 }
 
+// ── Artefacto legible por maquina, SOLO si se pide ──────────────────────────
+// Una sola implementacion de las reglas, un solo resultado, dos consumidores.
+// El medidor de re-atribucion (e03join_medir_reatribucion.js) lee esto en vez
+// de reimplementar la clasificacion: duplicar la regla es la deuda que esta
+// etapa vino a saldar, no algo que convenga repetir en el camino.
+const SALIDA_JSON = arg('--json', null);
+if (SALIDA_JSON) {
+  const DESTINO = { B: f => filasCotejo.find(x => x.d.id === f).jSit, C: null, D: null };
+  const bahias = [];
+  for (const [cajon, items] of cajones) {
+    const letra = cajon.split(' ')[0];
+    for (const { id, nota } of items) {
+      let destino = null;
+      if (letra === 'B') destino = DESTINO.B(id);
+      else if (letra === 'C' || letra === 'D') destino = (buscarCuerpo(nomBahia.get(id)) || []).map(c => c.jur);
+      else if (letra === 'A2' || letra === 'A3') destino = variantes.get(norm(mapa[String(id)].capitania)) || (jurLaxa(mapa[String(id)].capitania) || {}).id || null;
+      bahias.push({
+        id, nombre_sitport: nomBahia.get(id) || null, cajon: letra,
+        capitania_mapa: mapa[String(id)].capitania, capitania_sitport: capSitport.get(id) || null,
+        destino_propuesto: destino, nota: nota || null,
+      });
+    }
+  }
+  fs.writeFileSync(SALIDA_JSON, JSON.stringify({
+    generado: new Date().toISOString(),
+    generado_por: 'scripts/e03join_reconocimiento.js',
+    procedencia: 'E0.3 del PLAN_JURISDICCION.md. Particion medida; no es una adjudicacion.',
+    sha256_insumos: Object.fromEntries(Object.entries(RUTAS).map(([k, p]) => [k, sha(p)])),
+    variantes_establecidas: Object.fromEntries(variantes),
+    bahias: bahias.sort((a, b) => a.id - b.id),
+  }, null, 2) + '\n', 'utf8');
+  console.log('');
+  console.log(`Artefacto escrito en ${path.relative(RAIZ, SALIDA_JSON)} (${bahias.length} bahias).`);
+}
+
 console.log('');
 console.log('='.repeat(78));
-console.log('FIN DEL RECONOCIMIENTO — no se modifico ningun archivo.');
+console.log('FIN DEL RECONOCIMIENTO — no se modifico ningun archivo del repositorio.');
 console.log('='.repeat(78));

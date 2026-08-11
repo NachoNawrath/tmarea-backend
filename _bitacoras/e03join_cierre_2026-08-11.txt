@@ -1,0 +1,236 @@
+================================================================================
+E0.3 — PASADA DE CIERRE SOBRE LAS 34. NINGUNA QUEDA "SIN RESOLVER" A SECAS.
+Fecha: 2026-08-11
+Pedido del owner: agotar primero lo que ya hay delante —el texto completo del
+decreto incluidos los parrafos de las vecinas, los 13 endpoints de SITPORT y las
+bitacoras previas—, cerrar lo que cierre con su cita, y agrupar el resto POR
+FUENTE A CONSULTAR, no por geografia.
+Estado: 27 de 34 CERRADAS con lo que ya habia. 7 abiertas, todas con fuente
+        identificada. SIN FUENTE IDENTIFICADA: CERO.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Ejecutado por el agente en Git Bash sobre Windows. Reproducible en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts/e03join_cierre_34.js
+
+Crudo: _bitacoras/e03join_cierre_2026-08-11/01_pasada.txt
+       _bitacoras/e03join_cierre_2026-08-11/cierre.json
+
+
+1. LOS SIETE INSTRUMENTOS, DE MAS LITERAL A MAS DERIVADO
+--------------------------------------------------------------------------------
+La pasada se detiene en el primero que cierre. El orden importa: una atribucion
+que sale de una cita textual vale mas que una que sale de una geometria.
+
+  I    el decreto NOMBRA el accidente                       3 bahias
+  II   cae dentro de un POLIGONO de vertices escritos       3
+  III  cae de un lado de una LINEA COMPARTIDA declarada    15   <- el caso Ancud
+  IV   la BANDA de paralelos excluye a la otra candidata    2
+  V    identidad del cuerpo de agua, admitiendo GRAFIA      2
+  VI   cae dentro de un CONTORNO CERRADO declarado          1
+  VII  es la UNICA cuya banda declarada contiene el punto   1
+  ---
+       27 de 34
+
+El instrumento III es el que mas cerro, y es el que el caso Ancud enseño: la
+contrapartida esta en el parrafo de la vecina. Cuatro lineas compartidas
+resolvieron 15 bahias:
+
+  - la que divide el Canal Moraleda (melinka "por el Este" / puerto_cisnes "por
+    el Weste", los MISMOS cuatro puntos en los dos parrafos)         7 bahias
+  - Cayo Blanco - Punta San Andres - Puerto Perez - Islote Rodriguez
+    - Isla Traiguen (puerto_aguirre y puerto_chacabuco la citan)     1
+  - el meridiano 073 15 00 W entre 43 00 30 S y 43 44 25 S
+    (quellon al Weste / chaiten al Este)                             4
+  - Punta Harry - Cabo San Vicente, la Segunda Angostura
+    (punta_arenas al Weste / punta_delgada al Este)                  3
+
+
+2. EL HALLAZGO MAS FUERTE: TRES BAHIAS QUE NI EL MAPA NI SITPORT UBICAN BIEN
+--------------------------------------------------------------------------------
+251 Canal Golfo Corcovado (Norte), 252 Canal Moraleda (Este) y 253 Canal
+Chaffers Norte estan al NORTE del paralelo 43 44 25 S, que es el limite Norte
+tanto de Melinka como de Puerto Cisnes. O sea que las dos fuentes operativas
+—el mapa dice Cisnes, SITPORT dice Melinka— proponen jurisdicciones que el
+propio decreto excluye por su propia banda.
+
+El decreto si las ubica: al Weste del meridiano 073 15 00 W entre los paralelos
+43 00 30 S y 43 44 25 S es QUELLON. Cita de los dos lados:
+
+  quellon: "...hasta su interseccion con la Longitud 073 15 00 W, luego hacia el
+  Sur por este Meridiano hasta la Latitud 43 44 25 S, y desde alli hacia el Weste."
+  chaiten: "...siguiendo el paralelo 43 00 30 S hacia el Weste hasta su
+  interseccion con el Meridiano 073 15 00 W, luego hacia el Sur hasta el
+  Paralelo 43 44 25 S y desde alli hacia el Este."
+
+Distancias al meridiano: 251 a 24,27 km · 253 a 24,27 km · 252 a 2,69 km.
+
+RESERVA SOBRE LAS TRES, Y SOBRE TODO EL GRUPO DE AYSEN: el punto representativo
+de un "sector de canal" es una etiqueta, no una coordenada de grado de frontera.
+A 24 km del meridiano la conclusion aguanta cualquier imprecision razonable del
+punto; a 2,69 km (la 252) NO la aguanta. La 252 se reporta cerrada por el mismo
+criterio que las otras dos, y se declara aca que es la unica de las tres que una
+correccion del punto podria dar vuelta.
+
+
+3. CUATRO FALSOS CIERRES QUE CACE EN MI PROPIA PASADA (CLAUDE.md §0.3, §2)
+--------------------------------------------------------------------------------
+Los escribo porque el modo de falla de una pasada asi es cerrar de mas, y porque
+los cuatro pasaron una primera version del script:
+
+  (a) 156 PRIMERA ANGOSTURA cerraba en punta_arenas por el token 'ANGOSTURA'.
+      El decreto dice "Segunda Angostura" y son dos accidentes distintos. Yo
+      habia puesto 'PRIMERA' y 'SEGUNDA' en la lista de palabras genericas, que
+      es justo al reves de lo que son aca. Arreglo: la mencion exige TODOS los
+      tokens distintivos, no uno.
+  (b) 234 RIO PALENA cerraba en chaiten porque el parrafo dice "Incluye el Lago
+      Yelcho y el Lago Palena". Rio Palena y Lago Palena no son el mismo
+      accidente. Arreglo: el sustantivo de cabeza (RIO / LAGO) tiene que
+      coincidir. La 234 igual cierra, pero por la banda y por el meridiano, no
+      por una mencion que no la nombra.
+  (c) 33 atribuciones salieron ESPEJADAS en la primera corrida —la bahia que se
+      llama MELINKA cerraba en puerto_cisnes— porque deduje mal el signo del
+      producto cruz. Arreglo: el signo ya no se razona, se CALIBRA contra un
+      caso conocido dentro del script, y si se invierte el script revienta.
+  (d) 90 ISLA ROBINSON CRUSOE cerraba en san_antonio, y 137 BAHIA CHILOTA en
+      punta_arenas, por compartir latitud con la unica candidata que declara
+      paralelos. Robinson Crusoe esta a 670 km de la costa. Arreglo: una
+      candidata que el decreto define SIN paralelos no queda excluida porque
+      otra tenga banda. La latitud excluye; no atribuye.
+
+Los numeros de esta bitacora son los de la version con los cuatro arreglos.
+
+
+4. LAS 7 QUE SIGUEN ABIERTAS, AGRUPADAS POR FUENTE A CONSULTAR
+--------------------------------------------------------------------------------
+
+### FUENTE 1 — Ya la tenemos en el repositorio. No hay que preguntarle a nadie.
+
+  Bahias: 90 Isla Robinson Crusoe.
+  Que falta: el decreto dice que juan_fernandez "Comprende las islas de San
+  Felix, San Ambrosio y el Archipielago de Juan Fernandez". Falta certificar que
+  Isla Robinson Crusoe es una isla de ese archipielago — que es un hecho
+  geografico, no una lectura del decreto.
+  Donde esta: la capa de toponimos del IGM que ya se uso en fase5S
+  (gis.inv.igm.cl, SECCION_L), con el mismo script y la misma procedencia.
+  Costo: una consulta. Se resuelve de este lado, sin owner.
+  NOTA: `zonas_aviso.json` ya trata a la 90 como discrepancia de juan_fernandez,
+  o sea que el proyecto ya la da por de esa jurisdiccion. Esto lo certifica.
+
+### FUENTE 2 — UNA sola pregunta resuelve TRES bahias: donde cae el limite Sur.
+
+  Bahias: 127 Baker · 129 Puerto Eden · 154 Isla Guarello.
+  Por que estan juntas: las tres cuelgan del mismo hueco. El decreto define esas
+  dos jurisdicciones por un limite que NO es una coordenada:
+     baker      : "Desde el paralelo 47 00 00 S por el Norte hasta el LIMITE SUR
+                   DE LA REGION DE AYSEN, por el Sur; excluye los Lagos Cochrane
+                   y O'Higgins."
+     puerto_eden: "Desde el LIMITE SUR DE LA GOBERNACION MARITIMA DE AISEN por el
+                   Norte, hasta el paralelo 50 33 00 S por el Sur."
+  Con ese limite en coordenadas, las tres se ubican solas: 127 (47,80 S) y 129
+  (49,13 S) caen a un lado o al otro, y 154 (50,37 S) queda dentro de Puerto Eden
+  salvo que el limite este mas al Sur de lo que cualquiera espera.
+  Son DOS limites y hay que preguntar por los dos, porque no esta dicho en
+  ninguna parte que coincidan:
+     2a. El limite regional. Fuente: DPA_2023, que YA ESTA EN DISCO sin cargar
+         (geodata/DPA_2023.zip, 304 MB, §1.5 del plan). Se resuelve de este lado.
+     2b. El limite de la Gobernacion Maritima de Aisen. Fuente: DIRECTEMAR. Esto
+         SI hay que preguntarlo.
+
+  PREGUNTA REDACTADA PARA DIRECTEMAR:
+  "¿Cuales son las coordenadas del limite Sur de la jurisdiccion de la
+   Gobernacion Maritima de Aysen, que el D.S. 991/1987 usa como limite Norte de
+   la Capitania de Puerto Puerto Eden sin expresarlo en coordenadas? ¿Coincide
+   ese limite con el limite Sur de la Region de Aysen, que el mismo decreto usa
+   como limite Sur de la Capitania de Puerto Baker?"
+
+### FUENTE 3 — DIRECTEMAR: dos parrafos del decreto que se solapan.
+
+  Bahia: 137 Bahia Chilota (Porvenir), 53 18 13 S / 070 26 10 W.
+  Que pasa: los parrafos de punta_delgada y de tierra_del_fuego describen los
+  dos un area "al Este" de la misma linea, y no dicen como se reparten:
+     punta_delgada   : "El Estrecho de Magallanes desde la linea imaginaria que
+                        une punta Harry y Cabo San Vicente, hasta el limite
+                        maritimo internacional por el Oriente."
+     tierra_del_fuego: "El area oriental de la linea imaginaria que une Cabo San
+                        Vicente por el Norte, hasta Punta Anxius por el Sur.
+                        Incluye Bahia Gente Grande, Bahia Inutil, ..."
+  Medido: la bahia esta a 230 m de la linea Cabo San Vicente - Punta Anxius. No
+  hay geometria que la decida; esta practicamente encima.
+  Las otras tres de Magallanes (131 Bahia Gregorio, 132 Bahia Clarencia, 156
+  Primera Angostura) SI cerraron, porque estan al Norte de Cabo San Vicente y
+  ahi tierra_del_fuego no llega. La 137 es la unica al Sur.
+
+  PREGUNTA REDACTADA PARA DIRECTEMAR:
+  "En el D.S. 991/1987, la Capitania de Puerto Punta Delgada comprende 'el
+   Estrecho de Magallanes' al Oriente de la linea Punta Harry - Cabo San Vicente,
+   y la Capitania de Puerto Tierra del Fuego comprende 'el area oriental' de la
+   linea Cabo San Vicente - Punta Anxius. Las dos descripciones cubren la zona al
+   Oriente de Cabo San Vicente. ¿Bajo cual de las dos queda Bahia Chilota, en
+   Porvenir? Y en general, ¿como se reparten esas dos jurisdicciones esa zona?"
+
+  OBSERVACION QUE CONVIENE MANDAR CON LA PREGUNTA: la atribucion operativa de
+  SITPORT pone la 132 Bahia Clarencia en Tierra del Fuego y el decreto la deja
+  en Punta Delgada por estar al Norte de Cabo San Vicente. Es el unico caso de
+  las 34 donde el cierre por decreto contradice a SITPORT en Magallanes, y vale
+  la pena confirmarlo en la misma consulta.
+
+### FUENTE 4 — Informante con experiencia operativa austral.
+
+  Bahias: 239 Sector Canal Ferronave y Canal Devia (44 48 00 S / 073 24 00 W) ·
+          241 Sector Canal Goñi y Canal Ninualac (44 56 00 S / 073 33 00 W).
+  Que pasa: las dos caen entre los extremos de la linea Cayo Blanco - Punta San
+  Andres - Puerto Perez - Islote Rodriguez - Isla Traiguen, que es la frontera
+  declarada entre Puerto Cisnes y Puerto Aguirre. Estar "entre los extremos"
+  significa que el veredicto depende de como se prolongue el trazo hacia el
+  Weste, y eso el decreto no lo escribe. Sus dos bandas de paralelos las
+  contienen a las dos, asi que la latitud tampoco decide.
+  Es la misma familia que las otras 12 de Aysen que si cerraron: son las dos que
+  quedaron justo sobre la costura.
+
+  PREGUNTA REDACTADA PARA EL INFORMANTE:
+  "En la practica, ¿quien atiende los canales Ferronave, Devia, Goñi y Ninualac
+   — la Capitania de Puerto Cisnes o la de Puerto Aguirre? ¿Donde entiende la
+   gente que navega ahi que esta el limite entre las dos, al Weste de la linea
+   Islote Cayo Blanco - Punta San Andres?"
+  Y la de control, que es la que hace util la respuesta:
+  "¿Hay algun caso en que una de las dos haya dictado una restriccion para esos
+   canales?"
+
+  ESTA PREGUNTA SIRVE PARA MAS QUE DOS BAHIAS: la misma costura decide como se
+  cierra la figura de Puerto Aguirre por el Weste, que es una de las causas del
+  C3 abierto de E4. Conviene hacerla aunque estas dos se resolvieran de otro modo.
+
+
+5. SIN FUENTE IDENTIFICADA: CERO
+--------------------------------------------------------------------------------
+El owner pidio declararlo explicito porque una pendiente sin fuente es peor que
+una pendiente. Ninguna de las 34 quedo asi. El reparto final:
+
+    27  cerradas con el decreto y lo que ya habia en el repositorio
+     1  se cierra con una consulta nuestra al IGM (bahia 90)
+     3  dependen de un limite: 1 lo da DPA_2023 (en disco) y el otro DIRECTEMAR
+     1  requiere lectura de DIRECTEMAR sobre dos parrafos que se solapan (137)
+     2  requieren al informante austral (239, 241)
+    ---
+    34
+
+
+6. LO QUE ESTA PASADA DEJA ABIERTO Y NO ES UNA BAHIA
+--------------------------------------------------------------------------------
+- Cochamo es de ambito 'maritima' en el insumo y su parrafo nombra dos lagos
+  ("Incluye los Farellones Marimelli y los Lagos Tagua-Tagua e Inferior"), que
+  es lo que cerro la bahia 153. Una jurisdiccion maritima con cuerpos lacustres
+  adentro no esta contemplada en el cotejo lacustre, que solo recorre las seis
+  de ambito lacustre. No bloquea E0.3; sube a E3 como hallazgo.
+- Las coordenadas de Punta Harry, Cabo San Vicente y Punta Anxious salen de la
+  capa del IGM registrada en fase5S, no del decreto, que las nombra sin darlas.
+  Tres de los cierres de Magallanes se apoyan en ellas. Esta declarado en la
+  cita de cada uno.
+
+================================================================================
+FIN. Nada construido, nada aplicado. Alto antes de construir.
+================================================================================
