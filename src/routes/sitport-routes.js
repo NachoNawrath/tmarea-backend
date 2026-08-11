@@ -623,7 +623,7 @@ async function evaluarDriftCatalogo(registrosSitport, bahiaIdsEnRuta) {
 async function evaluarCobertura(puntosValidos) {
   try {
     const medicion = await medirCoberturaRuta(pool, puntosValidos);
-    const { avisos, defectos, bandera_cobertura } = componerAvisos(medicion);
+    const { avisos, defectos, bandera_cobertura } = await componerAvisos(medicion, pool);
 
     for (const d of defectos) {
       console.warn(`[cobertura] defecto ${d.tipo} ${d.largo_km}km ` +

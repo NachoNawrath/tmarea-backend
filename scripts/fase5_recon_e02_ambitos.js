@@ -1,6 +1,6 @@
 'use strict';
-// ─────────────────────────────────────────────────────────────────────────────
-// fase5_recon_e02_ambitos.js — RECONOCIMIENTO de E0.2, no construye nada.
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// fase5_recon_e02_ambitos.js â€” RECONOCIMIENTO de E0.2, no construye nada.
 //
 // Responde las tres preguntas que E0.2 tiene que contestar antes de proponer:
 //
@@ -13,7 +13,7 @@
 // No escribe en la base. Solo lee y mide.
 //
 // Reproducible:  node scripts/fase5_recon_e02_ambitos.js
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 require('dotenv').config();
 const { Pool } = require('pg');
@@ -28,12 +28,12 @@ const pool = new Pool({
   user: process.env.DB_USER, password: process.env.DB_PASSWORD,
 });
 
-const linea = (c = '─') => console.log(c.repeat(78));
-const titulo = (t) => { console.log(''); linea('═'); console.log(t); linea('═'); };
+const linea = (c = 'â”€') => console.log(c.repeat(78));
+const titulo = (t) => { console.log(''); linea('â•'); console.log(t); linea('â•'); };
 
-// ─── Rutas de prueba ────────────────────────────────────────────────────────
+// â”€â”€â”€ Rutas de prueba â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // TODOS los extremos son coordenadas publicadas por SITPORT y presentes en
-// bahias_sitport. No se inventa ninguna posicion (INV-0.2 / CLAUDE.md §3.2).
+// bahias_sitport. No se inventa ninguna posicion (INV-0.2 / CLAUDE.md Â§3.2).
 const RUTAS = [
   {
     id: 'lacustre_villarrica',
@@ -67,13 +67,13 @@ async function bahiasEnRuta(waypoints) {
 }
 
 async function main() {
-  console.log('RECONOCIMIENTO E0.2 — EL REGISTRO DE AMBITOS PUBLICADOS');
+  console.log('RECONOCIMIENTO E0.2 â€” EL REGISTRO DE AMBITOS PUBLICADOS');
   console.log(`fecha de ejecucion: ${new Date().toISOString()}`);
   console.log(`insumo: data/decreto/jurisdicciones_v2.json v${insumo.version} generado ${insumo.generado}`);
   console.log(`capa declarada: ${declCapa.capa_jurisdicciones} (recorte: ${declCapa.capa_recorte_tierra})`);
   console.log('shell del agente: Git Bash / PowerShell (Windows). Comandos reproducibles: PowerShell.');
 
-  // ── 1. AMBITOS EN EL INSUMO ───────────────────────────────────────────────
+  // â”€â”€ 1. AMBITOS EN EL INSUMO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   titulo('1. QUE AMBITOS EXISTEN EN EL INSUMO DEL DECRETO');
 
   const porAmbito = new Map();
@@ -93,7 +93,7 @@ async function main() {
       Object.entries(est).map(([k, v]) => `${k}=${v}`).join('  '));
   }
 
-  console.log('\nDetalle por ambito — recetas y jurisdicciones:');
+  console.log('\nDetalle por ambito â€” recetas y jurisdicciones:');
   for (const [amb, js] of [...porAmbito].sort()) {
     const recetas = {};
     for (const j of js) recetas[j.receta || '(sin receta)'] = (recetas[j.receta || '(sin receta)'] || 0) + 1;
@@ -105,10 +105,10 @@ async function main() {
     }
   }
 
-  // ── 2. QUE HAY EN LA BASE HOY ─────────────────────────────────────────────
+  // â”€â”€ 2. QUE HAY EN LA BASE HOY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   titulo('2. QUE AMBITOS ESTAN EFECTIVAMENTE EN LA BASE HOY');
 
-  console.log('\n2.a — Relaciones de la base que llevan una columna "ambito":');
+  console.log('\n2.a â€” Relaciones de la base que llevan una columna "ambito":');
   linea();
   const { rows: conAmbito } = await pool.query(`
     SELECT c.relname AS relacion,
@@ -121,9 +121,9 @@ async function main() {
      ORDER BY 1`);
   console.table(conAmbito);
   console.log(`La capa que el motor consulta es '${declCapa.capa_jurisdicciones}'.`);
-  console.log(`¿Lleva columna 'ambito'?  ${conAmbito.some(r => r.relacion === declCapa.capa_jurisdicciones) ? 'SI' : 'NO'}`);
+  console.log(`Â¿Lleva columna 'ambito'?  ${conAmbito.some(r => r.relacion === declCapa.capa_jurisdicciones) ? 'SI' : 'NO'}`);
 
-  console.log('\n2.b — Cobertura de cada ambito por la capa VIGENTE.');
+  console.log('\n2.b â€” Cobertura de cada ambito por la capa VIGENTE.');
   console.log('El area de referencia de cada ambito sale de jurisdicciones_decreto, que es');
   console.log('la unica relacion de la base con geometria Y ambito. Esta marcada SUPERSEDIDA:');
   console.log('sirve como referencia de DONDE cae cada ambito, no como capa correcta.');
@@ -151,7 +151,7 @@ async function main() {
     console.log('asi que no hay area de referencia contra la cual medir. No determinado.');
   }
 
-  console.log('\n2.c — Las celdas de la capa vigente, por si la geometria esta o no:');
+  console.log('\n2.c â€” Las celdas de la capa vigente, por si la geometria esta o no:');
   linea();
   const { rows: celdas } = await pool.query(`
     SELECT count(*) AS celdas,
@@ -161,7 +161,7 @@ async function main() {
       FROM "${declCapa.capa_jurisdicciones}"`);
   console.table(celdas);
 
-  console.log('\n2.d — Las bahias del catalogo cuyo nombre las ubica en un lago o en la Antartica:');
+  console.log('\n2.d â€” Las bahias del catalogo cuyo nombre las ubica en un lago o en la Antartica:');
   linea();
   const { rows: lac } = await pool.query(`
     SELECT b.bahia_id, b.nombre, b.lat, b.lng,
@@ -173,7 +173,7 @@ async function main() {
      ORDER BY b.lat < -60, b.bahia_id`);
   console.table(lac);
 
-  // ── 3. COMPORTAMIENTO DEL MOTOR ───────────────────────────────────────────
+  // â”€â”€ 3. COMPORTAMIENTO DEL MOTOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   titulo('3. COMO SE COMPORTA EL MOTOR CUANDO LA RUTA CAE EN UN AMBITO QUE NO ESTA');
 
   console.log('\nSe ejecuta el codigo del motor, no se describe:');
@@ -187,7 +187,7 @@ async function main() {
     JSON.stringify(za.zonas.reduce((a, z) => (a[z.ambito_jurisdiccion] = (a[z.ambito_jurisdiccion] || 0) + 1, a), {})));
 
   for (const r of RUTAS) {
-    linea('─');
+    linea('â”€');
     console.log(`\nRUTA ${r.id}  [ambito esperado: ${r.ambito_esperado}]`);
     console.log(`  ${r.descripcion}`);
     console.log(`  waypoints: ${JSON.stringify(r.waypoints)}`);
@@ -198,7 +198,7 @@ async function main() {
     console.log(`             (sitport-routes.js, filtro por bahiaIdsEnRuta).`);
 
     const medicion = await medirCoberturaRuta(pool, r.waypoints);
-    const { avisos, defectos, bandera_cobertura } = componerAvisos(medicion);
+    const { avisos, defectos, bandera_cobertura } = await componerAvisos(medicion, pool);
 
     console.log(`\n  [cobertura] largo de ruta: ${medicion.largo_ruta_km?.toFixed(3)} km`);
     console.log(`  [cobertura] piezas sin jurisdiccion: ${medicion.piezas.length}`);
@@ -220,11 +220,11 @@ async function main() {
     }
   }
 
-  linea('─');
+  linea('â”€');
   console.log('\nNOTA sobre el alcance de lo medido en el bloque 3: el aviso de cobertura se');
   console.log('calcula y se devuelve en su propio campo del endpoint, pero NO compone el');
-  console.log('veredicto — asi esta escrito en sitport-routes.js:852 ("Todavia NO compone el');
-  console.log('veredicto — esa es la pieza 4"). Lo que se mide arriba es lo que el backend');
+  console.log('veredicto â€” asi esta escrito en sitport-routes.js:852 ("Todavia NO compone el');
+  console.log('veredicto â€” esa es la pieza 4"). Lo que se mide arriba es lo que el backend');
   console.log('produce, no lo que el patron ve hoy en pantalla.');
 
   await pool.end();

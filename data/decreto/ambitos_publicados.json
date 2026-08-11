@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "generado": "2026-08-11",
+  "rige": "CONTRATO_MOTOR.md v1.7 — INV-3.6 (una jurisdiccion sin geometria se declara, nunca se resuelve en silencio) e INV-3.5 (ambitos)",
+
+  "que_es": "Que ambitos de jurisdiccion estan PUBLICADOS en la capa del D.S. 991 y cuales no, cada uno con su causa escrita. Es dato declarado, no inferido: el motor no adivina el estado de un ambito mirando si encuentra geometria.",
+
+  "que_no_es": "NO es una jurisdiccion, no resuelve contencion, no produce una restriccion y no puede escalar el veredicto mas alla de U (INV-3.6). Un ambito no publicado dice 'todavia no lo construimos', nunca 'esta prohibido'. Y NO es la capa que el motor consulta para resolver jurisdiccion: eso lo declara capa_consultada.json.",
+
+  "por_que_existe": "Hasta hoy, una ruta en un ambito que nunca se construyo salia clasificada como 'hueco_de_capa', que INV-3.6 define como 'un defecto de construccion nuestro' sobre 'una zona que ninguna jurisdiccion reclama'. Las dos mitades son falsas para un lago: el decreto SI le da jurisdiccion, y el ambito no esta mal construido sino sin construir. Sin este registro, 'el ambito no existe todavia' y 'nuestra capa tiene un agujero' son el mismo estado para el motor.",
+
+  "de_que_norma_sale": "De ninguna. Ni el D.S. 991 ni CONTRATO_MOTOR.md hablan de que un ambito este publicado o no: es un concepto NUESTRO, de estado de construccion. Se declara aca para no fabricar autoridad normativa (CLAUDE.md §1.1). Lo que SI es del contrato es la consecuencia: un trozo de ruta en un ambito no publicado es una jurisdiccion sin geometria cargada, o sea la causa (a) de INV-3.6, y lleva su mismo mensaje y su misma bandera U topada.",
+
+  "reversibilidad": "Una entrada con publicado=false existe SOLO mientras la capa publicada no tenga geometria de ese ambito. El dia que un ambito pase sus controles y entre a la base, esta declaracion queda invalida y el validador se detiene con el motivo, obligando a retirarla. Nadie tiene que acordarse de borrar la entrada. Y al reves: declarar publicado=true un ambito que la base no tiene tambien detiene la carga. Muerde en las dos direcciones.",
+
+  "capa_publicada": "jurisdicciones_ds991",
+
+  "por_que_esa_capa": "Es el nombre canonico de la capa derivada del D.S. 991. HOY NO EXISTE en la base: el build de la Etapa 3 pasa 7 de 8 controles, falla C3 y el rollback la deshace entera. Por eso los cuatro ambitos nacen no publicados. 'Publicado' significa exactamente lo que D3 fijo el 2026-08-10: el ambito existe cuando pasa SUS controles y queda en la base, no cuando su geometria se puede construir.",
+
+  "capa_publicada_no_es_la_consultada": "capa_consultada.json declara hoy bahia_jurisdicciones, que es un teselado de Voronoi que el propio contrato marca como contradictorio con INV-3.3 (§7 bug 4). Si esta capa_publicada apuntara ahi, los cuatro ambitos se leerian como publicados y el registro mentiria desde el primer dia. El validador lo comprueba y se detiene.",
+
+  "fuentes": {
+    "ambitos": "data/decreto/jurisdicciones_v2.json — de ahi salen los ambitos que existen y cuantas jurisdicciones tiene cada uno",
+    "estado": "postgres mapa_navegacion :: la capa_publicada de arriba — de ahi sale si el ambito esta o no",
+    "contactos": "src/data/bahia-capitania-map.json — fuente autorizada de telefono por bahia (CONTRATO_MOTOR.md §5)"
+  },
+
+  "sobre_la_geografia_de_reclamo": "Para avisarle al patron que su ruta entra en un ambito no publicado hay que saber en que ambito cae un trozo, y la geometria de ese ambito es justamente la que falta. Cada entrada declara de donde se toma esa geografia. NO resuelve jurisdiccion y el campo lo dice: sirve para decidir que aviso corresponde, igual que banda_latitud en zonas_aviso.json, nunca para adjudicar una Capitania a un punto (INV-3.3). Puede ser nula, y entonces el ambito queda registrado pero no reclama ningun trozo; el motivo de esa ausencia es obligatorio.",
+
+  "ambitos": [
+    {
+      "ambito": "maritima",
+      "publicado": false,
+      "jurisdicciones_esperadas": 52,
+      "causa": "La capa maritima del D.S. 991 no pasa sus controles. El build de la Etapa 3 falla C3 con seis pares de separacion lateral y el rollback deshace la transaccion entera, asi que jurisdicciones_ds991 no llega a existir. Se cierra en E4 (P2 autorizado, P4' y P3 pendientes). Mientras tanto el motor consulta bahia_jurisdicciones, que resuelve por teselado y no por los limites del decreto.",
+      "geografia_de_reclamo": {
+        "relacion": "jurisdicciones_decreto",
+        "columna_ambito": "ambito",
+        "no_resuelve_jurisdiccion": true,
+        "procedencia": "Build anterior de la capa del decreto, marcado SUPERSEDIDO Y DESACTUALIZADO. 44 de sus 52 jurisdicciones maritimas tienen geometria. Se usa unicamente para saber en que ambito cae un trozo de ruta."
+      }
+    },
+    {
+      "ambito": "lacustre",
+      "publicado": false,
+      "jurisdicciones_esperadas": 6,
+      "causa": "El ambito lacustre nunca se construyo en la capa publicada. Su geometria se construye bien —el constructor ya trata el ambito por separado y la receta union_cuerpos tiene su propio control que rechaza una lacustre vacia citando INV-3.5— pero comparte el rollback con C3, que es un defecto de las maritimas. Es lo que E3 va a destrabar partiendo el gate por ambito (D3). Consecuencia hoy: toda la navegacion lacustre es invisible para el motor.",
+      "geografia_de_reclamo": {
+        "relacion": "jurisdicciones_decreto",
+        "columna_ambito": "ambito",
+        "no_resuelve_jurisdiccion": true,
+        "procedencia": "Las 6 jurisdicciones lacustres tienen geometria en ese build (4.466 km2 en total). Medido el 2026-08-11: la capa vigente cubre 0,0000 km2 de esa area y la cobertura mas cercana a cualquiera de los seis lagos esta entre 16 y 84 km."
+      }
+    },
+    {
+      "ambito": "antartica",
+      "publicado": false,
+      "jurisdicciones_esperadas": 4,
+      "causa": "El ambito antartico nunca se construyo en la capa publicada, y ninguna etapa del plan lo toca: E3 es lacustre y E4 es maritima. Sus cuatro jurisdicciones tienen receta anillo y participa_matching=true, o sea que son construibles; simplemente no se construyeron. Medido el 2026-08-11: la capa vigente cubre 0,0000 km2 de sus 1.357.463 km2, con la cobertura mas cercana entre 453 y 807 km.",
+      "categoria_contractual": "pendiente",
+      "nota_categoria_contractual": "INV-3.5 nombra hoy tres ambitos —maritimo, lacustre e insular remoto— y no menciona el antartico en ninguna parte del contrato. El dueño del producto aprobo el 2026-08-11 el camino P1: sumar el ambito antartico a INV-3.5. El texto propuesto esta en _bitacoras/e02_texto_propuesto_inv35_2026-08-11.md y lo escribe el owner (CLAUDE.md §6). Este campo pasa a 'declarada' cuando el contrato lo recoja. La entrada se declara igual y desde ya: omitirla devolveria el ambito al silencio, que es lo que este registro existe para terminar.",
+      "geografia_de_reclamo": {
+        "relacion": "jurisdicciones_decreto",
+        "columna_ambito": "ambito",
+        "no_resuelve_jurisdiccion": true,
+        "procedencia": "Las 4 jurisdicciones antarticas tienen geometria en ese build (1.357.463 km2 en total)."
+      }
+    },
+    {
+      "ambito": "insular_remota",
+      "publicado": false,
+      "jurisdicciones_esperadas": 2,
+      "causa": "Sus dos jurisdicciones —hanga_roa y juan_fernandez— son las unicas del insumo cuyo ambito entero es no_cerrable: el decreto nombra las islas sin coordenadas. No es un ambito pendiente de construir sino un ambito que con el insumo de hoy no se puede construir, y por eso las dos ya estan declaradas una por una en zonas_aviso.json bajo la causa (a) de INV-3.6.",
+      "geografia_de_reclamo": null,
+      "motivo_sin_geografia_de_reclamo": "Ninguna de sus dos jurisdicciones tiene geometria en jurisdicciones_decreto, asi que no hay de donde tomar una geografia de reclamo. Declarar una seria fabricar un ambito insular que el insumo no trae — el mismo motivo por el que las dos zonas de zonas_aviso.json nacieron con ambito nulo. Con geografia nula el ambito queda registrado y no reclama ningun trozo, que es el comportamiento correcto: quien responde por esas dos rutas es zonas_aviso.json, que las nombra una por una."
+    }
+  ]
+}

@@ -106,7 +106,7 @@ const RUTAS = [
     }
 
     const med = await medirCoberturaRuta(pool, wps);
-    const { avisos, defectos, bandera_cobertura } = componerAvisos(med);
+    const { avisos, defectos, bandera_cobertura } = await componerAvisos(med, pool);
     capaInfo = capaInfo || { capa: med.capa, recorte: med.capa_recorte, tolerancia: med.tolerancia_m };
 
     const km = f => med.piezas.filter(f).reduce((s, p) => s + p.largo_km, 0);

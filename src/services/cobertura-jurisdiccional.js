@@ -21,10 +21,33 @@
 //   (b') hueco atribuible al recorte de la propia capa, pegado a jurisdiccion
 //        que la ruta ya resolvio -> defecto registrado, SIN aviso. Ver la
 //        justificacion medida en _bitacoras/fase5V_r1_2026-08-10.txt.
+//
+// LOS DOS ORIGENES DE LA CAUSA (a) — E0.2, 2026-08-11:
+//   INV-3.6 define (a) como "una jurisdiccion [que] NO TIENE GEOMETRIA CARGADA".
+//   Cargada es un hecho de LA BASE. Hasta E0.2 este modulo decidia (a)
+//   preguntandole al INSUMO —participa_matching === false, o sea "el decreto no
+//   permite construirla"—, que es otra cosa. Por ese desfase, una ruta en un
+//   ambito que nunca se construyo salia clasificada (b), afirmando un defecto de
+//   construccion sobre una capa que para ese ambito no existe.
+//
+//     origen 'jurisdiccion_no_cerrable'  el decreto no entrega con que cerrarla
+//                                        -> lo declara zonas_aviso.json
+//     origen 'ambito_no_publicado'       se puede construir y no se construyo
+//                                        -> lo declara ambitos_publicados.json
+//
+//   Al patron se le dice LO MISMO en los dos: misma fila del §10, misma bandera
+//   U topada. Lo que cambia es el registro interno, que es exactamente la
+//   asimetria que INV-3.6 ya establece entre (a) y (b).
 // ─────────────────────────────────────────────────────────────────────────────
 
 const path = require('path');
 const { cargarZonasAviso } = require('./zonas-aviso');
+const {
+  cargarAmbitosPublicados, ambitoQueReclama, contactosDeJurisdicciones,
+} = require('./ambitos-publicados');
+
+const RUTA_INSUMO    = path.join(__dirname, '..', '..', 'data', 'decreto', 'jurisdicciones_v2.json');
+const RUTA_CONTACTOS = path.join(__dirname, '..', 'data', 'bahia-capitania-map.json');
 
 const RUTA_CAPA = path.join(__dirname, '..', '..', 'data', 'decreto', 'capa_consultada.json');
 
@@ -164,8 +187,14 @@ async function medirCoberturaRuta(pool, waypoints) {
  * silenciados en defectos registrados. Es la unica funcion que arma texto, y
  * el texto lo transcribe de la declaracion, que a su vez lo transcribe del §10.
  */
-function componerAvisos(medicion) {
+async function componerAvisos(medicion, pool) {
   const { mensaje, contacto_generico, zonas_con_ambito } = cargarZonasAviso();
+  // El registro de ambitos se valida al cargarse, contra el insumo Y contra la
+  // base. Si la declaracion y la base dejaron de coincidir, esto lanza y el
+  // aviso no se compone: no se degrada a "no hay nada que avisar" (§4.1).
+  const registroAmbitos = await cargarAmbitosPublicados(pool);
+  const insumo = require(RUTA_INSUMO);
+  const contactos = require(RUTA_CONTACTOS);
 
   const avisos = [];
   const defectos = [];
@@ -184,14 +213,40 @@ function componerAvisos(medicion) {
       continue;
     }
 
-    // Causa (a) solo si una zona de aviso DECLARADA reclama el trozo. Hoy
-    // ninguna declara ambito, asi que ninguna reclama: no se adivina.
+    // Causa (a), primer origen: una zona de aviso DECLARADA reclama el trozo.
+    // Hoy ninguna declara ambito, asi que ninguna reclama: no se adivina.
     const reclamantes = zonas_con_ambito.filter(z => zonaReclama(z, p));
-    const causa = reclamantes.length > 0 ? 'jurisdiccion_sin_geometria' : 'hueco_de_capa';
 
-    const capitanias = reclamantes
-      .filter(z => z.contacto.tipo !== 'sin_contacto')
-      .map(z => ({ nombre: z.contacto.nombre, telefono: z.contacto.telefono, tipo: z.contacto.tipo }));
+    // Causa (a), segundo origen: el trozo cae en un ambito que no se publico.
+    // Se pregunta SOLO si ninguna zona declarada lo reclamo — una zona nombra
+    // una jurisdiccion concreta y un ambito nombra un conjunto, asi que la
+    // declaracion mas especifica manda.
+    const reclamoAmbito = reclamantes.length > 0
+      ? null
+      : await ambitoQueReclama(pool, registroAmbitos, p);
+
+    let causa, origen, jurisdiccionesProbables, capitanias, ambito;
+    if (reclamantes.length > 0) {
+      causa = 'jurisdiccion_sin_geometria';
+      origen = 'jurisdiccion_no_cerrable';
+      jurisdiccionesProbables = reclamantes.map(z => z.nombre);
+      ambito = null;
+      capitanias = reclamantes
+        .filter(z => z.contacto.tipo !== 'sin_contacto')
+        .map(z => ({ nombre: z.contacto.nombre, telefono: z.contacto.telefono, tipo: z.contacto.tipo }));
+    } else if (reclamoAmbito) {
+      causa = 'jurisdiccion_sin_geometria';
+      origen = 'ambito_no_publicado';
+      jurisdiccionesProbables = reclamoAmbito.ids;
+      ambito = reclamoAmbito.ambito;
+      capitanias = contactosDeJurisdicciones(reclamoAmbito.ids, insumo, contactos);
+    } else {
+      causa = 'hueco_de_capa';
+      origen = 'hueco_de_capa';
+      jurisdiccionesProbables = [];
+      ambito = null;
+      capitanias = [];
+    }
 
     const capa2 = capitanias.length === 1
       ? mensaje.capa_2_con_capitania
@@ -202,11 +257,17 @@ function componerAvisos(medicion) {
     avisos.push({
       orden_en_ruta: orden++,
       causa,
+      // Cual de los dos origenes de la causa (a). Para (b) repite la causa: no
+      // hay caso por defecto ni campo vacio que haya que interpretar.
+      origen,
+      // El ambito que reclamo el trozo, cuando lo reclamo uno. Es dato interno:
+      // al patron se le dice lo mismo en los tres casos.
+      ambito_no_publicado: ambito,
       // Tope duro de INV-3.6: constante, no calculo.
       bandera: BANDERA_AVISO,
       largo_km: +p.largo_km.toFixed(4),
       lat_ini: p.lat_ini, lon_ini: p.lon_ini, lat_fin: p.lat_fin, lon_fin: p.lon_fin,
-      jurisdicciones_probables: reclamantes.map(z => z.nombre),
+      jurisdicciones_probables: jurisdiccionesProbables,
       capitanias,
       contacto_generico: capitanias.length === 1 ? null : contacto_generico,
       capa_1: mensaje.capa_1,
@@ -216,6 +277,13 @@ function componerAvisos(medicion) {
 
     // INV-3.6: el hueco de la propia capa se registra como defecto ADEMAS de
     // mostrarse. Mostrarlo no lo convierte en estado del mundo.
+    //
+    // Un ambito no publicado NO entra aca, y ese es el arreglo de E0.2: es
+    // causa (a), estado del mundo, no un defecto de construccion nuestro.
+    // Antes de E0.2, 21,82 km lacustres y 47,57 km antarticos medidos se
+    // registraban como defectos de construccion de una capa que para esos
+    // ambitos no existe. Su trazabilidad vive en ambitos_publicados.json y en
+    // el campo 'origen' del aviso, no en esta lista.
     if (causa === 'hueco_de_capa') {
       defectos.push({
         tipo: 'hueco_de_capa',
