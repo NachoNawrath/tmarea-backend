@@ -15,7 +15,8 @@
   "Donde el decreto describe un tramo del limite como 'el litoral' (sigue_litoral: true), el contorno NO se cierra con la recta entre los dos extremos: se cierra generosamente hacia tierra y la tierra se resta despues. La recta corta por dentro de la costa y dejaria fuera superficie decretada. Queda 'de mas, nunca de menos' (INV-3.4). Convencion autorizada por el owner el 2026-08-09.",
   "'punto_representativo' es el testigo sobre agua que la geometria final debe contener. Su eleccion es nuestra; su ubicacion sale de una fuente real (bahias SITPORT, cuerpos lacustres adjudicados, anillo del decreto).",
   "Un punto del contorno con 'respaldo_textual: false' no aparece en el texto del decreto de su jurisdiccion y NO se usa para construir.",
-  "La separacion lateral entre Capitanias en la franja oceanica, el limite exterior de 200 mn y el cierre generoso hacia tierra con resta posterior de la capa de tierra siguen siendo convencion nuestra, como en v1."
+  "La separacion lateral entre Capitanias en la franja oceanica, el limite exterior de 200 mn y el cierre generoso hacia tierra con resta posterior de la capa de tierra siguen siendo convencion nuestra, como en v1.",
+  "UMBRAL DE CORRECCION DE TESTIGOS. CONVENCION NUESTRA, no decreto.\n\n  umbral = 500 m, uno solo para todos los puntos.\n\nQUE TIENE QUE CUMPLIR UN UMBRAL ACA. Dos cosas, y las dos se miden:\n  (1) alcanzar para arreglar el dato en el caso normal — si dejara afuera a la\n      mayoria seria una excusa, no una correccion;\n  (2) no permitir un desplazamiento que convierta al testigo en el punto de la\n      jurisdiccion vecina, porque ahi dejaria de probar nada.\nEl punto (3) de mas abajo registra una tercera exigencia que se intento imponer y que\nla medicion descarto. Queda escrita para que nadie la vuelva a derivar.\n\n(1) LO QUE CUESTA ARREGLAR EL DATO. Distancia al agua de los 35 testigos maritimos\n    que caen en tierra, medida contra la capa de costa declarada:\n      mediana 28 m   minimo 3 m   maximo 3.380 m\n      a menos de   100 m : 25 de 35\n      a menos de   250 m : 27 de 35\n      a menos de   500 m : 30 de 35\n      a menos de 1.000 m : 32 de 35\n      a menos de 2.000 m : 34 de 35\n    500 m cubre 30 de 35. Es un numero redondo por encima del percentil 85, no el\n    maximo observado: poner el umbral en el valor que hace pasar a todos lo\n    convertiria en una descripcion de la costa de hoy — al cambiar la capa se moveria\n    solo y no podria fallar nunca. Un umbral tiene que poder dejar puntos afuera, y\n    este los deja.\n\n(2) LO QUE SE PONE EN RIESGO AL MOVER. Distancia de cada testigo al testigo mas\n    cercano de OTRA jurisdiccion:\n      minimo 7.654 m (Coronel)   |   mediana 57.920 m\n    Contra eso, el desplazamiento mayor que esta correccion aplica es de 500 m. La\n    exigencia NO queda como observacion: por cada punto movido se comprueba que la\n    distancia al testigo vecino sea al menos 10 veces su desplazamiento, y si no se\n    cumple la corrida se DETIENE.\n\n    Segunda medida, del mismo lado: la libertad que la eleccion del testigo YA se\n    tomo respecto de la sede de su Capitania, que el propio insumo declara en\n    distancia_km_a_la_sede — mediana 1,8 km, maximo 25,2 km. La eleccion del testigo\n    ya aceptó apartarse kilometros de la sede; correrlo unos cientos de metros para\n    ponerlo sobre agua es chico contra esa libertad ya tomada.\n\n(3) UN UMBRAL POR PRECISION DEL PUNTO: SE INTENTO Y LA MEDICION LO DESCARTO.\n    Queda registrado porque la idea es razonable y alguien la va a volver a tener.\n\n    LA IDEA. Un punto escrito '-72.8' no afirma nada mas fino que unos kilometros;\n    medirle 1.007 m de desplazamiento y declararlo inservible seria juzgarlo con una\n    vara que su fuente nunca pretendio. De ahi: umbral = el mayor entre 500 m y la\n    precision del propio punto. Contando decimales sobre el insumo daba 32 puntos con\n    4 decimales (±6 m), y once con 3, 2, 1 y hasta 0 decimales — hasta ±55 km. Con esa\n    regla, Puerto Chacabuco (lon '-72.8', ±3.904 m) conservaba su testigo.\n\n    POR QUE NO SIRVE. Esa distribucion de precisiones NO EXISTE. Se fue a mirar la\n    fuente de los puntos — scripts/seed-bahias-sitport.js, de donde salen las 163\n    bahias SITPORT — y las 163 coordenadas estan escritas con CUATRO decimales, todas.\n    Bahia Chacabuco es '-45.4667, -72.8000' y Bahia Moreno es '-23.6500, -70.4000'.\n    Los decimales que faltaban se perdieron al serializar el JSON: -70.4000 y -70.4\n    son el MISMO numero de punto flotante, y al reescribir el archivo los ceros\n    finales desaparecen. O sea que lo que se estaba midiendo no era la precision del\n    dato sino el formato con que un archivo intermedio quedo escrito.\n\n    LO QUE ESTO SIGNIFICA. La fuente tiene precision UNIFORME de 4 decimales, ±6 m.\n    No hay ninguna variacion de precision sobre la que apoyar umbrales distintos, y\n    por lo tanto Puerto Chacabuco, a 1.007 m del agua con una coordenada precisa a\n    ±6 m, no tiene excusa de coordenada gruesa: describe otra cosa. Se declara.\n\n    LA LECCION, que es la general. El argumento se apoyaba en una medicion, y la\n    medicion no medía lo que el argumento decia. Antes de darla por buena hubo que ir\n    a la fuente del dato, no al archivo derivado que se tenia a mano.\n\nQUE PASA CON LOS QUE QUEDAN AFUERA. No se mueven. Se declaran sin testigo, con su\ncausa y con la distancia medida, igual que INV-3.6 exige declarar una geometria nula.\nEl punto original queda guardado en punto_representativo_descartado: la carencia se\ndeclara, no se esconde, y la evidencia de cual era el punto no se borra."
  ],
  "puntos_notables": [
   {
@@ -506,6 +507,106 @@
    "lon_dms": "067 16 00 W",
    "lat": -58.351667,
    "lon": -67.266667
+  },
+  {
+   "nombre": "Punta Anxious",
+   "lat_dms": "54 07 01 S",
+   "lon_dms": "070 56 04 W",
+   "lat": -54.116944,
+   "lon": -70.934444,
+   "fuente": {
+    "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+    "consultado": "2026-08-10",
+    "texto_en_la_capa": "Punta Anxious",
+    "valor_servicio": [
+     -54.116886,
+     -70.934365
+    ],
+    "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+   },
+   "usado_por": [
+    "Punta Arenas",
+    "Tierra del Fuego"
+   ],
+   "motivo_eleccion": "Es el UNICO 'Punta Anxious' de la capa. Los otros dos resultados de la consulta son 'Islotes Anxious' (54 06 58.1 S / 070 57 04.1 W) y 'Faro Islotes Anxious' (54 07 04.4 S / 070 57 16.0 W), los dos a menos de 1,5 km: confirman el lugar en vez de competir con el.",
+   "descartados": [],
+   "nota_grafia": "El decreto lo escribe 'Punta Anxius'. La capa del IGM no tiene ningun toponimo 'Anxius' — la consulta devuelve CERO — y si tiene 'Anxious'. Es una diferencia de grafia de la fuente del decreto, no otro lugar."
+  },
+  {
+   "nombre": "Peninsula Brecknock",
+   "lat_dms": "54 33 42 S",
+   "lon_dms": "071 51 01 W",
+   "lat": -54.561667,
+   "lon": -71.850278,
+   "fuente": {
+    "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+    "consultado": "2026-08-10",
+    "texto_en_la_capa": "PENÍNSULA BRECKNOCK",
+    "valor_servicio": [
+     -54.561585,
+     -71.850386
+    ],
+    "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+   },
+   "usado_por": [
+    "Punta Arenas"
+   ],
+   "motivo_eleccion": "La capa trae 19 toponimos con 'Brecknock', NUEVE de ellos llamados 'PENÍNSULA BRECKNOCK': la peninsula esta representada por varios puntos y hay que elegir uno. Se elige el MAS CERCANO AL PARALELO 54 33 00 S, a 1,29 km, porque es asi como el decreto la usa: 'hasta la Peninsula Brecknock y LUEGO POR EL PARALELO 54 33 00 S hacia el Oceano Pacifico'. El toponimo es el fin de un recorrido costero que empalma con ese paralelo, y el punto elegido hace ese empalme continuo.",
+   "descartados": [
+    "'Faro Península Brecknock' (54 37 30.4 S / 071 45 46.5 W). Era la primera eleccion, por ser marca de navegacion. Se descarta porque el decreto NO lo usa como marca sino como fin de recorrido: el faro queda 8,3 km AL SUR del paralelo 54 33 00 S por el que el limite sigue, y elegirlo dejaria un salto de 8,3 km entre el final del recorrido costero y el paralelo. El criterio 'marca de navegacion' es bueno en general y equivocado en este caso. Decidido por la owner el 2026-08-10.",
+    "los otros ocho 'PENÍNSULA BRECKNOCK', todos mas lejos del paralelo: 54 30 59.7 S, 54 30 48.4 S, 54 30 19.7 S, 54 29 45.3 S, 54 29 42.1 S, 54 29 01.3 S, 54 28 36.2 S y uno muy al Norte, 52 58 42.2 S."
+   ]
+  },
+  {
+   "nombre": "Punta Harry",
+   "lat_dms": "52 43 01 S",
+   "lon_dms": "070 34 17 W",
+   "lat": -52.716944,
+   "lon": -70.571389,
+   "fuente": {
+    "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+    "consultado": "2026-08-10",
+    "texto_en_la_capa": "Punta Harry",
+    "valor_servicio": [
+     -52.717013,
+     -70.571306
+    ],
+    "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+   },
+   "usado_por": [
+    "Punta Arenas",
+    "Punta Delgada"
+   ],
+   "motivo_eleccion": "La capa devuelve DOS 'Punta Harry'. Se elige esta porque el decreto la une con Cabo San Vicente 'en la Segunda Angostura del Estrecho de Magallanes', y desde esta hasta Cabo San Vicente hay 11,7 km medidos, en riberas opuestas de la Angostura.",
+   "descartados": [
+    "el otro 'Punta Harry', en 53 19 22.7 S / 073 11 20.6 W, a 197 km medidos de Cabo San Vicente, en los canales occidentales. Ninguna lectura del decreto une esa punta con Cabo San Vicente."
+   ]
+  },
+  {
+   "nombre": "Cabo San Vicente",
+   "lat_dms": "52 46 49 S",
+   "lon_dms": "070 25 57 W",
+   "lat": -52.780278,
+   "lon": -70.4325,
+   "fuente": {
+    "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+    "consultado": "2026-08-10",
+    "texto_en_la_capa": "Cabo San Vicente",
+    "valor_servicio": [
+     -52.78033,
+     -70.432513
+    ],
+    "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+   },
+   "usado_por": [
+    "Punta Arenas",
+    "Punta Delgada",
+    "Tierra del Fuego"
+   ],
+   "motivo_eleccion": "Unico 'Cabo San Vicente' de la capa. Se registra porque lo citan TRES jurisdicciones y no venia en el lote de coordenadas que trajo la owner: sin el, ni Punta Delgada ni Tierra del Fuego tienen su linea divisoria.",
+   "descartados": [
+    "'Faro Cabo San Vicente' (52 46 31.0 S / 070 26 34.1 W), a 600 m. El decreto nombra el cabo, no el faro."
+   ]
   }
  ],
  "fronteras": [
@@ -1759,12 +1860,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -20.2133,
-    "lon": -70.1503,
+    "lat": -20.2105506,
+    "lon": -70.152738,
     "fuente": "bahia SITPORT 72 — Bahía de Iquique",
     "distancia_km_a_la_sede": 1.1,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.1 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.1 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -20.2133,
+      "lon": -70.1503
+     },
+     "desplazamiento_m": 396.9,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -1814,7 +1933,25 @@
     "fuente": "bahia SITPORT 73 — Patache",
     "distancia_km_a_la_sede": 2.1,
     "bahias_que_eligen_esta_sede": 4,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.1 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.1 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "no_hizo_falta",
+     "original": {
+      "lat": -20.8,
+      "lon": -70.22
+     },
+     "desplazamiento_m": 0.0,
+     "motivo": "el punto original ya caia sobre agua segun la capa de costa declarada. No se movio. Queda registrado para que la ausencia de correccion sea un hecho medido y no un olvido."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -1864,7 +2001,25 @@
     "fuente": "bahia SITPORT 74 — Bahía Algodonales",
     "distancia_km_a_la_sede": 1.1,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.1 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.1 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "no_hizo_falta",
+     "original": {
+      "lat": -22.1,
+      "lon": -70.2167
+     },
+     "desplazamiento_m": 0.0,
+     "motivo": "el punto original ya caia sobre agua segun la capa de costa declarada. No se movio. Queda registrado para que la ausencia de correccion sea un hecho medido y no un olvido."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -1909,12 +2064,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -23.1,
-    "lon": -70.45,
+    "lat": -23.0982741,
+    "lon": -70.4502342,
     "fuente": "bahia SITPORT 75 — Bahía Mejillones del Sur",
     "distancia_km_a_la_sede": 1.0,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.0 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.0 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -23.1,
+      "lon": -70.45
+     },
+     "desplazamiento_m": 192.6,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -1959,12 +2132,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -23.65,
-    "lon": -70.4,
+    "lat": -23.6498042,
+    "lon": -70.4048917,
     "fuente": "bahia SITPORT 77 — Bahía Moreno (Antofagasta)",
     "distancia_km_a_la_sede": 2.0,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.0 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.0 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -23.65,
+      "lon": -70.4
+     },
+     "desplazamiento_m": 499.5,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2009,12 +2200,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -25.4089,
-    "lon": -70.4911,
+    "lat": -25.4086953,
+    "lon": -70.4912099,
     "fuente": "bahia SITPORT 79 — Tal Tal",
     "distancia_km_a_la_sede": 0.2,
     "bahias_que_eligen_esta_sede": 1,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.2 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.2 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -25.4089,
+      "lon": -70.4911
+     },
+     "desplazamiento_m": 25.2,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2064,7 +2273,25 @@
     "fuente": "bahia SITPORT 80 — Bahía Chañaral",
     "distancia_km_a_la_sede": 0.7,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.7 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.7 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "no_hizo_falta",
+     "original": {
+      "lat": -26.35,
+      "lon": -70.6333
+     },
+     "desplazamiento_m": 0.0,
+     "motivo": "el punto original ya caia sobre agua segun la capa de costa declarada. No se movio. Queda registrado para que la ausencia de correccion sea un hecho medido y no un olvido."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2109,12 +2336,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -27.0637,
-    "lon": -70.8237,
+    "lat": -27.0636674,
+    "lon": -70.8237602,
     "fuente": "bahia SITPORT 81 — Bahía Caldera",
     "distancia_km_a_la_sede": 0.9,
     "bahias_que_eligen_esta_sede": 3,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.9 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.9 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -27.0637,
+      "lon": -70.8237
+     },
+     "desplazamiento_m": 7.0,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2159,12 +2404,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -28.4609,
-    "lon": -71.2241,
+    "lat": -28.4608998,
+    "lon": -71.2240726,
     "fuente": "bahia SITPORT 84 — Bahía Puerto Huasco",
     "distancia_km_a_la_sede": 0.7,
     "bahias_que_eligen_esta_sede": 3,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.7 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.7 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -28.4609,
+      "lon": -71.2241
+     },
+     "desplazamiento_m": 2.7,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2249,12 +2512,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -29.9668,
-    "lon": -71.3499,
+    "lat": -29.9671312,
+    "lon": -71.3501425,
     "fuente": "bahia SITPORT 86 — Bahía Herradura de Guayacán",
     "distancia_km_a_la_sede": 1.6,
     "bahias_que_eligen_esta_sede": 5,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.6 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.6 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -29.9668,
+      "lon": -71.3499
+     },
+     "desplazamiento_m": 43.5,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2299,12 +2580,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -30.2558,
-    "lon": -71.4969,
+    "lat": -30.2559359,
+    "lon": -71.4971843,
     "fuente": "bahia SITPORT 87 — Tongoy",
     "distancia_km_a_la_sede": 1.3,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.3 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.3 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -30.2558,
+      "lon": -71.4969
+     },
+     "desplazamiento_m": 31.2,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2349,12 +2648,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -32.1362,
-    "lon": -71.5298,
+    "lat": -32.1359892,
+    "lon": -71.5296452,
     "fuente": "bahia SITPORT 180 — Bahía Pichidangui",
     "distancia_km_a_la_sede": 25.2,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (25.2 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (25.2 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -32.1362,
+      "lon": -71.5298
+     },
+     "desplazamiento_m": 27.6,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2442,12 +2759,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -32.7833,
-    "lon": -71.5333,
+    "lat": -32.7830307,
+    "lon": -71.5336303,
     "fuente": "bahia SITPORT 91 — Bahía de Quintero",
     "distancia_km_a_la_sede": 0.4,
     "bahias_que_eligen_esta_sede": 3,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.4 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.4 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -32.7833,
+      "lon": -71.5333
+     },
+     "desplazamiento_m": 43.0,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2491,21 +2826,34 @@
     "lon": -71.64,
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
-   "punto_representativo": {
-    "lat": -33.0333,
-    "lon": -71.6333,
-    "fuente": "bahia SITPORT 92 — Bahía de Valparaíso",
-    "distancia_km_a_la_sede": 0.7,
-    "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.7 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
-   },
-   "causa_sin_punto_representativo": null,
+   "punto_representativo": null,
+   "causa_sin_punto_representativo": "su punto representativo no sirve como testigo: cae en tierra y el agua mas cercana esta a 580 m, por encima del umbral de correccion de 500 m. El punto y su medicion quedan en punto_representativo_descartado.",
    "cuerpos_lacustres": null,
    "sectores": [],
    "texto_decreto": "Desde el paralelo 32 54 58 S (ribera Norte del rio Aconcagua) por el Norte, hasta el paralelo 33 16 25 S (Punta Tunquen) por el Sur.",
    "correccion_aplicada": null,
    "nota_fuente": null,
-   "cierre_v1": null
+   "cierre_v1": null,
+   "punto_representativo_descartado": {
+    "lat": -33.0333,
+    "lon": -71.6333,
+    "fuente": "bahia SITPORT 92 — Bahía de Valparaíso",
+    "distancia_km_a_la_sede": 0.7,
+    "bahias_que_eligen_esta_sede": 2,
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.7 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "motivo_descarte": "NO SIRVE COMO TESTIGO. El punto cae en tierra y el agua mas cercana esta a 580 m segun la capa de costa declarada, por encima del umbral de 500 m. La fuente escribe este punto con la misma precision que todos los demas — cuatro decimales, ±6 m —, asi que la distancia no se explica por una coordenada gruesa: a 580 m del agua el punto no es una orilla mal puesta por unos metros, describe otra cosa — una sede, un puerto interior —, y moverlo seria inventar el dato en vez de corregirlo. Se conserva aca para no borrar la evidencia de cual era.",
+    "distancia_al_agua_m": 580.1,
+    "cota_inferior_m": null,
+    "umbral_m": 500.0,
+    "margen_agua_m": 1.0,
+    "margen_identidad": 10.0,
+    "capa_de_costa": {
+     "capa": "osm_land_polygons",
+     "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+     "tabla": "costa_osm"
+    },
+    "aplicado_por": "scripts/fase5_corregir_testigos.py"
+   }
   },
   {
    "id": "juan_fernandez",
@@ -2582,12 +2930,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -33.3634,
-    "lon": -71.6726,
+    "lat": -33.3632168,
+    "lon": -71.6727904,
     "fuente": "bahia SITPORT 94 — Bahía Algarrobo",
     "distancia_km_a_la_sede": 0.7,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.7 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.7 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -33.3634,
+      "lon": -71.6726
+     },
+     "desplazamiento_m": 27.0,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2637,7 +3003,25 @@
     "fuente": "bahia SITPORT 93 — Puerto de San Antonio",
     "distancia_km_a_la_sede": 1.8,
     "bahias_que_eligen_esta_sede": 1,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.8 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.8 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "no_hizo_falta",
+     "original": {
+      "lat": -33.5833,
+      "lon": -71.6167
+     },
+     "desplazamiento_m": 0.0,
+     "motivo": "el punto original ya caia sobre agua segun la capa de costa declarada. No se movio. Queda registrado para que la ausencia de correccion sea un hecho medido y no un olvido."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2682,12 +3066,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -34.3829,
-    "lon": -72.0144,
+    "lat": -34.3827634,
+    "lon": -72.0143248,
     "fuente": "bahia SITPORT 95 — Pichilemu",
     "distancia_km_a_la_sede": 2.0,
     "bahias_que_eligen_esta_sede": 3,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.0 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.0 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -34.3829,
+      "lon": -72.0144
+     },
+     "desplazamiento_m": 16.7,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -2791,21 +3193,34 @@
     "lon": -72.45,
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
-   "punto_representativo": {
-    "lat": -35.3325,
-    "lon": -72.406,
-    "fuente": "bahia SITPORT 103 — Bahía Constitución",
-    "distancia_km_a_la_sede": 4.0,
-    "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (4.0 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
-   },
-   "causa_sin_punto_representativo": null,
+   "punto_representativo": null,
+   "causa_sin_punto_representativo": "su punto representativo no sirve como testigo: cae en tierra y el agua mas cercana esta a 1412 m, por encima del umbral de correccion de 500 m. El punto y su medicion quedan en punto_representativo_descartado.",
    "cuerpos_lacustres": null,
    "sectores": [],
    "texto_decreto": "Desde el paralelo 34 41 00 S (Punta Boyeruca), limite norte de la Region del Maule, hasta el paralelo 36 00 00 S limite sur de la Region del Maule. Incluye los lagos Teno, Vichuquen, Colbun y Maule.",
    "correccion_aplicada": null,
    "nota_fuente": null,
-   "cierre_v1": null
+   "cierre_v1": null,
+   "punto_representativo_descartado": {
+    "lat": -35.3325,
+    "lon": -72.406,
+    "fuente": "bahia SITPORT 103 — Bahía Constitución",
+    "distancia_km_a_la_sede": 4.0,
+    "bahias_que_eligen_esta_sede": 2,
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (4.0 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "motivo_descarte": "NO SIRVE COMO TESTIGO. El punto cae en tierra y el agua mas cercana esta a 1412 m segun la capa de costa declarada, por encima del umbral de 500 m. La fuente escribe este punto con la misma precision que todos los demas — cuatro decimales, ±6 m —, asi que la distancia no se explica por una coordenada gruesa: a 1412 m del agua el punto no es una orilla mal puesta por unos metros, describe otra cosa — una sede, un puerto interior —, y moverlo seria inventar el dato en vez de corregirlo. Se conserva aca para no borrar la evidencia de cual era.",
+    "distancia_al_agua_m": 1412.4,
+    "cota_inferior_m": null,
+    "umbral_m": 500.0,
+    "margen_agua_m": 1.0,
+    "margen_identidad": 10.0,
+    "capa_de_costa": {
+     "capa": "osm_land_polygons",
+     "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+     "tabla": "costa_osm"
+    },
+    "aplicado_por": "scripts/fase5_corregir_testigos.py"
+   }
   },
   {
    "id": "lirquen",
@@ -3056,12 +3471,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -36.7833,
-    "lon": -73.1833,
+    "lat": -36.7867423,
+    "lon": -73.186867,
     "fuente": "bahia SITPORT 198 — Sector Costero Península de Hualpén",
     "distancia_km_a_la_sede": 3.9,
     "bahias_que_eligen_esta_sede": 1,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (3.9 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (3.9 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -36.7833,
+      "lon": -73.1833
+     },
+     "desplazamiento_m": 497.3,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -3106,12 +3539,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -37.0092,
-    "lon": -73.1833,
+    "lat": -37.0094083,
+    "lon": -73.1835913,
     "fuente": "bahia SITPORT 100 — Bahía Coronel",
     "distancia_km_a_la_sede": 3.5,
     "bahias_que_eligen_esta_sede": 1,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (3.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (3.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -37.0092,
+      "lon": -73.1833
+     },
+     "desplazamiento_m": 34.7,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -3156,12 +3607,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -37.0735,
-    "lon": -73.1522,
+    "lat": -37.0734673,
+    "lon": -73.1522011,
     "fuente": "bahia SITPORT 102 — Lota",
     "distancia_km_a_la_sede": 10.4,
     "bahias_que_eligen_esta_sede": 1,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (10.4 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (10.4 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -37.0735,
+      "lon": -73.1522
+     },
+     "desplazamiento_m": 3.6,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -3205,21 +3674,34 @@
     "lon": -73.68,
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
-   "punto_representativo": {
-    "lat": -37.6015,
-    "lon": -73.6548,
-    "fuente": "bahia SITPORT 101 — Lebu",
-    "distancia_km_a_la_sede": 3.0,
-    "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (3.0 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
-   },
-   "causa_sin_punto_representativo": null,
+   "punto_representativo": null,
+   "causa_sin_punto_representativo": "su punto representativo no sirve como testigo: cae en tierra y el agua mas cercana esta a 565 m, por encima del umbral de correccion de 500 m. El punto y su medicion quedan en punto_representativo_descartado.",
    "cuerpos_lacustres": null,
    "sectores": [],
    "texto_decreto": "Desde el paralelo 37 26 00 S (ribera Norte del rio Quiapo) por el Norte, hasta el paralelo 38 30 00 S (Punta Manuel), limite Sur de la Region del Bio Bio. Incluye la Isla Mocha y los Lagos Lanalhue y Lleu Lleu.",
    "correccion_aplicada": null,
    "nota_fuente": null,
-   "cierre_v1": null
+   "cierre_v1": null,
+   "punto_representativo_descartado": {
+    "lat": -37.6015,
+    "lon": -73.6548,
+    "fuente": "bahia SITPORT 101 — Lebu",
+    "distancia_km_a_la_sede": 3.0,
+    "bahias_que_eligen_esta_sede": 2,
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (3.0 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "motivo_descarte": "NO SIRVE COMO TESTIGO. El punto cae en tierra y el agua mas cercana esta a 565 m segun la capa de costa declarada, por encima del umbral de 500 m. La fuente escribe este punto con la misma precision que todos los demas — cuatro decimales, ±6 m —, asi que la distancia no se explica por una coordenada gruesa: a 565 m del agua el punto no es una orilla mal puesta por unos metros, describe otra cosa — una sede, un puerto interior —, y moverlo seria inventar el dato en vez de corregirlo. Se conserva aca para no borrar la evidencia de cual era.",
+    "distancia_al_agua_m": 564.9,
+    "cota_inferior_m": null,
+    "umbral_m": 500.0,
+    "margen_agua_m": 1.0,
+    "margen_identidad": 10.0,
+    "capa_de_costa": {
+     "capa": "osm_land_polygons",
+     "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+     "tabla": "costa_osm"
+    },
+    "aplicado_por": "scripts/fase5_corregir_testigos.py"
+   }
   },
   {
    "id": "carahue",
@@ -3256,12 +3738,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -38.75,
-    "lon": -73.4333,
+    "lat": -38.7509468,
+    "lon": -73.4349695,
     "fuente": "bahia SITPORT 143 — Carahue - Borde Costero",
     "distancia_km_a_la_sede": 17.2,
     "bahias_que_eligen_esta_sede": 3,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (17.2 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (17.2 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -38.75,
+      "lon": -73.4333
+     },
+     "desplazamiento_m": 179.2,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -3924,21 +4424,41 @@
     "lon": -73.25,
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
-   "punto_representativo": {
-    "lat": -39.8136,
-    "lon": -73.2487,
-    "fuente": "bahia SITPORT 104 — Valdivia Fluvial",
-    "distancia_km_a_la_sede": 0.4,
-    "bahias_que_eligen_esta_sede": 15,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.4 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
-   },
-   "causa_sin_punto_representativo": null,
+   "punto_representativo": null,
+   "causa_sin_punto_representativo": "su punto representativo esta declarado fuera de la correccion al agua — Valdivia es un frente aparte y no entra en la correccion de testigos contra la capa de costa. Su punto no es una orilla mal puesta por unos metros: es un puerto FLUVIAL, rio arriba. El Art. 2 del D.S. 991 incluye los rios navegables en la jurisdiccion, pero una capa de costa no los trae — hacen falta datos de hidrografia, que son un tercer insumo y no una costa. Correr este punto al mar mas cercano lo sacaria del rio que es justamente su jurisdiccion. — y sin corregir cae en tierra, a 3380 m del agua. No se mueve y no se usa como testigo. El punto y su medicion quedan en punto_representativo_descartado.",
    "cuerpos_lacustres": null,
    "sectores": [],
    "texto_decreto": "Desde el paralelo 39 23 12 S (Punta Roca) por el Norte, hasta el paralelo 39 49 39 S (Punta Juan Latorre), y desde alli la linea imaginaria que une Punta Juan Latorre con Punta Niebla (39 51 55 S / 073 24 18 W), de alli al punto 39 52 18 S / 073 24 18 W, luego hasta Punta Fronton (39 53 25 S / 073 22 27 W), por el Sur.",
    "correccion_aplicada": null,
    "nota_fuente": null,
-   "cierre_v1": "Norte: paralelo 39 23 12 S. Abierto al Weste."
+   "cierre_v1": "Norte: paralelo 39 23 12 S. Abierto al Weste.",
+   "punto_representativo_descartado": {
+    "lat": -39.8136,
+    "lon": -73.2487,
+    "fuente": "bahia SITPORT 104 — Valdivia Fluvial",
+    "distancia_km_a_la_sede": 0.4,
+    "bahias_que_eligen_esta_sede": 15,
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.4 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion_al_agua": {
+     "aplica": false,
+     "motivo": "Valdivia es un frente aparte y no entra en la correccion de testigos contra la capa de costa. Su punto no es una orilla mal puesta por unos metros: es un puerto FLUVIAL, rio arriba. El Art. 2 del D.S. 991 incluye los rios navegables en la jurisdiccion, pero una capa de costa no los trae — hacen falta datos de hidrografia, que son un tercer insumo y no una costa. Correr este punto al mar mas cercano lo sacaria del rio que es justamente su jurisdiccion.",
+     "declarado_por": "owner, 2026-08-10",
+     "referencia": "_bitacoras/fase5K_cierre_estado_2026-08-10.txt, seccion CAMINO 1, condicion 2",
+     "frente_pendiente": "Valdivia fluvial: requiere hidrografia de rios navegables"
+    },
+    "motivo_descarte": "NO SIRVE COMO TESTIGO CONTRA UNA COSTA DE MAR, y ademas esta declarado fuera de esta correccion en el propio dato (punto_representativo.correccion_al_agua), por owner, 2026-08-10: Valdivia es un frente aparte y no entra en la correccion de testigos contra la capa de costa. Su punto no es una orilla mal puesta por unos metros: es un puerto FLUVIAL, rio arriba. El Art. 2 del D.S. 991 incluye los rios navegables en la jurisdiccion, pero una capa de costa no los trae — hacen falta datos de hidrografia, que son un tercer insumo y no una costa. Correr este punto al mar mas cercano lo sacaria del rio que es justamente su jurisdiccion. El punto no se movio. Medido igual, para que la declaracion tenga su numero al lado: el agua mas cercana esta a 3380 m.",
+    "distancia_al_agua_m": 3379.6,
+    "cota_inferior_m": null,
+    "umbral_m": 500.0,
+    "margen_agua_m": 1.0,
+    "margen_identidad": 10.0,
+    "capa_de_costa": {
+     "capa": "osm_land_polygons",
+     "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+     "tabla": "costa_osm"
+    },
+    "aplicado_por": "scripts/fase5_corregir_testigos.py"
+   }
   },
   {
    "id": "corral",
@@ -4100,12 +4620,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -39.8874,
-    "lon": -73.4274,
+    "lat": -39.8873575,
+    "lon": -73.4273765,
     "fuente": "bahia SITPORT 107 — Bahía Corral",
     "distancia_km_a_la_sede": 1.8,
     "bahias_que_eligen_esta_sede": 3,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.8 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.8 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -39.8874,
+      "lon": -73.4274
+     },
+     "desplazamiento_m": 5.1,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -4454,12 +4992,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -41.4833,
-    "lon": -72.95,
+    "lat": -41.4826394,
+    "lon": -72.9494255,
     "fuente": "bahia SITPORT 216 — Canal Tenglo",
     "distancia_km_a_la_sede": 1.9,
     "bahias_que_eligen_esta_sede": 4,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.9 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.9 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -41.4833,
+      "lon": -72.95
+     },
+     "desplazamiento_m": 87.7,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -4553,12 +5109,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -41.6156,
-    "lon": -73.5966,
+    "lat": -41.6155957,
+    "lon": -73.5965411,
     "fuente": "bahia SITPORT 112 — Bahía Maullín",
     "distancia_km_a_la_sede": 2.5,
     "bahias_que_eligen_esta_sede": 6,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -41.6156,
+      "lon": -73.5966
+     },
+     "desplazamiento_m": 4.9,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -4776,12 +5350,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -41.7763,
-    "lon": -73.1304,
+    "lat": -41.7765042,
+    "lon": -73.1303963,
     "fuente": "bahia SITPORT 113 — Bahía de Calbuco",
     "distancia_km_a_la_sede": 0.4,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.4 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.4 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -41.7763,
+      "lon": -73.1304
+     },
+     "desplazamiento_m": 22.7,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -4969,7 +5561,25 @@
     "fuente": "bahia SITPORT 184 — Ensenada Hualaihué",
     "distancia_km_a_la_sede": 16.5,
     "bahias_que_eligen_esta_sede": 8,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (16.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (16.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "no_hizo_falta",
+     "original": {
+      "lat": -42.0,
+      "lon": -72.5
+     },
+     "desplazamiento_m": 0.0,
+     "motivo": "el punto original ya caia sobre agua segun la capa de costa declarada. No se movio. Queda registrado para que la ausencia de correccion sea un hecho medido y no un olvido."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -5061,12 +5671,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -41.495,
-    "lon": -72.3106,
+    "lat": -41.4951508,
+    "lon": -72.3106456,
     "fuente": "bahia SITPORT 152 — Cochamó",
     "distancia_km_a_la_sede": 0.6,
     "bahias_que_eligen_esta_sede": 7,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.6 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.6 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -41.495,
+      "lon": -72.3106
+     },
+     "desplazamiento_m": 17.2,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -5223,12 +5851,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -41.8665,
-    "lon": -73.8313,
+    "lat": -41.8665535,
+    "lon": -73.8314418,
     "fuente": "bahia SITPORT 118 — Bahía Ancud y Canal Chacao",
     "distancia_km_a_la_sede": 4.9,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (4.9 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (4.9 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -41.8665,
+      "lon": -73.8313
+     },
+     "desplazamiento_m": 13.2,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -5332,12 +5978,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -42.1448,
-    "lon": -73.4725,
+    "lat": -42.1448833,
+    "lon": -73.4724501,
     "fuente": "bahia SITPORT 120 — Puerto Quemchi",
     "distancia_km_a_la_sede": 2.3,
     "bahias_que_eligen_esta_sede": 1,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.3 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.3 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -42.1448,
+      "lon": -73.4725
+     },
+     "desplazamiento_m": 10.1,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -5547,12 +6211,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -42.9112,
-    "lon": -72.7187,
+    "lat": -42.9115258,
+    "lon": -72.7187017,
     "fuente": "bahia SITPORT 121 — Chaitén",
     "distancia_km_a_la_sede": 5.1,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (5.1 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (5.1 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -42.9112,
+      "lon": -72.7187
+     },
+     "desplazamiento_m": 36.2,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -5956,7 +6638,25 @@
     "fuente": "bahia SITPORT 122 — Achao",
     "distancia_km_a_la_sede": 0.9,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.9 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.9 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "no_hizo_falta",
+     "original": {
+      "lat": -42.4677,
+      "lon": -73.4901
+     },
+     "desplazamiento_m": 0.0,
+     "motivo": "el punto original ya caia sobre agua segun la capa de costa declarada. No se movio. Queda registrado para que la ausencia de correccion sea un hecho medido y no un olvido."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -6337,12 +7037,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -42.4808,
-    "lon": -73.7591,
+    "lat": -42.4811231,
+    "lon": -73.7590092,
     "fuente": "bahia SITPORT 116 — Castro",
     "distancia_km_a_la_sede": 2.5,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -42.4808,
+      "lon": -73.7591
+     },
+     "desplazamiento_m": 36.7,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -6728,7 +7446,25 @@
     "fuente": "bahia SITPORT 119 — Chonchi",
     "distancia_km_a_la_sede": 3.5,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (3.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (3.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "no_hizo_falta",
+     "original": {
+      "lat": -42.6187,
+      "lon": -73.7688
+     },
+     "desplazamiento_m": 0.0,
+     "motivo": "el punto original ya caia sobre agua segun la capa de costa declarada. No se movio. Queda registrado para que la ausencia de correccion sea un hecho medido y no un olvido."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -6950,12 +7686,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -43.1208,
-    "lon": -73.6232,
+    "lat": -43.1208292,
+    "lon": -73.6232099,
     "fuente": "bahia SITPORT 117 — Bahía Quellón",
     "distancia_km_a_la_sede": 2.5,
     "bahias_que_eligen_esta_sede": 4,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -43.1208,
+      "lon": -73.6232
+     },
+     "desplazamiento_m": 3.3,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -7112,12 +7866,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -43.8987,
-    "lon": -73.7462,
+    "lat": -43.898828,
+    "lon": -73.7464537,
     "fuente": "bahia SITPORT 124 — Melinka",
     "distancia_km_a_la_sede": 1.1,
     "bahias_que_eligen_esta_sede": 7,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.1 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.1 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -43.8987,
+      "lon": -73.7462
+     },
+     "desplazamiento_m": 24.9,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -7307,12 +8079,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -44.7352,
-    "lon": -72.6826,
+    "lat": -44.7351991,
+    "lon": -72.6827633,
     "fuente": "bahia SITPORT 123 — Puerto Cisnes",
     "distancia_km_a_la_sede": 1.5,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -44.7352,
+      "lon": -72.6826
+     },
+     "desplazamiento_m": 12.9,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -7505,7 +8295,25 @@
     "fuente": "bahia SITPORT 125 — Sector Bahía de Puerto Aguirre",
     "distancia_km_a_la_sede": 1.3,
     "bahias_que_eligen_esta_sede": 10,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.3 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (1.3 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "no_hizo_falta",
+     "original": {
+      "lat": -45.1667,
+      "lon": -73.5333
+     },
+     "desplazamiento_m": 0.0,
+     "motivo": "el punto original ya caia sobre agua segun la capa de costa declarada. No se movio. Queda registrado para que la ausencia de correccion sea un hecho medido y no un olvido."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -7660,21 +8468,34 @@
     "lon": -72.83,
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
-   "punto_representativo": {
-    "lat": -45.4667,
-    "lon": -72.8,
-    "fuente": "bahia SITPORT 126 — Bahía Chacabuco",
-    "distancia_km_a_la_sede": 2.5,
-    "bahias_que_eligen_esta_sede": 8,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
-   },
-   "causa_sin_punto_representativo": null,
+   "punto_representativo": null,
+   "causa_sin_punto_representativo": "su punto representativo no sirve como testigo: cae en tierra y el agua mas cercana esta a 1007 m, por encima del umbral de correccion de 500 m. El punto y su medicion quedan en punto_representativo_descartado.",
    "cuerpos_lacustres": null,
    "sectores": [],
    "texto_decreto": "Por el Norte desde la linea imaginaria conformada desde el Este por el paralelo 44 57 15 S, hasta punta San Andres (44 57 15 S / 073 21 40 W) continuando en diagonal entre los puntos 45 14 45 S / 073 16 24 W (Puerto Perez); 45 22 18 S / 073 29 30 W (Islote Rodriguez), 45 27 48 S / 073 33 07 W (Isla Traiguen) y desde este ultimo punto por el paralelo 45 27 48 S hacia el Weste. Por el Sur el paralelo 47 00 00 S incluyendo los canales interiores hasta la Laguna San Rafael inclusive. Excluye el Lago General Carrera.",
    "correccion_aplicada": null,
    "nota_fuente": null,
-   "cierre_v1": "Sur: paralelo 47 00 00 S. Abierto al Weste."
+   "cierre_v1": "Sur: paralelo 47 00 00 S. Abierto al Weste.",
+   "punto_representativo_descartado": {
+    "lat": -45.4667,
+    "lon": -72.8,
+    "fuente": "bahia SITPORT 126 — Bahía Chacabuco",
+    "distancia_km_a_la_sede": 2.5,
+    "bahias_que_eligen_esta_sede": 8,
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (2.5 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "motivo_descarte": "NO SIRVE COMO TESTIGO. El punto cae en tierra y el agua mas cercana esta a 1007 m segun la capa de costa declarada, por encima del umbral de 500 m. La fuente escribe este punto con la misma precision que todos los demas — cuatro decimales, ±6 m —, asi que la distancia no se explica por una coordenada gruesa: a 1007 m del agua el punto no es una orilla mal puesta por unos metros, describe otra cosa — una sede, un puerto interior —, y moverlo seria inventar el dato en vez de corregirlo. Se conserva aca para no borrar la evidencia de cual era.",
+    "distancia_al_agua_m": 1006.7,
+    "cota_inferior_m": null,
+    "umbral_m": 500.0,
+    "margen_agua_m": 1.0,
+    "margen_identidad": 10.0,
+    "capa_de_costa": {
+     "capa": "osm_land_polygons",
+     "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+     "tabla": "costa_osm"
+    },
+    "aplicado_por": "scripts/fase5_corregir_testigos.py"
+   }
   },
   {
    "id": "lago_general_carrera",
@@ -7891,12 +8712,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -51.7319,
-    "lon": -72.5136,
+    "lat": -51.7320852,
+    "lon": -72.5136587,
     "fuente": "bahia SITPORT 130 — Puerto Natales",
     "distancia_km_a_la_sede": 0.3,
     "bahias_que_eligen_esta_sede": 2,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.3 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (0.3 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -51.7319,
+      "lon": -72.5136
+     },
+     "desplazamiento_m": 21.0,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -7940,12 +8779,30 @@
     "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
    },
    "punto_representativo": {
-    "lat": -53.1358,
-    "lon": -70.8625,
+    "lat": -53.1359703,
+    "lon": -70.862382,
     "fuente": "bahia SITPORT 134 — Punta Arenas",
     "distancia_km_a_la_sede": 4.2,
     "bahias_que_eligen_esta_sede": 15,
-    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (4.2 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca."
+    "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (4.2 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
+    "correccion": {
+     "umbral_m": 500.0,
+     "margen_agua_m": 1.0,
+     "margen_identidad": 10.0,
+     "capa_de_costa": {
+      "capa": "osm_land_polygons",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "tabla": "costa_osm"
+     },
+     "aplicado_por": "scripts/fase5_corregir_testigos.py",
+     "estado": "movido_al_agua",
+     "original": {
+      "lat": -53.1358,
+      "lon": -70.8625
+     },
+     "desplazamiento_m": 20.5,
+     "motivo": "el punto original caia en TIERRA segun la capa de costa declarada, y el insumo define el punto representativo como el testigo SOBRE AGUA que la geometria tiene que poder contener. Se corrio al agua mas cercana, que es lo minimo que lo hace cumplir su propia definicion."
+    }
    },
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,
@@ -7963,7 +8820,7 @@
    "participa_matching": false,
    "receta": "-",
    "estado_geometria": "no_cerrable",
-   "causa_sin_geometria": "El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si una ruta cae en esta zona, avisar que el limite no esta cargado.",
+   "causa_sin_geometria": "falta UNICAMENTE el limite maritimo internacional por el Oriente, que el propio decreto invoca sin darlo en coordenadas. Su linea del Weste ya esta resuelta: Punta Harry y Cabo San Vicente estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). El owner acepto que ese limite es la linea Punta Dungeness - Cabo del Espiritu Santo del Tratado de 1881; falta el extremo argentino, que la capa chilena no trae. Ver pendientes.",
    "contorno_cerrado": false,
    "lado_abierto": null,
    "sigue_litoral": false,
@@ -7999,7 +8856,7 @@
    "participa_matching": false,
    "receta": "-",
    "estado_geometria": "no_cerrable",
-   "causa_sin_geometria": "El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si una ruta cae en esta zona, avisar que el limite no esta cargado.",
+   "causa_sin_geometria": "faltan DOS cosas, y ya no es la falta de coordenadas de sus accidentes: Cabo San Vicente y Punta Anxious estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). Falta (1) el limite oriental internacional — mismo pendiente que Punta Delgada, ver pendientes — y (2) un ancla que diga de que lado de la linea esta la jurisdiccion. El decreto dice 'el area oriental', pero la construccion no decide lados por letra cardinal; lo limpio es anclar en uno de los cuerpos que el propio parrafo le enumera (Bahia Gente Grande, Bahia Inutil, Canal Whiteside, Canal Gabriel, Seno Almirantazgo).",
    "contorno_cerrado": false,
    "lado_abierto": null,
    "sigue_litoral": false,
@@ -8836,6 +9693,52 @@
    "correccion_aplicada": null,
    "nota_fuente": null,
    "cierre_v1": null
+  }
+ ],
+ "correccion_testigos": {
+  "aplicada": true,
+  "fecha": "2026-08-10",
+  "por": "scripts/fase5_corregir_testigos.py",
+  "camino": "camino 1, autorizado por el owner: correr cada testigo al agua mas cercana segun la capa de costa declarada, registrando el desplazamiento; pasado el umbral el punto no se mueve y se declara.",
+  "umbral_m": 500.0,
+  "umbral_regla": "uno solo para todos los puntos: la fuente los escribe a todos con la misma precision. La justificacion medida, y la regla por precision que se intento y se descarto, estan en convenciones.",
+  "margen_identidad": 10.0,
+  "margen_agua_m": 1.0,
+  "capa_de_costa": {
+   "capa": "osm_land_polygons",
+   "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+   "tabla": "costa_osm"
+  },
+  "movidos": 30,
+  "declarados_sin_testigo": 5,
+  "reproducible": "la correccion es funcion del punto original y de la capa de costa. El original queda en punto_representativo.correccion.original (o en punto_representativo_descartado). Volver a correr el script recalcula desde los originales: es idempotente, y si la costa cambia recalcula todo desde cero en vez de mover lo ya movido."
+ },
+ "pendientes": [
+  {
+   "id": "limite_maritimo_internacional_oriente_magallanes",
+   "que_falta": "el extremo ARGENTINO de la linea que cierra por el Oriente la boca oriental del Estrecho de Magallanes: Cabo del Espiritu Santo.",
+   "decision_owner": "Se acepta la linea Punta Dungeness - Cabo del Espiritu Santo del Tratado de Limites de 1881 como 'el limite maritimo internacional por el Oriente' que invoca el decreto. Owner, 2026-08-10.",
+   "extremo_chileno": {
+    "nombre": "Punta Dungeness",
+    "lat_dms": "52 23 53 S",
+    "lon_dms": "068 26 36 W",
+    "fuente": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+    "consultado": "2026-08-10",
+    "valor_servicio": [
+     -52.398096,
+     -68.443299
+    ]
+   },
+   "extremo_argentino": {
+    "nombre": "Cabo del Espiritu Santo",
+    "lat": null,
+    "lon": null,
+    "motivo_ausencia": "la consulta 'Espiritu Santo' contra la capa SECCION_L devuelve CERO resultados: es costa argentina y esta es la capa del IGM chileno. Hace falta otra fuente. NO se deduce ni se aproxima."
+   },
+   "bloquea": [
+    "punta_delgada",
+    "tierra_del_fuego"
+   ]
   }
  ]
 }
