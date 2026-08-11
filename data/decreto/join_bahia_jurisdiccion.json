@@ -1,0 +1,1716 @@
+{
+  "version": "1.0",
+  "generado": "2026-08-11T22:10:47.576Z",
+  "generado_por": "scripts/e03join_construir_join.js",
+  "procedencia": "E0.3 del PLAN_JURISDICCION.md, camino 2. El join bahia -> jurisdiccion del D.S. 991, con la clave del decreto y no con un nombre de Capitania. Derivado reproducible: se regenera corriendo el script, nunca se edita a mano (INV-3.7).",
+  "politica_de_resolucion": "Las entradas en estado sin_resolver se resuelven TODAS JUNTAS cuando lleguen las respuestas de las fuentes identificadas en cada `fuente_a_consultar`, no de a una y no cada una por un camino distinto. Donde el repositorio ya trae una declaracion previa que nombra a la bahia, va registrada en `declaracion_previa_en_el_repo` junto con lo que se midio sobre ella; registrarla no la aplica.",
+  "que_NO_es": "No es un directorio de contactos. El telefono y el nombre para mostrar siguen viviendo en src/data/bahia-capitania-map.json, que es dato operativo. Este archivo dice QUIEN TIENE JURISDICCION; aquel dice A QUIEN SE LLAMA. Mezclarlos fue lo que midio E0.3: 34 de 42 re-atribuciones dejaban el nombre de una Capitania con el telefono de otra.",
+  "sha256_insumos": {
+    "particion": "e04c24854db956ae2f6cf8942b8ff5b26fde10b870f80ec7c1ed51e478f4cf56",
+    "cierre": "5574b7b4daaa168ecea9a22e7722436bda78e01387cb502a9be31461f52e39f8",
+    "insumo": "13c5561486fd0088f23de68326528bbb5a7dfd3a34b015cf4281c5ace9ac2dfe",
+    "zonas": "b0d5878d713ba5e2bde1dc0427b0abe08c65b0c9f9d3462a2d309f1794519945"
+  },
+  "conteo": {
+    "total": 164,
+    "operativo": 88,
+    "decreto": 69,
+    "declaracion_versionada": 1,
+    "sin_resolver": 6
+  },
+  "significado_del_respaldo": {
+    "decreto": "La atribucion sale del texto del D.S. 991 — una mencion literal, un poligono o linea de vertices escritos, o una banda de paralelos que excluye a la otra candidata. La cita esta en `evidencia`.",
+    "operativo": "Las dos fuentes operativas (el mapa y SITPORT) coinciden y el nombre resuelve a una jurisdiccion del decreto. NO es el decreto diciendolo: es un acuerdo entre dos fuentes que no son normativas. E5, la prueba de las 163, es la etapa que las somete a prueba.",
+    "declaracion_versionada": "La cierra una declaracion previa del propio repositorio, no el decreto ni una fuente externa. Lleva `respaldo_pendiente` con la pregunta que la endureceria."
+  },
+  "entradas": [
+    {
+      "bahia_id": 71,
+      "nombre_sitport": "BAHÍA DE ARICA",
+      "jurisdiccion_id": "arica",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Arica' · SITPORT: 'ARICA' · jurisdiccion del decreto: 'arica'"
+    },
+    {
+      "bahia_id": 72,
+      "nombre_sitport": "BAHÍA DE IQUIQUE",
+      "jurisdiccion_id": "iquique",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Iquique' · SITPORT: 'IQUIQUE' · jurisdiccion del decreto: 'iquique'"
+    },
+    {
+      "bahia_id": 73,
+      "nombre_sitport": "PATACHE",
+      "jurisdiccion_id": "patache",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> patache",
+      "evidencia": "Patache: \"Desde el paralelo 20 36 36 S (Punta Barrancos) por el Norte, hasta el paralelo 21 25 30 S (ribera Norte del rio Loa) por el Sur....\""
+    },
+    {
+      "bahia_id": 74,
+      "nombre_sitport": "BAHÍA ALGODONALES",
+      "jurisdiccion_id": "tocopilla",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> tocopilla",
+      "evidencia": "Tocopilla: \"Desde el paralelo 21 25 30 S (ribera Norte del rio Loa) por el Norte, hasta el paralelo 22 39 00 S (Punta Tames) por el Sur....\""
+    },
+    {
+      "bahia_id": 75,
+      "nombre_sitport": "BAHÍA MEJILLONES DEL SUR",
+      "jurisdiccion_id": "mejillones",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Mejillones' · SITPORT: 'MEJILLONES' · jurisdiccion del decreto: 'mejillones'"
+    },
+    {
+      "bahia_id": 76,
+      "nombre_sitport": "CALETA MICHILLA",
+      "jurisdiccion_id": "mejillones",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> mejillones",
+      "evidencia": "Mejillones: \"Desde el paralelo 22 30 00 S (Punta Tames) por el Norte, hasta el paralelo 23 15 00 S (Punta Jorgino) por el Sur....\""
+    },
+    {
+      "bahia_id": 77,
+      "nombre_sitport": "BAHÍA MORENO (ANTOFAGASTA)",
+      "jurisdiccion_id": "antofagasta",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Antofagasta' · SITPORT: 'ANTOFAGASTA' · jurisdiccion del decreto: 'antofagasta'"
+    },
+    {
+      "bahia_id": 78,
+      "nombre_sitport": "CALETA COLOSO",
+      "jurisdiccion_id": "antofagasta",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Antofagasta' · SITPORT: 'ANTOFAGASTA' · jurisdiccion del decreto: 'antofagasta'"
+    },
+    {
+      "bahia_id": 79,
+      "nombre_sitport": "TAL TAL",
+      "jurisdiccion_id": "taltal",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> taltal",
+      "evidencia": "Taltal: \"Desde el paralelo 24 33 00 S (Punta Dos Reyes) por el Norte, hasta el paralelo 26 03 20 S (Punta Carrizalillo), limite Sur de la II Region....\""
+    },
+    {
+      "bahia_id": 80,
+      "nombre_sitport": "BAHÍA CHAÑARAL",
+      "jurisdiccion_id": "chanaral",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> chanaral",
+      "evidencia": "Chanaral: \"Desde el paralelo 26 03 20 S (Punta Carrizalillo) limite Norte de la III Region, hasta el paralelo 26 38 18 S (Punta Salinas) por el Sur....\""
+    },
+    {
+      "bahia_id": 81,
+      "nombre_sitport": "BAHÍA CALDERA",
+      "jurisdiccion_id": "caldera",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Caldera' · SITPORT: 'CALDERA' · jurisdiccion del decreto: 'caldera'"
+    },
+    {
+      "bahia_id": 82,
+      "nombre_sitport": "BAHÍA CALDERILLA",
+      "jurisdiccion_id": "caldera",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Caldera' · SITPORT: 'CALDERA' · jurisdiccion del decreto: 'caldera'"
+    },
+    {
+      "bahia_id": 83,
+      "nombre_sitport": "SECTOR PUNTA TOTORALILLO",
+      "jurisdiccion_id": "caldera",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Caldera' · SITPORT: 'CALDERA' · jurisdiccion del decreto: 'caldera'"
+    },
+    {
+      "bahia_id": 84,
+      "nombre_sitport": "BAHÍA PUERTO HUASCO",
+      "jurisdiccion_id": "huasco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Huasco' · SITPORT: 'HUASCO' · jurisdiccion del decreto: 'huasco'"
+    },
+    {
+      "bahia_id": 85,
+      "nombre_sitport": "BAHÍA COQUIMBO",
+      "jurisdiccion_id": "coquimbo",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Coquimbo' · SITPORT: 'COQUIMBO' · jurisdiccion del decreto: 'coquimbo'"
+    },
+    {
+      "bahia_id": 86,
+      "nombre_sitport": "BAHÍA HERRADURA DE GUAYACÁN",
+      "jurisdiccion_id": "coquimbo",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "VII · es la UNICA jurisdiccion del decreto cuya banda declarada contiene el punto",
+      "evidencia": "Coquimbo: \"Desde el paralelo 29 10 40 S (Punta Zorros) por el Norte, hasta el paralelo 30 06 00 S (Punta Lagunillas) por el Sur....\""
+    },
+    {
+      "bahia_id": 87,
+      "nombre_sitport": "TONGOY",
+      "jurisdiccion_id": "tongoy",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> tongoy",
+      "evidencia": "Tongoy: \"Desde el paralelo 30 06 00 S (Punta Lagunillas) por el Norte, hasta el paralelo 30 55 30 S (Punta Talca) por el Sur....\""
+    },
+    {
+      "bahia_id": 88,
+      "nombre_sitport": "BAHÍA CONCHALÍ",
+      "jurisdiccion_id": "los_vilos",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Los Vilos' · SITPORT: 'LOS VILOS' · jurisdiccion del decreto: 'los_vilos'"
+    },
+    {
+      "bahia_id": 89,
+      "nombre_sitport": "ISLA DE PASCUA",
+      "jurisdiccion_id": "hanga_roa",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Hanga Roa' · SITPORT: 'HANGA ROA' · jurisdiccion del decreto: 'hanga_roa'"
+    },
+    {
+      "bahia_id": 90,
+      "nombre_sitport": "ISLA ROBINSON CRUSOE",
+      "jurisdiccion_id": "juan_fernandez",
+      "estado": "resuelta",
+      "respaldo": "declaracion_versionada",
+      "criterio": "declaracion previa de R1 pieza 1 en zonas_aviso.json · autorizada por el owner el 2026-08-11, despues de medir que la capa del IGM propuesta NO tiene el dato (0 hits; _bitacoras/e03join_cierre_2026-08-11/02_igm_bahia_90.txt)",
+      "evidencia": "data/decreto/zonas_aviso.json, zona 'juan_fernandez': \"La unica bahia del catalogo en su territorio (90, Isla Robinson Crusoe) esta atribuida en el mapa operativo a la Capitania de Valparaiso, no a Juan Fernandez, a la que el decreto le da Capitania propia. Tomar ese telefono seria dejar que el mapa operativo revoque al decreto (INV-3.3).\"",
+      "respaldo_pendiente": {
+        "id": "pertenencia_archipielago",
+        "a_quien": "DIRECTEMAR (una linea dentro de la consulta que ya se prepara)",
+        "que_falta": "El paso \"Isla Robinson Crusoe es una isla del Archipielago de Juan Fernandez\" es conocimiento geografico corriente y ninguna fuente del repositorio lo certifica. La capa del IGM de fase5S se consulto el 2026-08-11 y NO lo tiene (0 hits; crudo en _bitacoras/e03join_cierre_2026-08-11/02_igm_bahia_90.txt).",
+        "pregunta": "¿La Isla Robinson Crusoe queda comprendida en el \"Archipielago de Juan Fernandez\" que el D.S. 991/1987 asigna a la Capitania de Puerto de Juan Fernandez?"
+      }
+    },
+    {
+      "bahia_id": 91,
+      "nombre_sitport": "BAHÍA DE QUINTERO",
+      "jurisdiccion_id": "quintero",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Quintero' · SITPORT: 'QUINTERO' · jurisdiccion del decreto: 'quintero'"
+    },
+    {
+      "bahia_id": 92,
+      "nombre_sitport": "BAHÍA DE VALPARAÍSO",
+      "jurisdiccion_id": "valparaiso",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Valparaíso' · SITPORT: 'VALPARAISO' · jurisdiccion del decreto: 'valparaiso'"
+    },
+    {
+      "bahia_id": 93,
+      "nombre_sitport": "PUERTO DE SAN ANTONIO",
+      "jurisdiccion_id": "san_antonio",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'San Antonio' · SITPORT: 'SAN ANTONIO' · jurisdiccion del decreto: 'san_antonio'"
+    },
+    {
+      "bahia_id": 94,
+      "nombre_sitport": "BAHÍA ALGARROBO",
+      "jurisdiccion_id": "algarrobo",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> algarrobo",
+      "evidencia": "Algarrobo: \"Desde el paralelo 33 16 25 S (Punta Tunquen) por el Norte, hasta el paralelo 33 31 30 S (Estero La Ciguena) por el Sur....\""
+    },
+    {
+      "bahia_id": 95,
+      "nombre_sitport": "PICHILEMU",
+      "jurisdiccion_id": "pichilemu",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> pichilemu",
+      "evidencia": "Pichilemu: \"Desde el paralelo 33 54 30 S (Punta Perro) por el Norte, hasta el paralelo 34 41 00 S (desembocadura de la laguna Boyeruca), limite Sur de la VI Region....\""
+    },
+    {
+      "bahia_id": 96,
+      "nombre_sitport": "LAGO RAPEL",
+      "jurisdiccion_id": "lago_rapel",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_rapel",
+      "evidencia": "Lago Rapel: \"Su jurisdiccion comprende el lago Rapel....\""
+    },
+    {
+      "bahia_id": 97,
+      "nombre_sitport": "BAHÍA CONCEPCIÓN - LIRQUÉN",
+      "jurisdiccion_id": "lirquen",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> lirquen",
+      "evidencia": "Lirquen: \"Desde el paralelo 36 00 00 S limite norte de la Region del Biobio, hasta la latitud 36 31 00 S. Luego, desde esta latitud y la longitud 073 00 48 W hacia el este y hacia el sur (Bahia de Concepcion) h...\""
+    },
+    {
+      "bahia_id": 98,
+      "nombre_sitport": "BAHÍA CONCEPCIÓN - TALCAHUANO",
+      "jurisdiccion_id": "talcahuano",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Talcahuano' · SITPORT: 'TALCAHUANO' · jurisdiccion del decreto: 'talcahuano'"
+    },
+    {
+      "bahia_id": 99,
+      "nombre_sitport": "BAHÍA SAN VICENTE",
+      "jurisdiccion_id": "san_vicente",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> san_vicente",
+      "evidencia": "San Vicente: \"Desde el paralelo 36 42 25 S (Punta Lobos) por el Norte, hasta el paralelo 36 49 00 S (ribera Sur del rio Bio Bio) por el Sur....\""
+    },
+    {
+      "bahia_id": 100,
+      "nombre_sitport": "BAHÍA CORONEL",
+      "jurisdiccion_id": "coronel",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Coronel' · SITPORT: 'CORONEL' · jurisdiccion del decreto: 'coronel'"
+    },
+    {
+      "bahia_id": 101,
+      "nombre_sitport": "LEBU",
+      "jurisdiccion_id": "lebu",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Lebu' · SITPORT: 'LEBU' · jurisdiccion del decreto: 'lebu'"
+    },
+    {
+      "bahia_id": 102,
+      "nombre_sitport": "LOTA ",
+      "jurisdiccion_id": "lota",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> lota",
+      "evidencia": "Lota: \"Desde el paralelo 37 04 00 S (ribera Norte del estero Playa Blanca) por el Norte, hasta el paralelo 37 26 00 S (ribera Norte del rio Quiapo) por el Sur....\""
+    },
+    {
+      "bahia_id": 103,
+      "nombre_sitport": "BAHÍA CONSTITUCIÓN",
+      "jurisdiccion_id": "constitucion",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Constitución' · SITPORT: 'CONSTITUCION' · jurisdiccion del decreto: 'constitucion'"
+    },
+    {
+      "bahia_id": 104,
+      "nombre_sitport": "VALDIVIA FLUVIAL",
+      "jurisdiccion_id": "valdivia",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Valdivia' · SITPORT: 'VALDIVIA' · jurisdiccion del decreto: 'valdivia'"
+    },
+    {
+      "bahia_id": 105,
+      "nombre_sitport": "LAGO VILLARRICA",
+      "jurisdiccion_id": "lago_villarrica",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_villarrica",
+      "evidencia": "Lago Villarrica: \"Lagos Colico, Caburgua, Huilipilun y Villarrica, lagunas Conguillio, Galletue e Icalma, y el Rio Tolten....\""
+    },
+    {
+      "bahia_id": 106,
+      "nombre_sitport": "PANGUIPULLI",
+      "jurisdiccion_id": "lago_panguipulli",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_panguipulli",
+      "evidencia": "Lago Panguipulli: \"Lagos Calafquen, Panguipulli, Pellaifa, Pullinque, Rinihue, Neltume, Pirihueico, y los rios Fuy y San Pedro....\""
+    },
+    {
+      "bahia_id": 107,
+      "nombre_sitport": "BAHÍA CORRAL",
+      "jurisdiccion_id": "corral",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Corral' · SITPORT: 'CORRAL' · jurisdiccion del decreto: 'corral'"
+    },
+    {
+      "bahia_id": 109,
+      "nombre_sitport": "PUERTO MONTT",
+      "jurisdiccion_id": "puerto_montt",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Puerto Montt' · SITPORT: 'PUERTO MONTT' · jurisdiccion del decreto: 'puerto_montt'"
+    },
+    {
+      "bahia_id": 110,
+      "nombre_sitport": "BAHÍA CHINCUI",
+      "jurisdiccion_id": "puerto_montt",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Puerto Montt' · SITPORT: 'PUERTO MONTT' · jurisdiccion del decreto: 'puerto_montt'"
+    },
+    {
+      "bahia_id": 111,
+      "nombre_sitport": "LAGO LLANQUIHUE",
+      "jurisdiccion_id": "puerto_varas",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Puerto Varas' · SITPORT: 'PUERTO VARAS' · jurisdiccion del decreto: 'puerto_varas'"
+    },
+    {
+      "bahia_id": 112,
+      "nombre_sitport": "BAHÍA MAULLÍN",
+      "jurisdiccion_id": "maullin",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Maullín' · SITPORT: 'MAULLIN' · jurisdiccion del decreto: 'maullin'"
+    },
+    {
+      "bahia_id": 113,
+      "nombre_sitport": "BAHÍA DE CALBUCO",
+      "jurisdiccion_id": "calbuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Calbuco' · SITPORT: 'CALBUCO' · jurisdiccion del decreto: 'calbuco'"
+    },
+    {
+      "bahia_id": 114,
+      "nombre_sitport": "CANAL CHACAO SECTOR PARGUA Y PUNTA CORONEL",
+      "jurisdiccion_id": "calbuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Calbuco' · SITPORT: 'CALBUCO' · jurisdiccion del decreto: 'calbuco'"
+    },
+    {
+      "bahia_id": 115,
+      "nombre_sitport": "CANAL HORNOPIRÉN",
+      "jurisdiccion_id": "hornopiren",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Hornopirén' · SITPORT: 'RIO NEGRO HORNOPIREN' · jurisdiccion del decreto: 'hornopiren'"
+    },
+    {
+      "bahia_id": 116,
+      "nombre_sitport": "CASTRO",
+      "jurisdiccion_id": "castro",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Castro' · SITPORT: 'CASTRO' · jurisdiccion del decreto: 'castro'"
+    },
+    {
+      "bahia_id": 117,
+      "nombre_sitport": "BAHÍA QUELLÓN",
+      "jurisdiccion_id": "quellon",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Quellón' · SITPORT: 'QUELLON' · jurisdiccion del decreto: 'quellon'"
+    },
+    {
+      "bahia_id": 118,
+      "nombre_sitport": "BAHÍA ANCUD Y CANAL CHACAO",
+      "jurisdiccion_id": "ancud",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Ancud' · SITPORT: 'ANCUD' · jurisdiccion del decreto: 'ancud'"
+    },
+    {
+      "bahia_id": 119,
+      "nombre_sitport": "CHONCHI",
+      "jurisdiccion_id": "chonchi",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Chonchi' · SITPORT: 'CHONCHI' · jurisdiccion del decreto: 'chonchi'"
+    },
+    {
+      "bahia_id": 120,
+      "nombre_sitport": "PUERTO QUEMCHI",
+      "jurisdiccion_id": "quemchi",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Quemchi' · SITPORT: 'QUEMCHI' · jurisdiccion del decreto: 'quemchi'"
+    },
+    {
+      "bahia_id": 121,
+      "nombre_sitport": "CHAITÉN",
+      "jurisdiccion_id": "chaiten",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Chaitén' · SITPORT: 'CHAITEN' · jurisdiccion del decreto: 'chaiten'"
+    },
+    {
+      "bahia_id": 122,
+      "nombre_sitport": "ACHAO",
+      "jurisdiccion_id": "achao",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Achao' · SITPORT: 'ACHAO' · jurisdiccion del decreto: 'achao'"
+    },
+    {
+      "bahia_id": 123,
+      "nombre_sitport": "PUERTO CISNES",
+      "jurisdiccion_id": "puerto_cisnes",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A3: el mapa operativo y SITPORT coinciden, y el nombre difiere solo en el prefijo \"Puerto \"/\"Lago \"",
+      "evidencia": "mapa: 'Cisnes' · SITPORT: 'CISNES' · jurisdiccion del decreto: 'puerto_cisnes'"
+    },
+    {
+      "bahia_id": 124,
+      "nombre_sitport": "MELINKA",
+      "jurisdiccion_id": "melinka",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Weste de la linea que divide el Canal Moraleda, a 21.96 km",
+      "evidencia": "melinka: \"Por el Este la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\" · puerto_cisnes: \"Por el Weste la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\""
+    },
+    {
+      "bahia_id": 125,
+      "nombre_sitport": "SECTOR BAHÍA DE PUERTO AGUIRRE",
+      "jurisdiccion_id": "puerto_aguirre",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> puerto_aguirre",
+      "evidencia": "Puerto Aguirre: \"Por el Norte el paralelo 44 46 54 S hasta el Islote Cayo Blanco (44 46 54 S / 073 32 30 W) y desde este punto la linea imaginaria que une los siguientes puntos: 44 57 15 S / 073 21 40 W (Punta San And...\""
+    },
+    {
+      "bahia_id": 126,
+      "nombre_sitport": "BAHÍA CHACABUCO",
+      "jurisdiccion_id": "puerto_chacabuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Chacabuco' · SITPORT: 'CHACABUCO' · jurisdiccion del decreto: 'puerto_chacabuco'"
+    },
+    {
+      "bahia_id": 127,
+      "nombre_sitport": "BAKER",
+      "jurisdiccion_id": null,
+      "estado": "sin_resolver",
+      "respaldo": null,
+      "criterio": null,
+      "candidatos": {
+        "mapa_operativo": null,
+        "sitport": "BAKER"
+      },
+      "fuente_a_consultar": {
+        "id": "limite_sur_aysen",
+        "a_quien": "DIRECTEMAR, y la parte regional a DPA_2023 (geodata/DPA_2023.zip, en disco sin cargar)",
+        "que_falta": "El decreto define baker por \"el limite Sur de la Region de Aysen\" y puerto_eden por \"el limite Sur de la Gobernacion Maritima de Aisen\". Ninguno de los dos esta en coordenadas, y no esta dicho que coincidan.",
+        "pregunta": "¿Cuales son las coordenadas del limite Sur de la jurisdiccion de la Gobernacion Maritima de Aysen, que el D.S. 991/1987 usa como limite Norte de la Capitania de Puerto Puerto Eden sin expresarlo en coordenadas? ¿Coincide ese limite con el limite Sur de la Region de Aysen, que el mismo decreto usa como limite Sur de la Capitania de Puerto Baker?"
+      },
+      "declaracion_previa_en_el_repo": null
+    },
+    {
+      "bahia_id": 128,
+      "nombre_sitport": "LAGO GENERAL CARRERA",
+      "jurisdiccion_id": "lago_general_carrera",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_general_carrera",
+      "evidencia": "Lago General Carrera: \"Lagos General Carrera, Cochrane y O'Higgins....\""
+    },
+    {
+      "bahia_id": 129,
+      "nombre_sitport": "PUERTO EDÉN",
+      "jurisdiccion_id": null,
+      "estado": "sin_resolver",
+      "respaldo": null,
+      "criterio": null,
+      "candidatos": {
+        "mapa_operativo": null,
+        "sitport": "EDEN"
+      },
+      "fuente_a_consultar": {
+        "id": "limite_sur_aysen",
+        "a_quien": "DIRECTEMAR, y la parte regional a DPA_2023 (geodata/DPA_2023.zip, en disco sin cargar)",
+        "que_falta": "El decreto define baker por \"el limite Sur de la Region de Aysen\" y puerto_eden por \"el limite Sur de la Gobernacion Maritima de Aisen\". Ninguno de los dos esta en coordenadas, y no esta dicho que coincidan.",
+        "pregunta": "¿Cuales son las coordenadas del limite Sur de la jurisdiccion de la Gobernacion Maritima de Aysen, que el D.S. 991/1987 usa como limite Norte de la Capitania de Puerto Puerto Eden sin expresarlo en coordenadas? ¿Coincide ese limite con el limite Sur de la Region de Aysen, que el mismo decreto usa como limite Sur de la Capitania de Puerto Baker?"
+      },
+      "declaracion_previa_en_el_repo": {
+        "archivo": "data/decreto/zonas_aviso.json",
+        "jurisdiccion_id": "puerto_eden",
+        "cita": "Su bahia (129, Puerto Eden) no tiene Capitania atribuida en el mapa operativo, y la Gobernacion que el mapa le pone (Aysen) no es la que le da el decreto (Punta Arenas). Con las dos fuentes en desacuerdo sobre la Gobernacion, no se declara contacto hasta adjudicar cual manda.",
+        "nota": "Escrita en R1 pieza 1 y versionada, nombra a esta bahia como propia de esa jurisdiccion. Queda REGISTRADA, no aplicada: esta bahia se resuelve junto con las otras cinco cuando responda su fuente.",
+        "medido_sobre_ella": "El decreto define el limite Norte de puerto_eden por \"el limite Sur de la Gobernacion Maritima de Aisen\", que no esta en coordenadas: medido, ninguna jurisdiccion con banda declarada contiene la latitud 49,13 S. La declaracion previa nombra la bahia como propia y no entra en contradiccion con nada medido, pero tampoco aporta el limite que falta."
+      }
+    },
+    {
+      "bahia_id": 130,
+      "nombre_sitport": "PUERTO NATALES",
+      "jurisdiccion_id": "puerto_natales",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Puerto Natales' · SITPORT: 'PUERTO NATALES' · jurisdiccion del decreto: 'puerto_natales'"
+    },
+    {
+      "bahia_id": 131,
+      "nombre_sitport": "BAHÍA GREGORIO",
+      "jurisdiccion_id": "punta_delgada",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · al Este de la linea Punta Harry - Cabo San Vicente (Segunda Angostura) (32.97 km) y al Norte de Cabo San Vicente, donde arranca la linea de tierra_del_fuego",
+      "evidencia": "punta_arenas: \"...hasta la linea imaginaria que une Punta Harry con Cabo San Vicente, en la Segunda Angostura del Estrecho de Magallanes\" · punta_delgada: \"El Estrecho de Magallanes desde la linea imaginaria que une punta Harry y Cabo San Vicente, hasta el limite maritimo internacional por el Oriente\". Coordenadas de los dos topónimos: IGM, registradas en fase5S.  ||  tierra_del_fuego queda excluida: \"El area oriental de la linea imaginaria que une Cabo San Vicente por el Norte, hasta Punta Anxius por el Sur\" arranca en 52 46 49 S / 070 25 57 W, al Sur de esta bahia."
+    },
+    {
+      "bahia_id": 132,
+      "nombre_sitport": "BAHÍA CLARENCIA",
+      "jurisdiccion_id": "punta_delgada",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · al Este de la linea Punta Harry - Cabo San Vicente (Segunda Angostura) (73.71 km) y al Norte de Cabo San Vicente, donde arranca la linea de tierra_del_fuego",
+      "evidencia": "punta_arenas: \"...hasta la linea imaginaria que une Punta Harry con Cabo San Vicente, en la Segunda Angostura del Estrecho de Magallanes\" · punta_delgada: \"El Estrecho de Magallanes desde la linea imaginaria que une punta Harry y Cabo San Vicente, hasta el limite maritimo internacional por el Oriente\". Coordenadas de los dos topónimos: IGM, registradas en fase5S.  ||  tierra_del_fuego queda excluida: \"El area oriental de la linea imaginaria que une Cabo San Vicente por el Norte, hasta Punta Anxius por el Sur\" arranca en 52 46 49 S / 070 25 57 W, al Sur de esta bahia."
+    },
+    {
+      "bahia_id": 133,
+      "nombre_sitport": "BAHÍA CATALINA",
+      "jurisdiccion_id": "punta_arenas",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Punta Arenas' · SITPORT: 'PUNTA ARENAS' · jurisdiccion del decreto: 'punta_arenas'"
+    },
+    {
+      "bahia_id": 134,
+      "nombre_sitport": "PUNTA ARENAS",
+      "jurisdiccion_id": "punta_arenas",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Punta Arenas' · SITPORT: 'PUNTA ARENAS' · jurisdiccion del decreto: 'punta_arenas'"
+    },
+    {
+      "bahia_id": 135,
+      "nombre_sitport": "CABO NEGRO",
+      "jurisdiccion_id": "punta_arenas",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Punta Arenas' · SITPORT: 'PUNTA ARENAS' · jurisdiccion del decreto: 'punta_arenas'"
+    },
+    {
+      "bahia_id": 136,
+      "nombre_sitport": "SENO OTWAY",
+      "jurisdiccion_id": "punta_arenas",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Punta Arenas' · SITPORT: 'PUNTA ARENAS' · jurisdiccion del decreto: 'punta_arenas'"
+    },
+    {
+      "bahia_id": 137,
+      "nombre_sitport": "BAHÍA CHILOTA",
+      "jurisdiccion_id": null,
+      "estado": "sin_resolver",
+      "respaldo": null,
+      "criterio": null,
+      "candidatos": {
+        "mapa_operativo": "Punta Arenas",
+        "sitport": "TIERRA DEL FUEGO"
+      },
+      "fuente_a_consultar": {
+        "id": "solape_delgada_tdf",
+        "a_quien": "DIRECTEMAR",
+        "que_falta": "Los parrafos de punta_delgada (\"el Estrecho de Magallanes\" al Oriente de la linea Punta Harry - Cabo San Vicente) y de tierra_del_fuego (\"el area oriental\" de la linea Cabo San Vicente - Punta Anxius) cubren los dos la zona al Oriente de Cabo San Vicente, y el decreto no dice como se reparten.",
+        "pregunta": "En el D.S. 991/1987 las descripciones de Punta Delgada y de Tierra del Fuego cubren ambas la zona al Oriente de Cabo San Vicente. ¿Bajo cual de las dos queda Bahia Chilota, en Porvenir? ¿Como se reparten esas dos jurisdicciones esa zona?"
+      },
+      "declaracion_previa_en_el_repo": {
+        "archivo": "data/decreto/zonas_aviso.json",
+        "jurisdiccion_id": "tierra_del_fuego",
+        "cita": "Su bahia (137, Bahia Chilota, Porvenir) esta atribuida en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el telefono del vecino.",
+        "nota": "Escrita en R1 pieza 1 y versionada, nombra a esta bahia como propia de esa jurisdiccion. Queda REGISTRADA, no aplicada: esta bahia se resuelve junto con las otras cinco cuando responda su fuente.",
+        "medido_sobre_ella": "Medido: los parrafos de punta_delgada y tierra_del_fuego describen los dos un area al Oriente de la misma linea y el decreto no dice como se reparten; la bahia esta a 230 m de la linea Cabo San Vicente - Punta Anxius. La declaracion previa elige tierra_del_fuego, o sea un lado que el texto del decreto no decide. Registrarla no es lo mismo que heredarla."
+      }
+    },
+    {
+      "bahia_id": 138,
+      "nombre_sitport": "PUERTO WILLIAMS",
+      "jurisdiccion_id": "puerto_williams",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Puerto Williams' · SITPORT: 'PUERTO WILLIAMS' · jurisdiccion del decreto: 'puerto_williams'"
+    },
+    {
+      "bahia_id": 139,
+      "nombre_sitport": "BAHÍA FILDES",
+      "jurisdiccion_id": "bahia_fildes",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "II · cae dentro del poligono de vertices que el decreto escribe",
+      "evidencia": "Bahia Fildes: \"Area delimitada por las lineas imaginarias que unen: 57 42 00 S / 053 00 00 W; 61 30 00 S / 053 00 00 W; 62 50 00 S / 059 16 00 W; 58 15 00 S / 059 30 00 W; 57 42 00 S / 057 50 00 W; 57 42 00 S / 053 00 00 W.\""
+    },
+    {
+      "bahia_id": 140,
+      "nombre_sitport": "BAHÍA PARAÍSO",
+      "jurisdiccion_id": "bahia_paraiso",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "II · cae dentro del poligono de vertices que el decreto escribe",
+      "evidencia": "Bahia Paraiso: \"Area delimitada por las lineas imaginarias que unen: 70 00 00 S / 053 00 00 W; 62 50 00 S / 059 16 00 W; 65 00 00 S / 075 15 00 W; 69 15 00 S / 090 00 00 W.\""
+    },
+    {
+      "bahia_id": 141,
+      "nombre_sitport": "CARAHUE - SECTOR RÍO",
+      "jurisdiccion_id": "carahue",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Carahue' · SITPORT: 'CARAHUE' · jurisdiccion del decreto: 'carahue'"
+    },
+    {
+      "bahia_id": 142,
+      "nombre_sitport": "CARAHUE - SECTOR LAGO",
+      "jurisdiccion_id": "carahue",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Carahue' · SITPORT: 'CARAHUE' · jurisdiccion del decreto: 'carahue'"
+    },
+    {
+      "bahia_id": 143,
+      "nombre_sitport": "CARAHUE - BORDE COSTERO",
+      "jurisdiccion_id": "carahue",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Carahue' · SITPORT: 'CARAHUE' · jurisdiccion del decreto: 'carahue'"
+    },
+    {
+      "bahia_id": 144,
+      "nombre_sitport": "LAGO RANCO",
+      "jurisdiccion_id": "lago_ranco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_ranco",
+      "evidencia": "Lago Ranco: \"Lagos Ranco, Maihue, Puyehue (hasta el limite con la Region de Los Lagos), Huishue y Gris. Incluye el rio Bueno en los sectores Los Patos, La Goleta y El Manzanito....\""
+    },
+    {
+      "bahia_id": 145,
+      "nombre_sitport": "LAGO MAIHUE",
+      "jurisdiccion_id": "lago_ranco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_ranco",
+      "evidencia": "Lago Ranco: \"Lagos Ranco, Maihue, Puyehue (hasta el limite con la Region de Los Lagos), Huishue y Gris. Incluye el rio Bueno en los sectores Los Patos, La Goleta y El Manzanito....\""
+    },
+    {
+      "bahia_id": 146,
+      "nombre_sitport": "RIO BUENO",
+      "jurisdiccion_id": "lago_ranco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_ranco",
+      "evidencia": "Lago Ranco: \"Lagos Ranco, Maihue, Puyehue (hasta el limite con la Region de Los Lagos), Huishue y Gris. Incluye el rio Bueno en los sectores Los Patos, La Goleta y El Manzanito....\""
+    },
+    {
+      "bahia_id": 147,
+      "nombre_sitport": "RADA MANZANO",
+      "jurisdiccion_id": "maullin",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Maullín' · SITPORT: 'MAULLIN' · jurisdiccion del decreto: 'maullin'"
+    },
+    {
+      "bahia_id": 148,
+      "nombre_sitport": "ENSENADA ESTAQUILLA",
+      "jurisdiccion_id": "maullin",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Maullín' · SITPORT: 'MAULLIN' · jurisdiccion del decreto: 'maullin'"
+    },
+    {
+      "bahia_id": 149,
+      "nombre_sitport": "RADA DE\tCARELMAPU",
+      "jurisdiccion_id": "maullin",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Maullín' · SITPORT: 'MAULLIN' · jurisdiccion del decreto: 'maullin'"
+    },
+    {
+      "bahia_id": 150,
+      "nombre_sitport": "GUANAQUEROS",
+      "jurisdiccion_id": "tongoy",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> tongoy",
+      "evidencia": "Tongoy: \"Desde el paralelo 30 06 00 S (Punta Lagunillas) por el Norte, hasta el paralelo 30 55 30 S (Punta Talca) por el Sur....\""
+    },
+    {
+      "bahia_id": 151,
+      "nombre_sitport": "BARNES",
+      "jurisdiccion_id": "coquimbo",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "IV · de los dos candidatos, la banda del decreto solo contiene a este (lat -30.05)",
+      "evidencia": "Coquimbo: \"Desde el paralelo 29 10 40 S (Punta Zorros) por el Norte, hasta el paralelo 30 06 00 S (Punta Lagunillas) por el Sur....\""
+    },
+    {
+      "bahia_id": 152,
+      "nombre_sitport": "COCHAMO",
+      "jurisdiccion_id": "cochamo",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Cochamó' · SITPORT: 'COCHAMO' · jurisdiccion del decreto: 'cochamo'"
+    },
+    {
+      "bahia_id": 153,
+      "nombre_sitport": "LAGO TAGUA TAGUA",
+      "jurisdiccion_id": "cochamo",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "I · el decreto la nombra (exacta, exacta)",
+      "evidencia": "Cochamo: \"...Las aguas y el litoral del Estero Reloncavi, desde la linea...\""
+    },
+    {
+      "bahia_id": 154,
+      "nombre_sitport": "ISLA GUARELLO",
+      "jurisdiccion_id": null,
+      "estado": "sin_resolver",
+      "respaldo": null,
+      "criterio": null,
+      "candidatos": {
+        "mapa_operativo": null,
+        "sitport": "EDEN"
+      },
+      "fuente_a_consultar": {
+        "id": "limite_sur_aysen",
+        "a_quien": "DIRECTEMAR, y la parte regional a DPA_2023 (geodata/DPA_2023.zip, en disco sin cargar)",
+        "que_falta": "El decreto define baker por \"el limite Sur de la Region de Aysen\" y puerto_eden por \"el limite Sur de la Gobernacion Maritima de Aisen\". Ninguno de los dos esta en coordenadas, y no esta dicho que coincidan.",
+        "pregunta": "¿Cuales son las coordenadas del limite Sur de la jurisdiccion de la Gobernacion Maritima de Aysen, que el D.S. 991/1987 usa como limite Norte de la Capitania de Puerto Puerto Eden sin expresarlo en coordenadas? ¿Coincide ese limite con el limite Sur de la Region de Aysen, que el mismo decreto usa como limite Sur de la Capitania de Puerto Baker?"
+      },
+      "declaracion_previa_en_el_repo": null
+    },
+    {
+      "bahia_id": 155,
+      "nombre_sitport": "QUEILEN",
+      "jurisdiccion_id": "chonchi",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Chonchi' · SITPORT: 'CHONCHI' · jurisdiccion del decreto: 'chonchi'"
+    },
+    {
+      "bahia_id": 156,
+      "nombre_sitport": "PRIMERA ANGOSTURA",
+      "jurisdiccion_id": "punta_delgada",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · al Este de la linea Punta Harry - Cabo San Vicente (Segunda Angostura) (29.59 km) y al Norte de Cabo San Vicente, donde arranca la linea de tierra_del_fuego",
+      "evidencia": "punta_arenas: \"...hasta la linea imaginaria que une Punta Harry con Cabo San Vicente, en la Segunda Angostura del Estrecho de Magallanes\" · punta_delgada: \"El Estrecho de Magallanes desde la linea imaginaria que une punta Harry y Cabo San Vicente, hasta el limite maritimo internacional por el Oriente\". Coordenadas de los dos topónimos: IGM, registradas en fase5S.  ||  tierra_del_fuego queda excluida: \"El area oriental de la linea imaginaria que une Cabo San Vicente por el Norte, hasta Punta Anxius por el Sur\" arranca en 52 46 49 S / 070 25 57 W, al Sur de esta bahia."
+    },
+    {
+      "bahia_id": 157,
+      "nombre_sitport": "PUERTO CARRIZAL BAJO",
+      "jurisdiccion_id": "huasco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> huasco",
+      "evidencia": "Huasco: \"Desde el paralelo 27 54 15 S (Punta Matamoros) por el Norte, hasta el paralelo 29 10 40 S (Punta Zorros) por el Sur....\""
+    },
+    {
+      "bahia_id": 158,
+      "nombre_sitport": "CALETA CHAÑARAL Y ENSENADA GAVIOTA",
+      "jurisdiccion_id": "huasco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> huasco",
+      "evidencia": "Huasco: \"Desde el paralelo 27 54 15 S (Punta Matamoros) por el Norte, hasta el paralelo 29 10 40 S (Punta Zorros) por el Sur....\""
+    },
+    {
+      "bahia_id": 159,
+      "nombre_sitport": "LAGO TODOS LOS SANTOS",
+      "jurisdiccion_id": "puerto_varas",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon C: puerto_varas",
+      "evidencia": "Puerto Varas: \"Lagos Llanquihue, Rupanco, Todos los Santos, Puyehue (hasta el limite con la Region de Los Rios) y Constancia....\""
+    },
+    {
+      "bahia_id": 160,
+      "nombre_sitport": "LAGO PUYEHUE",
+      "jurisdiccion_id": "lago_ranco",
+      "jurisdicciones_adicionales": [
+        "puerto_varas"
+      ],
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon C: lago_ranco + puerto_varas",
+      "evidencia": "Lago Ranco: \"Lagos Ranco, Maihue, Puyehue (hasta el limite con la Region de Los Lagos), Huishue y Gris. Incluye el rio Bueno en los sectores Los Patos, La Goleta y El Manzanito....\""
+    },
+    {
+      "bahia_id": 161,
+      "nombre_sitport": "LAGO RUPANCO",
+      "jurisdiccion_id": "puerto_varas",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon C: puerto_varas",
+      "evidencia": "Puerto Varas: \"Lagos Llanquihue, Rupanco, Todos los Santos, Puyehue (hasta el limite con la Region de Los Rios) y Constancia....\""
+    },
+    {
+      "bahia_id": 162,
+      "nombre_sitport": "LAGO CHAPO",
+      "jurisdiccion_id": "puerto_montt",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Puerto Montt' · SITPORT: 'PUERTO MONTT' · jurisdiccion del decreto: 'puerto_montt'"
+    },
+    {
+      "bahia_id": 163,
+      "nombre_sitport": "CANAL DALCAHUE",
+      "jurisdiccion_id": "castro",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Castro' · SITPORT: 'CASTRO' · jurisdiccion del decreto: 'castro'"
+    },
+    {
+      "bahia_id": 165,
+      "nombre_sitport": "SKYRING",
+      "jurisdiccion_id": "punta_arenas",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Punta Arenas' · SITPORT: 'PUNTA ARENAS' · jurisdiccion del decreto: 'punta_arenas'"
+    },
+    {
+      "bahia_id": 170,
+      "nombre_sitport": "SECTOR CHAIHUÍN",
+      "jurisdiccion_id": "corral",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Corral' · SITPORT: 'CORRAL' · jurisdiccion del decreto: 'corral'"
+    },
+    {
+      "bahia_id": 172,
+      "nombre_sitport": "BAHÍA PAN DE AZÚCAR",
+      "jurisdiccion_id": "chanaral",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> chanaral",
+      "evidencia": "Chanaral: \"Desde el paralelo 26 03 20 S (Punta Carrizalillo) limite Norte de la III Region, hasta el paralelo 26 38 18 S (Punta Salinas) por el Sur....\""
+    },
+    {
+      "bahia_id": 173,
+      "nombre_sitport": "BAHÍA CONCÓN",
+      "jurisdiccion_id": "valparaiso",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Valparaíso' · SITPORT: 'VALPARAISO' · jurisdiccion del decreto: 'valparaiso'"
+    },
+    {
+      "bahia_id": 174,
+      "nombre_sitport": "BAHÍA RADA QUINTAY",
+      "jurisdiccion_id": "valparaiso",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Valparaíso' · SITPORT: 'VALPARAISO' · jurisdiccion del decreto: 'valparaiso'"
+    },
+    {
+      "bahia_id": 175,
+      "nombre_sitport": "SECTOR REPOLLA ALTO",
+      "jurisdiccion_id": "melinka",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Weste de la linea que divide el Canal Moraleda, a 20.53 km",
+      "evidencia": "melinka: \"Por el Este la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\" · puerto_cisnes: \"Por el Weste la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\""
+    },
+    {
+      "bahia_id": 176,
+      "nombre_sitport": "SECTOR REPOLLA BAJO",
+      "jurisdiccion_id": "melinka",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Weste de la linea que divide el Canal Moraleda, a 19.95 km",
+      "evidencia": "melinka: \"Por el Este la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\" · puerto_cisnes: \"Por el Weste la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\""
+    },
+    {
+      "bahia_id": 180,
+      "nombre_sitport": "BAHIA PICHIDANGUI",
+      "jurisdiccion_id": "los_vilos",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Los Vilos' · SITPORT: 'LOS VILOS' · jurisdiccion del decreto: 'los_vilos'"
+    },
+    {
+      "bahia_id": 181,
+      "nombre_sitport": "CANAL CHOLGO",
+      "jurisdiccion_id": "hornopiren",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Hornopirén' · SITPORT: 'RIO NEGRO HORNOPIREN' · jurisdiccion del decreto: 'hornopiren'"
+    },
+    {
+      "bahia_id": 182,
+      "nombre_sitport": "ESTERO COMAU",
+      "jurisdiccion_id": "hornopiren",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Hornopirén' · SITPORT: 'RIO NEGRO HORNOPIREN' · jurisdiccion del decreto: 'hornopiren'"
+    },
+    {
+      "bahia_id": 183,
+      "nombre_sitport": "ESTERO PICHICOLO",
+      "jurisdiccion_id": "hornopiren",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Hornopirén' · SITPORT: 'RIO NEGRO HORNOPIREN' · jurisdiccion del decreto: 'hornopiren'"
+    },
+    {
+      "bahia_id": 184,
+      "nombre_sitport": "ENSENADA HUALAIHUÉ",
+      "jurisdiccion_id": "hornopiren",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Hornopirén' · SITPORT: 'RIO NEGRO HORNOPIREN' · jurisdiccion del decreto: 'hornopiren'"
+    },
+    {
+      "bahia_id": 185,
+      "nombre_sitport": "ENSENADA ROLECHA",
+      "jurisdiccion_id": "hornopiren",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Hornopirén' · SITPORT: 'RIO NEGRO HORNOPIREN' · jurisdiccion del decreto: 'hornopiren'"
+    },
+    {
+      "bahia_id": 186,
+      "nombre_sitport": "SECTOR AYACARA",
+      "jurisdiccion_id": "hornopiren",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Hornopirén' · SITPORT: 'RIO NEGRO HORNOPIREN' · jurisdiccion del decreto: 'hornopiren'"
+    },
+    {
+      "bahia_id": 187,
+      "nombre_sitport": "SECTOR BUILL",
+      "jurisdiccion_id": "hornopiren",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Hornopirén' · SITPORT: 'RIO NEGRO HORNOPIREN' · jurisdiccion del decreto: 'hornopiren'"
+    },
+    {
+      "bahia_id": 195,
+      "nombre_sitport": "PATILLO",
+      "jurisdiccion_id": "patache",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> patache",
+      "evidencia": "Patache: \"Desde el paralelo 20 36 36 S (Punta Barrancos) por el Norte, hasta el paralelo 21 25 30 S (ribera Norte del rio Loa) por el Sur....\""
+    },
+    {
+      "bahia_id": 196,
+      "nombre_sitport": "BORDE COSTERO NORTE PATACHE",
+      "jurisdiccion_id": "patache",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> patache",
+      "evidencia": "Patache: \"Desde el paralelo 20 36 36 S (Punta Barrancos) por el Norte, hasta el paralelo 21 25 30 S (ribera Norte del rio Loa) por el Sur....\""
+    },
+    {
+      "bahia_id": 197,
+      "nombre_sitport": "BORDE COSTERO SUR PATACHE",
+      "jurisdiccion_id": "patache",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> patache",
+      "evidencia": "Patache: \"Desde el paralelo 20 36 36 S (Punta Barrancos) por el Norte, hasta el paralelo 21 25 30 S (ribera Norte del rio Loa) por el Sur....\""
+    },
+    {
+      "bahia_id": 198,
+      "nombre_sitport": "SECTOR COSTERO PENINSULA DE HUALPEN",
+      "jurisdiccion_id": "san_vicente",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> san_vicente",
+      "evidencia": "San Vicente: \"Desde el paralelo 36 42 25 S (Punta Lobos) por el Norte, hasta el paralelo 36 49 00 S (ribera Sur del rio Bio Bio) por el Sur....\""
+    },
+    {
+      "bahia_id": 199,
+      "nombre_sitport": "CABO DE HORNOS",
+      "jurisdiccion_id": "puerto_williams",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Puerto Williams' · SITPORT: 'PUERTO WILLIAMS' · jurisdiccion del decreto: 'puerto_williams'"
+    },
+    {
+      "bahia_id": 200,
+      "nombre_sitport": "LAREDO",
+      "jurisdiccion_id": "punta_arenas",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Punta Arenas' · SITPORT: 'PUNTA ARENAS' · jurisdiccion del decreto: 'punta_arenas'"
+    },
+    {
+      "bahia_id": 202,
+      "nombre_sitport": "CRUZ GRANDE",
+      "jurisdiccion_id": "coquimbo",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Coquimbo' · SITPORT: 'COQUIMBO' · jurisdiccion del decreto: 'coquimbo'"
+    },
+    {
+      "bahia_id": 203,
+      "nombre_sitport": "LAGO O'HIGGINS",
+      "jurisdiccion_id": "lago_general_carrera",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_general_carrera",
+      "evidencia": "Lago General Carrera: \"Lagos General Carrera, Cochrane y O'Higgins....\""
+    },
+    {
+      "bahia_id": 204,
+      "nombre_sitport": "PISAGUA",
+      "jurisdiccion_id": "iquique",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Iquique' · SITPORT: 'IQUIQUE' · jurisdiccion del decreto: 'iquique'"
+    },
+    {
+      "bahia_id": 205,
+      "nombre_sitport": "PUQUELDÓN (ISLA LEMUY)",
+      "jurisdiccion_id": "chonchi",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Chonchi' · SITPORT: 'CHONCHI' · jurisdiccion del decreto: 'chonchi'"
+    },
+    {
+      "bahia_id": 206,
+      "nombre_sitport": "LA HIGUERA",
+      "jurisdiccion_id": "coquimbo",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Coquimbo' · SITPORT: 'COQUIMBO' · jurisdiccion del decreto: 'coquimbo'"
+    },
+    {
+      "bahia_id": 207,
+      "nombre_sitport": "VALDIVIA CONECTIVIDAD",
+      "jurisdiccion_id": "valdivia",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Valdivia' · SITPORT: 'VALDIVIA' · jurisdiccion del decreto: 'valdivia'"
+    },
+    {
+      "bahia_id": 208,
+      "nombre_sitport": "BORDE COSTERO-VALDIVIA",
+      "jurisdiccion_id": "valdivia",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Valdivia' · SITPORT: 'VALDIVIA' · jurisdiccion del decreto: 'valdivia'"
+    },
+    {
+      "bahia_id": 209,
+      "nombre_sitport": "LAGO VILLARRICA SECTOR PUCÓN",
+      "jurisdiccion_id": "lago_villarrica",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "V · identidad del cuerpo de agua (distancia de edicion 0)",
+      "evidencia": "Lago Villarrica: \"Lagos Colico, Caburgua, Huilipilun y Villarrica, lagunas Conguillio, Galletue e Icalma, y el Rio Tolten.\""
+    },
+    {
+      "bahia_id": 210,
+      "nombre_sitport": "LAGO VILLARRICA SECTOR VILLARRICA",
+      "jurisdiccion_id": "lago_villarrica",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "I · el decreto la nombra (exacta, exacta)",
+      "evidencia": "Lago Villarrica: \"...Lagos Colico, Caburgua, Huilipilun y Villarrica, lagunas Co...\""
+    },
+    {
+      "bahia_id": 213,
+      "nombre_sitport": "CANAL CHACAO",
+      "jurisdiccion_id": "ancud",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Ancud' · SITPORT: 'ANCUD' · jurisdiccion del decreto: 'ancud'"
+    },
+    {
+      "bahia_id": 214,
+      "nombre_sitport": "BAHÍA ANCUD",
+      "jurisdiccion_id": "ancud",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Ancud' · SITPORT: 'ANCUD' · jurisdiccion del decreto: 'ancud'"
+    },
+    {
+      "bahia_id": 215,
+      "nombre_sitport": "EL QUISCO",
+      "jurisdiccion_id": "algarrobo",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> algarrobo",
+      "evidencia": "Algarrobo: \"Desde el paralelo 33 16 25 S (Punta Tunquen) por el Norte, hasta el paralelo 33 31 30 S (Estero La Ciguena) por el Sur....\""
+    },
+    {
+      "bahia_id": 216,
+      "nombre_sitport": "CANAL TENGLO",
+      "jurisdiccion_id": "puerto_montt",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Puerto Montt' · SITPORT: 'PUERTO MONTT' · jurisdiccion del decreto: 'puerto_montt'"
+    },
+    {
+      "bahia_id": 218,
+      "nombre_sitport": "LAGUNA CABEZA DE MAR",
+      "jurisdiccion_id": "punta_arenas",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Punta Arenas' · SITPORT: 'PUNTA ARENAS' · jurisdiccion del decreto: 'punta_arenas'"
+    },
+    {
+      "bahia_id": 219,
+      "nombre_sitport": "SECTOR NORTE QUINTERO",
+      "jurisdiccion_id": "quintero",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> quintero",
+      "evidencia": "Quintero: \"Desde el paralelo 32 38 50 S (Punta Maitencillo) por el Norte, hasta el paralelo 32 54 58 S por el Sur (ribera Norte del rio Aconcagua)....\""
+    },
+    {
+      "bahia_id": 220,
+      "nombre_sitport": "FIORDO AYSEN",
+      "jurisdiccion_id": "puerto_chacabuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Chacabuco' · SITPORT: 'CHACABUCO' · jurisdiccion del decreto: 'puerto_chacabuco'"
+    },
+    {
+      "bahia_id": 221,
+      "nombre_sitport": "ESTERO QUITRALCO",
+      "jurisdiccion_id": "puerto_chacabuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Chacabuco' · SITPORT: 'CHACABUCO' · jurisdiccion del decreto: 'puerto_chacabuco'"
+    },
+    {
+      "bahia_id": 222,
+      "nombre_sitport": "ESTERO CUPQUELAN",
+      "jurisdiccion_id": "puerto_chacabuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Chacabuco' · SITPORT: 'CHACABUCO' · jurisdiccion del decreto: 'puerto_chacabuco'"
+    },
+    {
+      "bahia_id": 223,
+      "nombre_sitport": "CANAL COSTA Y ELEFANTES",
+      "jurisdiccion_id": "puerto_chacabuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Chacabuco' · SITPORT: 'CHACABUCO' · jurisdiccion del decreto: 'puerto_chacabuco'"
+    },
+    {
+      "bahia_id": 224,
+      "nombre_sitport": "CANAL ERRAZURIZ",
+      "jurisdiccion_id": "puerto_chacabuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Chacabuco' · SITPORT: 'CHACABUCO' · jurisdiccion del decreto: 'puerto_chacabuco'"
+    },
+    {
+      "bahia_id": 225,
+      "nombre_sitport": "CANAL UTARUPA",
+      "jurisdiccion_id": "puerto_chacabuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Chacabuco' · SITPORT: 'CHACABUCO' · jurisdiccion del decreto: 'puerto_chacabuco'"
+    },
+    {
+      "bahia_id": 226,
+      "nombre_sitport": "BOCA WICKHAM",
+      "jurisdiccion_id": "puerto_chacabuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Chacabuco' · SITPORT: 'CHACABUCO' · jurisdiccion del decreto: 'puerto_chacabuco'"
+    },
+    {
+      "bahia_id": 227,
+      "nombre_sitport": "CANAL WILLIAMS",
+      "jurisdiccion_id": "puerto_chacabuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Chacabuco' · SITPORT: 'CHACABUCO' · jurisdiccion del decreto: 'puerto_chacabuco'"
+    },
+    {
+      "bahia_id": 228,
+      "nombre_sitport": "CANAL VICUÑA",
+      "jurisdiccion_id": "puerto_chacabuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto",
+      "evidencia": "mapa: 'Chacabuco' · SITPORT: 'CHACABUCO' · jurisdiccion del decreto: 'puerto_chacabuco'"
+    },
+    {
+      "bahia_id": 229,
+      "nombre_sitport": "LAGO VICHUQUEN",
+      "jurisdiccion_id": "constitucion",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "I · el decreto la nombra (exacta)",
+      "evidencia": "Constitucion: \"...limite sur de la Region del Maule. Incluye los lagos Teno, Vichuquen, Colbun y Maule....\""
+    },
+    {
+      "bahia_id": 231,
+      "nombre_sitport": "BAHÍA CHILE",
+      "jurisdiccion_id": "puerto_soberania",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "II · cae dentro del poligono de vertices que el decreto escribe",
+      "evidencia": "Puerto Soberania: \"Area delimitada por las lineas imaginarias que unen: 62 50 00 S / 059 16 00 W; 58 15 00 S / 059 30 00 W; 59 45 00 S / 065 15 00 W; 63 15 00 S / 070 45 00 W; 65 00 00 S / 075 15 00 W; 62 50 00 S / 059 16 00 W.\""
+    },
+    {
+      "bahia_id": 232,
+      "nombre_sitport": "SAN JOSE-CAICAEN",
+      "jurisdiccion_id": "calbuco",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Calbuco' · SITPORT: 'CALBUCO' · jurisdiccion del decreto: 'calbuco'"
+    },
+    {
+      "bahia_id": 233,
+      "nombre_sitport": "SENO RELONCAVI",
+      "jurisdiccion_id": "puerto_montt",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "operativo",
+      "criterio": "cajon A1: el mapa operativo y SITPORT coinciden",
+      "evidencia": "mapa: 'Puerto Montt' · SITPORT: 'PUERTO MONTT' · jurisdiccion del decreto: 'puerto_montt'"
+    },
+    {
+      "bahia_id": 234,
+      "nombre_sitport": "RÍO PALENA",
+      "jurisdiccion_id": "chaiten",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Este de la meridiano 073 15 00 W entre los paralelos 43 00 30 S y 43 44 25 S, a 93.05 km",
+      "evidencia": "quellon: \"...hasta su interseccion con la Longitud 073 15 00 W, luego hacia el Sur por este Meridiano hasta la Latitud 43 44 25 S, y desde alli hacia el Weste\" · chaiten: \"...siguiendo el paralelo 43 00 30 S hacia el Weste hasta su interseccion con el Meridiano 073 15 00 W, luego hacia el Sur hasta el Paralelo 43 44 25 S y desde alli hacia el Este\""
+    },
+    {
+      "bahia_id": 235,
+      "nombre_sitport": "CHEQUIAN",
+      "jurisdiccion_id": "achao",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "VI · cae dentro del contorno cerrado que el decreto escribe",
+      "evidencia": "Achao: \"Area formada por la linea imaginaria que une la Punta Tenaun (42 20 00 S / 073 21 30 W) con la punta NW de la isla Meulin (42 23 30 S / 073 17 00 W), desde alli siguiendo el paralelo 42 23 30 S hacia el Este hasta el meridiano 073 00 00 W; ...\""
+    },
+    {
+      "bahia_id": 236,
+      "nombre_sitport": "CALETA VIUDA",
+      "jurisdiccion_id": "tocopilla",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> tocopilla",
+      "evidencia": "Tocopilla: \"Desde el paralelo 21 25 30 S (ribera Norte del rio Loa) por el Norte, hasta el paralelo 22 39 00 S (Punta Tames) por el Sur....\""
+    },
+    {
+      "bahia_id": 238,
+      "nombre_sitport": "SECTOR CANAL MORALEDA",
+      "jurisdiccion_id": "puerto_cisnes",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Este de la linea que divide el Canal Moraleda, a 20.57 km",
+      "evidencia": "melinka: \"Por el Este la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\" · puerto_cisnes: \"Por el Weste la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\""
+    },
+    {
+      "bahia_id": 239,
+      "nombre_sitport": "SECTOR CANAL FERRONAVE Y CANAL DEVIA",
+      "jurisdiccion_id": null,
+      "estado": "sin_resolver",
+      "respaldo": null,
+      "criterio": null,
+      "candidatos": {
+        "mapa_operativo": "Cisnes",
+        "sitport": "AGUIRRE"
+      },
+      "fuente_a_consultar": {
+        "id": "costura_cisnes_aguirre",
+        "a_quien": "Informante con experiencia operativa en la zona austral",
+        "que_falta": "Las dos bahias caen ENTRE los extremos de la linea Cayo Blanco - Punta San Andres - Puerto Perez - Islote Rodriguez - Isla Traiguen, que es la frontera declarada entre Puerto Cisnes y Puerto Aguirre. El veredicto dependeria de como se prolongue el trazo hacia el Weste, y eso el decreto no lo escribe. Las bandas de paralelos de las dos las contienen.",
+        "pregunta": "En la practica, ¿quien atiende los canales Ferronave, Devia, Goñi y Ninualac — la Capitania de Puerto Cisnes o la de Puerto Aguirre? ¿Donde entiende la gente que navega ahi que esta el limite entre las dos, al Weste de la linea Islote Cayo Blanco - Punta San Andres? ¿Hay algun caso en que una de las dos haya dictado una restriccion para esos canales?",
+        "sirve_ademas_para": "La misma costura decide como se cierra la figura de Puerto Aguirre por el Weste, que es una de las causas del C3 abierto de E4."
+      },
+      "declaracion_previa_en_el_repo": null
+    },
+    {
+      "bahia_id": 240,
+      "nombre_sitport": "SECTOR CANAL PILCOMAYO Y CANAL RODRIGUEZ",
+      "jurisdiccion_id": "puerto_cisnes",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "IV · de los dos candidatos, la banda del decreto solo contiene a este (lat -44.7333)",
+      "evidencia": "Puerto Cisnes: \"Desde el paralelo 43 44 25 S (Punta Guala) por el Norte, hasta el paralelo 44 57 15 S (Punta San Andres - Canal Puyuhuapi) por el Sur. Por el Weste la...\""
+    },
+    {
+      "bahia_id": 241,
+      "nombre_sitport": "SECTOR CANAL GOÑI Y CANAL NINUALAC",
+      "jurisdiccion_id": null,
+      "estado": "sin_resolver",
+      "respaldo": null,
+      "criterio": null,
+      "candidatos": {
+        "mapa_operativo": "Cisnes",
+        "sitport": "AGUIRRE"
+      },
+      "fuente_a_consultar": {
+        "id": "costura_cisnes_aguirre",
+        "a_quien": "Informante con experiencia operativa en la zona austral",
+        "que_falta": "Las dos bahias caen ENTRE los extremos de la linea Cayo Blanco - Punta San Andres - Puerto Perez - Islote Rodriguez - Isla Traiguen, que es la frontera declarada entre Puerto Cisnes y Puerto Aguirre. El veredicto dependeria de como se prolongue el trazo hacia el Weste, y eso el decreto no lo escribe. Las bandas de paralelos de las dos las contienen.",
+        "pregunta": "En la practica, ¿quien atiende los canales Ferronave, Devia, Goñi y Ninualac — la Capitania de Puerto Cisnes o la de Puerto Aguirre? ¿Donde entiende la gente que navega ahi que esta el limite entre las dos, al Weste de la linea Islote Cayo Blanco - Punta San Andres? ¿Hay algun caso en que una de las dos haya dictado una restriccion para esos canales?",
+        "sirve_ademas_para": "La misma costura decide como se cierra la figura de Puerto Aguirre por el Weste, que es una de las causas del C3 abierto de E4."
+      },
+      "declaracion_previa_en_el_repo": null
+    },
+    {
+      "bahia_id": 242,
+      "nombre_sitport": "SECTOR CANAL CARRERA DEL CHIVATO Y CANAL CUCHI",
+      "jurisdiccion_id": "puerto_aguirre",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Weste de la linea Cayo Blanco - Punta San Andres - Puerto Perez - Islote Rodriguez - Isla Traiguen, a 9.33 km",
+      "evidencia": "puerto_aguirre: \"Por el Norte el paralelo 44 46 54 S hasta el Islote Cayo Blanco y desde este punto la linea imaginaria que une los siguientes puntos...\" · puerto_chacabuco cita la MISMA linea por su Norte"
+    },
+    {
+      "bahia_id": 243,
+      "nombre_sitport": "SECTOR CANAL DARWIN",
+      "jurisdiccion_id": "puerto_aguirre",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> puerto_aguirre",
+      "evidencia": "Puerto Aguirre: \"Por el Norte el paralelo 44 46 54 S hasta el Islote Cayo Blanco (44 46 54 S / 073 32 30 W) y desde este punto la linea imaginaria que une los siguientes puntos: 44 57 15 S / 073 21 40 W (Punta San And...\""
+    },
+    {
+      "bahia_id": 244,
+      "nombre_sitport": "SECTOR CANAL TRANSITO",
+      "jurisdiccion_id": "puerto_aguirre",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon B: -> puerto_aguirre",
+      "evidencia": "Puerto Aguirre: \"Por el Norte el paralelo 44 46 54 S hasta el Islote Cayo Blanco (44 46 54 S / 073 32 30 W) y desde este punto la linea imaginaria que une los siguientes puntos: 44 57 15 S / 073 21 40 W (Punta San And...\""
+    },
+    {
+      "bahia_id": 245,
+      "nombre_sitport": "LAGO PELLAIFA",
+      "jurisdiccion_id": "lago_panguipulli",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_panguipulli",
+      "evidencia": "Lago Panguipulli: \"Lagos Calafquen, Panguipulli, Pellaifa, Pullinque, Rinihue, Neltume, Pirihueico, y los rios Fuy y San Pedro....\""
+    },
+    {
+      "bahia_id": 246,
+      "nombre_sitport": "LAGO PULLINQUE",
+      "jurisdiccion_id": "lago_panguipulli",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_panguipulli",
+      "evidencia": "Lago Panguipulli: \"Lagos Calafquen, Panguipulli, Pellaifa, Pullinque, Rinihue, Neltume, Pirihueico, y los rios Fuy y San Pedro....\""
+    },
+    {
+      "bahia_id": 247,
+      "nombre_sitport": "LAGO CALAFQUEN",
+      "jurisdiccion_id": "lago_panguipulli",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_panguipulli",
+      "evidencia": "Lago Panguipulli: \"Lagos Calafquen, Panguipulli, Pellaifa, Pullinque, Rinihue, Neltume, Pirihueico, y los rios Fuy y San Pedro....\""
+    },
+    {
+      "bahia_id": 248,
+      "nombre_sitport": "LAGO RIÑIHUE",
+      "jurisdiccion_id": "lago_panguipulli",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_panguipulli",
+      "evidencia": "Lago Panguipulli: \"Lagos Calafquen, Panguipulli, Pellaifa, Pullinque, Rinihue, Neltume, Pirihueico, y los rios Fuy y San Pedro....\""
+    },
+    {
+      "bahia_id": 249,
+      "nombre_sitport": "LAGO NELTUME",
+      "jurisdiccion_id": "lago_panguipulli",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon D: lago_panguipulli",
+      "evidencia": "Lago Panguipulli: \"Lagos Calafquen, Panguipulli, Pellaifa, Pullinque, Rinihue, Neltume, Pirihueico, y los rios Fuy y San Pedro....\""
+    },
+    {
+      "bahia_id": 250,
+      "nombre_sitport": "LAGO PIREHUICO",
+      "jurisdiccion_id": "lago_panguipulli",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "V · identidad del cuerpo de agua (distancia de edicion 2)",
+      "evidencia": "Lago Panguipulli: \"Lagos Calafquen, Panguipulli, Pellaifa, Pullinque, Rinihue, Neltume, Pirihueico, y los rios Fuy y San Pedro.\""
+    },
+    {
+      "bahia_id": 251,
+      "nombre_sitport": "CANAL GOLFO CORCOVADO (NORTE)",
+      "jurisdiccion_id": "quellon",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Weste de la meridiano 073 15 00 W entre los paralelos 43 00 30 S y 43 44 25 S, a 24.27 km",
+      "evidencia": "quellon: \"...hasta su interseccion con la Longitud 073 15 00 W, luego hacia el Sur por este Meridiano hasta la Latitud 43 44 25 S, y desde alli hacia el Weste\" · chaiten: \"...siguiendo el paralelo 43 00 30 S hacia el Weste hasta su interseccion con el Meridiano 073 15 00 W, luego hacia el Sur hasta el Paralelo 43 44 25 S y desde alli hacia el Este\""
+    },
+    {
+      "bahia_id": 252,
+      "nombre_sitport": "CANAL MORALEDA (ESTE)",
+      "jurisdiccion_id": "quellon",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Weste de la meridiano 073 15 00 W entre los paralelos 43 00 30 S y 43 44 25 S, a 2.69 km",
+      "evidencia": "quellon: \"...hasta su interseccion con la Longitud 073 15 00 W, luego hacia el Sur por este Meridiano hasta la Latitud 43 44 25 S, y desde alli hacia el Weste\" · chaiten: \"...siguiendo el paralelo 43 00 30 S hacia el Weste hasta su interseccion con el Meridiano 073 15 00 W, luego hacia el Sur hasta el Paralelo 43 44 25 S y desde alli hacia el Este\""
+    },
+    {
+      "bahia_id": 253,
+      "nombre_sitport": "CANAL CHAFFERS NORTE",
+      "jurisdiccion_id": "quellon",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Weste de la meridiano 073 15 00 W entre los paralelos 43 00 30 S y 43 44 25 S, a 24.27 km",
+      "evidencia": "quellon: \"...hasta su interseccion con la Longitud 073 15 00 W, luego hacia el Sur por este Meridiano hasta la Latitud 43 44 25 S, y desde alli hacia el Weste\" · chaiten: \"...siguiendo el paralelo 43 00 30 S hacia el Weste hasta su interseccion con el Meridiano 073 15 00 W, luego hacia el Sur hasta el Paralelo 43 44 25 S y desde alli hacia el Este\""
+    },
+    {
+      "bahia_id": 254,
+      "nombre_sitport": "CANAL CHAFFERS SUR",
+      "jurisdiccion_id": "melinka",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Weste de la linea que divide el Canal Moraleda, a 8.85 km",
+      "evidencia": "melinka: \"Por el Este la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\" · puerto_cisnes: \"Por el Weste la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\""
+    },
+    {
+      "bahia_id": 255,
+      "nombre_sitport": "CANAL PÉREZ NORTE",
+      "jurisdiccion_id": "melinka",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Weste de la linea que divide el Canal Moraleda, a 16.09 km",
+      "evidencia": "melinka: \"Por el Este la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\" · puerto_cisnes: \"Por el Weste la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\""
+    },
+    {
+      "bahia_id": 256,
+      "nombre_sitport": "CANAL PÉREZ SUR",
+      "jurisdiccion_id": "melinka",
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "III · cae al Weste de la linea que divide el Canal Moraleda, a 17.56 km",
+      "evidencia": "melinka: \"Por el Este la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\" · puerto_cisnes: \"Por el Weste la linea imaginaria que divide el Canal Moraleda entre los siguientes puntos...\""
+    },
+    {
+      "bahia_id": 257,
+      "nombre_sitport": "RÍO COCHRANE",
+      "jurisdiccion_id": "lago_general_carrera",
+      "jurisdicciones_adicionales": null,
+      "estado": "resuelta",
+      "respaldo": "decreto",
+      "criterio": "cajon C: lago_general_carrera",
+      "evidencia": "Lago General Carrera: \"Lagos General Carrera, Cochrane y O'Higgins....\""
+    }
+  ]
+}

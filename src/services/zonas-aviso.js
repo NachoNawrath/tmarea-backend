@@ -16,7 +16,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 const path = require('path');
-const { normalizarTexto } = require('../utils/normalizarTexto');
+const { mismoNombre } = require('../utils/coincidencia-nombres');
 
 const RUTA_DECLARACION  = path.join(__dirname, '..', '..', 'data', 'decreto', 'zonas_aviso.json');
 const RUTA_INSUMO       = path.join(__dirname, '..', '..', 'data', 'decreto', 'jurisdicciones_v2.json');
@@ -36,7 +36,6 @@ class ErrorZonasAviso extends Error {
 
 const exigir = (cond, mensaje) => { if (!cond) throw new ErrorZonasAviso(mensaje); };
 const textoNoVacio = (v) => typeof v === 'string' && v.trim().length > 0;
-const mismoNombre = (a, b) => normalizarTexto(a) === normalizarTexto(b) && normalizarTexto(a) !== '';
 
 // ─── Resolucion del contacto ────────────────────────────────────────────────
 // Cada tipo declara que tiene que cumplirse en la fuente para poder usarlo. La

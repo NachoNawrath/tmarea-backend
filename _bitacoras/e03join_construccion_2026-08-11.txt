@@ -1,0 +1,144 @@
+================================================================================
+E0.3 — CONSTRUCCION DEL CAMINO 2. EL JOIN COMO DATO DECLARADO PROPIO.
+Fecha: 2026-08-11
+Estado: E0.3 CERRADA. Construido, con mordida, y NO cableado al motor — eso es E6.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts/e03join_construir_join.js
+    node scripts/e03join_prueba_mordida_join.js
+    npm test
+
+Crudo: _bitacoras/e03join_construccion_2026-08-11/
+       01_mordida_join.txt · 02_suite.txt · 03_reproducibilidad.txt
+
+
+1. QUE SE CONSTRUYO
+--------------------------------------------------------------------------------
+  data/decreto/join_bahia_jurisdiccion.json   el dato: 164 entradas
+  scripts/e03join_construir_join.js           lo compone; el archivo no se
+                                              escribe a mano (INV-3.7)
+  src/services/join-bahia-jurisdiccion.js     carga + validacion adentro
+  src/utils/coincidencia-nombres.js           la deuda de E0.2, saldada
+  scripts/e03join_prueba_mordida_join.js      la mordida
+
+La clave del join es `jurisdiccion_id` del decreto, no un nombre de Capitania.
+De ahi se sigue lo de la deuda: la regla de coincidencia de nombre existia
+porque el join era POR NOMBRE; con id deja de ser una regla y pasa a ser un
+lookup. Lo que queda del nombre —cotejar el contacto que ofrece el mapa
+operativo contra la jurisdiccion del decreto— quedo en un solo lugar,
+src/utils/coincidencia-nombres.js.
+
+`bahia-capitania-map.json` NO se toco. Sigue siendo lo que es: contacto. E0.3
+midio por que no se lo puede usar de join: 34 de 42 re-atribuciones dejaban el
+nombre de una Capitania con el telefono de otra.
+
+
+2. LO MEDIDO
+--------------------------------------------------------------------------------
+  Mordida del validador                16/16 + control negativo
+     El control negativo corre PRIMERO: si el join del repositorio no validara,
+     los 16 casos cazarian por el motivo equivocado y la prueba diria que muerde
+     cuando en realidad esta rota.
+  Suite unitaria                       76 pass / 0 fail
+  El join valida contra sus fuentes    164 bahias · 158 resueltas · 6 sin resolver
+  Reparto del respaldo                 88 operativo · 69 decreto · 1 declaracion
+  Regenerar es no-op byte a byte       tres corridas seguidas, mismo sha256
+                                       (03_reproducibilidad.txt)
+
+  Quien consume lo nuevo, medido con grep:
+     join-bahia-jurisdiccion.js  -> solo su prueba de mordida. NADA en produccion.
+     coincidencia-nombres.js     -> zonas-aviso.js:19 y ambitos-publicados.js:25,
+                                    que son los dos que tenian la copia.
+  El join no cambia nada de lo que el patron ve, y no porque lo suponga: porque
+  no hay quien lo llame. Cablearlo es E6.
+
+  LA REPRODUCIBILIDAD NO SE CUMPLIA, Y SE ARREGLO. INV-3.7 pide que regenerar
+  produzca el mismo resultado. Al medirlo, no lo producia: `generado: new Date()`
+  hacia que cada corrida diera un archivo distinto, con lo cual "se regenero
+  igual" y "se regenero distinto" quedaban indistinguibles — que es justo lo que
+  el invariante existe para poder ver. El sello de tiempo ahora se conserva si el
+  contenido no cambio y solo se renueva cuando cambia.
+
+
+3. LA DISTINCION QUE EL DATO NO DEJA PERDER: `respaldo`
+--------------------------------------------------------------------------------
+  decreto                69   sale del texto del D.S. 991 — mencion literal,
+                              poligono o linea de vertices escritos, o banda de
+                              paralelos que excluye a la otra candidata.
+  operativo              88   el mapa y SITPORT coinciden y el nombre resuelve.
+                              NO es el decreto diciendolo: es un acuerdo entre
+                              dos fuentes que no son normativas.
+  declaracion_versionada  1   la bahia 90, cerrada por autorizacion del owner
+                              sobre una declaracion previa del repositorio, con
+                              `respaldo_pendiente` anotado.
+
+Las 88 de respaldo `operativo` son la deuda grande que queda viva: mas de la
+mitad del catalogo descansa en que dos fuentes operativas estan de acuerdo, no
+en el decreto. E5 —la prueba de las 163— es la etapa que existe para someterlas
+a prueba. Mientras tanto el dato las marca, que es lo que permite contarlas sin
+volver a medir.
+
+
+4. LAS 6 SIN RESOLVER: DECLARADAS, CON SU FUENTE, Y SE RESUELVEN JUNTAS
+--------------------------------------------------------------------------------
+  127 Baker              limite_sur_aysen        DIRECTEMAR + DPA_2023
+  129 Puerto Eden        limite_sur_aysen        DIRECTEMAR + DPA_2023
+  154 Isla Guarello      limite_sur_aysen        DIRECTEMAR + DPA_2023
+  137 Bahia Chilota      solape_delgada_tdf      DIRECTEMAR
+  239 Canal Ferronave    costura_cisnes_aguirre  informante austral
+  241 Canal Goñi         costura_cisnes_aguirre  informante austral
+
+La fuente va DENTRO del archivo, no solo aca: una pendiente que no diga a quien
+preguntarle vuelve a ser "sin resolver a secas". El validador se detiene si una
+entrada 'sin_resolver' no trae `fuente_a_consultar` con a_quien, que_falta y la
+pregunta redactada, y eso esta probado en dos casos de la mordida.
+
+`politica_de_resolucion`, en el encabezado del archivo: las seis se resuelven
+TODAS JUNTAS cuando lleguen las respuestas, no de a una y no cada una por un
+camino distinto. Decision del owner, 2026-08-11.
+
+Donde el repositorio ya trae una declaracion previa que nombra a la bahia —la
+129 y la 137, en los motivos de los 'sin_contacto' de zonas_aviso.json— va
+REGISTRADA en `declaracion_previa_en_el_repo`, con la cita completa y con lo que
+se midio sobre ella en `medido_sobre_ella`. Registrarla no la aplica. Lo medido
+sobre cada una:
+
+  129: ninguna jurisdiccion con banda declarada contiene la latitud 49,13 S. La
+       declaracion nombra la bahia como propia y no contradice nada de lo
+       medido, pero tampoco aporta el limite que falta.
+  137: los dos parrafos describen un area al Oriente de la misma linea y el
+       decreto no dice como se reparten; la bahia esta a 230 m de la linea Cabo
+       San Vicente - Punta Anxius. La declaracion elige un lado que el texto del
+       decreto no decide.
+
+
+5. LO QUE ESTA ETAPA NO DETERMINO (CLAUDE.md §8.3)
+--------------------------------------------------------------------------------
+No se midio y por lo tanto no se afirma:
+
+  - Si el join coincide con lo que el motor resuelve hoy por Voronoi para las
+    bahias que si matchea. Se cruza `bahia_jurisdicciones` contra el join; es
+    material de E5, no de esta etapa.
+  - Si alguna de las 158 atribuciones resueltas cambia el volumen de
+    restricciones que se le muestran al patron. Ese numero lo produce E2.
+  - Que ven las 6 sin resolver cuando el motor cambie de unidad. Hoy no las ve
+    nadie porque el join no esta cableado; en E6 hay que decidir y medir que
+    pasa con una bahia sin jurisdiccion atribuida.
+
+
+6. HALLAZGO QUE NO ES DE ESTA ETAPA
+--------------------------------------------------------------------------------
+Cochamo es de ambito 'maritima' en el insumo y su parrafo nombra dos lagos
+("Incluye los Farellones Marimelli y los Lagos Tagua-Tagua e Inferior"), que es
+lo que cerro la bahia 153. Una jurisdiccion maritima con cuerpos lacustres
+adentro no esta contemplada en cotejo_lacustre_adjudicado.json, que solo recorre
+las seis de ambito lacustre. No bloquea E0.3; sube a E3.
+
+================================================================================
+FIN. E0.3 cerrada. Nada cableado al motor.
+================================================================================

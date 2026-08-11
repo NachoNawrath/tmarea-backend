@@ -22,7 +22,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 const path = require('path');
-const { normalizarTexto } = require('../utils/normalizarTexto');
+const { mismoNombre } = require('../utils/coincidencia-nombres');
 
 const RUTA_DECLARACION = path.join(__dirname, '..', '..', 'data', 'decreto', 'ambitos_publicados.json');
 const RUTA_INSUMO      = path.join(__dirname, '..', '..', 'data', 'decreto', 'jurisdicciones_v2.json');
@@ -38,7 +38,6 @@ class ErrorAmbitos extends Error {
 }
 const exigir = (cond, m) => { if (!cond) throw new ErrorAmbitos(m); };
 const textoNoVacio = (v) => typeof v === 'string' && v.trim().length > 0;
-const mismoNombre = (a, b) => normalizarTexto(a || '') === normalizarTexto(b || '') && normalizarTexto(a || '') !== '';
 
 // ─── Validacion pura: la declaracion contra el insumo ───────────────────────
 /**

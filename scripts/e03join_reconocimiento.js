@@ -620,6 +620,7 @@ if (SALIDA_JSON) {
       let destino = null;
       if (letra === 'B') destino = DESTINO.B(id);
       else if (letra === 'C' || letra === 'D') destino = (buscarCuerpo(nomBahia.get(id)) || []).map(c => c.jur);
+      else if (letra === 'A1') destino = (jurPorNombre.get(norm(mapa[String(id)].capitania)) || {}).id || null;
       else if (letra === 'A2' || letra === 'A3') destino = variantes.get(norm(mapa[String(id)].capitania)) || (jurLaxa(mapa[String(id)].capitania) || {}).id || null;
       bahias.push({
         id, nombre_sitport: nomBahia.get(id) || null, cajon: letra,
