@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "generado": "2026-08-10",
+  "generado_por": "declaracion de procedencia escrita a mano. NO es un derivado: es el registro de que capa entra, con que huella y por que motivo. El detalle en prosa esta en geodata/costa/PROCEDENCIA.txt y en _bitacoras/fase5J_medicion_capa_A_2026-08-10.txt.",
+  "nota": "Este archivo es el UNICO lugar donde se declara que capa de tierra usa la construccion. El constructor y el corrector de testigos lo leen; ninguno nombra una capa en el codigo. Cambiar de costa — por ejemplo si llega una linea de costa oficial del SHOA — es cambiar el valor de roles.tierra aca y volver a correr el cargador y la construccion. Ese es el sentido de que sea dato y no constante.",
+
+  "roles": {
+    "tierra": {
+      "capa": "osm_land_polygons",
+      "para_que": "es la capa que se RESTA de la figura maritima para que el poligono represente agua, y es la capa contra la que se corre un testigo al agua mas cercana. Se juzga por fidelidad al agua real: que la orilla entre en las bahias en vez de cerrarlas.",
+      "exigencias": [
+        "semantica = 'tierra': sus poligonos son tierra y su complemento es agua navegable",
+        "aguas_interiores_son_tierra = true: los lagos y embalses interiores NO son huecos de esta capa. De eso depende que 'el agua mas cercana' no pueda ser un lago; si dejara de cumplirse, correr un testigo podria meterlo en agua dulce sin conexion con el mar.",
+        "cierra_bahias = false: no se admite una capa que cierre las bahias con una linea recta, porque marcaria agua real como tierra — el falso negativo que prohibe INV-3.6"
+      ],
+      "resolucion_minima_vs_limite_exterior": 10,
+      "como_se_mide_la_resolucion": "contando los vertices de la geometria RECORTADA a la caja, capa por capa. Ojo con esto, porque la primera version del control lo hizo mal: un filtro por bbox devuelve los poligonos ENTEROS que tocan la caja, y ne_land trae Sudamerica y la Antartica completas en dos poligonos. Sin recortar da 421.693 vertices para ne_land y la razon sale 21x; recortando da 16.599 y la razon sale 520x. La comparacion sin recortar no compara resoluciones: compara cuanto mundo hay dentro de cada poligono.",
+      "motivo_del_minimo": "el argumento por el que se cambio de capa es de RESOLUCION, y una exigencia que no se mide no es una exigencia. El cargador cuenta los vertices de las dos capas recortadas al MISMO recorte y exige que la de tierra sea al menos 10 veces mas fina. Diez y no 521: 521 es lo que dio esta capa, y poner el minimo en el valor medido convertiria la exigencia en una descripcion de la capa de hoy. Diez es el orden de magnitud por debajo del cual la capa vuelve a estar en el rango donde cierra bahias. Si alguien declara como tierra una capa que no llega a diez veces, la carga se detiene y hay que argumentarlo, no descubrirlo despues en la figura."
+    },
+    "limite_exterior": {
+      "capa": "ne_10m_land",
+      "para_que": "materializar el limite exterior del espacio maritimo como un buffer de 200 millas nauticas desde la costa. Aca la resolucion gruesa es adecuada A PROPOSITO y no un descuido: el error de una linea de costa de 1:10m es de cientos de metros, cuatro ordenes de magnitud por debajo de las 200 millas, y el resultado se simplifica antes de bufferear de todos modos. Usar la capa fina costaria horas de calculo para mover un borde que esta a 370 km de la costa.",
+      "exigencias": [
+        "cobertura continental completa dentro del recorte; no se le pide fidelidad de bahia"
+      ]
+    }
+  },
+
+  "recorte": {
+    "x_w": -85.0,
+    "y_s": -60.0,
+    "x_e": -65.0,
+    "y_n": -17.0,
+    "motivo": "es la caja de trabajo de la construccion (CONVENCION nuestra, no decreto). La capa de tierra se carga recortada a esta caja porque fuera de ella no se corta nada. El cargador exige que el recorte declarado aca cubra la caja del constructor; si el constructor ampliara su caja y esta no, la resta se haria contra una capa que no llega y la figura quedaria con tierra adentro sin que nada avise.",
+    "advertencia_ambito": "Los ambitos 'antartica' e 'insular_remota' caen fuera de esta caja. Hoy no se les resta tierra (la antartica se construye sobre su figura base y la insular remota es no_cerrable), asi que la caja les alcanza. Si algun dia se les construye geometria de agua, esta caja tiene que crecer o hay que declarar una capa de tierra propia para ellos."
+  },
+
+  "capas": [
+    {
+      "id": "osm_land_polygons",
+      "nombre": "OSM land polygons (variante split, EPSG:4326)",
+      "estado": "primaria",
+      "tabla": "costa_osm",
+      "tabla_subdividida": "costa_osm_sub",
+      "archivo": "geodata/costa/land-polygons-split-4326.zip",
+      "capa_interna": "land-polygons-split-4326/land_polygons.shp",
+      "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+      "bytes": 925046449,
+      "epsg": 4326,
+      "semantica": "tierra",
+      "aguas_interiores_son_tierra": true,
+      "cierra_bahias": false,
+      "poligonos_disjuntos": false,
+      "nota_poligonos_disjuntos": "MEDIDO el 2026-08-10 sobre el recorte: 2.116 pares de poligonos con traslape de AREA (no de borde), 6.219 km2 en total sobre ~2,8 millones de km2 de tierra = 0,22%, maximo 12,4 km2 por par, repartidos parejo en toda la latitud, y 208 poligonos con un duplicado exacto. La variante 'split' parte la costa en una grilla y las piezas se pisan en las costuras. NO es un defecto que invalide la capa — un traslape de tierra sobre tierra no inventa agua ni la tapa — pero prohibe un atajo: la union de la capa se tiene que hacer con ST_UnaryUnion y NO con ST_Collect, porque un MultiPolygon de piezas que se pisan es invalido, y sumar areas de la capa cuenta doble. Queda declarado aca para que el cargador lo verifique contra la medicion en vez de suponerlo: si una capa futura fuera disjunta o dejara de serlo, el control lo dice.",
+      "origen": "https://osmdata.openstreetmap.de/download/land-polygons-split-4326.zip",
+      "pagina": "https://osmdata.openstreetmap.de/data/land-polygons.html",
+      "licencia": "ODbL, (c) OpenStreetMap contributors",
+      "derivacion": "vias natural=coastline de OSM, ensambladas en poligonos y reparadas con osmcoastline. Incluye continentes e islas.",
+      "descargado": "2026-08-10",
+      "etag_al_descargar": "\"372316b1-658a910c0cdc3\"",
+      "last_modified": "Mon, 10 Aug 2026 03:36:54 GMT",
+      "en_el_repo": false,
+      "motivo_no_en_el_repo": "925 MB. Se regenera desde su origen; la huella sha256 de arriba es lo que permite comprobar que se bajo la misma.",
+      "advertencia_origen": "el archivo se REGENERA A DIARIO en el origen. Una descarga nueva NO va a dar este sha256, y eso no significa que este corrupta: significa que es otra version de la costa. Si se cambia, se actualiza el sha aca y se declara en la bitacora que la capa cambio.",
+      "motivo_eleccion": "resolucion medida en el mismo recuadro: 8.646.997 vertices contra los 16.578 de ne_land, 521 veces mas fina. A la escala de ne_land la costa cierra bahias enteras y la resta marcaria agua real como tierra. Trae continente E islas, a diferencia de mapa_base_multipoligonos, que solo tiene islas. Ya viene en EPSG:4326, el CRS de toda la base: no se reproyecta.",
+      "NO_es_el_motivo": "NO se eligio por cuantos puntos representativos deja sobre agua. Esa prueba no mide la capa: los testigos son puntos de ORILLA, y una costa mas fina abraza mejor la orilla y por eso deja AFUERA a mas de ellos, no a menos. OSM da 3 de 30 y la DPA daba 4, siendo OSM la mejor de las tres. El argumento quedo corregido en _bitacoras/fase5J."
+    },
+    {
+      "id": "ne_10m_land",
+      "nombre": "Natural Earth 10m land",
+      "estado": "descartada_como_tierra__vigente_como_limite_exterior",
+      "tabla": "ne_land",
+      "tabla_subdividida": null,
+      "archivo": "geodata/ne_10m_land.shp",
+      "capa_interna": null,
+      "sha256": "4cad3a49bc75c1a4c2f3d7efae04f2f8e63151c96764b2658effabf524331fa6",
+      "epsg": 4326,
+      "semantica": "tierra",
+      "aguas_interiores_son_tierra": true,
+      "cierra_bahias": true,
+      "poligonos_disjuntos": true,
+      "origen": "https://www.naturalearthdata.com/ 10m physical, land",
+      "licencia": "dominio publico",
+      "en_el_repo": true,
+      "motivo_descarte_como_tierra": "resolucion: 16.578 vertices en el recuadro de Chile contra 8.646.997 de OSM, 521 veces mas gruesa. A esa escala cierra bahias enteras. Restar con ella da por tierra 30 de los 53 puntos representativos, entre ellos Valparaiso, Iquique y San Antonio: agua real marcada como tierra, el falso negativo que prohibe INV-3.6.",
+      "motivo_conservacion": "sirve para el limite exterior, donde lo grueso no molesta — ver roles.limite_exterior."
+    },
+    {
+      "id": "dpa_2023",
+      "nombre": "Division politico administrativa de Chile 2023 (comunas, provincias, regiones)",
+      "estado": "descartada",
+      "tabla": null,
+      "archivo": "geodata/costa/DPA_2023.zip",
+      "capa_interna": null,
+      "sha256": null,
+      "bytes": 310992026,
+      "epsg": 5360,
+      "semantica": "division_administrativa",
+      "aguas_interiores_son_tierra": null,
+      "cierra_bahias": true,
+      "origen": "https://geoportal.cl/geoportal/catalog/36391/",
+      "licencia": "SUBDERE + IGM + DIFROL + INE",
+      "en_el_repo": false,
+      "motivo_descarte": "es una division ADMINISTRATIVA, no una linea de costa. Usa la costa del IGM para su borde exterior pero CIERRA las bahias con el poligono comunal — la comuna de Valparaiso incluye su bahia, y uno de los documentos de su propio zip se llama 'CIERRE DE POLIGONOS_v4.docx'. Para una division administrativa eso es correcto; para nosotros es el mismo defecto de ne_land con mejor resolucion. Se conserva el archivo por si alguna vez hacen falta limites administrativos.",
+      "NO_es_el_motivo": "NO se descarto por el 4 de 30 de la prueba de testigos. Esa prueba quedo invalidada — ver el campo homologo de osm_land_polygons."
+    },
+    {
+      "id": "mma_linea_litoral",
+      "nombre": "MMA Linea de litoral",
+      "estado": "no_descargada",
+      "tabla": null,
+      "archivo": null,
+      "capa_interna": null,
+      "sha256": null,
+      "epsg": null,
+      "semantica": "linea_de_costa",
+      "aguas_interiores_son_tierra": null,
+      "cierra_bahias": null,
+      "origen": "catalogo del Ministerio del Medio Ambiente",
+      "licencia": null,
+      "en_el_repo": false,
+      "motivo_descarte": "metadato pobre: escala de referencia declarada 'comuna', origen no cartografico. No se llego a descargar."
+    }
+  ]
+}
