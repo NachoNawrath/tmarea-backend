@@ -234,3 +234,70 @@ una pendiente. Ninguna de las 34 quedo asi. El reparto final:
 ================================================================================
 FIN. Nada construido, nada aplicado. Alto antes de construir.
 ================================================================================
+
+
+================================================================================
+ADDENDUM 2026-08-11 — LA BAHIA 90 Y EL IGM. ME EQUIVOQUE DE FUENTE.
+(CLAUDE.md §3.3: la bitacora se agrega, no se reescribe. El §4 "FUENTE 1" de
+ arriba queda como se escribio y se corrige aca.)
+================================================================================
+
+QUE DIJE: "se cierra con una consulta nuestra al IGM, la misma capa de fase5S.
+Se resuelve de este lado, sin owner."
+
+QUE MIDIO LA CONSULTA: la capa NO tiene el dato. Crudo en
+_bitacoras/e03join_cierre_2026-08-11/02_igm_bahia_90.txt.
+
+  capa SECCION_L, 6.617 features
+  '%ROBINSON%'        1 hit: "Cerro Pico Robinson" (54 57 51 S / 070 06 31 W),
+                      un cerro en Magallanes a 2.400 km de la isla
+  '%CRUSOE%'          0
+  '%JUAN FERNANDEZ%'  0
+  '%FERNANDEZ%'       4 hits, los cuatro en Magallanes
+  '%SAN AMBROSIO%'    0     '%SAN FELIX%'  0     '%SANTA CLARA%'  0
+
+Probe ademas el directorio de servicios del Geoportal: la unica otra capa
+alcanzable barata (Hosted/250k) es una grilla cartografica, sin toponimos.
+
+POR QUE ME EQUIVOQUE: fase5S uso esa capa para cuatro toponimos de Magallanes y
+yo generalice de "sirvio para esos cuatro" a "es la capa de toponimos del pais".
+Los 6.617 features estan todos en el extremo austral. Es el mismo error de forma
+que el §2 de CLAUDE.md persigue: una fuente que probo una cosa usada para
+respaldar otra.
+
+QUE SI LA CIERRA, Y YA ESTABA EN EL REPOSITORIO: `data/decreto/zonas_aviso.json`.
+La zona 'juan_fernandez', escrita y validada en R1 pieza 1, dice textual:
+
+  "La unica bahia del catalogo EN SU TERRITORIO (90, Isla Robinson Crusoe) esta
+   atribuida en el mapa operativo a la Capitania de Valparaiso, no a Juan
+   Fernandez, a la que el decreto le da Capitania propia. Tomar ese telefono
+   seria dejar que el mapa operativo revoque al decreto (INV-3.3)."
+
+O sea que el proyecto YA afirma que la bahia 90 esta en el territorio de
+juan_fernandez, y no de pasada: es el fundamento de que esa zona se declare
+'sin_contacto', y el validador de zonas-aviso se detiene si la 90 dejara de
+discrepar. Cerrarla ahi no es una adjudicacion nueva; es reconocer una que ya se
+tomo, esta versionada y tiene un control que la sostiene.
+
+LO QUE HAY QUE SABER IGUAL: esa cita es una afirmacion NUESTRA, no una autoridad
+externa. El paso que ninguna fuente del repositorio certifica sigue siendo
+"Isla Robinson Crusoe es una isla del Archipielago de Juan Fernandez" — que es
+conocimiento geografico corriente, pero §3.4 pide que se pueda reproducir desde
+el repositorio. Si el owner quiere una cita externa, es UNA linea en la consulta
+a DIRECTEMAR que ya se esta preparando:
+
+  "¿La Isla Robinson Crusoe queda comprendida en el 'Archipielago de Juan
+   Fernandez' que el D.S. 991/1987 asigna a la Capitania de Puerto de Juan
+   Fernandez?"
+
+REPARTO CORREGIDO:
+    28  cerradas (27 por el decreto + la 90 por la declaracion ya versionada)
+     3  el limite Sur: DPA_2023 en disco + DIRECTEMAR   (127, 129, 154)
+     1  dos parrafos que se solapan: DIRECTEMAR         (137)
+     2  informante austral                              (239, 241)
+    ---
+    34        sin fuente identificada: CERO (no cambia)
+
+FUENTES QUE QUEDAN DESCARTADAS Y POR QUE, para no volver a intentarlo:
+  - IGM SECCION_L: medido, no cubre las islas oceanicas. Sirve para Magallanes.
+  - IGM Hosted/250k: es una grilla cartografica, no trae toponimos.

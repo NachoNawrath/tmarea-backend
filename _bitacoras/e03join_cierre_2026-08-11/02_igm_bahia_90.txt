@@ -1,0 +1,20 @@
+CONSULTAS AL IGM PARA CERRAR LA BAHIA 90 — 2026-08-11T21:44:38.486Z
+Servicio: https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer (capa SECCION_L, la misma de fase5S)
+total de features en la capa: {"count":6617}
+
+where UPPER(texto) LIKE UPPER('%ROBINSON%')  -> http 200, 1 features
+    {"fid":974,"texto":"Cerro Pico Robinson","dof":0,"objectid":66500}  (-54.96434584928148, -70.1086278862679)
+where UPPER(texto) LIKE UPPER('%CRUSOE%')  -> http 200, 0 features
+where UPPER(texto) LIKE UPPER('%JUAN FERNANDEZ%')  -> http 200, 0 features
+where UPPER(texto) LIKE UPPER('%FERNÁNDEZ%')  -> http 200, 4 features
+    {"fid":4354,"texto":"PUESTO FERNÁNDEZ","dof":0,"objectid":70322}  (-52.798083094659006, -69.83161800726518)
+    {"fid":4571,"texto":"Cerro Fernández Vial","dof":0,"objectid":70546}  (-52.76833453760875, -72.02723122773895)
+    {"fid":5295,"texto":"Isla Fernández","dof":0,"objectid":71314}  (-52.74166020325571, -73.40818244456416)
+    {"fid":6387,"texto":"Islote Fernández","dof":0,"objectid":72513}  (-52.055238233657484, -73.13406438416395)
+where UPPER(texto) LIKE UPPER('%SAN AMBROSIO%')  -> http 200, 0 features
+where UPPER(texto) LIKE UPPER('%SAN FELIX%')  -> http 200, 0 features
+where UPPER(texto) LIKE UPPER('%SANTA CLARA%')  -> http 200, 0 features
+
+VEREDICTO: la capa no contiene ningun toponimo del Archipielago de Juan
+Fernandez ni de las islas San Felix y San Ambrosio. El unico ROBINSON es un
+cerro en Magallanes, a 2.400 km. La capa NO puede cerrar la bahia 90.
