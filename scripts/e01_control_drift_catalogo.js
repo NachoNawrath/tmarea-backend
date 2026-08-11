@@ -15,6 +15,13 @@
 //   node scripts/e01_control_drift_catalogo.js --insumo <dir con los 3 JSON>
 //   node scripts/e01_control_drift_catalogo.js --raiz <dir> --declaracion <archivo>
 //
+// DOS ORIGENES Y UN SOLO DESTINO PUBLICADO:
+//   sin --insumo  el origen es la consulta en vivo. Con --estado, escribe el
+//                 estado publicado. Es la corrida REAL.
+//   con --insumo  el origen son capturas en disco: es una corrida de PRUEBA, y
+//                 NO escribe el estado publicado aunque se le pase --estado.
+//                 Lo dice por consola en vez de callarlo.
+//
 // Códigos de salida:
 //   0  SIN_DRIFT                  las fuentes coinciden (o todo está adjudicado)
 //   1  DRIFT_NO_DECLARADO         divergencia que nadie había visto, o declaración
@@ -35,21 +42,64 @@ const {
 } = require('../src/services/catalogo-bahias');
 
 // ── argumentos ───────────────────────────────────────────────────────────────
-function arg(nombre, porDefecto) {
-  const i = process.argv.indexOf(nombre);
-  if (i === -1) return porDefecto;
-  const v = process.argv[i + 1];
-  if (v === undefined || v.startsWith('--')) {
-    console.error(`${nombre} necesita un valor`);
-    process.exit(CODIGO_SALIDA.DRIFT_NO_DECLARADO);
+// Se recorre el argv UNA vez, de izquierda a derecha, tomando cada `--flag` con
+// el token siguiente como su valor y saltandolo. De ahi salen dos propiedades
+// que la version anterior no tenia y que costaron caro:
+//
+//   · GANA LA ULTIMA ocurrencia. La version anterior usaba indexOf, que devuelve
+//     la PRIMERA, mientras drift-arranque.js compone `--estado REAL` y despues
+//     agrega los argumentos de prueba al final. Quien agrega al final espera
+//     ganar; obtenia lo contrario, en silencio.
+//   · UN VALOR NUNCA SE LEE COMO FLAG. Antes se buscaba el nombre en todo el
+//     argv sin distinguir posicion.
+//
+// Un flag desconocido detiene el control: un `--estato` mal tipeado se ignoraba
+// entero y la corrida seguia como si nada, que es la misma familia de falla.
+const FLAGS = new Set(['--raiz', '--insumo', '--estado', '--declaracion']);
+
+function leerArgumentos(argv) {
+  const encontrados = new Map();
+  for (let i = 0; i < argv.length; i++) {
+    const t = argv[i];
+    if (!t.startsWith('--')) {
+      console.error(`argumento suelto sin flag: ${t}`);
+      process.exit(CODIGO_SALIDA.DRIFT_NO_DECLARADO);
+    }
+    if (!FLAGS.has(t)) {
+      console.error(`flag desconocido: ${t}. Aceptados: ${[...FLAGS].join(', ')}`);
+      process.exit(CODIGO_SALIDA.DRIFT_NO_DECLARADO);
+    }
+    const v = argv[i + 1];
+    if (v === undefined || v.startsWith('--')) {
+      console.error(`${t} necesita un valor`);
+      process.exit(CODIGO_SALIDA.DRIFT_NO_DECLARADO);
+    }
+    encontrados.set(t, v);   // la ultima gana
+    i++;                     // el valor no vuelve a mirarse como flag
   }
-  return v;
+  return encontrados;
 }
+
+const ARGS = leerArgumentos(process.argv.slice(2));
+const arg = (nombre, porDefecto) => (ARGS.has(nombre) ? ARGS.get(nombre) : porDefecto);
 
 const RAIZ = path.resolve(arg('--raiz', path.join(__dirname, '..')));
 const INSUMO = arg('--insumo', null);
 const ESTADO = arg('--estado', null);
 const RUTA_DECL = path.resolve(arg('--declaracion', path.join(RAIZ, 'data/catalogo/divergencias_declaradas.json')));
+
+// ── LA GUARDA ────────────────────────────────────────────────────────────────
+// Una corrida con --insumo lee capturas de disco: es un ORIGEN DE PRUEBA. El
+// estado publicado describe el mundo, no el resultado de una prueba, asi que
+// una corrida con --insumo NO LO ESCRIBE. Nunca, con ninguna combinacion de
+// flags.
+//
+// No es "escribirlo en otro lado": es no escribirlo. Redirigir a un temporal
+// obliga a acordarse de redirigir, y acordarse ya fallo una vez — la
+// redireccion existia, estaba escrita, y no funcionaba (ver
+// _bitacoras/e03_recon_estado_drift_2026-08-11.txt). Lo que no se puede hacer
+// no hay que recordarlo.
+const ESCRIBE_ESTADO = ESTADO !== null && INSUMO === null;
 
 const ARCHIVOS_INSUMO = {
   consultaBahias: 'sitport_consultaBahias.json',
@@ -275,7 +325,15 @@ function escribirEstado(informe, origen) {
   }
 
   imprimir(informe, origen, RUTA_DECL);
-  if (ESTADO) escribirEstado(informe, origen);
+  if (ESCRIBE_ESTADO) {
+    escribirEstado(informe, origen);
+  } else if (ESTADO) {
+    // Se pidio escribir estado y no se escribe. Se dice, con el motivo: que la
+    // guarda actue en silencio seria otra forma del mismo problema.
+    console.log(`[estado] NO se escribe ${path.relative(RAIZ, ESTADO)}: esta corrida usa ` +
+      `--insumo, o sea un origen de prueba. El estado publicado solo lo escribe una ` +
+      `corrida en vivo.`);
+  }
   process.exit(CODIGO_SALIDA[informe.veredicto]);
 })().catch(e => {
   console.error('ERROR NO CONTROLADO:', e);
