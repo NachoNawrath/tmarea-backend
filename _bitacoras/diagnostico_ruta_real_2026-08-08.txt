@@ -1,0 +1,146 @@
+============================================================================
+DIAGNOSTICO: Ruta real Anahuac -> Melinka con Hualaihu/Ayacara en transito
+Fecha: 2026-08-09
+============================================================================
+
+PASO 1 — RUTA RASTER REAL
+============================================================================
+
+POST /api/rutas/calcular
+  lat_origen: -41.48607231899996  lon_origen: -72.97656408099994  (Caleta Pesquera Anahuac)
+  lat_destino: -43.89874101699996 lon_destino: -73.74618202399995 (Rampa Conectividad de Melinka)
+
+Motor: raster-v1, tile AUSTRAL_N, distancia 165.62 mn, 4 tramos.
+
+Waypoints crudos (todos los tramos concatenados, [lng, lat]):
+  [-72.97656408099994, -41.48607231899996]   <- zarpe (Anahuac)
+  [-72.97717291200632, -41.48648827021162]
+  [-72.97717967857584, -41.48693857833144]
+  [-72.98329086052388, -41.494993066848]
+  [-72.99061531312975, -41.5039374997533]
+  [-72.99609617899951, -41.509744887171706]
+  [-72.99560751440386, -41.51695493109011]
+  [-72.88420682461587, -41.69665749338543]
+  [-72.88774293903474, -41.90964235182292]
+  [-72.84897172397882, -41.94100859563468]
+  [-72.81025385050415, -41.97956655513141]
+  [-72.9763286006616,  -42.69245123251137]
+  [-72.92368489395477, -42.7235064267795]
+  [-72.91668863886052, -42.78750086697726]
+  [-73.13979644161698, -43.612575515828446]
+  [-73.65348165698089, -43.906572990839216]
+  [-73.74117248084521, -43.90301926571287]
+  [-73.74670774086451, -43.90068389244539]
+  [-73.74668142281786, -43.899783944796965]
+  [-73.74666826425292, -43.899333970914675]
+  [-73.74665510599357, -43.89888399699365]
+  [-73.74618202399995, -43.89874101699996]   <- recalada (Melinka)
+
+============================================================================
+PASO 2 — BAHIAS QUE MATCHEA LA RUTA (ST_Intersects contra bahia_jurisdicciones)
+============================================================================
+
+ bahia_id |        nombre         | intersect_m | dist_punto_ruta_m | area_km2
+----------+-----------------------+-------------+-------------------+----------
+      184 | Ensenada Hualaihu     |        3028 |             25809 |      134
+      186 | Sector Ayacara        |       50753 |             25774 |     1145
+      113 | Bahia de Calbuco      |       20100 |             20357 |      766
+      121 | Chaiten               |       83896 |             18517 |     1511
+      252 | Canal Moraleda (Este) |       46860 |             13824 |     2231
+      253 | Canal Chaffers Norte  |       14772 |             12904 |      814
+      110 | Bahia Chincui         |       17391 |              7940 |      552
+      254 | Canal Chaffers Sur    |       15192 |              6658 |      911
+      256 | Canal Perez Sur       |        6523 |              6068 |      124
+      216 | Canal Tenglo          |       10407 |              2240 |      166
+      124 | Melinka               |        4815 |                 5 |     4452
+
+TOTAL: 11 bahias matchean.
+
+HUALAIHU (184): punto de la bahia a 25.8 km de la ruta, 3 km de interseccion.
+AYACARA  (186): punto de la bahia a 25.8 km de la ruta, 50 km de interseccion.
+
+Ambas estan DENTRO del buffer de 80 km. Son matches LEGITIMOS por geografia.
+La ruta pasa por el borde de sus poligonos Voronoi (zona de Hornopiren).
+
+============================================================================
+PASO 3 — DATO CRUDO DE SITPORT Y CADENA DE EVALUACION
+============================================================================
+
+--- BAHIA 184: Ensenada Hualaihu (Capitania Hornopiren) ---
+
+Observacion cruda:
+  "SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO PARA EE.MM DE  A.B
+   DENTRO DE LA BAHIA, TRABAJO EN CENTROS DE CULTIVOS, FAENAS DE BUCEO
+   Y REMOLQUE SUSPENDIDAS."
+
+NaveRecibe: "NAVE MENOR (<100 AB)"
+TipoRestriccion: "LIMITES OPERACIONALES"
+MotivoRestriccion: "VIENTO"
+
+Cadena de evaluacion (nave_ab=43):
+  1. Texto Observacion: "...CERRADO PARA EE.MM DE  A.B DENTRO DE LA BAHIA..."
+                                                  ^^
+                                        ESPACIO DOBLE — falta el numero
+     El patron relevante: /EE\.?MM\.?\s*(?:(?:DE|A)\s+)?(\d+)\s*A\.?B/
+     El texto dice "EE.MM DE  A.B" -> NO hay (\d+) entre "DE" y "A.B"
+     -> extraerUmbralDeTexto() retorna null
+
+  2. Como umbral == null y el texto contiene "EE.MM" (no "EMBARCACIONES MENORES"
+     ni "NAVES MENORES" literal), cae a la rama generica:
+     return { umbral_dentro: null, umbral_fuera: null, bloqueo_total: false }
+     (linea 100 de sitport-parser.js)
+
+  3. Condicion detectada: VARIABLE (Observacion contiene "VARIABLE")
+     afecta_menores: true (NaveRecibe contiene "MENOR")
+
+  4. BRE recibe facts: condicion=VARIABLE, umbral_ab_fuera=null, afecta_menores=true
+     -> Regla 'variable-sin-umbral' (prioridad 5): condicion==VARIABLE &&
+        umbral_ab_fuera==null && afecta_menores==true -> MATCH
+     -> Resultado: nivel=U, estado=precaucion, bloquea=false
+
+  5. RESULTADO FINAL: aplica=true, estado=precaucion, nivel=U
+     Motivo: "Condicion VARIABLE - restriccion activa para embarcaciones menores"
+
+  El umbral_ab queda null -> la restriccion se aplica a TODAS las embarcaciones
+  menores, independiente de su AB. Una nave de 43 AB recibe precaucion aunque
+  probablemente el texto original de DIRECTEMAR decia algo como "CERRADO PARA
+  EE.MM DE 25 A.B" pero el numero se perdio en la transmision de datos.
+
+--- BAHIA 186: Sector Ayacara (Capitania Hornopiren) ---
+
+  IDENTICO a Hualaihu: mismo texto de Observacion, mismo NaveRecibe, misma
+  Capitania. Ambas sub-zonas de Hornopiren comparten la misma restriccion.
+  Cadena de evaluacion identica -> aplica=true, umbral_ab=null, precaucion.
+
+============================================================================
+PASO 4 — VEREDICTO CON DATOS
+============================================================================
+
+a) GEOGRAFIA: Hualaihu y Ayacara son matches LEGITIMOS. Sus puntos estan a
+   ~26 km de la ruta real. La ruta pasa 3 km por el poligono de Hualaihu y
+   50 km por el de Ayacara. Estan bien dentro del buffer de 80 km. El
+   recorte por buffer funciona correctamente — NO es un fallo de geografia.
+
+b) CLASIFICACION AB: La restriccion sale como aplica=true porque el umbral_ab
+   es null. El texto crudo de SITPORT dice "EE.MM DE  A.B" (con espacio
+   doble donde deberia haber un numero). Los patrones regex del parser
+   requieren (\d+) antes de "A.B", asi que extraerUmbralDeTexto() retorna
+   null. Con umbral null, la regla 'variable-sin-umbral' del BRE aplica
+   precaucion a TODAS las embarcaciones menores sin discriminar por AB.
+
+   Si SITPORT publicara el numero (ej: "EE.MM DE 25 A.B"), el parser lo
+   extraeria, y la regla 'variable-bajo-umbral' compararia 43 AB vs 25 AB
+   -> nave por encima del umbral -> no_afecta. El problema es que el dato
+   de origen llega sin numero.
+
+c) EN UNA FRASE: El problema es de CLASIFICACION AB, no de geografia.
+   Las bahias matchean legitimamente (estan a 26 km de la ruta), pero su
+   restriccion se muestra como activa para una nave de 43 AB porque el
+   texto de SITPORT omite el numero de AB en "EE.MM DE [vacio] A.B",
+   el parser no puede extraer umbral (null), y el BRE aplica el principio
+   de precaucion: sin umbral conocido, toda embarcacion menor queda
+   afectada.
+
+============================================================================
+NO SE MODIFICO NADA.
+============================================================================

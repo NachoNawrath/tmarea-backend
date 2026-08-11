@@ -1,0 +1,332 @@
+================================================================================
+ARQUEOLOGIA DE GIT — FRENTE 2: REGRESION DEL MATCHING
+Fecha: 2026-08-08
+Proyecto: tmarea-backend
+Objetivo: Identificar que cambio entre el fin de semana (sab 1 / dom 2 ago) y
+          hoy (vie 8 ago) causo que el matching de restricciones en transito
+          matchee bahias cuya jurisdiccion la ruta apenas roza.
+NO se modifico codigo. NO se commiteo. Solo lectura y git.
+================================================================================
+
+
+BLOQUE 1 — LINEA DE TIEMPO DE COMMITS
+================================================================================
+
+Commits que tocaron src/routes/sitport-routes.js y archivos relacionados,
+desde 2026-08-01 hasta 2026-08-08:
+
+SABADO 1 AGOSTO (fin de semana — estado "bueno")
+  196dc01 2026-08-01 15:24  feat: BAHIA_COORDS completo — 163 bahias SITPORT mapeadas
+  1a16ef5 2026-08-01 16:16  fix: fondeadero previo siempre antes de la zona restringida en sentido de viaje
+
+  Estado del matching al cierre del sabado:
+  - Matching por DISTANCIA: MAX_DIST_KM = 80
+  - Para cada waypoint, busca la bahia mas cercana (haversine a BAHIA_COORDS)
+  - Si esta dentro de 80 km, matchea
+  - Exclusion posicional: primer y ultimo match = zarpe/recalada, excluidos
+  - SIN PostGIS, SIN Voronoi, SIN bahia_jurisdicciones
+
+DOMINGO 2 AGOSTO
+  (sin commits)
+
+LUNES 3 AGOSTO (primera jornada post-fin de semana)
+  e46f006 2026-08-03 16:50  fix: matching invertido restricciones->ruta — elimina enmascaramiento por proximidad en clusteres
+    Archivos: src/routes/sitport-routes.js
+  36a779a 2026-08-03 23:49  fix: matching restricciones por distancia a segmento de ruta — elimina falsos positivos en archipielagos
+    Archivos: src/routes/sitport-routes.js
+  f0ec2bb 2026-08-03 23:05  feat: reporte incidencias (no toca matching)
+  9069f1e 2026-08-03 17:55  feat: buscador puertos (no toca matching)
+  0f98b7c 2026-08-03 18:16  feat: puertos antarticos (no toca matching)
+
+MARTES 4 AGOSTO
+  0eb3236 2026-08-04 23:02  fix: matching restricciones-ruta incluye NAVE MAYOR — eliminar filtro por NaveRecibe
+    Archivos: src/routes/sitport-routes.js
+  a72aca4 2026-08-04 23:57  fix: eliminar exclusion posicional en restricciones-ruta
+    Archivos: src/routes/sitport-routes.js
+  32c6fad 2026-08-04 13:07  fix: restaurar endpoint routing original (no toca restricciones)
+  dbdd706 2026-08-04 12:46  fix: snap-to-navigable BFS (no toca restricciones)
+  6f4087a 2026-08-04 23:26  test: test-anahuac-quemchi (no toca matching)
+
+MIERCOLES 5 AGOSTO  *** COMMIT CLAVE ***
+  8961deb 2026-08-05 00:11  fix: subir MAX_DIST_KM a 50 en restricciones-ruta
+    Archivos: src/routes/sitport-routes.js
+  42059c8 2026-08-05 14:51  feat: matching geografico Voronoi+PostGIS — elimina falsos positivos en fiordos
+    Archivos: src/routes/sitport-routes.js, scripts/seed-bahias-sitport.js,
+              geodata/ne_10m_land.* (7 archivos)
+    >>> REEMPLAZA EL MATCHING POR DISTANCIA CON ST_Intersects CONTRA VORONOI <<<
+  35c63d9 2026-08-05 13:47  feat: lookup de capitanias por bahia_id
+    Archivos: src/data/bahia-capitania-map.json
+  69d83ea 2026-08-05 19:37  feat: nodos_maritimos + trigger Voronoi
+    Archivos: bem_2025_puertos.json, src/services/puertos-service.js,
+              tools/seed-nodos-maritimos.js
+  23dac72 2026-08-05 18:40  fix: enrich weather-ruta con capitania
+  5ff375a 2026-08-05 20:27  fix: excluir bahias SITPORT del buscador
+  a262014 2026-08-05 19:45  fix: puertos endpoint
+  12e8895 2026-08-05 00:24  chore: scripts de diagnostico
+
+JUEVES 7 AGOSTO
+  fd16c13 2026-08-07 20:53  fix: robustez endpoint restricciones-ruta + rename aplica + tests INV-1.2
+    Archivos: src/routes/sitport-routes.js
+  620466c 2026-08-07 23:11  feat: validador habilitacion deportiva + tests
+    Archivos: src/routes/sitport-routes.js
+  3cc09f6 2026-08-07 20:53  fix: detectarCondicion revisa motivoNorm
+  97cd84a 2026-08-07 23:24  docs: contrato v1.5
+
+VIERNES 8 AGOSTO (hoy)
+  0cac54f 2026-08-08 22:32  fix(parser): captura umbral AB formato "EE.MM. A [n] A.B."
+  2ee3749 2026-08-08 16:36  Migra base caletas a v2 SUBPESCA
+  52ad9db 2026-08-08 16:32  Guarda bitacora migracion caletas v2
+  bbf1879 2026-08-08 16:27  Archiva huerfanos sesion puertos BEM
+
+
+================================================================================
+
+BLOQUE 2 — EL ESTADO BUENO vs EL ESTADO ACTUAL
+================================================================================
+
+Commit del estado bueno: 1a16ef5 (sab 1 ago 16:16)
+Commit que cambio el matching: 42059c8 (mie 5 ago 14:51)
+
+2a. MATCHING DEL FIN DE SEMANA (1a16ef5)
+-----------------------------------------
+
+Fragmento crudo de sitport-routes.js en 1a16ef5:
+
+    const MAX_DIST_KM = 80;
+    const matched = [];
+    const vistas = new Set();
+
+    for (let pi = 0; pi < ruta_puntos.length; pi++) {
+      const punto = ruta_puntos[pi];
+      if (!punto || punto.lat == null || punto.lng == null) continue;
+
+      let mejorId = null;
+      let mejorDist = Infinity;
+      for (const [id, c] of Object.entries(BAHIA_COORDS)) {
+        const d = distKm(punto.lat, punto.lng, c.lat, c.lng);
+        if (d < mejorDist && d < MAX_DIST_KM) {
+          mejorDist = d;
+          mejorId = Number(id);
+        }
+      }
+
+      if (mejorId != null && !vistas.has(mejorId)) {
+        vistas.add(mejorId);
+        matched.push({ idBahia: mejorId, coords: BAHIA_COORDS[mejorId], rutaIdx: pi });
+      }
+    }
+
+    const excluidas = new Set();
+    if (matched.length > 0) {
+      excluidas.add(matched[0].idBahia);
+      excluidas.add(matched[matched.length - 1].idBahia);
+    }
+    if (zarpe_id != null) excluidas.add(Number(zarpe_id));
+    if (recalada_id != null) excluidas.add(Number(recalada_id));
+
+    const restricciones = await sitportService.consultaRestricciones();
+    const porBahia = new Map();
+    for (const r of restricciones) {
+      if (r.bahia == null) continue;
+      if (!porBahia.has(r.bahia)) porBahia.set(r.bahia, []);
+      porBahia.get(r.bahia).push(r);
+    }
+
+MECANISMO:
+  1. Para cada waypoint, calcula haversine a los 163 puntos de BAHIA_COORDS
+  2. Guarda la bahia mas cercana SI esta dentro de MAX_DIST_KM (80 km)
+  3. Deduplica por Set (una bahia no se agrega dos veces)
+  4. Excluye primer y ultimo match como zarpe/recalada
+  5. Busca restricciones SITPORT para las bahias matcheadas
+
+PROPIEDADES CLAVE:
+  - Distancia MAXIMA de 80 km: ningun waypoint matchea una bahia cuyo
+    punto central este a mas de 80 km
+  - Sin Voronoi: el matching es punto-a-punto, no poligono
+  - Sin PostGIS: calculo puro en JavaScript (haversine)
+  - El radio de 80 km actua como CAP DURO: agua abierta a >80 km de
+    cualquier bahia no matchea NADA
+
+
+2b. MATCHING ACTUAL (HEAD, post-42059c8)
+-----------------------------------------
+
+Fragmento crudo de sitport-routes.js actual:
+
+    async function bahiasEnRutaPostGIS(waypoints) {
+      if (waypoints.length < 2) return new Set();
+      const coordinates = waypoints.map(wp => [wp.lng, wp.lat]);
+      const rutaGeoJSON = JSON.stringify({ type: 'LineString', coordinates });
+      const { rows } = await pool.query(
+        `SELECT bahia_id
+         FROM bahia_jurisdicciones
+         WHERE ST_Intersects(geom, ST_SetSRID(ST_GeomFromGeoJSON($1), 4326))`,
+        [rutaGeoJSON]
+      );
+      return new Set(rows.map(r => r.bahia_id));
+    }
+
+    [...]
+
+    const bahiaIdsEnRuta = await bahiasEnRutaPostGIS(puntosValidos);
+
+    const porBahia = new Map();
+    for (const restriccion of restriccionesTransito) {
+      const bahiaId = restriccion.bahia;
+      if (!bahiaIdsEnRuta.has(bahiaId)) continue;
+      [...]
+    }
+
+MECANISMO:
+  1. Construye un LineString GeoJSON con todos los waypoints
+  2. Ejecuta ST_Intersects contra los poligonos Voronoi de bahia_jurisdicciones
+  3. Toda bahia cuyo poligono Voronoi toque cualquier punto de la ruta matchea
+  4. SIN cap de distancia — los poligonos Voronoi cubren TODO el oceano
+
+PROPIEDADES CLAVE:
+  - Sin distancia maxima: el matching es binario (intersecta o no)
+  - Los poligonos Voronoi son una TESELACION de toda el agua: cada punto del
+    oceano pertenece a exactamente una bahia
+  - Bahias lejanas cuyo poligono se extiende hacia mar abierto matchean rutas
+    que pasan por ese mar abierto, sin importar la distancia al puerto real
+
+
+2c. DIFF CRUDO: funcion de matching (1a16ef5 vs HEAD)
+------------------------------------------------------
+
+Lo que se ELIMINO del viejo matching:
+  - MAX_DIST_KM = 80 (cap de distancia)
+  - Loop waypoint-por-waypoint con distKm() haversine
+  - Exclusion posicional (primer/ultimo match)
+  - Todas las restricciones se buscaban DESPUES del matching geografico
+
+Lo que se AGREGO en el nuevo matching:
+  - Pool de PostgreSQL (conexion a PostGIS)
+  - bahiasEnRutaPostGIS() con ST_Intersects
+  - Dependencia de tabla bahia_jurisdicciones (poligonos Voronoi)
+  - restriccionesTransito filtrado por tipo === 'TODOS' ANTES del matching
+  - Exclusion solo por zarpe_id/recalada_id explicitos
+
+Lo que NO CAMBIO:
+  - BAHIA_COORDS sigue existiendo (se usa para posicion en ruta y metadata)
+  - elegirRestriccion() sigue igual
+  - El motor de reglas (evaluarRuta/evaluarRestriccion) sigue igual
+  - La estructura de la respuesta es compatible
+
+El commit 42059c8 es el punto de inflexion.
+
+
+================================================================================
+
+BLOQUE 3 — LA GEOMETRIA EN LA BASE DE DATOS
+================================================================================
+
+3a. Creacion de bahia_jurisdicciones
+-------------------------------------
+La materialized view bahia_jurisdicciones fue creada como parte del commit
+42059c8 (mie 5 ago 14:51). El mensaje del commit dice:
+
+  "Crea materialized view bahia_jurisdicciones: Voronoi INTER bbox Chile - tierra"
+
+El script seed-bahias-sitport.js (unico archivo nuevo commitado) solo crea la
+tabla bahias_sitport con los 163 puntos. La materialized view fue creada
+directamente en psql durante la sesion de trabajo — su definicion SQL NO esta
+en ningun archivo commitado.
+
+Definicion inferida del commit message y del comportamiento observado:
+  1. Toma los 163 puntos de bahias_sitport
+  2. Calcula ST_VoronoiPolygons (teselacion de Voronoi)
+  3. Recorta contra un bbox de Chile (probablemente lat -90 a -15, lng -120 a -60
+     o similar)
+  4. Resta la geometria de tierra (ne_land, importada del shapefile Natural Earth
+     10m que esta en geodata/ne_10m_land.*)
+  5. Resultado: poligonos que cubren TODO el agua de Chile y sus alrededores,
+     cada uno asignado a la bahia mas cercana
+
+3b. Fue regenerada recientemente?
+---------------------------------
+No hay evidencia de que la materialized view haya sido regenerada o REFRESH'd
+despues de su creacion el 5 de agosto. Los commits posteriores (fd16c13, 620466c)
+no tocan la base de datos ni ejecutan REFRESH MATERIALIZED VIEW.
+
+El commit 69d83ea (5 ago 19:37) crea una tabla separada (nodos_maritimos) con su
+propio trigger de Voronoi para asignar jurisdiccion a nodos, pero NO modifica
+bahia_jurisdicciones.
+
+3c. El recorte por costa sigue aplicandose?
+--------------------------------------------
+SI, segun el commit message: "Voronoi INTER bbox Chile - tierra". El shapefile
+ne_10m_land esta commitado en geodata/ y la tabla ne_land existe en PostGIS
+(creada durante la misma sesion del 5 ago).
+
+PERO: el recorte por costa solo elimina TIERRA. No limita la extension del
+poligono hacia MAR ABIERTO. Un poligono Voronoi cuya bahia esta en la costa
+se extiende hacia el oceano Pacifico sin limite (hasta chocar con el bbox o
+con la celda Voronoi de otra bahia). Esto es consistente con los datos
+diagnosticos de la bitacora del reconocimiento previo:
+
+  bahia=174 (Rada Quintay): poligono de 28,055 km2, centroide a 192 km de la ruta
+  bahia=92  (Valparaiso):   poligono de 3,183 km2,  centroide a 68 km
+  bahia=215 (El Quisco):    poligono de 4,996 km2,  centroide a 69 km
+
+El recorte por costa funciona correctamente para fiordos (Maullin no matchea
+rutas por el Golfo de Ancud). Pero no limita la extension oceánica.
+
+
+================================================================================
+
+BLOQUE 4 — VEREDICTO
+================================================================================
+
+LA REGRESION ESTA EN EL CODIGO DEL MATCHING, NO EN LOS DATOS GEOMETRICOS.
+
+Commit culpable: 42059c8 (mie 5 ago 14:51)
+  "feat: matching geografico Voronoi+PostGIS — elimina falsos positivos en fiordos"
+
+Linea exacta que introduce el cambio:
+  sitport-routes.js (en el estado post-42059c8), funcion bahiasEnRutaPostGIS,
+  la query:
+    SELECT bahia_id
+    FROM bahia_jurisdicciones
+    WHERE ST_Intersects(geom, ST_SetSRID(ST_GeomFromGeoJSON($1), 4326))
+
+  Esta query reemplazo el loop de distancia con cap de 80 km.
+
+QUE SE PERDIO:
+  El cap de distancia. En el sistema viejo (1a16ef5), ningun waypoint podia
+  matchear una bahia cuyo punto central estuviera a mas de 80 km. En el sistema
+  nuevo, la distancia es irrelevante — lo unico que importa es si la ruta
+  intersecta el poligono Voronoi, y los poligonos Voronoi cubren TODO el oceano.
+
+QUE SE GANO (y por que se hizo el cambio):
+  El recorte por costa. En el sistema viejo, bahias separadas por tierra pero
+  cercanas por haversine se matcheaban incorrectamente (ej: Maullin matcheaba
+  rutas por el Golfo de Ancud porque la distancia haversine era <80 km aunque
+  hay una peninsula de por medio). Los poligonos Voronoi recortados por costa
+  resuelven este problema: la tierra actua como barrera.
+
+EL DESAJUSTE:
+  El commit resolvio un problema (falsos positivos en fiordos por distancia
+  haversine que no respeta barreras de tierra) pero introdujo otro (falsos
+  positivos en mar abierto por poligonos Voronoi sin cap de extension oceánica).
+  Ambos problemas NO pueden resolverse con el mismo mecanismo puro:
+    - Distancia pura: falla en fiordos (no ve tierra)
+    - Voronoi puro: falla en mar abierto (se extiende sin limite)
+
+NOTA: los datos geometricos (poligonos Voronoi) NO cambiaron despues de su
+creacion. El problema no es que se regeneraron mas grandes — es que desde su
+creacion cubren todo el oceano, y eso se hizo INTENCIONALMENTE (es la propiedad
+de la teselacion de Voronoi). El estado bueno del fin de semana nunca uso estos
+poligonos — usaba distancia pura.
+
+LINEA DE CORRECCION PROBABLE (no se implementa):
+  Combinar ambos mecanismos: usar los poligonos Voronoi (que respetan barreras
+  de tierra) PERO agregar un cap de distancia o de area para que poligonos
+  sobreextendidos no matcheen rutas lejanas. Posibles formas:
+    (a) ST_Intersects + filtro ST_Distance < umbral desde el punto de la bahia
+    (b) Recortar los Voronoi con un buffer maximo alrededor de cada bahia
+    (c) Agregar ST_DWithin como condicion adicional a ST_Intersects
+
+================================================================================
+FIN DE LA ARQUEOLOGIA
+================================================================================

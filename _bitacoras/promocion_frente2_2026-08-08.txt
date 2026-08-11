@@ -1,0 +1,161 @@
+============================================================================
+BITACORA: Promocion de bahia_jurisdicciones_v2 a produccion
+Fecha: 2026-08-08
+============================================================================
+
+PASO 1 — SQL EJECUTADO (promocion por rename)
+============================================================================
+
+BEGIN;
+
+-- 1. Renombrar la view actual a backup
+ALTER MATERIALIZED VIEW bahia_jurisdicciones
+  RENAME TO bahia_jurisdicciones_v1_backup;
+
+-- 2. Renombrar el indice de la view backup
+ALTER INDEX idx_bahia_jurisdicciones_geom
+  RENAME TO idx_bahia_jurisdicciones_v1_backup_geom;
+
+-- 3. Renombrar v2 a produccion
+ALTER MATERIALIZED VIEW bahia_jurisdicciones_v2
+  RENAME TO bahia_jurisdicciones;
+
+-- 4. Renombrar el indice de v2 al nombre que el sistema espera
+ALTER INDEX idx_bahia_jurisdicciones_v2_geom
+  RENAME TO idx_bahia_jurisdicciones_geom;
+
+COMMIT;
+
+Resultado: las 4 sentencias ejecutaron sin error dentro de la transaccion.
+
+Estado post-promocion:
+  - bahia_jurisdicciones          = geometria v2 (Voronoi + tierra + buffer 80km)
+  - bahia_jurisdicciones_v1_backup = geometria anterior (solo Voronoi + tierra)
+  - idx_bahia_jurisdicciones_geom  -> apunta a bahia_jurisdicciones (v2)
+  - idx_bahia_jurisdicciones_v1_backup_geom -> apunta al backup
+
+============================================================================
+PASO 2 — CONFIRMACION DE APUNTAMIENTO DEL CODIGO
+============================================================================
+
+Archivo: src/routes/sitport-routes.js, linea 538
+Funcion: bahiasEnRutaPostGIS()
+
+  const { rows } = await pool.query(
+    `SELECT bahia_id
+     FROM bahia_jurisdicciones
+     WHERE ST_Intersects(geom, ST_SetSRID(ST_GeomFromGeoJSON($1), 4326))`,
+    [rutaGeoJSON]
+  );
+
+El codigo apunta a "bahia_jurisdicciones" — el nombre que ahora tiene la
+geometria v2. NO se requiere ningun cambio en el codigo.
+
+============================================================================
+PASO 3 — PRUEBAS DE HUMO END-TO-END
+============================================================================
+
+--- PRUEBA A: RUTA MAR ABIERTO ---
+Waypoints: (-33, -71.6) -> (-33, -74) -> (-33, -76) -> (-33, -78)
+(Desde la costa de Valparaiso, 700+ km mar adentro en el Pacifico)
+
+Matching PostGIS directo - v2 (produccion):
+
+ bahia_id |       nombre        | dist_inicio_km
+----------+---------------------+----------------
+       92 | Bahia de Valparaiso |              5
+      174 | Bahia Rada Quintay  |             23
+
+Solo 2 bahias costeras, ambas legitimas.
+
+Matching PostGIS directo - v1 (backup, para contraste):
+
+ bahia_id |        nombre        | dist_inicio_km
+----------+----------------------+----------------
+       92 | Bahia de Valparaiso  |              5
+      174 | Bahia Rada Quintay   |             23
+       95 | Pichilemu            |            158   << FALSO POSITIVO
+       90 | Isla Robinson Crusoe |            679   << FALSO POSITIVO
+
+v1 matcheaba Pichilemu (158 km) e Isla Robinson Crusoe (679 km).
+v2 los elimina correctamente.
+
+API restricciones-ruta (POST http://localhost:3000/api/sitport/restricciones-ruta):
+
+{
+  "success": true,
+  "veredicto": "U",
+  "restricciones_intermedias": [
+    {
+      "id_bahia": 92,
+      "nombre_bahia": "Bahia de Valparaiso",
+      "lat": -33.0333,
+      "lng": -71.6333,
+      "restriccion": "VIENTO",
+      "condicion": "VARIABLE",
+      "capitania": "Valparaiso",
+      "orden_en_ruta": 1
+    }
+  ],
+  "total": 1
+}
+
+Solo Valparaiso (cerca de la costa, legitimo). Ninguna bahia lejana.
+
+--- PRUEBA B: RUTA CANALES INTERIORES ---
+Waypoints: (-41.78, -73.02) -> (-41.85, -73.10) -> (-42.00, -72.95) ->
+           (-42.20, -72.80) -> (-42.50, -72.90) -> (-42.80, -73.10) ->
+           (-43.10, -73.30)
+(Canales patagonicos: Calbuco -> Golfo de Ancud -> Ayacara -> Chaiten)
+
+Matching PostGIS directo - v2 (produccion):
+
+ bahia_id |      nombre      | dist_ruta_km
+----------+------------------+--------------
+      113 | Bahia de Calbuco |            7
+      186 | Sector Ayacara   |           23
+      155 | Queilen          |           24
+      121 | Chaiten          |           33
+
+4 bahias, todas legitimamente en la ruta por canales interiores.
+Todas a corta distancia. El matching Voronoi recortado por costa sigue
+funcionando correctamente en fiordos — no se perdieron bahias legitimas.
+
+API restricciones-ruta:
+
+{
+  "success": true,
+  "veredicto": "U",
+  "restricciones_intermedias": [
+    {
+      "id_bahia": 186,
+      "nombre_bahia": "Sector Ayacara",
+      "lat": -42.15,
+      "lng": -72.5333,
+      "restriccion": "VIENTO",
+      "condicion": "VARIABLE",
+      "capitania": "Hornopiren",
+      "gobernacion": "Puerto Montt",
+      "orden_en_ruta": 1
+    }
+  ],
+  "total": 1
+}
+
+Bahia de canal interior matchea correctamente.
+
+============================================================================
+VEREDICTO
+============================================================================
+
+Promocion exitosa. La geometria v2 esta en produccion como bahia_jurisdicciones.
+
+  - Mar abierto: RESUELTO. Ruta de 700+ km mar adentro solo matchea bahias
+    costeras (5-23 km). Antes matcheaba Robinson Crusoe a 679 km.
+  - Fiordos/canales: SIN REGRESION. Ruta por canales interiores matchea
+    las 4 bahias correctas (Calbuco, Ayacara, Queilen, Chaiten).
+  - API end-to-end: funciona sin cambios en el codigo.
+  - Backup conservado como bahia_jurisdicciones_v1_backup.
+
+No se commiteo. No se modifico codigo fuente.
+============================================================================

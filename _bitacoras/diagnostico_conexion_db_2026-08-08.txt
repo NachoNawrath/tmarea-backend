@@ -1,0 +1,143 @@
+============================================================================
+DIAGNOSTICO: Conexion del backend a PostGIS - "mapa_local" vs "mapa_navegacion"
+Fecha: 2026-08-09
+============================================================================
+
+1. CONFIGURACION DE CONEXION A POSTGIS
+============================================================================
+
+--- .env (raiz del proyecto) ---
+
+  DB_HOST=localhost
+  DB_PORT=5432
+  DB_NAME=mapa_navegacion        << la variable de entorno apunta a mapa_navegacion
+  DB_USER=postgres
+  DB_PASSWORD=Nacho77
+
+--- Archivos con pools de conexion y sus fallbacks ---
+
+  src/services/map-service.js:14
+    database: process.env.DB_NAME || 'mapa_local'
+    FALLBACK: mapa_local  (DISTINTO del resto del proyecto)
+
+  src/routes/sitport-routes.js:14
+    database: process.env.DB_NAME || 'mapa_navegacion'
+    FALLBACK: mapa_navegacion
+
+  src/services/puertos-service.js:6
+    database: process.env.DB_NAME || 'mapa_navegacion'
+    FALLBACK: mapa_navegacion
+
+  src/models/index.js:7 (Sequelize, no Pool)
+    process.env.DB_NAME || 'tmarea'
+    FALLBACK: tmarea (base de datos de la app, no la de mapas)
+
+  scripts/seed-bahias-sitport.js:11
+    database: process.env.DB_NAME || 'mapa_navegacion'
+    FALLBACK: mapa_navegacion
+
+  tools/verificar-cobertura-bem.js:12
+    database: process.env.DB_NAME || 'mapa_navegacion'
+    FALLBACK: mapa_navegacion
+
+  tools/seed-nodos-maritimos.js:13
+    database: process.env.DB_NAME || 'mapa_navegacion'
+    FALLBACK: mapa_navegacion
+
+RESUMEN: map-service.js es el UNICO archivo con fallback 'mapa_local'.
+Todos los demas usan 'mapa_navegacion'.
+
+--- Ocurrencias de "mapa_local" en el codigo ---
+
+  src/services/map-service.js:14  (fallback del Pool)
+  src/services/map-service.js:25  (log de arranque hardcodeado)
+  _bitacoras/.../12_arranque.txt:18  (captura de log anterior)
+
+  Solo 2 ocurrencias en codigo fuente, ambas en map-service.js.
+
+--- Ocurrencias de "mapa_navegacion" en el codigo ---
+
+  .env:3
+  src/routes/sitport-routes.js:14
+  src/services/puertos-service.js:6
+  scripts/seed-bahias-sitport.js:11
+  tools/verificar-cobertura-bem.js:12
+  tools/seed-nodos-maritimos.js:13
+
+============================================================================
+2. A QUE BASE SE CONECTA REALMENTE EL BACKEND
+============================================================================
+
+El pool de map-service.js (linea 11-20) lee process.env.DB_NAME.
+Como .env define DB_NAME=mapa_navegacion, el backend se conecta a mapa_navegacion.
+
+El texto del log de arranque (linea 25):
+  console.log('[map-service] Conectado a PostGIS (mapa_local)');
+
+Es un STRING HARDCODEADO. No refleja el nombre real de la base.
+El log deberia decir "mapa_navegacion" pero dice "mapa_local" porque
+el string nunca se actualizo cuando se cambio la base.
+
+CONCLUSION: el backend SE CONECTA a mapa_navegacion, el log miente.
+El fallback 'mapa_local' en linea 14 nunca se activa porque .env
+siempre tiene DB_NAME seteado.
+
+============================================================================
+3. BASES DE DATOS EXISTENTES EN POSTGRESQL
+============================================================================
+
+  psql -U postgres -c "\l"
+
+     Nombre      |   Due    | Codificacion
+  ---------------+----------+--------------
+  mapa_navegacion | postgres | UTF8
+  postgres        | postgres | UTF8
+  template0       | postgres | UTF8
+  template1       | postgres | UTF8
+
+  mapa_local NO EXISTE.
+  mapa_navegacion SI EXISTE.
+
+  Si el .env no existiera o no tuviera DB_NAME, map-service.js intentaria
+  conectarse a mapa_local y FALLARIA con:
+    FATAL: no existe la base de datos "mapa_local"
+
+============================================================================
+4. VERIFICACION DE GEOMETRIA EN mapa_navegacion
+============================================================================
+
+  SELECT COUNT(*) AS bahias,
+         ROUND(SUM(ST_Area(geom::geography)) / 1e6) AS area_total_km2
+  FROM bahia_jurisdicciones;
+
+   bahias | area_total_km2
+  --------+----------------
+      163 |         319342
+
+  Esta es la geometria v2 (con buffer de 80km).
+  La v1 tenia area_total = 4.725.948 km2.
+  La geometria promovida esta correctamente en su lugar.
+
+============================================================================
+VEREDICTO
+============================================================================
+
+El backend SI esta leyendo la geometria correcta (v2, con buffer) de
+mapa_navegacion. El texto "mapa_local" en el log de arranque es un string
+hardcodeado que NO refleja la base real — es un vestigio de cuando la base
+se llamaba asi (o un nombre de desarrollo que nunca se actualizo en el log).
+
+No hay una base "mapa_local" en PostgreSQL. Si se quitara DB_NAME del .env,
+map-service.js fallaria al intentar conectarse a "mapa_local" (no existe),
+mientras que sitport-routes.js y puertos-service.js seguirian funcionando
+(su fallback es 'mapa_navegacion' que si existe).
+
+RIESGOS IDENTIFICADOS:
+  1. El fallback de map-service.js:14 ('mapa_local') es incorrecto y
+     deberia ser 'mapa_navegacion' como el resto de los archivos.
+  2. El log hardcodeado en map-service.js:25 es confuso/engañoso.
+  Ambos son cosmeticos mientras .env tenga DB_NAME, pero son bombas
+  de tiempo si .env se pierde o se despliega sin esa variable.
+
+NO SE MODIFICO NADA.
+============================================================================

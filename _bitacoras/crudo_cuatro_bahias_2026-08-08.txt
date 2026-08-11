@@ -1,0 +1,287 @@
+================================================================================
+VOLCADO CRUDO — CUATRO BAHÍAS + GOLFO CORCOVADO NORTE
+Fecha consulta SITPORT: 2026-08-08
+================================================================================
+
+================================================================================
+BAHÍA: Quellón (bahia=117, GLBahia="BAHÍA QUELLÓN")
+IDRestriccion: 95608
+================================================================================
+
+--- PASO 1: LLAMADA CRUDA ---
+
+(1) Observacion literal:
+SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE 1- NAVEGACIÓN DENTRO DE BAHÍA Y HACIA EL NORTE NORMAL 2.- NAVEGACIÓN SECTOR SUR CERRADO PARA EE.MM MENORES DE 25 A.B. 3.- FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS EN SECTORES CON RESTRICCIÓN.
+
+(2) Carácter por carácter (subcadena EE...AB/A.B):
+  Subcadena: "EE.MM MENORES DE 25 A.B"
+  Posiciones 135..157:
+    [135] 'E' = U+0045 (dec 69)
+    [136] 'E' = U+0045 (dec 69)
+    [137] '.' = U+002E (dec 46)
+    [138] 'M' = U+004D (dec 77)
+    [139] 'M' = U+004D (dec 77)
+    [140] '(espacio)' = U+0020 (dec 32)
+    [141] 'M' = U+004D (dec 77)
+    [142] 'E' = U+0045 (dec 69)
+    [143] 'N' = U+004E (dec 78)
+    [144] 'O' = U+004F (dec 79)
+    [145] 'R' = U+0052 (dec 82)
+    [146] 'E' = U+0045 (dec 69)
+    [147] 'S' = U+0053 (dec 83)
+    [148] '(espacio)' = U+0020 (dec 32)
+    [149] 'D' = U+0044 (dec 68)
+    [150] 'E' = U+0045 (dec 69)
+    [151] '(espacio)' = U+0020 (dec 32)
+    [152] '2' = U+0032 (dec 50)
+    [153] '5' = U+0035 (dec 53)
+    [154] '(espacio)' = U+0020 (dec 32)
+    [155] 'A' = U+0041 (dec 65)
+    [156] '.' = U+002E (dec 46)
+    [157] 'B' = U+0042 (dec 66)
+
+--- PASO 2: NORMALIZACIÓN Y EXTRACCIÓN ---
+
+(a) Texto crudo (repetido):
+SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE 1- NAVEGACIÓN DENTRO DE BAHÍA Y HACIA EL NORTE NORMAL 2.- NAVEGACIÓN SECTOR SUR CERRADO PARA EE.MM MENORES DE 25 A.B. 3.- FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS EN SECTORES CON RESTRICCIÓN.
+
+(b) Texto después de normalizarTexto():
+SE ESTABLECE CONDICION DE PUERTO VARIABLE 1- NAVEGACION DENTRO DE BAHIA Y HACIA EL NORTE NORMAL 2.- NAVEGACION SECTOR SUR CERRADO PARA EE.MM MENORES DE 25 A.B. 3.- FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS EN SECTORES CON RESTRICCION.
+
+(c) Umbral extraído: 25
+
+(d) Patrón regex que matcheó: /(\d+)\s*(?:A\.?B|TRG)\b/
+
+--- normalizarRestriccion() completo ---
+{
+  "bahia_id": 117,
+  "bahia_nombre": "BAHIA QUELLON",
+  "condicion": "VARIABLE",
+  "afecta_menores": true,
+  "afecta_mayores": false,
+  "umbral_ab_dentro": 25,
+  "umbral_ab_fuera": 25,
+  "bloqueo_total": false,
+  "texto_original": "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE 1- NAVEGACIÓN DENTRO DE BAHÍA Y HACIA EL NORTE NORMAL 2.- NAVEGACIÓN SECTOR SUR CERRADO PARA EE.MM MENORES DE 25 A.B. 3.- FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS EN SECTORES CON RESTRICCIÓN.",
+  "timestamp": "08 Aug 2026 12:29:00:000",
+  "area": "FUERA"
+}
+
+================================================================================
+BAHÍA: Golfo Corcovado (Puerto Cisnes, bahia 123) (bahia=123, GLBahia="PUERTO CISNES")
+IDRestriccion: 95634
+================================================================================
+
+--- PASO 1: LLAMADA CRUDA ---
+
+(1) Observacion literal:
+SE ESTABLECE CONDICION DE PUERTO VARIABLE GOLFO CORCOVADO, CANAL MORALEDA Y ADYACENTES, CANAL JACAF Y ADYACENTES CERRADO PARA EE.MM DE 25 TRG// CANAL PUYUHUAPI Y BAHIA CISNES CONDICION NORMAL// SE SUSPENDEN TODO TIPO DE FAENAS EN SECTORES CON RESTRINCCION.
+
+(2) Carácter por carácter (subcadena EE...AB/A.B):
+  Subcadena: "EE.MM DE 25 TRG"
+  Posiciones 126..140:
+    [126] 'E' = U+0045 (dec 69)
+    [127] 'E' = U+0045 (dec 69)
+    [128] '.' = U+002E (dec 46)
+    [129] 'M' = U+004D (dec 77)
+    [130] 'M' = U+004D (dec 77)
+    [131] '(espacio)' = U+0020 (dec 32)
+    [132] 'D' = U+0044 (dec 68)
+    [133] 'E' = U+0045 (dec 69)
+    [134] '(espacio)' = U+0020 (dec 32)
+    [135] '2' = U+0032 (dec 50)
+    [136] '5' = U+0035 (dec 53)
+    [137] '(espacio)' = U+0020 (dec 32)
+    [138] 'T' = U+0054 (dec 84)
+    [139] 'R' = U+0052 (dec 82)
+    [140] 'G' = U+0047 (dec 71)
+
+--- PASO 2: NORMALIZACIÓN Y EXTRACCIÓN ---
+
+(a) Texto crudo (repetido):
+SE ESTABLECE CONDICION DE PUERTO VARIABLE GOLFO CORCOVADO, CANAL MORALEDA Y ADYACENTES, CANAL JACAF Y ADYACENTES CERRADO PARA EE.MM DE 25 TRG// CANAL PUYUHUAPI Y BAHIA CISNES CONDICION NORMAL// SE SUSPENDEN TODO TIPO DE FAENAS EN SECTORES CON RESTRINCCION.
+
+(b) Texto después de normalizarTexto():
+SE ESTABLECE CONDICION DE PUERTO VARIABLE GOLFO CORCOVADO, CANAL MORALEDA Y ADYACENTES, CANAL JACAF Y ADYACENTES CERRADO PARA EE.MM DE 25 TRG// CANAL PUYUHUAPI Y BAHIA CISNES CONDICION NORMAL// SE SUSPENDEN TODO TIPO DE FAENAS EN SECTORES CON RESTRINCCION.
+
+(c) Umbral extraído: 25
+
+(d) Patrón regex que matcheó: /EE\.?MM\.?\s*(?:(?:DE|A)\s+)?(\d+)\s*TRG/
+
+--- normalizarRestriccion() completo ---
+{
+  "bahia_id": 123,
+  "bahia_nombre": "PUERTO CISNES",
+  "condicion": "VARIABLE",
+  "afecta_menores": true,
+  "afecta_mayores": false,
+  "umbral_ab_dentro": 25,
+  "umbral_ab_fuera": 25,
+  "bloqueo_total": false,
+  "texto_original": "SE ESTABLECE CONDICION DE PUERTO VARIABLE GOLFO CORCOVADO, CANAL MORALEDA Y ADYACENTES, CANAL JACAF Y ADYACENTES CERRADO PARA EE.MM DE 25 TRG// CANAL PUYUHUAPI Y BAHIA CISNES CONDICION NORMAL// SE SUSPENDEN TODO TIPO DE FAENAS EN SECTORES CON RESTRINCCION.",
+  "timestamp": "09 Aug 2026 01:38:00:000",
+  "area": "FUERA"
+}
+
+================================================================================
+BAHÍA: Golfo Corcovado Norte (bahia 251) (bahia=251, GLBahia="CANAL GOLFO CORCOVADO (NORTE)")
+IDRestriccion: 95542
+================================================================================
+
+--- PASO 1: LLAMADA CRUDA ---
+
+(1) Observacion literal:
+CONDICION DE TIEMPO "VARIABLE", 1. CERRADO PARA EE.MM A 25 AB. 2. FAENAS SUSPENDIDAS EN AREAS CON RESTRICCION. 3. AVISO VIENTO FUERTE HASTA 091400.
+
+(2) Carácter por carácter (subcadena EE...AB/A.B):
+  Subcadena: "EE.MM A 25 AB"
+  Posiciones 48..60:
+    [48] 'E' = U+0045 (dec 69)
+    [49] 'E' = U+0045 (dec 69)
+    [50] '.' = U+002E (dec 46)
+    [51] 'M' = U+004D (dec 77)
+    [52] 'M' = U+004D (dec 77)
+    [53] '(espacio)' = U+0020 (dec 32)
+    [54] 'A' = U+0041 (dec 65)
+    [55] '(espacio)' = U+0020 (dec 32)
+    [56] '2' = U+0032 (dec 50)
+    [57] '5' = U+0035 (dec 53)
+    [58] '(espacio)' = U+0020 (dec 32)
+    [59] 'A' = U+0041 (dec 65)
+    [60] 'B' = U+0042 (dec 66)
+
+--- PASO 2: NORMALIZACIÓN Y EXTRACCIÓN ---
+
+(a) Texto crudo (repetido):
+CONDICION DE TIEMPO "VARIABLE", 1. CERRADO PARA EE.MM A 25 AB. 2. FAENAS SUSPENDIDAS EN AREAS CON RESTRICCION. 3. AVISO VIENTO FUERTE HASTA 091400.
+
+(b) Texto después de normalizarTexto():
+CONDICION DE TIEMPO "VARIABLE", 1. CERRADO PARA EE.MM A 25 AB. 2. FAENAS SUSPENDIDAS EN AREAS CON RESTRICCION. 3. AVISO VIENTO FUERTE HASTA 091400.
+
+(c) Umbral extraído: 25
+
+(d) Patrón regex que matcheó: /EE\.?MM\.?\s*(?:(?:DE|A)\s+)?(\d+)\s*A\.?B/
+
+--- normalizarRestriccion() completo ---
+{
+  "bahia_id": 251,
+  "bahia_nombre": "CANAL GOLFO CORCOVADO (NORTE)",
+  "condicion": "MAL_TIEMPO",
+  "afecta_menores": true,
+  "afecta_mayores": false,
+  "umbral_ab_dentro": 25,
+  "umbral_ab_fuera": 25,
+  "bloqueo_total": false,
+  "texto_original": "CONDICION DE TIEMPO \"VARIABLE\", 1. CERRADO PARA EE.MM A 25 AB. 2. FAENAS SUSPENDIDAS EN AREAS CON RESTRICCION. 3. AVISO VIENTO FUERTE HASTA 091400.",
+  "timestamp": "08 Aug 2026 11:45:17:810",
+  "area": "DENTRO_Y_FUERA"
+}
+
+================================================================================
+BAHÍA: Ensenada Hualaihué (bahia=184, GLBahia="ENSENADA HUALAIHUÉ")
+IDRestriccion: 95589
+================================================================================
+
+--- PASO 1: LLAMADA CRUDA ---
+
+(1) Observacion literal:
+SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO PARA EE.MM DE  A.B DENTRO DE LA BAHIA, TRABAJO EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS.
+
+(2) Carácter por carácter (subcadena EE...AB/A.B):
+  Subcadena: "EE.MM DE  A.B"
+  Posiciones 56..68:
+    [56] 'E' = U+0045 (dec 69)
+    [57] 'E' = U+0045 (dec 69)
+    [58] '.' = U+002E (dec 46)
+    [59] 'M' = U+004D (dec 77)
+    [60] 'M' = U+004D (dec 77)
+    [61] '(espacio)' = U+0020 (dec 32)
+    [62] 'D' = U+0044 (dec 68)
+    [63] 'E' = U+0045 (dec 69)
+    [64] '(espacio)' = U+0020 (dec 32)
+    [65] '(espacio)' = U+0020 (dec 32)
+    [66] 'A' = U+0041 (dec 65)
+    [67] '.' = U+002E (dec 46)
+    [68] 'B' = U+0042 (dec 66)
+
+--- PASO 2: NORMALIZACIÓN Y EXTRACCIÓN ---
+
+(a) Texto crudo (repetido):
+SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO PARA EE.MM DE  A.B DENTRO DE LA BAHIA, TRABAJO EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS.
+
+(b) Texto después de normalizarTexto():
+SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO PARA EE.MM DE  A.B DENTRO DE LA BAHIA, TRABAJO EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS.
+
+(c) Umbral extraído: null
+
+(d) Patrón regex que matcheó: (ninguno matcheó)
+
+--- normalizarRestriccion() completo ---
+{
+  "bahia_id": 184,
+  "bahia_nombre": "ENSENADA HUALAIHUE",
+  "condicion": "VARIABLE",
+  "afecta_menores": true,
+  "afecta_mayores": false,
+  "umbral_ab_dentro": null,
+  "umbral_ab_fuera": null,
+  "bloqueo_total": false,
+  "texto_original": "SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO PARA EE.MM DE  A.B DENTRO DE LA BAHIA, TRABAJO EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS.",
+  "timestamp": "07 Aug 2026 19:14:00:000",
+  "area": "DENTRO"
+}
+
+================================================================================
+BAHÍA: Sector Ayacara (bahia=186, GLBahia="SECTOR AYACARA")
+IDRestriccion: 95591
+================================================================================
+
+--- PASO 1: LLAMADA CRUDA ---
+
+(1) Observacion literal:
+SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO PARA EE.MM DE  A.B DENTRO DE LA BAHIA, TRABAJO EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS.
+
+(2) Carácter por carácter (subcadena EE...AB/A.B):
+  Subcadena: "EE.MM DE  A.B"
+  Posiciones 56..68:
+    [56] 'E' = U+0045 (dec 69)
+    [57] 'E' = U+0045 (dec 69)
+    [58] '.' = U+002E (dec 46)
+    [59] 'M' = U+004D (dec 77)
+    [60] 'M' = U+004D (dec 77)
+    [61] '(espacio)' = U+0020 (dec 32)
+    [62] 'D' = U+0044 (dec 68)
+    [63] 'E' = U+0045 (dec 69)
+    [64] '(espacio)' = U+0020 (dec 32)
+    [65] '(espacio)' = U+0020 (dec 32)
+    [66] 'A' = U+0041 (dec 65)
+    [67] '.' = U+002E (dec 46)
+    [68] 'B' = U+0042 (dec 66)
+
+--- PASO 2: NORMALIZACIÓN Y EXTRACCIÓN ---
+
+(a) Texto crudo (repetido):
+SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO PARA EE.MM DE  A.B DENTRO DE LA BAHIA, TRABAJO EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS.
+
+(b) Texto después de normalizarTexto():
+SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO PARA EE.MM DE  A.B DENTRO DE LA BAHIA, TRABAJO EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS.
+
+(c) Umbral extraído: null
+
+(d) Patrón regex que matcheó: (ninguno matcheó)
+
+--- normalizarRestriccion() completo ---
+{
+  "bahia_id": 186,
+  "bahia_nombre": "SECTOR AYACARA",
+  "condicion": "VARIABLE",
+  "afecta_menores": true,
+  "afecta_mayores": false,
+  "umbral_ab_dentro": null,
+  "umbral_ab_fuera": null,
+  "bloqueo_total": false,
+  "texto_original": "SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO PARA EE.MM DE  A.B DENTRO DE LA BAHIA, TRABAJO EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS.",
+  "timestamp": "07 Aug 2026 19:17:00:000",
+  "area": "DENTRO_Y_FUERA"
+}
+

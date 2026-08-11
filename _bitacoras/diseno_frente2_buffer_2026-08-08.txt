@@ -1,0 +1,160 @@
+============================================================================
+BITACORA: Doble recorte Voronoi + Buffer para bahia_jurisdicciones
+Fecha: 2026-08-08
+============================================================================
+
+PROBLEMA
+--------
+La materialized view bahia_jurisdicciones genera poligonos Voronoi recortados
+SOLO contra tierra (ST_Difference con ne_land). En mar abierto, el teselado
+Voronoi asigna TODO el oceano a alguna bahia sin limite de distancia. Resultado:
+falsos positivos en mar abierto (una ruta matchea bahias a cientos de km).
+
+SOLUCION
+--------
+Segundo recorte: intersectar cada poligono Voronoi (ya recortado contra tierra)
+con un ST_Buffer de 80 km alrededor del punto de la bahia. Asi el poligono
+respeta la costa (fiordos OK) y no se extiende al infinito (mar abierto OK).
+
+El buffer de 80 km usa ST_Buffer sobre geography (metros reales, no grados).
+
+============================================================================
+SQL DE LA NUEVA VIEW (bahia_jurisdicciones_v2)
+============================================================================
+
+CREATE MATERIALIZED VIEW bahia_jurisdicciones_v2 AS
+WITH
+  buffer_distancia_m AS (SELECT 80000 AS val),   -- << PARAMETRO UNICO: 80 km
+  bbox AS (
+    SELECT ST_MakeEnvelope(-82, -60, -64, -17, 4326) AS geom
+  ),
+  puntos AS (
+    SELECT ST_Collect(geom) AS geom FROM bahias_sitport
+  ),
+  voronoi_raw AS (
+    SELECT (ST_Dump(ST_VoronoiPolygons(puntos.geom, 0::float, bbox.geom))).geom AS geom
+    FROM puntos, bbox
+  ),
+  voronoi_asignado AS (
+    SELECT b.bahia_id, b.nombre, b.geom AS punto_geom,
+           ST_Intersection(v.geom, bbox.geom) AS geom
+    FROM voronoi_raw v
+    JOIN bahias_sitport b ON ST_Contains(v.geom, b.geom)
+    CROSS JOIN bbox
+  ),
+  tierra_chile AS (
+    SELECT ST_Union(ST_Intersection(l.geom, bbox.geom)) AS geom
+    FROM ne_land l, bbox
+    WHERE ST_Intersects(l.geom, bbox.geom)
+  )
+SELECT
+  va.bahia_id,
+  va.nombre,
+  ST_Intersection(
+    COALESCE(ST_Difference(va.geom, tc.geom), va.geom),
+    ST_Buffer(va.punto_geom::geography, bd.val)::geometry
+  ) AS geom
+FROM voronoi_asignado va
+CROSS JOIN tierra_chile tc
+CROSS JOIN buffer_distancia_m bd;
+
+CREATE INDEX idx_bahia_jurisdicciones_v2_geom
+  ON bahia_jurisdicciones_v2 USING GIST(geom);
+
+============================================================================
+VERIFICACION (a): CONTEO Y AREA TOTAL v1 vs v2
+============================================================================
+
+ version | bahias | area_total_km2
+---------+--------+----------------
+ v1      |    163 |        4725948
+ v2      |    163 |         319342
+
+Reduccion de area total: 93% (de 4.7M km2 a 319K km2).
+Las 163 bahias se conservan intactas.
+
+============================================================================
+VERIFICACION (b): TOP 15 BAHIAS CON MAYOR REDUCCION DE AREA
+============================================================================
+
+ bahia_id |               nombre               | area_v1_km2 | area_v2_km2 | reduccion_pct
+----------+------------------------------------+-------------+-------------+---------------
+       90 | Isla Robinson Crusoe               |      839391 |       19881 |            98
+      154 | Isla Guarello                      |      577081 |       14563 |            97
+       71 | Bahia de Arica                     |      337758 |        6873 |            98
+       75 | Bahia Mejillones del Sur           |      238130 |        5398 |            98
+      199 | Cabo de Hornos                     |      230159 |       17520 |            92
+      132 | Bahia Clarencia                    |      143326 |        3055 |            98
+      118 | Bahia Ancud y Canal Chacao         |      141819 |        4949 |            97
+      214 | Bahia Ancud                        |      141819 |        4949 |            97
+      223 | Canal Costa y Elefantes            |      125440 |        3208 |            97
+      158 | Caleta Chanaral y Ensenada Gaviota |      129472 |        7360 |            94
+       73 | Patache                            |      123569 |        1471 |            99
+       78 | Caleta Coloso                      |      119461 |        6719 |            94
+      136 | Seno Otway                         |       96878 |        1952 |            98
+      138 | Puerto Williams                    |       94193 |        4669 |            95
+      101 | Lebu                               |       93953 |       10094 |            89
+
+Todas las bahias sobreextendidas se redujeron drasticamente (89-99%).
+Robinson Crusoe: de 839K km2 a 20K km2 (era el peor caso).
+
+============================================================================
+VERIFICACION (c): NO-REGRESION EN FIORDOS
+============================================================================
+
+Test 1: Punto en Golfo de Ancud (-73.1, -41.85) - canal interior entre islas
+
+ version | bahia_id |      nombre      | dist_m
+---------+----------+------------------+--------
+ v1      |      113 | Bahia de Calbuco |      0
+ v2      |      113 | Bahia de Calbuco |      0
+
+RESULTADO: OK. Misma bahia en ambas versiones. El recorte por distancia
+NO reintroduce el problema de fiordos.
+
+Test 2: Punto en Seno Otway (-71.4, -52.8) - canal interior patagonico
+
+ version | bahia_id |   nombre   | dist_km
+---------+----------+------------+---------
+ v1      |      136 | Seno Otway |       0
+ v2      |      136 | Seno Otway |       0
+
+RESULTADO: OK. Misma bahia en ambas versiones. Fiordo profundo resuelto
+correctamente en v2.
+
+============================================================================
+VERIFICACION (d): MAR ABIERTO
+============================================================================
+
+Test 1: Punto lejano en Pacifico (-78, -30) - ~400 km de costa
+
+ v1: bahia_id=90, Isla Robinson Crusoe, dist_bahia=411 km  << FALSO POSITIVO
+ v2: (sin resultados)                                       << CORRECTO
+
+RESULTADO: OK. En v1 matcheaba Robinson Crusoe a 411 km de distancia.
+En v2 no matchea ninguna bahia -- el buffer de 80 km elimino el falso positivo.
+
+Test 2: Punto mar abierto patagonico (-75, -45) - ~110 km de costa
+
+ v1: bahia_id=243, Sector Canal Darwin, dist_bahia=110 km  << FALSO POSITIVO
+ v2: (sin resultados)                                       << CORRECTO
+
+RESULTADO: OK. En v1 matcheaba Canal Darwin a 110 km. En v2 no matchea.
+
+============================================================================
+VEREDICTO
+============================================================================
+
+El doble recorte (Voronoi - tierra) INTERSECT buffer(80km) RESUELVE el
+problema de mar abierto SIN romper fiordos:
+
+  - Mar abierto: puntos lejanos ya no matchean bahias a cientos de km.
+    Area total reducida 93% (de 4.7M a 319K km2).
+  - Fiordos: puntos en canales interiores siguen matcheando la bahia
+    correcta. Voronoi respeta la topologia costera dentro del buffer.
+  - 163 bahias conservadas, cero perdidas.
+  - Parametro unico (80000 m) facil de ajustar en un solo lugar.
+
+PROXIMO PASO: reemplazar la view de produccion y adaptar el matching.
+NO se hizo en esta sesion por diseno.
+============================================================================

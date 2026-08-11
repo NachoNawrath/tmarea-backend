@@ -1,0 +1,287 @@
+================================================================================
+RECONOCIMIENTO FRENTE 2 — AREA DE RESTRICCION vs JURISDICCION
+Fecha: 2026-08-08
+Proyecto: tmarea-backend
+Objetivo: Mapear el desajuste entre el area donde la restriccion REALMENTE aplica
+          y la geometria contra la que el motor hace el matching geografico.
+================================================================================
+
+BLOQUE 1 — QUE DICE EL CONTRATO (CONTRATO_MOTOR.md v1.5)
+================================================================================
+
+1a. Campo AreaRestriccion
+-------------------------
+El contrato NO menciona explicitamente un campo "AreaRestriccion" ni define como
+debe usarse para acotar geograficamente una restriccion. Lo mas cercano es la
+tabla de fuentes de datos en S5:
+
+  | Dato | Fuente autorizada |
+  | Bahias + jurisdicciones | PostGIS `bahias_sitport` + `bahia_jurisdicciones`
+  |                           (Voronoi recortado por costa) |
+
+Y el parser (sitport-parser.js) si extrae umbrales DENTRO/FUERA del limite del
+puerto, pero el contrato solo los menciona como umbrales de AB diferenciados,
+no como geometrias de area. Fragmento del parser que el contrato no cubre:
+
+  function detectarArea(areaRestriccion) {
+    const a = normalizarTexto(areaRestriccion);
+    const dentro = a.includes('DENTRO');
+    const fuera = a.includes('FUERA');
+    if (dentro && fuera) return 'DENTRO_Y_FUERA';
+    if (dentro) return 'DENTRO';
+    if (fuera) return 'FUERA';
+    return 'DENTRO_Y_FUERA';
+  }
+
+  -> Lineas 106-114 de sitport-parser.js
+
+1b. Sub-zonas dentro de una jurisdiccion
+----------------------------------------
+El contrato NO menciona sub-zonas geograficas dentro de una jurisdiccion. La
+seccion S3 (INV-3.1) dice:
+
+  "El motor NO mira solo el destino final. Evalua secuencialmente TODAS las
+   jurisdicciones de Capitania que la ruta activa atraviesa."
+
+Pero "jurisdiccion" es el nivel mas fino que el contrato reconoce. No hay
+invariante que hable de sub-zonas tipo "Golfo X dentro de la bahia Y" ni de
+restricciones que apliquen solo a una parte geografica de la jurisdiccion.
+
+1c. Como debe decidirse si la ruta "cruza" el area restringida
+--------------------------------------------------------------
+El contrato no distingue entre "cruzar la jurisdiccion administrativa" y
+"cruzar el area donde la restriccion aplica". La unica referencia es INV-3.1:
+
+  "Evalua secuencialmente TODAS las jurisdicciones de Capitania que la ruta
+   activa atraviesa. Una zona intermedia cerrada restringe el transito por sus
+   aguas jurisdiccionales aunque el destino final este abierto (LN Art. 32)."
+
+El contrato trata jurisdiccion = area de restriccion como sinonimos. No preve
+el caso donde una restriccion aplica solo a un sub-sector de la jurisdiccion.
+
+VEREDICTO BLOQUE 1: El contrato no modela el concepto de "area de restriccion"
+como algo distinto de la jurisdiccion completa. Tampoco menciona sub-zonas
+geograficas. El hueco esta en el contrato mismo.
+
+================================================================================
+
+BLOQUE 2 — QUE TRAE EL DATO CRUDO DE SITPORT
+================================================================================
+
+2a. Se lee y conserva AreaRestriccion?
+--------------------------------------
+SI. El parser lo lee y lo conserva.
+
+Fragmento crudo de sitport-parser.js, funcion normalizarRestriccion (lineas
+119-149):
+
+  function normalizarRestriccion(registro) {
+    const obsNorm = normalizarTexto(registro.Observacion);
+    const motivoNorm = normalizarTexto(registro.MotivoRestriccion);
+    const naveRecibeNorm = normalizarTexto(registro.NaveRecibe);
+
+    const condicion = detectarCondicion(obsNorm, motivoNorm);
+    const afecta_menores = naveRecibeNorm.includes('MENOR') || ...
+    const afecta_mayores = naveRecibeNorm.includes('MAYOR') || ...
+
+    const { umbral_dentro, umbral_fuera, bloqueo_total } = extraerUmbrales(obsNorm);
+
+    return {
+      bahia_id: registro.bahia,
+      bahia_nombre: normalizarTexto(registro.GLBahia),
+      condicion,
+      afecta_menores,
+      afecta_mayores,
+      umbral_ab_dentro: umbral_dentro,
+      umbral_ab_fuera: umbral_fuera,
+      bloqueo_total,
+      texto_original: registro.Observacion || '',
+      timestamp: registro.FCinicio || new Date().toISOString(),
+      area: detectarArea(registro.AreaRestriccion),   // <- AQUI SE GUARDA
+    };
+  }
+
+El campo `area` queda como "DENTRO", "FUERA", o "DENTRO_Y_FUERA".
+
+2b. Sub-zonas de Observacion se parsean?
+----------------------------------------
+NO. El texto de Observacion se guarda integro en `texto_original` (texto plano)
+y se parsea SOLO para:
+  - detectarCondicion(): busca TEMPORAL / MAL TIEMPO / VARIABLE (lineas 26-40)
+  - extraerUmbrales(): busca cifras de AB/TRG (lineas 60-101)
+
+No hay parseo de sub-zonas geograficas nombradas (ej: "GOLFO X RESTRINGIDO,
+CANAL Y CONDICION NORMAL"). El parser ignora completamente esa estructura
+geografica del texto libre.
+
+2c. Que campos de area/sub-zona llegan al evaluador?
+----------------------------------------------------
+Campos que LLEGAN al objeto normalizado: `area` (DENTRO/FUERA/DENTRO_Y_FUERA)
+
+Campos que el evaluador (route-restriction-evaluator.js) REALMENTE USA: NINGUNO
+de los de area.
+
+Fragmento crudo de route-restriction-evaluator.js, lineas 40-53:
+
+  const norm = normalizarRestriccion(raw);
+  const ev = await evaluarRestriccion(norm, nave_ab);
+
+  resultado.restricciones.push({
+    bahia: r.nombre_bahia || norm.bahia_nombre,
+    id_bahia: r.id_bahia || norm.bahia_id,
+    condicion: norm.condicion,
+    bloquea: ev.bloquea,
+    umbral_ab: norm.umbral_ab_fuera,       // <- usa umbral_ab_FUERA siempre
+    motivo: ev.motivo,
+    estado: ev.estado,
+    nivel: ev.nivel,
+  });
+
+Nota: usa `umbral_ab_fuera` como umbral representativo, nunca `umbral_ab_dentro`.
+
+El restriction-rules-engine.js (lineas 172-186) recibe estos facts:
+
+  const facts = {
+    condicion: restriccionNorm.condicion,
+    afecta_menores: restriccionNorm.afecta_menores,
+    afecta_mayores: restriccionNorm.afecta_mayores,
+    umbral_ab_fuera: restriccionNorm.umbral_ab_fuera,
+    umbral_ab_dentro: restriccionNorm.umbral_ab_dentro,
+    bloqueo_total: restriccionNorm.bloqueo_total,
+    nave_ab: ab ?? 0,
+    nave_ab_definido: ab != null,
+  };
+
+-> `area` NO esta en los facts. El motor de reglas no sabe si la restriccion es
+  DENTRO o FUERA del limite del puerto.
+
+-> `umbral_ab_dentro` SI se pasa como fact pero NINGUNA regla del engine lo
+  referencia. Las 6 reglas solo usan `umbral_ab_fuera`.
+
+VEREDICTO BLOQUE 2: El parser CAPTURA el campo AreaRestriccion y lo normaliza a
+DENTRO/FUERA/DENTRO_Y_FUERA. Tambien extrae umbrales diferenciados
+(umbral_dentro vs umbral_fuera). Pero NINGUNO de estos campos de area llega al
+motor de reglas. Las sub-zonas del texto de Observacion NO se parsean.
+
+================================================================================
+
+BLOQUE 3 — COMO SE DECIDE GEOGRAFICAMENTE EL MATCH HOY
+================================================================================
+
+3a. Geometria contra la que se hace ST_Intersects
+-------------------------------------------------
+Fragmento crudo de sitport-routes.js, funcion bahiasEnRutaPostGIS (lineas
+532-543):
+
+  async function bahiasEnRutaPostGIS(waypoints) {
+    if (waypoints.length < 2) return new Set();
+    const coordinates = waypoints.map(wp => [wp.lng, wp.lat]);
+    const rutaGeoJSON = JSON.stringify({ type: 'LineString', coordinates });
+    const { rows } = await pool.query(
+      `SELECT bahia_id
+       FROM bahia_jurisdicciones
+       WHERE ST_Intersects(geom, ST_SetSRID(ST_GeomFromGeoJSON($1), 4326))`,
+      [rutaGeoJSON]
+    );
+    return new Set(rows.map(r => r.bahia_id));
+  }
+
+La comparacion es:
+  - Geometria LEFT: `geom` de tabla `bahia_jurisdicciones`
+  - Geometria RIGHT: la LineString de la ruta del usuario
+  - Operacion: ST_Intersects (binaria: si/no)
+
+Segun el contrato S5 y el contexto del proyecto, `geom` es el poligono Voronoi
+recortado por costa = la JURISDICCION COMPLETA de la bahia. NO es el area donde
+la restriccion especifica aplica.
+
+3b. Existe geometria del area de restriccion en la base de datos?
+-----------------------------------------------------------------
+NO. La tabla `bahia_jurisdicciones` tiene:
+  - `bahia_id` (integer)
+  - `geom` (geometry) -> poligono Voronoi recortado por costa
+
+No existe una columna de geometria que represente "dentro del limite del puerto"
+ni "fuera del limite del puerto". No hay tabla separada para areas de
+restriccion. La unica geometria disponible es el poligono jurisdiccional
+completo.
+
+3c. Flujo completo del matching
+--------------------------------
+1. Frontend envia ruta_puntos (array de {lat,lng})
+2. bahiasEnRutaPostGIS() construye LineString -> ST_Intersects contra geom de
+   bahia_jurisdicciones -> devuelve Set de bahia_id
+3. Cada bahia_id que matchea se busca en las restricciones SITPORT activas
+4. Si hay restriccion, se evalua contra el AB de la nave
+5. La evaluacion NO considera si la ruta pasa por el area DENTRO, FUERA, o
+   ambas de esa bahia
+
+VEREDICTO BLOQUE 3: El matching es contra el poligono jurisdiccional COMPLETO
+(Voronoi recortado por costa). No existe geometria de area de restriccion en la
+base de datos. La decision es binaria: la ruta toca la jurisdiccion -> la
+restriccion aplica, sin importar si la ruta solo roza un borde.
+
+================================================================================
+
+BLOQUE 4 — EL DESAJUSTE
+================================================================================
+
+El hueco esta en TRES niveles:
+
+NIVEL 1 — CONTRATO (vacio conceptual):
+El contrato no modela "area de restriccion" como concepto separado de
+"jurisdiccion". INV-3.1 dice evaluar "todas las jurisdicciones que la ruta
+atraviesa", pero no dice "evaluar si la ruta pasa por el sub-sector donde la
+restriccion aplica". Para el contrato, jurisdiccion = area restringida.
+
+NIVEL 2 — DATO (se captura pero no se modela):
+SITPORT SI entrega el campo AreaRestriccion con valores como DENTRO/FUERA DEL
+LIMITE DEL PUERTO. El parser lo captura en el campo `area`. Pero:
+  - No existe representacion geometrica de que es "dentro" vs "fuera"
+  - El campo `area` no participa en ninguna decision del motor
+  - Los umbrales diferenciados (umbral_dentro vs umbral_fuera) se extraen pero
+    solo umbral_fuera se usa en las reglas
+  - Las sub-zonas geograficas del texto de Observacion se guardan como texto
+    plano sin parsear
+
+NIVEL 3 — MATCHING (todo o nada):
+La funcion bahiasEnRutaPostGIS() hace ST_Intersects contra el poligono Voronoi
+completo. Si la ruta roza cualquier punto del poligono jurisdiccional, la bahia
+matchea y la restriccion se aplica. No hay forma de saber si la ruta pasa por
+el puerto (DENTRO) o por la zona costera abierta (FUERA) de esa jurisdiccion.
+
+CONSECUENCIA PRACTICA:
+Una ruta que pasa por aguas abiertas dentro de una jurisdiccion amplia recibe
+la restriccion de esa bahia aunque la restriccion solo aplique DENTRO del limite
+del puerto, donde la ruta nunca entra. El motor no puede distinguir estos casos
+porque:
+  (a) el dato de area existe en SITPORT pero no tiene representacion geometrica
+  (b) el evaluador no lee el campo area ni siquiera como dato textual
+  (c) la unica geometria disponible es la jurisdiccion entera
+
+POSIBLES LINEAS DE CORRECCION (solo para contexto, NO se implementan):
+  1. Usar el campo `area` del parser para al menos diferenciar umbrales:
+     si area=DENTRO, usar umbral_dentro; si area=FUERA, usar umbral_fuera.
+     Esto no resuelve el matching geografico pero mejora la evaluacion de AB.
+  2. Modelar geometrias de "limite del puerto" en PostGIS (si existe fuente
+     oficial) y hacer matching diferenciado.
+  3. Parsear las sub-zonas del texto de Observacion para al menos informar al
+     usuario que partes de la jurisdiccion estan restringidas vs en condicion
+     normal.
+
+================================================================================
+VEREDICTOS RESUMIDOS
+================================================================================
+
+BLOQUE 1: El contrato NO modela el concepto de area de restriccion separada de
+la jurisdiccion. El hueco empieza en la especificacion.
+
+BLOQUE 2: El parser CAPTURA AreaRestriccion (DENTRO/FUERA) y diferencia
+umbrales, pero el motor de reglas NO usa ninguno de estos campos.
+
+BLOQUE 3: El matching geografico es contra el poligono jurisdiccional COMPLETO
+(Voronoi recortado). No existe geometria de area de restriccion en la BD.
+
+BLOQUE 4: El dato de area existe en SITPORT y se captura, pero no se usa ni
+geometrica ni logicamente. El desajuste es dato capturado que no participa en
+ninguna decision.

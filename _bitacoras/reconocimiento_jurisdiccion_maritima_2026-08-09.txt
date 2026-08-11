@@ -1,0 +1,2172 @@
+================================================================================
+RECONOCIMIENTO — RESOLUCIÓN DE JURISDICCIÓN MARÍTIMA (ESTADO ACTUAL)
+Fecha: 2026-08-09
+Modo: solo lectura. No se modificó ningún archivo, tabla, vista ni configuración.
+Alcance: cómo el sistema resuelve HOY a qué jurisdicción pertenece un punto o
+         una ruta. Sin propuestas, sin conclusiones, sin cambios.
+BRE (restriction-rules-engine.js): intocable. Solo se anota dónde aparece.
+================================================================================
+
+CONTEXTO DEL LEVANTAMIENTO
+--------------------------
+Este repositorio es el backend de Tmarea: una app que le dice a un patrón de nave
+chileno si puede zarpar y qué restricciones le aplican en su viaje. DIRECTEMAR
+publica restricciones POR BAHÍA; cada Capitanía de Puerto tiene una jurisdicción
+con límites definidos por decreto. Para saber qué restricciones afectan un viaje,
+el sistema debe determinar por qué jurisdicciones pasa la ruta.
+
+Interesa únicamente la cadena que va desde una coordenada hasta la lista de
+restricciones que se le muestran al patrón. Esa cadena es, en este documento:
+
+  coordenada / waypoints
+    → SECCIÓN 2.1.a-b  ST_Intersects contra bahia_jurisdicciones  → set de bahia_id
+    → SECCIÓN 1.1      geometría de bahia_jurisdicciones (Voronoi ∩ mar ∩ buffer 80 km)
+    → SECCIÓN 3.1      semilla BAHIA_COORDS → bahias_sitport (163 puntos)
+    → SECCIÓN 2.1.d-e  cruce con restricciones SITPORT del mismo bahia_id
+    → SECCIÓN 2.2.b    getCapitaniaByBahiaId → capitanía/gobernación/teléfono
+    → SECCIÓN 4.1      respuesta de /api/sitport/restricciones-ruta
+    → SECCIÓN 4.1 p.8  TransitRestrictionsBlock en pantalla P3
+
+HECHO RELEVANTE PARA EL CONTEXTO: la única geometría de jurisdicción que existe
+hoy en la base de datos es bahia_jurisdicciones, un teselado Voronoi de los 163
+puntos de bahias_sitport recortado por costa y por un buffer de 80 km (Sección 1.1).
+La única otra representación de jurisdicción en el código son las 14 franjas de
+latitud hardcodeadas de capitanias.js (Sección 2.2.a / 2.8), cuyo propio comentario
+dice "no un polígono de jurisdicción real".
+
+Búsqueda de material derivado de decreto (grep -i "decret" sobre el backend,
+excluyendo node_modules) — 10 archivos, ninguno con límites de Capitanía:
+  - CONTRATO_MOTOR.md:130 — cita normativa en prosa, literal:
+      "contempla una vía legal para la situación, se informa citando decreto, artículo e inciso,"
+      (ejemplo del mismo párrafo: "Reglamento de Recepción y Despacho de Naves (D.S. 364, Art. 36)")
+  - sondaje-sitport/*.json (6 archivos) — textos de restricción capturados de SITPORT.
+  - procesar_caletas.py:3 y :26 — lee el shapefile de caletas.
+  - CALETAS_PESQUERAS_DECRETADAS\CALETAS_PESQUERAS_DECRETADAS\ — shapefile SUBPESCA
+    de caletas pesqueras decretadas (ver Sección 3.10). Son PUNTOS de caleta con
+    metadatos de decreto, no polígonos de jurisdicción de Capitanía.
+No existe tabla, vista, archivo ni script que contenga los límites jurisdiccionales
+por decreto de las Capitanías de Puerto.
+
+SECCIONES FUERA DE LA CADENA PRINCIPAL (se levantan por completitud, marcadas):
+  1.6      objetos espaciales no jurisdiccionales (batimetría, base OSM, seamarks)
+  2.4-2.6  proximidad de puertos, fondeadero y deduplicación del seed
+  2.9      capitanías deportivas del frontend (VHF)
+  4.3      weather-ruta (matching por Haversine 120 km, cadena meteorológica)
+  4.4      bahia_sitport_id de nodos_maritimos (llega al frontend y nadie lo lee)
+================================================================================
+
+ENTORNO VERIFICADO
+------------------
+Repos:
+  Backend : C:\Users\katia\tmarea-backend   (git HEAD b97a54c)
+  Frontend: C:\Users\katia\tmarea-pwa
+
+Base de datos (leída de C:\Users\katia\tmarea-backend\.env, líneas 1-6):
+  DB_HOST=localhost
+  DB_PORT=5432
+  DB_NAME=mapa_navegacion
+  DB_USER=postgres
+  PORT=3000
+
+Cliente usado para las consultas: C:\Program Files\PostgreSQL\16\bin\psql.exe
+
+Extensiones instaladas (salida literal):
+
+ extname | extversion
+---------+------------
+ plpgsql | 1.0
+ postgis | 3.5.3
+(2 filas)
+
+git log de los archivos de jurisdicción (salida literal):
+
+b97a54c fix(jurisdicciones): recorte por buffer 80km en Voronoi — elimina falsos positivos en mar abierto
+620466c feat: validador habilitación deportiva + tests (INV-4.1/4.2/4.4, sentinel bahía=0)
+fd16c13 fix: robustez endpoint restricciones-ruta + rename aplica + tests integración INV-1.2
+5ff375a fix: excluir bahías SITPORT del buscador de puertos y agregar restricciones informativas
+23dac72 fix: enrich weather-ruta response with capitania lookup
+42059c8 feat: matching geográfico Voronoi+PostGIS — elimina falsos positivos en fiordos
+35c63d9 feat: lookup de capitanías por bahia_id + normativa zarpe≠recalada
+8961deb fix: subir MAX_DIST_KM a 50 en restricciones-ruta
+
+
+================================================================================
+SECCIÓN 1 — OBJETOS DE BASE DE DATOS QUE REPRESENTAN JURISDICCIÓN O ÁREA
+================================================================================
+
+1.0 INVENTARIO COMPLETO DE public (salida literal)
+--------------------------------------------------
+
+            relname             |  tipo   | tamano
+--------------------------------+---------+---------
+ bahia_jurisdicciones           | matview | 296 kB
+ bahia_jurisdicciones_v1_backup | matview | 352 kB
+ bahias_sitport                 | table   | 80 kB
+ batimetria                     | table   | 1333 MB
+ mapa_base_multipoligonos       | table   | 63 MB
+ ne_land                        | table   | 3960 kB
+ nodos_maritimos                | table   | 312 kB
+ qgis_projects                  | table   | 136 kB
+ reportes_incidencias           | table   | 16 kB
+ seamarks_puntos                | table   | 304 kB
+ spatial_ref_sys                | table   | 7144 kB
+ geography_columns              | view    | 0 bytes
+ geometry_columns               | view    | 0 bytes
+(13 filas)
+
+Columnas geométricas registradas (salida literal):
+
+ f_table_schema |          f_table_name          | f_geometry_column | coord_dimension | srid |     type
+----------------+--------------------------------+-------------------+-----------------+------+--------------
+ public         | bahia_jurisdicciones           | geom              |               2 |    0 | GEOMETRY
+ public         | bahia_jurisdicciones_v1_backup | geom              |               2 |    0 | GEOMETRY
+ public         | bahias_sitport                 | geom              |               2 | 4326 | POINT
+ public         | batimetria                     | geom              |               2 | 4326 | LINESTRING
+ public         | mapa_base_multipoligonos       | geom              |               2 | 4326 | MULTIPOLYGON
+ public         | ne_land                        | geom              |               2 | 4326 | MULTIPOLYGON
+ public         | nodos_maritimos                | geom              |               2 | 4326 | POINT
+ public         | seamarks_puntos                | geom              |               2 | 4326 | POINT
+(8 filas)
+
+Columnas geography registradas: 0 filas (no hay ninguna columna de tipo geography).
+
+Conteos de filas (salida literal):
+
+              obj               |  count
+--------------------------------+---------
+ bahias_sitport                 |     163
+ bahia_jurisdicciones           |     163
+ bahia_jurisdicciones_v1_backup |     163
+ ne_land                        |      11
+ nodos_maritimos                |     781
+ mapa_base_multipoligonos       |   76196
+ batimetria                     | 1179451
+ seamarks_puntos                |     827
+ reportes_incidencias           |       0
+ qgis_projects                  |       1
+(10 filas)
+
+Extensión espacial ST_Extent (salida literal):
+
+              obj               |                                    st_extent
+--------------------------------+----------------------------------------------------------------------------------
+ bahias_sitport                 | BOX(-109.35 -64.8167,-58.9667 -18.4746)
+ bahia_jurisdicciones           | BOX(-79.71226822131291 -56.70172019973141,-65.9860385220112 -18.009628959992376)
+ bahia_jurisdicciones_v1_backup | BOX(-82 -60,-64 -17)
+ ne_land                        | BOX(-179.99999999999991 -89.99999999999994,180 83.63410065300008)
+ nodos_maritimos                | BOX(-109.43906701499998 -64.877,-58.917 -18.446232407999958)
+ batimetria                     | BOX(-84.55 -60.99583333333335,-60.99583333333334 -14.766666666666671)
+ seamarks_puntos                | BOX(-109.4392885 -59.85538330000001,-66.5201401 -18.3481206)
+(7 filas)
+
+
+1.1 VISTA MATERIALIZADA public.bahia_jurisdicciones  ← objeto de jurisdicción en producción
+-------------------------------------------------------------------------------------------
+
+Tipo: MATERIALIZED VIEW
+Filas: 163
+Tamaño: 296 kB
+Extensión: BOX(-79.71226822131291 -56.70172019973141,-65.9860385220112 -18.009628959992376)
+
+Esquema (\d+ literal):
+
+ Columna  |   Tipo   | Nulable | Almacenamiento
+----------+----------+---------+----------------
+ bahia_id | integer  |         | plain
+ nombre   | text     |         | extended
+ geom     | geometry |         | main
+Índices:
+    "idx_bahia_jurisdicciones_geom" gist (geom)
+Método de acceso: heap
+
+DEFINICIÓN COMPLETA (pg_matviews.definition, literal):
+
+ WITH buffer_distancia_m AS (
+         SELECT 80000 AS val
+        ), bbox AS (
+         SELECT st_makeenvelope('-82'::integer::double precision, '-60'::integer::double precision, '-64'::integer::double precision, '-17'::integer::double precision, 4326) AS geom
+        ), puntos AS (
+         SELECT st_collect(bahias_sitport.geom) AS geom
+           FROM bahias_sitport
+        ), voronoi_raw AS (
+         SELECT (st_dump(st_voronoipolygons(puntos.geom, 0::double precision, bbox.geom))).geom AS geom
+           FROM puntos,
+            bbox
+        ), voronoi_asignado AS (
+         SELECT b.bahia_id,
+            b.nombre,
+            b.geom AS punto_geom,
+            st_intersection(v.geom, bbox.geom) AS geom
+           FROM voronoi_raw v
+             JOIN bahias_sitport b ON st_contains(v.geom, b.geom)
+             CROSS JOIN bbox
+        ), tierra_chile AS (
+         SELECT st_union(st_intersection(l.geom, bbox.geom)) AS geom
+           FROM ne_land l,
+            bbox
+          WHERE st_intersects(l.geom, bbox.geom)
+        )
+ SELECT va.bahia_id,
+    va.nombre,
+    st_intersection(COALESCE(st_difference(va.geom, tc.geom), va.geom), st_buffer(va.punto_geom::geography, bd.val::double precision)::geometry) AS geom
+   FROM voronoi_asignado va
+     CROSS JOIN tierra_chile tc
+     CROSS JOIN buffer_distancia_m bd;
+
+SCRIPT DE CREACIÓN EN EL REPO: scripts/create-bahia-jurisdicciones.sql (52 líneas, literal):
+
+-- bahia_jurisdicciones: polígonos Voronoi recortados por costa Y por buffer de distancia.
+--
+-- Doble recorte:
+--   1. ST_Difference contra tierra (ne_land) → respeta topología costera (fiordos OK)
+--   2. ST_Intersection con ST_Buffer(80km) del punto de la bahía → acota extensión
+--      en mar abierto (elimina falsos positivos a cientos de km)
+--
+-- El parámetro buffer_distancia_m (80000 = 80 km) es el único valor a ajustar.
+-- ST_Buffer se aplica sobre geography para que los metros sean reales.
+--
+-- Requiere: bahias_sitport (puntos), ne_land (polígonos de tierra).
+
+DROP MATERIALIZED VIEW IF EXISTS bahia_jurisdicciones;
+
+CREATE MATERIALIZED VIEW bahia_jurisdicciones AS
+WITH
+  buffer_distancia_m AS (SELECT 80000 AS val),
+  bbox AS (
+    SELECT ST_MakeEnvelope(-82, -60, -64, -17, 4326) AS geom
+  ),
+  puntos AS (
+    SELECT ST_Collect(geom) AS geom FROM bahias_sitport
+  ),
+  voronoi_raw AS (
+    SELECT (ST_Dump(ST_VoronoiPolygons(puntos.geom, 0::float, bbox.geom))).geom AS geom
+    FROM puntos, bbox
+  ),
+  voronoi_asignado AS (
+    SELECT b.bahia_id, b.nombre, b.geom AS punto_geom,
+           ST_Intersection(v.geom, bbox.geom) AS geom
+    FROM voronoi_raw v
+    JOIN bahias_sitport b ON ST_Contains(v.geom, b.geom)
+    CROSS JOIN bbox
+  ),
+  tierra_chile AS (
+    SELECT ST_Union(ST_Intersection(l.geom, bbox.geom)) AS geom
+    FROM ne_land l, bbox
+    WHERE ST_Intersects(l.geom, bbox.geom)
+  )
+SELECT
+  va.bahia_id,
+  va.nombre,
+  ST_Intersection(
+    COALESCE(ST_Difference(va.geom, tc.geom), va.geom),
+    ST_Buffer(va.punto_geom::geography, bd.val)::geometry
+  ) AS geom
+FROM voronoi_asignado va
+CROSS JOIN tierra_chile tc
+CROSS JOIN buffer_distancia_m bd;
+
+CREATE INDEX idx_bahia_jurisdicciones_geom
+  ON bahia_jurisdicciones USING GIST(geom);
+
+ESTADO DE LAS GEOMETRÍAS (salida literal):
+
+ nulas | vacias | area_cero | area_positiva | invalidas
+-------+--------+-----------+---------------+-----------
+     0 |     33 |        33 |           130 |         0
+(1 fila)
+
+      tipo       | count
+-----------------+-------
+ ST_Polygon      |   132
+ ST_MultiPolygon |    31
+(2 filas)
+
+ srid | count
+------+-------
+ 4326 |   163
+(1 fila)
+
+(nota factual: geometry_columns informa srid=0 para esta MV porque la columna no
+ tiene typmod; ST_SRID por fila devuelve 4326 en las 163 filas.)
+
+Área total de la unión de las 163 celdas: 314391.1 km²
+
+Top 15 celdas por área (salida literal):
+
+ bahia_id |               nombre               |   km2
+----------+------------------------------------+---------
+       90 | Isla Robinson Crusoe               | 19881.2
+      199 | Cabo de Hornos                     | 17519.6
+      154 | Isla Guarello                      | 14562.7
+      101 | Lebu                               | 10093.8
+      103 | Bahía Constitución                 |  8963.0
+      143 | Carahue - Borde Costero            |  8526.6
+      170 | Sector Chaihuín                    |  8094.8
+       88 | Bahía Conchalí                     |  8021.7
+       95 | Pichilemu                          |  7694.0
+      158 | Caleta Chañaral y Ensenada Gaviota |  7359.9
+      204 | Pisagua                            |  7173.9
+       79 | Tal Tal                            |  6974.1
+       71 | Bahía de Arica                     |  6872.8
+       78 | Caleta Coloso                      |  6719.5
+      157 | Puerto Carrizal Bajo               |  5894.3
+(15 filas)
+
+LAS 33 CELDAS CON GEOMETRÍA VACÍA (área 0 — ST_Intersects nunca puede matchearlas)
+(salida literal):
+
+ bahia_id |              nombre
+----------+-----------------------------------
+       89 | Isla de Pascua
+      104 | Valdivia Fluvial
+      105 | Lago Villarrica
+      106 | Panguipulli
+      111 | Lago Llanquihue
+      128 | Lago General Carrera
+      133 | Bahía Catalina
+      139 | Bahía Fildes
+      140 | Bahía Paraíso
+      142 | Carahue - Sector Lago
+      144 | Lago Ranco
+      145 | Lago Maihue
+      146 | Río Bueno
+      153 | Lago Tagua Tagua
+      159 | Lago Todos los Santos
+      160 | Lago Puyehue
+      161 | Lago Rupanco
+      162 | Lago Chapo
+      183 | Estero Pichicolo
+      203 | Lago O'Higgins
+      207 | Valdivia Conectividad
+      209 | Lago Villarrica Sector Pucón
+      210 | Lago Villarrica Sector Villarrica
+      225 | Canal Utarupa
+      229 | Lago Vichuquén
+      231 | Bahía Chile
+      234 | Río Palena
+      245 | Lago Pellaifa
+      246 | Lago Pullinque
+      247 | Lago Calafquén
+      248 | Lago Riñihue
+      249 | Lago Neltume
+      250 | Lago Pirehuico
+(33 filas)
+
+Bahías de bahias_sitport SIN fila en bahia_jurisdicciones: 0 filas.
+
+PARES DE CELDAS QUE SE SOLAPAN (salida literal):
+
+ id_a |              nombre_a              | id_b |           nombre_b            | km2_solape
+------+------------------------------------+------+-------------------------------+------------
+  118 | Bahía Ancud y Canal Chacao         |  214 | Bahía Ancud                   |   4949.062
+  129 | Puerto Edén                        |  154 | Isla Guarello                 |      0.000
+  117 | Bahía Quellón                      |  175 | Sector Repolla Alto           |      0.000
+   97 | Bahía Concepción - Lirquén         |   98 | Bahía Concepción - Talcahuano |      0.000
+   87 | Tongoy                             |  151 | Barnes                        |      0.000
+  158 | Caleta Chañaral y Ensenada Gaviota |  202 | Cruz Grande                   |      0.000
+   73 | Patache                            |  196 | Borde Costero Norte Patache   |      0.000
+   72 | Bahía de Iquique                   |  204 | Pisagua                       |      0.000
+(8 filas)
+
+(nota factual: los bahia_id 118 y 214 tienen coordenadas idénticas en el origen
+ de datos — ver Sección 3: BAHIA_COORDS 118 y 214 = lat -41.8665, lng -73.8313.)
+
+
+1.2 VISTA MATERIALIZADA public.bahia_jurisdicciones_v1_backup
+--------------------------------------------------------------
+
+Tipo: MATERIALIZED VIEW
+Filas: 163
+Tamaño: 352 kB
+Extensión: BOX(-82 -60,-64 -17)
+Índice: "idx_bahia_jurisdicciones_v1_backup_geom" gist (geom)
+
+DEFINICIÓN COMPLETA (literal):
+
+ WITH bbox AS (
+         SELECT st_makeenvelope('-82'::integer::double precision, '-60'::integer::double precision, '-64'::integer::double precision, '-17'::integer::double precision, 4326) AS geom
+        ), puntos AS (
+         SELECT st_collect(bahias_sitport.geom) AS geom
+           FROM bahias_sitport
+        ), voronoi_raw AS (
+         SELECT (st_dump(st_voronoipolygons(puntos.geom, 0::double precision, bbox.geom))).geom AS geom
+           FROM puntos,
+            bbox
+        ), voronoi_asignado AS (
+         SELECT b.bahia_id,
+            b.nombre,
+            st_intersection(v.geom, bbox.geom) AS geom
+           FROM voronoi_raw v
+             JOIN bahias_sitport b ON st_contains(v.geom, b.geom)
+             CROSS JOIN bbox
+        ), tierra_chile AS (
+         SELECT st_union(st_intersection(l.geom, bbox.geom)) AS geom
+           FROM ne_land l,
+            bbox
+          WHERE st_intersects(l.geom, bbox.geom)
+        )
+ SELECT va.bahia_id,
+    va.nombre,
+    COALESCE(st_difference(va.geom, tc.geom), va.geom) AS geom
+   FROM voronoi_asignado va
+     CROSS JOIN tierra_chile tc;
+
+Diferencia con la de producción: no aplica el recorte por ST_Buffer(80 km).
+Procedencia del rename: _bitacoras/promocion_frente2_2026-08-08.txt documenta
+ALTER MATERIALIZED VIEW bahia_jurisdicciones RENAME TO bahia_jurisdicciones_v1_backup
+y ALTER MATERIALIZED VIEW bahia_jurisdicciones_v2 RENAME TO bahia_jurisdicciones.
+Ningún código del repo consulta esta vista de backup (grep sin resultados fuera de
+_bitacoras/).
+
+
+1.3 TABLA public.bahias_sitport  ← semillas puntuales de la jurisdicción
+------------------------------------------------------------------------
+
+Filas: 163. Tamaño: 80 kB. Extensión: BOX(-109.35 -64.8167,-58.9667 -18.4746)
+
+Esquema (\d+ literal):
+
+ Columna  |         Tipo         | Nulable  | Almacenamiento
+----------+----------------------+----------+----------------
+ bahia_id | integer              | not null | plain
+ nombre   | text                 | not null | extended
+ lat      | double precision     | not null | plain
+ lng      | double precision     | not null | plain
+ geom     | geometry(Point,4326) |          | main
+Índices:
+    "bahias_sitport_pkey" PRIMARY KEY, btree (bahia_id)
+    "idx_bahias_sitport_geom" gist (geom)
+Referenciada por:
+    TABLE "nodos_maritimos" CONSTRAINT "nodos_maritimos_bahia_sitport_id_fkey" FOREIGN KEY (bahia_sitport_id) REFERENCES bahias_sitport(bahia_id)
+Método de acceso: heap
+
+DDL en el repo (scripts/seed-bahias-sitport.js, líneas 187-197, literal):
+
+      CREATE TABLE IF NOT EXISTS bahias_sitport (
+        bahia_id INTEGER PRIMARY KEY,
+        nombre   TEXT NOT NULL,
+        lat      DOUBLE PRECISION NOT NULL,
+        lng      DOUBLE PRECISION NOT NULL,
+        geom     GEOMETRY(Point, 4326)
+      );
+      CREATE INDEX IF NOT EXISTS idx_bahias_sitport_geom
+        ON bahias_sitport USING GIST(geom);
+
+Inserción (scripts/seed-bahias-sitport.js, líneas 204-213, literal):
+
+      await client.query(
+        `INSERT INTO bahias_sitport (bahia_id, nombre, lat, lng, geom)
+         VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($4, $3), 4326))
+         ON CONFLICT (bahia_id) DO UPDATE
+           SET nombre = EXCLUDED.nombre,
+               lat    = EXCLUDED.lat,
+               lng    = EXCLUDED.lng,
+               geom   = EXCLUDED.geom`,
+        [Number(id), nombre, lat, lng]
+      );
+
+
+1.4 TABLA public.ne_land  ← geometría de tierra usada para recortar
+-------------------------------------------------------------------
+
+Filas: 11. Tamaño: 3960 kB.
+Extensión: BOX(-179.99999999999991 -89.99999999999994,180 83.63410065300008)  (cobertura mundial)
+
+Esquema (\d+ literal):
+
+  Columna   |            Tipo             | Nulable  |              Por omisión
+------------+-----------------------------+----------+--------------------------------------
+ gid        | integer                     | not null | nextval('ne_land_gid_seq'::regclass)
+ featurecla | character varying(11)       |          |
+ scalerank  | smallint                    |          |
+ min_zoom   | double precision            |          |
+ geom       | geometry(MultiPolygon,4326) |          |
+Índices:
+    "ne_land_pkey" PRIMARY KEY, btree (gid)
+Método de acceso: heap
+
+NOTA FACTUAL: ne_land NO tiene índice espacial GIST (solo PK btree sobre gid).
+
+Contenido fila por fila (salida literal):
+
+ gid | featurecla  | scalerank | vertices |                                      extent
+-----+-------------+-----------+----------+----------------------------------------------------------------------------------
+   1 | Land        |         0 |   270426 | BOX(-179.99999999999991 -89.99999999999994,180 83.63410065300008)
+   2 | Land        |         6 |    12469 | BOX(-178.8588761059999 -79.18328215899993,179.95240319100003 81.63393789300005)
+   3 | Land        |         5 |    31704 | BOX(-179.99999999999991 -83.14837004999993,180 82.11994049700007)
+   4 | Land        |         6 |    26046 | BOX(-179.33613033799992 -73.39641692499993,179.95264733200008 80.17487213700008)
+   5 | Land        |         5 |    11650 | BOX(-179.87193762899992 -83.2268205709999,180 82.89663320500006)
+   6 | Land        |         3 |    26559 | BOX(-176.9778946609999 -81.59889088299991,180 81.56476471600007)
+   7 | Land        |         0 |    19468 | BOX(-179.99999999999991 -80.96038176899992,169.36443118600005 80.93349844000005)
+   8 |             |           |    35380 | BOX(-179.9576309889999 -76.12184010199991,179.50464928500003 81.34483470300006)
+   9 | Land        |         1 |     5009 | BOX(-171.8528946609999 -79.69687265399995,180 81.20526764500005)
+  10 | Land        |         5 |     7459 | BOX(-156.06016392799992 -77.39739348799992,178.7114363940001 83.36591217700004)
+  11 | Null island |       100 |        5 | BOX(-0.004789435546374 -0.004389928165484,0.004328009720073 0.004816903819262)
+(11 filas)
+
+No hay en el repo ningún script que cree o cargue ne_land (grep de shp2pgsql /
+ogr2ogr sin resultados). Ver "NO DETERMINADO".
+
+
+1.5 TABLA public.nodos_maritimos  ← puntos con jurisdicción asignada
+--------------------------------------------------------------------
+
+Filas: 781. Tamaño: 312 kB.
+Extensión: BOX(-109.43906701499998 -64.877,-58.917 -18.446232407999958)
+
+Esquema (\d+ literal):
+
+      Columna       |          Tipo          | Nulable  |                  Por omisión
+--------------------+------------------------+----------+---------------------------------------------
+ id                 | integer                | not null | nextval('nodos_maritimos_id_seq'::regclass)
+ nombre             | character varying(255) | not null |
+ nombre_normalizado | character varying(255) |          |
+ tipo               | character varying(50)  |          |
+ fuente             | character varying(50)  |          |
+ fuente_id          | character varying(50)  |          |
+ autoridad_maritima | character varying(100) |          |
+ region             | character varying(100) |          |
+ provincia          | character varying(100) |          |
+ comuna             | character varying(100) |          |
+ bahia_sitport_id   | integer                |          |
+ geom               | geometry(Point,4326)   | not null |
+Índices:
+    "nodos_maritimos_pkey" PRIMARY KEY, btree (id)
+    "idx_nodos_geom" gist (geom)
+    "idx_nodos_nombre_norm" btree (nombre_normalizado)
+Restricciones de llave foránea:
+    "nodos_maritimos_bahia_sitport_id_fkey" FOREIGN KEY (bahia_sitport_id) REFERENCES bahias_sitport(bahia_id)
+Triggers:
+    trg_jurisdiccion_auto BEFORE INSERT OR UPDATE OF geom ON nodos_maritimos FOR EACH ROW EXECUTE FUNCTION asignar_jurisdiccion_sitport()
+Método de acceso: heap
+
+Distribución por fuente y cobertura de jurisdicción (salida literal):
+
+   fuente   | count | con_jurisdiccion
+------------+-------+------------------
+ MOP        |   644 |              177
+ SITPORT    |    88 |               33
+ SERNAPESCA |    20 |               15
+ MANUAL     |    18 |                5
+ BEM        |    11 |                2
+(5 filas)
+
+Distribución por tipo (salida literal):
+
+           tipo            | count
+---------------------------+-------
+ Caleta                    |   186
+ Embarcadero               |   151
+ Defensa Costera           |   133
+ Rampa                     |   105
+ Bahía                     |    88
+ Infraestructura Portuaria |    67
+ Muelle                    |    15
+ Terminal                  |    15
+ puerto                    |    11
+ Puerto                    |    10
+(10 filas)
+
+Nodos con bahia_sitport_id = NULL: 549 de 781.
+
+Top de asignaciones del trigger (salida literal):
+
+ bahia_sitport_id |                  nombre                  | nodos
+------------------+------------------------------------------+-------
+                  |                                          |   549
+              235 | Chequián                                 |    17
+              122 | Achao                                    |    13
+              113 | Bahía de Calbuco                         |    12
+              117 | Bahía Quellón                            |    11
+              107 | Bahía Corral                             |    10
+               90 | Isla Robinson Crusoe                     |     9
+              163 | Canal Dalcahue                           |     7
+               77 | Bahía Moreno (Antofagasta)               |     7
+              143 | Carahue - Borde Costero                  |     7
+               71 | Bahía de Arica                           |     7
+              125 | Sector Bahía de Puerto Aguirre           |     6
+              155 | Queilén                                  |     5
+              197 | Borde Costero Sur Patache                |     5
+              134 | Punta Arenas                             |     5
+              158 | Caleta Chañaral y Ensenada Gaviota       |     5
+              232 | San José - Caicaén                       |     4
+              100 | Bahía Coronel                            |     4
+              114 | Canal Chacao Sector Pargua y Pta Coronel |     4
+              216 | Canal Tenglo                             |     4
+               97 | Bahía Concepción - Lirquén               |     4
+              205 | Puqueldón (Isla Lemuy)                   |     4
+              120 | Puerto Quemchi                           |     4
+              252 | Canal Moraleda (Este)                    |     3
+               88 | Bahía Conchalí                           |     3
+(25 filas)
+
+Comprobaciones de consistencia hechas hoy (salida literal):
+
+ nodos_null_que_intersectan_hoy
+--------------------------------
+                              0
+(1 fila)
+
+ desalineados
+--------------
+            0
+(1 fila)
+
+Ejemplo puntual — nodo id=1 "Caleta Pesquera Pisagua" (-19.597461023999927, -70.21522852399994)
+contra bahia_jurisdicciones: 0 filas (no intersecta ninguna celda).
+
+Primeros 15 nodos sin jurisdicción (salida literal):
+
+ id |                     nombre                     | fuente |         lat         |        lng
+----+------------------------------------------------+--------+---------------------+--------------------
+  1 | Caleta Pesquera Pisagua                        | MOP    | -19.597461023999927 | -70.21522852399994
+  2 | Defensa Costera Sector Museo Corbeta Esmeralda | MOP    | -20.210013447999927 | -70.15187266599997
+  3 | Caleta Pesquera Guardiamarina Riquelme         | MOP    | -20.210673786999962 | -70.15262960299998
+  4 | Caleta Pesquera Cavancha                       | MOP    | -20.234946823999962 | -70.15089682299998
+  5 | Caleta Pesquera Los Verdes                     | MOP    | -20.422999791999928 | -70.16488387499999
+  6 | Caleta Pesquera Chanavayita                    | MOP    |  -20.70310209099995 | -70.18844433899994
+  8 | Caleta Pesquera Rio Seco                       | MOP    |  -20.99789752099997 | -70.16374785199997
+  9 | Caleta Pesquera San Marcos                     | MOP    |  -21.11476683099994 | -70.12409000799994
+ 11 | Caleta Pesquera Caramucho                      | MOP    | -20.660375140999975 | -70.18436464399997
+ 12 | Borde Costero Sector Playa Bellavista          | MOP    |  -20.21790946899995 | -70.15554019099994
+ 13 | Borde Costero Pisagua                          | MOP    | -19.596942275999936 | -70.21262198499994
+ 14 | Caleta Pesquera Punta Arenas                   | MOP    | -21.633930754999938 | -70.13755351299994
+ 15 | Caleta Pesquera Tocopilla                      | MOP    |  -22.09314847099995 | -70.20413567799994
+ 16 | Playa Artificial Covadonga                     | MOP    |  -22.11196414999995 | -70.21377643699998
+ 17 | Borde Costero de Mejillones                    | MOP    | -23.098320399999977 | -70.44860158999995
+(15 filas)
+
+
+1.6 OTROS OBJETOS ESPACIALES (no representan jurisdicción; se listan por completitud)
+--------------------------------------------------------------------------------------
+
+public.mapa_base_multipoligonos — table, 76196 filas, 63 MB, geometry(MultiPolygon,4326)
+  Columnas: id, geom, osm_id, osm_way_id, name, type, aeroway, amenity, admin_level,
+  barrier, boundary, building, craft, geological, historic, land_area, landuse, leisure,
+  man_made, military, natural, office, place, shop, sport, tourism, other_tags
+  Índices: mapa_base_multipoligonos_pkey btree(id); sidx_mapa_base_multipoligonos_geom gist(geom)
+  Tiene columnas admin_level y boundary (potencialmente administrativas). Ningún
+  archivo del repo la consulta para jurisdicción marítima (grep sin resultados).
+
+public.batimetria — table, 1179451 filas, 1333 MB, geometry(LineString,4326)
+  Columnas: id, geom, fid, elev, layer, path
+  Índices: batimetria_pkey btree(id); idx_batimetria_geom gist(geom)
+
+public.seamarks_puntos — table, 827 filas, 304 kB, geometry(Point,4326)
+  Columnas: id, geom, osm_id, name, barrier, highway, ref, address, is_in, place,
+  man_made, other_tags
+  Índices: seamarks_puntos_pkey btree(id); sidx_seamarks_puntos_geom gist(geom)
+
+public.reportes_incidencias — table, 0 filas
+  Columnas: id, descripcion, screenshot_base64, pantalla_actual, datos_viaje (jsonb),
+  navegador, coordenadas_gps (jsonb), version_app, nombre_usuario, perfil_usuario,
+  estado, created_at, updated_at
+  Guarda coordenadas_gps en jsonb; no hay columna geométrica ni resolución de jurisdicción.
+
+public.qgis_projects — table, 1 fila, 136 kB
+public.spatial_ref_sys — table PostGIS, 7144 kB
+
+
+1.7 FUNCIONES Y TRIGGERS PROPIOS DEL PROYECTO
+----------------------------------------------
+
+Funciones no-PostGIS definidas en public: asignar_jurisdiccion_sitport, normalizar_nombre
+(el resto de las 777 filas de pg_proc son de PostGIS/plpgsql).
+
+FUNCIÓN public.asignar_jurisdiccion_sitport() — definición literal:
+
+ CREATE OR REPLACE FUNCTION public.asignar_jurisdiccion_sitport()
+  RETURNS trigger
+  LANGUAGE plpgsql
+ AS $function$
+ BEGIN
+     SELECT bahia_id INTO NEW.bahia_sitport_id
+     FROM bahia_jurisdicciones
+     WHERE ST_Intersects(NEW.geom, geom)
+     LIMIT 1;
+     RETURN NEW;
+ END;
+ $function$
+
+TRIGGER (definición literal):
+
+ CREATE TRIGGER trg_jurisdiccion_auto BEFORE INSERT OR UPDATE OF geom ON public.nodos_maritimos FOR EACH ROW EXECUTE FUNCTION asignar_jurisdiccion_sitport()
+
+Es el único trigger no interno de todo el esquema public (1 fila en la consulta de
+pg_trigger con NOT tgisinternal).
+
+FUNCIÓN public.normalizar_nombre(texto text) — definición literal:
+
+ CREATE OR REPLACE FUNCTION public.normalizar_nombre(texto text)
+  RETURNS text
+  LANGUAGE plpgsql
+  IMMUTABLE
+ AS $function$
+ DECLARE
+     resultado TEXT;
+ BEGIN
+     resultado := lower(trim(texto));
+     -- Quitar tildes y caracteres especiales
+     resultado := translate(resultado,
+         'áéíóúàèìòùäëïöüâêîôûãõñç',
+         'aeiouaeiouaeiouaeiouaonc');
+     -- Eliminar prefijos genericos
+     resultado := regexp_replace(resultado, '^(muelle|rampa|caleta pesquera|caleta de pescadores|caleta|puerto de|puerto|terminal|defensa costera|borde costero)\s+', '', 'i');
+     resultado := trim(resultado);
+     RETURN resultado;
+ END;
+ $function$
+
+(normalizar_nombre no es geográfica; participa en la búsqueda de puertos que
+ alimenta la selección de zarpe/recalada — ver Sección 4.)
+
+
+================================================================================
+SECCIÓN 2 — PUNTOS DEL CÓDIGO DONDE SE DETERMINA LA JURISDICCIÓN
+================================================================================
+
+2.1 BACKEND — src/routes/sitport-routes.js
+-------------------------------------------
+
+[2.1.a] bahiasEnRutaPostGIS() — resolución de jurisdicción de una RUTA
+Archivo: src/routes/sitport-routes.js
+Líneas: 529-543
+Fragmento literal:
+
+// Matching geográfico via PostGIS: devuelve los bahia_id cuyas celdas Voronoi
+// (recortadas por costa) intersectan la ruta. Elimina falsos positivos en
+// geografía de fiordos (ej: Maullín no matchea rutas por el Golfo de Ancud).
+async function bahiasEnRutaPostGIS(waypoints) {
+  if (waypoints.length < 2) return new Set();
+  const coordinates = waypoints.map(wp => [wp.lng, wp.lat]);
+  const rutaGeoJSON = JSON.stringify({ type: 'LineString', coordinates });
+  const { rows } = await pool.query(
+    `SELECT bahia_id
+     FROM bahia_jurisdicciones
+     WHERE ST_Intersects(geom, ST_SetSRID(ST_GeomFromGeoJSON($1), 4326))`,
+    [rutaGeoJSON]
+  );
+  return new Set(rows.map(r => r.bahia_id));
+}
+
+[2.1.b] Llamada a bahiasEnRutaPostGIS dentro de POST /api/sitport/restricciones-ruta
+Archivo: src/routes/sitport-routes.js
+Líneas: 605-608
+Fragmento literal:
+
+    // 2. Matching geográfico PostGIS: qué celdas Voronoi (recortadas por costa)
+    // intersectan la ruta. Reemplaza el radio de 50km — elimina falsos positivos
+    // en geografía de fiordos (ej: Maullín no matchea rutas por el Golfo de Ancud).
+    const bahiaIdsEnRuta = await bahiasEnRutaPostGIS(puntosValidos);
+
+[2.1.c] Filtro geográfico de entrada (recorte del rango de coordenadas aceptadas)
+Archivo: src/routes/sitport-routes.js
+Líneas: 567-573
+Fragmento literal:
+
+    const puntosValidos = [];
+    for (const p of ruta_puntos) {
+      if (!p || typeof p.lat !== 'number' || typeof p.lng !== 'number' ||
+          !Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
+      if (p.lat < -90 || p.lat > -15 || p.lng < -120 || p.lng > -60) continue;
+      puntosValidos.push(p);
+    }
+
+[2.1.d] Asignación de posición en ruta a cada bahía matcheada (Haversine)
+Archivo: src/routes/sitport-routes.js
+Líneas: 610-630
+Fragmento literal:
+
+    // 3. Agrupar restricciones por bahía y calcular posición en ruta para ordenar.
+    // La posición se estima como el índice del waypoint más cercano al punto de la bahía.
+    const porBahia = new Map(); // bahiaId → { restricciones, indiceRuta, coordsBahia }
+
+    for (const restriccion of restriccionesTransito) {
+      const bahiaId = restriccion.bahia;
+      if (!bahiaIdsEnRuta.has(bahiaId)) continue;
+      const coordsBahia = BAHIA_COORDS[bahiaId];
+      if (!coordsBahia) continue;
+
+      if (!porBahia.has(bahiaId)) {
+        // Estimar posición en ruta: índice del waypoint más cercano al punto de la bahía
+        let minDist = Infinity, minIdx = 0;
+        puntosValidos.forEach((wp, i) => {
+          const d = distKm(coordsBahia.lat, coordsBahia.lng, wp.lat, wp.lng);
+          if (d < minDist) { minDist = d; minIdx = i; }
+        });
+        porBahia.set(bahiaId, { restricciones: [], indiceRuta: minIdx, coordsBahia });
+      }
+      porBahia.get(bahiaId).restricciones.push(restriccion);
+    }
+
+[2.1.e] Exclusión de zarpe / recalada por ID explícito
+Archivo: src/routes/sitport-routes.js
+Líneas: 642-648
+Fragmento literal:
+
+    // 4. Excluir zarpe y recalada por ID explícito.
+    // La exclusión posicional (primer/último match) fue eliminada: asumía que
+    // las bahías más cercanas a los extremos de la ruta son zarpe/recalada, lo
+    // cual falla cuando solo hay pocas bahías dentro del radio y todas son tránsito.
+    const excluidas = new Set();
+    if (zarpe_id != null) excluidas.add(Number(zarpe_id));
+    if (recalada_id != null) excluidas.add(Number(recalada_id));
+
+NOTA FACTUAL: `zarpe_id` y `recalada_id` se leen de req.body (línea 554). Grep de
+"zarpe_id" y "recalada_id" sobre C:\Users\katia\tmarea-pwa\src → 0 resultados. El
+cuerpo que arma el frontend es (useVoyageVerification.js líneas 326-328):
+
+  const body = { ruta_puntos, nave_ab };
+  if (perfil_deportivo) body.perfil_deportivo = perfil_deportivo;
+  if (navegacion_deportiva) body.navegacion_deportiva = navegacion_deportiva;
+
+[2.1.f] Resolución de jurisdicción de un PUNTO por vecino más cercano — weather-ruta
+Archivo: src/routes/sitport-routes.js
+Líneas: 377-421
+Fragmento literal:
+
+    // 2. Enriquecer cada pronóstico con coordenadas del mapa estático
+    const enriquecidos = pronosticos
+      .map(p => {
+        const coords = BAHIA_COORDS[p.idBahia];
+        if (!coords) return null;
+        return { ...p, lat: coords.lat, lng: coords.lng, nombreBahia: coords.nombre };
+      })
+      .filter(Boolean)
+      .filter(p => p.velocidadViento !== null && p.temperatura !== null);
+...
+    // 3. Para cada punto de ruta, encontrar la bahía más cercana (máx 120 km)
+    const MAX_DIST_KM = 120;
+    const bahiasEnRuta = new Map(); // idBahia → registro
+
+    for (const punto of ruta_puntos) {
+      if (!punto.lat || !punto.lng) continue;
+      let mejor = null;
+      let mejorDist = Infinity;
+
+      for (const p of enriquecidos) {
+        const d = distKm(punto.lat, punto.lng, p.lat, p.lng);
+        if (d < mejorDist && d < MAX_DIST_KM) {
+          mejorDist = d;
+          mejor = p;
+        }
+      }
+
+      if (mejor && !bahiasEnRuta.has(mejor.idBahia)) {
+        bahiasEnRuta.set(mejor.idBahia, {
+          ...mejor,
+          distancia_km: Math.round(mejorDist)
+        });
+      }
+    }
+
+(weather-ruta NO usa PostGIS ni bahia_jurisdicciones: resuelve por Haversine al
+ punto BAHIA_COORDS más cercano con tope de 120 km.)
+
+[2.1.g] Función Haversine usada por 2.1.d y 2.1.f
+Archivo: src/routes/sitport-routes.js
+Líneas: 257-270
+Fragmento literal:
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Haversine (km)
+// ─────────────────────────────────────────────────────────────────────────────
+function distKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+[2.1.h] Resolución de bahía POR NOMBRE (no geográfica) — POST /api/sitport/restricciones
+Archivo: src/routes/sitport-routes.js
+Líneas: 241-255
+Fragmento literal:
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Lookup de bahia_id por nombre de puerto (para enriquecer estado de zarpe/recalada)
+// ─────────────────────────────────────────────────────────────────────────────
+function resolverBahiaIdPorNombre(nombre) {
+  if (!nombre) return null;
+  const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const skip = new Set(['caleta','bahia','puerto','ensenada','canal','punta','seno','rada','isla','lago','golfo']);
+  const palabras = norm(nombre).split(/\s+/).filter(w => w.length > 3 && !skip.has(w));
+  if (palabras.length === 0) return null;
+  for (const [id, coords] of Object.entries(BAHIA_COORDS)) {
+    const nombreNorm = norm(coords.nombre);
+    if (palabras.some(p => nombreNorm.includes(p))) return Number(id);
+  }
+  return null;
+}
+
+Y su uso en el endpoint, líneas 311-341 (literal):
+
+router.post('/restricciones', async (req, res) => {
+  try {
+    const { puerto } = req.body;
+    const data = await sitportService.consultaRestricciones();
+    if (!puerto) return res.json({ success: true, data, error: null });
+
+    const norm = s =>
+      s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const skip = ['caleta','bahia','puerto','ensenada','canal','punta',
+                  'seno','rada','isla','lago','golfo'];
+    const p = norm(puerto);
+
+    const filtradas = data.filter(r => {
+      const words = norm(r.GLBahia || '')
+        .split(/\s+/)
+        .filter(w => w.length > 3 && !skip.includes(w));
+      return words.length > 0 && words.some(w => p.includes(w));
+    });
+
+    const bahiaId = filtradas[0]?.bahia ?? resolverBahiaIdPorNombre(puerto);
+    const cap = bahiaId ? getCapitaniaByBahiaId(bahiaId) : null;
+
+    res.json({
+      success: true,
+      restricciones: filtradas,
+      timestamp: new Date().toISOString(),
+      error: null,
+      capitania: cap?.capitania || null,
+      gobernacion: cap?.gobernacion || null,
+      telefono: cap?.telefono || null,
+    });
+
+NOTA FACTUAL: el estado de zarpe y recalada (PortStatusBlock) resuelve su
+jurisdicción por coincidencia de TEXTO del nombre del puerto, no por geometría.
+El cuerpo que envía el frontend incluye lat/lng (`...ubicacion`, useVoyageVerification
+línea 199) pero el endpoint solo lee `puerto`.
+
+
+2.2 BACKEND — src/utils/capitanias.js
+--------------------------------------
+
+[2.2.a] getCapitania(lat, lon) — jurisdicción por FRANJA DE LATITUD
+Archivo: src/utils/capitanias.js
+Líneas: 12-50
+Fragmento literal:
+
+// Rangos ordenados de norte (lat menos negativa) a sur (lat más negativa).
+// lat_norte es el borde norte de la franja, lat_sur el borde sur; ambos negativos.
+const GOBERNACIONES = [
+  { nombre: 'Arica',           lat_norte: -17.5, lat_sur: -19.5, tel: '+56 58 220 6402' },
+  { nombre: 'Iquique',         lat_norte: -19.5, lat_sur: -22.0, tel: '+56 57 240 1902' },
+  { nombre: 'Antofagasta',     lat_norte: -22.0, lat_sur: -25.5, tel: '+56 55 263 0000' },
+  { nombre: 'Caldera',         lat_norte: -25.5, lat_sur: -29.0, tel: '+56 52 231 5276' },
+  { nombre: 'Coquimbo',        lat_norte: -29.0, lat_sur: -31.5, tel: '+56 51 255 8100' },
+  { nombre: 'Valparaíso',      lat_norte: -31.5, lat_sur: -33.3, tel: '+56 32 220 8905' },
+  { nombre: 'San Antonio',     lat_norte: -33.3, lat_sur: -35.5, tel: '+56 35 258 4802' },
+  { nombre: 'Talcahuano',      lat_norte: -35.5, lat_sur: -39.0, tel: '+56 41 226 6100' },
+  { nombre: 'Valdivia',        lat_norte: -39.0, lat_sur: -41.0, tel: '+56 63 227 6905' },
+  { nombre: 'Puerto Montt',    lat_norte: -41.0, lat_sur: -42.0, tel: '+56 65 256 1100' },
+  { nombre: 'Castro',          lat_norte: -42.0, lat_sur: -44.0, tel: '+56 65 262 9405' },
+  { nombre: 'Aysén',           lat_norte: -44.0, lat_sur: -49.0, tel: '+56 67 233 1405' },
+  { nombre: 'Punta Arenas',    lat_norte: -49.0, lat_sur: -54.0, tel: '+56 61 220 1102' },
+  { nombre: 'Puerto Williams', lat_norte: -54.0, lat_sur: -56.0, tel: '+56 61 262 4270' },
+];
+
+const HANGA_ROA = { nombre: 'Hanga Roa', tel: '+56 32 210 0222' };
+
+/**
+ * Devuelve la Gobernación Marítima jurisdiccional de una coordenada.
+ * @param {number} lat — latitud (negativa en el hemisferio sur)
+ * @param {number} lon — longitud (negativa al oeste)
+ * @returns {{ nombre: string, telefono: string } | null}
+ */
+function getCapitania(lat, lon) {
+  if (lat == null || isNaN(lat)) return null;
+
+  if (lon != null && !isNaN(lon) && lon < -100) {
+    return { nombre: HANGA_ROA.nombre, telefono: HANGA_ROA.tel };
+  }
+
+  const match = GOBERNACIONES.find((g) => lat <= g.lat_norte && lat > g.lat_sur);
+  if (!match) return null;
+
+  return { nombre: match.nombre, telefono: match.tel };
+}
+
+NOTA FACTUAL: grep de "getCapitania(" en el backend → solo su definición y el
+export (línea 60). Ningún endpoint del backend la invoca hoy.
+
+[2.2.b] getCapitaniaByBahiaId(bahiaId) — lookup por tabla estática
+Archivo: src/utils/capitanias.js
+Líneas: 52-60
+Fragmento literal:
+
+const BAHIA_CAPITANIA_MAP = require('../data/bahia-capitania-map.json');
+
+function getCapitaniaByBahiaId(bahiaId) {
+  const entry = BAHIA_CAPITANIA_MAP[String(bahiaId)];
+  if (!entry) return { capitania: 'Desconocida', gobernacion: 'Desconocida', telefono: null };
+  return entry;
+}
+
+module.exports = { getCapitania, getCapitaniaByBahiaId, GOBERNACIONES };
+
+Invocaciones de getCapitaniaByBahiaId en el backend:
+  - src/routes/sitport-routes.js:331  (POST /restricciones)
+  - src/routes/sitport-routes.js:448  (POST /weather-ruta, por cada bahía en ruta)
+  - src/routes/sitport-routes.js:662  (POST /restricciones-ruta, por cada intermedia)
+
+
+2.3 BASE DE DATOS — TRIGGER (resolución de jurisdicción de un PUNTO en INSERT/UPDATE)
+--------------------------------------------------------------------------------------
+
+Objeto: public.trg_jurisdiccion_auto sobre public.nodos_maritimos
+Función: public.asignar_jurisdiccion_sitport()
+Definición literal (repetida aquí por pertenecer también a esta sección):
+
+ CREATE TRIGGER trg_jurisdiccion_auto BEFORE INSERT OR UPDATE OF geom ON public.nodos_maritimos FOR EACH ROW EXECUTE FUNCTION asignar_jurisdiccion_sitport()
+
+ CREATE OR REPLACE FUNCTION public.asignar_jurisdiccion_sitport()
+  RETURNS trigger
+  LANGUAGE plpgsql
+ AS $function$
+ BEGIN
+     SELECT bahia_id INTO NEW.bahia_sitport_id
+     FROM bahia_jurisdicciones
+     WHERE ST_Intersects(NEW.geom, geom)
+     LIMIT 1;
+     RETURN NEW;
+ END;
+ $function$
+
+Hechos observados (consultas de la Sección 1.5):
+  - 549 de 781 nodos tienen bahia_sitport_id NULL.
+  - 0 de esos 549 intersectan hoy alguna celda de bahia_jurisdicciones.
+  - 0 nodos tienen un bahia_sitport_id distinto de la celda que los contiene hoy.
+  - El SELECT no tiene ORDER BY; usa LIMIT 1 sobre un conjunto que puede tener
+    más de una fila (hay 8 pares de celdas que se solapan; uno con 4949 km²).
+
+No existe ningún otro trigger no interno en el esquema public.
+
+
+2.4 BACKEND — src/services/puertos-service.js (resolución por proximidad)
+--------------------------------------------------------------------------
+
+Archivo: src/services/puertos-service.js
+Líneas: 77-93
+Fragmento literal:
+
+async function getPuertosByProximidad(lat, lng, radiusKm = 50, opciones = {}) {
+  const { incluirSitport = false } = opciones;
+  const filtroSitport = incluirSitport ? '' : "AND fuente != 'SITPORT'";
+  const radiusDeg = radiusKm / 111.0;
+  const { rows } = await pool.query(
+    `SELECT id, nombre, tipo, fuente, provincia, region, autoridad_maritima, bahia_sitport_id,
+            ST_Y(geom) AS lat, ST_X(geom) AS lng,
+            ST_Distance(geom::geography, ST_SetSRID(ST_MakePoint($2, $1), 4326)::geography) / 1000 AS distancia_km
+     FROM nodos_maritimos
+     WHERE ST_DWithin(geom, ST_SetSRID(ST_MakePoint($2, $1), 4326), $3)
+        ${filtroSitport}
+     ORDER BY distancia_km
+     LIMIT 50`,
+    [lat, lng, radiusDeg]
+  );
+  return rows.map(r => ({ ...rowToPort(r), distancia_km: parseFloat(r.distancia_km) }));
+}
+
+El campo bahia_sitport_id sale al frontend en todas las consultas del servicio
+(líneas 21, 33, 47, 66, 82) vía rowToPort (líneas 12-27, literal):
+
+function rowToPort(row) {
+  return {
+    id: row.id,
+    nombre: row.nombre,
+    tipo: row.tipo,
+    fuente: row.fuente,
+    provincia: row.provincia || row.region || null,
+    region: row.region || null,
+    autoridad_maritima: row.autoridad_maritima || null,
+    bahia_sitport_id: row.bahia_sitport_id || null,
+    ubicacion: { lat: parseFloat(row.lat), lng: parseFloat(row.lng) },
+    // Fallbacks planos para compatibilidad con código que use p.lat / p.lng
+    lat: parseFloat(row.lat),
+    lng: parseFloat(row.lng),
+  };
+}
+
+
+2.5 BACKEND — src/services/fondeadero-service.js (geografía asociada a la restricción)
+---------------------------------------------------------------------------------------
+
+Archivo: src/services/fondeadero-service.js
+Líneas: 50-113
+Fragmento literal:
+
+function buscarFondeadero(latRestr, lngRestr, rutaAntes, zonasExcluidas = []) {
+  if (typeof latRestr !== 'number' || typeof lngRestr !== 'number') return null;
+  if (!rutaAntes || rutaAntes.length === 0) return null;
+
+  const MAX_DIST_RUTA_KM = 30;
+  const RADIO_EXCLUSION_KM = 80;
+  const MARGEN_BBOX = 0.3; // ~33 km
+
+  // Bounding box del tramo anterior, expandido por margen
+  let minLat = Infinity, maxLat = -Infinity;
+  let minLng = Infinity, maxLng = -Infinity;
+  for (const p of rutaAntes) {
+    if (p.lat < minLat) minLat = p.lat;
+    if (p.lat > maxLat) maxLat = p.lat;
+    if (p.lng < minLng) minLng = p.lng;
+    if (p.lng > maxLng) maxLng = p.lng;
+  }
+  minLat -= MARGEN_BBOX; maxLat += MARGEN_BBOX;
+  minLng -= MARGEN_BBOX; maxLng += MARGEN_BBOX;
+
+  // Submuestra de la ruta para chequeo eficiente (~100 puntos max)
+  const step = Math.max(1, Math.floor(rutaAntes.length / 100));
+  const muestra = [];
+  for (let i = 0; i < rutaAntes.length; i += step) muestra.push(rutaAntes[i]);
+  const ultimo = rutaAntes[rutaAntes.length - 1];
+  if (muestra[muestra.length - 1] !== ultimo) muestra.push(ultimo);
+
+  // Construir lista de candidatos: puertos dentro del bbox y cerca de la ruta
+  const candidatos = [];
+  for (const p of PUERTOS) {
+    if (p.lat < minLat || p.lat > maxLat || p.lng < minLng || p.lng > maxLng) continue;
+
+    let cercaDeRuta = false;
+    for (const rp of muestra) {
+      if (distKm(p.lat, p.lng, rp.lat, rp.lng) < MAX_DIST_RUTA_KM) {
+        cercaDeRuta = true;
+        break;
+      }
+    }
+    if (!cercaDeRuta) continue;
+
+    candidatos.push({ ...p, dist: distKm(latRestr, lngRestr, p.lat, p.lng) });
+  }
+
+  // Ordenar por distancia a la restricción (más cercano = más conveniente)
+  candidatos.sort((a, b) => a.dist - b.dist);
+
+  // Seleccionar el primer candidato que no caiga dentro de ninguna zona restringida
+  for (const c of candidatos) {
+    const enZonaRestringida = zonasExcluidas.some(z =>
+      z && typeof z.lat === 'number' && typeof z.lng === 'number' &&
+      distKm(c.lat, c.lng, z.lat, z.lng) <= RADIO_EXCLUSION_KM
+    );
+    if (!enZonaRestringida) {
+      return {
+        nombre: c.nombre,
+        lat: c.lat,
+        lng: c.lng,
+        distancia_mn: Math.round(c.dist / KM_POR_MN),
+      };
+    }
+  }
+
+  return null;
+}
+
+Llamado desde src/routes/sitport-routes.js:682 (literal):
+
+          fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, rutaAntes, zonasRestringidas),
+
+donde `zonasRestringidas` se arma en la línea 651 (literal):
+
+    const zonasRestringidas = [...porBahia.values()].map(({ coordsBahia }) => coordsBahia);
+
+
+2.6 BACKEND — tools/seed-nodos-maritimos.js (deduplicación geográfica al poblar)
+---------------------------------------------------------------------------------
+
+Archivo: tools/seed-nodos-maritimos.js
+Líneas: 37-46
+Fragmento literal:
+
+// Verificar si ya existe un nodo dentro de dist_deg grados
+async function existeNodoCercano(client, lng, lat, distDeg) {
+  const res = await client.query(
+    `SELECT 1 FROM nodos_maritimos
+     WHERE ST_DWithin(geom, ST_SetSRID(ST_MakePoint($1, $2), 4326), $3)
+     LIMIT 1`,
+    [lng, lat, distDeg]
+  );
+  return res.rowCount > 0;
+}
+
+Umbrales usados: línea 92 `const DIST_DEG = 0.005; // ~500m` (SERNAPESCA),
+línea 122 `const DIST_DEG = 0.005;` (MANUAL), línea 150 `const DIST_DEG = 0.018; // ~2km` (SITPORT).
+
+Nota: los INSERT de este script (líneas 49-57) no escriben bahia_sitport_id; el
+valor lo pone el trigger trg_jurisdiccion_auto.
+
+
+2.7 BACKEND — scripts/diagnostico-nodos-en-tierra.sql (diagnóstico, no producción)
+-----------------------------------------------------------------------------------
+
+Archivo: scripts/diagnostico-nodos-en-tierra.sql
+Líneas 1 y 12, fragmento literal:
+
+-- Diagnóstico: nodos_maritimos cuya geometría intersecta con ne_land (están en tierra)
+...
+JOIN ne_land l ON ST_Intersects(n.geom, l.geom)
+
+Estado en git: archivo sin trackear (?? en git status).
+
+
+2.8 FRONTEND — src/utils/capitanias.js (PWA)
+---------------------------------------------
+
+Archivo: C:\Users\katia\tmarea-pwa\src\utils\capitanias.js
+Líneas: 37-57
+Fragmento literal:
+
+/**
+ * Devuelve la Gobernación Marítima jurisdiccional de una coordenada.
+ * @param {number} lat — latitud (negativa en el hemisferio sur)
+ * @param {number} lon — longitud (negativa al oeste)
+ * @returns {{ nombre: string, telefono: string, direccion: string|null } | null}
+ *          null si la latitud queda fuera de todos los rangos conocidos.
+ */
+export function getCapitania(lat, lon) {
+  if (lat == null || isNaN(lat)) return null;
+
+  // Isla de Pascua / territorio insular oceánico (lon muy al oeste).
+  if (lon != null && !isNaN(lon) && lon < -100) {
+    return { nombre: HANGA_ROA.nombre, telefono: HANGA_ROA.tel, direccion: null };
+  }
+
+  // La franja contiene la latitud si está entre su borde sur y su borde norte.
+  const match = GOBERNACIONES.find((g) => lat <= g.lat_norte && lat > g.lat_sur);
+  if (!match) return null;
+
+  return { nombre: match.nombre, telefono: match.tel, direccion: null };
+}
+
+El array GOBERNACIONES del frontend (líneas 17-32) es idéntico en valores al del
+backend (2.2.a). Comentario de cabecera del archivo, líneas 8-13 (literal):
+
+// Este mapa es una aproximación por FRANJAS DE LATITUD del continente (la costa
+// chilena es casi norte-sur), no un polígono de jurisdicción real. Es suficiente
+// para orientar la llamada; ante duda, siempre prima lo que indique la Autoridad
+// Marítima. Distinto de getNearestCapitania() en maritime-geo.js, que resuelve
+// la Capitanía deportiva más cercana por distancia y entrega canales VHF: acá se
+// entrega la Gobernación jurisdiccional con su teléfono fijo.
+
+Usos de getCapitania en el frontend:
+  - src/hooks/useVoyageVerification.js:519 y :521  (recordatorio R1, fallback)
+  - src/components/verification/PortStatusBlock.jsx:76 y :77 (fallback)
+
+
+2.9 FRONTEND — src/utils/maritime-geo.js (PWA, perfil deportivo)
+-----------------------------------------------------------------
+
+[2.9.a] getNearestCapitania — líneas 50-72, literal:
+
+/**
+ * Retorna la capitanía más cercana a una coordenada dada.
+ * @param {number} lat
+ * @param {number} lng
+ * @param {Array} capitanias - array de maritime_data.json
+ * @returns {{ capitania: object, distanceKm: number }}
+ */
+export function getNearestCapitania(lat, lng, capitanias) {
+  if (!capitanias?.length) return null;
+
+  let nearest = null;
+  let minDist = Infinity;
+
+  for (const cap of capitanias) {
+    const dist = haversineKm(lat, lng, cap.lat, cap.lng);
+    if (dist < minDist) {
+      minDist = dist;
+      nearest = cap;
+    }
+  }
+
+  return { capitania: nearest, distanceKm: minDist };
+}
+
+[2.9.b] getActiveCapitania — líneas 74-101, literal:
+
+/**
+ * Retorna la capitanía cuya jurisdicción (radius_km) contiene la coordenada dada.
+ * Si ninguna la contiene, retorna la más cercana como fallback.
+ * @param {number} lat
+ * @param {number} lng
+ * @param {Array} capitanias
+ * @returns {{ capitania: object, distanceKm: number, isWithinJurisdiction: boolean }}
+ */
+export function getActiveCapitania(lat, lng, capitanias) {
+  if (!capitanias?.length) return null;
+
+  let activeMatch = null;
+  let minDistInside = Infinity;
+
+  for (const cap of capitanias) {
+    const dist = haversineKm(lat, lng, cap.lat, cap.lng);
+    if (dist <= cap.radius_km && dist < minDistInside) {
+      minDistInside = dist;
+      activeMatch = { capitania: cap, distanceKm: dist, isWithinJurisdiction: true };
+    }
+  }
+
+  if (activeMatch) return activeMatch;
+
+  // Fallback: la más cercana aunque no esté dentro del radio
+  const { capitania, distanceKm } = getNearestCapitania(lat, lng, capitanias);
+  return { capitania, distanceKm, isWithinJurisdiction: false };
+}
+
+NOTA FACTUAL: grep de "getActiveCapitania" en tmarea-pwa/src → solo su definición.
+No hay llamadas.
+
+[2.9.c] estimateDistanceToCoastNM — líneas 104-148, resuelve distancia a costa con
+21 puntos de referencia hardcodeados (fragmento literal de la lista):
+
+  // Puntos costeros de referencia Chile (lat, lng) — costa principal
+  // Cobertura: Arica a Punta Arenas, ~cada 30-50km de costa
+  const COAST_REFERENCE_POINTS = [
+    [-18.48, -70.32], // Arica
+    [-20.21, -70.15], // Iquique
+    [-23.65, -70.40], // Antofagasta
+    [-27.37, -70.65], // Caldera
+    [-29.96, -71.34], // La Serena
+    [-32.78, -71.52], // Quintero
+    [-33.02, -71.63], // Valparaíso
+    [-33.36, -71.66], // Algarrobo
+    [-33.61, -71.64], // San Antonio
+    [-35.43, -72.36], // Constitución
+    [-36.62, -72.97], // Tomé
+    [-37.03, -73.16], // Talcahuano
+    [-38.74, -73.58], // Lebu
+    [-39.85, -73.70], // Valdivia (boca)
+    [-40.57, -73.92], // San Carlos de Osorno (aprox)
+    [-41.47, -72.94], // Puerto Montt
+    [-41.86, -73.96], // Ancud
+    [-42.48, -73.76], // Castro
+    [-43.70, -74.06], // Quellón
+    [-45.57, -72.70], // Puerto Aysén
+    [-51.73, -72.52], // Punta Arenas
+  ];
+
+
+2.10 FRONTEND — puntos donde se consume/decide la jurisdicción mostrada
+-------------------------------------------------------------------------
+
+[2.10.a] src/hooks/useVoyageVerification.js, líneas 515-521, literal:
+
+  // ── R1 — SIEMPRE: aviso por radio a la Capitanía de zarpe ──────────────────
+  // Preferir los datos ya resueltos por el backend (getCapitaniaByBahiaId).
+  // Caer a getCapitania(lat,lng) solo si el backend no pudo resolverlos.
+  const capZarpeNombre = portStatus?.zarpe?.gobernacion
+    || (zarpe ? getCapitania(zarpe.lat, zarpe.lng)?.nombre : null);
+  const capZarpeTel = portStatus?.zarpe?.telefono
+    || (zarpe ? getCapitania(zarpe.lat, zarpe.lng)?.telefono : null);
+
+[2.10.b] src/components/verification/PortStatusBlock.jsx, líneas 73-78, literal:
+
+  // Gobernación Marítima: preferir los datos del backend (getCapitaniaByBahiaId,
+  // lookup exacto por bahia_id). Caer a getCapitania(lat,lng) solo si el backend
+  // no pudo resolver la bahía (data.gobernacion es null).
+  const capNombre = data?.gobernacion || (data?.ubicacion ? getCapitania(data.ubicacion.lat, data.ubicacion.lng)?.nombre : null);
+  const capTel    = data?.telefono    || (data?.ubicacion ? getCapitania(data.ubicacion.lat, data.ubicacion.lng)?.telefono : null);
+  const capitania = capNombre ? { nombre: capNombre, telefono: capTel } : null;
+
+[2.10.c] src/components/verification/WeatherBlock.jsx, líneas 178-184, literal:
+
+              // Gobernación Marítima: leer directamente del backend (lookup exacto
+              // por bahia_id). Muestra el teléfono solo en la primera bahía de
+              // cada jurisdicción (tramos van norte→sur, misma gob. queda consecutiva).
+              const capNombre = b.gobernacion || null;
+              const capTel    = b.telefono    || null;
+              const prevNombre = i > 0 ? (tramosViento[i - 1].gobernacion || null) : null;
+              const mostrarTel = capNombre && capNombre !== prevNombre;
+
+[2.10.d] src/components/verification/TransitRestrictionsBlock.jsx, líneas 61-63, literal:
+
+  // Teléfono: usar datos del backend directamente
+  const nombreCap = r.capitania || r.gobernacion;
+  const tel = r.telefono;
+
+[2.10.e] src/screens/P2_VoyageSetup.jsx, líneas 689-697, literal:
+
+  // ← NUEVO: capitanía más cercana al zarpe
+  const nearestCapitania = useMemo(() => {
+    if (!isSport || !puertoZarpe) return null;
+    const lat = puertoZarpe.ubicacion?.lat ?? puertoZarpe.lat;
+    const lng = puertoZarpe.ubicacion?.lng ?? puertoZarpe.lng;
+    if (!lat || !lng) return null;
+    const result = getNearestCapitania(lat, lng, maritimeData.capitanias);
+    return result?.capitania ?? null;
+  }, [isSport, puertoZarpe]);
+
+
+2.11 DÓNDE APARECE EL BRE (no se toca)
+----------------------------------------
+
+src/services/restriction-rules-engine.js — motor json-rules-engine.
+grep de /lat|lng|geom|dist|km/i sobre ese archivo → 0 resultados. No participa en
+la resolución geográfica; recibe la restricción ya normalizada y el AB de la nave.
+Se invoca desde src/services/route-restriction-evaluator.js:41 (`evaluarRestriccion`),
+que a su vez se llama desde src/routes/sitport-routes.js:692 (`evaluarRuta`).
+
+
+================================================================================
+SECCIÓN 3 — ARCHIVOS DE DATOS QUE ALIMENTAN LO ANTERIOR
+================================================================================
+
+3.1 BAHIA_COORDS — mapa estático idBahia → coordenadas
+-------------------------------------------------------
+
+Ubicación primaria: src/routes/sitport-routes.js, líneas 19-239 (constante en código,
+no archivo separado).
+Formato: objeto JS `{ <bahia_id>: { lat, lng, nombre } }`
+Registros: 163
+Campos de cada registro: lat (number), lng (number), nombre (string)
+Cabecera literal (líneas 19-24):
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAPA ESTÁTICO idBahia → coordenadas WGS84
+// Fuente: SITPORT/DIRECTEMAR + MOP puertos_chile_nacional + cartografía
+// Cubre las 163 bahías del catálogo SITPORT
+// ─────────────────────────────────────────────────────────────────────────────
+const BAHIA_COORDS = {
+
+Copia duplicada: scripts/seed-bahias-sitport.js, líneas 17-181, con la cabecera
+literal `// ── BAHIA_COORDS extraído de sitport-routes.js ──`. Mismos 163 registros.
+Es la fuente que puebla la tabla bahias_sitport, que a su vez es la semilla del
+Voronoi de bahia_jurisdicciones.
+
+Entradas con coordenadas idénticas (relevante para el solape de 4949 km² de 1.1):
+  118: { lat: -41.8665, lng: -73.8313, nombre: 'Bahía Ancud y Canal Chacao' },
+  214: { lat: -41.8665, lng: -73.8313, nombre: 'Bahía Ancud' },
+
+Entradas fuera del bbox continental (extremos del catálogo):
+  90:  { lat: -33.6333, lng: -78.8500, nombre: 'Isla Robinson Crusoe' },
+  89:  { lat: -27.1167, lng: -109.3500, nombre: 'Isla de Pascua' },
+  139: { lat: -62.2000, lng: -58.9667, nombre: 'Bahía Fildes' },
+  231: { lat: -62.4667, lng: -59.6833, nombre: 'Bahía Chile' },
+  140: { lat: -64.8167, lng: -63.0000, nombre: 'Bahía Paraíso' },
+
+
+3.2 src/data/bahia-capitania-map.json
+--------------------------------------
+
+Ruta: C:\Users\katia\tmarea-backend\src\data\bahia-capitania-map.json
+Formato: JSON, objeto plano con clave string = bahia_id
+Tamaño: 18020 bytes, 165 líneas
+Registros: 163
+Campos de cada registro: capitania (string), gobernacion (string), telefono (string)
+Primeras entradas (literal):
+
+{
+  "71":  { "capitania": "Arica",           "gobernacion": "Arica",           "telefono": "+56 58 220 6402" },
+
+  "204": { "capitania": "Iquique",         "gobernacion": "Iquique",         "telefono": "+56 57 240 1902" },
+  "72":  { "capitania": "Iquique",         "gobernacion": "Iquique",         "telefono": "+56 57 240 1902" },
+  "195": { "capitania": "Iquique",         "gobernacion": "Iquique",         "telefono": "+56 57 240 1902" },
+  "196": { "capitania": "Iquique",         "gobernacion": "Iquique",         "telefono": "+56 57 240 1902" },
+  "73":  { "capitania": "Iquique",         "gobernacion": "Iquique",         "telefono": "+56 57 240 1902" },
+  "197": { "capitania": "Iquique",         "gobernacion": "Iquique",         "telefono": "+56 57 240 1902" },
+
+  "236": { "capitania": "Antofagasta",     "gobernacion": "Antofagasta",     "telefono": "+56 55 263 0000" },
+  ...
+  "75":  { "capitania": "Mejillones",      "gobernacion": "Antofagasta",     "telefono": "+56 55 263 0000" },
+  ...
+  "84":  { "capitania": "Huasco",          "gobernacion": "Caldera",         "telefono": "+56 52 231 5276" },
+
+(capitania y gobernacion difieren en algunas entradas; el teléfono corresponde a
+ la gobernación.)
+
+
+3.3 geodata/ne_10m_land.* — shapefile Natural Earth
+----------------------------------------------------
+
+Ruta: C:\Users\katia\tmarea-backend\geodata\
+Archivos y tamaños (literal):
+
+  ne_10m_land.cpg               5 bytes
+  ne_10m_land.dbf             350 bytes
+  ne_10m_land.prj             145 bytes
+  ne_10m_land.README.html   37096 bytes
+  ne_10m_land.shp         7166824 bytes
+  ne_10m_land.shx             188 bytes
+  ne_10m_land.VERSION.txt       7 bytes
+  ne_10m_land.zip         3269070 bytes
+
+ne_10m_land.VERSION.txt (contenido literal): 5.1.1
+ne_10m_land.prj (contenido literal):
+
+GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]
+
+Registros: 11 (coincide con las 11 filas de la tabla ne_land; el .shx de 188 bytes
+= 100 bytes de header + 11 × 8 bytes de índice).
+Campos por registro en la tabla cargada: featurecla, scalerank, min_zoom, geom.
+
+
+3.4 src/services/data/puertos_chile_nacional.json
+--------------------------------------------------
+
+Ruta: C:\Users\katia\tmarea-backend\src\services\data\puertos_chile_nacional.json
+Formato: FeatureSet Esri — { features: [ { attributes: {...}, geometry: { x, y } } ] }
+Registros: 644
+Campos de attributes: OBJECTID, LOCATION, NOMBRE, OPERATIVA, COD_REG, PROVINCIA, COMUNA
+Campos de geometry: x (lng), y (lat)
+Consumido por:
+  - src/services/fondeadero-service.js, líneas 12-20 (literal):
+
+const puertosRaw = require('./data/puertos_chile_nacional.json');
+
+const PUERTOS = (puertosRaw.features || [])
+  .map((f) => ({
+    nombre: f.attributes?.NOMBRE || 'Puerto sin nombre',
+    lat: f.geometry?.y,
+    lng: f.geometry?.x,
+  }))
+  .filter((p) => typeof p.lat === 'number' && typeof p.lng === 'number');
+
+  - tools/seed-nodos-maritimos.js, seedMOP() líneas 59-85 → 644 filas fuente=MOP en
+    nodos_maritimos.
+
+
+3.5 caletas_chile.json
+-----------------------
+
+Ruta: C:\Users\katia\tmarea-backend\caletas_chile.json
+Formato: JSON array
+Registros: 481
+Campos: id, nombre, region, comuna, latitud, longitud, propiedad, actividades,
+        especies, nro_embarcaciones, nro_pescadores, entorno, fuente
+Consumido por tools/seed-nodos-maritimos.js seedSERNAPESCA() (líneas 87-115) →
+20 filas fuente=SERNAPESCA en nodos_maritimos (el resto se descarta por duplicado
+dentro de 0.005°).
+
+
+3.6 src/services/data/puertos_adicionales.json
+-----------------------------------------------
+
+Ruta: C:\Users\katia\tmarea-backend\src\services\data\puertos_adicionales.json
+Formato: JSON array
+Registros: 19
+Campos: nombre, lat, lng, region, fuente
+Consumido por tools/seed-nodos-maritimos.js seedManuales() (líneas 117-142) →
+18 filas fuente=MANUAL en nodos_maritimos.
+
+
+3.7 bem_2025_puertos.json
+--------------------------
+
+Ruta: C:\Users\katia\tmarea-backend\bem_2025_puertos.json
+Formato: JSON array (el archivo empieza con BOM U+FEFF)
+Registros: 152
+Campos: nombre, nombre_instalacion_principal, tipo, autoridad_maritima, operadores,
+        seccion_bem, eslora
+Sin coordenadas propias. En nodos_maritimos hay 11 filas fuente=BEM; el script que
+las insertó es _archivo/insertar_puertos_bem.sql (usa ST_DWithin, línea 38).
+
+
+3.8 PWA — src/data/maritime_data.json.json
+-------------------------------------------
+
+Ruta: C:\Users\katia\tmarea-pwa\src\data\maritime_data.json.json
+Tamaño: 2818 bytes
+Estructura: { capitanias: [...], destinos_deportivos: [...] }
+capitanias — 5 registros. Campos: id, name, lat, lng, radius_km, vhf_primary,
+  vhf_secondary, phone, tips
+  Contenido literal de los radios: cap_valparaiso 40, cap_algarrobo 25,
+  cap_quintero 30, cap_puerto_montt 35, cap_castro 30
+destinos_deportivos — 4 registros. Campos: id, name, type, lat, lng, safety_tips
+
+
+3.9 SITPORT / DIRECTEMAR — fuente en vivo (no es archivo)
+-----------------------------------------------------------
+
+Archivo: src/services/sitport-service.js
+Líneas 3-5, literal:
+
+const BASE_URL = 'https://orion.directemar.cl/sitport/back/users';
+const TIMEOUT_MS = 10000;
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutos
+
+Endpoints:
+  POST {BASE_URL}/consultaRestricciones  → consultaRestricciones()
+  POST {BASE_URL}/consultaBahias         → consultaBahias()
+  GET  {BASE_URL}/Totalpronostico        → totalPronostico()
+
+Desenvoltura del payload, líneas 40-48 (literal):
+
+// consultaRestricciones y consultaBahias devuelven { recordsets: [[...]] }
+// (formato del driver SQL Server de DIRECTEMAR), no un array plano.
+// Totalpronostico sí devuelve el array directo.
+function unwrapRecordset(responseData) {
+  if (responseData && Array.isArray(responseData.recordsets)) {
+    return responseData.recordsets[0] || [];
+  }
+  return responseData;
+}
+
+Campos del registro de consultaRestricciones efectivamente leídos por el código:
+  bahia            (sitport-routes.js:615, sitport-parser.js:137)
+  GLBahia          (sitport-routes.js:324, :668; sitport-parser.js:138)
+  tipo             (sitport-routes.js:601-603, filtro === 'TODOS')
+  Observacion      (sitport-routes.js:504, :522, :672; sitport-parser.js:120)
+  MotivoRestriccion(sitport-routes.js:509, :671, :675; sitport-parser.js:121)
+  tiporestriccion  (sitport-routes.js:671, :676)
+  NaveRecibe       (sitport-routes.js:677; sitport-parser.js:122)
+  AreaRestriccion  (sitport-parser.js:147)
+  FCinicio         (sitport-parser.js:146)
+
+Campos del registro de Totalpronostico efectivamente leídos:
+  idBahia, velocidadViento, temperatura, presion, textoDireccionViento,
+  direccionVientoAprox, lluviaUltimaHora, pronostico, fecha
+  (sitport-routes.js:380-385 y :447-476)
+
+Muestra cruda guardada en el repo: _bitacoras/sitport_crudo_2026-08-08.json (77866 bytes).
+
+
+3.10 CALETAS_PESQUERAS_DECRETADAS — shapefile SUBPESCA (fuera de la cadena)
+----------------------------------------------------------------------------
+
+Ruta: C:\Users\katia\tmarea-backend\CALETAS_PESQUERAS_DECRETADAS\CALETAS_PESQUERAS_DECRETADAS\
+Archivos y tamaños (literal):
+
+  CALETAS PESQUERAS DECRETADAS.cpg          5 bytes
+  CALETAS PESQUERAS DECRETADAS.dbf     842762 bytes
+  CALETAS PESQUERAS DECRETADAS.prj        409 bytes
+  CALETAS PESQUERAS DECRETADAS.sbn        876 bytes
+  CALETAS PESQUERAS DECRETADAS.sbx        148 bytes
+  CALETAS PESQUERAS DECRETADAS.shp      37220 bytes
+  CALETAS PESQUERAS DECRETADAS.shp.xml  29971 bytes
+  CALETAS PESQUERAS DECRETADAS.shx        708 bytes
+
+Registros: 76 (cabecera DBF: registros=76, headerBytes=2049, recBytes=11062)
+Proyección — .prj literal:
+
+PROJCS["WGS_1984_UTM_Zone_19S",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",10000000.0],PARAMETER["Central_Meridian",-69.0],PARAMETER["Scale_Factor",0.9996],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]
+
+Campos de cada registro (nombre, tipo, largo — leídos de la cabecera DBF):
+
+  NOM_CALETA (C,60)    DECRETO_24 (C,254)   CODIGO_SER (F,19)   SIABC_SSFF (F,19)
+  REGION (C,254)       PROVINCIA (C,254)    COMUNA (C,254)      CODIGO_UNI (F,19)
+  UBICACI??N (C,254)   ACCESO (C,254)       VIAS_DE_AC (C,254)  ACTIVIDAD (C,254)
+  PUNTO_DE_D (C,254)   DECRETO_A (C,254)    A??O_DECRE (F,19)   ORGANIZACI (C,254)
+  RUT_ORGANI (C,254)   TIPO_ORGAN (C,254)   REPRESENTA (C,254)  SECTOR (C,254)
+  TRAMO (C,254)        NATURALEZA (C,254)   SUPERFICIE (C,254)  SUPERFIC_1 (C,254)
+  RESOL_APRU (C,254)   RESOL_AP_1 (C,254)   MEJORA_FIS (C,254)  INFRAESTRU (C,254)
+  N??_DE_ORG (F,19)    ARMADORES (F,19)     BUZOS (F,19)        PESCADORES (F,19)
+  RECOLECTOR (F,19)    TOTAL_DE_P (F,19)    HOMBRES (F,19)      MUJERES (F,19)
+  N??_COMUNI (C,254)   N??_TOTAL_ (F,19)    DESEMBARQU (F,19)   PECES (C,254)
+  MOLUSCOS (C,254)     CRUSTACEOS (C,254)   ALGAS (C,254)       OTROS__PIU (C,254)
+  N??_DE_APE (C,254)   AGUA_POTAB (C,254)   ELECTRICID (C,254)  ALCANTARIL (C,254)
+  COMUNICACI (C,254)   ALUMBRADO (C,254)    TRANSPORTE (C,254)  ACT__AGRIC (C,254)
+  ACT__FORES (C,254)   ACT__MINER (C,254)   ACT__COMER (C,254)  ACT__TURIS (C,254)
+  OTRO (C,254)         VIGENCIA (N,10)      ROA (N,10)          FECHA_DEC (D,8)
+  BOTE_REMO (F,19)     BOTE_MOTOR (N,10)    LANCHA (N,10)
+
+(los "??" corresponden a caracteres acentuados en la cabecera DBF: UBICACIÓN,
+ AÑO_DECRETO, N°_DE_ORG, N°_COMUNI, N°_TOTAL_, N°_DE_APE.)
+
+Consumido por: procesar_caletas.py, línea 26 (literal):
+
+SHP  = os.path.join(BASE, "CALETAS PESQUERAS DECRETADAS", "CALETAS PESQUERAS DECRETADAS.shp")
+
+Cabecera del script, línea 3 (literal):
+
+Lee el shapefile oficial de Caletas Pesqueras Decretadas de Chile
+
+Contenido: puntos de caleta con metadatos de decreto (DECRETO_24, DECRETO_A,
+AÑO_DECRETO, FECHA_DEC). No contiene polígonos de jurisdicción de Capitanía.
+Ningún código del backend en ejecución (src/) lo consulta.
+
+
+================================================================================
+SECCIÓN 4 — CONSUMIDORES AGUAS ABAJO HASTA LA RESPUESTA QUE VE EL USUARIO
+================================================================================
+
+Montaje de rutas — src/index.js (literal de las líneas relevantes):
+
+23: app.use('/api/puertos', puertosRoutes);
+28: app.use('/api/centros', centrosRouter);
+33: app.use('/api/concesiones', mitilidosRoutes);
+36: app.use('/api/marine-weather', marineWeatherRoutes);
+39: app.use('/api/sitport', sitportRoutes);
+42: app.use('/api', navigationRoutes);
+44: app.use('/api/mapa', mapRoutes);
+46: app.use('/api/viaje', voyageReportRoutes);
+54: app.use('/api/rutas', rutasRoutes);
+57: app.use('/api/tide', tideRoutes);
+60: app.use('/api/support', supportRoutes);
+
+BACKEND_URL en el frontend: `const BACKEND_URL = 'http://localhost:3000';`
+(useVoyageVerification.js línea 6).
+
+
+4.1 CADENA A — Jurisdicción de la RUTA (bahia_jurisdicciones → tarjeta en pantalla)
+-----------------------------------------------------------------------------------
+
+ 1. P3_VoyageVerification.jsx monta el hook useVoyageVerification.
+ 2. useVoyageVerification.js:745-753 llama fetchRuta → POST /api/rutas/calcular
+    (motor raster). Devuelve `ruta.tramos`.
+ 3. useVoyageVerification.js:846-862 (literal):
+
+      let transitRestrictions = null;
+      if (ruta?.ok && Array.isArray(ruta.tramos)) {
+        const tramosRuta = ruta.tramos.filter(
+          (t) => t.tipo !== 'aproximacion_final' && t.coords?.length >= 2
+        );
+        if (tramosRuta.length > 0 && !signal.aborted && runIdRef.current === currentRunId) {
+          const rutaWaypoints = tramosRuta
+            .flatMap((t) => t.coords)
+            .map(([lng, lat]) => ({ lat, lng }));
+          transitRestrictions = await fetchTransitRestrictions(
+            rutaWaypoints,
+            voyageData?.vessel?.ab,
+            signal,
+            { perfil_deportivo: perfilDeportivo, navegacion_deportiva: navegacionDeportiva }
+          );
+        }
+      }
+
+ 4. fetchTransitRestrictions (useVoyageVerification.js:320-337) → POST
+    http://localhost:3000/api/sitport/restricciones-ruta con body
+    { ruta_puntos, nave_ab [, perfil_deportivo] [, navegacion_deportiva] }.
+ 5. Backend sitport-routes.js POST /restricciones-ruta:
+      - valida y filtra puntos (líneas 567-573)
+      - consultaRestricciones() de SITPORT (línea 588)
+      - filtra `r.tipo.trim() === 'TODOS'` (líneas 601-603)
+      - bahiasEnRutaPostGIS(puntosValidos) → ST_Intersects contra
+        bahia_jurisdicciones (líneas 608, 532-543)   ← AQUÍ SE RESUELVE LA JURISDICCIÓN
+      - agrupa por bahía y ordena por posición en ruta (líneas 610-640)
+      - excluye zarpe_id/recalada_id si vienen (líneas 646-648)
+      - por cada bahía: getCapitaniaByBahiaId(idBahia) (línea 662) y
+        buscarFondeadero(...) (línea 682)
+      - evaluarRuta(intermedias, nave_ab) → route-restriction-evaluator.js →
+        restriction-rules-engine.js (BRE) (línea 692)
+      - enriquece cada restricción con `aplica` y `evaluacion` (líneas 695-710)
+      - validarHabilitacionDeportiva si hay perfil deportivo (líneas 715-724)
+ 6. Respuesta JSON (líneas 728-742, literal):
+
+    res.json({
+      success: true,
+      veredicto: evaluacion.veredicto,
+      bandera_final: banderaFinal,
+      veredicto_deportivo: veredictoDep,
+      motivo_principal: evaluacion.motivo_principal,
+      ultimo_tramo_seguro: evaluacion.ultimo_tramo_seguro,
+      fondeadero_sugerido: evaluacion.fondeadero_sugerido,
+      restricciones_intermedias: intermediasEnriquecidas,
+      total: intermediasEnriquecidas.length,
+      fuente: 'SITPORT/DIRECTEMAR',
+      timestamp: new Date().toISOString(),
+      timestamp_sitport: evaluacion.timestamp_sitport,
+      error: null,
+    });
+
+    Campos por restricción intermedia (líneas 666-684 + 695-710): id_bahia,
+    nombre_bahia, lat, lng, restriccion, observacion, condicion, condicion_legible,
+    motivo, tipo_restriccion, nave_recibe, capitania, gobernacion, telefono,
+    orden_en_ruta, fondeadero_previo, aplica, evaluacion{bloquea, estado, umbral_ab,
+    nivel, motivo}.
+
+ 7. useVoyageVerification.js:884-889 lo pasa a calcularVeredicto → escalarPorTransito
+    (líneas 129-145, literal):
+
+export function escalarPorTransito(transitRestrictions) {
+  if (!transitRestrictions) return null;
+
+  const veredictoBackend = transitRestrictions.bandera_final || transitRestrictions.veredicto;
+  if (veredictoBackend === 'UV') return 'UV';
+  if (veredictoBackend === 'U') return 'U';
+  if (veredictoBackend === 'Q') return null;
+
+  // Fallback por evaluación individual (nivel anidado bajo evaluacion por el endpoint)
+  const lista = transitRestrictions.restricciones_intermedias || [];
+  let nivel = null;
+  for (const r of lista) {
+    if (r.evaluacion?.nivel === 'UV') return 'UV';
+    if (r.evaluacion?.nivel === 'U') nivel = 'U';
+  }
+  return nivel;
+}
+
+    y calcularVeredicto (líneas 147-184) combina zarpe, recalada, clima y tránsito
+    con maxVeredicto → bandera Q / U / UV del viaje.
+
+ 8. Render: P3_VoyageVerification.jsx línea 273
+      <TransitRestrictionsBlock transitRestrictions={transitRestrictions} />
+    TransitRestrictionsBlock.jsx muestra por cada bahía:
+      línea 69  → r.nombre_bahia
+      líneas 72-84 → "📞 {r.capitania || r.gobernacion} — <a href=tel:{r.telefono}>"
+      líneas 86-89 → "⛔ Tu embarcación NO puede transitar" / "⚠ Restricción activa..."
+      líneas 92-99 → "Condición: {r.condicion_legible}" y el motivo del BRE
+      líneas 103-109 → fondeadero previo cuando estado === 'bloquea'
+    y el texto agregado (líneas 127-134, literal):
+
+  let introTexto;
+  if (nAplican > 0 && nInfo > 0) {
+    introTexto = `La ruta cruza ${nAplican} zona(s) con restricciones que afectan tu embarcación y ${nInfo} zona(s) con restricciones activas que no te afectan.`;
+  } else if (nAplican > 0) {
+    introTexto = `La ruta cruza ${nAplican} jurisdicción(es) con Condición de Puerto activa que afecta tu embarcación.`;
+  } else {
+    introTexto = `La ruta pasa por ${nInfo} zona(s) con restricciones activas. Ninguna afecta tu embarcación, pero se recomienda precaución.`;
+  }
+
+    Además P3 línea 147 (bloque ultimo_tramo_seguro):
+      "📍 Puedes navegar hasta <strong>{ultimoTramo.bahia}</strong>. A partir de ahí, la zona está restringida."
+
+
+4.2 CADENA B — Jurisdicción del PUERTO de zarpe/recalada (por nombre)
+----------------------------------------------------------------------
+
+ 1. useVoyageVerification.js:189-201 fetchPortStatus → POST /api/sitport/restricciones
+    con body { puerto: nombrePuerto, ...ubicacion }.
+ 2. Backend sitport-routes.js:311-341: filtra restricciones por coincidencia de
+    palabras del nombre, resuelve bahiaId por `filtradas[0]?.bahia ?? resolverBahiaIdPorNombre(puerto)`
+    y llama getCapitaniaByBahiaId(bahiaId).
+ 3. Respuesta incluye capitania, gobernacion, telefono.
+ 4. useVoyageVerification.js:226-236 arma el objeto de estado con
+    capitania / gobernacion / telefono; línea 871-874 le adjunta `ubicacion`.
+ 5. Consumo:
+    - buildNormativeReminders (líneas 518-530): recordatorio R1
+      "Avisar por radio a la Gobernación Marítima de {X} al iniciar la navegación",
+      con teléfono clickeable. Fallback a getCapitania(lat,lng).
+    - P3_VoyageVerification.jsx:268 → <PortStatusBlock portStatus={portStatus} vessel={vessel} />
+      PortStatusBlock.jsx:97-107 renderiza:
+      "📞 Gobernación Marítima de {capitania.nombre} — <a href=tel:...>{telefono}</a>"
+      Fallback a getCapitania(lat,lng) en las líneas 76-77.
+    - PortStatusBlock también determina el semáforo 🟢/🟡/🔴 (ESTADO_CONFIG, líneas 16-35)
+      que alimenta calcularVeredicto (líneas 148-163).
+
+
+4.3 CADENA C — Jurisdicción meteorológica por tramo (weather-ruta)
+-------------------------------------------------------------------
+
+ 1. useVoyageVerification.js:740 `const rutaDensa = densificarRuta(ruta_puntos);`
+    (interpolación en línea recta cada ~50 km; NO usa los waypoints del motor raster).
+ 2. fetchWeather (líneas 291-313) → POST /api/sitport/weather-ruta { ruta_puntos }.
+ 3. Backend sitport-routes.js POST /weather-ruta: bahía más cercana por Haversine
+    con tope MAX_DIST_KM = 120 (líneas 398-421); por cada bahía
+    getCapitaniaByBahiaId(b.idBahia) (línea 448).
+ 4. Respuesta (líneas 445-482): bahias_en_ruta[] con id_bahia, nombre, lat, lng,
+    temperatura_c, presion_hpa, velocidad_viento_kt, direccion_viento, lluvia_mm,
+    pronostico_texto, fecha_dato, distancia_km, capitania, gobernacion, telefono;
+    más peor_tramo, condicion_puerto, alerta_nivel, fuente, normativa, timestamp.
+ 5. Consumo en P3: P3_VoyageVerification.jsx:274 → <WeatherBlock weather={weather} ruta={voyageData} />
+    WeatherBlock.jsx:171-214 lista "Viento por tramo de la ruta" con
+    "Gob. Marítima de {capNombre}" y el teléfono en la primera bahía de cada
+    jurisdicción.
+ 6. `condicion_puerto` / `alerta_nivel` entran a calcularVeredicto (líneas 165-169)
+    y por tanto a la bandera Q/U/UV.
+ 7. Consumo en P4: P4_ActiveVoyage.jsx:242-252 usa el mismo endpoint y guarda
+    `data.bahias_en_ruta` en windData (flechas de viento sobre el mapa).
+
+
+4.4 CADENA D — bahia_sitport_id de nodos_maritimos hacia el buscador
+----------------------------------------------------------------------
+
+ 1. Trigger trg_jurisdiccion_auto escribe nodos_maritimos.bahia_sitport_id.
+ 2. puertos-service.js lo selecciona en las 4 consultas y lo expone en rowToPort.
+ 3. src/routes/puertos.js: GET /api/puertos, /api/puertos/provincia/:provincia,
+    /api/puertos/proximidad/:lat/:lng devuelven `data` con bahia_sitport_id.
+ 4. Frontend P2_VoyageSetup.jsx consume /api/puertos para el buscador de zarpe y
+    recalada. Línea 73 (literal):
+
+      const lugar = p.provincia || p.autoridad_maritima || '';
+
+    NOTA FACTUAL: grep de "bahia_sitport_id" en tmarea-pwa/src → 0 resultados. El
+    campo llega al frontend pero ningún componente lo lee. El puerto elegido viaja
+    a P3 como { nombre, ubicacion:{lat,lng} } y la jurisdicción se vuelve a resolver
+    por nombre en la Cadena B.
+
+ 5. P2_VoyageSetup.jsx:690-697 + :802 `nearest_capitania: nearestCapitania` — solo
+    perfil deportivo; muestra nombre y canales VHF (líneas 853-862) desde
+    maritime_data.json.json. Ese objeto también se lee en useVoyageVerification.js:527
+    para el canal del recordatorio R1.
+
+
+================================================================================
+SECCIÓN 5 — CONSTANTES NUMÉRICAS QUE PARTICIPAN EN EL CÁLCULO GEOGRÁFICO
+================================================================================
+
+--- BASE DE DATOS / DEFINICIÓN DE LA JURISDICCIÓN --------------------------------
+
+80000
+  Archivo: scripts/create-bahia-jurisdicciones.sql, línea 17
+    `buffer_distancia_m AS (SELECT 80000 AS val),`
+  También embebido en la definición viva de la matview bahia_jurisdicciones.
+  Uso: radio en METROS del ST_Buffer sobre geography aplicado al punto de la bahía;
+  recorta la celda Voronoi en mar abierto. Comentario del archivo (líneas 8-9):
+  "El parámetro buffer_distancia_m (80000 = 80 km) es el único valor a ajustar.
+   ST_Buffer se aplica sobre geography para que los metros sean reales."
+
+-82, -60, -64, -17
+  Archivo: scripts/create-bahia-jurisdicciones.sql, línea 19
+    `SELECT ST_MakeEnvelope(-82, -60, -64, -17, 4326) AS geom`
+  Uso: bbox (xmin, ymin, xmax, ymax) que acota el teselado Voronoi y el recorte de
+  tierra. Presente también en bahia_jurisdicciones_v1_backup.
+
+0 (tolerance de ST_VoronoiPolygons)
+  Archivo: scripts/create-bahia-jurisdicciones.sql, línea 25
+    `ST_VoronoiPolygons(puntos.geom, 0::float, bbox.geom)`
+  Uso: tolerancia de snapping del teselado.
+
+4326
+  Archivo: scripts/create-bahia-jurisdicciones.sql, líneas 19 (ST_MakeEnvelope)
+  Archivo: scripts/seed-bahias-sitport.js, líneas 193 y 206
+  Archivo: src/routes/sitport-routes.js, línea 539 (ST_SetSRID(..., 4326))
+  Archivo: src/services/puertos-service.js, líneas 84 y 86
+  Archivo: tools/seed-nodos-maritimos.js, líneas 41 y 54
+  Uso: SRID WGS84 de todas las geometrías.
+
+6378137.0 / 298.257223563
+  Archivo: geodata/ne_10m_land.prj (línea única)
+  Uso: semieje mayor y aplanamiento inverso del elipsoide WGS_1984 del shapefile
+  de tierra.
+
+LIMIT 1
+  Objeto: función public.asignar_jurisdiccion_sitport()
+  Uso: corta el resultado de ST_Intersects a una sola celda, sin ORDER BY.
+
+
+--- BACKEND: src/routes/sitport-routes.js ----------------------------------------
+
+6371
+  Línea 261: `const R = 6371;` dentro de distKm()
+  Uso: radio terrestre en km de la fórmula Haversine, usada en 2.1.d (posición de
+  la bahía en la ruta) y 2.1.f (bahía más cercana en weather-ruta).
+
+120
+  Línea 399: `const MAX_DIST_KM = 120;`
+  Uso: distancia máxima en km entre un punto de la ruta y el punto de una bahía
+  para asignarle el pronóstico meteorológico de esa bahía (endpoint weather-ruta).
+
+-90, -15, -120, -60
+  Línea 571: `if (p.lat < -90 || p.lat > -15 || p.lng < -120 || p.lng > -60) continue;`
+  Uso: recorte del rango geográfico aceptado para los waypoints de entrada en
+  restricciones-ruta.
+
+2
+  Líneas 533 (`if (waypoints.length < 2) return new Set();`) y 575
+  (`if (puntosValidos.length < 2)`)
+  Uso: mínimo de waypoints para construir el LineString.
+
+3
+  Líneas 248 y 326: `.filter(w => w.length > 3 ...)`
+  Uso: largo mínimo de palabra para el matching de nombre de bahía (Cadena B).
+
+30 / 26 / 15
+  Líneas 439-441:
+    if      (v >= 30) { alerta_nivel = 'alto';  condicion_puerto = 'temporal'; }
+    else if (v >= 26) { alerta_nivel = 'medio'; condicion_puerto = 'mal_tiempo'; }
+    else if (v >= 15) { alerta_nivel = 'bajo';  condicion_puerto = 'tiempo_variable'; }
+  Uso: umbrales de viento en nudos por categoría de zona (comentario líneas 432-433:
+  "Alta mar: 30 kt | Costera: 26 kt | Bahía: lo que fije la Capitanía", norma A-41/013).
+  No es geográfico en sí, pero se aplica al resultado del matching geográfico.
+
+
+--- BACKEND: src/services/fondeadero-service.js ----------------------------------
+
+6371
+  Línea 25: `const R = 6371;` (Haversine local del servicio)
+
+1.852
+  Línea 22: `const KM_POR_MN = 1.852;`
+  Uso: conversión km → millas náuticas del campo distancia_mn del fondeadero.
+
+30
+  Línea 54: `const MAX_DIST_RUTA_KM = 30;`
+  Uso: distancia máxima en km entre un puerto candidato y la ruta previa.
+
+80
+  Línea 55: `const RADIO_EXCLUSION_KM = 80;`
+  Uso: radio en km alrededor del punto de cada bahía restringida dentro del cual
+  un fondeadero candidato se descarta.
+
+0.3
+  Línea 56: `const MARGEN_BBOX = 0.3; // ~33 km`
+  Uso: expansión en GRADOS del bounding box del tramo previo.
+
+100
+  Línea 71: `const step = Math.max(1, Math.floor(rutaAntes.length / 100));`
+  Uso: número objetivo de puntos de la submuestra de ruta.
+
+
+--- BACKEND: src/services/puertos-service.js -------------------------------------
+
+50 (radiusKm por defecto)
+  Línea 77: `async function getPuertosByProximidad(lat, lng, radiusKm = 50, opciones = {})`
+
+111.0
+  Línea 80: `const radiusDeg = radiusKm / 111.0;`
+  Uso: conversión km → grados para el ST_DWithin en SRID 4326 (grados, no metros).
+
+50 (LIMIT)
+  Línea 89: `LIMIT 50`
+
+2000 (LIMIT)
+  Línea 38: `LIMIT 2000` en getPuertos()
+
+8 (limit por defecto de búsqueda)
+  Línea 43: `async function searchPuertos(query, limit = 8, opciones = {})`
+  y src/routes/puertos.js:13 `parseInt(limit) || 8`
+
+50 (radius por defecto del endpoint)
+  src/routes/puertos.js:51 `const radius = req.query.radius || 50;`
+
+
+--- BACKEND: src/utils/capitanias.js ---------------------------------------------
+
+Bordes de franja de latitud (líneas 15-28), pares lat_norte / lat_sur:
+  Arica            -17.5 / -19.5
+  Iquique          -19.5 / -22.0
+  Antofagasta      -22.0 / -25.5
+  Caldera          -25.5 / -29.0
+  Coquimbo         -29.0 / -31.5
+  Valparaíso       -31.5 / -33.3
+  San Antonio      -33.3 / -35.5
+  Talcahuano       -35.5 / -39.0
+  Valdivia         -39.0 / -41.0
+  Puerto Montt     -41.0 / -42.0
+  Castro           -42.0 / -44.0
+  Aysén            -44.0 / -49.0
+  Punta Arenas     -49.0 / -54.0
+  Puerto Williams  -54.0 / -56.0
+  Uso: `GOBERNACIONES.find((g) => lat <= g.lat_norte && lat > g.lat_sur)` (línea 46).
+
+-100
+  Línea 42: `if (lon != null && !isNaN(lon) && lon < -100)`
+  Uso: umbral de longitud que desvía a Hanga Roa (Isla de Pascua).
+
+
+--- BACKEND: tools/seed-nodos-maritimos.js ---------------------------------------
+
+0.005
+  Líneas 92 y 122: `const DIST_DEG = 0.005; // ~500m`
+  Uso: radio en GRADOS del ST_DWithin de deduplicación (SERNAPESCA y MANUAL).
+
+0.018
+  Línea 150: `const DIST_DEG = 0.018; // ~2km`
+  Uso: radio en GRADOS del ST_DWithin de deduplicación (SITPORT).
+
+180 / 90
+  Línea 69: `if (Math.abs(x) > 180 || Math.abs(y) > 90) { bad++; continue; }`
+  Uso: validación de coordenadas MOP.
+
+
+--- FRONTEND: src/utils/maritime-geo.js ------------------------------------------
+
+6371
+  Línea 7: `const EARTH_RADIUS_KM = 6371;`
+
+1.852
+  Línea 8: `const NM_TO_KM = 1.852;`
+
+0.5
+  Línea 161: `return haversineKm(origin.lat, origin.lng, destination.lat, destination.lng) < 0.5;`
+  Uso: umbral en km para considerar la ruta CIRCULAR (mismo origen y destino).
+
+21 pares de coordenadas COAST_REFERENCE_POINTS
+  Líneas 117-139 (transcritas en 2.9.c)
+  Uso: estimación de distancia a la costa en millas náuticas.
+
+cap.radius_km
+  Línea 90: `if (dist <= cap.radius_km && dist < minDistInside)`
+  Uso: radio de jurisdicción de la capitanía deportiva; valores en
+  maritime_data.json.json: 40, 25, 30, 35, 30 (km).
+
+
+--- FRONTEND: src/utils/capitanias.js --------------------------------------------
+
+Mismos bordes de franja que el backend (líneas 18-31) y mismo umbral -100 (línea 48).
+
+
+--- FRONTEND: src/hooks/useVoyageVerification.js ---------------------------------
+
+6371
+  Línea 250: `const R = 6371;` en distanciaKm()
+
+50 (pasoKm)
+  Línea 259: `function construirRutaPuntos(zarpe, recalada, pasoKm = 50)`
+  Línea 278: `function densificarRuta(puntos, pasoKm = 50)`
+  Uso: separación objetivo en km entre puntos interpolados de la ruta enviada a
+  weather-ruta.
+
+12 (mencionado)
+  Línea 187 de maritime-geo.js: comentario "Útil para validar licencia CDC (12 MN)"
+  sobre getMaxCoastDistanceOnRoute.
+
+
+================================================================================
+NO DETERMINADO
+================================================================================
+
+ 1. Cómo se cargó la tabla ne_land. No hay en el repo ningún script shp2pgsql,
+    ogr2ogr ni SQL de carga (grep sin resultados fuera de _bitacoras/). Solo consta
+    el shapefile en geodata/ y la tabla ya poblada con 11 filas.
+
+ 2. Cómo se cargaron mapa_base_multipoligonos (76196 filas), batimetria (1179451
+    filas) y seamarks_puntos (827 filas). Los nombres de índice con prefijo `sidx_`
+    son el patrón de QGIS/ogr2ogr, pero no hay script en el repo que lo confirme.
+
+ 3. Cuándo se ejecutó por última vez REFRESH MATERIALIZED VIEW bahia_jurisdicciones.
+    No existe ninguna sentencia REFRESH en el repo y pg_stat_all_tables no registra
+    last_vacuum/last_analyze para esa MV. No hay proceso programado detectable.
+
+ 4. Por qué 549 de 781 nodos_maritimos tienen bahia_sitport_id NULL. Se verificó
+    que ninguno de ellos intersecta hoy una celda de bahia_jurisdicciones, pero no
+    se puede determinar leyendo si eso se debe al recorte por tierra, al orden de
+    ejecución del seed respecto de la creación del trigger, o a ambos.
+
+ 5. Qué celda gana el `LIMIT 1` de asignar_jurisdiccion_sitport cuando un punto cae
+    en la zona de solape de 4949 km² entre bahia_id 118 y 214. No hay ORDER BY; el
+    resultado depende del plan de ejecución. No se probó (habría requerido escribir).
+
+ 6. Si `zarpe_id` / `recalada_id` del endpoint restricciones-ruta son enviados por
+    algún cliente. Se verificó que la PWA en este repo no los envía; no se puede
+    determinar leyendo si existe otro consumidor.
+
+ 7. Criterio con que se asignaron las coordenadas de BAHIA_COORDS. El comentario
+    dice "SITPORT/DIRECTEMAR + MOP puertos_chile_nacional + cartografía" pero no hay
+    trazabilidad registro a registro ni script que las derive.
+
+ 8. Por qué los bahia_id 118 y 214 comparten coordenadas exactas, ni cuál de los dos
+    es el vigente en el catálogo SITPORT.
+
+ 9. Si las 33 celdas de área cero (lagos interiores, Isla de Pascua, Antártica,
+    Bahía Catalina, Estero Pichicolo, Canal Utarupa, Río Palena, Valdivia Fluvial /
+    Conectividad) son un efecto buscado del recorte por tierra o un vacío de
+    cobertura. Solo consta el hecho de que existen y que ST_Intersects nunca las
+    puede devolver.
+
+10. Qué valor tiene el campo `autoridad_maritima` de nodos_maritimos y de dónde
+    proviene: el seed nunca lo escribe (tools/seed-nodos-maritimos.js no lo incluye
+    en el INSERT) y aun así P2_VoyageSetup.jsx:73 lo usa como fallback de etiqueta.
+
+11. Si mapa_base_multipoligonos.admin_level / boundary contienen límites
+    administrativos utilizables. No se inspeccionó su contenido (63 MB, fuera del
+    alcance de jurisdicción marítima) y ningún código del repo la consulta.
+
+12. La fecha real de última carga de bahias_sitport y de ne_land. pg_stat_all_tables
+    solo registra last_analyze para ne_land (2026-08-05 14:35:36.49025-04).
+
+13. Dónde están los límites jurisdiccionales por decreto de las Capitanías de
+    Puerto. No existen en la base de datos ni en ninguno de los dos repos. Lo más
+    cercano es el shapefile SUBPESCA de caletas pesqueras decretadas (76 puntos,
+    Sección 3.10), que no es jurisdicción de Capitanía, y las 14 franjas de latitud
+    de capitanias.js. No se puede determinar leyendo si existe una fuente oficial
+    identificada para esos límites.
+
+14. Relación entre los 163 bahia_id de SITPORT y las 14 gobernaciones / N capitanías
+    de bahia-capitania-map.json. El mapeo es manual, archivo a mano, sin script ni
+    fuente citada; no se puede determinar leyendo de dónde salió cada asignación
+    (ej: por qué bahia_id 75 "Bahía Mejillones del Sur" es capitanía "Mejillones"
+    pero gobernación "Antofagasta").
+
+15. Si el flujo produce hoy alguna restricción visible al patrón. La ejecución del
+    endpoint contra SITPORT en vivo habría requerido levantar el servidor; no se
+    hizo. Todo lo anterior es lectura de código, esquema y datos en reposo.
+
+================================================================================
+FIN DEL RECONOCIMIENTO
+================================================================================

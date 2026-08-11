@@ -1,0 +1,400 @@
+================================================================================
+RECONOCIMIENTO — RESTRICCIONES-RUTA (P3) — SESIÓN 2
+Fecha: 2026-08-08
+Propiedades: Partición por AB (INV-1.2), Geometría del matching
+NO se modificó código de producción. Se instrumentaron logs temporales,
+se capturó output crudo, y se removieron los logs. NO se commiteó nada.
+================================================================================
+
+
+================================================================================
+BLOQUE A — Qué geometría recibe restricciones-ruta
+================================================================================
+
+ARCHIVO: tmarea-pwa\src\hooks\useVoyageVerification.js
+
+--- Construcción del arreglo de puntos (líneas 847-854) ---
+
+      let transitRestrictions = null;
+      if (ruta?.ok && Array.isArray(ruta.tramos)) {
+        const tramosRuta = ruta.tramos.filter(
+          (t) => t.tipo !== 'aproximacion_final' && t.coords?.length >= 2
+        );
+        if (tramosRuta.length > 0 && !signal.aborted && runIdRef.current === currentRunId) {
+          const rutaWaypoints = tramosRuta
+            .flatMap((t) => t.coords)
+            .map(([lng, lat]) => ({ lat, lng }));
+          transitRestrictions = await fetchTransitRestrictions(
+            rutaWaypoints,
+            voyageData?.vessel?.ab,
+            signal,
+            { perfil_deportivo: perfilDeportivo, navegacion_deportiva: navegacionDeportiva }
+          );
+        }
+      }
+
+--- Secuencialidad (líneas 757-758, 815-818) ---
+
+La llamada es SECUENCIAL. Primero resuelve la ruta raster (Promise.allSettled
+incluye rutaPromise en línea 776), luego, DESPUÉS del await, usa los tramos
+reales (línea 847). Comentario explícito:
+  // restricciones-ruta se encadena DESPUÉS porque necesita los waypoints
+  // reales del motor raster, no una interpolación en línea recta.
+
+--- Espaciado de waypoints: mecanismo del motor raster ---
+
+ARCHIVO: tmarea-backend\src\services\raster-router-service.js
+
+El motor raster opera sobre un grid de 50m de resolución (res_m=50 en todos
+los tiles: NORTE, CENTRO, SUR, AUSTRAL_N, AUSTRAL_S). El A* produce un
+camino celda-a-celda (~50-70m entre puntos consecutivos). Luego el
+string-pulling (raster/string-pull.js línea 37) simplifica por visibilidad
+directa: extiende vorazmente cada segmento mientras la línea de vista sea
+navegable (agua con profundidad >= 2*dMinM).
+
+CONSECUENCIA CRÍTICA: en agua abierta (donde no hay obstrucciones), el
+string-pulling produce segmentos de DECENAS de km. En canales estrechos,
+segmentos de ~50-200m. La densidad de waypoints es altamente variable.
+
+--- OUTPUT CRUDO: espaciado real en una corrida ---
+
+Ruta: Quintero (-32.78, -71.55) → sur de Algarrobo (-33.60, -71.70)
+
+[RECON-B] waypoints=12 espaciado_km: min=0.050 max=39.572 avg=8.714 p90=26.531 p99=39.572
+[RECON-B] segmentos>5km (4): seg[0→1]=39.57km, seg[8→9]=5.38km, seg[9→10]=26.53km, seg[10→11]=19.33km
+
+12 waypoints para ~95km de ruta. El segmento más largo: 39.57 km (seg[0→1]).
+4 de 11 segmentos superan 5 km. La LineString que recibe restricciones-ruta
+tiene segmentos de decenas de km en línea recta.
+
+CONCLUSIÓN BLOQUE A:
+Los waypoints son los del motor raster post string-pulling. La llamada es
+secuencial (espera la ruta). El espaciado entre waypoints consecutivos puede
+llegar a 40 km en tramos de agua abierta, lo que genera segmentos largos en
+la LineString que se envía a PostGIS.
+
+
+================================================================================
+BLOQUE B — Cómo el backend elige las bahías de la ruta
+================================================================================
+
+ARCHIVO: tmarea-backend\src\routes\sitport-routes.js
+
+--- bahiasEnRutaPostGIS (líneas 532-543) ---
+
+async function bahiasEnRutaPostGIS(waypoints) {
+  if (waypoints.length < 2) return new Set();
+  const coordinates = waypoints.map(wp => [wp.lng, wp.lat]);
+  const rutaGeoJSON = JSON.stringify({ type: 'LineString', coordinates });
+  const { rows } = await pool.query(
+    `SELECT bahia_id
+     FROM bahia_jurisdicciones
+     WHERE ST_Intersects(geom, ST_SetSRID(ST_GeomFromGeoJSON($1), 4326))`,
+    [rutaGeoJSON]
+  );
+  return new Set(rows.map(r => r.bahia_id));
+}
+
+Matching: ST_Intersects puro entre LineString y polígonos Voronoi recortados
+por costa en bahia_jurisdicciones. NO hay radio ni umbral de distancia.
+
+--- OUTPUT CRUDO: diagnóstico PostGIS por bahía matcheada ---
+
+Se instrumentó una query diagnóstico que, para cada bahía matcheada, reporta:
+  - intersect_m: longitud del segmento de ruta dentro del polígono
+  - centroid_dist_m: distancia del centroide del polígono a la ruta
+  - area_km2: área total del polígono Voronoi
+
+[RECON-B] bahia_id=93  intersect_m=9994   centroid_dist_m=22875   area_km2=1284.4
+[RECON-B] bahia_id=94  intersect_m=8394   centroid_dist_m=285     area_km2=63.4
+[RECON-B] bahia_id=173 intersect_m=7252   centroid_dist_m=3077    area_km2=114.0
+[RECON-B] bahia_id=91  intersect_m=9897   centroid_dist_m=10154   area_km2=274.6
+[RECON-B] bahia_id=92  intersect_m=20789  centroid_dist_m=68492   area_km2=3183.0
+[RECON-B] bahia_id=174 intersect_m=12095  centroid_dist_m=191815  area_km2=28055.3
+[RECON-B] bahia_id=215 intersect_m=16823  centroid_dist_m=68803   area_km2=4996.2
+[RECON-B] bahías matcheadas total: 7 → [93,94,173,91,92,174,215]
+
+--- Análisis de los polígonos ---
+
+Bahías claramente EN la ruta (centroid cercano, polígono razonable):
+  bahia=94  (Algarrobo):     centroide a 285m,  polígono 63 km²  ← legítimo
+  bahia=173 (Concón):        centroide a 3 km,   polígono 114 km² ← legítimo
+  bahia=91  (Quintero):      centroide a 10 km,  polígono 275 km² ← near origin
+
+Bahías con polígonos SOBREEXTENDIDOS:
+  bahia=92  (Valparaíso):    centroide a 68 km,  polígono 3,183 km²
+  bahia=174 (Rada Quintay):  centroide a 192 km, polígono 28,055 km²  ← 28 MIL km²
+  bahia=215 (El Quisco):     centroide a 69 km,  polígono 4,996 km²
+  bahia=93  (Totoralillo):   centroide a 23 km,  polígono 1,284 km²
+
+bahia=174 (Rada Quintay): el centroide de su jurisdicción está a 192 km de la
+ruta, pero su polígono Voronoi cubre 28,055 km² (~167×167 km equivalente). El
+polígono se extiende masivamente hacia mar abierto porque no hay otra bahía más
+cercana a esa agua. La ruta cruza 12 km dentro de este polígono.
+
+--- ¿Rama (a) o rama (b)? ---
+
+Los datos distinguen claramente:
+
+RAMA (a) — Voronoi sobreextendidos — es la CAUSA DOMINANTE:
+  bahia=174 tiene un polígono de 28,055 km² con centroide a 192 km de la ruta.
+  Incluso si la LineString tuviera waypoints cada 100m (eliminando todo segmento
+  largo), la ruta seguiría cruzando este polígono porque el agua abierta por la
+  que pasa cae dentro de su celda Voronoi.
+
+RAMA (b) — Segmentos largos — es un FACTOR AGRAVANTE pero no la causa raíz:
+  El segmento seg[0→1]=39.57km crea una recta entre dos waypoints. Pero el
+  string-pulling garantiza que la recta es sobre agua navegable (verifica
+  celda a celda en el raster). La recta no cruza tierra — cruza agua abierta
+  que cae en polígonos Voronoi de bahías distantes.
+
+  Los segmentos largos podrían causar que la recta clip la esquina de un polígono
+  que la ruta celda-a-celda original no tocaría (por ser ligeramente curva).
+  Pero el efecto dominante es (a): los polígonos cubren demasiada agua.
+
+CONCLUSIÓN BLOQUE B:
+Matching por ST_Intersects contra polígonos Voronoi. Sin radio. La causa de las
+bahías fantasma es RAMA (a): polígonos Voronoi sobreextendidos que cubren agua
+abierta lejos de la bahía real. Rama (b) (segmentos largos) es agravante menor.
+
+
+================================================================================
+BLOQUE C — Dónde se decide "aplica / no aplica" por AB
+================================================================================
+
+ARCHIVO: tmarea-backend\src\services\route-restriction-evaluator.js (líneas 36-52)
+ARCHIVO: tmarea-backend\src\services\restriction-rules-engine.js (líneas 169-229)
+ARCHIVO: tmarea-backend\src\services\sitport-parser.js (líneas 119-149)
+
+--- Cadena completa: texto → umbral → BRE → aplica ---
+
+1. El parser (sitport-parser.js:134) extrae umbrales SOLO de obsNorm (Observacion):
+     const { umbral_dentro, umbral_fuera, bloqueo_total } = extraerUmbrales(obsNorm);
+   NO consulta NaveRecibe para el umbral numérico.
+
+2. El evaluador (route-restriction-evaluator.js:40-41) normaliza y evalúa:
+     const norm = normalizarRestriccion(raw);
+     const ev = await evaluarRestriccion(norm, nave_ab);
+
+3. El BRE (restriction-rules-engine.js) compara nave_ab con umbral_ab_fuera.
+   Reglas relevantes:
+     Regla 3 (mal-tiempo-bajo-umbral, prio 7): condicion=MAL_TIEMPO + umbral>0 + nave_ab<umbral → UV
+     Regla 4 (variable-bajo-umbral, prio 6): condicion=VARIABLE + umbral>0 + nave_ab<umbral → U
+     Regla 7 (variable-sin-umbral, prio 5): condicion=VARIABLE + umbral=null + afecta_menores=true → U
+     Regla 2 (mal-tiempo-sin-umbral, prio 8): condicion=MAL_TIEMPO + umbral=null + afecta_menores=true → UV
+
+4. El enriquecimiento (sitport-routes.js:700-701) produce el booleano:
+     aplica: estado !== 'no_afecta'
+
+--- Campo booleano de salida: `aplica` ---
+--- AB de la nave llega como: `nave_ab` en req.body (sitport-routes.js:554) ---
+--- El frontend envía: voyageData.vessel.ab (useVoyageVerification.js:857) ---
+
+--- OUTPUT CRUDO: traza AB en una corrida real ---
+
+Corrida 1 (nave_ab=15):
+[RECON-C] restriccion[0] bahia="Bahía de Valparaíso" texto="EN ATENCIÓN A CONDICIONES METEOROLÓGICAS PRESENTES SE ESTABLECE A CONTAR DE LAS 20:46 HORAS, DEL DÍA 08 DE AGOTO DE 2026" condicion=VARIABLE umbral_ab_fuera=null afecta_menores=true bloqueo_total=false nave_ab=15 → estado=precaucion bloquea=false nivel=U motivo="Condición VARIABLE — restricción activa para embarcaciones menores"
+
+Corrida 2 (nave_ab=150, misma ruta):
+[RECON-C] restriccion[0] bahia="Bahía de Valparaíso" texto="EN ATENCIÓN A CONDICIONES METEOROLÓGICAS PRESENTES SE ESTABLECE A CONTAR DE LAS 20:46 HORAS, DEL DÍA 08 DE AGOTO DE 2026" condicion=VARIABLE umbral_ab_fuera=null afecta_menores=true bloqueo_total=false nave_ab=150 → estado=precaucion bloquea=false nivel=U motivo="Condición VARIABLE — restricción activa para embarcaciones menores"
+
+RESULTADO: con AB=150, la restricción sigue siendo aplica=true, estado=precaucion.
+Una nave de AB 150 (nave mayor) recibe la MISMA clasificación que una de AB 15.
+
+--- Texto crudo de la restricción de Valparaíso (bahia=92) ---
+
+Observacion: "EN ATENCIÓN A CONDICIONES METEOROLÓGICAS PRESENTES SE ESTABLECE
+A CONTAR DE LAS 20:46 HORAS, DEL DÍA 08 DE AGOTO DE 2026 CONDICIÓN DE
+"TIEMPO VARIABLE", PUERTO CERRADO PARA NAVES MENORES FUERA Y DENTRO DE LA
+BAHIA. POR VIENTO DE COMPONENTE SUR SE SUSPENDEN LAS ACTIVIDADES DEPORTIVAS,
+FAENAS DE BUC"
+
+NaveRecibe: "NAVE MAYOR (>=100 AB), NAVE MENOR (<100 AB)"
+
+NOTA: para esta restricción específica, NaveRecibe dice MAYOR y MENOR (todas
+las naves). Así que aplica=true para AB=150 es correcto en este caso. El
+problema se manifiesta cuando NaveRecibe dice solo MENOR con un umbral
+específico pero Observacion no contiene el umbral numérico.
+
+--- Análisis de TODAS las restricciones activas tipo TODOS (37 registros) ---
+
+Extracción de AB del texto de Observacion vs NaveRecibe:
+
+CON umbral en Observacion (parser lo extrae correctamente): 7 bahías
+  bahia=107: "MENORES DE 100 ARQUEO BRUTO"        → umbral=100 ✓
+  bahia=112: "DE 25 AB"                            → umbral=25  ✓
+  bahia=117: "MENORES DE 25 A.B."                  → umbral=25  ✓
+  bahia=148: "DE 25 AB"                            → umbral=25  ✓
+  bahia=170: "MENORES DE 100 ARQUEO BRUTO"        → umbral=100 ✓
+  bahia=208: "MENORES DE 100 AB"                   → umbral=100 ✓
+  bahia=251: "EE.MM A 25 AB"                       → umbral=25  ✓
+
+SIN umbral en Observacion pero SITPORT genuinamente dice "NAVES MENORES" sin
+número (el parser devuelve null correctamente — es "todas las menores"): 25 bahías
+  bahia=80,82,83,87,88,90,92,95,97,102,103,131,132,135,137,143,150,151,156,
+  158,172,200,236 y otros.
+  Estos dicen "NAVES MENORES" o "EE.MM" sin un número de AB. El umbral
+  implícito es 100 AB (definición estándar de nave menor en Chile). El
+  comportamiento del BRE (tratar como "todas las menores") es CORRECTO aquí.
+
+CON umbral en Observacion pero parser NO lo extrae — FORMATO NO CUBIERTO: 1 bahía
+  bahia=147: "SE SUSPENDE EL TRAFICO DE EE.MM. A 25 A.B."
+  El número 25 ESTÁ en el texto pero el parser no lo captura porque:
+    (a) Preposición "A" en lugar de "DE" entre "EE.MM." y el número. Los
+        patterns del parser esperan (?:DE\s+)? pero no "A\s+".
+    (b) "A.B." con punto entre A y B. Los patterns EEMM usan "AB" sin punto.
+        Solo el pattern de "EMBARCACIONES MENORES" maneja "A\.?B".
+  CONSECUENCIA: umbral=null → regla variable-sin-umbral dispara → precaucion
+  para TODA nave menor, sin importar AB. Una nave con AB=30 (sobre umbral 25)
+  queda como afectada cuando debería ser informativa.
+
+CON dato MALFORMADO de SITPORT (sin número en el texto): 4 bahías
+  bahia=184,185,186,187: "CERRADO PARA EE.MM DE  A.B DENTRO DE LA BAHIA"
+  El texto dice "DE  A.B" con doble espacio y sin número. El número fue
+  omitido en el sistema SITPORT (error de carga de datos en la fuente).
+  El parser devuelve null correctamente — no hay número que extraer.
+
+--- Tests del BRE: formatos cubiertos por el sondeo de 3 días ---
+
+ARCHIVO: tmarea-backend\src\services\__tests__\bre-test.js
+
+Formatos cubiertos en los 29 tests:
+  "EEMM 25 AB"                    (línea 69)  ← sin puntos, sin preposición
+  "EEMM-50AB"                     (línea 81)  ← con guión
+  "EEMM <25 AB"                   (línea 92)  ← con menor-que
+  "EMBARCACIONES MENORES DE 50 AB" (línea 56)  ← con "DE"
+  "NAVES MENORES DE 25 AB"        (línea 161) ← con "DE"
+
+Formato NO cubierto:
+  "EE.MM. A 25 A.B."              ← preposición "A", puntos en "A.B."
+
+CONCLUSIÓN BLOQUE C:
+El campo booleano de salida es `aplica` (= estado !== 'no_afecta').
+La traza AB→umbral funciona correctamente cuando el parser extrae el umbral.
+El parser falla para el formato "EE.MM. [A] [número] A.B." (1 bahía activa
+hoy: bahia=147). La hipótesis del umbral null se CONFIRMA para ese formato
+específico: el parser no captura el 25 → la regla variable-sin-umbral trata
+la restricción como aplicable a toda nave menor sin discriminar AB.
+Adicionalmente, 4 bahías (184-187) tienen texto SITPORT malformado sin número.
+
+
+================================================================================
+BLOQUE D — Dónde el frontend decide bloqueante vs informativa
+================================================================================
+
+ARCHIVO: tmarea-pwa\src\components\verification\TransitRestrictionsBlock.jsx
+
+--- Partición aplican/informativas (líneas 121-123) ---
+
+  const aplican     = lista.filter(r => r.aplica !== false && (r.evaluacion?.estado || '') !== 'no_afecta');
+  const informativas = lista.filter(r => r.aplica === false || (r.evaluacion?.estado || '') === 'no_afecta');
+  const listaOrdenada = [...aplican, ...informativas];
+
+--- Dentro de RestriccionCard (línea 31) ---
+
+  const esInformativa = r.aplica === false || estado === 'no_afecta';
+
+--- Separador visual (líneas 156-163) ---
+
+  {nInfo > 0 && (
+    <>
+      {nAplican > 0 && <div style={styles.separadorInfo}>Restricciones activas — no afectan tu embarcación</div>}
+      {informativas.map((r, i) => (
+        <RestriccionCard key={`inf-${r.id_bahia}-${i}`} r={r} />
+      ))}
+    </>
+  )}
+
+--- Campo que lee: `aplica` (booleano) y `evaluacion.estado` (string) ---
+
+¿Coincide con BLOQUE C? SÍ. El backend produce:
+  aplica: estado !== 'no_afecta'     (sitport-routes.js:701)
+  evaluacion.estado: string          (sitport-routes.js:704)
+El frontend lee exactamente esos campos.
+
+¿PARTICIONA, DESCARTA, o pinta todas igual?
+PARTICIONA correctamente:
+  - Las que aplican (aplica=true y estado !== 'no_afecta') van arriba como activas
+  - Las que no aplican van abajo como informativas, con separador visual gris
+  - Cada card tiene estilo diferente según estado (bloquea=coral, no_afecta=gris, etc.)
+
+CONCLUSIÓN BLOQUE D:
+El frontend particiona correctamente usando los campos del backend. El
+componente lee `aplica` y `evaluacion.estado`, que coinciden con lo que el
+backend produce. Si el backend clasifica mal (por umbral null), el frontend
+refleja esa clasificación fielmente — el error NO está en el frontend.
+
+
+================================================================================
+VEREDICTO FINAL
+================================================================================
+
+PROPIEDAD 1 — Partición por AB (hipótesis del umbral null):
+
+  CONFIRMADA PARCIALMENTE con matiz importante.
+
+  La hipótesis dice: "el parser deja el umbral de AB en null para ciertos
+  formatos de texto → una regla sin umbral trata la restricción como bloqueo
+  total para toda nave menor, sin discriminar su AB."
+
+  EVIDENCIA:
+  - De 37 restricciones activas, 30 tienen umbral=null. Pero para 25 de esas
+    30, el null es CORRECTO: el texto dice "NAVES MENORES" sin sub-umbral, lo
+    que significa todas las menores (< 100 AB estándar). El BRE las trata como
+    "todas las menores" — comportamiento correcto.
+  - Para 1 bahía (147), el null es INCORRECTO: el texto "EE.MM. A 25 A.B."
+    contiene el umbral 25, pero el parser no lo captura por formato no cubierto:
+    preposición "A" (en vez de "DE") y "A.B." con punto. Resultado: una nave
+    con AB=30 recibe precaucion cuando debería recibir no_afecta.
+  - Para 4 bahías (184-187), el null viene de dato MALFORMADO de SITPORT
+    ("EE.MM DE  A.B" — sin número). Imposible extraer lo que no existe.
+
+  El fallo del parser es REAL pero PUNTUAL: 1 formato no cubierto por el
+  sondeo de 3 días ("EE.MM. A [número] A.B."). No es un fallo sistémico.
+
+  DÓNDE está el null: en el parser (sitport-parser.js:134, extraerUmbrales),
+  NO más adelante en la cadena. El umbral nace null y llega null al BRE.
+
+
+PROPIEDAD 2 — Geometría del matching:
+
+  RAMA (a) — Voronoi sobreextendidos — CONFIRMADA como causa dominante.
+
+  EVIDENCIA:
+  - bahia=174 (Rada Quintay): polígono de 28,055 km², centroide a 192 km de
+    la ruta. El polígono cubre una extensión enorme de mar abierto.
+  - bahia=92 (Valparaíso): polígono de 3,183 km², centroide a 68 km.
+  - bahia=215 (El Quisco): polígono de 4,996 km², centroide a 69 km.
+  - Contraste: bahia=94 (Algarrobo) tiene polígono de 63 km² con centroide a
+    285 m — claramente legítimo.
+
+  RAMA (b) — Segmentos largos — es AGRAVANTE MENOR, no causa raíz.
+  - El segmento más largo es 39.57 km (entre 2 waypoints en agua abierta).
+  - Pero el string-pulling garantiza que el segmento es sobre agua navegable.
+  - El segmento no cruza tierra — cruza agua abierta que cae en polígonos
+    Voronoi de bahías distantes. Incluso con waypoints cada 100m, la ruta
+    seguiría cruzando los polígonos sobreextendidos.
+
+  El mecanismo ST_Intersects es correcto. El problema está en los DATOS
+  geométricos: los polígonos Voronoi recortados por costa se extienden hacia
+  mar abierto sin límite, asignando toda el agua a la bahía más cercana. Una
+  ruta que pasa por agua abierta matchea bahías cuyo centroide jurisdiccional
+  puede estar a casi 200 km de distancia.
+
+================================================================================
+ARCHIVOS TEMPORALES GENERADOS (no commiteados)
+================================================================================
+  _bitacoras/recon_ruta_raw.json               — respuesta del motor raster
+  _bitacoras/recon_restricciones_body.json      — body enviado a restricciones-ruta
+  _bitacoras/recon_restricciones_body_ab150.json — body con AB=150
+  _bitacoras/recon_restricciones_response.json  — respuesta con AB=15
+  _bitacoras/recon_restricciones_response_ab150.json — respuesta con AB=150
+  _bitacoras/recon_server_output.log            — log completo del servidor
+
+Logs temporales de código ELIMINADOS de:
+  src/routes/sitport-routes.js
+  src/services/route-restriction-evaluator.js
+
+================================================================================
+FIN DEL RECONOCIMIENTO
+================================================================================
