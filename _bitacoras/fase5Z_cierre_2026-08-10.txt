@@ -1,0 +1,198 @@
+================================================================================
+FASE 5 — CIERRE DE SESION. EL PLAN SE REFORMULA: LA CAPA PRIMERO, R1 DESPUES.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.7
+Punto de retomada. Lo de mas abajo evita re-derivar nada.
+================================================================================
+
+LA DECISION QUE CIERRA LA SESION
+
+  El orden R1 -> P2 -> P4' -> P3 -> P5 -> medir C3 -> P1 queda REEMPLAZADO:
+
+      LA CAPA SE CONSTRUYE PRIMERO. R1 VA DESPUES, SOBRE ELLA.
+
+  Y LA ADICION 3 AL CONTRATO NO SE ESCRIBE. Motivo del owner, que conviene tener
+  entero porque es el que hace que no haya que volver a discutirlo: esa viñeta
+  existia para compensar que el motor filtra las restricciones por bahia; cuando
+  filtre por Capitania — que es lo que INV-3.4 ya manda — sobra. Escribir en el
+  contrato una regla de producto para tapar un incumplimiento del propio contrato
+  es al reves. Se arregla el incumplimiento.
+
+  Consecuencia directa: R1 tal como quedo NO se promueve. Ver "en que condicion".
+
+================================================================================
+1. QUE QUEDO APLICADO DE R1, Y EN QUE CONDICION
+================================================================================
+
+  PIEZA 1 — declaracion de zonas de aviso.  APLICADA Y LIMPIA. Se sostiene tal cual
+  cuando R1 se retome, porque no depende del criterio que se cayo.
+
+    data/decreto/zonas_aviso.json        10 zonas, una por jurisdiccion sin
+                                         geometria; ninguna con ambito declarado
+    src/services/zonas-aviso.js          carga con la validacion adentro
+    scripts/fase5_validar_zonas_aviso.js mordida 20/20 + control negativo, exit 0/1
+                                         probados en los dos sentidos
+
+    Contactos resueltos: arica, hanga_roa, talcahuano, puerto_williams por
+    Capitania; baker por Gobernacion. Cinco sin contacto, cada uno por una
+    discrepancia de clase C comprobada contra la fuente.
+    Retiro automatico comprobado: si una jurisdiccion recupera geometria
+    (participa_matching = true), la carga se detiene y obliga a retirar su zona.
+
+  PIEZA 2 — backend.  APLICADA PERO CON SU CRITERIO EN OBSERVACION. NO ESTA
+  TERMINADA. Silencia dos tramos que no deberia (§2). Esta en el arbol y en el
+  commit con esa condicion escrita en el mensaje, a proposito, para que nadie la
+  lea como cerrada.
+
+    src/services/cobertura-jurisdiccional.js   medicion + clasificacion + aviso
+    data/decreto/capa_consultada.json          capa consultada, capa de recorte y
+                                               tolerancia, declaradas
+    src/routes/sitport-routes.js               campo cobertura_jurisdiccional
+    scripts/fase5_medir_cobertura_ruta.js      medicion con el mismo modulo
+    scripts/fase5_auditar_tramos_silenciados.js  el auditor que encontro la falla
+    10 pruebas nuevas; suite completa 71/71
+
+  PIEZA 3 (frontend) y PIEZA 4 (veredicto): NO EMPEZADAS. El motor de reglas y el
+  frontend quedaron intocados en toda la sesion.
+
+  LO QUE SI SIRVE DE LA PIEZA 2 CUANDO SE RETOME: la medicion de cobertura, la
+  atribucion del hueco, el campo de respuesta con estado explicito, el tope duro en
+  U y las pruebas de que el aviso no puede pasar por restriccion. Lo unico que queda
+  en duda es la regla de silenciamiento.
+
+================================================================================
+2. EL FUNDAMENTO QUE SE CAYO, CON SUS DOS CASOS
+================================================================================
+
+  EL ARGUMENTO ERA: en las astillas de recorte no hay ceguera, porque la
+  jurisdiccion que opera esas aguas ya esta en la lista de la ruta con sus
+  restricciones a la vista.
+
+  LO QUE PROBABA: identidad de jurisdiccion. LO QUE NO PROBABA: que la restriccion
+  efectivamente le llegue al patron. El owner pidio medir la diferencia y la
+  diferencia existe.
+
+  MEDIDO sobre 34 tramos silenciados en 8 rutas reales — evidencia en
+  fase5V_r1_2026-08-10/05_auditoria_tramos_silenciados.txt:
+
+    Anahuac -> Chacabuco, tramo 6,3855 km  -43,95037,-73,11862 -> -44,00565,-73,13857
+      bahia 252 Canal Moraleda Este    3,379 km   MATCHEADA
+      bahia 254 Canal Chaffers Sur     2,240 km   NO MATCHEADA
+      bahia 238 Sector Canal Moraleda  0,729 km   MATCHEADA
+
+    Anahuac -> Chacabuco, tramo 6,1500 km  -45,42817,-72,83798 -> -45,45868,-72,81059
+      bahia 126 Bahia Chacabuco        2,839 km   NO MATCHEADA
+      bahia 220 Fiordo Aysen           1,172 km   MATCHEADA
+
+  Ninguna de las dos tenia restriccion activa en SITPORT en ese momento. ESO NO
+  SALVA NADA y no se debe leer asi: SITPORT cambia por hora y la pregunta es
+  estructural.
+
+  EL MATIZ QUE EXPLICA POR QUE EL PLAN CAMBIO: a nivel de CAPITANIA los dos casos
+  coinciden — las tres bahias del primer tramo son Cisnes, las dos del segundo son
+  Chacabuco. CERO de 34 rompen a nivel de Capitania. DOS de 34 rompen a nivel de
+  bahia_id, que es como el motor filtra hoy. El fundamento se sostiene en la unidad
+  que el contrato manda y se cae en la unidad que el codigo usa. De ahi la decision:
+  arreglar la unidad, no escribir una regla que compense.
+
+  fase5X (el texto propuesto para el contrato) quedo marcado INVALIDADO en su propio
+  archivo. No se usa.
+
+================================================================================
+3. HALLAZGO: LA RUTA A CHACABUCO NO MATCHEA LA BAHIA DE CHACABUCO
+================================================================================
+
+  No es de R1 y no se arreglo. Anotado con coordenadas para que se pueda retomar.
+
+  La ruta Anahuac -> Chacabuco termina en -45,462,-72,807, que es Bahia Chacabuco
+  (bahia 126), y 126 NO aparece entre las 16 bahias que la ruta matchea. Su celda
+  existe y su punto esta dentro del alcance de 80 km: lo que la borro de esa agua
+  fue el recorte contra ne_land. Lo mismo con la bahia 254.
+
+  CONSECUENCIA HOY: una restriccion publicada bajo Bahia Chacabuco no aparece en el
+  bloque de restricciones de transito de una ruta que termina ahi. Se veria por el
+  bloque de puerto si se pasa recalada_id, que es otra pantalla y otro camino.
+
+  Es el bug 4 del §7 con un caso concreto y medido. Sirve como prueba de aceptacion
+  de la capa nueva: cuando la capa este, esta ruta tiene que matchear su destino.
+
+================================================================================
+4. PENDIENTE DE TRAZABILIDAD: EL ART. 2 NO ES REPRODUCIBLE
+================================================================================
+
+  INV-3.3 invoca el Art. 2 del D.S. 991 — "las jurisdicciones comprenden el litoral,
+  lagos y rios navegables, aguas interiores, mar territorial, zona contigua, ZEE y
+  plataforma continental". Ese articulo NO ESTA EN EL INSUMO: el insumo trae los
+  parrafos por Capitania, que son del Art. 1. Buscadas las expresiones en
+  data/decreto/jurisdicciones_v2.json: 'aguas interiores' aparece; 'mar territorial',
+  'zona contigua' y 'plataforma continental' NO estan en ninguna parte del archivo.
+
+  O sea que esa cita vive solo en la transcripcion del contrato y no se puede
+  reproducir desde el repositorio, que es justo lo que INV-3.7 exige del dato fuente.
+
+  DOS SALIDAS, decision del owner: incorporar el texto del Art. 2 al insumo con su
+  procedencia, o aceptar que el contrato cita algo que el repositorio no respalda y
+  dejarlo declarado. No se resolvio en esta sesion y no se uso esa cita como respaldo
+  de ningun argumento.
+
+================================================================================
+5. UN ARGUMENTO NUEVO QUE REFUERZA P1 (y la costa fina)
+================================================================================
+
+  La resta de tierra es CONVENCION NUESTRA, declarada en el insumo. Convencion [2],
+  textual: "se cierra generosamente hacia tierra y la tierra se resta despues. La
+  recta corta por dentro de la costa y dejaria fuera superficie decretada. Queda 'de
+  mas, nunca de menos' (INV-3.4). Convencion autorizada por el owner el 2026-08-09."
+
+  MEDIDO, HACE LO CONTRARIO CON LA COSTA GRUESA DE HOY: le quita a la jurisdiccion
+  200,40 km de agua por donde la ruta efectivamente pasa, en 8 rutas — el 100% del
+  hueco en 7 de ellas. Queda "de menos", que es lo que la convencion se autorizo para
+  evitar.
+
+  La convencion es correcta; la capa de tierra con que se aplica hoy la traiciona.
+  Es un argumento medido a favor de la costa fina y de P1, y NO es un argumento
+  contra la convencion.
+
+  NUMEROS PARA NO REPETIR LA MEDICION: 8 rutas, 2.076,07 km, 499,13 km sin
+  jurisdiccion (24,04%). Atribucion: 200,40 km dentro de ne_land, 350,03 km fuera del
+  alcance de 80 km, 5,02 km por asignacion de Voronoi cruzada con ese alcance. Ni un
+  metro por jurisdiccion declarada sin geometria.
+
+================================================================================
+6. TRAMPAS DE ESTA SESION, PARA NO VOLVER A PAGARLAS
+================================================================================
+
+  ST_CoveredBy NO ES CONFIABLE sobre esta geometria: devolvio falso en 26 de 36
+  trozos cuya longitud fuera del recorte era de nanometros. Si el criterio se hubiera
+  apoyado en el predicado habria silenciado 14,43 km en vez de 141,45 y se habria
+  comportado como el camino A con el nombre del C. Medir metros, no preguntar al
+  predicado. La comprobacion predicado-contra-medida quedo dentro del script y
+  reporta en cada corrida.
+
+  MEDIR CON LOS WAYPOINTS QUE EL BACKEND RECIBE, no con todos los del ruteo: los
+  tramos 'aproximacion_final' los descarta el PWA antes de llamar, y medirlos infla
+  el hueco con metros de muelle que el motor nunca evalua.
+
+  UN EXIT 0 NO SE DA POR BUENO sin comprobar que el exit 1 tambien ocurre cuando
+  debe. Los dos scripts nuevos se probaron en los dos sentidos.
+
+  Y LA GENERAL, que ya iba dos veces y con esta van tres: antes de dar por buena una
+  conclusion, comprobar que la medicion prueba lo que el argumento dice. Esta vez el
+  argumento hablaba de restricciones vistas y la medicion probaba identidad de
+  jurisdiccion.
+
+================================================================================
+7. POR DONDE SE RETOMA
+================================================================================
+
+  1. Construir la capa: P2, P4', P3, P5, y medir C3. Es el frente principal ahora.
+  2. INV-3.4 — que el matching de restricciones sea por Capitania y no por celda de
+     bahia. Es lo que vuelve innecesaria la adicion 3 y lo que hace que el fundamento
+     de R1 se sostenga solo.
+  3. R1 sobre la capa nueva: revisar el criterio de silenciamiento con la capa fina y
+     el matching por Capitania, y recien ahi las piezas 3 y 4.
+  4. P1 como deuda declarada, ahora con el argumento medido de §5.
+  5. Art. 2 del decreto: incorporarlo al insumo o declarar que no es reproducible.
+  6. Prueba de aceptacion pendiente: la ruta a Chacabuco tiene que matchear su bahia
+     de destino.
+
+  ALTO.

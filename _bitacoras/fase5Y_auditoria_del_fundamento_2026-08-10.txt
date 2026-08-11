@@ -1,0 +1,194 @@
+================================================================================
+FASE 5 — R1. AUDITORIA DEL FUNDAMENTO DEL CAMINO C. NO SE SOSTIENE TAL COMO ESTA
+ESCRITO. MEDICION, CONTRASTE CON LA NORMA, Y CINCO CAMINOS.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.7
+Evidencia cruda: _bitacoras/fase5V_r1_2026-08-10/05_auditoria_tramos_silenciados.txt
+Script: scripts/fase5_auditar_tramos_silenciados.js   (exit 1 = rompe; exit 0 = se sostiene)
+NADA APLICADO EN ESTA ETAPA. La adicion 3 NO se redacta hasta que se elija camino.
+================================================================================
+
+LA RESPUESTA, ARRIBA
+
+  De 34 tramos silenciados en 8 rutas reales, DOS tienen aguas cuyo dueño la ruta
+  NO habia matcheado. El fundamento decia "la jurisdiccion que opera esas aguas ya
+  esta en la lista de la ruta"; en esos dos casos no lo esta, y por lo tanto su
+  restriccion no se listaria. El criterio necesita una condicion mas.
+
+  Los dos casos, los dos en Anahuac -> Chacabuco:
+
+    tramo 6,3855 km  -43,95037,-73,11862 -> -44,00565,-73,13857
+      aguas repartidas entre bahia 252 Canal Moraleda Este (3,379 km, MATCHEADA),
+      bahia 254 Canal Chaffers Sur (2,240 km, NO MATCHEADA) y
+      bahia 238 Sector Canal Moraleda (0,729 km, MATCHEADA).
+
+    tramo 6,1500 km  -45,42817,-72,83798 -> -45,45868,-72,81059
+      aguas repartidas entre bahia 126 Bahia Chacabuco (2,839 km, NO MATCHEADA) y
+      bahia 220 Fiordo Aysen (1,172 km, MATCHEADA).
+
+  Ninguna de las dos tiene restriccion publicada en SITPORT en este momento. Eso NO
+  salva al criterio y no lo voy a usar como si lo salvara: las restricciones de
+  SITPORT cambian por hora, y la pregunta es estructural. Si mañana Canal Chaffers
+  Sur o Bahia Chacabuco publican, el patron no las ve y el silenciamiento habria
+  sido un falso negativo con otro nombre — exactamente lo que el owner planteo.
+
+  UN MATIZ QUE IMPORTA PARA ELEGIR CAMINO, Y QUE NO CAMBIA EL RESULTADO:
+  a nivel de CAPITANIA los dos casos coinciden. Las tres bahias del primer tramo son
+  Capitania Cisnes; las dos del segundo son Capitania Chacabuco. O sea: a nivel de la
+  unidad que INV-3.3 declara jurisdiccional, CERO de 34 rompen. A nivel de bahia_id,
+  que es como el motor filtra hoy, DOS de 34 rompen. El fundamento se sostiene en la
+  unidad que el contrato manda y se cae en la unidad que el codigo usa.
+
+================================================================================
+1. UN HALLAZGO APARTE, QUE NO ES DE R1 Y HAY QUE ANOTAR IGUAL
+================================================================================
+
+  LA RUTA A PUERTO CHACABUCO NO MATCHEA LA BAHIA DE CHACABUCO. La ruta termina en
+  -45,462,-72,807, que es Bahia Chacabuco (bahia 126), y 126 no aparece entre las 16
+  bahias matcheadas. Su celda existe y el punto esta dentro del alcance de 80 km: lo
+  que la borro de esa agua fue el recorte contra ne_land. Lo mismo con 254.
+
+  Consecuencia hoy, sin relacion con R1: una restriccion publicada bajo Bahia
+  Chacabuco no aparece en el bloque de restricciones de transito de una ruta que
+  termina ahi. Se veria por el bloque de puerto si se pasa recalada_id, que es otro
+  camino y otra pantalla. Es el bug 4 del §7 con un caso concreto y medido.
+
+  No lo arreglo en esta sesion. Queda anotado con sus coordenadas.
+
+================================================================================
+2. LO QUE DICE LA NORMA SOBRE ESTO — Y LO QUE NO DICE
+================================================================================
+
+  Contrastado antes de proponer cualquier texto, como corresponde.
+
+  LO QUE NO EXISTE. Ni el D.S. 991, ni el D.L. 2222, ni el D.S. 364, ni el TM-002,
+  ni la CIRC O-41/001, ni la CIRC A-41/014 dicen nada sobre resolucion cartografica,
+  recorte de costa, huecos de una capa ni sobre que mostrarle al patron cuando a la
+  app le falta un dato. Regulan la navegacion y la autoridad, no la calidad del dato
+  de un tercero. NO HAY NORMA QUE RESPALDE NI QUE PROHIBA SILENCIAR ESOS TRAMOS.
+
+  LO QUE SI EXISTE, y es de nuestra propia fuente auditada, no de la norma:
+  la resta de tierra es CONVENCION NUESTRA y esta declarada como tal en el insumo.
+  Convencion [2], textual:
+
+    "Donde el decreto describe un tramo del limite como 'el litoral', el contorno NO
+     se cierra con la recta entre los dos extremos: se cierra generosamente hacia
+     tierra y la tierra se resta despues. La recta corta por dentro de la costa y
+     dejaria fuera superficie decretada. Queda 'de mas, nunca de menos' (INV-3.4).
+     Convencion autorizada por el owner el 2026-08-09."
+
+  Y la convencion [5] la repite: "el cierre generoso hacia tierra con resta posterior
+  de la capa de tierra siguen siendo convencion nuestra".
+
+  DE AHI SALEN DOS COSAS, Y CONVIENE NO CONFUNDIRLAS:
+   - que un hueco producido por esa resta sea DEFECTO NUESTRO y no carencia del
+     decreto es consecuencia directa de que la resta es convencion nuestra. Eso si
+     tiene respaldo, y es respaldo de nuestra propia fuente declarada.
+   - que ese defecto NO SE MUESTRE al patron no lo respalda nada. Es una decision de
+     producto.
+
+  ADEMAS, UNA OBSERVACION INCOMODA SOBRE LA CONVENCION [2]: se autorizo para quedar
+  "de mas, nunca de menos". Medido con la costa gruesa que la capa vigente usa, hace
+  lo contrario — le quita a la jurisdiccion agua por donde la ruta efectivamente
+  pasa, 200,40 km en 8 rutas. La convencion es correcta; la capa de tierra con que se
+  aplica hoy la traiciona. Es otro argumento para P1 y para la costa OSM, no para R1.
+
+  LO QUE NO PUDE VERIFICAR Y NO VOY A CITAR COMO SI PUDIERA: el contrato invoca en
+  INV-3.3 el Art. 2 del D.S. 991 ("las jurisdicciones comprenden el litoral, lagos y
+  rios navegables, aguas interiores, mar territorial, zona contigua, ZEE y plataforma
+  continental"). Ese articulo NO esta en nuestro insumo: el insumo trae los parrafos
+  por Capitania, que son del Art. 1. Buscadas las expresiones, 'aguas interiores'
+  aparece; 'mar territorial', 'zona contigua' y 'plataforma continental' NO estan en
+  ninguna parte del archivo. O sea que la cita del Art. 2 vive solo en la
+  transcripcion del contrato y no esta respaldada por la fuente versionada que
+  INV-3.7 exige. No la uso como respaldo, y queda anotada como algo que conviene
+  cerrar: o se incorpora el texto del Art. 2 al insumo con su procedencia, o el
+  contrato esta citando algo que el repositorio no puede reproducir.
+
+  CONCLUSION DE ESTA SECCION: cualquier viñeta que se agregue a INV-3.6 sobre
+  silenciar tramos es UNA REGLA DE PRODUCTO. Debe decirlo en su propio texto. Lo
+  unico con anclaje es la clasificacion del hueco como defecto propio, y el anclaje
+  es nuestra convencion declarada, no el decreto.
+
+================================================================================
+3. LOS CAMINOS, CON LO QUE CADA UNO GANA Y PIERDE
+================================================================================
+
+  O1 — VOLVER A B: aviso solo para la causa (a) declarada; ningun hueco de capa
+       avisa nunca.
+    Gana  imposible silenciar mal por criterio, porque no hay criterio. Cero codigo
+          nuevo. Cero riesgo de tarjeta equivocada.
+    Pierde los 357,68 km de Magallanes dejan de avisar, y ahi la ceguera es real y
+          medida. Hoy no avisaria nada en ninguna ruta. Contradice la letra de
+          INV-3.6 igual que antes.
+    Coste cero.
+
+  O2 — C MAS UNA TERCERA CONDICION: se silencia solo si TODAS las unidades dueñas de
+       esas aguas ya estan en el conjunto que la ruta matcheo.
+    Efecto medido  los 2 tramos pasan a avisar: +12,54 km, ambos en Anahuac ->
+          Chacabuco. El corredor de dia 0 pasa de 0 de 5 rutas con aviso a 1 de 5.
+          Las otras 7 rutas no cambian. Magallanes sigue avisando igual.
+    Gana  el fundamento deja de ser un argumento y pasa a ser una condicion que se
+          comprueba en cada ruta. Y avisa justo donde hay ceguera de verdad — en la
+          ruta a Chacabuco, que es el caso que la auditoria encontro.
+          "Unidad" es la clave con que el motor filtra, sea bahia hoy o Capitania
+          mañana: el criterio se adapta solo si el matching mejora.
+    Pierde hay que saber de quien serian esas aguas SIN el recorte. Hoy se reconstruye
+          el teselado previo, que es reproducible; habria que materializarlo una vez
+          (163 filas). Para la capa del decreto habria que declarar su figura
+          pre-recorte, que hoy el constructor no publica.
+    Salvaguarda si la capa pre-recorte no esta declarada, NO SE SILENCIA NADA. La
+          falla empuja hacia avisar, no hacia callar.
+    Coste una vista materializada nueva, un campo mas en capa_consultada.json, y una
+          consulta mas por ruta.
+
+  O3 — C MAS LA TERCERA CONDICION, PERO A NIVEL DE CAPITANIA en vez de bahia.
+    Efecto medido  0 de 34 tramos cambian. El corredor sigue en 0 de 5.
+    Gana  es la unidad que INV-3.3 declara jurisdiccional, y con ella el fundamento
+          se sostiene entero sin tocar nada mas.
+    Pierde afirmaria que la restriccion le llega al patron por Capitania, y hoy el
+          motor la filtra por bahia_id. Seria apoyarse en INV-3.4 que el codigo NO
+          cumple. Es la trampa de esta fase otra vez: un argumento apoyado en algo
+          que la medicion no respalda. NO la recomiendo mientras el matching sea por
+          bahia.
+
+  O4 — ARREGLAR LA RAIZ: que el matching de restricciones sea por Capitania y no por
+       celda de bahia, que es lo que INV-3.4 manda.
+    Gana  el fundamento de C se sostiene solo, sin tercera condicion, y de paso se
+          cierra un incumplimiento de INV-3.4 que existe hoy y que esta auditoria
+          midio: una restriccion publicada bajo una bahia solo alcanza a su celda.
+    Pierde toca el matching del motor, que es lo que esta fase mantiene intacto, y
+          depende de una capa por Capitania confiable que hoy no existe (bug 4, C3
+          no pasa). No es de esta sesion ni de R1.
+    Recomendacion queda como deuda declarada. El dia que se haga, O2 se vuelve
+          innecesaria y la tercera condicion se retira sola.
+
+  O5 — CAMINO A, no silenciar nada.
+    Ya descartado con medicion: aviso en 8 de 8 rutas, 24% del kilometraje, y el
+    mensaje atribuyendo a carencia de jurisdiccion lo que es defecto de recorte.
+
+  LO QUE RECOMIENDO: O2, y O4 anotada como la deuda que la haria innecesaria.
+  Razon: es el unico camino donde lo que afirmamos queda comprobado por ruta en vez
+  de argumentado una vez; el precio es una tarjeta en una ruta del corredor, y esa
+  tarjeta corresponde — la ruta a Chacabuco tiene hoy un punto ciego real sobre su
+  propia bahia de destino.
+
+  LO QUE NO RECOMIENDO Y POR QUE LO DIGO IGUAL: O3 es tentadora porque deja el
+  corredor en cero y no cambia nada. Es justamente por eso que hay que desconfiar de
+  ella.
+
+================================================================================
+4. ESTADO
+================================================================================
+
+  PIEZA 1  aplicada y auditada.
+  PIEZA 2  aplicada. Su criterio queda EN OBSERVACION hasta que se elija camino:
+           tal como esta hoy silencia dos tramos que no deberia.
+  PIEZA 3  no tocada.
+  PIEZA 4  no tocada.
+  CONTRATO adicion 3 NO redactada. El texto de fase5X quedo invalidado por esta
+           medicion: su fundamento esta escrito como si el caso no existiera, y
+           existe. Se reescribe cuando haya camino elegido.
+
+  MOTOR DE REGLAS INTOCADO.  FRONTEND INTOCADO.  COMMITS: ninguno.
+
+  ALTO.

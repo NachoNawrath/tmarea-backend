@@ -1,0 +1,188 @@
+================================================================================
+FASE 5 — (1) TOPONIMOS REGISTRADOS. (2) COMO COMPONE EL AVISO EN EL VEREDICTO.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.6
+EL MOTOR NO SE TOCO. La seccion 2 termina en una pregunta de contrato.
+================================================================================
+
+================================================================================
+1. LO APLICADO AL INSUMO
+================================================================================
+
+  scripts/fase5_registrar_toponimos_igm.py   idempotente, comprobado por sha256
+  auditoria exit 0   |   mordida 12/12, insumo restaurado byte por byte
+
+  CUATRO PUNTOS NOTABLES, con servicio, fecha de consulta, motivo y descartados:
+    Punta Anxious         54 07 01 S / 070 56 04 W
+    Peninsula Brecknock   54 33 42 S / 071 51 01 W   <- el punto de peninsula, NO el faro
+    Punta Harry           52 43 01 S / 070 34 17 W
+    Cabo San Vicente      52 46 49 S / 070 25 57 W
+
+  BRECKNOCK, la eleccion corregida y su motivo, tal como quedo escrito en el dato:
+    se elige el 'PENÍNSULA BRECKNOCK' mas cercano al paralelo 54 33 00 S — a 1,29 km —
+    porque el decreto lo usa como FIN DE RECORRIDO que empalma con ese paralelo
+    ("hasta la Peninsula Brecknock y luego por el paralelo 54 33 00 S"). Queda
+    registrado tambien por que se descarta el faro: esta 8,3 km al Sur del paralelo y
+    dejaria un salto entre el fin del recorrido costero y el paralelo por donde sigue
+    el limite. El criterio "marca de navegacion" es bueno en general y equivocado en
+    este caso.
+
+  PRECISION: se guarda el DMS al segundo entero y el decimal DERIVADO de ese DMS,
+  para que digan lo mismo — el auditor los compara con tolerancia de 5e-5 grados y
+  una discrepancia de redondeo lo haria fallar cuando estos puntos entren a un
+  contorno. El crudo del servicio queda en fuente.valor_servicio. Redondeo de hasta
+  0,5 s, unos 15 m.
+
+  CAUSAS ACTUALIZADAS. Punta Delgada y Tierra del Fuego dejaron de decir "pendiente
+  de carta SHOA": sus accidentes ya tienen coordenada oficial. Ahora declaran lo que
+  falta de verdad — a Punta Delgada, solo el limite oriental; a Tierra del Fuego, el
+  limite oriental y un ancla.
+
+  PENDIENTE REGISTRADO, no rellenado por deduccion:
+    limite_maritimo_internacional_oriente_magallanes
+    Decision del owner: se acepta la linea Punta Dungeness - Cabo del Espiritu Santo
+    del Tratado de 1881. Extremo chileno resuelto: Punta Dungeness 52 23 53 S /
+    068 26 36 W, del mismo servicio. Extremo argentino AUSENTE: la consulta
+    'Espiritu Santo' devuelve cero — es costa argentina y esta es la capa del IGM
+    chileno. Queda como pendiente con su motivo. No se inventa.
+
+================================================================================
+2. EL AVISO EN EL VEREDICTO. RESPUESTA Y PREGUNTA DE CONTRATO.
+================================================================================
+
+2.1 LA REGLA NO SE ROMPE, PORQUE NO DICE LO QUE PARECE
+
+  El owner planteo la regla como banderaFinal = max(restriccion, deportivo). Eso es
+  la IMPLEMENTACION de hoy, que tiene dos fuentes. Lo que el contrato dice es otra
+  cosa, y es mas general:
+
+    INV-1.1 — "El veredicto final es el MAXIMO de severidad de TODAS LAS FUENTES
+               (Q < U < U+V)."
+
+  "Todas las fuentes", no "las dos fuentes". Agregar una tercera no rompe INV-1.1:
+  es exactamente lo que INV-1.1 describe. La composicion queda
+
+    banderaFinal = max(restriccion, deportivo, COBERTURA)
+
+    COBERTURA = U   si algun punto evaluado de la ruta no resuelve jurisdiccion
+              = Q   en caso contrario
+
+  DOS PROPIEDADES QUE HAY QUE FIJAR JUNTO CON LA REGLA:
+
+  (a) COBERTURA NUNCA PUEDE VALER U+V. Por construccion, no por criterio. No saber
+      no es una prohibicion, y si pudiera llegar a U+V el motor estaria inventando
+      una restriccion que no existe — que es justamente lo que el owner descarto.
+      Escrito como tope duro, no como convencion.
+
+  (b) EL AVISO NO ES UNA RESTRICCION Y NO SE RENDERIZA ENTRE ELLAS. INV-1.2 dice que
+      el patron ve TODAS las restricciones de su ruta; mezclar ahi un "no sabemos"
+      ensuciaria esa lista y le daria al aviso una autoridad que no tiene. Va en su
+      propio bloque, con su propio encabezado.
+
+  ENCAJE CON INV-1.3, LA DOBLE CAPA: entra natural.
+      Capa 1  "No tenemos cargado el limite de esta jurisdiccion" — bandera U
+      Capa 2  "Verifica con la Capitania [nombre]: [telefono]"
+    INV-1.3 pide que la Capa 2 cite decreto y articulo "cuando el reglamento
+    contempla una via legal". Aca no hay articulo que citar porque no hay
+    reglamento en juego: hay un dato que nos falta. La Capa 2 conserva la parte que
+    si aplica — derivar a coordinar con la Autoridad Maritima — y no cita. Eso esta
+    dentro de la letra de INV-1.3, no contra ella.
+
+2.2 LO QUE SI EXIGE TOCAR EL CONTRATO, Y POR ESO NO TOQUE EL MOTOR
+
+  Dos cosas, las dos aditivas. Ninguna cambia una regla existente.
+
+  (i) INV-3.6 MANDA EL MENSAJE PERO NO DICE QUE BANDERA LLEVA.
+      Hoy dice, textual: "se informa: 'No tenemos cargado el limite de esta
+      jurisdiccion — verifica con la Capitania [nombre]: [telefono]'". Manda
+      informar y no dice con que severidad. Ese silencio es el hueco: sin cerrarlo,
+      cada implementacion elegiria su bandera y el contrato no podria arbitrar.
+      PROPONGO agregar a INV-3.6 la decision del owner del 2026-08-10:
+        "Una jurisdiccion sin geometria cargada en la ruta escala el veredicto a U.
+         NUNCA a U+V: la ausencia de dato no es una prohibicion. Verde seria
+         afirmar algo que el motor no puede respaldar."
+
+  (ii) EL CATALOGO DE MENSAJES (seccion 10) NO TIENE FILA PARA ESTE CASO.
+      Todas sus filas son restricciones normativas con su cita. Hace falta una fila
+      nueva, y es la primera del catalogo que no nace de un reglamento sino de una
+      carencia nuestra. Conviene que se note en el propio catalogo.
+
+  NO HACE FALTA TOCAR INV-1.1: queda como esta y ya cubre el caso. Lo digo explicito
+  porque es la que parecia estar en juego.
+
+2.3 UN RIESGO QUE HAY QUE DECIDIR ANTES DE IMPLEMENTAR
+
+  "No resuelve jurisdiccion" va a tener DOS causas distintas y el patron las ve
+  iguales:
+    A. el punto cae en una jurisdiccion declarada sin geometria — carencia real,
+       declarada, y es exactamente lo que INV-3.6 quiere comunicar;
+    B. el punto cae en un HUECO de nuestra capa — una faja entre poligonos que
+       ninguna jurisdiccion reclama, como la del Golfo de Corcovado entre 42 35 00 S
+       y 42 39 40 S que aparecio al analizar P2.
+
+  Al patron hay que decirle lo mismo en los dos casos: no sabemos, consulte. Pero
+  para nosotros son cosas opuestas — A es el estado del mundo, B es un defecto
+  nuestro. PROPONGO que el caso B, ademas del aviso, quede registrado como defecto
+  de la capa. Si no se separan, los huecos de construccion se van a esconder detras
+  de un mensaje que parece explicarlos.
+
+2.4 CUANTO AFECTA ESTO AL PRODUCTO DE DIA 0: NADA
+
+  Medido contra la lista de nulas: las diez sin geometria son Arica, Lirquen,
+  Talcahuano, Baker, Puerto Eden, Punta Delgada, Tierra del Fuego, Puerto Williams,
+  Hanga Roa y Juan Fernandez. NINGUNA esta en el corredor austral — Puerto Montt,
+  Calbuco, Ancud, Quemchi, Castro, Chonchi, Quellon, Rio Negro Hornopiren, Chaiten y
+  Melinka son todas cerrables.
+
+  O sea que el escalamiento a U por cobertura NO va a tocar ninguna ruta del corredor
+  de dia 0. Donde si va a aparecer es en el extremo norte y en el extremo austral,
+  que es precisamente donde hoy la app calla. Es la respuesta a la pregunta de si
+  esto devalua la señal: en la zona con usuarios, la señal no cambia.
+
+================================================================================
+3. ESTADO
+================================================================================
+
+  INSUMO     cuatro toponimos, dos causas y un pendiente. Auditoria exit 0,
+             mordida 12/12, registro idempotente.
+  MOTOR      INTOCADO.
+  FRONTEND   intocado.
+  COMMITS    ninguno.
+
+  ESPERANDO: la decision del owner sobre (i) y (ii) de 2.2, y sobre el registro
+  separado del caso B de 2.3. Con eso sigue R1 completo y despues P2, P4', P3, P5,
+  medir C3, y P1 como deuda declarada.
+
+  ALTO.
+
+================================================================================
+CORRECCION AL PIE (2026-08-10, agregada en la sesion de R1). NO SE BORRA LO DE
+ARRIBA: se corrige aca, como se hizo con fase5E/F/G.
+================================================================================
+
+  LA SECCION 2.4 ESTA MAL APOYADA. Dice "cuanto afecta esto al producto de dia 0:
+  NADA" y lo sostiene en que ninguna de las diez jurisdicciones sin geometria esta
+  en el corredor austral. Esa medicion es correcta pero es SOBRE LA CAPA D.S. 991,
+  QUE TODAVIA NO EXISTE.
+
+  R1 corre contra la capa que el motor consulta hoy (bahia_jurisdicciones). Medido
+  contra ella el 2026-08-10 sobre 8 rutas reales del motor de ruteo:
+
+      8 de 8 rutas tienen tramo sin jurisdiccion; 24,04% del kilometraje.
+      En el corredor de dia 0: Anahuac->Melinka 10,7%, Anahuac->Chacabuco 11,9%.
+      Ni un metro de ese hueco viene de una jurisdiccion declarada sin geometria:
+      200,4 km caen dentro de la capa de tierra del recorte y 350,0 km fuera del
+      alcance de 80 km de la capa vigente.
+
+  O sea que la afirmacion "no afecta al dia 0" y la medicion que la sostiene no
+  hablan de la misma capa. Reconocido por el owner en la sesion de R1.
+
+  QUE QUEDO EN SU LUGAR: el camino C — el hueco atribuible al recorte de la propia
+  capa se registra como defecto y no se muestra. Con ese criterio, medido, el
+  corredor de dia 0 queda en CERO avisos y solo avisa Magallanes, que es donde de
+  verdad no hay jurisdiccion cargada sobre el agua. La afirmacion de 2.4 vuelve a
+  ser cierta, pero ahora por una medicion sobre la capa correcta y con un criterio
+  declarado, no por coincidencia.
+
+  Ver: fase5V_r1_2026-08-10.txt (medicion y decision),
+       fase5W_r1_pieza2_2026-08-10.txt (lo construido),
+       fase5X_texto_propuesto_contrato_adicion3_2026-08-10.md (texto del contrato).

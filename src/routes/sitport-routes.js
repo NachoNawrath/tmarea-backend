@@ -6,6 +6,9 @@ const { getCapitaniaByBahiaId } = require('../utils/capitanias');
 const { normalizarRestriccion } = require('../services/sitport-parser');
 const { evaluarRuta } = require('../services/route-restriction-evaluator');
 const { validarHabilitacionDeportiva } = require('../services/deportivo-validator');
+const {
+  medirCoberturaRuta, componerAvisos, capaJurisdiccionesVigente,
+} = require('../services/cobertura-jurisdiccional');
 const router = express.Router();
 
 const pool = new Pool({
@@ -529,17 +532,62 @@ function elegirRestriccion(lista) {
 // Matching geográfico via PostGIS: devuelve los bahia_id cuyas celdas Voronoi
 // (recortadas por costa) intersectan la ruta. Elimina falsos positivos en
 // geografía de fiordos (ej: Maullín no matchea rutas por el Golfo de Ancud).
+//
+// El nombre de la capa NO está escrito acá: sale de la misma declaración que usa
+// la medición de cobertura (data/decreto/capa_consultada.json), validada contra
+// el catálogo. Si fueran dos fuentes distintas, el aviso de INV-3.6 podría hablar
+// de una capa mientras la lista de restricciones sale de otra.
 async function bahiasEnRutaPostGIS(waypoints) {
   if (waypoints.length < 2) return new Set();
+  const capa = await capaJurisdiccionesVigente(pool);
   const coordinates = waypoints.map(wp => [wp.lng, wp.lat]);
   const rutaGeoJSON = JSON.stringify({ type: 'LineString', coordinates });
   const { rows } = await pool.query(
     `SELECT bahia_id
-     FROM bahia_jurisdicciones
+     FROM "${capa}"
      WHERE ST_Intersects(geom, ST_SetSRID(ST_GeomFromGeoJSON($1), 4326))`,
     [rutaGeoJSON]
   );
   return new Set(rows.map(r => r.bahia_id));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Cobertura jurisdiccional (INV-3.6). Devuelve SIEMPRE un estado explícito.
+// Si la evaluación no se puede hacer, lo dice: 'no_evaluada' con su motivo. Lo
+// que no puede pasar es que un fallo se lea como "no hay nada que avisar" — ese
+// es exactamente el falso negativo silencioso que el invariante persigue.
+// ─────────────────────────────────────────────────────────────────────────────
+async function evaluarCobertura(puntosValidos) {
+  try {
+    const medicion = await medirCoberturaRuta(pool, puntosValidos);
+    const { avisos, defectos, bandera_cobertura } = componerAvisos(medicion);
+
+    for (const d of defectos) {
+      console.warn(`[cobertura] defecto ${d.tipo} ${d.largo_km}km ` +
+        `${d.lat_ini},${d.lon_ini} -> ${d.lat_fin},${d.lon_fin} :: ${d.detalle}`);
+    }
+
+    return {
+      estado: 'evaluada',
+      motivo: null,
+      capa: medicion.capa,
+      bandera: bandera_cobertura,
+      avisos,
+      defectos_registrados: defectos.length,
+      total: avisos.length,
+    };
+  } catch (error) {
+    console.error('[cobertura] no se pudo evaluar:', error.message);
+    return {
+      estado: 'no_evaluada',
+      motivo: error.message,
+      capa: null,
+      bandera: null,
+      avisos: [],
+      defectos_registrados: 0,
+      total: 0,
+    };
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -723,12 +771,20 @@ router.post('/restricciones-ruta', async (req, res) => {
       }
     }
 
-    console.log(`[sitport/restricciones-ruta] waypoints=${puntosValidos.length} bahias_matcheadas=${porBahia.size} restricciones=${intermediasEnriquecidas.length} omitidas=${bahiasOmitidas} veredicto=${evaluacion.veredicto} deportivo=${veredictoDep?.bandera || '-'} final=${banderaFinal}`);
+    // ─── Cobertura jurisdiccional (INV-3.6) ──────────────────────────────
+    // Se calcula y se devuelve en su PROPIO campo. NO entra en
+    // restricciones_intermedias: un "no sabemos" mezclado entre las
+    // restricciones reales de la ruta tendría una autoridad que no tiene
+    // (INV-1.2). Todavía NO compone el veredicto — esa es la pieza 4.
+    const cobertura = await evaluarCobertura(puntosValidos);
+
+    console.log(`[sitport/restricciones-ruta] waypoints=${puntosValidos.length} bahias_matcheadas=${porBahia.size} restricciones=${intermediasEnriquecidas.length} omitidas=${bahiasOmitidas} veredicto=${evaluacion.veredicto} deportivo=${veredictoDep?.bandera || '-'} final=${banderaFinal} cobertura=${cobertura.estado}/${cobertura.bandera || '-'} avisos=${cobertura.total} defectos=${cobertura.defectos_registrados}`);
 
     res.json({
       success: true,
       veredicto: evaluacion.veredicto,
       bandera_final: banderaFinal,
+      cobertura_jurisdiccional: cobertura,
       veredicto_deportivo: veredictoDep,
       motivo_principal: evaluacion.motivo_principal,
       ultimo_tramo_seguro: evaluacion.ultimo_tramo_seguro,

@@ -1,0 +1,151 @@
+================================================================
+MEDICION DE COBERTURA JURISDICCIONAL SOBRE RUTAS REALES
+================================================================
+fecha              : 2026-08-11T01:58:05.101Z
+motor de ruteo     : raster-router-service (el de produccion)
+waypoints medidos  : los que recibe el backend — tramos sin 'aproximacion_final',
+                     igual que src/hooks/useVoyageVerification.js:849 del PWA
+modulo de medicion : src/services/cobertura-jurisdiccional.js (el mismo del endpoint)
+
+warmup tile AUSTRAL_N: 260ms
+
+---- Anahuac -> Melinka  [corredor dia 0] ----
+  waypoints=21  largo=306.60 km  distancia_mn=165.64
+  descubierto 32.8411 km (10.711%) en 4 pieza(s)
+     criterio (i) solo  — entero dentro del recorte : 32.8411 km silenciaria
+     criterio (ii) solo — pegado a cobertura        : 32.8411 km silenciaria
+     criterio (i AND ii) — el aplicado              : 32.8411 km silencia
+  => AVISO al patron: 0 tarjeta(s), 0.0000 km | bandera cobertura Q
+  => DEFECTO registrado: 4
+     defecto_recorte     20.9207 km  recorte=si (frac 1.0000)  pegada=si  ini -43.28704,-73.05176 fin -43.47178,-73.10175
+     defecto_recorte      4.4499 km  recorte=si (frac 1.0000)  pegada=si  ini -41.94906,-72.84089 fin -41.98147,-72.81070
+     defecto_recorte      3.8149 km  recorte=si (frac 1.0000)  pegada=si  ini -41.91046,-72.88673 fin -41.93570,-72.85554
+     defecto_recorte      3.6556 km  recorte=si (frac 1.0000)  pegada=si  ini -41.48649,-72.97717 fin -41.51531,-72.99572
+
+---- Anahuac -> Quellon  [corredor dia 0] ----
+  waypoints=40  largo=217.71 km  distancia_mn=117.63
+  descubierto 5.5587 km (2.553%) en 3 pieza(s)
+     criterio (i) solo  — entero dentro del recorte : 5.5587 km silenciaria
+     criterio (ii) solo — pegado a cobertura        : 5.5587 km silenciaria
+     criterio (i AND ii) — el aplicado              : 5.5587 km silencia
+  => AVISO al patron: 0 tarjeta(s), 0.0000 km | bandera cobertura Q
+  => DEFECTO registrado: 3
+     defecto_recorte      3.6723 km  recorte=si (frac 1.0000)  pegada=si  ini -41.48649,-72.97717 fin -41.51526,-72.99758
+     defecto_recorte      1.1866 km  recorte=si (frac 1.0000)  pegada=si  ini -42.93078,-73.60597 fin -42.93912,-73.59807
+     defecto_recorte      0.6998 km  recorte=si (frac 1.0000)  pegada=si  ini -42.91381,-73.58632 fin -42.91773,-73.59273
+
+---- Anahuac -> Chacabuco  [corredor dia 0] ----
+  waypoints=59  largo=499.41 km  distancia_mn=270.02
+  descubierto 59.3264 km (11.879%) en 12 pieza(s)
+     criterio (i) solo  — entero dentro del recorte : 59.3264 km silenciaria
+     criterio (ii) solo — pegado a cobertura        : 59.3264 km silenciaria
+     criterio (i AND ii) — el aplicado              : 59.3264 km silencia
+  => AVISO al patron: 0 tarjeta(s), 0.0000 km | bandera cobertura Q
+  => DEFECTO registrado: 12
+     defecto_recorte     23.7748 km  recorte=si (frac 1.0000)  pegada=si  ini -43.28486,-73.04646 fin -43.49229,-73.08349
+     defecto_recorte      7.5653 km  recorte=si (frac 1.0000)  pegada=si  ini -45.26423,-73.46088 fin -45.29277,-73.37366
+     defecto_recorte      6.3855 km  recorte=si (frac 1.0000)  pegada=si  ini -43.95037,-73.11862 fin -44.00565,-73.13857
+     defecto_recorte      6.1500 km  recorte=si (frac 1.0000)  pegada=si  ini -45.42817,-72.83798 fin -45.45868,-72.81059
+     defecto_recorte      4.4566 km  recorte=si (frac 1.0000)  pegada=si  ini -41.94906,-72.84089 fin -41.98155,-72.81052
+     defecto_recorte      3.8149 km  recorte=si (frac 1.0000)  pegada=si  ini -41.91046,-72.88673 fin -41.93570,-72.85554
+     defecto_recorte      3.6556 km  recorte=si (frac 1.0000)  pegada=si  ini -41.48649,-72.97717 fin -41.51531,-72.99572
+     defecto_recorte      1.1932 km  recorte=si (frac 1.0000)  pegada=si  ini -44.10945,-73.27196 fin -44.11703,-73.28252
+     defecto_recorte      0.9477 km  recorte=si (frac 1.0000)  pegada=si  ini -44.63899,-73.46465 fin -44.64751,-73.46489
+     defecto_recorte      0.5421 km  recorte=si (frac 1.0000)  pegada=si  ini -44.06615,-73.21159 fin -44.06959,-73.21639
+     defecto_recorte      0.4517 km  recorte=si (frac 1.0000)  pegada=si  ini -45.35313,-73.08125 fin -45.35579,-73.07689
+     defecto_recorte      0.3892 km  recorte=si (frac 1.0000)  pegada=si  ini -44.12129,-73.28544 fin -44.12459,-73.28706
+
+---- Ancud -> Castro (mar interior)  [corredor dia 0] ----
+  waypoints=31  largo=162.10 km  distancia_mn=87.56
+  descubierto 8.0518 km (4.967%) en 5 pieza(s)
+     criterio (i) solo  — entero dentro del recorte : 8.0518 km silenciaria
+     criterio (ii) solo — pegado a cobertura        : 8.0518 km silenciaria
+     criterio (i AND ii) — el aplicado              : 8.0518 km silencia
+  => AVISO al patron: 0 tarjeta(s), 0.0000 km | bandera cobertura Q
+  => DEFECTO registrado: 5
+     defecto_recorte      4.2999 km  recorte=si (frac 1.0000)  pegada=si  ini -42.51490,-73.78076 fin -42.48094,-73.75838
+     defecto_recorte      2.5021 km  recorte=si (frac 1.0000)  pegada=si  ini -41.79328,-73.53749 fin -41.80390,-73.51281
+     defecto_recorte      0.5780 km  recorte=si (frac 1.0000)  pegada=si  ini -42.56954,-73.61881 fin -42.56952,-73.62585
+     defecto_recorte      0.5543 km  recorte=si (frac 1.0000)  pegada=si  ini -41.86604,-73.83179 fin -41.86128,-73.83330
+     defecto_recorte      0.1175 km  recorte=si (frac 1.0000)  pegada=si  ini -41.85750,-73.82691 fin -41.85693,-73.82572
+
+---- Chonchi -> Chaiten (Corcovado)  [corredor dia 0] ----
+  waypoints=11  largo=93.15 km  distancia_mn=50.24
+  descubierto 2.6333 km (2.827%) en 1 pieza(s)
+     criterio (i) solo  — entero dentro del recorte : 2.6333 km silenciaria
+     criterio (ii) solo — pegado a cobertura        : 2.6333 km silenciaria
+     criterio (i AND ii) — el aplicado              : 2.6333 km silencia
+  => AVISO al patron: 0 tarjeta(s), 0.0000 km | bandera cobertura Q
+  => DEFECTO registrado: 1
+     defecto_recorte      2.6333 km  recorte=si (frac 1.0000)  pegada=si  ini -42.90512,-72.75027 fin -42.91183,-72.71945
+
+---- Arica -> Iquique (norte)  [fuera corredor] ----
+  waypoints=21  largo=198.82 km  distancia_mn=108.33
+  descubierto 4.6362 km (2.332%) en 4 pieza(s)
+     criterio (i) solo  — entero dentro del recorte : 4.6362 km silenciaria
+     criterio (ii) solo — pegado a cobertura        : 4.6362 km silenciaria
+     criterio (i AND ii) — el aplicado              : 4.6362 km silencia
+  => AVISO al patron: 0 tarjeta(s), 0.0000 km | bandera cobertura Q
+  => DEFECTO registrado: 4
+     defecto_recorte      2.0942 km  recorte=si (frac 1.0000)  pegada=si  ini -20.19156,-70.15453 fin -20.21028,-70.15347
+     defecto_recorte      1.6845 km  recorte=si (frac 1.0000)  pegada=si  ini -19.28664,-70.28676 fin -19.30184,-70.28600
+     defecto_recorte      0.7904 km  recorte=si (frac 1.0000)  pegada=si  ini -18.47146,-70.31589 fin -18.46859,-70.32269
+     defecto_recorte      0.0671 km  recorte=si (frac 1.0000)  pegada=si  ini -18.63611,-70.35027 fin -18.63671,-70.35032
+
+---- Valparaiso -> San Antonio  [fuera corredor] ----
+  waypoints=30  largo=73.44 km  distancia_mn=40.04
+  descubierto 23.2321 km (31.634%) en 4 pieza(s)
+     criterio (i) solo  — entero dentro del recorte : 23.2321 km silenciaria
+     criterio (ii) solo — pegado a cobertura        : 23.2321 km silenciaria
+     criterio (i AND ii) — el aplicado              : 23.2321 km silencia
+  => AVISO al patron: 0 tarjeta(s), 0.0000 km | bandera cobertura Q
+  => DEFECTO registrado: 4
+     defecto_recorte     10.6829 km  recorte=si (frac 1.0000)  pegada=si  ini -33.43075,-71.70603 fin -33.50733,-71.63812
+     defecto_recorte      5.8554 km  recorte=si (frac 1.0000)  pegada=si  ini -33.08617,-71.73009 fin -33.13431,-71.73864
+     defecto_recorte      4.4420 km  recorte=si (frac 1.0000)  pegada=si  ini -33.55104,-71.63167 fin -33.58334,-71.61663
+     defecto_recorte      2.2518 km  recorte=si (frac 1.0000)  pegada=si  ini -33.03632,-71.62812 fin -33.01925,-71.63356
+
+---- Punta Arenas -> Pto Williams  [fuera corredor] ----
+  waypoints=117  largo=524.83 km  distancia_mn=282.71
+  descubierto 362.8513 km (69.136%) en 3 pieza(s)
+     criterio (i) solo  — entero dentro del recorte : 5.1718 km silenciaria
+     criterio (ii) solo — pegado a cobertura        : 362.8513 km silenciaria
+     criterio (i AND ii) — el aplicado              : 5.1718 km silencia
+  => AVISO al patron: 2 tarjeta(s), 357.6796 km | bandera cobertura U
+  => DEFECTO registrado: 3
+     aviso              352.6549 km  recorte=no (frac 0.1671)  pegada=si  ini -53.94586,-70.89735 fin -54.95498,-68.84277
+     defecto_recorte      5.1718 km  recorte=si (frac 1.0000)  pegada=si  ini -54.92414,-67.67343 fin -54.93222,-67.59714
+     aviso                5.0246 km  recorte=no (frac 0.0000)  pegada=si  ini -53.85279,-70.91715 fin -53.89745,-70.91590
+
+================================================================
+COHERENCIA ENTRE EL PREDICADO Y LA MEDIDA
+================================================================
+  piezas donde ST_CoveredBy discrepa de la medida en metros: 26 de 36
+  (por eso el criterio mide metros fuera y no pregunta al predicado)
+
+  tolerancia declarada          : 0.001 m
+  peor residuo bajo tolerancia  : 0.000e+0 m  (34 piezas)
+  menor exceso sobre tolerancia : 5024.63 m  (2 piezas)
+  piezas en la banda ambigua (0.001 m .. 1 m): 0  (ninguna: la separacion es limpia)
+
+================================================================
+RESUMEN
+================================================================
+  capa consultada: bahia_jurisdicciones | recortada contra: ne_land
+
+  ruta                                largo    descub.    AVISO   defecto  tarjetas bandera
+  Anahuac -> Melinka                  306.599   32.8411         0   32.8411      0  Q
+  Anahuac -> Quellon                  217.713    5.5587         0    5.5587      0  Q
+  Anahuac -> Chacabuco                499.407   59.3264         0   59.3264      0  Q
+  Ancud -> Castro (mar interior)      162.099    8.0518         0    8.0518      0  Q
+  Chonchi -> Chaiten (Corcovado)       93.149    2.6333         0    2.6333      0  Q
+  Arica -> Iquique (norte)            198.823    4.6362         0    4.6362      0  Q
+  Valparaiso -> San Antonio            73.441   23.2321         0   23.2321      0  Q
+  Punta Arenas -> Pto Williams        524.834  362.8513  357.6796    5.1718      2  U
+
+  TOTAL largo 2076.07 km | descubierto 499.13 km | AVISO 357.68 km | defecto silenciado 141.45 km
+  si el criterio fuera solo (i) : silenciaria 141.45 km
+  si el criterio fuera solo (ii): silenciaria 499.13 km
+
+  rutas con aviso al patron: 1 de 8 -> Punta Arenas -> Pto Williams
+  corredor de dia 0 con aviso: 0 de 5

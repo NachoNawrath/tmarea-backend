@@ -1,0 +1,10 @@
+PRUEBA DEL CODIGO DE SALIDA DEL VALIDADOR (no basta con que imprima)
+fecha: 2026-08-10T21:43:51-04:00
+
+  node scripts/fase5_validar_zonas_aviso.js  con la declaracion intacta -> exit 0
+  el mismo script con la zona 'baker' borrada del dato        -> exit 1
+  archivo restaurado byte por byte tras la prueba             -> si
+
+Motivo de esta prueba: en esta fase ya paso una vez que un auditor salia con
+el mismo codigo al crashear que al encontrar hallazgos. Un exit 0 no se da por
+bueno sin comprobar que el exit 1 tambien ocurre cuando debe.

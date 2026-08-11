@@ -1,0 +1,236 @@
+================================================================================
+FASE 5 — R1. PIEZA 1 APLICADA (declaracion de zonas de aviso) Y UN HALLAZGO QUE
+DETIENE LA PIEZA 2 ANTES DE ESCRIBIRLA.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.7
+Evidencia cruda: _bitacoras/fase5V_r1_2026-08-10/  (00 a 02)
+EL MOTOR NO SE TOCO. EL FRONTEND NO SE TOCO. NINGUN COMMIT.
+================================================================================
+
+LO PRIMERO, PORQUE CAMBIA EL PLAN
+
+  La pieza 2 dice "cuando la contencion no resuelve, devolver el aviso en vez de
+  vacio". Antes de escribirla medi cuanto es "no resuelve" contra la capa que el
+  motor consulta HOY. El resultado:
+
+      8 de 8 rutas reales medidas tienen tramo sin jurisdiccion.
+      24,04% del kilometraje total. En el corredor de dia 0, entre 2,5% y 11,9%.
+
+  Y la atribucion de ese hueco, que es lo que decide como leerlo:
+
+      499,13 km descubiertos en total
+        200,40 km  caen DENTRO de ne_land — la capa gruesa de tierra con que se
+                   recorta la capa vigente dice "tierra" donde el motor de ruteo
+                   (que usa una costa mucho mas fina) traza agua navegable.
+        350,03 km  caen fuera del radio de 80 km desde el punto de la bahia mas
+                   cercana — el segundo recorte, declarado en el SQL de la capa.
+          5,02 km  ninguno de los dos: un tramo que cae en la celda de una bahia
+                   que esta a mas de 80 km, mientras otra bahia mas cercana no lo
+                   reclama porque no es su celda de Voronoi. Es el mismo tope de
+                   80 km por otro camino.
+
+  NI UN METRO viene de una jurisdiccion declarada sin geometria. Ni uno.
+
+  O sea: si la pieza 2 se escribe como esta especificada, el aviso de INV-3.6 se
+  dispara en TODAS las rutas, escala el veredicto a U en TODAS (INV-3.6 bandera +
+  INV-1.1 maximo) y le dice al patron "no tenemos cargado el limite de esta
+  jurisdiccion" cuando lo que en verdad pasa es que nuestra capa provisional esta
+  recortada con una costa gruesa y con un tope de 80 km. El aviso seria falso en
+  su causa y permanente en pantalla.
+
+  ESTO CONTRADICE UNA MEDICION EN LA QUE SE APOYO LA DECISION DEL CONTRATO.
+  fase5T §2.4 afirma "cuanto afecta esto al producto de dia 0: NADA", y lo apoya
+  en que ninguna de las diez sin geometria esta en el corredor austral. Esa
+  medicion es correcta PERO ES SOBRE OTRA CAPA: sobre la capa D.S. 991 que aun no
+  existe. R1 corre contra la capa vigente. Medido contra la capa vigente, el
+  corredor de dia 0 SI se ve afectado: Anahuac->Melinka 10,7%, Anahuac->Chacabuco
+  11,9%. La afirmacion y la medicion que la sostiene no hablan de lo mismo.
+
+  Por eso no escribo la pieza 2 todavia. La decision de que hacer con esto es del
+  owner, y hay tres caminos, con numeros, mas abajo.
+
+================================================================================
+1. LA MEDICION — QUE SE MIDIO Y CON QUE
+================================================================================
+
+  scripts/fase5_medir_cobertura_ruta.js  (nuevo, reutilizable)
+  evidencia: _bitacoras/fase5V_r1_2026-08-10/00_medicion_cobertura_capa_vigente.txt
+
+  COMO SE MIDIO, para que se pueda juzgar si la medicion prueba lo que digo:
+
+  - Las rutas las produce el motor de ruteo de PRODUCCION (raster-router-service),
+    no una recta entre dos puertos. Una recta habria dado un hueco distinto.
+  - Los waypoints son EXACTAMENTE los que recibe /api/sitport/restricciones-ruta:
+    los tramos sin 'aproximacion_final', igual que el PWA en
+    src/hooks/useVoyageVerification.js:849. En la primera pasada los inclui y el
+    hueco salia mayor (24,4% en vez de 24,0%, y piezas que arrancaban justo en la
+    coordenada del puerto): eran metros de muelle que el motor nunca evalua. Lo
+    corregi antes de mirar el resultado.
+  - "No resuelve" = ST_Difference de la ruta contra la union de las jurisdicciones
+    que la ruta intersecta. Es la misma figura que consulta el motor
+    (bahia_jurisdicciones), no un muestreo de puntos.
+  - La capa NO esta nombrada en el codigo del script: se lee de CAPA_JURISDICCIONES
+    y por defecto toma la vigente. Cuando la capa cambie, la medicion se repite sin
+    tocar el script.
+  - El radio de 80 km NO esta copiado en el script: se lee de la definicion de la
+    propia vista materializada. Si alguien lo cambia en el SQL de construccion, la
+    medicion lo sigue sola. Si no se puede leer, el script se detiene.
+
+  RESULTADO POR RUTA
+
+    ruta                            largo km   descub. km   %      piezas
+    Anahuac -> Melinka               306,60       32,84    10,71%     4
+    Anahuac -> Quellon               217,71        5,56     2,55%     3
+    Anahuac -> Chacabuco             499,41       59,33    11,88%    12
+    Ancud -> Castro (mar interior)   162,10        8,05     4,97%     5
+    Chonchi -> Chaiten (Corcovado)    93,15        2,63     2,83%     1
+    Arica -> Iquique                 198,82        4,64     2,33%     4
+    Valparaiso -> San Antonio         73,44       23,23    31,63%     4
+    Punta Arenas -> Pto Williams     524,83      362,85    69,14%     3
+
+  En las siete primeras, el 100% del hueco esta dentro de ne_land. En la octava,
+  350 de 362,85 km estan fuera del alcance de 80 km: es el unico caso donde de
+  verdad no hay ninguna jurisdiccion cargada sobre esa agua, y por lo tanto el
+  unico donde una restriccion real seria invisible para el patron.
+
+  DISTRIBUCION DE LARGOS: n=36 piezas, min 67 m, mediana 3,66 km, max 352,65 km.
+  NO hay un corte natural entre "ruido" y "hueco real": es un continuo. Un umbral
+  de largo minimo elegido sobre esta distribucion seria arbitrario. Lo que si
+  separa limpio es la ATRIBUCION, no el largo.
+
+================================================================================
+2. LOS TRES CAMINOS, Y CUAL RECOMIENDO
+================================================================================
+
+  A. LA PIEZA 2 TAL COMO ESTA ESPECIFICADA — el aviso se dispara en todo tramo
+     que no resuelva, sin distinguir de que es sintoma.
+     Consecuencia medida: aviso en 8 de 8 rutas, veredicto U en 8 de 8, y un
+     mensaje que atribuye a una carencia de jurisdiccion lo que es un defecto de
+     nuestra capa provisional. NO la recomiendo, y no por gusto: la recomendacion
+     de fase5T se apoyaba en que esto seria raro, y medido no lo es.
+
+  B. EL AVISO SOLO PARA LA CAUSA (a) — jurisdicciones declaradas sin geometria.
+     Hoy no dispara nunca, porque la capa vigente no tiene ninguna declarada; se
+     enciende solo el dia que entre la capa D.S. 991. Los huecos de causa (b)
+     quedan registrados como defecto, sin pantalla.
+     Es honesto y es cero ruido, pero contradice la letra de INV-3.6, que dice
+     que al patron se le dice LO MISMO en los dos casos. Y deja sin avisar el
+     unico caso donde hoy hay un falso negativo real: los 350 km de Magallanes.
+
+  C. EL AVISO PARA LAS DOS CAUSAS, CON EL ARTEFACTO DE RECORTE SILENCIADO Y
+     REGISTRADO. Un tramo descubierto que cae dentro de la capa de tierra con que
+     se recorto la jurisdiccion no produce aviso: produce un defecto registrado.
+     Todo lo demas produce aviso.
+     Por que es defendible y no una excepcion de conveniencia: INV-3.6 existe para
+     evitar el FALSO NEGATIVO SILENCIOSO — "existe una restriccion real, la ruta
+     la cruza, y el patron nunca la ve". En esos tramos no hay tal cosa: la ruta
+     entra y sale de la misma jurisdiccion alrededor de la astilla, esa
+     jurisdiccion SI queda matcheada por ST_Intersects y su restriccion SI se
+     muestra. No hay ceguera que tapar. En los 350 km de Magallanes si la hay.
+     Efecto medido de C: el corredor de dia 0 queda en CERO avisos; Magallanes
+     avisa 355 km; Valparaiso-San Antonio queda en cero.
+     El criterio es dato, no codigo: cual es la capa de tierra que silencia se lee
+     de la declaracion de la propia capa, igual que el radio.
+
+  RECOMIENDO C. Es la que cumple el proposito de INV-3.6 en vez de su letra, y es
+  la unica que deja el aviso donde de verdad hay ceguera. Pero cambia lo que el
+  patron ve respecto de lo que el contrato dice hoy, y el contrato lo escribe el
+  owner: si C se acepta, INV-3.6 necesita una tercera adicion que declare que un
+  hueco atribuible al recorte de la propia capa se registra como defecto y no se
+  muestra, con el motivo escrito. No la aplico yo.
+
+  QUE NO CAMBIA EN NINGUNO DE LOS TRES: el aviso nunca pasa por restriccion. Ni en
+  el backend (campo propio, fuera de restricciones_intermedias), ni en la pantalla
+  (tarjeta con encabezado propio), ni en el veredicto (fuente aparte, topada en U).
+
+================================================================================
+3. PIEZA 1 — APLICADA. LA DECLARACION DE LAS ZONAS DE AVISO
+================================================================================
+
+  Es dato y es reversible, como quedo acordado. Aplicada porque hace falta en los
+  tres caminos por igual.
+
+  data/decreto/zonas_aviso.json          la declaracion — 10 zonas
+  src/services/zonas-aviso.js            carga + validacion (la validacion vive
+                                         adentro de la carga: no hay forma de
+                                         consumir la declaracion sin comprobarla)
+  scripts/fase5_validar_zonas_aviso.js   muestra lo resuelto y muerde 18 familias
+  evidencia: 01_zonas_aviso_validacion_y_mordida.txt, 02_codigos_de_salida.txt
+
+  EL CONTACTO NO SE ESCRIBE EN LA DECLARACION. Se declara DE QUE BAHIA se toma, y
+  se resuelve en cada carga desde bahia-capitania-map.json, que es la fuente
+  autorizada del §5. Con dos condiciones que se comprueban siempre:
+    - tipo 'capitania': solo si el mapa atribuye esa bahia a una Capitania cuyo
+      nombre coincide con el del decreto.
+    - tipo 'gobernacion': solo si el mapa no atribuye Capitania y su Gobernacion
+      coincide con la que el decreto le da a la jurisdiccion.
+  Si dejan de coincidir, la carga SE DETIENE. No sirve el telefono equivocado.
+
+  QUE QUEDO RESUELTO, Y QUE NO
+
+    con Capitania nombrada   arica, hanga_roa, talcahuano, puerto_williams
+    por Gobernacion          baker (Aysen) — el mapa no le atribuye Capitania
+    sin contacto             juan_fernandez, lirquen, puerto_eden, punta_delgada,
+                             tierra_del_fuego
+
+  Los cinco sin contacto NO son un descuido: en cuatro de ellos el mapa operativo
+  atribuye sus bahias a una Capitania VECINA a la que el decreto les da propia
+  (Juan Fernandez->Valparaiso, Lirquen->Talcahuano, Punta Delgada y Tierra del
+  Fuego->Punta Arenas). Tomar ese telefono seria dejar que el mapa operativo
+  revoque al decreto, que es lo que INV-3.3 prohibe y lo que la regla de clase C
+  de fase5R ya dejo escrita. El quinto, Puerto Eden, es peor: el mapa lo pone en
+  la Gobernacion de Aysen y el decreto en la de Punta Arenas. Las dos fuentes en
+  desacuerdo, sin adjudicar. Los cinco derivan al contacto generico, que es VHF
+  Canal 16 — que ya esta en el catalogo del §10, o sea que no inventa una via ni
+  un numero.
+
+  ESAS CINCO DISCREPANCIAS SON HALLAZGO, no solo un hueco de contacto: son cinco
+  casos de clase C encontrados sin correr la prueba de las 163 bahias.
+
+  REVERSIBILIDAD, COMPROBADA: una zona solo puede existir mientras su jurisdiccion
+  siga con participa_matching=false en el insumo. La familia M2 de la mordida hace
+  exactamente eso — le devuelve la geometria a Arica — y la carga se detiene
+  exigiendo que la zona se retire. El aviso no puede sobrevivir a su causa.
+
+  LAS DIEZ NACEN SIN AMBITO, y esa es la unica decision de pieza 1 que dejo
+  abierta. Nombrar una Capitania frente a un tramo exige un ambito aproximado, y
+  el decreto no lo da para ninguna de las diez: por eso estan sin geometria. Lo
+  que si mire, una por una:
+    - arica: da el paralelo Sur (19 13 00 S) y remite el Norte al limite politico
+      internacional. Cerrar la banda por el Norte es una convencion suya.
+    - baker y puerto_eden: mismo caso, con el otro extremo abierto.
+    - lirquen y talcahuano: dan los DOS paralelos, y aun asi una banda no sirve —
+      la de Talcahuano (36 31 00 a 36 42 25 S) queda contenida dentro de la de
+      Lirquen (36 00 00 a 36 44 10 S). Se reparten la Bahia de Concepcion
+      lateralmente. Es el bug 5 del §7 en vivo: las Capitanias no se apilan por
+      latitud.
+    - las otras cinco no tienen paralelos que declarar.
+  El campo esta previsto y validado para recibir un ambito el dia que se declare,
+  sin rehacer nada. Con ambito nulo la zona igual registra y igual se retira sola;
+  lo unico que no puede es reclamar un tramo.
+
+  MORDIDA: 18 familias, 18 muerden, mas un control negativo que comprueba que la
+  declaracion intacta NO muerde. Sin ese control, un validador que lanzara siempre
+  habria pasado las 18 y parecido perfecto.
+  CODIGOS DE SALIDA, probados en los dos sentidos: 0 con el dato bueno, 1 con el
+  dato roto. No doy por bueno un exit 0 sin comprobar que el exit 1 tambien ocurre
+  — ya paso una vez en esta fase que un auditor salia igual al crashear que al
+  encontrar hallazgos.
+
+================================================================================
+4. ESTADO Y QUE ESPERO
+================================================================================
+
+  PIEZA 1  APLICADA y auditada.
+  PIEZA 2  NO ESCRITA. Depende de la decision entre A, B y C.
+  PIEZA 3  no tocada.
+  PIEZA 4  no tocada. Sigue en pie que no se toca si algo anterior no cerro.
+
+  MOTOR     INTOCADO.   FRONTEND  INTOCADO.   COMMITS  ninguno.
+
+  ESPERANDO DOS DECISIONES:
+   (1) A, B o C para el disparo del aviso. Recomiendo C, y C pide una adicion a
+       INV-3.6 que escribe el owner.
+   (2) Si alguna de las diez zonas lleva ambito declarado, y con que motivo. Es
+       dato: se puede decidir despues sin frenar la pieza 2.
+
+  ALTO.

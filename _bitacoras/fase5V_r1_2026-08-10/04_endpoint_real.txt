@@ -1,0 +1,36 @@
+VERIFICACION DEL ENDPOINT REAL — POST /api/sitport/restricciones-ruta
+fecha: 2026-08-11T02:04:44.572Z
+servidor levantado de verdad; SITPORT consultado de verdad; rutas del motor de ruteo.
+payloads: req_magallanes.json, req_corredor.json (waypoints sin aproximacion_final)
+respuestas completas: resp_magallanes.json, resp_corredor.json
+
+=== MAGALLANES ===
+  veredicto=Q  bandera_final=Q  restricciones_intermedias=0
+  cobertura_jurisdiccional: estado=evaluada capa=bahia_jurisdicciones bandera=U avisos=2 defectos_registrados=3
+    aviso 1  causa=hueco_de_capa  bandera=U  largo=352.6549 km
+      tramo  -53.945859434848444,-70.897353512134  ->  -54.95498289039108,-68.84277313377942
+      capa 1: No tenemos cargado el límite de esta jurisdicción.
+      capa 2: Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.
+      capitanias=[]  es_restriccion=false
+    aviso 2  causa=hueco_de_capa  bandera=U  largo=5.0246 km
+      tramo  -53.85278675193657,-70.91714794090589  ->  -53.89745152038555,-70.91590112572263
+      capa 1: No tenemos cargado el límite de esta jurisdicción.
+      capa 2: Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.
+      capitanias=[]  es_restriccion=false
+  el aviso NO aparece dentro de restricciones_intermedias: confirmado
+  ningun elemento de restricciones_intermedias trae bandera de cobertura: confirmado
+
+=== CORREDOR ===
+  veredicto=U  bandera_final=U  restricciones_intermedias=2
+  cobertura_jurisdiccional: estado=evaluada capa=bahia_jurisdicciones bandera=Q avisos=0 defectos_registrados=4
+  el aviso NO aparece dentro de restricciones_intermedias: confirmado
+  ningun elemento de restricciones_intermedias trae bandera de cobertura: confirmado
+
+OBSERVACION QUE HAY QUE LEER: en Magallanes bandera_final=Q con dos avisos U debajo.
+Es correcto para el estado de hoy — la composicion del veredicto es la pieza 4 y todavia
+no esta. Es exactamente la tarjeta ambar bajo veredicto verde que fase5R (c) describe, y
+la razon por la que la pieza 4 existe. Sin ella R1 esta a medias.
+
+MORDIDA DEL SERVICIO DE COBERTURA (proceso aparte, declaracion alterada en memoria):
+  D1 capa declarada inexistente     -> se detiene con el motivo, no devuelve vacio
+  D2 sin tolerancia declarada       -> se detiene con el motivo, no supone una

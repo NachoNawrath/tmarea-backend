@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "generado": "2026-08-10",
+  "rige": "CONTRATO_MOTOR.md v1.7 — INV-3.6 (una jurisdiccion sin geometria se declara, nunca se resuelve en silencio)",
+  "que_es": "La declaracion de las jurisdicciones que el motor sabe que NO puede resolver, y de a quien deriva al patron cuando su ruta pasa por una de ellas. Es dato, no codigo: agregar, quitar o corregir una zona no toca el motor.",
+  "que_no_es": "NO es una jurisdiccion, no resuelve contencion, no produce una restriccion y no puede escalar el veredicto mas alla de U (INV-3.6). Una zona de aviso dice 'no sabemos', nunca 'esta prohibido'.",
+  "reversibilidad": "Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria en el insumo (participa_matching = false). El dia que esa jurisdiccion se pueda construir, esta declaracion queda invalida y el validador se detiene con el motivo, obligando a retirarla. No hay forma de que un aviso sobreviva a la carencia que lo justifica.",
+  "fuentes": {
+    "jurisdicciones": "data/decreto/jurisdicciones_v2.json — quien esta sin geometria y por que",
+    "contactos": "src/data/bahia-capitania-map.json — fuente autorizada de telefono por bahia (CONTRATO_MOTOR.md §5)"
+  },
+  "derivacion_de_contacto": {
+    "regla": "El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion que deje de coincidir detiene la carga en vez de mentir.",
+    "tipo capitania": "Solo si el mapa atribuye esa bahia a una Capitania cuyo nombre coincide con el de la jurisdiccion del decreto. Si no coincide, no se usa.",
+    "tipo gobernacion": "Solo si el mapa no atribuye Capitania a esa bahia (capitania = null) y su Gobernacion coincide con la que el decreto le da a la jurisdiccion. Deriva un escalon mas arriba, que es donde la fuente si tiene respaldo.",
+    "tipo sin_contacto": "Cuando ninguna de las dos coincide. Es el caso de las jurisdicciones cuyas bahias el mapa operativo atribuye a una Capitania vecina: usar ese telefono seria dejar que el mapa revoque al decreto, que es exactamente lo que INV-3.3 prohibe. Se declara la carencia con su motivo y el aviso deriva al contacto generico."
+  },
+  "mensaje": {
+    "procedencia": "CONTRATO_MOTOR.md §10, fila 'Jurisdiccion sin limite cargado'. TRANSCRITO de ahi, no redactado aca: el §10 es la fuente unica de mensajes y el codigo no inventa texto. Si el catalogo cambia, cambia aca y se nota.",
+    "capa_1": "No tenemos cargado el límite de esta jurisdicción.",
+    "capa_2_con_capitania": "Verifica con la Capitanía {nombre}: {telefono} antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.",
+    "capa_2_sin_capitania": "Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.",
+    "nota_capa_2_sin_capitania": "Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada forzosa y zona intermedia cerrada). No se agrega una via nueva ni un numero que la fuente no tenga."
+  },
+  "contacto_generico": {
+    "via": "VHF Canal 16",
+    "texto": "Coordina con la Autoridad Maritima por VHF Canal 16 antes de zarpar.",
+    "procedencia": "CONTRATO_MOTOR.md INV-3.2 y §10 — la derivacion por VHF Canal 16 ya esta en el catalogo de mensajes. No se inventa ningun numero telefonico que la fuente no tenga."
+  },
+  "nota_sobre_el_ambito": "Nombrar una Capitania frente a un tramo de ruta exige un ambito aproximado, y el decreto no lo entrega para ninguna de las diez: por eso estan sin geometria. Declarar uno es una convencion del dueño del producto, no un dato derivable, y por eso las diez zonas nacen con ambito nulo y su motivo escrito. Con ambito nulo la zona igual cumple su funcion de registro y de retiro automatico; lo que no puede es reclamar un tramo. El campo esta previsto para recibirlo el dia que se declare, sin rehacer nada.",
+  "zonas": [
+    {
+      "jurisdiccion_id": "arica",
+      "contacto": {
+        "tipo": "capitania",
+        "bahia_id": 71
+      },
+      "ambito": null,
+      "motivo_sin_ambito": "El decreto da el limite Sur (19 13 00 S) y remite el Norte al limite politico internacional Chile-Peru, sin coordenadas. Cerrar la banda por el Norte es una convencion del dueño del producto, no dato del decreto."
+    },
+    {
+      "jurisdiccion_id": "hanga_roa",
+      "contacto": {
+        "tipo": "capitania",
+        "bahia_id": 89
+      },
+      "ambito": null,
+      "motivo_sin_ambito": "El decreto nombra las islas sin coordenadas y no hay limite en paralelos que declarar. Un ambito insular exige una fuente de islas que el insumo no trae."
+    },
+    {
+      "jurisdiccion_id": "juan_fernandez",
+      "contacto": {
+        "tipo": "sin_contacto",
+        "motivo": "La unica bahia del catalogo en su territorio (90, Isla Robinson Crusoe) esta atribuida en el mapa operativo a la Capitania de Valparaiso, no a Juan Fernandez, a la que el decreto le da Capitania propia. Tomar ese telefono seria dejar que el mapa operativo revoque al decreto (INV-3.3).",
+        "bahias_en_discrepancia": [
+          90
+        ]
+      },
+      "ambito": null,
+      "motivo_sin_ambito": "Mismo caso que Hanga Roa: islas nombradas sin coordenadas, sin limites en paralelos que declarar."
+    },
+    {
+      "jurisdiccion_id": "lirquen",
+      "contacto": {
+        "tipo": "sin_contacto",
+        "motivo": "Su bahia homonima (97, Bahia Concepcion - Lirquen) esta atribuida en el mapa operativo a la Capitania de Talcahuano, y el decreto le da Capitania propia. Es una discrepancia de clase C: se registra, no se resuelve tomando el telefono del vecino.",
+        "bahias_en_discrepancia": [
+          97
+        ]
+      },
+      "ambito": null,
+      "motivo_sin_ambito": "El decreto si da los dos paralelos (36 00 00 S a 36 44 10 S), pero Lirquen y Talcahuano se reparten la Bahia de Concepcion lateralmente y sus bandas se contienen una a la otra: una banda de latitud no las separa, las confunde. Es el bug 5 de §7 — las Capitanias no se apilan por latitud."
+    },
+    {
+      "jurisdiccion_id": "talcahuano",
+      "contacto": {
+        "tipo": "capitania",
+        "bahia_id": 98
+      },
+      "ambito": null,
+      "motivo_sin_ambito": "Mismo motivo que Lirquen: su banda (36 31 00 S a 36 42 25 S) queda contenida en la de Lirquen. Separar las dos exige la poligonal lateral, no un par de paralelos."
+    },
+    {
+      "jurisdiccion_id": "baker",
+      "contacto": {
+        "tipo": "gobernacion",
+        "bahia_id": 127
+      },
+      "ambito": null,
+      "motivo_sin_ambito": "El decreto da el limite Norte (47 00 00 S) y remite el Sur al limite de la Region de Aysen, sin coordenadas. Cerrar la banda por el Sur exige una fuente regional que el insumo no trae."
+    },
+    {
+      "jurisdiccion_id": "puerto_eden",
+      "contacto": {
+        "tipo": "sin_contacto",
+        "motivo": "Su bahia (129, Puerto Eden) no tiene Capitania atribuida en el mapa operativo, y la Gobernacion que el mapa le pone (Aysen) no es la que le da el decreto (Punta Arenas). Con las dos fuentes en desacuerdo sobre la Gobernacion, no se declara contacto hasta adjudicar cual manda.",
+        "bahias_en_discrepancia": [
+          129
+        ]
+      },
+      "ambito": null,
+      "motivo_sin_ambito": "El decreto da el limite Sur (50 33 00 S) y remite el Norte al limite Sur de la Gobernacion Maritima, sin coordenadas."
+    },
+    {
+      "jurisdiccion_id": "punta_delgada",
+      "contacto": {
+        "tipo": "sin_contacto",
+        "motivo": "Las bahias de su sector (131 Gregorio, 132 Clarencia) estan atribuidas en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el telefono del vecino.",
+        "bahias_en_discrepancia": [
+          131,
+          132
+        ]
+      },
+      "ambito": null,
+      "motivo_sin_ambito": "El decreto no le da paralelos: la define por la linea Punta Harry - Cabo San Vicente y por el limite maritimo internacional por el Oriente, que invoca sin darlo en coordenadas."
+    },
+    {
+      "jurisdiccion_id": "tierra_del_fuego",
+      "contacto": {
+        "tipo": "sin_contacto",
+        "motivo": "Su bahia (137, Bahia Chilota, Porvenir) esta atribuida en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el telefono del vecino.",
+        "bahias_en_discrepancia": [
+          137
+        ]
+      },
+      "ambito": null,
+      "motivo_sin_ambito": "Le falta el limite oriental y un ancla; el decreto no le da paralelos que permitan declarar una banda."
+    },
+    {
+      "jurisdiccion_id": "puerto_williams",
+      "contacto": {
+        "tipo": "capitania",
+        "bahia_id": 138
+      },
+      "ambito": null,
+      "motivo_sin_ambito": "El decreto la describe por accidentes y canales, sin paralelos de norte y sur que permitan declarar una banda."
+    }
+  ]
+}

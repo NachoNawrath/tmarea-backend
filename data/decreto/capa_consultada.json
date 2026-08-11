@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "generado": "2026-08-10",
+
+  "que_es": "Cual es la capa de jurisdicciones que el motor consulta, y con que capa de tierra fue recortada. Es dato: el dia que entre la capa del D.S. 991 se cambia aca y nada mas.",
+
+  "por_que_existe": "El aviso de INV-3.6 necesita saber dos cosas de la capa que consulta: como se llama, y contra que se recorto. Lo segundo es lo que permite distinguir un hueco de jurisdiccion de un desacuerdo entre dos lineas de costa. Ninguna de las dos puede quedar escrita en el codigo: la capa cambia y el criterio tiene que seguirla sin que nadie se acuerde.",
+
+  "capa_jurisdicciones": "bahia_jurisdicciones",
+  "capa_recorte_tierra": "ne_land",
+
+  "tolerancia_fuera_del_recorte_m": 0.001,
+
+  "por_que_esa_tolerancia": "Para decidir si un trozo de ruta cae ENTERO dentro de la capa de tierra se mide cuantos metros quedan fuera, no se usa un predicado. Medido el 2026-08-10 sobre 36 trozos de 8 rutas reales: ST_CoveredBy devolvia falso en 26 trozos cuya fraccion medida dentro era 1,0 — el predicado no es confiable sobre esta geometria. Los residuos numericos observados llegan a 3,2e-9 m. Los trozos que de verdad quedan parcialmente fuera se separan solos: la distribucion tiene 34 trozos en fraccion 1,0000, uno en 0,1671 y uno en 0,0000, sin nada en medio. 1 mm queda 300.000 veces por encima del ruido numerico y 67.000 veces por debajo del trozo real mas corto que se midio (67 m). Si algun dia aparece un trozo en la banda intermedia, la medicion lo reporta y esta tolerancia se vuelve a discutir.",
+
+  "procedencia": "scripts/create-bahia-jurisdicciones.sql — la vista materializada se construye con ST_Difference de cada celda contra la union de ne_land, y despues se acota a un radio fijo desde el punto de la bahia.",
+
+  "advertencia": "bahia_jurisdicciones es la capa marcada en §7 bug 4 como contradictoria con INV-3.3: resuelve por teselado, no por los limites del decreto. Se declara aca porque es la que el motor consulta HOY, no porque sea la correcta. Cuando la reemplace la capa del D.S. 991, se cambian los dos nombres de arriba y su procedencia."
+}

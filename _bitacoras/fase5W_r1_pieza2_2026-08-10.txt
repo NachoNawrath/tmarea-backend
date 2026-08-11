@@ -1,0 +1,159 @@
+================================================================================
+FASE 5 — R1 PIEZA 2 APLICADA: EL BACKEND DEVUELVE EL AVISO EN VEZ DE VACIO.
+Fecha: 2026-08-10   Rige CONTRATO_MOTOR.md v1.7 (+ adicion 3 propuesta, no escrita)
+Evidencia cruda: _bitacoras/fase5V_r1_2026-08-10/  (03 y 04)
+Texto propuesto para el contrato: fase5X_texto_propuesto_contrato_adicion3_2026-08-10.md
+MOTOR DE REGLAS INTOCADO. FRONTEND INTOCADO. NINGUN COMMIT.
+================================================================================
+
+QUE QUEDO CONSTRUIDO
+
+  src/services/cobertura-jurisdiccional.js   mide la parte de la ruta que ninguna
+                                             jurisdiccion reclama, la clasifica y
+                                             compone el aviso
+  data/decreto/capa_consultada.json          cual es la capa que el motor consulta,
+                                             contra que tierra se recorto, y la
+                                             tolerancia de la medicion
+  src/routes/sitport-routes.js               campo nuevo cobertura_jurisdiccional
+  src/services/__tests__/cobertura-jurisdiccional.test.js   10 pruebas
+  scripts/fase5_medir_cobertura_ruta.js      la medicion usa EL MISMO modulo que
+                                             el endpoint, no una copia
+
+================================================================================
+1. UN HALLAZGO EN EL CAMINO: EL PREDICADO NO PROBABA LO QUE YO AFIRMABA
+================================================================================
+
+  El criterio C necesita saber si un trozo de ruta cae ENTERO dentro de la capa de
+  tierra del recorte. Lo escribi primero con ST_CoveredBy, que es el predicado que
+  existe justamente para eso, y puse al lado una medida de control: que fraccion
+  del trozo cae dentro.
+
+  Los dos no dijeron lo mismo. ST_CoveredBy devolvia FALSO en 26 de 36 trozos cuya
+  fraccion medida dentro era 1,0. Si me hubiera quedado con el predicado, el
+  criterio C habria silenciado 14,43 km en vez de 141,45 y habria seguido avisando
+  en 8 de 8 rutas — o sea, se habria comportado como el camino A que descartamos,
+  con el nombre del camino C.
+
+  La distribucion de la fraccion no deja lugar a dudas sobre cual de los dos tiene
+  razon: 34 trozos en 1,0000, uno en 0,1671, uno en 0,0000. Nada en medio.
+
+  QUEDO ASI: el criterio MIDE metros fuera del recorte y no le pregunta al
+  predicado. La tolerancia esta declarada en el dato (1 mm) con su justificacion
+  medida: el peor residuo numerico observado es 3,2e-9 m y el menor exceso real es
+  5.024 m — cinco millones de veces mas grande. La medicion reporta en cada corrida
+  cuantas piezas caen en la banda ambigua entre las dos cosas; hoy son cero, y el
+  dia que aparezca alguna sale en pantalla con un aviso de revisar la tolerancia.
+  El predicado se sigue calculando, solo como diagnostico, para que la discrepancia
+  quede a la vista en vez de desaparecer del registro.
+
+================================================================================
+2. EL CRITERIO, MEDIDO, Y SUS DOS MITADES POR SEPARADO
+================================================================================
+
+  Un trozo descubierto se SILENCIA (defecto registrado, sin tarjeta) si y solo si:
+    (i)  cae entero dentro de la capa de tierra con que se recorto la capa, y
+    (ii) al menos uno de sus extremos NO es un extremo de la ruta — o sea, es un
+         corte contra jurisdiccion que la ruta si resolvio y si muestra.
+  En cualquier otro caso, avisa.
+
+  ruta                            largo    descub.     AVISO   defecto  tarjetas
+  Anahuac -> Melinka             306,60     32,84         0     32,84      0
+  Anahuac -> Quellon             217,71      5,56         0      5,56      0
+  Anahuac -> Chacabuco           499,41     59,33         0     59,33      0
+  Ancud -> Castro                162,10      8,05         0      8,05      0
+  Chonchi -> Chaiten              93,15      2,63         0      2,63      0
+  Arica -> Iquique               198,82      4,64         0      4,64      0
+  Valparaiso -> San Antonio       73,44     23,23         0     23,23      0
+  Punta Arenas -> Pto Williams   524,83    362,85    357,68      5,17      2
+
+  TOTAL  2.076,07 km | descubierto 499,13 | AVISO 357,68 | silenciado 141,45
+  corredor de dia 0 con aviso: 0 de 5.   rutas con aviso: 1 de 8.
+
+  HONESTIDAD SOBRE (ii): en esta muestra (ii) no silencia NADA que (i) no silencie
+  ya — las dos mitades dan 141,45 km. No voy a decir que aporta, porque medido no
+  aporta. Esta como guardia del caso que si romperia el fundamento: una ruta que
+  corra entera por dentro del recorte sin tocar jurisdiccion en ningun extremo. Ahi
+  (i) sola callaria una ceguera real y (ii) lo impide. Es una guardia sin uso hoy,
+  declarada como tal.
+
+  LO QUE SI CAMBIO DE LO QUE ESTIME ANTES: dije "Magallanes avisa 355 km". Medido,
+  357,68 km en dos tarjetas. Y el corredor quedo en cero, como estimado.
+
+================================================================================
+3. COMO SALE EN LA RESPUESTA, Y POR QUE NO PUEDE CONFUNDIRSE CON UNA RESTRICCION
+================================================================================
+
+  Campo propio, hermano de restricciones_intermedias, nunca dentro:
+
+    cobertura_jurisdiccional: {
+      estado: 'evaluada' | 'no_evaluada',
+      motivo, capa, bandera, avisos[], defectos_registrados, total
+    }
+
+  ESTADO EXPLICITO, a proposito. Si la evaluacion no se puede hacer, el campo dice
+  'no_evaluada' con el motivo. Lo que no puede pasar es que un fallo se lea como
+  "no habia nada que avisar": ese es el mismo falso negativo silencioso que INV-3.6
+  persigue, y seria ironico introducirlo en la pieza que lo combate.
+
+  Cada aviso trae: causa, bandera (U, constante del modulo), largo y extremos del
+  tramo, capitanias nombradas (hoy ninguna), derivacion generica, capa 1 y capa 2 y
+  es_restriccion: false.
+
+  UNA PRUEBA COMPRUEBA QUE NO SE PAREZCA A UNA RESTRICCION: el aviso no puede traer
+  ninguno de los campos con que viaja una restriccion — restriccion, observacion,
+  condicion, motivo, tipo_restriccion, nave_recibe, evaluacion, aplica, id_bahia,
+  nombre_bahia. Si alguien se los agrega, el test falla.
+
+  EL TEXTO NO SE REDACTA EN EL CODIGO: se transcribe del §10 a la declaracion, con
+  su procedencia escrita, y el codigo sustituye. Hay una prueba que compara el texto
+  emitido contra el de la declaracion, y el validador exige que las marcas {nombre}
+  y {telefono} existan para que no salga una tarjeta sin telefono.
+
+  Y UNA COSA MAS QUE NO ESTABA PEDIDA PERO CERRABA UN HUECO: el matching de
+  restricciones tenia el nombre de la capa escrito a mano en su SQL. Ahora lo toma
+  de la misma declaracion que usa la medicion de cobertura. Es el mismo nombre que
+  antes — el comportamiento no cambia y hay un test que fija cual es —, pero deja de
+  ser posible que el aviso hable de una capa y la lista de restricciones de otra.
+
+================================================================================
+4. VERIFICADO DE VERDAD, NO SOLO EN TESTS
+================================================================================
+
+  Servidor levantado, SITPORT consultado, rutas del motor de ruteo de produccion.
+  Evidencia completa en 04_endpoint_real.txt, con las respuestas crudas guardadas.
+
+    MAGALLANES  cobertura evaluada | bandera U | 2 avisos | 3 defectos registrados
+                el aviso NO aparece en restricciones_intermedias: confirmado
+    CORREDOR    cobertura evaluada | bandera Q | 0 avisos | 4 defectos registrados
+                2 restricciones reales listadas, intactas
+
+  MORDIDA DEL SERVICIO, en proceso aparte:
+    capa declarada que no existe   -> se detiene con el motivo, no devuelve vacio
+    tolerancia no declarada        -> se detiene con el motivo, no supone una
+
+  SUITE COMPLETA: 71 de 71 pruebas pasan (61 previas + 10 nuevas). Ninguna previa
+  cambio de resultado.
+
+  LO QUE HAY QUE MIRAR EN LA EVIDENCIA: en Magallanes la respuesta trae
+  bandera_final = Q con dos avisos U debajo. Es correcto para el estado de hoy
+  —componer el veredicto es la pieza 4 y no esta escrita— y es exactamente la
+  tarjeta ambar bajo veredicto verde que fase5R (c) anticipo. Mientras la pieza 4
+  no exista, R1 esta a medias por diseño, no por descuido.
+
+================================================================================
+5. ESTADO
+================================================================================
+
+  PIEZA 1  aplicada y auditada. Mordida 20/20 + control negativo (subieron dos
+           familias nuevas: M19 y M20, por el registro de clase C).
+  PIEZA 2  APLICADA y verificada contra el endpoint real.
+  PIEZA 3  no tocada — sigue.
+  PIEZA 4  no tocada. No se toca si algo anterior no cerro.
+
+  CONTRATO  la adicion 3 esta redactada y NO aplicada: fase5X. Hasta que se escriba,
+            el motor hace algo que el contrato todavia no dice. Esa diferencia esta
+            declarada aca, no escondida.
+
+  MOTOR DE REGLAS INTOCADO.  FRONTEND INTOCADO.  COMMITS: ninguno.
+
+  ALTO.
