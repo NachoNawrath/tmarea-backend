@@ -71,6 +71,7 @@ from shapely.validation import explain_validity, make_valid
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 V2 = os.path.join(REPO, "data", "decreto", "jurisdicciones_v2.json")
+MANIFIESTO = os.path.join(REPO, "geodata", "costa", "capas_costa.json")
 LACUSTRE = os.path.join(REPO, "data", "decreto", "cotejo_lacustre_adjudicado.json")
 SHP_LAGOS = os.path.join(REPO, "geodata", "lagos", "Inventario_Lagos.shp")
 SALIDA_SQL = os.path.join(REPO, "scripts", "fase5_capa_ds991.sql")
@@ -90,14 +91,20 @@ KM_POR_GRADO = 111.32
 TOL_TRASLAPE_KM2 = 0.01
 TOL_HUECO_KM2 = 0.01
 
-# CAPA DE TIERRA. Insumo declarado, se cambia solo aqui. Vacio = no se resta.
-# Hoy vacio por decision del owner del 2026-08-10: la unica capa de tierra
-# disponible en la base es ne_land, Natural Earth 1:10m, que da por tierra 30 de
-# los 53 puntos representativos — bahias y puertos fluviales reales, entre ellos
-# Valparaiso, Iquique y San Antonio. Restar con esa capa produce el falso negativo
-# que prohibe INV-3.6. Mientras no haya una costa de resolucion real, no se resta:
-# incluir tierra de mas no daña a nadie porque no se navega por ella.
-CAPAS_TIERRA = []
+# CAPAS DE TIERRA Y DE LIMITE EXTERIOR. NO se declaran aca: las declara
+# geodata/costa/capas_costa.json, en sus roles, y capas_declaradas() las trae de ahi
+# al arrancar. Este modulo no nombra ninguna capa.
+#
+# Hasta el 2026-08-10 esto era una lista vacia con un comentario que explicaba por
+# que no se restaba tierra: la unica capa disponible era ne_land, 1:10m, que da por
+# tierra bahias y puertos reales — el falso negativo que prohibe INV-3.6. Esa
+# situacion se termino: la capa OSM esta cargada, medida y verificada, y el
+# manifiesto la declara primaria. Lo que cambio de fondo es que la eleccion dejo de
+# vivir en el codigo. Cambiar de costa el dia que llegue una linea oficial es
+# cambiar roles.tierra en el manifiesto y volver a correr.
+CAPAS_TIERRA = []          # lo llena capas_declaradas()
+CAPA_LIMITE_EXTERIOR = None
+COSTA_DECLARADA = {}       # huella de la capa de tierra, para el control C0
 
 CONVENCIONES_CONSTRUCTOR = [
     "RESTAR LA TIERRA ES CONVENCION NUESTRA, NO DECRETO. El Art. 2 del D.S. 991 "
@@ -126,6 +133,18 @@ CONVENCIONES_CONSTRUCTOR = [
     "recorta SOLO dentro de su alcance: se extiende perpendicular a si misma, nunca "
     "a lo largo. Prolongarla mas alla de sus extremos le haria decir lo que el "
     "decreto no dice ahi.",
+    "PARALELO COMPARTIDO. Cuando dos vecinas declaran el MISMO paralelo como su "
+    "limite comun, ese paralelo las separa EN TODA SU EXTENSION, no solo cerca de la "
+    "costa: nada en el decreto lo acota. Antes no recortaba, y la franja se armaba "
+    "solo con banda(), que deja que las latitudes citadas del contorno la EXTIENDAN. "
+    "Eso hacia que dos vecinas se pisaran mar afuera — Castro y Chonchi, 882 km2 en "
+    "una tira de 2,8 km de alto por 350 km de largo — porque las dos citan "
+    "coordenadas que cruzan su propio paralelo compartido. El fundamento de la "
+    "correccion: esas coordenadas describen el TRAZO LOCAL del limite, no la franja "
+    "oceanica. Por eso el paralelo recorta en todos lados MENOS dentro del alcance "
+    "de las fronteras poligonales que declara la misma pareja: ahi, y solo ahi, el "
+    "decreto dibuja el limite fino y ese dibujo manda. Decidido por la owner el "
+    "2026-08-10.",
     "La caja de trabajo es un artificio de calculo para poder cortar, no un limite "
     "juridico.",
     "El ambito antartico no resta tierra ni se acota al limite exterior: el decreto "
@@ -179,6 +198,53 @@ def buscar_psql():
         if c:
             return c[0]
     raise Alto("no se encontro psql. Ponelo en el PATH o exporta PSQL con su ruta.")
+
+
+def capas_declaradas():
+    """Trae del manifiesto las capas de los roles 'tierra' y 'limite_exterior'. Este
+    modulo no nombra capas: si el manifiesto declara otra costa, la construccion la
+    usa sin tocar una linea de codigo.
+
+    Comprueba ademas que el RECORTE con que la capa se cargo cubra la caja de trabajo
+    de la construccion. Si la caja creciera y el recorte no, se restaria tierra
+    contra una capa que no llega hasta ahi: quedaria tierra adentro de una figura
+    marina sin que nada avise, que es el falso negativo de INV-3.6."""
+    global CAPAS_TIERRA, CAPA_LIMITE_EXTERIOR, COSTA_DECLARADA
+    if not os.path.exists(MANIFIESTO):
+        raise Alto(f"falta {os.path.relpath(MANIFIESTO, REPO)}: es donde se declara "
+                   f"que capa de tierra usa la construccion. Sin el no se resta nada "
+                   f"por defecto, se para.")
+    man = json.load(open(MANIFIESTO, encoding="utf-8"))
+    porid = {c["id"]: c for c in man["capas"]}
+    elegidas = {}
+    for nombre in ("tierra", "limite_exterior"):
+        r = (man.get("roles") or {}).get(nombre) or {}
+        if r.get("capa") not in porid:
+            raise Alto(f"el manifiesto no declara una capa valida en "
+                       f"roles.{nombre}")
+        c = porid[r["capa"]]
+        t = c.get("tabla_subdividida") or c.get("tabla")
+        if not t or not str(t).replace("_", "").isalnum():
+            raise Alto(f"la capa '{c['id']}' del rol {nombre} no declara una tabla "
+                       f"usable")
+        elegidas[nombre] = (c, t)
+
+    rec = man["recorte"]
+    if not (rec["x_w"] <= X_W and rec["x_e"] >= X_E
+            and rec["y_s"] <= Y_S and rec["y_n"] >= Y_N):
+        raise Alto(f"el recorte con que se cargo la costa no cubre la caja de "
+                   f"trabajo de la construccion.\n  recorte  x {rec['x_w']}.."
+                   f"{rec['x_e']}  y {rec['y_s']}..{rec['y_n']}\n  caja     x {X_W}.."
+                   f"{X_E}  y {Y_S}..{Y_N}\n  Restar tierra contra una capa que no "
+                   f"llega deja tierra adentro de la figura sin aviso (INV-3.6). "
+                   f"Ampliá el recorte y volvé a cargar la costa.")
+
+    ct, tabla_tierra = elegidas["tierra"]
+    CAPAS_TIERRA = [tabla_tierra]
+    CAPA_LIMITE_EXTERIOR = elegidas["limite_exterior"][1]
+    COSTA_DECLARADA = {"id": ct["id"], "sha256": ct["sha256"],
+                       "tabla_base": ct["tabla"], "tabla": tabla_tierra}
+    return man
 
 
 def leer_env():
@@ -305,6 +371,62 @@ def banda_de_alcance(f):
                     (bx + nx, by + ny), (ax + nx, ay + ny)])
 
 
+def lados_de(f):
+    return frozenset(x for x in (f.get("lado_a"), f.get("lado_b"),
+                                 f.get("lado_norte"), f.get("lado_sur")) if x)
+
+
+def trazo_local_de(j, fronteras):
+    """Zona donde el TRAZO LOCAL manda y el paralelo compartido no recorta.
+
+    Dos partes, las dos sacadas del dato: la franja de longitudes que el contorno de
+    la jurisdiccion DIBUJA — excluyendo las resueltas al borde de la caja, que no son
+    trazo sino lado abierto — y el alcance de sus fronteras poligonales. Ahi el
+    decreto describe el limite fino, con sus entradas, islas y puntas, y ese dibujo
+    puede cruzar el paralelo: Castro cita 42 35 12 S y Quemchi 42 23 30 S, los dos al
+    Sur de su propio paralelo compartido y los dos pegados a la costa. Fuera de esa
+    zona no hay trazo que describir y el paralelo es todo lo que el decreto dice.
+
+    Misma definicion que usa el auditor, resuelta con geometria en vez de con
+    comparaciones escalares."""
+    zonas = []
+    lons = [p["lon"] for p in j["contorno"]
+            if p.get("lon") is not None and not p.get("lon_origen")
+            and abs(p["lon"] - X_W) > 1e-4 and abs(p["lon"] - X_E) > 1e-4]
+    if lons:
+        zonas.append(box(min(lons), Y_S - MARGEN, max(lons), Y_N + MARGEN))
+    for fid in j.get("fronteras") or []:
+        g = fronteras.get(fid)
+        if g is None or g["tipo"] != "poligonal" or len(g.get("puntos") or []) < 2:
+            continue
+        b = banda_de_alcance(g)
+        if b is not None:
+            zonas.append(b)
+    return unary_union(zonas) if zonas else None
+
+
+def recortar_por_paralelo(j, g, f, fronteras, anc):
+    """CONVENCION: un paralelo que las dos vecinas declaran como limite compartido
+    separa EN TODA SU EXTENSION. Ver PARALELO_COMPARTIDO en las convenciones."""
+    lat = f.get("latitud")
+    if lat is None or anc is None:
+        return g, False
+    local = trazo_local_de(j, fronteras)
+    libre = poligonal(g.intersection(local)) if local is not None else None
+    corta = poligonal(g.difference(local)) if local is not None else g
+    if corta.is_empty:
+        return g, False
+    lado = (box(X_W - MARGEN, lat, X_E + MARGEN, Y_N + MARGEN) if anc[0] > lat
+            else box(X_W - MARGEN, Y_S - MARGEN, X_E + MARGEN, lat))
+    nuevo = poligonal(corta.intersection(lado))
+    if libre is not None and not libre.is_empty:
+        nuevo = poligonal(unary_union([nuevo, libre]))
+    if nuevo.is_empty:
+        raise Alto(f"{j['nombre']} quedo vacia al recortar contra el paralelo "
+                   f"compartido '{f['id']}'")
+    return nuevo, True
+
+
 def recortar_por_fronteras(j, g, fronteras):
     """La figura no cruza ninguna frontera declarada, y cada frontera manda solo
     dentro de su alcance."""
@@ -316,7 +438,10 @@ def recortar_por_fronteras(j, g, fronteras):
             raise Alto(f"{j['nombre']} declara la frontera '{fid}', que no existe "
                        f"entre las fronteras del insumo")
         if f["tipo"] == "paralelo":
-            continue          # ya la aplica banda(), y la aplica sin encoger
+            g, hubo = recortar_por_paralelo(j, g, f, fronteras, anc)
+            if hubo:
+                aplicadas.append(fid)
+            continue
         if f["tipo"] != "poligonal":
             raise Alto(f"la frontera '{fid}' es de tipo '{f['tipo']}', que no esta "
                        f"en la tabla de tipos (paralelo, poligonal)")
@@ -476,6 +601,35 @@ def emitir_sql(v2, lac, filas, sectores):
     A("")
     A("BEGIN;")
     A("")
+    if CAPAS_TIERRA:
+        A("-- ══ C0. LA COSTA CONTRA LA QUE SE VA A RESTAR ES LA DECLARADA Y PASO")
+        A("--    SUS PROPIOS CONTROLES. Va PRIMERO, antes de construir nada: restar")
+        A("--    contra otra costa, o contra una que no se verifico, produce una capa")
+        A("--    que parece bien y no lo esta. El sha viene del manifiesto al generar")
+        A("--    este SQL, asi que el SQL tambien queda atado a la costa que declara.")
+        A("DO $$")
+        A("DECLARE h TEXT; malos TEXT;")
+        A("BEGIN")
+        A(f"  IF to_regclass('public.{COSTA_DECLARADA['tabla']}') IS NULL")
+        A(f"     OR to_regclass('public.{COSTA_DECLARADA['tabla_base']}_procedencia')"
+          " IS NULL THEN")
+        A(f"    RAISE EXCEPTION 'no esta cargada la capa de costa "
+          f"{COSTA_DECLARADA['tabla']}. Corre antes scripts/fase5_cargar_costa.py';")
+        A("  END IF;")
+        A(f"  SELECT valor INTO h FROM {COSTA_DECLARADA['tabla_base']}_procedencia")
+        A("    WHERE clave = 'sha256';")
+        A(f"  IF h IS DISTINCT FROM {sql_str(COSTA_DECLARADA['sha256'])} THEN")
+        A("    RAISE EXCEPTION E'la costa cargada no es la que declara el "
+          "manifiesto:\\n  cargada    %\\n  manifiesto %', h, "
+          f"{sql_str(COSTA_DECLARADA['sha256'])};")
+        A("  END IF;")
+        A("  SELECT string_agg(control, '; ') INTO malos FROM "
+          f"{COSTA_DECLARADA['tabla_base']}_verificacion WHERE NOT ok;")
+        A("  IF malos IS NOT NULL THEN")
+        A("    RAISE EXCEPTION 'la costa cargada tiene controles en falla: %', malos;")
+        A("  END IF;")
+        A("END $$;")
+        A("")
     A(f"DROP TABLE IF EXISTS {TABLA}_convenciones;")
     A(f"CREATE TABLE {TABLA}_convenciones (n INT PRIMARY KEY, origen TEXT NOT NULL,")
     A("  texto TEXT NOT NULL);")
@@ -552,16 +706,39 @@ def emitir_sql(v2, lac, filas, sectores):
             for t in CAPAS_TIERRA) + ";")
         A("CREATE INDEX ON _tierra USING GIST (geom);")
         A("ANALYZE _tierra;")
-        A(f"UPDATE {TABLA} j SET")
-        A("  _base = ST_Multi(ST_CollectionExtract(ST_MakeValid(")
-        A("    ST_Difference(ST_ReducePrecision(j._base, 1e-8), t.geom)), 3)),")
-        A("  _amplia = ST_Multi(ST_CollectionExtract(ST_MakeValid(")
-        A("    ST_Difference(ST_ReducePrecision(j._amplia, 1e-8), t.geom)), 3))")
-        A("FROM (SELECT j2.id, ST_ReducePrecision(ST_MakeValid(")
-        A("        ST_UnaryUnion(ST_Collect(t2.geom))), 1e-8) AS geom")
-        A(f"      FROM {TABLA} j2 JOIN _tierra t2 ON t2.geom && j2._amplia")
-        A("      WHERE j2.ambito = 'maritima' AND j2._amplia IS NOT NULL")
-        A("      GROUP BY j2.id) t WHERE j.id = t.id AND j.ambito = 'maritima';")
+        # La resta va jurisdiccion por jurisdiccion y no en una sola sentencia. La
+        # semantica es identica — cada figura se resta contra la misma tierra, y las
+        # filas no dependen entre si — pero una sola sentencia sobre 44 filas pesadas
+        # es opaca: corre veinte minutos sin decir si avanza, por cual va, ni cual es
+        # la cara. Con el bucle, cada jurisdiccion informa su tiempo y su tamaño, y
+        # si algun dia una se vuelve impagable se ve cual es. Sigue todo dentro de la
+        # misma transaccion: no cambia nada de lo que se deshace si algo falla.
+        # ST_UnaryUnion y no ST_Collect: la capa de costa se pisa a si misma (medido:
+        # 2.116 pares, 6.219 km2) y un MultiPolygon de piezas que se pisan es
+        # invalido. Ver poligonos_disjuntos en el manifiesto.
+        A("DO $$")
+        A("DECLARE r RECORD; t0 timestamptz; n int := 0; tot int;")
+        A("BEGIN")
+        A(f"  SELECT count(*) INTO tot FROM {TABLA}")
+        A("    WHERE ambito = 'maritima' AND _amplia IS NOT NULL;")
+        A(f"  FOR r IN SELECT id, nombre FROM {TABLA}")
+        A("      WHERE ambito = 'maritima' AND _amplia IS NOT NULL ORDER BY id LOOP")
+        A("    t0 := clock_timestamp();")
+        A(f"    UPDATE {TABLA} j SET")
+        A("      _base = ST_Multi(ST_CollectionExtract(ST_MakeValid(")
+        A("        ST_Difference(ST_ReducePrecision(j._base, 1e-8), u.g)), 3)),")
+        A("      _amplia = ST_Multi(ST_CollectionExtract(ST_MakeValid(")
+        A("        ST_Difference(ST_ReducePrecision(j._amplia, 1e-8), u.g)), 3))")
+        A("    FROM (SELECT ST_ReducePrecision(ST_MakeValid(")
+        A("            ST_UnaryUnion(ST_Collect(t.geom))), 1e-8) AS g")
+        A(f"          FROM _tierra t, {TABLA} j2")
+        A("          WHERE j2.id = r.id AND t.geom && j2._amplia) u")
+        A("    WHERE j.id = r.id;")
+        A("    n := n + 1;")
+        A("    RAISE NOTICE 'tierra restada %/% % en %', n, tot, r.nombre,")
+        A("      clock_timestamp() - t0;")
+        A("  END LOOP;")
+        A("END $$;")
         A("")
         A("-- Del ensanche solo sobrevive el agua alcanzable desde la figura base.")
         A(f"UPDATE {TABLA} j SET geom = c.geom FROM (")
@@ -578,12 +755,17 @@ def emitir_sql(v2, lac, filas, sectores):
     A("")
     A(f"UPDATE {TABLA} SET geom = _base WHERE ambito IN ('lacustre', 'antartica');")
     A("")
-    A("-- Limite exterior: solo lo maritimo.")
+    A("-- Limite exterior: solo lo maritimo. La capa sale del rol 'limite_exterior'")
+    A("-- del manifiesto, no de un nombre puesto aca. Ahi la resolucion gruesa es")
+    A("-- adecuada A PROPOSITO: el error de una costa 1:10m son cientos de metros,")
+    A("-- cuatro ordenes por debajo de las 200 millas, y ademas se simplifica antes")
+    A("-- de bufferear. Usar la capa fina costaria horas para mover un borde que esta")
+    A("-- a 370 km de la costa.")
     A("CREATE TEMP TABLE _zee AS")
     A("SELECT ST_ReducePrecision(ST_MakeValid(ST_Buffer(")
     A("  ST_Simplify(ST_Union(ST_MakeValid(ST_Intersection(ST_MakeValid(l.geom),")
     A(f"    ST_MakeEnvelope({X_W}, {Y_S}, {X_E}, {Y_N}, {CRS})))), 0.01)::geography,")
-    A(f"  {LIMITE_ZEE_M})::geometry), 1e-8) AS geom FROM ne_land l")
+    A(f"  {LIMITE_ZEE_M})::geometry), 1e-8) AS geom FROM {CAPA_LIMITE_EXTERIOR} l")
     A(f"WHERE ST_Intersects(l.geom, ST_MakeEnvelope({X_W}, {Y_S}, {X_E}, {Y_N}, {CRS}));")
     A(f"UPDATE {TABLA} j SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(")
     A("  ST_Intersection(ST_ReducePrecision(j.geom, 1e-8), z.geom)), 3))")
@@ -594,6 +776,94 @@ def emitir_sql(v2, lac, filas, sectores):
     A(f"UPDATE {TABLA} SET km2_ensanche = round((")
     A("  (ST_Area(geom::geography) - ST_Area(ST_Intersection(geom, _base)::geography))")
     A("  / 1e6)::numeric, 2) WHERE tramos_litoral > 0 AND geom IS NOT NULL;")
+    # ── EL ENSANCHE, MEDIDO ANTES DE PERDER LA FIGURA BASE ────────────────────
+    # Con capa de tierra el corredor de litoral se aplica de nuevo. Sin ella era una
+    # losa de 60 km que solo pisaba a las vecinas; con ella tiene que comportarse
+    # como ensanche — agregar el agua que la cuerda recta deja entre ella y la costa,
+    # y nada mas. Eso no se afirma: se mide aca, mientras _base todavia existe, y se
+    # persiste. Los NOTICE salen aunque la transaccion se deshaga despues, que es
+    # justamente cuando mas hacen falta.
+    A(f"DROP TABLE IF EXISTS {TABLA}_ensanche;")
+    A(f"CREATE TABLE {TABLA}_ensanche AS")
+    A("SELECT id, nombre, tramos_litoral,")
+    A("  round((ST_Area(ST_Intersection(geom,_base)::geography)/1e6)::numeric,2) "
+      "AS km2_sin_ensanche,")
+    A("  round((ST_Area(geom::geography)/1e6)::numeric,2) AS km2_con_ensanche,")
+    A("  round(((ST_Area(geom::geography) - "
+      "ST_Area(ST_Intersection(geom,_base)::geography))/1e6)::numeric,2) AS km2_agrega")
+    A(f"FROM {TABLA} WHERE tramos_litoral > 0 AND geom IS NOT NULL;")
+    A("")
+    # Traslapes atribuibles al ensanche: se compara el traslape de las figuras
+    # FINALES contra el de las figuras SIN el corredor (la base, recortada por el
+    # mismo limite exterior). Un par que no se pisaba sin corredor y se pisa con el
+    # es el corredor comportandose como losa.
+    A(f"DROP TABLE IF EXISTS {TABLA}_traslape_ensanche;")
+    A(f"CREATE TABLE {TABLA}_traslape_ensanche AS")
+    A("SELECT a.nombre AS na, b.nombre AS nb,")
+    A("  round((ST_Area(ST_Intersection(a.geom,b.geom)::geography)/1e6)::numeric,3) "
+      "AS km2_final,")
+    A("  round((ST_Area(ST_Intersection(ST_Intersection(a.geom,a._base),")
+    A("    ST_Intersection(b.geom,b._base))::geography)/1e6)::numeric,3) "
+      "AS km2_sin_ensanche")
+    A(f"FROM {TABLA} a JOIN {TABLA} b ON a.id < b.id")
+    A("WHERE (a.tramos_litoral > 0 OR b.tramos_litoral > 0)")
+    A("  AND a.geom IS NOT NULL AND b.geom IS NOT NULL")
+    A("  AND a._base IS NOT NULL AND b._base IS NOT NULL")
+    A("  AND a.geom && b.geom AND ST_Intersects(a.geom, b.geom);")
+    A("")
+    A("DO $$")
+    A("DECLARE r RECORD;")
+    A("BEGIN")
+    A("  RAISE NOTICE '--- ENSANCHE DE LITORAL, SUPERFICIE QUE AGREGA ---';")
+    A(f"  FOR r IN SELECT * FROM {TABLA}_ensanche ORDER BY km2_agrega DESC LOOP")
+    A("    RAISE NOTICE '  % (% tramo(s) litoral): sin ensanche % km2, con ensanche "
+      "% km2, agrega % km2', r.nombre, r.tramos_litoral, r.km2_sin_ensanche, "
+      "r.km2_con_ensanche, r.km2_agrega;")
+    A("  END LOOP;")
+    A("  RAISE NOTICE '--- TRASLAPES DONDE INTERVIENE UNA CON ENSANCHE ---';")
+    A(f"  FOR r IN SELECT * FROM {TABLA}_traslape_ensanche "
+      "ORDER BY km2_final DESC LOOP")
+    # El veredicto por par es de TRES casos, no de dos. La primera version tenia dos
+    # y etiquetaba 'LO CREA EL ENSANCHE' a pares cuya interseccion final es de area
+    # CERO: figuras que solo se tocan por el borde, que es lo que ST_Intersects
+    # devuelve verdadero sin que haya traslape ninguno. Decia que el ensanche creaba
+    # nueve traslapes cuando no creaba ninguno.
+    A("    RAISE NOTICE '  % x %: final % km2, sin ensanche % km2 -> %', r.na, r.nb, "
+      "r.km2_final, r.km2_sin_ensanche, CASE")
+    A(f"      WHEN r.km2_final <= {TOL_TRASLAPE_KM2} THEN 'sin traslape: solo se "
+      "tocan por el borde'")
+    A(f"      WHEN r.km2_sin_ensanche <= {TOL_TRASLAPE_KM2} THEN 'LO CREA EL "
+      "ENSANCHE'")
+    A(f"      WHEN r.km2_final > r.km2_sin_ensanche + {TOL_TRASLAPE_KM2} THEN")
+    A("        'ya existia sin el, y el ensanche lo AGRANDA ' ||")
+    A("        round(r.km2_final / nullif(r.km2_sin_ensanche,0), 1)::text || 'x'")
+    A("      ELSE 'ya existia sin el, el ensanche no lo mueve' END;")
+    A("  END LOOP;")
+    # Todos los traslapes, dichos como NOTICE ANTES de los controles. El detalle que
+    # viaja en el RAISE de C3 puede venir cortado, y si la transaccion se deshace la
+    # tabla no queda para consultarla: sin esto, un traslape que voltea la
+    # construccion no deja su medicion en ningun lado.
+    A("  RAISE NOTICE '--- TODOS LOS TRASLAPES ENTRE FIGURAS FINALES ---';")
+    # Con el rectangulo que ocupa cada traslape. Dos traslapes de la misma
+    # superficie tienen causas distintas segun DONDE caigan: una franja larga y
+    # angosta que se va al Oeste hasta el limite exterior es separacion lateral sin
+    # resolver en la franja oceanica; una mancha compacta pegada a la costa es otra
+    # cosa. Sin el rectangulo hay que ir a mirar el mapa para saber cual es cual.
+    A("  FOR r IN SELECT a.nombre na, b.nombre nb, a.ambito aa, b.ambito ab,")
+    A("      round((ST_Area(i.g::geography)/1e6)::numeric,3) km2,")
+    A("      round(ST_XMin(i.g)::numeric,3) x0, round(ST_XMax(i.g)::numeric,3) x1,")
+    A("      round(ST_YMin(i.g)::numeric,3) y0, round(ST_YMax(i.g)::numeric,3) y1")
+    A(f"    FROM {TABLA} a JOIN {TABLA} b ON a.id < b.id,")
+    A("      LATERAL (SELECT ST_Intersection(a.geom,b.geom) g) i")
+    A("    WHERE a.geom IS NOT NULL AND b.geom IS NOT NULL AND a.geom && b.geom")
+    A("      AND ST_Intersects(a.geom,b.geom)")
+    A(f"      AND ST_Area(i.g::geography) > {TOL_TRASLAPE_KM2}*1e6")
+    A("    ORDER BY 5 DESC LOOP")
+    A("    RAISE NOTICE '  % (%) x % (%) = % km2  |  lon % .. %  lat % .. %',")
+    A("      r.na, r.aa, r.nb, r.ab, r.km2, r.x0, r.x1, r.y0, r.y1;")
+    A("  END LOOP;")
+    A("END $$;")
+    A("")
     A(f"ALTER TABLE {TABLA} DROP COLUMN _base, DROP COLUMN _amplia;")
     A(f"CREATE INDEX idx_{TABLA}_geom ON {TABLA} USING GIST (geom);")
     A(f"CREATE INDEX idx_{TABLA}_ambito ON {TABLA} (ambito);")
@@ -670,9 +940,36 @@ def emitir_controles(A, permitidos):
     A("SELECT 'C7 indice espacial presente', count(*) >= 1, count(*)::text, NULL")
     A(f"FROM pg_indexes WHERE tablename = '{TABLA}' AND indexdef ILIKE '%gist%';")
     A("")
+    # C8. El corredor de litoral tiene que comportarse como ensanche y no como losa.
+    # Puede AGRANDAR un traslape que ya existia por separacion lateral — eso es otro
+    # problema, y es el que decide el decreto —, pero no puede CREAR uno donde las
+    # figuras base no se tocaban. Los traslapes deliberados quedan exentos por el
+    # mismo dato que exime a C3, no por una lista aparte.
+    A(f"INSERT INTO {TABLA}_verificacion")
+    A("SELECT 'C8 el ensanche no crea traslapes que no existieran sin el',")
+    A("  count(*) = 0, count(*)::text,")
+    A("  string_agg(x.na || ' x ' || x.nb || ' = ' || x.km2_final::text, '; ')")
+    A(f"FROM {TABLA}_traslape_ensanche x")
+    A(f"WHERE x.km2_sin_ensanche <= {TOL_TRASLAPE_KM2}")
+    A(f"  AND x.km2_final > {TOL_TRASLAPE_KM2}")
+    A(f"  AND NOT EXISTS (SELECT 1 FROM {TABLA} a, {TABLA} b, _ok o")
+    A("     WHERE a.nombre = x.na AND b.nombre = x.nb")
+    A("       AND o.a = least(a.id,b.id) AND o.b = greatest(a.id,b.id));")
+    A("")
+    # El estado de TODOS los controles sale como NOTICE antes del RAISE. El RAISE
+    # solo nombra los que fallan, y si la transaccion se deshace la tabla de
+    # verificacion se va con ella: sin esto, una corrida que se cae por un control no
+    # deja constancia de que los otros siete SI pasaron, que es la mitad de lo que
+    # hay que saber para decidir que hacer.
     A("DO $$")
-    A("DECLARE fallidos TEXT;")
+    A("DECLARE fallidos TEXT; r RECORD;")
     A("BEGIN")
+    A("  RAISE NOTICE '--- ESTADO DE TODOS LOS CONTROLES ---';")
+    A(f"  FOR r IN SELECT * FROM {TABLA}_verificacion ORDER BY control LOOP")
+    A("    RAISE NOTICE '  [%] % (obtenido %)%', CASE WHEN r.ok THEN 'ok   ' "
+      "ELSE 'FALLA' END, r.control, COALESCE(r.obtenido,'?'),")
+    A("      COALESCE(': ' || r.detalle, '');")
+    A("  END LOOP;")
     A("  SELECT string_agg(control || ' [obtenido=' || COALESCE(obtenido,'?') ||")
     A("           COALESCE(': ' || detalle, '') || ']', E'\\n  ')")
     A(f"    INTO fallidos FROM {TABLA}_verificacion WHERE NOT ok;")
@@ -690,6 +987,7 @@ def main():
                     help="escribe el SQL y no toca la base")
     args = ap.parse_args()
 
+    capas_declaradas()
     v2 = json.load(open(V2, encoding="utf-8"))
     lac = json.load(open(LACUSTRE, encoding="utf-8"))
     gdf = gpd.read_file(SHP_LAGOS).to_crs(epsg=CRS)
@@ -748,17 +1046,26 @@ def main():
     print()
     print(f"Aplicando con {psql} sobre {cfg['DB_NAME']}@{cfg['DB_HOST']}...")
     env = dict(os.environ, PGPASSWORD=cfg["DB_PASSWORD"])
-    r = subprocess.run([psql, "-h", cfg["DB_HOST"], "-p", cfg["DB_PORT"],
-                        "-U", cfg["DB_USER"], "-d", cfg["DB_NAME"],
-                        "-v", "ON_ERROR_STOP=1", "-q", "-f", SALIDA_SQL],
-                       env=env, capture_output=True, text=True, encoding="utf-8",
-                       errors="replace")
-    if r.stdout.strip():
-        print(r.stdout.strip()[-4000:])
-    if r.returncode != 0:
-        print(r.stderr.strip()[-4000:])
+    # Se transmite en vivo y con stderr mezclado, en vez de capturar y mostrar al
+    # final. Dos motivos, los dos aprendidos aca: los NOTICE de psql — el progreso de
+    # la resta de tierra y TODA la medicion del ensanche y los traslapes — salen por
+    # stderr, y capturando solo se mostraban cuando la corrida fallaba, o sea que al
+    # salir bien se perdian. Y una resta que tarda veinte minutos sin decir nada no
+    # se puede distinguir de una colgada.
+    proc = subprocess.Popen([psql, "-h", cfg["DB_HOST"], "-p", cfg["DB_PORT"],
+                             "-U", cfg["DB_USER"], "-d", cfg["DB_NAME"],
+                             "-v", "ON_ERROR_STOP=1", "-q", "-f", SALIDA_SQL],
+                            env=env, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, text=True, encoding="utf-8",
+                            errors="replace", bufsize=1)
+    for linea in proc.stdout:
+        print(linea.rstrip())
+        sys.stdout.flush()
+    if proc.wait() != 0:
         raise Alto("la construccion no paso sus propios controles. No hay capa: la "
-                   "transaccion se deshizo entera.")
+                   "transaccion se deshizo entera. El detalle esta arriba, y las "
+                   "mediciones que alcanzaron a salir como NOTICE tambien: sobreviven "
+                   "al rollback.")
     print("Capa construida y verificada. Los controles pasaron dentro de la "
           "transaccion.")
 
@@ -766,8 +1073,12 @@ def main():
 def informe(filas, diag, sectores):
     print("FASE 5, ETAPA B — CONSTRUCCION")
     print(f"  salida   : {os.path.relpath(SALIDA_SQL, REPO)}")
-    print(f"  tierra   : {', '.join(CAPAS_TIERRA) or 'no se resta (ver convencion)'}")
-    print(f"  ensanche : {ENSANCHE_KM:.0f} km, solo en tramos litoral")
+    print(f"  tierra   : {', '.join(CAPAS_TIERRA) or 'no se resta (ver convencion)'}"
+          + (f"   [{COSTA_DECLARADA['id']}, sha {COSTA_DECLARADA['sha256'][:12]}]"
+             if COSTA_DECLARADA else ""))
+    print(f"  ext.     : {CAPA_LIMITE_EXTERIOR}, buffer de {LIMITE_ZEE_M} m")
+    print(f"  ensanche : {ENSANCHE_KM:.0f} km, solo en tramos litoral"
+          + ("" if CAPAS_TIERRA else "  — NO APLICADO: exige capa de tierra"))
     print()
     print(f"{'NOMBRE':<24} {'AMBITO':<15} {'RECETA':<16} {'LIT':>3} {'ESTADO':<16} "
           f"FRONTERAS")

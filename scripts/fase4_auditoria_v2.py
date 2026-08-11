@@ -49,6 +49,25 @@ B8  Tramos del contorno. El constructor lee el tipo de cada tramo para saber cua
     a la vez la frontera que se comparte con una vecina, porque ensanchar ahi le
     comeria territorio.
 
+B9  Frontera declarada y respeto del alcance. Una frontera DECLARADA no sale de
+    vertices comunes: la puso una transcripcion, asi que tiene que traer su motivo,
+    la cita del decreto de sus DOS lados y su alcance ESCRITO — sin el, el alcance
+    queda atado a sus vertices y se mueve calladamente con ellos. Y su ALCANCE — el
+    tramo dentro del cual
+    decide — se audita entero, porque es lo que gobierna cuanta superficie recorta:
+    cada borde del alcance tiene que aparecer literalmente como coordenada citada
+    (INV-3.7 aplicado al alcance: el texto fuente esta ahi al lado), el alcance tiene
+    que contener a la propia frontera, y tiene que acotar el eje que corresponde — un
+    meridiano se extiende perpendicular a si mismo, o sea acota latitudes y no
+    longitudes.
+
+    POR QUE HIZO FALTA, medido el 2026-08-10: se ensancho el alcance de la unica
+    frontera declarada de medio grado a CUATRO grados de latitud y la auditoria
+    seguia dando exit 0. Con ese alcance el meridiano recorta donde el decreto no
+    dice nada y las figuras vecinas salen mas chicas, sin error en ningun lado — el
+    falso negativo silencioso de INV-3.6. Ninguna de las diez familias anteriores lo
+    cazaba: se cazaba MOVER la frontera (B2), no ENSANCHAR su alcance.
+
 Los controles B0 de campos obligatorios, ambito geografico y puntos notables, y
 los B2.0 de franjas oceanicas y cobertura del litoral, vienen de la primera
 pasada. Se habian perdido al reescribir el auditor para el modelo v2 y se
@@ -366,6 +385,48 @@ def dentro_del_alcance(f, lat, lon):
     return -margen <= t <= 1 + margen
 
 
+def lados_de(f):
+    return frozenset(x for x in (f.get("lado_a"), f.get("lado_b"),
+                                 f.get("lado_norte"), f.get("lado_sur")) if x)
+
+
+def franja_del_trazo(j):
+    """(lon_min, lon_max) que el decreto DIBUJA para esta jurisdiccion, o None.
+
+    Son las longitudes de su contorno que el decreto nombra de verdad. Se excluyen
+    las que el v2 resolvio al borde de la caja — las marcadas con lon_origen, y las
+    que caen sobre el borde mismo —: esas no son un trazo, son el lado abierto.
+
+    Es la forma medible de la distincion que gobierna el paralelo compartido: donde
+    el decreto dibuja, el dibujo manda; donde no dibuja nada, no hay con que
+    contradecir al paralelo.
+    """
+    lons = [p["lon"] for p in j["contorno"]
+            if p.get("lon") is not None and not p.get("lon_origen")
+            and abs(p["lon"] - X_W) > TOL_BORDE and abs(p["lon"] - X_E) > TOL_BORDE]
+    return (min(lons), max(lons)) if lons else None
+
+
+def dentro_del_trazo_local(j, lat, lon):
+    """¿El punto cae donde el decreto dibuja el trazo fino del limite?
+
+    Dos zonas, y las dos salen del dato: la franja de longitudes que el contorno de
+    la jurisdiccion describe, y el alcance de las fronteras poligonales que declara.
+    Ahi el limite tiene dibujo — entradas, islas, puntas — y ese dibujo puede cruzar
+    el paralelo. Fuera, solo queda mar abierto y el paralelo es todo lo que hay.
+    """
+    fr = franja_del_trazo(j)
+    if fr is not None and fr[0] - TOL_BORDE <= lon <= fr[1] + TOL_BORDE:
+        return True
+    for fid in j.get("fronteras") or []:
+        g = FRONTERAS.get(fid)
+        if g is None or g["tipo"] != "poligonal" or len(g.get("puntos") or []) < 2:
+            continue
+        if dentro_del_alcance(g, lat, lon):
+            return True
+    return False
+
+
 def fuera_por_frontera(j, lat, lon):
     """(True, motivo) si alguna frontera declarada deja este punto del lado ajeno.
 
@@ -379,14 +440,36 @@ def fuera_por_frontera(j, lat, lon):
         f = FRONTERAS.get(fid)
         if f is None:
             continue                                  # B7 lo caza por su cuenta
-        # Las fronteras por paralelo NO se aplican aqui: ya las aplica banda(), y
-        # las aplica bien. banda() deja que las latitudes del contorno EXTIENDAN la
-        # franja mas alla del paralelo declarado, nunca que la encojan. Volver a
-        # imponer el paralelo crudo aqui encogeria la figura y dejaria fuera
-        # superficie decretada — el falso negativo que prohibe INV-3.6. Castro cita
-        # 42 35 12 S, doce segundos al Sur de su propio limite declarado, y ese
-        # punto es suyo.
+        # PARALELO COMPARTIDO. Un paralelo que las dos vecinas declaran como limite
+        # comun separa en TODA su extension: nada en el decreto lo acota a la costa.
+        # Recorta en todos lados menos dentro del alcance de las poligonales que
+        # declara la misma pareja — ahi el decreto dibuja el trazo local del limite y
+        # ese dibujo puede cruzar el paralelo, que es de donde salian las latitudes
+        # que banda() usa para extender la franja.
+        #
+        # Origen, para no volver atras: antes esto era 'continue' con el argumento de
+        # que banda() ya lo aplicaba y que reimponer el paralelo encogeria la figura
+        # dejando fuera superficie decretada (INV-3.6). El argumento valia para el
+        # trazo local y se generalizo de mas: mar afuera no hay trazo que describir, y
+        # no recortar ahi dejaba a dos vecinas pisandose 882 km2 en pleno oceano.
         if f["tipo"] == "paralelo":
+            if f.get("latitud") is None or a is None:
+                continue
+            # Un punto SOBRE el paralelo pertenece a las dos vecinas, igual que uno
+            # sobre una frontera poligonal: son justamente los vertices con que el
+            # decreto describe el limite. Sin esta tolerancia, cinco jurisdicciones
+            # perdian coordenadas que el decreto les cita, por estar exactamente en
+            # la linea.
+            if abs(lat - f["latitud"]) <= TOL_BORDE:
+                continue
+            if dentro_del_trazo_local(j, lat, lon):
+                continue
+            arriba_ancla = a[0] > f["latitud"]
+            arriba_punto = lat > f["latitud"]
+            if arriba_ancla != arriba_punto:
+                return True, (f"del otro lado del paralelo compartido '{fid}' "
+                              f"({f['latitud']:.6f}) respecto de la sede, y fuera "
+                              f"del trazo local que el decreto dibuja")
             continue
         if len(f.get("puntos") or []) < 2 or a is None:
             continue
@@ -1233,6 +1316,119 @@ def main():
     else:
         inf.fallo("B8", f"no existe {os.path.relpath(ADJUDICACION, REPO)} y hay tramos "
                         f"que requieren adjudicacion")
+
+    # ── B9 ───────────────────────────────────────────────────────────────────
+    inf.h("B9 — FRONTERA DECLARADA Y RESPETO DEL ALCANCE")
+    inf.p("  Una frontera DECLARADA no sale de vertices que dos jurisdicciones")
+    inf.p("  compartan: la puso una transcripcion. Y su ALCANCE — hasta donde vale —")
+    inf.p("  decide cuanta superficie recorta. Ensanchar un alcance le hace decir al")
+    inf.p("  decreto lo que no dice, y le come territorio a la vecina sin que se vea:")
+    inf.p("  la figura sale mas chica y no hay error en ningun lado.")
+    inf.p("")
+
+    declaradas = [f for f in F if f.get("origen") or f.get("motivo_declaracion")]
+    con_ext = [f for f in F if f.get("extension")]
+    inf.p(f"  fronteras declaradas por transcripcion : {len(declaradas)}")
+    inf.p(f"  fronteras con alcance declarado        : {len(con_ext)}")
+    inf.p("")
+
+    # B9.1 — una frontera que nadie transcribe no es del decreto.
+    for f in declaradas:
+        citas = f.get("citas") or {}
+        lados = [f[k] for k in ("lado_a", "lado_b", "lado_norte", "lado_sur")
+                 if f.get(k)]
+        sin = [l for l in lados if not (citas.get(l) or "").strip()]
+        if not f.get("motivo_declaracion"):
+            inf.fallo("B9", f"{f['id']}: esta declarada y no dice por que. Una "
+                             f"frontera que no se deriva de vertices comunes y no "
+                             f"declara su motivo es una asercion sin respaldo")
+        if sin:
+            inf.fallo("B9", f"{f['id']}: declarada y sin cita del decreto para "
+                             f"{', '.join(sin)}. Las dos mitades tienen que estar en "
+                             f"el texto: es lo unico que la distingue de un limite "
+                             f"inventado")
+        # Una declarada tiene que traer su alcance ESCRITO, aunque coincida con el
+        # rectangulo de sus puntos. Sin el, alcance_de() cae a ese rectangulo y el
+        # alcance pasa a seguir a los puntos: mover un vertice movería calladamente
+        # hasta donde la frontera decide, y se perderia el registro de hasta donde
+        # se autorizo que dijera. El alcance explicito es la constancia de eso.
+        if not f.get("extension"):
+            inf.fallo("B9", f"{f['id']}: declarada y sin alcance escrito. Una "
+                             f"frontera declarada tiene que dejar constancia de "
+                             f"hasta donde se autorizo que decida; si no, el alcance "
+                             f"queda atado a sus vertices y se mueve con ellos")
+    if declaradas and not inf.fallos["B9"]:
+        inf.ok("toda frontera declarada trae su motivo y la cita de sus dos lados")
+
+    # B9.2 — cada borde del alcance, respaldado literalmente en las citas.
+    # Es INV-3.7 aplicado al alcance: la geometria se deriva del texto fuente, y el
+    # texto fuente esta ahi al lado, en 'citas'. Un borde que no aparece en ninguna
+    # cita es un numero que alguien puso.
+    for f in con_ext:
+        texto = " ".join(v for v in (f.get("citas") or {}).values() if v)
+        apoyos = set()
+        for m in RE_DMS.finditer(texto):
+            v = int(m.group(1)) + int(m.group(2)) / 60 + int(m.group(3)) / 3600
+            apoyos.add(-v if m.group(4) in ("S", "W") else v)
+        e = f["extension"]
+        for k in ("lat_min", "lat_max", "lon_min", "lon_max"):
+            if e.get(k) is None:
+                inf.fallo("B9", f"{f['id']}: el alcance declarado no trae '{k}'. Un "
+                                f"alcance a medias no acota nada")
+                continue
+            if not any(abs(e[k] - a) <= 5e-5 for a in apoyos):
+                inf.fallo("B9", f"{f['id']}: el alcance declara {k}={e[k]:.6f} y ese "
+                                f"valor NO aparece en ninguna cita del decreto de "
+                                f"esta frontera. Coordenadas citadas: "
+                                f"{sorted(round(a, 4) for a in apoyos)}")
+
+    # B9.3 — el alcance no puede ser mas chico que la frontera misma.
+    for f in con_ext:
+        pts = f.get("puntos") or []
+        if not pts:
+            inf.fallo("B9", f"{f['id']}: declara alcance y no tiene puntos. Sin "
+                            f"geometria propia el alcance no acota nada")
+            continue
+        e = f["extension"]
+        afuera = [p for p in pts
+                  if not (e["lat_min"] - TOL_GRADOS <= p["lat"] <= e["lat_max"] + TOL_GRADOS
+                          and e["lon_min"] - TOL_GRADOS <= p["lon"] <= e["lon_max"] + TOL_GRADOS)]
+        if afuera:
+            inf.fallo("B9", f"{f['id']}: el alcance declarado deja fuera "
+                            f"{len(afuera)} de sus propios vertices. Una frontera no "
+                            f"puede decidir sobre menos que el segmento que es")
+
+    # B9.4 — el alcance tiene que ser coherente con la forma de la frontera. Un
+    # meridiano acota latitudes y NO longitudes; un paralelo al reves. Si el alcance
+    # se ensancha por el eje a lo largo del cual la frontera corre, deja de acotar.
+    for f in con_ext:
+        pts = f.get("puntos") or []
+        if len(pts) < 2:
+            continue
+        e = f["extension"]
+        lons = {round(p["lon"], 6) for p in pts}
+        lats = {round(p["lat"], 6) for p in pts}
+        if len(lons) == 1 and abs(e["lon_max"] - e["lon_min"]) > TOL_GRADOS:
+            inf.fallo("B9", f"{f['id']}: corre por un solo meridiano "
+                            f"({lons.pop():.6f}) y su alcance abre una franja de "
+                            f"longitudes. Un meridiano se extiende perpendicular a "
+                            f"si mismo: acota latitudes, no longitudes")
+        if len(lats) == 1 and abs(e["lat_max"] - e["lat_min"]) > TOL_GRADOS:
+            inf.fallo("B9", f"{f['id']}: corre por un solo paralelo "
+                            f"({lats.pop():.6f}) y su alcance abre una franja de "
+                            f"latitudes")
+
+    if con_ext and not inf.fallos["B9"]:
+        inf.ok("todo alcance declarado esta respaldado en las citas, contiene a su "
+               "propia frontera y acota el eje que corresponde")
+    for f in con_ext:
+        e = f["extension"]
+        inf.p(f"    {f['id']}: lat {e['lat_min']} .. {e['lat_max']}  "
+              f"lon {e['lon_min']} .. {e['lon_max']}")
+    if not declaradas and not con_ext:
+        inf.fallo("B9", "no hay ninguna frontera declarada ni ningun alcance en el "
+                        "insumo. Este control no tiene nada que mirar, y eso no es "
+                        "'limpio': es que el camino que deberia cubrir desaparecio")
 
     # ── veredicto ────────────────────────────────────────────────────────────
     inf.h("VEREDICTO DE LA SEGUNDA PASADA")

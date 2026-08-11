@@ -161,6 +161,45 @@ def mut_b8(v2, lac, adj):
                      "con una frontera compartida")
 
 
+def _con_alcance(v2):
+    for f in v2["fronteras"]:
+        if f.get("extension"):
+            return f
+    raise SystemExit("PRUEBA MAL CONSTRUIDA: ninguna frontera declara alcance, y sin "
+                     "eso no hay que ensanchar. Si el insumo dejo de tener fronteras "
+                     "declaradas, B9 no tiene que quedar 'limpio': hay que saber que "
+                     "el camino desaparecio")
+
+
+def mut_b9_alcance(v2, lac, adj):
+    """El defecto que motivo toda la familia: ensanchar el alcance de una frontera
+    declarada. La frontera queda donde estaba — B2 no tiene nada que decir — pero
+    pasa a recortar sobre latitudes que el decreto nunca le dio, y las figuras
+    vecinas salen mas chicas sin que aparezca ningun error. Medido antes de escribir
+    B9: con esta misma mutacion la auditoria daba exit 0."""
+    f = _con_alcance(v2)
+    antes = f["extension"]["lat_min"]
+    f["extension"]["lat_min"] = antes - 2.0
+    return (f"se ensancho el alcance de la frontera declarada {f['id']}: lat_min de "
+            f"{antes} a {antes - 2.0}, dos grados que ninguna cita respalda")
+
+
+def mut_b9_cita(v2, lac, adj):
+    """Una frontera declarada a la que se le quita el respaldo de un lado. Es lo unico
+    que distingue una frontera transcrita del decreto de un limite que alguien
+    aserto: que las dos mitades esten en el texto."""
+    f = next((x for x in v2["fronteras"]
+              if (x.get("origen") or x.get("motivo_declaracion")) and x.get("citas")),
+             None)
+    if f is None:
+        raise SystemExit("PRUEBA MAL CONSTRUIDA: no hay frontera declarada con citas")
+    lado = next(k for k in ("lado_a", "lado_b", "lado_norte", "lado_sur")
+                if f.get(k) and (f["citas"].get(f[k]) or "").strip())
+    f["citas"][f[lado]] = None
+    return (f"se borro la cita del decreto del {lado} de la frontera declarada "
+            f"{f['id']}")
+
+
 MUTACIONES = [
     ("B0", "fidelidad de la migracion", mut_b0),
     ("B1", "cierre determinado", mut_b1),
@@ -172,6 +211,8 @@ MUTACIONES = [
     ("B0", "integridad referencial de los lados", mut_b0_referencias),
     ("B7", "grafo de fronteras", mut_b7),
     ("B8", "tramos del contorno", mut_b8),
+    ("B9", "alcance de una frontera declarada", mut_b9_alcance),
+    ("B9", "respaldo del decreto en la frontera declarada", mut_b9_cita),
 ]
 
 RE_FALLO = re.compile(r"^\s*\[(B\d)\]", re.M)
