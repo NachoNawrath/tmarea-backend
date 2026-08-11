@@ -1,0 +1,232 @@
+================================================================================
+E0.2 — EL REGISTRO DE AMBITOS PUBLICADOS. CONSTRUCCION Y CIERRE.
+Fecha: 2026-08-11.
+Reconocimiento: _bitacoras/e02_recon_2026-08-11.txt
+Propuesta:      _bitacoras/e02_propuesta_2026-08-11.txt
+================================================================================
+
+SHELL (CLAUDE.md §7.3): ejecutado en PowerShell 5.1 / Windows. Los comandos de
+abajo estan en sintaxis PowerShell, que es la forma ejecutada.
+
+REGENERAR TODA LA EVIDENCIA DE ESTE CIERRE
+  cd C:\Users\katia\tmarea-backend
+  node scripts/e02_prueba_mordida_ambitos.js
+  node scripts/e02_verificacion_e2e.js
+  npm test
+
+EVIDENCIA CRUDA
+  _bitacoras/e02_construccion_2026-08-11/01_mordida_ambitos.txt
+  _bitacoras/e02_construccion_2026-08-11/02_verificacion_e2e.txt
+  _bitacoras/e02_construccion_2026-08-11/03_suite_unitaria.txt
+
+--------------------------------------------------------------------------------
+1. QUE SE CONSTRUYO
+--------------------------------------------------------------------------------
+
+A · data/decreto/ambitos_publicados.json
+    Los CUATRO ambitos declarados, los cuatro NO publicados, cada uno con su
+    causa escrita. capa_publicada = jurisdicciones_ds991, que hoy no existe: por
+    eso ninguno esta publicado. Cada entrada declara su geografia de reclamo con
+    no_resuelve_jurisdiccion = true y su procedencia; insular_remota la declara
+    NULA con su motivo escrito, porque ninguna de sus dos jurisdicciones tiene
+    geometria de donde tomarla.
+
+    La cabecera declara que "ambito publicado" NO sale de ninguna norma: es
+    concepto nuestro, de estado de construccion (CLAUDE.md §1.1). Lo que si es
+    del contrato es la consecuencia.
+
+B · src/services/ambitos-publicados.js
+    La validacion vive ADENTRO de la carga, como en zonas-aviso.js: no hay forma
+    de consumir la declaracion sin que se haya comprobado. Sin caso por defecto.
+    OCHO controles — se propusieron siete y se agrego C7 al escribirlo, ver §4.
+
+C · src/services/cobertura-jurisdiccional.js
+    La causa (a) de INV-3.6 deja de leerse del INSUMO y pasa a leerse de la BASE,
+    con dos origenes: 'jurisdiccion_no_cerrable' (zonas_aviso.json) y
+    'ambito_no_publicado' (el registro nuevo). Precedencia: una zona declarada
+    gana sobre un ambito, porque nombra una jurisdiccion concreta y el ambito
+    nombra un conjunto. componerAvisos pasa a ser asincrona y recibe el pool.
+
+D · scripts/e02_prueba_mordida_ambitos.js  y  scripts/e02_verificacion_e2e.js
+
+--------------------------------------------------------------------------------
+2. LA MORDIDA — 11 DE 11, MAS CONTROL NEGATIVO
+--------------------------------------------------------------------------------
+
+Salida literal en 01_mordida_ambitos.txt. Exit 0.
+
+La declaracion y el insumo se leen REALES y se alteran EN MEMORIA. Si el test
+llevara su propia copia envejeceria en cuanto cambie el archivo y dejaria de
+medir lo que dice medir — es la trampa que E0.1 ya pago.
+
+  [01] C1  un ambito del insumo sin entrada en el registro
+  [02] C2  una entrada que no corresponde a ningun ambito del insumo
+  [03] C3  RETIRO AUTOMATICO — lacustre no publicado y la base YA lo tiene
+  [04] C4  lacustre declarado PUBLICADO y la capa publicada no existe
+  [05] C4  lacustre declarado PUBLICADO con 4 de 6 — a medias, contra D3
+  [06] C5  un ambito no publicado al que se le borra la causa
+  [07] C6  geografia de reclamo nula sin motivo escrito
+  [08] C6  geografia de reclamo sin declarar no_resuelve_jurisdiccion
+  [09] C6  geografia de reclamo en una relacion que no existe en la base
+  [10] C7  capa_publicada apuntando a la MISMA capa que el motor consulta hoy
+  [11] C8  un trozo reclamado por dos ambitos no publicados a la vez
+
+LAS DOS DIRECCIONES DEL RETIRO, que es lo que se pidio demostrar:
+
+  Direccion 1 — la declaracion dice ausente y la base lo tiene [caso 03]:
+    "C3: el ambito 'lacustre' esta declarado NO publicado y la capa
+     'jurisdicciones_ds991' ya tiene 6 jurisdiccion(es) suyas con geometria. El
+     ambito paso sus controles y se publico: esta entrada perdio la carencia que
+     la justificaba y debe retirarse de ambitos_publicados.json."
+
+  Direccion 2 — la declaracion dice presente y la base no lo tiene [casos 04-05]:
+    "C4: el ambito 'lacustre' esta declarado PUBLICADO y la capa
+     'jurisdicciones_ds991' ni siquiera existe. El registro estaria afirmando una
+     cobertura que no hay, que es el falso negativo silencioso que INV-3.6
+     persigue."
+    "C4: ... declarado PUBLICADO con 4 de 6 jurisdicciones construidas. D3 exige
+     que cada ambito publicado este COMPLETO y auditado."
+
+  El caso 03 es el retiro automatico literal: el dia que E3 publique lo lacustre,
+  la carga se detiene sola y obliga a borrar la entrada. Nadie tiene que
+  acordarse.
+
+CONTROL NEGATIVO, contra la base REAL — PASA:
+  capa_publicada declarada: 'jurisdicciones_ds991'
+  ambitos declarados 4 · no publicados 4 · con geografia de reclamo 3
+    maritima        publicado=false jur=52  reclamo=jurisdicciones_decreto
+    lacustre        publicado=false jur=6   reclamo=jurisdicciones_decreto
+    antartica       publicado=false jur=4   reclamo=jurisdicciones_decreto
+    insular_remota  publicado=false jur=2   reclamo=ninguna (declarado)
+
+  Un validador que rechaza todo no prueba nada. Este acepta la declaracion real.
+
+--------------------------------------------------------------------------------
+3. VERIFICACION DE PUNTA A PUNTA — 0 CAMBIOS DE BANDERA
+--------------------------------------------------------------------------------
+
+Salida literal en 02_verificacion_e2e.txt. Exit 0. La bandera medida ANTES de
+construir esta escrita en el script, para que la comparacion sea automatica y no
+a ojo.
+
+  Anahuac -> Melinka                         Q -> Q  igual
+  Anahuac -> Quellon                         Q -> Q  igual
+  Anahuac -> Chacabuco                       Q -> Q  igual
+  Ancud -> Castro (mar interior)             Q -> Q  igual
+  Chonchi -> Chaiten (Corcovado)             Q -> Q  igual
+  Arica -> Iquique (norte)                   Q -> Q  igual
+  Valparaiso -> San Antonio                  Q -> Q  igual
+  Punta Arenas -> Pto Williams               U -> U  igual
+  Lago Villarrica: bahia 210 -> 209          U -> U  igual
+  Antartica: bahia 139 Fildes -> 231 Chile   U -> U  igual
+
+  Rutas medidas 10 · cambios de bandera 0. La propuesta prometio esto ANTES de
+  construir y se cumple.
+
+LO QUE SI CAMBIO — la causa, que es lo que la etapa existia para arreglar:
+
+  Lago Villarrica (21,8178 km)
+    antes:  causa=hueco_de_capa · jurisdicciones_probables=[] · capitanias=[]
+            + 1 defecto de construccion registrado
+    ahora:  causa=jurisdiccion_sin_geometria · origen=ambito_no_publicado
+            ambito_no_publicado=lacustre
+            jurisdicciones_probables=["lago_villarrica"]
+            0 defectos de construccion registrados
+
+  Antartica Fildes -> Chile (47,5676 km)
+    antes:  causa=hueco_de_capa · 1 defecto de construccion
+    ahora:  causa=jurisdiccion_sin_geometria · origen=ambito_no_publicado
+            ambito_no_publicado=antartica
+            jurisdicciones_probables=["bahia_fildes","puerto_soberania"]
+            0 defectos de construccion
+
+  Los dos siguen derivando a VHF Canal 16, como la medicion de la propuesta
+  anticipo: lago_villarrica no calza con ninguna Capitania del mapa operativo y
+  las cuatro antarticas tampoco (0 de 4, medido).
+
+MEJORA NO PROMETIDA, y conviene decir que no estaba prometida:
+
+  Punta Arenas -> Pto Williams, dos avisos de 352,65 km y 5,02 km, pasan de
+  capitanias=[] y derivacion generica a:
+    capitanias=[{"nombre":"Punta Arenas","telefono":"+56 61 220 1102", ...}]
+    capa_2 -> "Verifica con la Capitania Punta Arenas: +56 61 220 1102 ..."
+
+  Sale de que el ambito maritimo tambien esta declarado no publicado (D10) y su
+  geografia de reclamo resuelve la jurisdiccion punta_arenas, cuyo nombre SI
+  calza con el mapa operativo. La propuesta habia medido la mejora de mensaje
+  solo para lo lacustre; esto es mas de lo que se anuncio, no menos, y queda
+  registrado para que no se lea como un efecto no medido.
+
+SUITE UNITARIA: 76 de 76, 7 suites, 0 fallos (03_suite_unitaria.txt).
+
+--------------------------------------------------------------------------------
+4. DESVIACIONES RESPECTO DE LO PROPUESTO
+--------------------------------------------------------------------------------
+
+4.a — SE AGREGO UN CONTROL. La propuesta ofrecia siete; son ocho.
+
+  C7 nuevo: capa_publicada no puede ser la misma capa que capa_consultada.json
+  declara. Apareció al escribir el modulo: si alguien apunta capa_publicada a
+  bahia_jurisdicciones, los cuatro ambitos se leen como publicados y el registro
+  miente entero desde el primer dia, en silencio y sin que ningun otro control
+  lo note. Es exactamente la forma que §0.3 manda mirar primero. Se agrego y
+  muerde (caso 10).
+
+4.b — SE ROMPIO Y SE ARREGLO UNA SUITE EXISTENTE.
+
+  Volver componerAvisos asincrona rompio
+  src/services/__tests__/cobertura-jurisdiccional.test.js, que la llamaba
+  sincronica. Se actualizo entera y se le sumaron cuatro pruebas nuevas: que un
+  ambito no publicado es causa (a) y NO registra defecto de construccion; que
+  nombra la Capitania cuando el mapa la atribuye; que el tope duro U no lo
+  levanta un ambito no publicado; y que un trozo que ningun ambito reclama sigue
+  siendo (b). Se conservaron las diez pruebas anteriores sin aflojar ninguna
+  asercion.
+
+4.c — DUPLICACION DECLARADA, no resuelta.
+
+  La regla de coincidencia de nombre entre el decreto y el mapa operativo esta
+  ahora en dos lugares: zonas-aviso.js:93-101 y ambitos-publicados.js
+  (contactosDeJurisdicciones). Ahi resuelve una zona declarada con su bahia
+  escrita a mano; aca una jurisdiccion que salio de una consulta geografica. Se
+  unifican en E0.3, que es la etapa que toca el join bahia -> Capitania. Queda
+  escrito en el codigo, no solo aca.
+
+--------------------------------------------------------------------------------
+5. LO QUE ESTE CIERRE NO ESTABLECE
+--------------------------------------------------------------------------------
+
+- NO se toco CONTRATO_MOTOR.md (§6). El texto propuesto para INV-3.5 esta en
+  _bitacoras/e02_texto_propuesto_inv35_2026-08-11.md y lo escribe el owner.
+  Mientras tanto la entrada antartica del registro lleva
+  categoria_contractual = "pendiente".
+- NO se toco la regla de silenciamiento defecto_recorte. Su fundamento ya cayo
+  en fase5Y y es trabajo de E7. Los 33 trozos maritimos que ningun ambito
+  reclama siguen silenciados exactamente igual que antes.
+- NO se toco el motor de reglas ni el parser SITPORT (§6).
+- NO se midio nada del lado de la PWA. El aviso sigue devolviendose en su propio
+  campo y sin componer el veredicto (sitport-routes.js:852, pieza 4). Lo que
+  cambia con E0.2 es QUE dice el backend, no que llegue a pantalla.
+- El ambito insular_remota queda declarado con geografia de reclamo NULA, asi
+  que no reclama ningun trozo. Sus dos jurisdicciones ya las nombra una por una
+  zonas_aviso.json. No se midio ninguna ruta insular: no hay tile de ruteo y
+  tampoco geometria de referencia. NO DETERMINADO.
+- El registro describe estado de construccion, no calidad. Que el maritimo este
+  "no publicado" no dice nada sobre si bahia_jurisdicciones sirve o no; eso ya
+  lo dice el contrato en §7 bug 4.
+
+--------------------------------------------------------------------------------
+6. HALLAZGO ENRUTADO, ABIERTO DESDE LA TANDA DE COMMITS
+--------------------------------------------------------------------------------
+
+npm run drift:mordida escribe sobre el MISMO data/catalogo/estado_drift.json que
+npm run drift, asi que la prueba contamina el estado publicado. El commit f1da328
+limpio el sintoma con una corrida en vivo; la causa sigue viva y va a volver a
+morder en la proxima corrida de esa mordida. Es cambio de codigo y no entro en
+E0.2. Sigue abierto.
+
+================================================================================
+E0.2 CERRADA. PLAN_JURISDICCION.md actualizado a v1.7: §7 con la fila de E0.2,
+§5 con D9 y D10, §8 con la entrada de version. Sin commitear: espera
+autorizacion (§6).
+================================================================================
