@@ -198,17 +198,43 @@ elige uno.
 
 ---
 
-## 7. ENTORNO — WINDOWS / POWERSHELL
+## 7. ENTORNO — WINDOWS
+
+### 7.1 — Hechos de la máquina (valen para cualquiera que ejecute)
+
+- PostgreSQL: `C:\Program Files\PostgreSQL\16\bin\psql.exe`, base `mapa_navegacion`.
+- Vite: puerto 5173, sube a 5174 si está ocupado. Backend en el 3000.
+- SQL largo o con comillas: a archivo, y `psql -f`. No inline. Se rompe distinto en
+  cada shell y además deja el SQL sin versionar.
+- **Nunca** matar node por nombre: mata Vite al mismo tiempo. Se mata por PID.
+
+### 7.2 — Convenciones de PowerShell: para los comandos que corre el owner
+
+**Estas convenciones aplican a los comandos que se le pasan al owner para que él los
+corra en su terminal, no a los que el agente ejecuta internamente.** Qué herramienta
+usa el agente para trabajar es decisión suya (§0): puede ser otra shell, y no tiene
+que reproducir estas convenciones para su propio uso.
+
+Cuando un comando esté pensado para que lo corra el owner, va en **sintaxis
+PowerShell**:
 
 - No existe el operador `&&`: cada comando por separado.
 - `curl.exe`, no el alias `curl`.
 - Archivos con caracteres españoles: `[System.IO.File]::WriteAllText()` con
   `UTF8Encoding($false)`. `Out-File -Encoding utf8` mete BOM y rompe la lectura.
-- SQL largo o con comillas: a archivo, y `psql -f`. No inline.
 - Puerto 3000 ocupado: `netstat -ano | findstr :3000` y `taskkill /PID [n] /F`.
-  **Nunca** `Stop-Process -Name node`: mata Vite al mismo tiempo.
-- PostgreSQL: `C:\Program Files\PostgreSQL\16\bin\psql.exe`, base `mapa_navegacion`.
-- Vite: puerto 5173, sube a 5174 si está ocupado.
+  **Nunca** `Stop-Process -Name node`.
+
+### 7.3 — La bitácora declara su shell
+
+Toda bitácora declara **con qué shell se generaron los comandos que transcribe**. Sin
+eso, un comando copiado de una bitácora falla en la terminal del owner y la evidencia
+deja de ser reproducible (§3.4) — que es justamente lo que la bitácora existe para
+garantizar.
+
+Un comando que aparece en una bitácora para que el owner lo repita va en sintaxis
+PowerShell, aunque el agente lo haya ejecutado en otra shell. Si la forma ejecutada y
+la forma reproducible difieren, se escriben las dos y se dice cuál es cuál.
 
 ---
 
