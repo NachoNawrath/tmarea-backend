@@ -1,0 +1,89 @@
+==============================================================================
+E2 — VOLUMEN DEL CAMBIO DE UNIDAD: BAHÍA → CAPITANÍA
+fecha: 2026-08-12T01:43:09.983Z
+==============================================================================
+unidad de hoy    : bahía, sobre 'bahia_jurisdicciones' (la que el motor consulta)
+unidad propuesta : Capitanía, sobre 'jurisdicciones_decreto' (el andamio de E1)
+join bahía→Capitanía: E0.3, 158 resueltas y 6 sin resolver
+restricciones    : captura versionada de E0.1, 39 registros
+
+LA EXPOSICIÓN QUE ESTE NÚMERO ARRASTRA, DECLARADA JUNTO AL NÚMERO:
+  · 32,1 % de los km medidos caen en alguna de las 11 jurisdicciones que
+    difieren entre v1 y v2 (deuda declarada; regenerar quedó fuera por decisión
+    del owner). No se afirma en qué dirección movería el número.
+  · 10,5 % de los km caen en zona de traslape del andamio: ahí la capa atribuye
+    DOS jurisdicciones y la unidad nueva cuenta de más por construcción.
+
+Anahuac -> Melinka
+   la ruta matchea  : 11 bahías (hoy) · 9 jurisdicciones (unidad nueva)
+   restricciones    : 2 hoy  →  6 con unidad Capitanía   (+4)
+   aparecen         : 112 BAHÍA MAULLÍN · 117 BAHÍA QUELLÓN · 148 ENSENADA ESTAQUILLA · 233 SENO RELONCAVI
+
+Anahuac -> Quellon
+   la ruta matchea  : 8 bahías (hoy) · 9 jurisdicciones (unidad nueva)
+   restricciones    : 3 hoy  →  6 con unidad Capitanía   (+3)
+   aparecen         : 112 BAHÍA MAULLÍN · 148 ENSENADA ESTAQUILLA · 233 SENO RELONCAVI
+
+Anahuac -> Chacabuco
+   la ruta matchea  : 16 bahías (hoy) · 10 jurisdicciones (unidad nueva)
+   restricciones    : 3 hoy  →  5 con unidad Capitanía   (+2)
+   aparecen         : 112 BAHÍA MAULLÍN · 148 ENSENADA ESTAQUILLA · 233 SENO RELONCAVI
+   desaparecen      : 239 SECTOR CANAL FERRONAVE Y CANAL DEVIA
+
+Ancud -> Castro (mar interior)
+   la ruta matchea  : 11 bahías (hoy) · 5 jurisdicciones (unidad nueva)
+   restricciones    : 0 hoy  →  1 con unidad Capitanía   (+1)
+   aparecen         : 155 QUEILEN
+
+Chonchi -> Chaiten (Corcovado)
+   la ruta matchea  : 4 bahías (hoy) · 3 jurisdicciones (unidad nueva)
+   restricciones    : 2 hoy  →  2 con unidad Capitanía   (+0)
+
+Arica -> Iquique (norte)
+   la ruta matchea  : 3 bahías (hoy) · 1 jurisdicciones (unidad nueva)
+   restricciones    : 14 hoy  →  0 con unidad Capitanía   (-14)
+   desaparecen      : 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA
+
+Valparaiso -> San Antonio
+   la ruta matchea  : 5 bahías (hoy) · 3 jurisdicciones (unidad nueva)
+   restricciones    : 0 hoy  →  0 con unidad Capitanía   (+0)
+
+Punta Arenas -> Pto Williams
+   la ruta matchea  : 3 bahías (hoy) · 1 jurisdicciones (unidad nueva)
+   restricciones    : 2 hoy  →  0 con unidad Capitanía   (-2)
+   desaparecen      : 138 PUERTO WILLIAMS · 138 PUERTO WILLIAMS
+
+──────────────────────────────────────────────────────────────────────────────
+TOTAL SOBRE LAS OCHO RUTAS
+──────────────────────────────────────────────────────────────────────────────
+  restricciones mostradas HOY (unidad bahía)      : 26
+  restricciones mostradas con unidad Capitanía    : 20
+  cambio                                          : -6  (-23 %)
+  restricciones que APARECEN                      : 11
+  restricciones que DESAPARECEN                   : 17
+
+
+  POR QUÉ DESAPARECE CADA UNA — tres causas, y sólo una es el cambio de unidad:
+     16  su Capitanía NO TIENE GEOMETRÍA en el andamio
+         (arica, puerto_williams)
+      1  su bahía es una de las 6 que el join de E0.3 dejó SIN RESOLVER
+         (239)
+      0  el CAMBIO DE UNIDAD las deja fuera
+
+  Las dos primeras causas NO son efectos del cambio de unidad: son huecos del
+  andamio y pendientes de E0.3. Una jurisdicción sin geometría YA tiene su
+  aviso por INV-3.6 —R1 pieza 1 la declara— así que el patrón no se queda sin
+  saber; pero esas restricciones no se le listan, y eso hay que decirlo.
+
+  DESCONTANDO LAS DOS CAUSAS QUE NO SON DEL CAMBIO DE UNIDAD, el neto es +11
+  (aparecen 11, desaparecen 0). El signo del neto DEPENDE de cómo se
+  traten los huecos del andamio: con la capa como está da -6, descontándolos da +11.
+  Un número cuyo SIGNO cambia según eso no alcanza para decidir por orden de
+  magnitud, y así se reporta.
+  Una que DESAPARECE es lo grave: hoy se muestra y con la unidad nueva no.
+  Una que APARECE es lo que INV-3.4 manda — la bahía etiqueta, la Capitanía
+  decide — y es de más, nunca de menos (INV-1.2).
+
+==============================================================================
+FIN — medición, no construcción. No se modificó nada.
+==============================================================================

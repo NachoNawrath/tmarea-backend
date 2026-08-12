@@ -1,0 +1,135 @@
+================================================================================
+E2 — SEGUNDA SUB-ETAPA: EL VOLUMEN DEL CAMBIO DE UNIDAD.
+Fecha: 2026-08-12
+Estado: MEDIDO. Nada construido. **El número no alcanza para decidir, y por qué.**
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts/e2_volumen_cambio_unidad.js
+
+Crudo: _bitacoras/e2_volumen_2026-08-12/01_volumen.txt
+
+
+0. LO PRIMERO, PORQUE EL OWNER LO PIDIÓ EXPLÍCITAMENTE
+--------------------------------------------------------------------------------
+El owner dijo: "si el número sale cerca de un umbral donde la decisión podría
+irse para cualquier lado, decilo — ahí el orden de magnitud no alcanza".
+
+**Es peor que cerca de un umbral: el SIGNO del número lo decide un artefacto.**
+
+    con el andamio como está          −6   restricciones  (−23 %)
+    descontando lo que no es del
+    cambio de unidad                 +11   restricciones
+
+Las dos cuentas son de la misma corrida. No hay un número; hay dos, con signo
+opuesto, y cuál se mira depende de cómo se traten los huecos del andamio.
+
+
+1. CÓMO SE MIDIÓ
+--------------------------------------------------------------------------------
+Ocho rutas reales. Lo de HOY no se reimplementa: sale del mismo SQL que
+`bahiasEnRutaPostGIS` usa en `sitport-routes.js:562`, contra la capa que
+`capa_consultada.json` nombra. La unidad NUEVA sale del andamio de E1 —pedido por
+`capaDeMedicion()`— y la Capitanía de cada restricción, del join de E0.3.
+
+Restricciones: la captura versionada de E0.1, 39 registros. En vivo daría otro
+número cada hora y no se podría comparar con nada.
+
+
+2. EL NÚMERO CRUDO
+--------------------------------------------------------------------------------
+    restricciones mostradas HOY (unidad bahía)      26
+    restricciones con unidad Capitanía              20
+    cambio                                          −6      (−23 %)
+    aparecen                                        11
+    desaparecen                                     17
+
+
+3. POR QUÉ DESAPARECE CADA UNA — TRES CAUSAS, Y SÓLO UNA ES LA UNIDAD
+--------------------------------------------------------------------------------
+     16   su Capitanía NO TIENE GEOMETRÍA en el andamio   (arica, puerto_williams)
+      1   su bahía es una de las 6 que el join de E0.3 dejó SIN RESOLVER  (239)
+      0   el CAMBIO DE UNIDAD las deja fuera
+
+**Cero.** Ninguna restricción se pierde por pasar de bahía a Capitanía. Las 17
+que desaparecen se explican enteras por dos cosas que no son el cambio de unidad:
+
+  · 14 de las 16 son la bahía 71 (Bahía de Arica) en la ruta Arica → Iquique.
+    `arica` es una de las diez jurisdicciones que el decreto NO permite cerrar
+    —"falta el límite norte, y no hay contorno que lo supla"— así que no tiene
+    geometría en ninguna capa y no la va a tener regenerando. Las otras 2 son
+    Puerto Williams, del mismo grupo.
+  · La 239 (Canal Ferronave y Canal Devia) es una de las seis que E0.3 dejó
+    declaradas sin resolver, esperando al informante austral.
+
+**Regenerar desde v2 NO arregla esto.** Las diez sin geometría lo están por el
+decreto, no por el insumo. Lo que corresponde es contarlas aparte, y que el
+patrón las reciba por donde INV-3.6 ya manda: R1 pieza 1 declara zona de aviso
+para `arica` y para `puerto_williams`, así que no se queda sin saber — pero esas
+restricciones no se le LISTAN, y eso hay que decirlo con todas las letras.
+
+
+4. LO QUE APARECE, QUE ES LO QUE EL CONTRATO MANDA
+--------------------------------------------------------------------------------
+11 restricciones que hoy NO se muestran y con la unidad Capitanía sí:
+
+    112 BAHÍA MAULLÍN · 117 BAHÍA QUELLÓN · 148 ENSENADA ESTAQUILLA ·
+    233 SENO RELONCAVI · 155 QUEILEN   (algunas en más de una ruta)
+
+Es exactamente INV-3.4: la bahía etiqueta, la Capitanía decide. Y es de más,
+nunca de menos (INV-1.2). Cuatro de las ocho rutas ganan restricciones; ninguna
+pierde por la unidad.
+
+Sobre las ocho rutas, la unidad nueva agrega entre 0 y 4 restricciones por ruta.
+El caso mayor es Anahuac → Melinka: de 2 a 6.
+
+
+5. LA EXPOSICIÓN, DECLARADA JUNTO AL NÚMERO COMO EL OWNER PIDIÓ
+--------------------------------------------------------------------------------
+  · **32,1 %** de los km medidos caen en alguna de las 11 jurisdicciones que
+    difieren entre v1 y v2. No se afirma en qué dirección movería el número:
+    exige regenerar y volver a medir.
+  · **10,5 %** de los km caen en zona de traslape del andamio, donde la capa
+    atribuye DOS jurisdicciones y la unidad nueva cuenta de más por construcción.
+    Las 11 que aparecen no se auditaron una por una contra esos tramos: no está
+    determinado cuántas de las 11 son traslape y cuántas son atribución legítima.
+
+
+6. POR QUÉ ESTO PIDE REEVALUAR REGENERAR — Y POR QUÉ NO ALCANZA CON ESO
+--------------------------------------------------------------------------------
+El owner dejó dicho que si el número se iba para cualquier lado, se reevalúa
+regenerar. Se va para cualquier lado. Pero la medición dice algo más preciso, y
+conviene no gastar la reevaluación en el lugar equivocado:
+
+  · El salto de signo NO lo produce la parte desactualizada (v1 vs v2), sino las
+    jurisdicciones sin geometría, que regenerar no toca.
+  · Lo que la parte desactualizada sí puede mover es el 32,1 % de los km, y con
+    ellos las 11 que aparecen y los 218,65 km ambiguos. Cuánto, no está medido.
+
+O sea: **regenerar es la única forma de bajar el 32,1 %, y no es la forma de
+resolver el salto de signo.** Para lo segundo hace falta decidir cómo se cuentan
+las jurisdicciones sin geometría en una medición de volumen, que es una decisión
+de método y la tomo yo si el owner no la revoca — pero no la tomo hoy, porque
+cambia el número que él va a mirar.
+
+
+7. LO QUE NO SE DETERMINÓ, Y POR QUÉ NO SE ESTIMA
+--------------------------------------------------------------------------------
+- **Cuántas de las 11 que aparecen vienen de tramos en traslape.** Se puede
+  medir cruzando cada aparición contra los 218,65 km ambiguos; no está hecho.
+- **Cuánto movería regenerar desde v2.** Exige regenerar. Cualquier número acá
+  sería una proyección y serviría para decidir mal con confianza.
+- **Si 39 restricciones capturadas un día son representativas.** Es una foto.
+  SITPORT cambia por hora, y el número de restricciones que aparecen depende de
+  cuáles estén publicadas ese día. La forma del resultado —cero pérdidas por
+  unidad, ganancias por INV-3.4— es estructural; la magnitud no.
+- **Qué pasa con las rutas lacustres y antárticas.** Las ocho rutas son
+  marítimas. El ámbito lacustre no tiene capa (E3).
+
+================================================================================
+FIN DE LA SUB-ETAPA. Alto para autorización.
+================================================================================
