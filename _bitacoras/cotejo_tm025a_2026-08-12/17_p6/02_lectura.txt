@@ -1,0 +1,52 @@
+P6 — REGENERAR Y COMPARAR. LECTURA DEL RESULTADO.
+Fecha: 2026-08-11  ·  Shell: Git Bash (MSYS)
+
+QUE SE COMPARO
+  El insumo derivado en el commit c3f2ae1 (2026-08-11), que es el ultimo
+  estado ANTES de esta pasada, contra el de ahora. El 'antes' se saca del
+  repositorio con git show, no de un respaldo suelto, para que la comparacion
+  se pueda repetir en cualquier clon:
+      git show c3f2ae1:data/decreto/jurisdicciones_v2.json > v2_antes_de_la_pasada.json
+      node comparar_v2.js v2_antes_de_la_pasada.json data/decreto/jurisdicciones_v2.json
+
+LO QUE CAMBIO
+  4 claves NUEVAS de nivel superior, 0 perdidas:
+      cotejado_contra              contra que texto se coteja (P5)
+      gobernaciones                las 16 del Art. 1 (P3)
+      articulos                    el Art. 2 (P3, cierra D6)
+      diferencias_no_incorporadas  las 6 declaradas (P5)
+  derivado_de: el sha256 del v1 pasa de 49672a46 a f6fe9b62. Correcto y
+      necesario: la fuente cambio a proposito y el sello la sigue. Es el campo
+      que el control B0 verifica, y hoy pasa.
+  puntos_notables: 73 -> 73. Cambia UNO, 'Punta Tames', en 'nota' (P4).
+  jurisdicciones: 64 -> 64. Cambian 12:
+      texto_decreto        9   las nueve de P2
+      correccion_aplicada  2   mejillones y punta_arenas (P4)
+      nota_fuente          1   tocopilla (P4)
+
+LO QUE NO CAMBIO — que es el resultado que importa
+  En las 64 jurisdicciones, NINGUNO de estos campos se movio:
+      limite_norte · limite_sur · contorno · tramos · receta ·
+      estado_geometria · participa_matching · ambito · contorno_cerrado ·
+      lado_abierto · sigue_litoral · cuerpos_lacustres · fronteras ·
+      punto_representativo
+  124 puntos antes, 124 despues, con el mismo respaldo cada uno.
+
+  O sea: la pasada agrego texto, procedencia y declaraciones, y NO TOCO UN SOLO
+  DATO DEL QUE SALGA GEOMETRIA. Esa era la promesa de P2 —agregar solo puede
+  sumar coincidencias de respaldo_textual, nunca quitarlas— y esta medida
+  sobre el estado final, no sobre un paso intermedio.
+
+UN CONTROL QUE VALE LA PENA LEER AL REVES
+  'valdivia' aparece en la lista con UN campo cambiado: texto_decreto. NO
+  aparece con causa_sin_punto_representativo ni punto_representativo_descartado,
+  que son los dos campos que la compuerta P0 encontro que se perdian al
+  regenerar. Que no esten en esta lista es la confirmacion, sobre el estado
+  final, de que la declaracion del owner del 2026-08-10 sobrevive a la cadena.
+
+ESTADO DE LOS CONTROLES AL CERRAR P6
+  auditor del insumo (fase4_auditoria_v2.py) : LIMPIA, exit 0
+  tramos                                     : litoral 4 · frontera 91 · abierto 5
+  suite unitaria                             : 76/76
+  mordidas                                   : 11/11 ambitos · 16/16 join · 14/14 andamio
+  validador de zonas_aviso                   : exit 0

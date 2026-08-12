@@ -1,0 +1,56 @@
+MEDICION — LA SEGUNDA GRAFIA DE LA LAGUNA GALLETUE / GUALLETUE
+Fecha: 2026-08-11  ·  Shell: Git Bash (MSYS)  ·  Sin escribir en el insumo.
+
+DE DONDE SALE. El cotejo del TM-025 A encontro que el parrafo de la GOBERNACION
+de Valdivia escribe 'Gualletue' donde el de la CAPITANIA de Lago Villarrica
+escribe 'Galletue'. El insumo se transcribio del parrafo de la Capitania, busco
+'Galletue' contra el catastro y no encontro nada: la laguna quedo con
+resolucion 'ausente' en cotejo_lacustre_adjudicado.json, o sea sin geometria.
+
+FUENTE: geodata/lagos/Inventario_Lagos.shp — 2.067 registros.
+
+RESULTADO
+  'GALLETUE'  -> 0 registros
+  'GUALLETUE' -> 1 registro, unico en los 2.067:
+      NOMBRE     LAGO GUALLETUE      (fid 965, NUM 966)
+      REGION     IX  ·  PROVINCIA Malleco  ·  COMUNA Lonquimay
+      AREA       13,075 km2
+      TIPO       'Laguna Principal' — el catastro tambien lo llama laguna,
+                 igual que el decreto
+      CENTRO     -38,6810 / -71,2915
+
+POR QUE ES EL CUERPO CORRECTO, medido y no argumentado
+  La frase del decreto es 'las Lagunas Conguillio, Galletue e Icalma'. El
+  candidato cae ENTRE los otros dos cuerpos de esa misma frase:
+      a ICALMA        8,6 km
+      a CONGUILLIO   24,7 km
+      a CABURGA      51,9 km   <- el siguiente cuerpo del parrafo, 6x mas lejos
+      a COLICO       65,3 km
+      a VILLARRICA   81,3 km
+      a HUILIPILUN   85,9 km
+  Y no hay competencia: es el UNICO cuerpo de la IX Region cuyo nombre empieza
+  con G en el catastro.
+
+  El argumento NO es 'se parece'. Es que la segunda grafia la da EL PROPIO
+  DECRETO, en el parrafo de la Gobernacion de la que esa Capitania depende, y
+  esa grafia calza EXACTA con el catastro. Es el instrumento del caso Ancud: la
+  contrapartida esta en el parrafo del vecino — y esta vez el vecino es el de
+  arriba. Ademas 'lago/laguna es nomenclatura, no identidad' y 'diferencia de
+  grafia del mismo toponimo' son criterios YA adjudicados en este insumo
+  (Caburgua->CABURGA, Pullinque->PULLINGUE, Pellaifa, Neltume).
+
+OJO AL INCORPORARLA — hay un duplicado en el catastro
+  El registro fid 960 no tiene NOMBRE y su geometria es IDENTICA a la del 965
+  (ST_Equals verdadero, misma area 13,075 km2). Hay ademas un cuerpo sin nombre
+  de 0,238 km2 a 475 m. Quien adjudique esto tiene que quedarse con fid 965 y
+  no unir el 960, o el area se cuenta dos veces. No es raro en esta capa:
+  Icalma ya esta adjudicada con dos fid (966 y 967) porque son dos partes
+  REALES del mismo cuerpo — este no es ese caso, es una fila repetida.
+
+QUE NO SE HIZO
+  No se toco el insumo. Incorporarla exige regenerar
+  cotejo_lacustre_adjudicado.json, que es un artefacto de adjudicacion, y eso
+  es decision del owner. La entrada 'galletue_vs_gualletue' de
+  diferencias_no_incorporadas ya deja escrito que esto la reabre.
+
+Scripts re-ejecutables: medir_galletue.py y medir_galletue2.py, en este directorio.

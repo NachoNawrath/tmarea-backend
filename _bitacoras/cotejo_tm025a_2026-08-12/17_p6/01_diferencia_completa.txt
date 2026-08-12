@@ -1,0 +1,53 @@
+==============================================================================
+P6 — DIFERENCIA COMPLETA DEL INSUMO DERIVADO, ANTES Y DESPUES DE LA PASADA
+==============================================================================
+  antes   : v2_antes_de_la_pasada.json
+  despues : C:/Users/katia/tmarea-backend/data/decreto/jurisdicciones_v2.json
+
+1. CLAVES DE NIVEL SUPERIOR
+   antes 12  ->  despues 16
+   NUEVAS   (4): cotejado_contra, gobernaciones, articulos, diferencias_no_incorporadas
+   PERDIDAS (0): — ninguna
+   CAMBIADAS(3): derivado_de, puntos_notables, jurisdicciones
+   IGUALES  (9): version, fuente, generado, generado_por, nota_construccion, convenciones, fronteras, correccion_testigos, pendientes
+
+2. DETALLE DE LAS CLAVES CAMBIADAS (fuera de `jurisdicciones`)
+   derivado_de:
+     jurisdicciones_capitanias.json     49672a4683d87dd2 -> f6fe9b62b51983fb
+     cotejo_lacustre_adjudicado.json    igual
+     seed-bahias-sitport.js             igual
+   puntos_notables: 73 -> 73 elementos
+     ~ Punta Tames: nota, nota_anterior
+
+3. JURISDICCIONES
+   cantidad: 64 -> 64
+   ids nuevos  : — ninguno
+   ids perdidos: — ninguno
+   jurisdicciones que cambiaron: 12 de 64
+
+   campos afectados:
+     texto_decreto                    9
+     correccion_aplicada              2
+     nota_fuente                      1
+
+   una por una:
+     tocopilla            nota_fuente
+     mejillones           correccion_aplicada
+     talcahuano           texto_decreto
+     carahue              texto_decreto
+     lago_villarrica      texto_decreto
+     lago_ranco           texto_decreto
+     valdivia             texto_decreto
+     corral               texto_decreto
+     cochamo              texto_decreto
+     punta_arenas         correccion_aplicada
+     tierra_del_fuego     texto_decreto
+     puerto_williams      texto_decreto
+
+4. CONTROLES — LO QUE NO TENIA QUE CAMBIAR
+   ok  ningun limite, contorno, tramo, receta, estado, ambito, frontera,
+       cuerpo lacustre ni punto representativo cambio en las 64.
+   puntos totales: 124 -> 124  ok
+   respaldo de los puntos: ok  identico
+
+==============================================================================
