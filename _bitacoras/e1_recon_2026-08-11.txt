@@ -1,0 +1,145 @@
+================================================================================
+E1 — RECONOCIMIENTO DEL ANDAMIO DE MEDICIÓN.
+Fecha: 2026-08-11
+Estado: reconocimiento CERRADO. Nada modificado. Alto antes de construir.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts/e1_reconocimiento_andamio.js
+
+Crudo: _bitacoras/e1_recon_2026-08-11/01_reconocimiento.txt (125 líneas).
+La conexión a la base sale de `.env` por `pg`; `psql.exe` a secas se queda
+esperando contraseña y cuelga la corrida.
+
+
+1. LA CAPA SIRVE PARA LO QUE E1 QUIERE
+--------------------------------------------------------------------------------
+`jurisdicciones_decreto`, tabla, medida hoy:
+
+    64 filas · 64 ids distintos · 10 geom nulas · 0 geom vacías
+    columnas: id, nombre, gobernacion, ambito, participa_matching,
+              sin_georreferenciar, estado_geometria, metodo, rol_cadena,
+              causa_sin_geom, texto_decreto, geom
+
+Y la clave es la del decreto, comprobado en los dos sentidos: los 64 ids de la
+capa y los 64 de `jurisdicciones_v2.json` son el mismo conjunto — ninguno sobra
+ni falta de ningún lado. Es lo que E1 necesita: unidad Capitanía y clave del
+decreto.
+
+`jurisdicciones_ds991` sigue sin existir. `bahia_jurisdicciones` sigue siendo la
+matview que el motor consulta.
+
+
+2. EL SOLAPAMIENTO QUE E0.2 ANOTÓ: VERIFICADO, Y LOS DOS MOTIVOS SIGUEN EN PIE
+--------------------------------------------------------------------------------
+La marca existe. Literal, leída de la base en esta pasada:
+
+  "SUPERSEDIDA Y DESACTUALIZADA. NO CONSULTAR. Capa de la Fase 3 ter, construida
+   desde data/decreto/jurisdicciones_capitanias.json (insumo v1). Dos motivos por
+   los que no debe usarse: (1) su geometria NO corresponde a su fuente — la Etapa
+   A corrigio despues el cuarto vertice de Rio Negro Hornopiren y el limite sur
+   de Castro, y esta capa no se regenero, de modo que contradice INV-3.7; (2) su
+   metodo produce traslapes grandes entre vecinas (28.325 km2 entre Puerto
+   Aguirre y Puerto Chacabuco, medidos el 10-AGO-2026). Se conserva junto con el
+   SQL que la genero, scripts/fase3ter_capa_jurisdicciones.sql, como constancia
+   de como se construyo. Ningun archivo de src/ la consulta. La reemplaza
+   jurisdicciones_ds991."
+
+No lo di por bueno. Medí los dos motivos hoy:
+
+  MOTIVO (1) — la geometría no corresponde a su fuente. CIERTO.
+    hornopiren : el insumo declara 4 puntos de contorno; 3 NO aparecen como
+                 vértice de la capa.
+    castro     : el insumo declara 11; 4 NO aparecen.
+    Es exactamente lo que el comentario dice y la razón por la que contradice
+    INV-3.7: la capa salió del insumo v1 y el insumo se corrigió después.
+
+  MOTIVO (2) — traslapes grandes entre vecinas. CIERTO, y peor de lo que el
+    comentario cuenta:
+      Puerto Aguirre × Puerto Chacabuco : 28.325,1 km²  (el comentario dice
+                                          28.325 — coincide al km²)
+      toda la capa                      : 60 pares que se traslapan,
+                                          44.875,6 km² en total
+
+    El comentario cita un par; la capa tiene sesenta. Eso no invalida la marca:
+    la refuerza, y hay que saberlo antes de medir sobre ella, porque una
+    medición de volumen sobre una capa con 60 pares traslapados cuenta de más
+    por construcción. E2 tiene que decir qué hace con eso, no descubrirlo.
+
+  UNA IMPRECISIÓN DEL COMENTARIO, MEDIDA: dice "Ningun archivo de src/ la
+  consulta". Hoy hay una mención en src/ —
+  `src/services/__tests__/cobertura-jurisdiccional.test.js:33`— dentro de una
+  lista de relaciones que el test finge en memoria. Ningún archivo de PRODUCCIÓN
+  la consulta, que es lo que el comentario quiere decir; pero literal ya no es
+  exacto, y cuando dos guards tienen que decir lo mismo, "literal" importa.
+
+
+3. LO QUE EL SOLAPAMIENTO OBLIGA A RESOLVER, Y NO ES COSMÉTICO
+--------------------------------------------------------------------------------
+El guard que ya está dice **NO CONSULTAR**, sin condición. El guard que E1 pide
+dice **consultable sólo para medir**. Puestos uno al lado del otro, se
+contradicen: alguien que lee la base ve "no consultar" y alguien que lee el
+repositorio ve "andamio declarado, úsese para medir".
+
+Los dos guards tienen que decir lo mismo, y lo que tienen que decir es lo mismo
+con la condición explícita: la capa NO la consulta el motor, y SÍ la puede
+consultar una medición declarada. Cuál de los dos textos se mueve, y cómo, es
+decisión de diseño de la construcción — no la tomo acá.
+
+Lo que sí queda medido es que **no alcanza con agregar un campo**: si sólo se
+declara el andamio en el repositorio, el comentario de la base queda mintiendo,
+y ese comentario es donde mira un tercero que abre la base sin el repo al lado.
+
+
+4. LA COSTURA POR DONDE ENTRARÍA, Y EL RIESGO QUE TRAE
+--------------------------------------------------------------------------------
+`data/decreto/capa_consultada.json` tiene hoy 10 campos y **ninguno marca
+andamio**. Su campo `capa_jurisdicciones` vale `bahia_jurisdicciones`.
+
+Quién lo lee, medido: `cobertura-jurisdiccional.js` (52, 71, 81, 154) y
+`ambitos-publicados.js` (29, 59), más el test y un comentario en
+`sitport-routes.js:554`.
+
+DE AHÍ SALE EL RIESGO CONCRETO DE PROMOCIÓN POR DESCUIDO: `cobertura-
+jurisdiccional.js` consulta la capa que ese archivo nombra. Si el andamio se
+declarara ahí como `capa_jurisdicciones`, el motor pasaría a consultarlo con
+sólo cambiar una línea de dato — que es exactamente lo que E1 existe para
+impedir. Cualquier diseño que se elija tiene que dejar el andamio en un campo
+que el motor NO lea como su capa, o hacer que el motor se detenga si lo lee.
+
+Además, `ambitos-publicados.js:59` (control C7) ya compara `capa_publicada`
+contra `capa_consultada.capa_jurisdicciones`. Es un tercer punto que toca los
+mismos nombres y hay que mirarlo al construir para no dejar tres reglas que
+opinan de lo mismo.
+
+
+5. EL ARRANQUE: HAY UN HOOK, Y ES DE OTRA NATURALEZA
+--------------------------------------------------------------------------------
+Hoy corre uno solo, en `src/index.js:77` →
+`drift-arranque.revisarDriftEnArranque()`, de E0.1. Su cabecera declara, y lo
+verifiqué en el archivo: **"No bloquea ni demora el arranque"**. Es informativo
+a propósito, porque una fuente externa caída no puede tumbar el servicio.
+
+El guard de E1 es al revés: la aceptación dice que **el arranque falla** si la
+capa declarada es el andamio fuera de un contexto de medición. Uno informa, el
+otro detiene. Conviven, pero no se pueden confundir ni compartir mecanismo sin
+decir cuál es cuál.
+
+
+6. LO QUE ESTE RECONOCIMIENTO NO DETERMINÓ
+--------------------------------------------------------------------------------
+- Qué es, operativamente, "un contexto de medición". Es la definición de la que
+  cuelga todo el guard y todavía no está escrita.
+- Si los 60 pares traslapados cambian lo que E2 puede concluir, y cuánto. Se
+  mide en E2; acá sólo queda registrado que existen.
+- Si la capa hay que regenerarla desde el insumo v2 antes de usarla de andamio.
+  Regenerarla arreglaría el motivo (1) de la marca y dejaría el (2) en pie. No
+  lo propongo ni lo descarto acá: es materia de la propuesta.
+
+================================================================================
+FIN DEL RECONOCIMIENTO. Alto para autorización.
+================================================================================

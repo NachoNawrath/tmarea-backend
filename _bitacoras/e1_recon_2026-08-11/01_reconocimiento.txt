@@ -1,0 +1,125 @@
+==============================================================================
+E1 — RECONOCIMIENTO DEL ANDAMIO DE MEDICIÓN
+fecha: 2026-08-11T23:01:51.312Z
+==============================================================================
+
+──────────────────────────────────────────────────────────────────────────────
+1. LAS TRES CAPAS QUE RESPONDEN LA MISMA PREGUNTA
+──────────────────────────────────────────────────────────────────────────────
+  bahia_jurisdicciones     matview  comentario: SÍ
+  jurisdicciones_decreto   tabla    comentario: SÍ
+  jurisdicciones_ds991     NO EXISTE
+
+──────────────────────────────────────────────────────────────────────────────
+2. LA MARCA QUE LA CAPA YA LLEVA EN EL DATO, LITERAL
+──────────────────────────────────────────────────────────────────────────────
+  │ SUPERSEDIDA Y DESACTUALIZADA. NO CONSULTAR. Capa de la Fase 3 ter,
+  │ construida desde data/decreto/jurisdicciones_capitanias.json (insumo v1).
+  │ Dos motivos por los que no debe usarse: (1) su geometria NO corresponde a
+  │ su fuente — la Etapa A corrigio despues el cuarto vertice de Rio Negro
+  │ Hornopiren y el limite sur de Castro, y esta capa no se regenero, de modo
+  │ que contradice INV-3.7; (2) su metodo produce traslapes grandes entre
+  │ vecinas (28.325 km2 entre Puerto Aguirre y Puerto Chacabuco, medidos el
+  │ 10-AGO-2026). Se conserva junto con el SQL que la genero,
+  │ scripts/fase3ter_capa_jurisdicciones.sql, como constancia de como se
+  │ construyo. Ningun archivo de src/ la consulta. La reemplaza
+  │ jurisdicciones_ds991.
+
+  Contiene la frase "NO CONSULTAR": SÍ
+  Contiene "SUPERSEDIDA":          SÍ
+
+──────────────────────────────────────────────────────────────────────────────
+3. ¿TIENE LA FORMA Y LA CLAVE QUE E1 NECESITA?
+──────────────────────────────────────────────────────────────────────────────
+  columnas (12): id, nombre, gobernacion, ambito, participa_matching, sin_georreferenciar, estado_geometria, metodo, rol_cadena, causa_sin_geom, texto_decreto, geom
+  filas 64 · ids distintos 64 · geom nulas 10 · geom vacías 0
+  ids del insumo: 64 · ids de la capa: 64
+  en el insumo y no en la capa: ninguno
+  en la capa y no en el insumo: ninguno
+
+  Lo que E1 necesita de una capa para medir el cambio de unidad es que la
+  unidad sea la Capitanía y que la clave sea la del decreto. Las dos cosas
+  están: la columna `id` es el mismo espacio de ids que `jurisdicciones_v2`.
+
+──────────────────────────────────────────────────────────────────────────────
+4. EL COMENTARIO AFIRMA "Ningún archivo de src/ la consulta". ¿ES CIERTO HOY?
+──────────────────────────────────────────────────────────────────────────────
+  src/ → 1 menciones en 1 archivos
+        1× src/services/__tests__/cobertura-jurisdiccional.test.js
+      literal: src/services/__tests__/cobertura-jurisdiccional.test.js:33:  jurisdicciones_decreto: ['id', 'ambito', 'geom'],
+  scripts/ → 257 menciones en 14 archivos
+       73× scripts/fase3_capa_jurisdicciones.sql
+       73× scripts/fase3bis_capa_jurisdicciones.sql
+       73× scripts/fase3ter_capa_jurisdicciones.sql
+       10× scripts/fase3bis_evidencia.sql
+        9× scripts/fase3_evidencia.sql
+        4× scripts/e02_prueba_mordida_ambitos.js
+        3× scripts/fase5_medir_e02_causas.js
+        3× scripts/fase5_recon_e02_ambitos.js
+        2× scripts/fase3_construir_capa.py
+        2× scripts/fase5_auditar_tramos_silenciados.js
+        2× scripts/fase5_declarar_capas_vigentes.sql
+        1× scripts/fase3bis_construir_capa.py
+        1× scripts/fase3ter_adyacencias.sql
+        1× scripts/fase3ter_construir_capa.py
+
+  LECTURA: en src/ la única mención está en un ARCHIVO DE PRUEBA, dentro de una
+  lista de relaciones que el test finge en memoria. Ningún archivo de producción
+  de src/ la consulta, que es lo que el comentario quiere decir — pero el
+  comentario dice "ningún archivo de src/", y eso, literal, ya no es exacto.
+
+──────────────────────────────────────────────────────────────────────────────
+5. LOS DOS MOTIVOS DE LA MARCA, MEDIDOS HOY
+──────────────────────────────────────────────────────────────────────────────
+  Motivo (1): "su geometría NO corresponde a su fuente — la Etapa A corrigió
+  después el cuarto vértice de Rio Negro Hornopiren y el límite sur de Castro,
+  y esta capa no se regeneró".
+
+    hornopiren: el insumo declara 4 puntos de contorno; la capa tiene 9 vértices distintos.
+      puntos del insumo que NO aparecen como vértice de la capa: 3
+        (-41.911667, -72.883333)
+        (-42.5, -72.633333)
+        (-42.5, -73)
+    castro: el insumo declara 11 puntos de contorno; la capa tiene 2734 vértices distintos.
+      puntos del insumo que NO aparecen como vértice de la capa: 4
+        (-42.558333, -73.558333)
+        (-42.558333, -73.616667)
+        (-42.583333, -73.616667)
+        (-42.583333, -85)
+
+  Motivo (2): "su método produce traslapes grandes entre vecinas (28.325 km²
+  entre Puerto Aguirre y Puerto Chacabuco, medidos el 10-AGO-2026)".
+    traslape Puerto Aguirre × Puerto Chacabuco, medido ahora: 28325.1 km²
+    pares de vecinas que se traslapan en toda la capa: 60 · 44875.6 km² en total
+
+──────────────────────────────────────────────────────────────────────────────
+6. `capa_consultada.json` — LA COSTURA, Y QUÉ CAMPOS TIENE HOY
+──────────────────────────────────────────────────────────────────────────────
+  campos: version, generado, que_es, por_que_existe, capa_jurisdicciones, capa_recorte_tierra, tolerancia_fuera_del_recorte_m, por_que_esa_tolerancia, procedencia, advertencia
+  capa_jurisdicciones = 'bahia_jurisdicciones'
+  ¿trae algún campo que marque andamio?  NO
+
+  Quién la lee, medido:
+      src/routes/sitport-routes.js:554:// la medición de cobertura (data/decreto/capa_consultada.json), validada contra
+      src/services/__tests__/cobertura-jurisdiccional.test.js:139:  const decl = require('../../../data/decreto/capa_consultada.json');
+      src/services/ambitos-publicados.js:29:const RUTA_CAPA        = path.join(__dirname, '..', '..', 'data', 'decreto', 'capa_consultada.json');
+      src/services/ambitos-publicados.js:59:    `C7: "capa_publicada" apunta a '${decl.capa_publicada}', que es la MISMA capa que capa_consultada.json ` +
+      src/services/cobertura-jurisdiccional.js:52:const RUTA_CAPA = path.join(__dirname, '..', '..', 'data', 'decreto', 'capa_consultada.json');
+      src/services/cobertura-jurisdiccional.js:71:      `capa_consultada.json no declara '${campo}'.`);
+      src/services/cobertura-jurisdiccional.js:81:      `la capa '${nombre}' declarada en capa_consultada.json no existe en el esquema public. ` +
+      src/services/cobertura-jurisdiccional.js:154:    `capa_consultada.json no declara 'tolerancia_fuera_del_recorte_m' como numero. ` +
+
+──────────────────────────────────────────────────────────────────────────────
+7. EL ARRANQUE — QUÉ VALIDA HOY
+──────────────────────────────────────────────────────────────────────────────
+      src/index.js:77:  require('./services/drift-arranque').revisarDriftEnArranque();
+      src/services/drift-arranque.js:3:// drift-arranque.js — condición del owner sobre D8 (aprobada B1, 2026-08-11):
+
+  El hook de E0.1 declara "No bloquea ni demora el arranque": SÍ
+  E1 pide lo contrario para su guard: "el arranque FALLA si la capa declarada
+  es el andamio fuera de un contexto de medición". Son dos hooks de naturaleza
+  distinta y conviene que no se confundan: uno informa, el otro detiene.
+
+==============================================================================
+FIN DEL RECONOCIMIENTO — no se modificó nada.
+==============================================================================
