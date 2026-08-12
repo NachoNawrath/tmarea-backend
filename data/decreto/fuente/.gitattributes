@@ -1,0 +1,8 @@
+# El repositorio corre con core.autocrlf=true. Sin esto, git normalizaria el .txt
+# al guardarlo y lo reescribiria al sacarlo, y el sha256 que PROCEDENCIA.md
+# registra dejaria de coincidir en un clon — que es exactamente la clase de
+# defecto que este directorio existe para cerrar.
+#
+# Los dos archivos se guardan tal cual estan, byte a byte.
+*.pdf binary
+*.txt -text
