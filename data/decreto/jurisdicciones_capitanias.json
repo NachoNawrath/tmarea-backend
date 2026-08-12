@@ -30,7 +30,8 @@
       "lon_dms": null,
       "lat": -22.65,
       "lon": null,
-      "nota": "El decreto usa 22 39 00 en CP Tocopilla y 22 30 00 en CP Mejillones para el mismo punto. Discrepancia de la fuente, no de OCR."
+      "nota": "CORRECCION DE MOTIVO, 2026-08-11 — El texto oficial (TM-025 A, actualizado al 4 de junio de 2025 (DIRECTEMAR)) usa 22º39'00'' tanto en CP Tocopilla como en CP Mejillones: NO HAY DISCREPANCIA DE LA FUENTE. La nota anterior afirmaba que si la habia y que no era de OCR; se equivocaba de documento, no de lectura — el consolidado de BCN contra el que se transcribio trae 22 30 00 en CP Mejillones y el texto oficial vigente no. Ubicacion del punto, sin cambios y verificada aparte: 22 39 22 S (terreno, Google Earth, 2026-08-09).",
+      "nota_anterior": "El decreto usa 22 39 00 en CP Tocopilla y 22 30 00 en CP Mejillones para el mismo punto. Discrepancia de la fuente, no de OCR."
     },
     {
       "nombre": "Punta Jorgino",
@@ -560,13 +561,14 @@
       "limite_norte_dec": -21.425,
       "limite_sur_dms": "22 39 00 S",
       "limite_sur_dec": -22.65,
-      "nota": "Valor confirmado. El parrafo de CP Mejillones daba 22 30 00 S para el mismo punto; se corrigio alli.",
+      "nota": "CORRECCION DE MOTIVO, 2026-08-11 — Valor confirmado: el limite Sur de CP Tocopilla es 22 39 00 S. La nota anterior decia que el parrafo de CP Mejillones daba 22 30 00 S para el mismo punto y que por eso se habia corregido alli. Eso era cierto del consolidado de BCN, no del decreto: el texto oficial (TM-025 A, actualizado al 4 de junio de 2025 (DIRECTEMAR)) escribe 22º39'00'' en LOS DOS parrafos. No hay discrepancia entre Capitanias que resolver.",
       "punto_interior": {
         "lat": -22.09,
         "lon": -70.215,
         "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
       },
-      "texto_decreto": "Desde el paralelo 21 25 30 S (ribera Norte del rio Loa) por el Norte, hasta el paralelo 22 39 00 S (Punta Tames) por el Sur."
+      "texto_decreto": "Desde el paralelo 21 25 30 S (ribera Norte del rio Loa) por el Norte, hasta el paralelo 22 39 00 S (Punta Tames) por el Sur.",
+      "nota_anterior": "Valor confirmado. El parrafo de CP Mejillones daba 22 30 00 S para el mismo punto; se corrigio alli."
     },
     {
       "id": "mejillones",
@@ -579,13 +581,21 @@
       "limite_norte_dec": -22.65,
       "limite_sur_dms": "23 15 00 S",
       "limite_sur_dec": -23.25,
-      "correccion_aplicada": "El decreto escribe 22 30 00 S. Se corrige a 22 39 00 S: Punta Tames esta en 22 39 22 S (verificacion en terreno, Google Earth, 2026-08-09) y el parrafo de CP Tocopilla usa 22 39 00 S para el mismo punto.",
+      "correccion_aplicada": "CORRECCION DE MOTIVO, 2026-08-11 — EL VALOR NO CAMBIA: el limite Norte sigue siendo 22 39 00 S. Lo que cambia es el motivo registrado, que resulto falso. Decia 'El decreto escribe 22 30 00 S', y el texto oficial (TM-025 A, actualizado al 4 de junio de 2025 (DIRECTEMAR), sha256 e14cb905b4895422) escribe 22º39'00'' en el parrafo de CP Mejillones: el mismo valor que el insumo ya tenia. La discrepancia era del consolidado de BCN contra el que se transcribio, NO del decreto. Verificado sobre el parrafo oficial: contiene 22 39 00 y no contiene 22 30 00. LO QUE SIGUE EN PIE y no dependia de esa premisa: Punta Tames esta en 22 39 22 S (verificacion en terreno, Google Earth, 2026-08-09) y el parrafo de CP Tocopilla usa 22 39 00 S para el mismo punto. O sea que esto ya no es una correccion del decreto sino una correccion de la transcripcion contra una version desactualizada de la fuente.",
       "punto_interior": {
         "lat": -23.1,
         "lon": -70.46,
         "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
       },
-      "texto_decreto": "Desde el paralelo 22 30 00 S (Punta Tames) por el Norte, hasta el paralelo 23 15 00 S (Punta Jorgino) por el Sur."
+      "texto_decreto": "Desde el paralelo 22 30 00 S (Punta Tames) por el Norte, hasta el paralelo 23 15 00 S (Punta Jorgino) por el Sur.",
+      "motivo_anterior": "El decreto escribe 22 30 00 S. Se corrige a 22 39 00 S: Punta Tames esta en 22 39 22 S (verificacion en terreno, Google Earth, 2026-08-09) y el parrafo de CP Tocopilla usa 22 39 00 S para el mismo punto.",
+      "clase_correccion": "transcripcion contra una version desactualizada de la fuente; NO es un defecto del decreto",
+      "remotivada": {
+        "fecha": "2026-08-11",
+        "documento": "TM-025 A, actualizado al 4 de junio de 2025 (DIRECTEMAR)",
+        "documento_sha256": "e14cb905b4895422e41a7741818b59a40578dd49ba049baf0b727a8928c522c8",
+        "por": "scripts/tm025a_p4_remotivar_correcciones.py"
+      }
     },
     {
       "id": "antofagasta",
@@ -2589,13 +2599,21 @@
       "limite_sur_dms": "54 33 00 S",
       "limite_sur_dec": -54.55,
       "sigue_litoral": true,
-      "correccion_aplicada": "El decreto escribe '52 3030 S', sin apostrofe. Se lee como 52 30 30 S: el parrafo inmediatamente anterior (CP Puerto Natales) cierra por el sur en 52 30 30 S y ambos provienen del mismo D.S. 391 Art. 1 N 21. Verificado en pantalla BCN 2026-08-09: el error es de la fuente.",
+      "correccion_aplicada": "CORRECCION DE MOTIVO, 2026-08-11 — EL VALOR NO CAMBIA: el limite Norte sigue siendo 52 30 30 S. Lo que cambia es el motivo registrado, que resulto falso. Decia 'El decreto escribe 52 3030 S, sin apostrofe', y el texto oficial (TM-025 A, actualizado al 4 de junio de 2025 (DIRECTEMAR), sha256 e14cb905b4895422) escribe 52º30'30\" S. correctamente. Era un artefacto de renderizado del consolidado de BCN, no un defecto del decreto. Verificado sobre el parrafo oficial: contiene 52 30 30 y no contiene 52 3030. LO QUE SIGUE EN PIE: el parrafo inmediatamente anterior (CP Puerto Natales) cierra por el sur en 52 30 30 S y los dos provienen del mismo D.S. 391 Art. 1 N 21. O sea que esto ya no es una correccion del decreto sino una correccion de la transcripcion contra una version desactualizada de la fuente.",
       "punto_interior": {
         "lat": -53.16,
         "lon": -70.91,
         "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
       },
-      "texto_decreto": "Desde el paralelo 52 30 30 S por el Norte hasta la linea imaginaria que une Punta Harry con Cabo San Vicente, en la Segunda Angostura del Estrecho de Magallanes; y de alli a Punta Anxius, siguiendo la costa Weste de la Isla Dawson, los Canales Magdalena y Cockburn y la totalidad de las aguas de los senos adyacentes hasta la Peninsula Brecknock y luego por el paralelo 54 33 00 S hacia el Oceano Pacifico."
+      "texto_decreto": "Desde el paralelo 52 30 30 S por el Norte hasta la linea imaginaria que une Punta Harry con Cabo San Vicente, en la Segunda Angostura del Estrecho de Magallanes; y de alli a Punta Anxius, siguiendo la costa Weste de la Isla Dawson, los Canales Magdalena y Cockburn y la totalidad de las aguas de los senos adyacentes hasta la Peninsula Brecknock y luego por el paralelo 54 33 00 S hacia el Oceano Pacifico.",
+      "motivo_anterior": "El decreto escribe '52 3030 S', sin apostrofe. Se lee como 52 30 30 S: el parrafo inmediatamente anterior (CP Puerto Natales) cierra por el sur en 52 30 30 S y ambos provienen del mismo D.S. 391 Art. 1 N 21. Verificado en pantalla BCN 2026-08-09: el error es de la fuente.",
+      "clase_correccion": "transcripcion contra una version desactualizada de la fuente; NO es un defecto del decreto",
+      "remotivada": {
+        "fecha": "2026-08-11",
+        "documento": "TM-025 A, actualizado al 4 de junio de 2025 (DIRECTEMAR)",
+        "documento_sha256": "e14cb905b4895422e41a7741818b59a40578dd49ba049baf0b727a8928c522c8",
+        "por": "scripts/tm025a_p4_remotivar_correcciones.py"
+      }
     },
     {
       "id": "punta_delgada",
