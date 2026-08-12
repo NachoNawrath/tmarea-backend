@@ -1,0 +1,14 @@
+==============================================================================
+E1 — APLICAR LA DECLARACIÓN DEL ANDAMIO AL COMENTARIO DE LA BASE
+==============================================================================
+capa   : jurisdicciones_decreto
+modo   : aplica
+
+ANTES:
+  SUPERSEDIDA Y DESACTUALIZADA. NO CONSULTAR. Capa de la Fase 3 ter, construida desde data/decreto/jurisdicciones_capitanias.json (insumo v1). Dos motivos por los que no debe usarse: (1) su geometria NO...
+
+DESPUÉS:
+  el comentario de 'jurisdicciones_decreto' coincide con lo que declara capa_consultada.json.
+
+Los dos guards dicen lo mismo, y ahora hay un control que se detiene si dejan
+de decirlo: src/services/andamio-medicion.js → verificarComentarioEnLaBase().

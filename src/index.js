@@ -64,6 +64,26 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// GUARD DE ARRANQUE — E1. BLOQUEANTE, y corre ANTES de escuchar.
+//
+// Es de naturaleza distinta al de drift (más abajo), que es informativo y
+// declara "no bloquea ni demora el arranque": ahí una fuente externa caída no
+// puede tumbar el servicio. Acá es al revés — el servicio NO puede levantarse
+// respondiendo con una capa declarada como andamio de medición, porque
+// respondería mal y sin avisar. Por eso este detiene y aquel informa.
+// ─────────────────────────────────────────────────────────────────────────────
+try {
+  require('./services/andamio-medicion').verificarEnArranque();
+} catch (e) {
+  console.error('');
+  console.error('ARRANQUE DETENIDO — ' + e.message);
+  console.error('');
+  console.error('El backend no levanta con una capa de andamio declarada como capa del motor.');
+  console.error('Se corrige en data/decreto/capa_consultada.json. Ver src/services/andamio-medicion.js.');
+  process.exit(1);
+}
+
 // Puerto
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

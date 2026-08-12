@@ -1,0 +1,123 @@
+==============================================================================
+E1 — MEDICIÓN QUE DECIDE ENTRE LOS CAMINOS DE LA PROPUESTA
+fecha: 2026-08-12T00:44:02.032Z
+==============================================================================
+
+──────────────────────────────────────────────────────────────────────────────
+A. ¿EL ANDAMIO ATRIBUYE CAPITANÍA, O LOS TRASLAPES LO INUTILIZAN?
+──────────────────────────────────────────────────────────────────────────────
+Se prueba con los 163 puntos de bahía del catálogo, uno por uno.
+
+  no cae en ninguna jurisdicción : 110
+  cae en exactamente una         : 43
+  cae en dos o más (traslape)    : 10
+
+  CÓMO NO LEER ESTE NÚMERO. Los 110 que no caen en ninguna NO dicen que el
+  andamio sea inservible. Los puntos de bahía son puntos de ORILLA, no de
+  agua —35 de 43 testigos caen en tierra, medido en fase5E/F/G— y este
+  repositorio ya pagó una vez el error de juzgar una capa por cuántos
+  testigos deja afuera: el defecto estaba en los testigos. Este conteo mide
+  lo mismo que aquel, no la capa.
+
+  Lo que SÍ se puede leer acá es el traslape: 10 puntos caen dentro de dos
+  jurisdicciones a la vez, y eso es un defecto de la capa, no del punto —
+  un punto no puede estar en dos jurisdicciones del decreto.
+
+  EL INSTRUMENTO CORRECTO para juzgar si el andamio sirve es la cobertura
+  sobre RUTAS reales, no sobre puntos: cuántos km de ruta resuelven a una
+  jurisdicción y cuántos caen en dos. NO está medido acá y no se afirma.
+
+  Las que caen en varias, con cuáles:
+    113 → calbuco + maullin
+    213 → ancud + maullin
+    163 → castro + quemchi
+    119 → castro + chonchi
+    239 → puerto_aguirre + puerto_cisnes
+    243 → puerto_aguirre + puerto_chacabuco
+    244 → puerto_aguirre + puerto_chacabuco
+    125 → puerto_aguirre + puerto_chacabuco
+    228 → puerto_aguirre + puerto_chacabuco
+    220 → puerto_aguirre + puerto_chacabuco
+
+──────────────────────────────────────────────────────────────────────────────
+A-bis. ¿EL ANDAMIO DICE LO MISMO QUE EL JOIN QUE E0.3 DEJÓ?
+──────────────────────────────────────────────────────────────────────────────
+Si midiera sobre una capa que atribuye distinto que el join, E2 mediría otra
+cosa. Se comparan sólo las bahías que el andamio resuelve a UNA jurisdicción
+y que el join tiene resueltas: es donde las dos fuentes se pueden contradecir.
+
+  comparables            : 42
+  coinciden              : 40
+  NO coinciden           : 2
+
+  Dónde discrepan (el join manda: sale del decreto, el andamio de una capa vieja):
+    por respaldo del join: {"operativo":1,"decreto":1}
+    186  andamio=quemchi              join=hornopiren           (operativo)
+    131  andamio=punta_arenas         join=punta_delgada        (decreto)
+
+──────────────────────────────────────────────────────────────────────────────
+B. ¿HAY QUE REGENERARLA DESDE EL INSUMO v2?
+──────────────────────────────────────────────────────────────────────────────
+  v1: 64 jurisdicciones · v2: 64
+
+  LOS DOS ESQUEMAS NO SON EL MISMO, y compararlos campo a campo mide el
+  renombre, no el contenido: v1 usa `limite_norte_dec` plano y `vertices`;
+  v2 usa `limite_norte.dec` y `contorno`. Acá se comparan los campos
+  equivalentes, no los homónimos.
+
+  jurisdicciones con diferencia real entre v1 y v2: 11 de 64
+    lirquen                  vértices: 2 en v1 y 2 en v2 · 1 sólo en v1, 1 sólo en v2
+        sólo v1: (-36.736111,0.000000)
+        sólo v2: (-36.736111,-73.013333)
+    talcahuano               vértices: 3 en v1 y 2 en v2 · 2 sólo en v1, 1 sólo en v2
+        sólo v1: (-36.736111,0.000000)
+        sólo v1: (-36.706944,-73.158889)
+        sólo v2: (-36.736111,-73.013333)
+    valdivia                 vértices: 4 en v1 y 4 en v2 · 1 sólo en v1, 1 sólo en v2
+        sólo v1: (-39.827500,0.000000)
+        sólo v2: (-39.827500,-85.000000)
+    corral                   vértices: 4 en v1 y 4 en v2 · 1 sólo en v1, 1 sólo en v2
+        sólo v1: (-39.827500,0.000000)
+        sólo v2: (-39.827500,-85.000000)
+    ancud                    vértices: 3 en v1 y 4 en v2 · 0 sólo en v1, 1 sólo en v2
+        sólo v2: (-42.000000,-85.000000)
+    quemchi                  vértices: 3 en v1 y 2 en v2 · 1 sólo en v1, 0 sólo en v2
+        sólo v1: (-42.000000,-73.000000)
+    chaiten                  vértices: 2 en v1 y 5 en v2 · 1 sólo en v1, 4 sólo en v2
+        sólo v1: (-43.008333,-73.325000)
+        sólo v2: (-42.500000,-73.200000)
+        sólo v2: (-43.008333,-73.200000)
+        sólo v2: (-43.008333,-73.250000)
+        sólo v2: (-43.740278,-73.250000)
+    achao                    vértices: 6 en v1 y 11 en v2 · 0 sólo en v1, 5 sólo en v2
+        sólo v2: (-42.391667,-73.000000)
+        sólo v2: (-42.500000,-73.000000)
+        sólo v2: (-42.500000,-73.200000)
+        sólo v2: (-42.661111,-73.200000)
+        sólo v2: (-42.661111,-73.397222)
+    castro                   vértices: 5 en v1 y 11 en v2 · 0 sólo en v1, 6 sólo en v2
+        sólo v2: (-42.661111,-73.397222)
+        sólo v2: (-42.661111,-73.558333)
+        sólo v2: (-42.558333,-73.558333)
+        sólo v2: (-42.558333,-73.616667)
+        sólo v2: (-42.583333,-73.616667)
+        sólo v2: (-42.583333,-85.000000)
+    chonchi                  vértices: 4 en v1 y 11 en v2 · 0 sólo en v1, 7 sólo en v2
+        sólo v2: (-42.583333,-73.616667)
+        sólo v2: (-42.558333,-73.616667)
+        sólo v2: (-42.558333,-73.558333)
+        sólo v2: (-42.661111,-73.558333)
+        sólo v2: (-42.661111,-73.200000)
+        sólo v2: (-43.008333,-73.200000)
+        sólo v2: (-42.833333,-85.000000)
+    quellon                  vértices: 4 en v1 y 6 en v2 · 0 sólo en v1, 2 sólo en v2
+        sólo v2: (-43.008333,-73.250000)
+        sólo v2: (-43.740278,-73.250000)
+
+  El comentario de la capa cita dos correcciones (hornopiren y castro). Lo de
+  arriba es la lista completa medida, que es lo que decide si regenerar es un
+  arreglo de dos casos o una reconstrucción.
+
+==============================================================================
+FIN DE LA MEDICIÓN — no se modificó nada.
+==============================================================================

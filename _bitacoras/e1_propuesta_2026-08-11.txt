@@ -1,0 +1,192 @@
+================================================================================
+E1 — PROPUESTA. EL ANDAMIO, LOS DOS GUARDS Y EL "CONTEXTO DE MEDICIÓN".
+Fecha: 2026-08-11
+Estado: propuesta. Nada construido.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts/e1_medir_andamio.js
+
+Crudo: _bitacoras/e1_propuesta_2026-08-11/01_medicion.txt
+
+
+0. CORRECCIÓN DE UNA AFIRMACIÓN MÍA DEL RECONOCIMIENTO (CLAUDE.md §2)
+--------------------------------------------------------------------------------
+En `e1_recon_2026-08-11.txt` §2 escribí que el motivo (1) de la marca —"su
+geometría no corresponde a su fuente"— quedaba **CIERTO**, apoyado en que 3 de
+los 4 puntos de contorno de `hornopiren` y 4 de los 11 de `castro` no aparecen
+como vértice de la capa. Y quedó así en el commit 7a12795.
+
+**Esa medición no prueba lo que dije.** La capa se construye por receta
+(`corte_y_ancla`): su polígono es el RESULTADO de recortar, y un polígono
+recortado legítimamente pierde vértices declarados. Que un punto del contorno no
+aparezca como vértice puede ser el recorte, no una discrepancia con la fuente.
+Es la misma forma de error que el §2 de CLAUDE.md persigue: la medición prueba
+algo parecido, no lo que el argumento afirma.
+
+Lo que sí quedó medido, y sostiene la marca por otro lado, está en el §1 de acá.
+El motivo (2) —los traslapes— sigue medido y en pie sin reservas: 28.325,1 km²
+entre Aguirre y Chacabuco, 60 pares y 44.875,6 km² en toda la capa.
+
+
+1. QUÉ CAMBIÓ DE VERDAD ENTRE v1 Y v2 — 11 DE 64, NO 2 NI 64
+--------------------------------------------------------------------------------
+La capa se construyó desde el insumo **v1** (`jurisdicciones_capitanias.json`).
+Comparar v1 con v2 decide si regenerar es arreglar dos casos o rehacer la capa.
+
+Primero un error que corregí en la propia medición: los dos esquemas NO son el
+mismo —v1 usa `limite_norte_dec` plano y `vertices`; v2 usa `limite_norte.dec` y
+`contorno`— y compararlos campo a campo por nombre daba "64 de 64 cambiaron",
+que medía el renombre. Comparando los campos EQUIVALENTES:
+
+    jurisdicciones con diferencia real entre v1 y v2:  11 de 64
+
+    lirquen · talcahuano · valdivia · corral · ancud · quemchi ·
+    chaiten · achao · castro · chonchi · quellon
+
+Dos cosas que se leen de esa lista y que importan:
+
+  · **`hornopiren` NO está en ella.** v1 y v2 coinciden hoy en sus vértices. Pero
+    el comentario de la base dice que la Etapa A corrigió "el cuarto vértice de
+    Rio Negro Hornopiren" *después* de construir la capa — y en efecto la entrada
+    de v1 trae un campo `correccion_aplicada`. La lectura que cierra las dos
+    cosas: **v1 también se corrigió después**, así que la capa está desactualizada
+    incluso respecto del insumo del que salió. No es una lectura medida; es la
+    única que reconcilia lo observado, y lo que la cerraría es reconstruir la
+    figura desde v2 y comparar áreas.
+  · **11 de las 64 son de Chiloé y del sur de Valdivia**: lirquen, talcahuano,
+    valdivia, corral, ancud, quemchi, chaiten, achao, castro, chonchi, quellon.
+    Es exactamente el corredor donde corren las rutas reales del motor. Regenerar
+    o no regenerar no es indiferente para lo que E2 va a medir.
+
+Varias diferencias son de una clase sola y vale nombrarla: v1 escribe longitud
+**0.000000** donde v2 escribe la longitud real o el borde de la caja de trabajo
+(-85). O sea que parte de las 11 son coordenadas que en v1 estaban incompletas.
+
+
+2. ¿EL ANDAMIO ATRIBUYE? LO QUE SE PUEDE Y LO QUE NO SE PUEDE CONCLUIR
+--------------------------------------------------------------------------------
+Probado con los 163 puntos de bahía: 110 no caen en ninguna jurisdicción, 43 en
+una, 10 en dos.
+
+**Los 110 NO dicen que el andamio sea inservible, y no los uso para eso.** Los
+puntos de bahía son puntos de ORILLA —35 de 43 testigos caen en tierra, medido
+en fase5E/F/G— y este repositorio ya pagó una vez el error de juzgar una capa
+por cuántos testigos deja afuera. Este conteo mide lo mismo que aquel.
+
+**Los 10 sí son de la capa**: un punto no puede estar en dos jurisdicciones del
+decreto. Son Calbuco×Maullín, Ancud×Maullín, Castro×Quemchi, Castro×Chonchi,
+Aguirre×Cisnes y cinco Aguirre×Chacabuco.
+
+**Y la prueba que habría roto mi fundamento**: si el andamio atribuyera distinto
+que el join de E0.3, medir sobre él mediría otra cosa. Cruzado sobre las 42
+bahías comparables: **40 coinciden, 2 no** — la 186 (andamio `quemchi`, join
+`hornopiren`, respaldo operativo) y la 131 (andamio `punta_arenas`, join
+`punta_delgada`, respaldo decreto). La 131 es una de las que E0.3 cerró contra
+el mapa operativo, así que el andamio arrastra el error viejo. Manda el join.
+
+**EL INSTRUMENTO CORRECTO PARA JUZGAR SI SIRVE ES LA COBERTURA SOBRE RUTAS**,
+no sobre puntos: cuántos km resuelven a una jurisdicción y cuántos caen en dos.
+**No está medido y no lo afirmo.** Es lo primero que tiene que correr E2, y el
+andamio existe justamente para poder correrlo.
+
+
+3. LOS DOS GUARDS: TRES CAMINOS
+--------------------------------------------------------------------------------
+El problema, en una línea: el comentario de la base dice **NO CONSULTAR** sin
+condición y el andamio dice **consultable sólo para medir**. Quien abre la base
+sin el repo al lado lee lo primero.
+
+  CAMINO 1 — Reescribir el comentario de la base para que diga la condición.
+    El comentario pasa a decir: no la consulta el motor; sí la puede consultar
+    una medición declarada, y la marca del repositorio es la que manda sobre
+    cuándo.
+    GANA: los dos textos dicen lo mismo y el que abre la base se entera.
+    PIERDE: el comentario es un `COMMENT ON` — no lo verifica nadie. Si el
+    repositorio cambia y el comentario no, vuelven a divergir en silencio.
+    COSTO MEDIDO: una sentencia en `fase5_declarar_capas_vigentes.sql`.
+
+  CAMINO 2 — Que el comentario lo escriba el mismo script que declara el andamio.
+    La declaración vive en el repositorio y aplicarla ESCRIBE el comentario; un
+    control comprueba que el texto en la base es el que el repositorio declara, y
+    se detiene si no.
+    GANA: los dos guards no pueden divergir, porque son uno solo con dos salidas.
+    Es la misma mecánica del control C0 de la Etapa 2 (la costa cargada debe ser
+    la declarada, por sha256), que ya está probada en este repositorio.
+    PIERDE: más piezas; y exige base disponible para validar.
+    COSTO MEDIDO: un script de aplicación + un control, del tamaño del de costa.
+
+  CAMINO 3 — Borrar la capa y reconstruirla desde v2 con la marca de andamio.
+    GANA: desaparece la contradicción porque desaparece la capa vieja; y arregla
+    de paso las 11 diferencias v1→v2 del §1.
+    PIERDE: **destruye la constancia** de cómo se construyó la Fase 3 ter, que el
+    propio comentario declara como su motivo de conservación. Y mete a E1 en el
+    negocio de construir capas, que es E3/E4.
+    DESCARTADO por eso, no por costo.
+
+  RECOMIENDO EL CAMINO 2. El 1 arregla el síntoma de hoy y deja viva la causa —
+  dos textos que alguien tiene que acordarse de sincronizar—, y el owner pidió
+  explícitamente que esto "no dependa de que alguien se acuerde".
+
+
+4. QUÉ ES UN "CONTEXTO DE MEDICIÓN": DOS CAMINOS
+--------------------------------------------------------------------------------
+De esta definición cuelga todo el guard, y hoy no está escrita.
+
+  CAMINO A — Por variable de entorno (`TMAREA_MEDICION=1` o equivalente).
+    GANA: simple, y cualquier script de medición la declara.
+    PIERDE: una variable de entorno es exactamente "que alguien se acuerde", y
+    peor: se puede quedar puesta en un shell y viajar a una corrida que no es de
+    medición. El modo de falla es silencioso.
+
+  CAMINO B — Por quién carga: el andamio sólo se puede pedir a través de una
+    función que los scripts de medición llaman explícitamente, y el arranque del
+    backend comprueba que la capa declarada como capa del motor no sea la marcada
+    como andamio, y se detiene si lo es.
+    GANA: el contexto no se declara, se DEMUESTRA — un proceso de producción no
+    llama a esa función porque no la tiene cableada, y si alguien la cablea, el
+    arranque lo caza. Es el mismo espíritu de la guarda de E0.3
+    (`ESCRIBE_ESTADO = ESTADO !== null && INSUMO === null`): la condición se
+    deduce de lo que el proceso ES, no de lo que alguien recuerde declarar.
+    PIERDE: no impide que un script de medición mal escrito la use para otra
+    cosa. Eso lo acota el §5.
+
+  RECOMIENDO EL CAMINO B, y el argumento no es de elegancia: es que el modo de
+  falla del A es el que este repositorio ya vio dos veces —una guarda que depende
+  de acordarse— y el propio owner lo puso como requisito de la etapa.
+
+
+5. LO QUE PROPONGO CONSTRUIR, SI SE AUTORIZA
+--------------------------------------------------------------------------------
+  1. `capa_consultada.json` suma un bloque `andamio` con: nombre de la capa,
+     `es_andamio: true`, el motivo, y la lista de motivos por los que NO se
+     promueve (los dos de la marca vieja, ya medidos).
+  2. El andamio NO se declara en `capa_jurisdicciones`. Ese campo lo sigue
+     leyendo `cobertura-jurisdiccional.js` y es la línea que lo promovería.
+  3. Guard de arranque, BLOQUEANTE, en `src/index.js`, separado y distinguible
+     del hook informativo de E0.1: si `capa_jurisdicciones` es la capa marcada
+     como andamio, el arranque se detiene con el motivo.
+  4. El script que aplica la declaración escribe el comentario de la base, y un
+     control comprueba que base y repositorio dicen lo mismo (camino 2 del §3).
+  5. Prueba de mordida: el guard tiene que fallar cuando se le inyecta el
+     defecto, incluido el caso "el comentario de la base fue editado a mano".
+  6. Regenerar o no la capa desde v2 queda FUERA de E1 y declarado como deuda,
+     con las 11 jurisdicciones medidas del §1. Lo que E2 mida sobre el andamio
+     hay que leerlo sabiendo eso.
+
+
+6. LO QUE ESTA PROPUESTA NO DETERMINÓ
+--------------------------------------------------------------------------------
+- La cobertura del andamio sobre rutas reales. Es el instrumento correcto para
+  saber si sirve, y es lo primero de E2.
+- Si la capa está desactualizada respecto del propio v1. La lectura del §1 lo
+  sugiere y no está medida; la cerraría reconstruir desde v2 y comparar áreas.
+- Cuánto de lo que E2 mida queda contaminado por los 60 pares traslapados.
+
+================================================================================
+FIN DE LA PROPUESTA. Alto para autorización.
+================================================================================

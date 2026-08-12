@@ -1,0 +1,143 @@
+================================================================================
+E1 — CONSTRUCCIÓN. EL ANDAMIO DECLARADO Y SUS DOS GUARDS.
+Fecha: 2026-08-11
+Estado: E1 CERRADA. Aceptación cumplida y probada levantando el proceso.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts/e1_aplicar_andamio.js
+    node scripts/e1_prueba_mordida_andamio.js
+    npm test
+
+Crudo: _bitacoras/e1_construccion_2026-08-11/
+       01_mordida_andamio.txt · 02_aplicacion.txt · 03_suite.txt · 04_declaracion.txt
+
+
+1. QUÉ QUEDÓ
+--------------------------------------------------------------------------------
+  data/decreto/capa_consultada.json      bloque `andamio` nuevo. `capa_jurisdicciones`
+                                         NO se tocó: sigue en `bahia_jurisdicciones`.
+  src/services/andamio-medicion.js       la validación, `capaDeMedicion()` y el
+                                         control del comentario de la base.
+  src/index.js                           guard de arranque BLOQUEANTE, antes de
+                                         escuchar.
+  scripts/e1_aplicar_andamio.js          escribe el comentario de la base desde
+                                         lo declarado, y lo verifica.
+  scripts/e1_prueba_mordida_andamio.js   la mordida, 14 casos.
+
+
+2. LOS DOS GUARDS YA NO PUEDEN DIVERGIR (camino 2)
+--------------------------------------------------------------------------------
+El texto del comentario vive en `capa_consultada.json` →
+`andamio.comentario_en_la_base`. El script de aplicación lo escribe en la base y
+`verificarComentarioEnLaBase()` comprueba que la base dice exactamente eso. Es
+un guard con dos salidas, no dos textos que alguien tenga que sincronizar.
+
+El comentario anterior decía **"SUPERSEDIDA Y DESACTUALIZADA. NO CONSULTAR"**
+sin condición, y contradecía a la declaración del andamio. El nuevo dice lo
+mismo que el repositorio y con la condición explícita: no la consulta el motor,
+la consulta una medición declarada, el repositorio es la autoridad, y el
+arranque se detiene si aparece como capa del motor. Aplicado y verificado —
+`02_aplicacion.txt` muestra el antes y el después.
+
+Nunca al revés: el comentario de la base no es fuente. Si el texto tiene que
+cambiar, se cambia en el archivo y se corre el script.
+
+
+3. "CONTEXTO DE MEDICIÓN" (camino B): SE DEMUESTRA, NO SE DECLARA
+--------------------------------------------------------------------------------
+El nombre de la capa de andamio sólo se obtiene llamando a `capaDeMedicion()`.
+Un proceso de producción no la tiene cableada, así que no puede estar en un
+contexto de medición por accidente. Y si alguien la cablea, el guard de arranque
+lo caza.
+
+Sin variable de entorno a propósito: una variable se queda puesta en un shell y
+viaja a una corrida que no es de medición. El modo de falla del entorno es
+silencioso; el de esto es un proceso que no levanta.
+
+
+4. LA MORDIDA — 14/14, CON SALIDA CRUDA EN 01_mordida_andamio.txt
+--------------------------------------------------------------------------------
+Control negativo primero: la declaración real valida (andamio
+`jurisdicciones_decreto`, capa del motor `bahia_jurisdicciones`, 3 motivos para
+no promoverla). Sin eso, los casos de abajo cazarían por el motivo equivocado.
+
+  1. LA DECLARACIÓN (en memoria, sin tocar nada)
+     ✔ la capa del motor ES el andamio — el guard central
+     ✔ sin bloque "andamio"
+     ✔ es_andamio no es true
+     ✔ el andamio no nombra la capa
+     ✔ el nombre de capa no es un identificador
+     ✔ sin "para_que"
+     ✔ sin motivos para no promoverse
+     ✔ sin el texto del comentario de la base
+
+  2. EL COMENTARIO DE LA BASE
+     ✔ coincide con el declarado (control negativo)
+     ✔ **EL COMENTARIO DE LA BASE EDITADO A MANO** — el caso que el owner pidió.
+        Se le agregó a mano la frase "Ademas se puede usar en produccion si hace
+        falta." y el control se detuvo con "los dos guards dejaron de decir lo
+        mismo, que es exactamente lo que E1 vino a impedir".
+     ✔ el comentario borrado de la base
+     (restaurado idéntico al original, comprobado leyéndolo de vuelta)
+
+  3. EL GUARD DE ARRANQUE, LEVANTANDO EL PROCESO DE VERDAD
+     ✔ el arranque FALLA si la capa del motor es el andamio.
+        No se simula: se deformó el archivo, se levantó `src/index.js` como
+        proceso y terminó con exit distinto de 0 diciendo
+        "ARRANQUE DETENIDO — [andamio] la capa declarada para el motor
+        ("capa_jurisdicciones") es 'jurisdicciones_decreto', que es la MISMA que
+        el bloque "andamio" marca como andamio de medición...".
+        Es la aceptación literal de E1.
+     ✔ con la declaración sana, el arranque pasa el guard (control negativo)
+     (capa_consultada.json restaurado, sha256 22a405b48bc5bf3c…)
+
+Suite unitaria: 76 pass / 0 fail.
+
+UN DEFECTO DE LA PROPIA MORDIDA, CAZADO Y ARREGLADO. La primera corrida dejó
+`data/catalogo/estado_drift.json` modificado: levantar el backend dispara el hook
+de drift de E0.1, que ESCRIBE el estado publicado. O sea que mi prueba
+reintroducía por la puerta de atrás el modo de falla que E0.3 arregló —una
+corrida de prueba dejando huella en un archivo publicado—, porque aquella guarda
+protege al control de drift y no a un arranque entero. Lo que se escribió no era
+falso (sólo cambió `ultima_corrida`; el veredicto y las divergencias eran las
+mismas), pero eso no lo salva: el archivo es constancia y una prueba no lo toca.
+Arreglado: la mordida respalda y restaura ese archivo por sha256, y lo declara
+en la salida. Verificado en la corrida siguiente.
+
+
+5. LA DEUDA DECLARADA, EN EL DATO Y NO SÓLO ACÁ
+--------------------------------------------------------------------------------
+`andamio.deuda_regenerar_desde_v2` lleva las **11 jurisdicciones que difieren de
+verdad entre el insumo v1 —del que salió la capa— y el v2**:
+
+  lirquen · talcahuano · valdivia · corral · ancud · quemchi ·
+  chaiten · achao · castro · chonchi · quellon
+
+Las once son del corredor de Chiloé y el sur de Valdivia, que es donde corren las
+rutas reales del motor. Regenerar queda **fuera de E1 por decisión del owner**, y
+lo que E2 mida sobre este andamio hay que leerlo sabiendo esto.
+
+Los otros dos motivos por los que no se promueve, también en el dato: los 60
+pares traslapados con 44.875,6 km² (el mayor, Aguirre × Chacabuco, 28.325,1) y
+las 10 filas sin geometría.
+
+
+6. LO QUE ESTA ETAPA NO DETERMINÓ
+--------------------------------------------------------------------------------
+- La cobertura del andamio sobre rutas reales — cuántos km resuelven a una
+  jurisdicción y cuántos caen en dos. Es el instrumento correcto para saber si
+  el andamio alcanza, y es lo primero que corre E2. El andamio existe para poder
+  correrlo; no lo contesta.
+- Cuánto de lo que E2 mida queda contaminado por los 60 pares traslapados.
+- Si la capa está desactualizada respecto del propio v1. Lo sugiere que
+  `hornopiren` coincida entre v1 y v2 mientras el comentario viejo afirmaba que
+  se había corregido después; lo cerraría reconstruir desde v2 y comparar áreas.
+
+================================================================================
+FIN. E1 cerrada.
+================================================================================
