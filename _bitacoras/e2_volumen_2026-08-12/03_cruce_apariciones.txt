@@ -1,0 +1,145 @@
+==============================================================================
+E2 — VOLUMEN DEL CAMBIO DE UNIDAD: BAHÍA → CAPITANÍA
+fecha: 2026-08-12T01:52:16.591Z
+==============================================================================
+unidad de hoy    : bahía, sobre 'bahia_jurisdicciones' (la que el motor consulta)
+unidad propuesta : Capitanía, sobre 'jurisdicciones_decreto' (el andamio de E1)
+join bahía→Capitanía: E0.3, 158 resueltas y 6 sin resolver
+restricciones    : captura versionada de E0.1, 39 registros
+
+LA EXPOSICIÓN QUE ESTE NÚMERO ARRASTRA, DECLARADA JUNTO AL NÚMERO:
+  · 32,1 % de los km medidos caen en alguna de las 11 jurisdicciones que
+    difieren entre v1 y v2 (deuda declarada; regenerar quedó fuera por decisión
+    del owner). No se afirma en qué dirección movería el número.
+  · 10,5 % de los km caen en zona de traslape del andamio: ahí la capa atribuye
+    DOS jurisdicciones y la unidad nueva cuenta de más por construcción.
+
+Anahuac -> Melinka
+   la ruta matchea  : 11 bahías (hoy) · 9 jurisdicciones (unidad nueva)
+   restricciones    : 2 hoy  →  6 con unidad Capitanía   (+4)
+   aparecen         : 112 BAHÍA MAULLÍN · 117 BAHÍA QUELLÓN · 148 ENSENADA ESTAQUILLA · 233 SENO RELONCAVI
+
+Anahuac -> Quellon
+   la ruta matchea  : 8 bahías (hoy) · 9 jurisdicciones (unidad nueva)
+   restricciones    : 3 hoy  →  6 con unidad Capitanía   (+3)
+   aparecen         : 112 BAHÍA MAULLÍN · 148 ENSENADA ESTAQUILLA · 233 SENO RELONCAVI
+
+Anahuac -> Chacabuco
+   la ruta matchea  : 16 bahías (hoy) · 10 jurisdicciones (unidad nueva)
+   restricciones    : 3 hoy  →  5 con unidad Capitanía   (+2)
+   aparecen         : 112 BAHÍA MAULLÍN · 148 ENSENADA ESTAQUILLA · 233 SENO RELONCAVI
+   desaparecen      : 239 SECTOR CANAL FERRONAVE Y CANAL DEVIA
+
+Ancud -> Castro (mar interior)
+   la ruta matchea  : 11 bahías (hoy) · 5 jurisdicciones (unidad nueva)
+   restricciones    : 0 hoy  →  1 con unidad Capitanía   (+1)
+   aparecen         : 155 QUEILEN
+
+Chonchi -> Chaiten (Corcovado)
+   la ruta matchea  : 4 bahías (hoy) · 3 jurisdicciones (unidad nueva)
+   restricciones    : 2 hoy  →  2 con unidad Capitanía   (+0)
+
+Arica -> Iquique (norte)
+   la ruta matchea  : 3 bahías (hoy) · 1 jurisdicciones (unidad nueva)
+   restricciones    : 14 hoy  →  0 con unidad Capitanía   (-14)
+   desaparecen      : 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA · 71 BAHÍA DE ARICA
+
+Valparaiso -> San Antonio
+   la ruta matchea  : 5 bahías (hoy) · 3 jurisdicciones (unidad nueva)
+   restricciones    : 0 hoy  →  0 con unidad Capitanía   (+0)
+
+Punta Arenas -> Pto Williams
+   la ruta matchea  : 3 bahías (hoy) · 1 jurisdicciones (unidad nueva)
+   restricciones    : 2 hoy  →  0 con unidad Capitanía   (-2)
+   desaparecen      : 138 PUERTO WILLIAMS · 138 PUERTO WILLIAMS
+
+──────────────────────────────────────────────────────────────────────────────
+TOTAL SOBRE LAS OCHO RUTAS
+──────────────────────────────────────────────────────────────────────────────
+  restricciones mostradas HOY (unidad bahía)      : 26
+  restricciones mostradas con unidad Capitanía    : 20
+  cambio                                          : -6  (-23 %)
+  restricciones que APARECEN                      : 11
+  restricciones que DESAPARECEN                   : 17
+
+
+  POR QUÉ DESAPARECE CADA UNA — tres causas, y sólo una es el cambio de unidad:
+     16  su Capitanía NO TIENE GEOMETRÍA en el andamio
+         (arica, puerto_williams)
+      1  su bahía es una de las 6 que el join de E0.3 dejó SIN RESOLVER
+         (239)
+      0  el CAMBIO DE UNIDAD las deja fuera
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  EL NÚMERO DE E2, con el método decidido por el owner el 2026-08-12:     ║
+║  las jurisdicciones sin geometría se EXCLUYEN del neto.                  ║
+║                                                                          ║
+║      cambio de volumen al pasar de bahía a Capitanía:  +11               ║
+║      aparecen 11 · desaparecen por la unidad 0                           ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  Ninguna restricción se pierde por pasar a Capitanía. Las que aparecen son
+  INV-3.4 funcionando: la bahía etiqueta, la Capitanía decide, de más y nunca
+  de menos (INV-1.2).
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│  LO QUE ESTE NÚMERO NO CUENTA, Y QUE EL AVISO NO TAPA                    │
+└──────────────────────────────────────────────────────────────────────────┘
+  16 restricciones caen en jurisdicciones SIN GEOMETRÍA y NO se le listan
+  al patrón. Hoy, con unidad bahía, SÍ se le muestran; con unidad Capitanía
+  dejarían de mostrarse. Están fuera del neto por método, no porque no pasen.
+
+  El aviso de INV-3.6 dice que la jurisdicción no está cargada y que consulte
+  con la Capitanía. NO dice qué restricciones hay. Esa parte no la cubre.
+
+    arica: 14 restricciones · bahías 71 BAHÍA DE ARICA
+      en 1 ruta(s): Arica -> Iquique (norte)
+    puerto_williams: 2 restricciones · bahías 138 PUERTO WILLIAMS
+      en 1 ruta(s): Punta Arenas -> Pto Williams
+
+  Y 1 más caen en una bahía que el join de E0.3 dejó sin resolver: tampoco
+  se listan, y a ésas no las cubre ningún aviso, porque su jurisdicción no
+  está identificada. Se cierran cuando responda el informante austral.
+
+  EXPOSICIÓN DEL NÚMERO (declarada junto a él):
+    · 32,1 % de los km medidos caen en las 11 jurisdicciones que difieren
+      entre v1 y v2. Regenerar las movería; no se afirma en qué dirección.
+    · 10,5 % de los km caen en zona de traslape del andamio. No está medido
+      cuántas de las 11 que aparecen vienen de ahí.
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│  LAS APARICIONES, CRUZADAS CONTRA LOS 218,65 km EN TRASLAPE              │
+└──────────────────────────────────────────────────────────────────────────┘
+  112 BAHÍA MAULLÍN          → maullin            ruta∩J 31.82 km · de eso en traslape 15.34 km · exclusivo 16.48 km
+      (Anahuac -> Melinka)
+  117 BAHÍA QUELLÓN          → quellon            ruta∩J 11.86 km · de eso en traslape 0.00 km · exclusivo 11.86 km
+      (Anahuac -> Melinka)
+  148 ENSENADA ESTAQUILLA    → maullin            ruta∩J 31.82 km · de eso en traslape 15.34 km · exclusivo 16.48 km
+      (Anahuac -> Melinka)
+  233 SENO RELONCAVI         → puerto_montt       ruta∩J 2.59 km · de eso en traslape 2.59 km · exclusivo 0.00 km   ← SE APOYA EN TRASLAPE
+      (Anahuac -> Melinka)
+  112 BAHÍA MAULLÍN          → maullin            ruta∩J 32.87 km · de eso en traslape 17.45 km · exclusivo 15.41 km
+      (Anahuac -> Quellon)
+  148 ENSENADA ESTAQUILLA    → maullin            ruta∩J 32.87 km · de eso en traslape 17.45 km · exclusivo 15.41 km
+      (Anahuac -> Quellon)
+  233 SENO RELONCAVI         → puerto_montt       ruta∩J 0.46 km · de eso en traslape 0.46 km · exclusivo 0.00 km   ← SE APOYA EN TRASLAPE
+      (Anahuac -> Quellon)
+  112 BAHÍA MAULLÍN          → maullin            ruta∩J 31.82 km · de eso en traslape 15.34 km · exclusivo 16.48 km
+      (Anahuac -> Chacabuco)
+  148 ENSENADA ESTAQUILLA    → maullin            ruta∩J 31.82 km · de eso en traslape 15.34 km · exclusivo 16.48 km
+      (Anahuac -> Chacabuco)
+  233 SENO RELONCAVI         → puerto_montt       ruta∩J 2.59 km · de eso en traslape 2.59 km · exclusivo 0.00 km   ← SE APOYA EN TRASLAPE
+      (Anahuac -> Chacabuco)
+  155 QUEILEN                → chonchi            ruta∩J 9.91 km · de eso en traslape 9.91 km · exclusivo 0.00 km   ← SE APOYA EN TRASLAPE
+      (Ancud -> Castro (mar interior))
+
+  apariciones FIRMES (la ruta toca su Capitanía sobre km exclusivos): 7
+  apariciones que SE APOYAN EN TRASLAPE                             : 4
+
+  4 de las 11 descansan en tramos donde la capa atribuye dos
+  jurisdicciones. Si esas atribuciones fueran erróneas, el número bajaría a
+  +7. No se afirma que lo sean: se afirma de qué dependen.
+
+==============================================================================
+FIN — medición, no construcción. No se modificó nada.
+==============================================================================

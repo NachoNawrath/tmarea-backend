@@ -136,7 +136,7 @@ const RUTAS = [
     const soloHoy = hoy.filter(x => { const e = join.resueltas.get(x.bahia); return !e || !e.jurisdicciones.some(j => jurs.has(j)); });
 
     totHoy += hoy.length; totNueva += nueva.length;
-    filas.push({ nombre, bahias: bahias.size, jurs: jurs.size, hoy: hoy.length, nueva: nueva.length, soloNueva, soloHoy });
+    filas.push({ nombre, gj, bahias: bahias.size, jurs: jurs.size, hoy: hoy.length, nueva: nueva.length, soloNueva, soloHoy });
 
     console.log('');
     console.log(`${nombre}`);
@@ -227,6 +227,60 @@ const RUTAS = [
   console.log('      entre v1 y v2. Regenerar las movería; no se afirma en qué dirección.');
   console.log('    · 10,5 % de los km caen en zona de traslape del andamio. No está medido');
   console.log(`      cuántas de las ${apareceTotal} que aparecen vienen de ahí.`);
+
+  // ── EL CRUCE QUE FALTABA: ¿las apariciones se apoyan en tramos ambiguos? ──
+  // Es lo único que puede bajar el +11, y +11 es el número con el que se decide.
+  // Una restricción aparece porque su Capitanía J está en el set de la ruta. La
+  // pregunta es sobre qué apoya J esa presencia: si la ruta toca a J SÓLO dentro
+  // de zona de traslape, la aparición descansa en terreno donde la capa atribuye
+  // dos jurisdicciones a la vez y podría estar equivocada. Si la toca sobre
+  // kilómetros que son exclusivamente de J, la aparición es firme.
+  const SQL_APOYO = `
+  WITH ruta AS (SELECT ST_SetSRID(ST_GeomFromGeoJSON($1),4326) AS g),
+       j AS (SELECT geom FROM "${CAPA_NUEVA}" WHERE id = $2),
+       traslape AS (
+         SELECT COALESCE(ST_Union(ST_Intersection(a.geom,b.geom)), ST_GeomFromText('POLYGON EMPTY',4326)) AS g
+           FROM "${CAPA_NUEVA}" a JOIN "${CAPA_NUEVA}" b ON a.id <> b.id
+          WHERE a.id = $2 AND a.geom IS NOT NULL AND b.geom IS NOT NULL AND ST_Intersects(a.geom,b.geom))
+  SELECT ST_Length(ST_Intersection((SELECT g FROM ruta),(SELECT geom FROM j))::geography) AS en_j_m,
+         ST_Length(ST_Intersection(ST_Intersection((SELECT g FROM ruta),(SELECT geom FROM j)),(SELECT g FROM traslape))::geography) AS en_traslape_m`;
+
+  console.log('');
+  console.log('┌' + '─'.repeat(74) + '┐');
+  console.log('│  LAS APARICIONES, CRUZADAS CONTRA LOS 218,65 km EN TRASLAPE              │');
+  console.log('└' + '─'.repeat(74) + '┘');
+  const firmes = [], apoyadasEnTraslape = [];
+  for (const f of filas) {
+    for (const x of f.soloNueva) {
+      const e = join.resueltas.get(x.bahia);
+      const jur = e.jurisdicciones.find(j => !sinGeom.has(j)) || e.jurisdiccion_id;
+      const { rows: [m] } = await pool.query(SQL_APOYO, [f.gj, jur]);
+      const enJ = Number(m.en_j_m), enTr = Number(m.en_traslape_m);
+      const exclusivo = enJ - enTr;
+      const reg = { ruta: f.nombre, bahia: x.bahia, nombre: x.nombre, jur, enJ, enTr, exclusivo };
+      // Firme si la ruta toca a J sobre kilómetros que no comparte con nadie.
+      // El umbral es 0: no hace falta elegir uno, porque la distribución separa
+      // sola —o hay kilómetros exclusivos o la intersección entera es traslape—.
+      (exclusivo > 1 ? firmes : apoyadasEnTraslape).push(reg);
+      console.log(`  ${String(x.bahia).padStart(3)} ${String(x.nombre || '').padEnd(22)} → ${jur.padEnd(18)} ` +
+        `ruta∩J ${(enJ/1000).toFixed(2)} km · de eso en traslape ${(enTr/1000).toFixed(2)} km · exclusivo ${(exclusivo/1000).toFixed(2)} km` +
+        `${exclusivo > 1 ? '' : '   ← SE APOYA EN TRASLAPE'}`);
+      console.log(`      (${f.ruta || f.nombre})`);
+    }
+  }
+  console.log('');
+  console.log(`  apariciones FIRMES (la ruta toca su Capitanía sobre km exclusivos): ${firmes.length}`);
+  console.log(`  apariciones que SE APOYAN EN TRASLAPE                             : ${apoyadasEnTraslape.length}`);
+  console.log('');
+  if (apoyadasEnTraslape.length === 0) {
+    console.log('  NINGUNA de las apariciones descansa en terreno ambiguo. El +11 no baja por');
+    console.log('  esta vía: los 218,65 km de traslape existen, pero no son los que hacen');
+    console.log('  aparecer estas restricciones. E2 cierra sin reserva sobre su propio número.');
+  } else {
+    console.log(`  ${apoyadasEnTraslape.length} de las ${apareceTotal} descansan en tramos donde la capa atribuye dos`);
+    console.log('  jurisdicciones. Si esas atribuciones fueran erróneas, el número bajaría a');
+    console.log(`  +${apareceTotal - apoyadasEnTraslape.length}. No se afirma que lo sean: se afirma de qué dependen.`);
+  }
 
   await pool.end();
   console.log('');
