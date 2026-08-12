@@ -24,6 +24,16 @@
 // reproducible. Una corrida en vivo da otro número cada hora y no se podría
 // comparar con nada. Queda declarado en la salida.
 //
+// MÉTODO DE CONTEO — decidido por el owner el 2026-08-12:
+// las jurisdicciones SIN GEOMETRÍA se EXCLUYEN del neto. Su ausencia ya la cubre
+// el aviso de INV-3.6, y contarlas como pérdida las contaría dos veces.
+//
+// CON UNA CONDICIÓN, que es la que da forma a la salida de abajo: el número
+// declara APARTE Y DE FORMA VISIBLE cuántas restricciones caen en esas
+// jurisdicciones y no se le listan al patrón. El aviso dice que la jurisdicción
+// no está cargada; NO dice qué restricciones hay. Esa parte no la tapa el aviso
+// y no se puede perder dentro del neto.
+//
 // Uso:  node scripts/e2_volumen_cambio_unidad.js
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -172,22 +182,51 @@ const RUTAS = [
   console.log(`    ${String(causas.join_sin_resolver.length).padStart(3)}  su bahía es una de las 6 que el join de E0.3 dejó SIN RESOLVER`);
   console.log(`         (${[...new Set(causas.join_sin_resolver.map(c => c.bahia))].join(', ') || '—'})`);
   console.log(`    ${String(causas.cambio_de_unidad.length).padStart(3)}  el CAMBIO DE UNIDAD las deja fuera`);
-  console.log('');
-  console.log('  Las dos primeras causas NO son efectos del cambio de unidad: son huecos del');
-  console.log('  andamio y pendientes de E0.3. Una jurisdicción sin geometría YA tiene su');
-  console.log('  aviso por INV-3.6 —R1 pieza 1 la declara— así que el patrón no se queda sin');
-  console.log('  saber; pero esas restricciones no se le listan, y eso hay que decirlo.');
-  console.log('');
-  const netoReal = apareceTotal - causas.cambio_de_unidad.length;
-  console.log(`  DESCONTANDO LAS DOS CAUSAS QUE NO SON DEL CAMBIO DE UNIDAD, el neto es ${netoReal >= 0 ? '+' : ''}${netoReal}`);
-  console.log('  (aparecen ' + apareceTotal + ', desaparecen ' + causas.cambio_de_unidad.length + '). El signo del neto DEPENDE de cómo se');
-  console.log('  traten los huecos del andamio: con la capa como está da ' + (delta >= 0 ? '+' : '') + delta + ', descontándolos da ' + (netoReal >= 0 ? '+' : '') + netoReal + '.');
-  console.log('  Un número cuyo SIGNO cambia según eso no alcanza para decidir por orden de');
-  console.log('  magnitud, y así se reporta.');
 
-  console.log('  Una que DESAPARECE es lo grave: hoy se muestra y con la unidad nueva no.');
-  console.log('  Una que APARECE es lo que INV-3.4 manda — la bahía etiqueta, la Capitanía');
-  console.log('  decide — y es de más, nunca de menos (INV-1.2).');
+  const neto = apareceTotal - causas.cambio_de_unidad.length;
+  console.log('');
+  console.log('╔' + '═'.repeat(74) + '╗');
+  console.log('║  EL NÚMERO DE E2, con el método decidido por el owner el 2026-08-12:     ║');
+  console.log('║  las jurisdicciones sin geometría se EXCLUYEN del neto.                  ║');
+  console.log('║' + ' '.repeat(74) + '║');
+  console.log(`║      cambio de volumen al pasar de bahía a Capitanía:  ${(neto >= 0 ? '+' : '') + neto}`.padEnd(75) + '║');
+  console.log(`║      aparecen ${apareceTotal} · desaparecen por la unidad ${causas.cambio_de_unidad.length}`.padEnd(75) + '║');
+  console.log('╚' + '═'.repeat(74) + '╝');
+  console.log('');
+  console.log('  Ninguna restricción se pierde por pasar a Capitanía. Las que aparecen son');
+  console.log('  INV-3.4 funcionando: la bahía etiqueta, la Capitanía decide, de más y nunca');
+  console.log('  de menos (INV-1.2).');
+
+  console.log('');
+  console.log('┌' + '─'.repeat(74) + '┐');
+  console.log('│  LO QUE ESTE NÚMERO NO CUENTA, Y QUE EL AVISO NO TAPA                    │');
+  console.log('└' + '─'.repeat(74) + '┘');
+  console.log(`  ${causas.sin_geometria.length} restricciones caen en jurisdicciones SIN GEOMETRÍA y NO se le listan`);
+  console.log('  al patrón. Hoy, con unidad bahía, SÍ se le muestran; con unidad Capitanía');
+  console.log('  dejarían de mostrarse. Están fuera del neto por método, no porque no pasen.');
+  console.log('');
+  console.log('  El aviso de INV-3.6 dice que la jurisdicción no está cargada y que consulte');
+  console.log('  con la Capitanía. NO dice qué restricciones hay. Esa parte no la cubre.');
+  console.log('');
+  const porJur = {};
+  for (const c of causas.sin_geometria) (porJur[c.jur] = porJur[c.jur] || []).push(c);
+  for (const [jur, lista] of Object.entries(porJur)) {
+    const rutas = [...new Set(lista.map(x => x.ruta))];
+    const bahias = [...new Set(lista.map(x => `${x.bahia} ${x.nombre || ''}`.trim()))];
+    console.log(`    ${jur}: ${lista.length} restricciones · bahías ${bahias.join(', ')}`);
+    console.log(`      en ${rutas.length} ruta(s): ${rutas.join(' · ')}`);
+  }
+  console.log('');
+  console.log(`  Y ${causas.join_sin_resolver.length} más caen en una bahía que el join de E0.3 dejó sin resolver: tampoco`);
+  console.log('  se listan, y a ésas no las cubre ningún aviso, porque su jurisdicción no');
+  console.log('  está identificada. Se cierran cuando responda el informante austral.');
+
+  console.log('');
+  console.log('  EXPOSICIÓN DEL NÚMERO (declarada junto a él):');
+  console.log('    · 32,1 % de los km medidos caen en las 11 jurisdicciones que difieren');
+  console.log('      entre v1 y v2. Regenerar las movería; no se afirma en qué dirección.');
+  console.log('    · 10,5 % de los km caen en zona de traslape del andamio. No está medido');
+  console.log(`      cuántas de las ${apareceTotal} que aparecen vienen de ahí.`);
 
   await pool.end();
   console.log('');
