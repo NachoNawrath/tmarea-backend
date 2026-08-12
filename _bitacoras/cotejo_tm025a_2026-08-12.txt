@@ -485,3 +485,68 @@ corregir el v2 a mano lo perderia en la proxima migracion."
 ================================================================================
 FIN
 ================================================================================
+
+================================================================================
+ADDENDUM 2026-08-11 23:05 -0400 — P0: LA COMPUERTA FALLO
+================================================================================
+(Se agrega al pie; nada de lo de arriba se reescribe — CLAUDE.md §3.3.)
+
+Autorizado el camino A2 con la compuerta P0. Corrida la cadena entera sobre el
+respaldo probado, en Git Bash. Evidencia: 10_p0_compuerta/.
+
+  1/5 fase5_correcciones_transcripcion.py  exit 0 — sin cambios (idempotente)
+  2/5 fase5_declaraciones_owner.py         exit 0 — sin cambios (idempotente)
+  3/5 fase4_migrar_insumo_v2.py            exit 0 — v2 = cffcfb50d6c9cb89
+  4/5 fase5_corregir_testigos.py --aplicar exit 0 — v2 = 7c6831ea6e74636d
+  5/5 fase5_registrar_toponimos_igm.py     exit 0 — v2 = afd45ebe2b7394f8
+
+  OBJETIVO: 13c5561486fd0088   OBTENIDO: afd45ebe2b7394f8   ->  NO REPRODUCE.
+
+QUE DIFIERE, MEDIDO CAMPO POR CAMPO
+  Claves de nivel superior: iguales. convenciones, puntos_notables,
+  correccion_testigos y pendientes VUELVEN completos — los recrean los pasos 4 y 5.
+  De las 64 jurisdicciones difiere UNA: valdivia, en dos campos
+  (causa_sin_punto_representativo y punto_representativo_descartado).
+
+LA CAUSA
+  La declaracion del owner del 2026-08-10 —"Valdivia es un frente aparte y no
+  entra en la correccion de testigos contra la capa de costa... es un puerto
+  FLUVIAL, rio arriba... correr este punto al mar mas cercano lo sacaria del rio
+  que es justamente su jurisdiccion", con referencia a
+  _bitacoras/fase5K_cierre_estado_2026-08-10.txt— vive en
+  `punto_representativo.correccion_al_agua` DEL V2. El v2 es derivado: la
+  migracion reconstruye `punto_representativo` desde el v1, y el v1 no tiene ese
+  campo. Al regenerar, fase5_corregir_testigos.py ya no ve la declaracion y cae
+  en su razonamiento generico.
+  Se ve en la salida del paso 4/5: "Excluidos por declaracion en el dato: 0".
+  En el v2 de hoy seria 1.
+
+POR QUE IMPORTA, aunque el resultado numerico coincida
+  Los dos textos dejan a Valdivia sin testigo y los dos cuentan 5 declarados sin
+  testigo. Pero el motivo cambia de naturaleza:
+    HOY   : esta fuera de la correccion porque es fluvial y una capa de costa no
+            puede juzgarlo (lectura normativa, cita el Art. 2). Declarado por el
+            owner.
+    REGEN : esta fuera porque 3380 m supera el umbral de 500 m (una medicion).
+  Si la capa de costa mejora o el umbral se mueve, la version regenerada puede
+  volver a meter a Valdivia en la correccion y correr su punto al mar — que es
+  exactamente lo que el owner declaro que no debe pasar. El resultado coincide
+  hoy por coincidencia, no por construccion.
+
+CLASE DEL DEFECTO
+  Es el mismo que el hallazgo de adjudicacion_tramos.json (§8), un nivel mas
+  abajo: una decision del owner que no es reproducible desde el repositorio y
+  que desaparece sin avisar. La compuerta existia para cazar esto y lo cazo.
+
+CORRECCION DE METODO, otra vez la misma trampa (§2)
+  Para ver si habia mas casos hice un barrido buscando menciones al owner dentro
+  del v2 y preguntando si su texto existia en el v1. Ese barrido da 13 menciones
+  y marca 6 como "se pierde" — y esta MAL: convenciones[2], los descartados de
+  puntos_notables, correccion_testigos.camino, pendientes[0] y el
+  adjudicacion_motivo de Chaiten SI vuelven, porque los recrean los pasos 4 y 5 o
+  el migrador desde adjudicacion_tramos.json. "No esta en el v1" no es "se pierde
+  al regenerar". La medicion que vale es la corrida de la cadena, y esa dice UNA.
+
+ESTADO
+  Restaurado. Los ocho sha256 de data/decreto/ vuelven a su valor y
+  `git status data/` sale limpio. No se avanzo a P1.

@@ -93,6 +93,39 @@ FRONTERA_QUEMCHI_HORNOPIREN = {
 }
 
 
+# ── 3. Valdivia fuera de la correccion al agua ───────────────────────────────
+# Decision del owner del 2026-08-10, tomada entonces y registrada ENTONCES en el
+# v2 — que es derivado. La compuerta P0 del 2026-08-11 midio la consecuencia:
+# al regenerar la cadena, la migracion reconstruye punto_representativo desde el
+# v1, la declaracion no estaba ahi, y fase5_corregir_testigos.py la reemplazaba
+# por su motivo generico ("supera el umbral de 500 m"). El resultado numerico
+# coincidia; el motivo cambiaba de una lectura normativa a una medicion, y con
+# una costa mejor o un umbral distinto Valdivia habria vuelto a entrar en la
+# correccion — exactamente lo que el owner declaro que no debe pasar.
+#
+# ESTO NO ES UNA ADJUDICACION NUEVA. Es la misma decision, movida al unico lugar
+# donde sobrevive: la fuente. El texto se copia literal del v2 vigente
+# (sha256 13c5561486fd0088), sin reescribirlo.
+VALDIVIA_FUERA_DE_CORRECCION = {
+    "jurisdiccion": "valdivia",
+    "declaracion": {
+        "aplica": False,
+        "motivo": (
+            "Valdivia es un frente aparte y no entra en la correccion de testigos "
+            "contra la capa de costa. Su punto no es una orilla mal puesta por unos "
+            "metros: es un puerto FLUVIAL, rio arriba. El Art. 2 del D.S. 991 "
+            "incluye los rios navegables en la jurisdiccion, pero una capa de costa "
+            "no los trae — hacen falta datos de hidrografia, que son un tercer "
+            "insumo y no una costa. Correr este punto al mar mas cercano lo sacaria "
+            "del rio que es justamente su jurisdiccion."),
+        "declarado_por": "owner, 2026-08-10",
+        "referencia": ("_bitacoras/fase5K_cierre_estado_2026-08-10.txt, seccion "
+                       "CAMINO 1, condicion 2"),
+        "frente_pendiente": "Valdivia fluvial: requiere hidrografia de rios navegables",
+    },
+}
+
+
 def escribir_json(ruta, doc):
     """Reescribe conservando la sangria que el archivo ya tenia.
 
@@ -178,6 +211,32 @@ def main():
     print("    0,088 grados AL NORTE del extremo de la frontera. Ahi la frontera")
     print("    ya no dice nada, y el constructor NO puede prolongarla: hay que")
     print("    medirlo al construir.")
+
+    # ── 3 ────────────────────────────────────────────────────────────────────
+    print()
+    print("=" * 78)
+    print("3. VALDIVIA FUERA DE LA CORRECCION AL AGUA")
+    print("=" * 78)
+    cid = VALDIVIA_FUERA_DE_CORRECCION["jurisdiccion"]
+    cap = caps.get(cid)
+    if cap is None:
+        raise SystemExit(f"  ALTO: '{cid}' no existe entre las capitanias del v1.")
+    if "correccion_al_agua" in cap:
+        print("  YA REGISTRADA, no se toca.")
+    else:
+        cap["correccion_al_agua"] = VALDIVIA_FUERA_DE_CORRECCION["declaracion"]
+        escribir_json(V1, v1)
+        d = cap["correccion_al_agua"]
+        print(f"  jurisdiccion   {cid}")
+        print(f"  aplica         {d['aplica']}   (o sea: NO se corrige al agua)")
+        print(f"  declarado_por  {d['declarado_por']}")
+        print(f"  referencia     {d['referencia']}")
+        print("  motivo         " + d["motivo"][:70] + "...")
+        print()
+        print("  POR QUE ACA Y NO EN EL v2: el v2 es derivado. La declaracion vivia")
+        print("  ahi y la migracion la borraba en cada regeneracion. Medido en la")
+        print("  compuerta P0: sin esto, el motivo normativo del owner se degradaba")
+        print("  al generico 'supera el umbral de 500 m'.")
 
 
 if __name__ == "__main__":

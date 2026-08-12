@@ -1151,6 +1151,24 @@ def main():
             if pr is None:
                 sin_punto.append((cap["nombre"], motivo))
 
+        # La exclusion de la correccion al agua se declara en el V1, que es la
+        # fuente. Vivia solo en el v2 y por eso se perdia al regenerar: la
+        # compuerta P0 del 2026-08-11 lo midio sobre Valdivia, donde el motivo
+        # normativo del owner ("es un puerto fluvial y una capa de costa no puede
+        # juzgarlo") se degradaba al generico "supera el umbral". Aca se copia tal
+        # cual, sin interpretarla: quien la valida es fase5_corregir_testigos.py,
+        # que ya exige 'aplica' y 'motivo'. Lo unico que se exige aca es que la
+        # declaracion no se pierda por el camino.
+        decl = cap.get("correccion_al_agua")
+        if decl is not None:
+            if pr is None:
+                raise Alto(f"{cap['nombre']}: el v1 declara 'correccion_al_agua' y "
+                           f"esta jurisdiccion no tiene punto representativo al que "
+                           f"adosarla. Una declaracion del owner que no tiene donde "
+                           f"aterrizar no se descarta en silencio")
+            pr = dict(pr)
+            pr["correccion_al_agua"] = decl
+
         juris.append({
             "id": cid,
             "nombre": cap["nombre"],

@@ -1,0 +1,30 @@
+PRUEBA DE MORDIDA — la guarda nueva del migrador (CLAUDE.md §4.6)
+Shell: Git Bash (MSYS). Fecha: 2026-08-12T02:59:42Z UTC
+
+DEFECTO INYECTADO: se declara correccion_al_agua en 'arica', que es
+no_cerrable y por lo tanto NO tiene punto_representativo. La declaracion
+no tiene donde aterrizar; el migrador debe detenerse.
+
+  inyectado en arica (estado_geometria=no_cerrable, sin punto representativo)
+
+CORRIDA DEL MIGRADOR CON EL DEFECTO:
+  exit=2
+  ultimas lineas:
+      entrada : data\decreto\jurisdicciones_capitanias.json  sha256[:16] dd44dde876ae4a16
+      lacustre: data\decreto\cotejo_lacustre_adjudicado.json  sha256[:16] 86f966583922c0f3
+      bahias  : 162 puntos SITPORT desde scripts\seed-bahias-sitport.js
+    
+
+RESTAURACION:
+  v1 sha256: 39ed468dd20506e5  (esperado 39ed468dd20506e5)
+  v2 sha256: f6c1940502eaf91b  (esperado f6c1940502eaf91b)
+
+MENSAJE CON QUE SE DETUVO (salida cruda completa en 7_mordida_salida_cruda.txt):
+
+  MIGRACION DETENIDA: Arica: el v1 declara 'correccion_al_agua' y esta
+  jurisdiccion no tiene punto representativo al que adosarla. Una declaracion
+  del owner que no tiene donde aterrizar no se descarta en silencio
+
+VEREDICTO: la guarda MUERDE. exit 2, no escribio el v2, y el motivo nombra la
+jurisdiccion y la causa. Sin ella, la declaracion se habria descartado en
+silencio — que es el modo de falla que esta pasada existe para cerrar.
