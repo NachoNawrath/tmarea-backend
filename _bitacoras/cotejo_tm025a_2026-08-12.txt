@@ -1,0 +1,487 @@
+================================================================================
+COTEJO DEL INSUMO DEL D.S. 991 CONTRA EL TEXTO OFICIAL TM-025 A (4-JUN-2025)
+================================================================================
+
+Fecha        : 2026-08-11 22:24 -0400 (Chile)  =  2026-08-12T02:24Z UTC
+               El nombre del archivo usa la fecha UTC, como las bitacoras de E2.
+Estado       : RECONOCIMIENTO Y MEDICION. No se construyo nada.
+               data/decreto/ quedo con los 8 sha256 con que empezo (§9).
+
+SHELL DECLARADO (CLAUDE.md §7.3)
+  Los comandos que aparecen abajo bajo "EJECUTADO" se corrieron en **Git Bash
+  (MSYS)** sobre Windows 10. No son PowerShell. Cada uno lleva su equivalente
+  bajo "PARA REPETIR (PowerShell)", que es la forma que el owner debe usar en su
+  terminal. Donde las dos formas difieren, estan escritas las dos y dicho cual es
+  cual, como exige §7.3.
+
+  Interprete de Python: tools\raster-build\.venv\Scripts\python.exe (3.14.6, con
+  geopandas, shapely y psycopg2). Node: v24.18.0. pdftotext: xpdf 4.06.
+
+--------------------------------------------------------------------------------
+0. POR QUE EXISTE ESTA BITACORA
+--------------------------------------------------------------------------------
+
+El owner consiguio el texto oficial TM-025 A actualizado al 4 de junio de 2025,
+cotejado con BCN mayo 2025. El insumo del repositorio se transcribio del
+consolidado que BCN publica (idNorma=142425). Nunca quedo escrito en el
+repositorio contra que version se transcribio: `jurisdicciones_v2.json` declara
+su `fuente` en prosa y ningun archivo guarda el texto contra el que se coteja.
+
+Este cotejo es la primera comparacion literal entre los dos.
+
+--------------------------------------------------------------------------------
+1. PROCEDENCIA DE LA FUENTE NUEVA — DECLARADA, NO VERIFICADA
+--------------------------------------------------------------------------------
+
+Archivo   : tm_025a_actualizada_al_04_jun_2025.pdf
+Ruta      : C:\Misil-Up\PROYECTOS\TMarea App\   (fuera del repositorio, hoy)
+sha256    : 7b7b4c603ed92b793f1be9be63f9f2b7c040edb811127bda5bc579cc6797541c
+tamano    : 284.047 bytes
+mtime     : 2026-08-11 21:51
+
+ORIGEN: **declarado por el owner de memoria, no verificado.** Descargado el
+2026-08-11 de la seccion de descargas gratuitas del sitio del SHOA. No se
+consulto la URL ni se comprobo el hash contra ningun sitio institucional. Si el
+mismo sha256 aparece publicado en un sitio institucional, el origen pasa a
+VERIFICADO y se registra con URL y fecha de consulta; mientras tanto queda como
+RECORDADO, que sirve mientras este dicho (§3.2: lo que no se puede verificar se
+escribe como tal).
+
+El documento en su portada es de la DIRECCION GENERAL DEL TERRITORIO MARITIMO Y
+DE MARINA MERCANTE — Division Reglamentos y Publicaciones Maritimas, codigo
+TM-025 A, con las leyendas "COTEJADO CON BCN MAYO 2025" y "SE ENCUENTRA
+DISPONIBLE SOLAMENTE EN PAGINA WEB". Su ficha tecnica declara aprobacion por
+D.S. (M) N 991 del 26-10-1987 (D.O. 32.931, 27-11-1987) y seis modificaciones,
+la ultima D.S. (M) N 391 del 17-10-2019 (D.O. 42.803, 12-11-2020).
+
+EXTRACCION DEL TEXTO
+  EJECUTADO (Git Bash):
+    pdftotext -layout -enc UTF-8 "<pdf>" 01_texto_oficial_extraido.txt
+  PARA REPETIR (PowerShell):
+    pdftotext -layout -enc UTF-8 "C:\Misil-Up\PROYECTOS\TMarea App\tm_025a_actualizada_al_04_jun_2025.pdf" 01_texto_oficial_extraido.txt
+  Resultado: 866 lineas, 50.411 bytes.
+  sha256 e14cb905b4895422e41a7741818b59a40578dd49ba049baf0b727a8928c522c8
+
+  ADVERTENCIA DE REPRODUCIBILIDAD: pdftotext de xpdf 4.06 no es el de
+  poppler-utils y no esta comprobado que den byte a byte lo mismo. Mientras el
+  .txt no se versione con su hash y un control que lo compare, este cotejo
+  depende de tener xpdf 4.06 instalado — o sea, del disco de alguien (§3.4).
+
+--------------------------------------------------------------------------------
+2. METODO DEL COTEJO
+--------------------------------------------------------------------------------
+
+Herramienta: cotejo.js (en este directorio, re-ejecutable).
+
+  1. Del texto oficial se descartan cabeceras de pagina y notas al pie por patron
+     (^\d{1,3}\s+D\.S\.\s*\(M\)  y  la cabecera repetida de cada pagina).
+  2. Se trocea por encabezado: "GOBERNACION MARITIMA DE X" y
+     "- Capitania de Puerto (de|del) X". Art. 2 se captura aparte.
+  3. Cada bloque se mapea a un id del insumo por tabla explicita, sin caso por
+     defecto (§4.2): un encabezado sin mapeo se reporta como "[SIN MAPEO]" en vez
+     de caer en el generico.
+  4. Normalizacion antes de comparar: sin tildes; marcas de nota al pie pegadas a
+     palabra o puntuacion eliminadas; grados/minutos/segundos y comillas a
+     espacio; minusculas; todo lo no alfanumerico colapsado a un espacio.
+     Con eso "19o13'00'' S." y "19 13 00 S" son el mismo token.
+  5. Diff LCS sobre tokens, agrupado, marcando SOLO OFICIAL / SOLO INSUMO.
+
+  EJECUTADO (Git Bash):     node cotejo.js
+  PARA REPETIR (PowerShell): node cotejo.js
+  (identico; node no cambia entre shells)
+
+QUE MIDE Y QUE NO MIDE
+  Mide el texto del decreto contra el campo `texto_decreto` del insumo.
+  NO mide geometria. Una diferencia de texto puede estar cubierta por otro campo
+  del insumo, asi que cada diferencia se verifico ademas contra `contorno`,
+  `cuerpos_lacustres`, `sectores` y `puntos_no_incorporados` antes de declararla
+  ausencia. La unica que resulto cubierta esta dicha en el §3.
+
+--------------------------------------------------------------------------------
+3. RESULTADO — QUE FALTA EN EL INSUMO
+--------------------------------------------------------------------------------
+
+De 64 Capitanias: 1 identica al normalizar (lago_rapel); el resto difiere. La
+mayoria es fraseo (el insumo omite "Su jurisdiccion comprende", contrae
+"en Latitud X y Longitud Y" a "X / Y", abrevia "Sexta Region" a "VI"). Descontado
+eso, quedan diferencias de contenido. Detalle completo en 03_cotejo_diff.txt.
+
+3.a — CONTENIDO DEL DECRETO AUSENTE DEL INSUMO (diez Capitanias)
+
+  carahue           "Incluye los rios Imperial, Queule, Moncul, Tolten (lo que
+                    comprende la jurisdiccion de la comuna de Tolten, hasta su
+                    desembocadura al mar), los lagos Budi, Queule y laguna
+                    Trovolhue." — la clausula entera.
+  lago_villarrica   el alcance del rio Tolten: "(desde su origen hasta la
+                    jurisdiccion de la comuna de Pitrufquen)". Es la costura con
+                    Carahue.
+  lago_ranco        las COORDENADAS de los tres sectores del rio Bueno:
+                    Los Patos    40 17 03 S / 073 31 43 W
+                    La Goleta    40 17 13 S / 073 36 52 W
+                    El Manzanito 40 15 06 S / 073 41 01 W
+                    Hoy el rio Bueno esta 'rechazado', sin geometria.
+  valdivia          "Incluye los Rios Calle Calle, Lingue, Cruces, Angachilla,
+                    Tornagaleones, Valdivia y sus afluentes navegables."
+  corral            "Incluye el rio Colun."
+  talcahuano        "y las lagunas Chica y Grande de San Pedro."
+  cochamo           "en la frontera con la Republica Argentina" (calificador de
+                    los lagos Tagua-Tagua e Inferior).
+  tierra_del_fuego  la oracion final entera: aguas de Tierra del Fuego con acceso
+                    por el Norte que se extienden al Sur de 54 33 00 — senos
+                    Martinez, Fontaine, Agostini, Serrano, Hyatt, brazo O'Ryan,
+                    bahias Parry y Blanca.
+  puerto_williams   dos trozos: "...y aquellas aguas que estan en Tierra del
+                    Fuego y tienen su entrada por el Sur, hasta el Canal Ocasion
+                    el que se divide en la Latitud 54 33 00 S y de alli por dicho
+                    paralelo hacia el Oceano Pacifico"; y "Comprende tambien los
+                    rios, lagos y lagunas contenidas en dicha jurisdiccion."
+  bahia_paraiso     "Y por el Sur, con las costas mas australes de la provincia
+                    Antartica Chilena entre los meridianos 53 00 00 W y
+                    90 00 00 W."
+
+  CUBIERTA POR OTRO CAMPO, no es ausencia: en `corral` el texto del insumo omite
+  las coordenadas de Punta Niebla y Punta Fronton, pero estan en su `contorno`
+  (-39.865278, -39.871667, -39.890278 / -73.405, -73.374167). No se pierde dato.
+
+  DOS TIENEN CONSECUENCIA SOBRE LA FIGURA, NO SOLO SOBRE EL TEXTO:
+    - bahia_paraiso esta construida como anillo cerrado sobre cuatro puntos. En
+      el oficial esos cuatro puntos son el LIMITE NORTE y el Sur es la costa
+      antartica. Ver §5.
+    - tierra_del_fuego y puerto_williams se faltaban la contrapartida mutua: las
+      dos oraciones ausentes son las dos mitades del reparto en el Canal Ocasion
+      / paralelo 54 33 00. Es el caso Ancud, y esta vez faltaban los dos lados.
+
+3.b — LO QUE NUNCA FUE DE UNA CAPITANIA
+
+  TRECE PARRAFOS DE GOBERNACION MARITIMA sin representacion en el insumo. El
+  insumo tiene 64 entradas y las 64 son Capitanias; `jurisdicciones_capitanias.json`
+  (v1) tampoco tiene registros de Gobernacion (64 capitanias, 0 gobernaciones).
+  Los de Arica, Hanga Roa y Puerto Williams no cuentan porque su Capitania tiene
+  "igual territorio jurisdiccional" y el insumo copio ese texto.
+
+  Los que traen contenido que sus Capitanias no repiten:
+    Valdivia     — enumeracion de rios y lagos, incluidos Colun, los sectores de
+                   Tornagaleones (Montanas del Pilhuita, La Boca, las Tres Bocas)
+                   y "el rio Imperial desde Nueva Imperial hasta su desembocadura"
+    Talcahuano   — lagunas Chica y Grande de San Pedro; lagos Maule, Colbun, Teno,
+                   Vichuquen, Lanalhue, Lleu Lleu; islas Quiriquina, Santa Maria,
+                   Mocha
+    Puerto Montt — lago Chapo, Lago Inferior, rio Maicolpue y la lista de islas
+    Valparaiso   — San Felix, San Ambrosio y Archipielago de Juan Fernandez
+    Punta Arenas — repite la clausula de las aguas de Tierra del Fuego
+    Aysen        — EL LIMITE SUR, ver §4
+    Antartica    — asiento (Caleta Ardley, Bahia Fildes, Isla Rey Jorge) y los
+                   ocho puntos de su limite Norte
+    Iquique, Antofagasta, Caldera, Coquimbo, San Antonio, Castro — bandas de
+                   paralelos que sus Capitanias ya cubren
+
+  EL ART. 2 COMPLETO, que INV-3.3 cita y el insumo no tiene:
+    "Las jurisdicciones senaladas en el articulo precedente comprenden el
+    litoral, lagos y rios navegables, las aguas interiores pertinentes, el mar
+    territorial, la zona contigua, la zona economica exclusiva y la plataforma
+    continental pertenecientes al Estado de Chile. Asimismo se considerara
+    aquellos espacios de la alta mar en los cuales la Direccion General del
+    Territorio Maritimo y de Marina Mercante debe realizar las funciones que le
+    demanda la normativa vigente..."  (texto vigente segun D.S. 391/2019 Art. 2)
+
+    Esto convierte D6 en decidible: hasta hoy la cita vivia solo en la
+    transcripcion del contrato y no se reproducia desde el repositorio.
+
+3.c — DOS PREMISAS DE CORRECCION FALSIFICADAS
+
+  El insumo tiene 8 correcciones aplicadas. Cinco llevan firma del owner y tres
+  no. Las dos falsificadas estan entre las TRES SIN FIRMA:
+
+  mejillones     el insumo dice: "El decreto escribe 22 30 00 S. Se corrige a
+                 22 39 00 S..."  EL OFICIAL DICE 22o39'00''.
+                 El valor corregido es correcto; el motivo ("discrepancia de la
+                 fuente") es falso. La misma afirmacion esta repetida en
+                 puntos_notables, entrada "Punta Tames".
+  punta_arenas   el insumo dice: "El decreto escribe '52 3030 S', sin apostrofe."
+                 EL OFICIAL DICE 52o30'30" S. Era artefacto de renderizado de BCN.
+
+  achao (tambien sin firma) SE SOSTIENE: el oficial escribe literalmente
+  "Longitud 073o12'00" S." — el error de hemisferio es de la fuente.
+
+3.d — LAS CINCO CON FIRMA DEL OWNER: LAS CINCO CONFIRMADAS
+
+  hornopiren (2026-08-09) · castro (2026-08-09) · ancud (2026-08-10) ·
+  chaiten (2026-08-10) · chonchi (2026-08-10).
+  Las cinco declaran "omision de transcripcion, lectura directa del parrafo". El
+  texto oficial trae literalmente los cierres y vertices que se agregaron:
+  "y desde alli hacia el Weste" (Ancud), "y desde este punto hacia el Weste"
+  (Castro), "siguiendo por esta Latitud hacia el Weste" (Chonchi), el vertice
+  42 30 00 S / 072 38 00 W (Chaiten y Hornopiren).
+  NINGUNA ADJUDICACION DEL OWNER CAMBIA DE SENTIDO CON EL TEXTO NUEVO.
+
+3.e — HILO NUEVO, CHICO
+
+  El parrafo de la Gobernacion de Valdivia escribe "Gualletue" donde la Capitania
+  de Lago Villarrica escribe "Galletue". En el insumo esa laguna esta con
+  resolucion 'ausente' — sin ninguna coincidencia en el catastro. Hay una segunda
+  grafia que nunca se probo contra el shapefile.
+
+3.f — INCONSISTENCIAS INTERNAS DEL PROPIO TEXTO OFICIAL, para que no se lean
+      como defectos de transcripcion
+
+  - Quemchi llama "Punta NE de isla Meulin" al mismo punto que Achao llama
+    "punta NW de la isla Meulin" (42 23 30 S / 073 17 00 W). El insumo reproduce
+    las dos, fiel.
+  - Achao: "Longitud 073o12'00" S." (hemisferio imposible en una longitud).
+  - Mejillones omite el "S." tras 22o39'00''; Quemchi omite el "S." tras
+    42o23'30". El insumo los suplio en silencio.
+  - GM San Antonio dice "Libertador Bernardo O'Higgins" y CP Pichilemu dice
+    "Libertador General Bernardo O'Higgins".
+
+--------------------------------------------------------------------------------
+4. GOBERNACION MARITIMA DE AYSEN — CIERRA LA ADJUDICACION DE 127, 129 Y 154
+--------------------------------------------------------------------------------
+
+Texto oficial, GM Aysen:
+
+  "...y por el Sur hasta el limite Sur de la XI Region Aisen del General Carlos
+  Ibanez del Campo, EL CUAL SE EXTIENDE desde una linea recta trazada de la
+  cumbre del cerro Chaltel o Fitz Roy, sobre el limite con Argentina al extremo
+  oriental del seno Iceberg o Tempano, desde dicha cumbre hasta dicho extremo
+  oriente del seno Iceberg o Tempano; el seno Iceberg o Tempano, desde su extremo
+  oriental hasta el canal Messier; y canales Messier, Adalberto, Fallos y del
+  Castillo, desde el seno Iceberg o Tempano hasta el mar Chileno."
+
+MEDIDO: ninguno de esos toponimos existe en el insumo. Busqueda literal de
+Chaltel, Fitz Roy, Iceberg, Tempano, Messier, Adalberto, Fallos y "del Castillo"
+sobre jurisdicciones_v2.json, jurisdicciones_capitanias.json,
+cotejo_lacustre_adjudicado.json, zonas_aviso.json y ambitos_publicados.json:
+CERO coincidencias. No es que estuviera y no se leyera: no estaba.
+
+La pregunta redactada para DIRECTEMAR en join_bahia_jurisdiccion.json
+(fuente_a_consultar id 'limite_sur_aysen') tiene dos mitades:
+
+  "¿Coincide ese limite con el limite Sur de la Region de Aysen?"
+      CONTESTADA POR EL PROPIO DECRETO. El "el cual" identifica los dos.
+      Eso une el limite Sur de baker con el limite Norte de puerto_eden: son
+      la misma linea, y deja de haber dos incognitas.
+
+  "¿Cuales son las coordenadas?"
+      NO CONTESTADA. El decreto nombra accidentes, no coordenadas. Y el tramo
+      "canales Messier, Adalberto, Fallos y del Castillo" es un recorrido por
+      canales, no una recta.
+
+Efecto: para las bahias 127 (Baker), 129 (Puerto Eden) y 154 (Isla Guarello) ya
+no hay nada que ADJUDICAR — quien manda esta escrito — y lo que queda es
+georreferenciar cuatro accidentes. Cambia la fuente que hace falta: de DIRECTEMAR
+a hidrografia/toponimos.
+
+NO TOCA las otras tres abiertas: 137 (solape punta_delgada x tierra_del_fuego al
+Oriente de Cabo San Vicente) ni 239/241 (costura Cisnes x Aguirre al Weste).
+
+--------------------------------------------------------------------------------
+5. BAHIA PARAISO — GEOMETRIA QUE EL DECRETO NO ESCRIBE
+--------------------------------------------------------------------------------
+
+En el insumo: receta=anillo, contorno_cerrado=true, sigue_litoral=false,
+4 puntos de contorno.
+
+En la base (jurisdicciones_decreto, el andamio):
+  LINESTRING(-53 -70, -59.266667 -62.833333, -75.25 -65, -90 -69.25, -53 -70)
+  area 776.121,2 km2
+
+El ultimo segmento —de (-90, -69.25) de vuelta a (-53, -70)— no esta en el
+decreto. El decreto dice que esos cuatro puntos son el limite NORTE y que por el
+Sur el limite son "las costas mas australes de la provincia Antartica Chilena
+entre los meridianos 53 y 90 W". El anillo sustituye una costa por una recta de
+37 grados de longitud.
+
+RADIO DE IMPACTO, MEDIDO (07_ y 08_):
+  - jurisdicciones_ds991 NO EXISTE en la base (to_regclass = None). La capa buena
+    nunca llego a construirse, asi que esta figura no esta en ella.
+  - El ambito antartico esta declarado NO PUBLICADO en ambitos_publicados.json.
+  - Traslapes entre las cuatro antarticas: NINGUNO. La figura mal cerrada no se
+    come a sus vecinas.
+  - La figura antartica mas al Norte llega a latitud -57,700. Una ruta chilena no
+    baja de -56. Geograficamente no puede alcanzar una ruta de hoy.
+  - 3 bahias SITPORT caen dentro de alguna figura antartica.
+
+  => Hoy no llega a ninguna ruta ni a ninguna bandera. El defecto es real y esta
+     contenido.
+
+EL ARREGLO YA TIENE MECANISMO EN EL REPOSITORIO, no hace falta codigo nuevo. La
+nota_construccion del insumo dice: "Donde el decreto dice 'siguiendo el litoral',
+el poligono se cierra generosamente hacia tierra y se recorta con ST_Difference
+contra la capa de tierra. No se traza la costa a mano." `sigue_litoral` lo deriva
+el migrador de los tramos (fase4_migrar_insumo_v2.py:406) y el auditor tiene un
+control cruzado que exige que coincidan (fase4_auditoria_v2.py:1265). O sea que
+es una propiedad declarada en el dato (§4.3), no una rama en el codigo.
+PENDIENTE DE COMPROBAR antes de aplicarlo: que la capa de tierra declarada cubra
+la Antartida.
+
+--------------------------------------------------------------------------------
+6. LA CADENA DEL INSUMO — QUE ES FUENTE Y QUE ES DERIVADO
+--------------------------------------------------------------------------------
+
+jurisdicciones_v2.json NO ES LA FUENTE. Es derivado. Lo dice el propio migrador
+en su cabecera: "El v2 es derivado y se REGENERA con fase4_migrar_insumo_v2.py:
+corregir el v2 a mano lo perderia en la proxima migracion."
+
+  v1  data/decreto/jurisdicciones_capitanias.json   <- transcripcion a mano
+   |  fase5_correcciones_transcripcion.py            (idempotente, sobre v1)
+   |  fase5_declaraciones_owner.py                   (idempotente, v1 + adjudicacion_tramos)
+   v
+  MIGRACION  fase4_migrar_insumo_v2.py               (v1 + cotejo_lacustre -> v2)
+   |
+   |  fase5_corregir_testigos.py --aplicar           (sobre v2; NECESITA PostgreSQL)
+   |  fase5_registrar_toponimos_igm.py               (sobre v2)
+   v
+  v2  data/decreto/jurisdicciones_v2.json
+
+--------------------------------------------------------------------------------
+7. MEDICION: ¿LA CADENA REGENERA?
+--------------------------------------------------------------------------------
+
+7.1 PRUEBA DEL RESPALDO, ANTES DE CORRER NADA (04_prueba_respaldo.txt)
+
+  Condicion del owner: probar que el respaldo restaura ANTES, no despues.
+
+    sha256 original en el repo   13c5561486fd0088...
+    sha256 del respaldo          13c5561486fd0088...  (8 de 8 archivos iguales)
+    tras dano deliberado         09fc25e5b891a310...  el JSON DEJA DE PARSEAR
+    tras restaurar               13c5561486fd0088...  parsea, 64 jurisdicciones
+
+  El dano se eligio para dejar el archivo INVALIDO, no solo distinto: un respaldo
+  que restaura bytes pero no un archivo usable no prueba lo que hace falta.
+
+7.2 REGENERACION DEL MIGRADOR (05_regeneracion_migrador.txt)
+
+  Autorizada por el owner el 2026-08-11.
+
+  EJECUTADO (Git Bash):
+    cd C:/Users/katia/tmarea-backend/scripts
+    ../tools/raster-build/.venv/Scripts/python.exe fase4_migrar_insumo_v2.py
+  PARA REPETIR (PowerShell):
+    cd C:\Users\katia\tmarea-backend\scripts
+    ..\tools\raster-build\.venv\Scripts\python.exe fase4_migrar_insumo_v2.py
+
+  exit 0.
+
+  EL MIGRADOR NO DERIVO. El v2 regenerado hoy desde el v1 de hoy es byte a byte
+  el v2 del commit 653fa1d (2026-08-10). `generado` no es sello de tiempo: sigue
+  diciendo 2026-08-09. La corrida es determinista y repetible.
+
+  PERO REGENERAR SOLO LA MIGRACION PIERDE LOS DOS PASOS POSTERIORES:
+
+    correccion_testigos   bloque completo          -> NO EXISTE en el regenerado
+    pendientes            1 entrada (la decision del owner del 2026-08-10 sobre
+                          Punta Dungeness / Cabo del Espiritu Santo)
+                                                   -> NO EXISTE en el regenerado
+    convenciones          7 -> 6   se pierde la n.7 "UMBRAL DE CORRECCION DE
+                          TESTIGOS. CONVENCION NUESTRA" (los 500 m del owner)
+    puntos_notables       73 -> 69  se pierden Punta Anxious, Peninsula Brecknock,
+                          Punta Harry y Cabo San Vicente (los cuatro del IGM)
+    jurisdicciones        64 -> 64 pero 45 DIFIEREN:
+                            punto_representativo             43
+                            causa_sin_punto_representativo    5
+                            punto_representativo_descartado   5
+                            causa_sin_geometria               2
+
+7.3 EL TERCER ESLABON CORRE HOY (06_medir_testigos.txt)
+
+  EJECUTADO (Git Bash):
+    ../tools/raster-build/.venv/Scripts/python.exe fase5_corregir_testigos.py --medir
+  PARA REPETIR (PowerShell):
+    ..\tools\raster-build\.venv\Scripts\python.exe fase5_corregir_testigos.py --medir
+
+  exit 0, modo medir, NO escribio nada. PostgreSQL responde, la capa
+  costa_osm_sub esta cargada y pasa su comprobacion de sha256 contra
+  capas_costa.json (e3570af698dd0867). Reprodujo la distribucion de la Etapa 1:
+  8 ya_en_agua, 30 corregible, 4 pasa_umbral, 0 irresoluble, 1 excluido,
+  9 sin_testigo; mediana 28 m, maximo 3.380 m; margen de identidad se cumple en
+  los 30 que se moverian.
+
+  => El costo de regenerar la cadena entera es BAJO y esta verificado hoy, no
+     estimado. Los tres eslabones corren.
+
+7.4 RESTAURACION (§9)
+
+  Restaurado desde el respaldo. Los 8 sha256 de data/decreto/ vuelven a su valor
+  y `git status data/` sale limpio.
+
+--------------------------------------------------------------------------------
+8. HALLAZGO PROPIO: UN REGISTRO DE PROCEDENCIA QUE QUEDO VIEJO SIN AVISAR
+--------------------------------------------------------------------------------
+
+8.0 CORRECCION DE METODO MIA, PRIMERO (§2)
+
+  La primera medicion de esto la hice comparando el sha256 de
+  `git show <commit>:archivo` contra el del archivo en disco. Con
+  core.autocrlf=true en este repositorio y el archivo en disco TODO CRLF
+  (9.743 CRLF, 0 LF), git guarda LF y entrega LF: esa comparacion mide el fin de
+  linea, no el contenido. Daba que los cuatro commits discrepaban, incluido el
+  actual, mientras `git status` decia limpio — la contradiccion la delato.
+  Es el caso del §2 de CLAUDE.md, cazado antes de reportar. Lo de abajo es la
+  medicion rehecha con conversion explicita LF->CRLF.
+
+8.1 LOS NUMEROS
+
+  estado                                     sha256 (CRLF, como queda en disco)
+  05e0b6b 2026-08-09                         7e5fc8ba6c468242...
+  4bbedc4 2026-08-10                         a2ff4b27a5211a7e...
+  653fa1d 2026-08-10                         cffcfb50d6c9cb89...  = REGENERADO HOY
+  c3f2ae1 2026-08-11                         13c5561486fd0088...  = DISCO HOY
+  registrado en adjudicacion_tramos.json     ff3e6710bbabe6b5...
+
+8.2 EL HALLAZGO
+
+  ff3e6710 NO ES NINGUNO DE LOS CUATRO, ni en LF ni en CRLF. Apunta a un v2 de
+  arbol de trabajo que nunca llego a un commit: no es reproducible desde el
+  repositorio en ningun estado de su historia.
+
+  - NADIE ESCRIBE ESE BLOQUE. grep sobre scripts/: ningun script produce
+    `insumo: { "jurisdicciones_v2.json": ... }`. Se puso a mano o lo puso algo que
+    ya no existe. Contra §3.4 y contra INV-3.7.
+  - NADIE LO VERIFICA. El auditor tiene el control equivalente para el eslabon de
+    arriba — B0, fase4_auditoria_v2.py:618, comprueba que v2.derivado_de coincide
+    con el v1 en disco, y hoy PASA — pero no hay nada analogo para
+    adjudicacion_tramos.insumo -> v2. El patron existe y no se aplico un nivel
+    mas abajo.
+  - LO QUE CUSTODIA NO ES MENOR. adjudicacion_tramos.json lleva la adjudicacion
+    del owner de 22 tramos, con su firma: "Autorizado por el owner el 2026-08-10.
+    El owner decide que dice el decreto". El archivo declara contra que insumo se
+    adjudico; esa declaracion quedo vieja el 2026-08-11 con c3f2ae1 y ningun
+    control se entero. Si esa adjudicacion hubiera que revisarla, hoy no hay forma
+    de saber que v2 estaba mirando el owner.
+
+--------------------------------------------------------------------------------
+9. ESTADO DEL REPOSITORIO AL CERRAR ESTA BITACORA
+--------------------------------------------------------------------------------
+
+  data/decreto/ — los 8 archivos con el mismo sha256 con que empezo (09_):
+    376e8bc2...  adjudicacion_tramos.json
+    9e4246b0...  ambitos_publicados.json
+    22a405b4...  capa_consultada.json
+    86f96658...  cotejo_lacustre_adjudicado.json
+    62a3b5c2...  join_bahia_jurisdiccion.json
+    49672a46...  jurisdicciones_capitanias.json
+    13c55614...  jurisdicciones_v2.json
+    b0d5878d...  zonas_aviso.json
+
+  Nada construido. Nada commiteado. Lo unico escrito en el repositorio es este
+  directorio de bitacora.
+
+--------------------------------------------------------------------------------
+10. LO QUE NO SE PUDO DETERMINAR
+--------------------------------------------------------------------------------
+
+  - El origen del PDF no esta verificado (§1). Queda como declarado de memoria.
+  - Que bahia es el id 108 sigue SIN DETERMINAR. El parrafo de Carahue acota los
+    candidatos —el decreto le nombra rios Imperial, Queule, Moncul y Tolten,
+    lagos Budi y Queule, y laguna Trovolhue—, pero el registro de Totalpronostico
+    no trae nombre ni coordenada. Lo que ya estaba establecido en E0.1 y sigue en
+    pie: la 108 pertenece a la Capitania de Puerto Carahue segun Totalgeneral
+    (reparticion 190, codigo 2169), y es una CUARTA bahia de esa reparticion que
+    el propio catalogo de SITPORT no lista.
+  - Si la capa de tierra declarada cubre la Antartida (necesario para el arreglo
+    de bahia_paraiso del §5).
+  - Si pdftotext de poppler produce el mismo .txt que xpdf 4.06 (§1).
+
+================================================================================
+FIN
+================================================================================

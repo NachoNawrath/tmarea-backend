@@ -1,0 +1,359 @@
+================================================================================
+PROPUESTA — ALINEAR EL INSUMO DEL D.S. 991 CON EL TEXTO OFICIAL VIGENTE
+================================================================================
+
+Fecha    : 2026-08-11 22:40 -0400 (Chile) = 2026-08-12T02:40Z UTC
+Shell    : las mediciones que respaldan esta propuesta se corrieron en Git Bash
+           (MSYS). Los comandos para repetirlas, en PowerShell, estan en
+           cotejo_tm025a_2026-08-12.txt §7.
+Medicion : _bitacoras/cotejo_tm025a_2026-08-12.txt y su directorio.
+Estado   : PROPUESTA. No se construyo nada.
+
+OBJETIVO (del owner): el insumo del decreto tiene que reproducir lo que el
+decreto dice; alineado con el texto oficial vigente, con su procedencia
+registrada, y con las diferencias que se decidan no incorporar declaradas como
+tales y no como ausencias.
+
+================================================================================
+§1.1 — QUE DICE LA NORMA
+================================================================================
+
+FUENTE NORMATIVA. D.S. (M) N 991 de 26-10-1987, texto vigente segun TM-025 A
+actualizado al 4 de junio de 2025 (DIRECTEMAR, Division Reglamentos y
+Publicaciones Maritimas), cotejado con BCN mayo 2025. Modificado por D.S. 020/1996,
+163/1997, 058/2000, 080/2004, 224/2012 y 391/2019.
+
+  Art. 1  — fija las jurisdicciones de las Gobernaciones Maritimas y establece
+            las Capitanias de Puerto y sus jurisdicciones. Es de donde salen
+            TANTO los parrafos de Capitania que el insumo transcribio COMO los
+            trece parrafos de Gobernacion que no transcribio.
+  Art. 2  — "Las jurisdicciones senaladas en el articulo precedente comprenden el
+            litoral, lagos y rios navegables, las aguas interiores pertinentes,
+            el mar territorial, la zona contigua, la zona economica exclusiva y
+            la plataforma continental pertenecientes al Estado de Chile..."
+
+LO QUE EL CONTRATO YA EXIGE, y que hoy NO se cumple:
+
+  INV-3.7 (Trazabilidad de los limites), textual:
+    "El archivo de definicion de jurisdicciones es dato fuente versionado en el
+    repositorio. CADA CAPITANIA CONSERVA EL TEXTO LITERAL DEL DECRETO QUE LA
+    DEFINE."
+    -> Diez Capitanias NO conservan el texto literal: les falta contenido del
+       parrafo (bitacora §3.a). Esto no es una carencia del dato: es un
+       incumplimiento de un invariante vigente.
+
+    "Correcciones: cuando la fuente contiene un error evidente... la correccion
+    se aplica en el archivo fuente registrando QUE DICE EL DECRETO, QUE SE LEYO
+    Y POR QUE."
+    -> Dos correcciones registran un "que dice el decreto" que el texto oficial
+       desmiente (mejillones, punta_arenas). El valor es correcto y el registro
+       es falso, que es exactamente lo que este invariante existe para impedir.
+
+    "Verificacion: regenerar la capa desde el archivo fuente debe producir el
+    mismo resultado. Si alguien clona el repositorio, puede reconstruirla sin
+    depender del disco de nadie."
+    -> El texto oficial contra el que se coteja vive hoy FUERA del repositorio.
+
+  INV-3.3 cita el Art. 2 y el Art. 2 no esta en el insumo (D6, abierta).
+  INV-0.2 (no fabricar datos) es lo que hace inaceptable el cierre de
+  bahia_paraiso: cuatro puntos que el decreto declara limite NORTE se usan como
+  anillo, y el segmento que los cierra por el Sur no esta en el decreto.
+
+LO QUE LA NORMA NO DICE, dicho con esas palabras (§1.1):
+  El decreto NO dice como estructurar el insumo, ni donde poner los parrafos de
+  Gobernacion, ni que un cotejo tenga que registrarse. Todo eso es ingenieria y
+  cae de mi lado (CLAUDE.md §0 y §0.4). Lo declaro como decision propia mas
+  abajo, no como exigencia normativa.
+  El decreto TAMPOCO entrega coordenadas para el limite Sur de la XI Region:
+  nombra accidentes. Convertirlos en geometria necesita otra fuente.
+
+================================================================================
+§1.2 — QUE MIDE EL DATO
+================================================================================
+
+Lo medido esta en cotejo_tm025a_2026-08-12.txt. Resumen de lo que decide:
+
+  M1  La migracion v1->v2 es DETERMINISTA. Regenerada hoy desde el v1 de hoy,
+      reproduce byte a byte el v2 del commit 653fa1d. `generado` no es sello de
+      tiempo.
+  M2  Regenerar SOLO la migracion pierde: correccion_testigos (bloque),
+      pendientes (bloque, con la decision del owner sobre Punta Dungeness),
+      1 convencion de 7 (el umbral de 500 m), 4 puntos notables de 73 (los del
+      IGM) y 45 de 64 jurisdicciones (punto_representativo en 43).
+  M3  El tercer eslabon CORRE HOY: fase5_corregir_testigos.py --medir termina en
+      exit 0 contra PostgreSQL con costa_osm_sub cargada y verificada por
+      sha256. Reprodujo la distribucion de la Etapa 1 (8/30/4/0/1/9).
+  M4  Las 8 correcciones del insumo se parten por firma: 5 con firma del owner,
+      3 sin. Las 5 firmadas estan TODAS confirmadas por el texto oficial. Las 2
+      falsificadas estan entre las 3 sin firma.
+  M5  bahia_paraiso esta contenida: jurisdicciones_ds991 no existe, el ambito
+      antartico esta declarado no publicado, no hay traslapes entre las cuatro
+      antarticas, y la figura mas al Norte llega a -57,700 mientras una ruta
+      chilena no baja de -56.
+  M6  Consumidores de jurisdicciones_v2.json: 4 servicios de produccion
+      (zonas-aviso, cobertura-jurisdiccional, ambitos-publicados,
+      join-bahia-jurisdiccion) y 23 scripts.
+  M7  adjudicacion_tramos.json declara derivar de un v2 (ff3e6710) que no existe
+      en ningun commit; nadie escribe ese bloque y nadie lo verifica.
+
+EL CASO QUE ROMPERIA MI PROPIO FUNDAMENTO, Y QUE NO PUDE MEDIR
+
+  Mi fundamento es: "regenerar la cadena es barato y seguro, asi que el texto que
+  falta entra en v1 y se regenera".
+  Lo que lo romperia: que la cadena completa —migracion + testigos + toponimos—
+  NO reproduzca el v2 de hoy. M1 prueba el primer eslabon y M3 prueba que el
+  tercero corre, pero NO CORRI LA CADENA ENTERA hasta reproducir 13c55614,
+  porque el paso de testigos escribe sobre el insumo y eso ya es construir.
+
+  Si la cadena no reproduce el v2 de hoy, el camino que recomiendo cambia de
+  costo y hay que volver a esta propuesta. Por eso ese es el PRIMER paso del
+  plan y su compuerta: se corre en un clon o sobre el respaldo, se compara, y si
+  no reproduce byte a byte, se detiene y se reporta antes de tocar nada (§4.1).
+  No se sustituye por un argumento (§1.2).
+
+================================================================================
+§1.3 — QUE OPCIONES HAY
+================================================================================
+
+--------------------------------------------------------------------------------
+D-A · QUE SE REHACE Y QUE SE CONSERVA
+--------------------------------------------------------------------------------
+
+CAMINO A1 — Re-transcribir el insumo entero desde el texto oficial (un v3).
+  Gana : una transcripcion nacida del texto vigente, sin herencia.
+  Pierde, MEDIDO: hay que volver a adjudicar 8 correcciones (5 con firma del
+         owner), 7 convenciones, 61 fronteras declaradas, 22 tramos adjudicados
+         con firma del owner del 2026-08-10, 73 puntos notables y la decision de
+         Punta Dungeness. Ninguna de esas decisiones esta en duda: M4 muestra que
+         las 5 firmadas las CONFIRMA el texto oficial. Re-transcribir las tira
+         para volver a pedirlas.
+  Costo real: re-adjudicacion completa por parte del owner.
+
+CAMINO A2 — Incorporar lo que falta al v1 y regenerar la cadena.  [RECOMENDADO]
+  Gana : conserva todo lo adjudicado; el texto que falta entra donde INV-3.7 dice
+         que vive ("cada Capitania conserva el texto literal"); la geometria se
+         rehace sola por el mecanismo que ya existe.
+  Pierde: nada medido, condicionado a que la compuerta de §1.2 pase.
+  Costo, MEDIDO: escribir el texto faltante en v1 + correr tres scripts que ya
+         existen y hoy corren (M1, M3) + volver a correr el auditor.
+
+CAMINO A3 — Parchar el v2 directamente.  DESCARTADO.
+  Motivo: el propio migrador lo prohibe en su cabecera — "corregir el v2 a mano
+  lo perderia en la proxima migracion". Seria trabajo que se borra solo.
+
+RECOMENDACION: A2. El fundamento es M1+M3+M4: la cadena es determinista y corre,
+y lo que A1 tiraria esta confirmado por el texto nuevo, no puesto en duda por el.
+
+--------------------------------------------------------------------------------
+D-B · LAS ADJUDICACIONES QUE EL OWNER YA TOMO
+--------------------------------------------------------------------------------
+
+Ninguna se revoca en silencio. Estado medido, una por una:
+
+  CONFIRMADAS por el texto oficial, no se tocan (5):
+    hornopiren, castro, ancud, chaiten, chonchi — los cierres y vertices que se
+    agregaron estan literalmente en el parrafo oficial.
+  SIN CAMBIO, no las toca este cotejo:
+    los 22 tramos de adjudicacion_tramos.json (su archivo si tiene un problema,
+    ver D-E) · las 7 convenciones · las 61 fronteras declaradas · el umbral de
+    500 m · la bahia 257 · la decision de Punta Dungeness · D1 a D10.
+  QUE SUBEN AL OWNER PORQUE CAMBIAN DE SENTIDO (2):
+    mejillones y punta_arenas — pero NO son adjudicaciones del owner: son las dos
+    unicas correcciones sin firma cuyo motivo el texto oficial desmiente. Ver D-D.
+  QUE PASA DE INDECIDIBLE A DECIDIBLE (1):
+    D6 (Art. 2). Con el texto oficial en el repositorio, "incorporarlo" deja de
+    depender de una fuente que no teniamos. La decision sigue siendo del owner.
+  QUE CAMBIA DE FUENTE, no de sentido (3 bahias):
+    127, 129 y 154. La pregunta a DIRECTEMAR queda contestada en su mitad de
+    adjudicacion por el propio decreto; la otra mitad pasa a ser georreferenciacion.
+    La politica del archivo dice que las 6 se resuelven TODAS JUNTAS: esta
+    propuesta NO la cambia, solo deja registrado que tres ya no esperan a
+    DIRECTEMAR. Mover esa politica es del owner.
+
+--------------------------------------------------------------------------------
+D-C · BAHIA PARAISO
+--------------------------------------------------------------------------------
+
+CAMINO C1 — Todo en esta pasada: texto + figura.  DESCARTADO.
+  Motivo: la reparacion de la figura depende de una precondicion NO VERIFICADA
+  —que la capa de tierra declarada cubra la Antartida— y toca al constructor y a
+  la mordida del auditor para el ambito antartico. Mezclar "el insumo reproduce
+  el decreto" con "el constructor arma la figura correcta" en una sola pasada
+  junta dos fallas distintas. Y es la opcion que deja todo en verde de una vez,
+  que §0.3 manda mirar con sospecha primero.
+
+CAMINO C2 — Partir: el texto ahora, la figura en su propia etapa.  [RECOMENDADO]
+  AHORA, dentro de esta pasada: entra la clausula que falta ("Y por el Sur, con
+  las costas mas australes de la provincia Antartica Chilena entre los meridianos
+  53 y 90 W") al texto literal, y el defecto de la figura queda DECLARADO en el
+  dato — no como ausencia, como defecto conocido con su medicion.
+  DESPUES, etapa propia: marcar el tramo Sur como litoral para que corra la resta
+  de tierra que ya existe, con la comprobacion previa de cobertura antartica de
+  la capa, y con la mordida del auditor re-probada.
+  Lo que sostiene la particion, MEDIDO (M5): hoy la figura mala no llega a
+  ninguna ruta ni a ninguna bandera. Es real y esta contenida, asi que se puede
+  arreglar bien en vez de rapido.
+
+--------------------------------------------------------------------------------
+D-D · LOS DOS MOTIVOS FALSOS
+--------------------------------------------------------------------------------
+
+REGLA: se corrige el MOTIVO, no el VALOR. Los dos valores (22 39 00 S y
+52 30 30 S) coinciden con el texto oficial y se quedan como estan.
+
+CAMINO D1 — Borrar las dos correcciones, ya que el valor coincide con el oficial.
+  DESCARTADO: borrarlas pierde el registro de que el consolidado de BCN se
+  renderiza distinto del texto oficial. Ese es justamente el dato que le sirve al
+  proximo que transcriba. Y §3.3 dice que lo superado se corrige al pie, no se
+  sobrescribe.
+
+CAMINO D2 — Reescribir el motivo conservando el valor y el historial. [RECOMENDADO]
+  Cada una pasa a decir tres cosas separadas: (a) que decia la version que se
+  transcribio (BCN, consolidado), (b) que dice el texto oficial vigente, con su
+  identificacion y hash, (c) por que el valor no cambia. Y queda marcado que el
+  motivo original resulto falso, con la fecha del cotejo que lo demostro.
+
+DONDE QUEDA ESCRITO — tres lugares, no uno:
+  1. `correccion_aplicada` de mejillones y de punta_arenas en
+     data/decreto/jurisdicciones_capitanias.json (v1), que es la fuente. El v2 lo
+     hereda al regenerar.
+  2. La entrada "Punta Tames" de `puntos_notables`, que repite la afirmacion
+     falsa ("El decreto usa 22 39 00 en CP Tocopilla y 22 30 00 en CP Mejillones
+     para el mismo punto. Discrepancia de la fuente, no de OCR").
+  3. Esta bitacora y la de medicion, que no se reescriben (§3.3).
+  El script que lo aplica es el que ya existe para esto,
+  fase5_correcciones_transcripcion.py, que es idempotente; se le agrega el caso
+  de re-motivacion sin tocar valores.
+
+--------------------------------------------------------------------------------
+D-E · PROCEDENCIA — LA CONDICION QUE VALE PARA TODO
+--------------------------------------------------------------------------------
+
+"Nada se toca sin que quede registrado contra que texto se coteja y en que fecha."
+
+E.1 EL TEXTO OFICIAL ENTRA AL REPOSITORIO
+      data/decreto/fuente/TM-025-A_2025-06-04.pdf   (284.047 bytes)
+      data/decreto/fuente/TM-025-A_2025-06-04.txt   (derivado, regenerable)
+      data/decreto/fuente/PROCEDENCIA.md
+    Origen: DECLARADO POR EL OWNER DE MEMORIA, NO VERIFICADO — descargas
+    gratuitas del sitio del SHOA, 2026-08-11. Queda como RECORDADO hasta que el
+    mismo sha256 aparezca en un sitio institucional; ahi pasa a VERIFICADO con
+    URL y fecha. Se escribe asi, no se mejora.
+
+E.2 EL INSUMO DECLARA CONTRA QUE SE COTEJO
+    Bloque nuevo `cotejado_contra` en v1 (y heredado a v2):
+      documento, sha256, fecha_cotejo, alcance (que se comparo y que no),
+      y la herramienta con que se hizo.
+    Sin ese bloque, el insumo vuelve a ser un archivo del que no se sabe contra
+    que version se transcribio — que es la causa raiz de todo esto.
+
+E.3 UN CONTROL QUE SE DETIENE
+    Control nuevo en fase4_auditoria_v2.py, hermano de B0: si el insumo declara
+    haberse cotejado contra un documento cuyo sha256 no es el del archivo en
+    data/decreto/fuente/, se detiene. Con su prueba de mordida (§4.6).
+
+E.4 EL HALLAZGO DE adjudicacion_tramos.json  (M7)
+    CAMINO E4a — que un script regenere el hash en cada corrida.  DESCARTADO.
+      Re-sellar automaticamente ESCONDE el problema: el archivo lleva una
+      adjudicacion del owner sobre un insumo concreto, y que el insumo se mueva
+      debajo tiene que gritar, no re-sellarse solo. Es la opcion que deja todo en
+      verde sin cambiar nada de fondo (§0.3).
+    CAMINO E4b — escribirlo por script Y verificarlo.  [RECOMENDADO]
+      El bloque `insumo` pasa a escribirlo el mismo script que escribe la
+      adjudicacion (hoy no lo escribe nadie: se puso a mano), y un control
+      hermano de B0 se detiene si el v2 en disco no es el declarado. Cuando el
+      insumo cambia a proposito, el owner re-confirma la adjudicacion y el script
+      re-sella con esa autorizacion; no antes.
+
+--------------------------------------------------------------------------------
+D-F · DONDE VIVEN LOS PARRAFOS DE GOBERNACION  (decision mia, §0.4)
+--------------------------------------------------------------------------------
+
+Enrutada de este lado porque es estructura del dato. Declaro el criterio; el
+owner lo revoca si corresponde.
+
+CAMINO F1 — Archivo aparte, `data/decreto/gobernaciones.json`.  DESCARTADO.
+  Motivo medido: la cadena v1->v2 esta atada por CONJUNTO DE IDS (control B0 del
+  auditor compara los ids del v1 con los del v2 y falla si difieren). Un segundo
+  archivo necesita su propia cadena, su propio migrador y su propio control, y
+  duplica el punto de falla que E0.3 ya pago una vez. Y hay un motivo de fondo:
+  el contenido del parrafo de Gobernacion ES NORMATIVO PARA SUS CAPITANIAS — el
+  limite Sur de la GM de Aysen es literalmente el limite Sur de baker y el limite
+  Norte de puerto_eden. Separarlo en otro archivo separa la respuesta de la
+  pregunta.
+
+CAMINO F2 — Lista hermana dentro del mismo archivo.  [RECOMENDADO]
+  En v1, junto a `capitanias`, una lista `gobernaciones`; el migrador la lleva al
+  v2 con la misma forma que ya usa. Cada entrada:
+    id, nombre, texto_decreto (literal), limite_norte / limite_sur (misma forma
+    que una Capitania: dms, dec, tipo), cuerpos_nombrados, capitanias: [ids],
+    y el mismo `cotejado_contra`.
+  Con dos propiedades declaradas que evitan que se confunda con una Capitania:
+    participa_matching: false   — no adjudica bahias
+    receta: null                — NO SE CONSTRUYE GEOMETRIA DE GOBERNACION.
+  Entran como FUENTE DE RESOLUCION para sus Capitanias, no como capa. El caso
+  Ancud generalizado: la contrapartida esta en el parrafo del vecino, y a veces
+  el vecino es el de arriba.
+  El conteo del insumo pasa de 64 a 64 + 16, y todo control que hoy diga "64"
+  tiene que decir contra que lista cuenta. Eso es parte del trabajo, no un
+  efecto colateral.
+
+--------------------------------------------------------------------------------
+D-G · LAS DIFERENCIAS QUE NO SE INCORPOREN
+--------------------------------------------------------------------------------
+
+Bloque `diferencias_no_incorporadas` en el insumo. Cada entrada: que dice el
+texto oficial (literal), donde, por que no se incorpora, quien lo decidio y
+cuando. Una diferencia declarada no es una ausencia: el auditor puede contarla y
+el proximo lector sabe que se miro y se decidio.
+Candidatas de hoy, todas del §3.f de la bitacora: las inconsistencias internas
+del propio texto oficial (Punta NE/NW de Meulin, la longitud "073 12 00 S", los
+"S." omitidos, los dos nombres de O'Higgins). Se declaran; no se corrigen, porque
+corregirlas seria decidir que dice el decreto, y eso es del owner.
+
+================================================================================
+ORDEN DE EJECUCION PROPUESTO — con su compuerta
+================================================================================
+
+  P0  COMPUERTA. Correr la cadena entera sobre el respaldo o un clon y comprobar
+      que reproduce el v2 de hoy (13c55614) byte a byte. Si no reproduce, ALTO y
+      se vuelve a esta propuesta. Es el caso que romperia el fundamento (§1.2).
+  P1  El texto oficial entra al repositorio con su procedencia (E.1).
+  P2  Se incorpora al v1 el contenido faltante de las diez Capitanias (§3.a).
+  P3  Entran las 16 Gobernaciones y el Art. 2 (F2 + D6, esta ultima si el owner
+      la decide).
+  P4  Se re-motivan las dos correcciones falsas (D2), sin tocar valores.
+  P5  Se declara `cotejado_contra`, `diferencias_no_incorporadas` y el defecto de
+      bahia_paraiso (C2, parte texto).
+  P6  Se regenera la cadena y se corre el auditor. Se comparan v2 viejo y v2
+      nuevo campo por campo y se reporta la diferencia completa.
+  P7  Controles nuevos con su prueba de mordida: cotejado_contra (E.3) y
+      adjudicacion_tramos (E4b).
+
+  FUERA DE ESTA PASADA, etapa propia: la figura de bahia_paraiso (C2, parte
+  geometria), y la georreferenciacion del limite Sur de la XI Region para 127,
+  129 y 154.
+
+================================================================================
+OBJECIONES QUE TENGO A LO QUE SE ME PIDIO  (§8.5)
+================================================================================
+
+1. "Antes de E3 o E4" es correcto para el insumo, pero E3 (ambito lacustre) es la
+   etapa MAS afectada y conviene decirlo: de las diez Capitanias a las que les
+   falta texto, cuatro son lacustres o fluviales (carahue, lago_villarrica,
+   lago_ranco, valdivia) y las tres coordenadas del rio Bueno son geometria que
+   hoy no existe. E3 no solo se retrasa: cambia de insumo.
+
+2. Esta propuesta NO arregla lo que el owner llamo el objetivo del sistema. Deja
+   el insumo reproduciendo el texto oficial, pero la Gobernacion de Aysen sigue
+   sin coordenadas y eso no lo arregla ninguna transcripcion. Que quede dicho
+   para que "insumo alineado" no se lea como "127, 129 y 154 cerradas".
+
+3. El .txt del PDF es un derivado cuya reproducibilidad depende de la version de
+   pdftotext. Lo propongo versionado con su hash, pero es una dependencia externa
+   que el repositorio no controla, y prefiero decirlo antes que descubrirlo en
+   seis meses.
+
+================================================================================
+FIN
+================================================================================

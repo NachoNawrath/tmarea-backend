@@ -1,0 +1,25 @@
+PRUEBA DE RESTAURACION DEL RESPALDO — antes de correr fase4_migrar_insumo_v2.py
+fecha: 2026-08-12T02:24:04Z UTC   shell: Git Bash (MSYS)
+archivo en juego: data/decreto/jurisdicciones_v2.json
+
+1. sha256 ORIGINAL en el repo:
+13c5561486fd0088f23de68326528bbb5a7dfd3a34b015cf4281c5ace9ac2dfe *C:/Users/katia/tmarea-backend/data/decreto/jurisdicciones_v2.json
+2. sha256 del RESPALDO:
+13c5561486fd0088f23de68326528bbb5a7dfd3a34b015cf4281c5ace9ac2dfe *C:/Users/katia/AppData/Local/Temp/claude/C--Users-katia--claude/1fedf1cd-c764-4ed7-875d-000f92bb263c/scratchpad/backup_decreto/jurisdicciones_v2.json
+
+3. DANO DELIBERADO: se agrega una linea al final del archivo
+   sha256 tras el dano:
+09fc25e5b891a310406b22a589b091aaeb87e90fcca9a3edc2970ce54c642ed8 *C:/Users/katia/tmarea-backend/data/decreto/jurisdicciones_v2.json
+   tamano tras el dano: 331542 bytes
+   el JSON quedo invalido? ->
+   SI — no parsea: C:\Users\katia\tmarea-backend\data\decreto\jurisdicciones_v2.json: Unexpected non-whitespace character after JSON at position 331269 (line 9745 column 1)
+
+4. RESTAURACION desde el respaldo
+   sha256 tras restaurar:
+13c5561486fd0088f23de68326528bbb5a7dfd3a34b015cf4281c5ace9ac2dfe *C:/Users/katia/tmarea-backend/data/decreto/jurisdicciones_v2.json
+   tamano tras restaurar: 331493 bytes
+   parsea?
+   SI — 64 jurisdicciones, version 2
+
+5. VEREDICTO
+   RESTAURACION PROBADA: sha256 identico al respaldo.
