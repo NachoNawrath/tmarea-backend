@@ -1,0 +1,47 @@
+==============================================================================
+P2 — COMPLETAR EL TEXTO LITERAL DE LAS DIEZ CAPITANIAS
+==============================================================================
+  insumo    : data/decreto/jurisdicciones_capitanias.json (el v1, la fuente)
+              sha256[:16] 39ed468dd20506e5
+  documento : TM-025 A, actualizado al 4 de junio de 2025 (DIRECTEMAR)
+              data/decreto/fuente/TM-025-A_2025-06-04.txt
+              sha256[:16] e14cb905b4895422  ok
+
+VERIFICACION DE LAS CITAS CONTRA EL DOCUMENTO OFICIAL
+  ok  carahue            1 cita(s) en '- Capitanía de Puerto de Carahue'  lineas 329-344
+  ok  lago_villarrica    1 cita(s) en '- Capitanía de Puerto de Lago Villarrica'  lineas 345-350
+  ok  lago_ranco         1 cita(s) en '- Capitanía de Puerto de Lago Ranco'  lineas 356-363
+  ok  valdivia           1 cita(s) en '- Capitanía de Puerto de Valdivia'  lineas 364-373
+  ok  corral             1 cita(s) en '- Capitanía de Puerto de Corral'  lineas 374-391
+  ok  talcahuano         1 cita(s) en '- Capitanía de Puerto de Talcahuano'  lineas 273-290
+  ok  cochamo            1 cita(s) en '- Capitanía de Puerto de Cochamó'  lineas 468-475
+  ok  tierra_del_fuego   1 cita(s) en '- Capitanía de Puerto de Tierra del Fuego'  lineas 709-718
+  ok  puerto_williams    2 cita(s) en 'GOBERNACIÓN MARÍTIMA DE PUERTO WILLIAMS'  lineas 719-744
+
+APLICACION
+  ++  carahue            +182 caracteres
+      Incluye los rios Imperial, Queule, Moncul, Tolten (lo que comprende la jurisdiccion de l...
+  ++  lago_villarrica    +81 caracteres
+      El Rio Tolten, desde su origen hasta la jurisdiccion de la comuna de Pitrufquen....
+  ++  lago_ranco         +159 caracteres
+      Los sectores del rio Bueno con sus coordenadas: Los Patos 40 17 03 S / 073 31 43 W; La G...
+  ++  valdivia           +110 caracteres
+      Incluye los Rios Calle Calle, Lingue, Cruces, Angachilla, Tornagaleones, Valdivia y sus ...
+  ++  corral             +22 caracteres
+      Incluye el rio Colun....
+  ++  talcahuano         +57 caracteres
+      Incluye tambien las lagunas Chica y Grande de San Pedro....
+  ++  cochamo            +57 caracteres
+      Los dos lagos en la frontera con la Republica Argentina....
+  ++  tierra_del_fuego   +239 caracteres
+      Asimismo, todas aquellas aguas que estan en Tierra del Fuego y tienen su acceso por el N...
+  ++  puerto_williams    +291 caracteres
+      Incluye ademas aquellas aguas que estan en Tierra del Fuego y tienen su entrada por el S...
+
+==============================================================================
+  aplicadas: 9   ya estaban: 0   total: 9
+  v1 ahora  : sha256[:16] 0e1e2cc512101b21
+
+  EL V2 NO SE TOCA ACA. Es derivado: se regenera con
+  fase4_migrar_insumo_v2.py y los dos pasos que le siguen.
+==============================================================================
