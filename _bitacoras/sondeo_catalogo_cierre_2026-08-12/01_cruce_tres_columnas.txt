@@ -1,0 +1,258 @@
+==============================================================================
+2.2 — CORTE POR ATRIBUCIÓN DE LA PROPIA BAHÍA
+==============================================================================
+  resueltas por el join .......................... 158
+   · decreto y SITPORT dicen el mismo nombre ..... 119
+   · difieren SOLO en grafía/prefijo ............. 23  (misma entidad)
+   · ATRIBUCIÓN DISTINTA DE VERDAD ............... 16
+  sin resolver (grupo D) ......................... 6
+
+  variantes de grafía encontradas:
+    Lago Villarrica  ≡  VILLARRICA
+    Lago Panguipulli  ≡  PANGUIPULLI
+    Puerto Cisnes  ≡  CISNES
+    Puerto Aguirre  ≡  AGUIRRE
+    Puerto Chacabuco  ≡  CHACABUCO
+    Lago General Carrera  ≡  LAGO GRAL.CARRERA
+    Puerto Soberania  ≡  SOBERANÍA
+
+──────────────────────────────────────────────────────────────────────────────
+  LAS 16 CON ATRIBUCIÓN DISTINTA — decreto vs SITPORT
+──────────────────────────────────────────────────────────────────────────────
+  132 BAHÍA CLARENCIA                    decreto: Punta Delgada      SITPORT: TIERRA DEL FUEGO [decreto]  mapa: Punta Arenas
+  146 RIO BUENO                          decreto: Lago Ranco         SITPORT: null             [decreto]  mapa: null
+  151 BARNES                             decreto: Coquimbo           SITPORT: TONGOY           [decreto]  mapa: Coquimbo
+  160 LAGO PUYEHUE                       decreto: Lago Ranco         SITPORT: PUERTO VARAS     [decreto]  mapa: Puerto Montt
+  234 RÍO PALENA                         decreto: Chaiten            SITPORT: CISNES           [decreto]  mapa: Chaitén
+  238 SECTOR CANAL MORALEDA              decreto: Puerto Cisnes      SITPORT: AGUIRRE          [decreto]  mapa: Cisnes
+  240 SECTOR CANAL PILCOMAYO Y CANAL RODRIGUEZ decreto: Puerto Cisnes      SITPORT: AGUIRRE          [decreto]  mapa: Cisnes
+  245 LAGO PELLAIFA                      decreto: Lago Panguipulli   SITPORT: VILLARRICA       [decreto]  mapa: null
+  246 LAGO PULLINQUE                     decreto: Lago Panguipulli   SITPORT: VILLARRICA       [decreto]  mapa: null
+  247 LAGO CALAFQUEN                     decreto: Lago Panguipulli   SITPORT: VILLARRICA       [decreto]  mapa: null
+  248 LAGO RIÑIHUE                       decreto: Lago Panguipulli   SITPORT: VILLARRICA       [decreto]  mapa: null
+  249 LAGO NELTUME                       decreto: Lago Panguipulli   SITPORT: VILLARRICA       [decreto]  mapa: null
+  250 LAGO PIREHUICO                     decreto: Lago Panguipulli   SITPORT: VILLARRICA       [decreto]  mapa: null
+  251 CANAL GOLFO CORCOVADO (NORTE)      decreto: Quellon            SITPORT: MELINKA          [decreto]  mapa: Cisnes
+  252 CANAL MORALEDA (ESTE)              decreto: Quellon            SITPORT: MELINKA          [decreto]  mapa: Cisnes
+  253 CANAL CHAFFERS NORTE               decreto: Quellon            SITPORT: MELINKA          [decreto]  mapa: Cisnes
+
+==============================================================================
+2.3 — CONTACTO
+==============================================================================
+  campos que existen HOY en el mapa: ["capitania","gobernacion","telefono"]
+  de las 164: con telefono 164 · con gobernacion 164 · con capitania 144 · con direccion 0 (el campo no existe)
+  con capitanias_64_final.csv: alcanzables 163 · tendrían telefono 163 · direccion 163 · gobernacion 163
+
+  cambiarían de TELÉFONO ....... 150
+  cambiarían de GOBERNACIÓN .... 10
+  cambiarían de alguno ......... 150  ← las que impactan al patrón
+
+  GOBERNACIÓN — las que cambiarían:
+    121 CHAITÉN                          Puerto Montt     → Castro
+    129 PUERTO EDÉN                      Aysén            → Punta Arenas
+    139 BAHÍA FILDES                     Puerto Williams  → Antártica Chilena
+    140 BAHÍA PARAÍSO                    Puerto Williams  → Antártica Chilena
+    141 CARAHUE - SECTOR RÍO             Talcahuano       → Valdivia
+    142 CARAHUE - SECTOR LAGO            Talcahuano       → Valdivia
+    143 CARAHUE - BORDE COSTERO          Talcahuano       → Valdivia
+    158 CALETA CHAÑARAL Y ENSENADA GAVIOTA Coquimbo         → Caldera
+    231 BAHÍA CHILE                      Puerto Williams  → Antártica Chilena
+    234 RÍO PALENA                       Puerto Montt     → Aysén
+
+  TELÉFONO — las que cambiarían (agrupadas por capitanía del CSV):
+    ARICA                +56 58 220 6402    → +56 58 2356704 (Secretaría Protocolar) ó +56 58 2356747 (Guardia)
+        1 bahías: 71
+    IQUIQUE              +56 57 240 1902    → +56 57 2401942
+        2 bahías: 72, 204
+    PATACHE              +56 57 240 1902    → +56 57 2401911
+        4 bahías: 73, 195, 196, 197
+    TOCOPILLA            +56 55 263 0000    → +56 55 2813279
+        2 bahías: 74, 236
+    MEJILLONES           +56 55 263 0000    → +56 55 2621513
+        2 bahías: 75, 76
+    TALTAL               +56 55 263 0000    → +56 55 2611033
+        1 bahías: 79
+    CHANARAL             +56 52 231 5276    → +56 52 2480047 /+56 52 2480442
+        2 bahías: 80, 172
+    HUASCO               +56 52 231 5276    → +56 51 2531011
+        2 bahías: 84, 157
+    TONGOY               +56 51 255 8100    → +56 51 2391781
+        3 bahías: 87, 150, 151
+    LOS VILOS            +56 51 255 8100    → +56 53 2541104
+        2 bahías: 88, 180
+    JUAN FERNÁNDEZ       +56 32 220 8905    → +56 32 2751008 / +56 32 2751009
+        1 bahías: 90
+    QUINTERO             +56 32 220 8905    → +56 32 2930057
+        2 bahías: 91, 219
+    VALPARAÍSO           +56 32 220 8905    → +56 32 2208505
+        3 bahías: 92, 173, 174
+    SAN ANTONIO          +56 35 258 4802    → +56 35 2584800
+        1 bahías: 93
+    ALGARROBO            +56 35 258 4802    → +56 35 2483993
+        2 bahías: 94, 215
+    PICHILEMU            +56 35 258 4802    → +56 72 2841206
+        1 bahías: 95
+    LAGO RAPEL           +56 35 258 4802    → +56 35 2584833
+        1 bahías: 96
+    LIRQUÉN              +56 41 226 6100    → +56 41 3839697
+        1 bahías: 97
+    TALCAHUANO           +56 41 226 6100    → +56 41 3831100
+        1 bahías: 98
+    SAN VICENTE          +56 41 226 6100    → +56 41 3839694
+        2 bahías: 99, 198
+    CORONEL              +56 41 226 6100    → +56 41 3839692
+        1 bahías: 100
+    LEBU                 +56 41 226 6100    → +56 41 2511158
+        1 bahías: 101
+    LOTA                 +56 41 226 6100    → +56 41 2876399
+        1 bahías: 102
+    CONSTITUCIÓN         +56 41 226 6100    → +56 71 2671307
+        2 bahías: 103, 229
+    VILLARRICA           +56 63 227 6905    → +56 45 2524733
+        9 bahías: 105, 209, 210, 245, 246, 247, 248, 249, 250
+    PANGUIPULLI          +56 63 227 6905    → +56 63 2276944
+        1 bahías: 106
+    CORRAL               +56 63 227 6905    → +56 63 2471267
+        2 bahías: 107, 170
+    PUERTO MONTT         +56 65 256 1100    → +56 65 2205100
+        5 bahías: 109, 110, 162, 216, 233
+    PUERTO VARAS         +56 65 256 1100    → +56 65 2235237
+        4 bahías: 111, 159, 160, 161
+    MAULLÍN              +56 65 256 1100    → +56 65 2451285
+        4 bahías: 112, 147, 148, 149
+    CALBUCO              +56 65 256 1100    → +56 65 2462434
+        3 bahías: 113, 114, 232
+    RIO NEGRO HORNOPIRÉN +56 65 256 1100    → +56 65 2217304
+        8 bahías: 115, 181, 182, 183, 184, 185, 186, 187
+    CASTRO               +56 65 262 9405    → +56 65 2629448
+        2 bahías: 116, 163
+    QUELLÓN              +56 65 262 9405    → +56 65 2681260
+        1 bahías: 117
+    ANCUD                +56 65 262 9405    → +56 65 2622363
+        3 bahías: 118, 213, 214
+    CHONCHI              +56 65 262 9405    → +56 65 2671950
+        3 bahías: 119, 155, 205
+    QUEMCHI              +56 65 262 9405    → +56 65 2691334 / +56981997435
+        1 bahías: 120
+    CHAITÉN              +56 65 256 1100    → +56 65 2731267
+        1 bahías: 121
+    ACHAO                +56 65 262 9405    → +56 65 2661260
+        2 bahías: 122, 235
+    CISNES               +56 67 233 1405    → +56 67 2346880
+        1 bahías: 123
+    MELINKA              +56 67 233 1405    → +56 67 2431555
+        9 bahías: 124, 175, 176, 251, 252, 253, 254, 255, 256
+    AGUIRRE              +56 67 233 1405    → +56 67 2361233
+        8 bahías: 125, 238, 239, 240, 241, 242, 243, 244
+    CHACABUCO            +56 67 233 1405    → +56 672351450
+        10 bahías: 126, 220, 221, 222, 223, 224, 225, 226, 227, 228
+    BAKER                +56 67 233 1405    → Móvil: +569 5617 3241
+        1 bahías: 127
+    LAGO GRAL.CARRERA    +56 67 233 1405    → +56 67 2411111
+        3 bahías: 128, 203, 257
+    EDÉN                 +56 67 233 1405    → +56 61 2201164
+        1 bahías: 129
+    PUERTO NATALES       +56 61 220 1102    → +56 61 2411570
+        1 bahías: 130
+    PUNTA DELGADA        +56 61 220 1102    → Móvil: + 56 61 2201189
+        2 bahías: 131, 156
+    TIERRA DEL FUEGO     +56 61 220 1102    → +56 61 2580841
+        2 bahías: 132, 137
+    PUNTA ARENAS         +56 61 220 1102    → +56 61 2201105
+        7 bahías: 133, 134, 135, 136, 165, 200, 218
+    PUERTO WILLIAMS      +56 61 262 4270    → +56 61 2624271
+        2 bahías: 138, 199
+    BAHÍA FILDES         +56 61 262 4270    → +56 32 2208557
+        1 bahías: 139
+    BAHÍA PARAÍSO        +56 61 262 4270    → +56 32 2208557
+        1 bahías: 140
+    CARAHUE              +56 41 226 6100    → +56 45 2524736
+        3 bahías: 141, 142, 143
+    LAGO RANCO           +56 63 227 6905    → +56 63 2314469
+        2 bahías: 144, 145
+    COCHAMÓ              +56 65 256 1100    → +56 987295906
+        2 bahías: 152, 153
+    EDÉN                 +56 61 220 1102    → +56 61 2201164
+        1 bahías: 154
+    HUASCO               +56 51 255 8100    → +56 51 2531011
+        1 bahías: 158
+    SOBERANÍA            +56 61 262 4270    → +56 32 2509291
+        1 bahías: 231
+    CISNES               +56 65 256 1100    → +56 67 2346880
+        1 bahías: 234
+
+==============================================================================
+2.4 — ¿EL JOIN TIENE CAMPOS DE CONTACTO?
+==============================================================================
+  campos de una entrada del join: ["bahia_id","nombre_sitport","jurisdiccion_id","jurisdicciones_adicionales","estado","respaldo","criterio","evidencia"]
+  campos de contacto presentes: NINGUNO
+  conteo declarado por el join : {"total":164,"operativo":88,"decreto":69,"declaracion_versionada":1,"sin_resolver":6}
+
+==============================================================================
+2.2 — GRUPOS A/B/C/D (variantes de grafía ya colapsadas)
+==============================================================================
+  A) los tres coinciden .................... 85
+  B) join=SITPORT, mapa difiere ........... 57
+  C) join difiere de SITPORT .............. 16
+  D) el join no la resuelve ............... 6
+                                    TOTAL   164
+
+  GRUPO B en detalle (mapa desactualizado, sin efecto en la medición):
+     73 PATACHE                            join/SITPORT: Patache              mapa: Iquique
+     74 BAHÍA ALGODONALES                  join/SITPORT: Tocopilla            mapa: Antofagasta
+     76 CALETA MICHILLA                    join/SITPORT: Mejillones           mapa: Antofagasta
+     79 TAL TAL                            join/SITPORT: Taltal               mapa: Antofagasta
+     80 BAHÍA CHAÑARAL                     join/SITPORT: Chanaral             mapa: Caldera
+     86 BAHÍA HERRADURA DE GUAYACÁN        join/SITPORT: Coquimbo             mapa: Guayacán
+     87 TONGOY                             join/SITPORT: Tongoy               mapa: Coquimbo
+     90 ISLA ROBINSON CRUSOE               join/SITPORT: Juan Fernandez       mapa: Valparaíso
+     94 BAHÍA ALGARROBO                    join/SITPORT: Algarrobo            mapa: San Antonio
+     95 PICHILEMU                          join/SITPORT: Pichilemu            mapa: San Antonio
+     96 LAGO RAPEL                         join/SITPORT: Lago Rapel           mapa: null
+     97 BAHÍA CONCEPCIÓN - LIRQUÉN         join/SITPORT: Lirquen              mapa: Talcahuano
+     99 BAHÍA SAN VICENTE                  join/SITPORT: San Vicente          mapa: Talcahuano
+    102 LOTA                               join/SITPORT: Lota                 mapa: Coronel
+    105 LAGO VILLARRICA                    join/SITPORT: Lago Villarrica      mapa: null
+    106 PANGUIPULLI                        join/SITPORT: Lago Panguipulli     mapa: null
+    115 CANAL HORNOPIRÉN                   join/SITPORT: Rio Negro Hornopiren mapa: Hornopirén
+    124 MELINKA                            join/SITPORT: Melinka              mapa: Cisnes
+    125 SECTOR BAHÍA DE PUERTO AGUIRRE     join/SITPORT: Puerto Aguirre       mapa: Cisnes
+    131 BAHÍA GREGORIO                     join/SITPORT: Punta Delgada        mapa: Punta Arenas
+    139 BAHÍA FILDES                       join/SITPORT: Bahia Fildes         mapa: null
+    140 BAHÍA PARAÍSO                      join/SITPORT: Bahia Paraiso        mapa: null
+    144 LAGO RANCO                         join/SITPORT: Lago Ranco           mapa: null
+    145 LAGO MAIHUE                        join/SITPORT: Lago Ranco           mapa: null
+    150 GUANAQUEROS                        join/SITPORT: Tongoy               mapa: Coquimbo
+    156 PRIMERA ANGOSTURA                  join/SITPORT: Punta Delgada        mapa: Punta Arenas
+    157 PUERTO CARRIZAL BAJO               join/SITPORT: Huasco               mapa: Caldera
+    158 CALETA CHAÑARAL Y ENSENADA GAVIOTA join/SITPORT: Huasco               mapa: Coquimbo
+    159 LAGO TODOS LOS SANTOS              join/SITPORT: Puerto Varas         mapa: Puerto Montt
+    161 LAGO RUPANCO                       join/SITPORT: Puerto Varas         mapa: Puerto Montt
+    172 BAHÍA PAN DE AZÚCAR                join/SITPORT: Chanaral             mapa: Caldera
+    175 SECTOR REPOLLA ALTO                join/SITPORT: Melinka              mapa: Cisnes
+    176 SECTOR REPOLLA BAJO                join/SITPORT: Melinka              mapa: Cisnes
+    181 CANAL CHOLGO                       join/SITPORT: Rio Negro Hornopiren mapa: Hornopirén
+    182 ESTERO COMAU                       join/SITPORT: Rio Negro Hornopiren mapa: Hornopirén
+    183 ESTERO PICHICOLO                   join/SITPORT: Rio Negro Hornopiren mapa: Hornopirén
+    184 ENSENADA HUALAIHUÉ                 join/SITPORT: Rio Negro Hornopiren mapa: Hornopirén
+    185 ENSENADA ROLECHA                   join/SITPORT: Rio Negro Hornopiren mapa: Hornopirén
+    186 SECTOR AYACARA                     join/SITPORT: Rio Negro Hornopiren mapa: Hornopirén
+    187 SECTOR BUILL                       join/SITPORT: Rio Negro Hornopiren mapa: Hornopirén
+    195 PATILLO                            join/SITPORT: Patache              mapa: Iquique
+    196 BORDE COSTERO NORTE PATACHE        join/SITPORT: Patache              mapa: Iquique
+    197 BORDE COSTERO SUR PATACHE          join/SITPORT: Patache              mapa: Iquique
+    198 SECTOR COSTERO PENINSULA DE HUALPEN join/SITPORT: San Vicente          mapa: Talcahuano
+    209 LAGO VILLARRICA SECTOR PUCÓN       join/SITPORT: Lago Villarrica      mapa: null
+    210 LAGO VILLARRICA SECTOR VILLARRICA  join/SITPORT: Lago Villarrica      mapa: null
+    215 EL QUISCO                          join/SITPORT: Algarrobo            mapa: San Antonio
+    219 SECTOR NORTE QUINTERO              join/SITPORT: Quintero             mapa: Valparaíso
+    231 BAHÍA CHILE                        join/SITPORT: Puerto Soberania     mapa: null
+    235 CHEQUIAN                           join/SITPORT: Achao                mapa: Quemchi
+    236 CALETA VIUDA                       join/SITPORT: Tocopilla            mapa: Antofagasta
+    242 SECTOR CANAL CARRERA DEL CHIVATO Y CANAL CUCHI join/SITPORT: Puerto Aguirre       mapa: Cisnes
+    243 SECTOR CANAL DARWIN                join/SITPORT: Puerto Aguirre       mapa: Cisnes
+    244 SECTOR CANAL TRANSITO              join/SITPORT: Puerto Aguirre       mapa: Cisnes
+    254 CANAL CHAFFERS SUR                 join/SITPORT: Melinka              mapa: Cisnes
+    255 CANAL PÉREZ NORTE                  join/SITPORT: Melinka              mapa: Cisnes
+    256 CANAL PÉREZ SUR                    join/SITPORT: Melinka              mapa: Cisnes
+    respaldo en B: {"decreto":48,"declaracion_versionada":1,"operativo":8}

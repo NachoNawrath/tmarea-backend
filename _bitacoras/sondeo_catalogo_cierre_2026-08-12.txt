@@ -1,0 +1,236 @@
+================================================================================
+CIERRE DEL SONDEO DE CATÁLOGO Y CONTACTO — 2026-08-12
+Estado: CERRADO SIN APLICAR. El sondeo NO aporta jurisdicción.
+        Aporta contacto, y eso queda abierto como decisión del owner.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\sondeo_catalogo_cierre_2026-08-12\02_cruce_tres_columnas.js
+
+El script trae la raíz cableada como constante (RAIZ) porque nació fuera del
+repositorio, en el scratchpad de la sesión. Se guarda con su método intacto para
+que el número sea reproducible. NO es una pieza del repositorio y no debe
+promoverse a scripts/ sin reescribirlo.
+
+ÚNICA MODIFICACIÓN sobre lo que se corrió: las tres rutas de lectura pasaron de
+`_sondeo_catalogo/` a `_bitacoras/sondeo_catalogo_2026-08-12/` cuando el
+directorio se movió, el mismo día. Nada de la lógica cambió y la salida sigue
+siendo la misma (85 / 57 / 16 / 6), verificada tras el movimiento.
+
+Crudo:
+    01_cruce_tres_columnas.txt            el cruce que vale
+    02_cruce_tres_columnas.js             el script que lo produjo
+    03_cruce_v1_con_el_error_de_metodo.txt la primera versión, con el error de §5
+
+
+1. QUÉ SE BUSCÓ Y POR QUÉ CAMINO
+--------------------------------------------------------------------------------
+Los commits a4ea1c1, 8f734f4 y 6b38c1a del 2026-08-12 sondearon SITPORT y
+DIRECTEMAR para completar el catálogo de Capitanías y su contacto. El sondeo
+dejó `_bitacoras/sondeo_catalogo_2026-08-12/diff_capitanias.csv` con las bahías
+que cambiarían de Capitanía respecto de `src/data/bahia-capitania-map.json`,
+SIN aplicar, y con la nota "requiere decisión del owner".
+
+La pregunta que este cierre contesta es una sola: **de eso, cuánto es información
+nueva y cuánto ya lo sabe el join de E0.3.**
+
+Camino: cruzar las 164 bahías en tres columnas —
+    · jurisdicción según `data/decreto/join_bahia_jurisdiccion.json` (E0.3),
+      con su campo `respaldo`;
+    · Capitanía según `src/data/bahia-capitania-map.json` (post-fix del BOM);
+    · Capitanía según SITPORT, resolviendo `IDBahia -> CdReparticion` con
+      `sitport_bahias_raw.json` y el nombre de la repartición con
+      `sitport_capitanias_raw.json`, ambos en
+      `_bitacoras/sondeo_catalogo_2026-08-12/`.
+
+No se consultó SITPORT en vivo: se cruzó contra la captura del propio sondeo,
+para que el resultado sea reproducible. Una corrida en vivo da otro número.
+
+
+2. EL RESULTADO
+--------------------------------------------------------------------------------
+    A) los tres coinciden .................... 85
+    B) join=SITPORT, mapa difiere ............ 57
+    C) join difiere de SITPORT ............... 16
+    D) el join no la resuelve ................. 6
+                                       TOTAL   164
+
+**B (57) es mapa desactualizado y no tiene efecto en la medición.** El join y
+SITPORT concuerdan; el que quedó atrás es el mapa operativo. Respaldo del join
+en ese grupo: 48 decreto, 8 operativo, 1 declaración versionada.
+
+**D (6) son las mismas seis sin resolver de E0.3, y siguen sin resolver.** El
+sondeo les pone una atribución de SITPORT —127 Baker, 129 y 154 Edén, 239 y 241
+Aguirre— pero SITPORT es exactamente la fuente que E0.3 declaró insuficiente
+para ellas: esperan DIRECTEMAR, DPA_2023 y el informante austral. Aplicar SITPORT
+acá sería dejar que el mapa operativo revoque al decreto, que es lo que INV-3.3
+prohíbe. La única señal útil es la 137 (ver §3 y §6).
+
+**El sondeo no movió ni un número de E2.** Verificado en la misma sesión: con el
+mapa antes y después del fix del BOM, `e2_volumen_cambio_unidad.js` y
+`e2_cobertura_andamio.js` dan salida idéntica byte a byte (+11 sobre 26 con piso
++7; 58,3 / 31,2 / 10,5 % sobre 2.076,06 km). Es esperable y conviene entender por
+qué: el join resuelve por `jurisdiccion_id` y el mapa entra sólo como candidato
+diagnóstico. **Contacto y jurisdicción ya están separados** — una entrada del
+join tiene `bahia_id, nombre_sitport, jurisdiccion_id, jurisdicciones_adicionales,
+estado, respaldo, criterio, evidencia` y CERO campos de contacto.
+
+
+3. LOS 16 CONFLICTOS — DECRETO vs SITPORT
+--------------------------------------------------------------------------------
+Los 16 tienen respaldo `decreto`: en todos, el decreto nombra la jurisdicción y
+SITPORT propone otra.
+
+  id  nombre                              decreto (join)      SITPORT           respaldo  mapa
+ ---  ----------------------------------  ------------------  ----------------  --------  ---------------
+ 132  BAHÍA CLARENCIA                     Punta Delgada       TIERRA DEL FUEGO  decreto   Punta Arenas
+ 146  RIO BUENO                           Lago Ranco          (null)            decreto   null
+ 151  BARNES                              Coquimbo            TONGOY            decreto   Coquimbo
+ 160  LAGO PUYEHUE                        Lago Ranco          PUERTO VARAS      decreto   Puerto Montt
+ 234  RÍO PALENA                          Chaiten             CISNES            decreto   Chaitén
+ 238  SECTOR CANAL MORALEDA               Puerto Cisnes       AGUIRRE           decreto   Cisnes
+ 240  SECTOR CANAL PILCOMAYO Y C. RODRIG. Puerto Cisnes       AGUIRRE           decreto   Cisnes
+ 245  LAGO PELLAIFA                       Lago Panguipulli    VILLARRICA        decreto   null
+ 246  LAGO PULLINQUE                      Lago Panguipulli    VILLARRICA        decreto   null
+ 247  LAGO CALAFQUEN                      Lago Panguipulli    VILLARRICA        decreto   null
+ 248  LAGO RIÑIHUE                        Lago Panguipulli    VILLARRICA        decreto   null
+ 249  LAGO NELTUME                        Lago Panguipulli    VILLARRICA        decreto   null
+ 250  LAGO PIREHUICO                      Lago Panguipulli    VILLARRICA        decreto   null
+ 251  CANAL GOLFO CORCOVADO (NORTE)       Quellon             MELINKA           decreto   Cisnes
+ 252  CANAL MORALEDA (ESTE)               Quellon             MELINKA           decreto   Cisnes
+ 253  CANAL CHAFFERS NORTE                Quellon             MELINKA           decreto   Cisnes
+
+No son 16 casos sueltos: son cuatro patrones.
+
+  · **Lacustre repartido por lago (245-250).** El decreto reparte por cuerpo de
+    agua nombrado —Panguipulli tiene los suyos, Villarrica los suyos— y SITPORT
+    los cuelga todos de una sola repartición. Mismo patrón en 105/209/210, que
+    caen en B porque ahí SITPORT sí coincide con el decreto.
+  · **Corredor Melinka / Quellón (251-253).** Ya medido y cerrado en E0.3: las
+    tres están al Norte del límite Norte de Melinka *y* del de Puerto Cisnes, o
+    sea que las dos fuentes operativas proponían jurisdicciones que el decreto
+    excluye. Van a Quellón.
+  · **Costura Cisnes / Aguirre (238, 240).** Es la misma costura Oeste que deja
+    abiertas a 239 y 241 en el grupo D.
+  · **Casos aislados (132, 146, 151, 160, 234).** Tres de éstos alimentan la
+    consulta a DIRECTEMAR — ver §6.
+
+
+4. LOS 16 QUEDAN A FAVOR DEL DECRETO, Y ESTO ES CONTRA-PRUEBA
+--------------------------------------------------------------------------------
+Los 16 se resuelven **a favor del decreto por INV-3.3**. No hay decisión nueva
+que tomar acá: INV-3.3 ya dice quién manda cuando el mapa operativo y el decreto
+discrepan, y el sondeo no trajo nada que lo mueva. SITPORT es fuente operativa
+—dice a quién se llama, qué restricción está publicada— y no es fuente normativa.
+
+**Para qué sirve este documento a futuro:** si alguien vuelve a proponer SITPORT
+como fuente de jurisdicción, acá está la contra-prueba medida. El sondeo es el
+intento más completo hecho hasta hoy —164 bahías, 64 Capitanías, 16 Gobernaciones,
+cinco endpoints— y su resultado neto sobre la jurisdicción es CERO: 57 casos donde
+sólo confirma lo que el join ya decía, 16 donde contradice al decreto y pierde, y
+6 donde no alcanza. Ningún caso donde aporte una jurisdicción que el decreto no
+diera.
+
+Dicho al revés, que es como conviene recordarlo: **SITPORT nunca fue capaz de
+resolver una sola de las seis que el decreto deja abiertas.** Si pudiera, se
+habría visto acá.
+
+
+5. EL ERROR DE MÉTODO QUE HUBO EN EL CAMINO
+--------------------------------------------------------------------------------
+**La primera versión del cruce reportó 39 conflictos. Son 16.** El crudo con el
+error queda en `03_cruce_v1_con_el_error_de_metodo.txt`, a propósito.
+
+La causa: `src/utils/normalizarTexto.js` devuelve el texto en MAYÚSCULAS, y la
+función que colapsaba variantes de nombre traía los patrones de prefijo en
+minúscula (`/^(puerto|lago|bahia)\s+/`). No colapsó ni una. El síntoma visible
+era un cero sospechoso —"variantes de grafía encontradas: 0"— con 39 conflictos
+donde saltaba a la vista que "Puerto Chacabuco" y "CHACABUCO" son la misma cosa.
+
+Las 23 que se colapsaron al corregirlo:
+    Puerto Chacabuco ≡ CHACABUCO      Puerto Cisnes ≡ CISNES
+    Puerto Aguirre ≡ AGUIRRE          Puerto Soberania ≡ SOBERANÍA
+    Lago Villarrica ≡ VILLARRICA      Lago Panguipulli ≡ PANGUIPULLI
+    Lago General Carrera ≡ LAGO GRAL.CARRERA
+
+**Por qué importa más allá del número:** es la misma trampa que E0.3 ya pagó una
+vez. Las variantes de nombre no se establecen por parecido de texto sino por
+IGUALDAD DE CONJUNTO —qué bahías atribuye cada lado—, y así está escrito en
+`src/utils/coincidencia-nombres.js`, que declara explícitamente que NO resuelve
+variantes y por qué. Un comparador ad-hoc escrito al lado de esa regla la ignoró
+y volvió a inventar el conflicto que el dato ya había resuelto.
+
+Se probó también la vía de conjunto pura (correspondencia 1:1 entre
+`jurisdiccion_id` y `CdReparticion`): da 46, y está de más porque arrastra bahías
+cuya atribución propia es unánime — la 85 BAHÍA COQUIMBO entra sólo porque la
+jurisdicción `coquimbo` también reclama la repartición de Tongoy. Sirve para ver
+dónde discrepan las FRONTERAS; no sirve para contar bahías en conflicto. El
+número que vale es el de la atribución de cada bahía: 16.
+
+
+6. ADVERTENCIA: CUATRO ASEVERACIONES DEL SONDEO QUE NO ESTABAN MEDIDAS
+--------------------------------------------------------------------------------
+**Quien lea `capitanias_64_final.csv` o `hallazgos_sondeo.txt` (los dos en
+`_bitacoras/sondeo_catalogo_2026-08-12/`)
+tiene que re-verificar contra los raw.** Cuatro afirmaciones de esa sesión no
+resisten la medición, o no fueron medidas. Ninguna es grave; todas son del tipo
+que se propaga si nadie las revisa. Medidas hoy contra `sitport_bahias_raw.json`,
+`sitport_capitanias_raw.json` y el propio CSV:
+
+  (1) **"82 de 164 bahías cambian de capitanía" — son 83 filas.**
+      Desglose real de `diff_capitanias.csv`: 63 DISTINTO + 19 NULO + 1
+      SIN_CAPITANIA = 83. La cuenta declarada ("19 nulas + 63 distintas") deja
+      afuera la fila SIN_CAPITANIA, que es justamente 146 RIO BUENO — el caso
+      más interesante del archivo. El titular esconde el hallazgo.
+
+  (2) **"19 nulas" contra 20 nulas reales en el mapa.**
+      El mapa tiene hoy 20 entradas con `capitania: null` (96, 105, 106, 127,
+      129, 139, 140, 144, 145, 146, 154, 209, 210, 231, 245, 246, 247, 248, 249,
+      250). El diff lista 19 bajo NULO porque a la 146 la clasifica aparte. Cierra
+      si se suman las dos clases, no si se lee el número solo. El commit a4ea1c1
+      además dice "20 nulos" pendientes, con lo que los dos rótulos conviven en
+      la historia sin que nada explique la diferencia.
+
+  (3) **Cobertura del CSV: el commit 8f734f4 dice "58/64 teléfono y dirección".**
+      Medido sobre el CSV final: 63 de 64 en teléfono, dirección, gobernación y
+      jefe. El 58 corresponde a `capuertos_eol.html` antes del reparseo, y quedó
+      corregido de hecho por 6b38c1a, pero el número viejo sigue en el mensaje
+      del commit sin marca de que fue superado.
+
+  (4) **Rada Covadonga (CdRep 291): "estado operativo NO verificado".**
+      Esta la declara el propio sondeo como no verificada, y sigue sin verificar
+      — no se puede cerrar desde el repositorio. Lo que SÍ está medido es que las
+      dos fuentes discrepan en su CLASE: SITPORT la publica como
+      "CAPITANÍA DE PUERTO RADA COVADONGA" (CDZona 5, CDRepPersonal 3817, 0
+      bahías, 0 restricciones) y DIRECTEMAR la clasifica como Alcaldía de Mar con
+      ficha vacía. Va a la consulta (§7).
+
+Lo que SÍ se verificó y se sostiene: **"SITPORT 164 = mapa 164, cero diferencias"
+es correcto.** Los dos conjuntos de ids son idénticos, sin sobrantes por ningún
+lado. Es la única aseveración de deriva de catálogo del sondeo y está bien.
+
+
+7. LO QUE SE HACE Y LO QUE NO
+--------------------------------------------------------------------------------
+NO se aplica `diff_capitanias.csv`. NO se abre tarea para las 82 (83) bahías.
+Decisión del owner, 2026-08-12, sobre la medición de §2: el archivo no cambia
+ninguna jurisdicción que el decreto no haya resuelto ya.
+
+SE actualiza la consulta a DIRECTEMAR con tres casos, en
+`_bitacoras/sondeo_catalogo_consulta_directemar_2026-08-12.md`.
+
+QUEDA ABIERTO, y es lo único que el sondeo aportó de verdad: **el contacto.**
+Medido en la misma sesión — con `capitanias_64_final.csv` cambiarían de teléfono
+150 bahías y de gobernación 10, y aparecería `direccion`, que hoy no existe como
+campo. Eso sí lo ve el patrón. No se aplicó nada y hay un obstáculo medido: seis
+teléfonos del CSV no son atómicos (traen "ó", "/" o la palabra "Móvil:") y el
+contrato los renderiza como enlaces `tel:` clickeables. Aplicarlos verbatim
+rompería el enlace. Ese frente es de contacto, no de jurisdicción, y no toca E2.
+
+================================================================================
+FIN — documentación. No se aplicó ningún cambio de dato ni de código.
+================================================================================
