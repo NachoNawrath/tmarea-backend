@@ -1,0 +1,102 @@
+==============================================================================
+E2 — COBERTURA DEL ANDAMIO SOBRE RUTAS REALES
+fecha: 2026-08-12T01:15:00.649Z
+==============================================================================
+capa medida: jurisdicciones_decreto (obtenida por capaDeMedicion(), el contrato de E1)
+
+LO QUE HAY QUE SABER PARA LEER ESTOS NÚMEROS — leído del propio dato,
+data/decreto/capa_consultada.json → andamio:
+  · Traslapes entre vecinas: 60 pares que se traslapan y 44.875,6 km2 en
+  · total, medidos el 2026-08-11. El par mayor es Puerto Aguirre x Puerto
+  · Chacabuco con 28.325,1 km2. Una medicion de volumen sobre esta capa
+  · cuenta de mas por construccion, y quien mida tiene que saberlo.
+  · Salio del insumo v1 (jurisdicciones_capitanias.json) y hay 11
+  · jurisdicciones que difieren de verdad entre v1 y v2. Ver
+  · `deuda_regenerar_desde_v2`.
+  · Diez de sus 64 filas no tienen geometria.
+  · Deuda declarada: 11 jurisdicciones difieren entre v1 y v2 —
+    lirquen, talcahuano, valdivia, corral, ancud, quemchi, chaiten, achao, castro, chonchi, quellon—
+    y Las once son del corredor de Chiloe y el sur de Valdivia, que es donde corren las rutas reales del motor. Lo que E2 mida sobre este andamio hay que leerlo sabiendo esto.
+
+Anahuac -> Melinka  ·  306.60 km  ·  21 waypoints
+   resuelven a UNA jurisdicción : 225.89 km  (73.7%)
+   caen en NINGUNA              : 49.06 km  (16.0%)
+   caen en zona de TRASLAPE     : 31.65 km  (10.3%)
+
+Anahuac -> Quellon  ·  217.71 km  ·  40 waypoints
+   resuelven a UNA jurisdicción : 140.63 km  (64.6%)
+   caen en NINGUNA              : 42.75 km  (19.6%)
+   caen en zona de TRASLAPE     : 34.34 km  (15.8%)
+
+Anahuac -> Chacabuco  ·  499.41 km  ·  59 waypoints
+   resuelven a UNA jurisdicción : 299.00 km  (59.9%)
+   caen en NINGUNA              : 75.40 km  (15.1%)
+   caen en zona de TRASLAPE     : 125.01 km  (25.0%)
+
+Ancud -> Castro (mar interior)  ·  162.10 km  ·  31 waypoints
+   resuelven a UNA jurisdicción : 138.16 km  (85.2%)
+   caen en NINGUNA              : 8.05 km  (5.0%)
+   caen en zona de TRASLAPE     : 15.89 km  (9.8%)
+
+Chonchi -> Chaiten (Corcovado)  ·  93.15 km  ·  11 waypoints
+   resuelven a UNA jurisdicción : 41.78 km  (44.9%)
+   caen en NINGUNA              : 39.60 km  (42.5%)
+   caen en zona de TRASLAPE     : 11.77 km  (12.6%)
+
+Arica -> Iquique (norte)  ·  198.82 km  ·  21 waypoints
+   resuelven a UNA jurisdicción : 109.32 km  (55.0%)
+   caen en NINGUNA              : 89.51 km  (45.0%)
+   caen en zona de TRASLAPE     : 0.00 km  (0.0%)
+
+Valparaiso -> San Antonio  ·  73.44 km  ·  30 waypoints
+   resuelven a UNA jurisdicción : 50.21 km  (68.4%)
+   caen en NINGUNA              : 23.23 km  (31.6%)
+   caen en zona de TRASLAPE     : 0.00 km  (0.0%)
+
+Punta Arenas -> Pto Williams  ·  524.83 km  ·  117 waypoints
+   resuelven a UNA jurisdicción : 205.67 km  (39.2%)
+   caen en NINGUNA              : 319.16 km  (60.8%)
+   caen en zona de TRASLAPE     : 0.00 km  (0.0%)
+
+──────────────────────────────────────────────────────────────────────────────
+TOTAL SOBRE LAS OCHO RUTAS
+──────────────────────────────────────────────────────────────────────────────
+  kilómetros medidos            : 2076.06 km
+  resuelven a UNA jurisdicción  : 1210.66 km  (58.3%)
+  caen en NINGUNA               : 646.76 km  (31.2%)
+  caen en zona de TRASLAPE      : 218.65 km  (10.5%)
+
+  Dónde caen los kilómetros ambiguos, y entre qué par de jurisdicciones:
+    84.59 km  puerto_aguirre + puerto_chacabuco
+    48.14 km  calbuco + maullin
+    33.82 km  hornopiren + quemchi
+    21.68 km  castro + chonchi
+    12.02 km  achao + quemchi
+    10.84 km  chonchi + quellon
+    7.56 km  puerto_aguirre + puerto_cisnes
+    5.63 km  calbuco + puerto_montt
+    5.63 km  maullin + puerto_montt
+    0.00 km  melinka + puerto_cisnes
+    0.00 km  chaiten + quellon
+    0.00 km  puerto_cisnes + quellon
+    0.00 km  ancud + calbuco
+    0.00 km  ancud + quemchi
+    0.00 km  achao + castro
+    0.00 km  chaiten + puerto_cisnes
+    0.00 km  algarrobo + san_antonio
+    0.00 km  algarrobo + valparaiso
+
+  Estos kilómetros son los que el traslape declarado produce SOBRE RUTA. El
+  dato declara 60 pares y 44.875,6 km² de traslape en toda la capa; lo de
+  arriba es cuánto de eso toca de verdad a una ruta real, que es otra cosa
+  y es la que importa para lo que el patrón ve.
+
+  CUÁNTO DE ESTO SE APOYA EN LA PARTE DESACTUALIZADA DE LA CAPA
+    km que caen en alguna de las 11 jurisdicciones que difieren entre v1 y v2:
+      666.36 km de 2076.06 (32.1% del total medido)
+    Son los kilómetros que una regeneración desde v2 podría mover. No se
+    afirma en qué dirección ni cuánto: eso exige regenerar y volver a medir.
+
+==============================================================================
+FIN — medición, no construcción. No se modificó nada.
+==============================================================================

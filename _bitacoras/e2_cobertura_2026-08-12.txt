@@ -1,0 +1,123 @@
+================================================================================
+E2 — PRIMERA SUB-ETAPA: LA COBERTURA DEL ANDAMIO SOBRE RUTAS REALES.
+Fecha: 2026-08-12
+Es lo que E1 dejó explícitamente sin contestar.
+Estado: MEDIDO. Nada construido, nada aplicado. Alto.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts/e2_cobertura_andamio.js
+
+Crudo: _bitacoras/e2_cobertura_2026-08-12/01_cobertura.txt
+
+La capa se pide por `capaDeMedicion()`. Este script ES un contexto de medición
+porque llama a esa función, que es el contrato que E1 dejó; ningún proceso de
+producción la tiene cableada.
+
+
+1. EL NÚMERO
+--------------------------------------------------------------------------------
+Ocho rutas reales del motor de ruteo, medidas sobre la geometría que el backend
+recibe —sin los tramos de `aproximacion_final`, que meterían metros de muelle—:
+
+    kilómetros medidos            2.076,06 km
+    resuelven a UNA jurisdicción  1.210,66 km   58,3 %
+    caen en NINGUNA                 646,76 km   31,2 %
+    caen en zona de TRASLAPE        218,65 km   10,5 %
+
+Sobre RUTAS, no sobre puntos de bahía: los puntos de bahía son de orilla y
+juzgar una capa por ellos es un error ya pagado dos veces acá.
+
+Los 2.076,06 km coinciden con los 2.076,07 medidos en su momento sobre las
+mismas ocho rutas contra la capa del motor. Es la misma ruta; cambia la capa
+contra la que se mide.
+
+
+2. UN ERROR DE MEDICIÓN MÍO, CAZADO ANTES DE REPORTARLO (CLAUDE.md §2)
+--------------------------------------------------------------------------------
+La primera versión de este script partía la ruta en segmentos y contaba en
+cuántas jurisdicciones caía cada uno. Daba **40,3 % de kilómetros ambiguos**.
+
+Ese número está mal y no mide traslape: un tramo que simplemente CRUZA un límite
+toca dos jurisdicciones sin que haya ninguna superposición. Medía cruces de
+frontera y los presentaba como ambigüedad — la misma forma de error que el §2 de
+CLAUDE.md persigue.
+
+Corregido: se corta la ruta contra la unión de las jurisdicciones (los km
+cubiertos) y contra la unión de las INTERSECCIONES DE PARES (los km realmente
+ambiguos). Un cruce de frontera no aporta a lo segundo porque una frontera no
+tiene área. El número real es **10,5 %**, cuatro veces menos que el que iba a
+reportar.
+
+
+3. DÓNDE ESTÁ LA AMBIGÜEDAD, Y ENTRE QUIÉNES
+--------------------------------------------------------------------------------
+    84,59 km  puerto_aguirre + puerto_chacabuco
+    48,14 km  calbuco + maullin
+    33,82 km  hornopiren + quemchi
+    21,68 km  castro + chonchi
+    12,02 km  achao + quemchi
+    10,84 km  chonchi + quellon
+     7,56 km  puerto_aguirre + puerto_cisnes
+     5,63 km  calbuco + puerto_montt
+     5,63 km  maullin + puerto_montt
+     (otros nueve pares tocan la ruta en 0,00 km: se rozan en un punto)
+
+El dato declara 60 pares traslapados y 44.875,6 km² en toda la capa. Sobre ruta
+real, sólo **nueve pares** aportan kilómetros, y dos de ellos —Aguirre ×
+Chacabuco y Calbuco × Maullín— son el 61 % de los 218,65 km. El área traslapada
+total no es un buen predictor de lo que una ruta toca: son dos cosas distintas y
+por eso se miden aparte.
+
+
+4. LO QUE ESTO SIGNIFICA PARA LA MEDICIÓN DE VOLUMEN, QUE ES EL OBJETO DE E2
+--------------------------------------------------------------------------------
+El 10,5 % es el **factor de contaminación** de cualquier medición de volumen que
+se haga sobre este andamio: son kilómetros donde la capa atribuye DOS
+jurisdicciones, así que las restricciones de las dos entrarían a la lista. Una
+medición de volumen sobre esta capa cuenta de más, y ahora se sabe cuánto de más
+puede contar y dónde.
+
+No es "un poco de ruido repartido": está concentrado en nueve pares y dos de
+ellos dominan. Eso se puede acotar al medir volumen; cómo hacerlo es la sub-etapa
+siguiente y no lo decido acá.
+
+
+5. CUÁNTO DE ESTO SE APOYA EN LA PARTE DESACTUALIZADA DE LA CAPA
+--------------------------------------------------------------------------------
+El owner pidió que la medición LEA la deuda declarada y la DECLARE en su
+resultado, no que la mencione. Medido:
+
+    km que caen en alguna de las 11 jurisdicciones que difieren entre v1 y v2:
+        666,36 km de 2.076,06        32,1 % del total medido
+
+Un tercio de lo medido se apoya en la parte de la capa que salió del insumo
+viejo. **No se afirma en qué dirección ni cuánto cambiaría una regeneración**:
+eso exige regenerar y volver a medir, y regenerar quedó fuera de E1 por decisión
+del owner. Lo que sí queda dicho es el tamaño de la exposición.
+
+
+6. LO QUE NO SE DETERMINÓ, Y POR QUÉ NO SE ESTIMA
+--------------------------------------------------------------------------------
+- **Cuánto cambia el volumen de restricciones al pasar de bahía a Capitanía.** Es
+  el número que E2 existe para producir y esta sub-etapa no lo produce: contesta
+  si la capa puede sostener esa medición y con qué contaminación. No lo estimo
+  porque depende de qué restricciones publica SITPORT el día que se mida, y una
+  proyección serviría para decidir mal con confianza.
+- **Si los 31,2 % sin jurisdicción son peores o mejores que lo que el motor tiene
+  hoy.** La capa de hoy resuelve por bahía y ésta por Capitanía: "no resuelve"
+  no significa lo mismo en las dos, y compararlas sin igualar el criterio sería
+  medir una cosa y afirmar otra. Se puede igualar, y no está hecho.
+- **Cuánto de los 646,76 km sin jurisdicción es hueco real y cuánto es figura sin
+  construir.** Diez de las 64 filas de la capa no tienen geometría; separar las
+  dos causas es trabajo aparte.
+- **Qué pasa con las 6 bahías que el join de E0.3 dejó sin resolver.** No tocan
+  esta medición porque acá se mide geometría, no atribución de bahías.
+
+================================================================================
+FIN DE LA SUB-ETAPA. Alto para autorización.
+================================================================================
