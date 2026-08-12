@@ -1232,6 +1232,10 @@ def main():
             "cotejo_lacustre_adjudicado.json": sha(LACUSTRE),
             "seed-bahias-sitport.js": sha(SEED_BAHIAS),
         },
+        # Contra que texto se coteja este insumo, con su sha256 y su fecha. Viaja al
+        # derivado a proposito: quien lee el v2 sin el v1 al lado tiene que poder
+        # saberlo, porque no saberlo es la causa raiz de todo este frente.
+        "cotejado_contra": v1.get("cotejado_contra"),
         "nota_construccion": v1.get("nota_construccion"),
         "convenciones": [
             "El lado de una poligonal lo decide 'ancla_seleccion' (la sede de la "
@@ -1266,6 +1270,10 @@ def main():
         # de ids contra el v1, y meter las Gobernaciones ahi lo romperia.
         "gobernaciones": v1.get("gobernaciones"),
         "articulos": v1.get("articulos"),
+        # Lo que el texto oficial dice y este insumo NO incorporo, con su motivo.
+        # Declarado, no ausente: es la diferencia entre una decision registrada y un
+        # hueco que alguien descubre despues.
+        "diferencias_no_incorporadas": v1.get("diferencias_no_incorporadas"),
         "jurisdicciones": juris,
     }
     with open(V2, "w", encoding="utf-8") as fh:

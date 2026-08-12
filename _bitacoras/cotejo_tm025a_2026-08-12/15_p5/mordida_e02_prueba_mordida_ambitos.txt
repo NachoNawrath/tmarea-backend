@@ -1,0 +1,56 @@
+PRUEBA DE MORDIDA — REGISTRO DE AMBITOS PUBLICADOS (E0.2)
+fecha: 2026-08-12T03:33:54.158Z
+shell: PowerShell 5.1 / Windows. Reproducible: node scripts/e02_prueba_mordida_ambitos.js
+La declaracion y el insumo se leen REALES y se alteran en memoria.
+==============================================================================
+
+[01] C1  CAZADO   un ambito del insumo sin entrada en el registro
+     [ambitos_publicados] C1: hay ambitos en el insumo sin entrada en el registro: lacustre. Sin su declaracion, una ruta que caiga ahi vuelve a ser indistinguible de una ruta sin restricciones (INV-3.6).
+
+[02] C2  CAZADO   una entrada que no corresponde a ningun ambito del insumo
+     [ambitos_publicados] C2: el registro declara el ambito 'fluvial', que no existe en el insumo. Ambitos del insumo: antartica, insular_remota, lacustre, maritima. Un ambito declarado que no existe produce un aviso que nunca se puede retirar, porque su causa no puede desaparecer.
+
+[03] C3  CAZADO   RETIRO AUTOMATICO — lacustre declarado no publicado y la base YA lo tiene
+     [ambitos_publicados] C3: el ambito 'lacustre' esta declarado NO publicado y la capa 'jurisdicciones_ds991' ya tiene 6 jurisdiccion(es) suyas con geometria. El ambito paso sus controles y se publico: esta entrada perdio la carencia que la justificaba y debe retirarse de ambitos_publicados.json. El av
+
+[04] C4  CAZADO   lacustre declarado PUBLICADO y la capa publicada no existe
+     [ambitos_publicados] C4: el ambito 'lacustre' esta declarado PUBLICADO y la capa 'jurisdicciones_ds991' ni siquiera existe. El registro estaria afirmando una cobertura que no hay, que es el falso negativo silencioso que INV-3.6 persigue.
+
+[05] C4  CAZADO   lacustre declarado PUBLICADO con 4 de 6 jurisdicciones — a medias (D3)
+     [ambitos_publicados] C4: el ambito 'lacustre' esta declarado PUBLICADO con 4 de 6 jurisdicciones construidas. D3 exige que cada ambito publicado este COMPLETO y auditado: nada se promueve a medias dentro de su propio ambito.
+
+[06] C5  CAZADO   un ambito no publicado al que se le borra la causa
+     [ambitos_publicados] C5: el ambito 'antartica' esta declarado no publicado y no trae "causa" escrita. Un ambito ausente sin causa es exactamente el silencio que este registro existe para terminar.
+
+[07] C6  CAZADO   geografia de reclamo nula sin motivo escrito
+     [ambitos_publicados] C6: el ambito 'lacustre' no declara geografia de reclamo y no escribe "motivo_sin_geografia_de_reclamo". La ausencia es un estado legitimo (CLAUDE.md §4.2) pero hay que declararla.
+
+[08] C6  CAZADO   geografia de reclamo sin declarar no_resuelve_jurisdiccion
+     [ambitos_publicados] C6: ambito 'lacustre': la geografia de reclamo debe declarar "no_resuelve_jurisdiccion": true. Sirve para decidir que aviso corresponde, nunca para adjudicar una Capitania a un punto (INV-3.3).
+
+[09] C6  CAZADO   geografia de reclamo en una relacion que no existe en la base
+     [ambitos_publicados] C6: el ambito 'lacustre' declara su geografia de reclamo en 'capa_que_no_existe', que no existe en el esquema public. El aviso no corre contra una relacion que no esta: se detiene en vez de callar.
+
+[10] C7  CAZADO   capa_publicada apuntando a la MISMA capa que el motor consulta hoy
+     [ambitos_publicados] C7: "capa_publicada" apunta a 'bahia_jurisdicciones', que es la MISMA capa que capa_consultada.json declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca contradictoria con INV-3.3 (§7 bug 4): tomarla como capa publicada haria que 
+
+[11] C8  CAZADO   un trozo reclamado por dos ambitos no publicados a la vez
+     [ambitos_publicados] C8: el trozo (-39.2,-72.2) -> (-39.3,-71.9) es reclamado por 2 ambitos no publicados a la vez: lacustre (5000 m), maritima (3000 m). La causa del aviso seria ambigua. Elegir el que mas metros reclama seria un caso por defecto silencioso (CLAUDE.md §4.2): los ambitos del decreto 
+
+==============================================================================
+MORDIDA: 11/11
+
+==============================================================================
+CONTROL NEGATIVO — la declaracion REAL contra la base REAL debe PASAR
+Un validador que rechaza todo no prueba nada.
+==============================================================================
+
+PASA. capa_publicada declarada: 'jurisdicciones_ds991'
+ambitos declarados: 4 · no publicados: 4 · con geografia de reclamo: 3
+  maritima         publicado=false jur=52  reclamo=jurisdicciones_decreto
+  lacustre         publicado=false jur=6  reclamo=jurisdicciones_decreto
+  antartica        publicado=false jur=4  reclamo=jurisdicciones_decreto
+  insular_remota   publicado=false jur=2  reclamo=ninguna (declarado)
+
+==============================================================================
+RESULTADO: 11/11 + control negativo. Los controles muerden y no rechazan de mas.

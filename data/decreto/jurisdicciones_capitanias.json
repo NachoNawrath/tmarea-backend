@@ -3389,5 +3389,98 @@
         "fecha_cotejo": "2026-08-11"
       }
     }
+  ],
+  "cotejado_contra": {
+    "documento": "TM-025 A, actualizado al 4 de junio de 2025 (DIRECTEMAR)",
+    "norma": "D.S. (M) N 991 del 26-10-1987, D.O. 32.931 del 27-11-1987, con las modificaciones de D.S. 020/1996, 163/1997, 058/2000, 080/2004, 224/2012 y 391/2019",
+    "archivo_en_el_repo": "data/decreto/fuente/TM-025-A_2025-06-04.pdf",
+    "texto_extraido": "data/decreto/fuente/TM-025-A_2025-06-04.txt",
+    "sha256_texto_extraido": "e14cb905b4895422e41a7741818b59a40578dd49ba049baf0b727a8928c522c8",
+    "procedencia": "data/decreto/fuente/PROCEDENCIA.md",
+    "fecha_cotejo": "2026-08-11",
+    "herramienta": "_bitacoras/cotejo_tm025a_2026-08-12/cotejo.js",
+    "evidencia": "_bitacoras/cotejo_tm025a_2026-08-12.txt",
+    "alcance": {
+      "que_se_comparo": "El campo `texto_decreto` de las 64 Capitanias contra el parrafo oficial de cada una, token a token, con tildes y notacion DMS normalizadas. Las 16 Gobernaciones y el Art. 2 no se compararon: no estaban, y se extrajeron del documento en P3.",
+      "que_NO_se_comparo": [
+        "La GEOMETRIA. El cotejo mide texto contra texto. Que el contorno construido corresponda al parrafo es otra cosa, y la audita el auditor.",
+        "Los LIMITES de las Gobernaciones. Entraron como texto; derivarlos a coordenadas exige decidir que dice el decreto y no se hizo.",
+        "Las notas al pie y la cabecera de pagina del documento, que son aparato de imprenta y se filtran antes de comparar."
+      ],
+      "convenciones_de_transcripcion_del_corpus": "El campo `texto_decreto` de las Capitanias esta transcrito en un estilo propio —sin tildes, DMS como 'dd mm ss S', coordenadas como 'lat / lon', sin el 'Su jurisdiccion comprende' inicial, numeros de Region en romanos— y esas diferencias de forma NO se listan una por una: son sistematicas y estan declaradas aca. El motivo de no re-estilar el corpus es que `respaldo_textual()` del migrador cotea los puntos del contorno contra ese campo. La fidelidad a la letra vive en el documento versionado, no en este campo. Las Gobernaciones si van literales, con tildes, porque nada cotea contra ellas."
+    }
+  },
+  "diferencias_no_incorporadas": [
+    {
+      "id": "meulin_ne_vs_nw",
+      "donde": "CP Quemchi y CP Achao",
+      "dice_el_oficial": [
+        "Latitud 42°23’30\" y Longitud 073°17’00\" W, Punta NE de isla Meulín",
+        "con la punta NW de la isla Meulín en el punto de Latitud 42°23’30\" S. y Longitud 073°17’00\" W."
+      ],
+      "que_pasa": "El mismo punto —42 23 30 S / 073 17 00 W— es 'Punta NE' en el parrafo de Quemchi y 'punta NW' en el de Achao.",
+      "que_hicimos": "Se transcribieron los dos tal como estan, cada uno en su jurisdiccion. El insumo reproduce la inconsistencia en vez de elegir un cardinal.",
+      "por_que_no_se_incorpora": "Elegir NE o NW es decidir que dice el decreto. Ademas no cambia nada medible: las coordenadas son identicas en los dos parrafos y es de ahi de donde sale la geometria, no del nombre. no se decide aca: resolverlo exige decidir que dice el decreto, y eso es del owner (CLAUDE.md §0)",
+      "reabre_si": "alguna vez hiciera falta nombrar ese vertice en pantalla, o si apareciera una fuente que diga cual de los dos cardinales es"
+    },
+    {
+      "id": "achao_longitud_con_hemisferio_sur",
+      "donde": "CP Achao",
+      "dice_el_oficial": [
+        "Longitud 073°12’00\" S."
+      ],
+      "que_pasa": "El decreto escribe una LONGITUD con hemisferio S, que no existe. El error esta en el texto oficial vigente, no en la transcripcion: se verifico.",
+      "que_hicimos": "INCORPORADA COMO CORRECCION, no diferida. `achao` la lee como 073 12 00 W y lo registra en `correccion_aplicada`, porque los parrafos de CP Chonchi y CP Chaiten usan 073 12 00 W para ese mismo meridiano. Se lista aca para dejar constancia de que el defecto es de la fuente oficial y sobrevivio a la version del 4 de junio de 2025.",
+      "por_que_no_se_incorpora": "no aplica: si se incorporo, como correccion.",
+      "reabre_si": "DIRECTEMAR publica una fe de erratas"
+    },
+    {
+      "id": "galletue_vs_gualletue",
+      "donde": "GM Valdivia y CP Lago Villarrica",
+      "dice_el_oficial": [
+        "las lagunas Conguillío, Gualletué",
+        "Lagunas Conguillío, Galletué e Icalma"
+      ],
+      "que_pasa": "La misma laguna se escribe 'Gualletué' en el parrafo de la Gobernacion y 'Galletué' en el de la Capitania.",
+      "que_hicimos": "Cada texto quedo como el decreto lo escribe. En el cotejo lacustre esa laguna esta con resolucion 'ausente': sin ninguna coincidencia en el catastro.",
+      "por_que_no_se_incorpora": "No es una diferencia con el insumo sino una inconsistencia del oficial, y elegir grafia es decidir que dice el decreto. no se decide aca: resolverlo exige decidir que dice el decreto, y eso es del owner (CLAUDE.md §0)",
+      "reabre_si": "HAY UN HILO CONCRETO, y este es el motivo de listarla: la segunda grafia 'Gualletue' nunca se probo contra el shapefile de lagos. Si calza, esa laguna deja de estar sin geometria. Eso es medicion, no adjudicacion, y se puede hacer sin decidir nada."
+    },
+    {
+      "id": "hemisferio_omitido_en_dos_parrafos",
+      "donde": "CP Mejillones y CP Quemchi",
+      "dice_el_oficial": [
+        "desde el paralelo 22º39'00'' (Punta Tames) por el Norte",
+        "ubicado en Latitud 42°23’30\" y Longitud 073°17’00\" W"
+      ],
+      "que_pasa": "Los dos omiten el 'S.' del hemisferio en una latitud. El resto de los parrafos lo escribe.",
+      "que_hicimos": "El insumo transcribio '22 39 00 S' y '42 23 30 S', o sea SUPLIO el hemisferio en silencio. Se declara aca para que deje de ser silencioso.",
+      "por_que_no_se_incorpora": "El valor no esta en duda —Chile esta entero en el hemisferio Sur y las dos Capitanias estan a esas latitudes— asi que no se revierte. Lo que se corrige es que el insumo lo hacia sin decirlo.",
+      "reabre_si": "nunca; queda como constancia de una omision de la fuente"
+    },
+    {
+      "id": "o_higgins_con_y_sin_general",
+      "donde": "GM San Antonio y CP Pichilemu",
+      "dice_el_oficial": [
+        "sur de la Sexta Región del Libertador Bernardo O´Higgins",
+        "la Sexta Región del Libertador General Bernardo O´Higgins"
+      ],
+      "que_pasa": "La misma Region se nombra con y sin 'General' en dos parrafos contiguos.",
+      "que_hicimos": "El insumo abrevia los nombres de Region ('VI Region'), asi que la diferencia no llega al dato. Se declara para que el cotejo no la reporte como hallazgo cada vez.",
+      "por_que_no_se_incorpora": "es nomenclatura, no delimita nada.",
+      "reabre_si": "nunca"
+    },
+    {
+      "id": "bahia_paraiso_limite_sur",
+      "donde": "CP Bahía Paraíso",
+      "dice_el_oficial": [
+        "Y por el Sur, con las costas más australes de la provincia Antártica Chilena entre los meridianos 53°00’00W y 90°00’00” W."
+      ],
+      "que_pasa": "El decreto declara que los cuatro puntos de esta Capitania son su limite NORTE y que por el Sur el limite es la costa antartica. El insumo transcribio los cuatro puntos y omitio esa oracion, y por eso la figura se construye como ANILLO CERRADO: el segmento que la cierra por el Sur —de 069 15 00 S / 090 00 00 W a 070 00 00 S / 053 00 00 W— NO ESTA EN EL DECRETO (INV-0.2).",
+      "que_hicimos": "DIFERIDA A SU PROPIA ETAPA, con el texto ya redactado y verificado en la constante DIFERIDAS de scripts/tm025a_p2_completar_texto.py. Se aplico y se midio el 2026-08-11: al sumar la oracion, el migrador pasa el tramo de cierre de 'frontera' a 'litoral' y sigue_litoral a true —lo cual es correcto—, pero con el parrafo nombrando la costa el control B8 exige adjudicacion del owner para LOS CUATRO tramos y la auditoria pasa de LIMPIA a 4 fallos.",
+      "por_que_no_se_incorpora": "Porque incorporarla sin la adjudicacion deja el insumo sin auditar, y B8 no se afloja (CLAUDE.md §0.3). En esta jurisdiccion el texto ES lo que dispara la decision sobre la figura, asi que van juntos. no se decide aca: resolverlo exige decidir que dice el decreto, y eso es del owner (CLAUDE.md §0)",
+      "contenido_hoy": "El defecto es real y esta CONTENIDO, medido el 2026-08-11: jurisdicciones_ds991 no existe, el ambito antartico esta declarado no publicado, no hay traslapes entre las cuatro antarticas, y la figura mas al Norte llega a -57,700 mientras una ruta chilena no baja de -56. Hoy no alcanza ninguna ruta ni ninguna bandera.",
+      "reabre_si": "el owner adjudica el tipo de los cuatro tramos de Bahia Paraiso. Ahi entra el texto, se repara la figura y se comprueba antes que la capa de tierra declarada cubra la Antartida"
+    }
   ]
 }
