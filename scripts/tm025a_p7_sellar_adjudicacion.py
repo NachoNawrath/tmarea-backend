@@ -43,6 +43,7 @@ import io
 import json
 import os
 import sys
+from datetime import date
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
@@ -171,8 +172,19 @@ def main():
                    "autorizacion es el re-sellado automatico que se descarto.")
 
     adj.setdefault("insumo", {})["jurisdicciones_v2.json"] = real
+    # La fecha SALE DEL RELOJ, no de una constante escrita a mano. La constante ya
+    # produjo el error que este bloque existe para impedir: el 2026-08-11 quedo
+    # sellado con fecha 2026-08-12, o sea una constancia de adjudicacion fechada en
+    # el futuro. Un sello es una afirmacion sobre cuando se autorizo algo; que
+    # dependa de que alguien se acuerde de actualizar una linea es la forma segura
+    # de que termine mintiendo.
+    #
+    # Que sea del reloj NO rompe la reproducibilidad como la rompe un `generado:
+    # new Date()` en un derivado: este archivo no se regenera, se escribe UNA VEZ
+    # por cada autorizacion explicita del owner. La fecha es un hecho de cuando
+    # ocurrio, no un valor derivado que deba dar igual en cada corrida.
     adj["sellado"] = {
-        "fecha": "2026-08-11",
+        "fecha": date.today().isoformat(),
         "autorizacion": args.autorizacion.strip(),
         "sello_anterior": sello,
         "verificado_antes_de_sellar": (

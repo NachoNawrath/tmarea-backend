@@ -1,0 +1,247 @@
+FASE 4 — MIGRACION DEL INSUMO v1 -> v2
+  entrada : data\decreto\jurisdicciones_capitanias.json  sha256[:16] f6fe9b62b51983fb
+  lacustre: data\decreto\cotejo_lacustre_adjudicado.json  sha256[:16] 86f966583922c0f3
+  bahias  : 162 puntos SITPORT desde scripts\seed-bahias-sitport.js
+
+jurisdicciones : 64
+fronteras      : 61  (41 por paralelo, 20 poligonales)
+salida         : data\decreto\jurisdicciones_v2.json  sha256[:16] 35430db74a29c771
+
+ESTADO DE GEOMETRIA, AHORA DECLARADO EN EL DATO
+  cerrable     54
+  no_cerrable  10
+      Arica                  el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno que lo supla. No se toma del vecino.
+      Hanga Roa              el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; requiere fuente externa
+      Juan Fernandez         el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; requiere fuente externa
+      Lirquen                La prosa describe el contorno de la Bahia de Concepcion sin dar sus vertices. La poligonal registrada son los dos extremos explicitos.
+      Talcahuano             El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al Sur de 36 42 25 S (limite sur declarado). El contorno de la bahia no viene con vertices. No se infiere.
+      Baker                  el decreto no entrega con que cerrar: falta el limite sur, y no hay contorno que lo supla. No se toma del vecino.
+      Puerto Eden            el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno que lo supla. No se toma del vecino.
+      Punta Delgada          El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si una ruta cae en esta zona, avisar que el limite no esta cargado.
+      Tierra del Fuego       El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si una ruta cae en esta zona, avisar que el limite no esta cargado.
+      Puerto Williams        el contorno parte el espacio en dos y no hay ancla que diga cual de los dos trozos es la jurisdiccion
+
+RESPALDO TEXTUAL DE LOS PUNTOS DEL CONTORNO
+  propio       113
+  correccion   2
+  ajeno        2
+  ninguno      0
+
+  Puntos DESCARTADOS: el decreto no los nombra en el parrafo de esta
+  jurisdiccion ni en el de una vecina con la que comparta frontera.
+    ninguno
+
+PUNTOS QUE EL DECRETO NOMBRA Y EL RECORRIDO TRANSCRITO NO INCLUYE
+  El recorrido es 'poligonal_completa'. Estos estaban solo en la lista
+  suelta de v1. Meterlos en el trazo exige decidir por donde pasa, y eso
+  es del owner: quedan aparte, no se pierden y no se inventan.
+    Lirquen                36 44 10 S / None  'Ribera Weste desembocadura rio Andalien'  respaldo=propio
+    Talcahuano             36 44 10 S / None  'Ribera Weste desembocadura rio Andalien'  respaldo=propio
+    Talcahuano             36 42 25 S / 073 09 32 W  'Punta de Lobos (Talcahuano)'  respaldo=propio
+    Valdivia               39 49 39 S / None  'Punta Juan Latorre'  respaldo=propio
+    Corral                 39 49 39 S / None  'Punta Juan Latorre'  respaldo=propio
+    Quemchi                42 00 00 S / 073 00 00 W  'Vertice 42S/73W'  respaldo=propio
+    Chaiten                43 00 30 S / 073 19 30 W  'Punta Centinela'  respaldo=ajeno
+
+PUNTO REPRESENTATIVO SOBRE AGUA
+  resueltos 53 de 54 cerrables
+  ok   Iquique                (-20.2133, -70.1503)  bahia SITPORT 72 — Bahía de Iquique
+  ok   Patache                (-20.8000, -70.2200)  bahia SITPORT 73 — Patache
+  ok   Tocopilla              (-22.1000, -70.2167)  bahia SITPORT 74 — Bahía Algodonales
+  ok   Mejillones             (-23.1000, -70.4500)  bahia SITPORT 75 — Bahía Mejillones del Sur
+  ok   Antofagasta            (-23.6500, -70.4000)  bahia SITPORT 77 — Bahía Moreno (Antofagasta)
+  ok   Taltal                 (-25.4089, -70.4911)  bahia SITPORT 79 — Tal Tal
+  ok   Chanaral               (-26.3500, -70.6333)  bahia SITPORT 80 — Bahía Chañaral
+  ok   Caldera                (-27.0637, -70.8237)  bahia SITPORT 81 — Bahía Caldera
+  ok   Huasco                 (-28.4609, -71.2241)  bahia SITPORT 84 — Bahía Puerto Huasco
+  ok   Coquimbo               (-29.9668, -71.3499)  bahia SITPORT 86 — Bahía Herradura de Guayacán
+  ok   Tongoy                 (-30.2558, -71.4969)  bahia SITPORT 87 — Tongoy
+  ok   Los Vilos              (-32.1362, -71.5298)  bahia SITPORT 180 — Bahía Pichidangui
+  --   Papudo                 ninguna bahia SITPORT tiene a esta Capitania como su sede mas cercana: no hay punto sobre agua con que probar su geometria
+  ok   Quintero               (-32.7833, -71.5333)  bahia SITPORT 91 — Bahía de Quintero
+  ok   Valparaiso             (-33.0333, -71.6333)  bahia SITPORT 92 — Bahía de Valparaíso
+  ok   Algarrobo              (-33.3634, -71.6726)  bahia SITPORT 94 — Bahía Algarrobo
+  ok   San Antonio            (-33.5833, -71.6167)  bahia SITPORT 93 — Puerto de San Antonio
+  ok   Pichilemu              (-34.3829, -72.0144)  bahia SITPORT 95 — Pichilemu
+  ok   Lago Rapel             (-34.1804, -71.4774)  los cuerpos de agua adjudicados en Fase 2
+  ok   Constitucion           (-35.3325, -72.4060)  bahia SITPORT 103 — Bahía Constitución
+  ok   San Vicente            (-36.7833, -73.1833)  bahia SITPORT 198 — Sector Costero Península de Hualpén
+  ok   Coronel                (-37.0092, -73.1833)  bahia SITPORT 100 — Bahía Coronel
+  ok   Lota                   (-37.0735, -73.1522)  bahia SITPORT 102 — Lota
+  ok   Lebu                   (-37.6015, -73.6548)  bahia SITPORT 101 — Lebu
+  ok   Carahue                (-38.7500, -73.4333)  bahia SITPORT 143 — Carahue - Borde Costero
+  ok   Lago Villarrica        (-39.2542, -72.0853)  los cuerpos de agua adjudicados en Fase 2
+  ok   Lago Panguipulli       (-39.5322, -72.2271)  los cuerpos de agua adjudicados en Fase 2
+  ok   Lago Ranco             (-40.6739, -72.5151)  los cuerpos de agua adjudicados en Fase 2
+  ok   Valdivia               (-39.8136, -73.2487)  bahia SITPORT 104 — Valdivia Fluvial
+  ok   Corral                 (-39.8874, -73.4274)  bahia SITPORT 107 — Bahía Corral
+  ok   Puerto Varas           (-41.1419, -72.8058)  los cuerpos de agua adjudicados en Fase 2
+  ok   Puerto Montt           (-41.4833, -72.9500)  bahia SITPORT 216 — Canal Tenglo
+  ok   Maullin                (-41.6156, -73.5966)  bahia SITPORT 112 — Bahía Maullín
+  ok   Calbuco                (-41.7763, -73.1304)  bahia SITPORT 113 — Bahía de Calbuco
+  ok   Rio Negro Hornopiren   (-42.0000, -72.5000)  bahia SITPORT 184 — Ensenada Hualaihué
+  ok   Cochamo                (-41.4950, -72.3106)  bahia SITPORT 152 — Cochamó
+  ok   Ancud                  (-41.8665, -73.8313)  bahia SITPORT 118 — Bahía Ancud y Canal Chacao
+  ok   Quemchi                (-42.1448, -73.4725)  bahia SITPORT 120 — Puerto Quemchi
+  ok   Chaiten                (-42.9112, -72.7187)  bahia SITPORT 121 — Chaitén
+  ok   Achao                  (-42.4677, -73.4901)  bahia SITPORT 122 — Achao
+  ok   Castro                 (-42.4808, -73.7591)  bahia SITPORT 116 — Castro
+  ok   Chonchi                (-42.6187, -73.7688)  bahia SITPORT 119 — Chonchi
+  ok   Quellon                (-43.1208, -73.6232)  bahia SITPORT 117 — Bahía Quellón
+  ok   Melinka                (-43.8987, -73.7462)  bahia SITPORT 124 — Melinka
+  ok   Puerto Cisnes          (-44.7352, -72.6826)  bahia SITPORT 123 — Puerto Cisnes
+  ok   Puerto Aguirre         (-45.1667, -73.5333)  bahia SITPORT 125 — Sector Bahía de Puerto Aguirre
+  ok   Puerto Chacabuco       (-45.4667, -72.8000)  bahia SITPORT 126 — Bahía Chacabuco
+  ok   Lago General Carrera   (-48.6897, -73.0777)  los cuerpos de agua adjudicados en Fase 2
+  ok   Puerto Natales         (-51.7319, -72.5136)  bahia SITPORT 130 — Puerto Natales
+  ok   Punta Arenas           (-53.1358, -70.8625)  bahia SITPORT 134 — Punta Arenas
+  ok   Bahia Fildes           (-59.8750, -56.2086)  el anillo que describe el decreto
+  ok   Puerto Soberania       (-61.2917, -63.5089)  el anillo que describe el decreto
+  ok   Rada Covadonga         (-66.4167, -54.5667)  el anillo que describe el decreto
+  ok   Bahia Paraiso          (-67.1250, -69.0695)  el anillo que describe el decreto
+
+TIPO DE TRAMO, TRANSCRITO DEL PARRAFO DE CADA JURISDICCION
+  total de tramos marcados: 100
+    litoral         4
+    frontera        91
+    abierto         5
+    indeterminado   0
+
+  LITORAL  Puerto Montt           Punta Capacho -> Caleta El Milagro
+           "), el litoral del Seno Reloncavi y el litoral continental hasta Caleta El Milagro ("
+  LITORAL  Puerto Montt           Punta Morro Chico -> Punta Trentelgue
+           "), continuando hacia el Sur por el litoral hasta Punta Trentelgue ("
+  LITORAL  Calbuco                Punta Capacho -> Vertice Maullin-Calbuco-Ancud
+           "), hasta el punto ubicado en"
+  LITORAL  Rio Negro Hornopiren   Punta Trentelgue -> Interseccion estero Renihue
+           ") siguiendo hacia el Sur por el litoral Weste de Chiloe Continental hasta la interseccion del pa"
+  origen de la marca:
+    cierto          78
+    adjudicado      22
+    sin_adjudicar   0
+  adjudicacion que REVIERTE la propuesta automatica:
+    Puerto Montt           litoral -> frontera  (Punta Trentelgue -> Vertice NE Calbuco/Puerto Montt)
+    Cochamo                litoral -> frontera  (? -> ?)
+    Chaiten                litoral -> frontera  (Interseccion 42 30 00 S / 072 38 00 W, costa Este estero Renihue -> ?)
+    Chaiten                litoral -> frontera  (? -> ?)
+
+INCIDENCIAS DETECTADAS AL DERIVAR FRONTERAS
+  el paralelo -43.740278 lo comparten 2 por el Sur (['Chaiten', 'Quellon']) y 2 por el Norte (['Melinka', 'Puerto Cisnes']): son Capitanias laterales, no apiladas, y el paralelo solo no las separa
+
+La migracion no adjudica nada de lo que quedo abierto en la Etapa A.
+Reorganiza el dato; lo que exige decidir que dice el decreto sigue abierto.
+FASE 5 â€” ETAPA 1. CORRECCION DE LOS TESTIGOS
+modo       : APLICAR
+insumo     : data/decreto/jurisdicciones_v2.json
+             sha256[:16] 35430db74a29c771
+capa costa : osm_land_polygons  ->  costa_osm_sub
+             sha256[:16] e3570af698dd0867
+
+==============================================================================
+DISTRIBUCION MEDIDA
+==============================================================================
+  testigos del ambito ['maritima'] : 52
+    ya_en_agua     8
+    corregible     30
+    pasa_umbral    4
+    irresoluble    0
+    excluido       1
+    sin_testigo    9
+
+  desplazamiento al agua, de los 35 que caen en tierra:
+    mediana 28 m   minimo 3 m   maximo 3380 m
+    a menos de   100 m : 25 de 35
+    a menos de   250 m : 27 de 35
+    a menos de   500 m : 30 de 35
+    a menos de  1000 m : 32 de 35
+    a menos de  2000 m : 34 de 35
+
+  riesgo de identidad â€” distancia al testigo de OTRA jurisdiccion:
+    minimo 7654 m (Coronel)   mediana 57920 m
+    el caso mas apretado de los que se mueven: San Vicente se mueve 497 m con el vecino a 25069 m = 50x (hacen falta 10x)
+
+  libertad que la eleccion del testigo YA se tomo respecto de la sede:
+    mediana 1.8 km   maximo 25.2 km
+
+  UMBRAL: 500 m, uno solo para todos
+  MARGEN DENTRO DEL AGUA: 1 m   MARGEN DE IDENTIDAD: 10x
+
+==============================================================================
+TESTIGO POR TESTIGO
+==============================================================================
+  mueve  Antofagasta                 499.5 m   (-23.65000,-70.40000) -> (-23.64980,-70.40489)
+  mueve  San Vicente                 497.3 m   (-36.78330,-73.18330) -> (-36.78674,-73.18687)
+  mueve  Iquique                     396.9 m   (-20.21330,-70.15030) -> (-20.21055,-70.15274)
+  mueve  Mejillones                  192.6 m   (-23.10000,-70.45000) -> (-23.09827,-70.45023)
+  mueve  Carahue                     179.2 m   (-38.75000,-73.43330) -> (-38.75095,-73.43497)
+  mueve  Puerto Montt                 87.7 m   (-41.48330,-72.95000) -> (-41.48264,-72.94943)
+  mueve  Coquimbo                     43.5 m   (-29.96680,-71.34990) -> (-29.96713,-71.35014)
+  mueve  Quintero                     43.0 m   (-32.78330,-71.53330) -> (-32.78303,-71.53363)
+  mueve  Castro                       36.7 m   (-42.48080,-73.75910) -> (-42.48112,-73.75901)
+  mueve  Chaiten                      36.2 m   (-42.91120,-72.71870) -> (-42.91153,-72.71870)
+  mueve  Coronel                      34.7 m   (-37.00920,-73.18330) -> (-37.00941,-73.18359)
+  mueve  Tongoy                       31.2 m   (-30.25580,-71.49690) -> (-30.25594,-71.49718)
+  mueve  Los Vilos                    27.6 m   (-32.13620,-71.52980) -> (-32.13599,-71.52965)
+  mueve  Algarrobo                    27.0 m   (-33.36340,-71.67260) -> (-33.36322,-71.67279)
+  mueve  Taltal                       25.2 m   (-25.40890,-70.49110) -> (-25.40870,-70.49121)
+  mueve  Melinka                      24.9 m   (-43.89870,-73.74620) -> (-43.89883,-73.74645)
+  mueve  Calbuco                      22.7 m   (-41.77630,-73.13040) -> (-41.77650,-73.13040)
+  mueve  Puerto Natales               21.0 m   (-51.73190,-72.51360) -> (-51.73209,-72.51366)
+  mueve  Punta Arenas                 20.5 m   (-53.13580,-70.86250) -> (-53.13597,-70.86238)
+  mueve  Cochamo                      17.2 m   (-41.49500,-72.31060) -> (-41.49515,-72.31065)
+  mueve  Pichilemu                    16.7 m   (-34.38290,-72.01440) -> (-34.38276,-72.01432)
+  mueve  Ancud                        13.2 m   (-41.86650,-73.83130) -> (-41.86655,-73.83144)
+  mueve  Puerto Cisnes                12.9 m   (-44.73520,-72.68260) -> (-44.73520,-72.68276)
+  mueve  Quemchi                      10.1 m   (-42.14480,-73.47250) -> (-42.14488,-73.47245)
+  mueve  Caldera                       7.0 m   (-27.06370,-70.82370) -> (-27.06367,-70.82376)
+  mueve  Corral                        5.1 m   (-39.88740,-73.42740) -> (-39.88736,-73.42738)
+  mueve  Maullin                       4.9 m   (-41.61560,-73.59660) -> (-41.61560,-73.59654)
+  mueve  Lota                          3.6 m   (-37.07350,-73.15220) -> (-37.07347,-73.15220)
+  mueve  Quellon                       3.3 m   (-43.12080,-73.62320) -> (-43.12083,-73.62321)
+  mueve  Huasco                        2.7 m   (-28.46090,-71.22410) -> (-28.46090,-71.22407)
+  DECL   Valdivia                     3380 m   excluido POR DECLARACION en el dato (owner, 2026-08-10)
+         Valdivia es un frente aparte y no entra en la correccion de testigos contra la capa de costa. Su punto no es una orilla mal puesta por unos metros: es un puerto FLUVIAL, rio arriba. El Art. 2 del D.S. 991 incluye los rios navegables en la jurisdiccion, pero una capa de costa no los trae â€” hacen falta datos de hidrografia, que son un tercer insumo y no una costa. Correr este punto al mar mas cercano lo sacaria del rio que es justamente su jurisdiccion.
+  DECL   Constitucion               1412.4 m   pasa el umbral de 500 m: no se mueve, se declara
+  DECL   Puerto Chacabuco           1006.7 m   pasa el umbral de 500 m: no se mueve, se declara
+  DECL   Valparaiso                  580.1 m   pasa el umbral de 500 m: no se mueve, se declara
+  DECL   Lebu                        564.9 m   pasa el umbral de 500 m: no se mueve, se declara
+  s/t    Arica                           â€”     no cerrable, no va a tener figura â€” el insumo no le da testigo
+  s/t    Papudo                          â€”     cerrable â€” ninguna bahia SITPORT tiene a esta Capitania como su sede mas cercana: no hay punto sobre agua con que probar su geometria
+  s/t    Lirquen                         â€”     no cerrable, no va a tener figura â€” el insumo no le da testigo
+  s/t    Talcahuano                      â€”     no cerrable, no va a tener figura â€” el insumo no le da testigo
+  s/t    Baker                           â€”     no cerrable, no va a tener figura â€” el insumo no le da testigo
+  s/t    Puerto Eden                     â€”     no cerrable, no va a tener figura â€” el insumo no le da testigo
+  s/t    Punta Delgada                   â€”     no cerrable, no va a tener figura â€” el insumo no le da testigo
+  s/t    Tierra del Fuego                â€”     no cerrable, no va a tener figura â€” el insumo no le da testigo
+  s/t    Puerto Williams                 â€”     no cerrable, no va a tener figura â€” el insumo no le da testigo
+  queda  Patache                         0 m   ya estaba sobre agua
+  queda  Tocopilla                       0 m   ya estaba sobre agua
+  queda  Chanaral                        0 m   ya estaba sobre agua
+  queda  San Antonio                     0 m   ya estaba sobre agua
+  queda  Rio Negro Hornopiren            0 m   ya estaba sobre agua
+  queda  Achao                           0 m   ya estaba sobre agua
+  queda  Chonchi                         0 m   ya estaba sobre agua
+  queda  Puerto Aguirre                  0 m   ya estaba sobre agua
+
+==============================================================================
+VERIFICACION SOBRE EL ARCHIVO YA ESCRITO
+==============================================================================
+  movidos al agua          : 30
+  declarados sin testigo   : 5
+  testigos sobre agua      : 38
+  sin testigo en el insumo : 14
+  insumo sha256[:16]       : a6b39be4e01c8716
+  todas las verificaciones pasaron
+
+  Excluidos por declaracion en el dato: 1
+    Valdivia: Valdivia es un frente aparte y no entra en la correccion de testigos contra la capa de costa. Su punto no es una orilla mal puesta por unos metros: es un puerto FLUVIAL, rio arriba. El Art. 2 del D.S. 991 incluye los rios navegables en la jurisdiccion, pero una capa de costa no los trae â€” hacen falta datos de hidrografia, que son un tercer insumo y no una costa. Correr este punto al mar mas cercano lo sacaria del rio que es justamente su jurisdiccion.
+FASE 5 â€” REGISTRO DE TOPONIMOS IGM
+  puntos notables agregados : 4
+  puntos notables corregidos: 0
+  causas actualizadas       : ['Punta Delgada', 'Tierra del Fuego']
+  pendiente agregado: limite_maritimo_internacional_oriente_magallanes
+
+  Punta Anxious            54 07 01 S /   070 56 04 W   -> -54.116944, -70.934444
+  Peninsula Brecknock      54 33 42 S /   071 51 01 W   -> -54.561667, -71.850278
+  Punta Harry              52 43 01 S /   070 34 17 W   -> -52.716944, -70.571389
+  Cabo San Vicente         52 46 49 S /   070 25 57 W   -> -52.780278, -70.4325

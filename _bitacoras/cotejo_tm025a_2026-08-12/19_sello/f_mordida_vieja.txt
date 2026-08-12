@@ -1,0 +1,83 @@
+FASE 4 — PRUEBA DE MORDIDA DEL AUDITOR
+auditor: scripts\fase4_auditoria_v2.py
+  sha256[:16] 225f47d894d6fa8b  data\decreto\jurisdicciones_v2.json
+  sha256[:16] 86f966583922c0f3  data\decreto\cotejo_lacustre_adjudicado.json
+  sha256[:16] 7d46a26b8b6cbf1f  data\decreto\adjudicacion_tramos.json
+
+linea base, insumo intacto: exit=0 (limpio)
+
+B0  caza     exit=1  fidelidad de la migracion
+      mutacion: se altero el texto del decreto de Arica en el v2
+      reporto : [B0] Arica: el texto del decreto cambio en la migracion
+
+B1  caza     exit=1  cierre determinado
+      mutacion: se quito el ancla de Valdivia, que se cierra por corte y ancla
+      reporto : [B1] Valdivia: receta de corte y no trae ancla
+
+B2  caza     exit=1  vecinas en lados opuestos
+      mutacion: se movio el ancla de Lirquen encima de la de Talcahuano, con quien comparte frontera
+      reporto : [B2] Lirquen y Talcahuano comparten una frontera de 2 puntos y cada figura contiene la sede de la otra: se solaparian
+
+B3  caza     exit=1  ninguna mas chica que su descripcion
+      mutacion: se subio medio grado el limite sur de Iquique, dejando fuera una coordenada que su texto cita
+      reporto : [B3] Iquique: el decreto cita '20 36 36 S' y la figura lo deja afuera — paralelo citado al Sur de la figura (-20.110000)
+
+B4  caza     exit=1  declaradas == no cerrables
+      mutacion: se declaro no_cerrable a Iquique, que el auditor si logra cerrar
+      reporto : [B4] Iquique: declarada no cerrable pero el auditor si la cierra (banda_paralelos). Cobertura perdida sin motivo
+
+B5  caza     exit=1  punto representativo
+      mutacion: se movio el testigo de Iquique fuera de su franja de latitud
+      reporto : [B5] Iquique: su testigo (-18.0000, -70.1527) [bahia SITPORT 72 — Bahía de Iquique, a 1.1 km de la sede] cae fuera de su figura — al Norte del limite 
+
+B6  caza     exit=1  adjudicacion lacustre
+      mutacion: se cambio el id de la primera entrada del cotejo lacustre
+      reporto : [B6] ids del cotejo lacustre sin jurisdiccion: ['id_que_no_existe']; lacustres sin entrada en el cotejo: ['lago_rapel']. Con un caso por defecto, esto
+
+B0  caza     exit=1  integridad referencial de los lados
+      mutacion: se apunto el lado_b de la frontera pol__lirquen__talcahuano a un id inexistente
+      reporto : [B0] pol__lirquen__talcahuano: lado_b='jurisdiccion_inexistente' no existe entre las jurisdicciones
+
+B7  caza     exit=1  grafo de fronteras
+      mutacion: se le agrego a Arica una referencia a una frontera inexistente
+      reporto : [B7] Arica: referencia la frontera 'frontera_que_no_existe', que no existe
+
+B8  caza     exit=1  tramos del contorno
+      mutacion: se marco litoral un tramo de Lirquen que es la frontera compartida pol__lirquen__talcahuano
+      reporto : [B8] Lirquen: el tramo (-36.5167, -73.0133) -> (-36.7361, -73.0133) esta marcado litoral y es tambien una frontera compartida con una vecina. Ensancha
+
+B9  caza     exit=1  alcance de una frontera declarada
+      mutacion: se ensancho el alcance de la frontera declarada pol__quemchi__hornopiren: lat_min de -42.5 a -44.5, dos grados que ninguna cita respalda
+      reporto : [B9] pol__quemchi__hornopiren: el alcance declara lat_min=-44.500000 y ese valor NO aparece en ninguna cita del decreto de esta frontera. Coordenadas 
+
+B9  caza     exit=1  respaldo del decreto en la frontera declarada
+      mutacion: se borro la cita del decreto del lado_a de la frontera declarada pol__quemchi__hornopiren
+      reporto : [B9] pol__quemchi__hornopiren: declarada y sin cita del decreto para quemchi. Las dos mitades tienen que estar en el texto: es lo unico que la disting
+
+==============================================================================
+VEREDICTO DE LA PRUEBA DE MORDIDA
+==============================================================================
+  familias probadas : 12
+  que cazan         : 12
+  que NO cazan      : 0
+
+  ok     B0  fidelidad de la migracion
+  ok     B1  cierre determinado
+  ok     B2  vecinas en lados opuestos
+  ok     B3  ninguna mas chica que su descripcion
+  ok     B4  declaradas == no cerrables
+  ok     B5  punto representativo
+  ok     B6  adjudicacion lacustre
+  ok     B0  integridad referencial de los lados
+  ok     B7  grafo de fronteras
+  ok     B8  tramos del contorno
+  ok     B9  alcance de una frontera declarada
+  ok     B9  respaldo del decreto en la frontera declarada
+
+  insumo restaurado, auditoria final: exit=0
+    intacto   data\decreto\jurisdicciones_v2.json
+    intacto   data\decreto\cotejo_lacustre_adjudicado.json
+    intacto   data\decreto\adjudicacion_tramos.json
+
+  PRUEBA SUPERADA: cada familia caza su defecto, y el insumo quedo
+  byte por byte como estaba.
