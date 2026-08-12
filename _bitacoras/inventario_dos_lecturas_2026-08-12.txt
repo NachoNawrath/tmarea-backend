@@ -1,0 +1,477 @@
+================================================================================
+LOS 38 PENDIENTES, EN DOS LECTURAS
+================================================================================
+
+Fecha  : 2026-08-12  ·  Shell: Git Bash (MSYS)
+Estado : MEDICION. No se resolvio ninguno y no se prioriza.
+Base   : _bitacoras/inventario_pendientes_geograficos_2026-08-12.txt (la
+         clasificacion por causa). Aca el mismo conjunto, caso por caso.
+
+Las magnitudes sobre ruta salen de la medicion de E2: OCHO RUTAS REALES del
+motor de ruteo, 2.076,06 km, con la geometria que el backend recibe (sin
+`aproximacion_final`). Donde no hay medicion, se dice.
+
+################################################################################
+LECTURA 1 — DESDE QUIEN CONSTRUYE
+################################################################################
+
+Formato de cada caso:
+  QUE NO FUNCIONA · QUE DATO CONCRETO LO COMPLETA · QUIEN LO ENTREGA ·
+  [si es del owner] LA PREGUNTA · DEPENDE DE / DESTRABA
+
+--------------------------------------------------------------------------------
+CAUSA A — ACCIDENTE NOMBRADO SIN COORDENADAS (11)
+--------------------------------------------------------------------------------
+
+A1 · El limite Sur de la XI Region  [baker, puerto_eden, bahias 127/129/154]
+  NO FUNCIONA  baker no tiene limite Sur y puerto_eden no tiene limite Norte, asi
+               que ninguna de las dos se construye; y tres bahias no se pueden
+               atribuir.
+  DATO         cuatro cosas, no una:
+               (1) la cumbre del cerro Chaltel o Fitz Roy, en lat/lon;
+               (2) el extremo ORIENTAL del seno Iceberg o Tempano, en lat/lon;
+               (3) el eje del seno Iceberg o Tempano desde ese extremo hasta el
+                   canal Messier, como polilinea;
+               (4) el eje de los canales Messier, Adalberto, Fallos y del
+                   Castillo desde el seno hasta el mar, como polilinea.
+  QUIEN        (1) y (2): IGM, capa de toponimos, la misma que ya se uso para
+               Punta Harry y Cabo San Vicente — pero hay que comprobar que cubra
+               la XI Region, porque SECCION_L resulto ser de Magallanes.
+               (3) y (4): SHOA, cartas nauticas de los canales patagonicos.
+               El limite REGIONAL, alternativa completa: DPA_2023, que ya esta
+               en geodata/ sin cargar.
+  DESTRABA     baker, puerto_eden, y las bahias 127, 129 y 154 del join.
+               NO destraba las otras 3 sin resolver del join.
+  OJO          la politica del join dice que las 6 se resuelven TODAS JUNTAS.
+               Cerrar estas 3 no las libera si esa politica no cambia — y
+               cambiarla es del owner.
+
+A2 · El limite Norte de arica
+  NO FUNCIONA  arica no se construye.
+  DATO         las coordenadas del punto en que el limite Chile-Peru llega al
+               mar (Hito 1 / punto Concordia), y el rumbo de la linea al mar.
+  QUIEN        DIFROL o IGM, cartografia del tratado. NO DIRECTEMAR.
+  DESTRABA     solo arica.
+
+A3 · hanga_roa   ·   A4 · juan_fernandez
+  NO FUNCIONA  el ambito insular_remota entero: 2 de 2 sin geometria.
+  DATO         los poligonos de Isla de Pascua, Sala y Gomez, San Felix, San
+               Ambrosio, Robinson Crusoe, Alejandro Selkirk y Santa Clara.
+  QUIEN        IGM, o una capa de islas oceanicas de Natural Earth / OSM.
+               MEDIDO Y DESCARTADO: la capa IGM SECCION_L no sirve — 6.617
+               toponimos, todos australes, 0 hits de Juan Fernandez, San Felix,
+               San Ambrosio y Crusoe.
+  DESTRABA     las dos juntas, con la misma capa. Y el ambito insular_remota.
+
+A5 · punta_delgada   ·   A6 · tierra_del_fuego (parte 1)
+  NO FUNCIONA  ninguna de las dos cierra por el Oriente.
+  DATO         UNA coordenada: Cabo del Espiritu Santo. El extremo chileno
+               (Punta Dungeness, 52 23 53 S / 068 26 36 W) ya esta verificado
+               contra el IGM y guardado en `pendientes`.
+  QUIEN        IGN Argentina, o la cartografia del Tratado de Limites de 1881.
+               La capa del IGM chileno no lo trae: medido, cero resultados.
+  DESTRABA     punta_delgada por completo. tierra_del_fuego solo a medias: le
+               queda C3 (el ancla).
+  DEPENDE      el owner ya decidio (2026-08-10) que ese limite ES la linea Punta
+               Dungeness - Cabo del Espiritu Santo. La decision esta tomada; lo
+               que falta es el dato.
+
+A7 · puerto_williams (parte 1)
+  NO FUNCIONA  no cierra por el Norte.
+  DATO         las coordenadas del hito N 26 del Canal Beagle, y la traza de "la
+               delimitacion existente del Canal Beagle" como polilinea.
+  QUIEN        cartografia del Tratado de Paz y Amistad de 1984, anexo
+               cartografico.
+  DESTRABA     puerto_williams a medias: le queda C4 (el ancla).
+
+A8 · lirquen   ·   A9 · talcahuano
+  NO FUNCIONA  ninguna de las dos cierra: el decreto describe el contorno de la
+               Bahia de Concepcion en prosa y da solo los dos extremos.
+  DATO         la linea de costa de la Bahia de Concepcion entre 36 31 00 S /
+               073 00 48 W y la ribera Weste de la desembocadura del rio
+               Andalien (36 44 10 S), como polilinea.
+  QUIEN        SHOA, carta nautica de Bahia de Concepcion. Alternativa medida y
+               disponible: la costa OSM que ya esta cargada (costa_osm) — habria
+               que comprobar si su resolucion alcanza ahi.
+  DESTRABA     las dos juntas, con el mismo dato.
+  OJO          talcahuano arrastra ademas que el decreto le menciona 36 44 10 S
+               AL SUR de su propio limite sur declarado (36 42 25 S). Eso no lo
+               cierra una carta: es una inconsistencia del parrafo. Si aparece al
+               construir, sube al owner.
+
+A10 · Punta de Lobos (talcahuano)   ·   A11 · Punta Juan Latorre (valdivia, corral)
+  NO FUNCIONA  el decreto los nombra y el recorrido transcrito no los incluye.
+  DATO         ninguno: las coordenadas ya estan en el insumo.
+  QUIEN        nadie externo. Ver N1: lo que falta es una decision.
+
+--------------------------------------------------------------------------------
+CAUSA B — AMBIGUEDAD DEL DECRETO (3). Las unicas que justifican consulta formal.
+--------------------------------------------------------------------------------
+
+B1 · bahia 137, Bahia Chilota (Porvenir)
+  NO FUNCIONA  dos parrafos cubren la misma zona y la bahia esta a 230 m de la
+               linea, asi que no se puede atribuir sin elegir.
+  DATO         cual de las dos Capitanias atiende Bahia Chilota, y como se
+               reparten punta_delgada y tierra_del_fuego la zona al Oriente de
+               Cabo San Vicente.
+  QUIEN        DIRECTEMAR. Es la unica autoridad que puede decirlo.
+  PREGUNTA     ya redactada y versionada en join_bahia_jurisdiccion.json.
+
+B2 · bahia 239   ·   B3 · bahia 241
+  NO FUNCIONA  caen entre los extremos de la frontera Cisnes/Aguirre y el decreto
+               no escribe como se prolonga el trazo hacia el Weste.
+  DATO         donde esta el limite entre Puerto Cisnes y Puerto Aguirre al Weste
+               de la linea Islote Cayo Blanco - Punta San Andres.
+  QUIEN        el archivo dice "informante con experiencia operativa". OBJECION
+               MIA: eso da practica, no autoridad, y la misma costura decide el
+               cierre Weste de Puerto Aguirre, que es geometria. Si se hace la
+               consulta de B1, conviene incluir esta.
+  DESTRABA     las dos juntas + una de las causas del C3 abierto de Puerto
+               Aguirre.
+
+--------------------------------------------------------------------------------
+CAUSA C — EL DECRETO LO DICE Y NO SE CONSTRUYO (9). Trabajo interno.
+--------------------------------------------------------------------------------
+
+C1 · Chaiten x Chonchi — P2 autorizada el 2026-08-10 y nunca aplicada
+  NO FUNCIONA  35.611 km2 de traslape (medida de fase5I) entre dos Capitanias que
+               el decreto SI separa.
+  DATO         ninguno externo. La frontera esta lista: meridiano 073 12 00 W
+               entre 42 39 40 S y 43 00 30 S.
+  QUIEN        nosotros. Es aplicar una decision ya tomada.
+
+C2 · Cochamo — cierre por cuerpo de agua marino nombrado (P3)
+  NO FUNCIONA  el decreto la delimita POR NOMBRE ("las aguas y el litoral del
+               Estero Reloncavi") y no hay mecanismo que resuelva un cuerpo de
+               agua marino nombrado.
+  DATO         ninguno externo si se usa la costa ya cargada. Hace falta el
+               mecanismo, hermano del `union_cuerpos` que ya existe para lagos.
+  QUIEN        nosotros.
+  DESTRABA     dos pares de C3 (Cochamo x Maullin, Cochamo x Hornopiren).
+
+C3 · tierra_del_fuego (parte 2) — el ancla
+  NO FUNCIONA  el decreto dice "el area oriental" y la construccion no decide
+               lados por letra cardinal.
+  DATO         un punto dentro de uno de los cuerpos que el propio parrafo
+               enumera: Bahia Gente Grande, Bahia Inutil, Canal Whiteside, Canal
+               Gabriel o Seno Almirantazgo.
+  QUIEN        nosotros, con cualquier capa de costa. El dato para elegirlo ya
+               esta en el decreto.
+  DEPENDE      no cierra sola: tierra_del_fuego tambien necesita A6.
+
+C4 · puerto_williams (parte 2) — el ancla
+  IGUAL QUE C3. Depende de A7 para cerrar del todo.
+
+C5 · Las 11 Capitanias maritimas con cuerpos de agua nombrados
+  NO FUNCIONA  `fase2_cotejo_lacustre.py:140` solo procesa las 6 Capitanias de
+               ambito lacustre. Los cuerpos que el decreto nombra dentro de
+               Capitanias maritimas quedan fuera POR CONSTRUCCION.
+  DATO         ninguno externo para los lagos: el shapefile los tiene. Para los
+               rios, ver D1.
+  QUIEN        nosotros, pero primero el owner tiene que decidir el alcance.
+  PREGUNTA     "El ambito lacustre que E3 publica, ¿es las 6 Capitanias de ambito
+               lacustre, o es toda el agua interior que el decreto adjudica, este
+               en la Capitania que este?" (D11)
+  DESTRABA     11 Capitanias. Depende de la respuesta a D11.
+
+C6 · cotejo_lacustre_adjudicado.json sin regenerar
+  NO FUNCIONA  E3 construye desde un archivo derivado del v1 anterior a la
+               pasada. No vio el texto nuevo.
+  DATO         ninguno. Es correr dos scripts que ya existen.
+  QUIEN        nosotros. Precondicion de E3.
+
+C7 · El andamio `jurisdicciones_decreto` desactualizado
+  NO FUNCIONA  11 jurisdicciones difieren, todas del corredor de Chiloe y el sur
+               de Valdivia, que es donde corren las rutas reales.
+  DATO         ninguno. Es regenerar.
+  QUIEN        nosotros. Deuda declarada, fuera de E1 por decision del owner.
+  OJO          esa marca se midio contra el v2 ANTERIOR a la pasada.
+
+C8 · jurisdicciones_ds991 no existe / ningun ambito publicado
+  NO FUNCIONA  es la consecuencia de todo lo demas, no una causa propia.
+
+C9 · Bahia Paraiso — la figura
+  NO FUNCIONA  se construye como anillo cerrado y el segmento que la cierra por
+               el Sur no esta en el decreto (INV-0.2).
+  DATO         que la capa de tierra declarada cubra la Antartida — hay que
+               COMPROBARLO, no esta comprobado.
+  QUIEN        nosotros, si la capa cubre.
+  DEPENDE      BLOQUEADO POR E1: sin la adjudicacion de los cuatro tramos, B8
+               deja la auditoria en rojo y no se construye nada.
+
+--------------------------------------------------------------------------------
+CAUSA D — FALTA UN DATO DE OTRA FUENTE (9)
+--------------------------------------------------------------------------------
+
+D1 · Los rios Tolten, Fuy, San Pedro y Bueno
+  NO FUNCIONA  cuatro cuerpos que el decreto adjudica y no tienen geometria.
+  DATO         una capa de hidrografia fluvial de Chile: los cauces como
+               polilineas o poligonos, con nombre. El shapefile
+               Inventario_Lagos.shp no contiene rios — medido.
+  QUIEN        DGA (Direccion General de Aguas) o BCN/IDE Chile.
+  DESTRABA     los cuatro juntos, D2, y el frente "Valdivia fluvial".
+
+D2 · valdivia sin testigo
+  NO FUNCIONA  su punto cae 3.380 m tierra adentro y el owner lo declaro fuera de
+               la correccion al agua porque es un puerto fluvial.
+  DATO         el mismo de D1.
+  QUIEN        el mismo de D1.
+
+D3 · papudo sin testigo
+  NO FUNCIONA  ninguna bahia SITPORT tiene a papudo como sede mas cercana, asi
+               que no hay punto sobre agua con que probar su figura.
+  DATO         una coordenada sobre agua dentro de la jurisdiccion de Papudo.
+  QUIEN        SITPORT no la da. Cualquier carta, o una eleccion nuestra
+               declarada como convencion.
+  PREGUNTA     "¿Se acepta elegir un testigo sobre agua para las Capitanias que
+               SITPORT no cubre, declarandolo como convencion nuestra, o esas
+               figuras se construyen sin verificar?"
+
+D4..D7 · valparaiso (580 m) · constitucion (1.412 m) · lebu (565 m) ·
+         puerto_chacabuco (1.007 m) — sin testigo
+  NO FUNCIONA  su punto representativo cae en tierra por encima del umbral de
+               500 m, asi que se construyen y NO SE PUEDEN VERIFICAR.
+  DATO         una coordenada sobre agua por Capitania.
+  QUIEN        nadie externo. El umbral es convencion del owner y el owner
+               decidio el 2026-08-10 que no se mueve.
+  PREGUNTA     la misma de D3. Las cinco se destraban juntas con una respuesta.
+
+D8 · id 108 de SITPORT
+  NO FUNCIONA  publica pronostico y /weather-ruta lo descarta en cada llamada.
+  DATO         el nombre o la posicion de la bahia 108. Determinado: pertenece a
+               la Capitania de Carahue (Totalgeneral, reparticion 190, codigo
+               2169) y es una CUARTA bahia de esa reparticion.
+  QUIEN        DIRECTEMAR / SITPORT. La pregunta ya no es "¿que es la 108?" sino
+               "¿cual de las bahias de la Capitania de Carahue es el id 108?", y
+               el parrafo de Carahue —que entro en P2— nombra los candidatos:
+               rios Imperial, Queule, Moncul, Tolten; lagos Budi y Queule; laguna
+               Trovolhue.
+
+D9 · bahia 257, Rio Cochrane
+  NO FUNCIONA  Capitania adjudicada, posicion no. Ningun endpoint de SITPORT la
+               entrega, y sin coordenada no entra a las otras cuatro fuentes.
+  DATO         lat/lon de la bahia 257.
+  QUIEN        DIRECTEMAR / SITPORT.
+
+--------------------------------------------------------------------------------
+CAUSA E — NI EL DECRETO NI UNA FUENTE EXTERNA. LO DECIDE EL OWNER (6)
+--------------------------------------------------------------------------------
+
+E1 · Bahia Paraiso — el tipo de sus cuatro tramos
+  NO FUNCIONA  B8 exige adjudicacion del owner para los cuatro y la auditoria
+               queda en rojo si el texto entra sin ella.
+  DATO         ninguno. No hay a quien preguntar y no hay carta que lo diga: el
+               decreto pone la palabra que califica el tramo en posiciones
+               incompatibles entre parrafos, y ninguna regla de posicion acierta.
+  PREGUNTA     "De los cuatro tramos del limite Norte de Bahia Paraiso, ¿cual es
+               litoral y cual es frontera?" — los cuatro van entre
+               070 00 00 S/053 00 00 W, 062 50 00 S/059 16 00 W,
+               065 00 00 S/075 15 00 W y 069 15 00 S/090 00 00 W.
+  DESTRABA     C9, y con el la ultima Capitania a la que le falta texto.
+
+E2..E6 · Los seis pares de separacion lateral de C3
+  NO FUNCIONA  la capa maritima no pasa C3 y por eso jurisdicciones_ds991 no
+               existe. Todo el ambito maritimo depende de esto.
+  DATO         ninguno. Esta escrito en el propio insumo, convencion n.6: "la
+               separacion lateral entre Capitanias en la franja oceanica... sigue
+               siendo CONVENCION NUESTRA". El decreto no la da.
+  PREGUNTAS    tres, y se pueden contestar por separado:
+               (a) "Cuando una Capitania no declara limite por un lado, ¿su
+                   figura se extiende hasta el borde de la caja de trabajo, o se
+                   corta en el trazo que el decreto si describe?" (P4')
+               (b) "El limite exterior de 200 mn, ¿se mide desde tierra chilena
+                   (DPA_2023) o desde la capa actual, que hoy lo mide desde
+                   tierra argentina?" (P1 — el 53% del traslape sale de ahi)
+               (c) "Un paralelo que dos Capitanias citan como limite comun,
+                   ¿las separa en toda su extension o solo en el trazo que
+                   dibujan?" (la convencion del paralelo compartido)
+  DEPENDE      C1 y C2 quitan tres de los seis pares por otro camino. Las tres
+               preguntas cubren los que queden.
+  OJO          las magnitudes citadas son de fase5I (2026-08-10) y NO SE CORRIO
+               EL BUILD desde entonces. Antes de decidir (a), (b) o (c) conviene
+               correrlo: puede que algun par ya no exista.
+
+--------------------------------------------------------------------------------
+N1..N3 — LOS QUE NO CAEN LIMPIO
+--------------------------------------------------------------------------------
+
+N1 · Los 7 puntos_no_incorporados
+  PREGUNTA     "Para cada punto que el decreto nombra y el recorrido transcrito
+               no incluye, ¿por donde pasa el trazo que lo incorpora?"
+               Son: Andalien (lirquen y talcahuano), Punta de Lobos
+               (talcahuano), Punta Juan Latorre (valdivia y corral), vertice
+               42S/73W (quemchi), Punta Centinela (chaiten).
+  OJO          quemchi y chaiten se destraban con la respuesta de E2(a): si el
+               contorno abierto no se extiende, esos vertices dejan de ser
+               ambiguos. Los otros cinco no.
+
+N2 · Las cuatro diferencias declaradas que no mueven geometria
+  Nada que hacer. Estan declaradas con su `reabre_si`.
+
+N3 · Galletue / Gualletue
+  PREGUNTA     "¿Se acepta la grafia 'Gualletue' del parrafo de la Gobernacion de
+               Valdivia para adjudicar la laguna que la Capitania escribe
+               'Galletue'?" (D12)
+  DATO         ya medido: LAGO GUALLETUE, fid 965, unico en 2.067 registros,
+               8,6 km de Icalma y 24,7 de Conguillio. Ojo con el duplicado sin
+               nombre, fid 960.
+
+################################################################################
+LECTURA 2 — DESDE EL PATRON
+################################################################################
+
+Base: ocho rutas reales, 2.076,06 km. Donde no hay ruta medida, se dice.
+
+--------------------------------------------------------------------------------
+GRUPO 1 — LE PASA ALGO HOY, EN UNA RUTA REAL, Y ESTA MEDIDO (4 casos)
+--------------------------------------------------------------------------------
+
+P-1 · Las 16 restricciones de arica y puerto_williams   [A1 no; A2 y A7 si]
+  HOY VE       las 16. Se le listan porque el motor filtra por bahia.
+  DEBERIA VER  las mismas 16.
+  QUE SALE MAL cuando el motor pase a filtrar por Capitania (E6), esas 16
+               DEJAN DE LISTARSELE, porque arica y puerto_williams no tienen
+               geometria. Va a recibir el aviso de INV-3.6 —"esta Capitania no
+               esta cargada", con escalamiento a U— pero ese aviso NO DICE QUE
+               RESTRICCIONES HAY. Medido en E2, y el owner ya puso como condicion
+               que el numero lo declare aparte.
+  CUANTO       16 de 26 restricciones mostradas hoy sobre las ocho rutas.
+
+P-2 · La bahia 239 (Canal Ferronave y Devia)   [B2]
+  HOY VE       su restriccion.
+  QUE SALE MAL con la unidad Capitania desaparece, y a esta NO la cubre ningun
+               aviso: no esta en las diez declaradas sin geometria, esta en las
+               seis sin adjudicar. Es la unica de las 17 que desaparecen sin red.
+  CUANTO       1 restriccion, corredor austral.
+
+P-3 · El 31,2% de kilometros sin jurisdiccion   [C7, y todo el ambito maritimo]
+  HOY VE       nada para esos km: ninguna Capitania, ninguna restriccion.
+  DEBERIA VER  la Capitania que corresponda y sus restricciones.
+  QUE SALE MAL 648 km de 2.076 no resuelven a ninguna jurisdiccion. Una parte es
+               el recorte contra ne_land: 200,40 km de agua por donde la ruta
+               efectivamente pasa quedan fuera de su jurisdiccion. El patron no
+               ve que le falta: no hay aviso para "aca no se sabe".
+  CUANTO       31,2% del trayecto medido.
+
+P-4 · La ruta a Chacabuco que no matchea la bahia de Chacabuco   [C7]
+  HOY VE       16 bahias en su bloque de transito, y la bahia 126 (Bahia
+               Chacabuco), donde la ruta TERMINA, no esta entre ellas.
+  QUE SALE MAL una restriccion publicada bajo Bahia Chacabuco no aparece en el
+               bloque de transito de una ruta que termina ahi. Verificado con
+               caso concreto. Igual con la 254 (Canal Chaffers Sur, 2,240 km).
+  CUANTO       2 tramos, corredor austral, ruta real del motor.
+
+--------------------------------------------------------------------------------
+GRUPO 2 — LE PASARIA ALGO SI NAVEGARA AHI, Y NO HAY RUTA MEDIDA (9 casos)
+--------------------------------------------------------------------------------
+
+P-5 · Las diez Capitanias sin geometria   [A1..A9, C3, C4]
+  HOY VE       un aviso propio con la Capitania nombrada y escalamiento a U, tope
+               duro, nunca U+V. Verificado disparando contra SITPORT real por la
+               costa de Carahue.
+  DEBERIA VER  la Capitania resuelta y sus restricciones listadas.
+  QUE SALE MAL nada silencioso: el aviso existe y funciona. Lo que pierde es
+               precision — le sube la bandera a U por una carencia nuestra, no
+               por el estado del mar. Un patron que ve U de mas deja de creerle a
+               la U.
+  CINCO DE LAS DIEZ, ADEMAS, SIN TELEFONO: juan_fernandez, lirquen, puerto_eden,
+  punta_delgada y tierra_del_fuego reciben derivacion generica, no el numero de
+  su Capitania.
+
+P-6 · Los cuerpos de agua interior sin construir   [C5, D1, D2]
+  HOY VE       nada: los lagos son invisibles. Una ruta en el Lago Llanquihue no
+               devuelve Capitania ni restricciones.
+  DEBERIA VER  su Capitania lacustre y sus restricciones.
+  QUE SALE MAL el ambito lacustre esta declarado NO PUBLICADO, asi que produce el
+               mismo aviso que una jurisdiccion sin geometria. No hay silencio,
+               hay carencia declarada. Medido en E0.2: 21,82 km lacustres sobre
+               las rutas del arnes.
+
+P-7 · Las cuatro Capitanias que se construyen y no se pueden verificar   [D4..D7]
+  valparaiso, constitucion, lebu, puerto_chacabuco.
+  HOY VE       lo que la capa vieja le da.
+  QUE SALE MAL cuando la capa nueva exista, esas cuatro figuras van a estar
+               construidas SIN NINGUNA PRUEBA de que contienen lo que deben. Si
+               una sale mal, el patron ve la Capitania equivocada y nadie se
+               entera. Es el unico caso de la lista donde el defecto seria
+               INVISIBLE tambien para nosotros.
+
+P-8 · El id 108   [D8]
+  HOY VE       un pronostico menos. /weather-ruta lo descarta en cada llamada.
+  QUE SALE MAL si ese pronostico traia >=30 kt, el patron se pierde un U+V.
+               `peorTramo` es un maximo: descartar solo puede BAJAR el veredicto.
+  DONDE        Capitania de Carahue, costa de la Araucania.
+
+P-9 · La bahia 257, Rio Cochrane   [D9]
+  HOY VE       nada si publica restriccion: el motor la descarta en silencio, no
+               tiene celda. A3 la cubre parcialmente mientras tanto.
+
+--------------------------------------------------------------------------------
+GRUPO 3 — NO LE PASA NADA A NINGUN PATRON, HOY (7 casos)
+--------------------------------------------------------------------------------
+
+P-10 · Bahia Paraiso: la figura y sus cuatro tramos   [C9, E1]
+  La figura mas al Norte del ambito antartico llega a -57,700 y una ruta chilena
+  no baja de -56. MEDIDO: no puede alcanzar una ruta de hoy. Ademas el ambito
+  antartico esta declarado no publicado y jurisdicciones_ds991 no existe.
+  INDOLORO HOY, y seguira siendolo mientras no haya rutas antarticas.
+
+P-11 · Las cuatro diferencias declaradas del texto oficial   [N2]
+  meulin NE/NW, la longitud con hemisferio S, los hemisferios omitidos, los dos
+  nombres de O'Higgins. Ninguna mueve una coordenada. INDOLORO.
+
+P-12 · Las 16 Gobernaciones sin limites derivados   [H4]
+  No se construye geometria de Gobernacion. El patron nunca ve una Gobernacion
+  como unidad de jurisdiccion. INDOLORO mientras eso no cambie.
+
+P-13 · Los 7 puntos_no_incorporados   [N1, A10, A11]
+  Afectan la forma exacta del borde de seis Capitanias. Sobre las ocho rutas
+  medidas NO SE MIDIO cuanto mueven: no lo se, y no lo afirmo.
+
+--------------------------------------------------------------------------------
+LO QUE NO SE MIDIO EN ESTA LECTURA
+--------------------------------------------------------------------------------
+  - Las ocho rutas son del corredor austral y de Chiloe. NO hay ruta medida por
+    Arica, Antofagasta, Coquimbo, Valparaiso, San Antonio ni Talcahuano. Todo lo
+    que se dice del norte es por construccion, no por medicion.
+  - No se midio cuanto mueven los 7 puntos_no_incorporados.
+  - No se midio el efecto de A8/A9 (Bahia de Concepcion) sobre ruta, porque no
+    hay ruta medida ahi.
+
+################################################################################
+DONDE LAS DOS LECTURAS NO COINCIDEN
+################################################################################
+
+BARATO DE ARREGLAR Y DUELE MUCHO
+  - C7, regenerar el andamio. No necesita ningun dato externo: es correr lo que
+    ya existe. Y es el que sostiene el 31,2% de km sin jurisdiccion (P-3) y el
+    caso Chacabuco (P-4), que son los dos danos medidos mas grandes. En la
+    lectura por causa es "trabajo interno", que suena a rutina.
+  - C1, aplicar P2. Decidida hace dos dias, cero datos externos, y quita el
+    segundo par mas grande de C3.
+  - C6, regenerar el cotejo lacustre. Dos scripts. Es precondicion de la unica
+    etapa que entrega valor visible temprano (S4, los lagos).
+  - B2/B3, las bahias 239 y 241. Una consulta. La 239 es la UNICA restriccion que
+    desaparece sin ningun aviso que la cubra (P-2).
+
+CARO DE ARREGLAR Y NO DUELE NADA HOY
+  - E1 + C9, Bahia Paraiso. Es lo mas visible de la lista —la unica Capitania con
+    texto pendiente y una figura que viola INV-0.2— y no puede alcanzar una ruta:
+    esta a 1,7 grados de latitud de la ruta chilena mas austral.
+  - A3/A4, hanga_roa y juan_fernandez. Necesitan una capa de islas que ya se
+    busco y no se encontro, y no hay ninguna ruta medida por ahi.
+  - A2, arica. Necesita cartografia de tratado. Sus restricciones hoy SI se ven
+    (P-1); lo que se rompe es despues de E6, y el aviso las cubre a medias.
+
+DONDE LA CAUSA ENGAÑA EN LA OTRA DIRECCION
+  - D4..D7 (P-7) estan clasificadas como "falta un dato" y suenan menores. Son el
+    unico caso donde un defecto futuro seria INVISIBLE PARA NOSOTROS: cuatro
+    figuras construidas sin prueba. No duele hoy porque la capa no existe.
+  - A1 esta en causa A —"conseguir cartografia"— y es el que mas casos destraba
+    de toda la lista (2 Capitanias + 3 bahias). Pero la politica de "las 6
+    juntas" lo neutraliza: cerrarlo no libera nada si esa politica no cambia, y
+    cambiarla no cuesta ningun dato.
+
+================================================================================
+FIN — 38 casos en dos lecturas. No se resolvio ninguno y no se priorizo.
+================================================================================

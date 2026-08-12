@@ -104,6 +104,15 @@ así que esa cita no es reproducible desde el repositorio; **(c)** `sectores` es
 *¿Cómo se corrige?* (a) es trabajo de fuente externa, declarado; (b) es decisión D6; (c) es
 deuda de §8.
 
+> **Corrección medida el 2026-08-12 (§3.3: el párrafo de arriba no se borra).** Las tres cosas
+> que faltaban eran más. **(b)** el Art. 2 **ya está**, extraído del documento oficial
+> versionado: D6 cerrada. **(d), no listada entonces:** diez Capitanías no conservaban el texto
+> literal de su párrafo, lo que es un incumplimiento de INV-3.7 y no una carencia del dato;
+> nueve quedaron completas y la décima, `bahia_paraiso`, declarada y diferida. **(e), tampoco
+> listada:** los dieciséis párrafos de Gobernación no estaban en el insumo ni en el v1 — entran
+> como lista hermana, con `participa_matching: false` y `receta: null`, porque **no se construye
+> geometría de Gobernación**. **(a) y (c) siguen en pie** sin cambios.
+
 Acompañan: `adjudicacion_tramos.json` (16 KB), `cotejo_lacustre_adjudicado.json` (20 KB,
 **el cotejo lacustre ya está adjudicado**), `zonas_aviso.json` (9 KB, R1 pieza 1),
 `capa_consultada.json` (2 KB, la costura que hace que cambiar de capa sea cambiar un dato),
@@ -352,6 +361,76 @@ lacustre y lo antártico toman su geometría base directamente (línea 756), la 
 > (línea 852)— en vez de construir dos tablas. **No lo doy por cerrado sin correr el build:**
 > que la geometría se construya no prueba que pase sus controles.
 
+#### Corrección al alcance de E3 — 2026-08-12
+
+**E3 ya no arranca sobre el insumo que este plan inventarió.** La pasada de alineación
+contra el TM-025 A (commits `8e22ef5`…`cb140d5`) cambió el insumo del que E3 depende, y de
+tres formas distintas.
+
+**(1) Cuatro de las nueve Capitanías completadas tocan agua interior.** `carahue` recuperó
+sus ríos Imperial, Queule, Moncul y Toltén y sus lagos Budi y Queule más la laguna
+Trovolhue; `valdivia`, sus ríos Calle Calle, Lingue, Cruces, Angachilla, Tornagaleones y
+Valdivia; `corral`, el río Colún; `talcahuano`, las lagunas Chica y Grande de San Pedro.
+Ninguno de esos cuerpos existía en el insumo cuando se escribió este plan.
+
+**(2) `lago_ranco` tiene geometría que antes no había.** El decreto entrega coordenadas para
+los tres sectores del río Bueno —Los Patos `40 17 03 S / 073 31 43 W`, La Goleta
+`40 17 13 S / 073 36 52 W`, El Manzanito `40 15 06 S / 073 41 01 W`— y el insumo las había
+omitido. Hoy el río Bueno está `rechazado` en el cotejo lacustre por falta de geometría, y
+esto es geometría. `lago_villarrica` recuperó además el alcance del río Toltén, *"desde su
+origen hasta la jurisdicción de la comuna de Pitrufquén"*, que es la costura con Carahue:
+sin él las dos Capitanías reclaman el río entero.
+
+**(3) `cotejo_lacustre_adjudicado.json` NO se regeneró y no lo sabe.** Su sha256 sigue siendo
+`86f96658…`, el mismo de antes de la pasada: se derivó del v1 tal como estaba y no vio nada
+de lo anterior. **E3 construye desde ese archivo.** Regenerarlo es precondición de E3, no una
+tarea de E3.
+
+##### Lo que la pasada hizo visible y este plan no tenía medido
+
+**El cotejo lacustre sólo mira las Capitanías de ámbito `lacustre` — 6 de 64**
+(`fase2_cotejo_lacustre.py:140`). Los cuerpos de agua que el decreto nombra dentro de
+Capitanías **marítimas** quedan fuera de su alcance por construcción. Medido sobre el insumo
+de hoy, son **once**:
+
+| Capitanía | cuerpos que el decreto le nombra | |
+|---|---|---|
+| `constitucion` | lagos Teno, Vichuquén, Colbún, Maule | ya estaba |
+| `lebu` | lagos Lanalhue y Lleu Lleu | ya estaba |
+| `puerto_montt` | lago Chapo | ya estaba |
+| `maullin` | río Maicolpué | ya estaba |
+| `cochamo` | lagos Tagua-Tagua e Inferior | ya estaba |
+| `chaiten` | lagos Yelcho y Palena | ya estaba |
+| `puerto_chacabuco` | canales interiores hasta la Laguna San Rafael | ya estaba |
+| `talcahuano` | lagunas Chica y Grande de San Pedro | **nuevo** |
+| `carahue` | lagos Budi y Queule, laguna Trovolhue, cuatro ríos | **nuevo** |
+| `valdivia` | seis ríos y sus afluentes navegables | **nuevo** |
+| `corral` | río Colún | **nuevo** |
+
+**Siete de esas once son anteriores a la pasada.** El hueco no lo creó la alineación: lo hizo
+visible y lo agrandó en cuatro. Ninguna de las once tiene `cuerpos_lacustres` en el insumo,
+así que ninguno de esos cuerpos tiene geometría hoy.
+
+Eso abre una pregunta que **es del owner y este plan no la tenía planteada**: si el ámbito
+lacustre que E3 publica es *"las 6 Capitanías lacustres"* o *"el agua interior que el decreto
+adjudica, esté en la Capitanía que esté"*. Con la primera respuesta, once Capitanías siguen
+sin sus cuerpos y hay que declararlo. Con la segunda, E3 crece y `fase2_cotejo_lacustre.py`
+cambia de alcance. Queda registrada como **D11**.
+
+##### Un cierre servido, medido y sin aplicar
+
+La laguna que `lago_villarrica` llama **Galletué** está hoy `ausente` en el cotejo: sin
+coincidencia en el catastro. El párrafo de la **Gobernación** de Valdivia la escribe
+**Gualletué**, y esa grafía calza con un registro único en los 2.067 del catastro —
+`LAGO GUALLETUE`, fid 965, Región IX, comuna Lonquimay, 13,075 km², *"Laguna Principal"*.
+Cae a 8,6 km de Icalma y 24,7 de Conguillío, los otros dos cuerpos de la misma frase del
+decreto, contra 51,9 km del siguiente. Es el instrumento del caso Ancud con el vecino de
+arriba.
+
+**Ojo al incorporarla:** el registro `fid 960` no tiene nombre y su geometría es idéntica a
+la del 965. Hay que quedarse con el 965. Medición completa en
+`_bitacoras/cotejo_tm025a_2026-08-12/16_galletue/`. Queda registrada como **D12**.
+
 ### E4 · Ámbito marítimo — cerrar C3
 **Depende de: nada nuevo. Frente lento, en paralelo.**
 
@@ -430,6 +509,8 @@ eso D3 (partir el gate) es lo que las vuelve verdaderamente paralelas.
 | D7 | **Ámbito A — seguridad** (`consultaRestricciones` y `Totalpronostico`) | **DECIDIDA 2026-08-11: A3** — aviso + escalamiento a **U**, tope duro, nunca U+V. **Implementada.** | El 0 de 5 la sostiene. Rige mientras no esté la consulta formal a DIRECTEMAR, que el owner gestiona por fuera: A3 es lo provisorio hecho bien, no la solución de fondo. `e01e_a3_2026-08-11.txt` |
 | D8 | **Ámbito B — alineación** (`consultaBahias`): ¿el patrón se entera? | **DECIDIDA 2026-08-11: B1** — no se le avisa | condición cumplida: la divergencia deja rastro del lado del equipo sin correr nada a mano — aviso en el arranque + `data/catalogo/estado_drift.json` versionado. `e01d §4` |
 | D9 | **El ámbito antártico no existe en el contrato** (INV-3.5 nombra tres, el insumo tiene cuatro) | **DECIDIDA 2026-08-11: P1** — se suma a INV-3.5 | texto propuesto en `e02_texto_propuesto_inv35_2026-08-11.md`; **lo escribe el owner** (§6). Hasta entonces la entrada del registro lleva `categoria_contractual: pendiente`. Descartadas P2 (fuera de alcance: la ruta necesita respuesta igual) y P3 (plegarlas a insular remoto: mete imprecisión en el dato fuente, contra INV-3.7) |
+| D11 | **Alcance del ámbito lacustre**: ¿E3 publica las 6 Capitanías de ámbito lacustre, o todo el agua interior que el decreto adjudica, incluida la de las 11 Capitanías marítimas que nombran cuerpos? | **abierta** | nada: está medido (E3, corrección 2026-08-12). Es política de producto sobre qué cubre "el ámbito lacustre" |
+| D12 | **Galletué / Gualletué**: ¿se acepta la grafía del párrafo de la Gobernación para adjudicar la laguna que hoy está `ausente`? | **abierta** | nada: el candidato está medido y es único. Es adjudicación de qué dice el decreto |
 | D10 | El ámbito **marítimo** entra al registro como no publicado, y la geografía de reclamo es `jurisdicciones_decreto` | **RESUELTA POR EL AGENTE 2026-08-11 (§0.4), aceptada por el owner** | criterio declarado: "publicado" = la capa del D.S. 991 de ese ámbito pasó sus controles y está en la base, que es lo que D3 ya fijó. Hoy C3 falla y `jurisdicciones_ds991` no existe. Enrutada de este lado porque el efecto sobre lo que el patrón ve está **medido en 0 cambios de bandera** sobre 10 rutas. `e02_propuesta §R1/§R2` |
 
 ### D7/D8 — por qué son dos y no una. Medido el 2026-08-11.
@@ -534,7 +615,7 @@ Se actualiza al cerrar cada etapa. "Cerrada" exige evidencia citada.
 | — E2 · Volumen del cambio de unidad | **cerrada. EL NÚMERO DE E2 ES +11**, con el método decidido por el owner el 2026-08-12: las jurisdicciones sin geometría se **excluyen** del neto, porque su ausencia ya la cubre el aviso de INV-3.6 y contarlas como pérdida las contaría dos veces. **Ninguna restricción se pierde por el cambio de unidad** (0); las 11 que aparecen son INV-3.4 funcionando. **Condición del owner, aplicada en la salida**: el número declara aparte y de forma visible que **16 restricciones caen en jurisdicciones sin geometría y NO se le listan al patrón** —14 de `arica` y 2 de `puerto_williams`—, que **hoy sí se le muestran**, y que el aviso de INV-3.6 dice que la jurisdicción no está cargada pero **no dice qué restricciones hay**: esa parte no la tapa. Una más (bahía 239) cae en las 6 que E0.3 dejó sin resolver y a ésa no la cubre ningún aviso. Ocho rutas, 39 restricciones de la captura versionada de E0.1. Lo de hoy no se reimplementa: sale del mismo SQL que `bahiasEnRutaPostGIS` usa en `sitport-routes.js:562`. La unidad nueva usa el andamio de E1 y el join de E0.3. **Crudo: 26 → 20, −6 (−23 %), 11 aparecen y 17 desaparecen.** Pero descompuesto por causa: **16 desaparecen porque su Capitanía no tiene geometría** (`arica`, `puerto_williams` — dos de las diez que el decreto no permite cerrar, así que **regenerar no las arregla**), **1 porque su bahía es una de las 6 que E0.3 dejó sin resolver** (239), y **0 por el cambio de unidad**. Descontando lo que no es unidad, el neto es **+11**: ninguna restricción se pierde por pasar a Capitanía, y las que aparecen son INV-3.4 funcionando. **El SIGNO del resultado lo decide un artefacto del andamio, no el cambio de unidad** — el owner pidió que se avisara si el número podía irse para cualquier lado, y se va. Precisión que evita gastar la reevaluación en el lugar equivocado: **el salto de signo no lo produce la parte desactualizada (v1↔v2), que regenerar sí bajaría; lo producen las jurisdicciones sin geometría, que regenerar no toca.** Exposición declarada junto al número: 32,1 % de km en las 11 desactualizadas, 10,5 % en traslape. | 2026-08-12 | `_bitacoras/e2_volumen_2026-08-12.txt` · `.../e2_volumen_2026-08-12/01_volumen.txt` |
 | — E2 · Las apariciones cruzadas contra el traslape | **cerrada — era lo único que podía bajar el +11.** De las 11 apariciones, **7 son firmes** (la ruta toca su Capitanía sobre km exclusivos) y **4 se apoyan en traslape**: tres son `233 Seno Reloncaví → puerto_montt` (ruta∩J de 2,59 y 0,46 km, enteras en zona ambigua) y una es `155 Queilén → chonchi` (9,91 km, entera). Son los **mismos pares** que la medición de cobertura había señalado —calbuco+puerto_montt, maullin+puerto_montt, castro+chonchi—, así que las dos mediciones se corroboran. **El número con el que se decide es +11 y su piso es +7: los dos positivos.** El cruce no hace saltar el signo — como sea que se resuelva la ambigüedad, el volumen sube. No se afirma que esas cuatro atribuciones sean erróneas: se afirma de qué dependen. Quién tiene razón en esos tramos lo resuelve la capa del D.S. 991 cuando exista (E3/E4). | 2026-08-12 | `_bitacoras/e2_volumen_2026-08-12.txt` (addendum 2) · `.../03_cruce_apariciones.txt` |
 | — E2 · Cobertura del andamio sobre rutas reales | **cerrada** — lo que E1 dejó sin contestar. Ocho rutas reales, **2.076,06 km** medidos sobre la geometría que el backend recibe (sin `aproximacion_final`): **58,3 % resuelven a UNA jurisdicción · 31,2 % caen en ninguna · 10,5 % caen en zona de traslape**. La capa se pidió por `capaDeMedicion()`, o sea que el contrato de E1 se ejerció de verdad. **Corrección de mi propia medición antes de reportarla:** la primera versión partía la ruta en segmentos y daba **40,3 %** de ambigüedad — medía cruces de frontera, no traslape, porque un tramo que cruza un límite toca dos jurisdicciones sin superposición. El número real es **cuatro veces menor**. **Los 218,65 km ambiguos están concentrados**: sólo 9 de los 60 pares declarados aportan kilómetros, y dos —Aguirre × Chacabuco (84,59) y Calbuco × Maullín (48,14)— son el 61 %; el área traslapada total no predice lo que una ruta toca. **La deuda se leyó y se declaró, no se mencionó**: **666,36 km, el 32,1 % de lo medido, cae en alguna de las 11 jurisdicciones que difieren entre v1 y v2** — sin afirmar en qué dirección cambiaría una regeneración, que exige regenerar y volver a medir. **El 10,5 % es el factor de contaminación** de cualquier medición de volumen sobre este andamio. | 2026-08-12 | `_bitacoras/e2_cobertura_2026-08-12.txt` |
-| E3 Ámbito lacustre | no iniciada — **desbloqueada, D3 decidida** | — | — |
+| E3 Ámbito lacustre | **no iniciada — desbloqueada por D3, pero su insumo cambió.** Precondición nueva: regenerar `cotejo_lacustre_adjudicado.json`, que no vio la pasada de alineación (sigue en `86f96658…`). Y dos decisiones abiertas que la tocan: **D11** (alcance) y **D12** (Galletué). | — | `_bitacoras/cotejo_tm025a_2026-08-12.txt` |
 | E4 Ámbito marítimo, cerrar C3 | en curso — P2 autorizado, sin aplicar | — | `fase5N`, `fase5O`, `fase5P`, `fase5Q` |
 | E5 Prueba de las 163 | no iniciada | — | diseño en `fase5R §3` |
 | E6 Cambio de unidad en el motor | no iniciada | — | — |
@@ -552,6 +633,7 @@ re-ejecutable de §1.
 
 | versión | fecha | qué cambió |
 |---|---|---|
+| 2.1 | 2026-08-12 | **Pasada de alineación del insumo contra el TM-025 A (4-jun-2025), cerrada en siete pasos.** El insumo no reproducía el decreto: faltaba contenido en diez Capitanías, faltaban los dieciséis párrafos de Gobernación y el Art. 2, dos correcciones tenían un motivo que el texto oficial desmiente, y no había forma de saber contra qué versión se había transcrito. Todo eso queda cerrado y declarado; el texto oficial entra al repositorio con su procedencia y su sha256. **Correcciones a este documento:** §1.2 decía que al insumo le faltaban tres cosas y eran más; el Art. 2 deja de ser "no reproducible" y **D6 se cierra**; **E3 cambia de insumo** y suma la precondición de regenerar el cotejo lacustre; se registran **D11 y D12**. **Hallazgo propio:** `adjudicacion_tramos.json` declaraba derivar de un v2 que no existe en ningún commit, y ni se escribía ni se verificaba — ahora lo escribe un script con autorización del owner y lo verifica **B12**. Tres controles nuevos en el auditor (**B10**, **B11**, **B12**) con mordida 9/9 y control negativo. **Bahía Paraíso queda diferida y declarada**: su cláusula del límite Sur dispara la adjudicación de sus cuatro tramos, así que texto y figura van juntos en su propia etapa. |
 | 2.0 | 2026-08-12 | **E2 cerrada: el cambio de unidad tiene su número.** +11 restricciones sobre ocho rutas reales, con piso +7 tras cruzar las apariciones contra el traslape — **los dos positivos, así que el volumen sube pase lo que pase con la ambigüedad**. **Ninguna restricción se pierde por el cambio de unidad**: las 17 que caían en el número crudo eran 16 de jurisdicciones sin geometría y 1 de las 6 que E0.3 dejó abiertas. Método de conteo decidido por el owner —las sin geometría se excluyen, porque el aviso de INV-3.6 ya las cubre y contarlas sería contarlas dos veces— **con la condición de que el número declare aparte y de forma visible las 16 que no se listan al patrón y que hoy sí se muestran**. Dos errores de medición propios, cazados antes de reportar: contar segmentos que cruzan una frontera como si fueran traslape (daba 40,3 % en vez de 10,5 %) y comparar v1 con v2 por nombre de campo cuando no comparten esquema (daba 64 de 64 en vez de 11). |
 | 1.9 | 2026-08-11 | **E1 cerrada.** El andamio queda declarado y con dos guards que no pueden divergir. Lo que la etapa corrigió, además de construir: la marca vieja de la capa decía que dos jurisdicciones estaban desactualizadas y **son 11**, todas del corredor donde corren las rutas reales; el conteo de bahías que caen fuera de la capa (110 de 163) **no se usa para juzgarla**, porque los puntos de bahía son de orilla y este repositorio ya pagó una vez ese error; y una afirmación del propio reconocimiento se corrigió al pie por medir el recorte y presentarlo como fidelidad a la fuente. Regenerar desde v2 queda como **deuda declarada dentro del dato**, con las 11 nombradas. |
 | 1.8 | 2026-08-11 | **E0.3 cerrada, y con ella E0 entera** — quedan desbloqueadas E1, E5 y E6. El join pasa a ser dato declarado propio con la clave del decreto (`join_bahia_jurisdiccion.json`, 164 entradas, 158 resueltas). **Tres cosas que el plan daba por sentadas y la medición corrigió:** las "3 variantes de nombre (36 bahías)" son **dos** (18 bahías) y una **sobre-atribución** —`Cisnes` cuelga 18 y SITPORT le da 2—; de las 29 jurisdicciones sin bahía, **SITPORT sí le atribuye a 27**, o sea que el mapa las colapsa en la vecina en vez de que SITPORT no publique; y la bahía 146, la única que SITPORT no atribuye, **la resuelve el decreto**. **El instrumento que más cerró fue el del caso Ancud**: cuatro líneas compartidas declaradas resolvieron 15 bahías. **Hallazgo:** 251, 252 y 253 están al Norte del límite Norte de Melinka *y* de Puerto Cisnes — las dos fuentes operativas proponen jurisdicciones que el decreto excluye; van a Quellón. **La deuda de E0.2 quedó saldada por la raíz**, no por copia: con `jurisdiccion_id` la regla de coincidencia deja de ser regla. **Medido antes de aplicar** (0 banderas movidas, y el hallazgo del teléfono que decidió la forma del arreglo) y **medido después de construir** (mordida 16/16, suite 76/76, regeneración byte a byte, que no se cumplía y se arregló). Quedan **6 bahías sin resolver, cada una con su fuente dentro del dato**, que se resuelven todas juntas. |

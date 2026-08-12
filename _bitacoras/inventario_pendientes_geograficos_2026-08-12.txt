@@ -1,0 +1,373 @@
+================================================================================
+INVENTARIO DE LO QUE SIGUE SIN RESOLVERSE GEOGRAFICAMENTE
+================================================================================
+
+Fecha   : 2026-08-12  ·  Shell: Git Bash (MSYS)
+Estado  : MEDICION. No se resolvio ningun caso, no se toco ningun dato.
+Insumo  : jurisdicciones_v2.json sha256 225f47d894d6fa8b (tras la pasada de
+          alineacion contra el TM-025 A, commits 8e22ef5..cb140d5)
+
+Para que existe: hoy esto vive repartido en listas que salieron de trabajos
+distintos y no hablan entre si. Aca estan juntas, clasificadas por CAUSA,
+porque la causa decide la accion y no el conteo.
+
+--------------------------------------------------------------------------------
+0. RESUMEN — 38 casos en CINCO causas, no cuatro
+--------------------------------------------------------------------------------
+
+  A. El decreto nombra un accidente y no lo da en coordenadas        11
+     -> se cierra con cartografia o toponimia, no preguntando
+  B. El decreto es ambiguo, o dos parrafos cubren la misma zona       3
+     -> se cierra preguntando a la autoridad
+  C. El decreto si lo dice y no se construyo                          9
+     -> trabajo interno, no hay a quien preguntar
+  D. Falta el dato en una fuente que no es el decreto                 9
+     -> se cierra consiguiendo esa fuente
+  E. EL DECRETO NO LO DICE Y NO HAY A QUIEN PREGUNTAR                  6
+     -> lo decide el owner como convencion o adjudicacion
+
+**LA CAUSA E NO ESTABA EN EL ENCARGO Y ES LA MAS CARA.** Son los seis pares de
+separacion lateral de C3 y los cuatro tramos de Bahia Paraiso: casos donde el
+decreto no entrega la regla, no hay autoridad que la tenga escrita, y ninguna
+cartografia la contiene. No se cierran con una consulta ni con una carta: se
+cierran con una decision del owner que despues hay que declarar como convencion
+nuestra. Meterlos en B —"preguntar a DIRECTEMAR"— haria gastar una consulta
+formal en algo que la consulta no puede contestar.
+
+Que la convencion sea el camino ya esta escrito en el propio insumo, convencion
+n.6: "La separacion lateral entre Capitanias en la franja oceanica, el limite
+exterior de 200 mn y el cierre generoso hacia tierra con resta posterior de la
+capa de tierra SIGUEN SIENDO CONVENCION NUESTRA".
+
+--------------------------------------------------------------------------------
+1. CAUSA A — ACCIDENTE NOMBRADO SIN COORDENADAS (11)
+    Se cierra con cartografia o toponimia. NO con una consulta.
+--------------------------------------------------------------------------------
+
+A1 · baker (limite Sur) + puerto_eden (limite Norte) + bahias 127, 129 y 154
+    QUE FALTA   las coordenadas del limite Sur de la XI Region.
+    QUE DICE    el parrafo de la GM de Aysen lo da por accidentes: recta desde
+                el cerro Chaltel o Fitz Roy al extremo oriental del seno Iceberg
+                o Tempano; ese seno hasta el canal Messier; y canales Messier,
+                Adalberto, Fallos y del Castillo hasta el mar Chileno. Y dice,
+                con un "el cual", que ese es el limite Sur de la Gobernacion.
+    POR QUE NO  son accidentes, no coordenadas, y el tramo de canales es un
+    ALCANZA     recorrido, no una recta.
+    QUE LO      cartografia: IGM/SHOA para el cerro y el seno; hidrografia para
+    CERRARIA    los cuatro canales. DPA_2023 (en geodata/, sin cargar) da el
+                limite regional.
+    BLOQUEA     E4 no; el join de E0.3 si — son 3 de sus 6 sin resolver.
+    ** CAMBIO DE CAUSA CON LA PASADA. ** Antes era B: la pregunta redactada para
+    DIRECTEMAR preguntaba si los dos limites coinciden, porque el parrafo de la
+    Gobernacion no estaba en el insumo. El decreto lo contesta. Hoy no hay nada
+    que adjudicar, solo que georreferenciar.
+    ** DEUDA QUE ESTO DEJA: ** `causa_sin_geometria` de baker y puerto_eden
+    todavia dice "el decreto no entrega con que cerrar", que ya es FALSO. El
+    migrador la deriva de los limites de la propia Capitania y no mira el parrafo
+    de su Gobernacion. Nadie la recalculo. Lo mismo vale para la pregunta
+    redactada de las tres bahias en join_bahia_jurisdiccion.json.
+
+A2 · arica — limite Norte
+    QUE FALTA   coordenadas del "Limite politico internacional Chile - Peru".
+    QUE DICE    lo nombra asi, en el parrafo de la Capitania y en el de su
+                Gobernacion. No lo da.
+    QUE LO      el tratado y su cartografia oficial (Hito 1 / Concordia).
+    CERRARIA
+    BLOQUEA     nada hoy: participa_matching=false y su aviso de INV-3.6 la cubre.
+
+A3 · hanga_roa   ·  A4 · juan_fernandez
+    QUE FALTA   geometria de islas.
+    QUE DICE    las nombra (Isla de Pascua, Sala y Gomez; San Felix, San
+                Ambrosio, Archipielago de Juan Fernandez). Sin coordenadas.
+    POR QUE NO  el insumo no trae capa de islas.
+    ALCANZA
+    QUE LO      una capa de islas oceanicas. Medido en E0.3: la capa IGM
+    CERRARIA    SECCION_L NO sirve — es de Magallanes, 0 hits de Juan Fernandez.
+    BLOQUEA     el ambito insular_remota entero (2 de 2 jurisdicciones).
+
+A5 · punta_delgada  ·  A6 · tierra_del_fuego (parte 1 de 2)
+    QUE FALTA   el extremo ARGENTINO de la linea que cierra por el Oriente:
+                Cabo del Espiritu Santo.
+    QUE DICE    "hasta el limite maritimo internacional por el Oriente".
+    POR QUE NO  el owner ya acepto (2026-08-10) que es la linea Punta Dungeness -
+    ALCANZA     Cabo del Espiritu Santo del Tratado de 1881. Punta Dungeness esta
+                verificada contra el IGM; el extremo argentino no lo trae la capa
+                chilena.
+    QUE LO      cartografia argentina o binacional. Registrado en `pendientes`
+    CERRARIA    del insumo con su decision del owner.
+    BLOQUEA     dos de las diez sin geometria.
+
+A7 · puerto_williams (parte 1 de 2)
+    QUE FALTA   el "hito N 26" del Canal Beagle y "la delimitacion existente del
+                Canal Beagle", nombrados sin coordenadas.
+    QUE LO      cartografia del Tratado de Paz y Amistad de 1984.
+    CERRARIA
+    BLOQUEA     una de las diez.
+
+A8 · lirquen  ·  A9 · talcahuano
+    QUE FALTA   los vertices del contorno de la Bahia de Concepcion.
+    QUE DICE    lo describe en prosa —"hacia el este y hacia el sur (Bahia de
+                Concepcion)"— y da solo los dos extremos.
+    QUE LO      una carta nautica de la bahia. NO una consulta: el decreto no es
+    CERRARIA    ambiguo, es que describe una costa con palabras.
+    BLOQUEA     dos de las diez. Y talcahuano arrastra ademas 36 44 10 S
+                (Andalien) al Sur de su propio limite sur declarado.
+
+A10 · Punta de Lobos (talcahuano)  ·  A11 · Punta Juan Latorre (valdivia, corral)
+    QUE FALTA   incorporarlos al recorrido: el decreto los nombra y la poligonal
+                transcrita no los incluye.
+    POR QUE NO  incorporarlos exige decidir por donde pasa el trazo.
+    ALCANZA
+    BLOQUEA     no bloquea; son 7 puntos_no_incorporados en total (ver §6).
+
+--------------------------------------------------------------------------------
+2. CAUSA B — AMBIGUEDAD DEL DECRETO (3)
+    Se cierra preguntando a la autoridad. Son las UNICAS tres que justifican
+    una consulta formal a DIRECTEMAR.
+--------------------------------------------------------------------------------
+
+B1 · bahia 137, Bahia Chilota (Porvenir)
+    QUE PASA    los parrafos de punta_delgada ("el Estrecho de Magallanes" al
+                Oriente de la linea Punta Harry - Cabo San Vicente) y de
+                tierra_del_fuego ("el area oriental" de la linea Cabo San
+                Vicente - Punta Anxius) cubren LOS DOS la zona al Oriente de
+                Cabo San Vicente, y el decreto no dice como se reparten.
+    QUE LO      DIRECTEMAR. La bahia esta a 230 m de la linea.
+    CERRARIA
+    BLOQUEA     el join. Sin cambio con la pasada.
+
+B2 · bahia 239 (Canal Ferronave y Devia)  ·  B3 · bahia 241 (Canal Goñi y Ninualac)
+    QUE PASA    caen ENTRE los extremos de la linea Cayo Blanco - Punta San
+                Andres - Puerto Perez - Islote Rodriguez - Isla Traiguen, que es
+                la frontera Cisnes/Aguirre. El veredicto depende de como se
+                prolongue el trazo hacia el Weste, y el decreto no lo escribe.
+    QUE LO      el archivo dice "informante con experiencia operativa en la zona
+    CERRARIA    austral". NOTA: eso es practica, no autoridad — si se hace la
+                consulta formal de B1, conviene incluirlas.
+    BLOQUEA     el join, y la misma costura decide el cierre Weste de Puerto
+                Aguirre, que es una de las causas del C3 abierto.
+
+--------------------------------------------------------------------------------
+3. CAUSA C — EL DECRETO LO DICE Y NO SE CONSTRUYO (9)
+    Trabajo interno. No hay a quien preguntar ni que conseguir.
+--------------------------------------------------------------------------------
+
+C1 · Chaiten x Chonchi — frontera declarable, P2 AUTORIZADA Y SIN APLICAR
+    Los dos parrafos describen el meridiano 073 12 00 W y comparten un solo
+    vertice, por eso la derivacion automatica no los une. Frontera lista entre
+    42 39 40 S y 43 00 30 S. Decidida el 2026-08-10 (D2) y nunca aplicada.
+    BLOQUEA E4: es el segundo par mas grande de C3.
+
+C2 · Cochamo — cierre por cuerpo de agua nombrado (P3)
+    El decreto lo delimita POR NOMBRE: "las aguas y el litoral del Estero
+    Reloncavi". Falta el mecanismo que resuelva un cuerpo de agua marino
+    nombrado, equivalente al `union_cuerpos` que ya existe para lagos.
+    BLOQUEA E4: dos pares (x Maullin, x Hornopiren).
+
+C3 · tierra_del_fuego (parte 2 de 2) — falta el ancla
+    El decreto dice "el area oriental", pero la construccion no decide lados por
+    letra cardinal. Lo limpio es anclar en uno de los cuerpos que el propio
+    parrafo enumera (Bahia Gente Grande, Bahia Inutil, Canal Whiteside, Canal
+    Gabriel, Seno Almirantazgo). El dato para hacerlo esta en el decreto.
+
+C4 · puerto_williams (parte 2 de 2) — falta el ancla
+    "el contorno parte el espacio en dos y no hay ancla que diga cual de los dos
+    trozos es la jurisdiccion".
+
+C5 · Las 11 Capitanias maritimas con cuerpos de agua nombrados y sin construir
+    constitucion (4 lagos) · lebu (2) · puerto_montt (lago Chapo) · maullin (rio
+    Maicolpue) · cochamo (2 lagos) · chaiten (2 lagos) · puerto_chacabuco
+    (canales interiores hasta Laguna San Rafael) · talcahuano (2 lagunas) ·
+    carahue (2 lagos + laguna + 4 rios) · valdivia (6 rios) · corral (rio Colun).
+    CAUSA REAL: `fase2_cotejo_lacustre.py:140` solo procesa las Capitanias de
+    ambito 'lacustre', 6 de 64. Los cuerpos nombrados dentro de Capitanias
+    maritimas quedan fuera de su alcance POR CONSTRUCCION.
+    SIETE son anteriores a la pasada; cuatro las agrego. Abre D11.
+
+C6 · cotejo_lacustre_adjudicado.json sin regenerar
+    sha256 86f96658..., el mismo de antes de la pasada. E3 construye desde ahi.
+    Precondicion de E3, no tarea de E3.
+
+C7 · El andamio `jurisdicciones_decreto` desactualizado
+    11 jurisdicciones difieren entre v1 y v2 —lirquen, talcahuano, valdivia,
+    corral, ancud, quemchi, chaiten, achao, castro, chonchi, quellon—, todas del
+    corredor donde corren las rutas reales. Deuda declarada en capa_consultada.
+    Y AHORA ES PEOR: esa marca se midio contra el v2 de antes de la pasada.
+
+C8 · jurisdicciones_ds991 no existe
+    Los cuatro ambitos estan declarados NO PUBLICADOS. El maritimo por C3; el
+    lacustre por el rollback compartido; el antartico y el insular por lo suyo.
+
+C9 · Bahia Paraiso — la figura
+    El decreto dice que los cuatro puntos son el limite NORTE y que por el Sur el
+    limite es la costa antartica. La figura se construye como anillo cerrado y el
+    segmento que la cierra por el Sur NO ESTA EN EL DECRETO (INV-0.2). El texto
+    ya esta redactado y verificado, diferido en la constante DIFERIDAS de
+    tm025a_p2_completar_texto.py. BLOQUEADO POR E1 (ver abajo).
+    Contenido, medido: ds991 no existe, ambito no publicado, cero traslapes entre
+    las cuatro antarticas, y la mas al Norte llega a -57,700 mientras una ruta
+    chilena no baja de -56. Hoy no alcanza ninguna ruta.
+
+--------------------------------------------------------------------------------
+4. CAUSA D — FALTA UN DATO DE UNA FUENTE QUE NO ES EL DECRETO (9)
+--------------------------------------------------------------------------------
+
+D1 · Rios Tolten, Fuy, San Pedro y Bueno — sin geometria
+    El shapefile Inventario_Lagos.shp NO CONTIENE RIOS. Hace falta una capa de
+    hidrografia fluvial. Es la misma carencia que bloquea el frente "Valdivia
+    fluvial".
+    NOTA: el rio Bueno tiene ahora TRES COORDENADAS que el decreto si da y el
+    insumo habia omitido (P2). Son puntos, no un cauce: acotan pero no cierran.
+
+D2 · valdivia sin testigo
+    Declarado fuera de la correccion al agua por el owner (2026-08-10): es un
+    puerto FLUVIAL rio arriba y correrlo al mar lo sacaria de su jurisdiccion.
+    Necesita hidrografia fluvial, igual que D1.
+
+D3 · papudo sin testigo
+    Ninguna bahia SITPORT tiene a esta Capitania como su sede mas cercana. Falta
+    dato de SITPORT, no del decreto.
+
+D4 · valparaiso (580 m) · D5 · constitucion (1.412 m) · D6 · lebu (565 m) ·
+D7 · puerto_chacabuco (1.007 m) — sin testigo
+    Su punto representativo cae en tierra por encima del umbral de 500 m. El
+    umbral es convencion del owner y no se mueve (decidido 2026-08-10). Cuatro
+    Capitanias construibles que NO SE PUEDEN VERIFICAR aunque se construyan.
+
+D8 · id 108 de SITPORT
+    Publica pronostico, no esta en ningun catalogo. Pertenece a la Capitania de
+    Carahue (Totalgeneral, reparticion 190, codigo 2169) y es una CUARTA bahia de
+    esa reparticion. Que bahia es: NO DETERMINADO. El parrafo de Carahue, que
+    entro en P2, acota los candidatos.
+
+D9 · bahia 257, Rio Cochrane
+    Capitania adjudicada por el owner; POSICION no la entrega ninguno de los 13
+    endpoints de SITPORT. Declarada como incoherencia_interna.
+
+--------------------------------------------------------------------------------
+5. CAUSA E — NI EL DECRETO NI UNA FUENTE EXTERNA. LO DECIDE EL OWNER (6)
+    Esta causa no estaba en el encargo. Es la mas cara y la que peor se
+    resuelve si se la confunde con B.
+--------------------------------------------------------------------------------
+
+E1 · Bahia Paraiso — el tipo de sus CUATRO tramos
+    Con el parrafo nombrando la costa, B8 exige adjudicacion del owner para los
+    cuatro. NO es ambiguedad del decreto: es que el decreto pone la palabra que
+    califica un tramo en posiciones incompatibles entre parrafos, y NINGUNA
+    REGLA DE POSICION ACIERTA en los tres casos conocidos (Calbuco, Hornopiren,
+    Cochamo). Eso ya esta escrito en adjudicacion_tramos.json.
+    No hay a quien preguntarlo y no hay carta que lo diga. BLOQUEA C9.
+
+E2..E6 · Los cinco pares de separacion lateral que quedan de C3
+    Cochamo x Maullin · Chaiten x Chonchi · Castro x Chonchi ·
+    Calbuco x Maullin · Maullin x Puerto Montt · Cochamo x Rio Negro Hornopiren
+    (seis pares; Chaiten x Chonchi tiene camino propio y esta en C1).
+    RAIZ COMUN, y esta escrita en el propio insumo (convencion n.6): "La
+    separacion lateral entre Capitanias en la franja oceanica... SIGUE SIENDO
+    CONVENCION NUESTRA". El decreto no la da. Maullin no tiene limite Este
+    declarado; Castro x Chonchi es la convencion `banda()` que solo extiende.
+    QUE LO CERRARIA: una decision del owner, declarada como convencion. Propuestas
+    medidas y sin aplicar en fase5P/fase5Q: P1 (limite exterior desde tierra
+    chilena), P4' (el contorno abierto no se extiende mas alla de su trazo), P5.
+    BLOQUEA E4 entero, y con el la capa maritima.
+
+    ** ADVERTENCIA SOBRE LAS MAGNITUDES: ** los km2 que se citan de estos pares
+    (Cochamo x Maullin 43.587,7 · Chaiten x Chonchi 35.611,1 · Castro x Chonchi
+    975,7 · Calbuco x Maullin 341,2 · Maullin x Pto Montt 180,4 · Cochamo x
+    Hornopiren 27,0) son de fase5I, 2026-08-10, y NO SE HA CORRIDO EL BUILD DESDE
+    ENTONCES — menos aun despues de la pasada de alineacion. Son ordenes de
+    magnitud, no el estado de hoy.
+
+--------------------------------------------------------------------------------
+6. CASOS QUE NO CAEN LIMPIO EN NINGUNA CAUSA — se dicen, no se fuerzan
+--------------------------------------------------------------------------------
+
+N1 · Los 7 puntos_no_incorporados
+    lirquen y talcahuano (Andalien) · talcahuano (Punta de Lobos) · valdivia y
+    corral (Punta Juan Latorre) · quemchi (vertice 42S/73W) · chaiten (Punta
+    Centinela, con respaldo AJENO).
+    El decreto los nombra y las coordenadas estan. Lo que falta es decidir por
+    donde pasa el trazo que los incorpora. Eso es mitad C (el dato esta) y mitad
+    E (la decision es del owner). No lo fuerzo a una sola.
+
+N2 · Las cuatro diferencias declaradas que no bloquean nada
+    meulin_ne_vs_nw · achao_longitud_con_hemisferio_sur (ya incorporada como
+    correccion) · hemisferio_omitido_en_dos_parrafos · o_higgins_con_y_sin_general.
+    Son defectos del texto oficial que no mueven geometria. Estan declaradas en
+    diferencias_no_incorporadas con su `reabre_si`. No son pendientes
+    geograficos; se listan para que no se descubran otra vez.
+
+N3 · Galletue / Gualletue
+    ** CAMBIO DE CAUSA CON LA PASADA. ** Antes era D pura: "sin ninguna
+    coincidencia ni candidato en el shapefile". Hoy el candidato esta medido y es
+    unico (LAGO GUALLETUE, fid 965), asi que ya no falta el dato: falta la
+    decision de aceptar la grafia del parrafo de la Gobernacion. Paso de D a
+    adjudicacion (D12).
+
+--------------------------------------------------------------------------------
+7. LO QUE BLOQUEA CADA ETAPA
+--------------------------------------------------------------------------------
+
+  E3 lacustre   C6 (regenerar el cotejo) · D11 (alcance) · D12 (Galletue) ·
+                D1 (rios sin capa)
+  E4 maritimo   E2..E6 (los seis pares) · C1 (P2 sin aplicar) · C2 (Cochamo)
+  E5 las 163    nada nuevo; su deuda son las 88 atribuciones de respaldo
+                operativo, que no son un pendiente geografico
+  E6 unidad     nada de esta lista
+  E7 R1         C8 (ningun ambito publicado)
+  el join       A1 (3 bahias) · B1 (1) · B2/B3 (2)
+  ninguna       A2, A10, A11, D3..D7, D8, D9, N1, N2
+
+--------------------------------------------------------------------------------
+8. HALLAZGOS DEL BARRIDO QUE NO ESTABAN EN NINGUNA LISTA
+--------------------------------------------------------------------------------
+
+H1 · Dos causas del insumo quedaron FALSAS con la pasada y nadie las recalculo.
+     `baker` y `puerto_eden` siguen diciendo "el decreto no entrega con que
+     cerrar", y el decreto SI lo entrega desde P3. El migrador deriva esa causa
+     de los limites de la propia Capitania y no mira el parrafo de su
+     Gobernacion. Lo mismo con la pregunta redactada de las bahias 127, 129 y 154
+     en join_bahia_jurisdiccion.json, que sigue preguntando a DIRECTEMAR algo que
+     el decreto contesta.
+
+H2 · Cuatro Capitanias construibles no se pueden verificar.
+     valparaiso, constitucion, lebu y puerto_chacabuco tienen estado 'cerrable' y
+     NO tienen testigo. Se van a poder construir y no se va a poder probar que la
+     figura sea correcta. Estaba medido en la Etapa 1 pero no listado como
+     pendiente en ninguna parte.
+
+H3 · Una medicion citada en el plan y en la memoria no existe en el repositorio.
+     "La convencion del paralelo compartido, aplicada: Castro x Chonchi 882,6 ->
+     28,3 km2; total 8.672 -> 6.102". No la encuentro en ninguna bitacora
+     (`grep` sobre _bitacoras/ por "882,6", "6.102" y "paralelo compartido"). El
+     plan §5 la lista entre las decisiones ya tomadas. O la bitacora no se
+     escribio, o se escribio con otro nombre. Mientras tanto NO uso esos numeros:
+     los de §5 son los de fase5I.
+
+H4 · Las 16 Gobernaciones entraron sin limites derivados, a proposito.
+     16 de 16 con limite_norte y limite_sur en null. No es un pendiente
+     geografico hoy —no se construye geometria de Gobernacion— pero si alguna vez
+     hace falta el limite de una Gobernacion, hay que adjudicarlo.
+
+--------------------------------------------------------------------------------
+9. QUE QUEDO FUERA DEL BARRIDO, Y POR QUE
+--------------------------------------------------------------------------------
+
+  - NO SE CORRIO EL CONSTRUCTOR. Todas las magnitudes de C3 son de builds
+    anteriores a la pasada de alineacion. Correrlo diria cuantos pares quedan HOY
+    y con que area; sin eso, §5 son ordenes de magnitud.
+  - NO SE BARRIO tmarea-pwa. El frontend no adjudica geografia, pero si muestra
+    lo que el backend resuelve; un pendiente de presentacion no entra aca.
+  - NO SE BARRIO el motor de reglas (parser SITPORT, motor, evaluador de ruta).
+    CLAUDE.md §6 lo declara intocable y no se leyo buscando pendientes.
+  - LAS BITACORAS SE BARRIERON POR MARCADOR, NO UNA POR UNA. Son ~45 archivos.
+    Se busco por patrones ("no determinado", "sin resolver", "falta el dato",
+    "requiere fuente", "pendiente"). Un pendiente escrito en prosa sin ninguno de
+    esos marcadores puede haberse escapado. H3 salio de ahi: si un numero citado
+    no tiene bitacora, otros pendientes pueden no tenerla tampoco.
+  - NO SE VERIFICO CONTRA LA BASE. El inventario se hizo sobre los archivos
+    versionados. Lo que este en PostgreSQL y no en el repositorio no aparece.
+
+================================================================================
+FIN — 38 casos. No se resolvio ninguno.
+================================================================================
