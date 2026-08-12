@@ -18,6 +18,42 @@ COMO SE RECAPTURA
 No capturar a una variable de PowerShell: rompe UTF-8. Bajar a disco y leer con
 [System.IO.File]::ReadAllText($ruta, [System.Text.Encoding]::UTF8).
 
+SOBRE QUE SE CALCULARON EL sha256 Y EL TAMANO — LEER ANTES DE VERIFICAR
+    Los dos se calcularon sobre EL ARCHIVO EN DISCO, que estaba en CRLF.
+
+    Este repositorio corre con core.autocrlf=true y estos .html se versionaron
+    SIN una regla `-text` que los protegiera, asi que el blob que git guarda esta
+    en LF y NO reproduce ninguno de los dos valores. Comprobado sobre los tres
+    primeros archivos de la lista:
+
+        capuertos_directemar.html     disco 72.058 b / da84e6f3...
+                                      blob  70.096 b / 6727e6aa...
+        gm_region-arica-y-parinacota  disco 49.738 b / aa221841...
+                                      blob  48.536 b / ad271a84...
+        gm_region-de-antofagasta      disco 53.071 b / 7fd7a9fe...
+                                      blob  51.823 b / 868532fd...
+
+    QUE SIGNIFICA EN LA PRACTICA:
+
+    · `git show <commit>:<archivo> | sha256sum` da OTRO hash. No es que el
+      archivo haya cambiado: es el fin de linea. Ese error ya se cometio antes en
+      esta fase y esta anotado en la bitacora del cotejo TM-025 A §8.0.
+    · Para verificar contra la historia, recuperar el archivo y re-convertir a
+      CRLF, o comparar el texto normalizado en vez del hash.
+    · Para verificar contra una recaptura con curl, el hash sirve solo si el
+      servidor devuelve los mismos fines de linea que devolvio el 2026-08-12. Si
+      no coincide, comparar el texto antes de concluir que la fuente cambio.
+
+    Los 18 siguen recuperables de la historia — `git show
+    a474ae4:_bitacoras/sondeo_catalogo_2026-08-12/<archivo>` — y de ahi salio la
+    comprobacion de arriba. Que el hash no calce NO significa que el contenido se
+    haya perdido.
+
+    COMO NO REPETIRLO: `data/decreto/fuente/` resuelve esto con un `.gitattributes`
+    que marca sus archivos `-text` para que git los guarde byte a byte. Un
+    directorio de evidencia que registre hashes deberia traer esa regla desde el
+    principio; este no la trajo.
+
 ================================================================================
 LOS 18 ARCHIVOS
 ================================================================================
