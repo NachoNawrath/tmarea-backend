@@ -1430,6 +1430,100 @@ def main():
                         "insumo. Este control no tiene nada que mirar, y eso no es "
                         "'limpio': es que el camino que deberia cubrir desaparecio")
 
+    # ── B10 ──────────────────────────────────────────────────────────────────
+    inf.h("B10 — EL COTEJO DECLARADO SIGUE VIVO")
+    inf.p("  El insumo declara contra que texto oficial se cotejo. Si ese documento")
+    inf.p("  no esta, o no es el que dice, la declaracion es una afirmacion sin")
+    inf.p("  respaldo — y no saber contra que version se transcribio es la causa raiz")
+    inf.p("  que ese bloque existe para cerrar.")
+    inf.p("")
+    ct = v2.get("cotejado_contra")
+    if not ct:
+        inf.fallo("B10", "el insumo no declara 'cotejado_contra': no hay forma de "
+                         "saber contra que version del decreto se transcribio")
+    else:
+        inf.p(f"  documento : {ct.get('documento')}")
+        inf.p(f"  cotejado  : {ct.get('fecha_cotejo')}")
+        for campo in ("texto_extraido", "archivo_en_el_repo", "procedencia"):
+            rel = ct.get(campo)
+            if not rel:
+                inf.fallo("B10", f"'cotejado_contra' no declara '{campo}'")
+            elif not os.path.exists(os.path.join(REPO, rel)):
+                inf.fallo("B10", f"'cotejado_contra.{campo}' apunta a {rel}, que no "
+                                 f"esta en el repositorio")
+            else:
+                inf.ok(f"{rel} esta en el repositorio")
+        rel, dec = ct.get("texto_extraido"), ct.get("sha256_texto_extraido")
+        if rel and dec and os.path.exists(os.path.join(REPO, rel)):
+            real = sha(os.path.join(REPO, rel))
+            if real != dec:
+                inf.fallo("B10", f"el texto oficial en disco tiene sha256 {real[:16]} "
+                                 f"y el insumo declara haberse cotejado contra "
+                                 f"{str(dec)[:16]}: el documento cambio debajo del cotejo")
+            else:
+                inf.ok(f"el texto oficial en disco es el declarado (sha256 {real[:16]})")
+
+    # ── B11 ──────────────────────────────────────────────────────────────────
+    inf.h("B11 — LO QUE EL V1 DECLARA LLEGA AL V2")
+    inf.p("  El v2 es derivado y es lo que consultan los servicios. Un bloque que el")
+    inf.p("  v1 declara y el migrador deja de copiar desapareceria sin que nada")
+    inf.p("  avise: el v1 seguiria completo y el v2 no. Es B0 un nivel mas alla.")
+    inf.p("")
+    for bloque in ("cotejado_contra", "gobernaciones", "articulos",
+                   "diferencias_no_incorporadas"):
+        en_v1, en_v2 = v1.get(bloque), v2.get(bloque)
+        if en_v1 is None:
+            inf.p(f"  --   {bloque}: el v1 no lo declara, no hay nada que llevar")
+        elif en_v2 is None:
+            inf.fallo("B11", f"el v1 declara '{bloque}' y el v2 no lo tiene: la "
+                             f"migracion lo perdio")
+        elif json.dumps(en_v1, sort_keys=True) != json.dumps(en_v2, sort_keys=True):
+            inf.fallo("B11", f"'{bloque}' difiere entre el v1 y el v2: la migracion lo "
+                             f"transforma y no deberia — viaja tal cual")
+        else:
+            n = len(en_v1) if isinstance(en_v1, list) else 1
+            inf.ok(f"{bloque} llega al v2 sin cambios ({n} entrada(s))")
+
+    gobs = v2.get("gobernaciones") or []
+    if gobs:
+        vinculadas = [c for g in gobs for c in (g.get("capitanias") or [])]
+        ids_j = {j["id"] for j in J}
+        if sorted(vinculadas) != sorted(ids_j):
+            faltan = sorted(ids_j - set(vinculadas))
+            sobran = sorted({c for c in vinculadas if c not in ids_j})
+            rep = sorted({c for c in vinculadas if vinculadas.count(c) > 1})
+            inf.fallo("B11", f"el vinculo Gobernacion->Capitanias no cubre exactamente "
+                             f"las {len(ids_j)} jurisdicciones: faltan {faltan}, sobran "
+                             f"{sobran}, repetidas {rep}")
+        else:
+            inf.ok(f"las {len(gobs)} Gobernaciones cubren las {len(ids_j)} Capitanias, "
+                   f"cada una exactamente una vez")
+
+    # ── B12 ──────────────────────────────────────────────────────────────────
+    inf.h("B12 — EL SELLO DE LA ADJUDICACION DE TRAMOS")
+    inf.p("  adjudicacion_tramos.json lleva una adjudicacion del owner y declara")
+    inf.p("  contra que insumo se tomo. Si el insumo se movio debajo, tiene que")
+    inf.p("  GRITAR: re-sellarlo solo esconderia que la decision se tomo mirando otra")
+    inf.p("  cosa. Se re-sella con scripts/tm025a_p7_sellar_adjudicacion.py, que exige")
+    inf.p("  la autorizacion del owner y comprueba antes que las adjudicaciones sigan")
+    inf.p("  aplicando.")
+    inf.p("")
+    adj_doc = json.load(open(ADJUDICACION, encoding="utf-8"))
+    sello = (adj_doc.get("insumo") or {}).get("jurisdicciones_v2.json")
+    real_v2 = sha(V2)
+    if not sello:
+        inf.fallo("B12", "adjudicacion_tramos.json no declara contra que insumo se "
+                         "adjudico")
+    elif sello != real_v2:
+        inf.fallo("B12", f"adjudicacion_tramos.json declara el insumo {sello[:16]} y el "
+                         f"v2 en disco es {real_v2[:16]}: el insumo se movio debajo de "
+                         f"una adjudicacion del owner ({len(adj_doc.get('tramos', []))} "
+                         f"tramos). NO se re-sella solo: corre "
+                         f"tm025a_p7_sellar_adjudicacion.py con la autorizacion")
+    else:
+        inf.ok(f"la adjudicacion se tomo sobre el insumo que esta en disco "
+               f"(sha256 {sello[:16]})")
+
     # ── veredicto ────────────────────────────────────────────────────────────
     inf.h("VEREDICTO DE LA SEGUNDA PASADA")
     con_fallos = {k: v for k, v in inf.fallos.items() if v}

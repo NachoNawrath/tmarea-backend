@@ -1,0 +1,27 @@
+==============================================================================
+P7 — PRUEBA DE MORDIDA DE B10, B11 Y B12
+==============================================================================
+  respaldo en: C:\Users\katia\AppData\Local\Temp\p7_mordida_bou6nwsd
+
+CONTROL NEGATIVO — con todo correcto los tres controles PASAN
+  auditor exit=0   B10/B11/B12 sin fallos: SI
+  ok   los tres controles pueden pasar; no son un fallo permanente
+
+DEFECTOS INYECTADOS, UNO POR VEZ
+  ok   B10  el sha256 del texto oficial declarado no es el del archivo
+  ok   B10  el insumo deja de declarar contra que se cotejo
+  ok   B10  el documento declarado no esta en el repositorio
+  ok   B11  la migracion pierde las Gobernaciones
+  ok   B11  la migracion transforma el Art. 2 en vez de copiarlo
+  ok   B11  el vinculo Gobernacion->Capitanias deja de cubrir las 64
+  ok   B12  el sello apunta a un insumo que no es el de disco
+  ok   B12  adjudicacion_tramos.json no declara contra que insumo se adjudico
+
+RESTAURACION
+  jurisdicciones_capitanias.json     f6fe9b62b51983fb  ok
+  jurisdicciones_v2.json             225f47d894d6fa8b  ok
+  adjudicacion_tramos.json           376e8bc2079e93b4  ok
+
+==============================================================================
+  MORDIDA: 9/9
+==============================================================================

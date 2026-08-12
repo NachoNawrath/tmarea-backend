@@ -1,0 +1,64 @@
+P7 — LOS TRES CONTROLES NUEVOS, Y POR QUE EL AUDITOR QUEDA EN ROJO
+Fecha: 2026-08-11  ·  Shell: Git Bash (MSYS)
+
+B10 — EL COTEJO DECLARADO SIGUE VIVO
+  El insumo declara contra que texto oficial se cotejo. B10 comprueba que ese
+  documento este en el repositorio y que su sha256 sea el declarado. Si el
+  documento cambia debajo del cotejo, se detiene.
+
+B11 — LO QUE EL V1 DECLARA LLEGA AL V2
+  cotejado_contra, gobernaciones, articulos y diferencias_no_incorporadas
+  viajan TAL CUAL del v1 al v2. B11 comprueba que lleguen y que lleguen
+  identicos. Cubre la deuda que P3 dejo nombrada: un migrador que deje de
+  copiarlos dejaria el v1 completo y el v2 sin ellos, sin que nada avisara.
+  Comprueba ademas que el vinculo Gobernacion->Capitanias cubra las 64
+  exactamente una vez.
+
+B12 — EL SELLO DE LA ADJUDICACION DE TRAMOS
+  adjudicacion_tramos.json declara contra que insumo se tomo la adjudicacion
+  del owner sobre 22 tramos. B12 comprueba que ese sello sea el v2 en disco.
+
+MORDIDA: 9/9, con control negativo (3_mordida.txt)
+  El control negativo va PRIMERO: con el sello puesto y nada roto, los tres
+  controles pasan. Sin eso, un control que falla siempre pareceria un control
+  que muerde. Despues, ocho defectos inyectados de a uno, cada uno cazado por
+  el control que le corresponde, con restauracion verificada por sha256 en un
+  finally.
+
+EL AUDITOR QUEDA EN ROJO, Y ES CORRECTO
+  B12 dispara hoy: adjudicacion_tramos.json declara el insumo ff3e6710 y el v2
+  en disco es 225f47d8. Ese ff3e6710 no existe en ningun commit del
+  repositorio — es el hallazgo del §8 de la bitacora, ahora ruidoso.
+
+  ESTO NO ES TRABAJO A MEDIAS. Es el primer disparo del control, y esta
+  haciendo exactamente lo que el owner pidio: que el insumo se mueva debajo de
+  una adjudicacion suya tiene que gritar. Se descarto a proposito que un
+  script re-selle solo, porque eso lo taparia.
+
+  LA ADJUDICACION SIGUE APLICANDO ENTERA — verificado, no supuesto
+  (2_verificar_sello.txt): los 22 tramos adjudicados existen en el v2 con las
+  mismas coordenadas y con el tipo que el owner adjudico. 0 no encontrados, 0
+  con otro tipo. Coincide con lo que P6 midio por otro camino: el campo
+  "tramos" no cambio en ninguna de las 64.
+
+  O sea que re-sellar es seguro. Pero es decision del owner, y el script se
+  niega a sellar sin --autorizacion.
+
+CONSECUENCIA QUE HAY QUE DECIR: mientras B12 este en rojo, la linea base del
+auditor no esta limpia, y por eso fase4_prueba_mordida_auditor.py (la mordida
+vieja del auditor) se niega a correr — con razon: una prueba de mordida sobre
+un insumo que ya falla no significa nada. Se destraba con el sello.
+
+COMANDO PARA EL OWNER (PowerShell):
+  cd C:\Users\katia\tmarea-backend\scripts
+  ..\tools\raster-build\.venv\Scripts\python.exe tm025a_p7_sellar_adjudicacion.py --verificar
+  ..\tools\raster-build\.venv\Scripts\python.exe tm025a_p7_sellar_adjudicacion.py --sellar --autorizacion "<texto>"
+
+RESTO DE LOS CONTROLES AL CERRAR P7
+  suite unitaria            : 76/76
+  mordida ambitos           : 11/11
+  mordida join              : 16/16
+  mordida andamio           : 14/14
+  validador zonas_aviso     : exit 0
+  mordida B10/B11/B12       : 9/9
+  mordida vieja del auditor : NO CORRE — linea base no limpia por B12

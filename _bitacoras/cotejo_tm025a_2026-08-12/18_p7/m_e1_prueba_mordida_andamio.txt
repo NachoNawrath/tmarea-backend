@@ -1,0 +1,33 @@
+==============================================================================
+PRUEBA DE MORDIDA — LOS GUARDS DEL ANDAMIO DE MEDICIÓN (E1)
+fecha: 2026-08-12T03:49:31.555Z
+==============================================================================
+
+CONTROL NEGATIVO: la declaración real valida. andamio='jurisdicciones_decreto', capa del motor='bahia_jurisdicciones', 3 motivos para no promoverla.
+
+1. LA DECLARACIÓN (en memoria, no se toca nada)
+  ✔ la capa del motor ES el andamio — el guard central
+  ✔ sin bloque "andamio"
+  ✔ es_andamio no es true
+  ✔ el andamio no nombra la capa
+  ✔ el nombre de capa no es un identificador
+  ✔ sin "para_que"
+  ✔ sin motivos para no promoverse
+  ✔ sin el texto del comentario de la base
+
+2. EL COMENTARIO DE LA BASE — INCLUIDO EL EDITADO A MANO
+  ✔ el comentario de la base coincide con el declarado (control negativo)
+  ✔ EL COMENTARIO DE LA BASE EDITADO A MANO
+  ✔ el comentario de la base borrado
+     (comentario de 'jurisdicciones_decreto' restaurado, idéntico al original)
+
+3. EL GUARD DE ARRANQUE — LEVANTANDO EL PROCESO DE VERDAD
+  ✔ el arranque FALLA si la capa del motor es el andamio
+      dijo: ARRANQUE DETENIDO — [andamio] la capa declarada para el motor ("capa_jurisdicciones") es 'jurisdicciones_decreto', que es la MISMA que el bloque "andamio" marca como andamio de medición. Esa capa no p
+     (data\decreto\capa_consultada.json restaurado, sha256 22a405b48bc5bf3c)
+  ✔ con la declaración sana, el arranque pasa el guard (control negativo)
+     (data/catalogo/estado_drift.json restaurado, sha256 261864d56f526630)
+
+==============================================================================
+MORDIDA: 14/14
+==============================================================================
