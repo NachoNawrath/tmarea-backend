@@ -11,13 +11,13 @@ FUENTES
 RESULTADO (capitanias_64_final.csv)
  capitania + codigo DIRECTEMAR : 64/64
  gobernacion                   : 63/64
- telefono + direccion          : 58/64
+ telefono + direccion + jefe   : 63/64
 
 HUECOS
  Rada Covadonga (CdRep 291): DIRECTEMAR la clasifica como Alcaldia de Mar, no capitania.
-   Depende de Gob. Maritima Antartica Chilena. Opera solo en campania estival.
- Sin telefono en capuertos_eol: Melinka, Chanaral, Puerto Montt y 3 antarticas.
-   Melinka y Puerto Montt SI tienen contacto en las paginas de gobernaciones (no extraido aun).
+   Depende de Gob. Maritima Antartica Chilena. Ficha sin capitan, direccion ni telefono. Sin informacion publica posterior a 2024. Estado operativo NO verificado. Sin bahias asociadas en SITPORT.
+ Contacto extraido de las paginas de gobernaciones (mas completas que capuertos_eol).
+   Titulos en div id="vtxt_cuerpo_TN", no en h3. 132 bloques (gobernaciones, capitanias, alcaldias).
  Rio Bueno (bahia 146, CdRep 189): no existe entre las 64 capitanias. Consultar a DIRECTEMAR.
 
 PENDIENTE DE APLICAR (diff_capitanias.csv)
@@ -28,3 +28,7 @@ NOTAS DE PARSEO
  curl capturado en variable PowerShell rompe UTF-8. Usar -o a disco y ReadAllText con Encoding::UTF8.
  Nombres no calzan entre fuentes: requiere normalizacion + tabla de alias.
  El sitio tiene typos (doble espacio en 'Capitania  de Puerto de Melinka'). Tolerar \s+ al parsear.
+
+DECISION DEL OWNER (no derivada de fuente)
+ Capitania sin telefono -> mostrar 'Sin informacion de contacto disponible. Comunicar por radio.'
+ Aplica hoy solo a Rada Covadonga. Regla general, no caso particular.
