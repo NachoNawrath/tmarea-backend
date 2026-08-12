@@ -1,0 +1,241 @@
+PROCEDENCIA — LOS 18 HTML DEL SONDEO DE CATALOGO Y CONTACTO
+Registrado el 2026-08-12, al podar el directorio.
+
+Los 18 archivos HTML que estuvieron aca fueron BORRADOS. Este archivo existe
+para que su perdida sea reparable: cada uno con su URL completa, su sha256, su
+tamano y —lo que de verdad importa— QUE SALIO DE EL. El sha detecta que un
+archivo cambio; no dice que se perdio. La linea "se extrajo" si.
+
+Se conservan los CSV derivados y los JSON raw de SITPORT, que son la evidencia
+que respalda `_bitacoras/sondeo_catalogo_cierre_2026-08-12.txt`. Lo que se fue
+es el HTML crudo: 0,95 MB de los 1,2 MB del directorio, el 79 %.
+
+FECHA DE CAPTURA: 2026-08-12, ~16:10 (declarada en `hallazgos_sondeo.txt`,
+commit 8f734f4 del mismo dia). Todos los archivos se capturaron en esa corrida.
+
+COMO SE RECAPTURA
+    curl -o <archivo> <URL>
+No capturar a una variable de PowerShell: rompe UTF-8. Bajar a disco y leer con
+[System.IO.File]::ReadAllText($ruta, [System.Text.Encoding]::UTF8).
+
+================================================================================
+LOS 18 ARCHIVOS
+================================================================================
+
+  capuertos_directemar.html
+      URL      : https://www.directemar.cl/directemar/site/edic/base/port/capuertos_eol.html
+      sha256   : da84e6f37197b4f394d5de5e66a66cc6a4adba664c35b3cb550319e3e711379f
+      tamano   : 72.058 bytes
+      se extrajo: listado plano de 58 Capitanias con direccion, telefono y mail.
+                 Titulos en <h3>. Es la fuente base; le faltan 5 (ver NOTA 2).
+
+  gm_region-arica-y-parinacota.html
+      URL      : https://www.directemar.cl/directemar/gobernaciones-maritimas/region-arica-y-parinacota
+      sha256   : aa22184190efa11d1d777afc22e898e4985396a5f8b893e717050c186297fa17
+      tamano   : 49.738 bytes
+      se extrajo: Gobernación Marítima de Arica — 1 Capitania(s) y 1 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Arica
+
+  gm_region-de-antofagasta.html
+      URL      : https://www.directemar.cl/gobernaciones-maritimas/region-de-antofagasta
+      sha256   : 7fd7a9fe96021f17bb05f731e203a162d1a2110e884106ddcef941ec6ff468b6
+      tamano   : 53.071 bytes
+      se extrajo: Gobernación Marítima de Antofagasta — 4 Capitania(s) y 2 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Tocopilla, Mejillones, Antofagasta, Taltal
+
+  gm_region-de-atacama.html
+      URL      : https://www.directemar.cl/gobernaciones-maritimas/region-de-atacama
+      sha256   : 3066a8e23fc4a137f1bf9bf60f7561d640b4a7268b9f1faf926d9d4c0afc80a8
+      tamano   : 52.041 bytes
+      se extrajo: Gobernación Marítima de Caldera — 3 Capitania(s) y 3 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Chañaral, Caldera, Huasco
+
+  gm_region-de-aysen.html
+      URL      : https://www.directemar.cl/directemar/gobernaciones-maritimas/region-de-aysen
+      sha256   : 7180d7351f5e00bfbf393c914c4bf64db966952df340268f1de04334e62c6d35
+      tamano   : 56.783 bytes
+      se extrajo: Gobernación Marítima de Aysén — 6 Capitania(s) y 3 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Melinka, Puerto Cisnes, Puerto Aguirre, Lago General Carrera, Chacabuco, Baker
+
+  gm_region-de-bio-bio.html
+      URL      : https://www.directemar.cl/gobernaciones-maritimas/region-de-bio-bio
+      sha256   : bdfa610fb9b4b32ee41dc6452d88b806e1ac7af13b1095ad2165f583b3524bed
+      tamano   : 60.850 bytes
+      se extrajo: Gobernación Marítima de Talcahuano — 7 Capitania(s) y 8 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Constitución, Lirquén-Tomé, San Vicente, Talcahuano, Coronel, Lota, Lebu
+
+  gm_region-de-coquimbo.html
+      URL      : https://www.directemar.cl/directemar/gobernaciones-maritimas/region-de-coquimbo
+      sha256   : 6f085f2bd73525c4feccdc460d1007855f1fa4e3a3ff092e5cab701e16081aa2
+      tamano   : 53.395 bytes
+      se extrajo: Gobernación Marítima de Coquimbo — 3 Capitania(s) y 3 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Coquimbo, Tongoy, Los Vilos
+
+  gm_region-de-los-lagos-castro.html
+      URL      : https://www.directemar.cl/gobernaciones-maritimas/region-de-los-lagos-castro
+      sha256   : 91a5ef92b9f12c0de874c0841c18694e4bbab75d41e75e086c6582a48b5324f0
+      tamano   : 60.174 bytes
+      se extrajo: Gobernación Marítima de Castro — 7 Capitania(s) y 7 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Ancud, Quemchi, Castro, Achao, Chonchi, Quellón, Chaitén
+
+  gm_region-de-los-lagos.html
+      URL      : https://www.directemar.cl/gobernaciones-maritimas/region-de-los-lagos
+      sha256   : e4bdcc9c0c9538c594557e13323f9309de105b5c38431885c4f4d84b2865292b
+      tamano   : 58.808 bytes
+      se extrajo: Gobernación Marítima de Puerto Montt — 6 Capitania(s) y 6 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Puerto Varas, Puerto Montt, Cochamó, Maullín, Calbuco, Hornopirén
+
+  gm_region-de-los-rios.html
+      URL      : https://www.directemar.cl/gobernaciones-maritimas/region-de-los-rios
+      sha256   : f956bf9f400bd657c6dd421ec6b324904664de55776f9740d03c673556b82f51
+      tamano   : 58.646 bytes
+      se extrajo: Gobernación Marítima de Valdivia — 6 Capitania(s) y 6 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Carahue, Villarrica, Panguipulli, Valdivia, Corral, Lago Ranco
+
+  gm_region-de-magallanes-puerto-williams.html
+      URL      : https://www.directemar.cl/directemar/gobernaciones-maritimas/region-de-magallanes-puerto-williams
+      sha256   : b68f27ac8b525fb5c0d79f10a459ec68636042901cd6a95644df5684b4aca80c
+      tamano   : 50.101 bytes
+      se extrajo: Gobernación Marítima de Puerto Williams — 1 Capitania(s) y 1 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Puerto Williams
+
+  gm_region-de-magallanes-punta-arenas.html
+      URL      : https://www.directemar.cl/gobernaciones-maritimas/region-de-magallanes-punta-arenas
+      sha256   : 75831b998594ae265ee840df87534a415f70d0aa94b0b78e8e159f94a6961a6d
+      tamano   : 55.897 bytes
+      se extrajo: Gobernación Marítima de Punta Arenas — 5 Capitania(s) y 3 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Punta Arenas, Puerto Natales, Punta Delgada, Puerto Edén, Tierra del Fuego
+
+  gm_region-de-magallanes-y-antartica-chilena.html
+      URL      : https://www.directemar.cl/directemar/gobernaciones-maritimas/region-de-magallanes-y-antartica-chilena
+      sha256   : ef7a1c430328b6a4ecd1a6b1f4800b052d03d4a5b9ee63c3194f80e8e10ee861
+      tamano   : 52.287 bytes
+      se extrajo: Gobernación Marítima Antártica Chilena — 3 Capitania(s) y 1 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Bahía Paraíso, Bahía Fildes, Soberanía
+
+  gm_region-de-tarapaca.html
+      URL      : https://www.directemar.cl/directemar/gobernaciones-maritimas/region-de-tarapaca
+      sha256   : 2e80e880284f27acc4eec6f63b37e9377cf23f29040c72cd39f546097d760f71
+      tamano   : 50.642 bytes
+      se extrajo: Gobernación Marítima de Iquique — 2 Capitania(s) y 2 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Iquique, Patache
+
+  gm_region-de-valparaiso-hanga-roa.html
+      URL      : https://www.directemar.cl/directemar/gobernaciones-maritimas/region-de-valparaiso-hanga-roa
+      sha256   : cbf3edb12db98337941a6d590d537f9c1af2a763ecea832bb033cd5fd6edbf59
+      tamano   : 49.795 bytes
+      se extrajo: Gobernación Marítima de Hanga Roa — 1 Capitania(s) y 1 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Hanga Roa
+
+  gm_region-de-valparaiso-o-higgins.html
+      URL      : https://www.directemar.cl/gobernaciones-maritimas/region-de-valparaiso-o-higgins
+      sha256   : 1704e7dda025c2a97ee18140d43d6da8260b8f530b03de057481c7acf924caed
+      tamano   : 54.989 bytes
+      se extrajo: Gobernación Marítima de San Antonio — 4 Capitania(s) y 3 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Algarrobo, San Antonio, Lago Rapel, Pichilemu
+
+  gm_region-de-valparaiso.html
+      URL      : https://www.directemar.cl/directemar/gobernaciones-maritimas/region-de-valparaiso
+      sha256   : 26288ad508038ac3bee63565f1983a4964876edad7cc02b445b0b1a3b4a0d383
+      tamano   : 54.710 bytes
+      se extrajo: Gobernación Marítima de Valparaíso — 4 Capitania(s) y 3 bloque(s) de Alcaldias de Mar.
+                 Capitanias: Quintero, Papudo, Valparaíso, Juan Fernández
+
+  gob_index2.html
+      URL      : https://www.directemar.cl/directemar/site/edic/base/port/gobernaciones_maritimas.html
+      sha256   : 6738b9a018159fd2cd3271a05ca3fd45e946d279fa80674b04ee1ff94954405f
+      tamano   : 56.731 bytes
+      se extrajo: indice de las 16 Gobernaciones Maritimas con el enlace a cada una.
+                 No aporta contacto: se uso para descubrir las 16 URLs de abajo.
+================================================================================
+NOTA 1 — EL PARSEO, QUE ES LO QUE COSTO TRABAJO
+================================================================================
+
+Sin los HTML esto deja de ser descubrible. Es la razon principal por la que este
+archivo existe.
+
+1.1  LOS TITULOS VAN EN DOS ESTRUCTURAS DISTINTAS SEGUN LA PAGINA.
+
+     · Las 16 paginas de Gobernaciones (`gm_*.html`) los ponen en
+              <div id="vtxt_cuerpo_TN"> ... </div>
+       con N correlativo desde 0. NO usan <h3>. Buscar <h3> ahi devuelve cero
+       resultados y la pagina parece vacia.
+
+     · `capuertos_directemar.html` los pone en <h3>. NO tiene vtxt_cuerpo_TN.
+
+     Un parser que asuma una sola de las dos formas se lleva la mitad del dato
+     sin fallar: devuelve menos filas, no un error.
+
+1.2  DENTRO DE `vtxt_cuerpo_TN` CONVIVEN TRES CLASES DE BLOQUE, y hay que
+     distinguirlas por el texto del titulo, no por la posicion:
+         "Gobernación Marítima de X"   → la Gobernacion (1 por pagina, la T0)
+         "Capitanía de Puerto de X"    → Capitania
+         "Alcaldías de Mar de X"       → alcaldias, que NO son Capitanias
+     En total 132 bloques entre las 16 paginas. Contarlos todos como Capitanias
+     infla el catalogo.
+
+1.3  EL TYPO DEL DOBLE ESPACIO. En `gm_region-de-aysen.html`, un titulo dice
+              "Capitanía  de Puerto de Melinka"
+     con DOS espacios despues de "Capitanía". Es la unica ocurrencia de espacio
+     doble en texto visible de los 18 archivos — verificado recorriendo los 18.
+     Ojo con el lugar: el doble espacio esta despues de "Capitanía", no despues
+     de "Puerto". Un parser con `Capitanía de Puerto` literal pierde Melinka en
+     silencio. Tolerar \s+ entre palabras al parsear.
+
+1.4  EL MAIL VIENE OFUSCADO como `[email&#160;protected]` (Cloudflare). No hay
+     direccion de correo utilizable en el HTML crudo; por eso el sondeo no
+     levanto mail y `capitanias_64_final.csv` no tiene esa columna.
+
+================================================================================
+NOTA 2 — QUE APORTO CADA FUENTE, Y UNA CORRECCION MEDIDA
+================================================================================
+
+Cobertura medida sobre los archivos, antes de borrarlos:
+
+    capuertos_eol.html          58 Capitanias
+    las 16 paginas gm           63 Capitanias
+    union                       63 Capitanias  (capuertos es SUBCONJUNTO de gm)
+
+Las CINCO que solo estan en las paginas de Gobernaciones, y que por eso
+justifican haber capturado las 16:
+
+    CHAÑARAL          gm_region-de-atacama.html
+    PUERTO MONTT      gm_region-de-los-lagos.html
+    BAHIA FILDES      gm_region-de-magallanes-y-antartica-chilena.html
+    BAHIA PARAISO     gm_region-de-magallanes-y-antartica-chilena.html
+    SOBERANIA         gm_region-de-magallanes-y-antartica-chilena.html
+
+CORRECCION AL COMMIT 6b38c1a. Su mensaje dice que suma el telefono "de Melinka,
+Chanaral y Puerto Montt (ausentes en capuertos_eol.html)". **Melinka NO estaba
+ausente**: `capuertos_eol.html` la trae, con direccion ("Costanera Oeste S/N.
+Melinka") y con el telefono +56 67 2431555, que es el mismo que quedo en el CSV.
+Medido sobre el archivo antes de borrarlo. Las ausentes son las cinco de arriba.
+
+Esto es una QUINTA aseveracion sin medir de la sesion del sondeo, hermana de las
+cuatro que registra `sondeo_catalogo_cierre_2026-08-12.txt` §6. Se anota aca
+porque es sobre lo que aporto cada HTML, que es lo que este archivo documenta.
+
+De donde sale, muy probablemente, el error: Melinka SI necesito el reparseo por
+el typo del doble espacio de la NOTA 1.3. "No la trae" y "no la encontre con mi
+parser" no son lo mismo, y el mensaje del commit escribio la segunda como si
+fuera la primera. Es exactamente el modo de falla contra el que existe esta nota.
+
+================================================================================
+NOTA 3 — LO QUE ESTE ARCHIVO NO PUEDE REPARAR
+================================================================================
+
+Si DIRECTEMAR cambia el sitio, el sha256 dira que lo recapturado no es lo mismo,
+pero no devuelve el original. Lo que se pierde en ese caso:
+
+  · la auditoria del parseo de la NOTA 1 contra el HTML real;
+  · la posibilidad de re-extraer un campo que el sondeo no levanto (el mail
+    ofuscado, el nombre del Capitan de Puerto en las fichas que lo traian);
+  · la prueba de que el typo de Melinka estaba en la fuente y no en el parser.
+
+Lo que NO se pierde, porque quedo en derivado versionado: las 64 Capitanias con
+su codigo, gobernacion, telefono, direccion y jefe (`capitanias_64_final.csv`),
+y las respuestas crudas de SITPORT (`sitport_*_raw.json`), que son las que
+respaldan cada numero de la bitacora de cierre.
+
+Precedente que se sigue: `geodata/costa/PROCEDENCIA.txt`, que hace lo mismo con
+la capa OSM de 925 MB que tampoco vive en el repositorio.
