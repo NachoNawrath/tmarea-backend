@@ -1,0 +1,105 @@
+FASE 5 — ETAPA 1. CORRECCION DE LOS TESTIGOS
+modo       : APLICAR
+insumo     : data/decreto/jurisdicciones_v2.json
+             sha256[:16] aeb06fbaa4ca666d
+capa costa : osm_land_polygons  ->  costa_osm_sub
+             sha256[:16] e3570af698dd0867
+
+==============================================================================
+DISTRIBUCION MEDIDA
+==============================================================================
+  testigos del ambito ['maritima'] : 52
+    ya_en_agua     8
+    corregible     30
+    pasa_umbral    4
+    irresoluble    0
+    excluido       1
+    sin_testigo    9
+
+  desplazamiento al agua, de los 35 que caen en tierra:
+    mediana 28 m   minimo 3 m   maximo 3380 m
+    a menos de   100 m : 25 de 35
+    a menos de   250 m : 27 de 35
+    a menos de   500 m : 30 de 35
+    a menos de  1000 m : 32 de 35
+    a menos de  2000 m : 34 de 35
+
+  riesgo de identidad — distancia al testigo de OTRA jurisdiccion:
+    minimo 7654 m (Coronel)   mediana 57920 m
+    el caso mas apretado de los que se mueven: San Vicente se mueve 497 m con el vecino a 25069 m = 50x (hacen falta 10x)
+
+  libertad que la eleccion del testigo YA se tomo respecto de la sede:
+    mediana 1.8 km   maximo 25.2 km
+
+  UMBRAL: 500 m, uno solo para todos
+  MARGEN DENTRO DEL AGUA: 1 m   MARGEN DE IDENTIDAD: 10x
+
+==============================================================================
+TESTIGO POR TESTIGO
+==============================================================================
+  mueve  Antofagasta                 499.5 m   (-23.65000,-70.40000) -> (-23.64980,-70.40489)
+  mueve  San Vicente                 497.3 m   (-36.78330,-73.18330) -> (-36.78674,-73.18687)
+  mueve  Iquique                     396.9 m   (-20.21330,-70.15030) -> (-20.21055,-70.15274)
+  mueve  Mejillones                  192.6 m   (-23.10000,-70.45000) -> (-23.09827,-70.45023)
+  mueve  Carahue                     179.2 m   (-38.75000,-73.43330) -> (-38.75095,-73.43497)
+  mueve  Puerto Montt                 87.7 m   (-41.48330,-72.95000) -> (-41.48264,-72.94943)
+  mueve  Coquimbo                     43.5 m   (-29.96680,-71.34990) -> (-29.96713,-71.35014)
+  mueve  Quintero                     43.0 m   (-32.78330,-71.53330) -> (-32.78303,-71.53363)
+  mueve  Castro                       36.7 m   (-42.48080,-73.75910) -> (-42.48112,-73.75901)
+  mueve  Chaiten                      36.2 m   (-42.91120,-72.71870) -> (-42.91153,-72.71870)
+  mueve  Coronel                      34.7 m   (-37.00920,-73.18330) -> (-37.00941,-73.18359)
+  mueve  Tongoy                       31.2 m   (-30.25580,-71.49690) -> (-30.25594,-71.49718)
+  mueve  Los Vilos                    27.6 m   (-32.13620,-71.52980) -> (-32.13599,-71.52965)
+  mueve  Algarrobo                    27.0 m   (-33.36340,-71.67260) -> (-33.36322,-71.67279)
+  mueve  Taltal                       25.2 m   (-25.40890,-70.49110) -> (-25.40870,-70.49121)
+  mueve  Melinka                      24.9 m   (-43.89870,-73.74620) -> (-43.89883,-73.74645)
+  mueve  Calbuco                      22.7 m   (-41.77630,-73.13040) -> (-41.77650,-73.13040)
+  mueve  Puerto Natales               21.0 m   (-51.73190,-72.51360) -> (-51.73209,-72.51366)
+  mueve  Punta Arenas                 20.5 m   (-53.13580,-70.86250) -> (-53.13597,-70.86238)
+  mueve  Cochamo                      17.2 m   (-41.49500,-72.31060) -> (-41.49515,-72.31065)
+  mueve  Pichilemu                    16.7 m   (-34.38290,-72.01440) -> (-34.38276,-72.01432)
+  mueve  Ancud                        13.2 m   (-41.86650,-73.83130) -> (-41.86655,-73.83144)
+  mueve  Puerto Cisnes                12.9 m   (-44.73520,-72.68260) -> (-44.73520,-72.68276)
+  mueve  Quemchi                      10.1 m   (-42.14480,-73.47250) -> (-42.14488,-73.47245)
+  mueve  Caldera                       7.0 m   (-27.06370,-70.82370) -> (-27.06367,-70.82376)
+  mueve  Corral                        5.1 m   (-39.88740,-73.42740) -> (-39.88736,-73.42738)
+  mueve  Maullin                       4.9 m   (-41.61560,-73.59660) -> (-41.61560,-73.59654)
+  mueve  Lota                          3.6 m   (-37.07350,-73.15220) -> (-37.07347,-73.15220)
+  mueve  Quellon                       3.3 m   (-43.12080,-73.62320) -> (-43.12083,-73.62321)
+  mueve  Huasco                        2.7 m   (-28.46090,-71.22410) -> (-28.46090,-71.22407)
+  DECL   Valdivia                     3380 m   excluido POR DECLARACION en el dato (owner, 2026-08-10)
+         Valdivia es un frente aparte y no entra en la correccion de testigos contra la capa de costa. Su punto no es una orilla mal puesta por unos metros: es un puerto FLUVIAL, rio arriba. El Art. 2 del D.S. 991 incluye los rios navegables en la jurisdiccion, pero una capa de costa no los trae — hacen falta datos de hidrografia, que son un tercer insumo y no una costa. Correr este punto al mar mas cercano lo sacaria del rio que es justamente su jurisdiccion.
+  DECL   Constitucion               1412.4 m   pasa el umbral de 500 m: no se mueve, se declara
+  DECL   Puerto Chacabuco           1006.7 m   pasa el umbral de 500 m: no se mueve, se declara
+  DECL   Valparaiso                  580.1 m   pasa el umbral de 500 m: no se mueve, se declara
+  DECL   Lebu                        564.9 m   pasa el umbral de 500 m: no se mueve, se declara
+  s/t    Arica                           —     no cerrable, no va a tener figura — el insumo no le da testigo
+  s/t    Papudo                          —     cerrable — ninguna bahia SITPORT tiene a esta Capitania como su sede mas cercana: no hay punto sobre agua con que probar su geometria
+  s/t    Lirquen                         —     no cerrable, no va a tener figura — el insumo no le da testigo
+  s/t    Talcahuano                      —     no cerrable, no va a tener figura — el insumo no le da testigo
+  s/t    Baker                           —     no cerrable, no va a tener figura — el insumo no le da testigo
+  s/t    Puerto Eden                     —     no cerrable, no va a tener figura — el insumo no le da testigo
+  s/t    Punta Delgada                   —     no cerrable, no va a tener figura — el insumo no le da testigo
+  s/t    Tierra del Fuego                —     no cerrable, no va a tener figura — el insumo no le da testigo
+  s/t    Puerto Williams                 —     no cerrable, no va a tener figura — el insumo no le da testigo
+  queda  Patache                         0 m   ya estaba sobre agua
+  queda  Tocopilla                       0 m   ya estaba sobre agua
+  queda  Chanaral                        0 m   ya estaba sobre agua
+  queda  San Antonio                     0 m   ya estaba sobre agua
+  queda  Rio Negro Hornopiren            0 m   ya estaba sobre agua
+  queda  Achao                           0 m   ya estaba sobre agua
+  queda  Chonchi                         0 m   ya estaba sobre agua
+  queda  Puerto Aguirre                  0 m   ya estaba sobre agua
+
+==============================================================================
+VERIFICACION SOBRE EL ARCHIVO YA ESCRITO
+==============================================================================
+  movidos al agua          : 30
+  declarados sin testigo   : 5
+  testigos sobre agua      : 38
+  sin testigo en el insumo : 14
+  insumo sha256[:16]       : 5e73804b2f720d5c
+  todas las verificaciones pasaron
+
+  Excluidos por declaracion en el dato: 1
+    Valdivia: Valdivia es un frente aparte y no entra en la correccion de testigos contra la capa de costa. Su punto no es una orilla mal puesta por unos metros: es un puerto FLUVIAL, rio arriba. El Art. 2 del D.S. 991 incluye los rios navegables en la jurisdiccion, pero una capa de costa no los trae — hacen falta datos de hidrografia, que son un tercer insumo y no una costa. Correr este punto al mar mas cercano lo sacaria del rio que es justamente su jurisdiccion.

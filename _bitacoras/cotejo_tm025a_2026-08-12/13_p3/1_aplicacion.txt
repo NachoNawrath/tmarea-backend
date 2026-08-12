@@ -1,0 +1,41 @@
+==============================================================================
+P3 — LAS 16 GOBERNACIONES MARITIMAS Y EL ART. 2
+==============================================================================
+  insumo    : data/decreto/jurisdicciones_capitanias.json (el v1, la fuente)
+              sha256[:16] 0e1e2cc512101b21
+  documento : TM-025 A, actualizado al 4 de junio de 2025 (DIRECTEMAR)
+              sha256[:16] e14cb905b4895422  ok
+
+EXTRACCION Y VINCULO (derivado del campo 'gobernacion' del v1)
+  GOBERNACIÓN MARÍTIMA DE ARICA                  1 cap    251 car
+  GOBERNACIÓN MARÍTIMA DE IQUIQUE                2 cap    226 car
+  GOBERNACIÓN MARÍTIMA DE ANTOFAGASTA            4 cap    266 car
+  GOBERNACIÓN MARÍTIMA DE CALDERA                3 cap    249 car
+  GOBERNACIÓN MARÍTIMA DE HANGA ROA              1 cap    166 car
+  GOBERNACIÓN MARÍTIMA DE COQUIMBO               3 cap    209 car
+  GOBERNACIÓN MARÍTIMA DE VALPARAÍSO             4 cap    286 car
+  GOBERNACIÓN MARÍTIMA DE SAN ANTONIO            4 cap    287 car
+  GOBERNACIÓN MARÍTIMA DE TALCAHUANO             7 cap    433 car
+  GOBERNACIÓN MARÍTIMA DE VALDIVIA               6 cap    856 car
+  GOBERNACIÓN MARÍTIMA DE PUERTO MONTT           6 cap   1243 car
+  GOBERNACIÓN MARÍTIMA DE CASTRO                 7 cap    665 car
+  GOBERNACIÓN MARÍTIMA DE AYSÉN                  6 cap    715 car  <-- limite Sur de la XI Region
+  GOBERNACIÓN MARÍTIMA DE PUNTA ARENAS           5 cap    438 car
+  GOBERNACIÓN MARÍTIMA DE PUERTO WILLIAMS        1 cap   1172 car
+  GOBERNACIÓN MARÍTIMA ANTÁRTICA CHILENA         4 cap    687 car
+
+  Art. 2 extraido: 573 caracteres, linea 815
+    Art. 2°.- Las jurisdicciones señaladas en el artículo precedente comprenden el litoral, lagos y ríos...
+
+APLICACION
+  ++  gobernaciones  16 entradas
+  ++  articulos      Art. 2, 573 caracteres
+
+==============================================================================
+  Capitanias en el insumo : 64  (NO cambia)
+  Gobernaciones           : 16
+  Capitanias vinculadas   : 64  (tiene que ser 64)
+  v1 ahora                : sha256[:16] a58d364c34ff75fa
+
+  EL V2 NO SE TOCA ACA. Se regenera con fase4_migrar_insumo_v2.py.
+==============================================================================

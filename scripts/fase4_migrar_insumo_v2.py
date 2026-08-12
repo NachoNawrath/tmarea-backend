@@ -1258,6 +1258,14 @@ def main():
         ],
         "puntos_notables": v1.get("puntos_notables"),
         "fronteras": fronteras,
+        # Las Gobernaciones Maritimas y el Art. 2 viajan TAL CUAL desde el v1: son
+        # texto y vinculo, no geometria. Esta migracion no los transforma, y por eso
+        # no los reordena ni los reinterpreta — solo los lleva al derivado, que es lo
+        # que consultan los servicios. Lista HERMANA de `jurisdicciones`, que sigue
+        # teniendo exactamente las 64 Capitanias: el control B0 compara ESE conjunto
+        # de ids contra el v1, y meter las Gobernaciones ahi lo romperia.
+        "gobernaciones": v1.get("gobernaciones"),
+        "articulos": v1.get("articulos"),
         "jurisdicciones": juris,
     }
     with open(V2, "w", encoding="utf-8") as fh:
