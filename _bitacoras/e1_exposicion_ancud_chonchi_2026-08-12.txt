@@ -1,0 +1,160 @@
+================================================================================
+EXPOSICIÓN DE ancud Y chonchi EN EL ANDAMIO — 2026-08-12
+Estado: MEDIDO SOBRE LA CAPA VIGENTE. No se regeneró nada.
+Para qué existe: sostiene D4 y D5, y acota qué está en juego en la deuda
+del andamio sin pagar el costo de regenerarlo.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\e1_exposicion_ancud_chonchi_2026-08-12\02_medir_ancud_chonchi.js
+
+El script nació en el scratchpad de la sesión y trae la raíz cableada, más los
+`require` por ruta absoluta —vive fuera de `scripts/`, así que no resuelve los
+módulos del repositorio de otra forma—. Se guarda tal como corrió. NO es una
+pieza del repositorio y no debe promoverse a `scripts/` sin reescribirlo.
+
+Necesita PostgreSQL levantado y el motor de ruteo ráster: mide sobre las mismas
+8 rutas reales que E2, con el mismo perfil (calado 1,2 m, licencia PNM) y el
+mismo filtro de `aproximacion_final`.
+
+Crudo:
+    01_exposicion.txt              la salida
+    02_medir_ancud_chonchi.js      el script
+
+
+0. POR QUÉ SE MIDIÓ ESTO
+--------------------------------------------------------------------------------
+El andamio (`jurisdicciones_decreto`) se construyó el 2026-08-10 desde el insumo
+v1 de ese momento. Después, la pasada de alineación contra el TM-025 A cambió el
+v1: de las 64 jurisdicciones, **sólo dos cambian campos que afectan la
+geometría** —`ancud` y `chonchi`—, las dos por la misma causa: recuperaron un
+límite Sur que la transcripción había omitido (ancud `42 00 00 S`, chonchi
+`42 50 00 S`).
+
+La pregunta del owner fue la correcta: **cuánto está en juego si esas dos figuras
+cambian**, antes de decidir si se regenera. Esto lo contesta sin regenerar.
+
+**Es una cota de EXPOSICIÓN, no una predicción.** Mide cuánto territorio de ruta
+y cuántas restricciones tocan hoy esas dos jurisdicciones. Cuánto se moverían los
+porcentajes o el +11 exige regenerar y volver a medir, y eso no se hizo.
+
+
+1. LOS KILÓMETROS
+--------------------------------------------------------------------------------
+  ruta                                 total km    en ancud+chonchi
+  ----------------------------------------------------------------------
+  Anahuac -> Melinka                    306.60             0.00
+  Anahuac -> Quellon                    217.71            20.63  <-
+  Anahuac -> Chacabuco                  499.41             0.00
+  Ancud -> Castro (mar interior)        162.10            60.29  <-
+  Chonchi -> Chaiten (Corcovado)         93.15            14.95  <-
+  Arica -> Iquique (norte)              198.82             0.00
+  Valparaiso -> San Antonio              73.44             0.00
+  Punta Arenas -> Pto Williams          524.83             0.00
+  ----------------------------------------------------------------------
+  TOTAL                                2076.06            95.87
+
+      km en ancud   : 60.17
+      km en chonchi : 35.70
+      PORCENTAJE DEL TOTAL MEDIDO: 4,6 %
+
+Tres de las ocho rutas las tocan; cinco no las tocan en absoluto. El total de
+2.076,06 km reproduce exactamente el de E2, que es la comprobación de que se
+midió sobre las mismas rutas.
+
+
+2. LAS RESTRICCIONES — UNA SOLA, Y NO ES CUALQUIERA
+--------------------------------------------------------------------------------
+De las **26** restricciones que el patrón ve hoy sobre esas 8 rutas, la única
+cuya Capitanía (join de E0.3) es ancud o chonchi es:
+
+    bahía 155 QUEILEN  ->  chonchi
+
+Aparece en dos de las rutas medidas con unidad bahía (Anahuac->Quellon y
+Chonchi->Chaiten) y en tres con unidad Capitanía (se suma Ancud->Castro).
+
+**LO QUE HAY QUE NO PERDER DE VISTA: 155 Queilén es una de las CUATRO apariciones
+que E2 clasificó como APOYADAS EN TRASLAPE.** E2 la midió así:
+
+    155 QUEILEN -> chonchi   ruta∩J 9,91 km · en traslape 9,91 km · exclusivo 0,00 km
+
+**Exclusivo 0,00 km.** No se apoya parcialmente en traslape: se apoya
+enteramente. Toda su intersección con la ruta cae en zona donde la capa atribuye
+dos jurisdicciones.
+
+Las cuatro apariciones apoyadas en traslape son justamente las que separan el
+**+11** de su piso **+7**. De modo que la exposición, leída bien, es:
+
+    4,6 % de los km medidos          — chico
+    1 de 26 restricciones            — chico
+    pero esa 1 está dentro del 36 %  — no tan chico
+    del margen que ya se sabía blando
+
+La figura de chonchi toca la parte más frágil del número de E2. Eso no dice que
+el número esté mal; dice de qué depende, que es lo que E2 se propuso declarar.
+
+
+3. LO QUE ESTA MEDICIÓN NO DICE
+--------------------------------------------------------------------------------
+· No dice cuánto se moverían 58,3 / 31,2 / 10,5 % ni el +11. Para eso hay que
+  regenerar y volver a medir.
+· No dice que ancud y chonchi vayan a cambiar de forma al regenerar. Dice que su
+  insumo cambió y que ésta es la superficie de contacto con lo medido.
+· No mide la deuda contra v2. Es otra deuda y está declarada aparte; ver el texto
+  propuesto en `e1_texto_propuesto_deuda_andamio_2026-08-12.md`.
+
+
+4. EL ERROR DE MÉTODO DEL PRIMER INTENTO — TERCERA VEZ HOY DEL MISMO PATRÓN
+--------------------------------------------------------------------------------
+Para decidir si ancud y chonchi seguían difiriendo entre v1 y v2, la primera
+corrida comparó el campo **`poligonal_completa`** del v1 contra **`contorno`** del
+v2. Dio "las 11 siguen difiriendo", que resultó ser la conclusión correcta por la
+razón equivocada: **esos dos campos no son equivalentes.**
+
+La equivalencia declarada, y la que usó E1 para medir las 11, es
+**`vertices` (v1) ↔ `contorno` (v2)**, comparados como CONJUNTOS de coordenadas.
+Está escrito en `_bitacoras/e1_propuesta_2026-08-11/01_medicion.txt` líneas 64-66:
+*"v1 usa `limite_norte_dec` plano y `vertices`; v2 usa `limite_norte.dec` y
+`contorno`. Acá se comparan los campos equivalentes, no los homónimos."*
+
+Rehecha con los campos correctos, la conclusión se sostiene y además se afina:
+
+    id            v1  v2  soloV1 soloV2   norte/sur
+    ancud          3   4       0      1    ok/ok
+    chonchi        4  11       0      7    ok/ok
+    ...
+    SIGUEN difiriendo: 11    YA coinciden: 0
+
+A ancud y chonchi el límite Sur **ya les coincide** con v2 tras la corrección del
+v1; lo que sigue difiriendo en las dos es el contorno. Ese matiz sólo aparece con
+la comparación correcta: la incorrecta lo tapaba diciendo "difieren" sin decir en
+qué.
+
+**ES LA TERCERA VEZ EN EL DÍA que muerde el mismo patrón —medir el campo
+equivocado— y las tres veces con distinta cara:**
+
+  1. El cruce del sondeo comparó nombres con `normalizarTexto`, que devuelve
+     MAYÚSCULAS, contra patrones en minúscula: no colapsó ninguna variante y dio
+     39 conflictos donde había 16.
+  2. El `PROCEDENCIA.txt` del sondeo calculó sha256 sobre el archivo en disco
+     (CRLF) sin declararlo, y el blob de git va en LF: el hash no se reproduce.
+  3. Ésta.
+
+El patrón no es "equivocarse de campo". Es **dar por equivalentes dos cosas que
+se parecen** —dos nombres, dos representaciones del mismo archivo, dos campos con
+rol parecido— sin comprobar la equivalencia. Y en los tres casos la comprobación
+era barata y estaba escrita en el repositorio: el encabezado de
+`normalizarTexto.js`, la trampa del cotejo TM-025 A §8.0, y las líneas 64-66 de
+la medición de E1. **El repositorio ya sabía las tres.**
+
+Aplicable, y es lo que conviene llevarse: antes de comparar dos campos de fuentes
+distintas, buscar si alguien ya declaró la equivalencia. En este repositorio la
+respuesta fue que sí las tres veces.
+
+================================================================================
+FIN — medición sobre la capa vigente. No se regeneró ni se modificó nada.
+================================================================================

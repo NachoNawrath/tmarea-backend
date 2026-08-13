@@ -318,6 +318,39 @@ Qué desbloquea: E2 sin esperar C3. **Es lo que saca al proyecto del camino crí
 **Aceptación:** el arranque falla si la capa declarada es el andamio fuera de un contexto de
 medición.
 
+#### Decisión sobre regenerar el andamio — 2026-08-12: NO se regenera
+
+Decidido por el owner tras medirlo. **No se ejecutó nada**: la capa vigente sigue siendo la
+que E2 midió.
+
+**Si alguna vez se regenera, va DESPUÉS de regenerar `cotejo_lacustre_adjudicado.json`, nunca
+antes.** Ese archivo es uno de los dos insumos de `scripts/fase3ter_construir_capa.py`, y E3 lo
+va a regenerar como precondición suya (§ *Corrección al alcance de E3*). Regenerar el andamio
+antes es trabajo tirado: habría que rehacerlo apenas E3 toque el cotejo.
+
+**Exposición medida sin regenerar** (`_bitacoras/e1_exposicion_ancud_chonchi_2026-08-12.txt`):
+de las 64 jurisdicciones, sólo **ancud** y **chonchi** cambian campos que afecten la geometría
+desde que la capa se construyó — las dos recuperaron un límite Sur omitido en la transcripción.
+Lo que eso toca de lo ya medido:
+
+- **95,87 de los 2.076,06 km — el 4,6 %**, en 3 de las 8 rutas. Las otras cinco no las tocan.
+- **1 de las 26 restricciones**: bahía 155 Queilén, cuya Capitanía es chonchi.
+
+**Esa 1 está en el margen blando.** 155 Queilén es una de las cuatro apariciones que E2
+clasificó como apoyadas en traslape, y la más extrema: `ruta∩J 9,91 km · en traslape 9,91 ·
+exclusivo 0,00`. Se apoya **enteramente**. Esas cuatro son las que separan el **+11** de su piso
+**+7**, así que la figura de chonchi toca la parte más frágil del número. La exposición es chica
+en volumen y no es despreciable en dónde cae.
+
+Nada de esto predice cuánto se movería el +11: para eso hay que regenerar y volver a medir. Dice
+de qué depende, que es lo que E2 se propuso declarar y lo que D4 y D5 necesitan.
+
+**Ojo con el generador:** lee el insumo **v1**, no el v2. Regenerar tal como está hoy saldaría la
+deuda contra el v1 vigente (las 2 correcciones de límite Sur) y **no** la deuda contra v2 (las 11
+diferencias de contorno, reverificadas el 2026-08-12: siguen siendo 11, ninguna se resolvió).
+Saldar esa segunda exige que el generador lea v2, que es cambio de código. Texto propuesto para
+la deuda declarada, sin aplicar, en `_bitacoras/e1_texto_propuesto_deuda_andamio_2026-08-12.md`.
+
 ### E2 · Diseñar y medir el cambio de unidad
 **Depende de: E1. No toca el motor: produce números y un diseño.**
 
