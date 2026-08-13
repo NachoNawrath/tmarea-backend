@@ -163,6 +163,27 @@ caso('C8', 'un trozo reclamado por dos ambitos no publicados a la vez', async ()
   await ambitoQueReclama(pool, d, { lat_ini: -39.2, lon_ini: -72.2, lat_fin: -39.3, lon_fin: -71.9 });
 });
 
+// ─── C9 — la habilitacion para publicar (E3, gate por ambito) ───────────────
+caso('C9', 'un ambito al que se le borra "habilitado_para_publicar"', async () => {
+  const d = clonar(DECL_REAL);
+  delete d.ambitos.find(a => a.ambito === 'antartica').habilitado_para_publicar;
+  validarDeclaracion(d, INSUMO_REAL, CAPA_REAL);
+});
+
+caso('C9', 'habilitacion declarada sin motivo escrito', async () => {
+  const d = clonar(DECL_REAL);
+  d.ambitos.find(a => a.ambito === 'lacustre').motivo_habilitacion = '   ';
+  validarDeclaracion(d, INSUMO_REAL, CAPA_REAL);
+});
+
+caso('C9', 'un ambito declarado PUBLICADO y no habilitado a publicar', async () => {
+  const d = clonar(DECL_REAL);
+  const e = d.ambitos.find(a => a.ambito === 'lacustre');
+  e.publicado = true;
+  e.habilitado_para_publicar = false;
+  validarDeclaracion(d, INSUMO_REAL, CAPA_REAL);
+});
+
 // ─── Corrida ────────────────────────────────────────────────────────────────
 (async () => {
   console.log('PRUEBA DE MORDIDA — REGISTRO DE AMBITOS PUBLICADOS (E0.2)');
@@ -217,6 +238,7 @@ caso('C8', 'un trozo reclamado por dos ambitos no publicados a la vez', async ()
       `con geografia de reclamo: ${validada.con_geografia.length}`);
     for (const e of validada.ambitos) {
       console.log(`  ${e.ambito.padEnd(16)} publicado=${String(e.publicado).padEnd(5)} ` +
+        `habilitado=${String(e.habilitado_para_publicar).padEnd(5)} ` +
         `jur=${e.jurisdicciones_esperadas}  reclamo=${e.geografia_de_reclamo ? e.geografia_de_reclamo.relacion : 'ninguna (declarado)'}`);
     }
   } catch (e) {

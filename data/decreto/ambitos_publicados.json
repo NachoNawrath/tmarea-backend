@@ -25,12 +25,16 @@
     "contactos": "src/data/bahia-capitania-map.json — fuente autorizada de telefono por bahia (CONTRATO_MOTOR.md §5)"
   },
 
+  "sobre_la_habilitacion": "Cada entrada declara dos cosas distintas que no se pueden confundir. `publicado` es un HECHO de la base — lo derivamos contando geometrias de ese ambito en capa_publicada, y el validador se detiene si la declaracion y la base dejan de coincidir. `habilitado_para_publicar` es una INTENCION nuestra: si el gate por ambito del constructor puede dejar entrar ese ambito a la base el dia que pase sus controles. Existe porque partir el gate por ambito (D3) no libera solamente al ambito que una etapa esta trabajando: libera a TODOS los que pasen sus controles. Sin esta declaracion, un ambito que ninguna etapa audito se publicaria solo, retirando su aviso de INV-3.6 y cambiando lo que el patron ve sin que nadie lo haya decidido. La habilitacion no afloja ningun control: un ambito habilitado que falla sus controles NO se publica igual. Y no puede haber un ambito publicado sin habilitar — el validador lo comprueba.",
+
   "sobre_la_geografia_de_reclamo": "Para avisarle al patron que su ruta entra en un ambito no publicado hay que saber en que ambito cae un trozo, y la geometria de ese ambito es justamente la que falta. Cada entrada declara de donde se toma esa geografia. NO resuelve jurisdiccion y el campo lo dice: sirve para decidir que aviso corresponde, igual que banda_latitud en zonas_aviso.json, nunca para adjudicar una Capitania a un punto (INV-3.3). Puede ser nula, y entonces el ambito queda registrado pero no reclama ningun trozo; el motivo de esa ausencia es obligatorio.",
 
   "ambitos": [
     {
       "ambito": "maritima",
       "publicado": false,
+      "habilitado_para_publicar": true,
+      "motivo_habilitacion": "E4 es la etapa que la cierra y su aceptacion es exactamente esa: C3 en cero fuera de los traslapes declarados y el ambito publicado. Queda habilitada desde ya para que el dia que sus controles pasen entre sola, sin que nadie tenga que acordarse de tocar este archivo. Hoy NO entra: C3 falla con seis pares de separacion lateral, todos maritimos, y el gate la retiene con esa causa escrita.",
       "jurisdicciones_esperadas": 52,
       "causa": "La capa maritima del D.S. 991 no pasa sus controles. El build de la Etapa 3 falla C3 con seis pares de separacion lateral y el rollback deshace la transaccion entera, asi que jurisdicciones_ds991 no llega a existir. Se cierra en E4 (P2 autorizado, P4' y P3 pendientes). Mientras tanto el motor consulta bahia_jurisdicciones, que resuelve por teselado y no por los limites del decreto.",
       "geografia_de_reclamo": {
@@ -43,6 +47,8 @@
     {
       "ambito": "lacustre",
       "publicado": false,
+      "habilitado_para_publicar": true,
+      "motivo_habilitacion": "E3. Sus seis jurisdicciones se construyen y pasan los ocho controles que les tocan, medido el 2026-08-12 (_bitacoras/e3_recon_2026-08-12.txt): lo unico que las mantenia fuera de la base era el rollback compartido con C3, que es un defecto de las maritimas. Con el gate partido por ambito entra en cuanto el build se aplique.",
       "jurisdicciones_esperadas": 6,
       "causa": "El ambito lacustre nunca se construyo en la capa publicada. Su geometria se construye bien —el constructor ya trata el ambito por separado y la receta union_cuerpos tiene su propio control que rechaza una lacustre vacia citando INV-3.5— pero comparte el rollback con C3, que es un defecto de las maritimas. Es lo que E3 va a destrabar partiendo el gate por ambito (D3). Consecuencia hoy: toda la navegacion lacustre es invisible para el motor.",
       "geografia_de_reclamo": {
@@ -55,6 +61,8 @@
     {
       "ambito": "antartica",
       "publicado": false,
+      "habilitado_para_publicar": false,
+      "motivo_habilitacion": "DECIDIDO POR EL OWNER el 2026-08-12: NO se habilita, y no por falta de geometria. Se habilita el dia que el owner escriba INV-3.5, no antes. Son dos motivos independientes y cada uno alcanza solo. (1) DE AUTORIDAD: el contrato no nombra el ambito antartico —INV-3.5 nombra maritimo, lacustre e insular remoto— y por eso este registro le lleva categoria_contractual 'pendiente' (D9, texto propuesto en _bitacoras/e02_texto_propuesto_inv35_2026-08-11.md, lo escribe el owner). Publicarlo retiraria su aviso de INV-3.6 sobre un ambito que su propia autoridad no reconoce: el aviso desapareceria antes que la carencia que lo justifica. (2) DE PRODUCTO: el ambito no esta listo aunque su geometria pase. De sus cuatro jurisdicciones, 'bahia_paraiso' esta diferida con sus cuatro tramos SIN ADJUDICAR —quedo del lado del owner al cerrar la pasada de alineacion del TM-025 A y abre su propia etapa— y 'rada_covadonga' es la que DIRECTEMAR lista como alcaldia con ficha vacia; del lado del repositorio eso se corrobora dos veces: es una de las dos unicas jurisdicciones a las que SITPORT no atribuye ninguna bahia (_bitacoras/e03join_recon_2026-08-11.txt) y una de las tres Capitanias sin pagina en el indice de resoluciones locales (_bitacoras/recon_resoluciones_locales_2026-08-12.txt). Publicar un ambito con dos de sus cuatro entradas en ese estado seria publicar cobertura que no hay. POR QUE ESTE CAMPO EXISTE, que es lo que el ensayo del 2026-08-12 hizo visible: el antartico PASA sus controles —siete en ok y 4 de 4 con geometria, medido en _bitacoras/e3_gate_2026-08-12/02_ensayo_build_completo.txt—, asi que un gate por ambito puro lo publicaba solo en la misma corrida que la lacustre. Lo que lo detiene es esta declaracion, no un control, y por eso tiene que estar escrita y no deducida.",
       "jurisdicciones_esperadas": 4,
       "causa": "El ambito antartico nunca se construyo en la capa publicada, y ninguna etapa del plan lo toca: E3 es lacustre y E4 es maritima. Sus cuatro jurisdicciones tienen receta anillo y participa_matching=true, o sea que son construibles; simplemente no se construyeron. Medido el 2026-08-11: la capa vigente cubre 0,0000 km2 de sus 1.357.463 km2, con la cobertura mas cercana entre 453 y 807 km.",
       "categoria_contractual": "pendiente",
@@ -69,6 +77,8 @@
     {
       "ambito": "insular_remota",
       "publicado": false,
+      "habilitado_para_publicar": false,
+      "motivo_habilitacion": "No hay geometria que publicar: sus dos jurisdicciones son las unicas del insumo cuyo ambito entero es no_cerrable, y el gate no publica un ambito sin ninguna geometria aunque este habilitado. Se declara false igual, y no se deja en true confiando en que el gate lo frene por vacio: la ausencia se declara, no se deduce de un efecto lateral. El dia que el decreto o una fuente nueva permitan cerrar esas dos islas, esto se revisa junto con las entradas que hoy las cubren una por una en zonas_aviso.json.",
       "jurisdicciones_esperadas": 2,
       "causa": "Sus dos jurisdicciones —hanga_roa y juan_fernandez— son las unicas del insumo cuyo ambito entero es no_cerrable: el decreto nombra las islas sin coordenadas. No es un ambito pendiente de construir sino un ambito que con el insumo de hoy no se puede construir, y por eso las dos ya estan declaradas una por una en zonas_aviso.json bajo la causa (a) de INV-3.6.",
       "geografia_de_reclamo": null,

@@ -6,6 +6,13 @@ detiene con el motivo y no deja capa a medias.
 
     ..\\tools\\raster-build\\.venv\\Scripts\\python.exe fase5_construir_capa_ds991.py
     ... --solo-generar     escribe el SQL y no toca la base
+    ... --ensayo           corre todo contra la base y al final deshace
+
+CODIGOS DE SALIDA
+  0  todos los ambitos habilitados pasaron sus controles y quedaron publicados
+  3  PUBLICACION PARCIAL: entro lo que paso, y algun ambito habilitado no paso
+     sus controles y quedo fuera con su causa escrita
+  1  no quedo capa — ningun ambito paso, o se cayo un supuesto antes
 
 COMO ESTA PENSADO, que es lo que el owner fijo:
 
@@ -16,13 +23,23 @@ COMO ESTA PENSADO, que es lo que el owner fijo:
 
   FALLA RUIDOSO     Una jurisdiccion que el insumo declara cerrable y no se puede
                     construir NO se degrada a nula: detiene la corrida. Lo mismo
-                    cualquier control de salida que no cuadre. No hay resultado
-                    parcial.
+                    cualquier control de salida que no cuadre.
 
   AUTOVERIFICADO    Los controles viajan DENTRO del SQL que construye, en la misma
-                    transaccion, y terminan en un RAISE. No hay una revision aparte
-                    que alguien pueda saltarse: si la capa se regenera mal en seis
-                    meses, la construccion se cae sola.
+                    transaccion. No hay una revision aparte que alguien pueda
+                    saltarse: si la capa se regenera mal en seis meses, la
+                    construccion se cae sola.
+
+  EL GATE ES POR    D3, 2026-08-10: "que un lago no se construya porque dos
+  AMBITO            Capitanias maritimas se pisan en Magallanes no tiene
+                    fundamento". Cada control se mide POR AMBITO y cada ambito
+                    entra por su cuenta: habilitado en el registro, sin controles
+                    suyos en falla, y con al menos una geometria. El que no entra
+                    se retira de la capa con su causa escrita en _publicacion.
+                    Dentro de cada ambito sigue siendo todo o nada — nada se
+                    promueve a medias —, y si no entra ninguno la transaccion se
+                    deshace entera, como antes. Ningun control se afloja: lo unico
+                    que cambia es a quien se lleva puesto el que falla.
 
   ABIERTO A QUE     Los sectores dentro de cada Capitania se construyen por el
   LA FUENTE CAMBIE  mismo camino que las jurisdicciones en cuanto el insumo los
@@ -73,12 +90,25 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 V2 = os.path.join(REPO, "data", "decreto", "jurisdicciones_v2.json")
 MANIFIESTO = os.path.join(REPO, "geodata", "costa", "capas_costa.json")
 LACUSTRE = os.path.join(REPO, "data", "decreto", "cotejo_lacustre_adjudicado.json")
+AMBITOS = os.path.join(REPO, "data", "decreto", "ambitos_publicados.json")
 SHP_LAGOS = os.path.join(REPO, "geodata", "lagos", "Inventario_Lagos.shp")
 SALIDA_SQL = os.path.join(REPO, "scripts", "fase5_capa_ds991.sql")
 ENV = os.path.join(REPO, ".env")
 
 TABLA = "jurisdicciones_ds991"
 CRS = 4326
+
+# Etiqueta del alcance que NO es un ambito: los controles estructurales — los que
+# hablan de la capa entera, no de un ambito — y los pares de traslape cuyos dos
+# lados son de ambitos distintos. Vive aca y no escrita dentro del SQL para que
+# el gate y los controles no puedan discrepar en como se llama.
+AMBITO_CAPA = "(capa)"
+
+# Marca de la linea con la que el gate informa que publico y que retuvo. La emite
+# el SQL y la vuelve a leer este mismo script para decidir con que codigo termina.
+# Es una sola linea, de formato fijo, y sale como NOTICE porque es lo unico que
+# sobrevive cuando la transaccion se deshace.
+MARCA_PUBLICACION = "PUBLICACION ::"
 
 # ── Parametros. Convencion nuestra, ninguno es un caso particular ─────────────
 LIMITE_ZEE_M = 370400          # 200 millas nauticas
@@ -245,6 +275,37 @@ def capas_declaradas():
     COSTA_DECLARADA = {"id": ct["id"], "sha256": ct["sha256"],
                        "tabla_base": ct["tabla"], "tabla": tabla_tierra}
     return man
+
+
+def habilitados_declarados():
+    """Que ambitos pueden entrar a la capa publicada, del registro declarado.
+
+    D3 parte el gate por ambito: cada ambito existe cuando pasa SUS controles. De
+    ahi se sigue algo que el plan no tenia escrito y que este lector existe para
+    cerrar: partir el gate no libera solo al ambito que la etapa esta trabajando,
+    libera a TODOS los que pasen. Un ambito que ninguna etapa audito se publicaria
+    solo, retirando su aviso de INV-3.6 sin que nadie lo decidiera. Cual puede
+    entrar es una declaracion, no una consecuencia.
+
+    Sin defaults: un ambito sin su campo detiene la corrida (CLAUDE.md §4.2). La
+    habilitacion NO afloja ningun control — un ambito habilitado que falla sus
+    controles tampoco entra."""
+    d = json.load(open(AMBITOS, encoding="utf-8"))
+    if not isinstance(d.get("ambitos"), list) or not d["ambitos"]:
+        raise Alto(f"{os.path.relpath(AMBITOS, REPO)} no trae un arreglo 'ambitos'")
+    out = {}
+    for e in d["ambitos"]:
+        a = e.get("ambito")
+        if not a:
+            raise Alto(f"{os.path.relpath(AMBITOS, REPO)}: hay una entrada sin 'ambito'")
+        if not isinstance(e.get("habilitado_para_publicar"), bool):
+            raise Alto(f"el ambito '{a}' no declara 'habilitado_para_publicar' booleano "
+                       f"en {os.path.relpath(AMBITOS, REPO)}. Sin ese campo no se sabe "
+                       f"si puede entrar a la capa, y no se supone que si")
+        if not str(e.get("motivo_habilitacion") or "").strip():
+            raise Alto(f"el ambito '{a}' declara habilitacion sin 'motivo_habilitacion'")
+        out[a] = bool(e["habilitado_para_publicar"])
+    return out
 
 
 def leer_env():
@@ -586,7 +647,56 @@ def construir_figura(j, ctx, fronteras):
 
 # ── SQL ──────────────────────────────────────────────────────────────────────
 
-def emitir_sql(v2, lac, filas, sectores):
+def emitir_ddl(A, tabla):
+    """La forma de la capa. Sale de aca y de ningun otro lado: la prueba de mordida
+    del gate levanta su tabla de prueba con este mismo emisor, para que no pueda
+    haber una copia del esquema que se quede vieja (CLAUDE.md §2)."""
+    A(f"DROP TABLE IF EXISTS {tabla}_sectores;")
+    A(f"DROP TABLE IF EXISTS {tabla};")
+    A(f"CREATE TABLE {tabla} (")
+    A("  id TEXT PRIMARY KEY, nombre TEXT NOT NULL, gobernacion TEXT NOT NULL,")
+    A("  ambito TEXT NOT NULL CHECK (ambito IN "
+      "('maritima','lacustre','antartica','insular_remota')),")
+    A("  participa_matching BOOLEAN NOT NULL, receta TEXT,")
+    A("  estado_geometria TEXT NOT NULL CHECK (estado_geometria IN "
+      "('construida','nula_declarada')),")
+    A("  causa_sin_geometria TEXT, sigue_litoral BOOLEAN NOT NULL,")
+    A("  tramos_litoral INT NOT NULL, fronteras_aplicadas TEXT, km2_ensanche NUMERIC,")
+    A("  punto_representativo geometry(Point, 4326), causa_sin_punto_representativo TEXT,")
+    A(f"  texto_decreto TEXT NOT NULL, _base geometry(MultiPolygon, {CRS}),")
+    A(f"  _amplia geometry(MultiPolygon, {CRS}), geom geometry(MultiPolygon, {CRS}),")
+    A("  CONSTRAINT nula_siempre_con_causa CHECK (")
+    A("    estado_geometria <> 'nula_declarada' OR causa_sin_geometria IS NOT NULL));")
+    A("")
+    A(f"CREATE TABLE {tabla}_sectores (")
+    A("  id TEXT PRIMARY KEY, jurisdiccion TEXT NOT NULL REFERENCES " + tabla + "(id),")
+    A(f"  nombre TEXT NOT NULL, texto_decreto TEXT, geom geometry(MultiPolygon, {CRS}));")
+    A("")
+
+
+def emitir_traslape_ensanche(A, tabla):
+    """La tabla que alimenta a C8. Tambien se emite desde un solo lugar: la mordida
+    del gate la construye con este emisor sobre su tabla de prueba."""
+    A(f"DROP TABLE IF EXISTS {tabla}_traslape_ensanche;")
+    A(f"CREATE TABLE {tabla}_traslape_ensanche AS")
+    # aa y ab: el ambito de cada lado. Los lleva la tabla y no se deducen despues,
+    # porque C8 los necesita para saber a que ambito le imputa el par — y un par
+    # con un lado de cada ambito no es de ninguno de los dos (ver emitir_controles).
+    A("SELECT a.nombre AS na, b.nombre AS nb, a.ambito AS aa, b.ambito AS ab,")
+    A("  round((ST_Area(ST_Intersection(a.geom,b.geom)::geography)/1e6)::numeric,3) "
+      "AS km2_final,")
+    A("  round((ST_Area(ST_Intersection(ST_Intersection(a.geom,a._base),")
+    A("    ST_Intersection(b.geom,b._base))::geography)/1e6)::numeric,3) "
+      "AS km2_sin_ensanche")
+    A(f"FROM {tabla} a JOIN {tabla} b ON a.id < b.id")
+    A("WHERE (a.tramos_litoral > 0 OR b.tramos_litoral > 0)")
+    A("  AND a.geom IS NOT NULL AND b.geom IS NOT NULL")
+    A("  AND a._base IS NOT NULL AND b._base IS NOT NULL")
+    A("  AND a.geom && b.geom AND ST_Intersects(a.geom, b.geom);")
+    A("")
+
+
+def emitir_sql(v2, lac, filas, sectores, habilitados, ensayo):
     permitidos = sorted({tuple(sorted(x["jurisdicciones"]))
                          for x in (lac.get("traslape_deliberado") or {}).values()
                          if len(x.get("jurisdicciones") or []) == 2})
@@ -655,27 +765,7 @@ def emitir_sql(v2, lac, filas, sectores):
                  ("limite_exterior_m", str(LIMITE_ZEE_M))):
         A(f"INSERT INTO {TABLA}_procedencia VALUES ({sql_str(k)}, {sql_str(v)});")
     A("")
-    A(f"DROP TABLE IF EXISTS {TABLA}_sectores;")
-    A(f"DROP TABLE IF EXISTS {TABLA};")
-    A(f"CREATE TABLE {TABLA} (")
-    A("  id TEXT PRIMARY KEY, nombre TEXT NOT NULL, gobernacion TEXT NOT NULL,")
-    A("  ambito TEXT NOT NULL CHECK (ambito IN "
-      "('maritima','lacustre','antartica','insular_remota')),")
-    A("  participa_matching BOOLEAN NOT NULL, receta TEXT,")
-    A("  estado_geometria TEXT NOT NULL CHECK (estado_geometria IN "
-      "('construida','nula_declarada')),")
-    A("  causa_sin_geometria TEXT, sigue_litoral BOOLEAN NOT NULL,")
-    A("  tramos_litoral INT NOT NULL, fronteras_aplicadas TEXT, km2_ensanche NUMERIC,")
-    A("  punto_representativo geometry(Point, 4326), causa_sin_punto_representativo TEXT,")
-    A(f"  texto_decreto TEXT NOT NULL, _base geometry(MultiPolygon, {CRS}),")
-    A(f"  _amplia geometry(MultiPolygon, {CRS}), geom geometry(MultiPolygon, {CRS}),")
-    A("  CONSTRAINT nula_siempre_con_causa CHECK (")
-    A("    estado_geometria <> 'nula_declarada' OR causa_sin_geometria IS NOT NULL));")
-    A("")
-    A(f"CREATE TABLE {TABLA}_sectores (")
-    A("  id TEXT PRIMARY KEY, jurisdiccion TEXT NOT NULL REFERENCES " + TABLA + "(id),")
-    A(f"  nombre TEXT NOT NULL, texto_decreto TEXT, geom geometry(MultiPolygon, {CRS}));")
-    A("")
+    emitir_ddl(A, TABLA)
     for f in filas:
         t = f["testigo"]
         pt = ("NULL" if not t else
@@ -797,20 +887,7 @@ def emitir_sql(v2, lac, filas, sectores):
     # FINALES contra el de las figuras SIN el corredor (la base, recortada por el
     # mismo limite exterior). Un par que no se pisaba sin corredor y se pisa con el
     # es el corredor comportandose como losa.
-    A(f"DROP TABLE IF EXISTS {TABLA}_traslape_ensanche;")
-    A(f"CREATE TABLE {TABLA}_traslape_ensanche AS")
-    A("SELECT a.nombre AS na, b.nombre AS nb,")
-    A("  round((ST_Area(ST_Intersection(a.geom,b.geom)::geography)/1e6)::numeric,3) "
-      "AS km2_final,")
-    A("  round((ST_Area(ST_Intersection(ST_Intersection(a.geom,a._base),")
-    A("    ST_Intersection(b.geom,b._base))::geography)/1e6)::numeric,3) "
-      "AS km2_sin_ensanche")
-    A(f"FROM {TABLA} a JOIN {TABLA} b ON a.id < b.id")
-    A("WHERE (a.tramos_litoral > 0 OR b.tramos_litoral > 0)")
-    A("  AND a.geom IS NOT NULL AND b.geom IS NOT NULL")
-    A("  AND a._base IS NOT NULL AND b._base IS NOT NULL")
-    A("  AND a.geom && b.geom AND ST_Intersects(a.geom, b.geom);")
-    A("")
+    emitir_traslape_ensanche(A, TABLA)
     A("DO $$")
     A("DECLARE r RECORD;")
     A("BEGIN")
@@ -870,113 +947,328 @@ def emitir_sql(v2, lac, filas, sectores):
     A(f"CREATE INDEX idx_{TABLA}_sect_geom ON {TABLA}_sectores USING GIST (geom);")
     A(f"ANALYZE {TABLA};")
     A("")
-    emitir_controles(A, permitidos)
+    emitir_controles(A, TABLA, permitidos)
+    A("")
+    emitir_gate(A, TABLA, habilitados)
     A("")
     A(f"COMMENT ON TABLE {TABLA} IS 'Capa de referencia de las jurisdicciones de "
       "Capitania del D.S. 991/1987. Derivada por script desde el insumo versionado "
       f"(INV-3.7); no editar la geometria a mano. Procedencia en {TABLA}_procedencia, "
-      f"convenciones en {TABLA}_convenciones. El motor todavia NO la consulta.';")
-    A("COMMIT;")
+      f"convenciones en {TABLA}_convenciones. CONTIENE SOLO LOS AMBITOS PUBLICADOS: "
+      "el gate por ambito (D3) retira en la misma transaccion los que no pasaron sus "
+      "controles o no estan habilitados, asi que un ambito que no aparece aca NO es "
+      "una zona sin jurisdiccion — es un ambito no publicado, causa (a) de INV-3.6, y "
+      f"lo declaran {TABLA}_publicacion y data/decreto/ambitos_publicados.json. El "
+      "motor todavia NO la consulta.';")
+    if ensayo:
+        A("")
+        A("-- ENSAYO: la corrida se hace entera —construye, mide, aplica el gate— y")
+        A("-- despues se deshace. Sirve para ver el veredicto de una construccion que")
+        A("-- tarda diez minutos sin dejar nada en la base. Las mediciones salen como")
+        A("-- NOTICE, que sobreviven al rollback.")
+        A("ROLLBACK;")
+    else:
+        A("COMMIT;")
     open(SALIDA_SQL, "w", encoding="utf-8").write("\n".join(L))
 
 
-def emitir_controles(A, permitidos):
-    """Los controles, en la misma transaccion, terminando en RAISE."""
+def control_por_fila(A, tabla, nombre, condicion):
+    """Un control de fila, contado POR AMBITO. La condicion describe la fila
+    DEFECTUOSA, igual que antes; lo que cambia es que el resultado deja de ser uno
+    para toda la capa. El LEFT JOIN contra la lista de ambitos es lo que hace que
+    un ambito sin defectos tenga igual su fila en ok: sin eso, un ambito limpio no
+    aparece y 'no falla' seria indistinguible de 'no se midio'."""
+    A(f"INSERT INTO {tabla}_verificacion")
+    A(f"SELECT {sql_str(nombre)}, a.ambito, count(x.id) = 0, count(x.id)::text,")
+    A("  string_agg(x.nombre, ', ')")
+    A(f"FROM _amb a LEFT JOIN {tabla} x ON x.ambito = a.ambito AND ({condicion})")
+    A(f"WHERE a.ambito <> {sql_str(AMBITO_CAPA)} GROUP BY a.ambito;")
+    A("")
+
+
+def emitir_controles(A, tabla, permitidos):
+    """Los controles, en la misma transaccion. Cada uno se evalua POR AMBITO.
+
+    POR QUE POR AMBITO. D3 (2026-08-10) decidio que el gate se parte: el ambito
+    lacustre existe cuando pasa SUS controles, el maritimo cuando pasa los suyos.
+    Hasta hoy los ocho controles escribian una fila para toda la capa y un solo
+    RAISE con WHERE NOT ok la miraba entera: C3 metia una fila en falla por un
+    traslape entre dos Capitanias maritimas de Chiloe y se llevaba puestas a las
+    seis lacustres, que no habian aportado ninguna. Medido el 2026-08-12 en
+    _bitacoras/e3_recon_2026-08-12.txt.
+
+    LO QUE ESTO NO ES. No se le baja la severidad a ningun control (CLAUDE.md
+    §0.3): las condiciones que definen la fila defectuosa son las mismas, con las
+    mismas tolerancias. C3 sigue fallando igual para lo maritimo. Lo unico que
+    cambia es a quien se lleva puesto cuando falla.
+
+    DOS ALCANCES. Un control puede hablar de un ambito o de la capa entera. Los de
+    capa entera llevan el ambito AMBITO_CAPA y su falla no publica nada: son C7
+    —el indice es de la tabla, no de un ambito— y los pares de traslape con un
+    lado de cada ambito, que no son de ninguno de los dos."""
     A("-- ══ CONTROLES. Van aca adentro a proposito: una revision aparte se puede")
-    A("--    saltar, esta no. Si algo no cuadra, la transaccion entera se cae.")
-    A(f"DROP TABLE IF EXISTS {TABLA}_verificacion;")
-    A(f"CREATE TABLE {TABLA}_verificacion (control TEXT PRIMARY KEY, ok BOOLEAN "
-      "NOT NULL, obtenido TEXT, detalle TEXT);")
+    A("--    saltar, esta no. Lo que cambia con D3 es el ALCANCE de lo que se cae:")
+    A("--    cada control se mide por ambito, y un ambito que falla no arrastra a")
+    A("--    los otros. Lo que ningun control hace es aflojarse.")
+    A(f"DROP TABLE IF EXISTS {tabla}_verificacion;")
+    A(f"CREATE TABLE {tabla}_verificacion (control TEXT NOT NULL, ambito TEXT NOT "
+      "NULL,")
+    A("  ok BOOLEAN NOT NULL, obtenido TEXT, detalle TEXT,")
+    A("  PRIMARY KEY (control, ambito));")
     A("")
-    A(f"INSERT INTO {TABLA}_verificacion")
-    A("SELECT 'C1 sin geometria vacia, de area cero o invalida',")
-    A("  count(*) = 0, count(*)::text, string_agg(nombre, ', ')")
-    A(f"FROM {TABLA} WHERE estado_geometria = 'construida'")
-    A("  AND (geom IS NULL OR ST_IsEmpty(geom) OR NOT ST_IsValid(geom)")
-    A("       OR ST_Area(geom::geography) = 0);")
+    A("-- Los ambitos que la capa realmente trae, mas el alcance de capa entera. La")
+    A("-- lista sale del dato construido y no de una enumeracion escrita aca: si")
+    A("-- manana el insumo trae un ambito nuevo, se mide solo.")
+    A("CREATE TEMP TABLE _amb AS SELECT DISTINCT ambito FROM " + tabla + ";")
+    A(f"INSERT INTO _amb VALUES ({sql_str(AMBITO_CAPA)});")
     A("")
-    A(f"INSERT INTO {TABLA}_verificacion")
-    A("SELECT 'C2 toda nula declarada con su causa', count(*) = 0, count(*)::text,")
-    A("  string_agg(nombre, ', ')")
-    A(f"FROM {TABLA} WHERE estado_geometria = 'nula_declarada'")
-    A("  AND (causa_sin_geometria IS NULL OR causa_sin_geometria = '');")
-    A("")
+    control_por_fila(A, tabla, "C1 sin geometria vacia, de area cero o invalida",
+                     "x.estado_geometria = 'construida' AND (x.geom IS NULL OR "
+                     "ST_IsEmpty(x.geom) OR NOT ST_IsValid(x.geom) OR "
+                     "ST_Area(x.geom::geography) = 0)")
+    control_por_fila(A, tabla, "C2 toda nula declarada con su causa",
+                     "x.estado_geometria = 'nula_declarada' AND "
+                     "(x.causa_sin_geometria IS NULL OR x.causa_sin_geometria = '')")
     A("-- Los traslapes permitidos salen del dato, no del codigo.")
-    A(f"DROP TABLE IF EXISTS {TABLA}_traslapes_ok;")
     A(f"CREATE TEMP TABLE _ok (a TEXT, b TEXT);")
     for a, b in permitidos:
         A(f"INSERT INTO _ok VALUES ({sql_str(a)}, {sql_str(b)});")
-    A(f"INSERT INTO {TABLA}_verificacion")
-    A("SELECT 'C3 cero traslapes fuera de los declarados deliberados',")
-    A("  count(*) = 0, count(*)::text,")
-    A("  string_agg(x.na || ' x ' || x.nb || ' = ' || x.km2::text, '; ')")
-    A("FROM (SELECT a.nombre na, b.nombre nb,")
-    A("        round((ST_Area(ST_Intersection(a.geom,b.geom)::geography)/1e6)::numeric,3) km2")
-    A(f"      FROM {TABLA} a JOIN {TABLA} b ON a.id < b.id")
-    A("      WHERE a.geom IS NOT NULL AND b.geom IS NOT NULL AND a.geom && b.geom")
-    A("        AND ST_Intersects(a.geom, b.geom)")
-    A(f"        AND ST_Area(ST_Intersection(a.geom,b.geom)::geography) > {TOL_TRASLAPE_KM2}*1e6")
-    A("        AND NOT EXISTS (SELECT 1 FROM _ok o WHERE o.a = least(a.id,b.id)")
-    A("                          AND o.b = greatest(a.id,b.id))) x;")
     A("")
-    A(f"INSERT INTO {TABLA}_verificacion")
-    A("SELECT 'C4 cada jurisdiccion contiene su punto representativo',")
-    A("  count(*) = 0, count(*)::text, string_agg(nombre, ', ')")
-    A(f"FROM {TABLA} WHERE geom IS NOT NULL AND punto_representativo IS NOT NULL")
-    A("  AND NOT ST_Intersects(geom, punto_representativo);")
+    # A QUE AMBITO SE LE IMPUTA UN PAR. Si los dos lados son del mismo ambito, a
+    # ese. Si son de ambitos distintos, a NINGUNO de los dos: al alcance de capa,
+    # que no publica nada. No es una severidad menor ni mayor — es negarse a
+    # elegir. Decidir cual de los dos lados esta de mas exige interpretar el
+    # decreto, y el plan lo deja escrito como lo unico que E4 tiene pendiente de
+    # definir dentro de C3. Medido el 2026-08-12: hoy hay CERO pares cruzados, asi
+    # que esta regla no cambia ningun resultado de hoy; existe para que el dia que
+    # aparezca uno no se resuelva solo y en silencio a favor del ambito que se
+    # estuviera publicando.
+    A("CREATE TEMP TABLE _c3 AS")
+    A("SELECT a.nombre na, b.nombre nb, a.ambito aa, b.ambito ab,")
+    A(f"  CASE WHEN a.ambito = b.ambito THEN a.ambito ELSE {sql_str(AMBITO_CAPA)} END "
+      "AS ambito,")
+    A("  round((ST_Area(ST_Intersection(a.geom,b.geom)::geography)/1e6)::numeric,3) km2")
+    A(f"FROM {tabla} a JOIN {tabla} b ON a.id < b.id")
+    A("WHERE a.geom IS NOT NULL AND b.geom IS NOT NULL AND a.geom && b.geom")
+    A("  AND ST_Intersects(a.geom, b.geom)")
+    A(f"  AND ST_Area(ST_Intersection(a.geom,b.geom)::geography) > {TOL_TRASLAPE_KM2}*1e6")
+    A("  AND NOT EXISTS (SELECT 1 FROM _ok o WHERE o.a = least(a.id,b.id)")
+    A("                    AND o.b = greatest(a.id,b.id));")
+    A(f"INSERT INTO {tabla}_verificacion")
+    A("SELECT 'C3 cero traslapes fuera de los declarados deliberados', a.ambito,")
+    A("  count(x.na) = 0, count(x.na)::text,")
+    A("  string_agg(x.na || ' x ' || x.nb || ' = ' || x.km2::text || CASE WHEN")
+    A("    x.aa <> x.ab THEN ' [PAR CRUZADO ' || x.aa || ' x ' || x.ab || ']' ELSE '' END,")
+    A("    '; ')")
+    A("FROM _amb a LEFT JOIN _c3 x ON x.ambito = a.ambito GROUP BY a.ambito;")
     A("")
-    A(f"INSERT INTO {TABLA}_verificacion")
-    A("SELECT 'C5 construida sin testigo trae su causa declarada',")
-    A("  count(*) = 0, count(*)::text, string_agg(nombre, ', ')")
-    A(f"FROM {TABLA} WHERE geom IS NOT NULL AND punto_representativo IS NULL")
-    A("  AND (causa_sin_punto_representativo IS NULL OR causa_sin_punto_representativo = '');")
-    A("")
-    A(f"INSERT INTO {TABLA}_verificacion")
-    A("SELECT 'C6 el ensanche solo donde hay tramo litoral', count(*) = 0,")
-    A("  count(*)::text, string_agg(nombre, ', ')")
-    A(f"FROM {TABLA} WHERE tramos_litoral = 0 AND km2_ensanche IS NOT NULL;")
-    A("")
-    A(f"INSERT INTO {TABLA}_verificacion")
-    A("SELECT 'C7 indice espacial presente', count(*) >= 1, count(*)::text, NULL")
-    A(f"FROM pg_indexes WHERE tablename = '{TABLA}' AND indexdef ILIKE '%gist%';")
+    control_por_fila(A, tabla, "C4 cada jurisdiccion contiene su punto representativo",
+                     "x.geom IS NOT NULL AND x.punto_representativo IS NOT NULL AND "
+                     "NOT ST_Intersects(x.geom, x.punto_representativo)")
+    control_por_fila(A, tabla, "C5 construida sin testigo trae su causa declarada",
+                     "x.geom IS NOT NULL AND x.punto_representativo IS NULL AND "
+                     "(x.causa_sin_punto_representativo IS NULL OR "
+                     "x.causa_sin_punto_representativo = '')")
+    control_por_fila(A, tabla, "C6 el ensanche solo donde hay tramo litoral",
+                     "x.tramos_litoral = 0 AND x.km2_ensanche IS NOT NULL")
+    # C7 es de la capa, no de un ambito: el indice esta o no esta para todos. Por
+    # eso lleva el alcance de capa entera y su falla no publica nada.
+    A(f"INSERT INTO {tabla}_verificacion")
+    A(f"SELECT 'C7 indice espacial presente', {sql_str(AMBITO_CAPA)}, count(*) >= 1,")
+    A("  count(*)::text, NULL")
+    A(f"FROM pg_indexes WHERE tablename = '{tabla}' AND indexdef ILIKE '%gist%';")
     A("")
     # C8. El corredor de litoral tiene que comportarse como ensanche y no como losa.
     # Puede AGRANDAR un traslape que ya existia por separacion lateral — eso es otro
     # problema, y es el que decide el decreto —, pero no puede CREAR uno donde las
     # figuras base no se tocaban. Los traslapes deliberados quedan exentos por el
     # mismo dato que exime a C3, no por una lista aparte.
-    A(f"INSERT INTO {TABLA}_verificacion")
-    A("SELECT 'C8 el ensanche no crea traslapes que no existieran sin el',")
-    A("  count(*) = 0, count(*)::text,")
-    A("  string_agg(x.na || ' x ' || x.nb || ' = ' || x.km2_final::text, '; ')")
-    A(f"FROM {TABLA}_traslape_ensanche x")
+    A("CREATE TEMP TABLE _c8 AS")
+    A("SELECT x.na, x.nb, x.aa, x.ab,")
+    A(f"  CASE WHEN x.aa = x.ab THEN x.aa ELSE {sql_str(AMBITO_CAPA)} END AS ambito,")
+    A("  x.km2_final")
+    A(f"FROM {tabla}_traslape_ensanche x")
     A(f"WHERE x.km2_sin_ensanche <= {TOL_TRASLAPE_KM2}")
     A(f"  AND x.km2_final > {TOL_TRASLAPE_KM2}")
-    A(f"  AND NOT EXISTS (SELECT 1 FROM {TABLA} a, {TABLA} b, _ok o")
+    A(f"  AND NOT EXISTS (SELECT 1 FROM {tabla} a, {tabla} b, _ok o")
     A("     WHERE a.nombre = x.na AND b.nombre = x.nb")
     A("       AND o.a = least(a.id,b.id) AND o.b = greatest(a.id,b.id));")
+    A(f"INSERT INTO {tabla}_verificacion")
+    A("SELECT 'C8 el ensanche no crea traslapes que no existieran sin el', a.ambito,")
+    A("  count(x.na) = 0, count(x.na)::text,")
+    A("  string_agg(x.na || ' x ' || x.nb || ' = ' || x.km2_final::text || CASE WHEN")
+    A("    x.aa <> x.ab THEN ' [PAR CRUZADO ' || x.aa || ' x ' || x.ab || ']' ELSE '' END,")
+    A("    '; ')")
+    A("FROM _amb a LEFT JOIN _c8 x ON x.ambito = a.ambito GROUP BY a.ambito;")
     A("")
-    # El estado de TODOS los controles sale como NOTICE antes del RAISE. El RAISE
-    # solo nombra los que fallan, y si la transaccion se deshace la tabla de
-    # verificacion se va con ella: sin esto, una corrida que se cae por un control no
-    # deja constancia de que los otros siete SI pasaron, que es la mitad de lo que
-    # hay que saber para decidir que hacer.
+    # El estado de TODOS los controles sale como NOTICE antes de cualquier RAISE. Si
+    # la transaccion se deshace, la tabla de verificacion se va con ella: sin esto,
+    # una corrida que se cae no deja constancia de que los demas SI pasaron, que es
+    # la mitad de lo que hay que saber para decidir que hacer.
     A("DO $$")
-    A("DECLARE fallidos TEXT; r RECORD;")
+    A("DECLARE r RECORD;")
     A("BEGIN")
-    A("  RAISE NOTICE '--- ESTADO DE TODOS LOS CONTROLES ---';")
-    A(f"  FOR r IN SELECT * FROM {TABLA}_verificacion ORDER BY control LOOP")
-    A("    RAISE NOTICE '  [%] % (obtenido %)%', CASE WHEN r.ok THEN 'ok   ' "
-      "ELSE 'FALLA' END, r.control, COALESCE(r.obtenido,'?'),")
+    A("  RAISE NOTICE '--- ESTADO DE TODOS LOS CONTROLES, POR AMBITO ---';")
+    A(f"  FOR r IN SELECT * FROM {tabla}_verificacion ORDER BY ambito, control LOOP")
+    A("    RAISE NOTICE '  [%] %  %  (obtenido %)%', CASE WHEN r.ok THEN 'ok   ' "
+      "ELSE 'FALLA' END, rpad(r.ambito, 16), r.control, COALESCE(r.obtenido,'?'),")
     A("      COALESCE(': ' || r.detalle, '');")
     A("  END LOOP;")
-    A("  SELECT string_agg(control || ' [obtenido=' || COALESCE(obtenido,'?') ||")
-    A("           COALESCE(': ' || detalle, '') || ']', E'\\n  ')")
-    A(f"    INTO fallidos FROM {TABLA}_verificacion WHERE NOT ok;")
-    A("  IF fallidos IS NOT NULL THEN")
-    A("    RAISE EXCEPTION E'LA CAPA NO CUMPLE SUS PROPIOS CONTROLES:\\n  %', fallidos;")
+    A("END $$;")
+
+
+def emitir_gate(A, tabla, habilitados):
+    """EL GATE, POR AMBITO. D3, 2026-08-10.
+
+    Antes: un RAISE con `WHERE NOT ok` sobre la capa entera. Un control en falla
+    deshacia la transaccion completa, y con ella los ambitos que habian pasado.
+
+    Ahora: cada ambito entra si —y solo si— se cumplen las tres condiciones, y el
+    que no entra se RETIRA de la capa con su causa escrita. La transaccion sigue
+    siendo una sola y sigue siendo todo-o-nada DENTRO de cada ambito: nada se
+    promueve a medias, que es la otra mitad de D3.
+
+      1. esta HABILITADO en data/decreto/ambitos_publicados.json;
+      2. no tiene ningun control suyo en falla;
+      3. tiene al menos una jurisdiccion con geometria.
+
+    POR QUE SE BORRAN LAS FILAS DEL AMBITO QUE NO ENTRA, en vez de marcarlas. Lo
+    que esta en la tabla ES lo publicado, sin que ningun consumidor tenga que
+    acordarse de filtrar. La alternativa —dejarlas con una bandera— es la forma
+    exacta del error que este repositorio ya pago: una tabla con el nombre
+    canonico y datos que parecen validos, que es el falso negativo silencioso de
+    INV-3.6 aplicado a la capa misma (ver fase5_descartar_build_provisional.sql).
+    Lo que se pierde con el borrado es poder mirar la geometria retenida en la
+    base; queda medida en los NOTICE y en las tablas _ensanche y
+    _traslape_ensanche, que ahora sobreviven porque la transaccion confirma.
+
+    LO QUE NO CAMBIA. Si NINGUN ambito entra, esto termina donde terminaba antes:
+    un RAISE que deshace la transaccion entera y no deja capa."""
+    A("-- ══ EL GATE, POR AMBITO (D3). Un ambito entra si esta habilitado, no tiene")
+    A("--    controles suyos en falla, y trae al menos una geometria. El que no")
+    A("--    entra se retira con su causa. Si no entra ninguno, no queda capa.")
+    A("CREATE TEMP TABLE _hab (ambito TEXT PRIMARY KEY, habilitado BOOLEAN NOT NULL);")
+    for a, h in sorted(habilitados.items()):
+        A(f"INSERT INTO _hab VALUES ({sql_str(a)}, {sql_bool(h)});")
+    A("")
+    # Un ambito construido que el registro no declara no se supone habilitado ni no
+    # habilitado: detiene. Es el mismo criterio que el resto del constructor —
+    # ningun mapeo por clave con caso por defecto (CLAUDE.md §4.2).
+    A("DO $$")
+    A("DECLARE faltan TEXT;")
+    A("BEGIN")
+    A("  SELECT string_agg(a.ambito, ', ') INTO faltan FROM _amb a")
+    A(f"   WHERE a.ambito <> {sql_str(AMBITO_CAPA)}")
+    A("     AND NOT EXISTS (SELECT 1 FROM _hab h WHERE h.ambito = a.ambito);")
+    A("  IF faltan IS NOT NULL THEN")
+    A("    RAISE EXCEPTION 'la capa trae ambitos que el registro de ambitos "
+      "publicados no declara: %. No se supone su habilitacion', faltan;")
     A("  END IF;")
     A("END $$;")
+    A("")
+    A(f"DROP TABLE IF EXISTS {tabla}_publicacion;")
+    A(f"CREATE TABLE {tabla}_publicacion (")
+    A("  ambito TEXT PRIMARY KEY, habilitado BOOLEAN NOT NULL,")
+    A("  controles_ok BOOLEAN NOT NULL, jurisdicciones INT NOT NULL,")
+    A("  con_geometria INT NOT NULL, publicado BOOLEAN NOT NULL, causa TEXT,")
+    A("  construido_en TIMESTAMPTZ NOT NULL DEFAULT now(),")
+    A("  CONSTRAINT retenido_siempre_con_causa CHECK (publicado OR causa IS NOT NULL));")
+    A("")
+    A(f"INSERT INTO {tabla}_publicacion")
+    A("  (ambito, habilitado, controles_ok, jurisdicciones, con_geometria, publicado,")
+    A("   causa)")
+    A("SELECT a.ambito, h.habilitado, m.ok, m.n, m.con_geom,")
+    A("  h.habilitado AND m.ok AND m.con_geom > 0 AND NOT capa.rota,")
+    A("  CASE WHEN capa.rota THEN 'la capa tiene un control ESTRUCTURAL en falla: '")
+    A("         || capa.detalle || '. Ningun ambito se publica'")
+    A("       WHEN NOT h.habilitado THEN 'no habilitado para publicar en "
+      "data/decreto/ambitos_publicados.json'")
+    A("       WHEN NOT m.ok THEN 'controles en falla: ' || COALESCE(m.fallidos,")
+    A("         'no se midio ningun control para este ambito')")
+    A("       WHEN m.con_geom = 0 THEN 'ninguna de sus jurisdicciones tiene "
+      "geometria: no hay nada que publicar'")
+    A("       ELSE NULL END")
+    A("FROM _amb a")
+    A("JOIN _hab h ON h.ambito = a.ambito")
+    A("CROSS JOIN LATERAL (")
+    A("  SELECT bool_and(v.ok) AS ok,")
+    A("         string_agg(v.control || COALESCE(' [' || v.detalle || ']', ''), '; ')")
+    A("           FILTER (WHERE NOT v.ok) AS fallidos")
+    A(f"    FROM {tabla}_verificacion v WHERE v.ambito = a.ambito) m0")
+    A("CROSS JOIN LATERAL (")
+    # Un ambito sin ninguna fila de control no se da por bueno: el default cae del
+    # lado que NO publica. Hoy no puede pasar —los controles se emiten contra la
+    # misma lista de ambitos— y por eso mismo, si pasara, seria un defecto.
+    A("  SELECT COALESCE(m0.ok, FALSE) AS ok, m0.fallidos,")
+    A(f"         (SELECT count(*)::int FROM {tabla} j WHERE j.ambito = a.ambito) AS n,")
+    A(f"         (SELECT count(*)::int FROM {tabla} j WHERE j.ambito = a.ambito")
+    A("            AND j.geom IS NOT NULL AND NOT ST_IsEmpty(j.geom)) AS con_geom) m")
+    A("CROSS JOIN LATERAL (")
+    A("  SELECT EXISTS (SELECT 1 FROM " + tabla + "_verificacion v")
+    A(f"           WHERE v.ambito = {sql_str(AMBITO_CAPA)} AND NOT v.ok) AS rota,")
+    A("         (SELECT string_agg(v.control || COALESCE(' [' || v.detalle || ']', ''),")
+    A(f"            '; ') FROM {tabla}_verificacion v")
+    A(f"           WHERE v.ambito = {sql_str(AMBITO_CAPA)} AND NOT v.ok) AS detalle) capa")
+    A(f"WHERE a.ambito <> {sql_str(AMBITO_CAPA)};")
+    A("")
+    A("-- El ambito que no entra se RETIRA. Los sectores primero, que apuntan a la")
+    A("-- jurisdiccion.")
+    A(f"DELETE FROM {tabla}_sectores s USING {tabla} j")
+    A(f" WHERE s.jurisdiccion = j.id AND j.ambito IN")
+    A(f"   (SELECT ambito FROM {tabla}_publicacion WHERE NOT publicado);")
+    A(f"DELETE FROM {tabla} WHERE ambito IN")
+    A(f"   (SELECT ambito FROM {tabla}_publicacion WHERE NOT publicado);")
+    A("")
+    A("DO $$")
+    A("DECLARE r RECORD; pub TEXT; falla TEXT; decl TEXT;")
+    A("BEGIN")
+    A("  RAISE NOTICE '--- GATE POR AMBITO (D3) ---';")
+    A(f"  FOR r IN SELECT * FROM {tabla}_publicacion ORDER BY ambito LOOP")
+    A("    RAISE NOTICE '  [%] %  habilitado=%  controles=%  %/% con geometria%',")
+    A("      CASE WHEN r.publicado THEN 'PUBLICA' ELSE 'retiene' END,")
+    A("      rpad(r.ambito, 16), r.habilitado,")
+    A("      CASE WHEN r.controles_ok THEN 'ok' ELSE 'EN FALLA' END,")
+    A("      r.con_geometria, r.jurisdicciones, COALESCE(' — ' || r.causa, '');")
+    A("  END LOOP;")
+    A("")
+    A(f"  SELECT string_agg(ambito, ',' ORDER BY ambito) INTO pub")
+    A(f"    FROM {tabla}_publicacion WHERE publicado;")
+    # Las dos causas de retencion se informan por separado a proposito. Un ambito
+    # retenido porque su declaracion no lo habilita es el estado previsto y no es
+    # una falla; uno retenido porque sus controles fallan SI lo es, y es lo que
+    # tiene que seguir haciendo ruido hasta que se arregle (CLAUDE.md §0.3). Que
+    # el proceso termine en verde o en rojo lo decide esa distincion, asi que
+    # viaja en una sola linea con formato fijo que el constructor vuelve a leer.
+    A(f"  SELECT string_agg(ambito, ',' ORDER BY ambito) INTO falla")
+    A(f"    FROM {tabla}_publicacion WHERE NOT publicado AND habilitado")
+    A("      AND NOT controles_ok;")
+    A(f"  SELECT string_agg(ambito, ',' ORDER BY ambito) INTO decl")
+    A(f"    FROM {tabla}_publicacion WHERE NOT publicado")
+    A("      AND (NOT habilitado OR (controles_ok AND con_geometria = 0));")
+    A(f"  RAISE NOTICE '{MARCA_PUBLICACION} publicados=[%] retenidos_por_falla=[%] "
+      "retenidos_por_declaracion=[%]', COALESCE(pub,''), COALESCE(falla,''),")
+    A("    COALESCE(decl,'');")
+    A("")
+    A("  IF pub IS NULL THEN")
+    A("    RAISE EXCEPTION E'NINGUN AMBITO PASA EL GATE, ASI QUE NO QUEDA CAPA. "
+      "Detalle por ambito:\\n  %',")
+    A(f"      (SELECT string_agg(ambito || ': ' || COALESCE(causa,'?'), E'\\n  ' "
+      f"ORDER BY ambito) FROM {tabla}_publicacion);")
+    A("  END IF;")
+    A("END $$;")
+    A("")
+    A(f"COMMENT ON TABLE {tabla}_publicacion IS 'Que ambito de la capa entro y cual "
+      "no, con su causa. Lo escribe el gate por ambito del constructor (D3): un "
+      "ambito entra si esta habilitado en data/decreto/ambitos_publicados.json, no "
+      "tiene controles suyos en falla y trae al menos una geometria. Las filas de "
+      "los ambitos que no entraron NO estan en la capa: fueron retiradas en la "
+      "misma transaccion. Esta tabla es la constancia de esa decision y la unica "
+      f"forma de saber, mirando solo la base, por que {tabla} no trae un ambito.';")
+    A(f"COMMENT ON TABLE {tabla}_verificacion IS 'Estado de cada control POR AMBITO "
+      "en la corrida que construyo la capa. El alcance " + AMBITO_CAPA + " son los "
+      "controles estructurales —de la capa entera, no de un ambito— y los pares de "
+      "traslape con un lado en cada ambito: si alguno de esos falla, no se publica "
+      "ningun ambito.';")
 
 
 # ── main ─────────────────────────────────────────────────────────────────────
@@ -985,9 +1277,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--solo-generar", action="store_true",
                     help="escribe el SQL y no toca la base")
+    ap.add_argument("--ensayo", action="store_true",
+                    help="corre todo contra la base y al final DESHACE: da el "
+                         "veredicto del gate sin publicar nada")
     args = ap.parse_args()
 
     capas_declaradas()
+    habilitados = habilitados_declarados()
     v2 = json.load(open(V2, encoding="utf-8"))
     lac = json.load(open(LACUSTRE, encoding="utf-8"))
     gdf = gpd.read_file(SHP_LAGOS).to_crs(epsg=CRS)
@@ -1034,8 +1330,8 @@ def main():
     if len(filas) != len(v2["jurisdicciones"]):
         raise Alto("se perdieron filas entre el insumo y la capa")
 
-    emitir_sql(v2, lac, filas, sectores)
-    informe(filas, diag, sectores)
+    emitir_sql(v2, lac, filas, sectores, habilitados, args.ensayo)
+    informe(filas, diag, sectores, habilitados)
 
     if args.solo_generar:
         print()
@@ -1044,7 +1340,8 @@ def main():
 
     cfg, psql = leer_env(), buscar_psql()
     print()
-    print(f"Aplicando con {psql} sobre {cfg['DB_NAME']}@{cfg['DB_HOST']}...")
+    print(f"Aplicando con {psql} sobre {cfg['DB_NAME']}@{cfg['DB_HOST']}"
+          + ("  [ENSAYO: termina en ROLLBACK]" if args.ensayo else "") + "...")
     env = dict(os.environ, PGPASSWORD=cfg["DB_PASSWORD"])
     # Se transmite en vivo y con stderr mezclado, en vez de capturar y mostrar al
     # final. Dos motivos, los dos aprendidos aca: los NOTICE de psql — el progreso de
@@ -1058,19 +1355,65 @@ def main():
                             env=env, stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT, text=True, encoding="utf-8",
                             errors="replace", bufsize=1)
+    # El veredicto del gate se lee de la linea con marca que el propio SQL emite. Se
+    # lee de ahi y no de la tabla _publicacion porque en un ensayo esa tabla no
+    # sobrevive, y porque el NOTICE es lo unico que queda cuando la transaccion se
+    # deshace. El prefijo que psql le pone a un NOTICE depende del idioma de la
+    # instalacion, asi que la marca se busca dentro de la linea, no al principio.
+    veredicto = None
     for linea in proc.stdout:
         print(linea.rstrip())
         sys.stdout.flush()
+        if MARCA_PUBLICACION in linea:
+            veredicto = linea.strip()
     if proc.wait() != 0:
-        raise Alto("la construccion no paso sus propios controles. No hay capa: la "
-                   "transaccion se deshizo entera. El detalle esta arriba, y las "
-                   "mediciones que alcanzaron a salir como NOTICE tambien: sobreviven "
-                   "al rollback.")
-    print("Capa construida y verificada. Los controles pasaron dentro de la "
+        raise Alto("ningun ambito paso el gate: no hay capa, la transaccion se "
+                   "deshizo entera. El detalle esta arriba, y las mediciones que "
+                   "alcanzaron a salir como NOTICE tambien: sobreviven al rollback.")
+    if veredicto is None:
+        raise Alto("la corrida termino sin errores y no emitio el veredicto de "
+                   f"publicacion ('{MARCA_PUBLICACION}'). No se da por publicada una "
+                   "capa cuyo gate no dijo que hizo.")
+
+    publicados, por_falla, por_decl = leer_veredicto(veredicto)
+    print()
+    if args.ensayo:
+        print("ENSAYO: la transaccion se deshizo. En la base no quedo nada.")
+        print("Lo que HABRIA publicado una corrida de verdad:")
+    print(f"  publicados               : {', '.join(publicados) or 'ninguno'}")
+    print(f"  retenidos por falla      : {', '.join(por_falla) or 'ninguno'}")
+    print(f"  retenidos por declaracion: {', '.join(por_decl) or 'ninguno'}")
+    if por_falla:
+        # Publicacion PARCIAL. No es exito: un ambito habilitado no pasa sus
+        # controles y eso tiene que seguir haciendo ruido hasta que se arregle
+        # (CLAUDE.md §0.3). Tampoco es el fracaso de antes, porque lo que si paso
+        # quedo publicado. Codigo propio para que las dos cosas se distingan, con
+        # el mismo criterio con que el control de drift de E0.1 usa su exit 3.
+        print()
+        print("PUBLICACION PARCIAL. Los ambitos habilitados que NO pasaron sus "
+              "controles siguen fuera de la capa, con su causa en "
+              f"{TABLA}_publicacion: {', '.join(por_falla)}.")
+        sys.exit(3)
+    print()
+    print("Todos los ambitos habilitados pasaron sus controles dentro de la "
           "transaccion.")
 
 
-def informe(filas, diag, sectores):
+def leer_veredicto(linea):
+    """Los tres grupos de la linea con marca. Si su forma cambia, esto se detiene:
+    un parser que devuelve listas vacias ante una linea que no entiende diria que
+    no se publico nada, que es exactamente lo contrario de lo que puede haber
+    pasado."""
+    import re
+    m = re.search(MARCA_PUBLICACION + r"\s*publicados=\[([^\]]*)\]\s*"
+                  r"retenidos_por_falla=\[([^\]]*)\]\s*"
+                  r"retenidos_por_declaracion=\[([^\]]*)\]", linea)
+    if not m:
+        raise Alto(f"no se entiende el veredicto de publicacion: {linea}")
+    return tuple([x for x in g.split(",") if x] for g in m.groups())
+
+
+def informe(filas, diag, sectores, habilitados):
     print("FASE 5, ETAPA B — CONSTRUCCION")
     print(f"  salida   : {os.path.relpath(SALIDA_SQL, REPO)}")
     print(f"  tierra   : {', '.join(CAPAS_TIERRA) or 'no se resta (ver convencion)'}"
@@ -1091,6 +1434,10 @@ def informe(filas, diag, sectores):
         print(f"CONTEO POR {et}")
         for k, v in sorted(c.items()):
             print(f"  {k:<24} {v}")
+    print()
+    print("HABILITACION PARA PUBLICAR, de data/decreto/ambitos_publicados.json")
+    for a, h in sorted(habilitados.items()):
+        print(f"  {a:<24} {'habilitado' if h else 'NO habilitado'}")
     print()
     print(f"SECTORES construidos: {len(sectores)}")
     print("NULAS DECLARADAS, CON SU CAUSA")

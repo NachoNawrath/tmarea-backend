@@ -89,6 +89,24 @@ function validarDeclaracion(decl, insumo, capaConsultada) {
         `Un ambito ausente sin causa es exactamente el silencio que este registro existe para terminar.`);
     }
 
+    // C9 — la habilitacion. `publicado` es un hecho de la base;
+    // `habilitado_para_publicar` es la intencion, y es lo que impide que partir el
+    // gate por ambito (D3) publique solo a un ambito que ninguna etapa audito.
+    // Se exige siempre y sin default: un ambito al que se le olvido la habilitacion
+    // no puede caer al lado permisivo (CLAUDE.md §4.2).
+    exigir(typeof e.habilitado_para_publicar === 'boolean',
+      `C9: el ambito '${e.ambito}' no declara "habilitado_para_publicar" booleano. Ese campo es el que ` +
+      `decide si el gate por ambito del constructor puede dejarlo entrar a la capa publicada el dia que pase ` +
+      `sus controles. Sin el declarado, un ambito que ninguna etapa audito se publicaria solo y retiraria su ` +
+      `aviso de INV-3.6 sin que nadie lo hubiera decidido.`);
+    exigir(textoNoVacio(e.motivo_habilitacion),
+      `C9: el ambito '${e.ambito}' declara "habilitado_para_publicar": ${e.habilitado_para_publicar} y no ` +
+      `escribe "motivo_habilitacion". Habilitar y no habilitar son las dos decisiones, y las dos se fundamentan.`);
+    exigir(!(e.publicado === true && e.habilitado_para_publicar !== true),
+      `C9: el ambito '${e.ambito}' esta declarado PUBLICADO y NO habilitado para publicar. Es una contradiccion: ` +
+      `o entro a la capa sin autorizacion, o la habilitacion se retiro despues de publicarlo y el aviso que ` +
+      `deberia volver no volvio.`);
+
     exigir(Number.isInteger(e.jurisdicciones_esperadas),
       `ambito '${e.ambito}': falta "jurisdicciones_esperadas" entero.`);
     exigir(e.jurisdicciones_esperadas === cuentaPorAmbito[e.ambito],
