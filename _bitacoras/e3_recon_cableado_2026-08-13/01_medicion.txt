@@ -1,0 +1,57 @@
+E3 PASO 3 — RECONOCIMIENTO DEL CABLEADO. Medicion cruda. 2026-08-13
+Agente en Git Bash sobre Windows. Solo lectura: no se ejecuto ninguna escritura.
+
+== 1. LOS DOS UNICOS PUNTOS DONDE LA CAPA ENTRA AL MOTOR ==
+src/routes/sitport-routes.js:10:  medirCoberturaRuta, componerAvisos, capaJurisdiccionesVigente,
+src/routes/sitport-routes.js:559:  const capa = await capaJurisdiccionesVigente(pool);
+src/services/cobertura-jurisdiccional.js:319:async function capaJurisdiccionesVigente(pool) {
+src/services/cobertura-jurisdiccional.js:326:  capaJurisdiccionesVigente,
+-- y los dos salen de la misma declaracion:
+66:async function capaDeclarada(pool) {
+145:  const decl = await capaDeclarada(pool);
+150:  const { rows } = await pool.query(SQL(decl.capa_jurisdicciones, decl.capa_recorte_tierra), [geojson]);
+320:  return (await capaDeclarada(pool)).capa_jurisdicciones;
+
+== 2. EL JOIN NO ESTA CABLEADO A PRODUCCION (solo scripts) ==
+src/services/join-bahia-jurisdiccion.js:3:// join-bahia-jurisdiccion.js — carga y VALIDA el join bahia -> jurisdiccion.
+src/services/join-bahia-jurisdiccion.js:134:function cargarJoin({ recargar = false } = {}) {
+src/services/join-bahia-jurisdiccion.js:141:module.exports = { cargarJoin, validarJoin, ErrorJoin };
+scripts/e03join_prueba_mordida_join.js:17:const { validarJoin, ErrorJoin } = require('../src/services/join-bahia-jurisdiccion');
+scripts/e2_volumen_cambio_unidad.js:47:const { cargarJoin } = require('../src/services/join-bahia-jurisdiccion');
+scripts/e2_volumen_cambio_unidad.js:87:  const join = cargarJoin();
+
+== 3. EL LADO LACUSTRE DEL JOIN ==
+entradas del join           : 164
+bahias en BAHIA_COORDS      : 163
+entradas de ambito lacustre : 21
+   lago_general_carrera    3 bahias: 128,203,257
+   lago_panguipulli        7 bahias: 106,245,246,247,248,249,250
+   lago_ranco              4 bahias: 144,145,146,160
+   lago_rapel              1 bahias: 96
+   lago_villarrica         3 bahias: 105,209,210
+   puerto_varas            3 bahias: 111,159,161
+lacustres SIN coordenada en BAHIA_COORDS: 257
+
+== 4. EL CONTACTO QUE EL MOTOR RESOLVERIA HOY PARA ESAS BAHIAS ==
+   (getCapitaniaByBahiaId, sitport-routes.js:781)
+96    decreto=lago_rapel             mapa=null                   tel=+56 35 258 4802
+105   decreto=lago_villarrica        mapa=null                   tel=+56 63 227 6905
+106   decreto=lago_panguipulli       mapa=null                   tel=+56 63 227 6905
+111   decreto=puerto_varas           mapa=Puerto Varas           tel=+56 65 256 1100
+128   decreto=lago_general_carrera   mapa=Lago General Carrera   tel=+56 67 233 1405
+144   decreto=lago_ranco             mapa=null                   tel=+56 63 227 6905
+145   decreto=lago_ranco             mapa=null                   tel=+56 63 227 6905
+146   decreto=lago_ranco             mapa=null                   tel=+56 63 227 6905
+159   decreto=puerto_varas           mapa=Puerto Montt           tel=+56 65 256 1100
+160   decreto=lago_ranco             mapa=Puerto Montt           tel=+56 65 256 1100
+161   decreto=puerto_varas           mapa=Puerto Montt           tel=+56 65 256 1100
+203   decreto=lago_general_carrera   mapa=Lago General Carrera   tel=+56 67 233 1405
+209   decreto=lago_villarrica        mapa=null                   tel=+56 63 227 6905
+210   decreto=lago_villarrica        mapa=null                   tel=+56 63 227 6905
+245   decreto=lago_panguipulli       mapa=null                   tel=+56 63 227 6905
+246   decreto=lago_panguipulli       mapa=null                   tel=+56 63 227 6905
+247   decreto=lago_panguipulli       mapa=null                   tel=+56 63 227 6905
+248   decreto=lago_panguipulli       mapa=null                   tel=+56 63 227 6905
+249   decreto=lago_panguipulli       mapa=null                   tel=+56 63 227 6905
+250   decreto=lago_panguipulli       mapa=null                   tel=+56 63 227 6905
+257   decreto=lago_general_carrera   mapa=Lago General Carrera   tel=+56 67 233 1405

@@ -394,8 +394,8 @@ lo que su aviso de INV-3.6 se retira solo.
 |---|---|---|
 | 1 | **Reconocimiento**: ¿la geometría lacustre pasa sus controles? | **CERRADO** 2026-08-12 · `_bitacoras/e3_recon_2026-08-12.txt` |
 | 2 | **Partir el gate por ámbito** sin bajarle la severidad a C3 | **CERRADO** 2026-08-12 · `_bitacoras/e3_gate_2026-08-12.txt` |
-| 3 | **Reconocimiento del cableado**: qué cuesta que un tramo de ruta resuelva contra la capa publicada, y por dónde se llega de la Capitanía a sus restricciones (join de E0.3) | por delante |
-| 4 | **Escribir el cableado y su prueba de mordida, sin aplicar** | por delante — **sin dimensionar** |
+| 3 | **Reconocimiento del cableado**: qué cuesta que un tramo de ruta resuelva contra la capa publicada, y por dónde se llega de la Capitanía a sus restricciones (join de E0.3) | **CERRADO** 2026-08-13 · `_bitacoras/e3_recon_cableado_2026-08-13.txt` |
+| 4 | **Escribir el cableado y su prueba de mordida, sin aplicar** | por delante — **dimensionado**: 4 archivos, 1 función |
 | 5 | **Aplicar el build · mover el registro · activar el cableado** — un solo movimiento, tres piezas | por delante |
 | 6 | **Verificación de punta a punta y regresión** | por delante |
 
@@ -454,6 +454,59 @@ defecto de construcción. La ventana no se acorta: se elimina.
 cableado: al enumerar esto no se habían leído `cobertura-jurisdiccional.js` (329 líneas) ni el
 resto de `sitport-routes.js` (886). Estimarlo sin medirlo es exactamente lo que §1.2 no admite,
 y por eso el paso 3 es un reconocimiento y no una construcción.
+
+#### Paso 3 CERRADO — 2026-08-13. El paso 4 queda dimensionado
+
+Bitácora: `_bitacoras/e3_recon_cableado_2026-08-13.txt`. Nada escrito, nada aplicado.
+
+**El resultado es mejor de lo esperado: el cableado mínimo no cambia la unidad del pipeline,
+la ensancha.** El pipeline trabaja por bahía de punta a punta y el filtro que decide qué se
+muestra es una línea —`sitport-routes.js:735`, `if (!bahiaIdsEnRuta.has(bahiaId)) continue;`—.
+Una restricción lacustre no llega hoy porque su bahía no está en ese Set: su celda Voronoi la
+borró el recorte contra `ne_land`. No hace falta reemplazar la unidad; hace falta que el Set
+incluya además las bahías que cuelgan de una Capitanía cuya geometría del D.S. 991 intersecta
+la ruta: `ruta ∩ jurisdicciones_ds991 → jurisdiccion_id → join de E0.3 → bahia_id`. Aditivo
+sobre un Set, sin sacar ninguna de las que hoy entran. **El cambio de unidad propiamente
+—dejar de filtrar por bahía— sigue entero en E6.**
+
+**Dimensión del paso 4: cuatro archivos, una función.** `capa_consultada.json` (un bloque de
+dato) · `cobertura-jurisdiccional.js` (dos puntos: verificar el nombre nuevo y unir las dos
+capas en el CTE `cob`) · `sitport-routes.js` (**sólo** `bahiasEnRutaPostGIS`, :557) ·
+`join-bahia-jurisdiccion.js` (sin cambios de código, pero **pasa a consumirse en producción por
+primera vez** — hoy sólo lo usan dos scripts, medido — y su validador empieza a poder detener
+el arranque).
+
+**Cuatro cosas que rompen si se tocan mal, las cuatro medidas:**
+
+1. **El camino obvio está cerrado por un control vivo.** Repuntar `capa_jurisdicciones` a
+   `jurisdicciones_ds991` **detiene la carga**: el C7 de `ambitos-publicados.js:58` exige que la
+   capa publicada no sea la que el motor consulta. El control es correcto y no se afloja: el
+   cableado declara un **nombre nuevo**. Que C7 tenga un horizonte —se escribió para la era en
+   que las dos deben diferir— lo mira E6; E3 no lo necesita.
+2. **Son dos consumidores, no uno.** Cablear la lista y dejar el SQL de cobertura contra la capa
+   vieja hace que la restricción lacustre aparezca *y al mismo tiempo* el mismo tramo se
+   registre como hueco de nuestra capa. Es la ventana que hundió al camino B, ahora dentro de un
+   solo paso: los dos puntos se cablean juntos.
+3. **El contacto lacustre está mal atribuido hoy y el cableado lo haría visible.** Medido sobre
+   las 21 entradas lacustres del join: **17 de 21 no nombran bien su Capitanía** — 14 con
+   `capitania: null` en el mapa **que devuelven teléfono igual**, y 3 (`159`, `160`, `161`) que
+   nombran "Puerto Montt" donde el decreto dice `puerto_varas` y `lago_ranco`. Es el hallazgo de
+   E0.3 con su caso lacustre. **No lo resuelve E3** —el contacto es el frente lateral de §7.1—;
+   lo que el paso 4 decide es de dónde sale el **nombre** (del decreto, vía el join, que es lo
+   que INV-3.3 manda) y qué hace con el teléfono cuando no se puede nombrar sin inventarlo, que
+   S3 ya resuelve para el aviso.
+4. **Ensanchar el Set le cambia el alcance al control de drift** de E0.1 (A3), que recibe
+   `bahiaIdsEnRuta`. No le hace daño; le cambia lo que mide. Se mide en el paso 6.
+
+**Agujero chico y concreto:** `BAHIA_COORDS` tiene 163 bahías y **la 257 no está**, aunque el
+join la adjudica a `lago_general_carrera` y el mapa de contacto la tiene. `sitport-routes.js:737`
+la descartaría **en silencio**. Hoy no molesta porque nunca entra al Set. Probablemente ya la
+cubre A3 — **no verificado**, anotado.
+
+**Discrepancia medida que el paso 4 tiene que resolver antes de dimensionar sobre ella:** D11
+dice "18 bahías del catálogo" y la medición de hoy da **21** — entradas del join cuya
+jurisdicción es de ámbito lacustre, 20 de ellas con coordenada. **No se determina de dónde sale
+el 18 y no se deduce.** Si son 21, hay tres bahías más que el cableado alcanza.
 
 **Verificado en el constructor, y hace a esta etapa más barata de lo que parecía.**
 `scripts/fase5_construir_capa_ds991.py` **ya trata el ámbito por separado**: la resta de

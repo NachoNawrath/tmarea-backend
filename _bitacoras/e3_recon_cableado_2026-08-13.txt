@@ -1,0 +1,193 @@
+================================================================================
+E3 — PASO 3 DE 6: RECONOCIMIENTO DEL CABLEADO. 2026-08-13
+Estado: MEDIDO. No se escribio cableado, no se toco produccion, no se aplico
+nada. Solo lectura (§6).
+Veredicto: el paso 4 queda DIMENSIONADO — son cuatro archivos y una funcion, y
+el cableado minimo NO cambia la unidad del pipeline: la ENSANCHA.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell,
+desde la raiz del repositorio — la medicion cruda es un solo archivo:
+
+    cd C:\Users\katia\tmarea-backend
+    Get-Content _bitacoras\e3_recon_cableado_2026-08-13\01_medicion.txt
+
+Crudo:
+    e3_recon_cableado_2026-08-13/01_medicion.txt
+
+Lo que el owner dio por sabido y no se remidio: `bahiasEnRutaPostGIS`
+(`sitport-routes.js:557`) selecciona `bahia_id` y la capa nueva esta indexada por
+`jurisdiccion_id`.
+
+NOTA DE FECHA. La sesion arranco el 2026-08-12 y el reloj paso la medianoche: el
+paso 2 y su ensayo son del 12 —la corrida del build termino 23:16— y **este paso
+3 es entero del 13**. Se deja dicho porque las dos bitacoras se leen juntas y
+tener la misma fecha las haria parecer una sola pasada. Los commits de la
+enumeracion de E3 (`aa44c56`, `c01614a`) llevan fecha del 13 y describen
+decisiones tomadas la noche del 12; el texto que bajaron al plan dice 2026-08-12
+y **no se reescribe** (§3.3): la fecha de la decision es esa.
+
+
+1. LA RESPUESTA CORTA, QUE ES MEJOR DE LO ESPERADO
+--------------------------------------------------------------------------------
+**El cableado minimo no tiene que cambiar la unidad del pipeline. Tiene que
+ensanchar su entrada.**
+
+El pipeline de restricciones de transito trabaja por bahia de punta a punta:
+SITPORT publica por bahia, `bahiasEnRutaPostGIS` devuelve un **Set de bahia_id**,
+y el filtro que decide que se muestra es una linea:
+
+    sitport-routes.js:735    if (!bahiaIdsEnRuta.has(bahiaId)) continue;
+
+Una restriccion lacustre no llega hoy porque su bahia no esta en ese Set: su
+celda Voronoi la borro el recorte contra `ne_land`. Para que llegue **no hace
+falta reemplazar la unidad**: hace falta que ese Set incluya, ademas, las bahias
+que cuelgan de una Capitania cuya geometria del D.S. 991 intersecta la ruta.
+
+    ruta ∩ jurisdicciones_ds991  ->  jurisdiccion_id  ->  join de E0.3  ->  bahia_id
+
+Es aditivo sobre un Set: no saca ninguna bahia de las que hoy entran. Y la unidad
+verdadera —dejar de filtrar por bahia y filtrar por Capitania— **sigue siendo de
+E6**, sin tocar. Esto es la puerta de entrada, no el cambio de unidad.
+
+
+2. QUE HAY QUE TOCAR — CUATRO ARCHIVOS, UNA FUNCION
+--------------------------------------------------------------------------------
+La capa entra al motor por **dos puntos, y los dos salen de la misma
+declaracion** — eso lo dejo asi E1 a proposito, para que el aviso de INV-3.6 no
+pueda hablar de una capa mientras la lista de restricciones sale de otra:
+
+    cobertura-jurisdiccional.js:150   el SQL de cobertura (CTE `cob`)
+    cobertura-jurisdiccional.js:320   capaJurisdiccionesVigente(pool)
+      └─ consumido por sitport-routes.js:559, dentro de bahiasEnRutaPostGIS
+
+De ahi sale el dimensionamiento:
+
+  1. `data/decreto/capa_consultada.json` — declarar la capa publicada como
+     consultable POR AMBITO PUBLICADO. Es dato, un bloque. **No se puede hacer
+     repuntando `capa_jurisdicciones`**: ver §3.a.
+
+  2. `src/services/cobertura-jurisdiccional.js` — dos puntos. `capaDeclarada()`
+     tiene que verificar el nombre nuevo contra el catalogo antes de
+     interpolarlo, como ya hace con los otros dos; y el CTE `cob` del SQL tiene
+     que unir las dos capas, porque si no un tramo lacustre sigue saliendo como
+     trozo no cubierto y el aviso lo registra como defecto (§3.b).
+
+  3. `src/routes/sitport-routes.js` — **una funcion**, `bahiasEnRutaPostGIS`
+     (:557). Sumarle al Set los `bahia_id` que salen de la capa publicada
+     expandidos por el join. El resto del pipeline no se toca.
+
+  4. `src/services/join-bahia-jurisdiccion.js` — **sin cambios de codigo, pero
+     cambia de estatus**: hoy NO lo consume produccion. Medido: los unicos
+     consumidores son `scripts/e2_volumen_cambio_unidad.js` y su prueba de
+     mordida. Con el cableado pasa a cargarse y validarse en el arranque, o sea
+     que su validador —el que se detiene si a una de las 6 sin resolver le falta
+     la pregunta redactada— empieza a poder detener el backend.
+
+Lo que NO hay que tocar, y conviene que quede escrito: el filtro de :735, el
+agrupamiento por bahia, el orden de transito, `elegirRestriccion`, y el motor de
+reglas (§6, intocable).
+
+
+3. QUE SE ROMPE SI SE TOCA MAL — CUATRO COSAS, LAS CUATRO MEDIDAS
+--------------------------------------------------------------------------------
+
+3.a — **EL CAMINO OBVIO ESTA CERRADO POR UN CONTROL VIVO.** Repuntar
+`capa_jurisdicciones` a `jurisdicciones_ds991` **detiene la carga del backend**:
+el control C7 de `ambitos-publicados.js:58` exige que la capa publicada NO sea la
+capa que el motor consulta, porque si lo fuera los cuatro ambitos se leerian como
+publicados y el registro mentiria desde el primer dia. El control es correcto y no
+se afloja (§0.3): el cableado tiene que declarar un **nombre nuevo**, dejando
+`capa_jurisdicciones` donde esta. Que C7 tenga un horizonte —fue escrito para la
+era en que las dos capas deben diferir— es algo que E6 va a tener que mirar; E3
+no lo toca porque no lo necesita.
+
+3.b — **SI SE CABLEA SOLO LA LISTA Y NO LA COBERTURA, EL AVISO MIENTE.** Son dos
+consumidores, no uno. Cablear `bahiasEnRutaPostGIS` y dejar el SQL de cobertura
+contra la capa vieja hace que la restriccion lacustre aparezca **y al mismo tiempo**
+el mismo tramo se registre como hueco de nuestra capa — causa (b) de INV-3.6, que
+el contrato define como defecto de construccion nuestro. Es la misma ventana que
+hundio al camino B en el paso anterior, ahora adentro de un solo paso. Los dos
+puntos se cablean juntos o no se cablea.
+
+3.c — **EL CONTACTO LACUSTRE ESTA MAL ATRIBUIDO HOY, Y EL CABLEADO LO HARIA
+VISIBLE.** `sitport-routes.js:781` nombra la Capitania con
+`getCapitaniaByBahiaId`, que lee el mapa operativo. Medido sobre las 21 entradas
+lacustres del join:
+
+    17 de 21 no nombran bien su Capitania
+      14 tienen `capitania: null` en el mapa — y DEVUELVEN TELEFONO igual
+         (96 -> +56 35 …4802;  105,106,144,145,146,209,210,245-250 -> +56 63 …6905)
+       3 nombran una Capitania MARITIMA donde el decreto dice otra:
+         159 y 161  mapa "Puerto Montt"  ·  decreto `puerto_varas`
+         160        mapa "Puerto Montt"  ·  decreto `lago_ranco`
+     4 coinciden: 111, 128, 203, 257
+
+Es el hallazgo de E0.3 —*el archivo mezcla quien tiene jurisdiccion con a quien se
+llama*— con su caso lacustre. **No lo resuelve E3**: el contacto es el frente
+lateral abierto de §7.1 del plan. Lo que E3 tiene que decidir en el paso 4 es de
+donde saca el NOMBRE — del decreto, via el join, que es lo que INV-3.3 manda — y
+que hace con el telefono cuando no se puede nombrar sin inventarlo, que es lo que
+S3 ya tiene resuelto para el aviso: *"con la derivacion generica cuando no"*.
+
+3.d — **AMPLIAR EL SET LE CAMBIA EL ALCANCE AL CONTROL DE DRIFT.**
+`evaluarDriftCatalogo` (:583) recibe `bahiaIdsEnRuta` y sobre eso decide que
+publica SITPORT bajo una bahia que no conocemos (A3, E0.1). Ensanchar el Set no le
+hace daño, pero le cambia lo que mide. Es un efecto a medir en el paso 6, no a
+descubrir despues.
+
+
+4. UN AGUJERO CHICO Y CONCRETO: LA BAHIA 257
+--------------------------------------------------------------------------------
+`BAHIA_COORDS` (`sitport-routes.js:30`) tiene **163 bahias** y la **257 no esta**.
+El join si la tiene, adjudicada a `lago_general_carrera`, y el mapa de contacto
+tambien. O sea que aunque el cableado la meta en el Set, dos lineas mas abajo:
+
+    sitport-routes.js:737    if (!coordsBahia) continue;
+
+la descarta **en silencio**. Es un descarte silencioso de los que §4.2 prohibe, y
+hoy no molesta porque la 257 nunca entra al Set. El paso 4 tiene que decidir que
+hace con ella; el control A3 de E0.1 existe justamente para que una bahia sin
+celda no se pierda sin registro, asi que lo mas probable es que ya este cubierto —
+**no verificado**, y por eso se anota en vez de afirmarse.
+
+
+5. UNA DISCREPANCIA QUE NO RESUELVO
+--------------------------------------------------------------------------------
+D11 dice, en §E3 del plan: *"E3 publica las 6 Capitanias de ambito lacustre (18
+bahias del catalogo)"*. **La medicion de hoy da 21.**
+
+Lo que mide el numero de hoy, dicho con precision: entradas de
+`data/decreto/join_bahia_jurisdiccion.json` cuya `jurisdiccion_id` tiene
+`ambito == "lacustre"` en el insumo v2. Son 21, repartidas asi:
+
+    lago_panguipulli      7   106,245,246,247,248,249,250
+    lago_ranco            4   144,145,146,160
+    lago_general_carrera  3   128,203,257
+    lago_villarrica       3   105,209,210
+    puerto_varas          3   111,159,161
+    lago_rapel            1   96
+
+De esas, **20 tienen coordenada** en `BAHIA_COORDS` (falta la 257).
+
+**No determino de donde sale el 18**, y no lo deduzco. Puede ser otro criterio
+—por ejemplo bahias que SITPORT publica, o el conteo anterior a que el join se
+recompusiera— y afirmar cual seria inventar. Se reporta la diferencia con el
+comando que la midio, que es lo que §2 pide. Importa porque el paso 4 dimensiona
+sobre este numero: si son 21 y no 18, hay tres bahias mas que el cableado alcanza.
+
+
+6. LO QUE ESTE RECONOCIMIENTO NO MIDIO
+--------------------------------------------------------------------------------
+- **Cuanto tarda** el SQL ensanchado. No se corrio ninguna consulta contra la
+  capa publicada porque **la capa publicada no existe todavia** — se aplica en el
+  paso 5. El paso 4 se escribe contra el ensayo, no contra la base.
+- **Si la 257 la caza A3.** Anotado en §4, no verificado.
+- **El efecto sobre las 8 rutas del arnes.** Eso es el paso 6, y esta escrito en
+  el plan que se mide en vez de afirmarse.
+
+================================================================================
+FIN — reconocimiento. No se escribio cableado, no se toco produccion.
+================================================================================
