@@ -1,6 +1,6 @@
 {
-  "generado": "2026-08-09",
-  "fase": "2 — cotejo cerrado con adjudicacion del owner",
+  "generado": "2026-08-12",
+  "fase": "2 — cotejo cerrado con adjudicacion del owner; regenerado tras la pasada de alineacion contra el TM-025 A, con D11 (alcance) y D12 (Galletue)",
   "insumo_shapefile": {
     "ruta": "geodata/lagos/Inventario_Lagos.shp",
     "sha256_shp": "0692f9b2d6193d211854ffac7e0521c56c19a2de35b9870eabc436d0695a8154",
@@ -11,7 +11,7 @@
   },
   "insumo_decreto": {
     "ruta": "data/decreto/jurisdicciones_capitanias.json",
-    "sha256": "d6e1d48fcde08bcfa447553c702d9fcde874d24dc1f048265fe9823a37683c56"
+    "sha256": "f6fe9b62b51983fb6c005d5cab47c41af26af641cab8d452e4d695130db0e8eb"
   },
   "criterios_adjudicacion": [
     "lago/laguna es nomenclatura, no identidad: decreto y catastro usan palabras distintas para el mismo cuerpo.",
@@ -20,7 +20,9 @@
     "Se rechazan los candidatos de otra region que solo comparten una palabra (Rio San Pedro, Rio Bueno).",
     "Icalma: union de sus dos poligonos.",
     "Puyehue: entero a las dos jurisdicciones que lo nombran (INV-3.4).",
-    "Rios y Galletue: geometria nula, declarados (INV-3.6)."
+    "Rios: geometria nula, declarados (INV-3.6). El shapefile no contiene rios.",
+    "Galletue/Gualletue (D12, 2026-08-12): se adjudica el fid 965. Coincidencia unica en los 2.067 registros; la grafia del catastro sale del parrafo de la Gobernacion Maritima de Valdivia, o sea del propio decreto. Se ancla POR FID: el fid 960 tiene geometria identica y no tiene nombre, y esta declarado como gemelo.",
+    "Los cuerpos con gemelo geometrico se anclan por FID y el gemelo se declara. El control cuenta FILAS, no area: dos poligonos identicos unidos dan la misma area que uno, asi que un control de superficie no ve el duplicado."
   ],
   "traslape_deliberado": {
     "LAGO PUYEHUE": {
@@ -41,6 +43,7 @@
           "nombre_decreto": "Lago Rapel",
           "fragmento_decreto": "el lago Rapel",
           "resolucion": "aceptado",
+          "anclaje": "nombre",
           "shapefile_fid": [
             568
           ],
@@ -69,6 +72,7 @@
           "nombre_decreto": "Lago Colico",
           "fragmento_decreto": "Lagos Colico",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             974
           ],
@@ -87,6 +91,7 @@
           "nombre_decreto": "Lago Caburgua",
           "fragmento_decreto": "Lagos ... Caburgua",
           "resolucion": "aceptado",
+          "anclaje": "nombre",
           "shapefile_fid": [
             975
           ],
@@ -105,6 +110,7 @@
           "nombre_decreto": "Lago Huilipilun",
           "fragmento_decreto": "Lagos ... Huilipilun",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             976
           ],
@@ -123,6 +129,7 @@
           "nombre_decreto": "Lago Villarrica",
           "fragmento_decreto": "Lagos ... y Villarrica",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             977
           ],
@@ -141,6 +148,7 @@
           "nombre_decreto": "Laguna Conguillio",
           "fragmento_decreto": "lagunas Conguillio",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             964
           ],
@@ -158,15 +166,36 @@
         {
           "nombre_decreto": "Laguna Galletue",
           "fragmento_decreto": "lagunas ... Galletue",
-          "resolucion": "ausente",
-          "shapefile_fid": [],
-          "shapefile_detalle": [],
-          "motivo": "Sin ninguna coincidencia ni candidato en el shapefile. Queda sin geometria, declarado (INV-3.6)."
+          "resolucion": "aceptado",
+          "anclaje": "fid",
+          "shapefile_fid": [
+            965
+          ],
+          "shapefile_detalle": [
+            {
+              "fid": 965,
+              "num": 966,
+              "nombre": "LAGO GUALLETUE",
+              "region": "IX",
+              "area_km2": 13.075
+            }
+          ],
+          "motivo": "D12, adjudicada por el owner el 2026-08-12. El decreto la escribe 'Galletue' y el catastro 'Gualletue'; esa grafia sale del parrafo de la Gobernacion Maritima de Valdivia, o sea del propio decreto y no de una fuente externa. Coincidencia unica en los 2.067 registros del catastro. Coherencia geografica con margen de 2x: 8,6 km de Icalma y 24,7 de Conguillio, los otros dos cuerpos de la misma frase del decreto, contra 51,9 km del siguiente candidato. SE ANCLA POR FID, no por nombre ni por geometria — ver GEMELOS_DECLARADOS.",
+          "gemelos_geometricos_declarados": {
+            "965": {
+              "gemelos_no_adjudicados": [
+                960
+              ],
+              "filas_para_el_mismo_poligono": 2,
+              "motivo": "El fid 960 no tiene nombre y su geometria es identica a la del 965: son dos filas del catastro para el mismo cuerpo. Se adjudica el 965, que es el que lleva el nombre. Un cotejo que seleccione por geometria traeria los dos y duplicaria la laguna sin que ningun control de area lo note."
+            }
+          }
         },
         {
           "nombre_decreto": "Laguna Icalma",
           "fragmento_decreto": "lagunas ... e Icalma",
           "resolucion": "aceptado",
+          "anclaje": "nombre",
           "shapefile_fid": [
             966,
             967
@@ -187,19 +216,36 @@
               "area_km2": 1.932
             }
           ],
-          "motivo": "Un cuerpo con dos partes en el catastro (9.901 y 1.932 km2). La jurisdiccion cubre las dos: se unen."
+          "motivo": "Un cuerpo con dos partes en el catastro (9.901 y 1.932 km2). La jurisdiccion cubre las dos: se unen.",
+          "gemelos_geometricos_declarados": {
+            "966": {
+              "gemelos_no_adjudicados": [
+                962
+              ],
+              "filas_para_el_mismo_poligono": 2,
+              "motivo": "Mismo patron que 960/965: el fid 962 no tiene nombre y su geometria es identica a la del 966 (parte mayor de Icalma, 9,901 km2). Se adjudica el 966. Hallado por el control de gemelos el 2026-08-12; la adjudicacion vigente ya tomaba el correcto, pero porque empareja por nombre y el gemelo no lo tiene."
+            },
+            "967": {
+              "gemelos_no_adjudicados": [
+                963
+              ],
+              "filas_para_el_mismo_poligono": 2,
+              "motivo": "Mismo patron: el fid 963 no tiene nombre y su geometria es identica a la del 967 (parte menor de Icalma, 1,932 km2). Se adjudica el 967."
+            }
+          }
         },
         {
           "nombre_decreto": "Rio Tolten",
           "fragmento_decreto": "y el Rio Tolten",
           "resolucion": "ausente",
+          "anclaje": "nombre",
           "shapefile_fid": [],
           "shapefile_detalle": [],
           "motivo": "Cuerpo fluvial. El shapefile no contiene rios. Sin geometria, declarado (INV-3.6)."
         }
       ],
-      "cuerpos_con_geometria": 6,
-      "cuerpos_sin_geometria": 2,
+      "cuerpos_con_geometria": 7,
+      "cuerpos_sin_geometria": 1,
       "cumple_inv_3_5": true
     },
     {
@@ -211,6 +257,7 @@
           "nombre_decreto": "Lago Calafquen",
           "fragmento_decreto": "Lagos Calafquen",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             982
           ],
@@ -229,6 +276,7 @@
           "nombre_decreto": "Lago Panguipulli",
           "fragmento_decreto": "Lagos ... Panguipulli",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             999
           ],
@@ -247,6 +295,7 @@
           "nombre_decreto": "Lago Pellaifa",
           "fragmento_decreto": "Lagos ... Pellaifa",
           "resolucion": "aceptado",
+          "anclaje": "nombre",
           "shapefile_fid": [
             993
           ],
@@ -265,6 +314,7 @@
           "nombre_decreto": "Lago Pullinque",
           "fragmento_decreto": "Lagos ... Pullinque",
           "resolucion": "aceptado",
+          "anclaje": "nombre",
           "shapefile_fid": [
             991
           ],
@@ -283,6 +333,7 @@
           "nombre_decreto": "Lago Rinihue",
           "fragmento_decreto": "Lagos ... Rinihue",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1029
           ],
@@ -301,6 +352,7 @@
           "nombre_decreto": "Lago Neltume",
           "fragmento_decreto": "Lagos ... Neltume",
           "resolucion": "aceptado",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1028
           ],
@@ -319,6 +371,7 @@
           "nombre_decreto": "Lago Pirihueico",
           "fragmento_decreto": "Lagos ... Pirihueico",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1042
           ],
@@ -337,6 +390,7 @@
           "nombre_decreto": "Rio Fuy",
           "fragmento_decreto": "los rios Fuy",
           "resolucion": "ausente",
+          "anclaje": "nombre",
           "shapefile_fid": [],
           "shapefile_detalle": [],
           "motivo": "Cuerpo fluvial. El shapefile no contiene rios. Sin geometria, declarado (INV-3.6)."
@@ -345,6 +399,7 @@
           "nombre_decreto": "Rio San Pedro",
           "fragmento_decreto": "los rios ... y San Pedro",
           "resolucion": "rechazado",
+          "anclaje": "nombre",
           "shapefile_fid": [],
           "shapefile_detalle": [],
           "motivo": "El candidato LAGUNA GRANDE DE SAN PEDRO esta en la Region VIII (San Pedro de la Paz): es otro cuerpo que comparte palabra. Se rechaza. Sin geometria (INV-3.6)."
@@ -363,6 +418,7 @@
           "nombre_decreto": "Lago Ranco",
           "fragmento_decreto": "Lagos Ranco",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1055
           ],
@@ -381,6 +437,7 @@
           "nombre_decreto": "Lago Maihue",
           "fragmento_decreto": "Lagos ... Maihue",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1067
           ],
@@ -399,6 +456,7 @@
           "nombre_decreto": "Lago Puyehue",
           "fragmento_decreto": "Lagos ... Puyehue (hasta el limite con la Region de Los Lagos)",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1110
           ],
@@ -417,6 +475,7 @@
           "nombre_decreto": "Lago Huishue",
           "fragmento_decreto": "Lagos ... Huishue",
           "resolucion": "aceptado",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1091
           ],
@@ -435,6 +494,7 @@
           "nombre_decreto": "Lago Gris",
           "fragmento_decreto": "Lagos ... y Gris",
           "resolucion": "aceptado",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1102
           ],
@@ -453,6 +513,7 @@
           "nombre_decreto": "Rio Bueno",
           "fragmento_decreto": "Incluye el rio Bueno en los sectores Los Patos, La Goleta y El Manzanito",
           "resolucion": "rechazado",
+          "anclaje": "nombre",
           "shapefile_fid": [],
           "shapefile_detalle": [],
           "motivo": "El candidato LAGUNA ACHIBUENO esta en la Region VII: es otro cuerpo que comparte palabra. Se rechaza. Sin geometria (INV-3.6)."
@@ -471,6 +532,7 @@
           "nombre_decreto": "Lago Llanquihue",
           "fragmento_decreto": "Lagos Llanquihue",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1146
           ],
@@ -489,6 +551,7 @@
           "nombre_decreto": "Lago Rupanco",
           "fragmento_decreto": "Lagos ... Rupanco",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1127
           ],
@@ -507,6 +570,7 @@
           "nombre_decreto": "Lago Todos los Santos",
           "fragmento_decreto": "Lagos ... Todos los Santos",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1147
           ],
@@ -525,6 +589,7 @@
           "nombre_decreto": "Lago Puyehue",
           "fragmento_decreto": "Lagos ... Puyehue (hasta el limite con la Region de Los Rios)",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1110
           ],
@@ -543,6 +608,7 @@
           "nombre_decreto": "Lago Constancia",
           "fragmento_decreto": "Lagos ... y Constancia",
           "resolucion": "aceptado",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1107
           ],
@@ -571,6 +637,7 @@
           "nombre_decreto": "Lago General Carrera",
           "fragmento_decreto": "Lagos General Carrera",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1738
           ],
@@ -589,6 +656,7 @@
           "nombre_decreto": "Lago Cochrane",
           "fragmento_decreto": "Lagos ... Cochrane",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1863
           ],
@@ -607,6 +675,7 @@
           "nombre_decreto": "Lago O'Higgins",
           "fragmento_decreto": "Lagos ... y O'Higgins",
           "resolucion": "exacta",
+          "anclaje": "nombre",
           "shapefile_fid": [
             1917
           ],
@@ -627,12 +696,98 @@
       "cumple_inv_3_5": true
     }
   ],
+  "alcance_d11": {
+    "decidido": "2026-08-12, por el owner",
+    "opcion": "estrecha — el cotejo cubre las 6 Capitanias de ambito lacustre",
+    "fundamento": "Los cuerpos de las Capitanias maritimas NO tienen geometria hoy, asi que la opcion estrecha no le quita nada al patron: no se puede perder lo que nunca se publico. La opcion amplia queda como frente propio, con su alcance medido antes de comprometerlo.",
+    "jurisdicciones_en_alcance": [
+      "lago_general_carrera",
+      "lago_panguipulli",
+      "lago_ranco",
+      "lago_rapel",
+      "lago_villarrica",
+      "puerto_varas"
+    ],
+    "carencia_declarada": {
+      "que_es": "Capitanias de ambito MARITIMO a las que el decreto tambien les nombra cuerpos de agua interior. Quedan FUERA del cotejo por decision D11, y se declaran aca para que la ausencia no sea silencio (INV-3.6).",
+      "cuantas": 11,
+      "sin_geometria_hoy": true,
+      "jurisdicciones": [
+        {
+          "id": "carahue",
+          "nombre": "Carahue",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "lagos Budi y Queule, laguna Trovolhue, y cuatro rios"
+        },
+        {
+          "id": "chaiten",
+          "nombre": "Chaiten",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "lagos Yelcho y Palena"
+        },
+        {
+          "id": "cochamo",
+          "nombre": "Cochamo",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "lagos Tagua-Tagua e Inferior"
+        },
+        {
+          "id": "constitucion",
+          "nombre": "Constitucion",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "lagos Teno, Vichuquen, Colbun y Maule"
+        },
+        {
+          "id": "corral",
+          "nombre": "Corral",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "rio Colun"
+        },
+        {
+          "id": "lebu",
+          "nombre": "Lebu",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "lagos Lanalhue y Lleu Lleu"
+        },
+        {
+          "id": "maullin",
+          "nombre": "Maullin",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "rio Maicolpue"
+        },
+        {
+          "id": "puerto_chacabuco",
+          "nombre": "Puerto Chacabuco",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "canales interiores hasta la Laguna San Rafael"
+        },
+        {
+          "id": "puerto_montt",
+          "nombre": "Puerto Montt",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "lago Chapo"
+        },
+        {
+          "id": "talcahuano",
+          "nombre": "Talcahuano",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "lagunas Chica y Grande de San Pedro"
+        },
+        {
+          "id": "valdivia",
+          "nombre": "Valdivia",
+          "ambito": "maritima",
+          "cuerpos_que_el_decreto_le_nombra": "seis rios y sus afluentes navegables"
+        }
+      ]
+    }
+  },
   "conteo": {
     "exacta": 18,
-    "aceptado": 9,
+    "aceptado": 10,
     "rechazado": 2,
-    "ausente": 3
+    "ausente": 2
   },
   "total_cuerpos": 32,
-  "total_con_geometria": 27
+  "total_con_geometria": 28
 }

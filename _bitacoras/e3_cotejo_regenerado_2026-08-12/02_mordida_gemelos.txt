@@ -1,0 +1,32 @@
+==============================================================================
+PRUEBA DE MORDIDA — gemelos geometricos y anclaje por FID
+==============================================================================
+
+POR QUE CONTANDO FILAS Y NO MIDIENDO AREA
+  area del fid 965 solo          : 13073946.567365
+  area de la union 965 + 960     : 13073946.567365
+  diferencia absoluta            : 7.45e-09
+  diferencia RELATIVA            : 5.70e-16   <-- lo que hay que mirar
+  filas involucradas             : 1 contra 2     <-- ESTO si se ve
+  => a un control de AREA con cualquier tolerancia razonable el duplicado LE PASA POR DEBAJO
+  => el control cuenta FILAS, que es lo unico que cambia de verdad
+
+CONTROL NEGATIVO PRIMERO — casos que TIENEN que morder
+  [MUERDE   ] gemelo de Galletue sin declarar
+  [MUERDE   ] gemelo de Icalma (parte mayor) sin declarar
+  [MUERDE   ] gemelo declarado con el fid equivocado
+  [MUERDE   ] gemelo declarado de mas
+  [MUERDE   ] FID fuera del rango del shapefile
+  [MUERDE   ] FID apunta a otra fila que la declarada
+  [MUERDE   ] un cuerpo anclado por nombre Y por FID
+  [MUERDE   ] D11 saca de alcance una jurisdiccion LACUSTRE
+  [MUERDE   ] D11 nombra una jurisdiccion que el decreto no tiene
+
+Y RECIEN AHORA, EL VERDE
+  [OK       ] arbol limpio: la adjudicacion corre entera
+
+  [OK       ] el cotejo real NO fue tocado por la prueba
+
+==============================================================================
+MORDIDA: 11/11
+==============================================================================
