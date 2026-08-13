@@ -380,6 +380,42 @@ vacía (INV-3.5) — completo, no a medias (D3); una ruta en el Lago Llanquihue 
 Capitanía y sus restricciones; y el registro de ámbitos pasa el lacustre a **publicado**, con
 lo que su aviso de INV-3.6 se retira solo.
 
+#### Los seis pasos de E3 — enumerados acá el 2026-08-12
+
+> **Por qué esto se escribe hoy.** La etapa se venía contando "paso 1 de 6", "paso 2 de 6"
+> desde el 2026-08-12, y esa numeración **nunca estuvo en este documento**: vivía en una
+> respuesta de sesión y en la memoria de trabajo. Al abrir la sesión del paso 2 hubo que
+> reconstruirla, y sólo se pudo recuperar cuáles eran el 1, el 2 y el 5. Es exactamente la
+> clase de cosa que se pierde entre sesiones, así que baja al plan, **incluido lo que no se
+> sabe** — que se escribe como no determinado y no se rellena por deducción.
+
+| # | paso | estado |
+|---|---|---|
+| 1 | **Reconocimiento**: ¿la geometría lacustre pasa sus controles? | **CERRADO** 2026-08-12 · `_bitacoras/e3_recon_2026-08-12.txt` |
+| 2 | **Partir el gate por ámbito** sin bajarle la severidad a C3 | **CERRADO** 2026-08-12 · `_bitacoras/e3_gate_2026-08-12.txt` |
+| 3 | **no determinado** | por delante |
+| 4 | **no determinado** | por delante |
+| 5 | **Aplicar el build y mover `ambitos_publicados.json`** — un solo movimiento | por delante |
+| 6 | **no determinado** | por delante |
+
+**Los pasos 3, 4 y 6 no están determinados, y no se inventan acá.** No aparecen en ninguna
+bitácora ni en ninguna versión de este documento; sólo se sabe que el conteo era de seis. Lo
+que sí está escrito y los acota es la **aceptación de E3**, tres párrafos más arriba: de sus
+tres exigencias, "las 6 construidas y auditadas" la cubren los pasos 1 y 2, y "el registro pasa
+el lacustre a publicado" es el paso 5 — queda sin paso asignado *"una ruta en el Lago
+Llanquihue devuelve su Capitanía y sus restricciones"*, que es verificación de punta a punta
+sobre el motor y es candidata natural a uno de los tres. Candidata, no decisión: **la
+enumeración la fija el owner.**
+
+**Paso 5, lo que ya se sabe y no hay que volver a descubrir:** aplicar el build y mover el
+registro **son el mismo movimiento, no dos**. En cuanto la construcción confirme las seis
+lacustres, el retiro automático de E0.2 —control C3 de `ambitos-publicados.js`— **detiene la
+carga** porque el ámbito está declarado no publicado y la base ya lo tiene. Eso no es un
+defecto: es ese control haciendo lo suyo. Pero implica que aplicar sin mover el registro deja
+el repositorio en un estado que no arranca, y por eso el paso 2 **no aplicó el build** aunque
+el gate ya esté partido y probado. La corrida real se hace con el registro listo para moverse
+en la misma pasada.
+
 **Verificado en el constructor, y hace a esta etapa más barata de lo que parecía.**
 `scripts/fase5_construir_capa_ds991.py` **ya trata el ámbito por separado**: la resta de
 tierra y el límite exterior se aplican solo a `ambito = 'maritima'` (líneas 723-772), lo
