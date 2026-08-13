@@ -503,10 +503,13 @@ join la adjudica a `lago_general_carrera` y el mapa de contacto la tiene. `sitpo
 la descartaría **en silencio**. Hoy no molesta porque nunca entra al Set. Probablemente ya la
 cubre A3 — **no verificado**, anotado.
 
-**Discrepancia medida que el paso 4 tiene que resolver antes de dimensionar sobre ella:** D11
-dice "18 bahías del catálogo" y la medición de hoy da **21** — entradas del join cuya
-jurisdicción es de ámbito lacustre, 20 de ellas con coordenada. **No se determina de dónde sale
-el 18 y no se deduce.** Si son 21, hay tres bahías más que el cableado alcanza.
+**Discrepancia CERRADA el 2026-08-13 — ver la nota al pie de D11, más arriba.** Eran dos
+criterios distintos, no un error: el **18** cuenta coincidencia de nombre (identificación) y el
+**21** cuenta atribución del join (alcance). El que corresponde a E3 es **21**, 20 con
+coordenada, y **el paso 4 dimensiona sobre eso**. El mismo día quedaron cerrados los otros dos
+pendientes de este paso: el agujero de la **257 — A3 sí la cubre**, verificado —, y la decisión
+del owner sobre de dónde sale el nombre de la Capitanía: **del join, no del mapa**; el teléfono
+sigue saliendo del mapa.
 
 **Verificado en el constructor, y hace a esta etapa más barata de lo que parecía.**
 `scripts/fase5_construir_capa_ds991.py` **ya trata el ámbito por separado**: la resta de
@@ -619,6 +622,60 @@ Dos salvedades sobre este número: la captura es una foto del 2026-08-11 y **SIT
 hora**, así que mide el orden de magnitud, no el estado de hoy; y la 153 es una de las cuatro
 bahías cuya Capitanía se resolvió recién el 2026-08-12 —antes tenía `capitania: null`—, con lo
 cual este cruce no era posible antes de esa corrección.
+
+> **NOTA AL PIE DE D11 — 2026-08-13. El número se corrige; la decisión no se mueve.**
+> Arriba dice *"(18 bahías del catálogo)"*. Ese 18 **no está mal, pero es de otra pregunta**, y
+> el texto de arriba no se reescribe (§3.3). Sale de
+> `_bitacoras/e03join_recon_2026-08-11.txt:177`, textual: *"18 bahías del catálogo **tienen por
+> nombre** uno de esos cuerpos"* — cuenta **coincidencia de nombre** entre una bahía del catálogo
+> y un cuerpo de agua que el decreto nombra, y era un instrumento de **identificación**: servía
+> para resolver 13 bahías sin atribuir sin interpretar nada.
+>
+> Lo que E3 publica es un **ámbito**, y de un ámbito cuelga la **atribución**, no la coincidencia
+> de nombre. Ese número es **21**: entradas de `join_bahia_jurisdiccion.json` cuya
+> `jurisdiccion_id` es de ámbito lacustre — `lago_panguipulli` 7, `lago_ranco` 4,
+> `lago_general_carrera` 3, `lago_villarrica` 3, `puerto_varas` 3, `lago_rapel` 1. Con coordenada
+> en `BAHIA_COORDS` son **20** (falta la 257). **El paso 4 dimensiona sobre 21/20.**
+>
+> Lo que no se reprodujo, dicho en vez de tapado: **no se recalculó el 18 con el mismo
+> comparador**. El contador vive en `scripts/e03join_reconocimiento.js` y es el que manda; un
+> recuento independiente con un comparador propio más laxo da **19** — corrobora el orden de
+> magnitud y no reproduce el número. Las dos entradas lacustres cuyo nombre no es un cuerpo
+> adjudicado son **250 Lago Pirehuico** y **257 Río Cochrane**.
+>
+> **D11 no se mueve**: decidió alcance estrecho contra amplio, y esa decisión no depende de si el
+> número es 18, 20 o 21.
+
+##### El contacto del ámbito lacustre — DECIDIDO por el owner el 2026-08-13
+
+**El NOMBRE de la Capitanía sale del join de E0.3; el TELÉFONO sigue saliendo del mapa
+operativo.** El paso 4 lo toma como dado.
+
+Motivo del owner: el join es dato declarado con respaldo del decreto, y el mapa **tiene 17 de 21
+mal** — 14 entradas con `capitania: null` que devuelven teléfono igual, y `159`/`160`/`161`
+nombrando "Puerto Montt", una Capitanía marítima, donde el decreto dice `puerto_varas` y
+`lago_ranco`. Es el archivo que E0.3 ya declaró insuficiente para esto. El teléfono se queda
+donde está porque el mapa es su autoridad por `CONTRATO_MOTOR.md` §5. Coherente con INV-3.3 —el
+mapa operativo no revoca al decreto— y con la separación que E0.3 hizo a propósito.
+
+**Esto no arregla el mapa: lo deja de consultar para el nombre en el ámbito lacustre.** El frente
+de contacto de §7.1 sigue abierto y ahora tiene una razón más, con caso concreto: en cuanto se
+cablee, un patrón navegando el Lago Puyehue vería "Puerto Montt" si el nombre saliera de ahí. La
+decisión lo evita en lo lacustre y **no lo evita en ningún otro ámbito**.
+
+##### La bahía 257 sí está cubierta por A3 — verificado el 2026-08-13
+
+Quedaba anotado como "probablemente, no verificado". Verificado leyendo el camino entero:
+`evaluarDriftCatalogo` arma sus candidatas con `!BAHIA_COORDS[r.id_bahia]`, o sea que la 257
+entra **justamente por no estar** en el catálogo; corre en `:724`, **antes** del `continue` de
+`:737` que la sacaría; y en `drift-ambito-a.js:97` el **defecto se registra siempre**, resuelva o
+no su Capitanía — si no se la puede ubicar cae en `no_ubicable`, que avisa igual. **No hay
+descarte silencioso**: el `continue` la saca de la lista de restricciones, no del registro.
+
+Efecto lateral que conviene tener escrito: **el cableado mejora este caso.** Hoy la 257 no puede
+producir aviso porque ninguna bahía lacustre matchea y su repartición nunca entra en
+`repsEnRuta`; cableado el ámbito, una ruta por el Lago General Carrera matchearía 128 y 203, y la
+257 pasaría de defecto registrado a **defecto + aviso**.
 
 ##### Un cierre servido, medido y sin aplicar
 

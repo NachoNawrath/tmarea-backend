@@ -191,3 +191,101 @@ sobre este numero: si son 21 y no 18, hay tres bahias mas que el cableado alcanz
 ================================================================================
 FIN — reconocimiento. No se escribio cableado, no se toco produccion.
 ================================================================================
+
+
+================================================================================
+ADDENDUM 2026-08-13 — TRES CIERRES PEDIDOS POR EL OWNER
+Se agrega al pie; nada de lo de arriba se reescribe (§3.3). Lo de arriba dejaba
+la discrepancia sin resolver y la 257 sin verificar: las dos quedan cerradas aca,
+y la tercera es una decision del owner que el paso 4 toma como dada.
+================================================================================
+
+A. LA DISCREPANCIA 18 vs 21: NO ES UN ERROR, SON DOS PREGUNTAS DISTINTAS
+--------------------------------------------------------------------------------
+El **18** sale de `_bitacoras/e03join_recon_2026-08-11.txt`, linea 177, textual:
+
+    "`cotejo_lacustre_adjudicado.json` ya trae ADJUDICADO que cuerpo de agua
+     nombra cada jurisdiccion lacustre, con el fragmento literal del decreto.
+     18 bahias del catalogo TIENEN POR NOMBRE uno de esos cuerpos; 13 de ellas
+     estan hoy sin atribuir."
+
+O sea que el 18 cuenta **coincidencia de NOMBRE** entre una bahia del catalogo y
+un cuerpo de agua que el decreto nombra. Era un **instrumento de identificacion**:
+servia para resolver 13 bahias sin atribuir sin tener que interpretar nada,
+porque el nombre de la bahia ES el cuerpo que el decreto nombra.
+
+El **21** cuenta otra cosa: entradas de `join_bahia_jurisdiccion.json` cuya
+`jurisdiccion_id` tiene `ambito == "lacustre"`. Es **atribucion**, no
+identificacion: a que Capitania quedo colgada cada bahia despues de que E0.3
+cerrara el join.
+
+**Ninguno de los dos esta mal. El que corresponde a E3 es el 21**, porque lo que
+E3 publica es un ambito y lo que cuelga de un ambito es la atribucion, no la
+coincidencia de nombre. Con coordenada en `BAHIA_COORDS` son **20** (falta la
+257, ver §B).
+
+Lo que NO se reprodujo, y se dice en vez de taparlo: **no se recalculo el 18 con
+el mismo comparador**. El contador vive en `scripts/e03join_reconocimiento.js` y
+es el que manda. Un recuento independiente con un comparador propio —mas laxo,
+por inclusion de subcadena en los dos sentidos— da **19**, no 18: corrobora el
+orden de magnitud y no reproduce el numero. Las dos entradas del join lacustre
+cuyo nombre NO es un cuerpo adjudicado son **250 LAGO PIREHUICO** (colgada de
+`lago_panguipulli`) y **257 RIO COCHRANE** (`lago_general_carrera`, la
+adjudicacion del owner del 2026-08-11).
+
+**D11 no se mueve.** Lo que D11 decidio es alcance estrecho contra amplio, y esa
+decision no depende de si el numero es 18, 20 o 21. Lo que cambia es sobre que
+numero dimensiona el paso 4: **21 atribuidas, 20 con coordenada.**
+
+
+B. LA 257 SI ESTA CUBIERTA POR A3 — VERIFICADO
+--------------------------------------------------------------------------------
+Quedaba anotado como "probablemente ya cubierto, NO VERIFICADO". Verificado
+leyendo el camino entero:
+
+  · `evaluarDriftCatalogo` (`sitport-routes.js:583`) arma `desconocidas` con
+    `registrosSitport.filter(r => !BAHIA_COORDS[r.id_bahia])` — o sea que una
+    restriccion publicada bajo la 257 entra **justamente por no estar** en
+    `BAHIA_COORDS`. Es la condicion de entrada, no de salida.
+  · Corre **antes** de los dos descartes. El propio comentario del codigo lo
+    declara (`:721`), y la lectura lo confirma: `bahiaIdsEnRuta` se calcula en
+    `:719`, el drift en `:724`, y el `continue` que la descartaria esta en `:737`.
+  · En `evaluarDriftEnRuta` (`drift-ambito-a.js:97`) el **defecto se registra
+    SIEMPRE**, resuelva o no su Capitania. El aviso al patron depende de si su
+    reparticion esta entre las de la ruta (`repsEnRuta`); y si no se la puede
+    ubicar, cae en `no_ubicable`, que **avisa igual** — el lado conservador.
+
+**No hay descarte silencioso.** El `continue` de `:737` la saca de la LISTA de
+restricciones, no del registro.
+
+Y hay un efecto lateral que conviene tener escrito: **el cableado mejora este
+caso.** Hoy la 257 no puede producir aviso porque ninguna bahia lacustre matchea
+y su reparticion nunca entra en `repsEnRuta`. Cableado el ambito, una ruta por el
+Lago General Carrera matchearia 128 y 203, su reparticion entraria, y la 257
+pasaria de **defecto registrado** a **defecto + aviso**. Lo unico que no se
+verifico es que SITPORT le de reparticion a la 257 — E0.1 ya lo midio y se la da
+(`e01d_d7_y_257_2026-08-11.txt`), y si algun dia no se la diera, cae en
+`no_ubicable` y avisa igual.
+
+
+C. DE DONDE SALE EL NOMBRE DE LA CAPITANIA — DECISION DEL OWNER, 2026-08-13
+--------------------------------------------------------------------------------
+El paso 4 la toma como dada:
+
+  · **El NOMBRE sale del join de E0.3**, no del mapa operativo. Motivo del owner:
+    el join es dato declarado con respaldo del decreto; el mapa tiene 17 de 21 mal
+    y es el que E0.3 ya declaro insuficiente.
+  · **El TELEFONO sigue saliendo del mapa**, que es su autoridad por
+    CONTRATO_MOTOR.md §5.
+
+Coherente con INV-3.3 —el mapa operativo no revoca al decreto— y con la separacion
+que E0.3 hizo a proposito: *quien tiene jurisdiccion* es normativo y *a quien se
+llama* es operativo.
+
+**Esto NO arregla el mapa: lo deja de consultar para el nombre en el ambito
+lacustre.** El frente de contacto de §7.1 del plan sigue abierto, y ahora tiene
+una razon mas y con caso concreto: en cuanto se cablee, un patron navegando el
+Lago Puyehue veria "Puerto Montt" —una Capitania maritima— si el nombre saliera
+de ahi. La decision lo evita en lo lacustre y no lo evita en ningun otro ambito.
+
+================================================================================
