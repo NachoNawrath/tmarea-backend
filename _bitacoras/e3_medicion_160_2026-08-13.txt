@@ -1,0 +1,234 @@
+================================================================================
+MEDICION — LA BAHIA 160 (LAGO PUYEHUE) Y EL CUERPO PARTIDO ENTRE DOS CAPITANIAS
+2026-08-13. SOLO LECTURA: no se toco codigo, ni dato, ni base.
+Pedida por el owner despues del cierre del paso 5 de E3. NO decide nada — la
+decision de a quien llama el patron es del owner.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows; las consultas se corrieron con psql y con dos
+scripts de lectura en el directorio temporal de la sesion (no se versionaron: no
+producen dato, solo lo leen; sus consultas estan transcritas enteras aca abajo).
+Reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    $env:PGPASSWORD = "<la del .env>"
+    & "C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -d mapa_navegacion -f <consulta>
+
+
+PREGUNTA 1 — ¿EL SISTEMA PUEDE SABER DE QUE LADO DEL LIMITE REGIONAL CAE UN
+TRAMO, O LA ADICIONAL ES SOLO UNA ETIQUETA DEL JOIN?
+--------------------------------------------------------------------------------
+**RESPUESTA: NO PUEDE, Y NO ES UNA LIMITACION DEL CODIGO. ES LA GEOMETRIA, Y ESTA
+ASI A PROPOSITO.**
+
+Las dos figuras estan cargadas y las dos contienen el LAGO ENTERO. No se parten
+en el limite regional: el mismo poligono se adjudico a las dos jurisdicciones.
+
+  a) La adjudicacion, en el insumo (`cotejo_lacustre_adjudicado.json`):
+
+       lago_ranco    | Lago Puyehue | fid [1110] | 155,642 km2
+       puerto_varas  | Lago Puyehue | fid [1110] | 155,642 km2
+
+     **EL MISMO FID.** Y el traslape esta DECLARADO en el propio dato:
+
+       "LAGO PUYEHUE": {
+         "jurisdicciones": ["lago_ranco", "puerto_varas"],
+         "motivo": "El decreto lo parte por limite regional ('hasta el limite con
+          la Region de Los Lagos' / 'de Los Rios'); el shapefile trae un unico
+          poligono y el criterio de particion no esta determinado. Se asigna
+          entero a ambas: INV-3.4 fija que el motor muestra de mas, nunca de
+          menos."
+       }
+
+  b) La capa construida lo confirma. Del area compartida, CERO pertenece a una
+     sola:
+
+       lago_compartido_km2  lago_solo_de_varas  lago_solo_de_ranco
+                  155,426            0,000000            0,000000
+
+  c) Barrido de nueve puntos a lo ancho del lago (de -72,6053 a -72,3269, sobre
+     la latitud del centroide). **Los nueve resuelven igual:**
+
+       i=1  lon -72,5775  ->  lago_ranco + puerto_varas
+       i=2  lon -72,5496  ->  lago_ranco + puerto_varas
+       i=3  lon -72,5218  ->  lago_ranco + puerto_varas
+       i=4  lon -72,4939  ->  lago_ranco + puerto_varas
+       i=5  lon -72,4661  ->  lago_ranco + puerto_varas
+       i=6  lon -72,4382  ->  lago_ranco + puerto_varas
+       i=7  lon -72,4104  ->  (fuera del agua — cae en una isla)
+       i=8  lon -72,3825  ->  lago_ranco + puerto_varas
+       i=9  lon -72,3547  ->  lago_ranco + puerto_varas
+
+**O sea que `jurisdicciones_adicionales` NO es "solo una etiqueta": es la
+contraparte fiel de una geometria que tambien esta duplicada.** El join y la capa
+dicen lo mismo — que el lago es de las dos — y ninguno de los dos sabe donde esta
+la costura, porque el criterio de particion no esta determinado en ninguna fuente
+cargada.
+
+**Lo que faltaria para poder distinguir**: la georreferencia del limite regional
+Los Rios / Los Lagos dentro del lago. **No es de DIRECTEMAR**: es `DPA_2023`, la
+misma capa que ya esta en disco sin cargar y que E0.3 identifico como fuente para
+las bahias 127, 129 y 154. Ver la pregunta 3.
+
+
+PREGUNTA 2 — ¿CUANTAS BAHIAS TIENEN JURISDICCIONES ADICIONALES? ¿SIGUE SIENDO
+SOLO LA 160 CON LA CAPA PUBLICADA?
+--------------------------------------------------------------------------------
+**RESPUESTA: SI, SIGUE SIENDO UNA SOLA DE 164.**
+
+    total entradas del join            : 164
+    con jurisdicciones_adicionales     : 1
+      bahia 160 | principal lago_ranco | adicionales ["puerto_varas"]
+                | respaldo: decreto | criterio: "cajon C: lago_ranco + puerto_varas"
+
+Y del lado de la GEOMETRIA publicada, el unico traslape del ambito lacustre es el
+mismo: Lago Ranco x Puerto Varas = 155,426 km2, el que C3 acepta por declarado.
+No hay ningun otro par lacustre que se pise.
+
+**UN CONTEO QUE HICE Y QUE NO SIRVE — LO DIGO PORQUE PARECE QUE SIRVE.** Probe
+cuantas bahias del catalogo caen DENTRO de mas de una jurisdiccion publicada y da
+**cero**. Ese numero NO contesta la pregunta: la bahia 160 **no cae dentro de
+ninguna de las dos figuras**, esta a **2.000 m de las dos**.
+
+    coordenada del catalogo para la 160 : lat -40,6833  lng -72,3167
+    lago_ranco    contiene=false  dist=2.000 m
+    puerto_varas  contiene=false  dist=2.000 m
+
+Es la trampa que este repositorio ya pago y que esta escrita: **los puntos
+representativos son puntos de ORILLA, no de agua**. Contar bahias por contencion
+mide donde SITPORT puso el punto, no si dos jurisdicciones comparten agua. El
+numero que contesta es el del join (1 de 164) y el del traslape declarado.
+
+
+PREGUNTA 3 — ¿QUE VE HOY UN PATRON QUE NAVEGA EL LADO DE PUERTO VARAS?
+--------------------------------------------------------------------------------
+**RESPUESTA: VE LAS DOS CAPITANIAS, Y VE EXACTAMENTE LO MISMO DE LOS DOS LADOS.**
+
+Dos tramos dentro del Puyehue, uno en cada mitad, con las mismas funciones que
+usa el endpoint:
+
+  === Puyehue mitad OESTE (lado Los Rios)
+      jurisdicciones que corta : lago_ranco + puerto_varas
+      bahias que devuelve      : [111, 144, 145, 146, 159, 160, 161]
+
+  === Puyehue mitad ESTE (lado Los Lagos)
+      jurisdicciones que corta : lago_ranco + puerto_varas
+      bahias que devuelve      : [111, 144, 145, 146, 159, 160, 161]
+
+**Identico.** Siete bahias de las dos Capitanias, se navegue donde se navegue.
+
+El contacto de cada una, hoy:
+
+    bahia 111 -> Puerto Varas | gob Puerto Montt | +56 65 256 1100 | fuente decreto
+    bahia 144 -> Lago Ranco   | gob Valdivia     | +56 63 227 6905 | fuente decreto
+    bahia 145 -> Lago Ranco   | gob Valdivia     | +56 63 227 6905 | fuente decreto
+    bahia 146 -> Lago Ranco   | gob Valdivia     | +56 63 227 6905 | fuente decreto
+    bahia 159 -> Puerto Varas | gob Puerto Montt | +56 65 256 1100 | fuente decreto
+    bahia 160 -> Lago Ranco   | gob PUERTO MONTT | +56 65 256 1100 | fuente decreto
+    bahia 161 -> Puerto Varas | gob Puerto Montt | +56 65 256 1100 | fuente decreto
+
+**LA 160 ES LA UNICA INCOHERENTE DE LAS SIETE**, y se ve mejor comparada con sus
+hermanas: 144, 145 y 146 son tambien de `lago_ranco` y llevan la gobernacion
+Valdivia y el telefono +56 63 227 6905. La 160 dice **Lago Ranco** y trae la
+**gobernacion y el telefono de Puerto Varas**.
+
+La causa esta en el mapa operativo, que la atribuye entera a Puerto Montt:
+
+    bahia 144 {"capitania": null,           "gobernacion":"Valdivia",     "telefono":"+56 63 227 6905"}
+    bahia 160 {"capitania":"Puerto Montt",  "gobernacion":"Puerto Montt", "telefono":"+56 65 256 1100"}
+
+
+HALLAZGO NO PEDIDO, Y ES EL QUE MAS PESA SOBRE LA DECISION
+--------------------------------------------------------------------------------
+**SITPORT PUBLICA EL PUYEHUE ENTERO BAJO PUERTO VARAS, NO BAJO LAGO RANCO.**
+
+De la captura versionada de `consultaBahias`
+(`_bitacoras/sondeo_catalogo_2026-08-12/sitport_bahias_raw.json`):
+
+    IDBahia 111 LAGO LLANQUIHUE       CdReparticion 201
+    IDBahia 159 LAGO TODOS LOS SANTOS CdReparticion 201
+    IDBahia 160 LAGO PUYEHUE          CdReparticion 201   <--
+    IDBahia 161 LAGO RUPANCO          CdReparticion 201
+    IDBahia 144 LAGO RANCO            CdReparticion 188
+    IDBahia 145 LAGO MAIHUE           CdReparticion 188
+    IDBahia 146 RIO BUENO             CdReparticion 189   (la que no existe — entrada 1
+                                                           del registro de DIRECTEMAR)
+
+Y las dos reparticiones, de `capitanias_64_final.csv`:
+
+    201  PUERTO VARAS  | Gob. Puerto Montt | Region de Los Lagos | +56 65 2235237
+    188  LAGO RANCO    | Gob. Valdivia     | Region de los Rios  | +56 63 2314469
+
+**O sea: la practica ya resolvio quien atiende el Puyehue, y dice PUERTO VARAS
+para el lago entero — mientras que nuestro join puso a `lago_ranco` como
+PRINCIPAL, que es lo que decide el nombre que se muestra.**
+
+Las dos cosas son defendibles y no se contradicen en derecho: el decreto le da a
+Lago Ranco el Puyehue *"hasta el limite con la Region de Los Lagos"*, asi que
+`lago_ranco` **si** tiene jurisdiccion sobre una parte; y SITPORT es fuente
+operativa, que por INV-3.3 no revoca al decreto. Pero **el efecto practico es que
+hoy le mostramos al patron la Capitania que la fuente operativa NO usa para esa
+bahia**, y el telefono de la que si usa. Es la peor de las dos combinaciones.
+
+**No lo resuelvo: cual de las dos se muestra es "que ve el patron" y es del
+owner** (CLAUDE.md §0.4).
+
+
+LO QUE ESTA MEDICION NO MIDIO
+--------------------------------------------------------------------------------
+- **Si la 160 llega a tener restriccion publicada.** SITPORT le da hoy
+  `color: "default"`, `valor: 0` — sin restriccion. Lo de arriba es el camino del
+  contacto, no una restriccion real en pantalla.
+- **Cuantas bahias mas tienen el nombre de una Capitania con el telefono de
+  otra.** El paso 3 midio 17 de 21 lacustres mal atribuidas en el mapa; esta
+  medicion mira siete. El conteo completo es del frente de contacto.
+- **El limite regional dentro del lago.** No se cargo `DPA_2023` ni se midio
+  donde cortaria.
+
+================================================================================
+FIN — medicion de solo lectura. Nada se aplico. Las tres preguntas quedan
+contestadas y la decision sigue siendo del owner.
+================================================================================
+
+
+ADDENDUM — 2026-08-13, EL MISMO DIA: QUE DECIDIO EL OWNER CON ESTO
+--------------------------------------------------------------------------------
+Se agrega al pie y no se reescribe nada de arriba (CLAUDE.md §3.3). Las tres
+decisiones bajaron a `PLAN_JURISDICCION.md` §7.1, "El frente de CONTACTO".
+
+1. **LA DECISION SOBRE LA GOBERNACION SE RETIRO.** Por la mañana del mismo dia el
+   owner habia decidido que la gobernacion saliera del join, igual que el nombre.
+   La objecion de §"PREGUNTA 3" la tumbo: aplicarla sola dejaba TRES campos
+   contradiciendose en la misma tarjeta —Capitania Lago Ranco, Gobernacion
+   Valdivia, telefono de Puerto Varas—, que se lee peor que hoy. **Queda como
+   esta.** El intento quedo escrito en el plan con su motivo: el registro de que
+   se intento vale tanto como la decision, y fue lo que hizo visible que el
+   defecto esta en la CLAVE del archivo y no en el valor de un campo.
+
+2. **EL FRENTE DE CONTACTO CAMBIA DE TAMAÑO Y DE NATURALEZA.** Deja de
+   describirse como "aplicar el CSV de las 64" —150 telefonos y 10
+   gobernaciones— y pasa a describirse por su causa de raiz: **el contacto esta
+   indexado por BAHIA**. La solucion anotada es **indexar por Capitania y
+   resolver la Capitania por el join**, con lo que los tres campos salen siempre
+   de la misma entidad y no pueden contradecirse. Es un **rediseño chico**, no
+   una correccion de datos, y el CSV pasa a ser el contenido de la tabla nueva en
+   vez de un parche sobre la vieja.
+
+3. **LA 160 QUEDA SIN RESOLVER Y VA A ESE FRENTE.** No se elige una Capitania
+   principal: **elegirla es inventar una particion que la fuente no da** —el
+   decreto parte el lago, el shapefile trae un solo poligono, y el criterio no
+   esta determinado—, y arreglarlo solo para la 160 seria un caso particular en
+   el codigo (§4.3), literalmente una rama con su numero adentro, porque es la
+   unica de las 164 con `jurisdicciones_adicionales`. **Lo que si quedo
+   decidido**: la combinacion de hoy —la Capitania que SITPORT no usa para esa
+   bahia con el telefono de la que si usa— es **la peor de las dos posibles**, y
+   **no se deja asi a proposito**: se deja porque arreglarla bien es el frente de
+   contacto.
+
+4. **LA ENTRADA 6 DEL REGISTRO DE DIRECTEMAR QUEDA COMO ESTA**, confirmada por el
+   owner: bien acotada, y correcto NO pedirles la georreferencia del limite
+   regional dentro del lago — esa es `DPA_2023`, que esta en disco sin cargar.
+
+================================================================================

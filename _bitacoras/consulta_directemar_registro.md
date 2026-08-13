@@ -269,8 +269,66 @@ tiene abiertos.
 
 ---
 
+## 6 · Bahía 160 — LAGO PUYEHUE: el decreto lo parte y la práctica no
+
+**Qué se pregunta**
+
+> El D.S. 991/1987 asigna a la Capitanía de Puerto Lago Ranco el lago Puyehue
+> *"hasta el límite con la Región de Los Lagos"*, y el resto del lago a la
+> Capitanía de Puerto Puerto Varas. En SITPORT, en cambio, el lago Puyehue figura
+> como una sola bahía (ID 160) asociada íntegramente a la repartición 201
+> (Capitanía de Puerto Puerto Varas).
+>
+> 1. En la práctica, ¿qué Capitanía atiende cada sector del lago Puyehue?
+> 2. ¿Cuál de las dos publica la condición de puerto del lago, y para qué
+>    extensión?
+> 3. Cuando un cuerpo de agua queda repartido entre dos Capitanías por un límite
+>    regional, ¿existe algún criterio o convención sobre cómo se reparte la
+>    atención al usuario — por sector, por puerto de zarpe, o de otra forma?
+
+**Por qué se pregunta, y por qué NO es una pregunta de jurisdicción.** El decreto
+**ya contesta de quién es**: lo parte en el límite regional y lo dice con esas
+palabras. Esta entrada no le pide a DIRECTEMAR que adjudique nada — sería
+exactamente lo que la cabecera de este archivo prohíbe. Lo que pregunta es
+**operativo**: quién atiende y quién publica, que es lo que el motor necesita para
+decirle al patrón a quién llamar, y que el decreto no regula.
+
+**Lo que NO se pregunta acá, dicho para que no se cuele:** la **georreferencia**
+del límite regional Los Ríos / Los Lagos dentro del lago. Esa no es de DIRECTEMAR
+— es `DPA_2023`, la misma capa que está en disco sin cargar y que la entrada 5.a
+ya identifica como fuente para el límite regional de las bahías 127, 129 y 154.
+Pedírsela a DIRECTEMAR invitaría a que respondan con una línea que el decreto no
+dibuja, que es el modo de falla que este registro evita.
+
+**Qué se midió antes de preguntar** — todo en
+`_bitacoras/e3_medicion_160_2026-08-13.txt`:
+
+- El insumo adjudica **el mismo `fid 1110`** —el lago entero, 155,642 km²— a
+  `lago_ranco` **y** a `puerto_varas`, con el traslape declarado y su motivo:
+  *"el shapefile trae un único polígono y el criterio de partición no está
+  determinado. Se asigna entero a ambas: INV-3.4 fija que el motor muestra de más,
+  nunca de menos."*
+- En la capa publicada, del área compartida **0,000000 km² pertenece a una sola**
+  jurisdicción. Un barrido de nueve puntos a lo ancho del lago resuelve a
+  **las dos** en los nueve (uno cae en una isla).
+- Es la **única** de las 164 entradas del join con `jurisdicciones_adicionales`.
+- **SITPORT le da la repartición 201** —`PUERTO VARAS`, Gobernación Puerto Montt,
+  Región de Los Lagos— igual que a las bahías 111, 159 y 161. Las bahías 144 y 145
+  (Lago Ranco, Lago Maihue) llevan la **188** — `LAGO RANCO`, Gobernación Valdivia,
+  Región de los Ríos. Capturas versionadas en
+  `_bitacoras/sondeo_catalogo_2026-08-12/`.
+- **Efecto medido hoy en el motor**: una ruta por el Puyehue devuelve las mismas
+  **siete bahías de las dos Capitanías** se navegue en la mitad Oeste o en la Este;
+  y la 160 se muestra como *"Lago Ranco"* con la gobernación y el teléfono de
+  Puerto Varas — la única incoherente de las siete.
+- **La 160 no tiene restricción publicada hoy** (`color: "default"`, `valor: 0`),
+  así que esto es el camino del contacto, no un caso en pantalla.
+
+---
+
 ## Registro de cambios de este archivo
 
 | fecha | qué se agregó |
 |---|---|
 | 2026-08-13 | Creación. Entran los tres casos del sondeo (146, 137, Rada Covadonga) con la evidencia nueva de la 146 medida ese día; la 258; y el espejo de las seis de E0.3. |
+| 2026-08-13 | Entrada **6**, el lago Puyehue: el decreto lo parte entre dos Capitanías y SITPORT lo publica entero bajo una. Se pregunta **quién atiende y quién publica**, no de quién es —eso lo contesta el decreto—, y se deja fuera a propósito la georreferencia del límite regional, que es de `DPA_2023` y no de DIRECTEMAR. |

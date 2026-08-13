@@ -654,17 +654,28 @@ resolver de 164`. **El drift no trae ninguna divergencia nueva**: la única cont
 respaldo es la **258**, ya medida y decidida (D14) antes de esta sesión; `estado_drift.json`
 se restauró al estado commiteado, verificado por sha256.
 
-**Dos cosas suben al owner porque deciden qué ve el patrón, y no las resolví:**
+**Dos cosas subieron al owner porque deciden qué ve el patrón. Las dos quedaron resueltas el
+mismo día, y las dos terminaron en el frente de contacto de §7.1** — medición completa en
+`_bitacoras/e3_medicion_160_2026-08-13.txt`:
 
 - **La gobernación de la bahía 160 dice "Puerto Montt" y su Capitanía dice "Lago Ranco".**
-  El nombre ya sale del decreto; la gobernación sigue saliendo del mapa operativo, que es su
-  fuente autorizada (§5 del contrato). El paso 4 lo dejó sin tocar por no tener discrepancia
-  medida; **ahora hay una**. Es el frente de contacto de §7.1 en su versión lacustre.
-- **La bahía 160 tiene dos jurisdicciones y se muestra una.** Es el Lago Puyehue:
-  `lago_ranco` más `puerto_varas` en `jurisdicciones_adicionales`. El **matching** mira las
-  dos (INV-3.4, por eso `puerto_varas` tiene cuatro bahías); el **contacto** muestra sólo la
-  principal. No es un defecto: es una pregunta de producto que nadie contestó — a quién debe
-  llamar el patrón que navega el Puyehue.
+  El owner decidió que la gobernación saliera del join, igual que el nombre, y **retiró la
+  decisión el mismo día**: aplicarla sola dejaba tres campos contradiciéndose en la misma
+  tarjeta —Capitanía Lago Ranco, Gobernación Valdivia, teléfono de Puerto Varas—, peor que hoy.
+  **Queda como está.** El intento hizo visible que el defecto está en la **clave** del archivo y
+  no en el valor de un campo, y con eso **el frente de contacto cambió de naturaleza**: no es
+  aplicar el CSV de las 64, es que el contacto está indexado **por bahía**. Ver §7.1.
+- **La bahía 160 tiene dos jurisdicciones y se muestra una.** **Queda sin resolver, y va al
+  frente de contacto.** Elegir una principal **es inventar una partición que la fuente no da**
+  —el decreto parte el lago, el shapefile trae un solo polígono y el criterio no está
+  determinado—, y arreglarlo sólo para la 160 sería un caso particular en el código (§4.3): es
+  la única de las 164 con `jurisdicciones_adicionales`. **Lo que sí quedó decidido:** la
+  combinación de hoy —la Capitanía que SITPORT no usa para esa bahía con el teléfono de la que
+  sí usa— es **la peor de las dos posibles**, y **no se deja así a propósito**; se deja porque
+  arreglarla bien es ese frente.
+- **Al registro de DIRECTEMAR entró la entrada 6** (el Puyehue): se pregunta **quién atiende y
+  quién publica**, no de quién es —eso lo contesta el decreto—, y **no** se les pide la
+  georreferencia del límite regional, que es `DPA_2023` y está en disco sin cargar.
 
 **Lo que el paso 5 no midió, y es del paso 6:** las otras seis rutas del arnés; el alcance
 nuevo del control de drift (el Set que A3 recibe creció en lo lacustre); una restricción
@@ -1229,9 +1240,17 @@ para que no quede huérfano ni se le fuerce un número de etapa que no le corres
 
 #### El frente de CONTACTO — abierto, y no cabe en E0–E6
 
+> **CAMBIÓ DE TAMAÑO el 2026-08-13, y el cambio es de naturaleza, no de volumen.** Este frente
+> se venía describiendo como *"aplicar `capitanias_64_final.csv`"*: una corrección de datos con
+> 150 teléfonos y 10 gobernaciones para actualizar. **No lo es.** La causa de raíz es que **el
+> contacto está indexado por BAHÍA**, y mientras esa sea la clave, ningún dato mejor lo arregla.
+> Ver *"La causa de raíz"* más abajo. **Es un rediseño chico, no una actualización de valores.**
+
 El sondeo dejó una cosa que sí vale y que **ninguna etapa de este plan cubre**: el contacto.
 Medido — con `capitanias_64_final.csv` cambiarían de **teléfono 150 bahías** y de
-**gobernación 10**, y aparecería `direccion`, que hoy no existe como campo.
+**gobernación 10**, y aparecería `direccion`, que hoy no existe como campo. **Ese número
+dimensiona el dato desactualizado, no el frente**: aplicarlo entero dejaría el defecto de
+estructura intacto.
 
 **Por qué no va dentro de E0–E6, y no es una omisión que haya que corregir metiéndolo:** este
 plan construye *quién tiene jurisdicción*. El contacto es *a quién se llama*, y E0.3 separó las
@@ -1248,6 +1267,88 @@ abierto con su medición, y su decisión es del owner.
 **Obstáculo medido antes de aplicar nada:** seis teléfonos del CSV no son atómicos —traen `ó`,
 `/` o la palabra `Móvil:`— y el contrato los renderiza como enlaces `tel:` clickeables.
 Aplicarlos verbatim rompe el enlace.
+
+##### Una decisión que se tomó y se revirtió el mismo día — 2026-08-13
+
+**El registro de que se intentó vale tanto como la decisión, así que no se borra.**
+
+**Lo decidido, por la mañana:** *la gobernación sale del join, igual que el nombre; el mapa
+queda sólo para el teléfono.* Fundamento del owner: el join es dato declarado con respaldo del
+decreto y el mapa es el que está mal — el mismo fundamento con el que se decidió el nombre.
+
+**Lo que la disparó, medido** (`_bitacoras/e3_medicion_160_2026-08-13.txt`): con el cableado de
+E3 activo, la bahía 160 muestra Capitanía **"Lago Ranco"** con gobernación **"Puerto Montt"**,
+mientras sus tres hermanas de la misma Capitanía —144, 145 y 146— muestran **"Valdivia"**. Es
+la única incoherente de las siete bahías que devuelve una ruta por el Puyehue.
+
+**RETIRADA el mismo día por el owner, y el motivo es la objeción que la tumba: aplicarla sola
+deja TRES campos contradiciéndose en la misma tarjeta, y eso se lee peor que hoy.** El teléfono
+de la 160 es `+56 65 256 1100`, el de Puerto Varas; las otras tres de `lago_ranco` traen
+`+56 63 227 6905`. Aplicada la decisión, la 160 diría **Capitanía Lago Ranco · Gobernación
+Valdivia · teléfono de Puerto Varas**: dos campos del decreto y uno de otra Capitanía. **Queda
+como está** hasta que el frente se resuelva entero.
+
+**Lo que este intento dejó, y es lo que valía:** hizo visible que el defecto no está en el valor
+de un campo sino en la clave del archivo. Sin él, el frente se habría seguido dimensionando como
+una actualización de datos.
+
+##### La causa de raíz — POR QUÉ ESTE FRENTE ES UN REDISEÑO Y NO UNA CORRECCIÓN DE DATOS
+
+**El contacto está indexado por BAHÍA.** `bahia-capitania-map.json` tiene una entrada por
+`bahia_id` con `capitania`, `gobernacion` y `telefono` juntos. De ahí se sigue todo lo demás:
+**para una bahía que el mapa mis-atribuye, el teléfono viaja con la Capitanía equivocada**, y
+ninguna decisión sobre qué campo sale de qué fuente puede arreglarlo, porque el problema no es
+de qué fuente sale el valor sino **de quién es el valor**.
+
+La medición que lo sostiene, sobre las siete bahías que devuelve una ruta por el Puyehue:
+
+| bahía | jurisdicción (join) | Capitanía mostrada | gobernación | teléfono |
+|---|---|---|---|---|
+| 111 | `puerto_varas` | Puerto Varas | Puerto Montt | +56 65 256 1100 |
+| 144 | `lago_ranco` | Lago Ranco | Valdivia | +56 63 227 6905 |
+| 145 | `lago_ranco` | Lago Ranco | Valdivia | +56 63 227 6905 |
+| 146 | `lago_ranco` | Lago Ranco | Valdivia | +56 63 227 6905 |
+| 159 | `puerto_varas` | Puerto Varas | Puerto Montt | +56 65 256 1100 |
+| **160** | **`lago_ranco`** | **Lago Ranco** | **Puerto Montt** | **+56 65 256 1100** |
+| 161 | `puerto_varas` | Puerto Varas | Puerto Montt | +56 65 256 1100 |
+
+**Cuatro bahías de `lago_ranco` y dos teléfonos distintos.** El teléfono correcto de Lago Ranco
+**ya está en el archivo** —lo traen 144, 145 y 146— y la 160 no lo alcanza, porque la clave es
+la bahía y a esa bahía el mapa le puso Puerto Montt. Es el mismo hallazgo de E0.3 en su versión
+lacustre: **34 de 42 re-atribuciones dejaban el nombre de una Capitanía con el teléfono de
+otra**, y el paso 3 de E3 midió **17 de 21** entradas lacustres mal atribuidas.
+
+**LA SOLUCIÓN, ANOTADA: indexar el contacto por CAPITANÍA, y resolver la Capitanía por el
+join.** El contacto pasa a ser *un dato por Capitanía* —que es la unidad que INV-3.3 manda— y
+la bahía deja de tenerlo: se le pregunta al join de quién es y se busca el contacto de esa
+Capitanía. Con eso, los tres campos salen siempre de la misma entidad y no pueden contradecirse,
+y el CSV de las 64 pasa a ser lo que siempre debió ser — **el contenido de la tabla nueva, no un
+parche sobre la vieja**.
+
+**Sigue siendo del owner y sigue tocando lo que ve el patrón**; lo que cambia es que ahora está
+dimensionado: un rediseño chico con su fundamento medido, no una lista de valores por actualizar.
+
+##### La bahía 160 queda SIN RESOLVER, y va a este frente
+
+**No se elige una Capitanía principal, y el motivo es que elegirla es inventar una partición que
+la fuente no da.** El decreto **sí** parte el lago —Lago Ranco *"hasta el límite con la Región
+de Los Lagos"*, el resto Puerto Varas—; el shapefile trae **un solo polígono**; y el criterio de
+partición **no está determinado en ninguna fuente cargada**. Por eso el insumo adjudicó el mismo
+`fid 1110` a las dos y declaró el traslape, y por eso la capa publicada tiene **0,000000 km² que
+pertenezcan a una sola** de las dos.
+
+**Y arreglarlo sólo para la 160 sería un caso particular en el código**, que es lo que
+`CLAUDE.md` §4.3 prohíbe: una regla que nombra a una entidad no es una regla. Es la única de las
+164 con `jurisdicciones_adicionales`, así que cualquier arreglo puntual sería literalmente una
+rama con su número adentro.
+
+**Lo que SÍ está decidido, y hay que dejarlo escrito para que nadie lo lea como descuido:** la
+combinación que se muestra hoy —**la Capitanía que SITPORT no usa para esa bahía, con el
+teléfono de la que sí usa**— es **la peor de las dos posibles**. SITPORT publica el Puyehue
+entero bajo la repartición **201 (Puerto Varas)**, y nuestro join puso a `lago_ranco` como
+principal, que es lo que decide el nombre. **No se deja así a propósito: se deja porque
+arreglarla bien es este frente**, y arreglarla a medias —eligiendo una principal, o parchando
+la 160— cuesta más de lo que ahorra.
 
 ### 7.2 Control del estado del plan — DECIDIDO (camino A), pendiente de implementar
 
