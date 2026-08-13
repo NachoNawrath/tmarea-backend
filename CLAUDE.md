@@ -135,10 +135,23 @@ Casos reales de este repositorio, para que no se repitan:
   se estaba midiendo el formato de serialización.
 - Se afirmó "no afecta al producto de día 0" con una medición hecha sobre una capa que
   todavía no existía.
+- Se afirmó que tres Capitanías faltaban en una fuente. Una de las tres estaba, con su
+  dirección y su teléfono —lo que falló fue el parser, que se perdía en un doble espacio
+  de la fuente—, y las que faltaban de verdad eran cinco.
+
+**Una afirmación de ausencia se escribe con el comando que la midió, o se escribe como "no
+la encontré con mi parser".** No son lo mismo y la segunda es casi siempre la verdadera.
 
 **Antes de dar por buena una conclusión, verifica que el dato la sostiene.** Y si una
 afirmación anterior tuya resulta mal fundada, corrígela explícitamente — sin borrar el
 texto original, con nota al pie, como ya se hizo en las bitácoras de esta fase.
+
+Y el corolario que este repositorio pagó tres veces en un solo día: antes de tratar dos
+cosas como equivalentes —dos nombres, dos representaciones del mismo archivo, dos campos
+con rol parecido— buscá si el repositorio ya pagó esa trampa. Las tres veces la advertencia
+estaba escrita: en el encabezado del normalizador, en la bitácora del cotejo, en la
+medición de la etapa anterior. No faltaba la regla; faltó buscarla. **Estas reglas no se
+recuerdan, se consultan.**
 
 ---
 
@@ -162,6 +175,43 @@ conclusión.
 Toda medición y toda construcción se regeneran desde el repositorio, en cualquier máquina,
 sin pasos manuales y sin depender del disco de nadie. Los insumos se copian al repo antes
 de usarse; si no se versionan, su procedencia queda registrada con URL, hash y fecha.
+
+### 3.5 — Dónde nace la evidencia, y qué se versiona de ella
+Un directorio de evidencia nace en `_bitacoras/<tema>_<fecha>/`. Nunca en la raíz. La raíz
+es para lo que el sistema ejecuta —`src/`, `scripts/`, `data/`, `geodata/`—; `_bitacoras/`
+es para lo que prueba cómo se llegó. La prueba es corta: **si ningún archivo del
+repositorio lo lee, no va en la raíz.**
+
+Dentro del directorio, tres capas con criterio distinto:
+
+- **Derivado** — los CSV, JSON o tablas que el análisis produce y que la bitácora cita.
+  **Se versionan siempre.** Son lo que hace verificable cada número; sin ellos la bitácora
+  es una afirmación sin respaldo.
+- **Crudo liviano** — las respuestas de API y los volcados que originaron el derivado.
+  **Se versionan.** Son la fuente real y pesan poco.
+- **Crudo pesado** — HTML, dumps, binarios. **No se versionan.** En su lugar queda un
+  `PROCEDENCIA.txt` en el mismo directorio.
+
+El corte entre liviano y pesado es **~100 KB por archivo, o ~200 KB en total para un
+conjunto**. Es un **umbral técnico y movible**: se fijó por costo de repositorio, no decide
+nada de lo que el patrón ve, y quien lo mueva sólo tiene que declarar el criterio con el
+que lo movió.
+
+Lo que no es movible es el contenido del `PROCEDENCIA.txt`. Por cada archivo que no se
+versiona:
+
+- **URL completa**, tomada del propio archivo cuando la trae (`<link rel="canonical">`), no
+  reconstruida desde el nombre;
+- **sha256 y tamaño**, declarando sobre qué se calcularon — el archivo en disco o el blob
+  de git no son el mismo byte cuando hay CRLF de por medio;
+- **fecha de captura** y el comando que la haría de nuevo;
+- **qué se extrajo de él**: qué filas, qué entidades, qué campos. El hash detecta que un
+  archivo cambió; no dice qué se perdió. "De acá salieron Chañaral y Puerto Montt" es lo
+  que permite recapturar sólo lo que falta;
+- **las notas de parseo que costaron trabajo**: dónde vive cada dato dentro del archivo, y
+  las trampas de la fuente. Eso deja de ser descubrible en cuanto el archivo no está.
+
+Precedente: `geodata/costa/PROCEDENCIA.txt`, para la capa OSM de 925 MB.
 
 ---
 
