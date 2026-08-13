@@ -187,6 +187,98 @@ FUERA_DE_ALCANCE_D11 = {
     "corral":           "rio Colun",
 }
 
+# ── D13 — la carencia DENTRO del alcance: cuerpos sin geometria ──────────────
+# D11 declara lo que queda FUERA del cotejo. Esto declara lo que queda ADENTRO y
+# aun asi no tiene geometria: cuerpos que el decreto le nombra a una de las seis
+# Capitanias lacustres y que el cotejo resolvio 'rechazado' o 'ausente'.
+#
+# POR QUE HACE FALTA, y es lo que D13 decidio el 2026-08-13. Mientras el ambito
+# lacustre no estaba publicado, un tramo de ruta sobre uno de estos cuerpos caia
+# en la causa (a) de INV-3.6 — carencia declarada — porque `ambitoQueReclama` lo
+# reclamaba para el ambito no publicado. PUBLICADO EL AMBITO (E3, paso 5) ese
+# mismo tramo cae en la causa (b): "una zona que ninguna jurisdiccion reclama",
+# "un defecto de construccion nuestro". Las dos mitades son FALSAS — la
+# jurisdiccion existe, el decreto se la da, y el cuerpo no esta mal construido
+# sino SIN construir por falta de geometria anclable.
+#
+# Esta declaracion NO evita ese registro (b): es opcion A de D13 —declarar sin
+# reclamo—, y evitarlo es la opcion B, que exige dibujar una geografia de reclamo
+# que ninguna fuente cargada da. Lo que hace es que la deuda no sea silencio.
+#
+# NO ES SOLO EL RIO BUENO, y esa parte NO la decidio el owner. D13 se decidio
+# sobre el rio Bueno; al escribirla se midio que en la misma situacion hay CUATRO
+# cuerpos, no uno (fase2_adjudicacion, corrida del 2026-08-13). Declarar los
+# cuatro se resolvio de este lado (CLAUDE.md §0.4: es estructura del dato, es
+# aditivo, y no cambia nada de lo que el patron ve) por el mismo fundamento con
+# el que D11 existe: declarar tres carencias y callar las otras tres seria
+# reponer el silencio que INV-3.6 persigue, y ademas dejaria una regla que nombra
+# a una entidad concreta, que es lo que CLAUDE.md §4.3 prohibe. El rio Bueno
+# lleva el texto de la decision del owner; los otros tres, el criterio con que se
+# declararon. El owner lo revoca si corresponde.
+#
+# (jurisdiccion_id, nombre_decreto) -> {causa, condicion_cierre, quien_lo_declaro}
+CARENCIA_CUERPO_SIN_GEOMETRIA = {
+    ("lago_ranco", "Rio Bueno"): {
+        "decidido": "2026-08-13, por el owner — D13, opcion A: declarar SIN reclamo",
+        "causa": "El decreto le da a la Capitania de Puerto Lago Ranco el rio Bueno en los "
+                 "sectores Los Patos, La Goleta y El Manzanito, y NINGUNA fuente cargada da la "
+                 "geometria de ese rio: el shapefile de lagos no contiene rios y el unico "
+                 "candidato por nombre —LAGUNA ACHIBUENO, Region VII— es otro cuerpo que "
+                 "comparte una palabra. Convertir los tres sectores del decreto en una figura "
+                 "es INTERPRETAR la fuente normativa, que es del owner (CLAUDE.md §0.4), y la "
+                 "figura que se dibujara antes de la respuesta de DIRECTEMAR se puede tirar "
+                 "entera.",
+        "que_implica_mientras_este_asi": "Un tramo de ruta por el rio Bueno se registra "
+                 "internamente como causa (b) de INV-3.6, o sea como defecto de construccion "
+                 "propio, y NO lo es. Es tolerable porque esta declarado y porque al patron no "
+                 "le sale —ve el mismo aviso en los dos casos—, no porque sea correcto.",
+        "condicion_de_cierre": "Se pasa a la opcion B —tercer origen de la causa (a), hermano "
+                 "del que E0.2 agrego— cuando DIRECTEMAR conteste el sector del rio Bueno "
+                 "(_bitacoras/consulta_directemar_registro.md, entradas 1 y 4); o antes, si "
+                 "aparece una capa hidrografica cargada que de la geometria del rio SIN "
+                 "interpretarla, porque ahi la figura deja de ser una lectura del decreto y "
+                 "pasa a ser un dato.",
+        "donde_esta_la_dependencia": "_bitacoras/consulta_directemar_registro.md, entradas 1 "
+                 "(reparticion 189) y 4 (bahia 258, sector Llancacura). El registro se cierra "
+                 "y se envia cuando la construccion termine, en una sola consulta.",
+    },
+    ("lago_villarrica", "Rio Tolten"): {
+        "decidido": "2026-08-13 — declarado por el ingeniero, mismo criterio que D13",
+        "causa": "Cuerpo fluvial. El shapefile de lagos no contiene rios, asi que no hay "
+                 "geometria que adjudicar. No hubo candidato ni cotejo que resolver.",
+        "que_implica_mientras_este_asi": "Igual que el rio Bueno: publicado el ambito "
+                 "lacustre, un tramo por el rio Tolten cae en la causa (b) de INV-3.6 siendo "
+                 "que la jurisdiccion existe y el decreto se la da.",
+        "condicion_de_cierre": "Una capa hidrografica cargada que de la geometria del rio. NO "
+                 "depende de DIRECTEMAR: no hay ninguna pregunta abierta sobre este cuerpo, "
+                 "solo falta la fuente.",
+        "donde_esta_la_dependencia": None,
+    },
+    ("lago_panguipulli", "Rio Fuy"): {
+        "decidido": "2026-08-13 — declarado por el ingeniero, mismo criterio que D13",
+        "causa": "Cuerpo fluvial. El shapefile de lagos no contiene rios, asi que no hay "
+                 "geometria que adjudicar. No hubo candidato ni cotejo que resolver.",
+        "que_implica_mientras_este_asi": "Igual que el rio Bueno: publicado el ambito "
+                 "lacustre, un tramo por el rio Fuy cae en la causa (b) de INV-3.6 siendo que "
+                 "la jurisdiccion existe y el decreto se la da.",
+        "condicion_de_cierre": "Una capa hidrografica cargada que de la geometria del rio. NO "
+                 "depende de DIRECTEMAR.",
+        "donde_esta_la_dependencia": None,
+    },
+    ("lago_panguipulli", "Rio San Pedro"): {
+        "decidido": "2026-08-13 — declarado por el ingeniero, mismo criterio que D13",
+        "causa": "Cuerpo fluvial, y ademas con candidato RECHAZADO: LAGUNA GRANDE DE SAN PEDRO "
+                 "esta en la Region VIII (San Pedro de la Paz) y es otro cuerpo que comparte "
+                 "palabra. Es el gemelo exacto del caso del rio Bueno con LAGUNA ACHIBUENO.",
+        "que_implica_mientras_este_asi": "Igual que el rio Bueno: publicado el ambito "
+                 "lacustre, un tramo por el rio San Pedro cae en la causa (b) de INV-3.6 "
+                 "siendo que la jurisdiccion existe y el decreto se la da.",
+        "condicion_de_cierre": "Una capa hidrografica cargada que de la geometria del rio. NO "
+                 "depende de DIRECTEMAR.",
+        "donde_esta_la_dependencia": None,
+    },
+}
+
 # Puyehue: el decreto lo parte por limite regional; el catastro trae un solo poligono.
 # Se asigna entero a las dos jurisdicciones. Genera traslape deliberado.
 TRASLAPE_DELIBERADO = {
@@ -261,9 +353,10 @@ def main():
         # reproducible — cada corrida daria otro sha256 y "se regenero igual" seria
         # indistinguible de "se regenero distinto". Se sube a mano cuando cambia el
         # contenido, que es lo que la hace informativa.
-        "generado": "2026-08-12",
+        "generado": "2026-08-13",
         "fase": "2 — cotejo cerrado con adjudicacion del owner; regenerado tras la pasada "
-                "de alineacion contra el TM-025 A, con D11 (alcance) y D12 (Galletue)",
+                "de alineacion contra el TM-025 A, con D11 (alcance), D12 (Galletue) y D13 "
+                "(la carencia por cuerpo dentro del alcance)",
         "insumo_shapefile": {
             "ruta": "geodata/lagos/Inventario_Lagos.shp",
             "sha256_shp": sha256(SHP),
@@ -469,6 +562,108 @@ def main():
                                for j, txt in sorted(FUERA_DE_ALCANCE_D11.items())],
         },
     }
+
+    # ── D13: la carencia por cuerpo, y su VALIDACION DE FORMA ────────────────
+    # La validacion corre en los DOS sentidos, igual que el retiro automatico de
+    # ambitos-publicados.js: una carencia que no se declara es silencio, y una
+    # declaracion que sobrevive a su causa es un aviso sin causa.
+    resuelto_sin_geom = set()
+    con_geom_de = {}
+    for entrada in salida["jurisdicciones"]:
+        for c in entrada["cuerpos"]:
+            clave = (entrada["id"], c["nombre_decreto"])
+            con_geom_de[clave] = bool(c["shapefile_fid"])
+            if not c["shapefile_fid"]:
+                resuelto_sin_geom.add(clave)
+
+    # (1) inexistente: se declara la carencia de un cuerpo que el cotejo no tiene.
+    inexistentes = sorted(k for k in CARENCIA_CUERPO_SIN_GEOMETRIA if k not in con_geom_de)
+    if inexistentes:
+        raise SystemExit(
+            f"FALLO: {inexistentes} tienen carencia declarada y no son cuerpos del cotejo. "
+            f"Una carencia se declara sobre un cuerpo que el decreto nombra, no sobre uno "
+            f"inventado.")
+
+    # (2) sobrevive a su causa: el cuerpo consiguio geometria y la carencia sigue escrita.
+    con_geometria = sorted(k for k in CARENCIA_CUERPO_SIN_GEOMETRIA if con_geom_de.get(k))
+    if con_geometria:
+        raise SystemExit(
+            f"FALLO: {con_geometria} tienen carencia declarada y AHORA TIENEN GEOMETRIA. La "
+            f"declaracion perdio la carencia que la justificaba y hay que retirarla: una "
+            f"carencia no puede sobrevivir a su causa (mismo criterio que el C3 de "
+            f"ambitos-publicados.js).")
+
+    # (3) silencio: un cuerpo sin geometria al que nadie le declaro la carencia.
+    sin_declarar = sorted(resuelto_sin_geom - set(CARENCIA_CUERPO_SIN_GEOMETRIA))
+    if sin_declarar:
+        raise SystemExit(
+            f"FALLO: {sin_declarar} quedaron SIN GEOMETRIA y sin carencia declarada. Publicado "
+            f"el ambito lacustre, un tramo de ruta sobre cualquiera de ellos se registra como "
+            f"causa (b) de INV-3.6 —defecto de construccion nuestro— sin serlo. Declaralo en "
+            f"CARENCIA_CUERPO_SIN_GEOMETRIA con su causa y su condicion de cierre, o "
+            f"conseguile geometria. Lo que no puede es quedar en silencio.")
+
+    # (4) forma: los cuatro campos obligatorios, con texto de verdad.
+    OBLIGATORIOS = ("decidido", "causa", "que_implica_mientras_este_asi", "condicion_de_cierre")
+    for clave, d in sorted(CARENCIA_CUERPO_SIN_GEOMETRIA.items()):
+        for campo in OBLIGATORIOS:
+            v = d.get(campo)
+            if not (isinstance(v, str) and v.strip()):
+                raise SystemExit(
+                    f"FALLO: la carencia de {clave} no escribe '{campo}'. Una carencia sin "
+                    f"causa, sin quien la decidio o sin condicion de cierre es una deuda que "
+                    f"sobrevive a su motivo sin que nadie pueda notarlo.")
+
+    salida["carencia_cuerpo_sin_geometria"] = {
+        "que_es": "Cuerpos que el decreto le nombra a una de las 6 Capitanias de ambito "
+                  "lacustre —o sea DENTRO del alcance de D11— y que el cotejo resolvio sin "
+                  "geometria. D11 declara lo que queda fuera del alcance; esto declara lo que "
+                  "queda adentro y aun asi no se puede construir.",
+        "por_que_existe": "Publicado el ambito lacustre (E3, paso 5), un tramo de ruta sobre "
+                          "uno de estos cuerpos deja de caer en la causa (a) de INV-3.6 "
+                          "—carencia declarada— y cae en la (b): 'una zona que ninguna "
+                          "jurisdiccion reclama', 'un defecto de construccion nuestro'. Las "
+                          "dos mitades son falsas. Esta declaracion NO evita ese registro "
+                          "—eso es la opcion B de D13, que exige una geografia de reclamo que "
+                          "ninguna fuente cargada da—: lo que hace es que la deuda quede "
+                          "escrita, acotada y con condicion de cierre, en vez de ser silencio.",
+        "no_es_un_mecanismo_del_motor": "Igual que alcance_d11: este bloque lo escribe "
+                                        "scripts/fase2_adjudicacion.py y NO lo lee ningun "
+                                        "archivo de src/. Es declaracion del insumo, no "
+                                        "mecanismo. No reclama ningun tramo, no produce aviso "
+                                        "y no evita el registro (b). Medido el 2026-08-13.",
+        "de_donde_sale_el_alcance_de_este_bloque": "D13 la decidio el owner sobre el rio Bueno. "
+                  "Al escribirla se midio que en la misma situacion hay CUATRO cuerpos, no uno. "
+                  "Declarar los otros tres se resolvio del lado del ingeniero (CLAUDE.md §0.4) "
+                  "porque es estructura del dato, es aditivo y no cambia nada de lo que el "
+                  "patron ve; declarar uno y callar tres habria repuesto el silencio que "
+                  "INV-3.6 persigue, y habria dejado una regla que nombra a una entidad "
+                  "concreta (§4.3). Cada entrada dice quien la decidio.",
+        "validacion_de_forma": "El script se detiene en los dos sentidos: (1) una carencia "
+                               "declarada sobre un cuerpo que el cotejo no tiene; (2) una "
+                               "carencia cuyo cuerpo YA tiene geometria —no puede sobrevivir a "
+                               "su causa, mismo criterio que el C3 de ambitos-publicados.js—; "
+                               "(3) un cuerpo sin geometria al que nadie le declaro la "
+                               "carencia; y (4) una entrada a la que le falte 'decidido', "
+                               "'causa', 'que_implica_mientras_este_asi' o "
+                               "'condicion_de_cierre'.",
+        "cuantos": len(CARENCIA_CUERPO_SIN_GEOMETRIA),
+        "cuerpos": [
+            {
+                "jurisdiccion_id": jid,
+                "jurisdiccion_nombre": nombres[jid],
+                "nombre_decreto": nombre_dec,
+                "resolucion_del_cotejo": next(
+                    c["resolucion"] for e in salida["jurisdicciones"] if e["id"] == jid
+                    for c in e["cuerpos"] if c["nombre_decreto"] == nombre_dec),
+                **d,
+            }
+            for (jid, nombre_dec), d in sorted(CARENCIA_CUERPO_SIN_GEOMETRIA.items())
+        ],
+    }
+
+    print(f"D13 (carencia por cuerpo): {len(CARENCIA_CUERPO_SIN_GEOMETRIA)} declarada(s), "
+          f"{len(resuelto_sin_geom)} cuerpo(s) sin geometria — OK, ninguno en silencio")
 
     salida["conteo"] = tot
     salida["total_cuerpos"] = sum(tot.values())

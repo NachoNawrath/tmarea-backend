@@ -26,13 +26,37 @@ const pieza = (over = {}) => ({
   ...over,
 });
 
-// La base tal como esta HOY: la capa publicada (jurisdicciones_ds991) no existe,
-// asi que ningun ambito esta publicado; la geografia de reclamo si existe.
-// 'reclamos' inyecta que devuelve la consulta de reclamo por ambito.
+// Una base COHERENTE CON LA DECLARACION, no una base congelada en una fecha.
+//
+// Antes esto decia "la base tal como esta HOY: la capa publicada no existe, asi
+// que ningun ambito esta publicado" y lo tenia escrito a mano. El 2026-08-13
+// (E3, paso 5) se publico el ambito lacustre y CATORCE de estos tests se
+// pusieron rojos por C4 —"declarado PUBLICADO y la capa ni siquiera existe"—,
+// que es el control funcionando contra una base de mentira que se quedo atras.
+//
+// Ahora el estado publicado SALE de la declaracion real: lo que este archivo
+// simula es "la base concuerda con lo que el registro declara", que es la
+// precondicion bajo la que estos tests prueban lo suyo. Lo que prueban es
+// `componerAvisos` —las REGLAS del aviso—, no C3 ni C4: esos dos son controles
+// de base-contra-declaracion y se ejercen contra la base REAL en la mordida de
+// E0.2 y en la verificacion e2e. Hacer que el pool falso concuerde no afloja
+// ningun control (CLAUDE.md §0.3): devuelve la simulacion a lo que decia querer
+// ser.
+const DECL_AMBITOS = require('../../../data/decreto/ambitos_publicados.json');
+const PUBLICADOS = DECL_AMBITOS.ambitos.filter((a) => a.publicado === true);
+// C4 exige con_geometria == jurisdicciones_esperadas para un ambito publicado.
+const FILAS_PUBLICADAS = PUBLICADOS.map((a) => ({ ambito: a.ambito, con_geom: a.jurisdicciones_esperadas }));
+
 const COLUMNAS = {
   jurisdicciones_decreto: ['id', 'ambito', 'geom'],
   bahia_jurisdicciones: ['bahia_id', 'nombre', 'geom'],
 };
+// La capa publicada existe en la base simulada si y solo si el registro declara
+// algun ambito publicado — que es justamente la correspondencia que C3 y C4
+// comprueban contra la base de verdad.
+if (PUBLICADOS.length > 0) COLUMNAS[DECL_AMBITOS.capa_publicada] = ['id', 'ambito', 'geom'];
+
+// 'reclamos' inyecta que devuelve la consulta de reclamo por ambito.
 const poolFalso = ({ reclamos = [] } = {}) => ({
   async query(sql, params) {
     if (sql.includes('pg_tables')) {
@@ -41,11 +65,26 @@ const poolFalso = ({ reclamos = [] } = {}) => ({
     if (sql.includes('pg_attribute')) {
       return { rows: (COLUMNAS[params[0]] || []).includes(params[1]) ? [{ ok: 1 }] : [] };
     }
-    if (sql.includes('count(*) FILTER')) return { rows: [] };
-    if (sql.includes('ST_MakeLine')) return { rows: reclamos };
+    if (sql.includes('count(*) FILTER')) return { rows: FILAS_PUBLICADAS };
+    // La consulta de reclamo lleva `WHERE columna = ANY($5)`, y $5 son los
+    // ambitos que `ambitoQueReclama` decidio preguntar —los NO publicados con
+    // geografia—. El pool falso tiene que respetarlo: si devolviera todo lo
+    // inyectado sin mirar $5, un test podria "probar" que un ambito publicado
+    // reclama, cuando lo que estaria probando es el mock (CLAUDE.md §2).
+    if (sql.includes('ST_MakeLine')) {
+      const pedidos = params[4] || [];
+      return { rows: reclamos.filter((r) => pedidos.includes(r.ambito)) };
+    }
     throw new Error(`consulta no prevista por el pool falso: ${sql.trim().slice(0, 70)}`);
   },
 });
+
+// Un ambito que el registro declara NO publicado Y con geografia de reclamo,
+// tomado del propio registro y no escrito a mano. El test que lo usa prueba la
+// REGLA "un ambito no publicado es causa (a)"; nombraba al `lacustre`, y por eso
+// dejo de decir la verdad el dia que el lacustre se publico (CLAUDE.md §4.3).
+const NO_PUBLICADO = DECL_AMBITOS.ambitos.find(
+  (a) => a.publicado === false && a.geografia_de_reclamo);
 
 test('un trozo clasificado aviso produce tarjeta y bandera U', async () => {
   const { avisos, bandera_cobertura } = await componerAvisos(medicion([pieza()]), poolFalso());
@@ -146,15 +185,36 @@ test('la capa que se consulta es la declarada, no una escrita en el codigo', () 
 // ─── E0.2 — los dos origenes de la causa (a) ────────────────────────────────
 
 test('E0.2: un trozo en ambito no publicado es causa (a), no un defecto de construccion', async () => {
-  const pool = poolFalso({ reclamos: [{ ambito: 'lacustre', m: 17706.9, ids: ['lago_villarrica'] }] });
+  // El ambito sale del registro (NO_PUBLICADO), no escrito a mano. Hasta el
+  // 2026-08-13 este test nombraba al `lacustre` con la jurisdiccion
+  // `lago_villarrica`; ese dia el lacustre se publico y la premisa del test paso
+  // a ser falsa. La regla que prueba no cambio: un ambito NO publicado que
+  // reclama un trozo es causa (a) y no puede registrarse como defecto.
+  assert.ok(NO_PUBLICADO, 'el registro tiene que declarar al menos un ambito no publicado con geografia de reclamo');
+  const pool = poolFalso({ reclamos: [{ ambito: NO_PUBLICADO.ambito, m: 17706.9, ids: ['una_jurisdiccion'] }] });
   const { avisos, defectos } = await componerAvisos(medicion([pieza()]), pool);
   assert.strictEqual(avisos[0].causa, 'jurisdiccion_sin_geometria',
     'un ambito sin construir es una jurisdiccion sin geometria cargada (INV-3.6 causa a)');
   assert.strictEqual(avisos[0].origen, 'ambito_no_publicado');
-  assert.strictEqual(avisos[0].ambito_no_publicado, 'lacustre');
-  assert.deepStrictEqual(avisos[0].jurisdicciones_probables, ['lago_villarrica']);
+  assert.strictEqual(avisos[0].ambito_no_publicado, NO_PUBLICADO.ambito);
+  assert.deepStrictEqual(avisos[0].jurisdicciones_probables, ['una_jurisdiccion']);
   assert.strictEqual(defectos.length, 0,
     'NO puede registrarse como defecto de construccion: la capa de ese ambito no existe');
+});
+
+test('E0.2: un ambito PUBLICADO ya no reclama — su aviso se retira solo (E3, paso 5)', async () => {
+  // El otro lado del mismo mecanismo, y es la aceptacion de E3: publicado el
+  // ambito, `ambitoQueReclama` deja de reclamarle el trozo y el aviso de INV-3.6
+  // desaparece sin que nadie lo apague a mano. Se ejerce con los ambitos que el
+  // registro declara publicados, sean los que sean.
+  assert.ok(PUBLICADOS.length > 0, 'el registro tiene que declarar algun ambito publicado');
+  for (const a of PUBLICADOS) {
+    const pool = poolFalso({ reclamos: [{ ambito: a.ambito, m: 17706.9, ids: ['una_jurisdiccion'] }] });
+    const { avisos } = await componerAvisos(medicion([pieza()]), pool);
+    assert.strictEqual(avisos[0].ambito_no_publicado, null,
+      `'${a.ambito}' esta publicado: no puede reclamar el trozo ni aparecer como causa (a)`);
+    assert.strictEqual(avisos[0].causa, 'hueco_de_capa');
+  }
 });
 
 test('E0.2: el ambito no publicado nombra la Capitania cuando el mapa la atribuye', async () => {

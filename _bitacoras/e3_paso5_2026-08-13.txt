@@ -1,0 +1,435 @@
+================================================================================
+E3 — PASO 5 DE 6: LA CARENCIA DECLARADA, EL BUILD APLICADO, EL REGISTRO MOVIDO
+Y EL CABLEADO ACTIVO. 2026-08-13
+Estado: APLICADO. `jurisdicciones_ds991` EXISTE con las 6 lacustres;
+`ambitos_publicados.json` declara el lacustre PUBLICADO; `consultada: true`.
+Veredicto: la aceptacion de E3 se cumple — el Lago Llanquihue devuelve su
+Capitania y su aviso de INV-3.6 se retiro solo. El antartico NO se toco.
+Regresion: suite 80/80 · seis mordidas en verde · la ruta maritima no se movio
+ni un metro.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell,
+desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    tools\raster-build\.venv\Scripts\python.exe scripts\fase2_adjudicacion.py
+    tools\raster-build\.venv\Scripts\python.exe scripts\e3_prueba_mordida_carencia.py
+    tools\raster-build\.venv\Scripts\python.exe scripts\fase5_construir_capa_ds991.py
+    node scripts\e3_prueba_mordida_cableado.js
+    node scripts\e02_prueba_mordida_ambitos.js
+    npm test
+
+Evidencia cruda en `_bitacoras/e3_paso5_2026-08-13/`:
+    00_cotejo_ANTES.json                       el cotejo antes de regenerar
+    00_estado_drift_ANTES.json                 el estado del drift, respaldado
+    01_fase2_regenerado.txt                    la regeneracion del cotejo
+    02_mordida_carencia.txt                    la mordida de la validacion (14/14)
+    03_build_aplicado.txt                      el build entero, exit 3
+    04_arranque_sin_mover_registro.txt         el arranque ANTES de mover el registro
+    05_server_log_sin_mover.txt                el log de ese arranque
+    06_endpoint_sin_mover_registro.json        el 502 de C3, medido
+    07_arranque_cableado_activo.txt            el arranque con el cableado activo
+    08_endpoint_llanquihue.json                la ruta lacustre, respuesta real
+    09_medicion_aceptacion.txt                 la aceptacion contra la capa real
+    10_suite.txt                               la suite, 80/80
+    11_mordidas_vecinas.txt                    las seis mordidas
+    12_mordida_e02.txt                         E0.2 con sus casos re-apuntados
+    13_mordida_cableado.txt                    la mordida del cableado, 21/21
+    14_endpoint_maritima.json                  la ruta maritima, sin moverse
+    medir_aceptacion.js                        el script de la medicion
+
+
+0. LOS CUATRO MOVIMIENTOS, EN EL ORDEN EN QUE SE HICIERON
+--------------------------------------------------------------------------------
+PRIMERO, y aparte: la declaracion de la carencia (§1 y §2).
+DESPUES los tres que no se separan, seguidos:
+  1. el build aplicado — 13 min 12 s, exit 3, publicacion parcial (§3);
+  2. `ambitos_publicados.json`: el lacustre a `publicado: true` (§5);
+  3. `capa_consultada.json`: `consultada: true` (§5).
+
+Entre el 1 y el 2 se midio a proposito el estado intermedio (§4), porque el
+plan afirmaba algo sobre el que resulto ser inexacto.
+
+
+1. LA CARENCIA DEL RIO BUENO — Y NO ERA SOLO EL RIO BUENO
+--------------------------------------------------------------------------------
+D13 la decidio el owner sobre el rio Bueno: opcion A, declarar SIN reclamo. Al
+escribirla se midio cuantos cuerpos estan en esa misma situacion —dentro del
+alcance de D11, en una de las 6 Capitanias lacustres, y sin geometria— y son
+CUATRO:
+
+    lago_ranco        Rio Bueno       rechazado  (candidato LAGUNA ACHIBUENO, VII)
+    lago_villarrica   Rio Tolten      ausente    (el shapefile no contiene rios)
+    lago_panguipulli  Rio Fuy         ausente    (el shapefile no contiene rios)
+    lago_panguipulli  Rio San Pedro   rechazado  (candidato LAGUNA GRANDE DE SAN
+                                                  PEDRO, VIII — el gemelo exacto
+                                                  del caso del rio Bueno)
+
+**Los cuatro caen en la causa (b) de INV-3.6 en cuanto el ambito se publica**, no
+solo el rio Bueno. Declarar uno y callar tres habria repuesto el silencio que
+INV-3.6 persigue, y habria dejado una regla que nombra a una entidad concreta,
+que es lo que CLAUDE.md §4.3 prohibe.
+
+**Se declararon los cuatro, y eso lo decidi yo** (§0.4: estructura del dato, es
+aditivo, no cambia nada de lo que el patron ve). **La decision del owner sigue
+siendo sobre el rio Bueno**: su entrada lleva el texto de D13 y dice
+`"decidido": "2026-08-13, por el owner"`; las otras tres dicen
+`"declarado por el ingeniero, mismo criterio que D13"`. **El owner lo revoca si
+corresponde**, y el bloque dice de donde salio su alcance.
+
+DONDE VIVE: `data/decreto/cotejo_lacustre_adjudicado.json`, bloque
+`carencia_cuerpo_sin_geometria`, hermano de `alcance_d11`. Lo escribe
+`scripts/fase2_adjudicacion.py`; el JSON no se edita a mano (INV-3.7).
+
+QUE DICE CADA ENTRADA: `decidido`, `causa`, `que_implica_mientras_este_asi`,
+`condicion_de_cierre` y `donde_esta_la_dependencia`. La del rio Bueno lleva su
+condicion de cierre completa: se pasa a la opcion B cuando DIRECTEMAR conteste
+—`_bitacoras/consulta_directemar_registro.md`, entradas 1 y 4— o antes, si
+aparece una capa hidrografica cargada que de la geometria del rio SIN
+interpretarla. Las otras tres NO dependen de DIRECTEMAR: no hay ninguna pregunta
+abierta sobre ellas, solo falta la fuente.
+
+LO QUE ESTA DECLARACION NO HACE, escrito dentro del propio bloque: **no evita el
+registro (b)**. Es opcion A. Y **no es un mecanismo del motor** — lo escribe un
+script de fase 2 y no lo lee ningun archivo de `src/`, igual que `alcance_d11`.
+Es declaracion del insumo.
+
+NADA CERRADO SE MOVIO AL REGENERAR. Comparado clave por clave contra
+`00_cotejo_ANTES.json`:
+    claves nuevas               : ['carencia_cuerpo_sin_geometria']
+    claves perdidas             : []
+    claves que cambiaron        : ['generado', 'fase']   (a proposito)
+    adjudicacion identica       : true
+    alcance_d11 identico        : true
+    conteo identico             : true   (exacta 18 · aceptado 10 · rechazado 2 ·
+                                          ausente 2 · total 32)
+    sha256 de los dos insumos   : identicos
+
+
+2. LA VALIDACION DE FORMA, Y SU MORDIDA — 14/14
+--------------------------------------------------------------------------------
+Vive donde vive la de D11: dentro de `fase2_adjudicacion.py`, que es quien
+escribe la declaracion. Corre EN LOS DOS SENTIDOS, que es lo que la hace algo
+mas que un chequeo de campos:
+
+  (1) INEXISTENTE — una carencia declarada sobre un cuerpo que el cotejo no
+      tiene. Se declara sobre lo que el decreto nombra, no sobre algo inventado.
+  (2) SOBREVIVE A SU CAUSA — una carencia cuyo cuerpo YA tiene geometria. Es el
+      mismo criterio que el C3 de `ambitos-publicados.js`: un aviso no puede
+      sobrevivir a su causa.
+  (3) SILENCIO — un cuerpo sin geometria al que nadie le declaro la carencia.
+      Es el defecto que este bloque existe para impedir, y el que hoy alcanzaba
+      a tres de los cuatro.
+  (4) FORMA — falta `decidido`, `causa`, `que_implica_mientras_este_asi` o
+      `condicion_de_cierre`, ausente o en blanco.
+
+Mordida: `scripts/e3_prueba_mordida_carencia.py`, **14/14** (02_mordida_carencia).
+Incluye el caso M3bis —el silencio se caza en CUALQUIERA de los cuatro, no solo
+en el rio Bueno, que es lo que prueba que la regla no es un nombre propio—, el
+control negativo, y una comprobacion de INOCUIDAD por sha256: la mordida redirige
+la salida a un temporal y **comprueba que el cotejo real no se movio**, porque
+"creia que redirigia" ya fue una causa real en este repositorio (E0.1) y no una
+hipotesis.
+
+
+3. EL BUILD APLICADO — EXIT 3, Y C3 NO SE MOVIO NI UN KM2
+--------------------------------------------------------------------------------
+    tools\raster-build\.venv\Scripts\python.exe scripts\fase5_construir_capa_ds991.py
+    13 min 12 s · EXIT 3 = PUBLICACION PARCIAL
+
+    GATE POR AMBITO (D3)
+      [PUBLICA] lacustre        habilitado=t  controles=ok  6/6 con geometria
+      [retiene] maritima        habilitado=t  controles=EN FALLA  44/52
+      [retiene] antartica       habilitado=f  controles=ok  4/4  — no habilitado
+      [retiene] insular_remota  habilitado=f  controles=ok  0/2  — no habilitado
+
+**EL ANTARTICO QUEDO FUERA POR SU DECLARACION, NO POR UN CONTROL**, que es
+exactamente lo que el owner decidio el 2026-08-12 y lo que este paso tenia que
+respetar: sus 7 controles pasan y sus 4 jurisdicciones tienen geometria. Lo
+detiene `habilitado_para_publicar: false`. No se toco.
+
+**C3 falla con LOS MISMOS SEIS PARES Y LOS MISMOS KM2 que el 2026-08-12**, al
+milesimo, sin que ninguno se moviera:
+
+    Cochamo x Maullin                 2947.340 km2
+    Chaiten x Chonchi                 1798.518 km2
+    Maullin x Puerto Montt             755.491 km2
+    Cochamo x Rio Negro Hornopiren     531.757 km2
+    Calbuco x Maullin                   40.833 km2
+    Castro x Chonchi                    28.254 km2
+
+Y el unico traslape lacustre —Lago Ranco x Puerto Varas, 155.426 km2, el
+Puyehue— sigue pasando **por declarado**, no por vacio.
+
+LOS OCHO CONTROLES DEL AMBITO LACUSTRE, EN OK: C1 sin geometria vacia · C2 toda
+nula declarada con causa · C3 cero traslapes fuera de los declarados · C4 cada
+jurisdiccion contiene su punto representativo · C5 construida sin testigo trae
+causa · C6 ensanche solo con tramo litoral · C8 el ensanche no crea traslapes.
+
+LA CAPA QUE QUEDO:
+    ambito    filas  con_geom  km2
+    lacustre      6         6  4479.4
+
+    lago_general_carrera  1627.11      lago_ranco        648.33
+    puerto_varas          1437.39      lago_panguipulli  367.62
+    lago_villarrica        326.17      lago_rapel         72.80
+
+Y `jurisdicciones_ds991_publicacion` registra los cuatro ambitos con su causa:
+la maritima con sus seis pares escritos, las otras dos con "no habilitado para
+publicar en data/decreto/ambitos_publicados.json".
+
+**Ojo con un numero que NO coincide y no es un error**: la
+`geografia_de_reclamo` del lacustre citaba 4.466 km2 y la capa construida da
+4.479,4. No es la misma capa — aquello era el andamio (`jurisdicciones_decreto`,
+insumo v1) y esto es el build del D.S. 991 desde el v2. La diferencia es la
+deuda v1/v2 ya declarada, no una discrepancia nueva.
+
+
+4. UNA COSA ESCRITA Y CERRADA QUE RESULTO INEXACTA: "EL BACKEND NO ARRANCA"
+--------------------------------------------------------------------------------
+El plan (§E3, "Paso 5 — son TRES piezas") y la bitacora del paso 2 dicen que
+aplicar el build sin mover el registro **"detiene la carga"** y deja el
+repositorio **"en un estado que no arranca"**. Se midio a proposito antes de
+mover nada, y **no es asi**:
+
+    node src/index.js
+    -> [andamio] OK · Servidor corriendo en puerto 3000 · Boot: 1518ms
+    El backend ARRANCA.
+
+    POST /api/sitport/restricciones-ruta
+    -> HTTP 502, veredicto U
+       "[ambitos_publicados] C3: el ambito 'lacustre' esta declarado NO publicado
+        y la capa 'jurisdicciones_ds991' ya tiene 6 jurisdiccion(es) suyas con
+        geometria... El aviso no puede sobrevivir a su causa."
+
+**El retiro automatico de E0.2 muerde en la PRIMERA CONSULTA, no en el
+arranque**, porque `cargarAmbitosPublicados` se llama dentro de la ruta y no en
+el boot. El guard de arranque de E1 corre y pasa; el de E3 estaba apagado.
+
+**QUE CAMBIA Y QUE NO.** La conclusion no cambia: aplicar y mover el registro
+siguen siendo el mismo movimiento y no se separan. **Lo que cambia es que el
+modo de falla es PEOR de lo que estaba escrito**: un backend que no arranca se
+ve; uno que arranca y devuelve 502 con veredicto U en cada ruta, no. Quien
+hubiera aplicado el build y se hubiera ido a dormir habria dejado el servicio
+en pie y roto.
+
+Queda como correccion al pie (CLAUDE.md §3.3), sin reescribir el texto del plan
+ni el de la bitacora del paso 2.
+
+
+5. LOS DOS ARCHIVOS QUE SE MOVIERON
+--------------------------------------------------------------------------------
+`data/decreto/ambitos_publicados.json`, entrada `lacustre`:
+  - `publicado`: false -> **true**, mas `publicado_el: "2026-08-13"`.
+  - `causa` RETIRADA. Decia "el ambito lacustre nunca se construyo... toda la
+    navegacion lacustre es invisible para el motor", y dejo de ser cierto ese
+    dia. En su lugar entra `como_entro`, que cuenta la publicacion Y **conserva
+    el texto historico de la causa** para que el cambio no borre el motivo por
+    el que la entrada existio. C5 solo exige causa a un ambito no publicado.
+  - `geografia_de_reclamo`: **a null**, con `motivo_sin_geografia_de_reclamo`
+    escrito. Un ambito publicado NO reclama —`con_geografia` solo mira las
+    entradas con `publicado: false`—, asi que dejar la del andamio habria sido
+    dejar dato muerto que alguien puede leer como vigente. El texto que tenia
+    queda transcrito ahi para constancia.
+  - `el_aviso_se_retiro_solo` y `lo_que_sigue_sin_geometria_dentro_de_este_ambito`,
+    este ultimo nombrando los cuatro cuerpos de §1 y apuntando al bloque del
+    cotejo. Se declara tambien aca porque **este es el archivo que dice que el
+    ambito esta publicado, y publicarlo es lo que convierte esa carencia en un
+    registro (b)**.
+
+`data/decreto/capa_consultada.json`, bloque `capa_publicada_por_ambito`:
+  - `consultada`: false -> **true**, mas `activado` con el orden de los tres
+    movimientos y el motivo por el que no se separan.
+
+
+6. LA ACEPTACION DE E3, MEDIDA CONTRA LA CAPA REAL
+--------------------------------------------------------------------------------
+`09_medicion_aceptacion.txt`, con las MISMAS funciones que usa el endpoint:
+
+    ENSANCHE VIGENTE: capa=jurisdicciones_ds991 columna=id ambito=ambito
+                      ambitos=["lacustre"]
+
+    LACUSTRE (Lago Llanquihue)
+      teselado (hoy)  : 0   {}
+      ensanche agrega : 4   {111, 159, 160, 161}
+      cobertura       : 0 trozos sin jurisdiccion, 0.0000 km
+
+    MARITIMA (Anahuac -> Melinka)
+      teselado (hoy)  : 14  {113,117,120,122,124,155,175,176,216,232,235,251,253,255}
+      ensanche agrega : 0
+      cobertura       : 6 trozos, 22.0256 km — TODOS defecto_recorte, 0 avisos
+
+**Los numeros del paso 4 se reprodujeron exactos contra la geometria
+definitiva**, no solo contra el ensayo.
+
+EL CONTACTO — nombre del decreto, telefono del mapa, como decidio el owner:
+
+    bahia 111 -> Puerto Varas · +56 65 256 1100 · capitania_fuente: decreto
+    bahia 159 -> Puerto Varas · +56 65 256 1100 · capitania_fuente: decreto
+    bahia 160 -> Lago Ranco   · +56 65 256 1100 · capitania_fuente: decreto
+    bahia 161 -> Puerto Varas · +56 65 256 1100 · capitania_fuente: decreto
+
+Ya no dice "Puerto Montt", que es lo que el paso 4 existia para evitar.
+
+DE PUNTA A PUNTA, contra el endpoint real:
+
+    LLANQUIHUE  HTTP 200 · veredicto Q · cobertura evaluada/Q · avisos 0 · defectos 0
+    MARITIMA    HTTP 200 · veredicto Q · cobertura evaluada/Q · avisos 0 · defectos 6
+
+**El aviso de INV-3.6 del ambito lacustre se retiro solo**: 0 avisos y 0
+defectos donde antes habia 18,992 km de hueco. **La maritima sigue con sus 6
+defectos de recorte**, los mismos de la linea base del paso 4.
+
+LO QUE ESTE PASO NO PUDO EJERCER, dicho en vez de dado por bueno: **SITPORT no
+publica hoy ninguna restriccion en las bahias 111, 159, 160 ni 161**, asi que
+"devuelve sus restricciones" se probo hasta el matching y el contacto, no con
+una restriccion real en pantalla. El campo `bahias_matcheadas=0` del log NO
+significa que el ensanche fallara: cuenta bahias CON restriccion publicada, no
+el tamaño del conjunto. Se midio el conjunto aparte, que es lo de arriba.
+
+
+7. TRES COSAS QUE ENVEJECIERON EL MISMO DIA, Y LAS TRES POR LO MISMO
+--------------------------------------------------------------------------------
+Publicar el lacustre puso en rojo tres cosas que estaban en verde. **Ninguna es
+un defecto del producto: las tres afirmaban el estado que este paso existia para
+terminar, y lo afirmaban NOMBRANDO al ambito lacustre.** Es CLAUDE.md §4.3 —
+una regla que nombra a alguien no es una regla— cobrandose tres veces seguidas.
+
+7.a — LA SUITE: 14 de 80 en rojo. El pool falso de
+`src/services/__tests__/cobertura-jurisdiccional.test.js` tenia escrito a mano
+"la base tal como esta HOY: la capa publicada no existe", asi que C4 reventaba
+—"declarado PUBLICADO y la capa ni siquiera existe"— contra una base de mentira
+que se habia quedado atras. **Arreglado derivando el estado publicado de la
+declaracion real**, que es lo que el comentario decia querer ser. No afloja
+ningun control: C3 y C4 son controles de base-contra-declaracion y se ejercen
+contra la base REAL en la mordida de E0.2; estos tests prueban `componerAvisos`.
+Un test mas se le agrego, el reverso: **un ambito PUBLICADO ya no reclama**.
+
+  Y una trampa que casi pago yo: la primera version de ese test nuevo fallaba, y
+  fallaba con razon — el pool falso devolvia el reclamo inyectado **sin mirar los
+  ambitos que la consulta pedia** (`$5`), asi que el test habria "probado" que un
+  ambito publicado reclama, cuando lo que probaba era el mock. El pool falso
+  ahora respeta `$5`, como la consulta real.
+
+7.b — LA MORDIDA DE E0.2: 11/14. Tres casos nombraban al lacustre —el C3 del
+retiro automatico y los dos C6 de la geografia de reclamo, que ahora es null—.
+**Arreglado haciendo que cada caso CONSTRUYA el escenario que su defecto
+necesita** en vez de heredarlo del estado del dia, con un `throw` al cargar si el
+registro dejara de tener sobre que inyectar (una mordida que no puede morder no
+se degrada a verde). Y **el caso 09 estaba saliendo CAZADO por el control
+equivocado**: con la base sin la capa publicada, C4 reventaba antes que C6.
+Ahora corre contra una base coherente y muerde C6 con su propio mensaje.
+Resultado: **14/14**, con los mensajes correctos.
+
+7.c — LA MORDIDA DEL CABLEADO: 4 fallos. `parteB` materializaba
+`jurisdicciones_ds991` con un `CREATE TABLE` porque la capa no existia, y B7
+afirmaba "el ensayo se deshizo: la capa sigue sin existir". Mas A3 ("ningun
+ambito publicado"), A13 ("el cableado esta apagado") y A-neg ("la declaracion
+real deja el cableado apagado"), los tres apoyados en el estado del archivo.
+**Los cuatro fallaban por haber acertado.**
+
+Re-apuntados, y el resultado es MAS FUERTE que antes:
+  - **B1, B2, B3, B5 y B6 corren ahora contra la CAPA REAL**, con su geometria
+    definitiva. El ensayo solo podia probar el cableado; esto prueba ademas la
+    geometria que el build dejo.
+  - **B4 conserva su fuerza sin recrear la capa**: inyecta las 44 maritimas del
+    andamio DENTRO de un SAVEPOINT y lo deshace apenas termina. Los ids son los
+    REALES y no un prefijo, porque el ensanche resuelve contra el join y un id
+    inventado habria dado cero bahias — B4 diria "el filtro muerde" probando que
+    un id falso no resuelve. El savepoint esta porque B5 y B6 miden despues:
+    el filtro por ambito no deberia dejarlas ver, y "no deberia" no es una
+    medicion.
+  - **B7 pasa a probar lo contrario**: que la mordida NO toco la capa real —
+    mismo censo por ambito antes y despues, y cero filas con la marca de
+    inyeccion sobrevivientes.
+  - **A3 y A-neg construyen su escenario**; A-neg deja de afirmar en que estado
+    tiene que estar el interruptor —eso lo decide una etapa, no un test— y pasa a
+    comprobar que el archivo real es COHERENTE CONSIGO MISMO.
+  - **A13 ejerce LAS DOS RAMAS del guard de arranque**, que es lo que el paso 4
+    dejo escrito como pendiente para este paso. Para eso
+    `verificarCableadoEnArranque(decl)` acepta la declaracion, con el archivo
+    real por defecto: produccion no cambia, y un guard que solo se puede probar
+    en el estado del calendario no se puede probar.
+
+Numeros de la parte B contra la capa real, identicos a los del ensayo:
+    B1  hoy={} · ensanche={111,159,160,161}
+    B2  hoy=14 · ensanche agrega 0 · total=14, las mismas
+    B4  con maritima publicada agregaria 31 bahias (sobre 44 inyectadas y deshechas)
+    B5  sin ensanche 18.992 km descubiertos de 18.992 · con ensanche 0.000 km
+    B6  22.025600 km antes y despues
+    B7  antes [lacustre=6] despues [lacustre=6] · 0 filas inyectadas sobrevivieron
+
+
+8. REGRESION
+--------------------------------------------------------------------------------
+    npm test                                80/80   (eran 79; el nuevo es 7.a)
+    e3_prueba_mordida_carencia.py           14/14   NUEVA
+    e3_prueba_mordida_cableado.js           21/21   (14 parte A + 7 parte B)
+    e02_prueba_mordida_ambitos.js           14/14
+    e03join_prueba_mordida_join.js          16/16
+    e1_prueba_mordida_andamio.js            14/14
+    e01_prueba_mordida_a3.js                10/10 + control negativo
+    e3_prueba_mordida_gate.py               10/10 (y no deja capa: ROLLBACK)
+
+EL GUARD DE ARRANQUE ESTRENO SU RAMA ACTIVA, que es lo que el paso 4 no pudo
+ejercer:
+
+    [cableado E3] activo — join de E0.3 validado: 158 resueltas, 6 sin resolver de 164.
+
+EL DRIFT NO TRAE NINGUNA DIVERGENCIA NUEVA. Comparado el estado de esta sesion
+contra el respaldo, conjunto contra conjunto:
+    desaparecidas: ninguna
+    nuevas       : `sitport_sin_catalogo|258`
+    universo     : 165 -> 166
+La 258 es la del rio Bueno sector Llancacura, **medida, declarada abierta y
+decidida (D14) el 2026-08-13, antes de esta sesion**
+(`_bitacoras/e01_drift_258_2026-08-13.txt`). No es una divergencia que haya
+aparecido en el paso 5. `data/catalogo/estado_drift.json` se **restauro** al
+estado commiteado, igual que en el paso 4, para que el diff de esta sesion quede
+acotado a E3 — verificado por sha256:
+`ffff23b2107595aea4c6742955434d38b5968bcb7539cf3dfefc0c419221b2fd` antes y
+despues.
+
+
+9. LO QUE SUBE AL OWNER — NO LO RESUELVO PORQUE ES QUE VE EL PATRON
+--------------------------------------------------------------------------------
+9.a — **LA GOBERNACION DE LA BAHIA 160 DICE "PUERTO MONTT" Y SU CAPITANIA DICE
+"LAGO RANCO".** El nombre de la Capitania ya sale del decreto (decision del
+owner, aplicada); la GOBERNACION sigue saliendo del mapa operativo, que es su
+fuente autorizada por CONTRATO_MOTOR.md §5, y el paso 4 lo dejo escrito sin
+tocarlo por no tener discrepancia medida. **Ahora hay una medida**: con el
+cableado activo, un patron en el Lago Puyehue veria "Lago Ranco" bajo la
+Gobernacion de "Puerto Montt". Es el mismo agujero de E0.3 —nombre de una,
+dato de otra— en su version lacustre. Es el frente de contacto de §7.1 y **no lo
+resuelvo yo porque decide que ve el patron**.
+
+9.b — **LA BAHIA 160 TIENE DOS JURISDICCIONES Y SE MUESTRA UNA.** Es el Lago
+Puyehue: `jurisdiccion_id: lago_ranco` mas `jurisdicciones_adicionales:
+[puerto_varas]`, la unica entrada del join con adicional en las 164, porque el
+decreto parte el lago en el limite regional. El MATCHING mira las dos —INV-3.4,
+muestra de mas y nunca de menos, y por eso las bahias de `puerto_varas` son
+cuatro—, pero el CONTACTO muestra solo la principal. **No es un defecto: es una
+pregunta de producto que nadie contesto todavia** — a quien tiene que llamar el
+patron que navega el Puyehue, a una de las dos o a las dos. Anotado, no
+resuelto.
+
+
+10. LO QUE ESTE PASO NO MIDIO, Y DONDE SE MIDE
+--------------------------------------------------------------------------------
+- **Las 8 rutas del arnes.** Se midieron dos: la lacustre y Anahuac -> Melinka.
+  Las otras seis son el paso 6.
+- **El alcance nuevo del control de drift** (trampa 2.d del paso 4): el Set que
+  A3 recibe ahora es mas grande en lo lacustre. Paso 6.
+- **Una restriccion lacustre real en pantalla**: SITPORT no publica ninguna hoy
+  en esas cuatro bahias (§6).
+- **La 257**: sigue sin listarse por falta de coordenada, y con el ambito
+  publicado pasa de defecto registrado a defecto + aviso, como el paso 4 dejo
+  medido. No se ejercio en vivo.
+
+================================================================================
+FIN — el paso 5 esta aplicado. La capa existe, el registro no miente y el
+cableado esta activo. **ALTO ACA: el paso 6 es sesion aparte.**
+================================================================================

@@ -1,0 +1,45 @@
+==============================================================================
+E3 — PRUEBA DE MORDIDA DEL CABLEADO (paso 4). Sin aplicar nada.
+fecha: 2026-08-13T17:11:20.184Z
+==============================================================================
+
+PARTE A — las reglas del cableado
+------------------------------------------------------------------------------
+  [OK]    A1  el bloque del cableado borrado del dato NO apaga el cableado en silencio
+  [OK]    A2  'consultada' que no es booleano se detiene, no cae al lado permisivo
+  [OK]    A3  cableado activado y NINGUN ambito publicado: se detiene
+  [OK]    A4  columna_ambito que no es identificador valido no se interpola
+  [OK]    A5  columna_jurisdiccion ausente se detiene
+  [OK]    A6  la capa publicada que no esta en el catalogo detiene la carga
+  [OK]    A7  la capa publicada sin la columna declarada detiene la carga
+  [OK]    A8  el SQL de cobertura sin ensanche no nombra la capa publicada
+  [OK]    A9  el join expande la jurisdiccion a SUS bahias, y solo a esas
+  [OK]    A10  las 6 lacustres expanden a las 21 entradas del join (20 con coordenada)
+  [OK]    A11  el NOMBRE sale del decreto en un ambito publicado, y el TELEFONO del mapa
+  [OK]    A12  una bahia MARITIMA no cambia de nombre porque se publique el lacustre
+  [OK]    A13  el guard de arranque decide por el dato: apagado no toca el join, activo lo valida
+  [OK]    A-neg  CONTROL NEGATIVO: la declaracion REAL de hoy es coherente consigo misma
+
+PARTE B — las dos direcciones, contra el ensayo en la base
+------------------------------------------------------------------------------
+  capa real, censo por ambito: lacustre=6
+  B4: 44 maritimas inyectadas — censo dentro del savepoint: lacustre=6 maritima=44
+  B4: savepoint deshecho — censo: lacustre=6
+  [OK]    B1  lo lacustre entra
+          hoy={} ensanche={111,159,160,161} total={111,159,160,161}
+  [OK]    B2  ninguna maritima sale, y no entra ninguna de mas
+          hoy=14 {113,117,120,122,124,155,175,176,216,232,235,251,253,255} · ensanche agrega 0 · total=14
+  [OK]    B3  la ruta lacustre no arrastra ninguna bahia de otro ambito
+          total={111,159,160,161} · ajenas al ambito publicado: ninguna
+  [OK]    B4  el cero de B2 lo produce el filtro por ambito, no una consulta rota
+          con maritima publicada el ensanche agregaria 31 bahias (sobre 44 maritimas inyectadas y deshechas)
+  [OK]    B5  con el cableado el tramo lacustre deja de contarse como hueco de capa
+          sin ensanche: 18.992 km descubiertos de 18.992 · con ensanche: 0.000 km
+  [OK]    B6  la cobertura de una ruta maritima no se mueve
+          sin ensanche: 22.025600 km · con ensanche: 22.025600 km
+  [OK]    B7  la mordida no toco la capa real: mismo censo por ambito y ninguna fila inyectada
+          antes [lacustre=6] despues [lacustre=6] · filas inyectadas que sobrevivieron: 0
+
+==============================================================================
+RESULTADO: 14 casos de la parte A + 7 de la parte B, todos en verde.
+==============================================================================

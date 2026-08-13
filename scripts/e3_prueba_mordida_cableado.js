@@ -57,16 +57,38 @@ const MAPA_REAL   = require('../src/data/bahia-capitania-map.json');
 const clonar = (o) => JSON.parse(JSON.stringify(o));
 const BLOQUE = 'capa_publicada_por_ambito';
 
-// El registro real, validado, tal como esta HOY: ningun ambito publicado.
+// El registro real, validado, tal como esta HOY.
 const REGISTRO_HOY = validarDeclaracion(DECL_REAL, INSUMO_REAL, CAPA_REAL);
 
-// El registro el dia del paso 5: el lacustre pasa a publicado. Se construye
-// alterando el REAL en memoria y volviendo a validarlo con el validador de
-// produccion — si el test llevara su propia copia, envejeceria (trampa de E0.1).
+// El registro SIN NINGUN AMBITO PUBLICADO. Hasta el 2026-08-13 este escenario
+// era el estado real y se usaba REGISTRO_HOY para representarlo; ese dia E3
+// publico el lacustre y el caso A3 —"cableado activo y ningun ambito publicado
+// se detiene"— dejo de morder, porque su premisa habia dejado de ser cierta
+// sola. El escenario se CONSTRUYE en vez de tomarse prestado del estado del dia.
+function registroSinNingunAmbitoPublicado() {
+  const d = clonar(DECL_REAL);
+  for (const a of d.ambitos) {
+    a.publicado = false;
+    if (!a.causa) a.causa = 'inyectada por la mordida: C5 exige causa a un ambito no publicado';
+  }
+  return validarDeclaracion(d, INSUMO_REAL, CAPA_REAL);
+}
+
+// El registro con el lacustre publicado. Desde el paso 5 esto ES el estado real,
+// y la funcion se conserva porque construir el escenario en vez de heredarlo es
+// lo que evita que un caso mida el calendario en lugar de la regla.
 function registroConLacustrePublicado() {
   const d = clonar(DECL_REAL);
   d.ambitos.find(a => a.ambito === 'lacustre').publicado = true;
   return validarDeclaracion(d, INSUMO_REAL, CAPA_REAL);
+}
+
+// La declaracion de capa con el cableado APAGADO, se llame como se llame el
+// estado del archivo real ese dia.
+function capaSinCableado() {
+  const c = clonar(CAPA_REAL);
+  c[BLOQUE] = { ...c[BLOQUE], consultada: false };
+  return c;
 }
 
 // La declaracion de capa con el cableado activado, sobre el archivo REAL.
@@ -127,7 +149,7 @@ caso('A2', "'consultada' que no es booleano se detiene, no cae al lado permisivo
 });
 
 caso('A3', 'cableado activado y NINGUN ambito publicado: se detiene', async () => {
-  await muerde(() => ensancheDeclarado(capaConCableado(), REGISTRO_HOY),
+  await muerde(() => ensancheDeclarado(capaConCableado(), registroSinNingunAmbitoPublicado()),
     'no publica ningun ambito');
 });
 
@@ -239,32 +261,74 @@ caso('A12', 'una bahia MARITIMA no cambia de nombre porque se publique el lacust
   }
 });
 
-caso('A13', 'el guard de arranque no toca el join mientras el cableado este apagado', async () => {
-  const r = verificarCableadoEnArranque();
-  if (r.activo !== false || r.join !== null) {
-    throw new Error(`hoy el guard tiene que decir apagado y no cargar el join; dio ${JSON.stringify(r)}`);
+caso('A13', 'el guard de arranque decide por el dato: apagado no toca el join, activo lo valida', async () => {
+  // LAS DOS RAMAS. Hasta el paso 5 esta mordida solo podia ejercer la apagada,
+  // porque la activa exigia escribir 'consultada': true en el archivo real y el
+  // paso 4 no aplicaba nada; quedo escrito ahi que se ejerceria en el paso 5.
+  // Ahora se ejercen las dos, y ninguna depende de como este el archivo hoy: el
+  // guard recibe la declaracion en vez de leerla, que es lo que lo hace medible.
+  const apagado = verificarCableadoEnArranque(capaSinCableado());
+  if (apagado.activo !== false || apagado.join !== null) {
+    throw new Error(`con el cableado apagado el guard no puede tocar el join; dio ${JSON.stringify(apagado)}`);
   }
-  // LO QUE ESTE CASO NO PRUEBA, dicho en vez de tapado: la rama ACTIVA del guard
-  // no se ejerce aca, porque exigiria escribir 'consultada': true en el archivo
-  // real y esta sesion no aplica nada. Esa rama es una linea —cargarJoin()— y su
-  // validador tiene su propia mordida, 16/16 en e03join_prueba_mordida_join.js.
-  // Se ejerce de verdad en el paso 5, cuando el cableado se active.
+  const activo = verificarCableadoEnArranque(capaConCableado());
+  if (activo.activo !== true || !activo.join || typeof activo.join !== 'object') {
+    throw new Error(`con el cableado activo el guard tiene que cargar y validar el join; dio ${JSON.stringify(activo)}`);
+  }
 });
 
-caso('A-neg', 'CONTROL NEGATIVO: la declaracion REAL de hoy deja el cableado apagado', async () => {
+caso('A-neg', 'CONTROL NEGATIVO: la declaracion REAL de hoy es coherente consigo misma', async () => {
+  // Hasta el 2026-08-13 este control afirmaba "la declaracion real deja el
+  // cableado APAGADO". Era cierto y dejo de serlo el dia que el paso 5 lo
+  // activo, que es exactamente lo que este control existia para detectar: hizo
+  // su trabajo. Lo que se conserva es el control negativo de verdad —que el
+  // archivo real, sin alterar, pasa el validador— sin afirmar en que estado
+  // tiene que estar el interruptor, porque eso lo decide una etapa, no un test.
   const ens = ensancheDeclarado(CAPA_REAL, REGISTRO_HOY);
-  if (ens !== null) throw new Error(`hoy el cableado tiene que estar apagado y dio ${JSON.stringify(ens)}`);
+  const activo = CAPA_REAL[BLOQUE].consultada === true;
+  if (activo !== (ens !== null)) {
+    throw new Error(`'consultada' dice ${activo} y ensancheDeclarado dio ${JSON.stringify(ens)}`);
+  }
+  if (ens !== null) {
+    // Con el cableado activo, lo que sale tiene que ser coherente con el registro.
+    const publicados = DECL_REAL.ambitos.filter(a => a.publicado === true).map(a => a.ambito);
+    if (ens.capa !== DECL_REAL.capa_publicada) {
+      throw new Error(`la capa tiene que salir de ambitos_publicados.json, dio '${ens.capa}'`);
+    }
+    if (JSON.stringify(ens.ambitos) !== JSON.stringify(publicados)) {
+      throw new Error(`los ambitos tienen que ser los publicados (${publicados}), dio ${JSON.stringify(ens.ambitos)}`);
+    }
+  }
+  // Y el escenario construido, que no depende del estado del archivo.
   const conLacustre = ensancheDeclarado(capaConCableado(), registroConLacustrePublicado());
   if (conLacustre.capa !== DECL_REAL.capa_publicada) {
     throw new Error(`la capa tiene que salir de ambitos_publicados.json, dio '${conLacustre.capa}'`);
   }
-  if (JSON.stringify(conLacustre.ambitos) !== JSON.stringify(['lacustre'])) {
-    throw new Error(`los ambitos tienen que ser solo los publicados, dio ${JSON.stringify(conLacustre.ambitos)}`);
+  if (!conLacustre.ambitos.includes('lacustre')) {
+    throw new Error(`los ambitos tienen que incluir el lacustre, dio ${JSON.stringify(conLacustre.ambitos)}`);
   }
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// PARTE B — LAS DOS DIRECCIONES, CONTRA EL ENSAYO EN LA BASE.
+// PARTE B — LAS DOS DIRECCIONES, CONTRA LA CAPA REAL.
+//
+// HASTA EL 2026-08-13 ESTA PARTE CORRIA CONTRA UN ENSAYO, y hay que decir por
+// que dejo de hacerlo. El paso 4 escribio el cableado cuando `jurisdicciones_
+// ds991` NO EXISTIA, asi que la materializaba dentro de una transaccion con la
+// geometria del andamio y hacia ROLLBACK. El paso 5 aplico el build y la capa
+// existe: el `CREATE TABLE` pasa a reventar con "la relacion ya existe" y el
+// B7 —"el ensayo se deshizo, la capa sigue sin existir"— pasa a afirmar lo
+// contrario de lo que el repositorio quiere. Los dos fallaban por haber
+// acertado, no por un defecto.
+//
+// Ahora B1, B2, B3, B5 y B6 corren contra la CAPA REAL con su geometria
+// definitiva, que es estrictamente mas fuerte que el ensayo: el paso 4 solo
+// podia probar el cableado y esto prueba ademas la geometria que el build dejo.
+// Lo unico que sigue necesitando una materializacion es B4 —el contrafactico
+// "que pasaria si lo maritimo tambien estuviera publicado"—, y para eso NO se
+// recrea la capa: se le INSERTAN las filas maritimas del andamio dentro de una
+// transaccion que se deshace. B7 pasa a comprobar eso: que la capa real quedo
+// exactamente como estaba, contada por ambito antes y despues.
 // ═════════════════════════════════════════════════════════════════════════════
 
 // Una ruta dentro del Lago Llanquihue (bahia 111, jurisdiccion `puerto_varas`).
@@ -275,20 +339,47 @@ const RUTA_MARITIMA = {
   coordinates: [[-72.97656408099994, -41.48607231899996], [-73.74786402599995, -43.89816864699998]],
 };
 
-const ENSAYO = `
-  CREATE TABLE public.jurisdicciones_ds991 AS
-    SELECT id, ambito, geom FROM public.jurisdicciones_decreto
-     WHERE geom IS NOT NULL AND ambito IN ('lacustre', 'maritima');`;
+// El contrafactico de B4. Toma las maritimas CON geometria del andamio y las
+// mete en la capa real dentro de una transaccion que se deshace.
+//
+// LOS IDS SON LOS REALES, NO UN PREFIJO: el ensanche resuelve jurisdiccion_id
+// contra el join de E0.3, asi que un id inventado devolveria cero bahias y B4
+// diria "el filtro muerde" por el motivo equivocado — probaria que un id falso
+// no resuelve, no que el filtro por ambito funciona (CLAUDE.md §2). No hay
+// choque de clave: las 6 filas de la capa son lacustres y sus ids no estan
+// entre las maritimas del andamio.
+//
+// Los campos obligatorios que el andamio no trae se rellenan con un texto que
+// DICE que es una inyeccion, para que una fila sobreviviente se reconozca de
+// inmediato en vez de parecer dato.
+const INYECTAR_MARITIMAS = `
+  INSERT INTO public.jurisdicciones_ds991
+    (id, nombre, gobernacion, ambito, participa_matching, estado_geometria,
+     sigue_litoral, tramos_litoral, texto_decreto, geom)
+  SELECT id, id, 'INYECTADA POR LA MORDIDA', 'maritima', true,
+         'construida', false, 0,
+         'FILA INYECTADA POR scripts/e3_prueba_mordida_cableado.js (caso B4), '
+         || 'dentro de una transaccion que se deshace. Si esta fila esta en la '
+         || 'base, una transaccion no se deshizo.',
+         geom
+    FROM public.jurisdicciones_decreto
+   WHERE geom IS NOT NULL AND ambito = 'maritima'
+     AND id NOT IN (SELECT id FROM public.jurisdicciones_ds991);`;
+
+const censar = async (c) => {
+  const { rows } = await c.query(
+    'SELECT ambito, count(*)::int n FROM jurisdicciones_ds991 GROUP BY ambito ORDER BY 1');
+  return rows.map(r => `${r.ambito}=${r.n}`).join(' ');
+};
 
 async function parteB(pool, salida) {
+  // El censo de la capa REAL antes de abrir nada. B7 lo compara al final.
+  const censoAntes = await censar(pool);
   const cliente = await pool.connect();
   const resultados = [];
   try {
     await cliente.query('BEGIN');
-    await cliente.query(ENSAYO);
-    const { rows: censo } = await cliente.query(
-      'SELECT ambito, count(*)::int n FROM jurisdicciones_ds991 GROUP BY ambito ORDER BY 1');
-    salida(`  ensayo materializado en la transaccion: ${censo.map(r => `${r.ambito}=${r.n}`).join(' ')}`);
+    salida(`  capa real, censo por ambito: ${censoAntes}`);
 
     const ens = ensancheDeclarado(capaConCableado(), registroConLacustrePublicado());
     await verificarEnsancheEnLaBase(cliente, ens);
@@ -341,10 +432,21 @@ async function parteB(pool, salida) {
     // Si el filtro no muerde, la misma consulta con `maritima` agregada devuelve
     // muchas bahias. Que B2 de cero tiene que ser por el filtro, no porque la
     // consulta este rota.
+    // La capa real solo tiene las 6 lacustres, asi que lo maritimo se INYECTA
+    // aca adentro (ver INYECTAR_MARITIMAS). Va dentro de un SAVEPOINT propio y
+    // se deshace apenas B4 termina: B5 y B6 miden cobertura despues, y aunque el
+    // ensanche filtre por ambito y no deberia verlas, "no deberia" no es una
+    // medicion. El savepoint lo vuelve imposible en vez de improbable.
+    await cliente.query('SAVEPOINT b4');
+    const { rowCount: inyectadas } = await cliente.query(INYECTAR_MARITIMAS);
+    salida(`  B4: ${inyectadas} maritimas inyectadas — censo dentro del savepoint: ${await censar(cliente)}`);
     const marSiSePublicara = await bahiasDelEnsanche(cliente, maritima, ensConMaritima);
+    await cliente.query('ROLLBACK TO SAVEPOINT b4');
+    salida(`  B4: savepoint deshecho — censo: ${await censar(cliente)}`);
     resultados.push(['B4', 'el cero de B2 lo produce el filtro por ambito, no una consulta rota',
-      marSiSePublicara.size > 0,
-      `con maritima publicada el ensanche agregaria ${marSiSePublicara.size} bahias`]);
+      inyectadas > 0 && marSiSePublicara.size > 0,
+      `con maritima publicada el ensanche agregaria ${marSiSePublicara.size} bahias ` +
+      `(sobre ${inyectadas} maritimas inyectadas y deshechas)`]);
 
     // ── B5 — LA COBERTURA: el tramo lacustre deja de ser un hueco ─────────────
     const medir = async (geojson, ensanche) => {
@@ -374,10 +476,16 @@ async function parteB(pool, salida) {
     cliente.release();
   }
 
-  // El ensayo no dejo nada.
-  const { rows } = await pool.query("SELECT to_regclass('public.jurisdicciones_ds991') AS capa");
-  resultados.push(['B7', 'el ensayo se deshizo: la capa publicada sigue sin existir',
-    rows[0].capa === null, `to_regclass = ${rows[0].capa}`]);
+  // B7 — INOCUIDAD. Hasta el 2026-08-13 este caso comprobaba que el ensayo no
+  // hubiera dejado la capa creada; desde que la capa EXISTE de verdad, lo que
+  // hay que comprobar es lo contrario: que la mordida no la haya tocado. Se
+  // cuenta por ambito antes y despues, fuera de la transaccion.
+  const censoDespues = await censar(pool);
+  const { rows: restos } = await pool.query(
+    "SELECT count(*)::int n FROM jurisdicciones_ds991 WHERE gobernacion = 'INYECTADA POR LA MORDIDA'");
+  resultados.push(['B7', 'la mordida no toco la capa real: mismo censo por ambito y ninguna fila inyectada',
+    censoDespues === censoAntes && restos[0].n === 0,
+    `antes [${censoAntes}] despues [${censoDespues}] · filas inyectadas que sobrevivieron: ${restos[0].n}`]);
 
   return resultados;
 }

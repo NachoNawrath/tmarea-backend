@@ -1,6 +1,6 @@
 {
-  "generado": "2026-08-13",
-  "fase": "2 — cotejo cerrado con adjudicacion del owner; regenerado tras la pasada de alineacion contra el TM-025 A, con D11 (alcance), D12 (Galletue) y D13 (la carencia por cuerpo dentro del alcance)",
+  "generado": "2026-08-12",
+  "fase": "2 — cotejo cerrado con adjudicacion del owner; regenerado tras la pasada de alineacion contra el TM-025 A, con D11 (alcance) y D12 (Galletue)",
   "insumo_shapefile": {
     "ruta": "geodata/lagos/Inventario_Lagos.shp",
     "sha256_shp": "0692f9b2d6193d211854ffac7e0521c56c19a2de35b9870eabc436d0695a8154",
@@ -781,60 +781,6 @@
         }
       ]
     }
-  },
-  "carencia_cuerpo_sin_geometria": {
-    "que_es": "Cuerpos que el decreto le nombra a una de las 6 Capitanias de ambito lacustre —o sea DENTRO del alcance de D11— y que el cotejo resolvio sin geometria. D11 declara lo que queda fuera del alcance; esto declara lo que queda adentro y aun asi no se puede construir.",
-    "por_que_existe": "Publicado el ambito lacustre (E3, paso 5), un tramo de ruta sobre uno de estos cuerpos deja de caer en la causa (a) de INV-3.6 —carencia declarada— y cae en la (b): 'una zona que ninguna jurisdiccion reclama', 'un defecto de construccion nuestro'. Las dos mitades son falsas. Esta declaracion NO evita ese registro —eso es la opcion B de D13, que exige una geografia de reclamo que ninguna fuente cargada da—: lo que hace es que la deuda quede escrita, acotada y con condicion de cierre, en vez de ser silencio.",
-    "no_es_un_mecanismo_del_motor": "Igual que alcance_d11: este bloque lo escribe scripts/fase2_adjudicacion.py y NO lo lee ningun archivo de src/. Es declaracion del insumo, no mecanismo. No reclama ningun tramo, no produce aviso y no evita el registro (b). Medido el 2026-08-13.",
-    "de_donde_sale_el_alcance_de_este_bloque": "D13 la decidio el owner sobre el rio Bueno. Al escribirla se midio que en la misma situacion hay CUATRO cuerpos, no uno. Declarar los otros tres se resolvio del lado del ingeniero (CLAUDE.md §0.4) porque es estructura del dato, es aditivo y no cambia nada de lo que el patron ve; declarar uno y callar tres habria repuesto el silencio que INV-3.6 persigue, y habria dejado una regla que nombra a una entidad concreta (§4.3). Cada entrada dice quien la decidio.",
-    "validacion_de_forma": "El script se detiene en los dos sentidos: (1) una carencia declarada sobre un cuerpo que el cotejo no tiene; (2) una carencia cuyo cuerpo YA tiene geometria —no puede sobrevivir a su causa, mismo criterio que el C3 de ambitos-publicados.js—; (3) un cuerpo sin geometria al que nadie le declaro la carencia; y (4) una entrada a la que le falte 'decidido', 'causa', 'que_implica_mientras_este_asi' o 'condicion_de_cierre'.",
-    "cuantos": 4,
-    "cuerpos": [
-      {
-        "jurisdiccion_id": "lago_panguipulli",
-        "jurisdiccion_nombre": "Lago Panguipulli",
-        "nombre_decreto": "Rio Fuy",
-        "resolucion_del_cotejo": "ausente",
-        "decidido": "2026-08-13 — declarado por el ingeniero, mismo criterio que D13",
-        "causa": "Cuerpo fluvial. El shapefile de lagos no contiene rios, asi que no hay geometria que adjudicar. No hubo candidato ni cotejo que resolver.",
-        "que_implica_mientras_este_asi": "Igual que el rio Bueno: publicado el ambito lacustre, un tramo por el rio Fuy cae en la causa (b) de INV-3.6 siendo que la jurisdiccion existe y el decreto se la da.",
-        "condicion_de_cierre": "Una capa hidrografica cargada que de la geometria del rio. NO depende de DIRECTEMAR.",
-        "donde_esta_la_dependencia": null
-      },
-      {
-        "jurisdiccion_id": "lago_panguipulli",
-        "jurisdiccion_nombre": "Lago Panguipulli",
-        "nombre_decreto": "Rio San Pedro",
-        "resolucion_del_cotejo": "rechazado",
-        "decidido": "2026-08-13 — declarado por el ingeniero, mismo criterio que D13",
-        "causa": "Cuerpo fluvial, y ademas con candidato RECHAZADO: LAGUNA GRANDE DE SAN PEDRO esta en la Region VIII (San Pedro de la Paz) y es otro cuerpo que comparte palabra. Es el gemelo exacto del caso del rio Bueno con LAGUNA ACHIBUENO.",
-        "que_implica_mientras_este_asi": "Igual que el rio Bueno: publicado el ambito lacustre, un tramo por el rio San Pedro cae en la causa (b) de INV-3.6 siendo que la jurisdiccion existe y el decreto se la da.",
-        "condicion_de_cierre": "Una capa hidrografica cargada que de la geometria del rio. NO depende de DIRECTEMAR.",
-        "donde_esta_la_dependencia": null
-      },
-      {
-        "jurisdiccion_id": "lago_ranco",
-        "jurisdiccion_nombre": "Lago Ranco",
-        "nombre_decreto": "Rio Bueno",
-        "resolucion_del_cotejo": "rechazado",
-        "decidido": "2026-08-13, por el owner — D13, opcion A: declarar SIN reclamo",
-        "causa": "El decreto le da a la Capitania de Puerto Lago Ranco el rio Bueno en los sectores Los Patos, La Goleta y El Manzanito, y NINGUNA fuente cargada da la geometria de ese rio: el shapefile de lagos no contiene rios y el unico candidato por nombre —LAGUNA ACHIBUENO, Region VII— es otro cuerpo que comparte una palabra. Convertir los tres sectores del decreto en una figura es INTERPRETAR la fuente normativa, que es del owner (CLAUDE.md §0.4), y la figura que se dibujara antes de la respuesta de DIRECTEMAR se puede tirar entera.",
-        "que_implica_mientras_este_asi": "Un tramo de ruta por el rio Bueno se registra internamente como causa (b) de INV-3.6, o sea como defecto de construccion propio, y NO lo es. Es tolerable porque esta declarado y porque al patron no le sale —ve el mismo aviso en los dos casos—, no porque sea correcto.",
-        "condicion_de_cierre": "Se pasa a la opcion B —tercer origen de la causa (a), hermano del que E0.2 agrego— cuando DIRECTEMAR conteste el sector del rio Bueno (_bitacoras/consulta_directemar_registro.md, entradas 1 y 4); o antes, si aparece una capa hidrografica cargada que de la geometria del rio SIN interpretarla, porque ahi la figura deja de ser una lectura del decreto y pasa a ser un dato.",
-        "donde_esta_la_dependencia": "_bitacoras/consulta_directemar_registro.md, entradas 1 (reparticion 189) y 4 (bahia 258, sector Llancacura). El registro se cierra y se envia cuando la construccion termine, en una sola consulta."
-      },
-      {
-        "jurisdiccion_id": "lago_villarrica",
-        "jurisdiccion_nombre": "Lago Villarrica",
-        "nombre_decreto": "Rio Tolten",
-        "resolucion_del_cotejo": "ausente",
-        "decidido": "2026-08-13 — declarado por el ingeniero, mismo criterio que D13",
-        "causa": "Cuerpo fluvial. El shapefile de lagos no contiene rios, asi que no hay geometria que adjudicar. No hubo candidato ni cotejo que resolver.",
-        "que_implica_mientras_este_asi": "Igual que el rio Bueno: publicado el ambito lacustre, un tramo por el rio Tolten cae en la causa (b) de INV-3.6 siendo que la jurisdiccion existe y el decreto se la da.",
-        "condicion_de_cierre": "Una capa hidrografica cargada que de la geometria del rio. NO depende de DIRECTEMAR: no hay ninguna pregunta abierta sobre este cuerpo, solo falta la fuente.",
-        "donde_esta_la_dependencia": null
-      }
-    ]
   },
   "conteo": {
     "exacta": 18,

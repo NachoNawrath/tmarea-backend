@@ -50,6 +50,21 @@ function poolFalso({ relaciones = [], columnas = {}, porAmbito = [], reclamos = 
   };
 }
 
+// ─── LOS SUJETOS DE CADA CASO SALEN DEL REGISTRO, NO DE UN NOMBRE ───────────
+// Hasta el 2026-08-13 estos casos nombraban al `lacustre` a mano. Ese dia E3 lo
+// paso a publicado y le retiro su geografia de reclamo —un ambito publicado no
+// reclama—, y TRES casos dejaron de morder: el C3 porque su sujeto ya no estaba
+// declarado ausente, y los dos C6 porque mutaban una geografia que habia pasado
+// a null. La mordida no medía lo que decia medir: medía el estado de un ambito
+// concreto. Ahora cada caso pide el ambito que su defecto necesita (CLAUDE.md
+// §4.3: una regla que nombra a alguien no es una regla).
+const conGeografia = (d) => d.ambitos.find(a => a.geografia_de_reclamo);
+if (!conGeografia(DECL_REAL)) {
+  throw new Error('MORDIDA INVALIDA: ningun ambito del registro declara geografia de reclamo, ' +
+    'asi que los casos de C6 no tienen sobre que inyectar su defecto. No se degrada a verde: ' +
+    'una mordida que no puede morder no prueba nada (CLAUDE.md §4.6).');
+}
+
 // La base tal como esta HOY: la capa publicada no existe, y la geografia de
 // reclamo si. Es el escenario real, y es sobre el que se inyectan los defectos.
 const BASE_HOY = {
@@ -95,9 +110,16 @@ caso('C2', 'una entrada que no corresponde a ningun ambito del insumo', async ()
 });
 
 // ─── C3 — RETIRO AUTOMATICO: declarado ausente y la base lo tiene ───────────
-caso('C3', 'RETIRO AUTOMATICO — lacustre declarado no publicado y la base YA lo tiene', async () => {
-  const d = validarDeclaracion(clonar(DECL_REAL), INSUMO_REAL, CAPA_REAL);
-  await verificarContraBase(poolFalso(BASE_CON_LACUSTRE), d);
+caso('C3', 'RETIRO AUTOMATICO — un ambito declarado no publicado y la base YA lo tiene', async () => {
+  // El defecto que se inyecta es "declarado ausente mientras la base lo tiene",
+  // asi que el sujeto se FUERZA a no publicado en la copia alterada. Antes esto
+  // dependia de que el registro real lo tuviera en false, y se apago solo el dia
+  // que E3 publico el lacustre.
+  const d = clonar(DECL_REAL);
+  const e = d.ambitos.find(a => a.ambito === BASE_CON_LACUSTRE.porAmbito[0].ambito);
+  e.publicado = false;
+  if (!e.causa) e.causa = 'inyectada por la mordida: C5 exige causa a un no publicado';
+  await verificarContraBase(poolFalso(BASE_CON_LACUSTRE), validarDeclaracion(d, INSUMO_REAL, CAPA_REAL));
 });
 
 // ─── C4 — la direccion contraria ────────────────────────────────────────────
@@ -133,14 +155,19 @@ caso('C6', 'geografia de reclamo nula sin motivo escrito', async () => {
 
 caso('C6', 'geografia de reclamo sin declarar no_resuelve_jurisdiccion', async () => {
   const d = clonar(DECL_REAL);
-  delete d.ambitos.find(a => a.ambito === 'lacustre').geografia_de_reclamo.no_resuelve_jurisdiccion;
+  delete conGeografia(d).geografia_de_reclamo.no_resuelve_jurisdiccion;
   validarDeclaracion(d, INSUMO_REAL, CAPA_REAL);
 });
 
 caso('C6', 'geografia de reclamo en una relacion que no existe en la base', async () => {
+  // La base tiene que ser COHERENTE con la declaracion, si no C4 revienta antes
+  // y el caso sale verde cazando el control equivocado. Paso el 2026-08-13:
+  // con BASE_HOY —sin la capa publicada— y el lacustre ya publicado, este caso
+  // reportaba CAZADO con el mensaje de C4. Un caso que muerde por otra razon es
+  // un caso que no prueba lo que dice (CLAUDE.md §2).
   const d = clonar(DECL_REAL);
-  d.ambitos.find(a => a.ambito === 'lacustre').geografia_de_reclamo.relacion = 'capa_que_no_existe';
-  await verificarContraBase(poolFalso(BASE_HOY), validarDeclaracion(d, INSUMO_REAL, CAPA_REAL));
+  conGeografia(d).geografia_de_reclamo.relacion = 'capa_que_no_existe';
+  await verificarContraBase(poolFalso(BASE_CON_LACUSTRE), validarDeclaracion(d, INSUMO_REAL, CAPA_REAL));
 });
 
 // ─── C7 — la capa publicada apunta a la capa provisoria ─────────────────────

@@ -46,17 +46,16 @@
     },
     {
       "ambito": "lacustre",
-      "publicado": false,
+      "publicado": true,
+      "publicado_el": "2026-08-13",
       "habilitado_para_publicar": true,
       "motivo_habilitacion": "E3. Sus seis jurisdicciones se construyen y pasan los ocho controles que les tocan, medido el 2026-08-12 (_bitacoras/e3_recon_2026-08-12.txt): lo unico que las mantenia fuera de la base era el rollback compartido con C3, que es un defecto de las maritimas. Con el gate partido por ambito entra en cuanto el build se aplique.",
       "jurisdicciones_esperadas": 6,
-      "causa": "El ambito lacustre nunca se construyo en la capa publicada. Su geometria se construye bien —el constructor ya trata el ambito por separado y la receta union_cuerpos tiene su propio control que rechaza una lacustre vacia citando INV-3.5— pero comparte el rollback con C3, que es un defecto de las maritimas. Es lo que E3 va a destrabar partiendo el gate por ambito (D3). Consecuencia hoy: toda la navegacion lacustre es invisible para el motor.",
-      "geografia_de_reclamo": {
-        "relacion": "jurisdicciones_decreto",
-        "columna_ambito": "ambito",
-        "no_resuelve_jurisdiccion": true,
-        "procedencia": "Las 6 jurisdicciones lacustres tienen geometria en ese build (4.466 km2 en total). Medido el 2026-08-11: la capa vigente cubre 0,0000 km2 de esa area y la cobertura mas cercana a cualquiera de los seis lagos esta entre 16 y 84 km."
-      }
+      "como_entro": "E3, paso 5, 2026-08-13. El build se aplico y el gate por ambito publico el lacustre con sus 6 de 6 jurisdicciones con geometria (4.479,4 km2) y sus ocho controles en ok, mientras retenia a la maritima por C3 —los mismos seis pares y los mismos km2 que el 2026-08-12, ni uno se movio— y a la antartica y la insular remota por declaracion. Exit 3, publicacion parcial. Crudo en _bitacoras/e3_paso5_2026-08-13/03_build_aplicado.txt. La causa que esta entrada declaraba mientras no estaba publicada —'el ambito lacustre nunca se construyo en la capa publicada... toda la navegacion lacustre es invisible para el motor'— dejo de ser cierta ese dia y por eso se retira: el registro dice lo que pasa, no lo que pasaba. Queda escrita aca su version historica para que el cambio no borre el motivo por el que la entrada existio.",
+      "el_aviso_se_retiro_solo": "Publicado el ambito, deja de estar en `con_geografia` y `ambitoQueReclama` ya no reclama ningun tramo lacustre: el aviso de INV-3.6 se retira sin que nadie lo apague a mano, que es como este registro esta pensado. Por eso las tres piezas del paso 5 no se separan — entre esto y activar el cableado hay una ventana en la que cada tramo lacustre cae en la causa (b).",
+      "lo_que_sigue_sin_geometria_dentro_de_este_ambito": "CUATRO cuerpos que el decreto le nombra a estas seis Capitanias y que no tienen geometria en ninguna fuente cargada: el rio Bueno (lago_ranco, D13 del owner), el rio Tolten (lago_villarrica), y los rios Fuy y San Pedro (lago_panguipulli). Publicado el ambito, un tramo de ruta sobre cualquiera de ellos cae en la causa (b) de INV-3.6 —defecto de construccion nuestro— SIN SERLO. Es deuda declarada, con su causa y su condicion de cierre, en el bloque `carencia_cuerpo_sin_geometria` de data/decreto/cotejo_lacustre_adjudicado.json. Se declara tambien aca porque este es el archivo que dice que el ambito esta publicado, y publicarlo es lo que convierte esa carencia en un registro (b).",
+      "geografia_de_reclamo": null,
+      "motivo_sin_geografia_de_reclamo": "Un ambito PUBLICADO no reclama: la geografia de reclamo existe para decidir a que ambito no publicado pertenece un trozo de ruta que no resuelve jurisdiccion, y `con_geografia` solo mira las entradas con publicado=false. Dejar la del andamio escrita seria dejar dato muerto que el dia de mañana alguien puede leer como si siguiera vigente. La que tenia, para constancia: relacion `jurisdicciones_decreto`, columna `ambito`, con las 6 lacustres en 4.466 km2 sobre ese build y la capa vigente cubriendo 0,0000 km2 de esa area, con la cobertura mas cercana entre 16 y 84 km (medido el 2026-08-11)."
     },
     {
       "ambito": "antartica",

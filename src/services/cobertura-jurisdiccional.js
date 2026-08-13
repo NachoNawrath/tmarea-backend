@@ -207,8 +207,14 @@ async function bahiasDelEnsanche(cliente, rutaGeoJSON, ensanche) {
  * tumbar un backend que no lo usa seria ensanchar el radio de falla sin que
  * ninguna etapa lo haya decidido.
  */
-function verificarCableadoEnArranque() {
-  const b = require(RUTA_CAPA)[BLOQUE_ENSANCHE];
+// `decl` es SIEMPRE el archivo real en produccion —src/index.js lo llama sin
+// argumentos— y existe para que la prueba de mordida pueda ejercer LAS DOS
+// RAMAS sin depender de como este el interruptor ese dia. El paso 4 dejo escrito
+// que la rama activa no se ejercia; con el paso 5 el interruptor quedo en true y
+// la que dejo de ejercerse fue la apagada. Un guard que solo se puede probar en
+// el estado del calendario no se puede probar.
+function verificarCableadoEnArranque(decl = require(RUTA_CAPA)) {
+  const b = decl[BLOQUE_ENSANCHE];
   exigir(b && typeof b === 'object' && typeof b.consultada === 'boolean',
     `capa_consultada.json: el bloque '${BLOQUE_ENSANCHE}' falta o no declara 'consultada' booleano. ` +
     `La verificacion completa vive en ensancheDeclarado(); esto es solo el arranque.`);
