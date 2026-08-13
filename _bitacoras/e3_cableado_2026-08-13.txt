@@ -1,0 +1,297 @@
+================================================================================
+E3 — PASO 4 DE 6: EL CABLEADO ESCRITO Y SU MORDIDA. 2026-08-13
+Estado: ESCRITO Y PROBADO. NO APLICADO. El cableado queda APAGADO en el dato
+(`consultada: false`) y no cambia nada de lo que el patron ve hoy — verificado
+levantando el backend y pegandole al endpoint.
+Veredicto: 21 casos en verde (14 de la parte A + 7 de la parte B). La capa
+`jurisdicciones_ds991` sigue sin existir; la parte B corre contra un ENSAYO
+dentro de una transaccion que se deshace.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell,
+desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts\e3_prueba_mordida_cableado.js
+    npm test
+
+Evidencia cruda en `_bitacoras/e3_cableado_2026-08-13/`:
+    01_mordida.txt                                  la mordida entera
+    02_arranque.txt                                 el arranque del backend
+    03_respuesta_endpoint_cableado_apagado.json     la respuesta real del endpoint
+    04_suite.txt                                    la suite unitaria
+    05_mordidas_vecinas.txt                         las cuatro mordidas de al lado
+
+
+1. QUE SE ESCRIBIO — Y POR QUE SON SEIS ARCHIVOS Y NO CUATRO
+--------------------------------------------------------------------------------
+El paso 3 dimensiono **cuatro archivos y una funcion**. Se escribieron seis, y
+las dos diferencias se declaran aca en vez de aparecer en el diff (§0.4):
+
+  1. data/decreto/capa_consultada.json
+     Bloque nuevo `capa_publicada_por_ambito`, con `consultada: false`. Es el
+     interruptor del cableado y es DATO, no codigo: activarlo es el tercer
+     movimiento del paso 5.
+
+  2. src/services/cobertura-jurisdiccional.js
+     Los DOS consumidores de la capa, juntos y en el mismo modulo:
+       · `ensancheDeclarado(decl, registro)` — la regla, pura sobre los dos
+         objetos, para que la mordida la ejerza con variantes en memoria;
+       · el CTE `cob` del SQL de cobertura, que ahora une las dos capas;
+       · `bahiasDelEnsanche(cliente, ruta, ensanche)` — ruta ∩ capa publicada →
+         jurisdiccion_id → join → bahia_id;
+       · `verificarCableadoEnArranque()` — el guard (ver §4).
+
+  3. src/routes/sitport-routes.js
+     `bahiasEnRutaPostGIS` suma al Set lo que devuelve `bahiasDelEnsanche`. Tres
+     lineas. Mas dos cambios de una linea que se explican en §2 y §3.
+
+  4. src/services/join-bahia-jurisdiccion.js
+     **El paso 3 dijo "sin cambios de codigo" y hubo uno**: el join solo sabia
+     ir de bahia a jurisdiccion y el cableado necesita el sentido inverso.
+     `bahiasDeJurisdicciones(ids)`, en el modulo que es dueño de la atribucion y
+     no en la ruta, que es de donde habria salido si no se escribia aca.
+
+  5. src/services/capitania-de-bahia.js — ARCHIVO NUEVO. Ver §3.
+
+  6. src/index.js — el guard de arranque. Ver §4.
+
+Y uno mas, chico: `src/services/ambitos-publicados.js` exporta su `IDENT`, para
+que la validacion de identificadores del ensanche use LA MISMA regla y no una
+hermana que despues divergiria (§2 de CLAUDE.md, el corolario de las tres
+trampas de equivalencia).
+
+Lo que NO se toco, y conviene que quede escrito: el filtro de `:735`, el
+agrupamiento por bahia, el orden de transito, `elegirRestriccion`, el motor de
+reglas (§6, intocable), y `capa_jurisdicciones`, que sigue siendo
+`bahia_jurisdicciones`.
+
+
+2. LAS CUATRO TRAMPAS DEL PASO 3, UNA POR UNA
+--------------------------------------------------------------------------------
+
+2.a — **NO SE REPUNTA `capa_jurisdicciones`.** El C7 de
+`ambitos-publicados.js:58` se deja intacto y el cableado declara un consumo
+aparte, en un bloque nuevo. El nombre de la capa **no se escribe dos veces**:
+sale de `capa_publicada` de `ambitos_publicados.json`, que es donde viven los
+controles que lo comprueban contra la base. Escribirlo tambien en
+`capa_consultada.json` habria creado los dos textos que alguien tiene que
+acordarse de sincronizar — exactamente lo que E1 corrigio con el comentario de
+la base.
+
+2.b — **LOS DOS CONSUMIDORES SE CABLEAN JUNTOS, Y AHORA VIVEN EN EL MISMO
+MODULO.** El SQL de cobertura y la consulta que ensancha el Set salen los dos de
+`ensancheVigente()` y estan a treinta lineas uno del otro. No es solo que se
+hayan cableado juntos: quedaron donde separarlos cuesta trabajo. La mordida lo
+mide en las dos mitades — B1 (la lista ensancha) y B5 (la cobertura deja de ver
+un hueco de 18,992 km en la misma ruta).
+
+2.c — **EL CONTACTO.** La decision del owner —nombre del join, telefono del
+mapa— se escribio en `src/services/capitania-de-bahia.js`, un archivo nuevo, y
+`sitport-routes.js:781` pasa de `getCapitaniaByBahiaId(idBahia)` a
+`capitaniaDeBahia(idBahia, ambitosPublicados)`.
+
+**Por que un archivo nuevo y no una rama en la ruta**: es el unico punto donde
+el decreto (normativo) y el mapa (operativo) se encuentran, y E0.3 los separo a
+proposito. Con la decision escrita en su cabecera, el dia que el frente de
+contacto de §7.1 se retome se sabe donde mirar.
+
+**Por que se toco `:781` si el paso 3 dijo "solo `bahiasEnRutaPostGIS`"**: sin
+esto, el paso 5 activaria el cableado y un patron navegando el Lago Puyehue
+veria "Puerto Montt" — que es justo lo que el owner decidio evitar el 2026-08-13.
+El paso 5 es *aplicar*, no *escribir*: si el nombre no se escribe aca, se
+escribe en el paso equivocado o no se escribe.
+
+**La regla no nombra a nadie** (§4.3): no dice "lacustre", dice *"las bahias
+cuya jurisdiccion es de un ambito publicado"*. Con la lista de ambitos vacia
+—el estado de hoy— se comporta identico a antes, y eso lo prueba A11/A12.
+
+**La gobernacion sigue saliendo del mapa**, dicho en vez de tapado. El owner
+decidio sobre el nombre de la Capitania y el telefono; la pertenencia
+Capitania → Gobernacion la dan el decreto, la agrupacion del indice de
+resoluciones locales y la reparticion de SITPORT, y las tres coinciden, asi que
+no hay discrepancia medida que arreglar y no se toco por anticipado.
+
+2.d — **EL DRIFT.** No se toco: `evaluarDriftCatalogo` sigue recibiendo
+`bahiaIdsEnRuta` y sigue corriendo ANTES de los dos descartes. Lo que cambia es
+lo que ese Set contiene, y eso **se mide en el paso 6**, como quedo escrito.
+Lo unico que se hizo por anticipado es lo de §5: que el descarte por falta de
+coordenada deje de ser silencioso.
+
+
+3. LO QUE EL CABLEADO NO HACE, Y ES A PROPOSITO
+--------------------------------------------------------------------------------
+- **No cambia la unidad.** El pipeline sigue filtrando por bahia en `:735`. El
+  cableado ensancha la entrada de ese filtro. E6 sigue entero.
+- **No publica nada.** `ambitos_publicados.json` no se toco: los cuatro ambitos
+  siguen en `publicado: false`.
+- **No construye geometria.** El build no se corrio.
+- **No toca `bahia-capitania-map.json`.** Lo deja de consultar para el nombre,
+  solo en los ambitos publicados. El frente de §7.1 sigue abierto.
+- **No cambia lo que el patron ve hoy.** Con el cableado apagado no hay ninguna
+  rama nueva en el camino: `ensancheDeclarado` devuelve `null` y el SQL de
+  cobertura es el de antes, sin mencion de la capa publicada (caso A8).
+
+
+4. UNA DECISION QUE TOME Y NO ESTABA PEDIDA: EL GUARD DE ARRANQUE
+--------------------------------------------------------------------------------
+El paso 3 midio que el join *"empieza a poder detener el arranque"*. Escrito el
+cableado, eso no pasaba solo: `cargarJoin()` se llama dentro de
+`bahiasDelEnsanche`, o sea que un join invalido habria reventado en **la primera
+ruta que lo consultara**, no al arrancar.
+
+Se agrego `verificarCableadoEnArranque()` y su bloque en `src/index.js`,
+hermano del guard de E1: **si el cableado esta activo**, el join se carga y se
+valida antes de escuchar. **Si esta apagado, el join no se toca** — hacerlo capaz
+de tumbar un backend que no lo consume seria ensanchar el radio de falla sin que
+ninguna etapa lo haya decidido.
+
+Es metodo y orden de ejecucion, asi que se resolvio de este lado y se declara
+(§0.4). **Lo que la mordida no ejerce**: la rama activa del guard, porque
+exigiria escribir `consultada: true` en el archivo real y esta sesion no aplica
+nada. Es una linea —`cargarJoin()`— y su validador tiene su propia mordida,
+16/16. Se ejerce de verdad en el paso 5. Escrito tambien dentro del caso A13,
+para que no dependa de que alguien lea esta bitacora.
+
+
+5. LA 257, DECIDIDA: NO SE LISTA, PERO DEJA DE DESCARTARSE EN SILENCIO
+--------------------------------------------------------------------------------
+El paso 3 dejo la pregunta abierta: `:737` descarta en silencio una bahia sin
+coordenada, y la 257 (Rio Cochrane) es la unica del join que no esta en
+`BAHIA_COORDS`.
+
+**Decision**: sigue sin listarse —sin coordenada no se la puede ubicar en el
+orden de transito ni buscarle fondeadero— y **deja de ser silenciosa**: el
+`continue` lleva su `console.warn` con el motivo y con quien responde por el
+caso, que es el control de drift A3. Es §4.2 sin cambiar el comportamiento: A3
+ya la registra siempre y avisa por reparticion aunque no se la pueda ubicar
+(verificado el 2026-08-13, addendum §B del reconocimiento).
+
+Y queda escrito el efecto lateral que ya estaba medido: cableado el ambito, la
+257 pasa de **defecto registrado** a **defecto + aviso**, porque la ruta por el
+Lago General Carrera hace entrar su reparticion.
+
+
+6. UN HALLAZGO DE LA MORDIDA: LAS BAHIAS DE `puerto_varas` SON CUATRO
+--------------------------------------------------------------------------------
+La primera version del caso A9 esperaba **tres** bahias para `puerto_varas`
+(111, 159, 161) y la mordida devolvio **cuatro**. **La que estaba mal era la
+expectativa, no el codigo**, y el numero salio de contar `jurisdiccion_id`:
+
+    bahia 160 LAGO PUYEHUE — jurisdiccion_id: lago_ranco
+                             jurisdicciones_adicionales: [puerto_varas]
+    criterio del join: "cajon C: lago_ranco + puerto_varas"
+
+Es la unica entrada del join con jurisdiccion adicional en las 164, y sale del
+decreto: el lago esta partido en el limite regional. `bahiasDeJurisdicciones`
+mira `jurisdicciones` —principal MAS adicionales— y no solo la principal, que es
+INV-3.4 leido al reves: **la restriccion de una Capitania aplica a toda su
+jurisdiccion, se muestra de mas y nunca de menos**. El caso A9 ahora fija las
+dos cosas: las cuatro bahias, y que la 160 entra por la ADICIONAL.
+
+Es la misma forma de error que §2 de CLAUDE.md persigue —un numero que mide algo
+parecido a lo que se afirma— y esta vez la caza fue la mordida, no una lectura.
+
+
+7. LA MORDIDA — 21 CASOS. CRUDO EN 01_mordida.txt
+--------------------------------------------------------------------------------
+PARTE A (14) — las reglas. Sin base o con pool falso, alterando en memoria las
+declaraciones REALES; si el test llevara su propia copia envejeceria en cuanto
+cambie el archivo (la trampa que E0.1 ya pago).
+
+  A1   el bloque borrado del dato NO apaga el cableado en silencio
+  A2   'consultada' no booleano se detiene, no cae al lado permisivo
+  A3   cableado activado y NINGUN ambito publicado: se detiene
+  A4   columna_ambito que no es identificador valido no se interpola
+  A5   columna_jurisdiccion ausente se detiene
+  A6   la capa publicada que no esta en el catalogo detiene la carga
+  A7   la capa publicada sin la columna declarada detiene la carga
+  A8   el SQL sin ensanche no nombra la capa publicada
+  A9   el join expande a SUS bahias y solo a esas (y la 160 por la adicional)
+  A10  las 6 lacustres expanden a las 21 entradas del join
+  A11  el NOMBRE sale del decreto y el TELEFONO del mapa, mismo telefono
+  A12  una bahia maritima no cambia de contacto porque se publique el lacustre
+  A13  el guard de arranque no toca el join con el cableado apagado
+  A-neg CONTROL NEGATIVO: la declaracion REAL de hoy deja el cableado apagado
+
+PARTE B (7) — LAS DOS DIRECCIONES, CONTRA EL ENSAYO EN LA BASE.
+
+**Que es el ensayo y por que hace falta.** `jurisdicciones_ds991` NO EXISTE: se
+aplica en el paso 5. La mordida la materializa dentro de una transaccion, con la
+geometria de `jurisdicciones_decreto` —la misma de la que sale hoy la geografia
+de reclamo de `ambitos_publicados.json`—, corre contra ella y hace `ROLLBACK`.
+Mete a proposito las **44 maritimas con geometria ademas de las 6 lacustres**:
+sin ellas, "el ensanche no le agrega nada a una ruta maritima" podria pasar
+porque la consulta esta rota. B4 lo distingue.
+
+**Que prueba este ensayo y que no.** Prueba el CABLEADO. NO prueba la geometria
+definitiva —la del ensayo sale del andamio—, y esa medicion es el paso 6.
+
+  B1  LO LACUSTRE ENTRA. Ruta dentro del Lago Llanquihue:
+      hoy = {} (vacio — los lagos son invisibles, que es la carencia entera de
+      E3) · ensanche = {111, 159, 160, 161} · total = {111, 159, 160, 161}
+  B2  NINGUNA MARITIMA SALE. Anahuac → Melinka, del arnes de las 8 rutas:
+      hoy = 14 bahias {113,117,120,122,124,155,175,176,216,232,235,251,253,255}
+      · el ensanche agrega 0 · total = 14, las mismas.
+  B3  la ruta lacustre no arrastra ninguna bahia de otro ambito — comprobado
+      contra el insumo, no contra una lista escrita a mano.
+  B4  MORDIDA DEL FILTRO POR AMBITO: con `maritima` tambien publicada, el
+      ensanche agregaria **31 bahias** a esa misma ruta. El cero de B2 lo produce
+      el filtro, no una consulta rota.
+  B5  la cobertura: sin ensanche **18,992 km descubiertos de 18,992**; con
+      ensanche **0,000 km**. El tramo lacustre deja de registrarse como defecto
+      de construccion nuestro (causa (b) de INV-3.6) — que es exactamente la
+      ventana que hundio al camino B.
+  B6  la cobertura de la ruta maritima no se mueve: 22,0256 km descubiertos
+      antes y despues, hasta el 1e-9.
+  B7  el ensayo se deshizo: `to_regclass('public.jurisdicciones_ds991')` = null.
+
+
+8. REGRESION — NADA DE LO QUE HAY SE MOVIO
+--------------------------------------------------------------------------------
+- **Suite unitaria: 79/79** (04_suite.txt). Eran 76 en la ultima medicion escrita
+  en la memoria de trabajo; hoy son 79 y las 79 pasan.
+- **Las cuatro mordidas de al lado, exit 0**: E0.2 ambitos, E0.3 join, E1
+  andamio, E0.1 A3 (05_mordidas_vecinas.txt).
+- **El backend arranca** (02_arranque.txt): guard de E1 en verde, guard nuevo
+  silencioso porque el cableado esta apagado, `Boot: 781ms`.
+- **El endpoint responde igual** (03_respuesta_endpoint_cableado_apagado.json):
+  `restricciones-ruta` sobre Anahuac → Melinka devuelve `capa:
+  bahia_jurisdicciones`, 0 avisos de cobertura, 6 defectos de recorte,
+  veredicto Q. Es la respuesta de siempre.
+
+**Lo que ese endpoint NO ejercito, dicho en vez de dado por bueno**: SITPORT no
+tenia ninguna restriccion de transito en esa ruta en ese momento, asi que
+`capitania_fuente` no se vio en una respuesta real. Lo ejerce A11/A12, y en una
+ruta con restriccion se vera en el paso 6.
+
+**Trampa pagada de nuevo, no vuelta a pagar**: levantar el backend reescribe
+`data/catalogo/estado_drift.json` (hook de E0.1). Se respaldo antes y se
+restauro despues, comprobado por sha256 —
+`ffff23b2107595aea4c6742955434d38b5968bcb7539cf3dfefc0c419221b2fd` antes y
+despues; durante el arranque el archivo fue `a1201dbf…`.
+
+**Hallazgo lateral que NO es de este paso y no se toco**: ese arranque reporto
+`DRIFT NO DECLARADO — total 4 · no declaradas 1 · abiertas 3`. Es el hook de
+E0.1 haciendo lo suyo sobre el catalogo de SITPORT, es anterior a este cambio y
+no lo toca ninguna pieza de este paso. Queda anotado para E0.1 (§0.4: se enruta,
+no se resuelve de paso).
+
+
+9. LO QUE ESTE PASO NO MIDIO
+--------------------------------------------------------------------------------
+- **Cuanto tarda el SQL ensanchado sobre la capa real.** Se midio sobre el
+  ensayo, que tiene 50 filas; la capa del paso 5 tendra las que el build deje.
+- **El efecto sobre las 8 rutas del arnes.** Es el paso 6.
+- **El alcance nuevo del control de drift** (trampa 2.d). Paso 6.
+- **La geometria lacustre definitiva.** La del ensayo es del andamio. Paso 5.
+- **La rama activa del guard de arranque.** §4.
+
+================================================================================
+FIN — el cableado esta escrito y probado. NO se aplico: `consultada: false`,
+`ambitos_publicados.json` sin tocar, `jurisdicciones_ds991` sin existir.
+El paso 5 son tres movimientos y no se separan: aplicar el build, mover el
+registro, poner `consultada` en true.
+================================================================================

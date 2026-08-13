@@ -8,7 +8,9 @@ const { evaluarRuta } = require('../services/route-restriction-evaluator');
 const { validarHabilitacionDeportiva } = require('../services/deportivo-validator');
 const {
   medirCoberturaRuta, componerAvisos, capaJurisdiccionesVigente,
+  ensancheVigente, bahiasDelEnsanche,
 } = require('../services/cobertura-jurisdiccional');
+const { capitaniaDeBahia } = require('../services/capitania-de-bahia');
 const {
   construirResolutorCapitania, evaluarDriftEnRuta, noEvaluado, componerConDrift,
 } = require('../services/drift-ambito-a');
@@ -554,6 +556,16 @@ function elegirRestriccion(lista) {
 // la medición de cobertura (data/decreto/capa_consultada.json), validada contra
 // el catálogo. Si fueran dos fuentes distintas, el aviso de INV-3.6 podría hablar
 // de una capa mientras la lista de restricciones sale de otra.
+// ENSANCHE POR ÁMBITO PUBLICADO (E3, paso 4). Además de las celdas del teselado,
+// entran las bahías que cuelgan de una Capitanía cuya geometría del D.S. 991
+// intersecta la ruta, y sólo en los ámbitos que el registro declara publicados:
+//
+//     ruta ∩ capa publicada → jurisdiccion_id → join de E0.3 → bahia_id
+//
+// Es ADITIVO sobre el Set: no saca ninguna de las que hoy entran. Una restricción
+// lacustre no llega hoy porque su celda Voronoi la borró el recorte contra
+// ne_land, no porque el pipeline la descarte más adelante. El cambio de unidad
+// —dejar de filtrar por bahía y filtrar por Capitanía— sigue entero en E6.
 async function bahiasEnRutaPostGIS(waypoints) {
   if (waypoints.length < 2) return new Set();
   const capa = await capaJurisdiccionesVigente(pool);
@@ -565,7 +577,12 @@ async function bahiasEnRutaPostGIS(waypoints) {
      WHERE ST_Intersects(geom, ST_SetSRID(ST_GeomFromGeoJSON($1), 4326))`,
     [rutaGeoJSON]
   );
-  return new Set(rows.map(r => r.bahia_id));
+  const ids = new Set(rows.map(r => r.bahia_id));
+
+  const ensanche = await ensancheVigente(pool);
+  if (!ensanche) return ids;
+  for (const bahiaId of await bahiasDelEnsanche(pool, rutaGeoJSON, ensanche)) ids.add(bahiaId);
+  return ids;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -718,6 +735,11 @@ router.post('/restricciones-ruta', async (req, res) => {
     // en geografía de fiordos (ej: Maullín no matchea rutas por el Golfo de Ancud).
     const bahiaIdsEnRuta = await bahiasEnRutaPostGIS(puntosValidos);
 
+    // Los ámbitos publicados, que es lo que decide de dónde sale el NOMBRE de la
+    // Capitanía (decisión del owner, 2026-08-13). Vacío = como hasta hoy.
+    const ensancheActivo = await ensancheVigente(pool);
+    const ambitosPublicados = ensancheActivo ? ensancheActivo.ambitos : [];
+
     // 2 bis. Drift del catálogo (A3): qué publica SITPORT bajo una bahía que no
     // conocemos. Se mide sobre TODAS las restricciones de tránsito, antes de los
     // dos descartes de abajo.
@@ -734,7 +756,18 @@ router.post('/restricciones-ruta', async (req, res) => {
       const bahiaId = restriccion.bahia;
       if (!bahiaIdsEnRuta.has(bahiaId)) continue;
       const coordsBahia = BAHIA_COORDS[bahiaId];
-      if (!coordsBahia) continue;
+      if (!coordsBahia) {
+        // No se puede ubicar en la ruta sin coordenada, así que no se lista;
+        // pero no se descarta en silencio (CLAUDE.md §4.2). Quien responde por
+        // este caso es el control de drift A3, que la registra SIEMPRE y avisa
+        // por repartición aunque no se la pueda ubicar. Hoy sólo lo alcanza la
+        // bahía 257 (Río Cochrane), y sólo cuando el ensanche esté activo:
+        // verificado el 2026-08-13, ver el §B del addendum de
+        // _bitacoras/e3_recon_cableado_2026-08-13.txt.
+        console.warn(`[sitport/restricciones-ruta] bahía ${bahiaId} entra al matching y no tiene coordenada ` +
+          `en BAHIA_COORDS: no se lista en tránsito. Su registro queda en el control de drift (A3).`);
+        continue;
+      }
 
       if (!porBahia.has(bahiaId)) {
         // Estimar posición en ruta: índice del waypoint más cercano al punto de la bahía
@@ -778,7 +811,10 @@ router.post('/restricciones-ruta', async (req, res) => {
 
       try {
         const r = elegirRestriccion(lista);
-        const cap = getCapitaniaByBahiaId(idBahia);
+        // El nombre sale del decreto (join de E0.3) en los ámbitos publicados;
+        // el teléfono, del mapa operativo (CONTRATO_MOTOR.md §5). La regla vive
+        // entera en capitania-de-bahia.js, con la decisión del owner escrita.
+        const cap = capitaniaDeBahia(idBahia, ambitosPublicados);
         const norm = normalizarRestriccion(r);
 
         const rutaAntes = puntosValidos.slice(0, rutaIdx);
@@ -797,6 +833,9 @@ router.post('/restricciones-ruta', async (req, res) => {
           capitania: cap?.capitania || null,
           gobernacion: cap?.gobernacion || null,
           telefono: cap?.telefono || null,
+          // De dónde salió el nombre: 'decreto' o 'mapa_operativo'. Dato
+          // interno, para que la procedencia no haya que deducirla.
+          capitania_fuente: cap?.capitania_fuente || null,
           orden_en_ruta: orden++,
           fondeadero_previo: buscarFondeadero(coords.lat, coords.lng, rutaAntes, zonasRestringidas),
           _raw: r,

@@ -330,6 +330,10 @@ async function cargarAmbitosPublicados(pool, { recargar = false } = {}) {
 }
 
 module.exports = {
+  // Identificador SQL seguro. Se exporta para que cobertura-jurisdiccional.js
+  // valide con LA MISMA regla los nombres que interpola del ensanche de E3, en
+  // vez de escribir una regex hermana que despues divergiria de esta.
+  IDENT,
   cargarAmbitosPublicados,
   validarDeclaracion,
   verificarContraBase,

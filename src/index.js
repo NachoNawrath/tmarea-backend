@@ -84,6 +84,27 @@ try {
   process.exit(1);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// GUARD DE ARRANQUE DEL CABLEADO — E3. BLOQUEANTE, misma naturaleza que el de
+// arriba: con el ensanche activo la atribución bahía → Capitanía decide qué
+// restricciones se le listan al patrón, así que un join inválido no puede
+// descubrirse en la primera ruta. Con el cableado apagado esto no toca el join.
+// ─────────────────────────────────────────────────────────────────────────────
+try {
+  const c = require('./services/cobertura-jurisdiccional').verificarCableadoEnArranque();
+  if (c.activo) {
+    console.log(`[cableado E3] activo — join de E0.3 validado: ${c.join.resueltas} resueltas, ` +
+      `${c.join.sin_resolver} sin resolver de ${c.join.total}.`);
+  }
+} catch (e) {
+  console.error('');
+  console.error('ARRANQUE DETENIDO — ' + e.message);
+  console.error('');
+  console.error('El cableado de ámbitos publicados (E3) está activo y su atribución no valida.');
+  console.error('Ver data/decreto/join_bahia_jurisdiccion.json y src/services/join-bahia-jurisdiccion.js.');
+  process.exit(1);
+}
+
 // Puerto
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

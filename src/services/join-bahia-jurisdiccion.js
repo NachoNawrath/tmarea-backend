@@ -126,6 +126,29 @@ function validarJoin(join, insumo, catalogo) {
       const r = resueltas.get(Number(bahiaId));
       return r ? r.jurisdiccion_id : null;
     },
+    /**
+     * El sentido inverso: que bahias cuelgan de estas jurisdicciones. Lo usa el
+     * ensanche de E3 para pasar de la jurisdiccion que la ruta intersecta a las
+     * bahias bajo cuyo nombre SITPORT publica.
+     *
+     * Mira `jurisdicciones` —el destino principal MAS los adicionales— y no
+     * solo `jurisdiccion_id`: una bahia que el decreto nombra en dos
+     * jurisdicciones entra por cualquiera de las dos. Es INV-3.4 aplicado al
+     * reves, muestra de mas y nunca de menos.
+     *
+     * Una jurisdiccion sin ninguna bahia devuelve vacio y eso es legitimo: 29
+     * de las 64 no tienen ninguna atribuida (E0.3), y 27 de esas 29 son
+     * jurisdicciones a las que SITPORT no le cuelga nada. Vacio significa "no
+     * hay bahia que agregar", nunca "no se encontro".
+     */
+    bahiasDeJurisdicciones(jurisdiccionIds) {
+      const buscadas = new Set(jurisdiccionIds);
+      const salida = new Set();
+      for (const r of resueltas.values()) {
+        if (r.jurisdicciones.some(j => buscadas.has(j))) salida.add(r.bahia_id);
+      }
+      return salida;
+    },
   };
 }
 
