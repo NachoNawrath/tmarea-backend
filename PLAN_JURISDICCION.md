@@ -386,35 +386,74 @@ lo que su aviso de INV-3.6 se retira solo.
 > desde el 2026-08-12, y esa numeración **nunca estuvo en este documento**: vivía en una
 > respuesta de sesión y en la memoria de trabajo. Al abrir la sesión del paso 2 hubo que
 > reconstruirla, y sólo se pudo recuperar cuáles eran el 1, el 2 y el 5. Es exactamente la
-> clase de cosa que se pierde entre sesiones, así que baja al plan, **incluido lo que no se
-> sabe** — que se escribe como no determinado y no se rellena por deducción.
+> clase de cosa que se pierde entre sesiones, así que baja al plan. Los pasos 3, 4 y 6
+> quedaron escritos como **no determinados** —no se rellenaron por deducción— hasta que el
+> owner cerró la enumeración el mismo día, por el **camino A**.
 
 | # | paso | estado |
 |---|---|---|
 | 1 | **Reconocimiento**: ¿la geometría lacustre pasa sus controles? | **CERRADO** 2026-08-12 · `_bitacoras/e3_recon_2026-08-12.txt` |
 | 2 | **Partir el gate por ámbito** sin bajarle la severidad a C3 | **CERRADO** 2026-08-12 · `_bitacoras/e3_gate_2026-08-12.txt` |
-| 3 | **no determinado** | por delante |
-| 4 | **no determinado** | por delante |
-| 5 | **Aplicar el build y mover `ambitos_publicados.json`** — un solo movimiento | por delante |
-| 6 | **no determinado** | por delante |
+| 3 | **Reconocimiento del cableado**: qué cuesta que un tramo de ruta resuelva contra la capa publicada, y por dónde se llega de la Capitanía a sus restricciones (join de E0.3) | por delante |
+| 4 | **Escribir el cableado y su prueba de mordida, sin aplicar** | por delante — **sin dimensionar** |
+| 5 | **Aplicar el build · mover el registro · activar el cableado** — un solo movimiento, tres piezas | por delante |
+| 6 | **Verificación de punta a punta y regresión** | por delante |
 
-**Los pasos 3, 4 y 6 no están determinados, y no se inventan acá.** No aparecen en ninguna
-bitácora ni en ninguna versión de este documento; sólo se sabe que el conteo era de seis. Lo
-que sí está escrito y los acota es la **aceptación de E3**, tres párrafos más arriba: de sus
-tres exigencias, "las 6 construidas y auditadas" la cubren los pasos 1 y 2, y "el registro pasa
-el lacustre a publicado" es el paso 5 — queda sin paso asignado *"una ruta en el Lago
-Llanquihue devuelve su Capitanía y sus restricciones"*, que es verificación de punta a punta
-sobre el motor y es candidata natural a uno de los tres. Candidata, no decisión: **la
-enumeración la fija el owner.**
+**Camino A, decidido por el owner el 2026-08-12.** Fundamento textual en lo esencial: *E3
+existe para que los lagos dejen de ser invisibles.*
 
-**Paso 5, lo que ya se sabe y no hay que volver a descubrir:** aplicar el build y mover el
-registro **son el mismo movimiento, no dos**. En cuanto la construcción confirme las seis
-lacustres, el retiro automático de E0.2 —control C3 de `ambitos-publicados.js`— **detiene la
-carga** porque el ámbito está declarado no publicado y la base ya lo tiene. Eso no es un
-defecto: es ese control haciendo lo suyo. Pero implica que aplicar sin mover el registro deja
-el repositorio en un estado que no arranca, y por eso el paso 2 **no aplicó el build** aunque
-el gate ya esté partido y probado. La corrida real se hace con el registro listo para moverse
-en la misma pasada.
+**El camino B queda descartado POR MEDICIÓN, no por preferencia.** B era: E3 cierra en la capa
+—las 6 en la base, ámbito publicado, aviso retirado— y S4 espera a E6. Es más barato, dos
+pasos en vez de cuatro, y no toca el motor. Lo hunden dos cosas medidas: deja los lagos
+**dibujados y sin usar**, que es lo contrario de lo que la etapa existe para entregar; y
+**retirar el aviso sin cablear registra como defecto de construcción algo que no lo es.** Hoy
+un tramo lacustre no resuelve jurisdicción, el ámbito lacustre lo reclama, y sale la causa (a)
+de INV-3.6 — carencia declarada. Publicado el ámbito, `ambitoQueReclama` deja de reclamarlo y
+ese mismo tramo cae a la **causa (b)**, que el contrato define como *"un defecto de
+construcción nuestro"* sobre *"una zona que ninguna jurisdicción reclama"*, y manda registrar
+como defecto además de mostrarlo. Las dos mitades serían falsas: la capa está, no se consulta.
+Al patrón le diría lo mismo, pero adentro sería mentira — y esa separación es justamente lo
+que INV-3.6 existe para sostener.
+
+#### E3 SE LLEVA UN PEDAZO DE E6, ACOTADO AL ÁMBITO PUBLICADO — declarado, no silencioso
+
+La aceptación (b) de E3 —*"una ruta en el Lago Llanquihue devuelve su Capitanía y sus
+restricciones"*— **se solapa con E6**. `bahiasEnRutaPostGIS` (`sitport-routes.js:557`) consulta
+la capa que nombra `capa_consultada.json` y selecciona **`bahia_id`**; la capa nueva está
+indexada por **`jurisdiccion_id`**. Esa diferencia *es* el cambio de unidad. Queda escrito acá
+para que E6 no termine hecho de a pedazos en silencio, que es el modo de falla que este plan
+persigue en otros lados.
+
+**Fundamento medido de por qué el pedazo es seguro: para lo lacustre el cambio de unidad es
+ADITIVO, no sustitutivo.** La capa vigente cubre **0,0000 km²** del área de los seis lagos, y
+su cobertura más cercana a cualquiera de ellos está **entre 16 y 84 km** (medido el
+2026-08-11, E0.2). No se reemplaza nada: se suma donde hoy no hay nada. Y una ruta marítima no
+puede caer en un lago, así que **por construcción no puede mover una bandera marítima**.
+
+**Eso último no se afirma: lo mide el paso 6**, sobre las 8 rutas reales del arnés, igual que
+E0.2 midió sus 0 cambios de bandera antes de dar nada por bueno.
+
+**Paso 5 — son TRES piezas, no dos, y no pueden separarse:**
+
+1. **aplicar el build** (la corrida real, ~13 min, que confirma en vez de deshacerse);
+2. **mover `ambitos_publicados.json`** — el lacustre pasa a `publicado: true`;
+3. **activar el cableado** que el paso 4 dejó escrito y probado.
+
+Por qué 1 y 2 no se separan: en cuanto la construcción confirme las seis lacustres, el retiro
+automático de E0.2 —control C3 de `ambitos-publicados.js`— **detiene la carga**, porque el
+ámbito está declarado no publicado y la base ya lo tiene. Eso no es un defecto: es ese control
+haciendo lo suyo. Pero implica que aplicar sin mover el registro deja el repositorio en un
+estado que **no arranca**, y por eso el paso 2 no aplicó el build aunque el gate ya esté
+partido y probado.
+
+Por qué 3 tampoco se separa: es el mismo motivo por el que cayó el camino B. Entre mover el
+registro y activar el cableado hay una ventana en la que cada tramo lacustre se registra como
+defecto de construcción. La ventana no se acorta: se elimina.
+
+**El paso 4 queda SIN DIMENSIONAR hasta que el paso 3 lo mida.** No se sabe cuánto es el
+cableado: al enumerar esto no se habían leído `cobertura-jurisdiccional.js` (329 líneas) ni el
+resto de `sitport-routes.js` (886). Estimarlo sin medirlo es exactamente lo que §1.2 no admite,
+y por eso el paso 3 es un reconocimiento y no una construcción.
 
 **Verificado en el constructor, y hace a esta etapa más barata de lo que parecía.**
 `scripts/fase5_construir_capa_ds991.py` **ya trata el ámbito por separado**: la resta de
