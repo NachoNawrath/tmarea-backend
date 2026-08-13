@@ -1,0 +1,59 @@
+LAS 21 BAHIAS LACUSTRES — LO QUE EL MOTOR MUESTRA HOY
+bahia  jurisdiccion(join)          Capitania (decreto)      Gobernacion   telefono (mapa)
+   96  lago_rapel                  Lago Rapel               San Antonio   +56 35 258 4802
+  105  lago_villarrica             Lago Villarrica          Valdivia      +56 63 227 6905
+  106  lago_panguipulli            Lago Panguipulli         Valdivia      +56 63 227 6905
+  111  puerto_varas                Puerto Varas             Puerto Montt  +56 65 256 1100
+  128  lago_general_carrera        Lago General Carrera     Aysén         +56 67 233 1405
+  144  lago_ranco                  Lago Ranco               Valdivia      +56 63 227 6905
+  145  lago_ranco                  Lago Ranco               Valdivia      +56 63 227 6905
+  146  lago_ranco                  Lago Ranco               Valdivia      +56 63 227 6905
+  159  puerto_varas                Puerto Varas             Puerto Montt  +56 65 256 1100
+  160  lago_ranco+puerto_varas     Lago Ranco               Puerto Montt  +56 65 256 1100
+  161  puerto_varas                Puerto Varas             Puerto Montt  +56 65 256 1100
+  203  lago_general_carrera        Lago General Carrera     Aysén         +56 67 233 1405
+  209  lago_villarrica             Lago Villarrica          Valdivia      +56 63 227 6905
+  210  lago_villarrica             Lago Villarrica          Valdivia      +56 63 227 6905
+  245  lago_panguipulli            Lago Panguipulli         Valdivia      +56 63 227 6905
+  246  lago_panguipulli            Lago Panguipulli         Valdivia      +56 63 227 6905
+  247  lago_panguipulli            Lago Panguipulli         Valdivia      +56 63 227 6905
+  248  lago_panguipulli            Lago Panguipulli         Valdivia      +56 63 227 6905
+  249  lago_panguipulli            Lago Panguipulli         Valdivia      +56 63 227 6905
+  250  lago_panguipulli            Lago Panguipulli         Valdivia      +56 63 227 6905
+  257  lago_general_carrera        Lago General Carrera     Aysén         +56 67 233 1405
+
+UNA CAPITANIA CON MAS DE UN TELEFONO:
+   Lago Ranco -> +56 63 227 6905 | +56 65 256 1100
+UN TELEFONO PARA MAS DE UNA CAPITANIA:
+   +56 63 227 6905 -> Lago Villarrica | Lago Panguipulli | Lago Ranco
+   +56 65 256 1100 -> Puerto Varas | Lago Ranco
+
+CONTRA EL CSV DE LAS 64, emparejado por REPARTICION de SITPORT.
+El CSV NO es autoridad (ver la cabecera): esto mide que las dos fuentes DISCREPAN.
+bahia  Capitania mostrada        tel mostrado         rep  CSV: Capitania        tel del CSV
+   96  Lago Rapel               +56 35 258 4802       97  LAGO RAPEL            +56 35 2584833   DISCREPA
+  105  Lago Villarrica          +56 63 227 6905      186  VILLARRICA            +56 45 2524733   DISCREPA
+  106  Lago Panguipulli         +56 63 227 6905      184  PANGUIPULLI           +56 63 2276944   DISCREPA
+  111  Puerto Varas             +56 65 256 1100      201  PUERTO VARAS          +56 65 2235237   DISCREPA
+  128  Lago General Carrera     +56 67 233 1405      235  LAGO GRAL.CARRERA     +56 67 2411111   DISCREPA
+  144  Lago Ranco               +56 63 227 6905      188  LAGO RANCO            +56 63 2314469   DISCREPA
+  145  Lago Ranco               +56 63 227 6905      188  LAGO RANCO            +56 63 2314469   DISCREPA
+  146  Lago Ranco               +56 63 227 6905      189  NO LISTADA            —   
+  159  Puerto Varas             +56 65 256 1100      201  PUERTO VARAS          +56 65 2235237   DISCREPA
+  160  Lago Ranco               +56 65 256 1100      201  PUERTO VARAS          +56 65 2235237   DISCREPA
+  161  Puerto Varas             +56 65 256 1100      201  PUERTO VARAS          +56 65 2235237   DISCREPA
+  203  Lago General Carrera     +56 67 233 1405      235  LAGO GRAL.CARRERA     +56 67 2411111   DISCREPA
+  209  Lago Villarrica          +56 63 227 6905      186  VILLARRICA            +56 45 2524733   DISCREPA
+  210  Lago Villarrica          +56 63 227 6905      186  VILLARRICA            +56 45 2524733   DISCREPA
+  245  Lago Panguipulli         +56 63 227 6905      186  VILLARRICA            +56 45 2524733   DISCREPA
+  246  Lago Panguipulli         +56 63 227 6905      186  VILLARRICA            +56 45 2524733   DISCREPA
+  247  Lago Panguipulli         +56 63 227 6905      186  VILLARRICA            +56 45 2524733   DISCREPA
+  248  Lago Panguipulli         +56 63 227 6905      186  VILLARRICA            +56 45 2524733   DISCREPA
+  249  Lago Panguipulli         +56 63 227 6905      186  VILLARRICA            +56 45 2524733   DISCREPA
+  250  Lago Panguipulli         +56 63 227 6905      186  VILLARRICA            +56 45 2524733   DISCREPA
+  257  Lago General Carrera     +56 67 233 1405      235  LAGO GRAL.CARRERA     +56 67 2411111   DISCREPA
+
+comparadas 20 de 21 · discrepan 20
+
+El telefono que hoy comparten tres Capitanias lacustres es +56 63 227 6905.
+El CSV le da ese numero a: VALDIVIA (reparticion 175, gobernacion Valdivia). Es una Capitania MARITIMA.

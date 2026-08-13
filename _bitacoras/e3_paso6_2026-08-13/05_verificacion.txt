@@ -1,0 +1,339 @@
+E3 — PASO 6: VERIFICACION DE PUNTA A PUNTA Y REGRESION
+fecha: 2026-08-13T21:26:27.921Z
+shell del agente: Git Bash / Windows. Reproducible por el owner, en PowerShell:
+    cd C:\Users\katia\tmarea-backend
+    node scripts\e3_verificacion_paso6.js
+
+── 0. LAS RUTAS ────────────────────────────────────────────────────────────
+  Anahuac -> Melinka: 21 waypoints
+  Anahuac -> Quellon: 40 waypoints
+  Anahuac -> Chacabuco: 59 waypoints
+  Ancud -> Castro (mar interior): 31 waypoints
+  Chonchi -> Chaiten (Corcovado): 11 waypoints
+  Arica -> Iquique (norte): 21 waypoints
+  Valparaiso -> San Antonio: 30 waypoints
+  Punta Arenas -> Pto Williams: 117 waypoints
+  Lago Villarrica: bahia 210 -> 209 (arnes E0.2): 2 waypoints (directa)
+  Antartica: bahia 139 Fildes -> 231 Chile (arnes E0.2): 2 waypoints (directa)
+  Lago Llanquihue (aceptacion del paso 5): 2 waypoints (directa)
+  cuerda dentro de puerto_varas: 2 waypoints (directa)
+  cuerda dentro de lago_villarrica: 2 waypoints (directa)
+  cuerda dentro de lago_panguipulli: 2 waypoints (directa)
+  cuerda dentro de lago_ranco: 2 waypoints (directa)
+  cuerda dentro de lago_general_carrera: 2 waypoints (directa)
+  cuerda dentro de lago_rapel: 2 waypoints (directa)
+  CONTROL NEGATIVO: entre lagos, fuera de toda jurisdiccion publicada: 2 waypoints (directa)
+  Anahuac -> Melinka (recta de 2 puntos, como el paso 5): 2 waypoints (directa)
+waypoints: escrito _bitacoras\e3_paso6_2026-08-13\02_rutas_waypoints.json
+
+── 1. LAS DOS PASADAS ───────────────────────────────────────────────────────
+  corriendo la pasada OFF (ensanche apagado en memoria)…
+  corriendo la pasada ON (el cableado tal como esta)…
+  capa_consultada.json intacto: sha256 9d539f3916e425d1d859cff5…
+  ensanche OFF = null
+  ensanche ON  = {"capa":"jurisdicciones_ds991","columna_jurisdiccion":"id","columna_ambito":"ambito","ambitos":["lacustre"]}
+
+── 2. RUTA POR RUTA ─────────────────────────────────────────────────────────
+
+  Anahuac -> Melinka   [maritima]
+    largo                 306.5987 km
+    Set teselado          11 {110,113,121,124,184,186,216,252,253,254,256}
+    ensanche agrega       0
+    Set total             11 -> 11
+    km descubiertos       32.841118 -> 32.841118
+    avisos                0 (0 km) -> 0 (0 km)
+    defectos              4 (32.8411 km) -> 4 (32.8411 km)
+    bandera de cobertura  Q -> Q   (igual)   [E0.2 2026-08-11: Q]
+
+  Anahuac -> Quellon   [maritima]
+    largo                 217.7129 km
+    Set teselado          8 {113,117,120,122,155,216,232,235}
+    ensanche agrega       0
+    Set total             8 -> 8
+    km descubiertos       5.558679 -> 5.558679
+    avisos                0 (0 km) -> 0 (0 km)
+    defectos              3 (5.5587 km) -> 3 (5.5587 km)
+    bandera de cobertura  Q -> Q   (igual)   [E0.2 2026-08-11: Q]
+
+  Anahuac -> Chacabuco   [maritima]
+    largo                 499.4067 km
+    Set teselado          16 {110,113,121,125,184,186,216,220,226,227,238,239,240,241,244,252}
+    ensanche agrega       0
+    Set total             16 -> 16
+    km descubiertos       59.326405 -> 59.326405
+    avisos                0 (0 km) -> 0 (0 km)
+    defectos              12 (59.3266 km) -> 12 (59.3266 km)
+    bandera de cobertura  Q -> Q   (igual)   [E0.2 2026-08-11: Q]
+
+  Ancud -> Castro (mar interior)   [maritima]
+    largo                 162.0985 km
+    Set teselado          11 {114,116,118,119,120,122,149,205,213,214,235}
+    ensanche agrega       0
+    Set total             11 -> 11
+    km descubiertos       8.051818 -> 8.051818
+    avisos                0 (0 km) -> 0 (0 km)
+    defectos              5 (8.0518 km) -> 5 (8.0518 km)
+    bandera de cobertura  Q -> Q   (igual)   [E0.2 2026-08-11: Q]
+
+  Chonchi -> Chaiten (Corcovado)   [maritima]
+    largo                 93.1492 km
+    Set teselado          4 {119,121,155,205}
+    ensanche agrega       0
+    Set total             4 -> 4
+    km descubiertos       2.633347 -> 2.633347
+    avisos                0 (0 km) -> 0 (0 km)
+    defectos              1 (2.6333 km) -> 1 (2.6333 km)
+    bandera de cobertura  Q -> Q   (igual)   [E0.2 2026-08-11: Q]
+
+  Arica -> Iquique (norte)   [maritima]
+    largo                 198.8231 km
+    Set teselado          3 {71,72,204}
+    ensanche agrega       0
+    Set total             3 -> 3
+    km descubiertos       4.636226 -> 4.636226
+    avisos                0 (0 km) -> 0 (0 km)
+    defectos              4 (4.6362 km) -> 4 (4.6362 km)
+    bandera de cobertura  Q -> Q   (igual)   [E0.2 2026-08-11: Q]
+
+  Valparaiso -> San Antonio   [maritima]
+    largo                 73.4409 km
+    Set teselado          5 {92,93,94,174,215}
+    ensanche agrega       0
+    Set total             5 -> 5
+    km descubiertos       23.232066 -> 23.232066
+    avisos                0 (0 km) -> 0 (0 km)
+    defectos              4 (23.2321 km) -> 4 (23.2321 km)
+    bandera de cobertura  Q -> Q   (igual)   [E0.2 2026-08-11: Q]
+
+  Punta Arenas -> Pto Williams   [maritima]
+    largo                 524.8338 km
+    Set teselado          3 {134,137,138}
+    ensanche agrega       0
+    Set total             3 -> 3
+    km descubiertos       362.85133 -> 362.85133
+    avisos                2 (357.6795 km) -> 2 (357.6795 km)
+    defectos              1 (5.1718 km) -> 1 (5.1718 km)
+    bandera de cobertura  U -> U   (igual)   [E0.2 2026-08-11: U]
+      aviso ON  352.6549 km · causa jurisdiccion_sin_geometria · origen ambito_no_publicado · ambito maritima · ["Punta Arenas"]
+      aviso ON  5.0246 km · causa jurisdiccion_sin_geometria · origen ambito_no_publicado · ambito maritima · ["Punta Arenas"]
+
+  Lago Villarrica: bahia 210 -> 209 (arnes E0.2)   [lacustre]
+    largo                 21.8178 km
+    Set teselado          0 {}
+    ensanche agrega       3 {105,209,210}
+    Set total             0 -> 3
+    km descubiertos       21.817838 -> 4.110957
+    avisos                1 (21.8178 km) -> 0 (0 km)
+    defectos              1 (21.8178 km) -> 3 (4.111 km)
+    bandera de cobertura  U -> Q   *** SE MOVIO ***   [E0.2 2026-08-11: U]
+      contacto  bahia 105 -> Lago Villarrica        +56 63 227 6905    fuente: decreto
+      contacto  bahia 209 -> Lago Villarrica        +56 63 227 6905    fuente: decreto
+      contacto  bahia 210 -> Lago Villarrica        +56 63 227 6905    fuente: decreto
+
+  Antartica: bahia 139 Fildes -> 231 Chile (arnes E0.2)   [antartica]
+    largo                 47.5676 km
+    Set teselado          0 {}
+    ensanche agrega       0
+    Set total             0 -> 0
+    km descubiertos       47.567622 -> 47.567622
+    avisos                1 (47.5676 km) -> 1 (47.5676 km)
+    defectos              0 (0 km) -> 0 (0 km)
+    bandera de cobertura  U -> U   (igual)   [E0.2 2026-08-11: U]
+      aviso ON  47.5676 km · causa jurisdiccion_sin_geometria · origen ambito_no_publicado · ambito antartica · []
+
+  Lago Llanquihue (aceptacion del paso 5)   [lacustre]
+    largo                 n/d
+    Set teselado          0 {}
+    ensanche agrega       4 {111,159,160,161}
+    Set total             0 -> 4
+    km descubiertos       18.992481 -> 0
+    avisos                1 (18.9925 km) -> 0 (0 km)
+    defectos              1 (18.9925 km) -> 0 (0 km)
+    bandera de cobertura  U -> Q   *** SE MOVIO ***
+      contacto  bahia 111 -> Puerto Varas           +56 65 256 1100    fuente: decreto
+      contacto  bahia 159 -> Puerto Varas           +56 65 256 1100    fuente: decreto
+      contacto  bahia 160 -> Lago Ranco             +56 65 256 1100    fuente: decreto
+      contacto  bahia 161 -> Puerto Varas           +56 65 256 1100    fuente: decreto
+
+  cuerda dentro de puerto_varas   [lacustre]
+    largo                 n/d
+    Set teselado          0 {}
+    ensanche agrega       4 {111,159,160,161}
+    Set total             0 -> 4
+    km descubiertos       13.496157 -> 0
+    avisos                1 (13.4962 km) -> 0 (0 km)
+    defectos              1 (13.4962 km) -> 0 (0 km)
+    bandera de cobertura  U -> Q   *** SE MOVIO ***
+      contacto  bahia 111 -> Puerto Varas           +56 65 256 1100    fuente: decreto
+      contacto  bahia 159 -> Puerto Varas           +56 65 256 1100    fuente: decreto
+      contacto  bahia 160 -> Lago Ranco             +56 65 256 1100    fuente: decreto
+      contacto  bahia 161 -> Puerto Varas           +56 65 256 1100    fuente: decreto
+
+  cuerda dentro de lago_villarrica   [lacustre]
+    largo                 n/d
+    Set teselado          0 {}
+    ensanche agrega       3 {105,209,210}
+    Set total             0 -> 3
+    km descubiertos       5.577719 -> 0
+    avisos                1 (5.5777 km) -> 0 (0 km)
+    defectos              1 (5.5777 km) -> 0 (0 km)
+    bandera de cobertura  U -> Q   *** SE MOVIO ***
+      contacto  bahia 105 -> Lago Villarrica        +56 63 227 6905    fuente: decreto
+      contacto  bahia 209 -> Lago Villarrica        +56 63 227 6905    fuente: decreto
+      contacto  bahia 210 -> Lago Villarrica        +56 63 227 6905    fuente: decreto
+
+  cuerda dentro de lago_panguipulli   [lacustre]
+    largo                 n/d
+    Set teselado          0 {}
+    ensanche agrega       7 {106,245,246,247,248,249,250}
+    Set total             0 -> 7
+    km descubiertos       2.671667 -> 0
+    avisos                1 (2.6717 km) -> 0 (0 km)
+    defectos              1 (2.6717 km) -> 0 (0 km)
+    bandera de cobertura  U -> Q   *** SE MOVIO ***
+      contacto  bahia 106 -> Lago Panguipulli       +56 63 227 6905    fuente: decreto
+      contacto  bahia 245 -> Lago Panguipulli       +56 63 227 6905    fuente: decreto
+      contacto  bahia 246 -> Lago Panguipulli       +56 63 227 6905    fuente: decreto
+      contacto  bahia 247 -> Lago Panguipulli       +56 63 227 6905    fuente: decreto
+      contacto  bahia 248 -> Lago Panguipulli       +56 63 227 6905    fuente: decreto
+      contacto  bahia 249 -> Lago Panguipulli       +56 63 227 6905    fuente: decreto
+      contacto  bahia 250 -> Lago Panguipulli       +56 63 227 6905    fuente: decreto
+
+  cuerda dentro de lago_ranco   [lacustre]
+    largo                 n/d
+    Set teselado          0 {}
+    ensanche agrega       4 {144,145,146,160}
+    Set total             0 -> 4
+    km descubiertos       5.809534 -> 0
+    avisos                1 (5.8095 km) -> 0 (0 km)
+    defectos              1 (5.8095 km) -> 0 (0 km)
+    bandera de cobertura  U -> Q   *** SE MOVIO ***
+      contacto  bahia 144 -> Lago Ranco             +56 63 227 6905    fuente: decreto
+      contacto  bahia 145 -> Lago Ranco             +56 63 227 6905    fuente: decreto
+      contacto  bahia 146 -> Lago Ranco             +56 63 227 6905    fuente: decreto
+      contacto  bahia 160 -> Lago Ranco             +56 65 256 1100    fuente: decreto
+
+  cuerda dentro de lago_general_carrera   [lacustre]
+    largo                 n/d
+    Set teselado          0 {}
+    ensanche agrega       3 {128,203,257}
+    Set total             0 -> 3
+    km descubiertos       4.741663 -> 0
+    avisos                1 (4.7417 km) -> 0 (0 km)
+    defectos              1 (4.7417 km) -> 0 (0 km)
+    bandera de cobertura  U -> Q   *** SE MOVIO ***
+      contacto  bahia 128 -> Lago General Carrera   +56 67 233 1405    fuente: decreto
+      contacto  bahia 203 -> Lago General Carrera   +56 67 233 1405    fuente: decreto
+      contacto  bahia 257 -> Lago General Carrera   +56 67 233 1405    fuente: decreto
+
+  cuerda dentro de lago_rapel   [lacustre]
+    largo                 n/d
+    Set teselado          0 {}
+    ensanche agrega       1 {96}
+    Set total             0 -> 1
+    km descubiertos       1.764327 -> 0
+    avisos                1 (1.7643 km) -> 0 (0 km)
+    defectos              1 (1.7643 km) -> 0 (0 km)
+    bandera de cobertura  U -> Q   *** SE MOVIO ***
+      contacto  bahia  96 -> Lago Rapel             +56 35 258 4802    fuente: decreto
+
+  CONTROL NEGATIVO: entre lagos, fuera de toda jurisdiccion publicada   [control]
+    largo                 15.6243 km
+    Set teselado          0 {}
+    ensanche agrega       0
+    Set total             0 -> 0
+    km descubiertos       15.624256 -> 15.624256
+    avisos                1 (15.6243 km) -> 1 (15.6243 km)
+    defectos              1 (15.6243 km) -> 1 (15.6243 km)
+    bandera de cobertura  U -> U   (igual)
+      aviso ON  15.6243 km · causa hueco_de_capa · origen hueco_de_capa · []
+
+  Anahuac -> Melinka (recta de 2 puntos, como el paso 5)   [maritima]
+    largo                 275.3018 km
+    Set teselado          14 {113,117,120,122,124,155,175,176,216,232,235,251,253,255}
+    ensanche agrega       0
+    Set total             14 -> 14
+    km descubiertos       22.0256 -> 22.0256
+    avisos                0 (0 km) -> 0 (0 km)
+    defectos              6 (22.0255 km) -> 6 (22.0255 km)
+    bandera de cobertura  Q -> Q   (igual)
+
+── 3. EL FUNDAMENTO DECLARADO, MEDIDO ───────────────────────────────────────
+  El plan declara que el cambio es ADITIVO porque "la capa vigente cubre 0,0000 km2
+  de los seis lagos y lo mas cercano esta entre 16 y 84 km". Se mide, no se repite:
+  capa vigente: bahia_jurisdicciones (163 celdas)
+
+    jurisdiccion lacustre     km2 del lago   km2 traslapados   km a la celda mas cercana
+    lago_general_carrera         1627.112            0.0000                      33.045
+    lago_panguipulli              367.621            0.0000                      72.428
+    lago_ranco                    648.326            0.0000                      72.186
+    lago_rapel                     72.803            0.0000                      28.786
+    lago_villarrica               326.171            0.0000                      84.178
+    puerto_varas                 1437.386            0.0000                      16.178
+
+    traslape total: 0.000000 km2 · distancias: de 16.178 a 84.178 km
+
+── 4. EL ALCANCE NUEVO DEL CONTROL DE DRIFT (A3) ────────────────────────────
+  restricciones de transito en la captura: 6
+  de esas, bajo una bahia que el catalogo NO conoce: 0 (ninguna)
+
+    ruta                                        reps OFF  reps ON  nuevas          avisos A3
+    Anahuac -> Melinka                                5        5  —              0 -> 0
+    Anahuac -> Quellon                                6        6  —              0 -> 0
+    Anahuac -> Chacabuco                              7        7  —              0 -> 0
+    Ancud -> Castro (mar interior)                    7        7  —              0 -> 0
+    Chonchi -> Chaiten (Corcovado)                    2        2  —              0 -> 0
+    Arica -> Iquique (norte)                          2        2  —              0 -> 0
+    Valparaiso -> San Antonio                         3        3  —              0 -> 0
+    Punta Arenas -> Pto Williams                      3        3  —              0 -> 0
+    Lago Villarrica: bahia 210 -> 209 (arnes E        0        1  186            0 -> 0
+    Antartica: bahia 139 Fildes -> 231 Chile (        0        0  —              0 -> 0
+    Lago Llanquihue (aceptacion del paso 5)           0        1  201            0 -> 0
+    cuerda dentro de puerto_varas                     0        1  201            0 -> 0
+    cuerda dentro de lago_villarrica                  0        1  186            0 -> 0
+    cuerda dentro de lago_panguipulli                 0        2  184,186        0 -> 0
+    cuerda dentro de lago_ranco                       0        2  188,201        0 -> 0
+    cuerda dentro de lago_general_carrera             0        1  235            0 -> 0
+    cuerda dentro de lago_rapel                       0        1  97             0 -> 0
+    CONTROL NEGATIVO: entre lagos, fuera de to        0        0  —              0 -> 0
+    Anahuac -> Melinka (recta de 2 puntos, com        7        7  —              0 -> 0
+
+── 4 bis. LA BAHIA 257 ──────────────────────────────────────────────────────
+  257 en BAHIA_COORDS               : false (por eso no se lista en transito)
+  SITPORT publica bajo la 257 hoy   : false
+  A3 la resuelve a                  : CAPITANÍA DE PUERTO LAGO GRAL.CARRERA (reparticion 235, via consultaBahias)
+  ruta usada                        : cuerda dentro de lago_general_carrera
+  EJERCICIO DEL MECANISMO con un registro SINTETICO — no es dato de SITPORT:
+    con el ensanche APAGADO : avisos 0 · defectos 1 · causa bahia_publicada_fuera_del_catalogo (fuera de la ruta) · bandera Q
+    con el ensanche ACTIVO  : avisos 1 · defectos 1 · causa en_ruta · bandera U
+    -> se cumple lo que el paso 4 dejo medido: de DEFECTO REGISTRADO a DEFECTO + AVISO.
+
+── 5. VEREDICTO ─────────────────────────────────────────────────────────────
+
+    ruta                                        ambito     ensanche  bandera OFF->ON   E0.2
+    Anahuac -> Melinka                         maritima          0  Q -> Q           Q
+    Anahuac -> Quellon                         maritima          0  Q -> Q           Q
+    Anahuac -> Chacabuco                       maritima          0  Q -> Q           Q
+    Ancud -> Castro (mar interior)             maritima          0  Q -> Q           Q
+    Chonchi -> Chaiten (Corcovado)             maritima          0  Q -> Q           Q
+    Arica -> Iquique (norte)                   maritima          0  Q -> Q           Q
+    Valparaiso -> San Antonio                  maritima          0  Q -> Q           Q
+    Punta Arenas -> Pto Williams               maritima          0  U -> U           U
+    Lago Villarrica: bahia 210 -> 209 (arnes E lacustre          3  U -> Q SE MOVIO   U
+    Antartica: bahia 139 Fildes -> 231 Chile ( antartica         0  U -> U           U
+    Lago Llanquihue (aceptacion del paso 5)    lacustre          4  U -> Q SE MOVIO   —
+    cuerda dentro de puerto_varas              lacustre          4  U -> Q SE MOVIO   —
+    cuerda dentro de lago_villarrica           lacustre          3  U -> Q SE MOVIO   —
+    cuerda dentro de lago_panguipulli          lacustre          7  U -> Q SE MOVIO   —
+    cuerda dentro de lago_ranco                lacustre          4  U -> Q SE MOVIO   —
+    cuerda dentro de lago_general_carrera      lacustre          3  U -> Q SE MOVIO   —
+    cuerda dentro de lago_rapel                lacustre          1  U -> Q SE MOVIO   —
+    CONTROL NEGATIVO: entre lagos, fuera de to control           0  U -> U           —
+    Anahuac -> Melinka (recta de 2 puntos, com maritima          0  Q -> Q           —
+
+  rutas medidas: 19 · de ambito no lacustre: 11
+  banderas no lacustres movidas: 0
+  bahias que el ensanche agrego a una ruta no lacustre: 0
+
+  NINGUNA BANDERA NO LACUSTRE SE MOVIO Y EL ENSANCHE NO AGREGO NADA FUERA DE LO LACUSTRE.
+  El fundamento declarado del plan queda MEDIDO, no repetido.

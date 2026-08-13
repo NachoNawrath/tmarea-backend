@@ -1,0 +1,66 @@
+=== npm test ===
+✔ totalPronostico envía headers Accept y Referer (1.8936ms)
+✔ consultaRestricciones maneja timeout (1.7692ms)
+✔ consultaBahias maneja error HTTP (404) (0.6256ms)
+✔ totalPronostico maneja error de red (0.4994ms)
+ℹ tests 80
+ℹ suites 7
+ℹ pass 80
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3270.5178
+
+=== e3_prueba_mordida_cableado.js ===
+exit=0
+
+==============================================================================
+RESULTADO: 14 casos de la parte A + 7 de la parte B, todos en verde.
+==============================================================================
+
+=== e02_prueba_mordida_ambitos.js ===
+exit=0
+  insular_remota   publicado=false habilitado=false jur=2  reclamo=ninguna (declarado)
+
+==============================================================================
+RESULTADO: 14/14 + control negativo. Los controles muerden y no rechazan de mas.
+
+=== e03join_prueba_mordida_join.js ===
+exit=0
+
+==============================================================================
+MORDIDA: 16/16
+==============================================================================
+
+=== e1_prueba_mordida_andamio.js ===
+exit=0
+
+==============================================================================
+MORDIDA: 14/14
+==============================================================================
+
+=== e01_prueba_mordida_a3.js ===
+exit=0
+M10 pertenencia por repartición, no por nombre                : 257 y 128 → repartición 235 ("CAPITANÍA DE PUERTO LAGO GRAL.CARRERA")
+
+================================================================================
+RESULTADO: mordida 10/10 + control negativo. A3 puede fallar y falla donde debe.
+
+=== e3_prueba_mordida_carencia.py ===
+  [OK  ] M4.condicion_de_cierre en blanco se detiene
+  [OK  ] M-neg la declaracion real de hoy pasa
+  [OK  ] M-inocuidad el cotejo real no se toco
+
+VEREDICTO: 14/14
+exit=0
+
+=== e3_prueba_mordida_gate.py ===
+
+[10] OK     un ambito construido que el registro no declara: se detiene
+     publicados=None por_falla=None por_declaracion=None
+     sobreviven=None exit=3
+
+==============================================================================
+MORDIDA: 10/10
+La capa de prueba no quedo en la base: cada escenario termina en ROLLBACK.

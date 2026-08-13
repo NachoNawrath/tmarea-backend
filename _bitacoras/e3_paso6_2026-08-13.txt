@@ -1,0 +1,429 @@
+================================================================================
+E3 — PASO 6 DE 6: VERIFICACION DE PUNTA A PUNTA Y REGRESION. 2026-08-13
+Estado: MEDIDO. No se aplico ningun cambio de producto: el unico archivo de
+`src/` que se toco es NINGUNO. Se agrego un instrumento
+(`scripts/e3_verificacion_paso6.js`) y su evidencia.
+Veredicto: la regresion que la etapa se comprometio a MEDIR en vez de afirmar
+esta medida y da CERO — ninguna bandera no lacustre se movio, sobre 11 rutas.
+Y el punto de la aceptacion que el paso 5 no pudo ejercer se CERRO EN VIVO: hoy
+SITPORT publica dos restricciones lacustres reales y las dos llegan a pantalla.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell,
+desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts\e3_verificacion_paso6.js
+    node _bitacoras\e3_paso6_2026-08-13\medir_contacto_lacustre.js
+    npm test
+    node scripts\e3_prueba_mordida_cableado.js
+    node scripts\e02_prueba_mordida_ambitos.js
+    node scripts\e03join_prueba_mordida_join.js
+    node scripts\e1_prueba_mordida_andamio.js
+    node scripts\e01_prueba_mordida_a3.js
+    tools\raster-build\.venv\Scripts\python.exe scripts\e3_prueba_mordida_carencia.py
+    tools\raster-build\.venv\Scripts\python.exe scripts\e3_prueba_mordida_gate.py
+
+Evidencia cruda en `_bitacoras/e3_paso6_2026-08-13/`:
+    00_estado_drift_ANTES.json          el estado del drift, respaldado
+    01_sitport_crudo/                   la captura de SITPORT de esta sesion
+    02_rutas_waypoints.json             los waypoints exactos de las 19 rutas
+    04_comparacion.json                 las dos pasadas enteras, para releer
+    05_verificacion.txt                 la verificacion completa
+    06_server_log.txt                   el log del backend en vivo
+    07_endpoint_villarrica.json         LA RESTRICCION LACUSTRE REAL, en vivo
+    08_endpoint_panguipulli.json        la segunda, en vivo
+    09_endpoint_general_carrera.json    la ruta de la 257
+    10_endpoint_maritima.json           la maritima, sin moverse
+    11_contacto_lacustre.txt            los 21 contactos lacustres, medidos
+    12_regresion.txt                    suite y las siete mordidas
+    medir_contacto_lacustre.js          el script de §9
+
+
+0. EL INSTRUMENTO, Y POR QUE ES UN CONTRAFACTICO Y NO UN BASELINE
+--------------------------------------------------------------------------------
+La pregunta de este paso es "¿se movio algo que no tenia que moverse?", y la
+forma barata de contestarla es comparar contra numeros copiados de una bitacora
+vieja. **No se hizo asi, y el motivo esta escrito con sangre en el paso 5**: tres
+cosas se pusieron en rojo ese dia por afirmar el estado del calendario, y una
+salia CAZADA por el control equivocado. Un baseline escrito a mano envejece.
+
+`scripts/e3_verificacion_paso6.js` corre **el mismo motor dos veces sobre las
+mismas coordenadas**: una con el cableado como esta y otra con el ensanche
+apagado. La diferencia entre las dos pasadas es, por construccion, el efecto del
+cableado y nada mas.
+
+Tres decisiones de metodo, declaradas (§0.4):
+
+  (1) **El apagado es en MEMORIA.** La pasada `off` muta el objeto que `require`
+      ya tiene en cache para `capa_consultada.json` antes de que ningun modulo de
+      produccion lo lea. El archivo en disco no se toca, y el script lo comprueba
+      por sha256 al principio y al final de cada pasada — `9d539f3916e425d1…`,
+      igual antes y despues. Cada polaridad corre en su **propio proceso** porque
+      `ensancheVigente` memoriza el resultado en la primera consulta.
+  (2) **Las 8 rutas se rutean UNA sola vez** y los waypoints quedan en disco
+      (`02_rutas_waypoints.json`). Si cada pasada ruteara por su cuenta, una
+      diferencia podria venir del ruteo y no del ensanche, y la comparacion
+      mediria otra cosa (CLAUDE.md §2).
+  (3) **Se miden 19 rutas, no 8.** El arnes de E0.2 son 10 —8 ruteadas mas 2
+      directas— y a esas se suman la del Llanquihue del paso 5, seis cuerdas
+      lacustres, un control negativo y la recta de §8.
+
+
+1. LA REGRESION — EL NUMERO QUE LA ETAPA SE COMPROMETIO A MEDIR
+--------------------------------------------------------------------------------
+    rutas medidas                                        : 19
+    de ambito NO lacustre                                : 11
+    banderas no lacustres movidas                        : 0
+    bahias que el ensanche agrego a una ruta no lacustre : 0
+    km descubiertos que cambiaron en una ruta no lacustre: 0
+
+Ruta por ruta, con el ensanche apagado -> activo (crudo en 05_verificacion.txt):
+
+    Anahuac -> Melinka             maritima   11 bahias, +0   32,841118 km   Q -> Q
+    Anahuac -> Quellon             maritima    8 bahias, +0    5,558679 km   Q -> Q
+    Anahuac -> Chacabuco           maritima   16 bahias, +0   59,326405 km   Q -> Q
+    Ancud -> Castro                maritima   11 bahias, +0    8,051818 km   Q -> Q
+    Chonchi -> Chaiten             maritima    4 bahias, +0    2,633347 km   Q -> Q
+    Arica -> Iquique               maritima    3 bahias, +0    4,636226 km   Q -> Q
+    Valparaiso -> San Antonio      maritima    5 bahias, +0   23,232066 km   Q -> Q
+    Punta Arenas -> Pto Williams   maritima    3 bahias, +0  362,851330 km   U -> U
+    Antartica 139 -> 231           antartica   0 bahias, +0   47,567622 km   U -> U
+    CONTROL NEGATIVO (entre lagos) control     0 bahias, +0   15,624256 km   U -> U
+    Anahuac -> Melinka (recta)     maritima   14 bahias, +0   22,025600 km   Q -> Q
+
+**Las ocho banderas del arnes coinciden ademas con las que E0.2 midio el
+2026-08-11**, que es una tercera referencia y no el criterio: siete Q y la de
+Punta Arenas -> Pto Williams en U, con sus dos avisos de `ambito_no_publicado`
+del ambito maritimo intactos (352,6549 y 5,0246 km, Capitania Punta Arenas).
+
+**EL CONTROL NEGATIVO MIDE LO QUE NINGUNA OTRA MIDE**, y hay que decir de donde
+salio: fue el primer tramo que escribi a mano creyendo que caia en el Lago
+Panguipulli, y cae **entre dos lagos**. En vez de corregirlo y borrarlo se
+conserva, porque prueba que **el ensanche no reclama lo que no tiene**: 0 bahias,
+causa (b) `hueco_de_capa`, bandera U, identico con el cableado y sin el.
+
+
+2. EL FUNDAMENTO DECLARADO DEL PLAN, MEDIDO
+--------------------------------------------------------------------------------
+El plan sostiene que el pedazo de E6 que E3 se lleva es seguro porque **"la capa
+vigente cubre 0,0000 km2 de los seis lagos y lo mas cercano esta entre 16 y 84
+km"**, y escribio que el paso 6 lo MIDE en vez de repetirlo. Medido contra la
+capa publicada, no contra el andamio del que salio aquel numero:
+
+    jurisdiccion lacustre     km2 del lago   km2 traslapados   km a la celda mas cercana
+    lago_general_carrera          1627,112           0,0000                     33,045
+    lago_panguipulli               367,621           0,0000                     72,428
+    lago_ranco                     648,326           0,0000                     72,186
+    lago_rapel                      72,803           0,0000                     28,786
+    lago_villarrica                326,171           0,0000                     84,178
+    puerto_varas                  1437,386           0,0000                     16,178
+
+    traslape total: 0,000000 km2 · distancias: de 16,178 a 84,178 km
+
+**Reproduce el rango declarado al kilometro**: 16 y 84 eran `puerto_varas` y
+`lago_villarrica`. El fundamento deja de ser una cita y pasa a ser una medicion
+sobre la capa que hoy esta publicada.
+
+
+3. LAS SEIS LACUSTRES, NO SOLO LA QUE LA ACEPTACION NOMBRA
+--------------------------------------------------------------------------------
+La aceptacion de E3 dice "una ruta en el Lago Llanquihue". Se midio esa y las
+**seis**, una cuerda por jurisdiccion:
+
+    ruta                              ensanche agrega                bandera   km de hueco
+    Lago Villarrica 210 -> 209 (E0.2)  3  {105,209,210}              U -> Q   21,818 -> 4,111
+    Lago Llanquihue (paso 5)           4  {111,159,160,161}          U -> Q   18,992 -> 0,000
+    cuerda en puerto_varas             4  {111,159,160,161}          U -> Q   13,496 -> 0,000
+    cuerda en lago_villarrica          3  {105,209,210}              U -> Q    5,578 -> 0,000
+    cuerda en lago_panguipulli         7  {106,245,246,247,248,249,250} U -> Q  2,672 -> 0,000
+    cuerda en lago_ranco               4  {144,145,146,160}          U -> Q    5,810 -> 0,000
+    cuerda en lago_general_carrera     3  {128,203,257}              U -> Q    4,742 -> 0,000
+    cuerda en lago_rapel               1  {96}                       U -> Q    1,764 -> 0,000
+
+**Los numeros del Llanquihue reproducen los del paso 5 al milesimo**: `{}` ->
+`{111,159,160,161}` y 18,992 km de hueco -> 0,000.
+
+**DE DONDE SALE CADA TRAMO, porque no todos valen lo mismo como prueba** — esto
+es lo primero que hay que leer de la tabla de arriba:
+
+  · **la del Lago Villarrica es del arnes de E0.2**, elegida el 2026-08-11,
+    antes de que esta capa existiera. Es la unica **independiente** de lo que se
+    esta midiendo, y por eso es la que mas pesa: nadie la dibujo para que pasara.
+  · la del Llanquihue es la del paso 5, transcrita igual para poder comparar.
+  · **las seis cuerdas se derivaron de la propia capa publicada** —el diametro
+    del circulo maximo inscrito en su parte mayor, al 70%—, y eso hay que
+    decirlo: **para el MATCHING son circulares por construccion**. Una ruta
+    dibujada dentro del poligono lo va a intersectar. **No** lo son para lo que
+    si prueban, que es todo lo que viene despues: que el join expande esa
+    jurisdiccion a SUS bahias y solo a esas, que el contacto sale del decreto,
+    que la cobertura deja de ver un hueco, y que el filtro por ambito no deja
+    entrar nada de un ambito no publicado. Existen para cubrir las SEIS y no solo
+    la que la aceptacion nombra.
+
+El contacto de las 21 bahias sale con `capitania_fuente: decreto` en las 21. En
+ninguna dice "Puerto Montt", que es lo que el paso 4 existia para evitar.
+
+
+4. EL PUNTO QUE EL PASO 5 NO PUDO EJERCER, CERRADO EN VIVO Y CON DATO REAL
+--------------------------------------------------------------------------------
+El paso 5 dejo escrito que "devuelve sus restricciones" se habia probado **hasta
+el matching y el contacto**, porque SITPORT no publicaba ninguna restriccion en
+las cuatro bahias del Llanquihue. **Hoy publica dos, en otras bahias lacustres, y
+las dos llegan a pantalla.** No hubo que fabricar nada.
+
+Captura cruda en `01_sitport_crudo/`, 2026-08-13T21:15:57Z: 9 restricciones
+totales, 6 de tipo TODOS, dos de ellas en bahias lacustres — 105 LAGO VILLARRICA
+y 106 PANGUIPULLI.
+
+4.a — LAGO VILLARRICA (07_endpoint_villarrica.json), sobre la ruta 210 -> 209
+del arnes de E0.2, contra el backend en vivo:
+
+    HTTP 200 · veredicto UV · bandera_final UV
+    cobertura evaluada/Q · avisos 0 · defectos 3 · drift evaluado/Q
+    restricciones_intermedias: 1
+
+      id_bahia          105  "Lago Villarrica"
+      restriccion       MAL TIEMPO, VIENTO
+      condicion         Puerto Cerrado
+      tipo_restriccion  LIMITES OPERACIONALES
+      capitania         Lago Villarrica     capitania_fuente: decreto
+      gobernacion       Valdivia            telefono: +56 63 227 6905
+      evaluacion        bloquea=true nivel=UV
+                        "Condicion MAL TIEMPO — navegacion suspendida para
+                         embarcaciones menores"
+      observacion       "SE ESTABLECE CONDICION DE PUERTO VARIABLE, PUERTO
+                         CERRADO PARA TODA ACTIVIDAD NAUTICA Y NAVEGACION DE
+                         EMBARCACIONES MENORES EN TODOS LOS LAGOS DE LA
+                         JURISDICCION."
+
+**ESTE ES EL FALSO NEGATIVO DE SEGURIDAD QUE E3 EXISTIA PARA CERRAR, y estaba
+activo hoy.** Ayer, un patron navegando el Lago Villarrica con el puerto CERRADO
+por su propia Capitania no veia la restriccion: veia el aviso de INV-3.6
+diciendo que no teniamos el limite de esa jurisdiccion. Hoy ve **UV, puerto
+cerrado**.
+
+El contrafactico no se argumenta, se lee de la pasada `off`: con el ensanche
+apagado el Set de esa ruta es **vacio**, y `sitport-routes.js:757`
+(`if (!bahiaIdsEnRuta.has(bahiaId)) continue;`) descarta toda restriccion cuya
+bahia no este en el Set. Set vacio = ninguna restriccion puede pasar.
+
+**Y la fuente corrobora INV-3.4 con sus propias palabras**: el texto dice "EN
+TODOS LOS LAGOS DE LA JURISDICCION". La restriccion se publica bajo una bahia y
+alcanza a la jurisdiccion entera, que es exactamente lo que el invariante fija y
+lo que el motor ahora hace.
+
+4.b — PANGUIPULLI (08_endpoint_panguipulli.json):
+
+    HTTP 200 · veredicto U · restricciones_intermedias: 1
+      id_bahia 106 "Panguipulli" · VIENTO · Tiempo Variable
+      capitania Lago Panguipulli (decreto) · nivel U, bloquea=false
+
+**Observacion de alcance, y va a E6 no a E3**: el texto de esta restriccion
+**acota el area** — "PUERTO CERRADO PARA EL LAGO PIREHUEICO, LAGO PANGUIPULLI,
+LAGO PELLAIFA, LAGO RIÑIHUE, LAGO NELTUME Y LAGO PULLINQUE, **EXCEPTUANDO LAGO
+CALAFQUEN**". El motor evalua a nivel de Capitania y le muestra la restriccion a
+las siete bahias de `lago_panguipulli`, incluida la 247 (Calafquen) que el propio
+texto exceptua. **No es un defecto: es la nota de alcance de INV-3.4 funcionando
+como esta escrita** — "el motor NO implementa el nivel de sector hoy; evalua a
+nivel de Capitania, que es el envolvente: muestra de mas, nunca de menos". Queda
+anotado como **el primer caso real observado** de esa nota, que hasta hoy era
+hipotetica.
+
+4.c — La maritima, sin moverse (10_endpoint_maritima.json): Anahuac -> Melinka
+ruteada, HTTP 200, veredicto Q, 0 restricciones, cobertura evaluada/Q, 4
+defectos de recorte. `bahias_matcheadas=0` en el log: hoy SITPORT no publica
+ninguna restriccion en esa ruta.
+
+
+5. EL ALCANCE NUEVO DEL CONTROL DE DRIFT (A3)
+--------------------------------------------------------------------------------
+El paso 4 anoto que ensanchar el Set le cambia el alcance a A3, porque de ese
+Set salen las **reparticiones** con las que el control decide si un dato
+publicado bajo una bahia que no conocemos cae dentro de la ruta del patron.
+Medido, ruta por ruta:
+
+    las 8 maritimas y la antartica : las reparticiones NO cambian, ni una.
+    Lago Villarrica 210 -> 209     : 0 -> 1   entra la 186
+    Lago Llanquihue / puerto_varas : 0 -> 1   entra la 201
+    cuerda en lago_villarrica      : 0 -> 1   entra la 186
+    cuerda en lago_panguipulli     : 0 -> 2   entran la 184 y la 186
+    cuerda en lago_ranco           : 0 -> 2   entran la 188 y la 201
+    cuerda en lago_general_carrera : 0 -> 1   entra la 235
+    cuerda en lago_rapel           : 0 -> 1   entra la 97
+    CONTROL NEGATIVO               : 0 -> 0
+
+**El alcance crece SOLO en lo lacustre, y es aditivo tambien aca**: ninguna ruta
+pierde una reparticion.
+
+**EFECTO EN VIVO HOY: NINGUNO, y se dice en vez de dejarlo implicito.** De las 6
+restricciones de transito de la captura, **cero** caen bajo una bahia que
+`BAHIA_COORDS` no tenga, asi que A3 no tiene nada que evaluar y da 0 avisos con
+el cableado y sin el. Lo que crecio es la **capacidad** del control, no su
+salida de hoy.
+
+**Dos hallazgos laterales de esta tabla, que no son de E3:**
+
+  · **la cuerda en `lago_panguipulli` hace entrar la 186 (VILLARRICA)** ademas de
+    la 184. No es un traslape de geometria: es que **SITPORT atribuye seis de las
+    siete bahias de `lago_panguipulli` a la reparticion 186** — 245 Pellaifa, 246
+    Pullinque, 247 Calafquen, 248 Riñihue, 249 Neltume y 250 Pirehuico. El
+    decreto se las da a `lago_panguipulli`. Es un conflicto decreto-vs-SITPORT de
+    los que **E5 existe para probar**, y se resuelve a favor del decreto por
+    INV-3.3. Se anota, no se toca.
+  · **la cuerda en `lago_ranco` hace entrar la 201 (PUERTO VARAS)**, que es la
+    bahia 160 otra vez — el Puyehue, ya medido y ya en el frente de §7.1.
+
+
+6. LA BAHIA 257
+--------------------------------------------------------------------------------
+    257 en BAHIA_COORDS             : NO (por eso no se lista en transito)
+    SITPORT publica bajo la 257 hoy : NO
+    A3 la resuelve a                : CAPITANIA DE PUERTO LAGO GRAL.CARRERA
+                                      (reparticion 235, via consultaBahias)
+    entra al Set por el ensanche    : SI — la cuerda en lago_general_carrera
+                                      devuelve {128, 203, 257}
+
+**LO QUE NO SE PUDO MEDIR EN VIVO, dicho antes que el resultado: SITPORT no
+publica ninguna restriccion bajo la 257 en la captura de esta sesion**, asi que
+"la 257 en vivo" no se pudo ejercer de punta a punta. Fabricar una restriccion
+para verla en pantalla seria inventar el dato (CLAUDE.md §3.2) y no se hizo.
+
+Lo que si se ejercio es **el mecanismo**, con un registro **SINTETICO y declarado
+como tal** —no es dato de SITPORT— sobre las mismas funciones que corren en
+produccion:
+
+    con el ensanche APAGADO : avisos 0 · defectos 1 ·
+                              `bahia_publicada_fuera_del_catalogo (fuera de la ruta)`
+                              · bandera Q
+    con el ensanche ACTIVO  : avisos 1 · defectos 1 · causa `en_ruta` · bandera U
+
+**Se cumple lo que el paso 4 dejo medido: de defecto registrado a defecto +
+aviso.** La parte que falta —verlo con dato real— depende de que DIRECTEMAR
+publique algo bajo esa bahia, y no de nosotros.
+
+
+7. LO QUE PASA CON LA 257 EN LA LISTA, VERIFICADO EN EL LOG
+--------------------------------------------------------------------------------
+La 257 entra al Set y `sitport-routes.js:767` no la lista por falta de
+coordenada, con su `console.warn` y con a quien le corresponde (A3). En el log
+de esta sesion **ese warn no aparece**, y es correcto que no aparezca: el
+descarte esta dentro del bucle que recorre las **restricciones publicadas**, y
+hoy no hay ninguna bajo la 257. El camino esta escrito y sin ejercer.
+
+
+8. DOS NUMEROS QUE PARECEN UNA REGRESION Y NO LO SON
+--------------------------------------------------------------------------------
+`Anahuac -> Melinka` da en este paso **11 bahias y 32,841 km** descubiertos, y el
+paso 5 y la mordida del cableado dicen **14 bahias y 22,0256 km**. **No cambio
+nada: son dos rutas distintas.**
+
+  · el paso 5 y la mordida miden la **RECTA de dos puntos** entre los extremos;
+  · este paso la mide **RUTEADA por el raster router**, que es la geometria que
+    el backend recibe de verdad (21 waypoints, 306,6 km contra 275,3 de la recta).
+
+**No se argumenta: se mide.** La recta se agrego al arnes de este script como una
+ruta mas, y reproduce los numeros del paso 5 **exactos**:
+
+    Anahuac -> Melinka (recta de 2 puntos)
+      Set teselado 14 {113,117,120,122,124,155,175,176,216,232,235,251,253,255}
+      ensanche agrega 0 · km descubiertos 22,0256 · 6 defectos · Q -> Q
+
+Quien compare bitacoras tiene que mirar cual de las dos geometrias se midio.
+
+
+9. EL CONTACTO LACUSTRE — MEDIDO, NO RESUELTO. VA A §7.1
+--------------------------------------------------------------------------------
+Con el ambito publicado, el contacto de las 21 bahias lacustres **ya se le
+muestra al patron**. Hasta el paso 5 ninguna entraba al matching, asi que la
+discrepancia era interna; hoy sale en la tarjeta de una restriccion real que dice
+"puerto cerrado". Por eso se midio (11_contacto_lacustre.txt):
+
+    UN TELEFONO PARA MAS DE UNA CAPITANIA
+      +56 63 227 6905 -> Lago Villarrica | Lago Panguipulli | Lago Ranco
+      +56 65 256 1100 -> Puerto Varas    | Lago Ranco   (la 160, ya conocida)
+
+    UNA CAPITANIA CON MAS DE UN TELEFONO
+      Lago Ranco -> +56 63 227 6905 | +56 65 256 1100
+
+**Tres Capitanias distintas comparten un numero**, y ese numero es identificable:
+`capitanias_64_final.csv` se lo da a **VALDIVIA, reparticion 175, que es una
+Capitania MARITIMA**. La identificacion se hizo **por el numero**, no por el
+nombre, asi que no supone ninguna equivalencia.
+
+Contra el CSV, emparejando **por codigo de reparticion** —no por nombre, que es
+la trampa que este repositorio ya pago tres veces; la primera version de este
+script emparejo por nombre y devolvio "NO ENCONTRADA" para dos de las seis,
+porque el CSV las llama VILLARRICA y PANGUIPULLI y el decreto
+`lago_villarrica` y `lago_panguipulli`—:
+
+    comparadas 20 de 21 · DISCREPAN 20
+    (la 21ª es la bahia 146, reparticion 189, que no esta en el CSV: es "la que
+     no existe", entrada 1 del registro de DIRECTEMAR)
+
+**QUE AFIRMA ESTA MEDICION Y QUE NO.** Afirma que **las dos fuentes discrepan en
+las 20 comparables**. NO afirma que el telefono mostrado este mal: la fuente
+autorizada del contacto es `bahia-capitania-map.json` por `CONTRATO_MOTOR.md` §5,
+y el CSV **no es autoridad** — el sondeo del 2026-08-12 se cerro SIN APLICAR y su
+propia bitacora pide re-verificar contra los raw.
+
+**No lo resuelvo y no propongo aplicarlo**: es el frente de contacto de §7.1,
+cuya causa de raiz ya esta escrita —el contacto esta indexado por BAHIA— y cuya
+decision es del owner. Lo que este paso agrega es **la urgencia medida**: dejo de
+ser un defecto interno y paso a ser un numero de telefono impreso al lado de un
+"puerto cerrado".
+
+
+10. REGRESION COMPLETA
+--------------------------------------------------------------------------------
+    npm test                                80/80
+    e3_prueba_mordida_cableado.js           21/21   (14 parte A + 7 parte B)
+    e02_prueba_mordida_ambitos.js           14/14   + control negativo
+    e03join_prueba_mordida_join.js          16/16
+    e1_prueba_mordida_andamio.js            14/14
+    e01_prueba_mordida_a3.js                10/10   + control negativo
+    e3_prueba_mordida_carencia.py           14/14   (incluida la inocuidad)
+    e3_prueba_mordida_gate.py               10/10   (y no deja capa: ROLLBACK)
+
+**Nada envejecio en este paso**, y era el riesgo: el paso 5 movio el estado del
+mundo y puso tres cosas en rojo; este paso no movio ningun estado, solo lo midio.
+
+La capa quedo como estaba: `jurisdicciones_ds991` con sus **6 lacustres**,
+verificado despues de correr la mordida del gate, que construye y deshace.
+
+EL DRIFT NO TRAE NINGUNA DIVERGENCIA NUEVA. Comparado conjunto contra conjunto
+antes y despues de levantar el backend:
+    desaparecidas: ninguna
+    nuevas       : `sitport_sin_catalogo|258`  — la del Rio Bueno sector
+                   Llancacura, medida y decidida (D14) el 2026-08-13, antes de
+                   esta sesion.
+`data/catalogo/estado_drift.json` se **restauro** al estado commiteado, igual que
+en los pasos 4 y 5, verificado por sha256
+`ffff23b2107595aea4c6742955434d38b5968bcb7539cf3dfefc0c419221b2fd` antes y
+despues.
+
+
+11. LO QUE ESTE PASO NO MIDIO, DICHO EN VEZ DE DADO POR BUENO
+--------------------------------------------------------------------------------
+- **La 257 con dato real.** SITPORT no publica bajo esa bahia hoy (§6). Se
+  ejercio el mecanismo con un registro sintetico y declarado.
+- **Una restriccion lacustre en una bahia SIN restriccion evaluable.** Las dos de
+  hoy son de tipo TODOS y las dos evaluaron; no se ejercio el camino de una
+  restriccion informativa (`aplica_a_mi_embarcacion: false`) en lo lacustre.
+- **El nivel de SECTOR** (§4.b). El motor muestra a las siete bahias de
+  `lago_panguipulli` una restriccion cuyo texto exceptua una. Es la nota de
+  alcance de INV-3.4, no un defecto, y su cierre no es de E3.
+- **La PWA.** Todo esto se midio contra el backend. Que la tarjeta se vea bien
+  con una Capitania lacustre no se verifico en pantalla.
+- **Las jurisdicciones lacustres con ruta real de navegacion.** Las seis cuerdas
+  son tramos rectos dentro del poligono, no rutas ruteadas: el raster router no
+  tiene tile lacustre.
+
+================================================================================
+FIN — el paso 6 esta medido. La regresion da cero, el fundamento del plan quedo
+medido en vez de repetido, y la aceptacion de E3 se cerro con una restriccion
+lacustre REAL en pantalla. **El cierre de E3 se propone al owner con esta
+evidencia; no se marca cerrada sin su visto bueno.**
+================================================================================
