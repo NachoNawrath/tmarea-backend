@@ -1,0 +1,187 @@
+FASE 5, ETAPA B — CONSTRUCCION
+  salida   : scripts\fase5_capa_ds991.sql
+  tierra   : costa_osm_sub   [osm_land_polygons, sha e3570af698dd]
+  ext.     : ne_land, buffer de 370400 m
+  ensanche : 60 km, solo en tramos litoral
+
+NOMBRE                   AMBITO          RECETA           LIT ESTADO           FRONTERAS
+--------------------------------------------------------------------------------------------------------------------------
+Arica                    maritima        -                  0 nula_declarada   
+Iquique                  maritima        banda_paralelos    0 construida       par__arica__iquique,par__iquique__patach
+Patache                  maritima        banda_paralelos    0 construida       par__iquique__patache,par__patache__toco
+Tocopilla                maritima        banda_paralelos    0 construida       par__patache__tocopilla,par__tocopilla__
+Mejillones               maritima        banda_paralelos    0 construida       par__mejillones__antofagasta,par__tocopi
+Antofagasta              maritima        banda_paralelos    0 construida       par__antofagasta__taltal,par__mejillones
+Taltal                   maritima        banda_paralelos    0 construida       par__antofagasta__taltal,par__taltal__ch
+Chanaral                 maritima        banda_paralelos    0 construida       par__chanaral__caldera,par__taltal__chan
+Caldera                  maritima        banda_paralelos    0 construida       par__caldera__huasco,par__chanaral__cald
+Huasco                   maritima        banda_paralelos    0 construida       par__caldera__huasco,par__huasco__coquim
+Hanga Roa                insular_remota  -                  0 nula_declarada   
+Coquimbo                 maritima        banda_paralelos    0 construida       par__coquimbo__tongoy,par__huasco__coqui
+Tongoy                   maritima        banda_paralelos    0 construida       par__coquimbo__tongoy,par__tongoy__los_v
+Los Vilos                maritima        banda_paralelos    0 construida       par__los_vilos__papudo,par__tongoy__los_
+Papudo                   maritima        banda_paralelos    0 construida       par__los_vilos__papudo,par__papudo__quin
+Quintero                 maritima        banda_paralelos    0 construida       par__papudo__quintero,par__quintero__val
+Valparaiso               maritima        banda_paralelos    0 construida       par__quintero__valparaiso,par__valparais
+Juan Fernandez           insular_remota  -                  0 nula_declarada   
+Algarrobo                maritima        banda_paralelos    0 construida       par__algarrobo__san_antonio,par__valpara
+San Antonio              maritima        banda_paralelos    0 construida       par__algarrobo__san_antonio,par__san_ant
+Pichilemu                maritima        banda_paralelos    0 construida       par__pichilemu__constitucion,par__san_an
+Lago Rapel               lacustre        union_cuerpos      0 construida       
+Constitucion             maritima        banda_paralelos    0 construida       par__constitucion__lirquen,par__pichilem
+Lirquen                  maritima        corte_y_ancla      0 nula_declarada   
+Talcahuano               maritima        corte_y_ancla      0 nula_declarada   
+San Vicente              maritima        banda_paralelos    0 construida       par__san_vicente__coronel,par__talcahuan
+Coronel                  maritima        banda_paralelos    0 construida       par__coronel__lota,par__san_vicente__cor
+Lota                     maritima        banda_paralelos    0 construida       par__coronel__lota,par__lota__lebu
+Lebu                     maritima        banda_paralelos    0 construida       par__lebu__carahue,par__lota__lebu
+Carahue                  maritima        banda_paralelos    0 construida       par__carahue__valdivia,par__lebu__carahu
+Lago Villarrica          lacustre        union_cuerpos      0 construida       
+Lago Panguipulli         lacustre        union_cuerpos      0 construida       
+Lago Ranco               lacustre        union_cuerpos      0 construida       
+Valdivia                 maritima        corte_y_ancla      0 construida       par__carahue__valdivia,pol__valdivia__co
+Corral                   maritima        corte_y_ancla      0 construida       par__corral__maullin,pol__valdivia__corr
+Puerto Varas             lacustre        union_cuerpos      0 construida       
+Puerto Montt             maritima        anillo             2 construida       pol__puerto_montt__calbuco,pol__puerto_m
+Maullin                  maritima        corte_y_ancla      0 construida       par__corral__maullin,par__maullin__ancud
+Calbuco                  maritima        anillo             1 construida       pol__calbuco__ancud,pol__calbuco__hornop
+Rio Negro Hornopiren     maritima        anillo             1 construida       pol__calbuco__hornopiren,pol__quemchi__h
+Cochamo                  maritima        corte_y_ancla      0 construida       pol__puerto_montt__cochamo
+Ancud                    maritima        corte_y_ancla      0 construida       par__ancud__quemchi,par__maullin__ancud,
+Quemchi                  maritima        corte_y_ancla      0 construida       pol__quemchi__achao,pol__quemchi__hornop
+Chaiten                  maritima        corte_y_ancla      0 construida       par__chaiten__melinka,par__chaiten__puer
+Achao                    maritima        anillo             0 construida       pol__achao__castro,pol__quemchi__achao
+Castro                   maritima        corte_y_ancla      0 construida       par__castro__chonchi,par__quemchi__castr
+Chonchi                  maritima        corte_y_ancla      0 construida       par__castro__chonchi,par__chonchi__quell
+Quellon                  maritima        corte_y_ancla      0 construida       par__chonchi__quellon,par__quellon__meli
+Melinka                  maritima        corte_y_ancla      0 construida       par__chaiten__melinka,par__melinka__puer
+Puerto Cisnes            maritima        corte_y_ancla      0 construida       par__chaiten__puerto_cisnes,par__puerto_
+Puerto Aguirre           maritima        corte_y_ancla      0 construida       par__melinka__puerto_aguirre,pol__puerto
+Puerto Chacabuco         maritima        corte_y_ancla      0 construida       par__puerto_chacabuco__baker,par__puerto
+Lago General Carrera     lacustre        union_cuerpos      0 construida       
+Baker                    maritima        -                  0 nula_declarada   
+Puerto Eden              maritima        -                  0 nula_declarada   
+Puerto Natales           maritima        banda_paralelos    0 construida       par__puerto_eden__puerto_natales,par__pu
+Punta Arenas             maritima        banda_paralelos    0 construida       par__puerto_natales__punta_arenas
+Punta Delgada            maritima        -                  0 nula_declarada   
+Tierra del Fuego         maritima        -                  0 nula_declarada   
+Puerto Williams          maritima        corte_y_ancla      0 nula_declarada   
+Bahia Fildes             antartica       anillo             0 construida       
+Puerto Soberania         antartica       anillo             0 construida       
+Rada Covadonga           antartica       anillo             0 construida       
+Bahia Paraiso            antartica       anillo             0 construida       
+
+CONTEO POR RECETA
+  -                        7
+  anillo                   8
+  banda_paralelos          26
+  corte_y_ancla            17
+  union_cuerpos            6
+CONTEO POR ESTADO
+  construida               54
+  nula_declarada           10
+
+SECTORES construidos: 0
+NULAS DECLARADAS, CON SU CAUSA
+  Arica                    el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno q
+  Hanga Roa                el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; r
+  Juan Fernandez           el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; r
+  Lirquen                  La prosa describe el contorno de la Bahia de Concepcion sin dar sus vertices. La
+  Talcahuano               El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al Sur de 
+  Baker                    el decreto no entrega con que cerrar: falta el limite sur, y no hay contorno que
+  Puerto Eden              el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno q
+  Punta Delgada            falta UNICAMENTE el limite maritimo internacional por el Oriente, que el propio 
+  Tierra del Fuego         faltan DOS cosas, y ya no es la falta de coordenadas de sus accidentes: Cabo San
+  Puerto Williams          el contorno parte el espacio en dos y no hay ancla que diga cual de los dos troz
+
+Aplicando con C:\Program Files\PostgreSQL\16\bin\psql.exe sobre mapa_navegacion@localhost...
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:32: NOTICE:  la tabla «jurisdicciones_ds991_convenciones» no existe, omitiendo
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:123: NOTICE:  la tabla «jurisdicciones_ds991_procedencia» no existe, omitiendo
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:134: NOTICE:  la tabla «jurisdicciones_ds991_sectores» no existe, omitiendo
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:135: NOTICE:  la tabla «jurisdicciones_ds991» no existe, omitiendo
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 1/44 Achao en 00:00:00.08585
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 2/44 Algarrobo en 00:00:00.039178
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 3/44 Ancud en 00:00:00.231611
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 4/44 Antofagasta en 00:00:00.29728
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 5/44 Calbuco en 00:00:00.203258
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 6/44 Caldera en 00:00:00.117951
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 7/44 Carahue en 00:00:00.224009
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 8/44 Castro en 00:00:00.095713
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 9/44 Chaiten en 00:00:00.730004
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 10/44 Chanaral en 00:00:00.112119
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 11/44 Chonchi en 00:00:00.282163
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 12/44 Cochamo en 00:00:00.712104
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 13/44 Constitucion en 00:00:00.073184
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 14/44 Coquimbo en 00:00:00.196715
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 15/44 Coronel en 00:00:00.023205
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 16/44 Corral en 00:00:00.620039
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 17/44 Rio Negro Hornopiren en 00:00:00.43601
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 18/44 Huasco en 00:00:00.132488
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 19/44 Iquique en 00:00:01.940675
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 20/44 Lebu en 00:00:00.044903
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 21/44 Los Vilos en 00:00:00.231639
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 22/44 Lota en 00:00:00.475833
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 23/44 Maullin en 00:00:01.866093
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 24/44 Mejillones en 00:00:00.054135
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 25/44 Melinka en 00:00:05.089584
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 26/44 Papudo en 00:00:00.141726
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 27/44 Patache en 00:00:00.060355
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 28/44 Pichilemu en 00:00:00.083505
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 29/44 Puerto Aguirre en 00:00:06.239379
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 30/44 Puerto Chacabuco en 00:00:13.068235
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 31/44 Puerto Cisnes en 00:00:05.800232
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 32/44 Puerto Montt en 00:00:00.323581
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 33/44 Puerto Natales en 00:01:20.332385
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 34/44 Punta Arenas en 00:01:49.449891
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 35/44 Quellon en 00:00:00.544687
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 36/44 Quemchi en 00:00:00.110361
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 37/44 Quintero en 00:00:00.037044
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 38/44 San Antonio en 00:00:00.139364
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 39/44 San Vicente en 00:00:00.481899
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 40/44 Taltal en 00:00:00.105324
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 41/44 Tocopilla en 00:00:00.047321
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 42/44 Tongoy en 00:00:00.025934
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 43/44 Valdivia en 00:00:00.34128
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:821: NOTICE:  tierra restada 44/44 Valparaiso en 00:00:00.318838
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:855: NOTICE:  la tabla «jurisdicciones_ds991_ensanche» no existe, omitiendo
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:863: NOTICE:  la tabla «jurisdicciones_ds991_traslape_ensanche» no existe, omitiendo
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:  --- ENSANCHE DE LITORAL, SUPERFICIE QUE AGREGA ---
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Puerto Montt (2 tramo(s) litoral): sin ensanche 268.12 km2, con ensanche 1003.01 km2, agrega 734.89 km2
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Rio Negro Hornopiren (1 tramo(s) litoral): sin ensanche 1116.49 km2, con ensanche 1847.16 km2, agrega 730.67 km2
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Calbuco (1 tramo(s) litoral): sin ensanche 658.92 km2, con ensanche 658.83 km2, agrega -0.09 km2
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:  --- TRASLAPES DONDE INTERVIENE UNA CON ENSANCHE ---
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Maullin x Puerto Montt: final 755.491 km2, sin ensanche 113.096 km2 -> ya existia sin el, y el ensanche lo AGRANDA 6.7x
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Cochamo x Rio Negro Hornopiren: final 531.757 km2, sin ensanche 26.969 km2 -> ya existia sin el, y el ensanche lo AGRANDA 19.7x
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Calbuco x Maullin: final 40.833 km2, sin ensanche 40.833 km2 -> ya existia sin el, el ensanche no lo mueve
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Chaiten x Rio Negro Hornopiren: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Cochamo x Puerto Montt: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Calbuco x Rio Negro Hornopiren: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Calbuco x Puerto Montt: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Calbuco x Quemchi: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Achao x Rio Negro Hornopiren: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Rio Negro Hornopiren x Quemchi: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Ancud x Calbuco: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Ancud x Rio Negro Hornopiren: final 0.000 km2, sin ensanche 0.000 km2 -> sin traslape: solo se tocan por el borde
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:  --- TODOS LOS TRASLAPES ENTRE FIGURAS FINALES ---
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Cochamo (maritima) x Maullin (maritima) = 2947.340 km2  |  lon -72.654 .. -64.500  lat -41.744 .. -41.204
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Chaiten (maritima) x Chonchi (maritima) = 1798.518 km2  |  lon -73.200 .. -64.500  lat -42.833 .. -42.583
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Maullin (maritima) x Puerto Montt (maritima) = 755.491 km2  |  lon -73.098 .. -72.641  lat -41.744 .. -41.473
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Cochamo (maritima) x Rio Negro Hornopiren (maritima) = 531.757 km2  |  lon -72.813 .. -72.345  lat -42.233 .. -41.965
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Lago Ranco (lacustre) x Puerto Varas (lacustre) = 155.426 km2  |  lon -72.605 .. -72.327  lat -40.725 .. -40.623
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Calbuco (maritima) x Maullin (maritima) = 40.833 km2  |  lon -73.525 .. -72.999  lat -41.783 .. -41.656
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:906: NOTICE:    Castro (maritima) x Chonchi (maritima) = 28.254 km2  |  lon -77.855 .. -73.617  lat -42.583 .. -42.558
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:916: NOTICE:  la tabla «jurisdicciones_ds991_verificacion» no existe, omitiendo
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:933: NOTICE:  la tabla «jurisdicciones_ds991_traslapes_ok» no existe, omitiendo
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:995: NOTICE:  --- ESTADO DE TODOS LOS CONTROLES ---
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:995: NOTICE:    [ok   ] C1 sin geometria vacia, de area cero o invalida (obtenido 0)
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:995: NOTICE:    [ok   ] C2 toda nula declarada con su causa (obtenido 0)
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:995: NOTICE:    [FALLA] C3 cero traslapes fuera de los declarados deliberados (obtenido 6): Castro x Chonchi = 28.254; Chaiten x Chonchi = 1798.518; Cochamo x Rio Negro Hornopiren = 531.757; Cochamo x Maullin = 2947.340; Maullin x Puerto Montt = 755.491; Calbuco x Maullin = 40.833
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:995: NOTICE:    [ok   ] C4 cada jurisdiccion contiene su punto representativo (obtenido 0)
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:995: NOTICE:    [ok   ] C5 construida sin testigo trae su causa declarada (obtenido 0)
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:995: NOTICE:    [ok   ] C6 el ensanche solo donde hay tramo litoral (obtenido 0)
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:995: NOTICE:    [ok   ] C7 indice espacial presente (obtenido 1)
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:995: NOTICE:    [ok   ] C8 el ensanche no crea traslapes que no existieran sin el (obtenido 0)
+psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:995: ERROR:  LA CAPA NO CUMPLE SUS PROPIOS CONTROLES:
+  C3 cero traslapes fuera de los declarados deliberados [obtenido=6: Castro x Chonchi = 28.254; Chaiten x Chonchi = 1798.518; Cochamo x Rio Negro Hornopiren = 531.757; Cochamo x Maullin = 2947.340; Maullin x Puerto Montt = 755.491; Calbuco x Maullin = 40.833]
+CONTEXTO:  función PL/pgSQL inline_code_block en la línea 13 en RAISE
+la construccion no paso sus propios controles. No hay capa: la transaccion se deshizo entera. El detalle esta arriba, y las mediciones que alcanzaron a salir como NOTICE tambien: sobreviven al rollback.

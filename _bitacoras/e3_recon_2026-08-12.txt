@@ -1,0 +1,186 @@
+================================================================================
+E3 — RECONOCIMIENTO DEL ÁMBITO LACUSTRE. 2026-08-12
+Estado: MEDIDO. Nada construido, nada partido, nada publicado.
+Veredicto: **la geometría lacustre pasa sus controles hoy. Lo único que la
+mantiene fuera de la base es el rollback que comparte con C3.**
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    tools\raster-build\.venv\Scripts\python.exe scripts\fase5_construir_capa_ds991.py
+
+Corrida real: **9 min 48 s**, exit 1 (lo esperado: C3 falla y deshace la
+transacción). Necesita PostgreSQL con PostGIS y la costa OSM cargada.
+
+Crudo:
+    01_build_completo.txt      la corrida entera
+    02_estado_controles.txt    los 8 controles
+    03_las_seis_lacustres.txt  las 6 con su receta y estado
+
+
+0. POR QUÉ ESTE RECONOCIMIENTO EXISTE
+--------------------------------------------------------------------------------
+§9 del plan lista, entre lo que el documento no responde: *"Si la geometría
+lacustre pasa sus controles. Está construida y separada, pero **no se corrió el
+build para verlo**. E3 empieza por ahí."* Y §E3 dice que la etapa no se da por
+cerrada sin correr el build.
+
+El plan además apuesta: *"la geometría lacustre **probablemente** ya se construye
+bien hoy"*. Este reconocimiento existe para sacarle el **probablemente**, antes
+de partir ningún gate. Si lo lacustre no se construyera bien, E3 cambia de forma
+entera y los pasos que siguen se replantean — descubrirlo después de tocar el
+generador sería trabajo tirado (§5.2).
+
+
+1. LA RESPUESTA: SÍ, SE CONSTRUYE, Y PASA TODO LO QUE LE TOCA
+--------------------------------------------------------------------------------
+Las seis salen **construida**, todas con receta `union_cuerpos`:
+
+    Lago Rapel               lacustre   union_cuerpos   construida
+    Lago Villarrica          lacustre   union_cuerpos   construida
+    Lago Panguipulli         lacustre   union_cuerpos   construida
+    Lago Ranco               lacustre   union_cuerpos   construida
+    Puerto Varas             lacustre   union_cuerpos   construida
+    Lago General Carrera     lacustre   union_cuerpos   construida
+
+Y el estado de los ocho controles, que sale como NOTICE **antes** del RAISE y por
+eso sobrevive al rollback:
+
+    [ok   ] C1 sin geometria vacia, de area cero o invalida        (0)
+    [ok   ] C2 toda nula declarada con su causa                    (0)
+    [FALLA] C3 cero traslapes fuera de los declarados deliberados  (6)
+    [ok   ] C4 cada jurisdiccion contiene su punto representativo  (0)
+    [ok   ] C5 construida sin testigo trae su causa declarada      (0)
+    [ok   ] C6 el ensanche solo donde hay tramo litoral            (0)
+    [ok   ] C7 indice espacial presente                            (1)
+    [ok   ] C8 el ensanche no crea traslapes que no existieran     (0)
+
+**Siete de ocho pasan.** C1 en particular —geometría vacía, de área cero o
+inválida, sobre todo lo `construida`— da **0**, lo que incluye a las seis.
+
+
+2. LOS SEIS PARES DE C3: NINGUNO ES LACUSTRE
+--------------------------------------------------------------------------------
+Éste es el hallazgo que decide la forma de E3.
+
+    Castro x Chonchi                    =    28,254 km2
+    Chaiten x Chonchi                   = 1.798,518 km2
+    Cochamo x Rio Negro Hornopiren      =   531,757 km2
+    Cochamo x Maullin                   = 2.947,340 km2
+    Maullin x Puerto Montt              =   755,491 km2
+    Calbuco x Maullin                   =    40,833 km2
+
+**Las doce jurisdicciones involucradas son marítimas. Ninguna lacustre aparece en
+ningún par.** O sea que C3 no tiene nada que reprocharle a lo lacustre: falla por
+un problema que vive entero en el otro ámbito, y se lleva puesto a un ámbito que
+pasó todo.
+
+**El único traslape lacustre×lacustre que existe está declarado y C3 lo acepta:**
+
+    Lago Ranco (lacustre) x Puerto Varas (lacustre) = 155,426 km2
+      lon -72,605..-72,327  lat -40,725..-40,623
+
+Es Puyehue — el traslape deliberado que el cotejo declara, porque el decreto lo
+parte por límite regional y el catastro trae un solo polígono. Que C3 lo deje
+pasar confirma que el mecanismo de declaración funciona: lo lacustre no pasa por
+no tener traslapes, pasa **teniendo uno y declarándolo bien**.
+
+
+3. EL ROLLBACK COMPARTIDO, LOCALIZADO EXACTO
+--------------------------------------------------------------------------------
+Está en `scripts/fase5_construir_capa_ds991.py`, en el bloque final que genera el
+SQL (líneas ~960-980). La forma es ésta:
+
+  · Cada control hace `INSERT` en una tabla **única**, `jurisdicciones_ds991_
+    verificacion`, con `(control, ok, obtenido, detalle)`. Es **una tabla para
+    todos los ámbitos**: ningún control está partido por ámbito ni lo declara.
+  · Al final, un `DO $$` recorre esa tabla, imprime todo como NOTICE, y hace:
+
+        SELECT string_agg(...) INTO fallidos FROM ..._verificacion WHERE NOT ok;
+        IF fallidos IS NOT NULL THEN
+          RAISE EXCEPTION 'LA CAPA NO CUMPLE SUS PROPIOS CONTROLES: ...';
+        END IF;
+
+  · Ese `RAISE` es **uno solo, y no distingue de qué ámbito vino el control que
+    falló**. Al dispararse, deshace la transacción entera — que incluye el
+    `CREATE TABLE`, los `INSERT` de las 64 y los índices.
+
+**Ahí está todo el problema de E3, en una condición de tres líneas:**
+`WHERE NOT ok` mira la capa entera. C3 mete una fila con `ok = false` por un
+traslape marítimo, y las seis lacustres —que no aportaron ni una fila en falla—
+se van al piso con ella.
+
+El comentario del propio generador dice por qué los controles van adentro de la
+transacción: *"una revisión aparte se puede saltar, ésta no. Si algo no cuadra,
+la transacción entera se cae."* El criterio es correcto y no hay que aflojarlo
+(§0.3). Lo que E3 tiene que resolver no es sacar el control de adentro, sino que
+el "algo" y la "transacción entera" dejen de ser de granularidad capa cuando D3
+ya decidió que el gate es **por ámbito**.
+
+**Confirmado que el rollback es real:** tras la corrida, `jurisdicciones_ds991`
+no existe en la base.
+
+
+4. RÍO BUENO NO AFECTA LA ACEPTACIÓN DE INV-3.5 PARA lago_ranco
+--------------------------------------------------------------------------------
+Medido sobre el cotejo regenerado hoy:
+
+    lago_ranco — 6 cuerpos, 5 con geometría, 1 sin.  cumple_inv_3_5: true
+
+      exacta     Lago Ranco       fid [1055]
+      exacta     Lago Maihue      fid [1067]
+      exacta     Lago Puyehue     fid [1110]
+      aceptado   Lago Huishue     fid [1091]
+      aceptado   Lago Gris        fid [1102]
+      rechazado  Rio Bueno        sin geometria
+
+**INV-3.5 exige que ninguna jurisdicción lacustre quede con geometría vacía tras
+la construcción — no que todos sus cuerpos tengan geometría.** `lago_ranco` tiene
+cinco cuerpos con geometría, así que su figura no queda vacía y el invariante se
+cumple. Río Bueno es una **carencia de cuerpo**, no de jurisdicción.
+
+Las seis, por lo mismo:
+
+    lago_rapel             1/1   OK
+    lago_villarrica        7/8   OK
+    lago_panguipulli       7/9   OK
+    lago_ranco             5/6   OK
+    puerto_varas           5/5   OK
+    lago_general_carrera   3/3   OK
+
+**Lo que NO queda resuelto, y sigue siendo del owner** (ya reportado al cerrar la
+regeneración del cotejo): el decreto entrega para el río Bueno tres sectores con
+coordenadas —Los Patos, La Goleta, El Manzanito— que el cotejo no consume, porque
+su alcance es decreto-contra-catastro y el catastro no tiene ríos. Convertir tres
+puntos en geometría exige decidir qué figura implican, y eso es interpretar el
+decreto y definir qué ve el patrón. **No bloquea E3**: sin eso, `lago_ranco`
+igual cumple INV-3.5 y se puede publicar. Lo que cambia es cuánto cubre.
+
+
+5. LO QUE ESTE RECONOCIMIENTO DEJA LISTO PARA EL PASO 2
+--------------------------------------------------------------------------------
+El "probablemente" del plan queda medido y es **sí**. De ahí se sigue que E3 no
+tiene que construir geometría nueva: tiene que **dejar salir la que ya se
+construye bien**. El paso 2 es partir el gate por ámbito, y ahora se sabe
+exactamente dónde: la condición `WHERE NOT ok` del `DO $$` final y la tabla
+`_verificacion`, que hoy no llevan ámbito.
+
+Queda dicho para que el paso 2 no lo afloje: **partir el gate no puede
+convertirse en bajarle la severidad a C3.** C3 tiene que seguir fallando igual
+para lo marítimo; lo que cambia es a quién se lleva puesto cuando falla.
+
+
+6. HALLAZGO LATERAL — UNA TABLA SOBREVIVE AL ROLLBACK
+--------------------------------------------------------------------------------
+Tras la corrida, `jurisdicciones_ds991` no existe (correcto) pero
+**`jurisdicciones_ds991_descartes` SÍ, con 1 fila y sin comentario.** No se
+investigó: queda anotado como cosa a mirar en el paso 2, porque una tabla que
+sobrevive a un rollback que se declara total es, como mínimo, una excepción no
+declarada al "no deja capa a medias".
+
+================================================================================
+FIN — medición. No se partió el gate, no se construyó, no se publicó nada.
+================================================================================
