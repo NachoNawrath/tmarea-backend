@@ -1,0 +1,498 @@
+================================================================================
+RECONOCIMIENTO — RESOLUCIONES LOCALES DE CAPITANIA (DIRECTEMAR)
+Buscando coordenadas para cerrar casos abiertos del inventario
+================================================================================
+
+Fecha   : 2026-08-12  ·  Shell del agente: Git Bash (MSYS)
+          Los comandos para que los repita el owner van en PowerShell (§7.2/§7.3).
+Estado  : RECONOCIMIENTO. No se adjudico nada, no se toco el insumo, no se toco
+          el plan. UN PDF entra al repositorio como fuente citable; no se
+          incorporo a jurisdicciones_v2.json.
+Encargo : del owner, 2026-08-12. Corregido DOS VECES por el propio owner mientras
+          se ejecutaba; las dos correcciones estan en §0 porque cambian que hay
+          que leer en esta bitacora y que no.
+
+--------------------------------------------------------------------------------
+0. QUE SE PIDIO, Y LAS DOS CORRECCIONES DE ALCANCE
+--------------------------------------------------------------------------------
+
+El encargo original traia tres preguntas: (1) si el indice es recorrible, (2)
+que Capitanias publican una resolucion de condiciones de puerto, (3) si alguna
+nombra un accidente geografico sin adjudicar.
+
+0.1 · PRIMERA CORRECCION — la pregunta (2) no era del encargo
+    El catalogo por familias de instrumento —quien publica condiciones de puerto
+    y quien no— es un frente distinto. Queda como HALLAZGO LATERAL en §6, sin
+    desarrollar y sin bajar al plan. Yo lo habia entregado como resultado
+    principal del primer reporte; la correccion es correcta y esta en §9.
+
+0.2 · SEGUNDA CORRECCION — el criterio de que se queda en el repositorio
+    Literal del owner:
+
+      "Lo que se buscaba son coordenadas para cerrar casos del inventario. El
+       contenido normativo de las resoluciones no es materia de la app: cuando la
+       app reporta una restriccion, el patron confirma con la Capitania, y lo que
+       esa Capitania le responda es responsabilidad de ella. La app no cita
+       resoluciones locales.
+       La pertenencia Capitania->Gobernacion tampoco hace falta buscarla ahi: ya
+       esta por el decreto, por la agrupacion del indice y por el campo de
+       reparticion de SITPORT, y las tres coinciden.
+       Quedan solo los que aportan geometria utilizable a un caso abierto. Los que
+       entraron por lo que dicen salen, y su hallazgo vive en la bitacora."
+
+    ESO REDUJO EL INGRESO DE SEIS A UNO. La version anterior de esta bitacora
+    listaba seis entradas; cinco pasaron a §4 sin perder nada de lo que se midio
+    sobre ellas. El hallazgo de cada una sigue escrito, solo que aca y no en el
+    directorio de fuentes.
+
+    EL TEST QUE SE APLICO, en dos partes, las dos obligatorias:
+      (a) trae COORDENADAS PROPIAS —no las del decreto, que ya estan en el insumo,
+          ni toponimia que haya que georreferenciar aparte—; y
+      (b) esas coordenadas DELIMITAN ALGO dentro de la zona de un caso abierto.
+
+    Una sola de las diecinueve pasa las dos.
+
+--------------------------------------------------------------------------------
+1. RESUMEN
+--------------------------------------------------------------------------------
+
+  · La fuente es alcanzable y recorrible entera: 44 paginas, 1.180 documentos,
+    16 Gobernaciones, 61 Capitanias con pagina de las 64 del insumo.
+  · Se seleccionaron 19 candidatas por titulo y se BAJARON Y LEYERON LAS 19.
+  · UNA entra al repositorio con procedencia:
+    `data/decreto/fuente_resoluciones_locales/`.
+  · DIECIOCHO no entran. Su hallazgo esta en §4 y su URL en `candidatos_19.json`:
+    lo que sirve de cada una es lo que dice §4, no su PDF. Si alguna hiciera
+    falta despues, se vuelve a bajar.
+  · Cuatro de esas dieciocho ni siquiera se pudieron leer: son escaneos sin capa
+    de texto.
+  · NINGUNA de las diecinueve delimita una jurisdiccion de Capitania. Delimitan
+    PUERTOS y AREAS DE OPERACION dentro de una bahia. Ver §5: eso descarta la via
+    para el resto de los casos, y es el resultado mas importante de esta sesion.
+  · Casos del inventario tocados por evidencia nueva: B1, C3, A8/A9, A3/A4.
+    Ninguno cerrado. Ninguno adjudicado.
+
+--------------------------------------------------------------------------------
+2. LA FUENTE Y COMO SE RECORRE
+--------------------------------------------------------------------------------
+
+2.1 · ALCANZABLE
+    HTTP 200 sin autenticacion, sin JavaScript, sin bloqueo. Se comprobo con
+    `curl` directo antes de disenar nada.
+
+2.2 · LA PREMISA DEL ENCARGO QUE RESULTO FALSA
+    El encargo decia "la barra lateral de cualquiera de ellas lista todas las
+    demas". NO ES ASI. Sobre el HTML crudo de la pagina de CP Cisnes, los unicos
+    enlaces `taxport_34_*` son el mismo, su Gobernacion y la raiz. Ninguna pagina
+    del sitio enumera sus hijos: los IDs de termino de la URL
+    (`taxport_34_<gobernacion>_<capitania>`) NO son descubribles navegando.
+
+    Lo que si hace recorrible la fuente es el indice raiz, que es plano y trae la
+    ruta taxonomica embebida en cada item:
+
+        data-ga-action="Resoluciones Locales AA.MM - Castro - CP Achao"
+
+    Gobernacion y Capitania vienen en el dato. No hay que inferirlas.
+
+2.3 · EL RECORRIDO, MEDIDO
+    Raiz: https://www.directemar.cl/directemar/site/tax/port/fid_adjunto/taxport_34___{N}.html
+
+    paginas                    : 44
+    documentos                 : 1.180
+    URLs de PDF distintas      : 1.180  (duplicadas: 0 — sirve de clave primaria)
+    rango de publicacion       : 2001-03-07 .. 2026-08-11
+    Gobernaciones              : 16
+    unidades CP con pagina     : 61
+    unidades GM con pagina     : 9
+    items sin unidad atribuible: 36  (data-ga-action vacio o cortado)
+
+    Salida literal: `recon_resoluciones_locales_2026-08-12/salida_recon.txt`
+    Regenerador   : `recon_resoluciones_locales_2026-08-12/recon_resoluciones_locales.js`
+
+    EL CATALOGO DE LOS 1.180 NO SE VERSIONA. Eran 476 KB de JSON derivado, el
+    78 % del directorio, para un frente que este mismo documento cierra. El
+    script lo reconstruye en una corrida, y el estado de la fuente al 2026-08-12
+    queda fijado por `paginas_sha256.txt` —44 hashes—, que es lo que de verdad
+    sirve para saber si algo cambio. Mismo criterio que se aplico a los HTML
+    crudos en §2.5.
+
+2.4 · LAS 61 CONTRA LAS 64 — cotejo doble
+    Contra `data/decreto/jurisdicciones_v2.json`: 61 de 64 tienen pagina.
+    SIN PAGINA: `papudo`, `rada_covadonga`, `bahia_paraiso`.
+
+    Que `bahia_paraiso` no publique ninguna resolucion local es el mismo caso que
+    el inventario tiene abierto como C9/E1. Sus dos hermanas antarticas si
+    publican (CP Bahia Fildes, 3 documentos; CP Soberania, 1).
+
+    Tres coinciden con OTRO NOMBRE, y un cotejo por texto las daria como no
+    coincidencia. Los alias van declarados en el script, no resueltos por
+    parecido (§4.2 de CLAUDE.md — un mapeo sin destino es error, no caso por
+    defecto):
+
+        DIRECTEMAR              insumo
+        CP Villarica            lago_villarrica
+        CP Panguipulli          lago_panguipulli
+        CP Soberania            puerto_soberania
+        CP Lirquen - Tome       lirquen          (una sola unidad)
+
+    Segundo cotejo, contra el catalogo del propio DIRECTEMAR
+    (`_bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv`, 64 filas):
+    la salida esta en `salida_recon.txt`. Sirve para separar "el insumo tiene una
+    Capitania que DIRECTEMAR no reconoce" de "DIRECTEMAR la reconoce pero no le
+    publica resoluciones". Papudo es lo segundo.
+
+    ESTE COTEJO NO SE HIZO PARA RESOLVER LA PERTENENCIA Capitania->Gobernacion.
+    Esa ya esta resuelta por tres fuentes que coinciden —el decreto, la
+    agrupacion del propio indice y el campo de reparticion de SITPORT— y el owner
+    lo dejo dicho en §0.2. Se hizo para medir la cobertura del indice.
+
+2.5 · LOS HTML CRUDOS NO SE VERSIONAN
+    4,2 MB que nadie lee. Se aplico el precedente de `geodata/costa/PROCEDENCIA.txt`
+    y de la poda del sondeo (commit 297b220): queda `paginas_sha256.txt` con la
+    URL y el sha256 de las 44 paginas tal como se bajaron el 2026-08-12.
+    El script las vuelve a bajar solo.
+
+--------------------------------------------------------------------------------
+3. LA UNICA QUE ENTRA
+--------------------------------------------------------------------------------
+
+CP TIERRA DEL FUEGO Ord. 12000/176, 30-sep-2020            caso B1
+
+  "Establece la prohibicion de fondeo de material de pesca en area de ingreso al
+   Puerto de Porvenir, canalizo de acceso, Bahia Chilota y Bahia Porvenir."
+
+  PASA (a): trae coordenadas propias.
+  PASA (b): delimitan un AREA dentro de la zona en disputa de B1 —la franja al
+            Oriente de Cabo San Vicente que los parrafos de `punta_delgada` y
+            `tierra_del_fuego` cubren los dos sin que el decreto diga como se
+            reparten—.
+
+  Cita literal, §1 cuarto vinetazo:
+
+    "Area de acceso al Puerto de Porvenir, Estrecho de Magallanes, comprendida
+     entre Punta de Palos, Punta Victoria, Punto ref. 1 (L: 53 16 47 S;
+     Long: 070 31 31 W) y Punto ref. 2 (Lat: 53 20 53 S; Long: 070 31 31 W)."
+
+  Los dos puntos comparten el meridiano 070 31 31 W, que hace de borde
+  occidental. Los otros dos vertices son toponimia y hay que georreferenciarlos
+  aparte. El area mide unos 7,5 km de Norte a Sur.
+
+  QUE ES Y QUE NO ES: es un area de acceso a puerto cuyo objeto es prohibir el
+  fondeo de material de pesca. NO es limite jurisdiccional. Que Tierra del Fuego
+  trace un area en el Estrecho al Oriente de Cabo San Vicente es evidencia de
+  donde opera, no norma de jurisdiccion, y no revoca al decreto.
+
+  Ficha con URL, sha256 y la advertencia de escala en
+  `data/decreto/fuente_resoluciones_locales/PROCEDENCIA.md`.
+
+--------------------------------------------------------------------------------
+4. LAS DIECIOCHO QUE NO ENTRAN, Y POR QUE
+--------------------------------------------------------------------------------
+
+De las dieciocho no se guarda el PDF ni su texto: lo que sirve de cada una es lo
+que dice esta seccion. Su URL y su sha256 estan en `candidatos_19.json`, asi que
+cualquiera de estas afirmaciones se puede volver a comprobar bajando el archivo y
+comparando el hash. Criterio del owner: en el commit queda lo poco que sirve y
+nada mas.
+
+4.1 · TRAEN COORDENADAS, PERO NO APORTAN AL CASO QUE TOCAN — tres
+    Fallan (b). Son las tres revocables si el owner quiere otro criterio: ver §8.
+
+    · CP TIERRA DEL FUEGO Ord. 12600/012, 18-dic-2023  — caso B1
+      "Resolucion de operacion de Bahia Chilota". Tres puntos de fondeo con
+      coordenadas (A 53 18 13 S / 070 25 54 W; B 53 18 04 S / 070 24 38 W;
+      C 53 18 03 S / 070 23 57 W). Son PUNTOS, no delimitan nada, y B1 no pide
+      posiciones —la posicion de la bahia 137 ya se conoce, esta a 230 m de la
+      linea— sino un reparto entre dos Capitanias. Declara ademas que los limites
+      del puerto NO estan definidos en el Apendice "1" del Reglamento de
+      Practicaje y Pilotaje, y que aun asi se fijan en la linea Punta Victoria -
+      Punta Palos.
+
+    · CP JUAN FERNANDEZ Ord. 12.000/48, 18-jun-2020  — caso A3/A4
+      "Establece delimitacion y zonificacion de Bahia Cumberland". Cinco
+      coordenadas que delimitan la zona de fondeo de embarcaciones menores DENTRO
+      de la bahia, mas tres zonas por accidentes locales (rampa sur de
+      pescadores, area marina protegida "El Palillo", Punta Loberia). A3/A4 pide
+      la geometria de las ISLAS —San Felix, San Ambrosio, archipielago de Juan
+      Fernandez— y esto delimita el interior de una bahia. La escala no alcanza
+      por tres ordenes de magnitud.
+      Es la que el encargo nombraba primero. La respuesta a "trae la
+      delimitacion de verdad" es: trae una, y no es la que hace falta.
+
+    · CP JUAN FERNANDEZ Ord. 12600/37, 28-jun-2022  — caso A3/A4
+      "Establece condiciones de operacion en la Bahia Cumberland". Cuatro
+      vertices con coordenadas del area prohibida de fondeo alrededor del SMS
+      "Dresden", y los limites del Puerto como linea Punta San Carlos - Punta
+      Loberia (carta SHOA 5411, ed. 2013). Mismo problema de escala.
+      TRAMPA DE NUMERACION, anotada para que no se descubra dos veces: figura con
+      codigo 12000/37, y la resolucion 12000/48 de 2020 deroga una "12.000/037"
+      DEL 4 DE SEPTIEMBRE DE 2012. Son dos resoluciones distintas con el mismo
+      correlativo, diez anos aparte.
+
+4.2 · ENTRARON POR LO QUE DICEN, NO POR LO QUE MIDEN — dos
+    Fallan (a): no traen coordenadas propias. Su hallazgo se conserva aca, que es
+    donde el owner dijo que corresponde.
+
+    · CP TIERRA DEL FUEGO Ord. 12000/120, 18-dic-2023  — casos B1 y C3
+      "Establece condiciones de puerto y limites de operacion para el puerto de
+      Porvenir". Todo por accidentes. Dos cosas que valen como hallazgo:
+      (i)  fija los limites del puerto de Porvenir en la linea Punta Palo (N) -
+           Punta Victoria (S), carta SHOA 11.421, Derrotero SHOA 3004 vol. IV;
+      (ii) §3: "las condiciones de puerto para BAHIA GENTE GRANDE y BAHIA INUTIL
+           se regiran bajo la presente disposicion hasta que no se emita una
+           disposicion exclusiva para dichos sectores".
+      (ii) TOCA C3. El inventario dice que lo limpio para anclar
+      `tierra_del_fuego` es uno de los cinco cuerpos que su propio parrafo
+      enumera —Gente Grande, Bahia Inutil, Canal Whiteside, Canal Gabriel, Seno
+      Almirantazgo—, y aca DOS de los cinco quedan nombrados como administrados
+      por esta Capitania. ES EVIDENCIA DE PRACTICA, NO COORDENADA: no elige el
+      ancla, la sostiene. Deja sin efecto la C.P.T.F. Ord. 12000/088 del
+      25-ago-2023.
+
+    · CP TALCAHUANO Ord. 12.600/491, 26-dic-2023  — caso A8/A9
+      "Establece condiciones de operacion para la Bahia de Concepcion". Citando
+      el Derrotero de la Costa de Chile, publicacion SHOA 3001, dice que "la
+      bahia de Concepcion comprende desde el MORRO LOBERIA, con una linea
+      imaginaria hasta PUNTA TUMBES, con casi 6 millas de boca por 9 millas de
+      saco".
+      Eso es la boca de la bahia por sus dos puntas, y A8/A9 existe porque el
+      decreto describe el contorno en prosa. PERO SON DOS TOPONIMOS SIN
+      COORDENADA, y la fuente real de ese dato es el Derrotero SHOA 3001, no una
+      resolucion de Capitania. Si alguna vez hace falta, LO QUE HAY QUE CONSEGUIR
+      ES EL DERROTERO; guardar la resolucion como intermediario seria guardar el
+      artefacto equivocado.
+      Transcribe ademas el parrafo del D.S. 991 para Talcahuano: SE COTEJO contra
+      `jurisdicciones_v2.json` y COINCIDE, incluidas las coordenadas de Punta de
+      Lobos (36 42 25 S / 073 09 32 W) y del rio Andalien (36 44 10 S). Sirve de
+      testigo externo de que el texto del insumo es el vigente; no aporta
+      geometria.
+      CONTIENE DOS FIGURAS que `pdftotext` no extrae —"Foto N 1: Limites
+      Jurisdiccionales de la Capitania de Puerto de Talcahuano" y "Foto N 2:
+      Limites del Puerto"—. Que muestran es NO DETERMINADO: en esta maquina no
+      hay `pdfimages` ni OCR.
+
+4.3 · NO SE PUDIERON LEER — cuatro escaneos sin capa de texto
+    pdftotext extrae entre 6 y 16 bytes. Comprobado sobre los objetos del PDF:
+    traen /Image y no traen /Font.
+
+      lirquen_operacion_bahia_concepcion    CP Lirquen 12600/476, 13-nov-2025
+      hangaroa_operacion_bahia              CP Hanga Roa 12250/41, 05-may-2025
+      pmo_pei_lago_chapo                    CP Pto Montt 12210/152, 01-sep-2025
+      lgc_embarcadero_escualo_rio_cochrane  CP LGC 12600/13, 20-jul-2026
+
+    QUE CONTIENEN: **NO DETERMINADO**. No hay OCR ni `pdfimages` en esta maquina;
+    solo `pdftotext` (xpdf 4.06). No se sustituye por una suposicion (§3.2).
+    LA MAS CARA ES LA DE LIRQUEN: es la contraparte exacta de A8/A9 —la otra
+    Capitania que dicta sobre la bahia de Concepcion— y es justo la que no se
+    puede leer. Es lo unico que este reconocimiento no pudo contestar.
+
+4.4 · SE LEYERON Y NO TRAEN GEOMETRIA — nueve
+    · williams_lmi_canal_beagle (CP Williams 12000/13, 30-mar-2023) — caso A7.
+      Prohibe artes de pesca "a menos de un cable del limite maritimo
+      internacional en el Canal Beagle". PRESUPONE el LMI conocido; no lo
+      describe ni lo cita. No aporta al hito N 26.
+    · chacabuco_laguna_san_rafael (CP Chacabuco 12000/321, 25-abr-2023) — C5 y,
+      de rebote, B2/B3. Ver §5.2: transcribe el decreto palabra por palabra. Sus
+      dos coordenadas (46 40 00 S / 073 51 18 W y 46 41 30 S / 073 52 30 W)
+      delimitan un sector prohibido de fondeo frente al ventisquero, no la
+      extension de la jurisdiccion.
+    · quintero_pei_bahia_papudo (CP Quintero 12210/81, 02-feb-2026) — caso D3.
+      El PDF publicado esta CENSURADO y las coordenadas del sector no estan en el
+      texto. Queda que Quintero otorgo un permiso sobre "Bahia de Papudo, Comuna
+      de Papudo": senal debil, un PEI no define jurisdiccion.
+    · tdf_puntos_fondeo_porvenir (12000/78, 21-jul-2021) — REDUNDANTE con
+      12600/012: las mismas tres coordenadas.
+    · tdf_navegacion_canalizo_chilota (12000/73, 08-jul-2021) — area por
+      accidentes, ya cubierta.
+    · tdf_deportes_nauticos_canalizo_chilota (12400/1, 26-feb-2016) — idem.
+    · tdf_terminal_bahia_gente_grande (12000/11, 04-abr-2012) — inhabilita un
+      terminal. Cero geometria.
+    · talcahuano_area_prohibida_fondeo_tumbes (12000/227/22, 25-oct-2022) — 20 m
+      por costado del cabezo del muelle y 200 m lineales hacia Isla Quiriquina,
+      con grafico en anexo. Micro y sin coordenadas.
+    · jf_zona_fondeo_viveros_cumberland (12000/61, 20-nov-2012) — cuatro
+      coordenadas de un area de fondeo de viveros, misma bahia, anteriores a las
+      dos de Juan Fernandez de §4.1.
+
+--------------------------------------------------------------------------------
+5. EL RESULTADO NEGATIVO — LA VIA QUEDA DESCARTADA PARA EL RESTO
+--------------------------------------------------------------------------------
+
+5.1 · LAS RESOLUCIONES LOCALES NO DELIMITAN JURISDICCIONES
+
+    Leidas las diecinueve, el patron es uniforme y no tiene excepcion:
+
+      · Cuando una resolucion local habla de LIMITES, habla de LIMITES DEL
+        PUERTO, no de limites de la jurisdiccion. Las dos de Tierra del Fuego y
+        las dos de Juan Fernandez fijan una linea entre dos puntas que cierra una
+        bahia. Eso es una boca de puerto, no una frontera entre Capitanias.
+      · Cuando una resolucion local cita la JURISDICCION, la cita del D.S. 991 y
+        la transcribe. Se comprobo en dos casos, palabra por palabra, contra
+        `jurisdicciones_v2.json`: Talcahuano (§4.2) y Chacabuco (§5.2). Ninguna
+        de las dos agrega un metro.
+      · Las coordenadas que aparecen son de PUNTOS DE FONDEO y AREAS DE
+        RESTRICCION dentro de una bahia. Su escala son cientos de metros. La
+        escala de los casos abiertos son decenas de kilometros.
+
+    DE AHI SE SIGUE, y es lo que hay que dejar escrito: **esta fuente no cierra
+    ninguno de los casos que dependen de saber donde termina una jurisdiccion.**
+    No sirve para los seis pares de separacion lateral (causa E), no sirve para
+    el limite Sur de la XI Region (A1), no sirve para la costura Cisnes/Aguirre
+    (B2/B3), no sirve para el extremo argentino (A5/A6), no sirve para el hito 26
+    del Beagle (A7), no sirve para la geometria de islas (A3/A4).
+
+    Lo que si da son ANCLAS DE PRACTICA: que Tierra del Fuego administra Porvenir,
+    Bahia Chilota, Bahia Gente Grande y Bahia Inutil; que Talcahuano y Lirquen
+    dictan las dos sobre la bahia de Concepcion. Eso orienta una adjudicacion. No
+    la hace, y esta bitacora no la hace.
+
+    ESTE ES EL RESULTADO PRINCIPAL DE LA SESION. Que un camino no sirva es
+    resultado: cierra la pregunta "habra algo en las resoluciones locales" para
+    los quince casos que no aparecen en §3 ni en §4.1-4.2, y ahorra volver a
+    abrirla.
+
+5.2 · LA PRUEBA MAS FUERTE DEL PUNTO ANTERIOR: CHACABUCO
+
+    La resolucion de Chacabuco 12000/321 transcribe su propia jurisdiccion:
+
+      "por el Norte desde la linea imaginaria conformada desde el Este por el
+       paralelo 44 57 15 S, hasta Punta San Andres, Latitud 44 57 15 S y Longitud
+       73 21 40 W, continuando en diagonal entre los puntos: 45 14 45 S /
+       73 16 24 W (Puerto Perez); 45 22 18 S / 73 29 30 W (Islote Rodriguez);
+       45 27 48 S / 73 33 07 W (Isla Traiguen) y desde este ultimo punto por el
+       paralelo 45 27 48 S, hacia el Weste. Por el sur el paralelo 47 00 00 S
+       incluyendo los canales interiores hasta la Laguna San Rafael inclusive.
+       Excluye el Lago General Carrera."
+
+    Cotejado contra `jurisdicciones_v2.json` -> `puerto_chacabuco.texto_decreto`:
+    **es el parrafo del decreto, sin una sola diferencia de fondo.**
+
+    Esto importa por dos motivos, y conviene no razonarlo mal:
+
+    (a) Una Capitania que en 2023 se describe a si misma citando el D.S. 991
+        confirma que el texto del insumo es el vigente. Es testigo externo, y de
+        eso se sigue que el insumo esta bien, no que el caso este cerrado.
+
+    (b) Los cuatro puntos que nombra —Punta San Andres, Puerto Perez, Islote
+        Rodriguez, Isla Traiguen— son los MISMOS que el inventario cita en B2/B3
+        para la costura Cisnes/Aguirre. Podria parecer que aca esta la
+        prolongacion que falta, porque dice "hacia el Weste". NO LO ES: esa cadena
+        es el limite AGUIRRE/CHACABUCO —el decreto la escribe identica en los
+        parrafos de `puerto_aguirre` y `puerto_chacabuco`, y en los dos dice
+        "hacia el Weste"—. Lo que B2/B3 necesita es como se prolonga la linea
+        CAYO BLANCO - PUNTA SAN ANDRES, que separa Cisnes de Aguirre, y de eso
+        esta resolucion no dice nada.
+
+        Se verifico leyendo los tres parrafos del insumo. B2/B3 SIGUE ABIERTO.
+
+--------------------------------------------------------------------------------
+6. HALLAZGO LATERAL — NO ES RESULTADO DEL ENCARGO, NO BAJA AL PLAN
+--------------------------------------------------------------------------------
+
+Queda registrado porque se midio, no porque se pida hacer algo con el. El owner
+lo saco explicitamente del alcance el 2026-08-12 (§0.1): es un frente distinto, y
+ademas la app no cita resoluciones locales (§0.2).
+
+Barriendo los 1.180 titulos aparecen cuatro familias de instrumento local. La
+separacion es POR TITULO; no se abrio el PDF de la mayoria, y afirmar que dos
+titulos distintos hacen lo mismo seria afirmar contenido no leido (§3.2).
+
+  A · "Define / establece condiciones de puerto" ......... 10 Capitanias
+  B · "Resolucion de operacion de la bahia X" ............ 16 Capitanias
+  C · "Procedimiento ante condiciones de tiempo variable"    8 Capitanias
+  D · "Plan (subsidiario) de mal tiempo" .................   9 Capitanias
+
+  con instrumento de A, B o C ....... 29 de 61
+  con instrumento de A, B, C o D .... 34 de 61
+  sin ninguno de los cuatro ......... 27 de 61
+
+Siete de las diez de la familia A son de 2025-2026. El detalle por Capitania, con
+fecha y URL, esta en `salida_recon.txt`.
+
+--------------------------------------------------------------------------------
+7. SI ESTO SE VUELVE A CONSULTAR
+--------------------------------------------------------------------------------
+
+Medido, no supuesto:
+
+  · La clave de comparacion es la URL DEL PDF. Las 1.180 son unicas.
+  · LAS FECHAS NO SIRVEN de clave: 352 de 1.180 tienen la fecha de publicacion
+    desfasada mas de 40 dias respecto del directorio donde vive el PDF. Ejemplo:
+    la resolucion de condiciones de puerto de CP Cisnes figura con fecha
+    23-ene-2026 y su PDF vive en /docs/20221003/.
+  · Hay que rebajar el indice ENTERO. El orden va por Gobernacion y unidad, y
+    dentro por el correlativo que cada Capitania le pone a su resolucion: una
+    resolucion nueva entra en medio y corre todo lo que sigue. Mirar la ultima
+    pagina no detecta nada.
+  · Un reemplazo se ve como un ITEM NUEVO cuyo titulo empieza con "Deroga". Hay
+    13 en el indice de hoy, cinco de 2026. CASI NINGUNA DICE EN EL TITULO QUE
+    DEROGA ("Deroga resolucion local que se indica"): la derogatoria avisa que
+    algo cambio, no que.
+  · 36 de 1.180 items (3%) no traen ruta taxonomica completa. Para esos la
+    Capitania hay que sacarla del prefijo del titulo ("C.P. ANDEZ",
+    "C.P. Pichilemu"), que existe pero no esta normalizado. Uno de ellos es de
+    Juan Fernandez.
+
+Comando para el owner, PowerShell:
+
+    node _bitacoras\recon_resoluciones_locales_2026-08-12\recon_resoluciones_locales.js
+
+--------------------------------------------------------------------------------
+8. LO QUE QUEDA DEL LADO DEL OWNER
+--------------------------------------------------------------------------------
+
+Ninguna decision es urgente y ninguna la tomo yo.
+
+  D-a · Si se abre o no el PDF de LIRQUEN 12600/476 a mano. Es el unico agujero
+        de este reconocimiento y es la contraparte de A8/A9. Dos caminos:
+        (1) abrirlo el owner y transcribir lo que diga de la bahia — costo:
+            minutos, resultado: cierra el agujero o lo declara vacio;
+        (2) dejarlo declarado NO DETERMINADO — costo: cero, y A8/A9 se queda con
+            un solo lado leido.
+        RECOMIENDO (1): son paginas escaneadas y es lo unico que este frente no
+        pudo contestar.
+
+  D-b · Si las tres de §4.1 vuelven. Salieron por fallar la parte (b) del test
+        —traen coordenadas que no aportan al caso—. Si el criterio fuera "toda
+        coordenada georreferenciada sobre una jurisdiccion que hoy no tiene
+        ninguna", las dos de Juan Fernandez vuelven, porque son los unicos nueve
+        puntos con coordenada que existen sobre el archipielago en todo lo
+        revisado. NO LO PROPONGO: A3/A4 pide contorno de islas y esos puntos no
+        lo dan ni empezando. Lo dejo escrito para que el descarte sea revocable
+        con un dato, no de memoria.
+
+  D-c · Si se consigue el DERROTERO SHOA 3001 para la boca de la bahia de
+        Concepcion (Morro Loberia - Punta Tumbes, §4.2). Esa es la fuente real;
+        la resolucion de Talcahuano solo la cita. Toca A8/A9 y es la unica pista
+        concreta que salio de este frente para ese caso.
+
+  D-d · Si las anclas de practica de Tierra del Fuego (§3, §4.2) pesan sobre B1 y
+        C3. Son evidencia de que administra Porvenir, Bahia Chilota, Bahia Gente
+        Grande y Bahia Inutil. No revocan al decreto y no eligen el ancla.
+        NO LO HICE.
+
+--------------------------------------------------------------------------------
+9. OBJECIONES Y ERRORES MIOS EN ESTA SESION (§8.5 de CLAUDE.md)
+--------------------------------------------------------------------------------
+
+  · La premisa de la barra lateral era falsa (§2.2). Se reporto antes de disenar
+    el recorrido, y el recorrido salio por otro lado.
+  · El encargo original pedia un catalogo por familias de instrumento que el
+    owner despues saco del alcance. Yo lo habia entregado como resultado
+    principal del primer reporte. La correccion es del owner y es correcta: ese
+    catalogo no contesta ninguna pregunta del inventario. Quedo en §6.
+  · **COMMITEE ANTES DE TIEMPO.** El paquete se commiteo como `0360bc9` con las
+    seis entradas, cuando el owner todavia no habia fijado el criterio de
+    permanencia. Se deshizo con `git reset HEAD~1` —local, nunca pusheado, arbol
+    intacto— y se rearmo con el criterio de §0.2. La autorizacion de commit de un
+    mensaje no cubre el estado del trabajo despues de una correccion de alcance;
+    ese fue el error.
+  · La seleccion de las 19 candidatas la hice yo, por titulo, sobre los 1.180.
+    Un titulo que prometa poco y contenga una delimitacion se me escapo. La
+    seleccion esta declarada en `candidatos_19.json` para que se pueda discutir
+    caso por caso en vez de tener que confiar en ella.
+
+================================================================================
+FIN. Una resolucion entra con procedencia. Dieciocho quedan aca con su hallazgo.
+Ningun caso cerrado, ninguna adjudicacion, insumo y plan intactos.
+================================================================================
