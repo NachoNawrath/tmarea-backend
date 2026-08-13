@@ -4,6 +4,15 @@ Fecha: 2026-08-12
 Origen: cierre del sondeo de catálogo (`sondeo_catalogo_cierre_2026-08-12.txt`)
 Estado: **REDACTADA, NO ENVIADA.** El envío es del owner.
 
+> **NOTA AGREGADA EL 2026-08-13 — este archivo ya no es el que se envía.**
+> Nada de lo de abajo se reescribe (CLAUDE.md §3.3): queda como constancia de
+> cómo se redactaron los tres primeros casos. El owner decidió el 2026-08-13 que
+> la consulta sea **una sola y al final de la construcción**, así que los casos
+> se acumulan en **`_bitacoras/consulta_directemar_registro.md`**, que es el
+> archivo vivo. Los tres de acá ya están allá, con la evidencia nueva del
+> 2026-08-13 sumada al Caso 1 (`resolver(146)` devuelve `null`, y SITPORT cuelga
+> el sector nuevo del río Bueno de la repartición 188 y no de la 189).
+
 ---
 
 ## Dónde vive la consulta, y por qué estos tres van aparte

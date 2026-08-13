@@ -595,6 +595,98 @@ real y la geometría lacustre definitiva (paso 5); el efecto sobre las 8 rutas d
 arnés y el alcance nuevo del control de drift (paso 6); la rama activa del guard de
 arranque (paso 5, es una línea con mordida propia 16/16).
 
+#### Lo que D13 necesita y hoy no existe — medido el 2026-08-13, antes de construir nada
+
+**El owner pidió que se le dijera antes de construirlo, y la respuesta es que hay que
+partir su instrucción en dos mitades, porque una se cumple hoy y la otra no.**
+
+**Lo que sí existe: declarar.** El precedente que la decisión invoca —las 11 Capitanías
+de D11— es un bloque `alcance_d11` dentro de `cotejo_lacustre_adjudicado.json`, con su
+`carencia_declarada`. Escribir el río Bueno igual es **aditivo y no toca el contrato**.
+
+**Lo que NO existe: que esa declaración cambie algo.** `alcance_d11` lo **escribe**
+`scripts/fase2_adjudicacion.py` y **no lo lee ningún archivo de `src/`** — medido con
+`grep` sobre `src/` y `scripts/`: los catorce consumidores del cotejo son todos scripts.
+O sea que **la declaración de D11 es documentación del insumo, no un mecanismo del
+motor**: no reclama ningún tramo, no produce aviso y no evita nada.
+
+De ahí se sigue el punto que decide: **con el mecanismo de D11, un tramo por el río Bueno
+se sigue registrando como defecto de construcción nuestro.** El camino está leído en el
+código: publicada la lacustre, `ambitos-publicados.js` la saca de `con_geografia`
+—`publicado === false` es la condición para reclamar—, ninguna zona de aviso la nombra, y
+`cobertura-jurisdiccional.js` cae a `hueco_de_capa`, la causa (b) de INV-3.6.
+
+**¿Toca INV-3.6? No, y el precedente es E0.2.** La causa (a) es *"no tiene geometría
+cargada"*, que es un hecho de la base, y el río Bueno no la tiene. E0.2 ya agregó un
+segundo origen de la causa (a) sin tocar el contrato; esto sería el **tercero**: *cuerpo
+declarado sin geometría dentro de una jurisdicción publicada*. Aditivo en dato y en
+código.
+
+**El costo real no es el mecanismo: es la geografía de reclamo.** Para el ámbito salía del
+andamio. Para el río Bueno **no hay geometría en ninguna fuente cargada** —por eso el
+cotejo lo rechazó—, así que un reclamo exige dibujar una: un corredor sobre los tres
+puntos del decreto (Los Patos, La Goleta, El Manzanito), una banda, o una capa
+hidrográfica que hoy no está cargada. Convertir esos tres puntos en geometría es
+**interpretar el decreto**, que este plan ya declaró que es del owner — y además choca con
+la dependencia que D13 declara: si la respuesta de DIRECTEMAR mueve la jurisdicción del
+sector, la figura dibujada antes sobra.
+
+**Recomendación, con sus dos alternativas declaradas (§0.2):**
+
+| | qué hace | qué cuesta | qué deja abierto |
+|---|---|---|---|
+| **A — declarar sin reclamo** *(recomendada)* | escribe la carencia del río Bueno donde se escribió la de D11, con su causa y su dependencia | bajo, aditivo, no toca el contrato ni el clasificador | **un tramo por el río Bueno se sigue registrando como defecto (b)**. Queda como deuda escrita, acotada y visible |
+| **B — tercer origen de la causa (a)** | registro nuevo + rama en `cobertura-jurisdiccional.js`, hermano de E0.2 | mecanismo ≈ E0.2 (dato + validador + mordida + una rama), **más una geografía de reclamo que hay que dibujar** | la figura depende de DIRECTEMAR: se puede tirar entera |
+| **C — no publicar `lago_ranco`** | espera a que el río Bueno tenga geometría | frena E3 entero por un cuerpo de seis | contradice la decisión de publicar |
+
+**Por qué A y no B**: B es correcto y llega tarde o temprano, pero hoy su única pieza
+cara —la figura— depende de una consulta sin enviar. A deja el defecto (b) registrado en
+un caso acotado, **declarado y visible en el registro interno**, que es exactamente la
+asimetría que INV-3.6 pide sostener; B lo evita al precio de dibujar una geometría que la
+respuesta puede invalidar. La diferencia para el patrón es **nula**: en los dos casos ve
+el mismo aviso; lo que cambia es el registro interno.
+
+##### D13 DECIDIDA — 2026-08-13, por el owner: OPCIÓN A, declarar sin reclamo
+
+**Fundamento del owner:** para el patrón la diferencia es **nula** —ve el mismo aviso en
+los dos casos— y lo que cambia es el registro interno. La B pide **dibujar una figura
+decidiendo qué implican tres puntos sueltos del decreto**, que es interpretar la fuente, y
+esa figura puede quedar tirada cuando DIRECTEMAR conteste.
+
+**LA DEUDA, SIN SUAVIZAR.** Mientras esto esté así, **el sistema registra internamente
+como defecto de construcción propio algo que no lo es**: un tramo de ruta por el río Bueno
+cae en la causa (b) de INV-3.6 —*"una zona que ninguna jurisdicción reclama"*, *"un
+defecto de construcción nuestro"*— y las dos mitades son falsas. La jurisdicción existe,
+el decreto se la da a `lago_ranco` con tres sectores nombrados, y no está mal construida
+sino **sin construir por falta de geometría anclable**.
+
+**Es tolerable porque está declarada y porque no sale al patrón. No porque sea
+correcta.** Es exactamente la misma forma de falsedad interna que hundió al camino B de
+E3; la diferencia —la única, y hay que decirla— es que allá era el ámbito entero y sin
+declarar, y acá es un cuerpo de seis, acotado, escrito y con condición de cierre.
+
+**Condición de cierre, para que la deuda no sobreviva a su causa:**
+
+- **se pasa a B cuando DIRECTEMAR conteste** el sector del río Bueno (registro
+  acumulativo `_bitacoras/consulta_directemar_registro.md`, entradas 1 y 4); o
+- **antes, si aparece una capa hidrográfica cargada** que dé la geometría del río
+  **sin interpretarla** — ahí la figura deja de ser una lectura del decreto y pasa a
+  ser un dato, y B se vuelve barato y sin riesgo de quedar tirado.
+
+**Lo que el paso 5 tiene que escribir, y todavía no está escrito:** la declaración de la
+carencia del río Bueno con esta causa y esta condición de cierre, en el lugar donde vive
+la de D11, más su validación de forma. Es aditivo, no toca el contrato ni el clasificador,
+y **no evita el registro (b)** — que es justamente lo que esta deuda declara.
+
+**La dependencia de D13 tiene dónde vivir**: la pregunta por el sector del río Bueno
+—y la de la bahía 258, que apareció el mismo día— están en
+**`_bitacoras/consulta_directemar_registro.md`**, el registro acumulativo que el owner
+abrió el 2026-08-13. **Se cierra y se envía cuando la construcción termine**: una sola
+consulta, no tres parciales. Ahí también entró la evidencia dura del Caso 1 (la
+repartición 189 ausente de los dos endpoints de catálogo y `resolver(146) → null`) y la
+evidencia de práctica del Caso 2 (12 resoluciones de Tierra del Fuego contra 1 de Punta
+Delgada, ninguna de ésta sobre Porvenir).
+
 #### Corrección al alcance de E3 — 2026-08-12
 
 **E3 ya no arranca sobre el insumo que este plan inventarió.** La pasada de alineación
@@ -892,6 +984,8 @@ eso D3 (partir el gate) es lo que las vuelve verdaderamente paralelas.
 | D11 | **Alcance del ámbito lacustre**: ¿E3 publica las 6 Capitanías de ámbito lacustre, o todo el agua interior que el decreto adjudica, incluida la de las 11 Capitanías marítimas que nombran cuerpos? | **DECIDIDA 2026-08-12: opción (a), la estrecha** — E3 publica las **6 Capitanías de ámbito lacustre** (18 bahías), y las **11 Capitanías marítimas con cuerpos quedan DECLARADAS como carencia**, no en silencio. **Fundamento del owner, que corrige la pregunta:** no había delta que medir. Esos cuerpos **no tienen geometría hoy**, así que la opción estrecha no le quita nada al patrón — no se puede perder lo que nunca se publicó. Pedir una medición previa del efecto habría sido medir contra la nada. La **(b) queda como frente propio**, con su alcance medido **antes** de comprometerlo, no después. | — (decidida) |
 | D12 | **Galletué / Gualletué**: ¿se acepta la grafía del párrafo de la Gobernación para adjudicar la laguna que hoy está `ausente`? | **DECIDIDA 2026-08-12: sí, se adjudica el `fid 965`** a `lago_villarrica`. Evidencia: coincidencia **única** en los 2.067 del catastro (`LAGO GUALLETUE`, Región IX, Lonquimay, 13,075 km²), respaldo en el **propio decreto** —el párrafo de la Gobernación de Valdivia escribe *Gualletué*— y coherencia geográfica con margen de 2× (8,6 km de Icalma y 24,7 de Conguillío, los otros dos cuerpos de la misma frase, contra 51,9 del siguiente candidato). **⚠ SE ADJUDICA POR `fid`, NUNCA POR GEOMETRÍA — ver la advertencia en §E3.** | — (decidida) |
 | D10 | El ámbito **marítimo** entra al registro como no publicado, y la geografía de reclamo es `jurisdicciones_decreto` | **RESUELTA POR EL AGENTE 2026-08-11 (§0.4), aceptada por el owner** | criterio declarado: "publicado" = la capa del D.S. 991 de ese ámbito pasó sus controles y está en la base, que es lo que D3 ya fijó. Hoy C3 falla y `jurisdicciones_ds991` no existe. Enrutada de este lado porque el efecto sobre lo que el patrón ve está **medido en 0 cambios de bandera** sobre 10 rutas. `e02_propuesta §R1/§R2` |
+| D13 | **El río Bueno dentro de `lago_ranco`**: la jurisdicción se publica en el paso 5 con **5 de sus 6 cuerpos**; el río Bueno está `rechazado` sin geometría en el cotejo. ¿Se publica igual, y con qué mecanismo se declara la carencia? | **DECIDIDA 2026-08-13 por el owner en dos tiempos. (1) SÍ se publica**, con el río Bueno **DECLARADO como carencia** dentro de la jurisdicción, no en silencio, y con la dependencia escrita: la respuesta de DIRECTEMAR puede mover la jurisdicción del sector, y si la mueve, cualquier figura dibujada antes sobra. **(2) OPCIÓN A — declarar SIN reclamo**, medido antes de construir nada: para el patrón la diferencia es nula y la B exige dibujar una figura decidiendo qué implican tres puntos sueltos del decreto. | **La deuda queda escrita sin suavizar**: mientras esto esté así, el sistema registra como defecto de construcción propio algo que no lo es. **Tolerable porque está declarada y porque no sale al patrón; no porque sea correcta.** Cierra cuando DIRECTEMAR conteste, o antes si aparece una capa hidrográfica cargada que dé la geometría sin interpretarla. Todo en §E3, *"Lo que D13 necesita y hoy no existe"* + *"D13 DECIDIDA"*. |
+| D14 | **La bahía 258** (`RÍO BUENO, SECTOR LLANCACURA`, repartición 188 = Lago Ranco), aparecida en el catálogo de SITPORT entre el 2026-08-12 y el 2026-08-13 | **DECIDIDA 2026-08-13 por el owner: NO se declara. Queda como divergencia ABIERTA**, que es lo honesto — SITPORT creció y nosotros no, y no sabemos dónde está. **No se le rellena coordenada** desde `puertos_chile_nacional.json` ni de ninguna otra fuente: rige el precedente de la 257. | Consecuencia anotada y **correcta**: con el cableado de E3 activo pasa de **defecto registrado** a **defecto + aviso**, porque la repartición 188 entra en la ruta por las bahías 144 y 145. El patrón se entera. Medición completa en `_bitacoras/e01_drift_258_2026-08-13.txt` |
 
 ### D7/D8 — por qué son dos y no una. Medido el 2026-08-11.
 

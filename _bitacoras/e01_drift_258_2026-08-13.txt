@@ -1,0 +1,255 @@
+================================================================================
+E0.1 — LA DIVERGENCIA NO DECLARADA DEL 2026-08-13: LA BAHIA 258
+Estado: MEDIDA. NO DECLARADA — declarar es decidir que se acepta, y eso es del
+owner. Solo lectura: no se escribio estado, no se toco el catalogo, no se aplico
+nada del paso 5 de E3.
+Veredicto: es la bahia 258 "RIO BUENO, SECTOR LLANCACURA", de la Capitania de
+Puerto Lago Ranco. NO descarta dato hoy. NO es del mismo tipo que ninguna de las
+tres declaradas, y toca al ambito que el paso 5 esta por publicar.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node scripts\e01_control_drift_catalogo.js
+
+SIN `--estado`: esa corrida NO escribe `data/catalogo/estado_drift.json`. Se
+verifico con `git status` despues de correrla — el archivo no se movio.
+
+Evidencia cruda en `_bitacoras/e01_drift_258_2026-08-13/`:
+    01_control_drift_en_vivo.txt   la corrida entera del control
+    02_registro_258.txt            el registro crudo y su reparticion
+    03_desde_cuando.txt            las tres capturas versionadas y el estado
+    04_geometria.txt               donde cae el sector, medido en PostGIS
+    05_resolver.txt                que devuelve el resolutor de Capitania
+
+
+1. CUAL ES, DESDE CUANDO, Y EN QUE ENDPOINT
+--------------------------------------------------------------------------------
+    IDBahia          258
+    NMBahia          RIO BUENO, SECTOR LLANCACURA
+    CdReparticion    188  =  CAPITANIA DE PUERTO LAGO RANCO
+    color/valor      "default" / 0     (sin restriccion)
+
+**EN QUE ENDPOINT: en `consultaBahias`, y en ninguno mas.** Medido hoy sobre los
+tres endpoints que el control compara: no esta en `consultaRestricciones` (5 ids
+distintos: 71, 86, 90, 97, 105) ni en `totalPronostico` (46 ids). Lo que se
+reviso son esos tres mas `Totalgeneral`; SITPORT tiene mas endpoints y no se
+recorrieron todos — se dice en vez de dejarlo implicito.
+
+**El endpoint donde aparece es el de CATALOGO.** Eso importa para leer el caso:
+no es que SITPORT publique un dato bajo un id que su catalogo no lista —eso es
+la 108—, es que SITPORT **agrego una bahia a su catalogo** y el nuestro no la
+tiene.
+
+**DESDE CUANDO: entre el 2026-08-12T21:23:50Z y el 2026-08-13T15:44Z**, una
+ventana de unas 18 h 20 min. La cota inferior no es "no la vimos", es medicion:
+
+  · tres capturas versionadas de `consultaBahias` —dos del 2026-08-11 y la del
+    sondeo de catalogo del 2026-08-12— tienen **164 ids, id maximo 257, sin 258**;
+  · la corrida del control del **2026-08-12T21:23:50Z** (estado publicado en el
+    commit `a356c9e`) midio **universo 165**; hoy son **166**. El control lista
+    TODA divergencia, y la 258 no esta en ninguna fuente interna: si hubiera
+    estado en SITPORT esa noche, habria salido listada. Su ausencia ahi es
+    prueba de ausencia.
+
+  · primera vez vista: el arranque del backend de hoy (`total 4 · no declaradas
+    1`) y la corrida en vivo de las **15:58:24Z**.
+
+
+2. NO ESTA DESCARTANDO DATO HOY. LA 108 SI, Y POR OTRO MOTIVO
+--------------------------------------------------------------------------------
+**Hoy la 258 no hace perder nada, porque hoy no publica ningun dato.** Existe en
+el catalogo con `color: "default"` y `valor: 0`, sin restriccion y sin
+pronostico. La diferencia con la 108 es de naturaleza, no de grado: la 108
+publica **meteorologia real** en `totalPronostico` que `/weather-ruta` descarta
+en cada llamada.
+
+Lo unico que la 258 atraviesa hoy es `GET /api/sitport/bahias`, que devuelve la
+lista de SITPORT **cruda**, sin filtrar por catalogo: sale tal cual. No hay
+descarte porque no hay dato que descartar.
+
+**LA EXPOSICION, TRAZADA SOBRE EL CODIGO (no simulada).** Si SITPORT publica una
+restriccion bajo la 258:
+
+  · entra a `restriccionesTransito`;
+  · `sitport-routes.js:735` — `bahiaIdsEnRuta` no puede tenerla: no tiene celda
+    en `bahia_jurisdicciones` y tampoco entrada en el join de E0.3. `continue`;
+  · **la caza A3**: `evaluarDriftCatalogo` arma `desconocidas` con
+    `!BAHIA_COORDS[r.id_bahia]`, o sea que la 258 entra **justamente por no
+    estar**, y el defecto se registra SIEMPRE;
+  · el **aviso** al patron depende de que su reparticion este entre las de la
+    ruta. Medido con el resolutor real (05_resolver.txt):
+
+        258 -> CAPITANIA DE PUERTO LAGO RANCO, reparticion 188
+        144 -> reparticion 188        145 -> reparticion 188
+
+    **Hoy la 188 no puede entrar en ninguna ruta**: la 144 y la 145 son lacustres
+    y los lagos son invisibles. Con el cableado del paso 5 activo, una ruta por
+    el Lago Ranco matchea 144 y 145, la 188 entra, y la 258 pasa de **defecto
+    registrado** a **defecto + aviso**. Es el mismo efecto lateral que ya se midio
+    para la 257, y esta vez con una Capitania distinta.
+
+**Dicho al reves, que es como conviene leerlo: hoy la 258 es inofensiva porque el
+ambito al que pertenece esta apagado. El paso 5 la enciende.**
+
+
+3. NO ES DEL MISMO TIPO QUE LAS TRES DECLARADAS
+--------------------------------------------------------------------------------
+El control le pone la **misma etiqueta de clase que a la 108**
+(`sitport_sin_catalogo`), y esa etiqueta alcanza para el control y no alcanza
+para decidir. Las cuatro, una al lado de la otra:
+
+  108  SITPORT publica DATO (pronostico) de un id que su propio endpoint de
+       catalogo NO lista, y **sin nombre**. Es una incoherencia DE LA FUENTE
+       consigo misma. Descarta dato hoy, en cada llamada.
+  108  (segunda entrada, clase `endpoint_fuera_de_catalogo`) la misma
+       incoherencia mirada desde el otro lado.
+  257  Esta en F3 y falta en F1, F2, F4 y F5: es una incoherencia NUESTRA,
+       consecuencia de que el owner adjudico la Capitania y SITPORT no entrega
+       posicion por ninguno de sus endpoints.
+  258  SITPORT **agrego una bahia a su propio catalogo**, con nombre, con
+       reparticion valida y coherente consigo mismo. No hay incoherencia de la
+       fuente ni nuestra: **el catalogo de SITPORT crecio y el nuestro no.**
+
+Es la primera divergencia de esa naturaleza en las tres corridas versionadas, y
+es la unica de las cuatro que **no describe un defecto**: describe un cambio del
+mundo. Por eso no se parece a ninguna, aunque comparta etiqueta con una.
+
+**Lo que si comparte con la 257, y es lo que la haria dificil de cerrar:**
+`consultaBahias` no trae posicion — sus campos son `IDBahia`,
+`CdReparticion`, `NMBahia`, `color`, `valor`, `Nom`. Cerrarla exigiria una
+coordenada que SITPORT no da.
+
+
+4. POR QUE ESTA TOCA A E3, Y NO A CUALQUIER ETAPA
+--------------------------------------------------------------------------------
+**La 258 es LACUSTRE y su Capitania es una de las seis que el paso 5 publica.**
+La reparticion 188 es `lago_ranco`, y las bahias que ya cuelgan de ella son la
+144 (Lago Ranco) y la 145 (Lago Maihue), las dos en el join de E0.3.
+
+Y su sector abre una pregunta que es del owner: **"Llancacura" no es ninguno de
+los tres sectores que el decreto nombra** para el rio Bueno en el parrafo de
+`lago_ranco` — Los Patos, La Goleta y El Manzanito. La palabra no aparece en
+ninguna parte del insumo (`grep` sobre `data/`, `src/` y `_bitacoras/`: cero
+coincidencias en el decreto; las unicas coincidencias del repositorio estan en
+dos datasets nauticos, ver abajo).
+
+**Medido en PostGIS** (04_geometria.txt), `ST_Contains` contra la figura de
+`lago_ranco` del andamio:
+
+    Llancacura (candidato MOP)      fuera · 72,1 km de la figura
+    Los Patos (decreto)             fuera · 81,3 km
+    La Goleta (decreto)             fuera · 88,6 km
+    El Manzanito (decreto)          fuera · 94,5 km
+    146 RIO BUENO (BAHIA_COORDS)    fuera · 34,4 km
+    144 LAGO RANCO (BAHIA_COORDS)   fuera · 0,066 km  (66 m — punto de orilla,
+                                    el hallazgo ya conocido: los representativos
+                                    son puntos de orilla, no de agua)
+
+O sea: **ningun punto del rio Bueno, ni los del decreto ni el nuevo, cae dentro
+de la jurisdiccion que el paso 5 va a publicar.** Y no es una sorpresa: en
+`cotejo_lacustre_adjudicado.json` —el insumo del build del paso 5— el rio Bueno
+esta `resolucion: "rechazado"`, `shapefile_fid: []`, con su motivo escrito. De
+los 6 cuerpos de `lago_ranco`, 5 tienen geometria y el rio no.
+
+**Consecuencia, dicha sin decidir nada:** el paso 5 publica `lago_ranco` con el
+rio Bueno sin geometria. Una ruta por el rio Bueno seguira sin resolver
+jurisdiccion despues del paso 5 — con la diferencia de que su ambito ya no
+podra reclamarla como carencia, porque estara publicado. Eso es exactamente la
+mecanica de la causa (a) → causa (b) que hundio al camino B, aplicada a un
+pedazo de una jurisdiccion publicada en vez de a un ambito entero. **No lo
+resuelvo ni lo declaro: lo mido y lo subo, porque depende de interpretar el
+decreto (§0.4).**
+
+**Candidato de posicion, MEDIDO Y NO APLICADO.** El repositorio ya tiene el
+toponimo en dos datasets propios: `src/services/data/puertos_chile_nacional.json`
+trae *"Embarcadero Muelle de Llancacura"*, `OBJECTID 2302`, `LOCATION
+140201-003`, Provincia **Ranco**, comuna **La Union**, region 14, en
+**-40,315075 / -73,418050**; y `src/config/zonas-dragadas.json` lo nombra igual.
+Ese punto cae **al Este de Los Patos**, o sea rio arriba, en el mismo tramo que
+el decreto describe. **Usarlo seria adjudicar una posicion desde una fuente
+distinta de SITPORT, y eso es del owner** — el precedente de la 257 es que no se
+rellena una coordenada que la fuente no entrega.
+
+
+5. UN HALLAZGO LATERAL, MEDIDO Y NO TOCADO: LA REPARTICION 189
+--------------------------------------------------------------------------------
+La bahia **146 RIO BUENO** —la que ya esta en nuestro catalogo— tiene
+`CdReparticion 189`, y **la 189 no existe en `consultaCapuertoRestriccion`**, que
+es de donde el resolutor saca el nombre de la Capitania (64 reparticiones, la
+188 esta, la 189 no). Tampoco esta entre las 64 de `Totalgeneral`.
+
+Consecuencia medida (05_resolver.txt): `resolver(146)` devuelve **null**. Una
+ruta que matchee la 146 **no aporta ninguna reparticion** a `repsEnRuta`, asi
+que una bahia desconocida de esa misma Capitania no recibiria su aviso por esa
+via. No afecta al caso de la 258 —que es 188 y si resuelve—, y no se toca: es
+otro frente, se anota (§0.4).
+
+
+6. LO QUE NO SE HIZO, A PROPOSITO
+--------------------------------------------------------------------------------
+- **No se declaro la divergencia.** `data/catalogo/divergencias_declaradas.json`
+  no se toco. Declarar es decidir que se acepta.
+- **No se escribio el estado.** La corrida fue sin `--estado`; verificado con
+  `git status` que `estado_drift.json` no se movio.
+- **No se agrego la 258 a ningun catalogo interno** — ni a `BAHIA_COORDS`, ni al
+  seed, ni al mapa de contacto, ni al join. Agregarla al mapa, ademas, detendria
+  el arranque hasta que el join tuviera su entrada: el validador de E0.3 exige
+  que toda bahia del catalogo este atribuida.
+- **No se aplico nada del paso 5.**
+
+================================================================================
+FIN — medido, no declarado. El control sigue en salida 1 (DRIFT_NO_DECLARADO), y
+eso es correcto: hay una divergencia que nadie decidio todavia.
+================================================================================
+
+
+================================================================================
+ADDENDUM 2026-08-13 — LO QUE EL OWNER DECIDIO SOBRE ESTA MEDICION
+Se agrega al pie; nada de lo de arriba se reescribe (§3.3).
+================================================================================
+
+A. LA 258 NO SE DECLARA — D14, registrada en el plan
+--------------------------------------------------------------------------------
+Queda como **divergencia ABIERTA**, y el motivo del owner es que es lo honesto:
+SITPORT crecio y nosotros no, y no sabemos donde esta. **No se le rellena
+coordenada** desde `puertos_chile_nacional.json` ni de ninguna otra fuente: rige
+el precedente de la 257.
+
+Consecuencia anotada por pedido del owner, y **es correcta**: con el cableado de
+E3 activo, la 258 pasa de **defecto registrado** a **defecto + aviso**, porque la
+reparticion 188 entra en la ruta por las bahias 144 y 145. **El patron se
+entera**, que es exactamente lo que INV-3.6 persigue. El control sigue en salida
+1 y eso tambien es correcto: la deuda tiene nombre y fecha.
+
+La pregunta por su posicion entra al registro acumulativo para DIRECTEMAR
+(`_bitacoras/consulta_directemar_registro.md`, entrada 4).
+
+
+B. EL RIO BUENO SE PUBLICA CON SU CARENCIA DECLARADA — D13
+--------------------------------------------------------------------------------
+`lago_ranco` se publica en el paso 5 con 5 de sus 6 cuerpos, y el rio Bueno queda
+**declarado como carencia dentro de la jurisdiccion**, con su dependencia escrita:
+la respuesta de DIRECTEMAR puede mover la jurisdiccion del sector, y si la mueve,
+cualquier figura dibujada antes sobra.
+
+**El owner pidio que se le dijera si el mecanismo existe ANTES de construirlo, y
+la respuesta esta medida en el plan**, bajo §E3 *"Lo que D13 necesita y hoy no
+existe"*. En una linea: **declarar es aditivo y no toca INV-3.6; que la
+declaracion EVITE el registro como defecto (b) no existe hoy y necesita una
+geografia de reclamo que ninguna fuente cargada tiene.** El precedente que la
+decision invoca —`alcance_d11`— lo escribe `fase2_adjudicacion.py` y no lo lee
+ningun archivo de `src/`: es declaracion del insumo, no mecanismo del motor.
+
+
+C. EL HALLAZGO DE LA 146 SUBE AL REGISTRO DE DIRECTEMAR
+--------------------------------------------------------------------------------
+`resolver(146) -> null` y la reparticion 189 ausente de los dos endpoints de
+catalogo entran como evidencia dura de la entrada 1 del registro acumulativo,
+junto con la evidencia nueva que aporto la propia 258: **SITPORT colgo el sector
+nuevo del rio Bueno de la reparticion 188, no de la 189.**
+
+================================================================================
