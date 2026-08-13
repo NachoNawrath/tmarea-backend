@@ -1,0 +1,388 @@
+================================================================================
+E3 — PASO 2 DE 6: EL GATE SE PARTE POR AMBITO. 2026-08-12
+Estado: APLICADO EN EL GENERADOR. Nada publicado en la base todavia.
+Veredicto: el gate esta partido, probado en diez escenarios, y C3 sigue
+fallando exactamente igual para lo maritimo.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell,
+desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    tools\raster-build\.venv\Scripts\python.exe scripts\e3_prueba_mordida_gate.py
+    node scripts\e02_prueba_mordida_ambitos.js
+    npm test
+    tools\raster-build\.venv\Scripts\python.exe scripts\fase5_construir_capa_ds991.py --ensayo
+
+Crudo:
+    e3_gate_2026-08-12/01_mordida_gate.txt          los 10 escenarios del gate
+    e3_gate_2026-08-12/02_ensayo_build_completo.txt el build entero, en ensayo
+    e3_gate_2026-08-12/03_mordida_ambitos_c9.txt    la mordida de E0.2 con C9
+    e3_gate_2026-08-12/04_descartes_comentada.txt   el hallazgo lateral, cerrado
+
+
+0. QUE PEDIA ESTE PASO Y QUE SE HIZO
+--------------------------------------------------------------------------------
+El reconocimiento del 2026-08-12 (`e3_recon_2026-08-12.txt`) dejo medido que la
+geometria lacustre se construye bien y pasa los controles que le tocan, y que lo
+unico que la mantiene fuera de la base es el rollback que comparte con C3. El
+paso 2 es partir ese gate.
+
+La condicion que no se negocia (§0.3): partir el gate NO puede convertirse en
+bajarle la severidad a C3. Se cumple, y se prueba — escenario 03 de la mordida.
+
+Lo que cambio:
+
+  scripts/fase5_construir_capa_ds991.py   los controles se miden por ambito y el
+                                          gate decide por ambito
+  data/decreto/ambitos_publicados.json    cada ambito declara si esta habilitado
+                                          a publicar, con su motivo
+  src/services/ambitos-publicados.js      control C9 sobre esa declaracion
+  scripts/e02_prueba_mordida_ambitos.js   tres casos nuevos para C9
+  scripts/e3_prueba_mordida_gate.py       NUEVO — la mordida del gate
+  scripts/fase5_descartar_build_provisional.sql   el hallazgo lateral (§6)
+
+Lo que NO cambio, y es deliberado: **no se aplico el build**. La base sigue sin
+`jurisdicciones_ds991`. El motivo esta en §5.
+
+
+1. LA FORMA VIEJA Y POR QUE NO ALCANZABA
+--------------------------------------------------------------------------------
+Los ocho controles escribian UNA fila cada uno en `jurisdicciones_ds991_
+verificacion`, con la capa entera como alcance, y al final un solo bloque hacia:
+
+    SELECT ... INTO fallidos FROM ..._verificacion WHERE NOT ok;
+    IF fallidos IS NOT NULL THEN RAISE EXCEPTION ...
+
+`WHERE NOT ok` mira la capa entera. C3 mete una fila por un traslape entre dos
+Capitanias maritimas de Chiloe, y el RAISE deshace la transaccion completa: se
+van el CREATE TABLE, los INSERT de las 64 y los indices. Las seis lacustres, que
+no aportaron ni una fila en falla, se caen con ellas.
+
+Hay una restriccion de fondo que decide toda la forma de la solucion: **una
+transaccion no confirma a medias**. Si se quiere que lo lacustre quede en la base
+mientras lo maritimo falla, el final no puede ser un RAISE sobre la capa entera.
+La transaccion sigue siendo UNA — no se parte en dos corridas —; lo que se parte
+es a quien se lleva puesto el control que falla.
+
+
+2. LA FORMA NUEVA, EN TRES PIEZAS
+--------------------------------------------------------------------------------
+
+2.1 — LOS CONTROLES SE MIDEN POR AMBITO
+
+`_verificacion` pasa de `(control PK, ok, obtenido, detalle)` a
+`(control, ambito, ok, obtenido, detalle)` con clave `(control, ambito)`. Cada
+control se evalua por separado para cada ambito que la capa realmente trae. La
+lista de ambitos sale de `SELECT DISTINCT ambito FROM la capa`, no de una
+enumeracion escrita en el codigo: si manana el insumo trae un ambito nuevo, se
+mide solo (§4.3, §4.5).
+
+Las CONDICIONES no se tocaron. La fila defectuosa se define igual y con las
+mismas tolerancias que antes; lo unico que cambia es el `GROUP BY`. Un control
+que antes decia "0 defectos en la capa" ahora dice "0 defectos en maritima, 0 en
+lacustre, 0 en antartica, 0 en insular_remota".
+
+Detalle que importa y que costo una linea de SQL: el conteo va con un LEFT JOIN
+contra la lista de ambitos, no filtrando por ambito. Sin eso, un ambito sin
+defectos no produce fila, y "no falla" se vuelve indistinguible de "no se midio".
+
+2.2 — DOS ALCANCES, NO UNO
+
+No todos los controles son de un ambito. Dos casos no lo son, y llevan el
+alcance `(capa)`:
+
+  · **C7, el indice espacial.** Es de la tabla, no de un ambito. Si falta, no
+    sirve la capa entera.
+  · **Un par de traslape con un lado en cada ambito.** No es de ninguno de los
+    dos. Imputarselo a uno seria elegir cual de los dos lados esta de mas, y eso
+    exige interpretar el decreto — el plan lo deja escrito como lo unico que E4
+    tiene pendiente de definir dentro de C3, y no se inventa aca.
+
+Un control de alcance `(capa)` en falla no publica NINGUN ambito. Es la opcion
+conservadora a proposito: negarse a elegir, no elegir en silencio a favor del
+ambito que se estuviera publicando.
+
+**Medido: hoy hay CERO pares cruzados**, asi que esta regla no cambia ningun
+resultado de hoy. Existe para el dia que aparezca uno.
+
+2.3 — EL GATE
+
+Un ambito entra a la capa si —y solo si— se cumplen las tres:
+
+  1. esta HABILITADO en `data/decreto/ambitos_publicados.json`;
+  2. no tiene ningun control suyo en falla;
+  3. tiene al menos una jurisdiccion con geometria.
+
+El que no entra se RETIRA de la capa, en la misma transaccion, con su causa
+escrita en `jurisdicciones_ds991_publicacion`. Si no entra ninguno, el final es
+el de antes: un RAISE que deshace todo y no deja capa.
+
+Dentro de cada ambito sigue siendo todo o nada, que es la otra mitad de D3:
+partir el gate no abre la puerta a publicar la mitad de los lagos.
+
+**Por que se BORRAN las filas del ambito que no entra, en vez de marcarlas.** Lo
+que esta en la tabla ES lo publicado, sin que ningun consumidor tenga que
+acordarse de filtrar. Dejarlas con una bandera es la forma exacta del error que
+este repositorio ya pago y documento: una tabla con el nombre canonico y datos
+que parecen validos es el falso negativo silencioso de INV-3.6 aplicado a la capa
+misma (`fase5_descartar_build_provisional.sql`, encabezado). Lo que se pierde con
+el borrado es poder mirar la geometria retenida en la base; queda medida en los
+NOTICE y en `_ensanche` y `_traslape_ensanche`, que ahora **sobreviven**, porque
+la transaccion confirma en vez de deshacerse.
+
+
+3. LA TERCERA CONDICION ES UN HALLAZGO, NO UN ADORNO
+--------------------------------------------------------------------------------
+Partir el gate por ambito **no libera solamente al ambito que la etapa esta
+trabajando: libera a TODOS los que pasen sus controles.**
+
+Eso no estaba escrito en ningun lado y es consecuencia directa de D3. Con un gate
+por ambito puro —publica todo el que pase—, la misma corrida que publica lo
+lacustre publicaria tambien **lo antartico**: sus cuatro jurisdicciones son
+construibles, no participan de ningun par en falla, y ninguna etapa del plan las
+cubre. Publicarlas retira su aviso de INV-3.6 y cambia lo que el patron ve en un
+ambito que el contrato **todavia no nombra** (D9: INV-3.5 nombra tres ambitos y
+el antartico no esta; su `categoria_contractual` sigue en "pendiente").
+
+Eso es politica de producto, no ingenieria (§0.4), asi que no se decide aca. Lo
+que se hizo es que deje de ser una consecuencia automatica y pase a ser una
+declaracion: `habilitado_para_publicar`, por ambito, con su motivo escrito.
+
+    maritima         habilitado      E4 la cierra; entra sola el dia que C3 pase
+    lacustre         habilitado      E3; sus controles ya pasan
+    antartica        NO habilitado   SUBE AL OWNER (D9)
+    insular_remota   NO habilitado   no hay geometria que publicar
+
+La habilitacion **no afloja ningun control**: un ambito habilitado que falla sus
+controles tampoco entra. Es una condicion adicional, nunca un permiso.
+
+Y `insular_remota` se declara `false` en vez de dejarla en `true` confiando en
+que la tercera condicion la frene por vacio: la ausencia se declara, no se deduce
+de un efecto lateral.
+
+El control **C9** de `ambitos-publicados.js` cierra el circulo en el arranque: el
+campo es obligatorio, su motivo tambien, y un ambito declarado PUBLICADO y no
+habilitado es una contradiccion que detiene la carga.
+
+
+4. LA PRUEBA DE QUE SIGUE MORDIENDO (§4.6)
+--------------------------------------------------------------------------------
+`scripts/e3_prueba_mordida_gate.py`, **10/10, con el control negativo primero**.
+
+No corre el build real —tarda diez minutos y depende de la costa OSM cargada—:
+levanta una capa de prueba de cuatro filas y corre sobre ella **el mismo SQL que
+el constructor emite**, importando sus emisores (`emitir_ddl`,
+`emitir_traslape_ensanche`, `emitir_controles`, `emitir_gate`). No hay una copia
+del esquema ni de los controles dentro de la prueba: si manana alguien cambia un
+control, la prueba cambia con el. Copiarlos habria sido la trampa del §2 — dos
+representaciones de lo mismo que alguien tiene que acordarse de sincronizar.
+
+Todo ocurre dentro de una transaccion que termina en ROLLBACK: en la base no
+queda nada, ni siquiera cuando un escenario pasa.
+
+  01  CONTROL NEGATIVO — capa sana: publican los dos ambitos      OK
+  02  C3 falla entre dos MARITIMAS: lo lacustre sale igual        OK  ← E3
+  03  C3 falla entre dos LACUSTRES: lo lacustre NO sale           OK  ← §0.3
+  04  par CRUZADO maritima x lacustre: no publica nadie           OK
+  05  traslape DECLARADO entre lacustres: C3 lo acepta            OK  ← Puyehue
+  06  ambito SANO pero NO habilitado: no entra                    OK
+  07  ambito habilitado con todas sus jurisdicciones nulas        OK
+  08  C1 falla en una LACUSTRE: no publica lo lacustre            OK
+  09  C7 sin indice: es de la capa, no publica nadie              OK
+  10  ambito construido que el registro no declara: se detiene    OK
+
+**El 03 es el que prueba la condicion que no se negocia.** Si partir el gate
+hubiera vuelto permisivo al ambito que la etapa quiere publicar, el 03 pasaria de
+largo. No pasa: cuando el traslape es lacustre, lo lacustre no sale, y sale lo
+maritimo.
+
+El 05 reproduce Puyehue en miniatura: dos figuras que se pisan y estan declaradas
+en el dato. C3 las acepta y el ambito publica. Confirma lo que el reconocimiento
+ya habia dicho: lo lacustre no pasa por no tener traslapes, pasa teniendo uno y
+declarandolo bien.
+
+Los escenarios 04, 09 y 10 comprueban ademas que la detencion ocurre **por el
+gate** y no por un SQL mal formado: la prueba exige el texto de la excepcion.
+
+Otras dos corridas, con su crudo:
+  · `e02_prueba_mordida_ambitos.js` — **14/14** (11 de antes + 3 de C9) mas el
+    control negativo contra la base real.
+  · `npm test` — **79/79**.
+
+
+5. POR QUE EL BUILD NO SE APLICO, Y NO ES UNA PIEZA A MEDIAS
+--------------------------------------------------------------------------------
+Aplicarlo hoy dejaria el backend sin arrancar.
+
+`ambitos-publicados.js` tiene retiro automatico en las dos direcciones (E0.2): su
+control C3 se detiene si un ambito declarado NO publicado ya tiene geometria en
+la capa publicada. En cuanto el build confirme las seis lacustres,
+`ambitos_publicados.json` queda mintiendo y **la carga se detiene con su motivo**
+— que es exactamente lo que ese control existe para hacer, no un defecto.
+
+O sea que aplicar y mover el registro son **el mismo movimiento**, y mover el
+registro es el paso 5. Aplicar aca dejaria el repositorio en un estado que no
+arranca hasta que llegue ese paso.
+
+Para poder verificar igual sobre datos reales se agrego `--ensayo`: corre la
+construccion entera contra la base —construye, resta tierra, mide, aplica el
+gate— y termina en ROLLBACK. Las mediciones salen como NOTICE, que sobreviven.
+Sirve para ver el veredicto de una construccion de diez minutos sin publicar
+nada.
+
+5.1 — EL ENSAYO, CORRIDO. Salida completa en `02_ensayo_build_completo.txt`.
+
+El estado de los controles, por ambito (7 controles por ambito + 3 de capa):
+
+    [ok   ] (capa)          C3 cero traslapes fuera de los declarados   (0)
+    [ok   ] (capa)          C7 indice espacial presente                 (1)
+    [ok   ] (capa)          C8 el ensanche no crea traslapes            (0)
+    [ok   ] antartica       C1..C6, C8                                  (0)
+    [ok   ] insular_remota  C1..C6, C8                                  (0)
+    [ok   ] lacustre        C1..C6, C8                                  (0)
+    [ok   ] maritima        C1, C2, C4, C5, C6, C8                      (0)
+    [FALLA] maritima        C3 cero traslapes fuera de los declarados   (6)
+
+Y el gate:
+
+    [retiene] antartica       habilitado=f  controles=ok        4/4 con geometria
+    [retiene] insular_remota  habilitado=f  controles=ok        0/2 con geometria
+    [PUBLICA] lacustre        habilitado=t  controles=ok        6/6 con geometria
+    [retiene] maritima        habilitado=t  controles=EN FALLA  44/52 con geometria
+
+    PUBLICACION :: publicados=[lacustre] retenidos_por_falla=[maritima]
+                   retenidos_por_declaracion=[antartica,insular_remota]
+
+    ENSAYO: la transaccion se deshizo. En la base no quedo nada.
+    EXIT=3
+
+Cuatro cosas que este ensayo prueba y que no se pueden afirmar sin correrlo:
+
+  · **C3 falla exactamente igual**, con los SEIS mismos pares y los mismos km2
+    que midio el reconocimiento — Cochamo x Maullin 2947.340, Chaiten x Chonchi
+    1798.518, Maullin x Puerto Montt 755.491, Cochamo x Rio Negro Hornopiren
+    531.757, Calbuco x Maullin 40.833, Castro x Chonchi 28.254. Ni uno se movio.
+    La severidad no bajo: lo que cambio es a quien se lleva puesto.
+  · **El unico traslape lacustre x lacustre —Puyehue, 155.426 km2— sigue pasando
+    por declarado**, no por vacio: la fila de C3 para `lacustre` da 0 con el
+    traslape presente en la medicion de arriba.
+  · **CERO pares cruzados**: la fila `(capa)` de C3 da 0. La regla conservadora
+    del §2.2 no cambia ningun resultado de hoy, que es lo que se esperaba.
+  · **El antartico se habria publicado solo, y ahora esta medido, no supuesto.**
+    Sus siete controles pasan y tiene 4/4 jurisdicciones con geometria: con un
+    gate por ambito puro entraba en esta misma corrida. Lo unico que lo detiene
+    es la declaracion. El §3 dejaba esto como consecuencia razonada; el ensayo lo
+    convierte en medicion.
+
+El codigo de salida es **3 — publicacion parcial**, no 0. Un ambito habilitado no
+pasa sus controles y eso tiene que seguir haciendo ruido hasta que E4 lo cierre
+(§0.3). Tampoco es el 1 de antes, porque lo que si paso quedaria publicado. El
+criterio del 3 es el mismo con que el control de drift de E0.1 distingue
+"divergencia declarada abierta" de "todo bien" y de "reventó".
+
+
+6. EL HALLAZGO LATERAL, CERRADO — Y ES LO CONTRARIO DE LO QUE PARECIA
+--------------------------------------------------------------------------------
+El reconocimiento anoto: *"`jurisdicciones_ds991_descartes` SI sobrevive al
+rollback, con 1 fila y sin comentario (...) una tabla que sobrevive a un rollback
+que se declara total es, como minimo, una excepcion no declarada."*
+
+**No es una excepcion: nunca estuvo dentro de esa transaccion.** Medido:
+
+  · El constructor **no la crea, no la toca y no la borra**. Sus tablas son
+    `_convenciones`, `_procedencia`, `_sectores`, `_ensanche`,
+    `_traslape_ensanche`, `_verificacion` y ahora `_publicacion`. `_descartes` no
+    aparece en ninguna parte del generador.
+  · La crea `scripts/fase5_descartar_build_provisional.sql`, en **su propia
+    transaccion**, ya confirmada. Su unica fila esta fechada
+    **2026-08-10 17:22:49-04** y registra el build provisional del 10-AGO 12:55
+    contra ne_land — 64 filas, 30 testigos fuera de su figura, 13 traslapes.
+  · Es una **nota**, no una capa: no tiene geometria y su nombre lo dice.
+
+O sea que sobrevive a los rollback del constructor por el mismo motivo por el que
+sobrevive cualquier otra tabla de la base que el constructor no toca. La premisa
+que hacia sospechosa la observacion —"el rollback se declara total"— es cierta
+para la transaccion del constructor, y `_descartes` no es parte de ella.
+
+**Lo que si faltaba, y se arreglo:** la tabla **no tenia comentario**. Su
+naturaleza vivia solo en el script que la creo. Quien abre la base y la ve al
+lado del nombre canonico no tiene como saber cual es cual — que es la misma
+leccion que E1 dejo escrita para el andamio: *el comentario de la base es donde
+mira quien la abre sin el repositorio al lado.* Se le puso `COMMENT ON TABLE`,
+escrito en el script que la crea, no a mano sobre la base.
+
+**Y una tercera, que aparecio al aplicar el comentario y es la mas fea de las
+tres:** el `INSERT` que deja la constancia llevaba un
+`WHERE to_regclass('public.jurisdicciones_ds991') IS NOT NULL` que **parecia
+protegerlo cuando la capa no existe y no protegia nada**. La subconsulta
+`(SELECT count(*) FROM jurisdicciones_ds991)` nombra la tabla, y una tabla que no
+existe rompe en el ANALISIS de la sentencia, antes de que ningun `WHERE` llegue a
+evaluarse. O sea que el script solo podia correr el dia que la capa mala estaba;
+volver a correrlo abortaba con *"no existe la relacion"* — que es exactamente lo
+que paso al intentar aplicar el comentario, y por eso se descubrio. Corregido con
+`EXECUTE`, que analiza la sentencia recien cuando ya se sabe que la tabla esta.
+Verificado en el estado de hoy: corre limpio, avisa que no hay nada que
+descartar, no agrega fila y deja la unica que habia intacta —misma fecha
+`2026-08-10 17:22:49-04`, mismas 64 filas registradas— con el comentario puesto.
+
+Una guarda que no se probo en el estado en que tiene que guardar es una guarda
+que no existe. Esta llevaba dos dias escrita.
+
+**Y una segunda cosa, que no estaba anotada y aparecio al mirar:** ese script es
+un `DROP TABLE ... jurisdicciones_ds991` de una sola vez, sin ninguna guarda.
+Mientras la capa canonica no existia era inofensivo. Con el gate por ambito pasa
+a haber una capa PUBLICADA con ese nombre, y volver a correrlo la borraria
+entera. Se le agrego una guarda que se detiene si `_publicacion` declara algun
+ambito publicado, con el motivo escrito. La distincion es la que el propio script
+ya documentaba: el build que el existe para descartar **no tenia** tablas de
+verificacion — lo dice su encabezado.
+
+
+7. LO QUE ESTE PASO NO RESOLVIO, Y DE QUIEN ES
+--------------------------------------------------------------------------------
+
+7.1 — **El antartico se publicaria solo. DECIDIDO EL MISMO DIA: no se habilita.**
+Ver §3 y §5.1. El owner: *"Se habilita cuando yo escriba INV-3.5, no antes."* Dos
+motivos independientes, cada uno suficiente, escritos en el `motivo_habilitacion`
+del registro:
+
+  · **De autoridad.** El contrato no nombra el ambito antartico y el registro le
+    lleva `categoria_contractual: pendiente` (D9). Publicarlo retiraria su aviso
+    de INV-3.6 sobre un ambito que su propia autoridad no reconoce: el aviso
+    desapareceria antes que la carencia que lo justifica.
+  · **De producto.** El ambito no esta listo aunque su geometria pase. De sus
+    cuatro jurisdicciones, `bahia_paraiso` esta diferida con sus **cuatro tramos
+    sin adjudicar** —quedo del lado del owner al cerrar la pasada del TM-025 A y
+    abre su propia etapa— y `rada_covadonga` es la que DIRECTEMAR lista como
+    alcaldia con ficha vacia. Del lado del repositorio eso se corrobora dos
+    veces: es una de las **dos unicas** jurisdicciones a las que SITPORT no
+    atribuye ninguna bahia (`e03join_recon_2026-08-11.txt`) y una de las **tres**
+    Capitanias sin pagina en el indice de resoluciones locales
+    (`recon_resoluciones_locales_2026-08-12.txt`). Dos de cuatro entradas en ese
+    estado es publicar cobertura que no hay.
+
+Queda anotado el orden que esto fija: **la geometria de un ambito pasando sus
+controles no es condicion suficiente para publicarlo.** Es exactamente lo que el
+campo `habilitado_para_publicar` existe para poder decir.
+
+7.2 — **Un par de traslape con un lado en cada ambito detiene la capa entera.**
+Es la regla que E4 tiene pendiente de definir. Hoy no hay ninguno, asi que la
+eleccion conservadora no cuesta nada; el dia que aparezca uno, la regla la
+escribe E4 y no este paso.
+
+7.3 — **HALLAZGO NUEVO, y es de E4: `maritima` no puede declararse publicada con
+el control C4 de `ambitos-publicados.js` tal como esta hoy.** Ese control exige
+`jurisdicciones con geometria en la base == jurisdicciones_esperadas`, y para
+maritima son **52 esperadas contra 44 construibles**: las otras 8 estan
+declaradas `nula_declarada` porque el decreto no permite cerrarlas (Arica,
+Lirquen, Talcahuano, Baker, Puerto Eden, Punta Delgada, Tierra del Fuego, Puerto
+Williams). Con esa cuenta, maritima nunca cumple. Para lacustre no aparece —6 de
+6 tienen geometria— asi que **no bloquea E3**, y por eso no se toca aca: cambiar
+la cuenta de un control que decide si un ambito se declara publicado, sin el caso
+que lo necesita delante, es aflojarlo por anticipado. Queda medido y escrito para
+E4, que es donde el caso llega.
+
+================================================================================

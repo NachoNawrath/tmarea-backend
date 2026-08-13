@@ -1,0 +1,48 @@
+PRUEBA DE MORDIDA — GATE POR AMBITO DE LA CAPA DEL D.S. 991 (E3)
+tabla de prueba: mordida_gate_ds991 · todo dentro de una transaccion que hace ROLLBACK
+los controles y el gate se IMPORTAN del constructor, no se copian
+==============================================================================
+
+[01] OK     CONTROL NEGATIVO — capa sana, todo habilitado: publican los dos ambitos
+     publicados=['lacustre', 'maritima'] por_falla=[] por_declaracion=[]
+     sobreviven=['lac_a', 'lac_b', 'mar_a', 'mar_b'] exit=0
+
+[02] OK     C3 falla entre dos MARITIMAS: lo lacustre sale igual
+     publicados=['lacustre'] por_falla=['maritima'] por_declaracion=[]
+     sobreviven=['lac_a', 'lac_b'] exit=0
+
+[03] OK     C3 falla entre dos LACUSTRES: lo lacustre NO sale, lo maritimo si
+     publicados=['maritima'] por_falla=['lacustre'] por_declaracion=[]
+     sobreviven=['mar_a', 'mar_b'] exit=0
+
+[04] OK     C3 con un par CRUZADO maritima x lacustre: no publica ningun ambito
+     publicados=[] por_falla=[] por_declaracion=[]
+     sobreviven=None exit=3
+
+[05] OK     traslape DECLARADO entre dos lacustres: C3 lo acepta y lo lacustre publica
+     publicados=['lacustre', 'maritima'] por_falla=[] por_declaracion=[]
+     sobreviven=['lac_a', 'lac_b', 'mar_a', 'mar_b'] exit=0
+
+[06] OK     un ambito SANO pero NO habilitado no entra, y sus filas no quedan
+     publicados=['lacustre'] por_falla=[] por_declaracion=['maritima']
+     sobreviven=['lac_a', 'lac_b'] exit=0
+
+[07] OK     un ambito habilitado cuyas jurisdicciones son todas nulas declaradas
+     publicados=['lacustre'] por_falla=[] por_declaracion=['insular_remota']
+     sobreviven=['lac_a', 'lac_b'] exit=0
+
+[08] OK     C1 falla en una LACUSTRE (construida sin geometria): no publica lo lacustre
+     publicados=['maritima'] por_falla=['lacustre'] por_declaracion=[]
+     sobreviven=['mar_a', 'mar_b'] exit=0
+
+[09] OK     C7 sin indice espacial: es de la capa, no de un ambito, y no publica nadie
+     publicados=[] por_falla=[] por_declaracion=[]
+     sobreviven=None exit=3
+
+[10] OK     un ambito construido que el registro no declara: se detiene
+     publicados=None por_falla=None por_declaracion=None
+     sobreviven=None exit=3
+
+==============================================================================
+MORDIDA: 10/10
+La capa de prueba no quedo en la base: cada escenario termina en ROLLBACK.

@@ -1,0 +1,50 @@
+== ANTES ==
+            relname             |    comentario    
+--------------------------------+------------------
+ jurisdicciones_ds991_descartes | (SIN COMENTARIO)
+(1 fila)
+
+
+== APLICANDO scripts/fase5_descartar_build_provisional.sql ==
+BEGIN
+DO
+psql:scripts/fase5_descartar_build_provisional.sql:69: NOTICE:  la relación «jurisdicciones_ds991_descartes» ya existe, omitiendo
+CREATE TABLE
+COMMENT
+psql:scripts/fase5_descartar_build_provisional.sql:114: NOTICE:  no hay ninguna jurisdicciones_ds991 que descartar: no se agrega fila. Las que ya estan quedan como estaban.
+DO
+psql:scripts/fase5_descartar_build_provisional.sql:116: NOTICE:  la tabla «jurisdicciones_ds991_sectores» no existe, omitiendo
+DROP TABLE
+psql:scripts/fase5_descartar_build_provisional.sql:117: NOTICE:  la tabla «jurisdicciones_ds991_verificacion» no existe, omitiendo
+DROP TABLE
+psql:scripts/fase5_descartar_build_provisional.sql:118: NOTICE:  la tabla «jurisdicciones_ds991_procedencia» no existe, omitiendo
+DROP TABLE
+psql:scripts/fase5_descartar_build_provisional.sql:119: NOTICE:  la tabla «jurisdicciones_ds991_convenciones» no existe, omitiendo
+DROP TABLE
+psql:scripts/fase5_descartar_build_provisional.sql:120: NOTICE:  la tabla «jurisdicciones_ds991» no existe, omitiendo
+DROP TABLE
+DO
+COMMIT
+         descartado_en         |        tabla         | filas 
+-------------------------------+----------------------+-------
+ 2026-08-10 17:22:49.433089-04 | jurisdicciones_ds991 |    64
+(1 fila)
+
+exit=0
+
+== DESPUES ==
+                                                                                                                                                                                                                                               comentario                                                                                                                                                                                                                                                
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ NO ES UNA CAPA NI UN RESIDUO: es la constancia de que un build se descarto a proposito, con su motivo y su evidencia. La escribe una sola vez scripts/fase5_descartar_build_provisional.sql, en su propia transaccion, y por eso NO la crea, no la toca y no la deshace el constructor (scripts/fase5_construir_capa_ds991.py): que siga estando despues de una construccion que se cae no es una excepcion al rollback, es que nunca estuvo adentro de esa transaccion. Una fila por build descartado.
+(1 fila)
+
+ filas |          unica_fecha          
+-------+-------------------------------
+     1 | 2026-08-10 17:22:49.433089-04
+(1 fila)
+
+ capa_canonica 
+---------------
+ 
+(1 fila)
+
