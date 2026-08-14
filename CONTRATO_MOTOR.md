@@ -11,8 +11,19 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 1.8
+Versión: 1.9
 Última actualización: 2026-08-13
+Cambios v1.9: **corrección de la v1.8, misma fecha.** Al partir la fila de contacto de §5, la
+v1.8 dejó fuera de la tabla a `bahia-capitania-map.json` — y ese archivo es el que alimenta
+**todo** el contacto que hoy sale en pantalla: `sitport-routes.js` (:339, :465, :817) llama a
+`getCapitaniaByBahiaId`, que lo lee. Durante unas horas el motor leyó contacto de un archivo
+que §5 no declaraba, que es exactamente lo que §5 abre prohibiendo. Se corrige declarándolo
+como **fuente transitoria** con su condición de retiro escrita, en vez de dejar el hueco
+abierto. Se corrige además la fila de Contacto de Gobernación, que la v1.8 escribió mal:
+decía que el dato vive hardcodeado en `src/utils/capitanias.js`, y la medición mostró que la
+tabla del backend **no la consume nadie** — el valor que llega a pantalla sale del mapa. La
+copia de la PWA sí se usa, sólo como fallback. Nada más de la v1.8 cambia: INV-10.1, el §10 y
+las dos filas PENDIENTE quedan como están.
 Cambios v1.8: **política de contacto** — decisión de producto del owner del 2026-08-13
 (PLAN_JURISDICCION.md D15), motivada por una medición: el campo `telefono` de
 `bahia-capitania-map.json` nunca contuvo el teléfono de una Capitanía, sino el de su
@@ -550,8 +561,8 @@ sirve otra cosa (causa del bug del perfil pescador).
 | Bahías + jurisdicciones | PostGIS `bahias_sitport` + `bahia_jurisdicciones` (Voronoi recortado por costa) | OK |
 | Nodos marítimos | PostGIS `nodos_maritimos` (781+ nodos) | OK |
 | Atribución bahía → Capitanía | `data/decreto/join_bahia_jurisdiccion.json` (164 entradas, 158 resueltas) | OK |
-| **Contacto de Capitanía** (teléfono, dirección) | ⚠️ POR DEFINIR — indexado por Capitanía, no por bahía | ⚠️ PENDIENTE |
-| **Contacto de Gobernación** (teléfono) | ⚠️ POR DEFINIR — hoy vive hardcodeado en `src/utils/capitanias.js` (backend y PWA), sin declarar acá | ⚠️ PENDIENTE |
+| **Contacto de Capitanía** (teléfono, dirección) | ⚠️ NO EXISTE fuente viva — ningún archivo de `src/` tiene teléfono ni dirección de Capitanía | ⚠️ PENDIENTE |
+| **Contacto de Gobernación** (teléfono) | `src/data/bahia-capitania-map.json` (164 entradas, indexado por bahía) | ⚠️ TRANSITORIA — ver §5.1 |
 | Mareas | Motor harmónico propio (`tidal-constants.json`, 21 estaciones) | OK |
 | Ruteo | Raster A* (5 tiles, Arica–Cabo de Hornos) | OK con bugs de snap |
 | **SST (temperatura agua)** | Open-Meteo Marine (`sea_surface_temperature`) | OK — real |
@@ -559,6 +570,37 @@ sirve otra cosa (causa del bug del perfil pescador).
 | Conocimiento de especies | `especies_pesca.json` | OK (encoding roto, cosmético) |
 | **Caladeros de pesca** | ❌ NO EXISTE fuente en backend | ❌ FALTA |
 | **Umbrales AB de mal tiempo** | Resoluciones locales de Capitanía vía SITPORT | Jurisdiccional |
+
+### 5.1 — El contacto de Gobernación es fuente TRANSITORIA, y por qué se declara igual
+
+`bahia-capitania-map.json` **no es la fuente que este sistema quiere**: está indexado por
+bahía y no por Capitanía, así que el mismo teléfono se repite en promedio 11 veces y un cambio
+de atribución arrastra el contacto con él. Aun así se declara, porque **hoy es de donde el
+motor lee** y un dato vivo sin declarar es peor que un dato malo declarado — es la situación
+que la primera línea de §5 existe para impedir.
+
+Lo que este archivo tiene de verdad, medido y sin suavizar:
+
+- Sus **164** entradas traen `capitania`, `gobernacion` y `telefono`.
+- Los **164 teléfonos son de Gobernación**, sin una sola excepción: son 15 valores distintos,
+  uno por Gobernación. **Ninguno es de una Capitanía.** Hasta la v1.8 el sistema los rotulaba
+  como si lo fueran; INV-10.1 cierra eso.
+- **No trae dirección.** La dirección que INV-10.1 manda mostrar no existe en ninguna fuente
+  viva del repositorio.
+- Tres de sus valores están **desactualizados** contra lo que DIRECTEMAR publica hoy, y entre
+  los tres alimentan **41 de las 164 entradas**. Corregirlos no requiere cambiar la estructura
+  ni esperar a la fuente definitiva.
+
+**Lo que NO es fuente, y se dice para que nadie lo trate como tal:** la tabla de Gobernaciones
+de `src/utils/capitanias.js` resuelve por franja de latitud, lo que contradice INV-3.3 y ya
+está anotado como bug abierto en §7. Medido: **la copia del backend no la consume nadie**; la
+de la PWA se usa **sólo como fallback** cuando el backend no manda contacto. Ninguna de las
+dos es fuente autorizada, y ninguna de las dos debe empezar a serlo.
+
+**Condición de retiro:** esta fila desaparece de §5 el día que exista una fuente de contacto
+indexada por Capitanía. Ese día `bahia-capitania-map.json` deja de alimentar contacto y el
+escalón 2 de INV-10.1 pasa a leer de la fuente nueva. Mientras tanto, la fila es transitoria
+por declaración y no por olvido.
 
 ### INV-5.1 — Clorofila etiquetada
 Mientras sea estimada, la respuesta lleva `clorofila_fuente` y la UI la muestra como
