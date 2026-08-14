@@ -23,6 +23,34 @@
     "capa_2_sin_capitania": "Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.",
     "nota_capa_2_sin_capitania": "Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada forzosa y zona intermedia cerrada). No se agrega una via nueva ni un numero que la fuente no tenga."
   },
+  "cotejo_con_el_contrato": {
+    "que_es": "La declaracion legible por maquina de QUE fila del contrato transcribe el bloque `mensaje` de arriba, para que un control pueda comprobarlo en cada corrida de `npm test`. Lo ejerce src/services/cotejo-contrato.js.",
+    "por_que_existe": "El bloque `mensaje` promete arriba que 'si el catalogo cambia, cambia aca y se nota'. El 2026-08-13 el catalogo cambio —la v1.8 le saco el telefono a la fila— y NO se noto: el dato sirvio el texto de la v1.7 hasta que una medicion lo encontro a mano. La promesa estaba escrita y no habia nada que la sostuviera. Esto es lo que la sostiene.",
+    "hermano_de_72_no_extension": "PLAN_JURISDICCION.md §7.2 vigila que el PLAN no mienta sobre el REPOSITORIO. Esto vigila que un DATO no divergisa del CONTRATO. Distinto alcance, misma forma. Se construye al lado y no adentro porque estirar §7.2 para meter esto seria el error que §7.2 mismo nombra: 'construir solo este y darse por cubierto'. De §7.2 se copia lo que se midio aplicable: la afirmacion declarada en el dato y no deducida de la prosa, el tipo `linea_dice`, la semantica de salida de E0.1 y la mordida con control negativo primero.",
+    "por_que_la_fila_se_declara_y_no_se_deduce": "La propuesta original decia que el control leeria `mensaje.procedencia` para ubicar la fila. `procedencia` es PROSA: parsearla seria deducir la afirmacion del texto, que es justo lo que §7.2 prohibe. Por eso la fila se declara aca, legible por maquina, y `procedencia` queda como lo que es — el motivo, para quien lee.",
+    "archivo": "CONTRATO_MOTOR.md",
+    "seccion": "10 — CATALOGO DE MENSAJES NORMATIVOS",
+    "fila": "Jurisdicción sin límite cargado",
+    "por_que_se_ubica_por_etiqueta_y_no_por_numero_de_seccion": "La etiqueta de la fila es unica en el contrato (comprobado) y sobrevive a que el §10 se mueva de lugar. Los numeros de seccion, en cambio, se pisan: hoy el contrato tiene dos secciones numeradas 5.1 (`### 5.1` e `### INV-5.1`). Si algun dia hubiera dos filas con la misma etiqueta, el control se detiene en vez de elegir una.",
+    "normalizacion": [
+      "NEGRITAS: el contrato es markdown y marca `**...**`; el dato es texto plano. Se quitan los asteriscos, no lo que envuelven.",
+      "MARCAS: el catalogo escribe los huecos como `[nombre]` y el dato como `{nombre}`, porque el dato los sustituye en runtime. Se unifican a `{...}`.",
+      "COMILLAS: la celda del contrato entrecomilla el texto, y actua distinto en cada celda. En la de capa 1 hay texto FUERA de las comillas (la bandera), asi que se EXTRAE lo entrecomillado; en la de capa 2 la celda entera esta entre comillas, asi que se QUITAN las envolventes.",
+      "Medido el 2026-08-13: con estas tres y el recorte de la celda alcanza. NO hace falta colapsar espacios internos — los textos calzan sin eso, y una regla de mas es una diferencia real que el control dejaria de ver."
+    ],
+    "afirmaciones": [
+      { "nombre": "capa 1 dice lo que el catalogo dice", "tipo": "linea_dice", "origen": "dato", "campo": "mensaje.capa_1", "celda": "capa_1", "extraer": "entrecomillado" },
+      { "nombre": "capa 2 con Capitania dice lo que el catalogo dice", "tipo": "linea_dice", "origen": "dato", "campo": "mensaje.capa_2_con_capitania", "celda": "capa_2", "extraer": "celda" },
+      { "nombre": "la bandera del codigo es la que declara el catalogo", "tipo": "linea_dice", "origen": "codigo", "campo": "BANDERA_AVISO", "celda": "capa_1", "extraer": "bandera" }
+    ],
+    "por_que_entra_la_bandera": "La misma celda de capa 1 declara el nivel (`🟡 U`) y el motor lo tiene como constante en cobertura-jurisdiccional.js (BANDERA_AVISO). Hasta hoy nadie cotejaba las dos. Si dejaran de coincidir, INV-3.6 tendria dos topes distintos segun donde se mire, y el tope duro dejaria de ser duro. Sale barato porque la fila ya esta localizada para lo demas.",
+    "lo_que_NO_cubre": [
+      "UNA SOLA FILA: la que se declara arriba. Las otras nueve del §10 no tienen dato transcrito que cotejar — el `[tel]` que la v1.8 le saco a la fila 'Zarpe cerrado' no vive en ningun archivo de datos, asi que este control no lo habria cazado.",
+      "NO caza que FALTE una transcripcion que deberia existir. Si manana el §10 sumara una fila que el motor tiene que servir y nadie la transcribe aca, este control seguiria en verde. Es el segundo hueco que §7.2 declara —'que el plan no diga algo que deberia decir'— y ningun control de esta familia lo cubre.",
+      "NO cubre `capa_2_sin_capitania` ni `contacto_generico`: no son transcripcion literal de una celda sino la misma fila con la derivacion cambiada, y su motivo esta escrito en `nota_capa_2_sin_capitania`. Cotejarlos contra una celda seria comparar dos cosas que no dicen lo mismo a proposito.",
+      "NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde."
+    ]
+  },
   "contacto_generico": {
     "via": "VHF Canal 16",
     "texto": "Coordina con la Autoridad Maritima por VHF Canal 16 antes de zarpar.",
