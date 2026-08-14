@@ -11,8 +11,37 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 1.9
-Última actualización: 2026-08-13
+Versión: 2.0
+Última actualización: 2026-08-14
+Cambios v2.0: **entra el DFL 292 como fuente normativa, y con él la regla de las Alcaldías de
+Mar.** Motivo: el sistema venía aplicando un criterio que no estaba escrito en ninguna parte. Se
+usó en la entrada 86 —`Guayacán`, que DIRECTEMAR lista como Alcaldía de Mar de la Capitanía de
+Coquimbo y que quedó rotulada `Coquimbo`—, y una búsqueda del término sobre este archivo,
+`CLAUDE.md`, `PLAN_JURISDICCION.md`, `_bitacoras/`, `src/` y `data/` dio **cero enunciados de la
+regla**: 41 menciones, todas descriptivas y casi todas sobre la clasificación de Rada Covadonga.
+Un criterio que decide qué Capitanía se le muestra al patrón y que sólo vive en la memoria de
+quien lo aplicó es la misma clase de vacío que §3 bis abre describiendo para los límites, y se
+cierra igual. **INV-3.3 suma un párrafo**: la Alcaldía de Mar **no es unidad de jurisdicción** y
+resuelve a la Capitanía de la que depende, con su verificación propia. **No es invariante nuevo,
+y es a propósito** — INV-3.3 ya fija cuál es la unidad, y esto es esa misma regla alcanzando un
+nivel que no nombraba; partirla en dos habría dejado dos textos que pueden divergir. **FUENTES
+suma el D.F.L. 292/1953**, que es lo que da la base: Art. 12 (el litoral se divide en
+Gobernaciones Marítimas y éstas en Subdelegaciones Marítimas y Alcaldías de Mar), Art. 14, y
+Art. 27 (los Alcaldes de Mar dependen de los Capitanes de Puerto). **El Art. 14 es el que más
+importa y por eso se cita entero**: reparte los instrumentos —Presidente para Gobernaciones y
+Subdelegaciones, Director General para las Alcaldías—, y de ahí se sigue que el D.S. 991,
+decreto presidencial, **no puede** contener a las Alcaldías. No encontrarlas ahí no es un hueco
+de nuestra capa: es el instrumento equivocado. **El texto se incorporó al repositorio ANTES de
+citarlo**, en `data/decreto/fuente_dfl292/`, con PDF, texto extraído, sha256 y procedencia, por
+el mismo camino que D6 usó para el Art. 2 del D.S. 991 — una cita que no se puede reproducir
+desde el repositorio es lo que el preámbulo de este archivo prohíbe. Se declara de dónde salió:
+BCN no entrega PDF por la URL de la norma, así que el archivo es la reproducción que publica
+DIRECTEMAR del consolidado de BCN, versión 31-05-2002, contrastada contra una segunda
+reproducción independiente. **Declarado y NO resuelto:** ningún control vivo vigila ese sha256
+—al del D.S. 991 lo cubre B10 porque el insumo declara `cotejado_contra`, y contra el DFL 292 no
+se coteja nada—; queda como quedó `fuente_resoluciones_locales/`, escrito en su `PROCEDENCIA.md`,
+y la pregunta se reabre si ese hash llega a sostener una verificación automática. **Nada más de
+la v1.9 cambia**: INV-10.1, §5, §10 y las dos filas PENDIENTE quedan como están.
 Cambios v1.9: **corrección de la v1.8, misma fecha.** Al partir la fila de contacto de §5, la
 v1.8 dejó fuera de la tabla a `bahia-capitania-map.json` — y ese archivo es el que alimenta
 **todo** el contacto que hoy sale en pantalla: `sitport-routes.js` (:339, :465, :817) llama a
@@ -106,6 +135,15 @@ estos textos o a datos SITPORT reales, no se implementa como norma.
   consolidado vigente 12-NOV-2020, últ. mod. D.S. 391, D.O. 12.11.2020). Referido como
   "D.S. 991". Define 16 Gobernaciones Marítimas y 64 Capitanías de Puerto con límites
   expresados en paralelos, meridianos y poligonales de puntos notables.
+- **D.F.L. 292/1953** — Ley Orgánica de la Dirección General del Territorio Marítimo y de
+  Marina Mercante. Referido como "DFL 292". Ordena los niveles administrativos del litoral,
+  que el D.S. 991 supone y no define: Art. 12 (el litoral se divide en Gobernaciones
+  Marítimas, y éstas en Subdelegaciones Marítimas y Alcaldías de Mar); Art. 14 (las
+  jurisdicciones de Gobernaciones y Subdelegaciones las fija el Presidente de la República,
+  y el número de Alcaldías de Mar y sus jurisdicciones los fija el Director General);
+  Art. 27 (los Alcaldes de Mar dependen de los Capitanes de Puerto y sus atribuciones son
+  las que éstos les asignen). Texto consolidado vigente al 31-05-2002, **versionado en
+  `data/decreto/fuente_dfl292/`** con su procedencia y su sha256.
 - **Resoluciones locales de cada Capitanía** — implementan la CIRC O-41/001 en su
   jurisdicción. Definen umbrales de condición de tiempo y AB. NO son nacionales.
 
@@ -309,6 +347,23 @@ geométrico, franjas de latitud ni de ninguna aproximación calculada.
   jurisdicción de la Capitanía que las dicta.
 - **Razón operativa:** cada Capitanía mide las condiciones de SU jurisdicción, decide para
   SU jurisdicción y publica por SITPORT. El alcance de lo que dicta es su territorio.
+- **La Alcaldía de Mar no es unidad de jurisdicción: resuelve a su Capitanía.** El litoral
+  tiene un nivel administrativo por debajo de la Capitanía de Puerto. Una bahía cuyo
+  territorio corresponde a una Alcaldía de Mar **se atribuye y se rotula con el nombre de la
+  Capitanía de Puerto de la que esa Alcaldía depende**, nunca con el nombre de la Alcaldía.
+  El conjunto de valores admisibles no crece: sigue siendo el de las Capitanías del decreto.
+  - **Base:** DFL 292 Art. 12 y Art. 27. La dependencia no es interpretación nuestra: el
+    Art. 27 la establece.
+  - **Por qué el D.S. 991 no las contiene, y eso NO es un hueco de nuestra capa:** el
+    Art. 14 del DFL 292 reparte los instrumentos. Las jurisdicciones de Gobernaciones y
+    Subdelegaciones las fija el Presidente —que es lo que el D.S. 991, decreto presidencial,
+    hace— y las Alcaldías de Mar las fija el Director General, en otro acto. Buscar una
+    Alcaldía dentro del D.S. 991 es buscarla en el instrumento equivocado, y no encontrarla
+    ahí no habilita a resolverla por aproximación.
+  - **Verificación:** ningún valor del campo de Capitanía puede ser el nombre de una
+    Alcaldía de Mar. Una bahía atribuida por esta vía lleva en su `respaldo` de qué Alcaldía
+    viene y a qué Capitanía se resolvió, para que la atribución no quede indistinguible de
+    una coincidencia de nombre.
 - **Verificación:** ningún punto del código puede resolver jurisdicción por distancia a un
   punto, por franja de latitud ni por celda de un teselado. Un punto resuelve su Capitanía
   por contención en el polígono del decreto, o no la resuelve.
