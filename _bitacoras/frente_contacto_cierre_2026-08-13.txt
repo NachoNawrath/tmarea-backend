@@ -282,3 +282,250 @@ los dos repos y es mas ancho.
 FIN — el frente de contacto queda ABIERTO, con su estado escrito. Tres tramos
 aplicados y en verde; ninguno toco los 41 numeros que el patron ve hoy.
 ================================================================================
+
+================================================================================
+ADENDA — 2026-08-13. TRAMO 2.a APLICADO Y PUSHEADO.
+Se agrega al pie por CLAUDE.md §3.3: el texto de arriba queda como constancia y
+no se reescribe. Donde esta adenda lo supera, lo nombra y lo dice.
+Esta adenda es REGISTRO DE MEDICION. No declara que deberia decir el contrato.
+================================================================================
+
+A.1 — QUE ENTRO
+--------------------------------------------------------------------------------
+Se ejecuto el objetivo que el §5 de esta bitacora recomendaba —LOS 41 NUMEROS
+MUERTOS (2.a)— en dos commits, ya en origin/main:
+
+    85bc68a  fix(contacto): repone el telefono de la Capitania declarada en 33 de
+             las 164 entradas
+             33 entradas, 12 Capitanias declaradas. Un solo archivo tocado,
+             `src/data/bahia-capitania-map.json`, y solo el campo `telefono`.
+
+    df684d7  fix(contacto): repone el telefono de la Capitania de Hornopiren en
+             las 8 entradas restantes
+             115, 181, 182, 183, 184, 185, 186, 187 -> +56 65 2217304.
+
+    push:    4743766..df684d7  main -> main   (fast-forward, sin merge)
+
+Regla aplicada: en cada entrada se escribe el telefono que
+`_bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv` asigna a la
+Capitania que ESA MISMA entrada declara en su campo `capitania`. El match
+Capitania -> fila del CSV es por nombre normalizado (NFD sin diacriticos,
+mayusculas, trim) y SOLO exacto, nunca por subcadena.
+
+Dos reglas de valor, decididas por el owner durante el tramo:
+
+  · VALOR UNICO. Si la celda del CSV trae mas de un numero rotulado, se escribe el
+    de la Guardia, solo el numero. Aplico a UNA fila: Arica.
+  · NORMALIZACION. Todo valor pasa por U+00A0 -> U+0020 y colapso de espacios
+    repetidos. Lo escrito son solo digitos, '+' y espacios simples; los 41 valores
+    tienen sus codepoints cerrados en {43, 32, 48..57}.
+
+A.2 — LA CORRECCION DE FONDO: NO ERAN TRES NUMEROS MUERTOS
+--------------------------------------------------------------------------------
+Esta bitacora, en su 2.a y en su §5, nombra el defecto como "los 41 numeros
+muertos": tres telefonos que DIRECTEMAR ya no publica, alimentando 41 entradas.
+Eso describia el SINTOMA. Medido sobre el estado previo (4743766):
+
+    entradas                                    : 164
+    con telefono de una GOBERNACION             : 164
+    con telefono propio de su Capitania         :   0
+    y era el de SU PROPIA Gobernacion           : 164 de 164
+    valores distintos                           :  15
+
+El defecto no era que tres numeros estuvieran de baja. Era que **el campo
+`telefono` del mapa nunca tuvo un telefono de Capitania**: las 164 entradas
+cargaban el de su Gobernacion, rotulado como si fuera de la Capitania. Los tres
+muertos eran la PARTE VISIBLE de esa mala atribucion —la parte donde, ademas de
+estar mal atribuido, el numero ya no atendia.
+
+Y las 41 no eran tres casos, eran TRECE. Medido:
+
+    entradas afectadas                : 41
+    valores distintos que cargaban    :  3   (los 3 muertos)
+    CAPITANIAS DECLARADAS distintas   : 13
+    Gobernaciones involucradas        :  3   Arica, Talcahuano, Puerto Montt
+
+De esas 13, tres comparten el nombre con su propia Gobernacion, y ahi la
+confusion era INVISIBLE —"Capitania Arica" con el telefono de la "Gobernacion
+Arica" se lee como un dato correcto:
+
+    Arica          gob Arica          x 1   ids 71
+    Talcahuano     gob Talcahuano     x 4   ids 97, 98, 99, 198
+    Puerto Montt   gob Puerto Montt   x 8   ids 109, 110, 159, 160, 161, 162, 216, 233
+                                     ---
+                        3 Capitanias,  13 entradas
+
+Las otras diez tienen nombre distinto del de su Gobernacion, y ahi la mala
+atribucion estaba a la vista de cualquiera que leyera el archivo:
+
+    Coronel        gob Talcahuano     x 2   ids 100, 102
+    Lebu           gob Talcahuano     x 1   ids 101
+    Constitución   gob Talcahuano     x 2   ids 103, 229
+    Carahue        gob Talcahuano     x 3   ids 141, 142, 143
+    Puerto Varas   gob Puerto Montt   x 1   ids 111
+    Maullín        gob Puerto Montt   x 4   ids 112, 147, 148, 149
+    Calbuco        gob Puerto Montt   x 3   ids 113, 114, 232
+    Hornopirén     gob Puerto Montt   x 8   ids 115, 181, 182, 183, 184, 185, 186, 187
+    Chaitén        gob Puerto Montt   x 2   ids 121, 234
+    Cochamó        gob Puerto Montt   x 2   ids 152, 153
+                                     ---
+                       10 Capitanias,  28 entradas
+
+    13 + 28 = 41.
+
+LO QUE ESTO IMPLICA, Y ES LO IMPORTANTE: la mala atribucion NO se agotaba en los
+muertos. Medido sobre el mismo estado previo:
+
+    entradas con telefono de Gobernacion VIGENTE (no muerto)     : 123
+    de esas, con Capitania de nombre DISTINTO a su Gobernacion    :  50
+
+Esas 50 son entradas donde el numero SI ATIENDE, pero no es de la Capitania que
+el sistema rotula. El tramo aplicado no las toco, porque su valor no estaba de
+baja. Siguen en el archivo. Medido despues de los dos commits, el numero no
+cambio: 50 entradas, 15 Capitanias:
+
+    Achao, Ancud, Chacabuco, Chonchi, Cisnes, Corral, Guayacán, Huasco,
+    Lago General Carrera, Los Vilos, Mejillones, Puerto Natales, Quellón,
+    Quemchi, Quintero
+
+Dicho de una vez: lo que se cerro es el subconjunto que ADEMAS estaba muerto. El
+defecto de atribucion sigue vivo en 50 entradas y 15 Capitanias mas, con numeros
+que atienden.
+
+A.3 — CORRIGE AL 2.a DE ESTA MISMA BITACORA: EL VALOR DE ARICA
+--------------------------------------------------------------------------------
+El 2.a de arriba anuncia como insumo "los valores nuevos —+56 58 2356702,
++56 41 3831100, +56 65 2205100". Los dos ultimos son los que se escribieron. El
+primero NO: +56 58 2356702 es el de la SECRETARIA PROTOCOLAR DE LA GOBERNACION
+Maritima de Arica, y la regla que termino aplicandose pide el de la Capitania.
+
+Lo escrito en la entrada 71 es +56 58 2356747, el rotulado Guardia dentro del
+bloque `Capitania de Puerto de Arica`. Verificado por posicion de bloque en el
+HTML crudo de `297b220^`, no a ojo:
+
+    924 - 936  Gobernación Marítima de Arica   tel +56 58 2356702 / 2356700
+    937 - 949  Capitanía de Puerto de Arica    tel +56 58 2356704 / 2356747
+    linea 944, dentro del bloque de la Capitania, rotulo adjunto "(Guardia)"
+
+Es coherente con A.2: el 2.a proponia cambiar un numero de Gobernacion por otro
+numero de Gobernacion, porque leia el defecto como "numero de baja". Al leerlo
+como mala atribucion, el valor que corresponde es el de la Capitania.
+
+A.4 — HORNOPIREN: RESUELTA POR ADJUDICACION DEL OWNER, NO POR CADENA
+--------------------------------------------------------------------------------
+El 2.f y el cierre del sondeo dejaron a Hornopiren sin fila: el CSV la lista como
+`RIO NEGRO HORNOPIREN` (linea 43) y el mapa la declara `Hornopirén`, que no es
+match exacto. El owner la adjudico contra la ficha de DIRECTEMAR: es Capitania de
+Puerto, con bloque propio entre las Capitanias de la Gobernacion Maritima de
+Puerto Montt y correo cphornopiren@directemar.cl; misma reparticion que la linea
+43 —mismo telefono, misma direccion, mismo Capitan de Puerto—, la diferencia es
+solo de nombre.
+
+Queda dicho para que nadie lo lea como coincidencia de cadena: el script del
+tramo toma la linea 43 POR NUMERO DE LINEA y verifica que sea esa. No la busca
+por nombre, porque por nombre no da.
+
+A.5 — LO MEDIDO, JUNTO A LO QUE §5.1 DEL CONTRATO AFIRMA
+--------------------------------------------------------------------------------
+§5.1 de CONTRATO_MOTOR.md dice: "Los 164 telefonos son de Gobernacion, sin una
+sola excepcion". Era exacto cuando se escribio, y A.2 lo confirma sobre 4743766:
+164 de 164.
+
+Medido despues de 85bc68a + df684d7, contra la tabla hardcodeada de
+`src/utils/capitanias.js` mas Hanga Roa:
+
+    total entradas             : 164
+    telefono de GOBERNACION    : 123
+    telefono NO de Gobernacion :  41
+    valores distintos totales  :  25   (eran 15)
+    valores distintos NO-gob   :  13
+
+Los 13 valores nuevos, con su Capitania y su conteo:
+
+    +56 65 2205100  x8  Puerto Montt      +56 41 3839692  x2  Coronel
+    +56 65 2217304  x8  Hornopirén        +56 71 2671307  x2  Constitución
+    +56 41 3831100  x4  Talcahuano        +56 65 2731267  x2  Chaitén
+    +56 65 2451285  x4  Maullín           +56 987295906   x2  Cochamó
+    +56 65 2462434  x3  Calbuco           +56 58 2356747  x1  Arica
+    +56 45 2524736  x3  Carahue           +56 41 2511158  x1  Lebu
+                                          +56 65 2235237  x1  Puerto Varas
+
+CONTRATO_MOTOR.md NO SE TOCO. El contrato lo escribe el owner (§6). Esta seccion
+registra la medicion y su divergencia con el texto vigente; no propone redaccion.
+
+Cochamo publica CELULAR y no red fija (+56 987295906). Confirmado por el owner
+contra la ficha; es el unico de los 41 sin codigo de area, y no es un dato
+truncado.
+
+A.6 — HALLAZGO NUEVO SOBRE EL INSUMO: NBSP EN EL CSV
+--------------------------------------------------------------------------------
+16 de las 64 filas de la columna `Telefono` del CSV traen U+00A0 (code 160) donde
+las demas traen espacio (code 32). Se ven identicas en pantalla. Dos de ellas
+alimentaban este tramo —linea 24 CONSTITUCION y linea 26 TALCAHUANO, 6 de las 41
+entradas— y entraron normalizadas a espacio por decision del owner.
+
+Filas afectadas del CSV: 3, 4, 7, 10, 12, 13, 17, 18, 20, 22, 24, 26, 27, 58, 59,
+65. Queda para quien promueva el CSV (2.f): el guard de `src/data/` cubre BOM y
+parseo, NO cubre caracteres invisibles dentro de un valor.
+
+Dato adjunto para el 2.b: ese 2.b advierte que los 7 puntos de render hacen
+`replace(/\s+/g,'')` sin comprobar atomicidad, y que "se vuelve real el dia que
+entre el CSV, que trae 6 no atomicos". Sigue NO siendo real: los 41 valores
+escritos son atomicos por la regla de normalizacion. Los 6 no atomicos no
+entraron.
+
+A.7 — QUE SIGUE ABIERTO
+--------------------------------------------------------------------------------
+2.b, 2.c, 2.d, 2.e, 2.f y 2.g quedan exactamente como estan escritos arriba. Se
+suma lo que A.2 cuantifica:
+
+  · NUEVO, medido aca — LAS 50 MAL ATRIBUIDAS CON NUMERO VIGENTE. 50 entradas y
+    15 Capitanias siguen mostrando el telefono de su Gobernacion bajo el nombre de
+    una Capitania distinta. No estan muertas, estan mal atribuidas. No entraron a
+    este tramo porque el criterio de entrada fue "numero de baja".
+  · 2.f — EL CSV NO SE PROMOVIO. Sigue en `_bitacoras/`, con su BOM, sin entrar a
+    `src/data/`. De este tramo salieron VALORES leidos de el, no el archivo. La
+    fuente que §5 declara sigue siendo `bahia-capitania-map.json`.
+  · 2.d — LA DIRECCION que INV-10.1 exige sigue sin existir en fuente viva: los
+    campos del mapa siguen siendo exactamente tres.
+  · 2.e — el telefono de la GM Antartica sigue sin cargarse a ninguna fuente viva.
+
+A.8 — AUSENCIA DE REGRESION. Medido en la FASE 3 DEL TRAMO DE HORNOPIREN,
+      antes de escribir esta adenda. No se volvio a correr para la adenda: es un
+      .txt que ningun archivo del repositorio lee. La seccion registra que NO
+      hubo regresion; no reporta una regresion encontrada.
+--------------------------------------------------------------------------------
+    npm test                                   84/84   (sin cambio)
+    datos-sin-bom.test.js                      3/3     sin BOM, parsea
+    require de los 6 consumidores del mapa     OK
+    ocurrencias de los 3 telefonos de baja     0 entradas / 0 crudas en el archivo
+
+Verificado ademas, con el diff y con relectura del archivo: 164 entradas, los
+mismos 3 campos y el mismo orden de claves; `capitania` y `gobernacion` sin tocar
+en las 164; indentacion, alineacion, CRLF y ausencia de BOM sin cambios. En cada
+tramo, revertir los valores escritos reproduce el archivo previo byte a byte.
+
+A.9 — REPRODUCIBLE
+--------------------------------------------------------------------------------
+Desde la raiz del repositorio, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    npm test
+    node --test src\services\__tests__\datos-sin-bom.test.js
+    git show 297b220^:_bitacoras/sondeo_catalogo_2026-08-12/gm_region-arica-y-parinacota.html
+    git show 297b220^:_bitacoras/sondeo_catalogo_2026-08-12/gm_region-de-los-lagos.html
+
+El estado previo con el que se comparo todo A.2 se lee sin tocar el working tree:
+
+    git cat-file blob 4743766:src/data/bahia-capitania-map.json
+
+Los HTML crudos NO estan en el working tree: se leen de `297b220^` con git show,
+igual que en la sesion anterior.
+
+================================================================================
+FIN DE LA ADENDA — 2.a CERRADO, el frente NO. Los 41 numeros que el patron veia
+ya no estan. Pero el campo `telefono` paso de 164 numeros de Gobernacion a 123, y
+de esas 123 hay 50 que siguen rotuladas con el nombre de otra Capitania: el
+defecto de atribucion que los muertos hacian visible sigue vivo donde el numero
+atiende.
+================================================================================
