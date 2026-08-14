@@ -1,0 +1,11 @@
+# Mismo motivo que en data/decreto/fuente/.gitattributes: el repositorio corre con
+# core.autocrlf=true y, sin esta regla, git normalizaria el .txt al guardarlo y lo
+# reescribiria al sacarlo. El sha256 que PROCEDENCIA.md registra dejaria de coincidir
+# en un clon, que es exactamente el defecto que este directorio existe para cerrar.
+#
+# El .txt de este directorio es CRLF puro (639 terminadores, 640 lineas) y su hash se
+# calculo sobre esos bytes.
+#
+# Todos los archivos se guardan tal cual estan, byte a byte.
+*.pdf binary
+*.txt -text
