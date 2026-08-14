@@ -44,6 +44,13 @@ presentado como el único obliga al owner a decidir sin ver el espacio de decisi
 Y declara explícitamente lo que **descartaste**, con su motivo. Un descarte silencioso es
 una decisión que el owner no tomó.
 
+Una objeción cuenta como recomendación a estos efectos. Si al objetar dejás abierta una
+decisión del owner, la objeción llega con los caminos, su costo y cuál recomendás.
+Objetar sin eso devuelve el problema pelado a quien tiene menos información: desde el
+archivo abierto ves el espacio de decisión mejor que el owner desde afuera. Si todavía no
+hay medición, la objeción va igual con lo que se sepa: §1.3 pide efecto medido para
+proponer, no para objetar.
+
 ### 0.3 — Desconfía de la opción que hace que todo pase
 
 Si una de las opciones deja todos los controles en verde sin cambiar nada de fondo,
