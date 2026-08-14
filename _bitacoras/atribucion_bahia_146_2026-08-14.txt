@@ -1,0 +1,150 @@
+================================================================================
+ATRIBUCION DE LA BAHIA 146 "RIO BUENO" — DECISION DEL OWNER, 2026-08-14
+Estado: DECIDIDA Y CERRADA. Registro, no propuesta. Solo lectura: no se toco
+ningun dato, ningun servicio y ningun archivo fuera de esta bitacora.
+Veredicto: la bahia 146 pertenece a la CAPITANIA DE PUERTO LAGO RANCO.
+Hallazgo que acompana: la API de SITPORT devuelve para esa bahia un codigo de
+reparticion —189— que su propio catalogo de 64 no define. Unico caso de 164.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Las mediciones de este archivo se reproducen
+en PowerShell, verificadas corriendolas ahi:
+
+    cd C:\Users\katia\tmarea-backend
+
+    # 189 no esta en ninguno de los dos catalogos que SITPORT expone
+    "189 en el catalogo de 64      : " + (Select-String -Path _bitacoras\sondeo_catalogo_2026-08-12\totalgeneral.json -Pattern '"id":189' -SimpleMatch -Quiet)
+    "188 en el catalogo de 64      : " + (Select-String -Path _bitacoras\sondeo_catalogo_2026-08-12\totalgeneral.json -Pattern '"id":188' -SimpleMatch -Quiet)
+    "189 en sitport_capitanias_raw : " + (Select-String -Path _bitacoras\sondeo_catalogo_2026-08-12\sitport_capitanias_raw.json -Pattern '"Cdreparticion":189' -SimpleMatch -Quiet)
+
+    # el registro crudo de la bahia 146 tal como lo entrega la API
+    Select-String -Path _bitacoras\e3_paso6_2026-08-13\01_sitport_crudo\consultaBahias.json -Pattern '"IDBahia": 146,' -SimpleMatch -Context 0,2
+
+Insumos, los tres versionados:
+    _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json   (captura 2026-08-13)
+    _bitacoras/sondeo_catalogo_2026-08-12/totalgeneral.json               (catalogo, 64 reparticiones)
+    _bitacoras/sondeo_catalogo_2026-08-12/sitport_capitanias_raw.json     (catalogo, 64 reparticiones)
+
+
+1. LA DECISION
+--------------------------------------------------------------------------------
+La bahia 146 "RIO BUENO" pertenece a la CAPITANIA DE PUERTO LAGO RANCO.
+
+Decidida por el owner el 2026-08-14. Cerrada.
+
+
+2. FUNDAMENTO
+--------------------------------------------------------------------------------
+La interfaz web de SITPORT (sitport.directemar.cl/#/general) agrupa la bahia
+bajo el bloque "CAPITANIA DE PUERTO LAGO RANCO", junto con LAGO RANCO y LAGO
+MAIHUE. Aparece como "RIO BUENO, SECTOR LLANCACURA". Verificado por el owner el
+2026-08-14, con captura de pantalla.
+
+ESTO NO ES UNA EXCEPCION A LA REGLA VIGENTE. SITPORT sigue mandando para
+atribucion bahia -> Capitania, y SITPORT dice Lago Ranco. El decreto coincide de
+forma independiente —nombra al rio Bueno dentro de `lago_ranco`— pero no fue
+necesario recurrir a el, y no se recurrio.
+
+
+3. EL HALLAZGO SOBRE LA FUENTE
+--------------------------------------------------------------------------------
+La API de SITPORT devuelve `CdReparticion: 189` para la bahia 146, y ese codigo
+NO EXISTE en el catalogo de 64 reparticiones que la propia SITPORT expone. Los
+dos catalogos disponibles lo desconocen.
+
+Es un desajuste INTERNO de SITPORT entre lo que muestra en su interfaz y lo que
+entrega por API: la interfaz agrupa la bahia bajo una Capitania nombrada, y la
+API devuelve un puntero que su propio catalogo no define.
+
+UNICO CASO DE LAS 164. De las 63 reparticiones distintas que `consultaBahias`
+cita, 62 estan en el catalogo y una no. La unica bahia afectada es la 146.
+
+
+4. MEDICION CRUDA
+--------------------------------------------------------------------------------
+=== registro crudo de la bahia 146 en consultaBahias (2026-08-13) ===
+{"IDBahia":146,"CdReparticion":189,"NMBahia":"RIO BUENO","color":"default","valor":0,"Nom":"RIOBUENO146"}
+
+=== la reparticion 189 en los dos catalogos que SITPORT expone ===
+  totalgeneral.json        (64 reparticiones): AUSENTE
+  sitport_capitanias_raw   (64 reparticiones): AUSENTE
+  reparticiones distintas citadas por consultaBahias: 63
+  de esas, AUSENTES del catalogo de 64: 189
+  bahias afectadas: 146
+
+=== lo mismo desde PowerShell, con los comandos de la cabecera ===
+189 en el catalogo de 64      : False
+188 en el catalogo de 64      : True
+189 en sitport_capitanias_raw : False
+
+=== el registro, extraido con Select-String ===
+> _bitacoras\e3_paso6_2026-08-13\01_sitport_crudo\consultaBahias.json:595:  "IDBahia": 146,
+  _bitacoras\e3_paso6_2026-08-13\01_sitport_crudo\consultaBahias.json:596:  "CdReparticion": 189,
+  _bitacoras\e3_paso6_2026-08-13\01_sitport_crudo\consultaBahias.json:597:  "NMBahia": "RIO BUENO",
+
+
+5. LA VECINDAD, MEDIDA — no altera la decision, precisa la pregunta
+--------------------------------------------------------------------------------
+La reparticion 188 del catalogo ES "CAPITANIA DE PUERTO LAGO RANCO", y la API le
+atribuye TRES bahias:
+
+=== vecindad: que dice SITPORT de las otras bahias de Lago Ranco ===
+  reparticion de Lago Ranco en el catalogo: CdRep 188 "CAPITANÍA DE PUERTO LAGO RANCO"
+    bahia 144  "LAGO RANCO"
+    bahia 145  "LAGO MAIHUE"
+    bahia 258  "RÍO BUENO, SECTOR LLANCACURA"
+
+=== la bahia 258, por su cercania de nombre (D14) ===
+  {"IDBahia":258,"CdReparticion":188,"NMBahia":"RÍO BUENO, SECTOR LLANCACURA","color":"default","valor":0,"Nom":"RÍOBUENO,SECTORLLANCACURA258"}
+
+O sea que el bloque "CAPITANIA DE PUERTO LAGO RANCO" que la API arma para la
+reparticion 188 —LAGO RANCO, LAGO MAIHUE y "RIO BUENO, SECTOR LLANCACURA"— tiene
+exactamente las mismas tres entradas que el owner vio en la interfaz web, y la
+tercera es la bahia 258, no la 146. La 146 se llama "RIO BUENO" a secas y cuelga
+del 189 huerfano.
+
+QUE NO CAMBIA: la decision. Las dos lecturas posibles llevan al mismo lugar —si
+la entrada de la interfaz es la 258, la 146 sigue sin aparecer en ningun otro
+bloque; y el decreto nombra al rio Bueno dentro de `lago_ranco` de forma
+independiente. La Capitania es Lago Ranco por las dos vias.
+
+QUE SI CAMBIA: la pregunta a DIRECTEMAR deja de ser solo "que es el 189" y pasa a
+ser tambien "que relacion hay entre la 146 y la 258", que es una pregunta mejor.
+Ver §6.
+
+Que la 146 y la 258 sean el mismo cuerpo de agua registrado dos veces, o dos
+tramos distintos, NO SE DETERMINA con lo que hay en el repositorio.
+
+
+6. NOTA PARA LAS CONSULTAS FORMALES PENDIENTES A DIRECTEMAR
+--------------------------------------------------------------------------------
+Corresponde incorporar la reparticion 189 al registro acumulativo
+`_bitacoras/consulta_directemar_registro.md`, que se cierra y se envia cuando la
+construccion termine, en una sola consulta.
+
+Lo que hay que preguntar:
+
+  (a) Que es la reparticion 189. La API la devuelve como reparticion de la bahia
+      146 y ningun catalogo publico de SITPORT la define.
+
+  (b) Que relacion hay entre la bahia 146 "RIO BUENO" (reparticion 189) y la
+      bahia 258 "RIO BUENO, SECTOR LLANCACURA" (reparticion 188). Si son el mismo
+      cuerpo registrado dos veces, cual queda vigente.
+
+La 258 ya esta en el registro por D14, declarada como divergencia ABIERTA. Las
+dos entradas van juntas: preguntar por una sin la otra desperdicia el viaje.
+
+
+7. LO QUE ESTE ARCHIVO NO RESPONDE
+--------------------------------------------------------------------------------
+- Que es la reparticion 189. Se documenta que no existe en el catalogo; no se
+  infiere que representa.
+- Si la 146 y la 258 son el mismo cuerpo de agua. No determinado.
+- Si la interfaz web y la API se desajustan en algun otro punto. Se midio solo el
+  catalogo de reparticiones, y ahi el desajuste es uno solo.
+- El estado del campo `capitania` de la 146 en `src/data/bahia-capitania-map.json`,
+  que hoy es `null`. Esta bitacora registra la atribucion decidida; no escribe el
+  dato ni propone cuando escribirlo.
+================================================================================
