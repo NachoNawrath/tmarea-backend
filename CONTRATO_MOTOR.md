@@ -11,8 +11,21 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 1.7
-Última actualización: 2026-08-10
+Versión: 1.8
+Última actualización: 2026-08-13
+Cambios v1.8: **política de contacto** — decisión de producto del owner del 2026-08-13
+(PLAN_JURISDICCION.md D15), motivada por una medición: el campo `telefono` de
+`bahia-capitania-map.json` nunca contuvo el teléfono de una Capitanía, sino el de su
+Gobernación, en las 164 entradas y sin excepción. La app venía rotulando como Capitanía un
+número que es de la autoridad superior. Se fija: **el contacto se muestra sólo en el punto
+de zarpe y recalada**, con la prelación Capitanía → Gobernación *rotulada como tal* → el
+campo no se muestra; y **los mensajes del catálogo no llevan teléfono**, porque el patrón no
+necesita que se le explique cómo contactar a su Capitanía. §10 pierde el `[tel]` en sus dos
+filas que lo llevaban. §5 parte la fila de contacto en tres, porque mezclaba dos datos
+distintos y afirmaba de uno lo que era cierto del otro: el contacto de Capitanía queda
+declarado como **pendiente** en vez de declarado como OK sobre un archivo que no lo tiene.
+**Las menciones a VHF Canal 16 del catálogo NO se tocan**: vienen de la norma citada
+(D.L. 2222 Art. 27 y Art. 32), no son instrucción operativa nuestra.
 Cambios v1.7: INV-3.6 cierra el hueco que dejaba abierto — mandaba informar la jurisdicción
 sin límite cargado pero callaba sobre la severidad, así que cada implementación habría
 elegido su bandera y el contrato no podría arbitrar. Se fija: escala a **U**, nunca a U+V.
@@ -536,7 +549,9 @@ sirve otra cosa (causa del bug del perfil pescador).
 | Clima por segmento | SITPORT `Totalpronostico` | OK |
 | Bahías + jurisdicciones | PostGIS `bahias_sitport` + `bahia_jurisdicciones` (Voronoi recortado por costa) | OK |
 | Nodos marítimos | PostGIS `nodos_maritimos` (781+ nodos) | OK |
-| Capitanía por bahía | `bahia-capitania-map.json` (163 bahías → gobernación + teléfono) | OK |
+| Atribución bahía → Capitanía | `data/decreto/join_bahia_jurisdiccion.json` (164 entradas, 158 resueltas) | OK |
+| **Contacto de Capitanía** (teléfono, dirección) | ⚠️ POR DEFINIR — indexado por Capitanía, no por bahía | ⚠️ PENDIENTE |
+| **Contacto de Gobernación** (teléfono) | ⚠️ POR DEFINIR — hoy vive hardcodeado en `src/utils/capitanias.js` (backend y PWA), sin declarar acá | ⚠️ PENDIENTE |
 | Mareas | Motor harmónico propio (`tidal-constants.json`, 21 estaciones) | OK |
 | Ruteo | Raster A* (5 tiles, Arica–Cabo de Hornos) | OK con bugs de snap |
 | **SST (temperatura agua)** | Open-Meteo Marine (`sea_surface_temperature`) | OK — real |
@@ -682,7 +697,7 @@ es, precisamente, lo que esa fila comunica.
 
 | Situación | Capa 1 (estado) | Capa 2 (vía normativa + cita) |
 |---|---|---|
-| **Zarpe cerrado** | 🔴 U+V "Puerto de zarpe cerrado. Navegación no recomendada." | "Según D.S. 364 (RRDN) Art. 36, en caso de mal tiempo con puerto cerrado la Autoridad Marítima puede autorizar el zarpe a la gira hacia un puerto próximo del litoral, si aseguras que la nave está en condiciones y te responsabilizas. Coordina con la Capitanía [nombre]: [tel]." |
+| **Zarpe cerrado** | 🔴 U+V "Puerto de zarpe cerrado. Navegación no recomendada." | "Según D.S. 364 (RRDN) Art. 36, en caso de mal tiempo con puerto cerrado la Autoridad Marítima puede autorizar el zarpe a la gira hacia un puerto próximo del litoral, si aseguras que la nave está en condiciones y te responsabilizas. Coordina con la Capitanía [nombre]." |
 | **Recalada cerrada (en puerto)** | 🟡 U "Puerto de recalada cerrado." | "Según D.S. 364 Art. 16, si debes cambiar el puerto de recalada, solicita permiso a la Autoridad Marítima con anticipación. Podría exigirse declarar puerto alternativo." |
 | **Recalada cierra en tránsito** | 🟡 U + flag arribadaForzosa | "Según D.L. 2222 Art. 27 y D.S. 364 Art. 17, puedes efectuar arribada forzosa a puerto/lugar distinto del prefijado. Avisa de inmediato a la Autoridad Marítima por VHF Canal 16. Prima la salvaguarda de la vida humana en el mar." |
 | **Zona intermedia cerrada** | 🔴 U+V "Tu embarcación NO puede transitar por [zona]." | "Según D.L. 2222 Art. 32, la Autoridad Marítima puede prohibir el tránsito por aguas jurisdiccionales. No ingreses a la zona. Contacta por VHF Canal 16, coordina fondeo de seguridad o recala en puerto alternativo." |
@@ -690,7 +705,29 @@ es, precisamente, lo que esa fila comunica.
 | **Zarpe sin despacho (comercial)** | ℹ️ recordatorio | "Según D.L. 2222 Art. 23, zarpar sin despacho se sanciona hasta con la cancelación del título. Gestiona tu despacho antes de navegar." |
 | **Deportivo — sin zarpe** | ℹ️ informativo | "Según RGDN (TM-002) Art. 34, tu navegación deportiva nacional no requiere autorización de zarpe. Informa tu intención de movimiento al club náutico o, en su defecto, a la Autoridad Marítima local." |
 | **Moto de agua nocturna** | 🟡 U | "Según RGDN Art. 26, las motos de agua solo pueden navegar entre el orto y el ocaso de sol. Tu horario estimado excede la luz diurna." |
-| **Jurisdicción sin límite cargado** | 🟡 U "No tenemos cargado el límite de esta jurisdicción." | "Verifica con la Capitanía [nombre]: [tel] antes de zarpar. **Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro** (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona." |
+| **Jurisdicción sin límite cargado** | 🟡 U "No tenemos cargado el límite de esta jurisdicción." | "Confirma con la Capitanía [nombre] antes de zarpar. **Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro** (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona." |
 
-**Regla de uso:** Capa 2 nunca cambia la bandera de Capa 1. Todos los teléfonos provienen
-de `bahia-capitania-map.json`, clickeables (`tel:`).
+**Regla de uso:** Capa 2 nunca cambia la bandera de Capa 1. **Los mensajes de este catálogo
+no llevan teléfono ni canal de radio propio**: nombran la Capitanía y ahí terminan. Las
+menciones a VHF Canal 16 que aparecen en el catálogo son las que **la norma citada** manda, no
+instrucción de contacto nuestra, y por eso se conservan.
+
+### INV-10.1 — El contacto vive en el punto de zarpe y recalada — INVARIANTE
+El teléfono y la dirección de la autoridad se muestran **sólo** en el punto de zarpe y en el
+de recalada, nunca dentro de un mensaje normativo. La prelación es:
+
+1. **Teléfono de la Capitanía**, si la fuente lo tiene para esa Capitanía.
+2. Si no, **el de su Gobernación, rotulado como Gobernación** — nunca como Capitanía. Rotular
+   como Capitanía un número que es de la Gobernación es el defecto que este invariante existe
+   para cerrar, y fue el estado del sistema hasta la v1.8.
+3. Si no hay ninguno de los dos, **el campo no se muestra**. Sin texto de reemplazo, sin
+   mensaje sustituto: la ausencia se resuelve callando el campo, no llenándolo.
+
+La dirección sigue la misma prelación y la misma regla de rotulación.
+
+Los teléfonos van clickeables (`tel:`). **Un valor que no sea un número atómico no se
+renderiza como enlace** — un campo con dos números, con `/` o con texto adentro se muestra
+como texto, porque un `tel:` roto es peor que ninguno.
+
+**Verificación:** ningún mensaje del catálogo contiene `[tel]`. Ninguna tarjeta muestra un
+número de Gobernación bajo la etiqueta "Capitanía".
