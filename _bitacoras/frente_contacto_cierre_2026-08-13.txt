@@ -1,0 +1,284 @@
+================================================================================
+FRENTE DE CONTACTO — CIERRE DE SESION. 2026-08-13
+Estado: TRES TRAMOS APLICADOS Y PUSHEADOS. El frente NO esta cerrado: queda
+abierto con su estado escrito, tramo por tramo.
+Lo que entro: la politica registrada (D15), el contacto de la GM Antartica
+recuperado, la distancia a INV-10.1 medida, el mensaje del catalogo sin telefono
+con su guard invertido, y el cotejo dato-contrato dentro de `npm test`.
+Lo que NO entro a proposito: los 41 numeros muertos, los puntos de render de la
+PWA, y el desempate de las 7 ambiguas.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows. Reproducible para el owner, en PowerShell,
+desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    npm test
+    node scripts\prueba_mordida_cotejo_contrato.js
+    node scripts\fase5_validar_zonas_aviso.js
+
+Esta bitacora es REGISTRO, no medicion nueva. Cada numero lleva la ruta de donde
+se midio; lo que no se midio en esta sesion se cita, no se afirma.
+
+
+1. LO QUE QUEDO APLICADO, LEIDO DEL LOG
+--------------------------------------------------------------------------------
+Cinco commits del 2026-08-13, en orden. Dos son del owner (el contrato, §6):
+
+    54c4b9a  docs(contacto): D15 registrada, la GM Antartica recuperada, y medida
+             la distancia a INV-10.1
+             · §5 del plan: D15, la politica de contacto del owner, con la
+               RETIRADA del texto de fallback de VHF Canal 16 y su motivo.
+             · §7.1: puntero a D15 y las cuatro pendientes con su medicion.
+             · _bitacoras/frente_contacto_2026-08-13/: el telefono de la
+               Gobernacion Maritima Antartica Chilena, recuperado de `297b220^`
+               con procedencia declarada. NO cargado a ninguna fuente viva.
+
+    d9f7f9e  docs: contrato v1.8 — politica de contacto, INV-10.1   [OWNER]
+             INV-10.1 nuevo: el contacto vive en zarpe y recalada, con la
+             prelacion Capitania -> Gobernacion rotulada -> el campo no se
+             muestra. §10 pierde el [tel] en sus dos filas que lo llevaban.
+
+    8ab2955  docs: contrato v1.9 — corrige v1.8, mapa como fuente transitoria  [OWNER]
+             Repone `bahia-capitania-map.json` en §5 como fuente TRANSITORIA con
+             condicion de retiro, y corrige la fila de Contacto de Gobernacion
+             con la medicion de esta sesion. §5.1 nueva.
+
+    5d6b9a1  feat(INV-10.1): el mensaje del catalogo pierde el telefono, y el
+             guard cambia de signo
+             · src/services/zonas-aviso.js: la asercion que EXIGIA {telefono} se
+               INVIERTE y ahora exige que NO este, nombrando INV-10.1.
+             · src/services/cobertura-jurisdiccional.js: sale la sustitucion.
+             · data/decreto/zonas_aviso.json: `capa_2_con_capitania` pasa al
+               texto del §10 vigente. `capa_2_sin_capitania` NO se toco.
+             · scripts/fase5_validar_zonas_aviso.js: M21 y M22.
+
+    e154e3c  feat(cotejo): el dato transcrito se coteja contra el contrato en
+             cada npm test
+             · src/services/cotejo-contrato.js (nuevo) — la comparacion pura.
+             · data/decreto/zonas_aviso.json: bloque `cotejo_con_el_contrato`,
+               con las tres reglas, las tres afirmaciones y LO QUE NO CUBRE.
+             · src/services/__tests__/cotejo-contrato.test.js (nuevo) — el
+               enganche dentro de `npm test`, camino A de §7.2.
+             · scripts/prueba_mordida_cotejo_contrato.js (nuevo) — 13/13 +
+               control negativo primero.
+
+REGRESION AL CERRAR (crudo en la respuesta del tramo 3):
+    npm test                                84/84   (baseline de la sesion: 80/80)
+    prueba_mordida_cotejo_contrato.js       13/13 + control negativo   NUEVA
+    fase5_validar_zonas_aviso.js            22/22 + control negativo   (eran 20)
+    e3_prueba_mordida_cableado.js           21/21
+    e02_prueba_mordida_ambitos.js           14/14 + control negativo
+    e03join_prueba_mordida_join.js          16/16
+    e1_prueba_mordida_andamio.js            14/14
+    e01_prueba_mordida_a3.js                10/10 + control negativo
+    e3_prueba_mordida_carencia.py           14/14
+    (NO se corrio `e3_prueba_mordida_gate.py`: construye y deshace la capa entera
+     y no toca nada de estos tramos. Ultimo valor conocido 10/10, paso 6 de E3.)
+
+El backend arranca (`Boot: 727ms`) y el endpoint devuelve el texto vigente sobre
+la ruta que nombra Capitania. `data/catalogo/estado_drift.json` respaldado y
+restaurado, `ffff23b2107595aea4c6742955434d38b5968bcb7539cf3dfefc0c419221b2fd`.
+
+
+2. LO QUE QUEDA ABIERTO, CON SU ESTADO EXACTO
+--------------------------------------------------------------------------------
+
+2.a — LOS 41 NUMEROS MUERTOS.  **LISTO PARA ARRANCAR. No bloqueado.**
+    Tres telefonos que DIRECTEMAR ya no publica alimentan 41 de las 164 entradas
+    del mapa y estan en pantalla hoy:
+        +56 58 220 6402 (Arica)         ->  1 entrada
+        +56 41 226 6100 (Talcahuano)    -> 12 entradas
+        +56 65 256 1100 (Puerto Montt)  -> 28 entradas
+    INSUMO YA DISPONIBLE: los valores nuevos —+56 58 2356702, +56 41 3831100,
+    +56 65 2205100— salen de los HTML crudos recuperables de `297b220^`, la misma
+    via con la que se verifico el CSV y se recupero la GM Antartica.
+    QUE LO DESBLOQUEO: la v1.9 repone el mapa en §5 como fuente TRANSITORIA. Bajo
+    la v1.8 escribirlo habria sido escribir en un archivo que el contrato no
+    declaraba; ya no.
+    **NO ENTRO EN ESTA SESION A PROPOSITO**: es el primer tramo que escribiria
+    datos que salen a pantalla y merece arrancar fresco.
+
+2.b — LOS PUNTOS DE RENDER QUE INV-10.1 MANDA LIMPIAR.  **LISTOS. No bloqueados.**
+    Todo lo que el invariante pide QUITAR se puede hacer sin datos nuevos:
+        src/routes/sitport-routes.js:817 + TransitRestrictionsBlock.jsx:74-82
+            telefono en la tarjeta de TRANSITO
+        P3_VoyageVerification.jsx:249-258
+            "Telefono: ..." dentro de un mensaje del catalogo. El VHF Canal 16 de
+            esa misma frase SE CONSERVA: viene de la norma citada y la Regla de
+            uso v1.9 lo dice.
+        WeatherBlock.jsx:193-205        telefono por tramo, fuera de zarpe/recalada
+        DeportiveAlerts.jsx:187,287,488 tres enlaces tel: de la tabla de la PWA
+    Y la atomicidad: los 7 puntos de render hacen `replace(/\s+/g,'')` sin
+    comprobar que el valor sea un numero atomico. HOY NO PUEDE FALLAR —los 15
+    numeros en uso son atomicos— y se vuelve real el dia que entre el CSV, que
+    trae 6 no atomicos.
+    YA CUMPLE: PortStatusBlock.jsx:99 rotula "Gobernacion Maritima de {nombre}",
+    que es el escalon 2 de INV-10.1.
+    Alcance: toca los DOS repos.
+
+2.c — EL DESEMPATE DE LAS 7 AMBIGUAS.  **BLOQUEADO — decision del owner.**
+    La llave decreto <-> CSV no existe declarada; se compone del join por
+    `consultaBahias` sin comparar nombres, y da 52 de 64 con una sola
+    reparticion, 7 ambiguas y 5 sin bahia. Dos ambiguas son de AMBITO PUBLICADO:
+        lago_panguipulli  184 PANGUIPULLI / 186 VILLARRICA
+        lago_ranco        188 LAGO RANCO / 189 (no existe) / 201 PUERTO VARAS
+    En las dos el CSV trae telefono para la Capitania que el decreto nombra: no
+    falta el dato, falta el CRITERIO, y elegir es adjudicar. Es el conflicto
+    decreto-vs-SITPORT que E5 existe para probar.
+
+2.d — LA DIRECCION QUE INV-10.1 EXIGE.  **BLOQUEADO — depende de §5.**
+    No existe en ninguna fuente viva: los campos de `bahia-capitania-map.json`
+    son exactamente tres (`capitania`, `gobernacion`, `telefono`). La trae solo
+    el CSV, 63 de 64, sin ninguna truncada. El contrato v1.9 lo dice en §5.1.
+    Igual que el telefono de Capitania: la fila de §5 esta en ⚠️ PENDIENTE.
+
+2.e — EL TELEFONO DE LA GM ANTARTICA CHILENA.  **RECUPERADO Y ESPERANDO.**
+    `_bitacoras/frente_contacto_2026-08-13/gm_antartica_chilena_RECUPERADO.md`
+    +56 32 2208557 · "Villa Las Estrellas. Antartica Chilena". Verificado: el
+    blob recuperado, reconvertido a CRLF, reproduce el sha256 y los 52.287 bytes
+    que declara el PROCEDENCIA.txt del sondeo. NO cargado a ninguna fuente viva:
+    es evidencia para el dia de la promocion, igual que el CSV.
+    Lo necesita el escalon 2 de INV-10.1 para Rada Covadonga, y hoy no existe en
+    ningun archivo vivo del repositorio.
+
+2.f — EL CSV `capitanias_64_final.csv`.  **VERIFICADO, SIN PROMOVER.**
+    Sigue en `_bitacoras/sondeo_catalogo_2026-08-12/`. Su promocion depende de
+    que §5 defina la fuente de Contacto de Capitania. Trae BOM UTF-8: si entrara
+    a `src/data/` tal cual, entraria con BOM. Criterio resuelto y sin aplicar —
+    el guard `datos-sin-bom.test.js` debe cubrir todo archivo bajo `src/data/`
+    para la asercion de BOM, y sólo `.json` para la de parseo estricto.
+
+2.g — EL CONTROL DE DIVERGENCIA, LO QUE NO CUBRE.  **DECLARADO EN EL DATO.**
+    Cotejo UNA fila; las otras nueve del §10 no tienen dato transcrito; no caza
+    que FALTE una transcripcion que deberia existir —el segundo hueco de §7.2—;
+    y no verifica que el contrato tenga razon. Escrito en
+    `zonas_aviso.json` -> `cotejo_con_el_contrato.lo_que_NO_cubre`.
+
+
+3. LO QUE ESTA MEDIDO Y NO HAY QUE VOLVER A MEDIR
+--------------------------------------------------------------------------------
+Con la ruta de la evidencia al lado. La proxima sesion no gasta en esto:
+
+    LA FORMA DEL DATO DE CONTACTO
+    164 entradas · 3 campos · 39 nombres de Capitania (20 en null) · 15
+    gobernaciones · **15 telefonos distintos**.
+    **Los 164 telefonos son de GOBERNACION, sin una sola excepcion**: coinciden
+    uno a uno con el de la gobernacion de su propia entrada, y los 15 valores son
+    exactamente los de la tabla hardcodeada de `src/utils/capitanias.js`.
+    -> reconocimiento del frente, y CONTRATO_MOTOR.md §5.1 lo recoge.
+
+    LO QUE EL REPOSITORIO NO TIENE
+    De las 64 Capitanias del decreto, **35 resuelven contacto hoy y NINGUNA con
+    telefono propio**. Cero teléfonos de Capitania en `src/`. Cero direcciones.
+
+    EL CSV, VERIFICADO CONTRA LOS RAW
+    64 filas · 64 con Capitania · **63 con telefono** (falta Rada Covadonga) ·
+    63 con direccion · **61 valores distintos** · 6 telefonos NO atomicos.
+    **63 de 63 verificados contra los 18 HTML crudos: cero discrepancias.** 53
+    atribuidos solo a Capitanias; 10 compartidos con su Gobernacion o una
+    alcaldia, y los 10 son casos reales de central compartida (verificado a mano
+    en Valdivia y Talcahuano, mismo edificio y distinto piso).
+
+    LA LLAVE
+    No existe declarada. Compuesta join x consultaBahias, SIN comparar nombres:
+    **52 de 64 con una sola reparticion · 7 ambiguas · 5 sin bahia.** Identico
+    con las capturas del 12 y del 13: no depende del dia.
+    De las 12 que no resuelven, **(a) = 0**: ninguna queda fuera porque al CSV le
+    falte el dato. **Las 12 son problema de llave, no de valor.**
+
+    LA PRELACION DE INV-10.1 APLICADA A LAS 64
+    **52 con telefono de Capitania · 11 de Gobernacion rotulada · 1 sin campo.**
+    Ese 1 es `rada_covadonga`, y es sin campo por FALTA DE VALOR, no por regla:
+    con el telefono de la GM Antartica cargado, pasa a **52 / 12 / 0**.
+
+    LAS GOBERNACIONES CONTRA DIRECTEMAR
+    16 fichas en los HTML. **12 coinciden con la tabla del motor, 3 DIFIEREN
+    (Arica, Talcahuano, Puerto Montt) y 1 FALTA (Antartica Chilena).**
+
+    QUIEN CONSUME QUE
+    El numero que llega a pantalla sale del MAPA (`getCapitaniaByBahiaId`, desde
+    `sitport-routes.js` :339, :465, :817). La tabla hardcodeada del BACKEND **no
+    la consume nadie**; la de la PWA se usa **solo como fallback**. Recogido por
+    la v1.9 en §5.1.
+
+    -> Toda la evidencia de este bloque vive en las respuestas de los tramos de
+       reconocimiento y verificacion de esta sesion, y sus insumos versionados
+       estan en `_bitacoras/sondeo_catalogo_2026-08-12/` (CSV, PROCEDENCIA.txt,
+       raws de SITPORT) y `_bitacoras/e3_paso6_2026-08-13/` (captura de SITPORT
+       del 13, contacto lacustre medido).
+
+
+4. LO QUE SUBE AL OWNER Y NO ES MIO
+--------------------------------------------------------------------------------
+
+4.a — LA ETIQUETA DE RADA COVADONGA: ¿CAPITANIA O ALCALDIA?
+    D15 punto 4 la llama "Capitania estacional". **La fuente la lista como
+    `Alcaldia de Mar`, con la ficha vacia** — sin telefono y sin direccion:
+
+        [Gobernación Marítima]   Antártica Chilena  tel +56 32 2208557
+        [Capitanía de Puerto de] Bahía Paraíso      tel +56 32 2208557
+        [Capitanía de Puerto de] Bahía Fildes       tel +56 32 2208557
+        [Capitanía de Puerto de] Soberanía          tel +56 32 2509291
+        [Alcaldía de Mar de]     Rada Covadonga     tel (no hallado)
+
+    No es contradiccion nueva —el plan lo tiene escrito desde E3 paso 2— pero **de
+    esa etiqueta depende de que escalon de INV-10.1 sale su contacto**. Es
+    interpretacion de la fuente. Evidencia:
+    `_bitacoras/frente_contacto_2026-08-13/gm_antartica_chilena_RECUPERADO.md`
+
+4.b — EL `5.1` DUPLICADO DEL CONTRATO
+    Conviven `### 5.1 — El contacto de Gobernacion es fuente TRANSITORIA` (:574) y
+    `### INV-5.1 — Clorofila etiquetada` (:605). Dos secciones con el mismo
+    numero, en un documento que se cita por numero. **No se toca (§6).**
+    Efecto lateral util, y quedo aprovechado: el cotejo de `e154e3c` ubica la fila
+    del §10 **por su etiqueta y no por numero de seccion**, justamente porque los
+    numeros se pisan y la etiqueta es unica (comprobado).
+
+4.c — EL ENDPOINT: `bandera_final Q` CON `cobertura.bandera U`
+    Medido en el tramo 2, sobre la ruta Punta Arenas -> Pto Williams:
+
+        HTTP 200 · veredicto Q · bandera_final Q · cobertura.bandera U · avisos 2
+
+    **No lo rompio ningun cambio de esta sesion** —el diff de `5d6b9a1` son cuatro
+    archivos y ninguno es `src/routes`— y esta declarado en el codigo desde
+    `08255e7`: *"Todavia NO compone el veredicto — esa es la pieza 4"*
+    (`sitport-routes.js`, sobre la llamada a `evaluarCobertura`). Es **E7 · R1
+    pieza 2**, que §7 del plan ya lista como "pieza 1 cerrada; pieza 2 en
+    observacion". Que el aviso de INV-3.6 escale o no el veredicto final decide
+    que ve el patron: es del owner.
+
+
+5. QUE RECOMIENDO COMO PROXIMO OBJETIVO — UNO
+--------------------------------------------------------------------------------
+**LOS 41 NUMEROS MUERTOS (2.a).**
+
+Por que ese y no otro, en una linea cada uno:
+
+  · **Es el unico defecto del frente que esta HOY en pantalla.** Todo lo demas es
+    estructura, deuda declarada o trabajo bloqueado; esto es un patron marcando
+    un numero que no atiende.
+  · **Dejo de estar bloqueado hace unas horas**: la v1.9 repone el mapa en §5 como
+    fuente transitoria, que era exactamente lo que faltaba para poder escribirlo.
+  · **El insumo ya esta verificado y la via probada dos veces** en esta sesion —el
+    CSV 63/63 y la GM Antartica, las dos recuperadas de `297b220^` con prueba de
+    identidad CRLF/LF.
+  · **No depende de ninguna de las decisiones abiertas**: ni de la llave, ni de la
+    etiqueta de Rada Covadonga, ni de la fuente definitiva de contacto.
+  · **Es chico y tiene mordida evidente**: comparar los telefonos en uso contra la
+    captura versionada, con la semantica de salida de E0.1 y control negativo
+    primero.
+
+**Y arranca fresco a proposito**: es el primer tramo de este frente que escribe
+datos que salen a pantalla, y esta sesion cierra con 1/4 de contexto.
+
+Segunda opcion, si el owner prefiere avanzar por lo declarativo: **2.b**, los
+puntos de render, que tambien esta listo y no necesita datos nuevos — pero toca
+los dos repos y es mas ancho.
+
+================================================================================
+FIN — el frente de contacto queda ABIERTO, con su estado escrito. Tres tramos
+aplicados y en verde; ninguno toco los 41 numeros que el patron ve hoy.
+================================================================================
