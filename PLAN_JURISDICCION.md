@@ -1211,6 +1211,7 @@ eso D3 (partir el gate) es lo que las vuelve verdaderamente paralelas.
 | D10 | El ámbito **marítimo** entra al registro como no publicado, y la geografía de reclamo es `jurisdicciones_decreto` | **RESUELTA POR EL AGENTE 2026-08-11 (§0.4), aceptada por el owner** | criterio declarado: "publicado" = la capa del D.S. 991 de ese ámbito pasó sus controles y está en la base, que es lo que D3 ya fijó. Hoy C3 falla y `jurisdicciones_ds991` no existe. Enrutada de este lado porque el efecto sobre lo que el patrón ve está **medido en 0 cambios de bandera** sobre 10 rutas. `e02_propuesta §R1/§R2` |
 | D13 | **El río Bueno dentro de `lago_ranco`**: la jurisdicción se publica en el paso 5 con **5 de sus 6 cuerpos**; el río Bueno está `rechazado` sin geometría en el cotejo. ¿Se publica igual, y con qué mecanismo se declara la carencia? | **DECIDIDA 2026-08-13 por el owner en dos tiempos. (1) SÍ se publica**, con el río Bueno **DECLARADO como carencia** dentro de la jurisdicción, no en silencio, y con la dependencia escrita: la respuesta de DIRECTEMAR puede mover la jurisdicción del sector, y si la mueve, cualquier figura dibujada antes sobra. **(2) OPCIÓN A — declarar SIN reclamo**, medido antes de construir nada: para el patrón la diferencia es nula y la B exige dibujar una figura decidiendo qué implican tres puntos sueltos del decreto. | **La deuda queda escrita sin suavizar**: mientras esto esté así, el sistema registra como defecto de construcción propio algo que no lo es. **Tolerable porque está declarada y porque no sale al patrón; no porque sea correcta.** Cierra cuando DIRECTEMAR conteste, o antes si aparece una capa hidrográfica cargada que dé la geometría sin interpretarla. Todo en §E3, *"Lo que D13 necesita y hoy no existe"* + *"D13 DECIDIDA"*. |
 | D14 | **La bahía 258** (`RÍO BUENO, SECTOR LLANCACURA`, repartición 188 = Lago Ranco), aparecida en el catálogo de SITPORT entre el 2026-08-12 y el 2026-08-13 | **DECIDIDA 2026-08-13 por el owner: NO se declara. Queda como divergencia ABIERTA**, que es lo honesto — SITPORT creció y nosotros no, y no sabemos dónde está. **No se le rellena coordenada** desde `puertos_chile_nacional.json` ni de ninguna otra fuente: rige el precedente de la 257. | Consecuencia anotada y **correcta**: con el cableado de E3 activo pasa de **defecto registrado** a **defecto + aviso**, porque la repartición 188 entra en la ruta por las bahías 144 y 145. El patrón se entera. Medición completa en `_bitacoras/e01_drift_258_2026-08-13.txt` |
+| D15 | **Política de contacto: qué se le muestra al patrón, y dónde.** ¿Con qué prelación sale el contacto en el punto de zarpe/recalada, y qué dice el mensaje de una restricción cuando no hay teléfono? | **DECIDIDA 2026-08-13 por el owner. Es decisión de PRODUCTO, sin cita normativa, y NO la necesita** — se escribe así explícitamente para que nadie la lea como respaldada por una norma ni salga a buscarle una (§1.1: presentar una regla de producto como si la norma la respaldara es fabricar autoridad). **Son dos contextos distintos, y tratarlos como uno era el error de fondo.** **(1) En ZARPE y RECALADA** se muestra la Capitanía con su **teléfono y su dirección**, en esta prelación: *teléfono de la Capitanía* si lo hay; si no, *el de su Gobernación, **rotulado como Gobernación**, nunca como Capitanía* —que es exactamente el defecto que este frente existe para corregir—; y si no hay ninguno de los dos, **el campo no se muestra**: sin texto de reemplazo y sin mensaje sustituto. **(2) En las RESTRICCIONES** el mensaje es **"confirma con la Capitanía respectiva"**, y ahí termina: **sin teléfono y sin canal de radio**. Fundamento del owner: *el patrón no necesita que se le explique cómo hacer algo que hace siempre*. **(3) El Canal 16 NO es contenido de la app, y la decisión que se venía armando queda RETIRADA.** El 2026-08-13, más temprano, se había decidido un texto de fallback —*"Sin información de contacto disponible. Comunicar por radiotelefonía, VHF Canal 16."*— y se estaba por registrar dónde debía vivir. **No se borra el intento: se registra que se consideró y por qué se retiró**, que es la misma regla con la que quedó escrita la reversión de la gobernación de la bahía 160. La retira (1): si no hay teléfono, no hay campo, así que no hay nada que reemplazar. **(4) Rada Covadonga es Capitanía ESTACIONAL y su contacto es la Gobernación Marítima Antártica Chilena** — queda como el **primer caso de la regla general de (1)**, no como excepción, y por eso no abre rama en el código (§4.3). | **Nada del lado del owner.** Lo que falta es de construcción y está medido el 2026-08-13: aplicada la prelación sobre las 64, quedarían **52 con teléfono de Capitanía · 11 con teléfono de Gobernación rotulado · 1 sin campo**. Ese 1 es `rada_covadonga`, y **es el punto donde la política no se puede aplicar con los datos que hay**: su Gobernación —Antártica Chilena— **no existe en ningún archivo vivo del repositorio**, ni en la tabla de `src/utils/capitanias.js` ni entre las 15 gobernaciones de `src/data/bahia-capitania-map.json`; DIRECTEMAR publica su teléfono (`+56 32 2208557`) y hoy sólo sobrevive en los HTML crudos, recuperables de `297b220^`. Los otros dos insumos que la política exige y que la fuente autorizada **no tiene**: la **dirección** —no es campo de `bahia-capitania-map.json`, y el CSV la trae 63/64— y los **teléfonos de Capitanía** —el CSV los trae 63/64, verificados **63/63** contra los raw—. Las dos cosas dependen de que se decida §5 del contrato, que declara la clave del archivo. Medición en `_bitacoras/e3_paso6_2026-08-13/11_contacto_lacustre.txt` y en el reconocimiento del frente. |
 
 ### D7/D8 — por qué son dos y no una. Medido el 2026-08-11.
 
@@ -1339,6 +1340,93 @@ para que no quede huérfano ni se le fuerce un número de etapa que no le corres
 > 150 teléfonos y 10 gobernaciones para actualizar. **No lo es.** La causa de raíz es que **el
 > contacto está indexado por BAHÍA**, y mientras esa sea la clave, ningún dato mejor lo arregla.
 > Ver *"La causa de raíz"* más abajo. **Es un rediseño chico, no una actualización de valores.**
+
+> **LA POLÍTICA DE CONTACTO ESTÁ DECIDIDA — 2026-08-13. Es `D15` en §5, y §5 es donde vive.**
+> Fija **qué se le muestra al patrón y dónde**, y lo primero que hace es separar dos contextos que
+> este frente venía tratando como uno: **en zarpe/recalada** va la Capitanía con teléfono y
+> dirección, con la prelación *Capitanía → Gobernación **rotulada como tal** → el campo no se
+> muestra*; **en las restricciones** el mensaje es *"confirma con la Capitanía respectiva"* y ahí
+> termina. **El Canal 16 deja de ser contenido de la app**, y el texto de fallback que se venía
+> armando ese mismo día queda **retirado, con su registro** (punto 3 de D15). **Es decisión de
+> producto, sin cita normativa, y no la necesita.**
+>
+> **Lo que la política le cambia a este frente:** deja de necesitar un mensaje sustituto, y pasa a
+> necesitar **dos datos que la fuente autorizada no tiene** —la dirección y el teléfono de
+> Capitanía— más **uno que no existe en ningún archivo vivo del repositorio**: el teléfono de la
+> Gobernación Marítima **Antártica Chilena**, que la regla (4) necesita para Rada Covadonga.
+> Medido el 2026-08-13: aplicada la prelación sobre las 64, **52 mostrarían teléfono de Capitanía,
+> 11 de Gobernación rotulada y 1 ninguno**.
+
+##### Lo que las mediciones dejaron pendiente — 2026-08-13, con INV-10.1 ya escrito
+
+`CONTRATO_MOTOR.md` v1.8 (`d9f7f9e`) convirtió la política en **INV-10.1**, con verificación
+propia: *"ningún mensaje del catálogo contiene `[tel]`; ninguna tarjeta muestra un número de
+Gobernación bajo la etiqueta Capitanía"*. **Con el invariante escrito, lo que sigue abierto
+deja de ser una lista de mejoras y pasa a ser la distancia entre el código y el contrato.**
+Cuatro cosas, cada una con su medición:
+
+1. **El segundo escalón de INV-10.1 se apoya en una tabla que el contrato acaba de declarar
+   `PENDIENTE`, y que tiene números muertos.** El teléfono de Gobernación **no sale de ninguna
+   fuente declarada**: sale de la tabla hardcodeada de `src/utils/capitanias.js` (14
+   Gobernaciones + Hanga Roa), **duplicada palabra por palabra en la PWA** —listas de nombres y
+   de teléfonos idénticas, comprobado— y §5 la declara *"POR DEFINIR — hoy vive hardcodeado…
+   sin declarar acá"*. Contra lo que DIRECTEMAR publicaba el 2026-08-12: **12 coinciden, 3
+   difieren** (Arica, Talcahuano, Puerto Montt) **y 1 falta** (Antártica Chilena). **El CSV no
+   la reemplaza: no trae ningún teléfono de Gobernación** — su columna `Gobernacion` es un
+   nombre, y sus 64 teléfonos son todos de Capitanía.
+
+2. **La dirección que INV-10.1 exige no existe en ninguna fuente autorizada.** Los campos de
+   `src/data/bahia-capitania-map.json` son exactamente tres —`capitania`, `gobernacion`,
+   `telefono`— y **ninguno es dirección**. La trae **sólo el CSV, 63 de 64** (la que falta es
+   Rada Covadonga), sin ninguna truncada. O sea que **el primer escalón de INV-10.1 no se puede
+   cumplir hoy ni en teléfono ni en dirección**: los dos datos están fuera de `src/`.
+
+3. **El criterio de desempate de las 7 ambiguas sigue abierto, y dos son de ámbito
+   publicado.** La llave entre el decreto y el CSV no existe declarada; se compone del join
+   (bahía → jurisdicción) por `consultaBahias` (bahía → repartición), **sin comparar nombres**,
+   y da **52 de 64 con una sola repartición · 7 ambiguas · 5 sin bahía** (idéntico con las
+   capturas del 12 y del 13, así que no depende del día). Las dos publicadas son
+   **`lago_panguipulli`** (184 PANGUIPULLI / 186 VILLARRICA) y **`lago_ranco`** (188 LAGO RANCO
+   / 189 —la que no existe— / 201 PUERTO VARAS). **En las dos el CSV trae teléfono para la
+   Capitanía que el decreto nombra**: lo que falta no es el dato, es el criterio, y elegir es
+   adjudicar. Va con los 16 conflictos decreto-vs-SITPORT de **E5**.
+
+4. **Los 3 números muertos están en pantalla hoy, y no dependen de §5 ni de la promoción.**
+   `+56 58 220 6402` (Arica), `+56 41 226 6100` (Talcahuano) y `+56 65 256 1100` (Puerto Montt)
+   alimentan **41 de las 164 entradas** del mapa —1 + 12 + 28, contadas por teléfono— y
+   DIRECTEMAR ya no los publica para esas Gobernaciones. **Es el único punto del frente que se
+   puede corregir sin decidir nada de estructura**: es un valor desactualizado dentro de la
+   fuente que el contrato **ya** autoriza. Ninguna de las 11 jurisdicciones que caerían al
+   segundo escalón usa uno de los tres —sus Gobernaciones son Valdivia, Coquimbo, Valparaíso,
+   Castro, Aysén y Punta Arenas, **las seis coinciden con DIRECTEMAR**—, así que el defecto vive
+   en el punto de zarpe y recalada de hoy, no en la política de mañana.
+
+**La distancia entre el código y INV-10.1, medida y no arreglada** (es insumo de la promoción,
+no la promoción):
+
+| dónde | qué incumple | ¿se puede cumplir hoy? |
+|---|---|---|
+| `data/decreto/zonas_aviso.json`, `mensaje.capa_2_con_capitania` | transcribe la **v1.7**: *"Verifica con la Capitanía {nombre}: **{telefono}**…"*. El §10 v1.8 dice *"Confirma con la Capitanía [nombre]"*, sin teléfono | **sí** — es quitar |
+| `src/services/zonas-aviso.js:163-165` | **exige que el mensaje incluya `{telefono}`** y se detiene si falta. Hoy el guard **impide cumplir el contrato**: hay que invertirlo | **sí** — es invertir |
+| `src/services/cobertura-jurisdiccional.js:421-424` | sustituye `{telefono}` en el mensaje | **sí** — es quitar |
+| `src/routes/sitport-routes.js:817` + `TransitRestrictionsBlock.jsx:74-82` | la tarjeta de **tránsito** muestra `📞 {Capitanía} — {teléfono}`; INV-10.1 pone el contacto **sólo** en zarpe y recalada | **sí** — es quitar |
+| `P3_VoyageVerification.jsx:249-258` | el bloque de arribada forzosa muestra *"Teléfono: …"* dentro de un mensaje del catálogo | **sí** — es quitar (el **VHF Canal 16** de esa misma frase **se conserva**: viene de la norma citada, y la Regla de uso v1.8 lo dice) |
+| `WeatherBlock.jsx:193-205` | muestra teléfono por tramo, fuera de zarpe/recalada | **sí** — es quitar |
+| `DeportiveAlerts.jsx:187, 287, 488` | tres enlaces `tel:` desde la tabla hardcodeada de la PWA | **sí** — es quitar |
+| los **7** puntos de render con `tel:` | ninguno comprueba que el valor sea **atómico**: todos hacen `replace(/\s+/g,'')` y arman el enlace. INV-10.1 manda mostrarlo como texto si no lo es | **sí**, y **hoy no puede fallar** —los 15 números en uso son atómicos—; **se vuelve real con el CSV**, que trae **6 no atómicos** |
+| **escalón 1** de INV-10.1 (teléfono y dirección de Capitanía) | no hay dato en ninguna fuente viva | **NO** — depende de §5 |
+| **escalón 2** para `rada_covadonga` | falta el teléfono de la GM Antártica Chilena | **NO** con lo que hay en `src/`; el valor está **recuperado y verificado** en `_bitacoras/frente_contacto_2026-08-13/` |
+
+> **El corte es limpio y conviene tenerlo escrito: todo lo que INV-10.1 pide QUITAR se puede
+> hacer hoy y sin datos nuevos; todo lo que pide MOSTRAR depende de que §5 se decida.** Son dos
+> trabajos separables, y el primero cierra por sí solo la verificación *"ningún mensaje del
+> catálogo contiene `[tel]`"*.
+
+> **Un hallazgo lateral que no es del frente y hay que anotar igual: el dato divergió del
+> contrato y nada lo detectó.** `zonas_aviso.json` declara en su propia `procedencia` que el
+> texto está *"TRANSCRITO"* del §10 y que *"si el catálogo cambia, cambia acá y se nota"* —
+> pero **no hay ningún control que compare los dos textos**, así que la v1.8 lo dejó
+> desactualizado en silencio. Es exactamente lo que §7.2 propone cazar.
 
 El sondeo dejó una cosa que sí vale y que **ninguna etapa de este plan cubre**: el contacto.
 Medido — con `capitanias_64_final.csv` cambiarían de **teléfono 150 bahías** y de
