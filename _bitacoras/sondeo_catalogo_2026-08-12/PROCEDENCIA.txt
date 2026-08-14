@@ -275,3 +275,280 @@ respaldan cada numero de la bitacora de cierre.
 
 Precedente que se sigue: `geodata/costa/PROCEDENCIA.txt`, que hace lo mismo con
 la capa OSM de 925 MB que tampoco vive en el repositorio.
+
+================================================================================
+LOS DERIVADOS — PROCEDENCIA DECLARADA
+Agregado el 2026-08-13. Los 18 HTML de arriba se declararon al podar el
+directorio; los derivados quedaron sin declarar. Esta seccion lo cierra para los
+que el propio repositorio permite verificar, y la NOTA 4 dice cuales no y por que.
+
+Todos salieron de la MISMA corrida del sondeo: 2026-08-12, ~16:10, la fecha que
+declara `hallazgos_sondeo.txt`. Ninguno se recapturo despues.
+
+Para los que se verifican contra los HTML: los 18 estan en `a474ae4` —el mismo
+commit que cita la cabecera, y que es `297b220^`— y se leen con `git show` sin
+tocar el working tree. Vale la advertencia del sha256 de mas arriba: comparar
+TEXTO NORMALIZADO, no hashes, porque el blob esta en LF y el disco estaba en CRLF.
+================================================================================
+
+  capitania_gobernacion.csv
+      origen   : las 16 paginas `gm_*.html` de este mismo directorio.
+      captura  : 2026-08-12, ~16:10 — la misma corrida de los 18 HTML.
+      forma    : CSV con BOM UTF-8, 3 columnas "Region","Gobernacion","Capitania",
+                 63 filas. Nombres en Title Case con tildes.
+      contiene : las 63 Capitanias de Puerto que publican esas 16 paginas, cada una
+                 con la Gobernacion Maritima de la pagina donde aparece y su Region.
+      verificado: DOS equivalencias, ambas contra `a474ae4`.
+                 (1) el set de la columna Capitania == el set de los titulos
+                     "Capitanía de Puerto de X" de los 16 `gm_*.html`, normalizados
+                     NFD sin diacriticos y en mayusculas: 63/63 EN LAS DOS
+                     DIRECCIONES, F\A = 0 y A\F = 0.
+                 (2) la columna Gobernacion == el titulo T0 ("Gobernación Marítima
+                     de X") de la pagina donde esa Capitania aparece: 63/63, sin
+                     una discrepancia.
+                 salida esperada:
+                     |A|=63 |F|=63 F\A=0 A\F=0 gob_ok=63/63
+      comando  : node -e "const fs=require('fs'),{execFileSync:x}=require('child_process');const D='_bitacoras/sondeo_catalogo_2026-08-12';const g=a=>x('git',a,{encoding:'utf8',maxBuffer:1<<26});const n=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim().toUpperCase();const A=new Set(),G=new Map();for(const f of g(['ls-tree','-r','--name-only','a474ae4','--',D]).split('\n').filter(f=>/gm_.*\.html$/.test(f))){const h=g(['show','a474ae4:'+f]),b=[...h.matchAll(/<div id=\"vtxt_cuerpo_T\d+\">([^<]*)<\/div>/g)].map(m=>m[1].replace(/\s+/g,' ').trim());const gb=(b.find(t=>/^Gobernaci[oó]n Mar[ií]tima/.test(t))||'').replace(/^Gobernaci[oó]n Mar[ií]tima\s+(?:de\s+)?/i,'').trim();for(const t of b){const c=t.match(/^Capitan[ií]a\s+de\s+Puerto\s+de\s+(.+)$/i);if(c){A.add(n(c[1]));G.set(n(c[1]),n(gb));}}}const F=fs.readFileSync(D+'/capitania_gobernacion.csv','utf8').replace(/^﻿/,'').split(/\r?\n/).filter(x=>x).slice(1).map(l=>l.match(/\"(?:[^\"]*)\"/g).map(s=>s.slice(1,-1)));const S=new Set(F.map(r=>n(r[2])));console.log('|A|='+A.size,'|F|='+S.size,'F\\\\A='+[...S].filter(v=>!A.has(v)).length,'A\\\\F='+[...A].filter(v=>!S.has(v)).length,'gob_ok='+F.filter(r=>G.get(n(r[2]))===n(r[1])).length+'/'+F.length);"
+      ojo      : la Region de la pagina de O'Higgins quedo con la entidad HTML SIN
+                 DECODIFICAR — "Región de Valparaíso / O&#39;higgins". Es un defecto
+                 del volcado y, al mismo tiempo, la huella de que salio de HTML: 15
+                 de las 16 Regiones aparecen literales en el texto de su pagina, y
+                 la 16a difiere solo por ese `&#39;`.
+      para que sirve: es la unica forma del nombre de Capitania comparable con el
+                 campo `capitania` de `src/data/bahia-capitania-map.json` (Title Case
+                 con tildes), y es la proyeccion derivada de la unica fuente que
+                 distingue Capitania de Alcaldia de Mar. El tipo NO esta en este
+                 CSV: para decidirlo hay que ir a los `gm_*.html` (NOTA 1.2).
+
+  capitanias_contacto_directemar.csv
+      origen   : `capuertos_directemar.html` de este mismo directorio, y solo esa.
+      captura  : 2026-08-12, ~16:10.
+      forma    : CSV con BOM UTF-8, 3 columnas "Capitania","Direccion","Telefono",
+                 58 filas. Nombres en MAYUSCULAS o Title Case segun venia el <h3>.
+      contiene : las 58 Capitanias del listado plano, sin las 5 que solo estan en
+                 las paginas de Gobernaciones (ver NOTA 2).
+      verificado: el set de la columna Capitania == el set de los 58 titulos <h3>
+                 de `capuertos_directemar.html` en `a474ae4`, quitandoles el prefijo
+                 "Capitanía de Puerto de " y normalizando: 58/58 en las dos
+                 direcciones, F\h3 = 0 y h3\F = 0. Y de los 54 telefonos no vacios,
+                 los 54 aparecen LITERALES en ese HTML; las otras 4 filas —Carahue,
+                 Valdivia, Castro, Chacabuco— tienen Telefono vacio en el CSV.
+                 salida esperada:
+                     |h3|=58 |F|=58 F\h3=0 h3\F=0 tel_literal=54/54 tel_vacio=4
+      comando  : node -e "const fs=require('fs'),{execFileSync:x}=require('child_process');const D='_bitacoras/sondeo_catalogo_2026-08-12';const n=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim().toUpperCase();const h=x('git',['show','a474ae4:'+D+'/capuertos_directemar.html'],{encoding:'utf8',maxBuffer:1<<26});const H=new Set([...h.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>/g)].map(m=>m[1].replace(/<[^>]*>/g,'').replace(/&nbsp;| /g,' ').replace(/\s+/g,' ').trim()).filter(Boolean).map(t=>n(t.replace(/^Capitan[ií]a\s+de\s+Puerto\s+de\s+/i,''))));const F=fs.readFileSync(D+'/capitanias_contacto_directemar.csv','utf8').replace(/^﻿/,'').split(/\r?\n/).filter(x=>x).slice(1).map(l=>l.match(/\"(?:[^\"]*)\"/g).map(s=>s.slice(1,-1)));const S=new Set(F.map(r=>n(r[0])));const t=h.replace(/\s+/g,' ');console.log('|h3|='+H.size,'|F|='+S.size,'F\\\\h3='+[...S].filter(v=>!H.has(v)).length,'h3\\\\F='+[...H].filter(v=>!S.has(v)).length,'tel_literal='+F.filter(r=>r[2]&&t.includes(r[2].replace(/\s+/g,' '))).length+'/'+F.filter(r=>r[2]).length,'tel_vacio='+F.filter(r=>!r[2]).length);"
+
+  capitanias_64_completo.csv
+      origen   : etapa INTERMEDIA del armado de `capitanias_64_final.csv`, de esta
+                 misma corrida. No es una fuente nueva ni una proyeccion de final:
+                 es un estado anterior de las mismas 64 filas.
+      captura  : 2026-08-12, ~16:10.
+      forma    : CSV con BOM UTF-8, 5 columnas "CdRep","Codigo","Capitania",
+                 "Telefono","Direccion", 64 filas.
+      verificado: contra `capitanias_64_final.csv`, que si esta declarado.
+                 · CdRep + Codigo + Capitania IDENTICOS en las 64 filas. Misma
+                   llave, mismo universo.
+                 · Telefono y Direccion difieren en 22 celdas de 14 filas: 10 pasan
+                   de VACIO a con valor —final rellena— y 12 pasan de un valor a
+                   OTRO valor —final corrige—. Las 12:
+                       IQUIQUE      tel  2401911  -> 2401942
+                       IQUIQUE      dir  "Jorge Barrera 98. Iquique" -> "...Pza. Aduana..."
+                       SAN ANTONIO  tel  2584804  -> 2584800
+                       LIRQUEN      tel  2385136  -> 3839697
+                       TALCAHUANO   tel  2266100  -> 3831100
+                       SAN VICENTE  tel  2541954  -> 3839694
+                       CORONEL      tel  2711124  -> 3839692
+                       QUEMCHI      tel  2691334  -> "2691334 / +56981997435"
+                       QUEMCHI      dir  sin punto final -> con punto final
+                       CASTRO       tel  2629416  -> 2629448
+                       CASTRO       dir  sin punto final -> con punto final
+                       ACHAO        dir  "Calle Progreso S/N" -> "Calle Miranda Velásquez..."
+      no determinado: DE QUE HTML salio cada valor de esta etapa, y por que 12
+                 cambiaron. El repositorio no lo registra. Lo que si queda medido es
+                 que `final` SUPERA a `completo` en esas 22 celdas, asi que para
+                 cualquier uso vale `final`.
+      NO SIRVE COMO INSUMO DE CONTACTO. Medido: su Telefono de TALCAHUANO es
+                 "+56 41 2266100", que normalizado es EL NUMERO DE LA GOBERNACION de
+                 Talcahuano, no el de la Capitania. DIRECTEMAR publica para esa
+                 Capitania el +56 41 3831100, que es lo que trae `final`. Es el mismo
+                 defecto que `85bc68a` corrigio en el mapa vivo: telefono de
+                 Gobernacion puesto donde va el de la Capitania.
+                 Alcance de la advertencia, medido sobre las 64 filas contra la tabla
+                 de Gobernaciones de `src/utils/capitanias.js` mas Hanga Roa:
+                     completo : 6 filas con Telefono igual a un numero de Gobernacion
+                                ANTOFAGASTA, HANGA ROA, CALDERA, COQUIMBO,
+                                TALCAHUANO, VALDIVIA
+                     final    : 5 — las mismas MENOS Talcahuano
+                 O sea: la unica que `final` corrige de las seis es Talcahuano, y por
+                 eso es la unica de la que aca se afirma el defecto. Las otras cinco
+                 NO se declaran defectuosas: la bitacora de cierre del sondeo registra
+                 casos reales de central compartida entre Capitania y Gobernacion, y
+                 este archivo no los distingue. Queda sin resolver, y no se corrige
+                 ningun archivo: para contacto se usa `final`, que esta verificado
+                 63/63 contra los HTML crudos.
+
+  diff_capitanias.csv
+      origen   : cruce de `sitport_bahias_raw.json` + `sitport_capitanias_raw.json`
+                 contra el campo `capitania` de `src/data/bahia-capitania-map.json`.
+      captura  : 2026-08-12, ~16:10 (los raw); el cruce, la misma corrida.
+      forma    : CSV con BOM UTF-8, 6 columnas "Estado","ID","Bahia","CdRep",
+                 "Local","Sitport", 83 filas.
+                 Estado: DISTINTO 63 · NULO 19 · SIN_CAPITANIA 1.  Los 20 que no son
+                 DISTINTO son exactamente los 20 `capitania: null` del mapa.
+      verificado: las tres columnas que vienen de SITPORT se reproducen COMPLETAS:
+                     Bahia   == sitport_bahias_raw.NMBahia           83/83
+                     CdRep   == sitport_bahias_raw.CdReparticion     83/83
+                     Sitport == el nombre del CdRep en
+                                sitport_capitanias_raw.NMBahia,
+                                sin el prefijo "CAPITANÍA DE PUERTO"  83/83
+                 la columna Local == el campo `capitania` del mapa (vacio si null)
+                 en 82/83, contra el mapa en `a4ea1c1` y posteriores.
+      no determinado: UNA celda. La fila del id 153 (LAGO TAGUA TAGUA) trae
+                 Local="Puerto Montt", y el mapa no dice eso en ninguno de los cinco
+                 commits que lo tocaron: era `null` hasta `01d3901` y es "Cochamó"
+                 desde `a4ea1c1`. De donde salio ese "Puerto Montt" no esta en el
+                 repositorio. No se corrige el CSV: se declara la celda.
+      ojo      : la linea 34 escribe el campo Local vacio SIN COMILLAS —
+                     "SIN_CAPITANIA","146","RIO BUENO","189",,""
+                 Es la unica de las 83. Un parser que solo tome campos entrecomillados
+                 lee 5 campos en esa fila y 6 en las demas, sin fallar. Hermano del
+                 modo de falla de la NOTA 1.
+
+  nulos_resueltos.csv
+      origen   : la resolucion por SITPORT de las bahias con `capitania: null`, de
+                 esta misma corrida.
+      captura  : 2026-08-12, ~16:10.
+      forma    : CSV con BOM UTF-8, 4 columnas "ID","Gobernacion","NMBahia",
+                 "CdRep", 24 filas, sin ids repetidos.
+      verificado: sus 24 ids contra el mapa en `a474ae4`:
+                 · 20 SON los `capitania: null` del mapa, y son TODOS: ninguno de
+                   los 20 nulls falta en el CSV.
+                 · 4 NO son null — 229, 153, 128, 203 — porque ya se habian aplicado
+                   en `a4ea1c1`, cuyo mensaje dice exactamente "resuelve 4 capitanias
+                   nulas via sondeo SITPORT".
+                 O sea: el CSV propone 24 resoluciones, 4 entraron y 20 siguen sin
+                 aplicar. El archivo es la propuesta, no el resultado.
+      ojo      : `a4ea1c1` es tambien el commit que le metio el BOM UTF-8 al mapa,
+                 revertido por `22530b6`, y por el que existe
+                 `src/services/__tests__/datos-sin-bom.test.js`.
+
+  sitport_bahias_raw.json
+      origen   : respuesta CRUDA del endpoint `consultaBahias` de SITPORT, POST.
+                 Declarado en el bloque FUENTES de `hallazgos_sondeo.txt`:
+                     SITPORT POST consultaBahias -> 164 bahias (IDBahia, CdReparticion, NMBahia)
+      URL      : https://orion.directemar.cl/sitport/back/users/consultaBahias
+                 (la misma que usa `src/services/sitport-service.js:83`)
+      captura  : 2026-08-12, ~16:10.
+      forma    : envoltorio mssql completo. recordset de 164 filas, campos
+                 ["IDBahia","CdReparticion","NMBahia","color","valor","Nom"].
+      nota     : la NOTA 3 ya lo cubria con el glob `sitport_*_raw.json`. Esta entrada
+                 solo agrega el endpoint, que el glob no dice.
+
+  sitport_capitanias_raw.json
+      origen   : respuesta CRUDA del endpoint `consultaCapuertoRestriccion` de
+                 SITPORT, POST. Declarado en el bloque FUENTES de
+                 `hallazgos_sondeo.txt`:
+                     SITPORT POST consultaCapuertoRestriccion -> 64 capitanias (Cdreparticion, NMBahia, CDRepPersonal, CDZona)
+      URL      : https://orion.directemar.cl/sitport/back/users/consultaCapuertoRestriccion
+                 (la misma que usa `src/services/sitport-service.js:109`)
+      captura  : 2026-08-12, ~16:10.
+      forma    : envoltorio mssql completo. recordset de 64 filas, campos
+                 ["Cdreparticion","NMBahia","SiglaReparticion","CDZona",
+                  "CDRepPersonal","Totalcapuerto","TotalRestri"] — superset de los
+                 cuatro que nombra `hallazgos_sondeo.txt`.
+      ojo      : su `NMBahia` NO es un nombre de bahia: trae el nombre de la
+                 reparticion CON su tipo delante — "CAPITANÍA DE PUERTO ARICA" — y lo
+                 hace en los 64, uniformemente, incluida Rada Covadonga, que
+                 DIRECTEMAR clasifica como Alcaldia de Mar (ver HUECOS en
+                 `hallazgos_sondeo.txt`). Parece declarar el tipo y no lo discrimina:
+                 afirma "Capitania de Puerto" para todo. No usarlo para decidir el
+                 tipo de una reparticion; para eso van los `gm_*.html` (NOTA 1.2).
+      nota     : la NOTA 3 ya lo cubria con el glob `sitport_*_raw.json`. Esta entrada
+                 solo agrega el endpoint, que el glob no dice.
+
+  totalgeneral.json
+      origen   : respuesta CRUDA del endpoint `Totalgeneral` de SITPORT.
+      URL      : https://orion.directemar.cl/sitport/back/users/Totalgeneral
+                 (la misma que usa `src/services/sitport-service.js:128`)
+      captura  : 2026-08-12, ~16:10.
+      forma    : objeto JSON indexado por posicion, claves "0".."63". NO trae el
+                 envoltorio mssql de los otros raw. Cada valor:
+                     { observacionCapuerto, medicionMeteo,
+                       restricciones: { numeroRestricciones, navesMayores,
+                                        navesMenores, restriccionBahia },
+                       reparticion:   { id, nombre, codigo } }
+      verificado: sus 64 `reparticion` calzan uno a uno con `sitport_capitanias_raw`:
+                 `id` == Cdreparticion, `nombre` == NMBahia, `codigo` ==
+                 CDRepPersonal, en los 64 sin excepcion.
+      ojo      : que NO traiga el envoltorio mssql no lo vuelve derivado. Es crudo:
+                 este endpoint devuelve JSON compuesto, no un recordset. Por eso la
+                 NOTA 3 lo dejaba fuera del glob `sitport_*_raw.json` sin querer.
+
+  reparzona.json
+      origen   : respuesta CRUDA del endpoint `consultareparzona` de SITPORT, POST.
+                 El endpoint lo declara `hallazgos_sondeo.txt` de este mismo
+                 directorio, en su bloque FUENTES:
+                     SITPORT POST consultareparzona -> capitania -> macrozona naval (1-6)
+      URL      : COMPUESTA, no citada: el nombre del endpoint sale de
+                 `hallazgos_sondeo.txt` y la base de `src/services/sitport-service.js:3`
+                 (https://orion.directemar.cl/sitport/back/users). La base no aparece
+                 junto a este endpoint en ninguna fuente del repo, asi que la URL
+                 completa es inferida y se marca como tal.
+      captura  : 2026-08-12, ~16:10.
+      forma    : envoltorio mssql completo (recordsets / recordset / output /
+                 rowsAffected / returnValue). recordset de 64 filas, campos
+                 ["Cdreparticion","CDZona"], rowsAffected [64].
+      contiene : la macrozona naval de cada una de las 64 reparticiones.
+      verificado: contra `sitport_capitanias_raw.json`, de la misma corrida:
+                 · los 64 `Cdreparticion` son los mismos 64, sin diferencia;
+                 · el `CDZona` de cada reparticion coincide 64/64 con el `CDZona`
+                   que ya trae ese otro raw.
+                 Es coherencia interna entre dos raw de la misma captura, y ademas
+                 el endpoint esta declarado: eso es lo que permite declararlo.
+
+================================================================================
+NOTA 4 — EL QUE QUEDA SIN DECLARAR, Y POR QUE
+================================================================================
+
+`zonas.json` NO se declara. No falta medirlo: falta el dato que identifica una
+fuente en este archivo, que es de donde salio.
+
+Lo medido, que sirve para cerrar la entrada en una linea el dia que se sepa:
+
+    zonas.json   envoltorio mssql completo (recordsets / recordset / output /
+                 rowsAffected / returnValue). recordset de 5 filas, campos
+                 ["CDCodigo","NMZona"], rowsAffected [5]. Contenido entero:
+                     {"CDCodigo":1,"NMZona":"CUARZONA"}
+                     {"CDCodigo":2,"NMZona":"PRIZONA"}
+                     {"CDCodigo":3,"NMZona":"SEZONA"}
+                     {"CDCodigo":6,"NMZona":"QUINZONA"}
+                     {"CDCodigo":5,"NMZona":"TERZONA"}
+
+El envoltorio lo identifica como respuesta CRUDA de SITPORT, y su contenido calza
+exactamente con los otros dos raw: sus 5 `CDCodigo` son [1,2,3,5,6], el MISMO
+conjunto que los `CDZona` distintos de `reparzona.json` y de
+`sitport_capitanias_raw.json`. Pero:
+
+  · el endpoint NO esta declarado en ninguna parte. `hallazgos_sondeo.txt` lista
+    cuatro endpoints de SITPORT en su bloque FUENTES —consultaBahias,
+    consultaCapuertoRestriccion, Totalgeneral, consultareparzona— y ninguno
+    devuelve esta forma.
+  · `src/services/sitport-service.js` nombra consultaRestricciones, consultaBahias,
+    consultaCapuertoRestriccion, Totalgeneral y Totalpronostico. Ninguno tampoco.
+  · el nombre del archivo no es nombre de endpoint verificable: es como el sondeo
+    lo guardo.
+  · que su contenido sea coherente con los otros dos raw prueba COHERENCIA, no
+    procedencia: dos archivos consistentes entre si pueden venir de cualquier parte.
+
+Por §3.2 se escribe "no determinado" y se dice por que, en vez de inferir una URL
+plausible. Con `reparzona.json` se pudo declarar porque el endpoint estaba escrito
+en `hallazgos_sondeo.txt`; con este no hay tal linea.
+
+DOS CORRECCIONES MEDIDAS, sobre texto ya declarado:
+
+  · `hallazgos_sondeo.txt` describe la macrozona naval como "(1-6)". Los codigos que
+    existen son CINCO: 1, 2, 3, 5 y 6. El 4 NO esta, ni en `zonas.json` ni entre los
+    `CDZona` de las 64 reparticiones. "1-6" se lee como un rango completo y no lo es.
+  · los nombres de zona NO siguen el orden de su codigo: CUARZONA es 1, PRIZONA es 2,
+    SEZONA es 3, TERZONA es 5 y QUINZONA es 6. Quien una por codigo y lea el nombre
+    va a leer "primera zona" donde el dato dice 2. Se anota porque es el mismo modo
+    de falla que la NOTA 1: el dato es correcto y la lectura ingenua no.
