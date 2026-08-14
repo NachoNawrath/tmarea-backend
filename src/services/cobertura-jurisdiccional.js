@@ -417,10 +417,11 @@ async function componerAvisos(medicion, pool) {
       capitanias = [];
     }
 
+    // Sólo {nombre}: INV-10.1 saca el teléfono de los mensajes del catálogo, y el
+    // guard de zonas-aviso.js se detiene si el texto lo trae. El contacto —teléfono
+    // y dirección— se muestra en el punto de zarpe y recalada, no acá.
     const capa2 = capitanias.length === 1
-      ? mensaje.capa_2_con_capitania
-          .replace('{nombre}', capitanias[0].nombre)
-          .replace('{telefono}', capitanias[0].telefono)
+      ? mensaje.capa_2_con_capitania.replace('{nombre}', capitanias[0].nombre)
       : mensaje.capa_2_sin_capitania;
 
     avisos.push({

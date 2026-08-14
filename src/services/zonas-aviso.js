@@ -152,18 +152,24 @@ function validarDeclaracion(decl, insumo, contactos) {
     'la declaracion no trae "contacto_generico.texto", que es a donde deriva un aviso sin Capitania nombrada.');
 
   // El texto que ve el patron se transcribe del §10, no se redacta en el codigo.
-  // Aca se exige que este completo y que las marcas de sustitucion existan: un
-  // mensaje al que le falte {telefono} saldria a pantalla sin telefono.
+  // Aca se exige que este completo y que las marcas de sustitucion que el mensaje
+  // SI usa esten, y que la que el contrato PROHIBE no este.
   const msg = decl.mensaje;
   exigir(msg && textoNoVacio(msg.procedencia),
     'la declaracion no trae "mensaje.procedencia" — de que fila del catalogo §10 se transcribio el texto.');
   for (const campo of ['capa_1', 'capa_2_con_capitania', 'capa_2_sin_capitania']) {
     exigir(textoNoVacio(msg[campo]), `la declaracion no trae "mensaje.${campo}".`);
   }
-  for (const marca of ['{nombre}', '{telefono}']) {
-    exigir(msg.capa_2_con_capitania.includes(marca),
-      `"mensaje.capa_2_con_capitania" no incluye la marca ${marca}: saldria a pantalla sin ese dato.`);
-  }
+  exigir(msg.capa_2_con_capitania.includes('{nombre}'),
+    `"mensaje.capa_2_con_capitania" no incluye la marca {nombre}: saldria a pantalla sin ese dato.`);
+  // INV-10.1 (contrato v1.8, `d9f7f9e`): el contacto vive en el punto de zarpe y
+  // recalada, y los mensajes del catalogo NO llevan telefono. Hasta la v1.7 este
+  // guard exigia {telefono} y era correcto; con el invariante escrito, exigirlo
+  // IMPIDE cumplir el contrato — medido: el dato corregido abortaba aca. Se
+  // INVIERTE, no se quita: el mismo campo sigue vigilado, cambia el signo.
+  exigir(!msg.capa_2_con_capitania.includes('{telefono}'),
+    `"mensaje.capa_2_con_capitania" lleva {telefono}, y INV-10.1 prohibe el telefono dentro de ` +
+    `un mensaje del catalogo: el contacto se muestra en el punto de zarpe y recalada, no aca.`);
   exigir(!/\{[a-z_]+\}/.test(msg.capa_1) && !/\{[a-z_]+\}/.test(msg.capa_2_sin_capitania),
     'hay marcas de sustitucion en un texto que no las resuelve; saldrian literales a pantalla.');
 

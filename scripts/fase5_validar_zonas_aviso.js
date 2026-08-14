@@ -180,6 +180,30 @@ const FAMILIAS = [
   ['M20 la discrepancia se resolvio y el sin_contacto la esconderia',
     () => { const c = clonar(CONTACTOS); c['97'].capitania = 'Lirquen'; return [DECL, INSUMO, c]; },
     /SI coincide hoy con el decreto/],
+
+  // M21 y M22 — INV-10.1 (contrato v1.8, `d9f7f9e`). Son los dos lados del mismo
+  // campo y por eso van juntos: el mensaje tiene que seguir llevando {nombre}
+  // —si no, sale a pantalla sin nombrar la Capitania— y NO puede llevar
+  // {telefono} —el contacto se muestra en zarpe y recalada, no en el catalogo—.
+  //
+  // Hasta la v1.7 el guard EXIGIA {telefono}; con INV-10.1 escrito, esa exigencia
+  // impedia cumplir el contrato (medido: el dato corregido abortaba). M22 prueba
+  // la inversion, y su expresion esperada NOMBRA a INV-10.1 a proposito: si el
+  // caso saliera cazado por otro control —por 'falta la marca {nombre}', por
+  // ejemplo— estaria en verde probando otra cosa, que es la trampa que el paso 5
+  // de E3 ya pago.
+  ['M21 el mensaje pierde {nombre} y saldria sin nombrar la Capitania',
+    () => { const d = clonar(DECL);
+      d.mensaje.capa_2_con_capitania = d.mensaje.capa_2_con_capitania.replace('{nombre}', 'Arica');
+      return [d, INSUMO, CONTACTOS]; },
+    /no incluye la marca \{nombre\}/],
+
+  ['M22 el mensaje reinyecta {telefono}, que INV-10.1 prohibe',
+    () => { const d = clonar(DECL);
+      d.mensaje.capa_2_con_capitania =
+        d.mensaje.capa_2_con_capitania.replace('{nombre} antes', '{nombre}: {telefono} antes');
+      return [d, INSUMO, CONTACTOS]; },
+    /INV-10\.1 prohibe el telefono dentro de un mensaje del catalogo/],
 ];
 
 // Control negativo: la declaracion intacta NO puede morder. Sin esto, un
