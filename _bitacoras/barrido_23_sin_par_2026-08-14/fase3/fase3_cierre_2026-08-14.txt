@@ -282,3 +282,38 @@ PENDIENTE ABIERTO POR EL OWNER EN ESTE MISMO MOMENTO, y no se resolvio:
 `../PENDIENTE_puertas_de_autorizacion.txt` — revisar cuales de las puertas de
 autorizacion se justifican y cuales son friccion. B12 es su caso testigo.
 ================================================================================
+
+================================================================================
+ADENDA A.3 — 2026-08-15. UN DEFECTO DEL INSTRUMENTO, encontrado DESPUES de
+commitear y arreglado en el commit siguiente. Se agrega, no se reescribe (§3.3).
+================================================================================
+QUE PASO. Corrida la verificacion sobre el arbol ya commiteado, dio
+
+    RESULTADO: 4 CONTROL(ES) EN ROJO — la fase NO pasa
+
+y los cuatro eran del bloque E:
+    E · cambiaron 0 claves y se esperaban exactamente 2: (ninguna)
+    E · dentro de derivado_de cambiaron: (ninguna)
+    E · puntos_notables: 0 altas y 0 bajas, se esperaban 3 y 0
+    E · las 73 de HEAD cambiaron de contenido o de orden
+
+EL DATO NO CAMBIO. Lo que cambio fue la REFERENCIA. `verificar_fase3.js` sacaba
+el "v2 de antes" con `git show HEAD:...`, y **`HEAD` significa "antes del cambio"
+solamente mientras el cambio esta sin commitear.** Al commitear, `HEAD` paso a
+ser el commit CON los tres puntos y el bloque E quedo comparando el archivo
+contra si mismo.
+
+POR QUE IMPORTA MAS QUE EL SUSTO. Un instrumento con referencia relativa sirve
+UNA sola vez: el dia que alguien quiera reproducir esta verificacion —que es
+justo lo que §3.4 exige— la va a encontrar en rojo y va a creer que el insumo se
+rompio. Es la misma familia de trampa que este repositorio ya tiene anotada: un
+test que NOMBRA un estado envejece cuando ese estado cambia.
+
+ARREGLO: la referencia se ancla al commit fijo `d82f41f`, que es el anterior a
+`feat(decreto): los tres sectores del rio Bueno a puntos_notables, v1 y v2`.
+Con eso la verificacion vuelve a dar TODOS LOS CONTROLES EN VERDE y sigue dando
+lo mismo cuantas veces se corra. Salida en `16_verificacion_post_commit.txt`.
+
+LO QUE NO SE TOCO: `09_verificacion.txt` queda como esta. Es la corrida real de
+antes del commit, cuando `HEAD` si era la referencia correcta, y era valida en
+ese momento. Se conserva como constancia; no se regenera para que "quede linda".

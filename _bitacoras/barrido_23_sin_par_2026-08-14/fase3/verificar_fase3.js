@@ -25,9 +25,18 @@ const RAIZ = path.resolve(__dirname, '..', '..', '..');
 const D3 = __dirname;
 const V1 = path.join(RAIZ, 'data', 'decreto', 'jurisdicciones_capitanias.json');
 const V2 = path.join(RAIZ, 'data', 'decreto', 'jurisdicciones_v2.json');
-// El v2 de HEAD NO se guarda como archivo (362 KB, sobre el umbral de §3.5): se
-// saca del propio repositorio, que es la fuente reproducible (§3.4).
-const V2_HEAD_CMD = 'git show HEAD:data/decreto/jurisdicciones_v2.json';
+// El v2 de ANTES del cambio NO se guarda como archivo (362 KB, sobre el umbral
+// de §3.5): se saca del propio repositorio, que es la fuente reproducible (§3.4).
+//
+// EL COMMIT VA FIJO, NO `HEAD`. La primera version decia `HEAD` y era un error:
+// `HEAD` significa "antes del cambio" solo mientras el cambio esta sin
+// commitear. Al commitear, la referencia se movio sola y los cuatro controles
+// del bloque E se pusieron en rojo sin que el dato hubiera cambiado. Una
+// referencia relativa convierte un instrumento en algo que solo sirve una vez.
+// d82f41f es el commit anterior a `feat(decreto): los tres sectores del rio
+// Bueno a puntos_notables, v1 y v2`.
+const COMMIT_ANTES = 'd82f41f';
+const V2_HEAD_CMD = `git show ${COMMIT_ANTES}:data/decreto/jurisdicciones_v2.json`;
 // Del v2 regenerado en la copia descartable se conservo lo unico que esta prueba
 // compara —`puntos_notables` y `derivado_de`—; el archivo completo se borro por
 // el mismo umbral, con su PROCEDENCIA.txt al lado.
@@ -57,7 +66,7 @@ const head = JSON.parse(require('child_process').execSync(V2_HEAD_CMD, { cwd: RA
 L('VERIFICACION DE LA FASE 3 — camino B, los tres sectores del rio Bueno');
 L(`v1 : ${path.relative(RAIZ, V1)}  sha256 ${crypto.createHash('sha256').update(fs.readFileSync(V1)).digest('hex')}`);
 L(`v2 : ${path.relative(RAIZ, V2)}  sha256 ${crypto.createHash('sha256').update(fs.readFileSync(V2)).digest('hex')}`);
-L(`referencia de HEAD: ${V2_HEAD_CMD}  (${head.puntos_notables.length} puntos_notables)`);
+L(`referencia (v2 antes del cambio): ${V2_HEAD_CMD}  (${head.puntos_notables.length} puntos_notables)`);
 
 // ── A ────────────────────────────────────────────────────────────────────────
 H('A — LA PRUEBA CORRIDA: el v2 regenerado desde el v1 actual');
@@ -185,8 +194,8 @@ const bajas = antesN.filter((p) => !ahoraN.some((q) => igualCodepoint(q, p)));
 // Las 73 de HEAD, en su orden relativo.
 const resto = ahoraN.filter((p) => !NOMBRES.includes(p.nombre));
 igualCodepoint(resto, antesN)
-  ? ok('E · las 73 de HEAD sobreviven identicas y en el mismo orden relativo')
-  : mal('E · las 73 de HEAD cambiaron de contenido o de orden');
+  ? ok('E · las 73 de antes sobreviven identicas y en el mismo orden relativo')
+  : mal('E · las 73 de antes cambiaron de contenido o de orden');
 
 // ── cierre ───────────────────────────────────────────────────────────────────
 H(fallos === 0 ? 'RESULTADO: TODOS LOS CONTROLES EN VERDE' : `RESULTADO: ${fallos} CONTROL(ES) EN ROJO — la fase NO pasa`);
