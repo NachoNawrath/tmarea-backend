@@ -2050,8 +2050,9 @@ Escrito para que no se lea como más cerrado de lo que está.
   y forma reproducible en `_bitacoras/reclasificacion_insular_2026-08-15/`.
 
 - **`ST_Simplify(geom, 0.01)` ~~borra una isla~~ borra OCHO PIEZAS antes de bufferizar el límite
-  exterior.** Frente abierto el 2026-08-15, **medido y NO arreglado**; **precondición cerrada el
-  mismo día, con el arreglo identificado y no aplicado** (ver el pie de este bullet). El
+  exterior.** Frente abierto el 2026-08-15, ~~**medido y NO arreglado**; **precondición cerrada el
+  mismo día, con el arreglo identificado y no aplicado**~~ **ARREGLADO Y VERIFICADO el 2026-08-15**
+  — ver el pie de este bullet, punto 8. El
   constructor simplifica la unión de `ne_10m_land` con tolerancia 0,01° antes del buffer de
   200 mn. Medido pieza por pieza:
 
@@ -2107,7 +2108,8 @@ Escrito para que no se lea como más cerrado de lo que está.
   > bajar a `0,001` (funciona, pero deja 15.281 vértices y sale **15,60 s, más lento que sin
   > simplificar**: paga el costo sin cobrar el beneficio).
   >
-  > **5. Por qué no se aplicó, y qué cuesta.** **Mueve la geometría de 43 de las 44 marítimas ya
+  > **5. ~~Por qué no se aplicó~~ SE APLICÓ EL 2026-08-15, y qué costó.** **Mueve la geometría de ~~43~~
+  > ONCE de las 44 marítimas ya
   > construidas** —Antofagasta +6.084,7 · Taltal +4.056,1 · Caldera +2.492,9 · Chañaral +1.306,3
   > · Huasco +1.286,5 km², y 38 más por debajo de 150— así que exige **build (~20 min)** y es
   > escritura propia con su propia parada. **La atribución es aproximada y no se firma por
@@ -2116,9 +2118,20 @@ Escrito para que no se lea como más cerrado de lo que está.
   > para el km² de cada una. **Lo que NO cuesta: `B0` y `B12` no muerden y no hay resello que
   > pagar**, porque los dos sellan contra el sha256 del v1/v2 y **la tolerancia es constante del
   > constructor: el v2 no se toca**; `verificar_v2_contra_v1.py` sigue en **exit 0** (114 · 114 ·
-  > 0 · 0). Tampoco hay que recargar capas: `ne_land` ya está entera. **NO DETERMINADO:**
+  > 0 · 0). Tampoco hay que recargar capas: `ne_land` ya está entera. ~~**NO DETERMINADO:**
   > `fase5_corregir_testigos.py` con la máscara movida —hoy reproduce byte a byte, `movidos: 30`—,
-  > mismo pendiente que este §9 ya anotó para `arica`.
+  > mismo pendiente que este §9 ya anotó para `arica`.~~
+  >
+  > > **TACHADO Y CONTESTADO el 2026-08-15 (§3.3).** `fase5_corregir_testigos.py` **corrió con la
+  > > máscara movida, en `--medir` y en `--aplicar`, los dos en exit 0, `movidos al agua: 30`, y el
+  > > v2 quedó idéntico byte a byte** (sha256 `ddff10f4…` antes y después). **Y no era una
+  > > casualidad: el script no lee el rol `limite_exterior` en ninguna parte** —un grep de
+  > > `ne_land|limite_exterior|_zee|370400` sobre ese archivo devuelve **cero** coincidencias—;
+  > > corre contra `roles.tierra` (`costa_osm`) y la corrección es función del punto original y de
+  > > la capa de tierra. **La máscara no entra en su cuenta**, así que el pendiente no era "no
+  > > determinado" sino "no aplica". Se corrió igual, con respaldo y verificación de sha, porque
+  > > §1.2 pide medir y no argumentar. **El pendiente equivalente de `arica` sigue abierto**: ése
+  > > sí toca el insumo.
   >
   > **6. El agua que el arreglo destapa, con su aritmética completa.** **Gana 39.162,4 km²**
   > (agua que hoy falta) · **pierde 2.066,7** (agua que hoy sobra, porque Douglas-Peucker también
@@ -2135,6 +2148,77 @@ Escrito para que no se lea como más cerrado de lo que está.
   > agranda el hueco declarado, no sólo las bandas**, y es el **segundo caso medido de la
   > disyuntiva (a) contra (b) de INV-3.6**, junto a los ~31.400 km² de `arica`; los dos esperan la
   > misma decisión y conviene tomarla una sola vez.
+  >
+  > **8. APLICADO Y VERIFICADO el 2026-08-15. Evidencia y forma reproducible en
+  > `_bitacoras/operador_preservetopology_2026-08-15/`.** Dos builds completos, antes y después,
+  > para que el delta sea del operador y no de la deriva del insumo. **El diff del SQL emitido por
+  > el cambio de operador es de UNA LÍNEA** (`843c843`), que era el control central.
+  >
+  > **Lo primero, porque reordena todo: la capa publicada NO se mueve.** La máscara ZEE se aplica
+  > sólo a `ambito='maritima'` (`:862`) y el gate por ámbito **borra** de la tabla lo que no
+  > publica (`:1219-1220`); el marítimo está habilitado pero C3 falla, así que **se construye y se
+  > borra en la misma transacción**. `jurisdicciones_ds991` queda con las mismas 6 lacustres y los
+  > mismos 4.479,4 km². **Los km² que el cambio destapa no los adjudica nadie, por construcción del
+  > gate y no por cuidado de quien lo corrió** — con lo que la objeción "aplicar sin adjudicar
+  > produce una capa que adjudica agua que nadie adjudicó" **queda desactivada por medición**, y se
+  > reactiva el día que el marítimo pase C3.
+  >
+  > **Se agregó `jurisdicciones_ds991_areas`, emitida antes del gate** (autorizada por el owner en
+  > la parada de Fase 1). Sin ella el número no existía: el gate borra las figuras, `_publicacion`
+  > guarda la cuenta y no el área, `_ensanche` sólo mira las de tramo litoral —**3 de 44**— y
+  > ninguno de los once `RAISE NOTICE` del constructor imprime área por jurisdicción. Es
+  > **constancia, no control**: nada la consulta.
+  >
+  > **~~43~~ SON ONCE, Y UNA PIERDE.** Antofagasta **+6.238,1** · Taltal **+4.086,9** · Caldera
+  > **+2.269,5** · Chañaral **+1.298,4** · Huasco **+969,8** · Lebu +155,6 · Carahue +115,2 ·
+  > Mejillones +59,1 · Lota +49,1 · Valdivia +10,2 · **Coquimbo −21,9**. Las otras 33 marítimas
+  > construidas no se mueven al décimo de km². **Total marítima 2.023.196,8 → 2.038.426,8
+  > (+15.230,0 km²).** La atribución del punto 5 **no estaba mal hecha y su límite estaba
+  > declarado**: reconstruía la banda desde `ST_YMin`/`ST_YMax` y la cruzaba contra la caja entera,
+  > lo que reparte el agua del borde entre todas las que comparten latitud; en la figura real la
+  > mayoría no llega al borde exterior. **Acertó donde importaba** —las cinco grandes, en el mismo
+  > orden y con km² cercanos—; lo que no se podía anticipar es que la desviación estuviera en
+  > **cuántas** y no en el km². **Y `Coquimbo` le pone nombre propio a la dirección "pierde": el
+  > cambio no es monótono.**
+  >
+  > **El número del arreglo aplicado es 37.106,1 km², no 39.162,4.** Aquéllos eran *sin simplify*
+  > contra hoy; `ST_SimplifyPreserveTopology` queda a 0,003% de esa máscara, no encima. Ganancia
+  > **37.106,1** · pérdida **227,0** · neto **36.876,2**.
+  >
+  > **Y con el build queda confirmado el punto 7:** de los 37.106,1 destapados, **15.230,0 llegan a
+  > una marítima y 21.876,1 no le tocan a ninguna** — que son, casi exactamente, los **21.661,0 km²
+  > del disco de Diego Ramírez** que caen en latitud de `puerto_williams`, `no_cerrable`.
+  >
+  > **Verificación, toda corrida: los dos builds en exit 3 con veredicto idéntico palabra por
+  > palabra** (`publicados=[lacustre] retenidos_por_falla=[maritima]`); **C3 sigue en los mismos
+  > seis pares con los mismos km² al milésimo** —previsión mía equivocada: esperaba que se
+  > movieran, y no lo hacen porque los seis son de separación lateral en el mar interior, a
+  > cientos de km del borde de las 200 mn—; `verificar_v2_contra_v1.py` **exit 0** (114·114·0·0);
+  > auditor del v2 **exit 0, "AUDITORÍA LIMPIA", con B0 y B12 leídos uno por uno y ninguno
+  > mordiendo**; tripwire **44/8 · 54/10 antes y después, y por primera vez medido contra el v2**.
+  >
+  > **DECLARADO Y NO TOCADO — el mismo operador vive en SEIS lugares muertos:**
+  > `fase3_construir_capa.py:293`, `fase3bis_construir_capa.py:312`, `fase3ter_construir_capa.py:373`
+  > y los tres `.sql` que generan (`:571`, `:372`, `:296`). Los tres construyen
+  > `jurisdicciones_decreto` —el andamio, que **E1 decidió no regenerar**—. Los dos primeros traen
+  > `SUPERSEDIDO … NO CORRER` en su encabezado; **el único que no lo dice es `fase3ter`, que es
+  > justamente el que construyó el andamio vigente**. **Quien regenere el andamio algún día
+  > reintroduce el defecto entero —las ocho piezas, San Félix y Sala y Gómez incluidas— y ningún
+  > control lo va a cazar**, por el mismo motivo por el que no lo cazaba acá.
+  >
+  > **DECLARADO — el andamio conserva el borde viejo.** `jurisdicciones_decreto` sigue con la
+  > geometría construida con `ST_Simplify` y el build no lo toca: **desde hoy el constructor y el
+  > andamio describen bordes distintos, y esa distancia crece con cada cambio del constructor.** No
+  > es defecto nuevo —ya está rotulado SUPERSEDIDO Y DESACTUALIZADO—, pero el andamio todavía
+  > alimenta la `geografia_de_reclamo` de los ámbitos marítimo y antártico en
+  > `ambitos_publicados.json`. Ese uso **no resuelve jurisdicción** y un borde exterior corrido no
+  > cambia a un trozo de ámbito, así que **hoy no tiene efecto medible**; se declara porque es el
+  > tipo exacto de desfase que este repositorio ya pagó una vez.
+  >
+  > **Queda en pie, y no se tocó:** la tolerancia `0,01` sigue **literal dentro de la cadena de
+  > `:857`** y no como constante nombrada junto a `LIMITE_ZEE_M` y la caja de trabajo
+  > (`:113-122`). Es asimetría del constructor; arreglarla es cambio de estructura y esta sesión
+  > estaba acotada al operador.
 
 - **Si alguna `no_cerrable` se resuelve por complemento** — o sea si su geometría es el hueco
   entre vecinas ya construidas. Reconocimiento **no hecho**. Su condición previa tampoco está

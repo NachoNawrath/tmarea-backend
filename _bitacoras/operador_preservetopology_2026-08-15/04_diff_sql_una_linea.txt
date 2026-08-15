@@ -1,0 +1,15 @@
+843c843
+<   ST_Simplify(ST_Union(ST_MakeValid(ST_Intersection(ST_MakeValid(l.geom),
+---
+>   ST_SimplifyPreserveTopology(ST_Union(ST_MakeValid(ST_Intersection(ST_MakeValid(l.geom),
+840a841,850
+> -- EL OPERADOR NO ES INTERCAMBIABLE, y esto no es preferencia de estilo.
+> -- ST_Simplify es Douglas-Peucker y puede eliminar un ANILLO ENTERO: con esta
+> -- misma tolerancia borraba OCHO piezas de la union —entre ellas San Felix y
+> -- Sala y Gomez, dos de las seis islas que el D.S. 991 enumera por nombre— y
+> -- ningun control lo cazaba, porque la figura que queda no es nula, ni vacia,
+> -- ni invalida, ni de area cero. ST_SimplifyPreserveTopology conserva todos
+> -- los anillos por construccion, comprime igual (5.950 vertices contra 5.980)
+> -- y cuesta 0,4 s mas de buffer. Medido en
+> -- _bitacoras/simplify_precondicion_2026-08-15/ y aplicado en
+> -- _bitacoras/operador_preservetopology_2026-08-15/. No volver al anterior.

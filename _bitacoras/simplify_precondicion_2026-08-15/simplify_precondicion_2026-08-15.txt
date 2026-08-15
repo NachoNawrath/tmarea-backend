@@ -338,6 +338,40 @@ Queda dicho para que nadie tome el 44 de arriba como confirmacion del 44/8.
 
 NADA DE ESTO SE MOVIO EN ESTA SESION. El arreglo no se aplico.
 
+  ------------------------------------------------------------------------------
+  ENMIENDA AL PIE, 2026-08-15 (§3.3: no se reescribe nada de arriba). La escribe
+  la sesion que aplico el operador; evidencia en
+  _bitacoras/operador_preservetopology_2026-08-15/.
+
+  EL TRIPWIRE YA ESTA VERIFICADO CONTRA EL v2, y la cifra que circulaba era
+  correcta. Medido sobre data/decreto/jurisdicciones_v2.json, contando
+  estado_geometria, antes de tocar nada:
+
+      maritima     44 cerrable / 8 no_cerrable    (sobre 52)
+      las 64       54 cerrable / 10 no_cerrable   (sobre 64)
+
+  Y se volvio a medir despues del cambio de operador: identico. Sale del v2, que
+  el cambio no toca. La cautela de arriba —no tomar el 44 del andamio como
+  confirmacion del 44/8— sigue siendo correcta como metodo; lo que cambia es que
+  ahora hay una medicion que no la necesita. Crudo en 10_tripwire_despues.txt.
+
+  DOS NUMEROS DE ESTA BITACORA HAY QUE LEERLOS CON SU AMBITO, y no son errores de
+  aca: los 39.162,4 km2 del punto 4 y los 2.066,7 son "sin simplify contra hoy",
+  que es la comparacion que este directorio midio. EL ARREGLO QUE SE APLICO ES
+  OTRO: ST_SimplifyPreserveTopology contra hoy da 37.106,1 km2 de ganancia y
+  227,0 de perdida. No se contradicen —ST_SimplifyPreserveTopology queda a 0,003%
+  de la mascara sin simplificar, no encima de ella—, pero la cifra que hay que
+  citar para el cambio aplicado es 37.106,1.
+
+  Y LA ATRIBUCION DEL PUNTO 4 DIO 43 MARITIMAS DONDE EL BUILD DA ONCE. El limite
+  del metodo estaba declarado ahi mismo y era correcto —"sirve para decidir SI
+  cambian, no para firmar el km2 de cada una"—; lo que no se podia anticipar es
+  que la desviacion estuviera en CUANTAS y no en el km2. La banda reconstruida
+  desde ST_YMin/ST_YMax reparte el agua del borde entre todas las que comparten
+  latitud, y en la figura real la mayoria no llega al borde exterior. Las cinco
+  grandes del punto 4 acertaron, en el mismo orden y con km2 cercanos.
+  ------------------------------------------------------------------------------
+
 
 8. OBJECIONES QUE QUEDAN EN PIE
 --------------------------------------------------------------------------------

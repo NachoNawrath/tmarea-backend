@@ -851,9 +851,20 @@ def emitir_sql(v2, lac, filas, sectores, habilitados, ensayo):
     A("-- cuatro ordenes por debajo de las 200 millas, y ademas se simplifica antes")
     A("-- de bufferear. Usar la capa fina costaria horas para mover un borde que esta")
     A("-- a 370 km de la costa.")
+    A("-- EL OPERADOR NO ES INTERCAMBIABLE, y esto no es preferencia de estilo.")
+    A("-- ST_Simplify es Douglas-Peucker y puede eliminar un ANILLO ENTERO: con esta")
+    A("-- misma tolerancia borraba OCHO piezas de la union —entre ellas San Felix y")
+    A("-- Sala y Gomez, dos de las seis islas que el D.S. 991 enumera por nombre— y")
+    A("-- ningun control lo cazaba, porque la figura que queda no es nula, ni vacia,")
+    A("-- ni invalida, ni de area cero. ST_SimplifyPreserveTopology conserva todos")
+    A("-- los anillos por construccion, comprime igual (5.950 vertices contra 5.980)")
+    A("-- y cuesta 0,4 s mas de buffer. Medido en")
+    A("-- _bitacoras/simplify_precondicion_2026-08-15/ y aplicado en")
+    A("-- _bitacoras/operador_preservetopology_2026-08-15/. No volver al anterior.")
     A("CREATE TEMP TABLE _zee AS")
     A("SELECT ST_ReducePrecision(ST_MakeValid(ST_Buffer(")
-    A("  ST_Simplify(ST_Union(ST_MakeValid(ST_Intersection(ST_MakeValid(l.geom),")
+    A("  ST_SimplifyPreserveTopology(ST_Union(ST_MakeValid(ST_Intersection("
+      "ST_MakeValid(l.geom),")
     A(f"    ST_MakeEnvelope({X_W}, {Y_S}, {X_E}, {Y_N}, {CRS})))), 0.01)::geography,")
     A(f"  {LIMITE_ZEE_M})::geometry), 1e-8) AS geom FROM {CAPA_LIMITE_EXTERIOR} l")
     A(f"WHERE ST_Intersects(l.geom, ST_MakeEnvelope({X_W}, {Y_S}, {X_E}, {Y_N}, {CRS}));")
@@ -946,6 +957,29 @@ def emitir_sql(v2, lac, filas, sectores, habilitados, ensayo):
     A(f"CREATE INDEX idx_{TABLA}_ambito ON {TABLA} (ambito);")
     A(f"CREATE INDEX idx_{TABLA}_sect_geom ON {TABLA}_sectores USING GIST (geom);")
     A(f"ANALYZE {TABLA};")
+    A("")
+    # ── EL AREA DE CADA FIGURA, TOMADA ANTES DE QUE EL GATE BORRE ─────────────
+    # Constancia, no control. El gate por ambito (D3) retira de la tabla los
+    # ambitos que no se publican, asi que terminada la corrida no queda de donde
+    # leer el km2 de una jurisdiccion retenida: _publicacion guarda la CUENTA y no
+    # el area, y _ensanche solo mira las que tienen tramo litoral — hoy tres de
+    # cuarenta y cuatro. Sin esto, medir que le hizo un cambio del constructor a
+    # las maritimas obliga a reconstruir la banda de cada una por fuera del build,
+    # que es aproximado y no se puede firmar km2 por km2.
+    # Se emite ACA a proposito: es el ultimo momento en que las figuras retenidas
+    # todavia existen. Nada la consulta y ninguna decision depende de ella.
+    A(f"DROP TABLE IF EXISTS {TABLA}_areas;")
+    A(f"CREATE TABLE {TABLA}_areas AS")
+    A("SELECT id, nombre, ambito, estado_geometria,")
+    A("  round((ST_Area(geom::geography) / 1e6)::numeric, 1) AS km2,")
+    A("  ST_NPoints(geom) AS vertices, ST_NumGeometries(geom) AS piezas")
+    A(f"FROM {TABLA};")
+    A(f"COMMENT ON TABLE {TABLA}_areas IS 'Area de cada jurisdiccion TAL COMO LA "
+      "CONSTRUYO ESTA CORRIDA, tomada antes del gate por ambito. Incluye los "
+      "ambitos que el gate retiene y borra de la capa, que es justamente lo que no "
+      "se puede leer en ningun otro lado despues. ES CONSTANCIA, NO CONTROL: nada "
+      "la consulta y ninguna decision depende de ella. Una fila con km2 nulo es una "
+      "nula_declarada (INV-3.6), no un error.';")
     A("")
     emitir_controles(A, TABLA, permitidos)
     A("")

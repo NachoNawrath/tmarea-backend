@@ -1,0 +1,87 @@
+EL AREA DE CADA JURISDICCION, ANTES Y DESPUES DEL CAMBIO DE OPERADOR
+2026-08-15
+  antes   = build con ST_Simplify(0.01)
+  despues = build con ST_SimplifyPreserveTopology(0.01)
+  fuente  = jurisdicciones_ds991_areas, tomada ANTES del gate por ambito
+==============================================================================
+
+JURISDICCIONES QUE SE MUEVEN: 11
+NOMBRE                   AMBITO        ANTES km2  DESPUES km2    DELTA km2
+------------------------------------------------------------------------------
+Antofagasta              maritima      102,203.7    108,441.8     +6,238.1
+Taltal                   maritima      161,479.1    165,566.0     +4,086.9
+Caldera                  maritima      134,756.8    137,026.3     +2,269.5
+Chanaral                 maritima       65,187.4     66,485.8     +1,298.4
+Huasco                   maritima      106,261.7    107,231.5       +969.8
+Lebu                     maritima       38,222.3     38,377.9       +155.6
+Carahue                  maritima       32,526.3     32,641.5       +115.2
+Mejillones               maritima       23,897.7     23,956.8        +59.1
+Lota                     maritima       12,800.0     12,849.1        +49.1
+Valdivia                 maritima       16,577.3     16,587.5        +10.2
+Coquimbo                 maritima       36,963.9     36,942.0        -21.9
+
+JURISDICCIONES QUE NO SE MUEVEN: 43
+  Achao                    maritima          716.0
+  Algarrobo                maritima       31,684.9
+  Ancud                    maritima        8,863.0
+  Bahia Fildes             antartica     176,233.1
+  Bahia Paraiso            antartica     776,121.2
+  Calbuco                  maritima          658.8
+  Castro                   maritima        8,521.4
+  Chaiten                  maritima        8,971.4
+  Chonchi                  maritima       10,561.8
+  Cochamo                  maritima        5,754.1
+  Constitucion             maritima      135,232.8
+  Coronel                  maritima        9,273.9
+  Corral                   maritima       12,424.8
+  Iquique                  maritima       58,828.6
+  Lago General Carrera     lacustre        1,627.1
+  Lago Panguipulli         lacustre          367.6
+  Lago Ranco               lacustre          648.3
+  Lago Rapel               lacustre           72.8
+  Lago Villarrica          lacustre          326.2
+  Los Vilos                maritima      128,153.9
+  Maullin                  maritima       45,028.9
+  Melinka                  maritima       41,229.2
+  Papudo                   maritima       57,115.4
+  Patache                  maritima       31,690.6
+  Pichilemu                maritima      101,797.5
+  Puerto Aguirre           maritima       26,952.9
+  Puerto Chacabuco         maritima       49,857.6
+  Puerto Cisnes            maritima       12,940.6
+  Puerto Montt             maritima        1,003.0
+  Puerto Natales           maritima      125,067.3
+  Puerto Soberania         antartica     253,818.7
+  Puerto Varas             lacustre        1,437.4
+  Punta Arenas             maritima      129,115.5
+  Quellon                  maritima       35,787.8
+  Quemchi                  maritima        1,325.4
+  Quintero                 maritima       33,371.8
+  Rada Covadonga           antartica     151,289.8
+  Rio Negro Hornopiren     maritima        1,847.2
+  San Antonio              maritima       48,058.3
+  San Vicente              maritima        4,113.2
+  Tocopilla                maritima       48,862.2
+  Tongoy                   maritima       32,981.6
+  Valparaiso               maritima       44,529.2
+
+NULAS DECLARADAS (sin geometria en los dos builds, INV-3.6): 10
+  Arica, Baker, Hanga Roa, Juan Fernandez, Lirquen, Puerto Eden, Puerto Williams, Punta Delgada, Talcahuano, Tierra del Fuego
+
+TOTALES POR AMBITO
+AMBITO                ANTES km2    DESPUES km2      DELTA km2
+------------------------------------------------------------------------------
+antartica           1,357,462.8    1,357,462.8           +0.0
+insular_remota              0.0            0.0           +0.0
+lacustre                4,479.4        4,479.4           +0.0
+maritima            2,023,196.8    2,038,426.8      +15,230.0
+
+PIEZAS Y VERTICES, solo donde cambian
+  Antofagasta              vertices   19598 -> 19602    piezas    2 -> 2
+  Carahue                  vertices   13436 -> 13445    piezas    1 -> 1
+  Coquimbo                 vertices   14411 -> 14410    piezas    2 -> 2
+  Huasco                   vertices   10724 -> 10726    piezas    2 -> 2
+  Lebu                     vertices    3482 -> 3483     piezas    1 -> 1
+  Lota                     vertices   23701 -> 23702    piezas    1 -> 1
+  Mejillones               vertices    3582 -> 3587     piezas    1 -> 2
+  Taltal                   vertices   10306 -> 10304    piezas    2 -> 2

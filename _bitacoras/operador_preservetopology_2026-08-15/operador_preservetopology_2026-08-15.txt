@@ -1,0 +1,376 @@
+EL OPERADOR DEL LIMITE EXTERIOR: ST_Simplify -> ST_SimplifyPreserveTopology
+APLICADO Y VERIFICADO
+2026-08-15
+================================================================================
+
+QUE FUE ESTA SESION
+--------------------------------------------------------------------------------
+Aplico el cambio de operador que la sesion de la precondicion
+(_bitacoras/simplify_precondicion_2026-08-15/) habia identificado y dejado sin
+aplicar, corrio el build DOS veces —antes y despues— y verifico.
+
+  scripts/fase5_construir_capa_ds991.py:856
+    ST_Simplify(..., 0.01)  ->  ST_SimplifyPreserveTopology(..., 0.01)
+
+Se escribio, ademas del operador, una tabla de constancia en el constructor
+(punto 2) y una nota de codigo que explica por que el operador no es
+intercambiable. NO se adjudico agua: eso es decision del owner y esta fuera del
+alcance que el owner fijo para esta sesion.
+
+Shell: los comandos se ejecutaron en Git Bash. La forma reproducible para el
+owner esta en PowerShell, en la cabecera de cada .sql y del .py de este
+directorio. Los .txt de psql los escribio psql con -o, NUNCA con el '>' de
+PowerShell, que reencoda.
+
+Estado del repositorio al abrir: HEAD 32a0b99, cinco untracked viejos (08-08 y
+08-12). Sin commits en esta sesion.
+
+  NOTA DE INSTRUMENTO: la sesion abrio con el directorio de trabajo en
+  C:\Users\katia\.claude, que no es el repositorio, y los dos primeros `git`
+  salieron "fatal: not a git repository". Se corrigio apuntando a
+  C:/Users/katia/tmarea-backend. Queda escrito porque el reporte crudo de
+  apertura, tal como salio, no era el del repo.
+
+
+1. EL HECHO QUE REORDENA TODO: LA CAPA PUBLICADA NO SE MUEVE
+--------------------------------------------------------------------------------
+La mascara ZEE se aplica SOLO al ambito maritimo (:862), y el gate por ambito
+(D3) BORRA de la tabla todo ambito que no publica (:1219-1220). El maritimo esta
+habilitado pero sus controles fallan —C3, seis pares—, asi que se construye y se
+borra dentro de la misma transaccion.
+
+  jurisdicciones_ds991, antes y despues     6 filas, las 6 lacustres, identicas
+  lacustre                                  4.479,4 km2 -> 4.479,4 km2   (0,0)
+  antartica                             1.357.462,8 km2 -> 1.357.462,8   (0,0)
+
+DE AHI SE SIGUE LO QUE HACE SEGURA A ESTA SESION: los km2 que el cambio destapa
+se construyen y se borran, y NADIE los adjudica. El agua nueva queda declarada
+como pendiente POR CONSTRUCCION DEL GATE, no por cuidado de quien la corrio. El
+fuera-de-alcance que el owner fijo esta garantizado por el mecanismo.
+
+Y desactiva por medicion la objecion que la sesion anterior dejo en pie ("aplicar
+el arreglo sin adjudicar esa agua produce una capa que adjudica km2 que nadie
+adjudico"): no los adjudica, porque esa capa no se publica. La objecion se
+reactiva el dia que el maritimo pase C3, y ese dia la decision del owner ya tiene
+que estar tomada.
+
+
+2. LO QUE HUBO QUE AGREGAR PARA PODER MEDIR, Y POR QUE
+--------------------------------------------------------------------------------
+El encargo pedia el area de las maritimas que se mueven MEDIDA CON EL BUILD. No
+se podia: el gate las borra, y de lo que sobrevive, _publicacion guarda la CUENTA
+y no el area, y _ensanche solo mira las que tienen tramo litoral — TRES de 44
+(Calbuco, Puerto Montt, Rio Negro Hornopiren). Los once RAISE NOTICE del
+constructor no imprimen area por jurisdiccion; se verifico por grep, no de
+memoria.
+
+  AUTORIZADO POR EL OWNER en la parada de la Fase 1, Opcion B de tres.
+  Descartadas con su motivo: (A) aceptar 3 de 44 —deja el pedido sin cumplir—;
+  (C) correr el SQL generado a mano con un CREATE TABLE intercalado —lo que se
+  corre deja de ser el build y la evidencia no se regenera con un comando (§3.4)—.
+
+Se agrego jurisdicciones_ds991_areas, emitida ANTES del gate, con id, nombre,
+ambito, estado_geometria, km2, vertices y piezas de TODAS las jurisdicciones,
+incluidas las que el gate va a borrar. ES CONSTANCIA, NO CONTROL: nada la
+consulta y ninguna decision depende de ella. Una fila con km2 nulo es una
+nula_declarada de INV-3.6, no un error.
+
+EL DIFF DE UNA SOLA LINEA, que el owner fijo como control central, se preservo
+separando las dos escrituras: primero la tabla de constancia (y con ella el build
+"antes", para que la linea base tuviera de donde salir), y DESPUES el operador
+solo, contra el SQL que ya la traia. Los tres diffs del SQL emitido estan en
+04_diff_sql_una_linea.txt:
+
+  tabla de constancia   +8 lineas, un bloque, nada mas se movio
+  OPERADOR              1 linea (843c843)   <- el control central
+  nota de codigo        +10 lineas, todas comentario SQL
+
+
+3. LA MASCARA DEL LIMITE EXTERIOR, ANTES Y DESPUES
+--------------------------------------------------------------------------------
+  Instrumento: 02_mascara_zee.sql -> 02_mascara_zee.txt
+
+  operador                              piezas  vertices   mascara km2
+  ANTES   ST_Simplify 0.01                 168      5980   6.669.307,3
+  DESPUES ST_SimplifyPreserveTopology      176      5950   6.706.183,5
+
+REPRODUCE EXACTO la referencia de 01_variantes.txt de la sesion de la
+precondicion, en los cuatro numeros. Ese cotejo era la condicion para seguir: si
+no reproducia, el hallazgo habria sido ese y la sesion paraba ahi.
+
+Las seis islas que el D.S. 991 enumera por nombre, medidas por AREA DE
+INTERSECCION (nunca con ST_PointOnSurface, que sobrecuenta la supervivencia):
+
+  isla                 antes      despues
+  San Felix           0,0000       0,8260    RECUPERADA
+  San Ambrosio        0,7429       0,8375    deja de achicarse
+  Robinson Crusoe    44,3643      44,3643    (medida dentro de una ventana de
+  Alejandro Selkirk  37,0252      37,0252     0,05 grados: es supervivencia, no
+                                              el area total de la isla)
+  Isla de Pascua      0,0000       0,0000    fuera de la caja -85..-65
+  Sala y Gomez        0,0000       0,0000    fuera de la caja -85..-65
+
+  LAS DOS ULTIMAS SALEN EN CERO POR EL RECORTE, NO POR EL OPERADOR. La caja de
+  trabajo del constructor las deja afuera; el operador no tiene nada que ver. Se
+  listan igual para que la ausencia quede medida y no supuesta. Que Sala y Gomez
+  se recupere con el operador nuevo esta medido en la sesion de la precondicion
+  con la caja ancha, y sigue valiendo: lo que hace falta para CONSTRUIRLA es la
+  Opcion B de hanga_roa, no este cambio.
+
+
+4. EL AGUA QUE EL CAMBIO DESTAPA — Y UNA CORRECCION AL NUMERO QUE CIRCULA
+--------------------------------------------------------------------------------
+  GANA   - despues menos antes                 37.106,1 km2
+  PIERDE - antes menos despues                    227,0 km2
+  NETO   - resta de las areas de las mascaras   36.876,2 km2
+
+LOS TRES VAN JUNTOS. El neto solo esconde que el borde se movio en los dos
+sentidos, que es la trampa que la sesion anterior ya pago.
+
+CORRECCION AL NUMERO QUE VENIA CIRCULANDO: el agua que ESTE CAMBIO destapa son
+37.106,1 km2, no 39.162,4. Los 39.162,4 son "sin simplify menos hoy" —la sesion
+de la precondicion los midio contra la variante SIN simplificar—, y
+ST_SimplifyPreserveTopology no es lo mismo que no simplificar: queda a 0,003% de
+esa mascara, no encima de ella. La cifra correcta para el arreglo aplicado es
+37.106,1. La diferencia (2.056,3 km2) no cambia ninguna decision, pero el numero
+que se cite tiene que ser el del arreglo que se aplico.
+
+Lo mismo del lado que pierde: 227,0 km2 contra los 2.066,7 de aquella
+comparacion.
+
+
+5. LAS QUE SE MUEVEN: SON ONCE, NO 43 — Y UNA PIERDE
+--------------------------------------------------------------------------------
+  Instrumentos: jurisdicciones_ds991_areas -> 03_areas_{antes,despues}.{txt,csv}
+                08_comparar_areas.py -> 08_areas_antes_despues.txt
+
+ESTE ES EL HALLAZGO DE LA SESION, y contradice el "43 de las 44" que venia del
+§9 del plan y del prompt de apertura:
+
+  NOMBRE                 ANTES km2    DESPUES km2    DELTA km2
+  Antofagasta            102.203,7      108.441,8     +6.238,1
+  Taltal                 161.479,1      165.566,0     +4.086,9
+  Caldera                134.756,8      137.026,3     +2.269,5
+  Chanaral                65.187,4       66.485,8     +1.298,4
+  Huasco                 106.261,7      107.231,5       +969,8
+  Lebu                    38.222,3       38.377,9       +155,6
+  Carahue                 32.526,3       32.641,5       +115,2
+  Mejillones              23.897,7       23.956,8        +59,1
+  Lota                    12.800,0       12.849,1        +49,1
+  Valdivia                16.577,3       16.587,5        +10,2
+  Coquimbo                36.963,9       36.942,0        -21,9   <- PIERDE
+
+  maritima, total      2.023.196,8    2.038.426,8    +15.230,0
+  las otras 33 maritimas construidas: sin movimiento, al decimo de km2.
+
+POR QUE LA ATRIBUCION ANTERIOR DABA 43 Y NO ESTABA MAL HECHA: reconstruia la
+banda de cada jurisdiccion desde su extension latitudinal (ST_YMin/ST_YMax) y la
+cruzaba contra la caja entera -85..-65, sin contorno, sin fronteras declaradas,
+sin resta de tierra y sin ensanche. Eso reparte el agua del borde exterior entre
+TODAS las que comparten latitud con ella. En la figura real, la mayoria no llega
+al borde exterior: su contorno la detiene antes. Aquel instrumento declaraba
+"sirve para decidir SI cambian, no para firmar el km2 de cada una" — y la
+declaracion era correcta. Lo que no se podia anticipar es que el error no
+estuviera en el km2 de cada una sino en CUANTAS.
+
+Y el metodo aproximado acerto donde importaba: las cinco grandes son las mismas y
+en el mismo orden, con los km2 cerca (Antofagasta 6.084,7 estimado contra 6.238,1
+medido; Taltal 4.056,1 contra 4.086,9; Chanaral 1.306,3 contra 1.298,4). Lo que
+sobro fueron 32 jurisdicciones chicas que no tocan el borde.
+
+COQUIMBO PIERDE 21,9 km2, y es la primera vez que la direccion "pierde" tiene un
+nombre propio. Douglas-Peucker no solo mete el borde para adentro: tambien lo
+empuja para afuera, y ahi la capa de hoy tiene agua de mas que el operador nuevo
+retira. El cambio NO es monotono, y cualquier lectura de "el arreglo agrega agua"
+tiene que decirlo.
+
+DONDE CAE EL RESTO DEL AGUA, y confirma con el build lo que §9 anoto:
+  destapado por la mascara      37.106,1 km2
+  que llega a una maritima      15.230,0 km2
+  que no le toca a ninguna      21.876,1 km2
+Esos 21.876,1 son, casi exactamente, los 21.661,0 km2 del disco de Diego Ramirez
+que §9 punto 7 ya habia identificado como agua que cae en latitud de
+puerto_williams —no_cerrable, sin geometria—. ARREGLAR EL INSUMO AGRANDA EL HUECO
+DECLARADO, y ahora esta medido con el build y no por atribucion.
+
+PIEZAS Y VERTICES, solo donde cambian:
+  Antofagasta 19598->19602 · Carahue 13436->13445 · Coquimbo 14411->14410
+  Huasco 10724->10726 · Lebu 3482->3483 · Lota 23701->23702
+  Mejillones 3582->3587 y de 1 pieza a 2 · Taltal 10306->10304
+Tres de las once (Caldera, Chanaral, Valdivia) cambian de area SIN cambiar de
+cantidad de vertices: el borde se corrio sin agregar vertice.
+
+
+6. VERIFICACION — TODA CORRIDA, NINGUNA DADA POR BUENA
+--------------------------------------------------------------------------------
+  build antes      01_build_antes.txt      exit 3, publicacion parcial
+  build despues    05_build_despues.txt    exit 3, publicacion parcial
+
+  Los dos veredictos son IDENTICOS, palabra por palabra:
+    publicados=[lacustre] retenidos_por_falla=[maritima]
+    retenidos_por_declaracion=[antartica,insular_remota]
+
+  CONTROLES: los siete por ambito, iguales antes y despues. C3 sigue fallando en
+  maritima con los MISMOS SEIS PARES y LOS MISMOS km2, al milesimo:
+    Calbuco x Maullin 40,833 · Maullin x Puerto Montt 755,491
+    Cochamo x Maullin 2947,340 · Cochamo x Rio Negro Hornopiren 531,757
+    Chaiten x Chonchi 1798,518 · Castro x Chonchi 28,254
+
+    ESTO CONTRADICE LO QUE YO ESPERABA. En el plan de la Fase 1 dije que
+    esperaba que los km2 de C3 se movieran, porque cada figura llega mas afuera.
+    No se movieron: los seis pares son de separacion lateral en el mar interior y
+    en el corredor de Chiloe, a cientos de km del borde de las 200 mn, y el agua
+    que el operador destapa no los toca. La prevision era mia y era equivocada;
+    queda escrita para que no se lea el verde como si hubiera sido lo previsto.
+
+  verificar_v2_contra_v1.py    06_v2_contra_v1.txt    EXIT 0
+    114 diferencias · 114 declaradas · 0 abiertas · 0 no declaradas.
+    Comparado contra el 04_v2_contra_v1.txt de causa_pd_tdf_2026-08-15/, que es
+    el vigente. NO contra el de arica_limite_norte_2026-08-15/, que es el estado
+    viejo (exit 3) y simula una regresion que no existe.
+    Se corrio con ruta de salida por argumento, para no pisar la constancia de
+    la sesion que lo alberga (§3.3).
+
+  auditor del v2 (fase4_auditoria_v2.py)   07_auditor_v2.txt   EXIT 0
+    "AUDITORIA LIMPIA". B0 y B12 CORRIDOS Y LEIDOS, no supuestos:
+      B0   ok  el v2 deriva del v1 que esta en disco (sha256 coincide)
+           ok  64 jurisdicciones, los mismos ids que el v1
+           ok  todo punto del v1 esta en el contorno del v2
+           ok  textos del decreto y correcciones, identicos al v1
+           ok  toda frontera apunta a jurisdicciones existentes
+           ok  DMS y decimal coinciden en todo el contorno
+           ok  todas traen los campos obligatorios
+      B12  ok  la adjudicacion se tomo sobre el insumo que esta en disco
+               (sha256 ddff10f45a8e4f77)
+    NINGUNO MUERDE, y la razon medida es una sola: la tolerancia y el operador
+    son constantes del constructor, la geometria vive en Postgres y EL v2 NO SE
+    TOCA. No hay resello que pagar ni autorizacion de B12 que pedir.
+
+  fase5_corregir_testigos.py — EL "NO DETERMINADO" QUEDA RESUELTO
+    09_corregir_testigos.txt        --medir    exit 0
+    09b_corregir_testigos_aplicar.txt --aplicar exit 0, "movidos al agua: 30"
+
+    sha256 del v2 antes y despues de --aplicar:
+      ddff10f45a8e4f77d441690ef6ba265705393e794d4a56b15aabafc33a4a5354
+      ddff10f45a8e4f77d441690ef6ba265705393e794d4a56b15aabafc33a4a5354
+    IDENTICO BYTE A BYTE. Reproduce los 30 con la mascara movida.
+
+    Y LA RAZON POR LA QUE TENIA QUE REPRODUCIR, que convierte "no determinado" en
+    "no aplica": el script NO LEE el rol limite_exterior en ninguna parte. Un
+    grep de 'ne_land|limite_exterior|_zee|370400' sobre
+    scripts/fase5_corregir_testigos.py devuelve CERO coincidencias; corre contra
+    roles.tierra (costa_osm), y la correccion es funcion del punto ORIGINAL y de
+    la capa de tierra. La mascara ZEE no entra en su cuenta. Se corrio igual, con
+    respaldo del v2 y verificacion de sha, porque §1.2 pide medir y no
+    argumentar — pero el argumento explica por que el resultado no era una
+    casualidad.
+
+  TRIPWIRE   10_tripwire_despues.txt
+    antes   maritima 44 cerrable / 8 no_cerrable · las 64: 54 / 10
+    despues maritima 44 cerrable / 8 no_cerrable · las 64: 54 / 10
+    SIN MOVIMIENTO. Sale de estado_geometria del v2, que no se toca.
+
+    ESTA SESION LO MIDIO CONTRA EL v2, QUE ES LO QUE NUNCA SE HABIA HECHO. La
+    bitacora de la precondicion declara en su §7 que los dos pares se leyeron de
+    _bitacoras/ y del prompt del owner, no del insumo. Ahora estan medidos, y el
+    "antes" dio 44/8 · 54/10: la cifra que circulaba era correcta.
+
+  git status --short: solo scripts/fase5_construir_capa_ds991.py modificado, mas
+  este directorio como untracked. Los cinco untracked viejos siguen ahi.
+
+
+7. LO QUE QUEDA DECLARADO Y NO SE TOCO
+--------------------------------------------------------------------------------
+EL MISMO OPERADOR VIVE EN SEIS LUGARES MAS, TODOS MUERTOS:
+
+  scripts/fase3_construir_capa.py:293        y fase3_capa_jurisdicciones.sql:571
+  scripts/fase3bis_construir_capa.py:312     y fase3bis_capa_jurisdicciones.sql:372
+  scripts/fase3ter_construir_capa.py:373     y fase3ter_capa_jurisdicciones.sql:296
+
+Los tres .py construyen jurisdicciones_decreto —el ANDAMIO—, no la capa del
+D.S. 991. Los tres .sql son su salida generada. NO SE TOCARON, y el motivo es que
+E1 decidio que el andamio NO se regenera: cambiar un generador que nadie corre
+mueve un artefacto que ya no se produce, y dejaria el .sql generado desincronizado
+con su .py sin que nada lo verifique.
+
+  MEDIDO, no supuesto: fase3_construir_capa.py:4 y fase3bis_construir_capa.py:4
+  traen "SUPERSEDIDO POR fase3ter_construir_capa.py. NO CORRER." en su
+  encabezado. El unico de los tres que NO lo dice es fase3ter, que es justamente
+  el que construyo el andamio vigente. capa_consultada.json lo declara ANDAMIO y
+  NO SE PROMUEVE.
+
+QUIEN REGENERE EL ANDAMIO ALGUN DIA REINTRODUCE EL DEFECTO — las ocho piezas
+borradas, San Felix y Sala y Gomez incluidas— y ningun control lo va a cazar, por
+el mismo motivo por el que no lo cazaba aca: C1 solo mira nula, vacia, invalida o
+de area cero. Queda escrito porque es descubrible hoy y deja de serlo el dia que
+alguien corra fase3ter sin leer esto.
+
+Y EL ANDAMIO CONSERVA EL BORDE VIEJO. jurisdicciones_decreto sigue con la
+geometria del build anterior, construida con ST_Simplify: sus 44 maritimas tienen
+el borde exterior sin las ocho piezas. El build de esta sesion no lo toca. A
+partir de hoy el constructor y el andamio describen bordes distintos, y esa
+distancia crece con cada cambio del constructor. NO ES UN DEFECTO NUEVO —el
+andamio ya estaba rotulado SUPERSEDIDO Y DESACTUALIZADO en ambitos_publicados.json
+y en capa_consultada.json—, pero SI IMPORTA para lo que el andamio todavia
+alimenta: la geografia_de_reclamo de los ambitos maritimo y antartico en
+data/decreto/ambitos_publicados.json, que decide a que ambito no publicado se le
+atribuye un trozo de ruta. Ese uso no resuelve jurisdiccion (el propio archivo lo
+declara) y un borde exterior corrido no lo cambia de ambito, asi que hoy no tiene
+efecto medible; se declara porque es exactamente el tipo de desfase que en este
+repositorio ya costo una sesion ("un atajo que evita regenerar tambien evita
+enterarse").
+
+
+8. OBJECIONES QUE QUEDAN EN PIE
+--------------------------------------------------------------------------------
+· LOS 37.106,1 km2 SIGUEN SIN ADJUDICAR, a proposito. Hoy no los adjudica nadie
+  porque el maritimo no se publica. El dia que C3 pase, se publican con ellos
+  adentro salvo que la decision normativa este tomada. La decision es del owner y
+  el frente es el del mecanismo de alcance costa-afuera.
+· LOS 21.876,1 km2 QUE NO LE TOCAN A NINGUNA son el hueco declarado creciendo. Es
+  el segundo caso medido de la disyuntiva (a) contra (b) de INV-3.6, junto a los
+  ~31.400 km2 de arica, y ahora esta medido con el build.
+· LAS 200 mn DEL LIMITE EXTERIOR SIGUEN SIENDO CONVENCION NUESTRA y no dato del
+  decreto. Esta sesion mide el borde de esa convencion con mas fidelidad; no la
+  funda. Cualquier cifra de aca hereda esa condicion.
+· LA TOLERANCIA 0.01 SIGUE LITERAL DENTRO DE LA CADENA DE :857, y no como
+  constante nombrada junto a LIMITE_ZEE_M y la caja de trabajo (:113-122). Es una
+  asimetria del constructor. NO SE ARREGLO: es cambio de estructura y el owner
+  acoto esta sesion al operador.
+· jurisdicciones_ds991_areas ES CONSTANCIA Y NO CONTROL. Nada la lee. Si algun
+  dia se quiere que muerda —que avise cuando una figura cambia de area sin que
+  nadie lo haya pedido— eso es un control nuevo, con su prueba de mordida (§4.6),
+  y no es lo que se escribio aca.
+
+
+9. INVENTARIO DEL DIRECTORIO
+--------------------------------------------------------------------------------
+  01_build_antes.txt              build completo con ST_Simplify, exit 3
+  02_mascara_zee.sql / .txt       la mascara con los dos operadores, las dos
+                                  direcciones del borde, y las seis islas
+  03_areas.sql                    vuelca la tabla de constancia (se corre 2 veces)
+  03_areas_antes.txt / .csv       areas del build con ST_Simplify
+  03_areas_despues.txt / .csv     areas del build con ST_SimplifyPreserveTopology
+  04_diff_sql_una_linea.txt       los tres diffs del SQL emitido
+  05_build_despues.txt            build completo con el operador nuevo, exit 3
+  06_v2_contra_v1.txt             control v1/v2, exit 0
+  07_auditor_v2.txt               auditor del v2 con B0 y B12, exit 0
+  08_comparar_areas.py            cruza los dos CSV por id
+  08_areas_antes_despues.txt      la tabla del punto 5
+  09_corregir_testigos.txt        --medir, exit 0
+  09b_corregir_testigos_aplicar.txt  --aplicar, exit 0, v2 identico
+  10_tripwire_despues.txt         44/8 · 54/10 medido contra el v2
+  operador_preservetopology_2026-08-15.txt   esta bitacora
+
+Los .txt de psql los produjo psql con -o corriendo los .sql de este mismo
+directorio. Los de los builds y los scripts .py son la salida literal de la
+corrida, redirigida en Git Bash (no en PowerShell).
+
+NO SE VERSIONA scripts/fase5_capa_ds991.sql, el SQL que el constructor emite:
+son 2,5 MB, no esta en git y nunca lo estuvo, y se regenera con
+`--solo-generar` en segundos. Lo que prueba el cambio son los diffs de
+04_diff_sql_una_linea.txt, que pesan lineas.
+
+No hay PROCEDENCIA.txt: no se uso ningun archivo crudo pesado sin versionar
+(§3.5). Los insumos son ne_land y costa_osm, cuya procedencia ya vive en
+geodata/costa/capas_costa.json y geodata/costa/PROCEDENCIA.txt.
