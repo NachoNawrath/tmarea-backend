@@ -1,0 +1,382 @@
+================================================================================
+CIERRE DE SESION — 2026-08-14
+Dos frentes en una sesion. El primero se midio, se escribio y se commiteo; el
+segundo se midio entero y NO se escribio nada de el.
+  (1) FRENTE DE CONTACTO — el fallback de pantalla. Commit 1637b5d, SIN PUSHEAR.
+  (2) LAS 14 FRANJAS DE LATITUD y las ocho `no_cerrable`. Solo lectura.
+Escrito segun el estandar de cinco puntos de CLAUDE.md §8.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en PowerShell y Git Bash sobre Windows, mas `node` para las mediciones
+cuantitativas. Reproducible para el owner, en PowerShell, desde la raiz:
+
+    cd C:\Users\katia\tmarea-backend
+
+    # las mediciones del frente de contacto (Fase 1 y 1b)
+    node _bitacoras\frente_contacto_fallback_2026-08-14\medir_fallback.js
+
+    # el estado del commit
+    git log -1 --stat
+    git rev-list --left-right --count origin/main...HEAD
+
+ADVERTENCIA DE METODO que esta sesion pago dos veces, y por eso va arriba:
+
+  · NO volcar salida con `>` de PowerShell. Reencodea y convierte los finales de
+    linea. Midiendo asi el blob de HEAD del plan, esta sesion afirmo que estaba
+    en CRLF y era falso: era la propia redireccion. Se corrige con
+    `git ls-files --eol`, que reporta indice y working tree sin intermediario.
+  · CUIDADO con `comando | sed ... || echo "no hay"`. El `||` se ata al PIPELINE
+    y `sed` sale 0 aunque no reciba nada, asi que el `echo` nunca dispara y una
+    ausencia real se ve igual que una salida vacia. Paso dos veces: una al medir
+    si la PWA tenia cambios (dio "HAY CAMBIOS" siendo un untracked de tres dias
+    antes) y otra al medir quien lee `limite_norte` en src/. Se rehace contando.
+
+
+================================================================================
+1. QUE QUEDO VERIFICADO, Y CON QUE EVIDENCIA
+================================================================================
+
+1.1 — EL COMMIT
+--------------------------------------------------------------------------------
+    1637b5d85de50a6682e50f59eee09f652b28bcc8   (corto: 1637b5d)
+    docs(contacto): el fallback de pantalla medido, y la regla de Guardia retirada
+
+    PLAN_JURISDICCION.md                               | 107 ++++++
+    _bitacoras/frente_contacto_cierre_2026-08-13.txt   |  83 +++++
+    _bitacoras/frente_contacto_fallback_2026-08-14.txt | 375 +++++++++++++++++++
+    .../medir_fallback.js                              | 193 +++++++++++
+    data/contacto/gobernaciones/PROCEDENCIA.md         | 191 +++++++++++
+    .../gobernaciones_directemar_2026-08-14.json       |  44 +++
+    6 files changed, 993 insertions(+)
+
+993 inserciones y CERO borrados en todo el commit. Los dos archivos que ya
+existian crecieron sin perder una linea.
+
+**NO SE PUSHEO.** Estado al cerrar:
+
+    behind=0  ahead=1
+    ref del remoto (git ls-remote): 4673bcf8e5b543c375db7704c879fb1048e89803
+
+El push seria un fast-forward limpio de 4673bcf..1637b5d. Queda del lado del
+owner. Los cinco untracked preexistentes NO entraron, verificado uno por uno con
+`git ls-files --error-unmatch`.
+
+1.2 — EL FRENTE DE CONTACTO, MEDIDO
+--------------------------------------------------------------------------------
+Evidencia completa en `_bitacoras/frente_contacto_fallback_2026-08-14.txt`, cuya
+seccion 1 es la salida sin editar de su instrumento. Lo que quedo establecido:
+
+  · LAS DOS COPIAS DE LA TABLA SON LA MISMA TABLA. Los archivos difieren (3040 vs
+    3423 bytes, CommonJS vs ESM, LF vs CRLF) pero el bloque GOBERNACIONES es
+    identico caracter a caracter, 1300 chars los dos. El plan tenia razon.
+  · LA COPIA DEL BACKEND NO LA CONSUME NADIE. `getCapitania` y `GOBERNACIONES` se
+    exportan y ningun archivo del backend los importa. La que llega a pantalla es
+    la de la PWA, y solo esa: 2 consumidores, 4 sitios de llamada.
+  · LOS 3 NUMEROS DE BAJA NO ALIMENTAN NINGUNA ENTRADA DEL MAPA. Cero, medido
+    sobre las 164. Estuvieron —35c63d9— y los repusieron 85bc68a (21:52) y
+    df684d7 (22:10) el 2026-08-13, OCHO HORAS despues de que 813dd80 (13:35)
+    escribiera la medicion del plan y la tabla de las siete bahias del Puyehue.
+  · EL 41 SOBREVIVE, EL MECANISMO NO. 41 reproduce exacto (1 Arica + 12
+    Talcahuano + 28 Puerto Montt) pero cuenta entradas cuya GOBERNACION es una de
+    las tres. Para el fallback la poblacion es 31, y los conjuntos no estan
+    anidados: 28 en las dos, 13 solo en el 41, 3 solo en el 31.
+  · LA REGLA DE VALOR UNICO QUEDA RETIRADA (owner). Vivia SOLO en
+    `frente_contacto_cierre_2026-08-13.txt:315-318`. Cero en el contrato, cero en
+    el plan, cero en src/ y en la PWA. Adenda A.10-A.12 al pie de esa bitacora.
+  · FUENTE NUEVA, DECLARADA Y SIN CONSUMIR: `data/contacto/gobernaciones/`, 15
+    telefonos de Gobernacion del owner, con PROCEDENCIA. No es fuente autorizada
+    y no la lee nadie.
+
+1.3 — FASE 4: LAS 14 FRANJAS NO TIENEN FUENTE
+--------------------------------------------------------------------------------
+Esto es lo mas importante que la sesion establecio, y no se escribio en ningun
+documento del repositorio todavia.
+
+  · PROCEDENCIA: NO HAY. La tabla entro completa en un commit por copia —
+    ca7f70d (PWA, 2026-07-30) el original, y 9e2fd28 (backend, 2026-07-30) que se
+    declara a si mismo "espejo CommonJS de la tabla del frontend". Ningun
+    comentario, ningun commit y ninguna bitacora dice de donde salen los numeros.
+    No es hallazgo nuevo: el reconocimiento del 2026-08-09, item 13, ya decia
+    "No se puede determinar leyendo si existe una fuente oficial identificada
+    para esos limites".
+  · LOS 15 BORDES SON DECIMOS DE GRADO REDONDOS: -17.5, -19.5, -22.0, -25.5,
+    -29.0, -31.5, -33.3, -35.5, -39.0, -41.0, -42.0, -44.0, -49.0, -54.0, -56.0.
+    Los paralelos del decreto son DMS: 32°10'30" = -32.175, 43°44'25" = -43.7403.
+    UN CONJUNTO DE QUINCE DECIMOS REDONDOS NO PUEDE SER TRANSCRIPCION DE VALORES
+    DMS. Ese argumento no depende de ningun parser y es el que cierra la pregunta.
+  · CONTRA PARALELOS DE CAPITANIA: 1 de 15 coincide exacto, el -42.0
+    (ancud.limite_sur, "42 00 00 S"), y es coincidencia — un paralelo redondo lo
+    elige igual un decreto que un corte a mano.
+  · CONTRA PARALELOS DE GOBERNACION, que es la comparacion justa porque la tabla
+    esta rotulada con Gobernaciones: CERO DE DIECIOCHO bordes comparables.
+    Desviaciones de 3 a 618 km, la mayoria entre 56 y 91 km.
+    Limite del instrumento, declarado: el parser toma el primer paralelo del
+    texto como norte y el ultimo como sur, y en `punta_arenas` ese emparejamiento
+    casi seguro esta mal (de ahi los 618 km). No cambia la conclusion.
+  · LA TABLA HACE DOS TRABAJOS EN EL MISMO REGISTRO: resolver jurisdiccion
+    (nombre) y entregar contacto (tel). En los 4 sitios de consumo se piden en
+    lineas consecutivas y se renderizan en la misma frase.
+
+1.4 — FASE 4: EL FALLBACK NO TIENE REEMPLAZO SERVIDO
+--------------------------------------------------------------------------------
+  · NO EXISTE ENDPOINT que resuelva jurisdiccion dada una coordenada. Medido
+    sobre las 34 rutas del backend. La capa del D.S. 991 SI se consulta en
+    PostGIS, pero `bahiasEnRutaPostGIS` exige >=2 waypoints, arma un LineString y
+    devuelve `bahia_id`, nunca `jurisdiccion_id`.
+  · EL BACKEND RECIBE lat/lng Y NO LOS LEE. La PWA manda
+    `{ puerto, ...ubicacion }` y el handler hace `const { puerto } = req.body`.
+    Para un destino que es lat/lon, la tabla de franjas es LO UNICO que responde,
+    y responde en el cliente.
+  · RETIRAR LA TABLA NO ES UN CAMBIO EN LA PWA: requiere trabajo en el backend.
+
+1.5 — FASE 5: EL INSUMO DEL TM-025A NO REEMPLAZA LAS FRANJAS
+--------------------------------------------------------------------------------
+  · DONDE ESTA: `data/decreto/jurisdicciones_capitanias.json` (v1) y
+    `data/decreto/jurisdicciones_v2.json` (v2). El v2 lo genera
+    `scripts/fase4_migrar_insumo_v2.py` DESDE EL v1, no desde el txt; solo cambia
+    la forma (`limite_norte_dec` plano -> `limite_norte.dec`).
+  · EL v1 NO LO ESCRIBE NINGUN SCRIPT: es transcripcion a mano, generado
+    2026-08-09. EL TM-025A ENTRO AL REPOSITORIO EL 2026-08-11, dos dias despues.
+    El documento versionado no genero los decimales: llego despues y sirvio para
+    COTEJARLOS (fecha_cotejo 2026-08-11).
+  · COBERTURA: Gobernaciones 0 de 16 con limite en decimal. Capitanias 41 de 64
+    con par completo; 23 sin par, de las cuales 20 sin ninguno de los dos.
+  · "SIN PAR" NO ES "SIN GEOMETRIA": de las 23, ocho son `no_cerrable` y las
+    otras QUINCE son `cerrable` con receta que no usa paralelos (`union_cuerpos`
+    saca la geometria del catastro de cuerpos de agua, `anillo` la traza
+    alrededor de un punto). No les falta el dato; no lo necesitan.
+  · CERO DE QUINCE franjas se pueden reemplazar con el par propio del insumo.
+    Cinco —Iquique, Antofagasta, Caldera, Coquimbo, Talcahuano— se aproximarian
+    por ENVOLVENTE de sus Capitanias porque todas las suyas tienen par. Las otras
+    diez no: `puerto_montt` tiene 1 de 6, y `arica`, `puerto_williams` y
+    `hanga_roa` tienen una sola Capitania y sin par.
+  · LOS LIMITES DE GOBERNACION ESTAN RESERVADOS AL OWNER, y esta escrito en el
+    codigo desde que se extrajeron. `scripts/tm025a_p3_gobernaciones.py:35`:
+    "NO deriva `limite_norte` ni `limite_sur` de las Gobernaciones. Sacar una
+     coordenada de la prosa exige decidir que dice el decreto, y eso es del owner.
+     Entran como texto y como vinculo; el dia que hagan falta sus limites, se
+     adjudican."
+    Y el `nota_limites` de las 16 entradas repite lo mismo.
+  · QUIEN CONSUME LOS DECIMALES: solo scripts, y en un rol — construir la
+    geometria (`fase5_construir_capa_ds991.py:345-360`). CERO archivos de src/
+    mencionan `limite_norte` o `limite_sur`. En tiempo de ejecucion nadie los mira.
+
+  LA CONCLUSION QUE ESTO OBLIGA, y contradice las dos hipotesis con que se abrio
+  la Fase 5: el insumo NI quedo incompleto NI quedo completo-sin-conectar. Esta
+  conectado —alimenta el constructor de la capa y cinco servicios lo leen— y
+  NUNCA FUE LA MISMA COSA QUE LAS FRANJAS. Las franjas son 15 bandas de
+  GOBERNACION con un telefono adentro; el insumo son 64 CAPITANIAS sin telefono.
+
+1.6 — FASE 8: LAS OCHO `no_cerrable` SON CINCO PROBLEMAS
+--------------------------------------------------------------------------------
+Parrafos literales del TM-025A y clasificacion. Detalle completo en la respuesta
+de sesion; lo esencial:
+
+  A · LIMITE CHILE-PERU              -> arica                      DATO EXTERNO
+      El decreto lo invoca ("Límite político internacional Chile - Perú", L92) y
+      NO lo da. `Perú` aparece UNA SOLA VEZ en todo el documento, sin coordenada.
+
+  B · LIMITE SUR DE LA REGION DE AYSEN -> baker, puerto_eden       TRAZADO
+      Es UN SOLO borde visto desde los dos lados: el Sur de Baker y el Norte de
+      Puerto Eden. EL DECRETO LO DESCRIBE ENTERO en el parrafo de la Gobernacion
+      de Aysen, L595-602, por accidentes nombrados y sin coordenadas: cumbre del
+      cerro Chaltel o Fitz Roy, extremo oriental del seno Iceberg o Tempano,
+      canales Messier, Adalberto, Fallos y del Castillo. Los cinco son chilenos.
+      Ninguno esta en los 73 `puntos_notables` del insumo.
+
+  C · LIMITE INTERNACIONAL ORIENTAL DEL ESTRECHO -> punta_delgada,
+                                                     tierra_del_fuego  DATO EXTERNO
+      Es UN SOLO DATO: la coordenada de Cabo del Espiritu Santo, costa argentina.
+      Ya esta declarado en `pendientes` del insumo con su motivo de ausencia
+      ("la capa SECCION_L del IGM chileno devuelve CERO resultados").
+      El extremo chileno SI esta: Punta Dungeness, 52 23 53 S / 068 26 36 W.
+
+  D · ANCLA DE LADO -> tierra_del_fuego, puerto_williams           TRAZADO
+      No necesita ningun dato nuevo. Falta un punto interior que diga que mitad
+      es la jurisdiccion. El decreto ya enumera candidatos en el propio parrafo:
+      para Tierra del Fuego, Bahia Gente Grande, Bahia Inutil, Canal Whiteside,
+      Canal Gabriel, Seno Almirantazgo; para Puerto Williams, el Paso Drake, el
+      Canal Ocasion y las aguas al Sur de la Isla Grande.
+      PUERTO WILLIAMS ES LA MAS BARATA DE LAS OCHO: el decreto le da cuatro
+      coordenadas explicitas —punto A 55°07'18"S/066°25'00"W, punto F
+      58°21'06"S/067°16'00"W, el meridiano 067°16'00"W y el paralelo 54°33'00"S—
+      y lo unico que falta es el lado.
+
+  E · GEOMETRIA INSULAR -> hanga_roa, juan_fernandez     NO ES CARENCIA DE LIMITE
+      El decreto define estas dos COMPLETAMENTE, por enumeracion de islas. No les
+      falta ningun borde: falta una capa de islas. Contarlas junto a `arica` hace
+      parecer que al decreto le falta algo, y no le falta.
+
+  EL LIMITE INTERNACIONAL EN COORDENADAS, medido sobre el documento entero:
+    · Peru    : NO existe en coordenadas en ninguna parte. Una mencion, L92.
+    · Argentina: cinco menciones. Tres son localizadores descriptivos (L407, L474
+      para los lagos Tagua-Tagua; L599 para el extremo de una recta). SOLO
+      PUERTO WILLIAMS LA DA EN COORDENADAS (L722, L727: puntos A y F).
+      Y ESAS COORDENADAS NO SIRVEN PARA PUNTA DELGADA NI TIERRA DEL FUEGO: A y F
+      estan entre 55°07'S y 58°21'S —sector Beagle / Cabo de Hornos— y el limite
+      que Punta Delgada invoca esta a ~52°24'S, la boca oriental del Estrecho.
+      Son segmentos distintos de la misma frontera.
+    · El Tratado de 1881 NO APARECE en el documento: cero ocurrencias de
+      "Dungeness", "Espiritu Santo" y "Tratado". La linea Punta Dungeness - Cabo
+      del Espiritu Santo es una ADJUDICACION DEL OWNER del 2026-08-10, no texto
+      del decreto. Conviene no confundirlas.
+
+
+================================================================================
+2. QUE QUEDO A MEDIAS, Y ES LO PRIMERO DE LA PROXIMA
+================================================================================
+
+2.1 — EL BARRIDO DE LAS 23 CAPITANIAS SIN PAR CONTRA EL TEXTO
+--------------------------------------------------------------------------------
+NO SE HIZO. Es lo primero.
+
+Motivo por el que hace falta, y salio de la Fase 8: al leer el parrafo de
+`puerto_williams` aparecio una CARENCIA DE TRANSCRIPCION, no del decreto. El
+texto fija el paralelo 54°33'00" S dos veces y el meridiano 067°16'00" W, y el
+insumo tiene sus `limite_norte` y `limite_sur` en `null`, con solo 2 puntos de
+contorno. El decreto dio mas de lo que el insumo guardo.
+
+Lo que hay que medir: para cada una de las 23 Capitanias sin par, leer su parrafo
+en `data/decreto/fuente/TM-025-A_2025-06-04.txt` y responder si el decreto da un
+paralelo que el insumo no guardo. Es el mismo instrumento de la Fase 8, repetido
+23 veces.
+
+Las 23, para no volver a listarlas:
+  no_cerrable (8): arica, hanga_roa, juan_fernandez, baker, puerto_eden,
+                   punta_delgada, tierra_del_fuego, puerto_williams
+  cerrable con receta sin paralelos (15):
+    union_cuerpos : lago_rapel, lago_villarrica, lago_panguipulli, lago_ranco,
+                    puerto_varas, lago_general_carrera
+    anillo        : puerto_montt, calbuco, hornopiren, achao, bahia_fildes,
+                    puerto_soberania, rada_covadonga, bahia_paraiso
+    corte_y_ancla : cochamo
+
+2.2 — LA PARTE 1 DE LA FASE 9 — RESUELTA AL CERRAR, Y ABSORBIDA
+--------------------------------------------------------------------------------
+Primero se escribio asi, y no se borra (§3.3):
+
+  ~~DECLARADA POR EL OWNER AL CERRAR, Y SIN CONTENIDO REGISTRADO. Se escribe asi
+  a proposito (§3.2). En esta sesion NO se definio ninguna Fase 9: no hay
+  encargo, no hay alcance y no hay rastro de ella en el repositorio —medido, cero
+  coincidencias de "fase 9" / "fase9" en `_bitacoras/`, `scripts/` y los `.md` de
+  la raiz. Queda anotado que existe y que no alcanzo a correr; QUE ERA, no se
+  puede recuperar de esta sesion y hay que preguntarlo antes de retomarla.~~
+
+EL OWNER LO CONTESTO EN EL MISMO CIERRE, 2026-08-14: la Parte 1 de la Fase 9 era
+**el parrafo de Puerto Williams con sus coordenadas, cotejado contra el insumo**.
+
+Y QUEDA ABSORBIDA: no se mantiene aparte. Ese cotejo ya se hizo dentro de la Fase
+8 —es el hallazgo del punto 1.6, familia D— y el barrido de 2.1 lo cubre para las
+23. Lo que Puerto Williams dejo demostrado es justamente por que el barrido hace
+falta: el decreto le da cuatro coordenadas explicitas y el insumo guardo dos
+puntos de contorno con `limite_norte` y `limite_sur` en `null`. Si eso paso en
+una, hay que mirar las otras 22.
+
+La ausencia de rastro que se midio arriba SIGUE SIENDO CIERTA y por eso el
+parrafo tachado se conserva: no habia nada escrito de la Fase 9 en el
+repositorio, y de no haberla preguntado se habria perdido.
+
+2.3 — LO QUE LA FASE 4 DEJO MEDIDO Y SIN ESCRIBIR
+--------------------------------------------------------------------------------
+Nada de la Fase 4, 5 ni 8 esta escrito en PLAN_JURISDICCION.md ni en ninguna
+bitacora del repositorio: vive solo en la sesion y en este cierre. Si el owner
+quiere que la ausencia de fuente de las franjas quede registrada donde se lee,
+hay que escribirlo — no se hizo porque las tres fases eran de reconocimiento y
+ninguna autorizo escritura.
+
+
+================================================================================
+3. QUE NO SE PUDO DETERMINAR
+================================================================================
+  · Si el valor de Aysen cambio entre la captura del 2026-08-12 y la del 14, o si
+    una de las dos esta mal. Es la CUARTA divergencia contra la tabla hardcodeada
+    —el plan §7.1 punto 1 tiene medido que son tres (Arica, Talcahuano, Puerto
+    Montt) contra la captura del 12; contra la del 14 son cuatro, con Aysen—.
+    Declarado en `data/contacto/gobernaciones/PROCEDENCIA.md`.
+  · Si el criterio nuevo cambia el valor de Arica. Bajo la regla vieja se escribio
+    +56 58 2356747 (Guardia). El primero publicado EN LA CELDA DEL CSV es
+    +56 58 2356704, pero la celda no es la fuente: la fuente es el HTML de
+    DIRECTEMAR y "el primero publicado" ahi se resuelve por posicion de bloque.
+    No se midio. Declarado en la adenda A.11.
+  · Si el emparejamiento norte/sur de mi parser sobre los parrafos de Gobernacion
+    es correcto en todos los casos. En `punta_arenas` casi seguro no lo es.
+  · El estado previo a la normalizacion de 14 de los 15 telefonos del owner: se
+    recibieron ya en formato y solo Aysen se normalizo aca.
+  · Si SITPORT publica hoy restriccion bajo la bahia 258. Se midio contra la
+    captura del 2026-08-13, no en vivo.
+
+
+================================================================================
+4. QUE DECISIONES LE QUEDAN AL OWNER
+================================================================================
+
+4.1 — EL ANCLA DE TIERRA DEL FUEGO Y PUERTO WILLIAMS
+--------------------------------------------------------------------------------
+Cual de las dos mitades del corte es la jurisdiccion. El decreto dice "el area
+oriental" para Tierra del Fuego, y la construccion no decide lados por letra
+cardinal. Es adjudicacion sobre el decreto, no dato faltante: no requiere ninguna
+fuente externa, y el propio parrafo enumera los cuerpos que pueden servir de
+ancla. Es la mas barata de las cinco familias.
+
+4.2 — A QUE NIVEL RESUELVE EL REEMPLAZO DE LAS FRANJAS
+--------------------------------------------------------------------------------
+Los dos caminos, con su costo medido:
+
+  · A NIVEL GOBERNACION — hay que adjudicar 16 pares de paralelos desde la prosa
+    del decreto. El texto los tiene (ej. Valparaiso: "desde el paralelo 32º10'30"
+    S. (Punta Huesos) por el Norte, hasta el paralelo 33º16'25" S. (Punta
+    Tunquen) por el Sur"), y `tm025a_p3_gobernaciones.py` declara que derivarlos
+    es del owner. Conserva la unidad actual de la tabla.
+  · A NIVEL CAPITANIA — hay que salir de la tabla y consultar la capa. Requiere
+    un endpoint que tome un punto y lo resuelva contra el D.S. 991, que la Fase 4
+    midio que NO EXISTE. Y hoy solo serviria para lo lacustre: la capa marítima
+    del decreto no esta en la base, es E4.
+
+No lo recomiendo desde aca porque la eleccion cambia que unidad ve el patron.
+
+4.3 — QUE MUESTRA LA APP CUANDO NO SE PUEDE DETERMINAR LA JURISDICCION
+--------------------------------------------------------------------------------
+INV-3.6 ya fija la bandera (U, nunca U+V) y el mensaje generico. Lo que queda es
+que se le dice al patron en cada una de las cinco familias A-E, que no son el
+mismo caso: en E la jurisdiccion esta perfectamente determinada por el decreto y
+lo que falta es una capa nuestra; en A falta un dato del mundo. Decidirlo es del
+owner por §0.4 — decide que ve el patron.
+
+4.4 — EL PUSH
+--------------------------------------------------------------------------------
+`1637b5d` esta local y sin pushear, ahead=1, fast-forward limpio.
+
+
+================================================================================
+5. OBJECIONES QUE TUVE, AUNQUE HAYA TERMINADO EJECUTANDO
+================================================================================
+  · "Cual de las dos afirmaciones esta desactualizada", en singular: estaban LAS
+    DOS, por la misma causa y del mismo commit. Corregido antes de enmendar.
+  · La instruccion de enmendar la tabla de las siete bahias CON TACHADO ADENTRO:
+    la habria destruido como snapshot. Es una medicion fechada que sostiene el
+    argumento de causa raiz; tachar celdas le quita la unica funcion que tiene.
+    El tachado fue al bloque de correccion debajo. Las filas no se tocaron.
+  · "Escribi el campo de la 146": 144 y 145 estaban en null POR EL MISMO MOTIVO,
+    y no habia de donde copiar el valor porque ninguna de las 164 entradas
+    escribia "Lago Ranco". El owner amplio el alcance a las tres tras la medicion.
+  · "Medicion C ligada a la B": la dependencia estaba invertida. B pregunta si
+    existe el dato de reemplazo, y C descubre que la fuente a corregir puede ser
+    la equivocada. B es la pregunta correcta solo si C hubiera dado que las dos
+    fuentes coinciden, y no coinciden.
+  · "Cotejar las franjas contra algun limite del D.S. 991": las franjas estan
+    rotuladas con Gobernaciones y los limites derivados son de Capitania. Se
+    hicieron las dos comparaciones y se declaro cual es la justa.
+  · "Faltan B y C": ya estaban ejecutadas y bajadas, en las lineas 159-231 de la
+    bitacora. La causa del malentendido fue mia y de forma: agrupe las siete
+    mediciones en un solo archivo y B y C quedaron sin rastro propio.
+  · DOS ERRORES DE INSTRUMENTO MIOS, corregidos en el acto y anotados arriba: la
+    medicion de EOL con `>` de PowerShell, y el `||` atado a un pipeline.
+  · Una fecha mia: `f421949` es del 2026-08-14, no del 13.
+
+================================================================================
+FIN DEL CIERRE. Lo que esta sesion NO hizo, dicho para que no se busque: no se
+toco src/ ni la PWA en ningun momento, no se pusheo, y las Fases 4, 5 y 8 no
+dejaron una sola linea escrita en el repositorio fuera de este archivo.
+================================================================================
