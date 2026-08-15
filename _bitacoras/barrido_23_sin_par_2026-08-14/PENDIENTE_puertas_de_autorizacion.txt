@@ -1,0 +1,79 @@
+================================================================================
+PENDIENTE — REVISAR LAS PUERTAS DE AUTORIZACION DEL OWNER
+Abierto por el owner el 2026-08-14, al cerrar el camino B. NO SE RESUELVE ACA.
+Esto es el enunciado del pendiente con lo poco que ya esta medido, no su
+respuesta.
+================================================================================
+
+EL ENUNCIADO, como lo dejo el owner
+--------------------------------------------------------------------------------
+"Hay controles acumulados que piden autorizacion del owner para operaciones que
+no cambian sustancia. Conviene una revision de cuales se justifican y cuales son
+friccion."
+
+DE DONDE SALE, y por eso vale la pena revisarlo
+--------------------------------------------------------------------------------
+El caso que lo disparo es de esta misma sesion. Agregar tres puntos a
+`puntos_notables` —una clave que **ningun archivo de `src/` lee**, medido— puso
+en rojo el control B12 y exigio una autorizacion escrita del owner para
+re-sellar `adjudicacion_tramos.json`.
+
+Y el sello que se pidio autorizar NO cubria lo que cambio: `adjudicacion_tramos.json`
+adjudica 22 tramos del bloque `jurisdicciones`, que quedo verificado identico
+byte a byte, y no menciona `puntos_notables` en ninguna parte. El propio script
+lo comprobo antes de sellar: 22 de 22 siguen aplicando, mismos tramos, mismos
+tipos. O sea: **el control disparo por un sha256 de archivo entero, sobre un
+cambio que no tocaba nada de lo que ese sello protege.**
+
+Eso es exactamente la forma que el owner describe: una puerta que se justifica
+por lo que puede pasar, disparada por un caso donde no paso.
+
+LO QUE YA ESTA MEDIDO — inventario, no diagnostico
+--------------------------------------------------------------------------------
+Cuatro scripts tienen puertas o mensajes de autorizacion del owner:
+
+    scripts/fase4_auditoria_v2.py                 8 menciones
+    scripts/tm025a_p7_sellar_adjudicacion.py      5 menciones
+    scripts/fase5_declaraciones_owner.py          3 menciones
+    scripts/fase4_auditoria_insumo.py             1 mencion
+
+Puntos donde un control aborta pidiendo una accion del owner:
+
+    fase4_auditoria_insumo.py:974    "requiere autorizacion del owner"
+    fase4_auditoria_v2.py:1521       "NO se re-sella solo"
+    fase4_auditoria_v2.py:1536       "requiere autorizacion del owner"
+    tm025a_p7_sellar_adjudicacion.py:29, 151, 161, 171
+
+LO QUE HAY QUE MIRAR, Y NO SE MIRO
+--------------------------------------------------------------------------------
+  · Cual es la GRANULARIDAD de cada puerta. B12 se dispara con el sha256 del v2
+    ENTERO. Si se disparara con el sha de la parte que el sello protege —el
+    bloque `jurisdicciones`, o los 22 tramos— este caso no habria disparado, y
+    los casos que si importan seguirian disparando. **Es la hipotesis mas
+    prometedora y esta sin medir.**
+  · Cuales de esas puertas nacieron de un incidente real y cual fue. La de B12
+    si: el sello apuntaba a un v2 (`ff3e6710`) que no existe en ningun commit,
+    medido el 2026-08-11. Una puerta con un incidente detras no es friccion; una
+    puerta puesta por simetria puede serlo.
+  · Cuantas veces disparo cada una desde que existe, y cuantas de esas veces
+    termino en un cambio de decision del owner en vez de en un re-sello. Es el
+    numero que separa control de tramite y **no esta contado**.
+  · Que perderia cada puerta si se afinara. El propio `tm025a_p7` deja escrito
+    por que NO se re-sella solo: "un re-sellado automatico ESCONDE el problema
+    ... que el insumo se mueva debajo tiene que gritar, no taparse", decision del
+    owner del 2026-08-11. Afinar la granularidad NO es lo mismo que automatizar
+    el re-sello, y la revision tiene que no confundirlos.
+
+ADVERTENCIA QUE VA CON EL PENDIENTE
+--------------------------------------------------------------------------------
+Esta revision tiene la forma de riesgo que `CLAUDE.md` §0.3 persigue: su
+resultado natural es que varios controles dejen de disparar, o sea "la opcion
+que hace que todo pase". Conviene que cada puerta que se afloje salga con el
+caso que SI deberia seguir cazando y con la prueba de que lo caza (§4.6), y no
+solo con el caso molesto que la motivo.
+
+QUIEN LO DECIDE: el owner. Aflojar un control es cambiar su criterio, y §0.3 lo
+reserva para el owner con su motivo escrito.
+
+NO SE TOCO NINGUN CONTROL EN ESTA SESION.
+================================================================================

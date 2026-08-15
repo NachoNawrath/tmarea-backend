@@ -1,0 +1,24 @@
+==============================================================================
+P7 — SELLO DE adjudicacion_tramos.json
+==============================================================================
+  modo             : verificar (no escribe)
+  v2 en disco      : b1168241bb6e6610
+  sello registrado : 225f47d894d6fa8b
+  al dia           : NO
+
+¿LA ADJUDICACION SIGUE APLICANDO?
+  tramos adjudicados por el owner : 22
+  siguen existiendo y con su tipo : 22
+  no se encuentran en el v2       : 0
+  encontrados con otro tipo       : 0
+
+  ok  las 22 adjudicaciones siguen aplicando: mismos tramos, mismos tipos.
+
+  EL SELLO ESTA VIEJO. La adjudicacion sigue aplicando entera, asi
+  que re-sellarla es seguro — pero es decision del owner, no de este
+  script. Para ponerlo:
+
+    ..\tools\raster-build\.venv\Scripts\python.exe \
+      scripts\tm025a_p7_sellar_adjudicacion.py --sellar \
+      --autorizacion "<lo que el owner escriba>"
+==============================================================================

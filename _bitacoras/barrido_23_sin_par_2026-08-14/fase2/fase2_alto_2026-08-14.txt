@@ -1,0 +1,163 @@
+================================================================================
+CAMINO B — FASE 2: ALTO ANTES DE TERMINAR (CLAUDE.md §5.2)
+2026-08-14.
+PASO 1 HECHO Y VERIFICADO. PASOS 2 y 3 EJECUTADOS, MEDIDOS COMO DESTRUCTIVOS Y
+REVERTIDOS. El v2 esta intacto, en HEAD.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash + node + el venv del repo. Para el owner, en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\barrido_23_sin_par_2026-08-14\fase2\insertar_rio_bueno.js
+
+CORRECCION A LO QUE DIJE EN LA FASE 1: el interprete NO es `py`. `py` es 3.14.6
+pero **no tiene geopandas**, y `fase4_migrar_insumo_v2.py` lo importa en la linea
+93. El interprete de estos scripts es el venv del repo:
+
+    .\tools\raster-build\.venv\Scripts\python.exe scripts\fase4_migrar_insumo_v2.py
+
+Mismo 3.14.6, con geopandas 1.1.4.
+
+
+================================================================================
+1. QUE QUEDO HECHO — PASO 1, EL v1
+================================================================================
+`data/decreto/jurisdicciones_capitanias.json`: **69 -> 72 puntos_notables.**
+
+    sha256 antes  : f6fe9b62b51983fb6c005d5cab47c41af26af641cab8d452e4d695130db0e8eb
+    sha256 despues: f26ff6676114b0a1ed6f2748ec9464eefe1eb3916d4c0b9dc12b0212f1a237b1
+    git diff      : 24 inserciones, 0 borrados
+
+Insertados en los indices 33-35, despues de `Ribera Sur rio Bueno`, en orden
+Norte->Sur: El Manzanito, Los Patos, La Goleta. Con `nota` como cita, sin tildes,
+igual que las seis notas que ya existian.
+
+METODO: reemplazo literal de cadena, no parseo + reserializado. El v1 es
+transcripcion a mano y reserializarlo habria reformateado el archivo entero.
+El instrumento (`insertar_rio_bueno.js`) aborta si el ancla no aparece
+exactamente una vez, si el resultado no parsea, si el conteo no da 72, si alguna
+de las 69 originales cambio o se movio, si el orden Norte->Sur se rompe, si algun
+decimal no reproduce su DMS, o si quedan saltos LF sueltos en un archivo CRLF.
+Los ocho controles pasaron. CRLF preservado.
+
+
+================================================================================
+2. POR QUE PARE — LOS PASOS 2 Y 3 PIERDEN DATO QUE NO ESTABA EN LA CUENTA
+================================================================================
+
+2.1 — LO QUE PASO
+--------------------------------------------------------------------------------
+Se corrio la migracion y despues el script del IGM, como estaba aprobado. Los
+conteos dieron **exactamente lo esperado: v1 = 72, v2 = 76**, las cuatro del IGM
+repuestas y `pendientes` de vuelta.
+
+**Y el resultado igual estaba mal.** El diff del v2 no eran tres puntos:
+
+    247 inserciones, 924 BORRADOS
+
+2.2 — QUE SE PERDIA, medido contra el v2 de HEAD
+--------------------------------------------------------------------------------
+    claves de primer nivel: 16 -> 15
+      PERDIDA: correccion_testigos          (bloque entero)
+      DIFIERE: convenciones      5.858 -> 1.385 chars   (-4.473)
+      DIFIERE: jurisdicciones  221.951 -> 194.336 chars (-27.615)
+      DIFIERE: puntos_notables   13.568 -> 14.588 chars (lo unico que yo queria)
+
+2.3 — LA CAUSA: EL v2 LO ESCRIBEN TRES SCRIPTS, NO DOS
+--------------------------------------------------------------------------------
+    1. fase4_migrar_insumo_v2.py      genera el v2 desde el v1 (modo "w", sobrescribe)
+    2. fase5_corregir_testigos.py     escribe `correccion_testigos`, amplia
+                                      `convenciones` y enriquece `jurisdicciones`
+    3. fase5_registrar_toponimos_igm.py  las 4 del IGM y `pendientes`
+
+**LA FASE 1 ENCONTRO EL 3 Y NO EL 2. Es error mio**, y de un tipo concreto:
+medi la diferencia de `puntos_notables` (69 vs 73), encontre el hueco del IGM y
+**generalice de un bloque al archivo entero** en vez de comparar el v2 completo
+contra lo que la migracion produce. La secuencia de tres pasos que propuse y que
+el owner aprobo estaba incompleta por eso.
+
+2.4 — Y EL PASO QUE FALTA NO ES BARATO COMO LOS OTROS DOS
+--------------------------------------------------------------------------------
+`fase5_registrar_toponimos_igm.py` es offline e idempotente: se repone gratis.
+`fase5_corregir_testigos.py` **no**:
+
+  · importa `psycopg2` — necesita PostgreSQL `mapa_navegacion` arriba;
+  · lee `geodata/costa/capas_costa.json` y mide contra la capa OSM de 925 MB
+    (esta en disco: `land-polygons-split-4326.zip`, mas `DPA_2023.zip` de 311 MB);
+  · **RECALCULA**: desplazamientos por testigo, punto representativo, distancia
+    al agua. No repone un valor guardado, lo vuelve a medir;
+  · lleva adentro `UMBRAL_M = 500.0`, que **lo decidio el owner** sobre una
+    medicion, con su justificacion escrita en el propio script.
+
+O sea: reponerlo no es correr un script, es rehacer una medicion cara cuyo
+resultado el owner ya aprobo una vez. Si algo derivo, el numero cambia solo.
+
+2.5 — SE REVIRTIO, Y NADA SE PERDIO
+--------------------------------------------------------------------------------
+    git checkout -- data/decreto/jurisdicciones_v2.json
+
+El v2 quedo en HEAD: 73 puntos_notables, `correccion_testigos` PRESENTE,
+`pendientes` = 1. El archivo regenerado se conservo como evidencia en
+`06_v2_regenerado_DESCARTADO.json`; no se borro nada sin dejar copia.
+
+
+================================================================================
+3. LA SALIDA QUE PROPONGO, Y ESTA PROBADA, NO ARGUMENTADA
+================================================================================
+
+No regenerar el v2. Hacerle al v2 **la misma insercion quirurgica** que se le
+hizo al v1, y poner al dia el sha256 del v1 en `derivado_de`.
+
+LA PRUEBA, ya corrida (§1.2 de CLAUDE.md: se mide, no se argumenta). Se comparo
+lo que produciria la insercion quirurgica contra lo que produjo la regeneracion
+completa mas el script del IGM:
+
+    quirurgico: 76 puntos    regenerado+IGM: 76 puntos
+    MISMO CONTENIDO (como conjunto): SI, identico
+    MISMO ORDEN                    : SI, identico
+
+Tiene que dar identico y se entiende por que: la migracion no calcula
+`puntos_notables`, lo COPIA — `fase4_migrar_insumo_v2.py:1263` es
+`"puntos_notables": v1.get("puntos_notables")`. Para la unica clave que mi
+edicion toca, quirurgico y regenerado son la misma cosa. Para las otras tres
+claves, regenerar destruye y quirurgico no toca.
+
+SOBRE ESCRIBIR EL sha256 DE `derivado_de` A MANO — me lo objeto yo primero,
+porque tiene la forma exacta de lo que §0.3 prohibe: la opcion que deja el
+control B0 en verde sin rehacer nada.
+
+No lo es, y la diferencia importa. B0 pregunta "¿el v2 deriva del v1 que esta en
+disco?". Despues de la insercion quirurgica la respuesta es SI de verdad, y esta
+demostrado arriba que el contenido coincide con el de la regeneracion. Escribir
+el sha declara un hecho cierto, no afloja el criterio.
+
+Pero para no pedir que se me crea, propongo que la Fase 3 **corra la prueba en
+vez de citarla**: regenerar el v2 en una copia descartable a partir del v1
+actual y comprobar que su `puntos_notables` es identico al del v2 quirurgico. Si
+no lo fuera, la Fase 3 falla y no se commitea nada. Es un control que puede
+fallar (§4.6).
+
+ALTERNATIVA, con su costo, para que la decision no llegue con un solo camino:
+regenerar el v2 y correr los TRES scripts posteriores, incluido
+`fase5_corregir_testigos.py`. Gana un v2 reproducible de punta a punta desde el
+v1. Pierde: exige Postgres arriba y una corrida larga sobre 925 MB, y **vuelve a
+medir** valores que el owner ya aprobo bajo un umbral que el fijo — con la
+posibilidad de que cambien solos y sin que nadie lo haya pedido. No lo
+recomiendo para meter tres puntos en una lista que ningun archivo de `src/` lee.
+
+
+================================================================================
+4. ESTADO EXACTO AL PARAR
+================================================================================
+    M  data/decreto/jurisdicciones_capitanias.json   69 -> 72 puntos_notables
+       data/decreto/jurisdicciones_v2.json           SIN TOCAR, en HEAD, 73
+
+    Sin commit. Sin push. `src/` y la PWA sin tocar.
+    Untracked previos a esta sesion, no mios: scripts/diagnostico-nodos-en-tierra.sql
+    y src/data/bahia-capitania-map.json.bak-2026-08-12.
+
+ALTO. La Fase 3 no arranca hasta que el owner elija entre la insercion
+quirurgica (§3, recomendada) y la regeneracion completa con los tres scripts.
+================================================================================

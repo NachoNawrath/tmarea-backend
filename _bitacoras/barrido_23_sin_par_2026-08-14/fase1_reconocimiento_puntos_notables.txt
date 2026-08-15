@@ -1,0 +1,280 @@
+================================================================================
+CAMINO B — FASE 1: RECONOCIMIENTO DE `puntos_notables`
+2026-08-14. Solo lectura. No se escribio ni un byte en data/.
+Autorizado: los tres puntos del rio Bueno a `puntos_notables` de lago_ranco.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash + `node`. Para el owner, en PowerShell, desde la raiz:
+
+    cd C:\Users\katia\tmarea-backend
+    py --version                                     # 3.14.6
+    node _bitacoras\barrido_23_sin_par_2026-08-14\barrido_23.js
+
+HECHO DE MAQUINA QUE HAY QUE ANOTAR: **`python` NO existe en el PATH** (devuelve
+el stub de Microsoft Store). El interprete es **`py`**, 3.14.6. Todo comando de
+la Fase 2 que invoque un script .py va con `py`, no con `python`.
+
+
+================================================================================
+1. LA FORMA EXACTA DE `puntos_notables`
+================================================================================
+
+1.1 — CAMPOS (v1, `data/decreto/jurisdicciones_capitanias.json`)
+--------------------------------------------------------------------------------
+69 entradas. Union de campos: nombre | lat_dms | lon_dms | lat | lon | nota |
+nota_anterior. Tres formas, no una:
+
+    63 x  { nombre, lat_dms, lon_dms, lat, lon }        <- la forma canonica
+     5 x  { nombre, lat_dms, lon_dms, lat, lon, nota }
+     1 x  { nombre, lat_dms, lon_dms, lat, lon, nota, nota_anterior }
+
+36 tienen `lon`; 33 lo tienen en `null` junto con `lon_dms` (son paralelos
+sueltos, no puntos). Los tres del rio Bueno son PUNTOS: van con los cinco campos.
+
+Decimales: 6 posiciones, en las 69. Los tres del rio Bueno redondean exacto a 6.
+
+1.2 — NO EXISTE CAMPO DE CITA. Ninguna de las 69 lo tiene
+--------------------------------------------------------------------------------
+No hay `cita`, `parrafo`, `articulo`, `fuente` ni equivalente en el v1. Lo unico
+que existe para prosa extra es **`nota`**, y las 6 que la usan la usan para lo
+mismo: dejar constancia de una discrepancia o de una procedencia.
+
+Precedente EXACTO para lo que hace falta aca — `Interseccion estero Renihue`:
+
+    "nota": "Vertice comun Hornopiren / Chaiten / Gob. Puerto Montt / Gob.
+             Castro, introducido por D.S. 391 num. 11, 14, 15 y 16."
+
+Es una cita al instrumento modificatorio, dentro de `nota`. No hizo falta un
+campo nuevo.
+
+1.3 — NOMBRES: ASCII plano, y el calificador entre parentesis cuando repite
+--------------------------------------------------------------------------------
+**0 de 69 nombres tienen un caracter fuera de ASCII.** Sin tildes ni enes: se
+escribe "Punta Fronton", "Islote Rodriguez", "Punta Cheguian", "Peninsula
+Brecknock". Cuando el nombre solo no basta, el calificador va entre parentesis:
+"Punta Pindo (isla Chelin)", "Punta de Lobos (Talcahuano)", "Punto A (limite con
+Argentina)", "Punta Chocoi (variante Gob. Castro)".
+
+**Y hace falta aca, no es opcional: ya existe `Ribera Sur rio Bueno`** (40 14 30 S,
+indice 32), que es el limite regional Los Rios / Los Lagos y NO es ninguno de los
+tres sectores. Sin calificador, "Los Patos" quedaria sin decir de que rio, y
+"rio Bueno" ya nombra otra cosa en la misma lista.
+
+1.4 — ORDEN: Norte -> Sur, respetado 68 de 69
+--------------------------------------------------------------------------------
+La lista esta ordenada por latitud descendente. Se rompe **una sola vez**, en el
+indice 53: `Punta Centinela` (-43.008333) -> `Interseccion estero Renihue`
+(-42.5), que es un append posterior del D.S. 391. O sea: el orden es convencion
+sostenida, y la unica excepcion es justamente una entrada agregada despues.
+
+Vecindario donde entran los tres:
+
+    [28] -39.827500  39 49 39 S  (sin lon)     Punta Juan Latorre
+    [29] -39.865278  39 51 55 S  073 24 18 W   Punta Niebla
+    [30] -39.871667  39 52 18 S  073 24 18 W   Vertice Valdivia-Corral
+    [31] -39.890278  39 53 25 S  073 22 27 W   Punta Fronton
+    [32] -40.241667  40 14 30 S  (sin lon)     Ribera Sur rio Bueno
+    >>> aqui, en este orden: El Manzanito (-40.251667), Los Patos (-40.284167),
+        La Goleta (-40.286944)
+    [33] ...
+
+Insertar respetando el orden mantiene la convencion en 71 de 72; appendear al
+final la rompe una segunda vez. Se propone insertar.
+
+1.5 — QUIEN CONSUME `puntos_notables`
+--------------------------------------------------------------------------------
+    grep -rn "puntos_notables" src/   ->  CERO archivos.
+
+**Ningun archivo de `src/` lo lee.** Los consumidores son seis scripts:
+fase4_auditoria_insumo.py, fase4_auditoria_v2.py, fase4_migrar_insumo_v2.py,
+fase5_inventario_insumos.js, fase5_registrar_toponimos_igm.py,
+tm025a_p4_remotivar_correcciones.py.
+
+CONSECUENCIA, y decide el riesgo de la Fase 2: **este cambio no puede mover nada
+de lo que el patron ve.** Es completitud del insumo, no producto.
+
+
+================================================================================
+2. EL v2: PROPAGA POR COPIA LITERAL — Y AHI ESTA EL PROBLEMA
+================================================================================
+
+2.1 — Propaga, no recalcula
+--------------------------------------------------------------------------------
+`scripts/fase4_migrar_insumo_v2.py`, linea 1263:
+
+    "puntos_notables": v1.get("puntos_notables"),
+
+Copia la lista entera del v1 tal cual. No recalcula, no reordena, no valida. Y la
+linea 1279 abre el v2 en modo `"w"`: **sobrescribe el archivo completo.**
+
+O sea: agregar los tres al v1 y correr la migracion SI los propaga solos.
+
+2.2 — PERO EL v2 TIENE 73 Y EL v1 TIENE 69, Y LAS CUATRO DE DIFERENCIA
+        SE PIERDEN AL REGENERAR
+--------------------------------------------------------------------------------
+Diferencia medida por nombre: **4 entradas estan solo en el v2, 0 solo en el v1.**
+
+    Punta Anxious          54 07 01 S / 070 56 04 W
+    Peninsula Brecknock    54 33 42 S / 071 51 01 W
+    Punta Harry            52 43 01 S / 070 34 17 W
+    Cabo San Vicente       52 46 49 S / 070 25 57 W
+
+No son puntos cualquiera. Las cuatro llegaron DESPUES de la migracion, escritas
+por `scripts/fase5_registrar_toponimos_igm.py` —que escribe SOLO en el v2— y
+traen campos que el v1 no tiene: `fuente` (servicio IGM, fecha de consulta,
+`valor_servicio` crudo, nota de precision), `usado_por`, `motivo_eleccion`,
+`descartados` y `nota_grafia`.
+
+Y traen ADJUDICACIONES DEL OWNER del 2026-08-10 dentro del dato. La de Peninsula
+Brecknock incluye textualmente una primera eleccion descartada por el owner:
+
+    "'Faro Peninsula Brecknock' ... Era la primera eleccion, por ser marca de
+     navegacion. Se descarta porque el decreto NO lo usa como marca sino como fin
+     de recorrido ... El criterio 'marca de navegacion' es bueno en general y
+     equivocado en este caso. Decidido por la owner el 2026-08-10."
+
+**Correr la migracion sola borra las cuatro**, y con ellas ese registro.
+
+2.3 — Y NO REGENERAR TAMPOCO ES OPCION: la auditoria del v2 lo caza
+--------------------------------------------------------------------------------
+`scripts/fase4_auditoria_v2.py`, control B0, linea 618:
+
+    dec = v2.get("derivado_de") or {}
+    real = sha(V1)
+    if dec.get("jurisdicciones_capitanias.json") != real:
+        inf.fallo("B0", "... el insumo cambio despues de migrar")
+
+El v2 guarda el sha256 del v1 del que derivo. Tocar el v1 y no regenerar el v2
+pone B0 en rojo. Editar el v2 a mano tambien: el sha seguiria sin coincidir.
+
+2.4 — LA BUENA NOTICIA, medida: el script de recuperacion es OFFLINE e idempotente
+--------------------------------------------------------------------------------
+`fase5_registrar_toponimos_igm.py` **no hace ninguna llamada HTTP en `main()`**.
+La URL del servicio esta solo como procedencia, y los cuatro puntos —DMS,
+`valor_servicio`, `motivo_eleccion`, `descartados`, `nota_grafia`— estan
+HARDCODEADOS en la constante `PUNTOS`, lineas 54-131. `main()` hace upsert por
+nombre (`if p["nombre"] in por_nombre` -> reemplaza; si no -> append) y cuenta
+`nuevos` / `act`.
+
+Se puede volver a correr sin red, sin depender de que el IGM siga publicando lo
+mismo, y reproduce las cuatro entradas identicas.
+
+2.5 — DE AHI SALE LA SECUENCIA OBLIGADA DE LA FASE 2
+--------------------------------------------------------------------------------
+Los tres pasos, EN ESTE ORDEN, y ninguno se puede saltar:
+
+    1. editar `data/decreto/jurisdicciones_capitanias.json`  (los tres puntos)
+    2. py scripts\fase4_migrar_insumo_v2.py                  (propaga y sobrescribe v2)
+    3. py scripts\fase5_registrar_toponimos_igm.py           (repone las 4 IGM)
+
+Saltarse el 2 -> B0 en rojo. Saltarse el 3 -> se pierden las cuatro del IGM.
+Estado esperado al final: v1 = 72 puntos, v2 = 76.
+
+
+================================================================================
+3. TEXTO PROPUESTO DE LOS TRES REGISTROS — para aprobar antes de escribir
+================================================================================
+
+Se propone `nota` como portador de la cita, por 1.2: es el unico campo de prosa
+que el esquema ya tiene, y `Interseccion estero Renihue` ya lo usa exactamente
+asi. Agregar un campo `cita` dejaria tres entradas de 72 con una clave que
+ninguna otra tiene, y el v2 lo copiaria sin saber que es.
+
+Fuente literal — TM-025-A_2025-06-04.txt, lineas 356-362, parrafo de la
+Capitania de Puerto de Lago Ranco, con su llamada 25 = D.S. (M) N° 80, del 22 de
+marzo de 2004, Art. 1º, Nº 7:
+
+    "Incluye el río Bueno en los sectores: Los Patos, latitud: 40°17'03" S. y
+     longitud 073°31'43" W.; La Goleta, latitud 40°17'13" S. y longitud
+     073°36'52" W y El Manzanito, latitud 40°15'06" S. y longitud 073º41'01" W."
+
+Los tres registros, insertados despues de `Ribera Sur rio Bueno` (indice 32):
+
+    {
+      "nombre": "El Manzanito (rio Bueno)",
+      "lat_dms": "40 15 06 S",
+      "lon_dms": "073 41 01 W",
+      "lat": -40.251667,
+      "lon": -73.683611,
+      "nota": "Sector del rio Bueno que el decreto le da a la Capitania de Puerto
+               Lago Ranco. TM-025 A, parrafo de esa Capitania, segun D.S. (M) N 80
+               del 22 de marzo de 2004, Art. 1 N 7. Localiza el sector; no delimita
+               el cauce."
+    },
+    {
+      "nombre": "Los Patos (rio Bueno)",
+      "lat_dms": "40 17 03 S",
+      "lon_dms": "073 31 43 W",
+      "lat": -40.284167,
+      "lon": -73.528611,
+      "nota": <la misma, cambiando el nombre del sector>
+    },
+    {
+      "nombre": "La Goleta (rio Bueno)",
+      "lat_dms": "40 17 13 S",
+      "lon_dms": "073 36 52 W",
+      "lat": -40.286944,
+      "lon": -73.614444,
+      "nota": <la misma, cambiando el nombre del sector>
+    }
+
+La frase final de la nota —"localiza el sector; no delimita el cauce"— es
+deliberada: impide que la proxima sesion lea tres puntos y crea que hay una
+figura del rio. Ver §4.
+
+
+================================================================================
+4. LA CARENCIA D13 DESPUES DE ESTE CAMBIO — anotado, sin resolver
+================================================================================
+Bloque `carencia_cuerpo_sin_geometria` de `data/decreto/cotejo_lacustre_adjudicado.json`,
+entrada `lago_ranco` / `Rio Bueno`, decidida por el owner el 2026-08-13 (D13,
+opcion A: declarar SIN reclamo).
+
+**LA CARENCIA QUEDA EXACTAMENTE IGUAL. Este cambio no la mueve ni un milimetro.**
+
+  · Su `causa` no es que falten las coordenadas de los sectores: es que "NINGUNA
+    fuente cargada da la geometria de ese rio — el shapefile de lagos no contiene
+    rios". Tres puntos no son un cauce. **Localizan, no delimitan.**
+  · Su `condicion_de_cierre` son dos, y ninguna la dispara este cambio: que
+    DIRECTEMAR conteste el sector del rio Bueno (registro acumulativo, entradas
+    1 y 4), o que aparezca una capa hidrografica cargada que de la geometria
+    "SIN interpretarla".
+  · Su `validacion_de_forma` se dispara sobre si el CUERPO tiene geometria, no
+    sobre `puntos_notables`. El bloque lo escribe `fase2_adjudicacion.py` y no lo
+    lee ningun archivo de `src/`. Nada cambia de estado.
+  · Sigue en pie lo que la entrada declara: un tramo por el rio Bueno se registra
+    internamente como causa (b) de INV-3.6 —defecto de construccion propio— y no
+    lo es.
+
+LO QUE SI CAMBIA, y es lo unico: la frase de la `causa` que dice "el decreto le
+da ... los sectores Los Patos, La Goleta y El Manzanito" pasa a tener sus
+coordenadas EN EL REPOSITORIO como dato, y no solo dentro de la prosa de
+`texto_decreto`. La materia prima queda inventariada. La advertencia de la propia
+entrada sigue rigiendo sobre ella: "convertir los tres sectores del decreto en
+una figura es INTERPRETAR la fuente normativa, que es del owner".
+
+NO SE PROPONE tocar el bloque D13 en esta Fase 2. Si el owner quiere que la
+entrada apunte a los tres `puntos_notables` nuevos, es una linea mas y se decide
+aparte — pero es edicion de una declaracion suya, no del insumo.
+
+
+================================================================================
+5. OBJECIONES A LA FASE 2 TAL COMO VIENE ENUNCIADA
+================================================================================
+  · "CON SU CITA AL PARRAFO DEL DECRETO" y "CON LA MISMA FORMA QUE LOS EXISTENTES"
+    se tensionan: no existe campo de cita en las 69. Se resuelve con `nota`, que
+    es el mecanismo que el esquema ya tiene y que ya se uso para citar un D.S.
+    (§1.2). Si el owner prefiere un campo `cita` propio, se hace — pero deja tres
+    entradas de 72 con una clave unica y el v2 la copiaria sin conocerla.
+  · "SI EL v2 NO LOS PROPAGA SOLO, REGENERALO CON EL SCRIPT QUE CORRESPONDE" da
+    por supuesto que regenerar es inocuo. **No lo es**: borra cuatro toponimos del
+    IGM con adjudicaciones del owner adentro (§2.2). La instruccion se cumple, pero
+    exige un tercer paso que no estaba en el enunciado y sin el cual la Fase 3
+    encontraria el v2 mutilado. Por eso la secuencia de §2.5 tiene tres pasos.
+  · EL ORDEN DE LA LISTA no estaba en el encargo y decide como se ve el diff.
+    Se propone INSERTAR en su lugar por latitud (§1.4), no appendear.
+
+ALTO. No se escribe nada hasta que el owner apruebe §3 y §2.5.
+================================================================================

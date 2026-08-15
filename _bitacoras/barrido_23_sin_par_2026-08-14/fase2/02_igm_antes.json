@@ -1,0 +1,102 @@
+[
+ {
+  "nombre": "Punta Anxious",
+  "lat_dms": "54 07 01 S",
+  "lon_dms": "070 56 04 W",
+  "lat": -54.116944,
+  "lon": -70.934444,
+  "fuente": {
+   "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+   "consultado": "2026-08-10",
+   "texto_en_la_capa": "Punta Anxious",
+   "valor_servicio": [
+    -54.116886,
+    -70.934365
+   ],
+   "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+  },
+  "usado_por": [
+   "Punta Arenas",
+   "Tierra del Fuego"
+  ],
+  "motivo_eleccion": "Es el UNICO 'Punta Anxious' de la capa. Los otros dos resultados de la consulta son 'Islotes Anxious' (54 06 58.1 S / 070 57 04.1 W) y 'Faro Islotes Anxious' (54 07 04.4 S / 070 57 16.0 W), los dos a menos de 1,5 km: confirman el lugar en vez de competir con el.",
+  "descartados": [],
+  "nota_grafia": "El decreto lo escribe 'Punta Anxius'. La capa del IGM no tiene ningun toponimo 'Anxius' — la consulta devuelve CERO — y si tiene 'Anxious'. Es una diferencia de grafia de la fuente del decreto, no otro lugar."
+ },
+ {
+  "nombre": "Peninsula Brecknock",
+  "lat_dms": "54 33 42 S",
+  "lon_dms": "071 51 01 W",
+  "lat": -54.561667,
+  "lon": -71.850278,
+  "fuente": {
+   "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+   "consultado": "2026-08-10",
+   "texto_en_la_capa": "PENÍNSULA BRECKNOCK",
+   "valor_servicio": [
+    -54.561585,
+    -71.850386
+   ],
+   "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+  },
+  "usado_por": [
+   "Punta Arenas"
+  ],
+  "motivo_eleccion": "La capa trae 19 toponimos con 'Brecknock', NUEVE de ellos llamados 'PENÍNSULA BRECKNOCK': la peninsula esta representada por varios puntos y hay que elegir uno. Se elige el MAS CERCANO AL PARALELO 54 33 00 S, a 1,29 km, porque es asi como el decreto la usa: 'hasta la Peninsula Brecknock y LUEGO POR EL PARALELO 54 33 00 S hacia el Oceano Pacifico'. El toponimo es el fin de un recorrido costero que empalma con ese paralelo, y el punto elegido hace ese empalme continuo.",
+  "descartados": [
+   "'Faro Península Brecknock' (54 37 30.4 S / 071 45 46.5 W). Era la primera eleccion, por ser marca de navegacion. Se descarta porque el decreto NO lo usa como marca sino como fin de recorrido: el faro queda 8,3 km AL SUR del paralelo 54 33 00 S por el que el limite sigue, y elegirlo dejaria un salto de 8,3 km entre el final del recorrido costero y el paralelo. El criterio 'marca de navegacion' es bueno en general y equivocado en este caso. Decidido por la owner el 2026-08-10.",
+   "los otros ocho 'PENÍNSULA BRECKNOCK', todos mas lejos del paralelo: 54 30 59.7 S, 54 30 48.4 S, 54 30 19.7 S, 54 29 45.3 S, 54 29 42.1 S, 54 29 01.3 S, 54 28 36.2 S y uno muy al Norte, 52 58 42.2 S."
+  ]
+ },
+ {
+  "nombre": "Punta Harry",
+  "lat_dms": "52 43 01 S",
+  "lon_dms": "070 34 17 W",
+  "lat": -52.716944,
+  "lon": -70.571389,
+  "fuente": {
+   "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+   "consultado": "2026-08-10",
+   "texto_en_la_capa": "Punta Harry",
+   "valor_servicio": [
+    -52.717013,
+    -70.571306
+   ],
+   "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+  },
+  "usado_por": [
+   "Punta Arenas",
+   "Punta Delgada"
+  ],
+  "motivo_eleccion": "La capa devuelve DOS 'Punta Harry'. Se elige esta porque el decreto la une con Cabo San Vicente 'en la Segunda Angostura del Estrecho de Magallanes', y desde esta hasta Cabo San Vicente hay 11,7 km medidos, en riberas opuestas de la Angostura.",
+  "descartados": [
+   "el otro 'Punta Harry', en 53 19 22.7 S / 073 11 20.6 W, a 197 km medidos de Cabo San Vicente, en los canales occidentales. Ninguna lectura del decreto une esa punta con Cabo San Vicente."
+  ]
+ },
+ {
+  "nombre": "Cabo San Vicente",
+  "lat_dms": "52 46 49 S",
+  "lon_dms": "070 25 57 W",
+  "lat": -52.780278,
+  "lon": -70.4325,
+  "fuente": {
+   "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+   "consultado": "2026-08-10",
+   "texto_en_la_capa": "Cabo San Vicente",
+   "valor_servicio": [
+    -52.78033,
+    -70.432513
+   ],
+   "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+  },
+  "usado_por": [
+   "Punta Arenas",
+   "Punta Delgada",
+   "Tierra del Fuego"
+  ],
+  "motivo_eleccion": "Unico 'Cabo San Vicente' de la capa. Se registra porque lo citan TRES jurisdicciones y no venia en el lote de coordenadas que trajo la owner: sin el, ni Punta Delgada ni Tierra del Fuego tienen su linea divisoria.",
+  "descartados": [
+   "'Faro Cabo San Vicente' (52 46 31.0 S / 070 26 34.1 W), a 600 m. El decreto nombra el cabo, no el faro."
+  ]
+ }
+]

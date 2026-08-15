@@ -1,0 +1,86 @@
+================================================================================
+PROCEDENCIA — lo que este directorio de evidencia NO versiona
+CLAUDE.md §3.5. Cuatro archivos superaron el umbral de ~100 KB por archivo.
+2026-08-14.
+================================================================================
+
+Shell declarada (§7.3): los comandos van en PowerShell, desde la raiz del repo.
+El interprete de Python de este repositorio NO es `py` —no tiene geopandas— sino
+el venv de `tools/raster-build`:
+
+    cd C:\Users\katia\tmarea-backend
+    .\tools\raster-build\.venv\Scripts\python.exe --version   # 3.14.6, geopandas 1.1.4
+
+
+1. fase2/05_v2_HEAD.json — BORRADO
+--------------------------------------------------------------------------------
+QUE ERA      : `data/decreto/jurisdicciones_v2.json` tal como estaba en HEAD,
+               antes de esta sesion. 73 puntos_notables, `correccion_testigos`
+               presente, `pendientes` = 1.
+TAMANO       : 362.088 bytes en disco (CRLF).
+IDENTIDAD    : blob de git 14c69983ce6b5cd2aa687012aaafc97a6ede447b
+               sha256 del blob (LF, como lo guarda git):
+               408e1b46f1d150c1b7c7f4ba6314db621d50c4c62e1009aa38be7f7effaa8f17
+               sha256 del archivo en disco (CRLF), que es lo que hashea la
+               migracion: 225f47d894d6fa8b82d01f2a8a78485d5b56a3f7f72c18980d8b8bff1dcc240d
+               — el blob y el archivo NO dan el mismo sha256, y la diferencia es
+               el fin de linea. Trampa ya pagada por este repositorio.
+POR QUE SE BORRO: es recuperable EXACTO desde el propio repositorio, asi que
+               guardarlo era duplicar 362 KB de algo que git ya tiene.
+COMO SE RECUPERA:
+               git show HEAD:data/decreto/jurisdicciones_v2.json
+QUE SE EXTRAJO: nada, se lee entero. `fase3/verificar_fase3.js` lo obtiene con
+               ese mismo comando en tiempo de ejecucion, para que la verificacion
+               se reproduzca sin depender de ningun archivo pesado.
+
+
+2. fase3/.v2_regenerado_completo — BORRADO
+   (y su antecesor fase2/06_v2_regenerado_DESCARTADO.json, misma naturaleza)
+--------------------------------------------------------------------------------
+QUE ERA      : el `jurisdicciones_v2.json` que produce la migracion corrida
+               sobre el v1 YA con los tres sectores del rio Bueno. Es la COPIA
+               DESCARTABLE de la prueba que pidio el owner: sirve para demostrar
+               que la insercion quirurgica en el v2 da lo mismo que regenerar.
+TAMANO       : 327.100 bytes.
+sha256       : c2c94dd091c5a1788d58a2fa020636772bce0489ad0846b21d2f39292e182e10
+               Es identificador ESTABLE: `generado` en este derivado es la fecha
+               fija "2026-08-09" escrita en `fase4_migrar_insumo_v2.py:1228`, no
+               un `now()`. Medido: una segunda regeneracion da el mismo
+               `puntos_notables`, byte a byte.
+FECHA        : 2026-08-14.
+COMO SE VUELVE A HACER — y OJO, sobrescribe el v2 vivo; hay que respaldarlo antes
+               y restaurarlo despues, comprobando el sha256 en los dos extremos:
+
+               $q = (Get-FileHash data\decreto\jurisdicciones_v2.json -Algorithm SHA256).Hash
+               Copy-Item data\decreto\jurisdicciones_v2.json $env:TEMP\v2_quir.tmp
+               .\tools\raster-build\.venv\Scripts\python.exe scripts\fase4_migrar_insumo_v2.py
+               Copy-Item data\decreto\jurisdicciones_v2.json <destino_descartable>
+               Copy-Item $env:TEMP\v2_quir.tmp data\decreto\jurisdicciones_v2.json
+               (Get-FileHash data\decreto\jurisdicciones_v2.json -Algorithm SHA256).Hash -eq $q
+
+QUE SE EXTRAJO, y ESO SI ESTA VERSIONADO — es lo unico que la prueba compara:
+               fase3/11_puntos_notables_regenerado.json   72 entradas, 11.356 B
+               fase3/12_derivado_de_regenerado.json          304 B
+               De ahi salen los controles A1, A2 y A3 de `verificar_fase3.js`.
+
+NOTA DE PARSEO que deja de ser descubrible sin el archivo: el v2 regenerado trae
+               72 puntos_notables y NO 76. Las cuatro del IGM —Punta Anxious,
+               Peninsula Brecknock, Punta Harry, Cabo San Vicente— no las escribe
+               la migracion sino `fase5_registrar_toponimos_igm.py`, despues. Y
+               le faltan ademas `correccion_testigos`, el tramo largo de
+               `convenciones` y 27,6 KB de `jurisdicciones`, que los escribe
+               `fase5_corregir_testigos.py`, tambien despues. Por eso este
+               archivo es DESCARTABLE y nunca debe copiarse encima del v2 vivo.
+
+
+3. fase3/.v2_quirurgico_respaldo — BORRADO
+--------------------------------------------------------------------------------
+QUE ERA      : copia de seguridad del v2 ya corregido, tomada antes de correr la
+               migracion de la prueba, para poder restaurarlo.
+TAMANO       : 373.558 bytes.
+sha256       : b1168241bb6e6610b16f9dba0abb4008c76624b4b44949578230b74bd058a6d3
+POR QUE SE BORRO: es byte a byte el `data/decreto/jurisdicciones_v2.json` que
+               quedo en el arbol de trabajo. Guardarlo era guardar dos veces el
+               mismo archivo. La restauracion se verifico comparando sha256 y
+               dio identica, dos veces.
+================================================================================

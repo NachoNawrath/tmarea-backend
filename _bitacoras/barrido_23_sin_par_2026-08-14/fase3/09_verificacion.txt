@@ -1,0 +1,63 @@
+VERIFICACION DE LA FASE 3 — camino B, los tres sectores del rio Bueno
+v1 : data\decreto\jurisdicciones_capitanias.json  sha256 f26ff6676114b0a1ed6f2748ec9464eefe1eb3916d4c0b9dc12b0212f1a237b1
+v2 : data\decreto\jurisdicciones_v2.json  sha256 b1168241bb6e6610b16f9dba0abb4008c76624b4b44949578230b74bd058a6d3
+referencia de HEAD: git show HEAD:data/decreto/jurisdicciones_v2.json  (73 puntos_notables)
+
+==============================================================================
+A — LA PRUEBA CORRIDA: el v2 regenerado desde el v1 actual
+==============================================================================
+  regenerado: 72 puntos_notables · quirurgico: 76 · v1: 72
+  (el regenerado NO lleva las 4 del IGM: las escribe un script posterior, no la migracion)
+
+  [ OK ]   A1 · el `puntos_notables` regenerado es identico al del v1, por codepoint
+  [ OK ]   A2 · el quirurgico menos las 4 del IGM es identico al regenerado, por codepoint (mismo contenido Y mismo orden)
+  [ OK ]   A3 · derivado_de[v1] escrito a mano == el que escribe la migracion == el v1 en disco (f26ff6676114b0a1…)
+
+==============================================================================
+B — LOS TRES PUNTOS EN v1 Y EN v2, Y SUS DECIMALES
+==============================================================================
+  [ OK ]   B · El Manzanito (rio Bueno)   v1==v2 por codepoint · 40 15 06 S -> -40.251667 · 073 41 01 W -> -73.683611 (delta < 5e-7)
+  [ OK ]   B · Los Patos (rio Bueno)      v1==v2 por codepoint · 40 17 03 S -> -40.284167 · 073 31 43 W -> -73.528611 (delta < 5e-7)
+  [ OK ]   B · La Goleta (rio Bueno)      v1==v2 por codepoint · 40 17 13 S -> -40.286944 · 073 36 52 W -> -73.614444 (delta < 5e-7)
+  [ OK ]   B · v1: orden Norte->Sur en el tramo insertado (-40.241667 -> -40.251667 -> -40.284167 -> -40.286944 -> -41.65)
+  [ OK ]   B · v2: orden Norte->Sur en el tramo insertado (-40.241667 -> -40.251667 -> -40.284167 -> -40.286944 -> -41.65)
+
+==============================================================================
+C — LAS CUATRO DEL IGM, INTACTAS CON SUS ADJUDICACIONES
+==============================================================================
+  [ OK ]   C · Punta Anxious        identico a HEAD por codepoint · sha 9052eb23f8f141be · adjudicacion: motivo_eleccion, descartados, nota_grafia, usado_por, fuente
+  [ OK ]   C · Peninsula Brecknock  identico a HEAD por codepoint · sha 96ffe60649beab38 · adjudicacion: motivo_eleccion, descartados, usado_por, fuente
+  [ OK ]   C · Punta Harry          identico a HEAD por codepoint · sha 75bc30a39d992a67 · adjudicacion: motivo_eleccion, descartados, usado_por, fuente
+  [ OK ]   C · Cabo San Vicente     identico a HEAD por codepoint · sha 727ff609fe72fd00 · adjudicacion: motivo_eleccion, descartados, usado_por, fuente
+
+  Los no-ASCII de esas cuatro entradas, con su codepoint (aca es donde el glifo enganaria):
+    Punta Anxious .fuente.servicio: '—' U+2014
+    Punta Anxious .nota_grafia: '—' U+2014
+    Peninsula Brecknock .fuente.servicio: '—' U+2014
+    Peninsula Brecknock .fuente.texto_en_la_capa: 'Í' U+00CD
+    Peninsula Brecknock .motivo_eleccion: 'Í' U+00CD
+    Peninsula Brecknock .descartados[0]: 'í' U+00ED
+    Peninsula Brecknock .descartados[1]: 'Í' U+00CD
+    Punta Harry .fuente.servicio: '—' U+2014
+    Cabo San Vicente .fuente.servicio: '—' U+2014
+  [ OK ]   C · las 76 entradas de puntos_notables estan en forma NFC (0 fuera)
+
+==============================================================================
+D — correccion_testigos, convenciones Y jurisdicciones, SIN CAMBIOS VS HEAD
+==============================================================================
+  [ OK ]   D · correccion_testigos  identico a HEAD por codepoint · 1063 bytes · sha b9a2344ad7c4790b
+  [ OK ]   D · convenciones         identico a HEAD por codepoint · 5881 bytes · sha cd5751abdc482f4e
+  [ OK ]   D · jurisdicciones       identico a HEAD por codepoint · 222128 bytes · sha aa27ece8aca7e571
+
+==============================================================================
+E — EL DIFF DEL v2, ACOTADO A puntos_notables Y derivado_de
+==============================================================================
+  [ OK ]   E · las 16 claves de primer nivel, las mismas y en el mismo orden
+  [ OK ]   E · SOLO cambiaron: derivado_de, puntos_notables
+  [ OK ]   E · dentro de derivado_de solo cambio "jurisdicciones_capitanias.json"
+  [ OK ]   E · puntos_notables: 3 altas (El Manzanito (rio Bueno), Los Patos (rio Bueno), La Goleta (rio Bueno)), 0 bajas, 0 modificadas
+  [ OK ]   E · las 73 de HEAD sobreviven identicas y en el mismo orden relativo
+
+==============================================================================
+RESULTADO: TODOS LOS CONTROLES EN VERDE
+==============================================================================

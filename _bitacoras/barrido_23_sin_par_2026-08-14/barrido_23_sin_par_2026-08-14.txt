@@ -1,0 +1,276 @@
+================================================================================
+BARRIDO DE LAS 23 CAPITANIAS SIN PAR CONTRA EL TEXTO DEL DECRETO — 2026-08-14
+Es el punto 2.1 del cierre de sesion del mismo dia, que quedo declarado como
+"lo primero de la proxima". Fase de RECONOCIMIENTO: solo lectura, no se toco
+ni el insumo ni src/ ni la PWA.
+Escrito segun el estandar de cinco puntos de CLAUDE.md §8.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Agente en Git Bash sobre Windows, mediciones con `node`.
+Reproducible para el owner, en PowerShell, desde la raiz:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\barrido_23_sin_par_2026-08-14\barrido_23.js
+
+La salida sin editar de ese comando es `salida_barrido_23.txt` en este mismo
+directorio, y contiene EL PARRAFO LITERAL de las 23. Este archivo es el indice
+de esa salida, no su reemplazo (§3.1).
+
+
+================================================================================
+0. UNA CORRECCION AL PLANTEO, ANTES DE LOS NUMEROS
+================================================================================
+
+El encargo, tal como venia del cierre 2.1, era: "responder si el decreto da un
+PARALELO que el insumo no guardo". Se ejecuto mas ancho, y por dos motivos
+medidos:
+
+  (a) EL PROPIO CASO PUERTO WILLIAMS NO ES SOLO DE PARALELOS. Su parrafo fija
+      tambien el MERIDIANO 067°16'00" W, y el enunciado del encargo ya lo
+      nombraba. Barrer solo paralelos habria dejado fuera la mitad del caso que
+      motivo el barrido.
+  (b) LA UNIDAD QUE CONTESTA NO ES "PARALELO SI/NO" SINO LA COORDENADA CON SU
+      ROL. El insumo puede tener el mismo numero guardado como otra cosa: el
+      067°16'00" W esta, pero como la longitud del punto F, no como meridiano.
+      Reportar "esta" seria tratar dos cosas distintas como equivalentes, que es
+      exactamente la trampa que CLAUDE.md §2 persigue y que este repositorio ya
+      pago tres veces en un dia.
+
+SEGUNDA CORRECCION, y esta cambia el resultado. El barrido empezo comparando el
+parrafo contra los CAMPOS NUMERICOS de la entrada, y daba 6 coordenadas
+ausentes. La verificacion independiente de esa ausencia —grep literal sobre el
+JSON entero, §2: "una afirmacion de ausencia se escribe con el comando que la
+midio"— la desmintio: las 6 ESTAN en el insumo, dentro de `texto_decreto` y de
+`completado_desde_oficial`. Estan como PROSA y no como dato.
+
+El instrumento se rehizo para distinguir cuatro estados, no dos. Sin esa
+correccion la bitacora habria afirmado seis ausencias falsas.
+
+CUARTO ESTADO Y SU LECTURA:
+  MISMO ROL     el decreto lo da y el insumo lo guarda numerico, como lo mismo
+  OTRO ROL      el numero esta, pero guardado como otra cosa
+  SOLO EN PROSA esta escrito en el texto de la entrada y en NINGUN campo numerico
+  NO ESTA       no aparece en ninguna parte de la entrada
+
+
+================================================================================
+1. QUE QUEDO VERIFICADO, Y CON QUE EVIDENCIA
+================================================================================
+
+1.1 — EL CUADRO COMPLETO
+--------------------------------------------------------------------------------
+23 Capitanias. 67 coordenadas en sus parrafos del texto versionado.
+
+    capitania                en el parrafo  mismo rol  otro rol  solo prosa  NO ESTA
+    arica                                1          1         0           0        0
+    hanga_roa                            0          0         0           0        0
+    juan_fernandez                       0          0         0           0        0
+    lago_rapel                           0          0         0           0        0
+    lago_villarrica                      0          0         0           0        0
+    lago_panguipulli                     0          0         0           0        0
+    lago_ranco                           3          0         0           3        0
+    puerto_varas                         0          0         0           0        0
+    puerto_montt                         5          5         0           0        0
+    calbuco                              5          5         0           0        0
+    hornopiren                           7          2         5           0        0
+    cochamo                              2          2         0           0        0
+    achao                               13          7         6           0        0
+    lago_general_carrera                 0          0         0           0        0
+    baker                                1          1         0           0        0
+    puerto_eden                          1          1         0           0        0
+    punta_delgada                        0          0         0           0        0
+    tierra_del_fuego                     1          0         0           1        0
+    puerto_williams                      6          3         1           2        0
+    bahia_fildes                         6          6         0           0        0
+    puerto_soberania                     6          6         0           0        0
+    rada_covadonga                       4          4         0           0        0
+    bahia_paraiso                        6          4         2           0        0
+    -------------------------------------------------------------------------
+    TOTAL                               67         47        14           6        0
+
+**NO ESTA = 0 en las 23.** Ninguna coordenada del decreto se perdio del todo.
+La carencia que Puerto Williams demostro existe, pero no es una perdida: es que
+la coordenada quedo del lado del texto y no del lado del dato.
+
+1.2 — LA CARENCIA DE TRANSCRIPCION SON TRES CAPITANIAS Y SEIS COORDENADAS
+--------------------------------------------------------------------------------
+El patron de Puerto Williams se repite, y no solo en las `no_cerrable`:
+
+  puerto_williams (no_cerrable)     54°33'00" S, dos veces en el parrafo
+  tierra_del_fuego (no_cerrable)    54°33'00" S, una vez
+  lago_ranco (CERRABLE, union_cuerpos)
+        Los Patos    40°17'03" S / 073°31'43" W
+        La Goleta    40°17'13" S / 073°36'52" W
+        El Manzanito 40°15'06" S / 073°41'01" W
+
+Las seis estan en `texto_decreto` de su entrada y en NINGUN campo numerico.
+Verificado ademas contra `jurisdicciones_v2.json`: **tampoco estan ahi**, en
+ningun numero de la entrada. No es un defecto de la migracion v1->v2.
+
+El 54°33'00" S si existe numerico en el insumo, pero en dos lugares que NO son
+estas entradas: `capitanias[56].limite_sur_dms` (punta_arenas) y
+`puntos_notables[66] "Limite Punta Arenas sur"`. Es el mismo paralelo repartiendo
+tres jurisdicciones, y solo una de las tres lo tiene como dato.
+
+1.3 — LO QUE ESTO LE HACE A LA CLASIFICACION DE LAS 15 "CERRABLES"
+--------------------------------------------------------------------------------
+La premisa del cierre 2.1 era: las 15 "no necesitan el dato". **Se sostiene en
+14 de 15 y se cae en una.**
+
+  · SE SOSTIENE, y ahora esta medido y no supuesto: SIETE de las quince no
+    tienen NI UNA coordenada en su parrafo — lago_rapel, lago_villarrica,
+    lago_panguipulli, puerto_varas, lago_general_carrera (mas hanga_roa,
+    juan_fernandez y punta_delgada, que son `no_cerrable`). El decreto las define
+    por enumeracion de cuerpos o por accidentes nombrados. No hay nada que
+    transcribir: la ausencia en el insumo es fiel al documento.
+  · SE SOSTIENE en puerto_montt, calbuco, cochamo, hornopiren y achao: sus
+    coordenadas SI estan guardadas.
+  · SE CAE EN lago_ranco. Es `cerrable` por `union_cuerpos`, y su parrafo trae
+    tres puntos explicitos que el insumo no guardo como dato. Es la unica de las
+    quince donde el decreto da mas de lo que el insumo tomo.
+
+1.4 — LAS 14 "OTRO ROL": trece son modelado, cinco dejan un extremo abierto
+--------------------------------------------------------------------------------
+Un decreto que dice "siga este paralelo hasta tal longitud" se representa en el
+insumo por los DOS extremos del tramo, no por la linea. Eso NO es perdida.
+
+Discriminador declarado, y es heuristica, no veredicto: se cuentan los puntos
+DISTINTOS de la entrada que caen sobre esa linea. Dos o mas -> el tramo tiene sus
+dos extremos. Uno -> queda un extremo abierto.
+
+  CON DOS EXTREMOS (9): hornopiren 42°30'00" S (x2), 073°00'00" W ·
+      achao 42°23'30" S, 073°00'00" W, 42°30'00" S, 073°12'00" S, 42°39'40" S,
+      073°23'50" W
+  CON UN SOLO EXTREMO (5):
+      hornopiren  072°38'00" W   (interseccion en la costa Este del estero Renihue)
+      hornopiren  42°00'00" S
+      puerto_williams 067°16'00" W  — el meridiano corre "hacia el Sur hasta el
+          limite Norte de la GM Antartica Chilena, en el Paso Drake": el otro
+          extremo es una jurisdiccion, no una coordenada
+      bahia_paraiso 53°00'00" W y 90°00'00" W — el borde Sur son "las costas mas
+          australes", no una coordenada
+
+Los cinco extremos abiertos no son huecos de transcripcion: el decreto tampoco
+da el otro extremo. Se anotan porque explican por que esos contornos no cierran.
+
+Nota de esquema, dicha una vez: **el insumo v1 no tiene ningun campo para un
+MERIDIANO suelto.** Tiene `limite_norte`/`limite_sur` (lineas de latitud) y
+listas de puntos. Un meridiano del decreto solo puede entrar partido en vertices.
+No es un hueco de una entrada; es una forma que el esquema no admite.
+
+1.5 — UNA ANOMALIA DE LA FUENTE, no del insumo
+--------------------------------------------------------------------------------
+El parrafo de `achao` (linea 530 del txt) escribe:
+
+    "...luego hacia el Weste hasta su interseccion con la Longitud 073°12'00" S.;"
+
+**Rotulo de LONGITUD con hemisferio S.** El insumo lo interpreto como longitud
+(-73.2, en `poligonal_completa[4]` y `[5]`), que es la unica lectura coherente
+con el resto del parrafo. La transcripcion esta bien; el defecto es del
+documento. Se anota para el registro de DIRECTEMAR.
+
+
+================================================================================
+2. QUE QUEDO A MEDIAS
+================================================================================
+Nada del barrido. El encargo pedia el cuadro de las 23 y el cuadro esta completo.
+
+Lo que NO se hizo, por instruccion expresa del owner ("alto con el cuadro
+completo, no corrijas nada"): no se escribio ninguna de las seis coordenadas al
+insumo, ni se toco `PLAN_JURISDICCION.md`. Nada de este barrido esta escrito en
+el repositorio fuera de este directorio.
+
+
+================================================================================
+3. QUE NO SE PUDO DETERMINAR
+================================================================================
+  · Si el paralelo 54°33'00" S DEBE ir a algun campo de `puerto_williams` y de
+    `tierra_del_fuego`, y a cual. Ninguna de las dos jurisdicciones es una banda
+    de latitud: en Puerto Williams el paralelo cierra por el Weste sobre el
+    Oceano Pacifico, y en Tierra del Fuego acota una clausula sobre aguas que
+    "tienen su acceso por el Norte". Meterlo en `limite_norte`/`limite_sur`
+    afirmaria una forma que el decreto no da. Es adjudicacion sobre la fuente
+    normativa -> del owner (CLAUDE.md §0.4).
+  · Si los tres puntos del rio Bueno alcanzan para darle geometria al cuerpo.
+    Son tres sectores localizados, no un cauce. Localizan; no delimitan.
+  · Si el 073°12'00" S de `achao` es error del D.S. original o de la
+    digitalizacion del PDF. Se midio el txt versionado, no el D.O.
+  · El discriminador de "extremo abierto" cuenta puntos sobre una linea; no
+    prueba que esos puntos SEAN los extremos del tramo. Es indicio, no veredicto.
+
+
+================================================================================
+4. QUE DECISIONES LE QUEDAN AL OWNER
+================================================================================
+
+4.1 — LAS SEIS COORDENADAS EN PROSA: donde aterrizan
+--------------------------------------------------------------------------------
+Tres caminos, con lo que gana y pierde cada uno:
+
+  (A) NO TOCAR NADA, y declarar la prosa como suficiente.
+      Gana: cero riesgo, cero trabajo. El dato es recuperable a mano.
+      Pierde: `fase5_construir_capa_ds991.py` lee campos numericos, no prosa.
+      Lo que esta solo en el texto no llega nunca a la capa. Y la deuda no queda
+      escrita en ningun lado que se lea.
+
+  (B) SOLO `lago_ranco`: los tres puntos del rio Bueno a `puntos_notables` +
+      referencia en la entrada.
+      Gana: es el unico caso donde el dato es un PUNTO, que el esquema si admite
+      sin decidir nada; y toca de frente la carencia D13 del rio Bueno, ya
+      declarada en `cotejo_lacustre_adjudicado.json`.
+      Pierde: deja los dos casos del 54°33' sin registrar.
+      ES EL QUE RECOMIENDO como primer paso: es el unico de los tres que no exige
+      interpretar la forma de la jurisdiccion.
+
+  (C) LOS TRES CASOS, con un campo nuevo para coordenadas del parrafo que no son
+      limite norte/sur (p.ej. `coordenadas_del_parrafo`, con su rol declarado).
+      Gana: el 54°33' queda como dato en las tres jurisdicciones que reparte, no
+      en una sola; y el esquema deja de perder los meridianos.
+      Pierde: es cambio de esquema, arrastra al generador de v2 y al constructor
+      de la capa, y hay que decidir que significa cada rol antes de escribirlo.
+
+  DESCARTADO, con su motivo: meter el 54°33'00" S en `limite_norte`/`limite_sur`
+  de las dos australes. Ni Puerto Williams ni Tierra del Fuego son bandas de
+  latitud; el campo afirmaria una forma que el decreto no describe, y el
+  constructor lo consumiria como si lo fuera.
+
+4.2 — SI ESTE BARRIDO SE ESCRIBE EN EL REPOSITORIO
+--------------------------------------------------------------------------------
+Igual que las Fases 4, 5 y 8 del cierre anterior, nada de esto esta en
+`PLAN_JURISDICCION.md`. Vive solo aqui. Si el owner quiere que la carencia de
+las seis quede donde se lee, hay que escribirla — no se hizo porque esta fase
+era de reconocimiento y no autorizo escritura.
+
+
+================================================================================
+5. OBJECIONES QUE TUVE, AUNQUE HAYA TERMINADO EJECUTANDO
+================================================================================
+  · EL ENCARGO PEDIA PARALELOS Y EL CASO QUE LO MOTIVO NO ERA SOLO DE PARALELOS.
+    Se ensancho a toda coordenada con su rol. Declarado arriba, §0.
+  · "EL INSUMO TIENE AMBOS LIMITES EN NULL" es exacto para `jurisdicciones_v2.json`
+    (`limite_norte: {dms:null, dec:null, tipo:null}`) y no para v1, donde el campo
+    directamente NO EXISTE en la entrada de `puerto_williams`. Las dos formas
+    dicen lo mismo, pero la afirmacion se apoya en el derivado y la fuente es el
+    v1 — precisamente la trampa que el repositorio ya tiene anotada
+    ("`jurisdicciones_v2.json` NO es la fuente, es derivado").
+  · UN ERROR MIO, corregido antes de reportar y por eso queda escrito: la primera
+    version del instrumento contaba `vertices` y `poligonal_completa` como listas
+    independientes, y en `puerto_williams` son el MISMO punto A y el MISMO punto F
+    dos veces. El discriminador de extremos dio "2 (segmento con dos extremos)"
+    para el meridiano 067°16'00" W cuando el valor correcto es 1 (EXTREMO
+    ABIERTO). Media la duplicacion del esquema, no la geometria.
+  · UN SEGUNDO ERROR MIO, el que mas caro habria salido: la primera corrida
+    reporto 6 coordenadas "NO ESTA" comparando solo contra campos numericos. El
+    grep literal sobre el JSON entero las encontro en `texto_decreto`. Seis
+    ausencias falsas si no se verifica la ausencia con un comando independiente.
+  · LA PREMISA "LAS QUINCE CERRABLES NO NECESITAN EL DATO" no se dio por buena.
+    Se midio, y se cae en `lago_ranco`. El encargo ya pedia incluirlas, asi que
+    la objecion es al razonamiento del cierre anterior, no a la instruccion de hoy.
+
+================================================================================
+FIN. Lo que este barrido NO hizo, dicho para que no se busque: no se modifico
+`jurisdicciones_capitanias.json` ni `jurisdicciones_v2.json`, no se toco src/ ni
+la PWA, no se commiteo y no se pusheo.
+================================================================================
