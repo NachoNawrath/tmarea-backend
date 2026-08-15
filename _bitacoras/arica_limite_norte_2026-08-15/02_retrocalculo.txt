@@ -1,0 +1,139 @@
+==============================================================================
+MEDICION DEL LIMITE NORTE DE `arica` — paquete Espacios_Maritimos de DIFROL
+corrida: 2026-08-15 19:24:17Z   (UTC)
+solo lectura sobre el repositorio; escribe unicamente sus derivados
+==============================================================================
+
+0. EL ARCHIVO Y SU HUELLA
+------------------------------------------------------------------------------
+  url          https://difrol.gob.cl/repositorio/Espacios_Maritimos/Espacios_Maritimos.zip
+  bytes        409817
+  sha256       601c6dfd357662739b5ae9d29ebebfea5dc8e81f9f13f4b1e726ff5129b25f74
+  origen       zip ya presente en el directorio
+
+1. QUE ES EL PAQUETE
+------------------------------------------------------------------------------
+  contenido del zip : SIRGAS Chile/, SIRGAS Chile/Espacios_Maritimos.cpg, SIRGAS Chile/Espacios_Maritimos.dbf, SIRGAS Chile/Espacios_Maritimos.prj, SIRGAS Chile/Espacios_Maritimos.sbn, SIRGAS Chile/Espacios_Maritimos.sbx, SIRGAS Chile/Espacios_Maritimos.shp, SIRGAS Chile/Espacios_Maritimos.shp.xml, SIRGAS Chile/Espacios_Maritimos.shx
+  features          : 5
+  codificacion .dbf : utf-8 — PROBADA, no supuesta. El paquete trae
+                      .cpg y declara UTF-8, y los bytes crudos lo confirman
+                      (b'Econ\xc3\xb3mica'). Si al leer esta salida en una
+                      consola de Windows aparece 'Econ?mica', el defecto es
+                      de la consola y NO del archivo: el derivado .csv de al
+                      lado esta en UTF-8 y bien.
+  tipos de geometria: ['LineString', 'MultiLineString']
+  campos            : ['OBJECTID', 'Nombre', 'Nom_abre']
+  vertices totales  : 29643
+  valores de Z      : [0.0]
+
+  .prj declarado:
+    GEOGCS["GCS_SIRGAS-Chile",DATUM["D_SIRGAS-Chile",SPHEROID["GRS_1980",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]
+  EPSG que pyogrio deduce: 5360
+
+  TRAZA DE PROCESAMIENTO del .shp.xml (es la evidencia del rotulo de datum):
+    ['Merge', 'Dissolve', 'DefineProjection']
+
+  LECTURA — el datum es un ROTULO, no una transformacion pendiente:
+  el .prj declara un GCS sin codigo EPSG y sin epoca, y la traza muestra un
+  DefineProjection, que REESCRIBE la etiqueta sin mover un solo vertice. Si
+  hubiera habido cambio de datum la traza diria Project. QUIEN REPROYECTE
+  CREYENDO QUE HAY UNA TRANSFORMACION PENDIENTE MUEVE EL DATO SIN MOTIVO.
+
+  LO QUE EL PAQUETE NO TRAE, y hay que decirlo: NO vienen las lineas de base.
+  Sin ellas no se puede recalcular nada desde cero: se mide sobre el trazado
+  publicado, que es lo que este script hace.
+
+2. LAS CINCO FEATURES, UNA POR UNA
+------------------------------------------------------------------------------
+  Van todas y no solo las tres que se usan, porque el nombre NO las
+  distingue: hay dos 'Zona Economica Exclusiva y Plataforma Continental'.
+
+   #  nombre                                            vert.    lat norte      lat sur
+   0  Mar Territorial                                    7242    -18.35004    -56.73458
+   1  Zona Económica Exclusiva  y Plataforma Continental   8698    -20.16194    -59.78329
+   2  Zona Económica Exclusiva  y Plataforma Continental   5183    -57.68820    -78.16629
+   3  Zona Contigua                                      8154    -18.35012    -56.93416
+   4  Plataforma Continental                              366    -58.00562    -59.69814
+
+  IDENTIFICADAS PARA ESTA MEDICION: MT=[0] · ZC=[3] · limite exterior=[1]
+  El limite exterior se eligio POR GEOGRAFIA (unica ZEE/PC con termino norte
+  al Norte del paralelo 25 S), no por nombre. Ver el criterio en identificar().
+
+3. LOS TERMINOS NORTE
+------------------------------------------------------------------------------
+  campo de nombre usado: 'Nombre'
+
+  MT   'Mar Territorial'
+       termino norte  18 21 00,137 S / 70 35 26,642 W
+       decimal        -18.35003809 / -70.59073400
+  ZC   'Zona Contigua'
+       termino norte  18 21 00,420 S / 70 48 03,647 W
+       decimal        -18.35011667 / -70.80101309
+  ZEE  'Zona Económica Exclusiva  y Plataforma Continental'
+       termino norte  20 09 42,993 S / 73 43 33,703 W
+       decimal        -20.16194243 / -73.72602849
+
+  CONTRA EL ACTA DE 1930: el Acta pone el hito en 18 21 03 S. Los dos
+  terminos de arriba estan en 18 21 00 y algo, o sea que LA CAPA USA
+  18 21 00 — tres segundos al Norte de lo que el Acta escribe.
+  El hito 1 del Acta NO esta versionado en este repositorio, asi que la
+  distancia exacta entre los dos puntos NO SE MIDE ACA (CLAUDE.md 3.2).
+
+4. EL RETROCALCULO DEL ANCLA
+------------------------------------------------------------------------------
+  Metodo: cada linea se proyecta hacia el ORIENTE por el ancho que le
+  corresponde — 12 mn la de MT, 24 mn la de ZC — hasta el origen del limite.
+  Si las dos caen en el mismo punto, ese punto es el ancla. SON DOS CAPAS
+  INDEPENDIENTES: que coincidan es la prueba. Una sola no probaria nada,
+  porque retroproyectar desde una linea reproduce la definicion de esa linea.
+
+  CORRECCION DE MI PROPIO INSTRUMENTO, hecha antes de reportar y escrita
+  porque el metodo importa tanto como el numero (CLAUDE.md 2). La primera
+  corrida proyecto sobre una GEODESICA de azimut inicial 90, y una geodesica
+  NO es un paralelo: tiene su vertice en el punto de partida y desde ahi se
+  aparta hacia el ecuador. Las dos se corren abajo, a la vista.
+
+  GEODESICA (metodo equivocado)
+    desde MT (12 mn):  18 20 59,720 S / 70 22 49,681 W   [-18.34992211, -70.38046685]
+    desde ZC (24 mn):  18 20 58,750 S / 70 22 49,725 W   [-18.34965271, -70.38047915]
+    separacion MT vs ZC: 29.85 m
+
+  PARALELO   (metodo correcto)
+    desde MT (12 mn):  18 21 00,137 S / 70 22 49,680 W   [-18.35003809, -70.38046675]
+    desde ZC (24 mn):  18 21 00,420 S / 70 22 49,722 W   [-18.35011667, -70.38047840]
+    separacion MT vs ZC: 8.78 m
+
+  EL RESULTADO, sobre el metodo correcto:
+    diferencia en LONGITUD  0.0419" de arco  =  1.23 m
+    diferencia en LATITUD   0.2829" de arco
+    separacion total        8.78 m
+
+  QUE AFIRMA ESTA COINCIDENCIA Y QUE NO. Afirma que las dos capas comparten
+  el mismo origen EN LONGITUD dentro del metro. NO afirma que compartan la
+  latitud al centimetro, y no pueden: sus propios terminos norte estan a
+  0.283" uno del otro (8.7 m de latitud), que es el ruido del
+  propio trazado. El ancla se toma del promedio y se declara con ese ruido.
+
+  ANCLA RETROCALCULADA: 18 21 00,279 S / 70 22 49,701 W
+              decimal : -18.35007738 / -70.38047258
+  REDONDEADA como se escribe en el insumo: 18 21 00 S / 070 22 49,7 W
+
+  ESTO ES UN RETROCALCULO NUESTRO. DIFROL NO PUBLICA ESTE PUNTO: lo deja
+  implicito en el trazado de dos lineas. El valor de arriba es lo que se
+  deduce de ellas, y asi tiene que quedar escrito en el insumo.
+
+5. HASTA DONDE LLEGA EL PARALELO — lo que sostiene la decision de 24 mn
+------------------------------------------------------------------------------
+  La linea de ZEE/PC ('Zona Económica Exclusiva  y Plataforma Continental') termina por el Norte en
+    20 09 42,993 S / 73 43 33,703 W   [-20.16194243, -73.72602849]
+  Ese punto esta a 108.3 mn AL SUR del paralelo del ancla.
+
+  LECTURA: si el limite con Peru siguiera el paralelo hasta las 200 mn, la
+  linea de ZEE tendria que terminar SOBRE el paralelo. No lo hace. El propio
+  paquete niega que el paralelo siga mas alla, y por eso cubrir de 24 a 200
+  mn con el paralelo adjudicaria como chilena agua que la fuente que usamos
+  para cerrar el Norte dice que no lo es.
+
+==============================================================================
+FIN
+==============================================================================

@@ -1,0 +1,156 @@
+================================================================================
+PROCEDENCIA — Espacios_Maritimos de DIFROL
+Insumo del que sale el limite Norte declarado de `arica` (Opcion D, 2026-08-15).
+Escrito segun CLAUDE.md 3.5. Precedente: geodata/costa/PROCEDENCIA.txt.
+================================================================================
+
+POR QUE ESTE ARCHIVO EXISTE
+--------------------------------------------------------------------------------
+El paquete pesa 409.817 bytes y el corte de 3.5 esta en ~100 KB por archivo o
+~200 KB por conjunto, asi que es CRUDO PESADO y NO SE VERSIONA. Lo que si se
+versiona es el derivado —01_terminos_medidos.csv, 02_retrocalculo.txt,
+03_huella.json— y el instrumento que lo produce, medir_difrol.py.
+
+Y hay un motivo mas fuerte que el tamano para que este archivo sea completo: el
+valor 070 22 49,7 W que la convencion de `arica` declara en el insumo NO ES UNA
+COORDENADA PUBLICADA. Es un retrocalculo nuestro sobre este paquete. Sin poder
+rehacerlo, esa convencion seria un numero sin respaldo, que es lo que CLAUDE.md
+3.1 prohibe. Este archivo es lo que la vuelve reproducible (INV-3.7).
+
+
+EL ARCHIVO
+--------------------------------------------------------------------------------
+  URL       https://difrol.gob.cl/repositorio/Espacios_Maritimos/Espacios_Maritimos.zip
+  pagina    https://difrol.gob.cl/  (repositorio institucional de la Direccion
+            Nacional de Fronteras y Limites del Estado)
+  bytes     409.817
+  sha256    601c6dfd357662739b5ae9d29ebebfea5dc8e81f9f13f4b1e726ff5129b25f74
+
+  SOBRE QUE SE CALCULO EL SHA256: sobre el .zip TAL COMO LLEGA POR LA RED, en
+  memoria, antes de escribirlo a disco. No sobre un archivo extraido ni sobre un
+  blob de git. La distincion importa en este repositorio: con core.autocrlf=true
+  el blob de git y el archivo en disco no son los mismos bytes para texto. Para
+  un .zip binario no hay diferencia, y se declara igual para que la huella diga
+  de que es huella.
+
+  Last-Modified  Fri, 05 Jan 2024 17:31:45 GMT
+  Content-Type   application/zip
+  Server         cloudflare
+  capturado      2026-08-15 19:22 UTC
+
+  ETag: EL SERVIDOR NO LO MANDA. Se anota porque su ausencia es un dato: la
+  deteccion de cambio se apoya en Last-Modified y en el sha256, no en un ETag.
+
+  CONTENIDO DEL ZIP (un solo shapefile, dentro de la carpeta "SIRGAS Chile/"):
+    Espacios_Maritimos.shp · .shx · .dbf · .prj · .cpg · .sbn · .sbx · .shp.xml
+
+
+COMO SE VUELVE A CAPTURAR — Y EL HECHO DE MAQUINA QUE CUESTA UNA CORRIDA
+--------------------------------------------------------------------------------
+difrol.gob.cl esta detras de Cloudflare y ROMPE EL HANDSHAKE TLS CON SCHANNEL en
+Windows. Fallan las dos herramientas que uno probaria primero:
+
+    Invoke-WebRequest  -> falla
+    curl.exe           -> falla, SEC_E_ILLEGAL_MESSAGE
+
+No es un problema de red, de proxy ni de certificado vencido, y REINTENTARLO NO
+SIRVE. Es schannel, el backend TLS de Windows, negociando con este host. Baja
+bien con cualquier cliente que use OpenSSL.
+
+El comando que rehace la captura y toda la medicion, EN POWERSHELL (CLAUDE.md
+7.2 y 7.3), desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    .\tools\raster-build\.venv\Scripts\python.exe _bitacoras\arica_limite_norte_2026-08-15\medir_difrol.py
+
+EL INTERPRETE NO ES CUALQUIERA, y esto ya costo una corrida en la sesion del
+barrido de las 23:
+  · `python`  es el stub de la Microsoft Store: no existe.
+  · `py`      es 3.14.6 del sistema y NO tiene geopandas.
+  · el bueno  es tools/raster-build/.venv/Scripts/python.exe — 3.14.6,
+              OpenSSL 3.5.7, geopandas 1.1.4, pyogrio 0.13.0, shapely 2.1.2,
+              pyproj 3.7.2.
+
+El script guarda el .zip como _Espacios_Maritimos.zip y extrae en _shp/. Los dos
+empiezan con "_" y estan excluidos por el .gitignore de este directorio: son el
+crudo pesado y no se versionan. Borrarlos y volver a correr rehace todo.
+
+
+QUE SE EXTRAJO DE EL — filas, entidades y campos
+--------------------------------------------------------------------------------
+El paquete trae CINCO features de linea (PolyLineZ, Z=0 en los 29.643 vertices),
+campos OBJECTID / Nombre / Nom_abre. De esas cinco se usaron TRES:
+
+  [0] "Mar Territorial"                      -> su TERMINO NORTE
+  [3] "Zona Contigua"                        -> su TERMINO NORTE
+  [1] "Zona Economica Exclusiva y Plataforma Continental" -> su TERMINO NORTE
+
+Las otras dos no se usaron: [2] es la ZEE/PC austral (termino norte en -57,7) y
+[4] es "Plataforma Continental" (termino norte en -58,0). Ninguna llega a la
+latitud de Arica.
+
+De esos tres terminos salieron los cuatro numeros que la convencion cita:
+  · el paralelo que la capa usa de verdad: 18 21 00 (y no el 18 21 03 del Acta)
+  · el ancla retrocalculada: 070 22 49,7 W
+  · la coincidencia entre las dos capas: 1,23 m en longitud
+  · el termino de la ZEE: 20 09 42,993 S / 73 43 33,703 W
+
+
+NOTAS DE PARSEO QUE COSTARON TRABAJO
+--------------------------------------------------------------------------------
+Esto es lo que deja de ser descubrible en cuanto el archivo no esta.
+
+1. EL NOMBRE NO IDENTIFICA A LA LINEA DEL LIMITE EXTERIOR. Hay DOS features
+   llamadas exactamente "Zona Economica Exclusiva y Plataforma Continental" y una
+   tercera llamada "Plataforma Continental". Un filtro por nombre devuelve tres y
+   no una. La que sirve para Arica se identifica POR GEOGRAFIA: es la unica ZEE/PC
+   cuyo termino norte cae al Norte del paralelo 25 S. El criterio esta escrito en
+   identificar() y el script se DETIENE si alguna vez devolviera mas de una, en
+   vez de quedarse con la primera.
+
+2. UNA GEODESICA NO ES UN PARALELO, y confundirlas mueve el resultado 29 m.
+   El retrocalculo consiste en ir hacia el Oriente desde el termino de cada linea
+   —12 mn la de MT, 24 mn la de ZC— hasta el origen del limite. La primera version
+   uso Geod.fwd() con azimut 90, que es una GEODESICA: tiene su vertice en el
+   punto de partida y desde ahi se aparta del paralelo hacia el ecuador, ~9 m a
+   12 mn y ~38 m a 24 mn. Esos ~29 m de diferencia aparecian como si las dos capas
+   discreparan, cuando el que discrepaba era el instrumento. El limite del decreto
+   es un PARALELO: latitud constante. Las dos versiones se corren y se imprimen
+   juntas a proposito, para que la comparacion quede a la vista y no haya que
+   volver a descubrirla.
+
+3. EL "�" DE LA SALIDA ES DE LA CONSOLA, NO DEL ARCHIVO. El .dbf esta en UTF-8,
+   el .cpg lo declara bien, y los bytes crudos son b'Econ\xc3\xb3mica'. Al ver
+   'Zona Econ?mica' en una consola de Windows escribi que el .cpg mentia: era
+   falso, y la afirmacion quedo retractada dentro del propio script. Es la misma
+   familia que la ausencia falsa de Sala y Gomez del 2026-08-15: lo que fallo fue
+   mi lector, no la fuente (CLAUDE.md 2).
+
+4. EL PAQUETE NO TRAE LAS LINEAS DE BASE. La traza del .shp.xml muestra
+   Merge -> Dissolve -> DefineProjection: se fusionaron y se perdieron. Sin ellas
+   NO se puede recalcular el limite desde cero; todo lo de aca se mide sobre el
+   trazado publicado.
+
+5. EL DATUM ES UN ROTULO Y NO UNA TRANSFORMACION PENDIENTE. El .prj declara
+   GEOGCS["GCS_SIRGAS-Chile", DATUM["D_SIRGAS-Chile", SPHEROID["GRS_1980",...]]]
+   SIN codigo EPSG y SIN epoca. pyogrio deduce 5360. La traza del .shp.xml trae
+   DefineProjection, que REESCRIBE LA ETIQUETA sin mover un vertice; si hubiera
+   habido cambio de datum diria Project. QUIEN REPROYECTE ESTOS DATOS CREYENDO QUE
+   HAY UNA TRANSFORMACION PENDIENTE LOS MUEVE SIN MOTIVO.
+
+
+LO QUE ESTE PAQUETE NO CONTESTA
+--------------------------------------------------------------------------------
+  · El limite Chile-Peru entre las 24 mn y las 200 mn. El paquete no lo traza:
+    su linea de ZEE arranca ya en 20 09 42,993 S, a 108,3 mn AL SUR del paralelo
+    del ancla. Es lo que sostiene la decision del owner de no cubrir mas alla de
+    las 24 mn, y no un hueco de esta medicion.
+  · El hito 1 del Acta de 1930. NO esta versionado en este repositorio, asi que la
+    distancia entre el ancla retrocalculada y el hito NO SE MIDIO. Cualquier cifra
+    sobre esa distancia que aparezca en otro lado no sale de aca.
+  · Nada de las jurisdicciones interiores: cero vertices en el Estrecho de
+    Magallanes, el Beagle, el Messier y el Baker. Medido en la sesion del
+    2026-08-15; este paquete no aporta a `punta_delgada`, `baker`, `puerto_eden`
+    ni `tierra_del_fuego`.
+
+================================================================================

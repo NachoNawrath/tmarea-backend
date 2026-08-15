@@ -1,0 +1,296 @@
+================================================================================
+EL LIMITE NORTE DE `arica` — DECLARADO, NO CONSTRUIDO
+Opcion D del owner, 2026-08-15. D16 en PLAN_JURISDICCION.md §5.
+Escrito segun el estandar de cinco puntos de CLAUDE.md §8.
+================================================================================
+
+EL ROTULO, ANTES QUE NADA, PORQUE ES LO QUE MAS FACIL SE LEE MAL
+--------------------------------------------------------------------------------
+**`arica` NO SE CERRO.** Sigue `no_cerrable`, sigue sin geometria, y el conteo del
+ambito MARITIMO sigue en **44 cerrable / 8 no_cerrable** (sobre las 64: **54/10**).
+Lo que se cerro es el REGISTRO. Quien lea "Arica cerrada" en algun lado va a
+buscar un poligono que no esta.
+
+Precision del owner, adoptada: corrige mi propio encuadre de la fase de plan, que
+hablaba de "cerrar Arica" y proyectaba 45/7.
+
+SHELL DECLARADA (§7.3) — en PowerShell, desde la raiz:
+
+    cd C:\Users\katia\tmarea-backend
+    .\tools\raster-build\.venv\Scripts\python.exe _bitacoras\arica_limite_norte_2026-08-15\<script>.py
+
+El interprete NO es `py` (no tiene geopandas) ni `python` (stub de la Store): es
+`tools/raster-build/.venv/Scripts/python.exe` — 3.14.6, OpenSSL 3.5.7,
+geopandas 1.1.4, pyogrio 0.13.0, shapely 2.1.2, pyproj 3.7.2.
+
+
+================================================================================
+1. QUE QUEDO VERIFICADO, Y CON QUE EVIDENCIA
+================================================================================
+
+1.1 — LA PRECONDICION NO ERA TRAMITE: EL NUMERO NO ESTABA EN EL REPOSITORIO
+--------------------------------------------------------------------------------
+El valor `070 22 49,7 W` que la decision del owner nombra **no existia en ningun
+archivo de `tmarea-backend`** — ni en `data/`, ni en `_bitacoras/`, ni en el
+insumo. Vivia solo en una memoria de sesion. Escribirlo tal cual habria sido
+escribir un numero sin respaldo, que es lo que §3.1 prohibe y lo que INV-3.7 hace
+imposible de reproducir.
+
+Se bajo el paquete, se midio, y quedo en
+`_bitacoras/arica_limite_norte_2026-08-15/`:
+
+  PROCEDENCIA.txt          URL, sha256 (declarando sobre que se calculo), bytes,
+                           Last-Modified, que se extrajo, y las notas de parseo
+  01_terminos_medidos.csv  derivado, se versiona siempre (§3.5)
+  02_retrocalculo.txt      la salida cruda de la medicion
+  03_huella.json           huella + cabeceras HTTP + traza del .shp.xml
+  04_v2_contra_v1.txt      el control de consistencia del v2
+  05_auditoria_v2.txt      la auditoria del insumo, limpia
+  medir_difrol.py          instrumento re-ejecutable, solo lee y descarga
+  insertar_en_v2.py        la insercion quirurgica, idempotente
+  verificar_v2_contra_v1.py  el control que la acompaña
+  .gitignore               el .zip (409.817 B) y el shapefile extraido NO se
+                           versionan: crudo pesado (§3.5)
+
+1.2 — LOS NUMEROS, MEDIDOS
+--------------------------------------------------------------------------------
+  paquete    sha256 601c6dfd357662739b5ae9d29ebebfea5dc8e81f9f13f4b1e726ff5129b25f74
+             409.817 bytes · Last-Modified 2024-01-05 · capturado 2026-08-15
+             5 features de linea, 29.643 vertices, Z=0 en todos
+
+  terminos norte
+    Mar Territorial   18 21 00,137 S / 70 35 26,642 W
+    Zona Contigua     18 21 00,420 S / 70 48 03,647 W
+    ZEE/PC            20 09 42,993 S / 73 43 33,703 W
+
+  LA CAPA USA 18 21 00, no el 18 21 03 del Acta de 1930. El hito 1 del Acta NO
+  esta versionado, asi que la distancia entre los dos NO SE MIDIO.
+
+  retrocalculo del ancla, sobre el paralelo
+    desde MT (12 mn)  070 22 49,680 W
+    desde ZC (24 mn)  070 22 49,722 W
+    coinciden en LONGITUD dentro de 0,0419" = 1,23 m
+
+  QUE AFIRMA ESA COINCIDENCIA Y QUE NO. Afirma que dos capas INDEPENDIENTES
+  comparten el mismo origen en longitud dentro del metro — y que sean dos es la
+  prueba: retroproyectar desde una sola reproduce la definicion de esa linea y no
+  mediria nada. NO afirma que compartan la latitud al centimetro: la separacion
+  total es 8,78 m y son casi todos de latitud, heredados del ruido del propio
+  trazado (los dos terminos estan a 8,7 m uno del otro).
+
+  ancla declarada   18 21 00 S / 070 22 49,7 W
+
+  LO QUE SOSTIENE LA DECISION DE 24 mn: si el limite siguiera el paralelo hasta
+  las 200 mn, la linea de ZEE tendria que terminar SOBRE el paralelo. Termina
+  108,3 mn AL SUR. El propio paquete que se usa para cerrar el Norte niega que el
+  paralelo siga.
+
+1.3 — POR QUE D Y NO ESCRIBIR EL VALOR — la objecion, medida antes de proponerla
+--------------------------------------------------------------------------------
+`receta_banda_paralelos` (`fase5_construir_capa_ds991.py:591`) devuelve
+`box(X_W, sur, X_E, norte)`, recortado despues por el buffer de 200 mn que la
+linea 862 aplica `WHERE j.ambito = 'maritima'`. **No hay ningun campo de alcance
+en el insumo**: `alcance` aparece 0 veces en `jurisdicciones_v2.json`.
+
+O sea que "hasta 24 mn" NO ES EXPRESABLE con las recetas de hoy. Escribir
+`limite_norte_dec = -18.35` no produce una figura de 24 mn: produce la banda
+entera hasta 370 km de la costa, con el paralelo como borde Norte en todo el
+recorrido. Estimacion de RECTANGULO —declarada como tal, medirla exige correr el
+build—: de ~35.700 km², ~31.400 quedarian fuera de lo autorizado, el ~88 %.
+
+Fundamento del owner para D, textual en lo esencial: *todo el texto de convencion
+que escribe D es el mismo que B va a necesitar; la unica diferencia es
+`limite_norte_dec`, que es el campo peligroso. Si se escribiera ese campo ahora y
+el mecanismo de alcance despues, cualquiera que regenere en el medio produce una
+capa que adjudica agua que el propio paquete de DIFROL niega. D no abre esa
+ventana.*
+
+1.4 — QUE SE ESCRIBIO, Y DONDE
+--------------------------------------------------------------------------------
+  data/decreto/jurisdicciones_capitanias.json  (el v1, que es LA FUENTE)
+    · `limite_norte_convencion` en `arica`: valor, que dice el decreto, que se
+      leyo, el ancla con `es_retrocalculo: true`, su precision, la trampa del
+      metodo, el `no_confundir` sobre las dos cosas que este repo llama "ancla",
+      el rotulo de datum, el alcance y la procedencia.
+    · `revisar` en `arica`: la causa reescrita. Ya no es "falta el limite Norte"
+      sino "el limite esta declarado; falta el mecanismo de alcance".
+    · NO se toco `limite_norte_dms`, `limite_norte_dec` (sigue null),
+      `limite_norte_tipo` (sigue "descriptivo"), `punto_interior` ni
+      `texto_decreto`.
+
+  scripts/fase4_migrar_insumo_v2.py
+    · la convencion nueva en la lista de `convenciones` (donde viven las otras 6).
+    · UNA LINEA DE PASO para que `limite_norte_convencion` llegue al v2. Decision
+      mia, declarada (§0.4): el emisor tiene lista de campos FIJA, y sin esa linea
+      la convencion viviria solo en la fuente mientras el derivado —que es lo que
+      leen el auditor, el constructor y los dos validadores— seguiria diciendo
+      unicamente "limite politico internacional Chile-Peru", que es el estado que
+      declararla existe para terminar. Es paso puro, sin logica. Revocable.
+
+  data/decreto/jurisdicciones_v2.json  (insercion quirurgica, no regeneracion)
+    · el sha del v1 al dia en `derivado_de`
+    · `limite_norte_convencion` en LAS 64 (bloque en `arica`, null en 63)
+    · la causa y `nota_fuente` de `arica`
+    · la convencion, en la posicion que le toca: despues de las que emite la
+      migracion y ANTES del umbral que agrega el corrector de testigos
+
+  data/decreto/adjudicacion_tramos.json — re-sellado (B12) con la autorizacion
+  literal del owner. Las 22 adjudicaciones se verificaron ANTES de sellar: mismos
+  tramos, mismos tipos, 0 perdidas.
+
+  PLAN_JURISDICCION.md — enmiendas §3.3 en §1.2(a), §2, el parrafo de las ocho de
+  E4, la fila de E4 en §7, D16 nueva en §5, tres bullets nuevos en §9, encabezado
+  a 2.4 y fila 2.4 en §8.
+
+  NO SE TOCO: `zonas_aviso.json` (la zona de `arica` sigue viva porque
+  `participa_matching` no se movio, y con ella la frase que ya anticipaba esto:
+  *"Cerrar la banda por el Norte es una convencion del dueño del producto, no dato
+  del decreto"*) · `ambitos_publicados.json` · `capa_consultada.json` · nada de
+  `src/` · nada de la PWA.
+
+1.5 — EL CONTROL QUE EL OWNER EXIGIO, Y LO QUE CAZO
+--------------------------------------------------------------------------------
+Condicion del owner: *el atajo que evita regenerar tambien evita enterarse*. La
+insercion quirurgica va con verificacion de que el v2 quedo consistente con el v1
+en TODO, no solo en el campo insertado.
+
+`verificar_v2_contra_v1.py` regenera el v2 entero a un archivo aparte —desviando
+la constante `V2` del modulo en memoria, y comprobando por sha256 que el v2 real
+no se toco— y exige que toda diferencia caiga en lo que los OTROS DOS scripts
+escriben, declarado por nombre. Para `convenciones` y `puntos_notables` no alcanza
+con permitir el bloque entero: se exige que la lista regenerada sea **prefijo
+exacto** de la del v2, asi un agregado al final pasa y una MODIFICACION de lo que
+la migracion si produce no pasa.
+
+  CORRIDO PRIMERO CON EL DEFECTO PUESTO (§4.6), antes de insertar nada: exit 1,
+  69 divergencias no declaradas. El control puede fallar.
+
+  RESULTADO DESPUES DE LA INSERCION: **exit 3**
+    117 diferencias · 115 declaradas · 0 NO DECLARADAS · 2 ABIERTAS
+
+  LAS 2 ABIERTAS SON ANTERIORES A ESTA SESION, medido contra HEAD `e2db84b`:
+  `punta_delgada` y `tierra_del_fuego` traen en el v2 una `causa_sin_geometria`
+  que **el v1 no tiene en ningun campo** —ni en `motivo_exclusion` ni en
+  `revisar`—. Regenerar el v2 la reemplazaria en silencio por el texto del v1, que
+  ADEMAS esta vencido: dice que faltan las coordenadas de Punta Harry, Cabo San
+  Vicente y Punta Anxious, y los tres estan verificados contra el IGM y viven en
+  `puntos_notables`. Es conocimiento que solo vive en el DERIVADO, la inversion que
+  INV-3.7 prohibe, y es la misma forma que la trampa de la laguna Galletue.
+
+  NO SE ARREGLO ACA — esta fuera del alcance que el owner fijo, y las dos estan
+  bloqueadas esperando fuente argentina. Queda declarada con codigo **3**, la
+  semantica que E0.1 fijo para "divergencia conocida y abierta", nombrada una por
+  una y con su condicion de cierre escrita (que la causa vigente baje al v1).
+  Cualquier divergencia que no este nombrada sigue saliendo **1**: la lista no es
+  un cajon.
+
+1.6 — REGRESION
+--------------------------------------------------------------------------------
+  auditoria del insumo v2 (B0..B12)   LIMPIA, exit 0
+  B12 antes de sellar                 FALLA, como debe
+  B12 despues de sellar               ok, sha 98fbd67feb9ff361
+  B11 (lo que el v1 declara llega al v2)  ok — es el control que habria cazado
+                                      la linea de paso si faltara
+  suite `npm test`                    84/84
+  `zonas_aviso.json`                  10 zonas, la de `arica` intacta
+  control v2 contra v1                exit 3 (2 abiertas anteriores, 0 nuevas)
+
+
+================================================================================
+2. QUE QUEDO A MEDIAS
+================================================================================
+Nada de lo que esta sesion se propuso. El alcance era la Pieza 1 en modo D y se
+cumplio entero.
+
+Diferido POR DECISION DEL OWNER, no por falta de tiempo:
+  · Pieza 2 — reclasificacion de `hanga_roa` y `juan_fernandez`.
+  · Pieza 3 — el reconocimiento de complemento y su condicion previa.
+  · El mecanismo generico de alcance costa-afuera (la Opcion B), como sesion
+    propia y diseñado GENERICO, no como caso de `arica` (§4.3).
+
+
+================================================================================
+3. QUE NO SE PUDO DETERMINAR
+================================================================================
+  · El area real dentro y fuera de las 24 mn. Los ~4.300 / ~31.400 km² son
+    estimacion de RECTANGULO sobre una banda de 96,5 km; la figura verdadera la
+    recorta el buffer desde la costa y no es un rectangulo. Medirla exige el build.
+  · La distancia entre el ancla retrocalculada y el hito 1 del Acta de 1930. El
+    hito NO esta versionado en el repositorio. Cualquier cifra sobre esa distancia
+    que circule no sale de aca.
+  · El trazado del limite entre las 24 mn y las 200 mn. El paquete no lo trae: su
+    linea de ZEE arranca ya 108,3 mn al Sur. Interpolarlo seria adjudicar.
+  · Si `banda_paralelos` + el mecanismo de alcance cierran `arica` de verdad, y si
+    `arica × iquique` agrega un par a C3 sobre el paralelo 19 13 00 S que
+    comparten. Las dos exigen correr el build; esta sesion no lo corrio.
+
+
+================================================================================
+4. QUE DECISIONES LE QUEDAN AL OWNER
+================================================================================
+  D-1  Si el hueco entre 24 y 200 mn es causa (a) o (b) de INV-3.6. Hoy la
+       maquinaria lo clasificaria (b) —defecto de construccion nuestro— y no lo es.
+  D-2  El tercer estado de `estado_geometria`, hoy binario, que una jurisdiccion
+       construida en parte necesita. Toca los dos validadores de `zonas_aviso.json`
+       (`zonas-aviso.js:196` y `:216`), que hoy no lo admiten.
+  D-3  Si la causa vigente de `punta_delgada` y `tierra_del_fuego` baja al v1.
+       Cierra la divergencia abierta de 1.5. Es barato y no depende de nadie.
+
+  D-1 y D-2 van con el mecanismo de alcance, no antes.
+
+  D-3 NO: EL OWNER LE FIJO ORDEN AL CERRAR ESTA SESION (2026-08-15). Es el PRIMER
+  punto de la sesion siguiente, **antes de la Pieza 3** (el reconocimiento de
+  complemento), y el motivo no es de secuencia sino de fondo: la Pieza 3 pregunta
+  justamente por esas dos jurisdicciones, y el v1 dice hoy de ellas que "el decreto
+  define sus limites solo por accidentes geograficos sin coordenadas" — texto
+  VENCIDO. Entrar al reconocimiento leyendo ese v1 es razonar sobre una carencia
+  que ya no existe.
+
+
+================================================================================
+5. OBJECIONES QUE TUVE, AUNQUE HAYA TERMINADO EJECUTANDO
+================================================================================
+
+  · MI PROPIO ENCUADRE DE LA FASE DE PLAN ESTABA MAL Y LO CORRIGIO EL OWNER.
+    Escribi la pieza bajo el titulo "CERRAR ARICA" y proyecte "45/7". Con D nada
+    de eso pasa. La correccion se adopto en todos los lugares que se tocaron.
+
+  · UNA ENMIENDA QUE EL OWNER PIDIO Y NO SE HIZO, con su motivo. Pidio tachar la
+    nota de E2 sobre las *"16 restricciones que no se le listan al patron — 14 de
+    `arica` y 2 de `puerto_williams`"*, porque en la fase de plan yo dije que
+    envejecia. **NO envejecio**: envejeceria si `arica` se hubiera cerrado, y con D
+    no se cerro. Las 16 siguen siendo 16. Tacharla habria sido escribir algo falso
+    en el lugar donde alguien mira para saber que falta. Se le agrego un puntero a
+    donde vive ahora la causa, que es lo unico que si cambio.
+
+  · TRES CORRECCIONES DE INSTRUMENTO MIAS, hechas antes de reportar y escritas
+    porque el metodo vale tanto como el numero.
+    (a) El identificador de la linea de ZEE por NOMBRE estaba mal: el paquete trae
+        CINCO features y TRES mencionan ZEE o Plataforma. El guard se nego a elegir
+        y se rehizo por GEOGRAFIA, con `Alto` si alguna vez devuelve mas de una.
+    (b) El retrocalculo se hizo primero sobre una GEODESICA de azimut 90, que NO es
+        un paralelo: se aparta ~9 m a 12 mn y ~38 m a 24 mn, y los dos
+        retrocalculos parecian discrepar 29,85 m cuando el que discrepaba era el
+        instrumento. Las dos versiones quedan corridas y a la vista.
+    (c) AFIRME QUE EL `.cpg` DEL PAQUETE MENTIA sobre la codificacion, y era FALSO.
+        Los bytes crudos del .dbf son `b'Econ\xc3\xb3mica'`, UTF-8 valido; el
+        caracter roto lo ponia la CONSOLA de Windows. Lei el terminal y le atribui
+        el defecto a la fuente. Es la misma familia que la ausencia falsa de Sala y
+        Gomez del mismo dia, y §2 la nombra: "no la encontre con mi parser" no es
+        "no esta". La retractacion quedo dentro del propio script.
+
+  · EL CONTROL NUEVO SE ROMPIO COMO SE ROMPIO EL DE E0.1, y por eso se arreglo con
+    su leccion y no solo con su sintoma. Moria con `UnicodeEncodeError` al imprimir
+    una flecha en la consola cp1252, y al morir **dejaba en disco el .txt de la
+    corrida anterior**: exit 1, evidencia vieja, y nada que dijera por que. Es
+    exactamente el BOM del 2026-08-12, donde el control moria antes de escribir su
+    estado versionado y apagaba los dos rastros a la vez. Ahora la evidencia se
+    escribe ANTES de imprimir, y la pantalla es lo prescindible.
+
+  · LA LINEA DE PASO EN LA MIGRACION LA DECIDI YO (§0.4). El owner listo los tres
+    campos que NO debian escribirse y no menciono esta linea; la enrute de este
+    lado por ser estructura del dato, y la declaro para que la revoque si
+    corresponde. Sin ella, D entrega la mitad de lo que existe para entregar.
+
+  · NO SE COMMITEO NADA. Sin autorizacion explicita (§6).
+================================================================================

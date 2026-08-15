@@ -1185,6 +1185,14 @@ def main():
             "limite_norte": {"dms": cap.get("limite_norte_dms"),
                              "dec": cap.get("limite_norte_dec"),
                              "tipo": cap.get("limite_norte_tipo")},
+            # Linea de PASO, sin logica. Existe porque el emisor tiene lista de
+            # campos FIJA: un campo nuevo del v1 que no se nombre aca no llega nunca
+            # al v2, y el v2 es lo que leen el auditor, el constructor y los dos
+            # validadores. Sin esto la convencion del limite Norte de `arica` viviria
+            # solo en la fuente y el derivado seguiria diciendo unicamente
+            # "limite politico internacional Chile-Peru", que es el estado que
+            # declararla existe para terminar. Es None en las otras 63.
+            "limite_norte_convencion": cap.get("limite_norte_convencion"),
             "limite_sur": {"dms": cap.get("limite_sur_dms"),
                            "dec": cap.get("limite_sur_dec"),
                            "tipo": cap.get("limite_sur_tipo")},
@@ -1259,6 +1267,21 @@ def main():
             "La separacion lateral entre Capitanias en la franja oceanica, el limite "
             "exterior de 200 mn y el cierre generoso hacia tierra con resta posterior "
             "de la capa de tierra siguen siendo convencion nuestra, como en v1.",
+            "EL LIMITE NORTE DE `arica` ESTA DECLARADO Y NO CONSTRUIDO. Owner, "
+            "2026-08-15. El decreto no da coordenada: remite al limite politico "
+            "internacional con el Peru, que fija otro instrumento. Se declara el "
+            "paralelo 18 21 00 S con su ancla en 070 22 49,7 W, RETROCALCULADA por "
+            "nosotros sobre el paquete Espacios_Maritimos de DIFROL — no es una "
+            "coordenada que DIFROL publique — y con alcance de 24 mn desde la costa. "
+            "EL VALOR NO SE ESCRIBE EN `limite_norte_dec` Y `arica` SIGUE "
+            "`no_cerrable`, a proposito: la unica receta para una jurisdiccion sin "
+            "contorno es `banda_paralelos`, que devuelve la franja entera hasta las "
+            "200 mn, y eso adjudicaria agua que el propio paquete de DIFROL niega. "
+            "Escribir el valor antes que el mecanismo de alcance abre una ventana en "
+            "la que cualquiera que regenere produce esa capa. El detalle completo "
+            "—que dice el decreto, que se leyo, el retrocalculo con su precision y su "
+            "trampa de metodo, el rotulo de datum y la procedencia— vive en "
+            "`limite_norte_convencion` dentro del v1, que es la fuente.",
         ],
         "puntos_notables": v1.get("puntos_notables"),
         "fronteras": fronteras,

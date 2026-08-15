@@ -4,7 +4,7 @@
  "generado": "2026-08-09",
  "generado_por": "scripts/fase4_migrar_insumo_v2.py",
  "derivado_de": {
-  "jurisdicciones_capitanias.json": "e630d8354a14e6752ea0d6601e31753ab887871c6a31ebb1d223f13f4e2fce82",
+  "jurisdicciones_capitanias.json": "e57a90730923236df60e75bc967b170931f51f433683fa2674ac54d42a6994bd",
   "cotejo_lacustre_adjudicado.json": "c3c5d5b1e189f802053b9bad069bbe753f81b761ea35eeab015a75e6ad2ee014",
   "seed-bahias-sitport.js": "b57af4af0e9f6fefeb07e05e36518d2bb97e82bc44049f60860c70dcfa8848e8"
  },
@@ -36,6 +36,7 @@
   "'punto_representativo' es el testigo sobre agua que la geometria final debe contener. Su eleccion es nuestra; su ubicacion sale de una fuente real (bahias SITPORT, cuerpos lacustres adjudicados, anillo del decreto).",
   "Un punto del contorno con 'respaldo_textual: false' no aparece en el texto del decreto de su jurisdiccion y NO se usa para construir.",
   "La separacion lateral entre Capitanias en la franja oceanica, el limite exterior de 200 mn y el cierre generoso hacia tierra con resta posterior de la capa de tierra siguen siendo convencion nuestra, como en v1.",
+  "EL LIMITE NORTE DE `arica` ESTA DECLARADO Y NO CONSTRUIDO. Owner, 2026-08-15. El decreto no da coordenada: remite al limite politico internacional con el Peru, que fija otro instrumento. Se declara el paralelo 18 21 00 S con su ancla en 070 22 49,7 W, RETROCALCULADA por nosotros sobre el paquete Espacios_Maritimos de DIFROL — no es una coordenada que DIFROL publique — y con alcance de 24 mn desde la costa. EL VALOR NO SE ESCRIBE EN `limite_norte_dec` Y `arica` SIGUE `no_cerrable`, a proposito: la unica receta para una jurisdiccion sin contorno es `banda_paralelos`, que devuelve la franja entera hasta las 200 mn, y eso adjudicaria agua que el propio paquete de DIFROL niega. Escribir el valor antes que el mecanismo de alcance abre una ventana en la que cualquiera que regenere produce esa capa. El detalle completo —que dice el decreto, que se leyo, el retrocalculo con su precision y su trampa de metodo, el rotulo de datum y la procedencia— vive en `limite_norte_convencion` dentro del v1, que es la fuente.",
   "UMBRAL DE CORRECCION DE TESTIGOS. CONVENCION NUESTRA, no decreto.\n\n  umbral = 500 m, uno solo para todos los puntos.\n\nQUE TIENE QUE CUMPLIR UN UMBRAL ACA. Dos cosas, y las dos se miden:\n  (1) alcanzar para arreglar el dato en el caso normal — si dejara afuera a la\n      mayoria seria una excusa, no una correccion;\n  (2) no permitir un desplazamiento que convierta al testigo en el punto de la\n      jurisdiccion vecina, porque ahi dejaria de probar nada.\nEl punto (3) de mas abajo registra una tercera exigencia que se intento imponer y que\nla medicion descarto. Queda escrita para que nadie la vuelva a derivar.\n\n(1) LO QUE CUESTA ARREGLAR EL DATO. Distancia al agua de los 35 testigos maritimos\n    que caen en tierra, medida contra la capa de costa declarada:\n      mediana 28 m   minimo 3 m   maximo 3.380 m\n      a menos de   100 m : 25 de 35\n      a menos de   250 m : 27 de 35\n      a menos de   500 m : 30 de 35\n      a menos de 1.000 m : 32 de 35\n      a menos de 2.000 m : 34 de 35\n    500 m cubre 30 de 35. Es un numero redondo por encima del percentil 85, no el\n    maximo observado: poner el umbral en el valor que hace pasar a todos lo\n    convertiria en una descripcion de la costa de hoy — al cambiar la capa se moveria\n    solo y no podria fallar nunca. Un umbral tiene que poder dejar puntos afuera, y\n    este los deja.\n\n(2) LO QUE SE PONE EN RIESGO AL MOVER. Distancia de cada testigo al testigo mas\n    cercano de OTRA jurisdiccion:\n      minimo 7.654 m (Coronel)   |   mediana 57.920 m\n    Contra eso, el desplazamiento mayor que esta correccion aplica es de 500 m. La\n    exigencia NO queda como observacion: por cada punto movido se comprueba que la\n    distancia al testigo vecino sea al menos 10 veces su desplazamiento, y si no se\n    cumple la corrida se DETIENE.\n\n    Segunda medida, del mismo lado: la libertad que la eleccion del testigo YA se\n    tomo respecto de la sede de su Capitania, que el propio insumo declara en\n    distancia_km_a_la_sede — mediana 1,8 km, maximo 25,2 km. La eleccion del testigo\n    ya aceptó apartarse kilometros de la sede; correrlo unos cientos de metros para\n    ponerlo sobre agua es chico contra esa libertad ya tomada.\n\n(3) UN UMBRAL POR PRECISION DEL PUNTO: SE INTENTO Y LA MEDICION LO DESCARTO.\n    Queda registrado porque la idea es razonable y alguien la va a volver a tener.\n\n    LA IDEA. Un punto escrito '-72.8' no afirma nada mas fino que unos kilometros;\n    medirle 1.007 m de desplazamiento y declararlo inservible seria juzgarlo con una\n    vara que su fuente nunca pretendio. De ahi: umbral = el mayor entre 500 m y la\n    precision del propio punto. Contando decimales sobre el insumo daba 32 puntos con\n    4 decimales (±6 m), y once con 3, 2, 1 y hasta 0 decimales — hasta ±55 km. Con esa\n    regla, Puerto Chacabuco (lon '-72.8', ±3.904 m) conservaba su testigo.\n\n    POR QUE NO SIRVE. Esa distribucion de precisiones NO EXISTE. Se fue a mirar la\n    fuente de los puntos — scripts/seed-bahias-sitport.js, de donde salen las 163\n    bahias SITPORT — y las 163 coordenadas estan escritas con CUATRO decimales, todas.\n    Bahia Chacabuco es '-45.4667, -72.8000' y Bahia Moreno es '-23.6500, -70.4000'.\n    Los decimales que faltaban se perdieron al serializar el JSON: -70.4000 y -70.4\n    son el MISMO numero de punto flotante, y al reescribir el archivo los ceros\n    finales desaparecen. O sea que lo que se estaba midiendo no era la precision del\n    dato sino el formato con que un archivo intermedio quedo escrito.\n\n    LO QUE ESTO SIGNIFICA. La fuente tiene precision UNIFORME de 4 decimales, ±6 m.\n    No hay ninguna variacion de precision sobre la que apoyar umbrales distintos, y\n    por lo tanto Puerto Chacabuco, a 1.007 m del agua con una coordenada precisa a\n    ±6 m, no tiene excusa de coordenada gruesa: describe otra cosa. Se declara.\n\n    LA LECCION, que es la general. El argumento se apoyaba en una medicion, y la\n    medicion no medía lo que el argumento decia. Antes de darla por buena hubo que ir\n    a la fuente del dato, no al archivo derivado que se tenia a mano.\n\nQUE PASA CON LOS QUE QUEDAN AFUERA. No se mueven. Se declaran sin testigo, con su\ncausa y con la distancia medida, igual que INV-3.6 exige declarar una geometria nula.\nEl punto original queda guardado en punto_representativo_descartado: la carencia se\ndeclara, no se esconde, y la evidencia de cual era el punto no se borra."
  ],
  "puntos_notables": [
@@ -2390,7 +2391,7 @@
    "participa_matching": false,
    "receta": "-",
    "estado_geometria": "no_cerrable",
-   "causa_sin_geometria": "el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno que lo supla. No se toma del vecino.",
+   "causa_sin_geometria": "El limite Norte YA ESTA DECLARADO — ver 'limite_norte_convencion'. Lo que falta NO es el dato: es el MECANISMO DE ALCANCE. La convencion del owner cubre hasta 24 mn de la costa, y la unica receta disponible para una jurisdiccion sin contorno es 'banda_paralelos', que devuelve la franja entera hasta el limite exterior de 200 mn. Construirla asi adjudicaria como chilena el agua entre 24 y 200 mn que el propio paquete de DIFROL niega: su linea de ZEE termina 108,3 mn al Sur del paralelo del ancla. Por eso 'limite_norte_dec' queda en null A PROPOSITO — escribirlo antes que el mecanismo abre una ventana en la que cualquiera que regenere produce esa capa. El mecanismo se disena aparte y GENERICO, no como caso de Arica: 'baker' y 'puerto_eden' tienen exactamente esta forma —receta '-', contorno vacio, un paralelo faltante— y son sus clientes siguientes.",
    "contorno_cerrado": false,
    "lado_abierto": null,
    "sigue_litoral": false,
@@ -2398,6 +2399,29 @@
     "dms": "limite politico internacional Chile-Peru",
     "dec": null,
     "tipo": "descriptivo"
+   },
+   "limite_norte_convencion": {
+    "valor_dms": "18 21 00 S",
+    "valor_dec": -18.35,
+    "decidido_por": "el owner, 2026-08-15",
+    "estado": "DECLARADA, SIN GEOMETRIA. Esta convencion no se construye todavia: 'limite_norte_dec' sigue en null y 'arica' sigue 'no_cerrable'. Lo que quedo cerrado es el REGISTRO, no la jurisdiccion. Quien lea esto buscando un poligono de Arica no lo va a encontrar, y eso es correcto.",
+    "que_dice_el_decreto": "'desde el limite politico internacional Chile-Peru por el Norte'. El decreto NO da coordenada: remite a un limite que fija otro instrumento. 'Peru' aparece UNA sola vez en todo el documento y sin numero. Esto NO es una correccion de fuente —INV-3.7 no admite rellenar por deduccion un valor que la fuente no entrega— sino una CONVENCION que materializa un limite delegado, de la misma familia que el limite exterior de 200 mn y la separacion lateral en la franja oceanica, que este insumo ya declara como convencion nuestra.",
+    "que_se_leyo": "El paquete Espacios_Maritimos de DIFROL. Los terminos norte de sus lineas de Mar Territorial y Zona Contigua estan en 18 21 00,137 S y 18 21 00,420 S: LA CAPA USA 18 21 00, no el 18 21 03 del Acta de 1930. Los dos terminos estan a 0,283 segundos uno del otro, 8,7 m, que es el ruido del propio trazado.",
+    "ancla_del_limite": {
+     "lat_dms": "18 21 00 S",
+     "lon_dms": "070 22 49,7 W",
+     "lat": -18.35007738,
+     "lon": -70.38047258,
+     "es_retrocalculo": true,
+     "como_se_obtuvo": "RETROCALCULO NUESTRO. DIFROL NO PUBLICA ESTE PUNTO: lo deja implicito en el trazado de dos lineas. Se proyecto el termino norte de cada linea hacia el Oriente SOBRE EL PARALELO —latitud constante— por su ancho: 12 mn el de Mar Territorial, 24 mn el de Zona Contigua. Los dos caen en 070 22 49,680 W y 070 22 49,722 W: coinciden en longitud dentro de 0,0419 segundos, 1,23 m. SON DOS CAPAS INDEPENDIENTES Y ESO ES LA PRUEBA — retroproyectar desde una sola linea reproduce la definicion de esa linea y no mediria nada.",
+     "precision_declarada": "1,23 m en LONGITUD, que es la magnitud que este ancla fija. La separacion total entre los dos retrocalculos es 8,78 m, y esos 8,78 m son casi todos de LATITUD: se heredan del ruido del trazado —los dos terminos norte estan a 8,7 m uno del otro—, no los introduce el metodo.",
+     "trampa_del_metodo": "UNA GEODESICA NO ES UN PARALELO. Proyectar con azimut inicial 90 grados usa una geodesica, que tiene su vertice en el punto de partida y desde ahi se aparta del paralelo hacia el ecuador: ~9 m a 12 mn y ~38 m a 24 mn. Con ese metodo los dos retrocalculos parecen discrepar 29,85 m, y el que discrepa es el instrumento. El limite del decreto es un paralelo, latitud constante. Las dos versiones quedan corridas y a la vista en la evidencia.",
+     "no_confundir": "ESTE NO ES EL 'punto_interior' / 'ancla_seleccion' DE ESTA JURISDICCION, y en este repositorio las dos cosas se llaman 'ancla'. Aquel es la SEDE DE LA CAPITANIA (-18,475 / -70,335), sirve para elegir de que lado de un contorno queda la jurisdiccion, y la receta 'banda_paralelos' NO LO USA. Este es el ORIGEN DEL LIMITE con el Peru, esta a 14,7 km del otro, y no interviene en ninguna receta. Confundirlos mueve una figura entera."
+    },
+    "datum": "ES UN ROTULO, NO UNA TRANSFORMACION PENDIENTE. El .prj del paquete declara GEOGCS GCS_SIRGAS-Chile sobre GRS_1980, SIN codigo EPSG y SIN epoca; pyogrio deduce 5360. La traza de procesamiento del .shp.xml es Merge, Dissolve, DefineProjection, y DefineProjection REESCRIBE LA ETIQUETA sin mover un solo vertice: si hubiera habido cambio de datum la traza diria Project. A la escala de este uso WGS84 y SIRGAS-Chile son indistinguibles. QUIEN REPROYECTE ESTOS DATOS CREYENDO QUE HAY UNA TRANSFORMACION PENDIENTE LOS MUEVE SIN MOTIVO.",
+    "alcance": "24 millas nauticas (44.448 m) desde la costa. Mas alla de 24 mn esta jurisdiccion NO SE CUBRE, y eso es una decision, no un olvido. Motivo del owner: el patron no se acerca a la frontera. Motivo medido que lo respalda: si el limite siguiera el paralelo hasta las 200 mn, la linea de ZEE del paquete tendria que terminar sobre el paralelo, y termina en 20 09 42,993 S / 73 43 33,703 W, a 108,3 mn AL SUR. El propio paquete que se usa para cerrar el Norte niega que el paralelo siga.",
+    "lo_que_el_paquete_no_trae": "Las LINEAS DE BASE. La traza del .shp.xml muestra que se fusionaron y se perdieron en un Dissolve. Sin ellas no se puede recalcular el limite desde cero: todo lo de arriba se mide sobre el trazado publicado. Tampoco trae nada de las jurisdicciones interiores —cero vertices en el Estrecho de Magallanes, el Beagle, el Messier y el Baker—, asi que no aporta a 'punta_delgada', 'baker', 'puerto_eden' ni 'tierra_del_fuego'.",
+    "procedencia": "_bitacoras/arica_limite_norte_2026-08-15/ — PROCEDENCIA.txt, los derivados versionados (01_terminos_medidos.csv, 02_retrocalculo.txt, 03_huella.json) y el instrumento re-ejecutable medir_difrol.py. El paquete es https://difrol.gob.cl/repositorio/Espacios_Maritimos/Espacios_Maritimos.zip, 409.817 bytes, sha256 601c6dfd357662739b5ae9d29ebebfea5dc8e81f9f13f4b1e726ff5129b25f74, Last-Modified 2024-01-05, capturado el 2026-08-15. NO se versiona por tamano (CLAUDE.md 3.5): su procedencia y su nota de captura estan en ese directorio, incluido el hecho de que difrol.gob.cl rompe el handshake TLS con schannel en Windows y hay que bajarlo con el python del venv de tools/raster-build."
    },
    "limite_sur": {
     "dms": "19 13 00 S",
@@ -2421,7 +2445,7 @@
    "sectores": [],
    "texto_decreto": "Su jurisdiccion comprende desde el limite politico internacional Chile-Peru por el Norte, hasta el paralelo 19 13 00 S. (Punta Camarones) por el Sur.",
    "correccion_aplicada": null,
-   "nota_fuente": null,
+   "nota_fuente": "El limite Norte YA ESTA DECLARADO — ver 'limite_norte_convencion'. Lo que falta NO es el dato: es el MECANISMO DE ALCANCE. La convencion del owner cubre hasta 24 mn de la costa, y la unica receta disponible para una jurisdiccion sin contorno es 'banda_paralelos', que devuelve la franja entera hasta el limite exterior de 200 mn. Construirla asi adjudicaria como chilena el agua entre 24 y 200 mn que el propio paquete de DIFROL niega: su linea de ZEE termina 108,3 mn al Sur del paralelo del ancla. Por eso 'limite_norte_dec' queda en null A PROPOSITO — escribirlo antes que el mecanismo abre una ventana en la que cualquiera que regenere produce esa capa. El mecanismo se disena aparte y GENERICO, no como caso de Arica: 'baker' y 'puerto_eden' tienen exactamente esta forma —receta '-', contorno vacio, un paralelo faltante— y son sus clientes siguientes.",
    "cierre_v1": null
   },
   {
@@ -2441,6 +2465,7 @@
     "dec": -19.216667,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "20 36 36 S",
     "dec": -20.61,
@@ -2509,6 +2534,7 @@
     "dec": -20.61,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "21 25 30 S",
     "dec": -21.425,
@@ -2577,6 +2603,7 @@
     "dec": -21.425,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "22 39 00 S",
     "dec": -22.65,
@@ -2645,6 +2672,7 @@
     "dec": -22.65,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "23 15 00 S",
     "dec": -23.25,
@@ -2713,6 +2741,7 @@
     "dec": -23.25,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "24 33 00 S",
     "dec": -24.55,
@@ -2781,6 +2810,7 @@
     "dec": -24.55,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "26 03 20 S",
     "dec": -26.055556,
@@ -2849,6 +2879,7 @@
     "dec": -26.055556,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "26 38 18 S",
     "dec": -26.638333,
@@ -2917,6 +2948,7 @@
     "dec": -26.638333,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "27 54 15 S",
     "dec": -27.904167,
@@ -2985,6 +3017,7 @@
     "dec": -27.904167,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "29 10 40 S",
     "dec": -29.177778,
@@ -3053,6 +3086,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -3093,6 +3127,7 @@
     "dec": -29.177778,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "30 06 00 S",
     "dec": -30.1,
@@ -3161,6 +3196,7 @@
     "dec": -30.1,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "30 55 30 S",
     "dec": -30.925,
@@ -3229,6 +3265,7 @@
     "dec": -30.925,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "32 10 30 S",
     "dec": -32.175,
@@ -3297,6 +3334,7 @@
     "dec": -32.175,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "32 38 50 S",
     "dec": -32.647222,
@@ -3340,6 +3378,7 @@
     "dec": -32.647222,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "32 54 58 S",
     "dec": -32.916111,
@@ -3408,6 +3447,7 @@
     "dec": -32.916111,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "33 16 25 S",
     "dec": -33.273611,
@@ -3471,6 +3511,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -3511,6 +3552,7 @@
     "dec": -33.273611,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "33 31 30 S",
     "dec": -33.525,
@@ -3579,6 +3621,7 @@
     "dec": -33.525,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "33 54 30 S",
     "dec": -33.908333,
@@ -3647,6 +3690,7 @@
     "dec": -33.908333,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "34 41 00 S",
     "dec": -34.683333,
@@ -3715,6 +3759,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -3776,6 +3821,7 @@
     "dec": -34.683333,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "36 00 00 S",
     "dec": -36.0,
@@ -3839,6 +3885,7 @@
     "dec": -36.0,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "36 44 10 S",
     "dec": -36.736111,
@@ -3941,6 +3988,7 @@
     "dec": -36.516667,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "36 42 25 S",
     "dec": -36.706944,
@@ -4053,6 +4101,7 @@
     "dec": -36.706944,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "36 49 00 S",
     "dec": -36.816667,
@@ -4121,6 +4170,7 @@
     "dec": -36.816667,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "37 04 00 S",
     "dec": -37.066667,
@@ -4189,6 +4239,7 @@
     "dec": -37.066667,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "37 26 00 S",
     "dec": -37.433333,
@@ -4257,6 +4308,7 @@
     "dec": -37.433333,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "38 30 00 S",
     "dec": -38.5,
@@ -4320,6 +4372,7 @@
     "dec": -38.5,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "39 23 12 S",
     "dec": -39.386667,
@@ -4388,6 +4441,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -4605,6 +4659,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -4798,6 +4853,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -4944,6 +5000,7 @@
     "dec": -39.386667,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "39 53 25 S",
     "dec": -39.890278,
@@ -5135,6 +5192,7 @@
     "dec": -39.8275,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "40 14 30 S",
     "dec": -40.241667,
@@ -5328,6 +5386,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -5465,6 +5524,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -5705,6 +5765,7 @@
     "dec": -40.241667,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "41 44 40 S",
     "dec": -41.744444,
@@ -5822,6 +5883,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -6063,6 +6125,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -6269,6 +6332,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -6384,6 +6448,7 @@
     "dec": -41.744444,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "42 00 00 S",
     "dec": -42.0,
@@ -6564,6 +6629,7 @@
     "dec": -42.0,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "42 20 00 S",
     "dec": -42.333333,
@@ -6691,6 +6757,7 @@
     "dec": -42.5,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "43 44 25 S",
     "dec": -43.740278,
@@ -6924,6 +6991,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -7346,6 +7414,7 @@
     "dec": -42.333333,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "42 35 00 S",
     "dec": -42.583333,
@@ -7750,6 +7819,7 @@
     "dec": -42.583333,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "42 50 00 S",
     "dec": -42.833333,
@@ -8154,6 +8224,7 @@
     "dec": -42.833333,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "43 44 25 S",
     "dec": -43.740278,
@@ -8399,6 +8470,7 @@
     "dec": -43.740278,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "44 46 54 S",
     "dec": -44.781667,
@@ -8579,6 +8651,7 @@
     "dec": -43.740278,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "44 57 15 S",
     "dec": -44.954167,
@@ -8792,6 +8865,7 @@
     "dec": -44.781667,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "45 27 48 S",
     "dec": -45.463333,
@@ -9003,6 +9077,7 @@
     "dec": -44.954167,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "47 00 00 S",
     "dec": -47.0,
@@ -9177,6 +9252,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -9276,6 +9352,7 @@
     "dec": -47.0,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "limite Sur de la Region de Aysen del General Carlos Ibanez del Campo",
     "dec": null,
@@ -9318,6 +9395,7 @@
     "dec": null,
     "tipo": "descriptivo"
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "50 33 00 S",
     "dec": -50.55,
@@ -9360,6 +9438,7 @@
     "dec": -50.55,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "52 30 30 S",
     "dec": -52.508333,
@@ -9428,6 +9507,7 @@
     "dec": -52.508333,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": "54 33 00 S",
     "dec": -54.55,
@@ -9495,6 +9575,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -9531,6 +9612,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -9567,6 +9649,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -9653,6 +9736,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -9859,6 +9943,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -10065,6 +10150,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
@@ -10207,6 +10293,7 @@
     "dec": null,
     "tipo": null
    },
+   "limite_norte_convencion": null,
    "limite_sur": {
     "dms": null,
     "dec": null,
