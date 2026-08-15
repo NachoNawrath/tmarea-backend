@@ -1,0 +1,132 @@
+FASE 4 — MIGRACION DEL INSUMO v1 -> v2
+  entrada : data\decreto\jurisdicciones_capitanias.json  sha256[:16] e630d8354a14e675
+  lacustre: data\decreto\cotejo_lacustre_adjudicado.json  sha256[:16] c3c5d5b1e189f802
+  bahias  : 162 puntos SITPORT desde scripts\seed-bahias-sitport.js
+
+jurisdicciones : 64
+fronteras      : 61  (41 por paralelo, 20 poligonales)
+salida         : data\decreto\jurisdicciones_v2.json  sha256[:16] 316d960adfe9357b
+
+ESTADO DE GEOMETRIA, AHORA DECLARADO EN EL DATO
+  cerrable     54
+  no_cerrable  10
+      Arica                  el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno que lo supla. No se toma del vecino.
+      Hanga Roa              el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; requiere fuente externa
+      Juan Fernandez         el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; requiere fuente externa
+      Lirquen                La prosa describe el contorno de la Bahia de Concepcion sin dar sus vertices. La poligonal registrada son los dos extremos explicitos.
+      Talcahuano             El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al Sur de 36 42 25 S (limite sur declarado). El contorno de la bahia no viene con vertices. No se infiere.
+      Baker                  el decreto no entrega con que cerrar: falta el limite sur, y no hay contorno que lo supla. No se toma del vecino.
+      Puerto Eden            el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno que lo supla. No se toma del vecino.
+      Punta Delgada          El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si una ruta cae en esta zona, avisar que el limite no esta cargado.
+      Tierra del Fuego       El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si una ruta cae en esta zona, avisar que el limite no esta cargado.
+      Puerto Williams        No cerrable con el decreto: el limite norte pasa por el 'hito N 26' del Canal Beagle, que el texto nombra sin coordenadas, y por 'la delimitacion existente del Canal Beagle'. Falta dato de fuente, no de transcripcion.
+
+RESPALDO TEXTUAL DE LOS PUNTOS DEL CONTORNO
+  propio       113
+  correccion   2
+  ajeno        2
+  ninguno      0
+
+  Puntos DESCARTADOS: el decreto no los nombra en el parrafo de esta
+  jurisdiccion ni en el de una vecina con la que comparta frontera.
+    ninguno
+
+PUNTOS QUE EL DECRETO NOMBRA Y EL RECORRIDO TRANSCRITO NO INCLUYE
+  El recorrido es 'poligonal_completa'. Estos estaban solo en la lista
+  suelta de v1. Meterlos en el trazo exige decidir por donde pasa, y eso
+  es del owner: quedan aparte, no se pierden y no se inventan.
+    Lirquen                36 44 10 S / None  'Ribera Weste desembocadura rio Andalien'  respaldo=propio
+    Talcahuano             36 44 10 S / None  'Ribera Weste desembocadura rio Andalien'  respaldo=propio
+    Talcahuano             36 42 25 S / 073 09 32 W  'Punta de Lobos (Talcahuano)'  respaldo=propio
+    Valdivia               39 49 39 S / None  'Punta Juan Latorre'  respaldo=propio
+    Corral                 39 49 39 S / None  'Punta Juan Latorre'  respaldo=propio
+    Quemchi                42 00 00 S / 073 00 00 W  'Vertice 42S/73W'  respaldo=propio
+    Chaiten                43 00 30 S / 073 19 30 W  'Punta Centinela'  respaldo=ajeno
+
+PUNTO REPRESENTATIVO SOBRE AGUA
+  resueltos 53 de 54 cerrables
+  ok   Iquique                (-20.2133, -70.1503)  bahia SITPORT 72 — Bahía de Iquique
+  ok   Patache                (-20.8000, -70.2200)  bahia SITPORT 73 — Patache
+  ok   Tocopilla              (-22.1000, -70.2167)  bahia SITPORT 74 — Bahía Algodonales
+  ok   Mejillones             (-23.1000, -70.4500)  bahia SITPORT 75 — Bahía Mejillones del Sur
+  ok   Antofagasta            (-23.6500, -70.4000)  bahia SITPORT 77 — Bahía Moreno (Antofagasta)
+  ok   Taltal                 (-25.4089, -70.4911)  bahia SITPORT 79 — Tal Tal
+  ok   Chanaral               (-26.3500, -70.6333)  bahia SITPORT 80 — Bahía Chañaral
+  ok   Caldera                (-27.0637, -70.8237)  bahia SITPORT 81 — Bahía Caldera
+  ok   Huasco                 (-28.4609, -71.2241)  bahia SITPORT 84 — Bahía Puerto Huasco
+  ok   Coquimbo               (-29.9668, -71.3499)  bahia SITPORT 86 — Bahía Herradura de Guayacán
+  ok   Tongoy                 (-30.2558, -71.4969)  bahia SITPORT 87 — Tongoy
+  ok   Los Vilos              (-32.1362, -71.5298)  bahia SITPORT 180 — Bahía Pichidangui
+  --   Papudo                 ninguna bahia SITPORT tiene a esta Capitania como su sede mas cercana: no hay punto sobre agua con que probar su geometria
+  ok   Quintero               (-32.7833, -71.5333)  bahia SITPORT 91 — Bahía de Quintero
+  ok   Valparaiso             (-33.0333, -71.6333)  bahia SITPORT 92 — Bahía de Valparaíso
+  ok   Algarrobo              (-33.3634, -71.6726)  bahia SITPORT 94 — Bahía Algarrobo
+  ok   San Antonio            (-33.5833, -71.6167)  bahia SITPORT 93 — Puerto de San Antonio
+  ok   Pichilemu              (-34.3829, -72.0144)  bahia SITPORT 95 — Pichilemu
+  ok   Lago Rapel             (-34.1804, -71.4774)  los cuerpos de agua adjudicados en Fase 2
+  ok   Constitucion           (-35.3325, -72.4060)  bahia SITPORT 103 — Bahía Constitución
+  ok   San Vicente            (-36.7833, -73.1833)  bahia SITPORT 198 — Sector Costero Península de Hualpén
+  ok   Coronel                (-37.0092, -73.1833)  bahia SITPORT 100 — Bahía Coronel
+  ok   Lota                   (-37.0735, -73.1522)  bahia SITPORT 102 — Lota
+  ok   Lebu                   (-37.6015, -73.6548)  bahia SITPORT 101 — Lebu
+  ok   Carahue                (-38.7500, -73.4333)  bahia SITPORT 143 — Carahue - Borde Costero
+  ok   Lago Villarrica        (-39.2542, -72.0853)  los cuerpos de agua adjudicados en Fase 2
+  ok   Lago Panguipulli       (-39.5322, -72.2271)  los cuerpos de agua adjudicados en Fase 2
+  ok   Lago Ranco             (-40.6739, -72.5151)  los cuerpos de agua adjudicados en Fase 2
+  ok   Valdivia               (-39.8136, -73.2487)  bahia SITPORT 104 — Valdivia Fluvial
+  ok   Corral                 (-39.8874, -73.4274)  bahia SITPORT 107 — Bahía Corral
+  ok   Puerto Varas           (-41.1419, -72.8058)  los cuerpos de agua adjudicados en Fase 2
+  ok   Puerto Montt           (-41.4833, -72.9500)  bahia SITPORT 216 — Canal Tenglo
+  ok   Maullin                (-41.6156, -73.5966)  bahia SITPORT 112 — Bahía Maullín
+  ok   Calbuco                (-41.7763, -73.1304)  bahia SITPORT 113 — Bahía de Calbuco
+  ok   Rio Negro Hornopiren   (-42.0000, -72.5000)  bahia SITPORT 184 — Ensenada Hualaihué
+  ok   Cochamo                (-41.4950, -72.3106)  bahia SITPORT 152 — Cochamó
+  ok   Ancud                  (-41.8665, -73.8313)  bahia SITPORT 118 — Bahía Ancud y Canal Chacao
+  ok   Quemchi                (-42.1448, -73.4725)  bahia SITPORT 120 — Puerto Quemchi
+  ok   Chaiten                (-42.9112, -72.7187)  bahia SITPORT 121 — Chaitén
+  ok   Achao                  (-42.4677, -73.4901)  bahia SITPORT 122 — Achao
+  ok   Castro                 (-42.4808, -73.7591)  bahia SITPORT 116 — Castro
+  ok   Chonchi                (-42.6187, -73.7688)  bahia SITPORT 119 — Chonchi
+  ok   Quellon                (-43.1208, -73.6232)  bahia SITPORT 117 — Bahía Quellón
+  ok   Melinka                (-43.8987, -73.7462)  bahia SITPORT 124 — Melinka
+  ok   Puerto Cisnes          (-44.7352, -72.6826)  bahia SITPORT 123 — Puerto Cisnes
+  ok   Puerto Aguirre         (-45.1667, -73.5333)  bahia SITPORT 125 — Sector Bahía de Puerto Aguirre
+  ok   Puerto Chacabuco       (-45.4667, -72.8000)  bahia SITPORT 126 — Bahía Chacabuco
+  ok   Lago General Carrera   (-48.6897, -73.0777)  los cuerpos de agua adjudicados en Fase 2
+  ok   Puerto Natales         (-51.7319, -72.5136)  bahia SITPORT 130 — Puerto Natales
+  ok   Punta Arenas           (-53.1358, -70.8625)  bahia SITPORT 134 — Punta Arenas
+  ok   Bahia Fildes           (-59.8750, -56.2086)  el anillo que describe el decreto
+  ok   Puerto Soberania       (-61.2917, -63.5089)  el anillo que describe el decreto
+  ok   Rada Covadonga         (-66.4167, -54.5667)  el anillo que describe el decreto
+  ok   Bahia Paraiso          (-67.1250, -69.0695)  el anillo que describe el decreto
+
+TIPO DE TRAMO, TRANSCRITO DEL PARRAFO DE CADA JURISDICCION
+  total de tramos marcados: 100
+    litoral         4
+    frontera        91
+    abierto         5
+    indeterminado   0
+
+  LITORAL  Puerto Montt           Punta Capacho -> Caleta El Milagro
+           "), el litoral del Seno Reloncavi y el litoral continental hasta Caleta El Milagro ("
+  LITORAL  Puerto Montt           Punta Morro Chico -> Punta Trentelgue
+           "), continuando hacia el Sur por el litoral hasta Punta Trentelgue ("
+  LITORAL  Calbuco                Punta Capacho -> Vertice Maullin-Calbuco-Ancud
+           "), hasta el punto ubicado en"
+  LITORAL  Rio Negro Hornopiren   Punta Trentelgue -> Interseccion estero Renihue
+           ") siguiendo hacia el Sur por el litoral Weste de Chiloe Continental hasta la interseccion del pa"
+  origen de la marca:
+    cierto          78
+    adjudicado      22
+    sin_adjudicar   0
+  adjudicacion que REVIERTE la propuesta automatica:
+    Puerto Montt           litoral -> frontera  (Punta Trentelgue -> Vertice NE Calbuco/Puerto Montt)
+    Cochamo                litoral -> frontera  (? -> ?)
+    Chaiten                litoral -> frontera  (Interseccion 42 30 00 S / 072 38 00 W, costa Este estero Renihue -> ?)
+    Chaiten                litoral -> frontera  (? -> ?)
+
+INCIDENCIAS DETECTADAS AL DERIVAR FRONTERAS
+  el paralelo -43.740278 lo comparten 2 por el Sur (['Chaiten', 'Quellon']) y 2 por el Norte (['Melinka', 'Puerto Cisnes']): son Capitanias laterales, no apiladas, y el paralelo solo no las separa
+
+La migracion no adjudica nada de lo que quedo abierto en la Etapa A.
+Reorganiza el dato; lo que exige decidir que dice el decreto sigue abierto.

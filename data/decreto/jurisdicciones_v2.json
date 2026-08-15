@@ -4,8 +4,8 @@
  "generado": "2026-08-09",
  "generado_por": "scripts/fase4_migrar_insumo_v2.py",
  "derivado_de": {
-  "jurisdicciones_capitanias.json": "f26ff6676114b0a1ed6f2748ec9464eefe1eb3916d4c0b9dc12b0212f1a237b1",
-  "cotejo_lacustre_adjudicado.json": "86f966583922c0f3c67f8d2558145e655204e8052034b42ae345f6c9b3a3cff8",
+  "jurisdicciones_capitanias.json": "e630d8354a14e6752ea0d6601e31753ab887871c6a31ebb1d223f13f4e2fce82",
+  "cotejo_lacustre_adjudicado.json": "c3c5d5b1e189f802053b9bad069bbe753f81b761ea35eeab015a75e6ad2ee014",
   "seed-bahias-sitport.js": "b57af4af0e9f6fefeb07e05e36518d2bb97e82bc44049f60860c70dcfa8848e8"
  },
  "cotejado_contra": {
@@ -3737,6 +3737,7 @@
      "nombre_decreto": "Lago Rapel",
      "fragmento_decreto": "el lago Rapel",
      "resolucion": "aceptado",
+     "anclaje": "nombre",
      "shapefile_fid": [
       568
      ],
@@ -4409,6 +4410,7 @@
      "nombre_decreto": "Lago Colico",
      "fragmento_decreto": "Lagos Colico",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       974
      ],
@@ -4427,6 +4429,7 @@
      "nombre_decreto": "Lago Caburgua",
      "fragmento_decreto": "Lagos ... Caburgua",
      "resolucion": "aceptado",
+     "anclaje": "nombre",
      "shapefile_fid": [
       975
      ],
@@ -4445,6 +4448,7 @@
      "nombre_decreto": "Lago Huilipilun",
      "fragmento_decreto": "Lagos ... Huilipilun",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       976
      ],
@@ -4463,6 +4467,7 @@
      "nombre_decreto": "Lago Villarrica",
      "fragmento_decreto": "Lagos ... y Villarrica",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       977
      ],
@@ -4481,6 +4486,7 @@
      "nombre_decreto": "Laguna Conguillio",
      "fragmento_decreto": "lagunas Conguillio",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       964
      ],
@@ -4498,15 +4504,36 @@
     {
      "nombre_decreto": "Laguna Galletue",
      "fragmento_decreto": "lagunas ... Galletue",
-     "resolucion": "ausente",
-     "shapefile_fid": [],
-     "shapefile_detalle": [],
-     "motivo": "Sin ninguna coincidencia ni candidato en el shapefile. Queda sin geometria, declarado (INV-3.6)."
+     "resolucion": "aceptado",
+     "anclaje": "fid",
+     "shapefile_fid": [
+      965
+     ],
+     "shapefile_detalle": [
+      {
+       "fid": 965,
+       "num": 966,
+       "nombre": "LAGO GUALLETUE",
+       "region": "IX",
+       "area_km2": 13.075
+      }
+     ],
+     "motivo": "D12, adjudicada por el owner el 2026-08-12. El decreto la escribe 'Galletue' y el catastro 'Gualletue'; esa grafia sale del parrafo de la Gobernacion Maritima de Valdivia, o sea del propio decreto y no de una fuente externa. Coincidencia unica en los 2.067 registros del catastro. Coherencia geografica con margen de 2x: 8,6 km de Icalma y 24,7 de Conguillio, los otros dos cuerpos de la misma frase del decreto, contra 51,9 km del siguiente candidato. SE ANCLA POR FID, no por nombre ni por geometria — ver GEMELOS_DECLARADOS.",
+     "gemelos_geometricos_declarados": {
+      "965": {
+       "gemelos_no_adjudicados": [
+        960
+       ],
+       "filas_para_el_mismo_poligono": 2,
+       "motivo": "El fid 960 no tiene nombre y su geometria es identica a la del 965: son dos filas del catastro para el mismo cuerpo. Se adjudica el 965, que es el que lleva el nombre. Un cotejo que seleccione por geometria traeria los dos y duplicaria la laguna sin que ningun control de area lo note."
+      }
+     }
     },
     {
      "nombre_decreto": "Laguna Icalma",
      "fragmento_decreto": "lagunas ... e Icalma",
      "resolucion": "aceptado",
+     "anclaje": "nombre",
      "shapefile_fid": [
       966,
       967
@@ -4527,12 +4554,29 @@
        "area_km2": 1.932
       }
      ],
-     "motivo": "Un cuerpo con dos partes en el catastro (9.901 y 1.932 km2). La jurisdiccion cubre las dos: se unen."
+     "motivo": "Un cuerpo con dos partes en el catastro (9.901 y 1.932 km2). La jurisdiccion cubre las dos: se unen.",
+     "gemelos_geometricos_declarados": {
+      "966": {
+       "gemelos_no_adjudicados": [
+        962
+       ],
+       "filas_para_el_mismo_poligono": 2,
+       "motivo": "Mismo patron que 960/965: el fid 962 no tiene nombre y su geometria es identica a la del 966 (parte mayor de Icalma, 9,901 km2). Se adjudica el 966. Hallado por el control de gemelos el 2026-08-12; la adjudicacion vigente ya tomaba el correcto, pero porque empareja por nombre y el gemelo no lo tiene."
+      },
+      "967": {
+       "gemelos_no_adjudicados": [
+        963
+       ],
+       "filas_para_el_mismo_poligono": 2,
+       "motivo": "Mismo patron: el fid 963 no tiene nombre y su geometria es identica a la del 967 (parte menor de Icalma, 1,932 km2). Se adjudica el 967."
+      }
+     }
     },
     {
      "nombre_decreto": "Rio Tolten",
      "fragmento_decreto": "y el Rio Tolten",
      "resolucion": "ausente",
+     "anclaje": "nombre",
      "shapefile_fid": [],
      "shapefile_detalle": [],
      "motivo": "Cuerpo fluvial. El shapefile no contiene rios. Sin geometria, declarado (INV-3.6)."
@@ -4583,6 +4627,7 @@
      "nombre_decreto": "Lago Calafquen",
      "fragmento_decreto": "Lagos Calafquen",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       982
      ],
@@ -4601,6 +4646,7 @@
      "nombre_decreto": "Lago Panguipulli",
      "fragmento_decreto": "Lagos ... Panguipulli",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       999
      ],
@@ -4619,6 +4665,7 @@
      "nombre_decreto": "Lago Pellaifa",
      "fragmento_decreto": "Lagos ... Pellaifa",
      "resolucion": "aceptado",
+     "anclaje": "nombre",
      "shapefile_fid": [
       993
      ],
@@ -4637,6 +4684,7 @@
      "nombre_decreto": "Lago Pullinque",
      "fragmento_decreto": "Lagos ... Pullinque",
      "resolucion": "aceptado",
+     "anclaje": "nombre",
      "shapefile_fid": [
       991
      ],
@@ -4655,6 +4703,7 @@
      "nombre_decreto": "Lago Rinihue",
      "fragmento_decreto": "Lagos ... Rinihue",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1029
      ],
@@ -4673,6 +4722,7 @@
      "nombre_decreto": "Lago Neltume",
      "fragmento_decreto": "Lagos ... Neltume",
      "resolucion": "aceptado",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1028
      ],
@@ -4691,6 +4741,7 @@
      "nombre_decreto": "Lago Pirihueico",
      "fragmento_decreto": "Lagos ... Pirihueico",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1042
      ],
@@ -4709,6 +4760,7 @@
      "nombre_decreto": "Rio Fuy",
      "fragmento_decreto": "los rios Fuy",
      "resolucion": "ausente",
+     "anclaje": "nombre",
      "shapefile_fid": [],
      "shapefile_detalle": [],
      "motivo": "Cuerpo fluvial. El shapefile no contiene rios. Sin geometria, declarado (INV-3.6)."
@@ -4717,6 +4769,7 @@
      "nombre_decreto": "Rio San Pedro",
      "fragmento_decreto": "los rios ... y San Pedro",
      "resolucion": "rechazado",
+     "anclaje": "nombre",
      "shapefile_fid": [],
      "shapefile_detalle": [],
      "motivo": "El candidato LAGUNA GRANDE DE SAN PEDRO esta en la Region VIII (San Pedro de la Paz): es otro cuerpo que comparte palabra. Se rechaza. Sin geometria (INV-3.6)."
@@ -4767,6 +4820,7 @@
      "nombre_decreto": "Lago Ranco",
      "fragmento_decreto": "Lagos Ranco",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1055
      ],
@@ -4785,6 +4839,7 @@
      "nombre_decreto": "Lago Maihue",
      "fragmento_decreto": "Lagos ... Maihue",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1067
      ],
@@ -4803,6 +4858,7 @@
      "nombre_decreto": "Lago Puyehue",
      "fragmento_decreto": "Lagos ... Puyehue (hasta el limite con la Region de Los Lagos)",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1110
      ],
@@ -4821,6 +4877,7 @@
      "nombre_decreto": "Lago Huishue",
      "fragmento_decreto": "Lagos ... Huishue",
      "resolucion": "aceptado",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1091
      ],
@@ -4839,6 +4896,7 @@
      "nombre_decreto": "Lago Gris",
      "fragmento_decreto": "Lagos ... y Gris",
      "resolucion": "aceptado",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1102
      ],
@@ -4857,6 +4915,7 @@
      "nombre_decreto": "Rio Bueno",
      "fragmento_decreto": "Incluye el rio Bueno en los sectores Los Patos, La Goleta y El Manzanito",
      "resolucion": "rechazado",
+     "anclaje": "nombre",
      "shapefile_fid": [],
      "shapefile_detalle": [],
      "motivo": "El candidato LAGUNA ACHIBUENO esta en la Region VII: es otro cuerpo que comparte palabra. Se rechaza. Sin geometria (INV-3.6)."
@@ -5291,6 +5350,7 @@
      "nombre_decreto": "Lago Llanquihue",
      "fragmento_decreto": "Lagos Llanquihue",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1146
      ],
@@ -5309,6 +5369,7 @@
      "nombre_decreto": "Lago Rupanco",
      "fragmento_decreto": "Lagos ... Rupanco",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1127
      ],
@@ -5327,6 +5388,7 @@
      "nombre_decreto": "Lago Todos los Santos",
      "fragmento_decreto": "Lagos ... Todos los Santos",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1147
      ],
@@ -5345,6 +5407,7 @@
      "nombre_decreto": "Lago Puyehue",
      "fragmento_decreto": "Lagos ... Puyehue (hasta el limite con la Region de Los Rios)",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1110
      ],
@@ -5363,6 +5426,7 @@
      "nombre_decreto": "Lago Constancia",
      "fragmento_decreto": "Lagos ... y Constancia",
      "resolucion": "aceptado",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1107
      ],
@@ -9135,6 +9199,7 @@
      "nombre_decreto": "Lago General Carrera",
      "fragmento_decreto": "Lagos General Carrera",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1738
      ],
@@ -9153,6 +9218,7 @@
      "nombre_decreto": "Lago Cochrane",
      "fragmento_decreto": "Lagos ... Cochrane",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1863
      ],
@@ -9171,6 +9237,7 @@
      "nombre_decreto": "Lago O'Higgins",
      "fragmento_decreto": "Lagos ... y O'Higgins",
      "resolucion": "exacta",
+     "anclaje": "nombre",
      "shapefile_fid": [
       1917
      ],
@@ -9382,7 +9449,7 @@
     "lon": -70.862382,
     "fuente": "bahia SITPORT 134 — Punta Arenas",
     "distancia_km_a_la_sede": 4.2,
-    "bahias_que_eligen_esta_sede": 15,
+    "bahias_que_eligen_esta_sede": 10,
     "origen": "CONVENCION nuestra, no decreto: de las bahias SITPORT cuya sede de Capitania mas cercana es esta, la mas proxima (4.2 km). Punto sobre agua, que es lo que la geometria final tiene que poder contener. La eleccion NO usa la franja del decreto ni el poligono: si lo hiciera, el testigo se confirmaria solo y el control no podria fallar nunca.",
     "correccion": {
      "umbral_m": 500.0,
@@ -9491,7 +9558,7 @@
    "participa_matching": false,
    "receta": "corte_y_ancla",
    "estado_geometria": "no_cerrable",
-   "causa_sin_geometria": "el contorno parte el espacio en dos y no hay ancla que diga cual de los dos trozos es la jurisdiccion",
+   "causa_sin_geometria": "No cerrable con el decreto: el limite norte pasa por el 'hito N 26' del Canal Beagle, que el texto nombra sin coordenadas, y por 'la delimitacion existente del Canal Beagle'. Falta dato de fuente, no de transcripcion.",
    "contorno_cerrado": false,
    "lado_abierto": null,
    "sigue_litoral": false,
@@ -9555,7 +9622,11 @@
    ],
    "puntos_no_incorporados": null,
    "fronteras": [],
-   "ancla_seleccion": null,
+   "ancla_seleccion": {
+    "lat": -54.93,
+    "lon": -67.6,
+    "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con el trozo que contiene este punto."
+   },
    "punto_representativo": null,
    "causa_sin_punto_representativo": null,
    "cuerpos_lacustres": null,

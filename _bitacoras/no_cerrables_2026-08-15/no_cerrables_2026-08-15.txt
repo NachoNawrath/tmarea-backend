@@ -1,0 +1,373 @@
+================================================================================
+LAS `no_cerrable` CONTRA LAS FUENTES YA CARGADAS — 2026-08-15
+Investigacion de solo lectura. No se toco data/, src/ ni la PWA.
+Hipotesis a probar: que alguna este mas cerca de cerrarse de lo que su etiqueta
+dice, porque el dato ya esta en el repositorio en una fuente que nadie cruzo.
+Escrito segun el estandar de cinco puntos de CLAUDE.md §8.
+================================================================================
+
+SHELL DECLARADA (§7.3) — en PowerShell, desde la raiz:
+
+    cd C:\Users\katia\tmarea-backend
+    .\tools\raster-build\.venv\Scripts\python.exe _bitacoras\no_cerrables_2026-08-15\<script>.py
+
+El interprete NO es `py` (no tiene geopandas): es el venv de `tools/raster-build`
+(3.14.6, geopandas 1.1.4, pyogrio 0.13.0). Salidas crudas: 01_ a 05_.
+
+ESTANDAR DE FUENTE APLICADO, del owner (2026-08-15): institucional publicada y
+citable — SHOA, IGM, IDE Chile, BCN, IGN argentino, texto de tratado. Nada de
+mapa web, Wikipedia ni blog. Si un dato solo aparece en fuente no institucional,
+se reporta NO ENCONTRADO y se dice donde deberia estar.
+
+
+================================================================================
+0. LA LISTA. SON DIEZ, NO OCHO, Y LOS DOS "OCHO" SON CONJUNTOS DISTINTOS
+================================================================================
+Medido sobre `jurisdicciones_v2.json`: **10 jurisdicciones con
+`estado_geometria: no_cerrable`** — 8 de ambito `maritima` y 2 de
+`insular_remota`.
+
+Las dos listas de ocho que circulan son dos INTERSECCIONES distintas, y por eso
+no coinciden:
+
+  CONJUNTO A — las `no_cerrable` que ademas estan entre las 23 SIN PAR.
+    Es el universo de la Fase 8 y del barrido del 2026-08-14, cuyo criterio de
+    entrada era "sin par de limites", no el ambito.
+    arica · hanga_roa · juan_fernandez · baker · puerto_eden · punta_delgada ·
+    tierra_del_fuego · puerto_williams
+
+  CONJUNTO B — las `no_cerrable` de ambito MARITIMA.
+    Es el universo del control C4 y de E4: son las 8 que hacen que marítima
+    cuente 52 esperadas contra 44 construibles.
+    arica · lirquen · talcahuano · baker · puerto_eden · punta_delgada ·
+    tierra_del_fuego · puerto_williams
+
+  POR QUE DIFIEREN, medido:
+    · hanga_roa y juan_fernandez son `insular_remota`, no maritima -> fuera de B.
+    · lirquen y talcahuano TIENEN los dos limites en decimal (par completo)
+      -> nunca estuvieron entre las 23 sin par, o sea fuera de A.
+    · Las otras 6 estan en las dos.
+
+  **LAS QUE BLOQUEAN LA PUBLICACION DEL AMBITO MARITIMO SON LAS DEL CONJUNTO B.**
+  En la lectura del 2026-08-15 se nombro "las 8 no_cerrable" citando a Lirquen y
+  Talcahuano contra la lista de la Fase 8, que es la A. La correccion es esta
+  seccion: las dos listas existen, miden cosas distintas y las dos son correctas
+  en su universo.
+
+
+================================================================================
+1. QUE QUEDO VERIFICADO, Y CON QUE EVIDENCIA
+================================================================================
+
+1.1 — EL HALLAZGO QUE MAS CAMBIA EL CUADRO: LA CONVENCION DE ANCLA YA EXISTE
+--------------------------------------------------------------------------------
+**51 de las 64 Capitanias del insumo v1 traen `punto_interior`**, declarado con
+este texto:
+
+    "CONVENCION, no decreto. Sede de la Capitania. La construccion se queda con
+     el trozo que contiene este punto."
+
+Las tres marítimas que NO lo traen son exactamente las tres cuya causa habla de
+un ancla faltante: **punta_delgada, tierra_del_fuego y puerto_williams**.
+
+De ahi se sigue algo que la etiqueta `no_cerrable` no deja ver: para esas tres,
+**lo que falta no es un dato del mundo, es aplicar una convencion que el propio
+insumo ya usa 51 veces**, incluidas hanga_roa y juan_fernandez. No hace falta
+fuente externa ninguna.
+
+Lo que NO esta medido y no se afirma: si el ancla ALCANZA para que la figura
+cierre. Eso exige correr el build, y esta investigacion es de solo lectura.
+
+1.2 — LAS DOS INSULARES: EL DATO ESTA, Y LA CLASIFICACION CONFUNDE DOS ESTADOS
+--------------------------------------------------------------------------------
+Su causa dice: "el decreto nombra las islas sin coordenadas y el insumo no trae
+capa de islas; requiere fuente externa".
+
+La primera mitad es cierta y la segunda **ya no**: la capa de islas esta cargada
+y versionada su procedencia — `geodata/costa/land-polygons-split-4326.zip` (OSM
+land polygons, cobertura global, 925 MB, con `PROCEDENCIA.txt`).
+
+  CONSULTADA POR CAJA, resultado (salida 02_ y 03_):
+    Isla de Pascua        117 poligonos   ~163,6 km2 reales   PRESENTE
+    Isla Sala y Gomez       7 poligonos   en -105,3664/-26,4751  PRESENTE
+    Isla San Felix         53 poligonos                       PRESENTE
+    Isla San Ambrosio      21 poligonos                       PRESENTE
+    Robinson Crusoe        17 poligonos   ~47,9 km2 reales    PRESENTE
+    Alejandro Selkirk      36 poligonos   ~49,5 km2 reales    PRESENTE
+
+  CORRECCION DE UNA MEDICION MIA, y por eso queda escrita: la primera consulta
+  de Sala y Gomez dio CERO y estuve a un paso de reportar ausencia. La caja
+  estaba mal puesta —busque en -105,50..-105,40 y la isla esta en -105,366—. Se
+  re-consulto con tres cajas de tamano creciente antes de afirmar nada. Es
+  literalmente el caso que CLAUDE.md §2 describe: "no la encontre con mi parser"
+  no es "no esta".
+
+  LO QUE SI FALTA, Y ES DE CONSTRUCCION, NO DE DATO — dos cosas, las dos ya
+  anticipadas por escrito en el repositorio:
+
+  (a) LA CAJA DE TRABAJO. `geodata/costa/capas_costa.json` -> `recorte` declara
+      x_w=-85, y_s=-60, x_e=-65, y_n=-17, y su propia `advertencia_ambito` dice:
+      "Los ambitos 'antartica' e 'insular_remota' caen fuera de esta caja ... Si
+      algun dia se les construye geometria de agua, esta caja tiene que crecer o
+      hay que declarar una capa de tierra propia para ellos."
+      Medido contra las seis islas:
+        Isla de Pascua    lon -109,37  FUERA de la caja
+        Sala y Gomez      lon -105,37  FUERA de la caja
+        San Felix         lon  -80,10  DENTRO
+        San Ambrosio      lon  -79,88  DENTRO
+        Robinson Crusoe   lon  -78,83  DENTRO
+        Alejandro Selkirk lon  -80,78  DENTRO
+      **Las cuatro islas de juan_fernandez estan DENTRO de la caja de hoy. Las
+      dos de hanga_roa estan fuera.**
+
+  (b) EL LIMITE EXTERIOR. `fase5_construir_capa_ds991.py:114` define
+      `LIMITE_ZEE_M = 370400` (200 millas nauticas) y lo aplica en la linea 862
+      con `WHERE j.ambito = 'maritima'`. **El buffer esta acotado al ambito
+      maritimo**, asi que hoy no alcanzaria a `insular_remota` aunque la
+      geometria de isla estuviera cargada. Extenderlo es decidir que es la
+      jurisdiccion de una isla remota, y eso es del owner.
+
+  VEREDICTO: **`no_cerrable` es una clasificacion equivocada de NATURALEZA para
+  estas dos.** El decreto las define COMPLETAMENTE por enumeracion; no les falta
+  ningun borde. Lo que falta es capa de islas —que esta— y dos decisiones de
+  construccion. Contarlas junto a `arica` hace parecer que al decreto le falta
+  algo, y no le falta. Es exactamente lo que la Fase 8 ya habia dicho de la
+  familia E, y ahora esta medido contra la capa.
+
+1.3 — TIERRA DEL FUEGO: EL ANCLA APARECIO EN LA UNICA RESOLUCION VERSIONADA
+--------------------------------------------------------------------------------
+Su causa declara DOS faltantes. El primero —el limite oriental internacional—
+sigue faltando (ver 1.5). El segundo es el ancla, y **se puede cerrar con una
+fuente institucional que ya esta en el repositorio**:
+
+  `data/decreto/fuente_resoluciones_locales/CP-TIERRA-DEL-FUEGO_12000-176_2020-09-30.txt`
+  DIRECTEMAR, Capitania de Puerto de Tierra del Fuego, 30-SEP-2020, con PDF,
+  texto y PROCEDENCIA.md en el repositorio.
+
+  Da dos puntos con coordenadas explicitas:
+    Punto ref. 1   53 16 47 S / 070 31 31 W
+    Punto ref. 2   53 20 53 S / 070 31 31 W
+
+  MEDIDO (salida 03_): de que lado caen respecto de la linea Cabo San Vicente ->
+  Punta Anxious, que son los dos extremos que el decreto le da y que ya estan
+  verificados contra el IGM en `puntos_notables`:
+
+    CALIBRACION Punta Arenas (Weste, lado conocido)   signo -0,45524
+    CALIBRACION Porvenir     (Este,  lado conocido)   signo +0,34304
+    Punto ref. 1                                      signo +0,12668
+    Punto ref. 2                                      signo +0,16098
+
+  Los dos caen del **lado Este**, que es el que el decreto le adjudica ("el area
+  oriental"). El signo se calibro contra dos ciudades de lado conocido y no se
+  dedujo — es la trampa que este repositorio ya tiene anotada ("el signo de un
+  producto cruz no se deduce, se calibra").
+
+  SALVEDAD QUE VA CON EL HALLAZGO, y es del propio directorio: su PROCEDENCIA.md
+  advierte que ese material son limites de PUERTO y areas de OPERACION, y **no
+  sirve para decidir donde termina una jurisdiccion**. La advertencia se respeta:
+  aca no se usa para fijar ningun limite. **Un ancla no es un limite, es un punto
+  interior**, y la distincion es justamente la que la advertencia deja abierta.
+  Ademas el acto en si es evidencia operativa: la resolucion la dicta la CP de
+  Tierra del Fuego regulando esas aguas.
+
+  Y hay un camino aun mas barato que este: el `punto_interior` de 1.1. La
+  resolucion sirve como CORROBORACION independiente del lado, no como el unico
+  medio.
+
+1.4 — BAKER Y PUERTO EDEN: DPA_2023 APORTA, PERO NO ALCANZA. MEDIDO
+--------------------------------------------------------------------------------
+Son un solo borde visto desde los dos lados: el Sur de Baker y el Norte de
+Puerto Eden. El decreto lo describe como "el limite Sur de la XI Region de
+Aysen" y lo detalla por accidentes sin coordenadas.
+
+Fuente cargada que podria tenerlo: `geodata/costa/DPA_2023.zip`, que **trae
+`REGIONES/REGIONES_v1.shp`** — 16 regiones, EPSG:5360, institucional (IDE Chile
+/ SUBDERE), con PROCEDENCIA. Nadie la habia cruzado contra este caso.
+
+  RESULTADO (salidas 01_ y 04_):
+  · Los poligonos son TERRESTRES para mar abierto —un punto de mar frente a
+    Arica y otro frente a Aysen quedan FUERA— pero **si incluyen aguas
+    interiores**: un punto en el Estrecho de Magallanes cae DENTRO de Magallanes.
+  · La linea COMPARTIDA entre Aysen y Magallanes existe y es medible:
+    MultiLineString, extension lon -73,9681..-73,2305 / lat -49,1588..-48,7167.
+  · **Pero termina en lon -73,9681.** El decreto lleva ese limite "hasta el mar
+    Chileno" por los canales Messier, Adalberto, Fallos y del Castillo, cuyo eje
+    esta cerca de lon -75,0 y el oceano abierto cerca de -75,7. **Quedan del
+    orden de 127 km de recorrido por agua sin linea.**
+  · Al Weste de ese punto los dos poligonos ya no se tocan: DPA cubre las ISLAS
+    del archipielago y las atribuye a una u otra region, pero no cubre el agua
+    entre ellas de forma continua. El transecto de la salida 04_ lo muestra:
+    la cobertura es intermitente, con huecos donde hay canal.
+
+  VEREDICTO: **aporta y no cierra.** La porcion oriental del limite es DATO; los
+  ~127 km finales serian INTERPOLACION por los canales, o sea adjudicacion sobre
+  la fuente normativa, que es del owner. No es "no hay nada": es que la fuente
+  cargada acota el problema y no lo resuelve.
+
+1.5 — PUNTA DELGADA: FALTA UN SOLO DATO Y NO ESTA EN EL REPOSITORIO
+--------------------------------------------------------------------------------
+Su lado Weste ya esta resuelto: Punta Harry y Cabo San Vicente estan verificados
+contra la capa de Toponimos del IGM y viven en `puntos_notables` con su
+`motivo_eleccion` y sus descartados.
+
+Falta UNICAMENTE el limite maritimo internacional por el Oriente. El owner ya
+acepto (2026-08-10) que es la linea Punta Dungeness - Cabo del Espiritu Santo
+del Tratado de 1881. El extremo chileno esta (Punta Dungeness, 52 23 53 S /
+068 26 36 W, IGM). **El extremo argentino, Cabo del Espiritu Santo, NO esta**, y
+el propio insumo lo declara en `pendientes` con su motivo: la capa SECCION_L del
+IGM chileno devuelve CERO resultados porque es costa argentina.
+
+  Consultado en las fuentes cargadas: no hay ninguna capa de toponimos
+  argentinos ni cartografia argentina en `geodata/` ni en `data/`.
+  **NO ENCONTRADO.**
+  DONDE DEBERIA ESTAR: IGN argentino (Instituto Geografico Nacional), o el texto
+  del Tratado de Limites de 1881 con su protocolo, que es fuente institucional
+  publicada y citable. Ninguno de los dos esta versionado hoy.
+
+1.6 — ARICA: NO CERRABLE CON LO CARGADO, Y LA FECHA LO EMPEORA
+--------------------------------------------------------------------------------
+Falta el limite Norte, que el decreto invoca —"limite politico internacional
+Chile-Peru"— y no da. `Peru` aparece UNA sola vez en todo el documento, sin
+coordenada.
+
+Lo que se busco en lo cargado y que dio:
+  · `DPA_2023 REGIONES` — el poligono de Arica y Parinacota es TERRESTRE
+    (medido: un punto de mar frente a Arica NO esta contenido). Da, a lo sumo,
+    donde el limite TERRESTRE con Peru toca el mar. **No da el limite MARITIMO.**
+  · No hay ninguna otra capa cargada con limites internacionales maritimos.
+
+  Y ADEMAS, POR LA ADVERTENCIA DEL OWNER (2026-08-15): **el fallo de la Corte
+  Internacional de Justicia del 27 de enero de 2014 redefinio el limite maritimo
+  Chile-Peru.** Cualquier fuente anterior a esa fecha esta desactualizada para
+  este uso. DPA_2023 es de 2023 y por lo tanto posterior, pero es terrestre, con
+  lo cual no sirve igual — por objeto, no por fecha.
+
+  **NO ENCONTRADO.**
+  DONDE DEBERIA ESTAR: SHOA (cartografia de limites maritimos), DIFROL, o el
+  texto del fallo de la CIJ de 2014 con sus coordenadas. Ninguno versionado.
+  Es la mas lejana de las diez.
+
+1.7 — LIRQUEN Y TALCAHUANO: LA COSTA ESTA; EL CIERRE ES REGLA, NO DATO
+--------------------------------------------------------------------------------
+Las dos tienen `receta: corte_y_ancla`, `contorno` de 2 puntos y
+`lado_abierto: "W"`. Su causa dice que la prosa describe el contorno de la Bahia
+de Concepcion **sin dar sus vertices**.
+
+Fuente cargada: la capa OSM de land polygons, que es la que el manifiesto declara
+en el rol `tierra` con la exigencia explicita de que **no cierre las bahias**
+("cierra_bahias = false ... marcaria agua real como tierra — el falso negativo
+que prohibe INV-3.6").
+
+  MEDIDO (salida 02_): en la caja de la Bahia de Concepcion
+  (-73,20/-36,80 a -72,90/-36,50) la capa trae **1.627 poligonos de tierra**, y
+  la isla Quiriquina —que el decreto le adjudica a Talcahuano— esta presente con
+  47 poligonos.
+
+  VEREDICTO: el contorno de la bahia **si esta disponible como dato**, con la
+  resolucion que el propio manifiesto exige. Lo que falta no es la linea de
+  costa: es la REGLA de como un contorno abierto se cierra contra ella, que es
+  **P4'** de E4 ("el contorno abierto no se extiende mas alla de su propio trazo
+  salvo por el lado que declara abierto"), y esas dos declaran abierto el Weste.
+  No se midio si P4' las cierra: exige correr el build.
+
+1.8 — PUERTO WILLIAMS: SOLO EL ANCLA, Y NO NECESITA FUENTE
+--------------------------------------------------------------------------------
+Ya medido en el barrido del 2026-08-14: el decreto le da cuatro coordenadas
+explicitas y el insumo guardo los puntos A y F. Su causa es unicamente el ancla.
+
+No aparecio ninguna fuente cargada nueva que aporte. **Y no hace falta**: por
+1.1, la convencion "sede de la Capitania" ya esta aplicada en 51 de 64 y a esta
+no. Es la misma familia D que tierra_del_fuego.
+
+Salvedad igual que en 1.1: que el ancla ALCANCE para cerrar la figura no esta
+medido. Su contorno son dos puntos, y si dos puntos mas el limite exterior
+particionan el espacio es una pregunta del build, no de esta lectura.
+
+
+================================================================================
+2. CUADRO
+================================================================================
+ jurisdiccion      que falta exactamente          fuente cargada que podia      resultado
+ ---------------- ------------------------------ ----------------------------- ----------------------------------
+ juan_fernandez   geometria de sus 4 islas       OSM land polygons             ESTA. Las 4 dentro de la caja.
+                                                                               Falta ambito del buffer ZEE.
+ hanga_roa        geometria de sus 2 islas       OSM land polygons             ESTA. Las 2 FUERA de la caja.
+                                                                               Falta caja + ambito del buffer.
+ puerto_williams  un ancla                       —                             No hace falta fuente: convencion
+                                                                               `punto_interior`, ya en 51 de 64.
+ tierra_del_fuego (1) limite oriental            IGN argentino / Tratado 1881  NO ENCONTRADO
+                  (2) un ancla                   CP-TF 12000/176 (versionada)  ESTA. Lado Este confirmado y
+                                                                               calibrado. Y ademas la convencion.
+ punta_delgada    Cabo del Espiritu Santo        IGN argentino / Tratado 1881  NO ENCONTRADO
+ lirquen          contorno Bahia Concepcion      OSM land polygons             ESTA (1.627 pol.). Falta la REGLA
+ talcahuano       contorno Bahia Concepcion      OSM land polygons             ESTA (+ Quiriquina). Falta P4'.
+ baker            limite Sur Region de Aysen     DPA_2023 REGIONES             PARCIAL. Linea hasta lon -73,97;
+ puerto_eden      el mismo borde, otro lado      DPA_2023 REGIONES             faltan ~127 km por los canales.
+ arica            limite maritimo con Peru       DPA (terrestre) / ninguna     NO ENCONTRADO. Y post-CIJ 2014.
+
+
+================================================================================
+3. QUE NO SE PUDO DETERMINAR
+================================================================================
+  · Si un ancla ALCANZA para cerrar puerto_williams, tierra_del_fuego o
+    punta_delgada. Exige correr el build; esta fase fue de solo lectura.
+  · Si P4' cierra lirquen y talcahuano contra la costa OSM. Mismo motivo.
+  · Si el poligono de una isla mas el buffer de 200 mn es lo que el owner
+    entiende por "la jurisdiccion" de una Capitania insular remota. Es
+    interpretacion de la fuente normativa.
+  · Si la linea Aysen/Magallanes de DPA_2023 coincide con lo que el decreto
+    describe por accidentes. Se midio que existe y hasta donde llega; NO se
+    midio contra los accidentes nombrados, porque ninguno de los cinco —cerro
+    Chaltel/Fitz Roy, seno Iceberg/Tempano, canales Messier, Adalberto, Fallos y
+    del Castillo— esta en `puntos_notables`.
+  · Ninguno de los cuerpos-ancla que el decreto le enumera a tierra_del_fuego
+    —Bahia Gente Grande, Bahia Inutil, Canal Whiteside, Canal Gabriel, Seno
+    Almirantazgo— esta en `puntos_notables`. Medido: cero coincidencias.
+
+
+================================================================================
+4. QUE DECISIONES LE QUEDAN AL OWNER
+================================================================================
+Ninguna de estas se toma aca. Van con lo que desbloquean.
+
+  D-a  APLICAR LA CONVENCION `punto_interior` a punta_delgada, tierra_del_fuego
+       y puerto_williams. Es la mas barata de las cinco y la unica que no
+       necesita ninguna fuente. Desbloquea la familia del ancla.
+  D-b  QUE ES LA JURISDICCION DE UNA CAPITANIA INSULAR REMOTA: isla sola, o isla
+       mas limite exterior. Desbloquea hanga_roa y juan_fernandez.
+  D-c  SI LA CAJA DE TRABAJO CRECE o si insular_remota lleva capa de tierra
+       propia. Solo afecta a hanga_roa. `capas_costa.json` ya escribio las dos
+       opciones.
+  D-d  SI LA LINEA REGIONAL DE DPA_2023 SE ACEPTA como el "limite Sur de la
+       Region de Aysen" del decreto, y que se hace con los ~127 km que le faltan.
+       Desbloquea baker y puerto_eden — o los deja donde estan.
+  D-e  SI SE INCORPORAN FUENTES ARGENTINAS (IGN) y el texto del Tratado de 1881,
+       y para arica el fallo CIJ 2014 o cartografia SHOA. Es lo unico de esta
+       lista que exige traer material nuevo al repositorio.
+
+
+================================================================================
+5. OBJECIONES QUE TUVE, AUNQUE HAYA TERMINADO EJECUTANDO
+================================================================================
+  · EL ENCARGO DECIA "LAS 8" Y SON 10. Se ejecuto sobre las diez, porque las dos
+    listas de ocho que circulan son conjuntos distintos y trabajar sobre una sola
+    habria dejado afuera casos reales de la otra. La aclaracion es §0.
+  · YO INTRODUJE EL ERROR QUE EL OWNER CORRIGIO. En la lectura del 2026-08-15
+    cite a Lirquen y Talcahuano como si estuvieran en la lista de la Fase 8. No
+    lo estaban. Y de paso afirme que "la resolucion local de Talcahuano
+    12.600/491 ya da la boca de la bahia": esa resolucion **no esta versionada**
+    —el directorio tiene UNA sola resolucion y es la de Tierra del Fuego—; el
+    dato vive en una bitacora de reconocimiento. "Se leyo una vez y quedo citado"
+    no es "esta en el repositorio", y la diferencia es justamente la que este
+    encargo pedia medir.
+  · UNA MEDICION MIA DIO AUSENCIA FALSA y por eso queda escrita: Sala y Gomez con
+    la caja mal puesta. Se re-consulto con tres cajas antes de reportar.
+  · EL GREP DE "Peru" SOBRE `land-polygons-split-4326.zip` DEVOLVIO COINCIDENCIA
+    Y NO SIGNIFICA NADA: es un binario comprimido. No se uso como evidencia de
+    nada, y se dice para que nadie lea esa linea de la salida como un hallazgo.
+  · LA RESOLUCION DE TIERRA DEL FUEGO SE USA CONTRA LA ADVERTENCIA DE SU PROPIO
+    DIRECTORIO, y por eso lo declaro en 1.3 en vez de taparlo: la advertencia
+    prohibe usarla para fijar LIMITES, y aca se usa para un PUNTO INTERIOR. Si el
+    owner considera que la distincion no vale, el hallazgo cae y queda en pie la
+    convencion `punto_interior`, que llega al mismo lugar sin esa fuente.
+================================================================================

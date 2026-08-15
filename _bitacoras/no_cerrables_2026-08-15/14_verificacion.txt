@@ -1,0 +1,85 @@
+VERIFICACION — el ancla de puerto_williams (camino A, owner 2026-08-15)
+v1 en disco : sha256 e630d8354a14e6752ea0d6601e31753ab887871c6a31ebb1d223f13f4e2fce82
+v2 en disco : sha256 5ae68d143e813e5d361fc4969b22037250f201de1119f2b0b47c44f40143424e
+referencia  : git show bf66ab2:…  (v1 con 51 punto_interior)
+
+==============================================================================
+A — EL ANCLA EN EL v1, CON LA FORMA Y EL TEXTO DE LAS 51
+==============================================================================
+  [ OK ]   A1 · las otras siguen siendo 51 (total ahora 52)
+  [ OK ]   A2 · puerto_williams tiene punto_interior
+  [ OK ]   A3 · forma {lat,lon,origen}, la misma que las 51
+  [ OK ]   A4 · el texto de `origen` es IDENTICO POR CODEPOINT al unico que usan las 51
+  [ OK ]   A5 · el texto de origen es ASCII puro (108 chars, sin tildes, como las 51)
+  [ OK ]   A6 · el texto esta en forma NFC
+         valor: lat -54.93  lon -67.6
+  [ OK ]   A7 · la clave quedo entre `revisar` y `texto_decreto`, sin mover ninguna otra
+
+==============================================================================
+B — LA COORDENADA: SEDE, NO BAHIA, Y TESTIGO A DISTANCIA NO NULA
+==============================================================================
+  [ OK ]   B1 · el ancla NO cae sobre una bahia SITPORT: la mas proxima es 138 "Puerto Williams" a 0.34 km
+  [ OK ]   B2 · ninguna de las 50 sedes maritimas cae sobre una bahia (se mantiene el patron)
+  [ OK ]   B3 · el ancla cae dentro de la caja de trabajo del constructor
+
+==============================================================================
+C — LO DERIVADO EN EL v2
+==============================================================================
+  [ OK ]   C1 · `ancla_seleccion` del v2 es copia IDENTICA POR CODEPOINT del `punto_interior` del v1
+  [ OK ]   C2 · `causa_sin_geometria` es ahora, literal, el campo `revisar` — el hito N 26
+  [ OK ]   C3 · sigue `no_cerrable` y `participa_matching: false` — el ancla NO la vuelve construible
+  [ OK ]   C4 · `punto_representativo` en null: una no_cerrable no recibe testigo
+  [ OK ]   C5 · maritimas: 44 cerrables y 8 no_cerrable — las mismas que antes. C4 no se abarata
+  [ OK ]   C6 · derivado_de[v1] == el v1 en disco (e630d8354a14e675…)
+
+==============================================================================
+D — LOS CUATRO BLOQUES QUE SALIERON IDENTICOS, SIGUEN IDENTICOS
+==============================================================================
+  [ OK ]   D · correccion_testigos  identico a bf66ab2 por codepoint · 1063 bytes · sha b9a2344ad7c4790b
+  [ OK ]   D · convenciones         identico a bf66ab2 por codepoint · 5881 bytes · sha cd5751abdc482f4e
+  [ OK ]   D · puntos_notables      identico a bf66ab2 por codepoint · 14609 bytes · sha f8bd5e00b99689b7
+  [ OK ]   D · pendientes           identico a bf66ab2 por codepoint · 1046 bytes · sha 1289eeb24995a90d
+
+==============================================================================
+E — LAS CUATRO DEL IGM, INTACTAS CON SUS ADJUDICACIONES
+==============================================================================
+  [ OK ]   E · Punta Anxious        identico por codepoint · sha 9052eb23f8f141be · motivo_eleccion, descartados, nota_grafia, usado_por, fuente
+  [ OK ]   E · Peninsula Brecknock  identico por codepoint · sha 96ffe60649beab38 · motivo_eleccion, descartados, usado_por, fuente
+  [ OK ]   E · Punta Harry          identico por codepoint · sha 75bc30a39d992a67 · motivo_eleccion, descartados, usado_por, fuente
+  [ OK ]   E · Cabo San Vicente     identico por codepoint · sha 727ff609fe72fd00 · motivo_eleccion, descartados, usado_por, fuente
+  [ OK ]   E · las 76 entradas de puntos_notables estan en NFC (0 fuera)
+
+  no-ASCII de esas cuatro, con su codepoint (donde el glifo enganaria):
+    Punta Anxious        '—' U+2014
+    Peninsula Brecknock  '—' U+2014  'Í' U+00CD  'í' U+00ED
+    Punta Harry          '—' U+2014
+    Cabo San Vicente     '—' U+2014
+
+==============================================================================
+F — EL DIFF ACOTADO A LO ESPERADO
+==============================================================================
+  [ OK ]   F1 · las 16 claves de primer nivel, las mismas y en el mismo orden
+  [ OK ]   F2 · de primer nivel SOLO cambiaron `derivado_de` y `jurisdicciones`
+  [ OK ]   F3 · cambian exactamente 8 jurisdicciones, y son las esperadas
+  [ OK ]   F4 · punta_arenas cambia SOLO el contador (15 -> 10); su testigo no se mueve
+  [ OK ]   F5 · puerto_williams cambia SOLO `causa_sin_geometria` y `ancla_seleccion`
+  [ OK ]   F6 · las seis lacustres cambian en 38 hojas, y son exactamente las esperadas: 32 anclaje · 2 gemelos_geometricos_declarados · 1 resolucion · 1 shapefile_fid · 1 shapefile_detalle · 1 motivo
+  [ OK ]   F7 · una sola resolucion se mueve: Laguna Galletue, ausente -> aceptado
+  [ OK ]   F8 · el motivo de Galletue cita D12 y su fecha: es adjudicacion del owner, no derivacion
+
+  ORIGEN DE LAS SEIS LACUSTRES — NO ES ESTE CAMBIO, Y HAY QUE LEERLO ASI:
+    El v2 commiteado no se regeneraba desde antes del 2026-08-12. Todo lo de
+    arriba estaba ya escrito en data/decreto/cotejo_lacustre_adjudicado.json y
+    el v2 no lo tenia. Dos capas de desfase:
+      · 2026-08-12 — D12, ADJUDICACION DEL OWNER: Laguna Galletue pasa de
+        "ausente" a "aceptado" con el fid 965. El v2 commiteado seguia diciendo
+        "Sin ninguna coincidencia ni candidato en el shapefile". Eso es
+        sustantivo, no cosmetico.
+      · 2026-08-13 — af0a853 (E3 paso 5): `anclaje` y
+        `gemelos_geometricos_declarados`.
+    El cambio del 2026-08-14 fue quirurgico y PRESERVO el desfase. Regenerar hoy
+    lo puso al dia. Quien lea el diff no tiene que buscar la causa en el ancla.
+
+==============================================================================
+RESULTADO: TODOS LOS CONTROLES EN VERDE
+==============================================================================

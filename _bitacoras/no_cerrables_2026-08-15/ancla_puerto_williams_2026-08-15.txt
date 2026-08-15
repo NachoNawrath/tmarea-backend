@@ -1,0 +1,249 @@
+================================================================================
+EL ANCLA DE PUERTO WILLIAMS — camino A del owner. 2026-08-15.
+Fases 2 y 3 cerradas. 33 controles en verde. SIN COMMIT.
+Escrito segun el estandar de cinco puntos de CLAUDE.md §8.
+================================================================================
+
+SHELL DECLARADA (§7.3) — en PowerShell, desde la raiz:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\no_cerrables_2026-08-15\insertar_ancla_pw.js
+    .\tools\raster-build\.venv\Scripts\python.exe scripts\fase4_migrar_insumo_v2.py
+    .\tools\raster-build\.venv\Scripts\python.exe scripts\fase5_corregir_testigos.py --aplicar
+    .\tools\raster-build\.venv\Scripts\python.exe scripts\fase5_registrar_toponimos_igm.py
+    node _bitacoras\no_cerrables_2026-08-15\verificar_ancla_pw.js
+
+El interprete NO es `py` (no tiene geopandas): es el venv de `tools/raster-build`.
+Salidas crudas: 07_ a 14_.
+
+
+================================================================================
+1. QUE QUEDO VERIFICADO, Y CON QUE EVIDENCIA
+================================================================================
+
+1.1 — EL CAMBIO
+--------------------------------------------------------------------------------
+    v1  data/decreto/jurisdicciones_capitanias.json   51 -> 52 punto_interior
+        sha256 f26ff667… -> e630d8354a14e6752ea0d6601e31753ab887871c6a31ebb1d223f13f4e2fce82
+        git diff: 5 inserciones, 0 borrados
+    v2  data/decreto/jurisdicciones_v2.json           regenerado por el pipeline
+        sha256 b1168241… -> 5ae68d143e813e5d361fc4969b22037250f201de1119f2b0b47c44f40143424e
+        git diff: 86 inserciones, 10 borrados
+
+`puerto_williams` gana `punto_interior` entre `revisar` y `texto_decreto`, que es
+donde va en las otras 51:
+
+    "punto_interior": {
+      "lat": -54.93,
+      "lon": -67.6,
+      "origen": "CONVENCION, no decreto. Sede de la Capitania. La construccion se
+                 queda con el trozo que contiene este punto."
+    }
+
+El texto de `origen` NO se escribio a mano en el instrumento: se toma de otra
+entrada del propio archivo, y la corrida aborta si las 51 existentes no comparten
+un unico texto. Verificado ademas por codepoint contra ese unico texto (A4).
+
+1.2 — LA COORDENADA Y SU PROCEDENCIA
+--------------------------------------------------------------------------------
+Sede de la Capitania, colocada A MANO igual que las 51, con la precision modal de
+la lista (2 decimales; 26 de 51 estan en 2/2).
+
+CORROBORACION, no derivacion: la bahia 138 "Puerto Williams" del seed SITPORT
+esta en -54.9324 / -67.5968, o sea a **0,34 km** del ancla — dentro del rango de
+las 38 maritimas con testigo (minimo 0,2 · mediana 1,8 · maxima 25,2 km).
+
+POR QUE NO SE USO LA COORDENADA DE LA BAHIA COMO ANCLA, que era lo que esta misma
+investigacion habia propuesto en su Fase 1 y que la medicion descarto:
+
+  (a) el texto declarado dice "Sede de la Capitania", y una bahia no lo es:
+      poner ahi una bahia haria falso, en esa entrada, el mismo texto que las
+      otras 51 declaran verdadero;
+  (b) **ninguna de las 49 sedes maritimas de entonces caia sobre una bahia
+      SITPORT** (medido a <50 m). Romper el patron en la 50a no tiene fundamento;
+  (c) el ancla elige el trozo y el `punto_representativo` es el testigo que la
+      figura final debe contener. Con el ancla SOBRE el testigo, la contencion
+      pasaria por construccion y el control no podria fallar (§4.6). Medido: de
+      las 38 con testigo, **ninguna** esta a 0,0 km del ancla.
+
+La procedencia va aca y no en el insumo, para no dejar una entrada de 52 con una
+clave que ninguna otra tiene. Misma resolucion que se tomo con la cita de los
+sectores del rio Bueno en `puntos_notables`.
+
+1.3 — LO QUE EL PIPELINE DERIVO, Y LO QUE NO
+--------------------------------------------------------------------------------
+El v2 se REGENERO —no se edito quirurgicamente— porque estos campos son
+derivados, no copia. Corrida completa: migracion, testigos `--aplicar`, IGM.
+
+    campo                        antes                         ahora
+    ancla_seleccion              null                          el objeto, copia identica del v1
+    causa_sin_geometria          "no hay ancla que diga..."    el hito N 26 del Canal Beagle
+    estado_geometria             no_cerrable                   no_cerrable
+    participa_matching           false                         false
+    punto_representativo         null                          null
+
+**EL ANCLA NO VUELVE CONSTRUIBLE A puerto_williams, y ahora esta medido en el
+resultado y no solo en la lectura del clasificador.** Maritimas: **44 cerrables y
+8 no_cerrable, las mismas que antes** (control C5). La decision de C4 —52
+esperadas contra 44 construibles— NO se abarata en nada.
+
+Lo que si hace, y era el objetivo: **deja de afirmar una ausencia falsa y destapa
+el bloqueo real.** La causa pasa de decir "no hay ancla" a decir lo que de verdad
+la detiene: el hito N 26 y la delimitacion existente del Canal Beagle, que el
+decreto nombra sin coordenadas. Es falta de dato de fuente, no de transcripcion.
+
+1.4 — EL SCRIPT IGM NO SE TOCO, POR INSTRUCCION Y POR MEDICION
+--------------------------------------------------------------------------------
+`scripts/fase5_registrar_toponimos_igm.py` reescribe `causa_sin_geometria` en
+cada corrida para las jurisdicciones de su dict `causas`. Medido: ese dict tiene
+**dos claves, `punta_delgada` y `tierra_del_fuego`**, y el archivo entero tiene
+**cero menciones de Puerto Williams**. No habia nada que arreglar.
+
+QUEDA ANOTADO PARA LA PROXIMA: el texto de `tierra_del_fuego` sigue diciendo que
+le falta "(2) un ancla que diga de que lado de la linea esta la jurisdiccion", y
+eso **sigue siendo cierto** porque a TdF no se le aplico. El dia que se le
+aplique, hay que corregir ese texto o el script va a re-afirmar una ausencia
+falsa en cada corrida.
+
+1.5 — LAS SEIS LACUSTRES NO VIENEN DE ESTE CAMBIO. VIENEN DEL DESFASE DEL v2
+--------------------------------------------------------------------------------
+**ESTA SECCION EXISTE PORQUE SIN ELLA EL PROXIMO QUE LEA EL DIFF VA A BUSCAR LA
+CAUSA DONDE NO ESTA.** Pedida por el owner al abrir la Fase 3.
+
+El diff del v2 toca 8 jurisdicciones. Dos son de este cambio —`puerto_williams` y
+el contador de `punta_arenas`— y **seis son lacustres que este cambio no toca**:
+lago_rapel, lago_villarrica, lago_panguipulli, lago_ranco, puerto_varas y
+lago_general_carrera.
+
+CAUSA: **el v2 commiteado no se regeneraba desde antes del 2026-08-12.** Todo lo
+que aparece ya estaba escrito en `data/decreto/cotejo_lacustre_adjudicado.json`;
+el v2 simplemente no lo tenia. Son DOS capas de desfase, y no son de la misma
+naturaleza:
+
+  · **2026-08-12 — D12, ADJUDICACION DEL OWNER. Esto es SUSTANTIVO, no cosmetico.**
+    `lago_villarrica` -> `Laguna Galletue` pasa de:
+        resolucion "ausente" · shapefile_fid []
+        motivo "Sin ninguna coincidencia ni candidato en el shapefile. Queda sin
+                geometria, declarado (INV-3.6)."
+    a:
+        resolucion "aceptado" · shapefile_fid [965]
+        detalle {"fid":965,"num":966,"nombre":"LAGO GUALLETUE","region":"IX",
+                 "area_km2":13.075}
+        motivo "D12, adjudicada por el owner el 2026-08-12. El decreto la escribe
+                'Galletue' y el catastro 'Gualletue'; esa grafia sale del parrafo
+                de la Gobernacion Maritima de Valdivia, o sea del propio decreto…"
+    O sea: **el v2 commiteado seguia declarando sin geometria un cuerpo que el
+    owner habia adjudicado tres dias antes.** Es UNA sola resolucion en las seis,
+    y esta nombrada (controles F7 y F8).
+
+  · **2026-08-13 — af0a853 (E3 paso 5).** Aparecen dos campos declarados que el
+    v2 no tenia: `anclaje` (32 cuerpos: 31 por "nombre", 1 por "fid") y
+    `gemelos_geometricos_declarados` (2 cuerpos de lago_villarrica, que declaran
+    filas del catastro con geometria identica).
+
+**El cambio del 2026-08-14 —los tres sectores del rio Bueno— fue quirurgico
+justamente para no regenerar, y PRESERVO el desfase sin que nadie lo notara.**
+Regenerar hoy lo puso al dia. Decision del owner del 2026-08-15, con su motivo:
+"volver a quirurgico seria preservar a sabiendas una desactualizacion de dos
+dias".
+
+ALCANCE EXACTO, medido y afirmado por el control F6: **38 hojas** distintas en
+las seis, y solo estas — 32 `anclaje` · 2 `gemelos_geometricos_declarados` ·
+1 `resolucion` · 1 `shapefile_fid` · 1 `shapefile_detalle` · 1 `motivo`.
+
+1.6 — LO QUE SOBREVIVIO INTACTO
+--------------------------------------------------------------------------------
+Identicos por codepoint al commit `bf66ab2`:
+
+    correccion_testigos    1.063 bytes   sha b9a2344ad7c4790b
+    convenciones           5.881 bytes   sha cd5751abdc482f4e
+    puntos_notables       14.609 bytes   sha f8bd5e00b99689b7
+    pendientes             1.046 bytes   sha 1289eeb24995a90d
+
+Y las cuatro entradas del IGM, con sus adjudicaciones completas:
+
+    Punta Anxious        sha 9052eb23f8f141be   motivo_eleccion, descartados, nota_grafia, usado_por, fuente
+    Peninsula Brecknock  sha 96ffe60649beab38   motivo_eleccion, descartados, usado_por, fuente
+    Punta Harry          sha 75bc30a39d992a67   motivo_eleccion, descartados, usado_por, fuente
+    Cabo San Vicente     sha 727ff609fe72fd00   motivo_eleccion, descartados, usado_por, fuente
+
+Sus no-ASCII se imprimieron con su punto de codigo, que es donde el glifo
+enganaria: '—' U+2014 y, en Brecknock, 'Í' U+00CD / 'í' U+00ED —la I acentuada
+como UN codepoint, no como "I" + U+0301—. Las 76 entradas en forma NFC, 0 fuera.
+
+1.7 — UN RESULTADO QUE RETIRA UN MIEDO ANTERIOR
+--------------------------------------------------------------------------------
+La sesion del 2026-08-14 evito regenerar el v2 porque `fase5_corregir_testigos.py`
+**vuelve a medir** contra la capa OSM de 925 MB con el umbral de 500 m del owner,
+y se temia que los valores se movieran solos.
+
+**Medido hoy: no se movieron.** Re-corrido el script, `correccion_testigos` sale
+byte a byte identico, y sus contadores reproducen exacto — `movidos: 30`,
+`declarados_sin_testigo: 5`. La correccion es funcion del punto original y de la
+capa, y las dos estan fijas. El miedo era razonable y resulto infundado para
+estos insumos.
+
+
+================================================================================
+2. QUE QUEDO A MEDIAS
+================================================================================
+Nada de esta fase. `punta_delgada` y `tierra_del_fuego` NO se tocaron, por
+decision del owner: la pregunta abierta de la bahia 137 —"¿bajo cual de las dos
+queda Bahia Chilota, en Porvenir? ¿como se reparten esas dos jurisdicciones esa
+zona?"— esta enrutada a DIRECTEMAR, y es exactamente el reparto entre esas dos.
+
+
+================================================================================
+3. QUE NO SE PUDO DETERMINAR
+================================================================================
+  · Si el ancla ALCANZA para que la figura de puerto_williams cierre. No se midio
+    y no se puede medir sin correr el build: su contorno son dos puntos y si dos
+    puntos mas el limite exterior particionan el espacio es pregunta del
+    constructor. Lo que SI esta medido es que sigue `no_cerrable` por el hito
+    N 26, asi que la pregunta no se plantea todavia.
+  · Si el resto del v2 tiene mas desfase que el de las seis lacustres. Se midio
+    el diff completo contra `bf66ab2` y no aparecio nada mas, pero eso mide este
+    par de archivos, no la salud de los otros insumos que la migracion lee.
+  · Si la sede de la Capitania de Puerto de Puerto Williams esta exactamente
+    donde se la coloco. Es convencion, no dato: igual que las 51, no declara
+    procedencia. La corroboracion contra la bahia 138 acota, no confirma.
+
+
+================================================================================
+4. QUE DECISIONES LE QUEDAN AL OWNER
+================================================================================
+  · EL COMMIT. Rutas exactas:
+        data/decreto/jurisdicciones_capitanias.json
+        data/decreto/jurisdicciones_v2.json
+        _bitacoras/no_cerrables_2026-08-15/
+    Nunca `git add .`: hay cinco untracked previos que no son de esta sesion.
+  · SI EL RE-SELLO DE `adjudicacion_tramos.json` HACE FALTA OTRA VEZ. El v2
+    cambio de sha, asi que el control B12 va a volver a morder. No se corrio la
+    auditoria en esta fase.
+  · LAS OTRAS DOS ANCLAS, cuando vuelva DIRECTEMAR.
+
+
+================================================================================
+5. OBJECIONES QUE TUVE, AUNQUE HAYA TERMINADO EJECUTANDO
+================================================================================
+  · MI PROPIA PROPUESTA DE FASE 1 ERA DEFECTUOSA y la medicion la descarto: usar
+    la coordenada de una bahia del join como ancla rompia el texto declarado y
+    dejaba el control sin poder fallar (§1.2). Se reporto antes de escribir.
+  · UNA ADVERTENCIA MIA RESULTO FALSA, y por eso queda escrita: avise que anclar
+    Tierra del Fuego en Porvenir le haria derivar la bahia 137 como
+    `punto_representativo`. El pipeline real deja ese campo en **null** para una
+    `no_cerrable` — puerto_williams salio en null y TdF saldria igual. Mi
+    simulacion replicaba la asignacion por cercania pero no la compuerta de mas
+    abajo. Esa objecion no debio pesar en la decision del owner; los otros
+    motivos del camino A siguen en pie sin ella.
+  · EL CONTROL F6 FALLO DOS VECES POR CAUSA MIA, no del dato: primero esperaba
+    tres hojas donde `null -> objeto` produce una sola; despues comparaba dos
+    objetos por `JSON.stringify` cuando el orden de insercion de sus claves
+    difiere. Las dos veces se corrigio la EXPECTATIVA y no el criterio: el
+    control quedo afirmando el conjunto exacto de 38 hojas, que es mas fuerte que
+    el "solo anclaje" que tenia al principio.
+  · Y SE LE HIZO PRUEBA DE MORDIDA (§4.6): inyectado `anclaje: 31` donde la
+    medicion da 32, F6 lo caza y la corrida sale con codigo 1. La primera mordida
+    se corrio desde `%TEMP%` y fallaba por rutas, no por el defecto — un caso que
+    muerde por otra razon no prueba nada; se rehizo en el directorio correcto.
+================================================================================

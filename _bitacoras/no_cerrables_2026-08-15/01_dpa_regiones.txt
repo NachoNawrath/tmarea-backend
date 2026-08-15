@@ -1,0 +1,24 @@
+=== EXTENSION DE CADA REGION DE INTERES (lon/lat WGS84) ===
+  15 Arica y Parinacota     lon -70.3776..-68.9113   lat -19.2291..-17.4984   area_deg2 1.4437
+  11 Aysen                  lon -75.6779..-71.0913   lat -49.1588..-43.6380   area_deg2 12.5030
+  12 Magallanes             lon -75.7232..-66.4156   lat -56.5378..-48.5941   area_deg2 17.2787
+  08 Biobio                 lon -73.9736..-70.9830   lat -38.4924..-36.4432   area_deg2 2.4445
+
+=== ¿SON POLIGONOS DE TIERRA O INCLUYEN MAR? ===
+  Prueba: un punto claramente en mar abierto frente a la costa.
+    mar frente a Arica  (-70.60,-18.48)  dentro de la region? False
+    mar frente a Aysen  (-76.50,-46.50)  dentro de la region? False
+    Estrecho Magallanes (-70.45,-53.30)  dentro de la region? True
+
+=== LA FRONTERA COMPARTIDA AYSEN / MAGALLANES ===
+  tipo: MultiLineString | longitud en grados: 0.859933
+  extension  lon -73.9681..-73.2305   lat -49.1588..-48.7167
+  NOTA: el extremo Weste de esta linea es donde la frontera terrestre llega al agua.
+        Mas al Weste el decreto la describe por canales, y ahi dos poligonos de
+        TIERRA ya no se tocan: no hay linea que extraer.
+
+=== EL BORDE NORTE DE ARICA Y PARINACOTA (limite con Peru) ===
+  lat maxima del poligono: -17.498399   lon en ese extremo:
+    vertice mas al Norte: lon -69.468474  lat -17.498399
+    vertice mas al Weste del tramo norte: lon -69.826057  lat -17.706022
+    (ese es el punto donde el limite terrestre con Peru toca el mar)
