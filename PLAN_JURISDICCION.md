@@ -1930,12 +1930,127 @@ Escrito para que no se lea como más cerrado de lo que está.
   Se diseña **genérico**, no como caso de `arica` (§4.3): `baker` y `puerto_eden` tienen la
   misma forma.
 - **Si `hanga_roa` y `juan_fernandez` están mal clasificadas, y qué son.** El barrido del
-  2026-08-15 midió que **las seis islas están en la capa OSM cargada** y que su
+  2026-08-15 midió que ~~**las seis islas están en la capa OSM cargada**~~ y que su
   `causa_sin_geometria` —*"el insumo no trae capa de islas; requiere fuente externa"*— es falsa
   en su segunda mitad. Pero **no** contesta qué es la jurisdicción de una Capitanía insular
   remota (isla sola, o isla más límite exterior), que es interpretación de la fuente normativa
   y es del owner. **No cuentan para C4**: son `insular_remota`, no marítimas. Trabajo no
   iniciado, y no pertenece a ninguna etapa de E0–E8.
+  > **TACHADO Y CORREGIDO el 2026-08-15 (§3.3). "Las seis islas están en la capa OSM cargada"
+  > es FALSO para `hanga_roa`.** Medido contra `costa_osm`, que es la tabla que la construcción
+  > lee —no contra el zip de 925 MB—: las cuatro de `juan_fernandez` están (Alejandro Selkirk
+  > **36** polígonos · Robinson Crusoe **55** · San Ambrosio **54** · San Félix **54**); las dos
+  > de `hanga_roa` traen **0 polígonos cada una**, porque el cargador recorta a la caja
+  > `-85..-65` declarada en `geodata/costa/capas_costa.json` y **Isla de Pascua está en
+  > `-109,37` y Sala y Gómez en `-105,37`**, las dos afuera. La extensión real de `costa_osm`
+  > es `xmin -80,838 / xmax -63,999`.
+  >
+  > **La bitácora original lo tenía bien y lo que envejeció fue el resumen:**
+  > `_bitacoras/no_cerrables_2026-08-15/no_cerrables_2026-08-15.txt` §2 dice, en su cuadro,
+  > *"hanga_roa — ESTA. Las 2 FUERA de la caja"* y *"juan_fernandez — ESTA. Las 4 dentro de la
+  > caja"*. Al condensarse en este bullet se perdió la mitad que decide. **Es el modo de falla
+  > del §2: "está en la capa" y "está en la capa cargada" no son la misma afirmación**, y la
+  > segunda es la que gobierna la construcción.
+  >
+  > **Consecuencia sobre el rótulo de la pieza:** para `juan_fernandez` esto es
+  > **reclasificación** —el dato está cargado—; para `hanga_roa` sigue siendo **carga de capa**,
+  > que es trabajo distinto y más caro. Evidencia y forma reproducible en
+  > `_bitacoras/reclasificacion_insular_2026-08-15/`.
+  >
+  > **Y la mala clasificación no vive en un campo del insumo: vive en el código.**
+  > `scripts/fase4_migrar_insumo_v2.py:369-372` devuelve `no_cerrable` **incondicionalmente**
+  > para todo el ámbito `insular_remota`, con la causa escrita en el `return`. La rama vecina
+  > —`lacustre`— sí interroga al dato (`if not [f for c in cuerpos ...]`). Reclasificar no es
+  > editar un campo: es hacer esa rama simétrica con la lacustre y agregar una receta insular a
+  > la tabla `RECETAS` del constructor, que hoy tiene cuatro y ninguna sirve.
+  >
+  > **PASA A FRENTE PROPIO, con una decisión normativa por delante (owner, 2026-08-15).** No se
+  > ejecuta hasta que el owner lea el **Art. 2 del D.S. 991** y adjudique qué es la jurisdicción
+  > de una Capitanía insular remota. **Recomendación ya registrada para cuando esa decisión esté
+  > tomada: OPCIÓN B para `hanga_roa` —capa de tierra propia para el ámbito `insular_remota`—,
+  > no la Opción A de crecer la caja.** Las dos están escritas desde el 2026-08-10 en
+  > `capas_costa.json`, campo `recorte.advertencia_ambito`. **El número que decide, medido:**
+  > crecer `X_W` a `-110` estira **todas** las bandas de `receta_banda_paralelos` 25° al Oeste
+  > y mete a Pascua y Sala y Gómez en el buffer del límite exterior, con lo que **543.337,9 km²
+  > de la ZEE de las islas de `hanga_roa` quedan adjudicados a ocho Capitanías continentales**
+  > —taltal 134.499,5 · caldera 112.444,1 · huasco 101.287,7 · antofagasta 84.947,4 · chañaral
+  > 53.156,0 · coquimbo 46.338,7 · tongoy 8.479,7 · mejillones 2.184,8— **como efecto lateral
+  > de mover una constante, y C3 no lo ve porque las bandas no se pisan entre sí.** Es la forma
+  > exacta de D16: producir una capa que adjudica agua que nadie adjudicó.
+  >
+  > **DESCARTADA por el owner, con su motivo (§0.2): la tercera vía** —construir
+  > `juan_fernandez` sola ahora y dejar `hanga_roa` `no_cerrable`—. Es viable técnicamente y
+  > deja el ámbito **partido en dos estados**, obligando a declarar un insular medio construido:
+  > justo el **tercer estado de `estado_geometria`** que este mismo §9 tiene abierto y sin
+  > resolver en el bullet del alcance costa-afuera.
+  >
+  > **Hallazgo lateral anotado y NO tocado:** el v1 declara `participa_matching: true` para las
+  > dos, y el v2 lo deriva `false` (`fase4_migrar_insumo_v2.py:1177`,
+  > `participa_matching = (estado == "cerrable")`). Es **campo muerto en la fuente, contradicho
+  > por su propio derivado**. No se corrige acá: entra al frente insular, o al de los 50 fallos
+  > del auditor del v1, que ya reclama por estas dos.
+- **De quién es el mar de las islas oceánicas — el buffer ZEE del límite exterior.** Frente
+  abierto el 2026-08-15, **medido y NO diagnosticado**. El límite exterior se materializa
+  bufferizando 200 mn la unión de la capa del rol `limite_exterior` (`ne_10m_land`) recortada a
+  la caja de trabajo, y **las cuatro islas de `juan_fernandez` caen dentro de esa caja**. Medido
+  contra la capa construida real —`jurisdicciones_decreto`, el andamio, 44 marítimas con
+  geometría—, reproduciendo el pipeline del constructor (recorte → `ST_Simplify(0,01)` → buffer
+  de 370.400 m en `geography`) y restando el buffer continental para quedarse sólo con lo que
+  ninguna costa del continente alcanza:
+
+  | | km² |
+  |---|---|
+  | ZEE que existe **únicamente** por las islas de `juan_fernandez` | **976.448,7** |
+  | de eso, ya adjudicado a **15 Capitanías continentales** | **742.627,0** |
+
+  **Los dos números son un PISO, no el total, y la propia medición lo delata:** la auditoría
+  del corte del instrumento cuenta **3 piezas insulares, no 4**, porque el `ST_Simplify(0,01)`
+  del frente de abajo ya había borrado Isla San Félix antes del buffer. Con las cuatro adentro
+  la cifra sube, no baja. Se escribe así y no "las cuatro islas" porque eso afirmaría algo que
+  la medición no midió (§2).
+
+  Taltal 103.998,2 (64,4% de su área) · Constitución 92.684,2 (68,6%) · Caldera 86.372,1
+  (64,1%) · Los Vilos 83.905,1 (65,5%) · Pichilemu 65.912,7 (64,8%) · Huasco 58.221,8 (54,8%) ·
+  Antofagasta 52.322,7 (51,2%) · Chañaral 42.787,6 (65,7%) · Papudo 39.749,9 (69,6%) · San
+  Antonio 33.917,8 (70,7%) · Valparaíso 31.737,7 (71,4%) · Quintero 23.451,2 (70,3%) ·
+  Algarrobo 22.432,3 (70,9%) · Tongoy 3.345,3 · Coquimbo 1.788,4.
+
+  **Esto PASA HOY, sin ninguna insular construida.** Siete de cada diez km² de la jurisdicción
+  de San Antonio, Valparaíso, Algarrobo, Quintero y Papudo son agua que ninguna costa
+  continental alcanza con 200 mn: existe porque Robinson Crusoe está en la capa del límite
+  exterior. Encaja con lo que E4 ya tenía escrito y nadie había cruzado —*"conectividad global:
+  descartada y medida, deja 5 de 6 pares en cero pero borra la ZEE de las islas oceánicas"*—,
+  sólo que ahora tiene número.
+
+  **La pregunta abierta es NORMATIVA y es del owner: el Art. 2 del D.S. 991.** No se contesta
+  midiendo. Darle alcance costa-afuera propio a `juan_fernandez` es disputarle 742.627,0 km² a
+  quince Capitanías continentales; no dárselo es dejar que quince continentales sigan siendo
+  dueñas del mar de Juan Fernández. **Las dos son adjudicación, no construcción.** Y el Art. 2
+  no está en el insumo —ver el pendiente de trazabilidad de INV-3.7—, así que la lectura no se
+  reproduce desde el repositorio. **Probablemente exija consulta a DIRECTEMAR**, como Cabo del
+  Espíritu Santo: entra al registro acumulativo de `_bitacoras/consulta_directemar_registro.md`,
+  que se cierra y se envía cuando la construcción termine. **Acá no se diagnostica.** Evidencia
+  y forma reproducible en `_bitacoras/reclasificacion_insular_2026-08-15/`.
+
+- **`ST_Simplify(geom, 0.01)` borra una isla antes de bufferizar el límite exterior.** Frente
+  abierto el 2026-08-15, **medido y NO arreglado**. El constructor simplifica la unión de
+  `ne_10m_land` con tolerancia 0,01° antes del buffer de 200 mn. Medido pieza por pieza:
+
+  | isla | antes | después |
+  |---|---|---|
+  | Robinson Crusoe | 91,682 km² | 88,916 km² |
+  | Alejandro Selkirk | 51,165 km² | 47,540 km² |
+  | San Ambrosio | 1,512 km² | 0,743 km² |
+  | **San Félix** (`-80,0977 / -26,2720`) | **0,939 km²** | **desaparece** |
+
+  **Hoy no importa**: nadie reclama esa agua y la jurisdicción insular no está construida. **El
+  día que `juan_fernandez` se construya, se construye con 3 islas de 4 y ningún control avisa**
+  —C1 sólo mira que la geometría no sea nula, vacía, inválida o de área cero, y la figura que
+  queda cumple las cuatro cosas—. Es **defecto del límite exterior, no de la pieza insular**, y
+  arreglarlo dentro de ella sería un caso particular (§4.3): la tolerancia la fija el mecanismo
+  del buffer, que sirve a las 44 marítimas. **NO DETERMINADO:** si Sala y Gómez —más chica que
+  San Félix— sobrevive al mismo simplify. Es una consulta y no se corrió.
+
 - **Si alguna `no_cerrable` se resuelve por complemento** — o sea si su geometría es el hueco
   entre vecinas ya construidas. Reconocimiento **no hecho**. Su condición previa tampoco está
   medida: si el decreto reparte el territorio **sin vacíos**. Si dejara zonas sin asignar, el
@@ -1984,5 +2099,19 @@ Escrito para que no se lea como más cerrado de lo que está.
   viejo mirando el campo que dejó de ser el vigente es exactamente la pregunta abierta.**
   Mientras no se conteste, **el que vale para decidir es el auditor del v2** (`fase4_auditoria_v2.py`,
   B0..B12), que sale **limpio**.
+- **Mudar `verificar_v2_contra_v1.py` a `scripts/` — pendiente chico, y NO es movimiento puro.**
+  El control vive hoy en `_bitacoras/arica_limite_norte_2026-08-15/`, que es una constancia de
+  sesión, y **no es evidencia de una sesión: hay que correrlo cada vez que se toque el v2
+  quirúrgicamente**, así que `scripts/` es su casa. Se anotó como movimiento propio el
+  2026-08-15. **Corrección de forma aceptada por el owner el mismo día: un `git mv` lo deja
+  roto, son tres constantes de ruta.** (1) `:51` resuelve `REPO` con **dos** `dirname()` porque
+  hoy cuelga dos niveles abajo de la raíz; en `scripts/` cuelga uno solo y apuntaría al padre
+  del repositorio. (2) `V2_PATRON` (`:55`) se escribe junto al script — quedaría dentro de
+  `scripts/`. (3) La salida por defecto (`:409-410`) es `AQUI/04_v2_contra_v1.txt`, que también
+  caería en `scripts/`, y **§3.5 prohíbe evidencia fuera de `_bitacoras/`**. El argumento de
+  ruta de salida ya existe y sigue mandando; lo que hay que corregir es el defecto. Se hace en
+  un solo paso y **con la mordida de §4.6 después**: el control tiene que seguir cazando lo
+  mismo desde su casa nueva, y hoy sale **exit 0** (114 diferencias · 114 declaradas · 0
+  abiertas · 0 no declaradas).
 - **Plazos.** No hay estimaciones acá a propósito: E4 depende de cuántas iteraciones tome C3,
   y eso no se sabe hasta medir después de P4' y P3.

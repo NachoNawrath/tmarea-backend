@@ -1,0 +1,363 @@
+RECLASIFICACION INSULAR — RECONOCIMIENTO Y ASIENTO EN §9
+2026-08-15
+================================================================================
+
+QUE FUE ESTA SESION, Y QUE NO FUE
+--------------------------------------------------------------------------------
+Fue de SOLO LECTURA y de REGISTRO. No se toco ningun dato, ninguna geometria,
+ningun script del sistema y ninguna capa. Lo unico que se escribio es
+PLAN_JURISDICCION.md §9 y este directorio.
+
+LA PIEZA NO SE EJECUTO. El owner la convirtio en frente propio el mismo dia,
+porque tiene por delante una decision normativa que no iba a tomar sin mirar el
+Art. 2 del D.S. 991: que es la jurisdiccion de una Capitania insular remota
+—isla sola, o isla mas alcance costa-afuera—.
+
+Shell: los comandos se ejecutaron en Git Bash; la forma reproducible para el
+owner esta en PowerShell, en PROCEDENCIA.txt y en la cabecera de cada instrumento.
+
+Estado del repositorio al abrir y al cerrar: HEAD c8012b1. Sin commits.
+
+
+1. LA PREMISA DE LA PIEZA, VERIFICADA — Y ES FALSA POR LA MITAD
+--------------------------------------------------------------------------------
+La pieza se planteo como "reclasificacion, no busqueda: las seis islas ya estan
+en la capa OSM cargada". Se midio antes de construir nada sobre esa frase, que es
+lo que CLAUDE.md §1.2 pide.
+
+  Instrumento: 01_costa_osm_islas.sql
+  Contra: costa_osm — la tabla que el constructor y el corrector de testigos leen.
+          NO el zip de 925 MB, que es otra afirmacion.
+
+  costa_osm: 78.653 filas, extension xmin -80,838 / xmax -63,999
+                                     ymin -56,538 / ymax -16,000
+
+  juan_fernandez  Alejandro Selkirk  -80,738 / -33,733   dentro   36 poligonos
+                  Robinson Crusoe    -78,868 / -33,624   dentro   55 poligonos
+                  San Ambrosio       -79,903 / -26,355   dentro   54 poligonos
+                  San Felix          -80,098 / -26,272   dentro   54 poligonos
+
+  hanga_roa       Isla de Pascua     -109,37 / -27,11    FUERA     0 poligonos
+                  Isla Sala y Gomez  -105,365 / -26,472  FUERA     0 poligonos
+
+VEREDICTO: para `juan_fernandez` es reclasificacion —el dato esta cargado—. Para
+`hanga_roa` sigue siendo CARGA DE CAPA, que es trabajo distinto y mas caro: las
+dos islas estan en el zip pero el cargador recorta a la caja -85..-65 declarada en
+capas_costa.json y las dos quedan afuera.
+
+LA BITACORA ORIGINAL LO TENIA BIEN. _bitacoras/no_cerrables_2026-08-15/ dice en
+su cuadro, textual: "hanga_roa — ESTA. Las 2 FUERA de la caja" y "juan_fernandez —
+ESTA. Las 4 dentro de la caja". Lo que envejecio fue el RESUMEN en §9, que al
+condensar perdio la mitad que decide. Es el modo de falla del §2 en su forma mas
+barata de cometer: "esta en la capa" y "esta en la capa cargada" no son la misma
+afirmacion.
+
+  -> §9 tachado y contestado al pie (§3.3). No se reescribio.
+
+
+2. DONDE VIVE LA MALA CLASIFICACION: EN EL CODIGO, NO EN UN CAMPO
+--------------------------------------------------------------------------------
+scripts/fase4_migrar_insumo_v2.py:369-372
+
+    if amb == "insular_remota":
+        return ("-", "no_cerrable",
+                "el decreto nombra las islas sin coordenadas y el insumo no trae "
+                "capa de islas; requiere fuente externa")
+
+Es una rama que devuelve `no_cerrable` INCONDICIONALMENTE para todo el ambito,
+con la causa escrita en el `return`. La rama vecina —`lacustre`, doce lineas mas
+arriba— SI interroga al dato: `if not [f for c in cuerpos for f in
+(c.get("shapefile_fid") or [])]`. El ambito lacustre pregunta si tiene cuerpos
+adjudicados; el insular no pregunta nada.
+
+Consecuencia: reclasificar NO es editar un campo del v1. Es hacer esa rama
+simetrica con la lacustre —adjudicacion de islas versionada, analoga a
+cotejo_lacustre_adjudicado.json— y agregar una receta insular a la tabla RECETAS
+del constructor, que hoy tiene cuatro (anillo, corte_y_ancla, banda_paralelos,
+union_cuerpos) y ninguna sirve para una isla.
+
+Y la causa que las dos comparten palabra por palabra es falsa en su segunda mitad
+para `juan_fernandez` y verdadera para `hanga_roa`, precisamente porque sale de un
+`return` y no del insumo.
+
+NO SE TOCO NADA DE ESTO. Queda descrito en §9 para el frente.
+
+
+3. FRENTE NUEVO — EL BUFFER ZEE DEL LIMITE EXTERIOR
+--------------------------------------------------------------------------------
+Salio de medir lo que la pieza arrastraba, y es mas grande que la pieza.
+
+  Instrumento: 02_zee_insular.sql
+  Contra: jurisdicciones_decreto (el ANDAMIO, 44 maritimas con geometria).
+          NO jurisdicciones_ds991, que hoy trae solo las 6 lacustres.
+
+  ZEE que existe UNICAMENTE por las islas de juan_fernandez     976.448,7 km2
+  De eso, ya adjudicado a 15 Capitanias CONTINENTALES           742.627,0 km2
+
+    Taltal        103.998,2 (64,4%)    Constitucion   92.684,2 (68,6%)
+    Caldera        86.372,1 (64,1%)    Los Vilos      83.905,1 (65,5%)
+    Pichilemu      65.912,7 (64,8%)    Huasco         58.221,8 (54,8%)
+    Antofagasta    52.322,7 (51,2%)    Chanaral       42.787,6 (65,7%)
+    Papudo         39.749,9 (69,6%)    San Antonio    33.917,8 (70,7%)
+    Valparaiso     31.737,7 (71,4%)    Quintero       23.451,2 (70,3%)
+    Algarrobo      22.432,3 (70,9%)    Tongoy          3.345,3
+    Coquimbo        1.788,4
+
+ESTO PASA HOY, sin ninguna insular construida. Siete de cada diez km2 de la
+jurisdiccion de San Antonio, Valparaiso, Algarrobo, Quintero y Papudo son agua
+que ninguna costa continental alcanza con 200 mn: existe porque Robinson Crusoe
+esta en la capa del rol `limite_exterior`.
+
+ENCAJA CON ALGO QUE E4 YA TENIA ESCRITO Y NADIE HABIA CRUZADO: "conectividad
+global — descartada y medida: deja 5 de 6 pares en cero pero borra la ZEE de las
+islas oceanicas". El plan sabia que esa ZEE estaba ahi. Lo que no tenia era el
+numero ni de quien era.
+
+LOS DOS NUMEROS SON UN PISO. La auditoria de corte del propio instrumento cuenta
+TRES piezas insulares, no cuatro: el ST_Simplify del punto 4 ya habia borrado San
+Felix antes del buffer. Con las cuatro adentro la cifra sube. Se rotula asi
+—"3 de 4"— y no "las cuatro islas", porque eso afirmaria algo que la medicion no
+midio.
+
+LA PREGUNTA ABIERTA ES NORMATIVA Y ES DEL OWNER, y no se contesta midiendo:
+
+  · darle alcance costa-afuera propio a juan_fernandez es disputarle 742.627,0
+    km2 a quince Capitanias continentales;
+  · no darselo es dejar que quince continentales sigan siendo duenas del mar de
+    Juan Fernandez.
+
+Las dos son ADJUDICACION, no construccion. Base: Art. 2 del D.S. 991 — que
+ademas NO esta en el insumo (ver el pendiente de trazabilidad de INV-3.7: el v2
+trae los parrafos del Art. 1 y la cita del Art. 2 vive solo en la transcripcion
+del contrato). Probablemente exija consulta a DIRECTEMAR, como Cabo del Espiritu
+Santo, y por eso entra al registro acumulativo de
+_bitacoras/consulta_directemar_registro.md.
+
+ACA NO SE DIAGNOSTICA. Asentado en §9 con los numeros y sin propuesta.
+
+
+4. FRENTE NUEVO — ST_Simplify(0,01) BORRA UNA ISLA
+--------------------------------------------------------------------------------
+  Instrumento: 03_simplify_islas.sql
+
+  isla                                     antes        despues
+  Robinson Crusoe   -78,87 / -33,62      91,682 km2    88,916 km2
+  Alejandro Selkirk -80,74 / -33,73      51,165 km2    47,540 km2
+  San Ambrosio      -79,90 / -26,35       1,512 km2     0,743 km2
+  San Felix         -80,0977 / -26,2720   0,939 km2    DESAPARECE
+
+El constructor simplifica la union de la capa del limite exterior con tolerancia
+0,01 grados ANTES de bufferizar las 200 mn. Para el borde continental la
+tolerancia es adecuada A PROPOSITO y el manifiesto lo declara —el error de una
+costa 1:10m son cientos de metros, cuatro ordenes por debajo de las 200 millas—.
+Lo que nadie habia medido es que le hace a una isla oceanica cuyo diametro es del
+orden de la tolerancia. ST_Simplify es Douglas-Peucker y puede eliminar un anillo
+entero; no es ST_SimplifyPreserveTopology.
+
+HOY NO IMPORTA: nadie reclama esa agua y la jurisdiccion insular no esta
+construida.
+
+EL DIA QUE juan_fernandez SE CONSTRUYA, SE CONSTRUYE CON 3 ISLAS DE 4 Y NINGUN
+CONTROL AVISA. C1 solo exige que la geometria no sea nula, vacia, invalida ni de
+area cero, y la figura que queda cumple las cuatro cosas. Es un falso negativo
+silencioso de manual.
+
+ES DEFECTO DEL LIMITE EXTERIOR, NO DE LA PIEZA INSULAR, y arreglarlo dentro de
+ella seria un caso particular (§4.3): la tolerancia la fija el mecanismo del
+buffer, que sirve a las 44 maritimas.
+
+NO DETERMINADO: si Sala y Gomez —mas chica que San Felix— sobrevive al mismo
+simplify. Esta fuera de la caja, asi que solo se puede medir con la caja ampliada
+de la Opcion A. Es una consulta y no se corrio.
+
+Asentado en §9 sin arreglar.
+
+
+5. LAS DOS OPCIONES PARA hanga_roa, CON SU NUMERO — REGISTRO DE LA RECOMENDACION
+--------------------------------------------------------------------------------
+Las dos estan escritas desde el 2026-08-10 en capas_costa.json, campo
+`recorte.advertencia_ambito`: "esta caja tiene que crecer o hay que declarar una
+capa de tierra propia para ellos". No las invento esta sesion; las midio.
+
+  Instrumento: 04_opcion_A_hanga_roa.py
+
+  OPCION A — crecer la caja de -85 a -110
+    Toca: recorte de capas_costa.json, X_W del constructor, fase5_cargar_costa.py.
+    Regenera: la carga entera de costa_osm desde el zip de 925 MB, costa_osm_sub,
+              y detras la capa completa.
+    COSTO MEDIDO: receta_banda_paralelos devuelve box(X_W, sur, X_E, norte), asi
+    que TODAS las bandas se estiran 25 grados al Oeste, y el limite exterior se
+    arma bufferizando ne_10m_land recortada a esa MISMA caja, donde Pascua y Sala
+    y Gomez si estan. Resultado, sin que nadie decida nada:
+
+      ZEE de 200 mn de las dos islas de hanga_roa           721.870,3 km2
+      adjudicado a ocho Capitanias continentales            543.337,9 km2
+        taltal 134.499,5 · caldera 112.444,1 · huasco 101.287,7
+        antofagasta 84.947,4 · chanaral 53.156,0 · coquimbo 46.338,7
+        tongoy 8.479,7 · mejillones 2.184,8
+
+    Y C3 NO LO VE: las bandas no se pisan entre si. Es la forma exacta de D16 —
+    producir una capa que adjudica agua que nadie adjudico.
+
+  OPCION B — capa de tierra propia para el ambito insular_remota
+    Toca: un rol nuevo en capas_costa.json, su carga a tabla propia, la rama
+          insular de la migracion y la receta nueva.
+    Regenera: solo la tabla nueva. costa_osm no se re-carga, las 44 maritimas no
+              se re-construyen, las bandas continentales no cambian de forma.
+    Controles que se mueven: los del punto 6, mas el
+    `resolucion_minima_vs_limite_exterior: 10` que el cargador exige y que habria
+    que declarar para la capa nueva.
+
+RECOMENDACION DEL AGENTE, Y DECISION REGISTRADA DEL OWNER (2026-08-15): OPCION B.
+A es mas barata de escribir y mas cara de tener: mete a ocho Capitanias
+continentales en una adjudicacion de medio millon de km2 como efecto lateral de
+mover una constante, y ningun control lo caza. Es la opcion que hace que todo
+pase, que §0.3 manda mirar primero. B mantiene el aislamiento que el propio
+manifiesto habia previsto por escrito hace cinco dias.
+
+DESCARTADA POR EL OWNER, CON SU MOTIVO (§0.2): la tercera via —construir
+juan_fernandez sola ahora y dejar hanga_roa no_cerrable—. Es viable tecnicamente
+y deja el ambito PARTIDO EN DOS ESTADOS, obligando a declarar un insular medio
+construido: justo el TERCER ESTADO de estado_geometria que §9 ya tiene abierto y
+sin resolver en el bullet del alcance costa-afuera.
+
+
+6. QUE CONTROLES HOY EN VERDE SE MOVERIAN — medido, y NO ejecutado
+--------------------------------------------------------------------------------
+El "verde hoy" sale de consultar jurisdicciones_ds991_verificacion, no de memoria.
+Se deja escrito aca porque es el trabajo caro de la sesion y el frente lo va a
+necesitar entero.
+
+  C3 alcance (capa)     ok, obtenido 0. EL QUE MAS CUESTA. Un par de traslape con
+                        un lado insular_remota y otro maritima es PAR CRUZADO: se
+                        imputa a (capa), y el gate calcula
+                        publicado = habilitado AND controles_ok AND con_geom > 0
+                                    AND NOT capa.rota
+                        para TODOS los ambitos. Se caeria la publicacion del
+                        LACUSTRE, viva desde el 2026-08-13. Los 742.627,0 km2 del
+                        punto 3 dicen que el par aparece.
+
+  C1 insular_remota     ok, 0. El constructor asigna geom en tres lugares:
+                        _amplia para maritima, _base para lacustre y antartica, y
+                        la ZEE solo WHERE ambito = 'maritima'. NO HAY NINGUNA
+                        RAMA QUE LE ASIGNE GEOMETRIA A insular_remota. Estado
+                        'construida' + geom NULL = C1 falla.
+
+  C5 insular_remota     ok, 0. Las dos traen punto_representativo null y
+                        causa_sin_punto_representativo null. Con geom no nula,
+                        C5 falla. Pide testigo o causa escrita.
+
+  zonas-aviso.js:196    verde (suite 84/84). Exige participa_matching === false
+                        para toda zona declarada, y la migracion lo deriva a true
+                        (:1177, participa_matching = (estado == "cerrable")). Las
+                        dos entradas de zonas_aviso.json tienen que retirarse EN
+                        EL MISMO MOVIMIENTO, y :216 muerde en el sentido
+                        contrario si se retiran sin mover el campo. Es un paso,
+                        no dos.
+
+  ambitos-publicados    C3 y C4 son POR AMBITO. Se mantienen verdes solo porque
+  .js                   insular_remota sigue habilitado_para_publicar: false y el
+                        gate borra sus filas. PERO su `causa` y su
+                        `motivo_habilitacion` pasan a ser texto falso —"no hay
+                        geometria que publicar", "las unicas del insumo cuyo
+                        ambito entero es no_cerrable"— y ningun validador lo caza:
+                        lo caza §2.
+                        CONFIRMADO ademas: la deuda de maritima —52 esperadas
+                        contra 44 construibles— NO la toca esta pieza. Las dos
+                        insulares no cuentan para el C4 maritimo.
+
+  fase5_corregir_       reproduce byte a byte hoy (movidos: 30). Con una
+  testigos.py           jurisdiccion mas deja de estar garantizado. Mismo
+                        pendiente que §9 ya anoto para arica. NO DETERMINADO.
+
+  B0 / B12              tocar el v2 dispara los dos. B12 exige
+                        tm025a_p7_sellar_adjudicacion.py --sellar --autorizacion.
+
+  verificar_v2_contra_  exit 0 (114 dif · 114 declaradas · 0 abiertas · 0 no
+  v1.py                 declaradas). Es la ganancia de la sesion anterior y es lo
+                        primero que se pierde con una escritura descuidada.
+
+NO DETERMINADO, Y ES EL QUE DECIDE: si el par cruzado de C3 aparece de verdad.
+Exige correr el build con resta de tierra (~20 min). Esta sesion fue de solo
+lectura.
+
+
+7. CONTEOS — CADA UNO CON SU AMBITO
+--------------------------------------------------------------------------------
+Verificados contra el v2 al abrir la sesion, no recordados:
+
+  maritima              44 cerrable /  8 no_cerrable   NO SE MUEVE NI UN DIGITO
+  sobre las 64          54 cerrable / 10 no_cerrable
+  insular_remota         0 cerrable /  2 no_cerrable
+
+  Si algun dia juan_fernandez se construye sola:  55/9 sobre las 64
+  Si se construyen las dos:                       56/8 sobre las 64
+  Maritima sigue 44/8 en los dos casos: ninguna de las dos es maritima.
+
+NADA DE ESTO SE MOVIO EN ESTA SESION. La pieza no se ejecuto.
+
+
+8. HALLAZGO LATERAL, ANOTADO Y NO TOCADO
+--------------------------------------------------------------------------------
+El v1 declara participa_matching: true para hanga_roa y juan_fernandez. El v2 lo
+deriva false. Es campo muerto en la FUENTE, contradicho por su propio derivado.
+
+No se corrige aca por decision del owner: entra al frente insular, o al de los 50
+fallos del auditor del v1 (fase4_auditoria_insumo.py, exit 1, A0 3 · A1 12 · A2 9
+· A4 12 · A5 14), que ya reclama por estas dos en A4. Ese frente no se abre.
+
+
+9. CORRECCION DE FORMA ACEPTADA: EL MOVIMIENTO 3 NO ES MOVIMIENTO PURO
+--------------------------------------------------------------------------------
+Mudar verificar_v2_contra_v1.py de _bitacoras/arica_limite_norte_2026-08-15/ a
+scripts/ NO se hace con un git mv. Son tres constantes de ruta:
+
+  :51        REPO se resuelve con DOS dirname() porque hoy cuelga dos niveles
+             abajo de la raiz. En scripts/ cuelga uno solo y apuntaria al padre
+             del repositorio.
+  :55        V2_PATRON se escribe junto al script — quedaria dentro de scripts/.
+  :409-410   la salida por defecto es AQUI/04_v2_contra_v1.txt, que tambien
+             caeria en scripts/, y §3.5 prohibe evidencia fuera de _bitacoras/.
+
+El argumento de ruta de salida ya existe y sigue mandando; lo que hay que
+corregir es el DEFECTO. Se hace en un solo paso y con la mordida de §4.6 despues:
+el control tiene que seguir cazando lo mismo desde su casa nueva.
+
+NO SE HIZO en esta sesion. Asentado en §9 con esa precision.
+
+
+10. DOS CORRECCIONES DE INSTRUMENTO, HECHAS ANTES DE REPORTAR
+--------------------------------------------------------------------------------
+Van escritas porque el metodo vale tanto como el numero.
+
+(i) 02_zee_insular.sql rotulaba su total como "las 4 islas de juan_fernandez", y
+    su propia auditoria de corte —que se agrego justamente para poder auditar el
+    criterio— contaba TRES piezas. La cuarta la habia borrado el simplify. El
+    rotulo se corrigio a "3 de 4" y el numero se declaro PISO, en el instrumento
+    y en §9. Si esa auditoria no estuviera, el numero seguiria diciendo cuatro y
+    seria falso: un control de forma cazo un error de afirmacion.
+
+(ii) 04_opcion_A_hanga_roa.py salia con SyntaxWarning por las rutas de Windows en
+     su docstring. Docstring a raw string. La salida no cambio.
+
+Y una trampa que costo una corrida y queda en PROCEDENCIA: clip() de geopandas
+devuelve MultiPolygons por fila, con Sudamerica entera en uno solo. Sin explode()
+ninguna pieza tiene bounds de isla y el filtro devuelve CERO islas — que se lee
+como "las islas no estan", exactamente la afirmacion falsa que este directorio
+existe para no repetir.
+
+
+11. LO QUE LE QUEDA AL OWNER
+--------------------------------------------------------------------------------
+  1. Art. 2 del D.S. 991: que es la jurisdiccion de una Capitania insular remota.
+     Sin eso, todo lo demas de este frente es prematuro.
+  2. De quien es el mar de las islas oceanicas (punto 3). Probable consulta a
+     DIRECTEMAR.
+  3. Opcion A o B para hanga_roa cuando 1 y 2 esten. Recomendacion registrada: B.
+
+Objeciones que quedan en pie aunque el frente se ejecute:
+  · el ST_Simplify que borra San Felix es defecto del limite exterior y no se
+    arregla dentro de la pieza insular, pero construir juan_fernandez sin
+    arreglarlo es publicar tres islas de cuatro;
+  · el Art. 2 no se reproduce desde el repositorio, que es lo que INV-3.7 exige.
+    Cualquier adjudicacion que se apoye en el hereda ese pendiente.

@@ -1,0 +1,179 @@
+PROCEDENCIA — reclasificacion_insular_2026-08-15
+================================================================================
+
+QUE HAY EN ESTE DIRECTORIO
+--------------------------------------------------------------------------------
+Los cuatro instrumentos de medicion que sostienen los tres asientos que la sesion
+del 2026-08-15 dejo en PLAN_JURISDICCION.md §9:
+
+  · el TACHADO de "las seis islas estan en la capa OSM cargada";
+  · el frente nuevo del buffer ZEE del limite exterior;
+  · el frente nuevo del ST_Simplify que borra una isla.
+
+Estan aca y no en el scratchpad de una sesion POR EL MOTIVO EXACTO que el ancla
+de arica dejo escrito el 2026-08-15: el valor `070 22 49,7 W` no existia en el
+repositorio, vivia solo en una memoria de sesion, y hubo que bajar el paquete de
+DIFROL de nuevo y volver a medirlo. Un instrumento que no se versiona lo vuelve a
+pagar la sesion siguiente. Estos cuatro son baratos de correr y caros de
+reconstruir: lo caro no es el SQL, es haber descubierto que hay que preguntarle a
+`costa_osm` y no al zip, y que el corte del simplify va ANTES del buffer.
+
+  01_costa_osm_islas.sql       ¿estan las seis islas en la capa OSM CARGADA?
+  01_costa_osm_islas.txt       su salida literal
+  02_zee_insular.sql           ¿de quien es hoy el mar de Juan Fernandez?
+  02_zee_insular.txt           su salida literal
+  03_simplify_islas.sql        ¿que islas sobreviven al ST_Simplify(0,01)?
+  03_simplify_islas.txt        su salida literal
+  04_opcion_A_hanga_roa.py     el costo de crecer la caja (Opcion A)
+  04_opcion_A_hanga_roa.txt    su salida literal
+  reclasificacion_insular_2026-08-15.txt   la bitacora
+
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+Las corridas cuya salida esta en los .txt se EJECUTARON con Git Bash sobre
+Windows 10. La forma REPRODUCIBLE, que es la que va en la cabecera de cada
+instrumento y la que el owner corre, esta en PowerShell. Las dos formas hacen lo
+mismo; difieren en como se pasa la contrasena y en el separador de rutas.
+
+Desde la raiz del repositorio:
+
+  $env:PGPASSWORD = "<la de .env, clave DB_PASSWORD>"
+  & "C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -h localhost `
+      -d mapa_navegacion `
+      -f _bitacoras\reclasificacion_insular_2026-08-15\01_costa_osm_islas.sql
+
+  (idem 02_zee_insular.sql y 03_simplify_islas.sql)
+
+  .\tools\raster-build\.venv\Scripts\python.exe `
+      _bitacoras\reclasificacion_insular_2026-08-15\04_opcion_A_hanga_roa.py
+
+Para volcar la salida a archivo sin romper los acentos, NO usar `Out-File -Encoding
+utf8` (mete BOM). Redirigir con `>` deja la salida en la codificacion de la
+consola; si el archivo lo va a leer otra herramienta, capturar en variable y
+escribir con [System.IO.File]::WriteAllText(ruta, texto, (New-Object
+System.Text.UTF8Encoding($false))).
+
+EL INTERPRETE DE PYTHON NO ES `python` NI `py`. `python` es el stub de la
+Microsoft Store y no esta en el PATH; `py` (3.14.6) no tiene geopandas. El de
+este repositorio es tools\raster-build\.venv\Scripts\python.exe (geopandas 1.1.4,
+pyogrio 0.13.0, pyproj). Vale para cualquier .py del repo.
+
+
+DE DONDE SALE CADA DATO
+--------------------------------------------------------------------------------
+Ninguno de los cuatro descarga nada. Todos leen lo que ya esta versionado o
+cargado, y por eso este PROCEDENCIA no lleva URL ni sha de descarga propia: la
+procedencia de las capas vive donde le corresponde y no se duplica aca.
+
+  costa_osm (tabla)          la capa OSM land-polygons cargada y recortada a la
+                             caja. Su procedencia completa —URL, sha256, etag,
+                             advertencia de que el origen se regenera a diario—
+                             esta en geodata/costa/capas_costa.json y en
+                             geodata/costa/PROCEDENCIA.txt. 925 MB, NO va al repo.
+                             78.653 filas, extension medida xmin -80,838 /
+                             xmax -63,999 / ymin -56,538 / ymax -16,000.
+
+  ne_land (tabla) y          Natural Earth 10m land. Versionada en el repo:
+  geodata/ne_10m_land.shp    sha256 4cad3a49bc75c1a4c2f3d7efae04f2f8e63151c9
+                             6764b2658effabf524331fa6 (declarado en
+                             capas_costa.json). Rol `limite_exterior`.
+                             11 filas en la base; 178 piezas al explotar dentro
+                             de la caja ampliada de la Opcion A.
+
+  jurisdicciones_decreto     el ANDAMIO. 52 marítimas, 44 con geometria; 6
+  (tabla)                    lacustres, 4 antarticas, 2 insulares sin geometria.
+                             Marcado SUPERSEDIDO Y DESACTUALIZADO en
+                             data/decreto/capa_consultada.json. Se mide contra el
+                             porque es la unica geometria maritima construida que
+                             hay en la base: jurisdicciones_ds991 hoy trae solo
+                             las 6 lacustres, el gate por ambito (D3) retiro el
+                             resto. LOS NUMEROS DE 02 SON DE ESE BUILD, no de uno
+                             nuevo.
+
+  data/decreto/              versionado. sha del v2 en el bloque `derivado_de` y
+  jurisdicciones_v2.json     en jurisdicciones_ds991_procedencia. HEAD c8012b1.
+
+  la caja de trabajo         x_w -85, y_s -60, x_e -65, y_n -17. CONVENCION
+                             nuestra, no decreto. Declarada en el bloque
+                             `recorte` de capas_costa.json, junto con la
+                             advertencia de ambito del 2026-08-10 que anticipo
+                             todo esto por escrito: "Los ambitos 'antartica' e
+                             'insular_remota' caen fuera de esta caja... Si algun
+                             dia se les construye geometria de agua, esta caja
+                             tiene que crecer o hay que declarar una capa de
+                             tierra propia para ellos."
+
+  las coordenadas de las     del barrido del 2026-08-14/15, en
+  seis islas                 _bitacoras/no_cerrables_2026-08-15/02_canales_y_islas.txt
+                             y 03_salaygomez_canales_ancla.txt. NO se remidieron
+                             aca: 01 las usa como entrada.
+
+
+TRAMPAS DE PARSEO Y DE METODO QUE COSTARON TRABAJO
+--------------------------------------------------------------------------------
+Esto es lo que deja de ser descubrible en cuanto los instrumentos no esten.
+
+1. `clip()` de geopandas devuelve MultiPolygons POR FILA, y el continente
+   sudamericano entero viene en uno solo. Sin `.explode(index_parts=False)`
+   ninguna pieza tiene bounds de isla y el filtro por longitud devuelve CERO
+   islas — lo que se lee como "las islas no estan", que es exactamente la
+   afirmacion falsa que este directorio existe para no repetir. Costo una corrida.
+   Queda comentado dentro de 04.
+
+2. LA AUSENCIA FALSA DE SALA Y GOMEZ, otra vez y por tercera vez en este
+   repositorio. Una caja de 0,1 grados alrededor de su coordenada nominal
+   devuelve 0 poligonos; una de 0,5 devuelve 7. La isla esta en -105,366 y la
+   coordenada nominal redondeada no la contiene. Ver
+   _bitacoras/no_cerrables_2026-08-15/03_salaygomez_canales_ancla.txt, que ya
+   habia pagado esta misma trampa. Una afirmacion de ausencia se escribe con el
+   comando que la midio (CLAUDE.md §2).
+
+3. EL ORDEN IMPORTA: el ST_Simplify va ANTES del buffer. Medir el buffer
+   suponiendo que las cuatro islas entran da un numero que la propia auditoria de
+   corte de 02 desmiente: entran TRES. Por eso 02 imprime las piezas de cada lado
+   del corte antes de dar el total, y por eso el total se rotula como piso.
+   Si esa auditoria no estuviera, 02 diria "las cuatro islas" y seria falso.
+
+4. "ESTA EN LA CAPA" NO ES "ESTA EN LA CAPA CARGADA". El barrido anterior midio
+   el zip de 925 MB y encontro las seis; 01 mide `costa_osm`, que es lo que la
+   construccion lee, y encuentra cuatro. Las dos mediciones son correctas y miden
+   cosas distintas. La que gobierna la construccion es la segunda.
+
+5. Un buffer en grados NO es un buffer en metros. 04 proyecta a azimutal
+   equidistante centrada en cada isla y vuelve; las areas se calculan en Lambert
+   azimutal equivalente. Es aproximacion del ST_Buffer(::geography) del
+   constructor, con 1-2% de distorsion a 370 km: sirve para elegir entre dos
+   caminos, no para escribir un numero en un dato.
+
+
+UN QUINTO INSTRUMENTO QUE SE DESCARTO, Y SU NUMERO (CLAUDE.md §0.2)
+--------------------------------------------------------------------------------
+El primer intento de medir la ZEE insular fue en geopandas, aproximando el
+pipeline sin tocar la base. Dio 920.222,4 km2 de agua alcanzable solo desde las
+islas, sobre 19 bandas.
+
+Se descarto y se reemplazo por 02_zee_insular.sql, que mide CONTRA LA GEOMETRIA
+CONSTRUIDA y da 976.448,7 km2 sobre 15 jurisdicciones. Los dos numeros no miden
+lo mismo: el de geopandas intersecta las bandas RECTANGULARES del insumo, que no
+son la figura final —a la figura final se le resto tierra y se le aplicaron
+fronteras y recortes—, asi que cuenta bandas que en la capa real no llegan y le
+falta area que en la capa real si esta. La diferencia (56.226,3 km2, 5,8%) no es
+error de nadie: es la distancia entre la receta y la figura.
+
+Queda escrito porque un descarte silencioso es una decision que el owner no tomo,
+y porque si alguien vuelve a medir esto con geopandas va a obtener 920.222,4 y
+tiene que saber por que no coincide con lo que dice §9.
+
+
+LO QUE ESTOS INSTRUMENTOS NO MIDEN
+--------------------------------------------------------------------------------
+  · De quien DEBE ser el mar de las islas oceanicas. Es el Art. 2 del D.S. 991,
+    es del owner, y probablemente exija consulta a DIRECTEMAR.
+  · Si Sala y Gomez sobrevive al ST_Simplify(0,01). Esta fuera de la caja, asi
+    que solo se puede medir con la caja ampliada de la Opcion A. NO DETERMINADO.
+  · Si un par de traslape cruzado insular_remota x maritima aparece de verdad al
+    construir. Exige correr el build con resta de tierra. NO CORRIDO: la sesion
+    fue de solo lectura.
+  · Si fase5_corregir_testigos.py sigue reproduciendo byte a byte con una
+    jurisdiccion mas. Mismo motivo.
