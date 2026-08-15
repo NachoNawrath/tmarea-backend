@@ -1,0 +1,34 @@
+==============================================================================
+MORDIDA DE LOS DOS CONTROLES QUE ESTA PIEZA TOCO — CLAUDE.md 4.6
+==============================================================================
+
+  v1 antes  sha256 4e28dd88652617439dae8bc6e0fb3063e8780de9f35f7dafc8bce87b91b4da28
+  v2 antes  sha256 ddff10f45a8e4f77d441690ef6ba265705393e794d4a56b15aabafc33a4a5354
+
+LOS CASOS
+------------------------------------------------------------------------------
+  CAZADO   BASE  el dato como quedo, sin defecto
+           esperaba exit 0 · dio exit 0
+           el control tiene que pasar antes de creerle a cualquier rojo
+  CAZADO   A1    la causa VIEJA de vuelta en el v2 (punta_delgada)
+           esperaba exit 1 · dio exit 1
+           antes salia 3 por declarada; ahora es divergencia NO declarada
+  CAZADO   A2    `derivado_de` desfasado (el paso que se olvida)
+           esperaba exit 1 · dio exit 1
+           da 1 y no 3: no es una divergencia declarada, es el v2 declarando derivar de un v1 que no esta
+  CAZADO   A3    un toponimo del IGM movido 0,01° en el v2
+           esperaba exit 1 · dio exit 1
+           ESTE NO SE CAZABA ANTES: el permiso de apendice sobre `puntos_notables` lo dejaba pasar
+  CAZADO   B1    `Punta Harry` sacado del v1
+           esperaba exit 2 · dio exit 2
+           el verificador nuevo tiene que dar ALTO: la causa que nombra ese punto quedaria mintiendo
+
+EL DATO REAL VOLVIO A DONDE ESTABA
+------------------------------------------------------------------------------
+  v1 despues sha256 4e28dd88652617439dae8bc6e0fb3063e8780de9f35f7dafc8bce87b91b4da28   ok
+  v2 despues sha256 ddff10f45a8e4f77d441690ef6ba265705393e794d4a56b15aabafc33a4a5354   ok
+
+==============================================================================
+VEREDICTO: LOS DOS CONTROLES MUERDEN — exit 0.
+           Los 4 defectos se cazaron y el dato quedo intacto.
+==============================================================================

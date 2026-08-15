@@ -16,7 +16,16 @@ Cualquier otra diferencia es el desfase que este control existe para cazar.
   · el v2 real     data/decreto/jurisdicciones_v2.json  (con la insercion aplicada)
   · el v2 patron   se regenera aca, en _v2_regenerado.json, y NO se versiona
   · veredicto      exit 0 sin divergencia · exit 1 divergencia NO declarada
-                   exit 2 no se pudo medir
+                   exit 2 no se pudo medir · exit 3 divergencia declarada y abierta
+
+LA RUTA DE SALIDA SE PASA POR ARGUMENTO desde el 2026-08-15, y el defecto no
+cambio: sin argumento sigue escribiendo `04_v2_contra_v1.txt` aca al lado. El
+motivo es CLAUDE.md 3.3 — este control hay que correrlo cada vez que se toque el
+v2 quirurgicamente, y correrlo donde nacio PISA la constancia de la sesion que lo
+produjo. Una bitacora publicada se agrega, no se reescribe. Cada corrida nueva
+escribe en la bitacora de SU sesion:
+
+    ... verificar_v2_contra_v1.py <ruta del .txt de salida>
 
 NO ESCRIBE NADA en data/, src/ ni geodata/. La constante V2 del modulo de migracion
 se sustituye en memoria antes de llamarlo, asi que el v2 real no se toca ni por un
@@ -54,18 +63,26 @@ V2_PATRON = os.path.join(AQUI, "_v2_regenerado.json")     # gitignored
 
 # Bloques que la migracion NO produce y otro script AGREGA ENTEROS: en el patron
 # no existen y en el v2 si.
+#
+# 2026-08-15, Opcion 2: SE RETIRA `pendientes`. Ya no lo agrega nadie sobre el
+# derivado — vive en el v1 y la migracion lo sube con su linea de paso—, asi que
+# el patron lo produce y tiene que salir identico. Retirarlo APRIETA el control:
+# hasta hoy perdonaba el bloque entero.
 BLOQUES_AGREGADOS = {
     "correccion_testigos": "fase5_corregir_testigos.py",
-    "pendientes": "fase5_registrar_toponimos_igm.py",
 }
 
 # Listas donde otro script AGREGA AL FINAL. No se declaran como "todo lo que pase
 # aca esta bien" —eso taparia una modificacion de lo que la migracion si produce—:
 # se exige que la lista del patron sea PREFIJO EXACTO de la del v2, y lo que sobra
 # al final se lista una por una para que se vea quien la puso.
+#
+# 2026-08-15, Opcion 2: SE RETIRA `puntos_notables`, por el mismo motivo. Los 4
+# toponimos del IGM viven en el v1 desde hoy y la migracion copia la lista
+# verbatim, asi que el patron trae los 76 y se comparan uno por uno. Hasta hoy se
+# perdonaban 4 elementos de cola.
 LISTAS_CON_APENDICE = {
     "convenciones": "fase5_corregir_testigos.py (el umbral de 500 m)",
-    "puntos_notables": "fase5_registrar_toponimos_igm.py (los 4 toponimos del IGM)",
 }
 
 BLOQUES_DE_OTROS = dict(BLOQUES_AGREGADOS)
@@ -76,21 +93,19 @@ BLOQUES_DE_OTROS = dict(BLOQUES_AGREGADOS)
 # nombra, la deja a la vista en cada corrida y en el diff de git, y exige que se
 # escriba como cerrarla. Cualquier divergencia que no este nombrada aca sigue
 # saliendo `1`, que es lo que impide que esta lista se convierta en un cajon.
-DIVERGENCIAS_ABIERTAS = {
-    "jurisdicciones[punta_delgada].causa_sin_geometria": (
-        "PRECEDE A ESTA SESION — medido contra HEAD e2db84b, donde ya estaba. El v2 "
-        "trae una causa informativa que el v1 NO TIENE EN NINGUN CAMPO: ni en "
-        "`motivo_exclusion` ni en `revisar`. Regenerar el v2 la reemplazaria por el "
-        "texto viejo del v1 en silencio, y el texto viejo ADEMAS esta vencido: dice "
-        "que faltan las coordenadas de Punta Harry y Cabo San Vicente, y los dos "
-        "estan verificados contra el IGM y viven en `puntos_notables` desde la "
-        "pasada de toponimos. Es conocimiento que solo vive en el DERIVADO, que es "
-        "la inversion que INV-3.7 prohibe, y es la misma forma que la trampa de la "
-        "laguna Galletue. CIERRA cuando la causa vigente baje al v1."),
-    "jurisdicciones[tierra_del_fuego].causa_sin_geometria": (
-        "PRECEDE A ESTA SESION — medido contra HEAD e2db84b. Identica a la de "
-        "`punta_delgada` y por el mismo motivo. CIERRA por el mismo camino."),
-}
+#
+# CERRADAS EL 2026-08-15 (Opcion 2), y por eso el dict quedo vacio: las dos que
+# vivian aca eran `jurisdicciones[punta_delgada].causa_sin_geometria` y la de
+# `tierra_del_fuego`. Su condicion de cierre escrita era "cuando la causa vigente
+# baje al v1", y bajo — con los 4 toponimos del IGM y el bloque `pendientes`, que
+# es lo que hace verdadero al texto. Evidencia en
+# `_bitacoras/causa_pd_tdf_2026-08-15/`.
+#
+# Se dejan retiradas y no comentadas adentro: una entrada que ya no puede
+# dispararse es un permiso vivo esperando a que el defecto vuelva. El dict vacio
+# es el estado correcto — cualquier divergencia sale `1` hasta que alguien la
+# declare a proposito, que es lo que impide que esta lista se vuelva un cajon.
+DIVERGENCIAS_ABIERTAS = {}
 
 # Dentro de cada jurisdiccion, los campos que el corrector de testigos reescribe.
 # El resto tiene que salir IDENTICO de la migracion.
@@ -367,9 +382,8 @@ def main():
         codigo, veredicto = 1, "DIVERGENCIA NO DECLARADA — exit 1"
     elif abiertas:
         codigo, veredicto = 3, (
-            f"DIVERGENCIA DECLARADA Y ABIERTA — exit 3. Son {len(abiertas)}, las dos "
-            f"anteriores a esta sesion.\n            Lo que esta sesion inserto pasa "
-            f"limpio; lo que queda abierto esta nombrado arriba\n            y no se "
+            f"DIVERGENCIA DECLARADA Y ABIERTA — exit 3. Son {len(abiertas)}, "
+            f"nombradas arriba\n            con su condicion de cierre. No se "
             f"cierra callandolo.")
     else:
         codigo, veredicto = 0, "SIN DIVERGENCIA — exit 0"
@@ -392,9 +406,12 @@ def main():
     # corrida moria con UnicodeEncodeError y dejaba en disco el .txt de la corrida
     # ANTERIOR, con exit 1 y sin decir por que. Primero el archivo; despues la
     # pantalla, que es lo prescindible.
-    with io.open(os.path.join(AQUI, "04_v2_contra_v1.txt"), "w",
-                 encoding="utf-8", newline="\n") as fh:
+    destino = (os.path.abspath(sys.argv[1]) if len(sys.argv) > 1
+               else os.path.join(AQUI, "04_v2_contra_v1.txt"))
+    os.makedirs(os.path.dirname(destino), exist_ok=True)
+    with io.open(destino, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(texto)
+    L.append(f"\n(evidencia escrita en {os.path.relpath(destino, REPO)})")
 
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")

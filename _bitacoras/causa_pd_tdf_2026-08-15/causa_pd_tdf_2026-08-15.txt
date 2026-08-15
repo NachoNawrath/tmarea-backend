@@ -1,0 +1,281 @@
+================================================================================
+LA CAUSA DE `punta_delgada` Y `tierra_del_fuego` BAJA AL V1 — OPCION 2
+Orden del owner del 2026-08-15: primer punto de la sesion, ANTES de la Pieza 3.
+Cierra la divergencia que `_bitacoras/arica_limite_norte_2026-08-15/` dejo
+declarada con codigo 3. Escrito segun el estandar de cinco puntos de CLAUDE.md 8.
+================================================================================
+
+EL ROTULO, ANTES QUE NADA
+--------------------------------------------------------------------------------
+**CIERRA LA DIVERGENCIA, NO LAS JURISDICCIONES.** `punta_delgada` y
+`tierra_del_fuego` siguen `no_cerrable`, sin geometria, con
+`participa_matching: false`. **Marítima sigue 44/8; sobre las 64, 54/10.** Sigue
+faltando Cabo del Espiritu Santo (fuente argentina, no esta en el repositorio) y
+sigue faltando el ancla de Tierra del Fuego.
+
+SHELL DECLARADA (7.3) — en PowerShell, desde la raiz:
+
+    cd C:\Users\katia\tmarea-backend
+    .\tools\raster-build\.venv\Scripts\python.exe _bitacoras\causa_pd_tdf_2026-08-15\<script>.py
+
+El interprete NO es `py` (no tiene geopandas) ni `python` (stub de la Store): es
+`tools/raster-build/.venv/Scripts/python.exe`.
+
+ORDEN DE EJECUCION, y no es indistinto:
+    01_gate_puntos_notables.py      (gate previo — si sale 1, no se escribe)
+    02_bajar_al_v1.py               (el v1, que es LA FUENTE)
+    03_espejar_en_v2.py             (el derivado, quirurgico)
+    verificar_v2_contra_v1.py <ruta del .txt>       (el control)
+    tm025a_p7_sellar_adjudicacion.py --sellar ...   (B12)
+    05_mordida.py                   (4.6)
+
+
+================================================================================
+1. QUE QUEDO VERIFICADO, Y CON QUE EVIDENCIA
+================================================================================
+
+1.1 — LA PREMISA DE LA SESION ANTERIOR ERA IMPRECISA, Y ESO CAMBIO LA PIEZA
+--------------------------------------------------------------------------------
+`arica_limite_norte_2026-08-15.txt` 1.5 dijo de esta divergencia que era
+*"conocimiento que solo vive en el DERIVADO"* y *"la misma forma que la trampa de
+la laguna Galletue"*. **Las dos mitades hay que separarlas:**
+
+  CIERTO   el v1 no tenia la causa vigente en ningun campo, y regenerar el v2
+           la reemplazaba en silencio por un texto vencido.
+  FALSO    que fuera conocimiento huerfano. **La escribia
+           `scripts/fase5_registrar_toponimos_igm.py:196-215`**, versionado, con
+           las dos causas literales en un dict. Habia escritor, y el pipeline
+           completo (fase4 -> testigos -> toponimos) la reproducia.
+
+Galletue era el v1 ADELANTADO y el v2 atrasado; esto era al reves y con script.
+La correccion importa porque abria una opcion que el encuadre anterior excluia:
+declarar el bloque en el control habria sido reconocer un tercer escritor real,
+no fabricar un permiso. Se descarto igual, y por que esta en 4.
+
+1.2 — Y AL TIRAR DE ESE HILO SALIO LO QUE REENCUADRO LA PIEZA ENTERA
+--------------------------------------------------------------------------------
+Medido sobre los dos archivos:
+
+    puntos_notables       v1: 72     v2: 76
+    los 4 que faltan      Punta Anxious · Peninsula Brecknock · Punta Harry ·
+                          Cabo San Vicente
+    bloque `pendientes`   v1: NO EXISTE     v2: 1 entrada
+    Punta Dungeness       no esta en `puntos_notables` de ninguno de los dos:
+                          vive dentro de `pendientes`
+
+**El texto del v1 no estaba solo vencido en su prosa: era exacto respecto del
+estado del v1.** El v1 realmente no sabia que esos accidentes tenian coordenadas.
+La inversion que INV-3.7 prohibe no era el texto — eran los 4 toponimos del IGM y
+el bloque `pendientes`, que son dato fuente, con procedencia institucional
+(capa SECCION_L, Geoportal IGM, consultada el 2026-08-10) y vivian unicamente en
+el derivado. El texto era el sintoma.
+
+De ahi la Opcion 2, elegida por el owner sobre la 1 con su razon escrita: la 1
+dejaba el v1 diciendo *"ver puntos_notables"* con esos puntos ausentes de su
+propio `puntos_notables`, y entraba a la Pieza 3 con un v1 sin las coordenadas
+que la Pieza 3 va a leer.
+
+1.3 — EL GATE QUE EL OWNER EXIGIO MEDIDO **ANTES** DE ESCRIBIR
+--------------------------------------------------------------------------------
+Condicion textual: *"que los controles A del auditor del v1 no se muevan al pasar
+puntos_notables de 72 a 76"*. No se razono sobre el codigo: se corrio el auditor
+DOS VECES —contra el v1 de hoy y contra una sombra con los 4 puntos y el bloque
+ya puestos— y se compararon los informes linea por linea.
+
+    01_gate_puntos_notables.txt      exit 0
+      veredicto del auditor     exit 1 contra los dos  (no cambia)
+      informe real              391 lineas
+      informe sombra            391 lineas
+      lineas que difieren       0
+      vertices del v1 que nombran alguno de los 4 : 0
+
+  EL UNICO LUGAR donde el auditor del v1 lee `puntos_notables` es A0
+  (`fase4_auditoria_insumo.py:458` y `:517-531`): cruza el catalogo contra los
+  `vertices` que NOMBRAN un punto notable. Con cero vertices que los nombren, A0
+  no gana ni una comparacion.
+
+  **NOTA QUE VA CON EL NUMERO, para que nadie lea el verde de mas: el auditor del
+  v1 ya venia en exit 1 con 50 fallos** (A0 3 · A1 12 · A2 9 · A4 12 · A5 14). Es
+  estado previo, identico antes y despues. **No lo produce esta pieza y esta
+  pieza no lo arregla.**
+
+1.4 — QUE SE ESCRIBIO, Y DONDE
+--------------------------------------------------------------------------------
+  data/decreto/jurisdicciones_capitanias.json  (el v1, que es LA FUENTE)
+    · `motivo_exclusion` de las dos -> la causa vigente. Es el campo que la
+      migracion lee primero cuando `sin_georreferenciar` es true
+      (fase4_migrar_insumo_v2.py:361-362), y de ahi sale `causa_sin_geometria`.
+    · `revisar` de las dos -> reescrito. Era el string mas vencido de los seis y
+      nadie lo habia nombrado: decia que esos accidentes necesitan
+      georreferenciacion externa. De ahi sale `nota_fuente` (:1212). Corrige de
+      paso `Punta Anxius` -> `Punta Anxious`, la grafia del IGM.
+    · `puntos_notables` 72 -> 76, COPIADOS del v2, no transcritos a mano.
+    · `pendientes`, el bloque entero, copiado del v2.
+    · NO se toco `sin_georreferenciar` (sigue true) ni `participa_matching`
+      (sigue false).
+    132 inserciones, 4 borrados.
+
+  scripts/fase4_migrar_insumo_v2.py
+    · UNA LINEA DE PASO para `pendientes`, misma forma que la que D16 abrio para
+      `limite_norte_convencion`. Paso puro, sin logica.
+
+  scripts/fase5_registrar_toponimos_igm.py
+    · **DEJA DE ESCRIBIR Y PASA A VERIFICAR.** Conserva sus constantes —que son el
+      registro de que se consulto, donde, cuando y por que se eligio cada punto
+      sobre sus descartados— y las contrasta contra el v1. Si el v1 dejo de decir
+      lo que la consulta dijo, ALTO.
+    · POR QUE VERIFICAR Y NO BORRARLO: la causa esta ACOPLADA a los toponimos
+      —dice que estan verificados y nombra el pendiente—, asi que si alguien saca
+      un toponimo del v1 la causa queda mintiendo. Un script borrado no avisa de
+      eso; este si (4.4).
+
+  data/decreto/jurisdicciones_v2.json  (insercion quirurgica, NO regeneracion)
+    · `derivado_de` al dia · las 2 `causa_sin_geometria` y las 2 `nota_fuente`,
+      LEIDAS DEL V1 y no copiadas en el script · `pendientes` movido antes de
+      `correccion_testigos`, que es el orden que produce una regeneracion con la
+      linea de paso nueva.
+
+  data/decreto/adjudicacion_tramos.json — re-sellado (B12) con la autorizacion
+  literal del owner. Las 22 adjudicaciones se verificaron ANTES de sellar:
+  mismos tramos, mismos tipos, 0 perdidas.
+
+  _bitacoras/arica_limite_norte_2026-08-15/verificar_v2_contra_v1.py
+    · ruta de salida por argumento (defecto sin cambio), por 3.3.
+    · `DIVERGENCIAS_ABIERTAS` queda VACIO: las dos cumplieron su condicion de
+      cierre escrita.
+    · **SE RETIRAN DOS PERMISOS y el control queda MAS ESTRICTO**:
+      `BLOQUES_AGREGADOS['pendientes']` perdonaba un bloque entero y
+      `LISTAS_CON_APENDICE['puntos_notables']` perdonaba 4 elementos de cola.
+      Ninguno de los dos tiene ya objeto: los produce la migracion desde el v1.
+
+  NO SE TOCO: `zonas_aviso.json` — se midio y **ya estaba vigente**, su
+  `motivo_sin_ambito` de `punta_delgada` nombra la linea Punta Harry - Cabo San
+  Vicente y el limite oriental · `ambitos_publicados.json` · `capa_consultada.json`
+  · nada de `src/` · nada de la PWA · ninguna geometria.
+
+1.5 — EL CONTROL, DESPUES
+--------------------------------------------------------------------------------
+    04_v2_contra_v1.txt              **exit 0 — SIN DIVERGENCIA**
+      diferencias totales        114   (eran 117)
+      declaradas (otros scripts) 114   (todas de fase5_corregir_testigos.py)
+      divergencias ABIERTAS        0   (eran 2)
+      NO DECLARADAS                0
+      CONTROL 5   maritima 44/8 · TOTAL 64 -> 54/10
+
+  Las tres que sobraban desaparecieron sin excepcion que las tape:
+  `puntos_notables` y `pendientes` ya no figuran como permisos y salen identicos.
+
+1.6 — LA MORDIDA (4.6): LOS DOS CONTROLES TOCADOS MUERDEN
+--------------------------------------------------------------------------------
+    05_mordida.txt                   exit 0, 4 de 4 defectos cazados
+
+      BASE  el dato sin defecto                            exit 0  ok
+      A1    la causa VIEJA de vuelta en el v2              exit 1  CAZADO
+            (antes salia 3 por declarada; ahora no lo esta)
+      A2    `derivado_de` desfasado                        exit 1  CAZADO
+            el paso que se olvida, y da 1 y no 3
+      A3    un toponimo del IGM movido 0,01° en el v2      exit 1  CAZADO
+            **ESTE NO SE CAZABA ANTES DE ESTA PIEZA**: el permiso de apendice
+            sobre `puntos_notables` lo dejaba pasar. Es la prueba de que retirar
+            el permiso aprieta de verdad y no solo de nombre.
+      B1    `Punta Harry` sacado del v1                    exit 2  CAZADO
+            el verificador nuevo da ALTO
+
+  El dato real volvio byte a byte: sha256 del v1 y del v2 comprobados antes y
+  despues. La salida del control durante la mordida fue a un temporal: una
+  corrida con el dato roto no es evidencia y no se versiona.
+
+1.7 — REGRESION
+--------------------------------------------------------------------------------
+  auditoria del insumo v2 (B0..B12)  **LIMPIA, exit 0**
+  B12 antes de sellar                FALLA, como debe (sello 98fbd67f vs v2 ddff10f4)
+  B12 despues de sellar              ok — 22/22 adjudicaciones siguen aplicando
+  validador de `zonas_aviso.json`    declaracion limpia + mordida 22/22
+  suite `npm test`                   **84/84**
+  auditoria del insumo v1            exit 1, 50 fallos — IDENTICO a antes (1.3)
+  control v2 contra v1               exit 0
+
+
+================================================================================
+2. QUE QUEDO A MEDIAS
+================================================================================
+Nada de lo que esta pieza se propuso. El alcance era la Pieza 1 en modo Opcion 2
+y se cumplio entero.
+
+Diferido POR DECISION DEL OWNER:
+  · Pieza 2 — reclasificacion de `hanga_roa` y `juan_fernandez`.
+  · Pieza 3 — reconocimiento de complemento y su condicion previa.
+  · El mecanismo generico de alcance costa-afuera, sesion propia.
+  · **Mudar `verificar_v2_contra_v1.py` a `scripts/`.** El owner coincide en que
+    esa es su casa natural —hay que correrlo cada vez que se toque el v2— pero
+    decidio que va como movimiento propio: mudarlo adentro de una correccion de
+    dato mezcla dos cosas.
+
+
+================================================================================
+3. QUE NO SE PUDO DETERMINAR
+================================================================================
+  · Nada nuevo de esta pieza. Lo que sigue sin determinarse es lo mismo que antes
+    y no se movio: Cabo del Espiritu Santo (extremo argentino, ninguna capa
+    argentina versionada en el repositorio) y si un ancla ALCANZA para cerrar
+    `tierra_del_fuego`, que exige correr el build.
+  · No se corrio el build. Esta pieza no toca geometria y ninguna de las dos
+    jurisdicciones cambio de estado, asi que no habia que correrlo — pero queda
+    dicho para que nadie lea "regresion completa" como "la capa se reconstruyo".
+
+
+================================================================================
+4. QUE DECISIONES LE QUEDAN AL OWNER
+================================================================================
+  D-3  **CERRADA** por esta pieza. Era la unica de las tres que dejo abierta
+       `arica_limite_norte_2026-08-15.txt` 4 que no dependia de nadie.
+  D-1  Si el hueco entre 24 y 200 mn es causa (a) o (b) de INV-3.6.  ABIERTA.
+  D-2  El tercer estado de `estado_geometria`.                       ABIERTA.
+       Las dos van con el mecanismo de alcance, no antes. No las toco esta pieza.
+
+  NUEVA, chica y anotada, no decidida aca: mudar el control a `scripts/`.
+
+
+================================================================================
+5. OBJECIONES QUE TUVE, AUNQUE HAYA TERMINADO EJECUTANDO
+================================================================================
+
+  · CORREGI UNA AFIRMACION DE LA BITACORA ANTERIOR, QUE ES MIA. Dije que la causa
+    era conocimiento huerfano del derivado y que era la forma de Galletue. Habia
+    escritor versionado y no era Galletue. La correccion va por NOTA AL PIE en
+    aquella bitacora, no reescribiendola (3.3). Sin esa correccion, la Opcion 3
+    parecia imposible cuando en realidad era legitima y habia que descartarla con
+    su motivo.
+
+  · LA OPCION 3 SE DESCARTO Y QUEDA ESCRITA. Declarar el bloque en el control
+    cerraba el codigo 3 en una linea, sin tocar el dato. Es la opcion que deja
+    todo en verde sin cambiar nada de fondo —0.3 manda sospechar de ella
+    primero— y dejaba el v1 vencido, que es lo que el owner ordeno arreglar. El
+    owner acordo dejarla escrita: si algo de la 2 hubiera fallado, declarar el
+    bloque no habria sido fabricar un permiso.
+
+  · EL TEXTO NO REPONE UNA FRASE QUE EL `motivo_exclusion` VIEJO TENIA. Decia
+    *"El motor NO debe evaluarla en silencio: si una ruta cae en esta zona,
+    avisar que el limite no esta cargado."* No se repuso, y es decision mia
+    declarada: esa instruccion ya vive en `zonas_aviso.json` y en el catalogo 10
+    del contrato, `arica` no la lleva, y una copia mas es un lugar mas donde
+    envejecer. Revocable.
+
+  · EL PUNTERO `Ver pendientes.` SE CAMBIO POR EL ID DEL PENDIENTE. Es el unico
+    cambio contra el texto que el v2 ya tenia. Motivo: un puntero a un bloque
+    tiene que ser verdadero en los dos archivos, y el id es estable.
+
+  · CONVERTIR EL SCRIPT DE TOPONIMOS EN VERIFICADOR LO DECIDI YO (0.4). El owner
+    autorizo la Opcion 2, que exige que el v1 sea la autoridad; que el tercer
+    escritor pase a verificar en vez de desaparecer es estructura, y lo declaro
+    para que lo revoque si corresponde. Sin eso quedaban DOS escritores del mismo
+    string y el que gana es el script — o sea, la inversion seguiria viva.
+
+  · MOVER `pendientes` ANTES DE `correccion_testigos` EN EL V2 NO ERA
+    ESTRICTAMENTE NECESARIO. El control compara por clave, no por posicion, asi
+    que habria pasado igual. Se hizo por 3.4: regenerar tiene que dar el mismo
+    resultado, y con la linea de paso nueva ese es el orden que sale. Lo digo
+    porque agranda el diff del v2 y no quiero que parezca otra cosa.
+
+  · NO SE COMMITEO NADA. Sin autorizacion explicita (6).
+================================================================================

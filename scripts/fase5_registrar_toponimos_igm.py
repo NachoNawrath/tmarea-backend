@@ -3,14 +3,34 @@ FASE 5 — REGISTRO DE TOPONIMOS VERIFICADOS CONTRA EL IGM.
 
     ..\\tools\\raster-build\\.venv\\Scripts\\python.exe scripts\\fase5_registrar_toponimos_igm.py
 
-Escribe en el insumo cuatro puntos notables que el decreto nombra sin coordenadas y
-que se resolvieron contra la capa oficial de Toponimos del IGM, y actualiza la causa
-de las dos jurisdicciones que esos puntos dejan a un solo pendiente de cerrar.
+Cuatro puntos notables que el decreto nombra sin coordenadas y que se resolvieron
+contra la capa oficial de Toponimos del IGM, mas el pendiente que esos puntos dejan
+abierto, mas la causa de las dos jurisdicciones que ese pendiente bloquea.
 
-POR QUE UN SCRIPT Y NO UNA EDICION A MANO: INV-3.7. El insumo es dato fuente y sus
-correcciones tienen que quedar registradas con que dice el decreto, que se leyo y
-por que. Este script ES ese registro, y es idempotente: correrlo dos veces deja el
-archivo igual.
+DESDE EL 2026-08-15 ESTE SCRIPT NO ESCRIBE: VERIFICA. Y el cambio no es de estilo.
+
+  Hasta esa fecha escribia las tres cosas DIRECTAMENTE sobre `jurisdicciones_v2.json`,
+  que es el DERIVADO. O sea que el registro de una consulta a una fuente
+  institucional —dato fuente, con procedencia— vivia unicamente en el derivado: una
+  regeneracion del v2 desde el v1 lo borraba, y el v1, que es LA FUENTE, seguia
+  diciendo que a esos accidentes les faltaban coordenadas. Es exactamente la
+  inversion que INV-3.7 prohibe, y la que el control de consistencia v1/v2 dejo
+  declarada con codigo 3 el 2026-08-15.
+
+  Ahora las tres viven en el v1 (Opcion 2 del owner, 2026-08-15) y la migracion las
+  sube al v2. Este script conserva sus constantes —que son el registro de QUE se
+  consulto, DONDE, CUANDO y por que se eligio cada punto sobre sus descartados— y
+  las contrasta contra el v1. Si el v1 dejo de decir lo que la consulta dijo, ALTO.
+
+  POR QUE VERIFICAR EN VEZ DE BORRAR EL SCRIPT: la causa de esas dos jurisdicciones
+  esta ACOPLADA a los toponimos —dice "estan verificados contra el IGM" y nombra el
+  pendiente—, asi que si alguien quita un toponimo del v1 la causa queda mintiendo.
+  Un script borrado no puede avisar de eso; este si (CLAUDE.md 4.4).
+
+POR QUE NO UNA EDICION A MANO: INV-3.7. El insumo es dato fuente y sus correcciones
+tienen que quedar registradas con que dice el decreto, que se leyo y por que. Este
+script ES ese registro. Es idempotente y de SOLO LECTURA: correrlo no toca ningun
+archivo.
 
 LA FUENTE, consultada y verificada el 2026-08-10, no transcrita de segunda mano:
   https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0
@@ -35,7 +55,11 @@ import sys
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-V2 = os.path.join(REPO, "data", "decreto", "jurisdicciones_v2.json")
+V1 = os.path.join(REPO, "data", "decreto", "jurisdicciones_capitanias.json")
+
+
+class Alto(Exception):
+    """El v1 dejo de decir lo que la consulta al IGM dijo. No se sigue."""
 
 SERVICIO = ("https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0"
             " — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000")
@@ -157,11 +181,11 @@ PENDIENTE_ORIENTE = {
 
 
 def main():
-    v2 = json.load(open(V2, encoding="utf-8"))
-    notables = v2.setdefault("puntos_notables", [])
+    v1 = json.load(open(V1, encoding="utf-8"))
+    notables = v1.get("puntos_notables") or []
     por_nombre = {p["nombre"]: p for p in notables}
 
-    nuevos = act = 0
+    faltan, difieren = [], []
     for p in PUNTOS:
         reg = {
             "nombre": p["nombre"],
@@ -183,16 +207,16 @@ def main():
         }
         if p["grafia"]:
             reg["nota_grafia"] = p["grafia"]
-        if p["nombre"] in por_nombre:
-            i = notables.index(por_nombre[p["nombre"]])
-            if notables[i] != reg:
-                notables[i] = reg
-                act += 1
-        else:
-            notables.append(reg)
-            nuevos += 1
+        if p["nombre"] not in por_nombre:
+            faltan.append(p["nombre"])
+        elif por_nombre[p["nombre"]] != reg:
+            difieren.append(p["nombre"])
 
-    # Las dos nulas: la causa cambia, porque el pendiente cambio de tamaño.
+    # Las dos jurisdicciones que este pendiente bloquea. La causa esta ACOPLADA a
+    # los toponimos de arriba —dice que estan verificados y nombra el pendiente—,
+    # asi que se contrasta contra el v1 en vez de escribirse sobre el derivado.
+    # Si el texto del v1 se mueve sin que se mueva esta constante, o al reves, el
+    # acoplamiento se rompio y hay que mirarlo.
     causas = {
         "punta_delgada":
             "falta UNICAMENTE el limite maritimo internacional por el Oriente, que "
@@ -201,43 +225,65 @@ def main():
             "contra la capa de Toponimos del IGM (ver puntos_notables). El owner "
             "acepto que ese limite es la linea Punta Dungeness - Cabo del Espiritu "
             "Santo del Tratado de 1881; falta el extremo argentino, que la capa "
-            "chilena no trae. Ver pendientes.",
+            "chilena no trae. Ver el pendiente "
+            "`limite_maritimo_internacional_oriente_magallanes`.",
         "tierra_del_fuego":
             "faltan DOS cosas, y ya no es la falta de coordenadas de sus accidentes: "
             "Cabo San Vicente y Punta Anxious estan verificados contra la capa de "
             "Toponimos del IGM (ver puntos_notables). Falta (1) el limite oriental "
-            "internacional — mismo pendiente que Punta Delgada, ver pendientes — y "
-            "(2) un ancla que diga de que lado de la linea esta la jurisdiccion. El "
-            "decreto dice 'el area oriental', pero la construccion no decide lados "
-            "por letra cardinal; lo limpio es anclar en uno de los cuerpos que el "
-            "propio parrafo le enumera (Bahia Gente Grande, Bahia Inutil, Canal "
-            "Whiteside, Canal Gabriel, Seno Almirantazgo).",
+            "internacional — mismo pendiente que Punta Delgada, "
+            "`limite_maritimo_internacional_oriente_magallanes` — y (2) un ancla "
+            "que diga de que lado de la linea esta la jurisdiccion. El decreto dice "
+            "'el area oriental', pero la construccion no decide lados por letra "
+            "cardinal; lo limpio es anclar en uno de los cuerpos que el propio "
+            "parrafo le enumera (Bahia Gente Grande, Bahia Inutil, Canal Whiteside, "
+            "Canal Gabriel, Seno Almirantazgo).",
     }
-    tocadas = []
-    for j in v2["jurisdicciones"]:
-        if j["id"] in causas and j["causa_sin_geometria"] != causas[j["id"]]:
-            j["causa_sin_geometria"] = causas[j["id"]]
-            tocadas.append(j["nombre"])
+    caps = {c["id"]: c for c in v1["capitanias"]}
+    causas_mal = []
+    for cid, texto in causas.items():
+        if cid not in caps:
+            causas_mal.append(f"'{cid}' no esta en el v1")
+        elif caps[cid].get("motivo_exclusion") != texto:
+            causas_mal.append(f"'{cid}'.motivo_exclusion no es el texto acoplado "
+                              f"a estos toponimos")
 
-    pend = v2.setdefault("pendientes", [])
-    if not any(x.get("id") == PENDIENTE_ORIENTE["id"] for x in pend):
-        pend.append(PENDIENTE_ORIENTE)
-        nuevo_pend = True
-    else:
-        pend[[x.get("id") for x in pend].index(PENDIENTE_ORIENTE["id"])] = \
-            PENDIENTE_ORIENTE
-        nuevo_pend = False
+    pend = {x.get("id"): x for x in (v1.get("pendientes") or [])}
+    pend_mal = []
+    if PENDIENTE_ORIENTE["id"] not in pend:
+        pend_mal.append(f"el v1 no trae el pendiente "
+                        f"'{PENDIENTE_ORIENTE['id']}'")
+    elif pend[PENDIENTE_ORIENTE["id"]] != PENDIENTE_ORIENTE:
+        pend_mal.append(f"el pendiente '{PENDIENTE_ORIENTE['id']}' del v1 difiere "
+                        f"de lo que la consulta al IGM dejo registrado")
 
-    with open(V2, "w", encoding="utf-8") as fh:
-        json.dump(v2, fh, ensure_ascii=False, indent=1)
+    print("FASE 5 — TOPONIMOS IGM: VERIFICACION CONTRA EL V1 (no escribe)")
+    print(f"  insumo                    : {os.path.relpath(V1, REPO)}")
+    print(f"  puntos_notables en el v1  : {len(notables)}")
+    print(f"  toponimos que este registro declara : {len(PUNTOS)}")
+    print(f"    ausentes del v1         : {faltan or 'ninguno'}")
+    print(f"    presentes pero distintos: {difieren or 'ninguno'}")
+    print(f"  causas acopladas          : "
+          f"{causas_mal or 'las 2 coinciden con el v1'}")
+    print(f"  pendiente                 : "
+          f"{pend_mal or PENDIENTE_ORIENTE['id'] + ' coincide con el v1'}")
 
-    print("FASE 5 — REGISTRO DE TOPONIMOS IGM")
-    print(f"  puntos notables agregados : {nuevos}")
-    print(f"  puntos notables corregidos: {act}")
-    print(f"  causas actualizadas       : {tocadas or 'ninguna'}")
-    print(f"  pendiente {'agregado' if nuevo_pend else 'actualizado'}: "
-          f"{PENDIENTE_ORIENTE['id']}")
-    print("")
+    problemas = ([f"toponimo ausente del v1: {n}" for n in faltan]
+                 + [f"toponimo del v1 distinto del registrado: {n}" for n in difieren]
+                 + causas_mal + pend_mal)
+    if problemas:
+        raise Alto(
+            "el v1 dejo de decir lo que la consulta al IGM del "
+            f"{CONSULTA} dejo registrado:\n    - " + "\n    - ".join(problemas)
+            + "\n  Desde el 2026-08-15 estos tres bloques viven en el v1 y la "
+              "migracion los sube al v2.\n  Este script NO los repone: los "
+              "verifica. Si el v1 cambio a proposito, se cambia\n  tambien la "
+              "constante de aca, que es el registro de la consulta.")
+
+    print()
+    print("  ok — el v1 dice exactamente lo que la consulta al IGM dejo "
+          "registrado.")
+    print()
     for p in PUNTOS:
         print(f"  {p['nombre']:<22} {p['lat_dms']:>12} / {p['lon_dms']:>13}"
               f"   -> {dec(p['lat_dms'])}, {dec(p['lon_dms'])}")
@@ -245,4 +291,8 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Alto as e:
+        print(f"\nALTO: {e}\n", file=sys.stderr)
+        sys.exit(2)

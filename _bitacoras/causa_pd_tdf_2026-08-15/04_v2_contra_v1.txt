@@ -4,15 +4,15 @@ condicion del owner, 2026-08-15: la insercion quirurgica va con verificacion
 de que el v2 quedo consistente en TODO, no solo en el campo insertado
 ==============================================================================
 
-  v1     sha256 e57a90730923236df60e75bc967b170931f51f433683fa2674ac54d42a6994bd
-  v2     sha256 98fbd67feb9ff361330e23d0509dc6b631c0fe2b20320a86a500ebf48ec2719b
-  patron sha256 d0e351c1214c59ba5d59e67e34620f6a71bb3536c26fdc43d394b2af3354b4a6   (_v2_regenerado.json, no se versiona)
+  v1     sha256 4e28dd88652617439dae8bc6e0fb3063e8780de9f35f7dafc8bce87b91b4da28
+  v2     sha256 ddff10f45a8e4f77d441690ef6ba265705393e794d4a56b15aabafc33a4a5354
+  patron sha256 d35322ccc918a88e1e662a91b6ca52470c2286af581681c6f3d034b1cc23df6c   (_v2_regenerado.json, no se versiona)
 
   El v2 real NO se toco: sha comprobado antes y despues de regenerar.
 
 CONTROL 1 — `derivado_de` apunta al v1 que esta en disco (es B0 adelantado)
 ------------------------------------------------------------------------------
-  ok       e57a90730923236df60e75bc967b1709...
+  ok       4e28dd88652617439dae8bc6e0fb3063...
 
 CONTROL 2 — las listas donde otro script agrega al final
 ------------------------------------------------------------------------------
@@ -26,43 +26,18 @@ CONTROL 2 — las listas donde otro script agrega al final
 
   umbral = 500 m, uno solo pa
            las agrega: fase5_corregir_testigos.py (el umbral de 500 m)
-  ok     puntos_notables    patron  72 · v2  76 · prefijo exacto, 4 agregada(s) al final
-           + {'nombre': 'Punta Anxious', 'lat_dms': '54 07 01 S', 'lon_dms': '070 56 04 W', 'lat': -54.116944
-           + {'nombre': 'Peninsula Brecknock', 'lat_dms': '54 33 42 S', 'lon_dms': '071 51 01 W', 'lat': -54.
-           + {'nombre': 'Punta Harry', 'lat_dms': '52 43 01 S', 'lon_dms': '070 34 17 W', 'lat': -52.716944, 
-           + {'nombre': 'Cabo San Vicente', 'lat_dms': '52 46 49 S', 'lon_dms': '070 25 57 W', 'lat': -52.780
-           las agrega: fase5_registrar_toponimos_igm.py (los 4 toponimos del IGM)
 
 CONTROL 3 — toda diferencia contra la regeneracion esta declarada
 ------------------------------------------------------------------------------
-  diferencias totales        117
-  declaradas (otros scripts) 115
-  divergencias ABIERTAS      2   (declaradas y sin cerrar -> exit 3)
+  diferencias totales        114
+  declaradas (otros scripts) 114
+  divergencias ABIERTAS      0   (declaradas y sin cerrar -> exit 3)
   NO DECLARADAS              0   (-> exit 1)
 
   Reparto de las declaradas, por quien las escribe:
       114  fase5_corregir_testigos.py
-        1  fase5_registrar_toponimos_igm.py
 
-  LAS DIVERGENCIAS ABIERTAS — conocidas, escritas, y SIN CERRAR:
-    jurisdicciones[punta_delgada].causa_sin_geometria
-        v2 real    'falta UNICAMENTE el limite maritimo internacional por el Oriente, que el propio decreto invoca sin darlo en coordenadas. Su linea del Weste ya esta r
-        regenerado 'El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si un
-        · PRECEDE A ESTA SESION — medido contra HEAD e2db84b, donde ya estaba.
-        · El v2 trae una causa informativa que el v1 NO TIENE EN NINGUN CAMPO: ni en `motivo_exclusion` ni en `revisar`.
-        · Regenerar el v2 la reemplazaria por el texto viejo del v1 en silencio, y el texto viejo ADEMAS esta vencido: dice que faltan las coordenadas de Punta Harry y Cabo San Vicente, y los dos estan verificados contra el IGM y viven en `puntos_notables` desde la pasada de toponimos.
-        · Es conocimiento que solo vive en el DERIVADO, que es la inversion que INV-3.7 prohibe, y es la misma forma que la trampa de la laguna Galletue.
-        · CIERRA cuando la causa vigente baje al v1.
-    jurisdicciones[tierra_del_fuego].causa_sin_geometria
-        v2 real    "faltan DOS cosas, y ya no es la falta de coordenadas de sus accidentes: Cabo San Vicente y Punta Anxious estan verificados contra la capa de Toponimo
-        regenerado 'El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si un
-        · PRECEDE A ESTA SESION — medido contra HEAD e2db84b.
-        · Identica a la de `punta_delgada` y por el mismo motivo.
-        · CIERRA por el mismo camino.
-
-  Ninguna NO DECLARADA. Todo lo que difiere esta arriba, con su nombre y
-  su condicion de cierre. Que exit sea 3 y no 0 es el punto: hay desfase
-  y esta escrito, que no es lo mismo que no haberlo.
+  Ninguna. El v2 dice del v1 exactamente lo que una regeneracion diria.
 
 CONTROL 4 — la insercion de `arica`, contra lo que la migracion produce sola
 ------------------------------------------------------------------------------
@@ -90,21 +65,19 @@ CONTROL 5 — el conteo, SIEMPRE con su ambito al lado
     construido el mecanismo de alcance, algo escribio `limite_norte_dec`.
 
 ==============================================================================
-VEREDICTO: DIVERGENCIA DECLARADA Y ABIERTA — exit 3. Son 2, las dos anteriores a esta sesion.
-            Lo que esta sesion inserto pasa limpio; lo que queda abierto esta nombrado arriba
-            y no se cierra callandolo.
+VEREDICTO: SIN DIVERGENCIA — exit 0
 ==============================================================================
 
 Salida de la migracion durante la regeneracion (para que no quede oculta):
 ------------------------------------------------------------------------------
   FASE 4 — MIGRACION DEL INSUMO v1 -> v2
-    entrada : data\decreto\jurisdicciones_capitanias.json  sha256[:16] e57a90730923236d
+    entrada : data\decreto\jurisdicciones_capitanias.json  sha256[:16] 4e28dd8865261743
     lacustre: data\decreto\cotejo_lacustre_adjudicado.json  sha256[:16] c3c5d5b1e189f802
     bahias  : 162 puntos SITPORT desde scripts\seed-bahias-sitport.js
   
   jurisdicciones : 64
   fronteras      : 61  (41 por paralelo, 20 poligonales)
-  salida         : _bitacoras\arica_limite_norte_2026-08-15\_v2_regenerado.json  sha256[:16] d0e351c1214c59ba
+  salida         : _bitacoras\arica_limite_norte_2026-08-15\_v2_regenerado.json  sha256[:16] d35322ccc918a88e
   
   ESTADO DE GEOMETRIA, AHORA DECLARADO EN EL DATO
     cerrable     54
@@ -116,8 +89,8 @@ Salida de la migracion durante la regeneracion (para que no quede oculta):
         Talcahuano             El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al Sur de 36 42 25 S (limite sur declarado). El contorno de la bahia no viene con vertices. No se infiere.
         Baker                  el decreto no entrega con que cerrar: falta el limite sur, y no hay contorno que lo supla. No se toma del vecino.
         Puerto Eden            el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno que lo supla. No se toma del vecino.
-        Punta Delgada          El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si una ruta cae en esta zona, avisar que el limite no esta cargado.
-        Tierra del Fuego       El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si una ruta cae en esta zona, avisar que el limite no esta cargado.
+        Punta Delgada          falta UNICAMENTE el limite maritimo internacional por el Oriente, que el propio decreto invoca sin darlo en coordenadas. Su linea del Weste ya esta resuelta: Punta Harry y Cabo San Vicente estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). El owner acepto que ese limite es la linea Punta Dungeness - Cabo del Espiritu Santo del Tratado de 1881; falta el extremo argentino, que la capa chilena no trae. Ver el pendiente `limite_maritimo_internacional_oriente_magallanes`.
+        Tierra del Fuego       faltan DOS cosas, y ya no es la falta de coordenadas de sus accidentes: Cabo San Vicente y Punta Anxious estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). Falta (1) el limite oriental internacional — mismo pendiente que Punta Delgada, `limite_maritimo_internacional_oriente_magallanes` — y (2) un ancla que diga de que lado de la linea esta la jurisdiccion. El decreto dice 'el area oriental', pero la construccion no decide lados por letra cardinal; lo limpio es anclar en uno de los cuerpos que el propio parrafo le enumera (Bahia Gente Grande, Bahia Inutil, Canal Whiteside, Canal Gabriel, Seno Almirantazgo).
         Puerto Williams        No cerrable con el decreto: el limite norte pasa por el 'hito N 26' del Canal Beagle, que el texto nombra sin coordenadas, y por 'la delimitacion existente del Canal Beagle'. Falta dato de fuente, no de transcripcion.
   
   RESPALDO TEXTUAL DE LOS PUNTOS DEL CONTORNO
@@ -229,37 +202,3 @@ Salida de la migracion durante la regeneracion (para que no quede oculta):
   
   La migracion no adjudica nada de lo que quedo abierto en la Etapa A.
   Reorganiza el dato; lo que exige decidir que dice el decreto sigue abierto.
-
-================================================================================
-NOTA AL PIE AGREGADA EL 2026-08-15 — NO SE REESCRIBE NADA DE ARRIBA (CLAUDE.md 3.3)
-================================================================================
-LAS DOS DIVERGENCIAS ABIERTAS DE ARRIBA ESTAN CERRADAS. Cumplieron la condicion
-de cierre que ellas mismas declaraban —"cuando la causa vigente baje al v1"— y
-bajo, en la misma fecha, con la Opcion 2 del owner.
-
-  evidencia   _bitacoras/causa_pd_tdf_2026-08-15/
-  control     el mismo instrumento, ahora con ruta de salida por argumento:
-              04_v2_contra_v1.txt de ESA bitacora, exit 0
-              114 diferencias · 114 declaradas · 0 abiertas · 0 no declaradas
-
-CORRECCION A LO QUE DICE ARRIBA, y por eso se escribe en vez de dejarlo pasar:
-esta salida caracteriza las dos divergencias como "conocimiento que solo vive en
-el DERIVADO" y "la misma forma que la trampa de la laguna Galletue". La primera
-mitad es cierta —el v1 no lo tenia— pero la segunda es imprecisa: **habia
-escritor versionado**, `scripts/fase5_registrar_toponimos_igm.py:196-215`, con
-las dos causas literales en un dict, y el pipeline completo las reproducia.
-Galletue era el v1 adelantado y el v2 atrasado; esto era al reves.
-
-Lo que si era la inversion que INV-3.7 prohibe, y no estaba nombrado: los **4
-toponimos del IGM** y el bloque **`pendientes`**, dato fuente con procedencia,
-que vivian unicamente en el v2. La Opcion 2 los bajo al v1.
-
-EL CONTROL QUEDO MAS ESTRICTO, no mas permisivo: se le retiraron
-`BLOQUES_AGREGADOS['pendientes']` y `LISTAS_CON_APENDICE['puntos_notables']`,
-que perdonaban un bloque entero y 4 elementos de cola. Mordida en
-`_bitacoras/causa_pd_tdf_2026-08-15/05_mordida.txt`: el caso A3 —un toponimo del
-IGM movido en el v2— **no se cazaba antes de ese retiro** y ahora sale exit 1.
-
-MARÍTIMA SIGUE 44/8; SOBRE LAS 64, 54/10. Cerro la divergencia, no las
-jurisdicciones.
-================================================================================

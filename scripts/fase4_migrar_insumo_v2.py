@@ -1298,6 +1298,16 @@ def main():
         # hueco que alguien descubre despues.
         "diferencias_no_incorporadas": v1.get("diferencias_no_incorporadas"),
         "jurisdicciones": juris,
+        # LINEA DE PASO, 2026-08-15 (Opcion 2). Los pendientes son dato fuente —
+        # lo que una consulta a una fuente institucional NO pudo resolver, con su
+        # motivo escrito— y viven en el v1 desde esta fecha. Hasta hoy los
+        # escribia `fase5_registrar_toponimos_igm.py` directamente sobre el v2, o
+        # sea que el conocimiento vivia solo en el derivado: la inversion que
+        # INV-3.7 prohibe. Es paso puro, sin logica, igual que la que D16 abrio
+        # para `limite_norte_convencion`. Va al final porque es donde estaba
+        # cuando lo agregaba el otro script, y asi el orden de claves de una
+        # regeneracion reproduce el del archivo en disco.
+        "pendientes": v1.get("pendientes"),
     }
     with open(V2, "w", encoding="utf-8") as fh:
         json.dump(salida, fh, ensure_ascii=False, indent=1, sort_keys=False)

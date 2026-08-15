@@ -1,0 +1,49 @@
+==============================================================================
+GATE — ¿SE MUEVE ALGUN CONTROL A DEL AUDITOR DEL V1 AL PASAR
+        puntos_notables DE 72 A 76 Y AGREGAR EL BLOQUE `pendientes`?
+condicion del owner, 2026-08-15: medido ANTES de escribir, no despues
+==============================================================================
+
+  v1 real    sha256 e57a90730923236df60e75bc967b170931f51f433683fa2674ac54d42a6994bd
+  v2 real    sha256 98fbd67feb9ff361330e23d0509dc6b631c0fe2b20320a86a500ebf48ec2719b
+  v1 sombra  sha256 fbba4e118430a204156738ee3235b8f584cc66d8dd47c845c2d44509e0d4327b   (_v1_sombra.json, no se versiona)
+
+  puntos_notables agregados a la sombra : 4  ['Punta Anxious', 'Peninsula Brecknock', 'Punta Harry', 'Cabo San Vicente']
+  puntos_notables en la sombra          : 76
+  entradas de `pendientes` en la sombra : 1
+
+  El v1 real NO se toco: sha comprobado antes y despues de cada corrida.
+
+CONTROL 1 — el veredicto del auditor
+------------------------------------------------------------------------------
+  contra el v1 real   exit 1
+  contra la sombra    exit 1
+  ok     el veredicto no cambia
+
+CONTROL 2 — informe contra informe, linea por linea
+------------------------------------------------------------------------------
+  Se descartan solo las lineas de huella sha256 y la que nombra la ruta
+  del insumo: cambian porque el archivo auditado es otro. Todo lo demas
+  tiene que salir identico.
+
+  lineas del informe (real)   391
+  lineas del informe (sombra) 391
+  lineas que difieren         0
+
+  ok     los dos informes son identicos. Ningun control A se mueve.
+
+CONTROL 3 — el unico lugar donde el auditor del v1 LEE puntos_notables
+------------------------------------------------------------------------------
+  `fase4_auditoria_insumo.py:458` arma el catalogo y `:517-531` (A0) lo
+  cruza contra los `vertices` que NOMBRAN un punto notable. Agregar un
+  punto solo puede mover A0 si alguna capitania tiene un vertice con ese
+  nombre. Se cuenta, no se supone:
+
+  vertices del v1 que nombran alguno de los 4 : 0
+  ok     ninguno. A0 no gana ni una comparacion nueva.
+
+==============================================================================
+VEREDICTO: NINGUN CONTROL A SE MUEVE — exit 0.
+           El auditor del v1 dice exactamente lo mismo con 72 y con 76
+           puntos notables y con el bloque `pendientes` puesto.
+==============================================================================

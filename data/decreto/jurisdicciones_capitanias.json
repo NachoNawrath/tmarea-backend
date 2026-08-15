@@ -516,6 +516,134 @@
       "lon_dms": "067 16 00 W",
       "lat": -58.351667,
       "lon": -67.266667
+    },
+    {
+      "nombre": "Punta Anxious",
+      "lat_dms": "54 07 01 S",
+      "lon_dms": "070 56 04 W",
+      "lat": -54.116944,
+      "lon": -70.934444,
+      "fuente": {
+        "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+        "consultado": "2026-08-10",
+        "texto_en_la_capa": "Punta Anxious",
+        "valor_servicio": [
+          -54.116886,
+          -70.934365
+        ],
+        "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+      },
+      "usado_por": [
+        "Punta Arenas",
+        "Tierra del Fuego"
+      ],
+      "motivo_eleccion": "Es el UNICO 'Punta Anxious' de la capa. Los otros dos resultados de la consulta son 'Islotes Anxious' (54 06 58.1 S / 070 57 04.1 W) y 'Faro Islotes Anxious' (54 07 04.4 S / 070 57 16.0 W), los dos a menos de 1,5 km: confirman el lugar en vez de competir con el.",
+      "descartados": [],
+      "nota_grafia": "El decreto lo escribe 'Punta Anxius'. La capa del IGM no tiene ningun toponimo 'Anxius' — la consulta devuelve CERO — y si tiene 'Anxious'. Es una diferencia de grafia de la fuente del decreto, no otro lugar."
+    },
+    {
+      "nombre": "Peninsula Brecknock",
+      "lat_dms": "54 33 42 S",
+      "lon_dms": "071 51 01 W",
+      "lat": -54.561667,
+      "lon": -71.850278,
+      "fuente": {
+        "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+        "consultado": "2026-08-10",
+        "texto_en_la_capa": "PENÍNSULA BRECKNOCK",
+        "valor_servicio": [
+          -54.561585,
+          -71.850386
+        ],
+        "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+      },
+      "usado_por": [
+        "Punta Arenas"
+      ],
+      "motivo_eleccion": "La capa trae 19 toponimos con 'Brecknock', NUEVE de ellos llamados 'PENÍNSULA BRECKNOCK': la peninsula esta representada por varios puntos y hay que elegir uno. Se elige el MAS CERCANO AL PARALELO 54 33 00 S, a 1,29 km, porque es asi como el decreto la usa: 'hasta la Peninsula Brecknock y LUEGO POR EL PARALELO 54 33 00 S hacia el Oceano Pacifico'. El toponimo es el fin de un recorrido costero que empalma con ese paralelo, y el punto elegido hace ese empalme continuo.",
+      "descartados": [
+        "'Faro Península Brecknock' (54 37 30.4 S / 071 45 46.5 W). Era la primera eleccion, por ser marca de navegacion. Se descarta porque el decreto NO lo usa como marca sino como fin de recorrido: el faro queda 8,3 km AL SUR del paralelo 54 33 00 S por el que el limite sigue, y elegirlo dejaria un salto de 8,3 km entre el final del recorrido costero y el paralelo. El criterio 'marca de navegacion' es bueno en general y equivocado en este caso. Decidido por la owner el 2026-08-10.",
+        "los otros ocho 'PENÍNSULA BRECKNOCK', todos mas lejos del paralelo: 54 30 59.7 S, 54 30 48.4 S, 54 30 19.7 S, 54 29 45.3 S, 54 29 42.1 S, 54 29 01.3 S, 54 28 36.2 S y uno muy al Norte, 52 58 42.2 S."
+      ]
+    },
+    {
+      "nombre": "Punta Harry",
+      "lat_dms": "52 43 01 S",
+      "lon_dms": "070 34 17 W",
+      "lat": -52.716944,
+      "lon": -70.571389,
+      "fuente": {
+        "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+        "consultado": "2026-08-10",
+        "texto_en_la_capa": "Punta Harry",
+        "valor_servicio": [
+          -52.717013,
+          -70.571306
+        ],
+        "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+      },
+      "usado_por": [
+        "Punta Arenas",
+        "Punta Delgada"
+      ],
+      "motivo_eleccion": "La capa devuelve DOS 'Punta Harry'. Se elige esta porque el decreto la une con Cabo San Vicente 'en la Segunda Angostura del Estrecho de Magallanes', y desde esta hasta Cabo San Vicente hay 11,7 km medidos, en riberas opuestas de la Angostura.",
+      "descartados": [
+        "el otro 'Punta Harry', en 53 19 22.7 S / 073 11 20.6 W, a 197 km medidos de Cabo San Vicente, en los canales occidentales. Ninguna lectura del decreto une esa punta con Cabo San Vicente."
+      ]
+    },
+    {
+      "nombre": "Cabo San Vicente",
+      "lat_dms": "52 46 49 S",
+      "lon_dms": "070 25 57 W",
+      "lat": -52.780278,
+      "lon": -70.4325,
+      "fuente": {
+        "servicio": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+        "consultado": "2026-08-10",
+        "texto_en_la_capa": "Cabo San Vicente",
+        "valor_servicio": [
+          -52.78033,
+          -70.432513
+        ],
+        "nota_precision": "lat/lon derivados del DMS redondeado al segundo entero, para que DMS y decimal coincidan exacto. El crudo del servicio esta en valor_servicio; el redondeo es de hasta 0,5 s, unos 15 m."
+      },
+      "usado_por": [
+        "Punta Arenas",
+        "Punta Delgada",
+        "Tierra del Fuego"
+      ],
+      "motivo_eleccion": "Unico 'Cabo San Vicente' de la capa. Se registra porque lo citan TRES jurisdicciones y no venia en el lote de coordenadas que trajo la owner: sin el, ni Punta Delgada ni Tierra del Fuego tienen su linea divisoria.",
+      "descartados": [
+        "'Faro Cabo San Vicente' (52 46 31.0 S / 070 26 34.1 W), a 600 m. El decreto nombra el cabo, no el faro."
+      ]
+    }
+  ],
+  "pendientes": [
+    {
+      "id": "limite_maritimo_internacional_oriente_magallanes",
+      "que_falta": "el extremo ARGENTINO de la linea que cierra por el Oriente la boca oriental del Estrecho de Magallanes: Cabo del Espiritu Santo.",
+      "decision_owner": "Se acepta la linea Punta Dungeness - Cabo del Espiritu Santo del Tratado de Limites de 1881 como 'el limite maritimo internacional por el Oriente' que invoca el decreto. Owner, 2026-08-10.",
+      "extremo_chileno": {
+        "nombre": "Punta Dungeness",
+        "lat_dms": "52 23 53 S",
+        "lon_dms": "068 26 36 W",
+        "fuente": "https://gis.inv.igm.cl/host/rest/services/Hosted/L/FeatureServer/0 — capa SECCION_L, Toponimos IGM, Geoportal de Chile, 1:50.000",
+        "consultado": "2026-08-10",
+        "valor_servicio": [
+          -52.398096,
+          -68.443299
+        ]
+      },
+      "extremo_argentino": {
+        "nombre": "Cabo del Espiritu Santo",
+        "lat": null,
+        "lon": null,
+        "motivo_ausencia": "la consulta 'Espiritu Santo' contra la capa SECCION_L devuelve CERO resultados: es costa argentina y esta es la capa del IGM chileno. Hace falta otra fuente. NO se deduce ni se aproxima."
+      },
+      "bloquea": [
+        "punta_delgada",
+        "tierra_del_fuego"
+      ]
     }
   ],
   "capitanias": [
@@ -2670,9 +2798,9 @@
       "tipo": "maritima",
       "ambito": "maritima",
       "participa_matching": false,
-      "revisar": "Limites definidos por accidentes geograficos sin coordenadas (Punta Harry, Cabo San Vicente). Requiere georreferenciacion externa.",
+      "revisar": "Punta Harry y Cabo San Vicente estan verificados contra la capa de Toponimos del IGM. Lo pendiente de fuente externa es el extremo argentino de la linea del Oriente (Cabo del Espiritu Santo), no los accidentes del Weste.",
       "sin_georreferenciar": true,
-      "motivo_exclusion": "El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si una ruta cae en esta zona, avisar que el limite no esta cargado.",
+      "motivo_exclusion": "falta UNICAMENTE el limite maritimo internacional por el Oriente, que el propio decreto invoca sin darlo en coordenadas. Su linea del Weste ya esta resuelta: Punta Harry y Cabo San Vicente estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). El owner acepto que ese limite es la linea Punta Dungeness - Cabo del Espiritu Santo del Tratado de 1881; falta el extremo argentino, que la capa chilena no trae. Ver el pendiente `limite_maritimo_internacional_oriente_magallanes`.",
       "texto_decreto": "El Estrecho de Magallanes desde la linea imaginaria que une punta Harry y Cabo San Vicente, hasta el limite maritimo internacional por el Oriente."
     },
     {
@@ -2682,9 +2810,9 @@
       "tipo": "maritima",
       "ambito": "maritima",
       "participa_matching": false,
-      "revisar": "Limites definidos por accidentes geograficos sin coordenadas (Cabo San Vicente, Punta Anxius). Requiere georreferenciacion externa.",
+      "revisar": "Cabo San Vicente y Punta Anxious estan verificados contra la capa de Toponimos del IGM. Lo pendiente de fuente externa es el extremo argentino de la linea del Oriente (Cabo del Espiritu Santo), y ademas falta el ancla que elija el lado.",
       "sin_georreferenciar": true,
-      "motivo_exclusion": "El decreto define sus limites solo por accidentes geograficos sin coordenadas. Pendiente de carta SHOA. El motor NO debe evaluarla en silencio: si una ruta cae en esta zona, avisar que el limite no esta cargado.",
+      "motivo_exclusion": "faltan DOS cosas, y ya no es la falta de coordenadas de sus accidentes: Cabo San Vicente y Punta Anxious estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). Falta (1) el limite oriental internacional — mismo pendiente que Punta Delgada, `limite_maritimo_internacional_oriente_magallanes` — y (2) un ancla que diga de que lado de la linea esta la jurisdiccion. El decreto dice 'el area oriental', pero la construccion no decide lados por letra cardinal; lo limpio es anclar en uno de los cuerpos que el propio parrafo le enumera (Bahia Gente Grande, Bahia Inutil, Canal Whiteside, Canal Gabriel, Seno Almirantazgo).",
       "texto_decreto": "El area oriental de la linea imaginaria que une Cabo San Vicente por el Norte, hasta Punta Anxius por el Sur. Incluye Bahia Gente Grande, Bahia Inutil, ambas riberas del Canal Whiteside, Canal Gabriel y Seno Almirantazgo con la totalidad de las aguas de Senos y Bahias adyacentes. Asimismo, todas aquellas aguas que estan en Tierra del Fuego y tienen su acceso por el Norte y se extienden al Sur de la latitud 54 33 00 S: senos Martinez y Fontaine, Brazo O'Ryan, senos Agostini, Serrano y Hyatt y bahias Parry y Blanca.",
       "completado_desde_oficial": [
         {

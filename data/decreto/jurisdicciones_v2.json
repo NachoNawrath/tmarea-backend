@@ -4,7 +4,7 @@
  "generado": "2026-08-09",
  "generado_por": "scripts/fase4_migrar_insumo_v2.py",
  "derivado_de": {
-  "jurisdicciones_capitanias.json": "e57a90730923236df60e75bc967b170931f51f433683fa2674ac54d42a6994bd",
+  "jurisdicciones_capitanias.json": "4e28dd88652617439dae8bc6e0fb3063e8780de9f35f7dafc8bce87b91b4da28",
   "cotejo_lacustre_adjudicado.json": "c3c5d5b1e189f802053b9bad069bbe753f81b761ea35eeab015a75e6ad2ee014",
   "seed-bahias-sitport.js": "b57af4af0e9f6fefeb07e05e36518d2bb97e82bc44049f60860c70dcfa8848e8"
  },
@@ -9566,7 +9566,7 @@
    "participa_matching": false,
    "receta": "-",
    "estado_geometria": "no_cerrable",
-   "causa_sin_geometria": "falta UNICAMENTE el limite maritimo internacional por el Oriente, que el propio decreto invoca sin darlo en coordenadas. Su linea del Weste ya esta resuelta: Punta Harry y Cabo San Vicente estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). El owner acepto que ese limite es la linea Punta Dungeness - Cabo del Espiritu Santo del Tratado de 1881; falta el extremo argentino, que la capa chilena no trae. Ver pendientes.",
+   "causa_sin_geometria": "falta UNICAMENTE el limite maritimo internacional por el Oriente, que el propio decreto invoca sin darlo en coordenadas. Su linea del Weste ya esta resuelta: Punta Harry y Cabo San Vicente estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). El owner acepto que ese limite es la linea Punta Dungeness - Cabo del Espiritu Santo del Tratado de 1881; falta el extremo argentino, que la capa chilena no trae. Ver el pendiente `limite_maritimo_internacional_oriente_magallanes`.",
    "contorno_cerrado": false,
    "lado_abierto": null,
    "sigue_litoral": false,
@@ -9592,7 +9592,7 @@
    "sectores": [],
    "texto_decreto": "El Estrecho de Magallanes desde la linea imaginaria que une punta Harry y Cabo San Vicente, hasta el limite maritimo internacional por el Oriente.",
    "correccion_aplicada": null,
-   "nota_fuente": "Limites definidos por accidentes geograficos sin coordenadas (Punta Harry, Cabo San Vicente). Requiere georreferenciacion externa.",
+   "nota_fuente": "Punta Harry y Cabo San Vicente estan verificados contra la capa de Toponimos del IGM. Lo pendiente de fuente externa es el extremo argentino de la linea del Oriente (Cabo del Espiritu Santo), no los accidentes del Weste.",
    "cierre_v1": null
   },
   {
@@ -9603,7 +9603,7 @@
    "participa_matching": false,
    "receta": "-",
    "estado_geometria": "no_cerrable",
-   "causa_sin_geometria": "faltan DOS cosas, y ya no es la falta de coordenadas de sus accidentes: Cabo San Vicente y Punta Anxious estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). Falta (1) el limite oriental internacional — mismo pendiente que Punta Delgada, ver pendientes — y (2) un ancla que diga de que lado de la linea esta la jurisdiccion. El decreto dice 'el area oriental', pero la construccion no decide lados por letra cardinal; lo limpio es anclar en uno de los cuerpos que el propio parrafo le enumera (Bahia Gente Grande, Bahia Inutil, Canal Whiteside, Canal Gabriel, Seno Almirantazgo).",
+   "causa_sin_geometria": "faltan DOS cosas, y ya no es la falta de coordenadas de sus accidentes: Cabo San Vicente y Punta Anxious estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). Falta (1) el limite oriental internacional — mismo pendiente que Punta Delgada, `limite_maritimo_internacional_oriente_magallanes` — y (2) un ancla que diga de que lado de la linea esta la jurisdiccion. El decreto dice 'el area oriental', pero la construccion no decide lados por letra cardinal; lo limpio es anclar en uno de los cuerpos que el propio parrafo le enumera (Bahia Gente Grande, Bahia Inutil, Canal Whiteside, Canal Gabriel, Seno Almirantazgo).",
    "contorno_cerrado": false,
    "lado_abierto": null,
    "sigue_litoral": false,
@@ -9629,7 +9629,7 @@
    "sectores": [],
    "texto_decreto": "El area oriental de la linea imaginaria que une Cabo San Vicente por el Norte, hasta Punta Anxius por el Sur. Incluye Bahia Gente Grande, Bahia Inutil, ambas riberas del Canal Whiteside, Canal Gabriel y Seno Almirantazgo con la totalidad de las aguas de Senos y Bahias adyacentes. Asimismo, todas aquellas aguas que estan en Tierra del Fuego y tienen su acceso por el Norte y se extienden al Sur de la latitud 54 33 00 S: senos Martinez y Fontaine, Brazo O'Ryan, senos Agostini, Serrano y Hyatt y bahias Parry y Blanca.",
    "correccion_aplicada": null,
-   "nota_fuente": "Limites definidos por accidentes geograficos sin coordenadas (Cabo San Vicente, Punta Anxius). Requiere georreferenciacion externa.",
+   "nota_fuente": "Cabo San Vicente y Punta Anxious estan verificados contra la capa de Toponimos del IGM. Lo pendiente de fuente externa es el extremo argentino de la linea del Oriente (Cabo del Espiritu Santo), y ademas falta el ancla que elija el lado.",
    "cierre_v1": null
   },
   {
@@ -10452,24 +10452,6 @@
    "cierre_v1": null
   }
  ],
- "correccion_testigos": {
-  "aplicada": true,
-  "fecha": "2026-08-10",
-  "por": "scripts/fase5_corregir_testigos.py",
-  "camino": "camino 1, autorizado por el owner: correr cada testigo al agua mas cercana segun la capa de costa declarada, registrando el desplazamiento; pasado el umbral el punto no se mueve y se declara.",
-  "umbral_m": 500.0,
-  "umbral_regla": "uno solo para todos los puntos: la fuente los escribe a todos con la misma precision. La justificacion medida, y la regla por precision que se intento y se descarto, estan en convenciones.",
-  "margen_identidad": 10.0,
-  "margen_agua_m": 1.0,
-  "capa_de_costa": {
-   "capa": "osm_land_polygons",
-   "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
-   "tabla": "costa_osm"
-  },
-  "movidos": 30,
-  "declarados_sin_testigo": 5,
-  "reproducible": "la correccion es funcion del punto original y de la capa de costa. El original queda en punto_representativo.correccion.original (o en punto_representativo_descartado). Volver a correr el script recalcula desde los originales: es idempotente, y si la costa cambia recalcula todo desde cero en vez de mover lo ya movido."
- },
  "pendientes": [
   {
    "id": "limite_maritimo_internacional_oriente_magallanes",
@@ -10497,5 +10479,23 @@
     "tierra_del_fuego"
    ]
   }
- ]
+ ],
+ "correccion_testigos": {
+  "aplicada": true,
+  "fecha": "2026-08-10",
+  "por": "scripts/fase5_corregir_testigos.py",
+  "camino": "camino 1, autorizado por el owner: correr cada testigo al agua mas cercana segun la capa de costa declarada, registrando el desplazamiento; pasado el umbral el punto no se mueve y se declara.",
+  "umbral_m": 500.0,
+  "umbral_regla": "uno solo para todos los puntos: la fuente los escribe a todos con la misma precision. La justificacion medida, y la regla por precision que se intento y se descarto, estan en convenciones.",
+  "margen_identidad": 10.0,
+  "margen_agua_m": 1.0,
+  "capa_de_costa": {
+   "capa": "osm_land_polygons",
+   "sha256": "e3570af698dd086787a9f021620acde9be2fee1d707a9c097a86eb4f719ce266",
+   "tabla": "costa_osm"
+  },
+  "movidos": 30,
+  "declarados_sin_testigo": 5,
+  "reproducible": "la correccion es funcion del punto original y de la capa de costa. El original queda en punto_representativo.correccion.original (o en punto_representativo_descartado). Volver a correr el script recalcula desde los originales: es idempotente, y si la costa cambia recalcula todo desde cero en vez de mover lo ya movido."
+ }
 }
