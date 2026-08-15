@@ -1929,6 +1929,14 @@ Escrito para que no se lea como más cerrado de lo que está.
   `fase5_corregir_testigos.py` con una jurisdicción más, que **deja de reproducir byte a byte**.
   Se diseña **genérico**, no como caso de `arica` (§4.3): `baker` y `puerto_eden` tienen la
   misma forma.
+  > **2026-08-15 — la disyuntiva (a)/(b) de INV-3.6 ya tiene DOS casos medidos, no uno.** Al hueco
+  > de ~31.400 km² de `arica` se suma que **arreglar el `ST_Simplify` del límite exterior destapa
+  > 21.661,0 km² sobre Diego Ramírez que no le tocan a ninguna de las 44 marítimas**, porque caen
+  > en latitud de `puerto_williams`, que es `no_cerrable`. **Arreglar el insumo agranda el hueco
+  > declarado**, y lo hace por una vía distinta a la de `arica` —ahí el hueco lo abre un alcance
+  > declarado más corto que la convención; acá lo abre una isla que vuelve a existir—. **Los dos
+  > piden la misma decisión y conviene tomarla una sola vez.** Medición en
+  > `_bitacoras/simplify_precondicion_2026-08-15/`.
 - **Si `hanga_roa` y `juan_fernandez` están mal clasificadas, y qué son.** El barrido del
   2026-08-15 midió que ~~**las seis islas están en la capa OSM cargada**~~ y que su
   `causa_sin_geometria` —*"el insumo no trae capa de islas; requiere fuente externa"*— es falsa
@@ -1977,6 +1985,15 @@ Escrito para que no se lea como más cerrado de lo que está.
   > 53.156,0 · coquimbo 46.338,7 · tongoy 8.479,7 · mejillones 2.184,8— **como efecto lateral
   > de mover una constante, y C3 no lo ve porque las bandas no se pisan entre sí.** Es la forma
   > exacta de D16: producir una capa que adjudica agua que nadie adjudicó.
+  >
+  > **2026-08-15, motivo INDEPENDIENTE que termina de cerrar la Opción A: queda descartada por
+  > innecesaria.** El último argumento que le quedaba a favor era que sin ella no se podía
+  > **medir** qué le hace el simplify a Pascua y a Sala y Gómez. Ese argumento cayó: `ne_land` se
+  > carga **entera** y el recorte lo hace la consulta, así que las dos se midieron sin tocar la
+  > caja —Sala y Gómez **no sobrevive**, `0,3961 → 0,0000`—. La caja ancha no hace falta para
+  > medir; sólo para construir, que es justamente lo que la Opción B hace sin arrastrar 543.337,9
+  > km² de efecto lateral. **Queda la B.** Ver el bullet del `ST_Simplify` y
+  > `_bitacoras/simplify_precondicion_2026-08-15/`.
   >
   > **DESCARTADA por el owner, con su motivo (§0.2): la tercera vía** —construir
   > `juan_fernandez` sola ahora y dejar `hanga_roa` `no_cerrable`—. Es viable técnicamente y
@@ -2032,9 +2049,11 @@ Escrito para que no se lea como más cerrado de lo que está.
   que se cierra y se envía cuando la construcción termine. **Acá no se diagnostica.** Evidencia
   y forma reproducible en `_bitacoras/reclasificacion_insular_2026-08-15/`.
 
-- **`ST_Simplify(geom, 0.01)` borra una isla antes de bufferizar el límite exterior.** Frente
-  abierto el 2026-08-15, **medido y NO arreglado**. El constructor simplifica la unión de
-  `ne_10m_land` con tolerancia 0,01° antes del buffer de 200 mn. Medido pieza por pieza:
+- **`ST_Simplify(geom, 0.01)` ~~borra una isla~~ borra OCHO PIEZAS antes de bufferizar el límite
+  exterior.** Frente abierto el 2026-08-15, **medido y NO arreglado**; **precondición cerrada el
+  mismo día, con el arreglo identificado y no aplicado** (ver el pie de este bullet). El
+  constructor simplifica la unión de `ne_10m_land` con tolerancia 0,01° antes del buffer de
+  200 mn. Medido pieza por pieza:
 
   | isla | antes | después |
   |---|---|---|
@@ -2048,8 +2067,74 @@ Escrito para que no se lea como más cerrado de lo que está.
   —C1 sólo mira que la geometría no sea nula, vacía, inválida o de área cero, y la figura que
   queda cumple las cuatro cosas—. Es **defecto del límite exterior, no de la pieza insular**, y
   arreglarlo dentro de ella sería un caso particular (§4.3): la tolerancia la fija el mecanismo
-  del buffer, que sirve a las 44 marítimas. **NO DETERMINADO:** si Sala y Gómez —más chica que
-  San Félix— sobrevive al mismo simplify. Es una consulta y no se corrió.
+  del buffer, que sirve a las 44 marítimas. ~~**NO DETERMINADO:** si Sala y Gómez —más chica que
+  San Félix— sobrevive al mismo simplify. Es una consulta y no se corrió.~~
+
+  > **TACHADO Y CONTESTADO el 2026-08-15 (§3.3). Evidencia y forma reproducible en
+  > `_bitacoras/simplify_precondicion_2026-08-15/`.** No se reescribió nada de arriba: la tabla
+  > de las cuatro islas sigue siendo correcta, y San Ambrosio 1,512 → 0,743 se reprodujo exacto.
+  >
+  > **1. "Borra una isla" es falso por defecto: son OCHO piezas en la caja vigente y NUEVE en la
+  > ancha.** La unión pasa de **176 a 168** piezas. Además de San Félix (0,9387 km²) desaparecen
+  > **dos de Diego Ramírez** (0,5462 y 0,2183 km², `-68,71 / -56,51`) y **cinco islotes del
+  > entorno de Isla Mocha** (0,1827 a 0,0370 km², `-73,90…-73,97 / -38,31…-38,44`). Los nombres
+  > son identificación por coordenada; lo medido son las coordenadas y las áreas.
+  >
+  > **2. Sala y Gómez NO sobrevive — y se midió SIN ampliar ninguna caja.** `0,3961 km² → 0,0000`
+  > (`-105,4656 / -26,4592`); Isla de Pascua sí sobrevive (174,8731 → 165,0873 km²). **La premisa
+  > de que "sólo se puede medir con la caja ampliada de la Opción A" era falsa, y es otra vez la
+  > confusión de §2 entre dos capas:** `costa_osm` (rol `tierra`) se carga **ya recortada** a
+  > `-85..-65` y ahí las dos islas no están —eso era cierto—, pero el simplify corre sobre
+  > **`ne_land`** (rol `limite_exterior`), que se carga **entera**: 11 filas, `-180..180 /
+  > -90..83,634`. **El recorte lo hace `ST_MakeEnvelope` dentro de la consulta del constructor
+  > (`:857`, `:859`), no el cargador.** Cambiar ese envelope en una consulta de sólo lectura no
+  > toca ninguna caja declarada. La Opción A no hace falta para **medir**; hace falta para
+  > **construir**.
+  >
+  > **3. Lo que esto le hace al rótulo del frente:** de las **seis islas que el D.S. 991 enumera
+  > por nombre**, el simplify borra **dos — San Félix y Sala y Gómez—, una por cada Capitanía
+  > insular.** No es un caso de borde de `juan_fernandez`.
+  >
+  > **4. RESUELTO Y NO APLICADO (§0.4) — el arreglo genérico es cambiar el operador:**
+  > `ST_Simplify` → **`ST_SimplifyPreserveTopology`**, misma tolerancia 0,01, en
+  > `scripts/fase5_construir_capa_ds991.py:856`. Conserva **todos** los anillos por construcción:
+  > **176 piezas, 5.950 vértices** —comprime igual que `ST_Simplify`, que deja 5.980—, buffer de
+  > 12,03 s contra 11,63 s, y máscara a **0,003%** de la de sin simplificar. **Un umbral por
+  > tamaño está prohibido por §4.3:** la ventana entre la borrada más grande (San Félix, 0,9387)
+  > y la sobreviviente más chica (San Ambrosio, **1,5117**) es de **0,57 km²**, y cualquier
+  > número ahí adentro es uno elegido para que San Félix pase. **Descartadas con su motivo:**
+  > sacar el simplify (funciona, pero vuelve a 16.599 vértices y tira la compresión declarada) y
+  > bajar a `0,001` (funciona, pero deja 15.281 vértices y sale **15,60 s, más lento que sin
+  > simplificar**: paga el costo sin cobrar el beneficio).
+  >
+  > **5. Por qué no se aplicó, y qué cuesta.** **Mueve la geometría de 43 de las 44 marítimas ya
+  > construidas** —Antofagasta +6.084,7 · Taltal +4.056,1 · Caldera +2.492,9 · Chañaral +1.306,3
+  > · Huasco +1.286,5 km², y 38 más por debajo de 150— así que exige **build (~20 min)** y es
+  > escritura propia con su propia parada. **La atribución es aproximada y no se firma por
+  > Capitanía**: la banda se reconstruye desde la extensión latitudinal de la figura construida,
+  > sin contorno, fronteras ni resta de tierra. Sirve para decidir **si** cambian —cambian—, no
+  > para el km² de cada una. **Lo que NO cuesta: `B0` y `B12` no muerden y no hay resello que
+  > pagar**, porque los dos sellan contra el sha256 del v1/v2 y **la tolerancia es constante del
+  > constructor: el v2 no se toca**; `verificar_v2_contra_v1.py` sigue en **exit 0** (114 · 114 ·
+  > 0 · 0). Tampoco hay que recargar capas: `ne_land` ya está entera. **NO DETERMINADO:**
+  > `fase5_corregir_testigos.py` con la máscara movida —hoy reproduce byte a byte, `movidos: 30`—,
+  > mismo pendiente que este §9 ya anotó para `arica`.
+  >
+  > **6. El agua que el arreglo destapa, con su aritmética completa.** **Gana 39.162,4 km²**
+  > (agua que hoy falta) · **pierde 2.066,7** (agua que hoy sobra, porque Douglas-Peucker también
+  > empuja el borde hacia afuera) · **neto 37.099,1**. Los tres van juntos: **el neto solo esconde
+  > que el borde está corrido en los dos sentidos**, y confundirlo con el bruto ya produjo una
+  > cifra mal reportada dentro de la propia sesión, corregida en la bitácora. Dos discos dominan:
+  > **Diego Ramírez 21.661,0 km²** y **San Félix 14.562,3 km²**; el resto son 171 astillas de
+  > borde. **Aplicar el arreglo sin adjudicar esa agua produce una capa que adjudica 39.162,4 km²
+  > que nadie adjudicó — la forma exacta de D16**, la misma que motivó descartar la Opción A.
+  >
+  > **7. PARA LA SESIÓN DEL MECANISMO, anotado y no desarrollado:** los **21.661,0 km² de Diego
+  > Ramírez no le tocan a ninguna de las 44** —el mayor ganador del sur es Punta Arenas con 59,8—
+  > porque caen en latitud de `puerto_williams`, que es `no_cerrable`. **Arreglar el insumo
+  > agranda el hueco declarado, no sólo las bandas**, y es el **segundo caso medido de la
+  > disyuntiva (a) contra (b) de INV-3.6**, junto a los ~31.400 km² de `arica`; los dos esperan la
+  > misma decisión y conviene tomarla una sola vez.
 
 - **Si alguna `no_cerrable` se resuelve por complemento** — o sea si su geometría es el hueco
   entre vecinas ya construidas. Reconocimiento **no hecho**. Su condición previa tampoco está

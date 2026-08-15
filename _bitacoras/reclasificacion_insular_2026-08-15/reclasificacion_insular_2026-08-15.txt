@@ -170,6 +170,38 @@ NO DETERMINADO: si Sala y Gomez —mas chica que San Felix— sobrevive al mismo
 simplify. Esta fuera de la caja, asi que solo se puede medir con la caja ampliada
 de la Opcion A. Es una consulta y no se corrio.
 
+  [NOTA AL PIE — 2026-08-15, sesion F1-ALCANCE. §3.3: se agrega, no se
+  reescribe. El texto de arriba queda como esta.]
+
+  CONTESTADO, Y LA SEGUNDA FRASE ERA FALSA. Sala y Gomez NO sobrevive:
+  0,3961 km2 -> 0,0000 (-105,4656 / -26,4592). Isla de Pascua si sobrevive
+  (174,8731 -> 165,0873 km2).
+
+  Y SE MIDIO SIN AMPLIAR NINGUNA CAJA. "Esta fuera de la caja, asi que solo se
+  puede medir con la caja ampliada de la Opcion A" mezcla dos capas distintas,
+  que es la misma familia de error que el §1 de esta bitacora identifico para
+  "esta en la capa" contra "esta en la capa cargada":
+
+    costa_osm (rol 'tierra')          se carga YA RECORTADA a -85..-65, y ahi
+                                      las dos islas no estan. Eso es cierto y
+                                      esta bien medido en 01_costa_osm_islas.
+    ne_land   (rol 'limite_exterior') se carga ENTERA: 11 filas, -180..180 /
+                                      -90..83,634. EL SIMPLIFY CORRE SOBRE
+                                      ESTA. El recorte lo hace ST_MakeEnvelope
+                                      dentro de la consulta del constructor
+                                      (fase5_construir_capa_ds991.py:857, :859),
+                                      no el cargador.
+
+  Cambiar ese envelope en una consulta de solo lectura no toca ninguna caja
+  declarada, ninguna constante y ningun dato. La Opcion A no hace falta para
+  MEDIR; hace falta para CONSTRUIR.
+
+  Y EL CONTEO DE ARRIBA TAMBIEN QUEDA CORTO: el simplify no borra una isla,
+  borra OCHO PIEZAS en la caja vigente (176 -> 168) y NUEVE en la ancha. Ademas
+  de San Felix desaparecen dos de Diego Ramirez y cinco islotes del entorno de
+  Isla Mocha. Ver la nota al pie del punto 4 y
+  _bitacoras/simplify_precondicion_2026-08-15/.
+
 Asentado en §9 sin arreglar.
 
 

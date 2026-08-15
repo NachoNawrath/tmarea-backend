@@ -1,0 +1,377 @@
+EL ST_Simplify DEL LIMITE EXTERIOR — PRECONDICION DEL FRENTE DE ALCANCE
+2026-08-15
+================================================================================
+
+QUE FUE ESTA SESION, Y QUE NO FUE
+--------------------------------------------------------------------------------
+Fue de SOLO LECTURA sobre el dato y de REGISTRO. No se toco ninguna geometria,
+ninguna capa, ningun script del sistema y ningun insumo. NO se corrio el build.
+Lo unico que se escribio es este directorio y PLAN_JURISDICCION.md §9.
+
+Explicitamente NO se tocaron, por instruccion del owner: jurisdicciones_v2.json,
+adjudicacion_tramos.json, scripts/fase5_construir_capa_ds991.py y
+geodata/costa/capas_costa.json.
+
+EL ARREGLO NO SE APLICO. Esta sesion lo identifica y lo deja registrado; su
+aplicacion mueve geometria de 43 figuras ya construidas y exige build, asi que
+es escritura propia con su propia parada.
+
+Shell: los comandos se ejecutaron en Git Bash. La forma reproducible para el
+owner esta en PowerShell, en la cabecera de cada uno de los cuatro .sql. Los
+.txt de este directorio los escribio psql con -o, NUNCA con el '>' de
+PowerShell, que reencoda.
+
+Estado del repositorio al abrir: HEAD 4e27496, arbol limpio en las rutas
+tocadas. Sin commits en esta sesion.
+
+  NOTA DE ESTADO: el prompt de apertura declaraba HEAD c8012b1 y el real era
+  4e27496, su hijo — el commit de la sesion insular, que el owner habia
+  anunciado. Se paro y se pidio confirmacion antes de escribir. No hubo
+  escritura ajena: main...origin/main sin ahead/behind.
+
+
+1. POR QUE EXISTE EL SIMPLIFY, Y QUE COMPRA DE VERDAD
+--------------------------------------------------------------------------------
+El constructor simplifica la union de la capa del rol 'limite_exterior'
+(ne_land) con tolerancia 0,01 grados ANTES de bufferizar las 200 mn:
+
+  scripts/fase5_construir_capa_ds991.py:854-859
+
+La justificacion esta escrita en dos lugares — el comentario del constructor
+(:850-853) y geodata/costa/capas_costa.json, rol limite_exterior — y los dos
+dicen lo mismo: la resolucion gruesa es adecuada A PROPOSITO porque el error de
+una costa 1:10m son cientos de metros, cuatro ordenes por debajo de las 200
+millas, y "usar la capa fina costaria horas".
+
+ESE ARGUMENTO ES SOBRE OTRA COSA. Justifica no usar costa_osm para el limite
+exterior, que es una decision distinta y sigue siendo correcta. El costo del
+SIMPLIFY EN SI, sobre ne_land, no estaba medido en ninguna parte. Se midio:
+
+  variante                              piezas  vertices   buffer
+  A. sin simplify                          176     16599   14,06 s
+  B. ST_Simplify 0.01 (HOY)                168      5980   11,63 s
+  C. ST_Simplify 0.001                     176     15281   15,60 s
+  D. ST_SimplifyPreserveTopology 0.01      176      5950   12,03 s
+
+  mascara ZEE resultante                        km2         vert
+  A. sin simplify                          6.706.406,3       524
+  B. ST_Simplify 0.01 (HOY)                6.669.307,3       407
+  C. ST_Simplify 0.001                     6.706.521,5       521
+  D. ST_SimplifyPreserveTopology 0.01      6.706.183,5       436
+
+  Instrumento: 01_variantes.sql -> 01_variantes.txt
+  Los tiempos salen de \timing, que imprime por consola y no al archivo de -o;
+  van transcriptos aca declarando su origen (§3.2: no se fabrica un numero, se
+  dice de donde salio).
+
+EL SIMPLIFY COMPRA ENTRE 2,4 Y 4,7 SEGUNDOS. La corrida versionada de arriba da
+2,43 s (14,06 contra 11,63). Una corrida exploratoria previa, misma maquina y
+mismo dia, dio 4,73 s (14,94 contra 10,22). Se declaran las dos y se da el
+rango en vez de un numero: la varianza entre corridas es del orden del efecto
+que se mide, y presentar 4,7 s como si fuera el valor seria elegir la corrida
+que mas favorece al argumento.
+
+Contra un build que tarda ~20 min, el simplify abarata entre el 0,2% y el 0,4%.
+
+
+2. LO QUE COSTABA: OCHO PIEZAS BORRADAS, NO UNA
+--------------------------------------------------------------------------------
+  Instrumento: 02_piezas_borradas.sql -> 02_piezas_borradas.txt
+
+En la caja de trabajo vigente (-85..-65 / -60..-17) el simplify lleva la union
+de 176 piezas a 168. DESAPARECEN OCHO:
+
+  km2 antes  km2 despues   lon        lat        vert
+    1,5117      0,7429    -79,8984   -26,3539     6   San Ambrosio: SE ACHICA
+    0,9387      0,0000    -80,0967   -26,2704     8   ISLA SAN FELIX
+    0,5462      0,0000    -68,7127   -56,5097     7   Diego Ramirez
+    0,2183      0,0000    -68,7042   -56,5218     5   Diego Ramirez
+    0,1827      0,0000    -73,9080   -38,4436     6   entorno de Isla Mocha
+    0,0547      0,0000    -73,9326   -38,4136     5   entorno de Isla Mocha
+    0,0451      0,0000    -73,9423   -38,4105     9   entorno de Isla Mocha
+    0,0439      0,0000    -73,9018   -38,4241     9   entorno de Isla Mocha
+    0,0370      0,0000    -73,9678   -38,3138     5   entorno de Isla Mocha
+
+  Los nombres de la ultima columna son IDENTIFICACION POR COORDENADA, no
+  medicion. Lo medido son las coordenadas y las areas. San Felix esta nombrada
+  por el D.S. 991 y su posicion coincide con la que ya traia
+  _bitacoras/reclasificacion_insular_2026-08-15/.
+
+San Ambrosio 1,5117 -> 0,7429 REPRODUCE EXACTO lo que habia medido la sesion
+insular (1,512 -> 0,743). Es el cotejo que dice que este instrumento mide lo
+mismo que aquel.
+
+LA SOBREVIVIENTE MAS CHICA ES SAN AMBROSIO, CON 1,5117 km2. La siguiente es de
+5,6316 km2 (-65,5989 / -45,0572). Eso deja la ventana para un umbral por tamano
+entre 0,9387 y 1,5117 km2 — ver el punto 5.
+
+  CORRECCION DE INSTRUMENTO, HECHA ANTES DE REPORTAR (§2). La primera version
+  media la supervivencia con ST_Intersects contra ST_PointOnSurface de la pieza
+  original. Ese test SOBRECUENTA: el punto de la pieza original puede caer
+  fuera de la pieza simplificada aunque la pieza sobreviva, y con el San
+  Ambrosio salia como BORRADA. Lo habria reportado como novena desaparecida y
+  en contradiccion con la sesion insular, que tenia razon. El criterio correcto
+  es el AREA que queda, y esta escrito en la cabecera del .sql para que el
+  proximo no repita el atajo.
+
+  SEGUNDA CORRECCION, MISMA FAMILIA: la consulta de las sobrevivientes mas
+  chicas usaba el mismo test por punto y por eso omitia a San Ambrosio,
+  devolviendo 5,6316 km2 como la mas chica. Con el filtro por area la mas chica
+  es 1,5117. La ventana del umbral pasa de "0,94 a 5,63" a "0,94 a 1,51": el
+  numero que se reporto primero era casi cuatro veces mas ancho de lo real, y
+  en la direccion que hacia parecer mas defendible un umbral por tamano.
+
+
+3. ne_land NO ESTA RECORTADA, Y ESO DESBLOQUEO LO QUE ESTABA "NO DETERMINADO"
+--------------------------------------------------------------------------------
+  Instrumento: 01_variantes.sql (primera consulta) y 03_caja_ancha.sql
+
+  ne_land (tabla cruda):  11 filas
+                          lon -180,000 / 180,000
+                          lat  -90,000 /  83,634
+
+LA TABLA ES GLOBAL. El recorte a la caja de trabajo NO lo hace el cargador: lo
+hace ST_MakeEnvelope DENTRO de la consulta del constructor (:857 y :859).
+
+De ahi se sigue algo que §9 y la bitacora insular declaraban imposible: medir
+si Sala y Gomez sobrevive al simplify NO exige la Opcion A ni ampliar ninguna
+caja. Exige cambiar el envelope de una consulta de solo lectura sobre una tabla
+que ya esta completa.
+
+  caja ancha (-110..-65 / -60..-17)   piezas   vertices
+    ANTES                                178      16642
+    DESPUES                              169       5988
+
+  km2 antes  km2 despues    lon         lat        vert
+   174,8731    165,0873   -109,3465   -27,1324     37   Isla de Pascua: SOBREVIVE
+     0,3961      0,0000   -105,4656   -26,4592      6   ISLA SALA Y GOMEZ: DESAPARECE
+
+LA CONFUSION QUE PRODUJO EL "NO DETERMINADO" ES ENTRE DOS CAPAS DISTINTAS, y es
+la misma familia del §2 que la sesion insular ya habia pagado con "esta en la
+capa" contra "esta en la capa cargada":
+
+  costa_osm  (rol 'tierra')            se carga YA RECORTADA a -85..-65. Ahi
+                                       las dos islas de hanga_roa NO estan, y
+                                       eso es cierto y esta bien medido.
+  ne_land    (rol 'limite_exterior')   se carga ENTERA. El simplify corre sobre
+                                       ESTA, no sobre aquella.
+
+La afirmacion de la sesion insular era correcta para la capa de la que hablaba
+y se aplico a la capa equivocada. La Opcion A no hace falta para MEDIR; hace
+falta para CONSTRUIR.
+
+CONSECUENCIA QUE ORDENA EL FRENTE: de las SEIS islas que el D.S. 991 enumera
+por nombre para sus dos Capitanias insulares, el simplify borra DOS — San Felix
+(juan_fernandez) y Sala y Gomez (hanga_roa). Una por Capitania.
+
+
+4. CUANTA AGUA FALTA HOY, Y A QUIEN LE TOCA
+--------------------------------------------------------------------------------
+  Instrumento: 04_diferencia_y_atribucion.sql -> 04_diferencia_y_atribucion.txt
+
+  GANA   - sin simplify menos hoy                39.162,4 km2   173 piezas
+  PIERDE - hoy menos sin simplify                 2.066,7 km2   172 piezas
+  NETO   - resta de las areas de las dos mascaras 37.099,1 km2
+
+LOS TRES NUMEROS VAN JUNTOS PORQUE DICEN COSAS DISTINTAS, y confundirlos ya
+costo una cifra mal reportada dentro de esta misma sesion: al owner se le
+reporto primero "+37.099,0 km2" como si fuera el agua que falta, y ese es el
+NETO. El agua que falta son 39.162,4. Los 2.066,7 son agua que hoy la capa TIENE
+DE MAS, porque Douglas-Peucker no solo mete el borde para adentro: tambien lo
+empuja para afuera. El neto solo esconde que el borde esta corrido en los dos
+sentidos.
+
+  (39.162,4 - 2.066,7 = 37.095,7 contra un neto de 37.099,1: 3,4 km2 de
+  diferencia sobre 39.000, 0,009%. Es el area geodesica calculada sobre
+  teselados distintos, no un descuadre del razonamiento.)
+
+LAS DOS PIEZAS QUE DOMINAN SON LOS DISCOS DE 200 mn DE LAS ISLAS BORRADAS:
+
+    21.661,0 km2   lon -69,387  lat -57,768   (lat -58,32 a -56,89)   Diego Ramirez
+    14.562,3 km2   lon -82,363  lat -25,291   (lat -29,04 a -23,24)   San Felix
+
+El resto son 171 astillas del borde de la mascara repartidas por toda la costa;
+la mayor es de 147,7 km2 y 152 estan por encima de 1 km2.
+
+ATRIBUCION A LAS FIGURAS YA CONSTRUIDAS — 43 de las 44 maritimas cambian:
+
+    Antofagasta   +6.084,7   sobre 102.158,0
+    Taltal        +4.056,1   sobre 161.418,3
+    Caldera       +2.492,9   sobre 134.710,5
+    Chanaral      +1.306,3   sobre  65.172,9
+    Huasco        +1.286,5   sobre 106.205,1
+    Constitucion    +143,4 · Los Vilos +139,3 · Tongoy +126,7 · Carahue +116,2
+    Lebu +86,2 · Tocopilla +83,6 · Mejillones +65,9 · Punta Arenas +59,8
+    Puerto Chacabuco +59,4 · Puerto Natales +53,1 · Iquique +48,9 · Lota +45,2
+    Puerto Cisnes +37,6 · Patache +35,2 · Maullin +32,3 · Melinka +29,5
+    Valdivia +27,1 · Puerto Aguirre +26,9 · Chaiten +25,1 · Pichilemu +24,8
+    Coquimbo +15,7 · Rio Negro Hornopiren +15,6 · Valparaiso +15,5
+    San Antonio +14,2 · Quellon +13,8 · Coronel +13,1 · Calbuco +13,0
+    Papudo +11,6 · Chonchi +11,4 · Ancud +11,3 · Quemchi +11,3 · Achao +8,9
+    Castro +8,9 · Puerto Montt +7,9 · Corral +7,2 · Quintero +4,5
+    Algarrobo +2,0 · San Vicente +1,6
+
+    (43 filas por encima de 1 km2, sobre 44 maritimas construidas con
+    geometria. La 44a gana menos de 1 km2.)
+
+  ============================ LIMITE DEL METODO ============================
+  LA ATRIBUCION ES APROXIMADA Y NO SE PUEDE FIRMAR km2 POR km2. La banda de
+  cada jurisdiccion se RECONSTRUYE desde la extension latitudinal de su figura
+  ya construida (ST_YMin / ST_YMax de j.geom); no se lee del insumo. Y no se
+  aplica nada de lo que el constructor aplica despues: ni contorno, ni
+  fronteras declaradas, ni resta de tierra, ni el ensanche de litoral. La
+  separacion lateral entre vecinas redistribuiria parte de esta agua.
+
+  SIRVE PARA decidir SI las figuras construidas cambian. Cambian, y son 43.
+  NO SIRVE PARA firmar el km2 de cada Capitania. Eso exige correr el build.
+
+  Y NO SE PUEDE MEDIR RE-RECORTANDO j.geom CONTRA LA MASCARA NUEVA: j.geom ya
+  viene recortada por la mascara vieja, que esta contenida en la nueva, asi que
+  la interseccion devolveria j.geom sin cambio y el crecimiento seria
+  invisible. Por eso se reconstruye la banda. Queda escrito porque es el atajo
+  que cualquiera intentaria primero.
+  ===========================================================================
+
+
+5. EL ARREGLO GENERICO: CAMBIAR EL OPERADOR, NO AGREGAR UNA CONDICION
+--------------------------------------------------------------------------------
+RESUELTO DE ESTE LADO (§0.4: es estructura y umbral tecnico, no interpretacion
+de fuente normativa ni politica de producto) Y NO APLICADO.
+
+  El arreglo es  ST_Simplify  ->  ST_SimplifyPreserveTopology,
+  misma tolerancia 0,01, en scripts/fase5_construir_capa_ds991.py:856.
+
+POR QUE NO UN UMBRAL POR TAMANO. La ventana medida entre la pieza borrada mas
+grande (San Felix, 0,9387 km2) y la sobreviviente mas chica (San Ambrosio,
+1,5117 km2) es de 0,57 km2. Cualquier umbral ahi adentro es un numero elegido
+para que San Felix pase: un caso particular disfrazado de regla, que es lo que
+prohibe CLAUDE.md §4.3. Y una regla asi tampoco es estable — la ventana se
+mueve con la capa, con la caja y con la tolerancia, asi que el proximo cambio
+de insumo la invalida en silencio.
+
+POR QUE EL OPERADOR SI ES GENERICO. ST_SimplifyPreserveTopology conserva TODOS
+los anillos por construccion. No nombra ninguna entidad, no tiene excepciones y
+no tiene umbral que calibrar. Medido: 176 piezas (todas), 5.950 vertices —
+comprime igual que ST_Simplify, que deja 5.980—, buffer de 12,03 s contra 11,63
+s, y mascara de 6.706.183,5 km2, a 0,003% de la mascara sin simplificar.
+San Felix sobrevive con 0,8260 km2.
+
+  DESCARTADAS, CON SU MOTIVO (§0.2):
+  · Sacar el simplify. Funciona —176 piezas— pero devuelve el buffer a 16.599
+    vertices y 14,06 s, y tira la compresion que el manifiesto declara querer.
+    Cambia una decision declarada para arreglar un defecto que no la necesita.
+  · Bajar a ST_Simplify(0,001). Tambien funciona: 176 piezas, no borra nada.
+    Pero deja 15.281 vertices —practicamente sin comprimir— y el buffer sale
+    15,60 s, MAS LENTO que sin simplificar en esta corrida. Es el peor de los
+    cuatro: paga el costo de simplificar sin cobrar el beneficio.
+  · Un umbral condicional por tamano de pieza. Ver arriba, §4.3.
+
+DESCONFIANZA DECLARADA (§0.3). El operador es la opcion que deja todo en verde
+sin cambiar nada de fondo, y esa forma es la que §0.3 manda mirar primero. Se
+mira: el arreglo es barato, pero LO QUE DESTAPA NO LO ES. Mueve 43 figuras
+construidas, agranda un hueco declarado (punto 6) y pone sobre la mesa 39.162,4
+km2 que hay que adjudicar. Lo barato es el diff; lo caro es la consecuencia, y
+por eso no se aplica en esta sesion.
+
+POR QUE NO SE APLICO ACA: mueve geometria de 43 figuras construidas y exige
+correr el build. Es escritura propia con su propia parada, y el owner la fijo
+asi.
+
+LO QUE EL ARREGLO NO DISPARA, MEDIDO CONTRA EL CODIGO Y NO SUPUESTO:
+
+  B0     no muerde. Sella derivado_de contra el sha256 del v1.
+  B12    no muerde. Sella adjudicacion_tramos.json contra el sha256 de
+         jurisdicciones_v2.json (scripts/tm025a_p7_sellar_adjudicacion.py:121-122).
+  verificar_v2_contra_v1.py   sigue en exit 0 (114 dif · 114 declaradas ·
+         0 abiertas · 0 no declaradas).
+
+  LA RAZON ES UNA SOLA: la tolerancia es una constante del constructor y la
+  geometria vive en Postgres. EL v2 NO SE TOCA. Por eso no hay resello que
+  pagar y no hay autorizacion de B12 que pedir — que es bastante mas barato de
+  lo que el frente suponia.
+
+  COSTO DE REGENERACION: correr el build (~20 min, segun
+  _bitacoras/reclasificacion_insular_2026-08-15/). NO hay que recargar nada:
+  ne_land ya esta entera y no cambia, y costa_osm no interviene en el limite
+  exterior. Lo que si queda por determinar es fase5_corregir_testigos.py, que
+  hoy reproduce byte a byte (movidos: 30) y con la mascara movida deja de estar
+  garantizado — mismo pendiente que §9 ya anoto para arica. NO DETERMINADO.
+
+
+6. PARA LA SESION DEL MECANISMO — ANOTADO, NO DESARROLLADO
+--------------------------------------------------------------------------------
+(i) LOS 21.661,0 km2 DE DIEGO RAMIREZ NO LE TOCAN A NINGUNA DE LAS 44. Caen en
+    latitud -58,32 a -56,89, y en la atribucion del punto 4 el mayor ganador
+    del sur es Punta Arenas con 59,8 km2. Esa agua cae en latitud de
+    puerto_williams, que es no_cerrable y no tiene geometria.
+
+    O SEA: ARREGLAR EL INSUMO AGRANDA EL HUECO DECLARADO, no solo las bandas.
+    Es el segundo caso medido de la disyuntiva (a) contra (b) de INV-3.6, junto
+    a los ~31.400 km2 de arica. Los dos esperan la misma decision y conviene
+    que la tomen juntos.
+
+(ii) CON LAS SEIS ISLAS SOBREVIVIENDO, LA OPCION A DE hanga_roa QUEDA
+     DESCARTADA POR INNECESARIA. La Opcion A —crecer la caja de -85 a -110—
+     tenia como efecto lateral medido 543.337,9 km2 adjudicados a ocho
+     Capitanias continentales, sin que ningun control lo cazara. Ya estaba
+     descartada por el owner a favor de la B (capa de tierra propia para el
+     ambito insular_remota); esta sesion le agrega un motivo independiente:
+     la caja ancha no hace falta ni siquiera para MEDIR, que era el ultimo
+     argumento que le quedaba a favor. Queda la B.
+
+NINGUNA DE LAS DOS SE DESARROLLA ACA. El mecanismo generico de alcance
+costa-afuera va a sesion propia, por decision del owner del 2026-08-15.
+
+
+7. CONTEOS — CADA UNO CON SU AMBITO
+--------------------------------------------------------------------------------
+  maritimas construidas con geometria en el andamio        44   (medido, 04)
+
+  maritima            44 cerrable /  8 no_cerrable     NO VERIFICADO ESTA SESION
+  sobre las 64        54 cerrable / 10 no_cerrable     NO VERIFICADO ESTA SESION
+
+EL TRIPWIRE 44/8 · 54/10 NO SE VERIFICO CONTRA EL v2 EN ESTA SESION. Esos dos
+pares se leyeron de _bitacoras/ y del prompt del owner, no se midieron. Lo unico
+medido es que jurisdicciones_decreto —el ANDAMIO, que es otra cosa— trae 44
+maritimas con geometria, lo cual es consistente pero NO es la misma medicion.
+Queda dicho para que nadie tome el 44 de arriba como confirmacion del 44/8.
+
+NADA DE ESTO SE MOVIO EN ESTA SESION. El arreglo no se aplico.
+
+
+8. OBJECIONES QUE QUEDAN EN PIE
+--------------------------------------------------------------------------------
+· El agua que el arreglo destapa hay que adjudicarla, y esa es decision
+  normativa del owner, no consecuencia tecnica del operador. Aplicar el arreglo
+  sin esa decision produce una capa que adjudica 39.162,4 km2 que nadie
+  adjudico — la forma exacta de D16, y la misma que motivo descartar la Opcion A
+  de hanga_roa.
+· Las 200 mn del limite exterior siguen siendo CONVENCION NUESTRA y no dato del
+  decreto. Este directorio mide el borde de esa convencion con mas fidelidad; no
+  la funda. Cualquier cifra de aca hereda esa condicion.
+· La atribucion del punto 4 no se puede firmar por Capitania sin correr el
+  build. Esta declarado en el instrumento y en el punto 4, y se repite aca
+  porque es el numero que mas facil se cita fuera de contexto.
+· fase5_corregir_testigos.py con la mascara movida: NO DETERMINADO.
+
+
+9. INVENTARIO DEL DIRECTORIO
+--------------------------------------------------------------------------------
+  01_variantes.sql / .txt                 las cuatro variantes, piezas,
+                                          vertices y mascara ZEE; extension de
+                                          ne_land
+  02_piezas_borradas.sql / .txt           las 8 que desaparecen en la caja
+                                          vigente y las 12 sobrevivientes mas
+                                          chicas
+  03_caja_ancha.sql / .txt                Isla de Pascua y Sala y Gomez
+  04_diferencia_y_atribucion.sql / .txt   gana / pierde / neto, los dos discos,
+                                          las astillas y las 43 maritimas
+  simplify_precondicion_2026-08-15.txt    esta bitacora
+
+Los cuatro .txt los produjo psql con -o corriendo los .sql de este mismo
+directorio, no una transcripcion a mano. Se pueden regenerar con los comandos
+PowerShell de la cabecera de cada .sql (§3.4).
+
+No hay PROCEDENCIA.txt: no se uso ningun archivo crudo pesado sin versionar
+(§3.5). El unico insumo es la tabla ne_land, cuya procedencia ya vive en
+geodata/costa/capas_costa.json y geodata/costa/PROCEDENCIA.txt.
