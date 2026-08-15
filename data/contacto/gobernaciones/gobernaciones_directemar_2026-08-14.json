@@ -1,0 +1,44 @@
+{
+  "que_es": "Telefono de las Gobernaciones Maritimas, tomado de las paginas de DIRECTEMAR el 2026-08-14 y aportado por el owner. Es dato de CONTACTO indexado por GOBERNACION, no por bahia y no por Capitania.",
+  "que_NO_es": [
+    "NO es fuente autorizada. CONTRATO_MOTOR.md §5 declara el contacto de Gobernacion como PENDIENTE / POR DEFINIR, y esa fila la escribe el owner. Este archivo no la cambia.",
+    "NO lo consume nadie. Medido al escribirlo: ningun archivo de src/ ni de la PWA lo lee. El fallback de pantalla sigue leyendo la tabla hardcodeada de src/utils/capitanias.js.",
+    "NO son telefonos de Capitania. La columna Telefono de capitanias_64_final.csv es de Capitania y es otra categoria; mezclarlas es lo que INV-10.1 existe para cerrar.",
+    "NO reemplaza la tabla de franjas de latitud. Esa tabla resuelve QUE Gobernacion corresponde a una coordenada, y ese defecto es independiente del valor del telefono."
+  ],
+  "fuente": {
+    "emisor": "DIRECTEMAR / Armada de Chile",
+    "de_donde": "paginas de Gobernaciones Maritimas del sitio de DIRECTEMAR",
+    "capturado_el": "2026-08-14",
+    "capturado_por": "el owner, y entregado en la sesion del 2026-08-14",
+    "origen": "DECLARADO POR EL OWNER, NO VERIFICADO POR EL AGENTE. No se consultaron las URLs desde esta sesion y no se comprobo ningun hash contra el sitio. Mismo estado en que entro el TM-025 A: ver data/decreto/fuente/PROCEDENCIA.md."
+  },
+  "normalizacion": {
+    "formato": "+56 NN NNNNNNN — prefijo pais, codigo de area, y el resto sin separadores",
+    "aplicada": "Aysen llego como '+56 672351450' y se le abrio el espacio de area para dejarlo en '+56 67 2351450'.",
+    "verificado": "Sobre la lista tal como fue entregada, las 15 quedan con el mismo formato y sus codepoints cerrados en {43, 32, 48..57}. NO se verifico el estado previo a la normalizacion de las otras catorce: el agente recibio la lista ya normalizada salvo Aysen."
+  },
+  "cobertura": {
+    "entradas": 15,
+    "gobernaciones_del_decreto": 16,
+    "falta": "Antartica Chilena",
+    "nota_de_la_que_falta": "Su telefono esta recuperado y verificado en _bitacoras/frente_contacto_2026-08-13/gm_antartica_chilena_RECUPERADO.md (+56 32 2208557), con el HTML crudo en 297b220^. NO se agrega aca porque este archivo registra lo que el owner entrego el 2026-08-14, y esa entrada no venia. Sumarla es decision suya."
+  },
+  "gobernaciones": [
+    { "gobernacion": "Arica",           "telefono": "+56 58 2356702" },
+    { "gobernacion": "Iquique",         "telefono": "+56 57 2401902" },
+    { "gobernacion": "Antofagasta",     "telefono": "+56 55 2630000" },
+    { "gobernacion": "Caldera",         "telefono": "+56 52 2315276" },
+    { "gobernacion": "Coquimbo",        "telefono": "+56 51 2558100" },
+    { "gobernacion": "Valparaíso",      "telefono": "+56 32 2208905" },
+    { "gobernacion": "San Antonio",     "telefono": "+56 35 2584802" },
+    { "gobernacion": "Talcahuano",      "telefono": "+56 41 3831100" },
+    { "gobernacion": "Valdivia",        "telefono": "+56 63 2276905" },
+    { "gobernacion": "Puerto Montt",    "telefono": "+56 65 2205100" },
+    { "gobernacion": "Castro",          "telefono": "+56 65 2629405" },
+    { "gobernacion": "Aysén",           "telefono": "+56 67 2351450" },
+    { "gobernacion": "Punta Arenas",    "telefono": "+56 61 2201102" },
+    { "gobernacion": "Puerto Williams", "telefono": "+56 61 2624270" },
+    { "gobernacion": "Hanga Roa",       "telefono": "+56 32 2100222" }
+  ]
+}

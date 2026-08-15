@@ -529,3 +529,86 @@ de esas 123 hay 50 que siguen rotuladas con el nombre de otra Capitania: el
 defecto de atribucion que los muertos hacian visible sigue vivo donde el numero
 atiende.
 ================================================================================
+
+
+================================================================================
+ADENDA DEL 2026-08-14 — LA REGLA DE VALOR UNICO QUEDA RETIRADA
+================================================================================
+Se agrega, no se reescribe (CLAUDE.md §3.3). El texto de arriba queda como esta.
+
+A.10 — QUE SE RETIRA, Y QUE LO REEMPLAZA
+--------------------------------------------------------------------------------
+La segunda de las "dos reglas de valor" enunciadas en esta misma bitacora —bloque
+de A.1, lineas 315-318— decia:
+
+    · VALOR UNICO. Si la celda del CSV trae mas de un numero rotulado, se escribe el
+      de la Guardia, solo el numero. Aplico a UNA fila: Arica.
+
+QUEDA RETIRADA POR DECISION DEL OWNER, 2026-08-14.
+
+El criterio pasa a ser: **cuando la fuente publica mas de un numero, se toma el
+PRIMERO PUBLICADO.** No el rotulado Guardia, no el que parezca mas operativo: el
+primero, en el orden en que la fuente lo imprime.
+
+DONDE ESTABA REGISTRADA, medido antes de tocar nada:
+
+    enunciada en  : este archivo, lineas 315-318 (bloque A.1)
+    aplicada en   : este archivo, A.3, lineas 395-412
+    en PLAN_JURISDICCION.md : 0 ocurrencias de "Guardia", "Protocolar", "VALOR UNICO"
+    en CONTRATO_MOTOR.md    : 0 ocurrencias de las mismas
+    en src/ y en la PWA     : 0 ocurrencias
+
+Los otros archivos donde `git grep` encuentra la palabra NO enuncian la regla:
+`capitanias_64_final.csv`, `capitanias_64_completo.csv`,
+`capitanias_contacto_directemar.csv` y `sondeo_catalogo_cierre_2026-08-12/01_cruce_
+tres_columnas.txt` traen el VALOR de la celda de Arica, y
+`reconocimiento_jurisdiccion_maritima_2026-08-09.txt:624` dice "Guardiamarina
+Riquelme", que es un toponimo.
+
+O sea que la regla vivio SOLO en una bitacora, nunca en una autoridad. Retirarla no
+toca el contrato ni el plan, y por eso se puede escribir de este lado.
+
+A.11 — LO QUE QUEDA ESCRITO BAJO LA REGLA VIEJA, SIN RESOLVER
+--------------------------------------------------------------------------------
+LAS 33 ENTRADAS DE `85bc68a` SE ESCRIBIERON BAJO LA REGLA ANTERIOR.
+
+    85bc68a  2026-08-13 21:52  fix(contacto): repone el telefono de la Capitania
+             declarada en 33 de las 164 entradas
+
+No se revisa, no se recalcula y no se revierte en esta sesion. Queda declarado
+para que nadie lea esas 33 como si hubieran salido del criterio nuevo.
+
+Lo que SI esta medido de esa aplicacion, y acota el alcance: la regla vieja
+`aplico a UNA sola fila, Arica` —lo dice A.1 y lo confirma A.3—, porque es la unica
+de las 64 filas del CSV cuya celda de telefono trae mas de un numero. Las otras 32
+de `85bc68a` no pasaron por la regla: su celda era atomica.
+
+LO QUE NO ESTA MEDIDO, y hay que decirlo en vez de deducirlo: si el criterio nuevo
+cambia el valor de Arica. Bajo la regla vieja se escribio `+56 58 2356747`, el
+rotulado Guardia. El primero publicado en esa celda es `+56 58 2356704`. Parecen
+distintos, PERO la celda del CSV no es la fuente: la fuente es el HTML de
+DIRECTEMAR, y cual es "el primero publicado" ahi se resuelve por posicion en el
+bloque, no por el orden en que el CSV los concateno. Eso NO se midio aca.
+
+A.12 — UNA CONSECUENCIA QUE CONVIENE VER JUNTA
+--------------------------------------------------------------------------------
+A.3 de esta bitacora descarto el valor `+56 58 2356702` para la entrada 71 con este
+motivo, textual: "es el de la SECRETARIA PROTOCOLAR DE LA GOBERNACION Maritima de
+Arica, y la regla que termino aplicandose pide el de la Capitania".
+
+Ese descarte SIGUE SIENDO CORRECTO para la entrada 71, que es una bahia y cuyo
+campo pide Capitania.
+
+Y el mismo numero entro el 2026-08-14 como dato valido POR OTRA VIA y para OTRA
+COSA: `data/contacto/gobernaciones/gobernaciones_directemar_2026-08-14.json` lo
+registra como telefono de la GOBERNACION Maritima de Arica, que es exactamente lo
+que A.3 dice que es. No hay contradiccion: son dos entidades y dos campos.
+
+Se anota porque el mismo string aparece descartado en un lado y aceptado en el
+otro, y sin esta nota parece un error.
+
+================================================================================
+FIN DE LA ADENDA DEL 2026-08-14. Retira una regla, declara una deuda y no resuelve
+ninguna de las dos: ni el valor de Arica bajo el criterio nuevo, ni las 33 de
+`85bc68a`.
+================================================================================

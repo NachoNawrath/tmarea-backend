@@ -1,0 +1,375 @@
+================================================================================
+FRENTE DE CONTACTO — EL FALLBACK DE PANTALLA, MEDIDO. 2026-08-14
+Estado: SOLO MEDICION. No se toco ningun archivo de `src/` ni de la PWA.
+Lo unico que esta sesion escribio son las enmiendas de PLAN_JURISDICCION.md que
+esta bitacora respalda, y este archivo con su instrumento.
+Objeto: dejar medido el estado real de la tabla de Gobernaciones hardcodeada que
+alimenta el fallback de contacto, y resolver una contradiccion del plan sobre ese
+mismo asunto.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+El agente midio con tres herramientas: PowerShell, Git Bash y `node`. Lo que
+importa para reproducir es que TODO lo cuantitativo esta en un solo instrumento
+versionado al lado de este archivo, y las tres corridas de git son directas.
+
+Reproducible para el owner, en PowerShell, desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+
+    # las siete mediciones cuantitativas, de una sola corrida
+    node _bitacoras\frente_contacto_fallback_2026-08-14\medir_fallback.js
+
+    # el camino de ejecucion (lectura de codigo)
+    git grep -n "getCapitania(" -- "*.js"
+    cd C:\Users\katia\tmarea-pwa
+    git grep -n "from '.*utils/capitanias" -- "*.js" "*.jsx"
+
+    # la historia que fecha la contradiccion
+    cd C:\Users\katia\tmarea-backend
+    git log --format="%h %ad %s" --date=format:"%Y-%m-%d %H:%M" -1 813dd80
+    git log --format="%h %ad %s" --date=format:"%Y-%m-%d %H:%M" -1 85bc68a
+    git show 85bc68a -- src/data/bahia-capitania-map.json
+
+ADVERTENCIA DE METODO, y se declara porque esta sesion la pago una vez: NO usar
+`>` de PowerShell para volcar salida a archivo. Reencodea el texto y convierte
+los finales de linea, con lo cual una medicion de EOL hecha asi mide la propia
+redireccion. En esta sesion eso produjo una afirmacion falsa —que el blob de
+HEAD del plan estaba en CRLF— que hubo que corregir con `git ls-files --eol`.
+
+INSUMOS, con su sha256
+--------------------------------------------------------------------------------
+    src/utils/capitanias.js                       5b1eedfcdd6b4be1eff3ae1bce81246cf5f8bf416bdf43d0a5e7183e76ae8e0e
+    ../tmarea-pwa/src/utils/capitanias.js         b14abe356affe81ec6450d29749f9b8a28cf7d20987282d2c157bd6622f1a4c6
+    src/data/bahia-capitania-map.json             0225aa23959b51b1cf20f75018f0cba3e474bc83517db56a0103cb7c31b4b03b
+    _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json
+                                                  AED48C23FFBB840C… (captura del 2026-08-13)
+    _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv
+
+RUTAS ABSOLUTAS DE LOS DOS REPOS, verificadas antes de leer nada
+--------------------------------------------------------------------------------
+    C:\Users\katia\tmarea-backend    git=True  rama=main  origin=github.com/NachoNawrath/tmarea-backend.git
+    C:\Users\katia\tmarea-pwa        git=True  rama=main  origin=github.com/NachoNawrath/tmarea-pwa.git
+
+    C:\Users\katia\tmarea-backend\src\utils\capitanias.js                       3040 bytes  2026-08-05 13:14:27
+    C:\Users\katia\tmarea-pwa\src\utils\capitanias.js                           3423 bytes  2026-07-30 16:15:07
+    C:\Users\katia\tmarea-pwa\src\components\verification\PortStatusBlock.jsx   9894 bytes  2026-08-05 14:28:06
+    C:\Users\katia\tmarea-pwa\src\hooks\useVoyageVerification.js               44643 bytes  2026-08-11 11:28:41
+
+DESCARTADOS con motivo medido, no por su nombre:
+    C:\Users\katia\tmarea-workspace\tmarea-backend-OBSOLETO
+        HEAD 3cf54ff "initial project structure", sin src/, sin capitanias.js
+    C:\Users\katia\tmarea-workspace\tmarea-pwa-OBSOLETO
+        17 commits atras, sin capitanias.js
+    Los dos dan "0 0" contra origin/main, y eso NO es sincronia: es su ref local
+    de remote-tracking, nunca actualizada.
+
+
+1. SALIDA LITERAL DEL INSTRUMENTO
+--------------------------------------------------------------------------------
+Corrida completa de `node _bitacoras/frente_contacto_fallback_2026-08-14/medir_fallback.js`
+el 2026-08-14. Sin editar.
+
+=== M1 — la tabla GOBERNACIONES en las dos copias ===
+  backend : C:\Users\katia\tmarea-backend\src\utils\capitanias.js
+            3040 bytes  sha256 5b1eedfcdd6b4be1eff3ae1bce81246cf5f8bf416bdf43d0a5e7183e76ae8e0e
+  pwa     : C:\Users\katia\tmarea-pwa\src\utils\capitanias.js
+            3423 bytes  sha256 b14abe356affe81ec6450d29749f9b8a28cf7d20987282d2c157bd6622f1a4c6
+  identicos a nivel ARCHIVO : false
+  largo del bloque backend  : 1300
+  largo del bloque pwa      : 1300
+  identicos a nivel TABLA   : true
+
+=== M3 — los 3 numeros de baja contados sobre bahia-capitania-map.json ===
+  +56 58 220 6402    ->   0 entradas
+  +56 41 226 6100    ->   0 entradas
+  +56 65 256 1100    ->   0 entradas
+  TOTAL por telefono: 0   (el plan declaraba 41)
+  gobernacion Arica          ->   1 entradas
+  gobernacion Talcahuano     ->  12 entradas
+  gobernacion Puerto Montt   ->  28 entradas
+  TOTAL por gobernacion: 41
+
+=== A — universo de consultaBahias contra las claves del mapa ===
+  consultaBahias : 165 registros, 165 ids distintos
+  mapa           : 164 claves
+  EN LA FUENTE Y NO EN EL MAPA (caso del par mezclado): 1
+      258  "RÍO BUENO, SECTOR LLANCACURA"
+  EN EL MAPA Y NO EN LA FUENTE: NINGUNA
+  BAHIA_COORDS   : 163 ids
+  en BAHIA_COORDS y NO en el mapa: ninguna
+  en el mapa y NO en BAHIA_COORDS: 257
+
+=== A2 — resolverBahiaIdPorNombre corrido sobre sus propios 163 nombres ===
+  total            : 163
+  devuelve null    : 1
+      79 "Tal Tal"
+  devuelve OTRO id : 42
+      98 "Bahía Concepción - Talcahuano" -> 97 "Bahía Concepción - Lirquén"
+      114 "Canal Chacao Sector Pargua y Pta Coronel" -> 83 "Sector Punta Totoralillo"
+      118 "Bahía Ancud y Canal Chacao" -> 114 "Canal Chacao Sector Pargua y Pta Coronel"
+      125 "Sector Bahía de Puerto Aguirre" -> 83 "Sector Punta Totoralillo"
+      140 "Bahía Paraíso" -> 92 "Bahía de Valparaíso"
+      141 "Carahue - Sector Río" -> 83 "Sector Punta Totoralillo"
+      142 "Carahue - Sector Lago" -> 83 "Sector Punta Totoralillo"
+      143 "Carahue - Borde Costero" -> 141 "Carahue - Sector Río"
+      158 "Caleta Chañaral y Ensenada Gaviota" -> 80 "Bahía Chañaral"
+      170 "Sector Chaihuín" -> 83 "Sector Punta Totoralillo"
+      175 "Sector Repolla Alto" -> 83 "Sector Punta Totoralillo"
+      176 "Sector Repolla Bajo" -> 83 "Sector Punta Totoralillo"
+      183 "Estero Pichicolo" -> 182 "Estero Comau"
+      186 "Sector Ayacara" -> 83 "Sector Punta Totoralillo"
+      187 "Sector Buill" -> 83 "Sector Punta Totoralillo"
+      196 "Borde Costero Norte Patache" -> 73 "Patache"
+      197 "Borde Costero Sur Patache" -> 73 "Patache"
+      198 "Sector Costero Península de Hualpén" -> 83 "Sector Punta Totoralillo"
+      199 "Cabo de Hornos" -> 135 "Cabo Negro"
+      207 "Valdivia Conectividad" -> 104 "Valdivia Fluvial"
+      208 "Borde Costero - Valdivia" -> 104 "Valdivia Fluvial"
+      209 "Lago Villarrica Sector Pucón" -> 83 "Sector Punta Totoralillo"
+      210 "Lago Villarrica Sector Villarrica" -> 83 "Sector Punta Totoralillo"
+      213 "Canal Chacao" -> 114 "Canal Chacao Sector Pargua y Pta Coronel"
+      214 "Bahía Ancud" -> 118 "Bahía Ancud y Canal Chacao"
+      219 "Sector Norte Quintero" -> 83 "Sector Punta Totoralillo"
+      221 "Estero Quitralco" -> 182 "Estero Comau"
+      222 "Estero Cupquelán" -> 182 "Estero Comau"
+      227 "Canal Williams" -> 138 "Puerto Williams"
+      231 "Bahía Chile" -> 95 "Pichilemu"
+      238 "Sector Canal Moraleda" -> 83 "Sector Punta Totoralillo"
+      239 "Sector Canal Ferronave y Canal Devia" -> 83 "Sector Punta Totoralillo"
+      240 "Sector Canal Pilcomayo y Canal Rodríguez" -> 83 "Sector Punta Totoralillo"
+      241 "Sector Canal Goñi y Canal Ninualac" -> 83 "Sector Punta Totoralillo"
+      242 "Sector Canal Carrera del Chivato y Canal Cuchi" -> 83 "Sector Punta Totoralillo"
+      243 "Sector Canal Darwin" -> 83 "Sector Punta Totoralillo"
+      244 "Sector Canal Tránsito" -> 83 "Sector Punta Totoralillo"
+      252 "Canal Moraleda (Este)" -> 238 "Sector Canal Moraleda"
+      253 "Canal Chaffers Norte" -> 196 "Borde Costero Norte Patache"
+      254 "Canal Chaffers Sur" -> 253 "Canal Chaffers Norte"
+      255 "Canal Pérez Norte" -> 196 "Borde Costero Norte Patache"
+      256 "Canal Pérez Sur" -> 255 "Canal Pérez Norte"
+
+=== A2 bis — nombres de destino no portuario ===
+      "Marina del Sur" -> null
+      "Centro de cultivo 103421" -> null
+      "Fondeadero Quicavi" -> null
+      "Caladero 42S" -> null
+      "-41.47, -72.94" -> null
+
+=== B — columnas del CSV y cobertura de las 15 franjas ===
+  columnas: CdRep | Codigo | Capitania | Gobernacion | Region | Telefono | Direccion | Jefe
+  filas de datos: 64
+  columnas cuyo nombre contiene "tel": Telefono
+  valores distintos de la columna Gobernacion:
+      Arica | Iquique | Antofagasta | Hanga Roa | Caldera | Coquimbo | Valparaíso | San Antonio | Talcahuano | Valdivia | Puerto Montt | Castro | Aysén | Punta Arenas | Puerto Williams | Antártica Chilena |
+  Arica             -> CdRep 2  tel="+56 58 2356704 (Secretaría Protocolar) ó +56 58 2356747 (Guardia)"
+  Iquique           -> CdRep 10  tel="+56 57 2401942"
+  Antofagasta       -> CdRep 13  tel="+56 55 2630000"
+  Caldera           -> CdRep 30  tel="+56 52 2315276"
+  Coquimbo          -> CdRep 45  tel="+56 51 2558100"
+  Valparaíso        -> CdRep 72  tel="+56 32 2208505"
+  San Antonio       -> CdRep 91  tel="+56 35 2584800"
+  Talcahuano        -> CdRep 134  tel="+56 41 3831100"
+  Valdivia          -> CdRep 175  tel="+56 63 2276905"
+  Puerto Montt      -> CdRep 194  tel="+56 65 2205100"
+  Castro            -> CdRep 208  tel="+56 65 2629448"
+  Aysén             -> SIN FILA de Capitania con ese nombre
+  Punta Arenas      -> CdRep 251  tel="+56 61 2201105"
+  Puerto Williams   -> CdRep 275  tel="+56 61 2624271"
+  Hanga Roa         -> CdRep 38  tel="+56 32 2100222"
+
+=== C — getCapitania(lat,lng) contra el campo gobernacion del mapa ===
+  coinciden      : 132
+  DIFIEREN       : 28
+  franja da null : 3
+  90   Isla Robinson Crusoe                 lat=-33.6333  franja="San Antonio" vs mapa="Valparaíso"
+  103  Bahía Constitución                   lat=-35.3325  franja="San Antonio" vs mapa="Talcahuano"
+  118  Bahía Ancud y Canal Chacao           lat=-41.8665  franja="Puerto Montt" vs mapa="Castro"
+  121  Chaitén                              lat=-42.9112  franja="Castro" vs mapa="Puerto Montt"
+  124  Melinka                              lat=-43.8987  franja="Castro" vs mapa="Aysén"
+  129  Puerto Edén                          lat=-49.1295  franja="Punta Arenas" vs mapa="Aysén"
+  160  Lago Puyehue                         lat=-40.6833  franja="Valdivia" vs mapa="Puerto Montt"
+  161  Lago Rupanco                         lat=-40.7833  franja="Valdivia" vs mapa="Puerto Montt"
+  175  Sector Repolla Alto                  lat=-43.7833  franja="Castro" vs mapa="Aysén"
+  176  Sector Repolla Bajo                  lat=-43.8333  franja="Castro" vs mapa="Aysén"
+  180  Bahía Pichidangui                    lat=-32.1362  franja="Valparaíso" vs mapa="Coquimbo"
+  181  Canal Cholgo                         lat=-42.0167  franja="Castro" vs mapa="Puerto Montt"
+  182  Estero Comau                         lat=-42.2     franja="Castro" vs mapa="Puerto Montt"
+  183  Estero Pichicolo                     lat=-42.0333  franja="Castro" vs mapa="Puerto Montt"
+  184  Ensenada Hualaihué                   lat=-42       franja="Castro" vs mapa="Puerto Montt"
+  185  Ensenada Rolecha                     lat=-42.05    franja="Castro" vs mapa="Puerto Montt"
+  186  Sector Ayacara                       lat=-42.15    franja="Castro" vs mapa="Puerto Montt"
+  187  Sector Buill                         lat=-42.1167  franja="Castro" vs mapa="Puerto Montt"
+  213  Canal Chacao                         lat=-41.7833  franja="Puerto Montt" vs mapa="Castro"
+  214  Bahía Ancud                          lat=-41.8665  franja="Puerto Montt" vs mapa="Castro"
+  229  Lago Vichuquén                       lat=-34.8333  franja="San Antonio" vs mapa="Talcahuano"
+  234  Río Palena                           lat=-43.6333  franja="Castro" vs mapa="Puerto Montt"
+  251  Canal Golfo Corcovado (Norte)        lat=-43.3     franja="Castro" vs mapa="Aysén"
+  252  Canal Moraleda (Este)                lat=-43.5     franja="Castro" vs mapa="Aysén"
+  253  Canal Chaffers Norte                 lat=-43.7     franja="Castro" vs mapa="Aysén"
+  254  Canal Chaffers Sur                   lat=-43.8     franja="Castro" vs mapa="Aysén"
+  255  Canal Pérez Norte                    lat=-43.75    franja="Castro" vs mapa="Aysén"
+  256  Canal Pérez Sur                      lat=-43.85    franja="Castro" vs mapa="Aysén"
+  --- las que la franja no resuelve ---
+  139 "Bahía Fildes" lat=-62.2 mapa="Puerto Williams"
+  140 "Bahía Paraíso" lat=-64.8167 mapa="Puerto Williams"
+  231 "Bahía Chile" lat=-62.4667 mapa="Puerto Williams"
+
+=== C bis — poblacion expuesta a los 3 numeros, por las dos vias ===
+  por gobernacion del MAPA  (el 41, sobre las 163 con coordenada): 41
+  por getCapitania FRANJA   (la via real del fallback)          : 31
+  en las dos                  : 28
+  solo por MAPA, no por franja: 103, 121, 160, 161, 181, 182, 183, 184, 185, 186, 187, 229, 234
+  solo por FRANJA, no por mapa: 118, 213, 214
+  257 en BAHIA_COORDS: false  | gobernacion en el mapa: Aysén
+  getCapitania(-64.8167,-63.0) = null
+
+
+2. CAMINO DE EJECUCION — LECTURA DE CODIGO, LITERAL
+--------------------------------------------------------------------------------
+Los dos puntos de consumo del fallback, en la PWA:
+
+    PortStatusBlock.jsx:3    import { getCapitania } from '../../utils/capitanias.js';
+    PortStatusBlock.jsx:73   // Gobernación Marítima: preferir los datos del backend (getCapitaniaByBahiaId,
+    PortStatusBlock.jsx:74   // lookup exacto por bahia_id). Caer a getCapitania(lat,lng) solo si el backend
+    PortStatusBlock.jsx:75   // no pudo resolver la bahía (data.gobernacion es null).
+    PortStatusBlock.jsx:76   const capNombre = data?.gobernacion || (data?.ubicacion ? getCapitania(data.ubicacion.lat, data.ubicacion.lng)?.nombre : null);
+    PortStatusBlock.jsx:77   const capTel    = data?.telefono    || (data?.ubicacion ? getCapitania(data.ubicacion.lat, data.ubicacion.lng)?.telefono : null);
+
+    useVoyageVerification.js:3     import { getCapitania } from '../utils/capitanias.js';
+    useVoyageVerification.js:535   const capZarpeNombre = portStatus?.zarpe?.gobernacion
+    useVoyageVerification.js:536     || (zarpe ? getCapitania(zarpe.lat, zarpe.lng)?.nombre : null);
+    useVoyageVerification.js:537   const capZarpeTel = portStatus?.zarpe?.telefono
+    useVoyageVerification.js:538     || (zarpe ? getCapitania(zarpe.lat, zarpe.lng)?.telefono : null);
+
+Lo que manda el backend:
+
+    sitport-routes.js:338   const bahiaId = filtradas[0]?.bahia ?? resolverBahiaIdPorNombre(puerto);
+    sitport-routes.js:339   const cap = bahiaId ? getCapitaniaByBahiaId(bahiaId) : null;
+    sitport-routes.js:346     capitania: cap?.capitania || null,
+    sitport-routes.js:347     gobernacion: cap?.gobernacion || null,
+    sitport-routes.js:348     telefono: cap?.telefono || null,
+
+    sitport-routes.js:465   const cap = getCapitaniaByBahiaId(b.idBahia);
+    sitport-routes.js:479-481   capitania / gobernacion / telefono, mismo patron
+
+    capitanias.js:54-58  (backend)
+      function getCapitaniaByBahiaId(bahiaId) {
+        const entry = BAHIA_CAPITANIA_MAP[String(bahiaId)];
+        if (!entry) return { capitania: 'Desconocida', gobernacion: 'Desconocida', telefono: null };
+        return entry;
+      }
+
+`ubicacion` NO viene del backend: la agrega la PWA con su propio dato de viaje.
+
+    useVoyageVerification.js:886   // Se adjunta la ubicación del puerto al estado — PortStatusBlock la usa
+    useVoyageVerification.js:887   // para resolver la Gobernación Marítima jurisdiccional (getCapitania).
+    useVoyageVerification.js:888   const portStatus = {
+    useVoyageVerification.js:889     zarpe:    { ...zarpeStatus,    ubicacion: puerto_zarpe.ubicacion },
+    useVoyageVerification.js:890     recalada: { ...recaladaStatus, ubicacion: recaladaUbicacion },
+    useVoyageVerification.js:891   };
+
+Quien consume la tabla de franjas, salida literal de git grep:
+
+    --- consumo de la tabla de franjas en el BACKEND ---
+      (ninguna coincidencia)
+    _bitacoras/cotejo_tm025a_2026-08-12/cotejo.js:15:  if (/FIJA JURISDICCI[OÓ]N DE LAS GOBERNACIONES/i.test(t)) return false; // cabecera
+
+    --- consumo en la PWA ---
+    src/components/verification/PortStatusBlock.jsx:3:import { getCapitania } from '../../utils/capitanias.js';
+    src/hooks/useVoyageVerification.js:3:import { getCapitania } from '../utils/capitanias.js';
+
+El unico hit del backend es una cabecera de texto del decreto dentro de una
+bitacora, no una llamada. La copia del backend no la consume nadie.
+
+Los tres caminos que produce el `||`, que opera CAMPO POR CAMPO y no por registro:
+
+    bahiaId falsy -> cap = null
+        gobernacion=null  telefono=null   -> cae al hardcodeado NOMBRE y TELEFONO
+    bahiaId presente y NO esta en el mapa
+        gobernacion='Desconocida' (truthy)  telefono=null (falsy)
+                                        -> cae SOLO el telefono. Par mezclado.
+    bahiaId en el mapa
+        los dos campos del mapa         -> no cae (las 164 tienen los dos)
+
+
+3. LA CONTRADICCION DEL PLAN, FECHADA
+--------------------------------------------------------------------------------
+Las dos afirmaciones del plan sobre este asunto —la medicion del punto 4 y la
+tabla de las siete bahias del Puyehue— se escribieron en el MISMO commit, y las
+invalido un cambio del MISMO dia, ocho horas despues.
+
+    813dd80 2026-08-13 13:35  docs(contacto): la bahia 160 medida, y el frente de contacto redimensionado
+    35c63d9 2026-08-05 13:47  feat: lookup de capitanías por bahia_id + normativa zarpe≠recalada
+    85bc68a 2026-08-13 21:52  fix(contacto): repone el telefono de la Capitania declarada en 33 de las 164 entradas
+    df684d7 2026-08-13 22:10  fix(contacto): repone el telefono de la Capitania de Hornopiren en las 8 entradas restantes
+
+Diff de 85bc68a sobre las entradas que el plan cita:
+
+    -  "71":  { "capitania": "Arica",           "gobernacion": "Arica",           "telefono": "+56 58 220 6402" },
+    +  "71":  { "capitania": "Arica",           "gobernacion": "Arica",           "telefono": "+56 58 2356747" },
+    -  "97":  { "capitania": "Talcahuano",      "gobernacion": "Talcahuano",      "telefono": "+56 41 226 6100" },
+    +  "97":  { "capitania": "Talcahuano",      "gobernacion": "Talcahuano",      "telefono": "+56 41 3831100" },
+    -  "160": { "capitania": "Puerto Montt",    "gobernacion": "Puerto Montt",    "telefono": "+56 65 256 1100" },
+    -  "161": { "capitania": "Puerto Montt",    "gobernacion": "Puerto Montt",    "telefono": "+56 65 256 1100" },
+    -  "111": { "capitania": "Puerto Varas",    "gobernacion": "Puerto Montt",    "telefono": "+56 65 256 1100" },
+    -  "159": { "capitania": "Puerto Montt",    "gobernacion": "Puerto Montt",    "telefono": "+56 65 256 1100" },
+    +  "160": { "capitania": "Puerto Montt",    "gobernacion": "Puerto Montt",    "telefono": "+56 65 2205100" },
+    +  "161": { "capitania": "Puerto Montt",    "gobernacion": "Puerto Montt",    "telefono": "+56 65 2205100" },
+    +  "111": { "capitania": "Puerto Varas",    "gobernacion": "Puerto Montt",    "telefono": "+56 65 2235237" },
+    +  "159": { "capitania": "Puerto Montt",    "gobernacion": "Puerto Montt",    "telefono": "+56 65 2205100" },
+
+Cuando se escribieron, las dos afirmaciones eran ciertas y coherentes entre si.
+
+
+4. LA GOBERNACION ANTARTICA
+--------------------------------------------------------------------------------
+El valor existe, recuperado y verificado en una sesion anterior:
+
+    _bitacoras/frente_contacto_2026-08-13/gm_antartica_chilena_RECUPERADO.md:36
+      | teléfono | **+56 32 2208557** |
+    _bitacoras/frente_contacto_2026-08-13/gm_antartica_chilena_RECUPERADO.md:69
+        [Gobernación Marítima]   Antártica Chilena  tel +56 32 2208557
+
+    HTML crudo conservado en 297b220^:
+      _bitacoras/sondeo_catalogo_2026-08-12/gm_region-de-magallanes-y-antartica-chilena.html
+
+No cabe en la estructura de franjas: la ultima llega a `lat_sur: -56.0`, y
+`getCapitania(-64.8167,-63.0)` devuelve `null` (§1, bloque C bis).
+
+
+5. LO QUE ESTA BITACORA NO RESPONDE
+--------------------------------------------------------------------------------
+- Que hacer con los tres numeros. Esta sesion midio; no propuso correccion.
+- Que hacer con la copia muerta del backend —actualizarla o retirarla—. Se midio
+  que no la consume nadie; la decision no se tomo.
+- Los 42 nombres que resuelven a otra bahia. Se midio el hecho y se localizo la
+  causa (`'sector'` fuera del set de palabras a saltar). NO se midio que efecto
+  tiene aguas abajo ni cuantas rutas reales lo tocan.
+- Si SITPORT publica hoy restriccion bajo la 258. Se midio contra la captura del
+  2026-08-13, no en vivo.
+- Si el CSV es dato vigente. El sondeo del 2026-08-12 se cerro SIN APLICAR y su
+  propia bitacora pide re-verificar contra los raw. Aca se leyeron sus columnas,
+  no se valido su contenido.
+- La afirmacion del plan de que ninguna de las 11 jurisdicciones del segundo
+  escalon usa uno de los tres numeros. NO se reprodujo en esta sesion.
+
+
+6. QUE SE ESCRIBIO CON ESTA MEDICION
+--------------------------------------------------------------------------------
+Tres enmiendas en PLAN_JURISDICCION.md §7.1, todas por agregado y ninguna por
+borrado (§3.3), en el mismo tramo que esta bitacora respalda:
+
+  · bloque CORRECCION 2026-08-14 dentro del punto 4 — el 41 y su mecanismo, la
+    poblacion real de 31, y la conclusion de "unico punto corregible sin decidir
+    estructura" enmendada con sus tres motivos.
+  · bloque REGISTRO 2026-08-14 despues de la lista — los cuatro hechos medidos
+    que no enmiendan nada: el par mezclado armado y sin disparar, el fallback
+    completo alcanzable, los 42 nombres, y la Antartica.
+  · bloque CORREGIDA 2026-08-14 debajo de la tabla de las siete bahias — la
+    columna telefono, con tachado. LA TABLA NO SE TOCO POR DENTRO: es una
+    medicion fechada que sostiene el argumento de causa raiz, y tacharle celdas
+    la dejaria sin poder mostrar que se midio ese dia.
+
+Ningun archivo de `src/` ni de la PWA fue modificado en esta sesion.
+================================================================================

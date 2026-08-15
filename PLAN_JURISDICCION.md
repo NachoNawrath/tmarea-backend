@@ -1414,6 +1414,84 @@ Cuatro cosas, cada una con su medición:
    Castro, Aysén y Punta Arenas, **las seis coinciden con DIRECTEMAR**—, así que el defecto vive
    en el punto de zarpe y recalada de hoy, no en la política de mañana.
 
+   > **CORRECCIÓN 2026-08-14, §3.3: el párrafo de arriba no se borra. El número sobrevive; el
+   > mecanismo y la conclusión, no.**
+   >
+   > **(a) El 41 es correcto y lo que este punto dice de él es falso.** Los tres teléfonos **no
+   > alimentan ninguna entrada del mapa**: medido sobre las 164, `+56 58 220 6402` → 0,
+   > `+56 41 226 6100` → 0, `+56 65 256 1100` → 0. Estuvieron —los puso `35c63d9`— y los
+   > repusieron `85bc68a` y `df684d7` el 2026-08-13, **ocho horas después de escribirse este
+   > apartado**. Hoy viven **sólo** en la tabla hardcodeada de `src/utils/capitanias.js`, que es
+   > lo que el **punto 1 de este mismo apartado ya dice bien**: el apartado se contradecía
+   > consigo mismo. El 41 reproduce exacto —1 Arica + 12 Talcahuano + 28 Puerto Montt— pero
+   > cuenta **entradas cuya Gobernación es una de las tres**, no entradas que lleven el número.
+   >
+   > **(b) Para el fallback la población es 31, no 41, y los dos conjuntos no están anidados.**
+   > Cuando el fallback dispara, el teléfono sale de `getCapitania(lat,lng)` —franjas de
+   > latitud— y no del mapa. Medido sobre las 163 bahías con coordenada: **31** reciben uno de
+   > los tres números por esa vía. **28 están en las dos cuentas**; **13 sólo en el 41** —103,
+   > 121, 160, 161, 181, 182, 183, 184, 185, 186, 187, 229, 234— y **3 sólo en el 31** —118,
+   > 213, 214—. La 257 queda fuera de las dos: sin coordenada en `BAHIA_COORDS`, la función no
+   > puede evaluarla.
+   >
+   > **(c) "El único punto del frente que se puede corregir sin decidir nada de estructura" ya
+   > no se sostiene, por tres motivos medidos.** **Uno:** el valor a corregir **no está** en la
+   > fuente que el contrato autoriza — está en `src/utils/capitanias.js`, que §5 declara *"POR
+   > DEFINIR — hoy vive hardcodeado… sin declarar acá"*. **Dos:** el insumo de reemplazo **no
+   > existe en el repositorio** — `capitanias_64_final.csv` tiene ocho columnas (`CdRep`,
+   > `Codigo`, `Capitania`, `Gobernacion`, `Region`, `Telefono`, `Direccion`, `Jefe`), su única
+   > columna de teléfono es de **Capitanía** y `Gobernacion` es un nombre; 14 de las 15 franjas
+   > tienen una Capitanía homónima en el CSV, pero usar ese número sería rotular un teléfono de
+   > Capitanía como Gobernación, que es la mezcla de categorías que INV-10.1 existe para cerrar,
+   > con los roles invertidos. **Tres:** la fuente que alimenta el fallback **devuelve la
+   > Gobernación equivocada en 28 de 163 casos** —17 %— contra el campo `gobernacion` del mapa,
+   > y hay 3 más que no resuelve. Reponer los tres números sigue siendo barato de teclear y
+   > **deja intacto el defecto mayor**: el teléfono correcto de la Gobernación equivocada no
+   > sirve. Sigue siendo necesario; dejó de ser suficiente.
+   >
+   > Medido el 2026-08-14. ~~**La evidencia cruda de esta medición todavía no está en
+   > `_bitacoras/`** (§3.1) — se tomó en sesión y la enmienda se escribió antes de bajarla.~~
+   > **SALDADO el mismo día (§3.3): la evidencia está en
+   > `_bitacoras/frente_contacto_fallback_2026-08-14.txt`**, con su instrumento re-ejecutable en
+   > `_bitacoras/frente_contacto_fallback_2026-08-14/medir_fallback.js` — sólo lee, no escribe
+   > nada, y la sección 1 de la bitácora es su salida sin editar. La frase tachada fue cierta
+   > entre que se escribió esta enmienda y que se bajó la bitácora, y se conserva porque el
+   > orden importa: **la enmienda se escribió antes que su respaldo**, que es lo que §3.1 pide
+   > no hacer.
+
+> **REGISTRO del 2026-08-14 — cuatro hechos medidos que no enmiendan nada de arriba y no abren
+> tramo.** Van acá porque son del mismo camino de código que este apartado describe, y entre
+> sesiones se pierden.
+>
+> - **El par mezclado está armado y sin disparar.** Si el backend recibe un `bahia_id` que el
+>   mapa no tiene, `getCapitaniaByBahiaId` devuelve `gobernacion: 'Desconocida'` —truthy, así que
+>   el `||` **no** cae al fallback— y `telefono: null` —falsy, así que **sí** cae—: la pantalla
+>   quedaría con un nombre del backend y un teléfono de la tabla de franjas, sin nada que lo
+>   señale. El `||` de `PortStatusBlock.jsx:76-77` y de `useVoyageVerification.js:535-538` opera
+>   **campo por campo, no por registro**. Medido contra la captura del 2026-08-13: de los 165 ids
+>   de `consultaBahias`, **uno solo** no está en el mapa —la **258**— y ninguna clave del mapa
+>   falta en la fuente. SITPORT no publica restricción bajo la 258 hoy, así que el caso existe y
+>   no dispara. Es la divergencia que **D14** dejó abierta a propósito.
+> - **El fallback completo sí es alcanzable.** `bahiaId` llega vacío cuando no hay restricción
+>   que matchee **y** el nombre no resuelve, y `resolverBahiaIdPorNombre` sólo puede devolver
+>   claves de `BAHIA_COORDS` —las 163, todas en el mapa—. Con destinos no portuarios devuelve
+>   `null`: probado con "Marina del Sur", "Centro de cultivo 103421", "Fondeadero Quicavi",
+>   "Caladero 42S" y un par de coordenadas, los cinco `null`. Ahí caen al hardcodeado **el nombre
+>   y el teléfono**. Es el bug 1 de `CONTRATO_MOTOR.md` §7 llegando al contacto.
+> - **42 de los 163 nombres resuelven a OTRA bahía.** Corrido el resolutor sobre su propio
+>   universo: 1 devuelve `null` (79 "Tal Tal") y **42 devuelven un id distinto del suyo** —98
+>   Talcahuano → 97 Lirquén, 140 Bahía Paraíso → 92 Valparaíso, y 175/176 Repolla → 83 Punta
+>   Totoralillo, entre otras—. La causa está localizada: `'sector'` **no** está en el set de
+>   palabras a saltar, así que todo nombre que la contenga matchea primero contra
+>   `83 "Sector Punta Totoralillo"`. No es de este frente; queda con su causa escrita para no
+>   tener que volver a encontrarla.
+> - **La Antártica tiene teléfono y no cabe en la estructura.** `+56 32 2208557`, recuperado y
+>   verificado en `_bitacoras/frente_contacto_2026-08-13/`, con los HTML crudos en `297b220^`.
+>   Pero las franjas terminan en `lat_sur: -56.0` y `getCapitania(-64.8167, -63.0)` devuelve
+>   `null`: las tres bahías antárticas —139 Fildes, 140 Paraíso, 231 Chile— la función no las
+>   resuelve, y el mapa se las adjudica a "Puerto Williams". Sumarla **no es una fila más**: es
+>   decidir qué hace la tabla al sur del paralelo 56, y eso toca lo que el patrón ve.
+
 **La distancia entre el código y INV-10.1, medida y no arreglada** (es insumo de la promoción,
 no la promoción):
 
@@ -1506,6 +1584,35 @@ La medición que lo sostiene, sobre las siete bahías que devuelve una ruta por 
 | 159 | `puerto_varas` | Puerto Varas | Puerto Montt | +56 65 256 1100 |
 | **160** | **`lago_ranco`** | **Lago Ranco** | **Puerto Montt** | **+56 65 256 1100** |
 | 161 | `puerto_varas` | Puerto Varas | Puerto Montt | +56 65 256 1100 |
+
+> **La tabla de arriba es la medición del 2026-08-13 y NO se toca por dentro: es la evidencia
+> del argumento, no un cuadro de datos vigentes.** Tachar celdas adentro la volvería inútil como
+> snapshot — dejaría de mostrar qué se midió ese día, que es lo que sostiene la causa raíz. La
+> corrección va acá abajo, fechada (§3.3).
+>
+> **CORREGIDA el 2026-08-14: la columna `teléfono` murió en 4 de las 7 filas.** Ocho horas
+> después de escribirse esta medición, `85bc68a` (21:52) y `df684d7` (22:10) repusieron en el
+> mapa el teléfono de la Capitanía declarada. Lo que dice el mapa hoy:
+>
+> | bahía | teléfono medido el 2026-08-13 | teléfono hoy |
+> |---|---|---|
+> | 111 | ~~`+56 65 256 1100`~~ | `+56 65 2235237` |
+> | 144 | `+56 63 227 6905` | `+56 63 227 6905` — vigente |
+> | 145 | `+56 63 227 6905` | `+56 63 227 6905` — vigente |
+> | 146 | `+56 63 227 6905` | `+56 63 227 6905` — vigente |
+> | 159 | ~~`+56 65 256 1100`~~ | `+56 65 2205100` |
+> | 160 | ~~`+56 65 256 1100`~~ | `+56 65 2205100` |
+> | 161 | ~~`+56 65 256 1100`~~ | `+56 65 2205100` |
+>
+> **Las otras dos columnas siguen vigentes, y se midió que lo siguen:** `jurisdicción (join)` no
+> cambió, y `Capitanía mostrada` es salida del motor vía el join —no el campo `capitania` del
+> mapa—, así que "Puerto Varas" en 111/159/161 y "Lago Ranco" en la 160 es lo que la pantalla
+> sigue renderizando.
+>
+> **El argumento que esta tabla sostiene NO se mueve**, y por eso la enmienda es de la columna y
+> no del párrafo: cuatro bahías de `lago_ranco` con dos teléfonos distintos sigue siendo cierto
+> hoy —144, 145 y 146 traen `+56 63 227 6905` y la 160 trae `+56 65 2205100`—, y la causa sigue
+> siendo que la clave del archivo es la bahía.
 
 **Cuatro bahías de `lago_ranco` y dos teléfonos distintos.** El teléfono correcto de Lago Ranco
 **ya está en el archivo** —lo traen 144, 145 y 146— y la 160 no lo alcanza, porque la clave es
