@@ -554,3 +554,36 @@ QUE NO SE TOCO Y SIGUE ABIERTO:
 - **Si `capitania` y `gobernacion` deben retirarse de la respuesta.** Esta pieza
   los conserva y no lo evalua.
 ================================================================================
+
+
+================================================================================
+NOTA AL PIE AGREGADA EL 2026-08-16 POR EL TRAMO B (CLAUDE.md §3.3 — las
+bitacoras se agregan, no se reescriben). Nada de lo de arriba se toco.
+================================================================================
+
+(a) V10 DE `04_verificar.js` QUEDA EN ROJO A PARTIR DE ACA, Y ES POR DISENO.
+    Ese control clava por sha256 los 5 archivos de la PWA porque en el Tramo A
+    `tmarea-pwa` era SOLO LECTURA. El Tramo B abrio la escritura que el owner
+    habia decidido en D1(a) y escribio 3 de esos 5. `04_verificar.js` NO se
+    modifica: es constancia de lo que se verifico el dia que se verifico. Su
+    V10 afirmaba "la PWA no se toco EN ESTA SESION", y eso sigue siendo cierto
+    de aquella sesion.
+    Los sha256 nuevos de los 3 archivos escritos quedan en
+    `_bitacoras/rotulo_p3_tramo_b_2026-08-16/02_verificar.txt`, y quien quiera
+    el equivalente vivo de V10 tiene V2 y V9 de `02_verificar.js`: V2 exige que
+    los modificados sean exactamente esos 3 y que cada hunk caiga adentro de los
+    5 puntos; V9 clava por sha256 los 2 que NO se tocaron.
+
+(b) EL MAPA DE LA SECCION 2 TENIA 12 PUNTOS Y SON 13.
+    Falta el consumidor PWA del camino `weather-ruta`:
+    `WeatherBlock.jsx:181-182` y `:195`, que rotula "Gob. Marítima de {nombre}"
+    y muestra telefono por tramo de ruta. El mapa enumera el PRODUCTOR de ese
+    camino (`capitanias.js:55`) y su SALIDA (`sitport-routes.js:479`), pero
+    nunca su consumidor; los otros tres caminos si tienen el suyo listado.
+    Apareció al montar la app, no leyendo archivos, y por eso no lo caza ningun
+    control que solo lea codigo. Queda ANOTADO Y NO ABIERTO: esta fuera de los
+    5 puntos y ademas `weather-ruta` no emite `contacto`, asi que cerrarlo pide
+    un punto de backend y uno de PWA. Medicion y detalle en
+    `_bitacoras/rotulo_p3_tramo_b_2026-08-16/05_pantalla_montada.txt` §3.
+    El reparto de la seccion 2 se lee entonces asi: 6 puntos que la pieza toca
+    + 6 fuera de alcance + 1 no enumerado = 13.

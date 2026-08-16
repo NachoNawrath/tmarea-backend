@@ -1,0 +1,136 @@
+================================================================================
+QUE LE LLEGA AL PATRON POR LOS CUATRO CAMINOS — hoy y con la pieza aplicada
+Ancla: commit fijo dc7d63e72b1787e0cd93bfc587eb8a2201f3753d
+NO escribe ningun archivo. La PWA se LEE.
+================================================================================
+
+=== LINEA BASE ===
+  HEAD     : dc7d63e72b1787e0cd93bfc587eb8a2201f3753d
+  esperado : dc7d63e72b1787e0cd93bfc587eb8a2201f3753d
+
+=== INSUMOS, con sha256 del archivo en disco ===
+  src/data/bahia-capitania-map.json                      e2b34432d9128153f10ae75abae4ee3b8bb77d02d52f657029a352a813b6c92b
+  data/contacto/reparticiones_publicadas.json            9524a3792e3d79d7690d5a4c09b1c46191934dea45a734051f285420f89fef46
+  src/services/contacto-por-escalon.js                   8078a2233c1feb8a933c580e950f4bda93b399e73938983ef6a44173c922ec7d
+  pwa:src/hooks/useVoyageVerification.js                 a31d8af17d422c2c6a0186e318b6d0f6dd23e39de88daa2a38a652c7c0567374
+  pwa:src/components/verification/PortStatusBlock.jsx    a1427f734ce97bea95711828dadaea4c358108cdb2bb42f474cc4a7c73d0ac25
+  pwa:src/components/verification/NormativeBlock.jsx     7460aa3e17298d759ca01949fc5e965da614813fcebd6276a2d4d9eed06d04fc
+
+=== LOS 5 PUNTOS DE LA PWA, RELEIDOS CONTRA EL ARCHIVO ===
+  src/hooks/useVoyageVerification.js:246                 OK
+      P3·P4 PASAMANOS — copia campo por campo (:246-:248)
+  src/components/verification/PortStatusBlock.jsx:76     OK
+      P3 CONSUMIDOR — nunca mira `capitania`
+  src/components/verification/PortStatusBlock.jsx:99     OK
+      P3 RENDER — etiqueta DURA en el JSX
+  src/hooks/useVoyageVerification.js:535                 OK
+      P4 CONSUMIDOR — r1_radio_aviso
+  src/components/verification/NormativeBlock.jsx:81      OK
+      P4 RENDER — telefono dentro de un mensaje normativo
+  PUNTOS COMPROBADOS : 5 de 5
+
+=== P3 — TARJETA DE ZARPE Y RECALADA (PortStatusBlock.jsx) ===
+  DENOMINADOR DECLARADO: las 164 entradas de `bahia-capitania-map.json`.
+  COMPARACIONES EFECTIVAS : 164
+
+  con la pieza aplicada, reparto por etiqueta:
+      Capitanía de Puerto de      99
+      Gobernación Marítima de     65
+
+  rotulos que SE MUEVEN (Gobernación -> Capitanía) : 99
+  de esos, los que ademas CAMBIAN EL NOMBRE        : 62
+  BAJAS — dejan de mostrar el campo (escalon 3)    : 0
+  QUIETAS — misma etiqueta y mismo nombre          : 65
+  SUMA : 99 + 0 + 65 = 164  de 164
+
+  telefonos NO atomicos que hoy se renderizan como `tel:` : 0
+      (INV-10.1: un valor que no sea numero atomico se muestra como texto)
+
+  --- los nombres que cambian, uno por uno ---
+     96  "San Antonio" -> "Lago Rapel"
+    100  "Talcahuano" -> "Coronel"
+    101  "Talcahuano" -> "Lebu"
+    102  "Talcahuano" -> "Coronel"
+    103  "Talcahuano" -> "Constitución"
+    105  "Valdivia" -> "Villarrica"
+    106  "Valdivia" -> "Panguipulli"
+    111  "Puerto Montt" -> "Puerto Varas"
+    112  "Puerto Montt" -> "Maullín"
+    113  "Puerto Montt" -> "Calbuco"
+    114  "Puerto Montt" -> "Calbuco"
+    115  "Puerto Montt" -> "Hornopirén"
+    121  "Puerto Montt" -> "Chaitén"
+    123  "Aysén" -> "Puerto Cisnes"
+    124  "Aysén" -> "Melinka"
+    125  "Aysén" -> "Puerto Aguirre"
+    129  "Punta Arenas" -> "Puerto Edén"
+    139  "Puerto Williams" -> "Bahía Fildes"
+    140  "Puerto Williams" -> "Bahía Paraíso"
+    141  "Talcahuano" -> "Carahue"
+    142  "Talcahuano" -> "Carahue"
+    143  "Talcahuano" -> "Carahue"
+    147  "Puerto Montt" -> "Maullín"
+    148  "Puerto Montt" -> "Maullín"
+    149  "Puerto Montt" -> "Maullín"
+    152  "Puerto Montt" -> "Cochamó"
+    153  "Puerto Montt" -> "Cochamó"
+    154  "Punta Arenas" -> "Puerto Edén"
+    175  "Aysén" -> "Melinka"
+    176  "Aysén" -> "Melinka"
+    181  "Puerto Montt" -> "Hornopirén"
+    182  "Puerto Montt" -> "Hornopirén"
+    183  "Puerto Montt" -> "Hornopirén"
+    184  "Puerto Montt" -> "Hornopirén"
+    185  "Puerto Montt" -> "Hornopirén"
+    186  "Puerto Montt" -> "Hornopirén"
+    187  "Puerto Montt" -> "Hornopirén"
+    209  "Valdivia" -> "Villarrica"
+    210  "Valdivia" -> "Villarrica"
+    229  "Talcahuano" -> "Constitución"
+    231  "Puerto Williams" -> "Soberanía"
+    232  "Puerto Montt" -> "Calbuco"
+    234  "Puerto Montt" -> "Chaitén"
+    238  "Aysén" -> "Puerto Aguirre"
+    239  "Aysén" -> "Puerto Aguirre"
+    240  "Aysén" -> "Puerto Aguirre"
+    241  "Aysén" -> "Puerto Aguirre"
+    242  "Aysén" -> "Puerto Aguirre"
+    243  "Aysén" -> "Puerto Aguirre"
+    244  "Aysén" -> "Puerto Aguirre"
+    245  "Valdivia" -> "Villarrica"
+    246  "Valdivia" -> "Villarrica"
+    247  "Valdivia" -> "Villarrica"
+    248  "Valdivia" -> "Villarrica"
+    249  "Valdivia" -> "Villarrica"
+    250  "Valdivia" -> "Villarrica"
+    251  "Aysén" -> "Melinka"
+    252  "Aysén" -> "Melinka"
+    253  "Aysén" -> "Melinka"
+    254  "Aysén" -> "Melinka"
+    255  "Aysén" -> "Melinka"
+    256  "Aysén" -> "Melinka"
+
+=== P4 — RECORDATORIO r1_radio_aviso (useVoyageVerification.js:535-547) ===
+  DENOMINADOR DECLARADO: las mismas 164, leidas como bahia de ZARPE.
+  Lee EL MISMO PAR que P3 y lo rotula igual, asi que el movimiento de rotulo
+  y de nombre es el mismo. Lo que P4 tiene y P3 no es el TELEFONO adentro del
+  mensaje normativo, que es lo que la primera frase de INV-10.1 prohibe.
+  COMPARACIONES EFECTIVAS : 164
+  recordatorios que HOY llevan telefono   : 164 de 164
+  recordatorios que lo llevarian con D3(a):   0 de 164
+  rotulos que se mueven / nombres que cambian: 99 / 62  (identicos a P3, mismo par)
+
+=== EL CASO QUE EL DATO NO EJERCITA — bahia sin resolver (construido) ===
+  entrada construida       : {"capitania":"Desconocida","gobernacion":"Desconocida","telefono":null}
+  el motor la resuelve como: {"nivel":null,"nombre":null,"telefono":null,"telefono_atomico":false,"motivo":"sin_telefono"}
+  render de HOY            : "📞 Gobernación Marítima de Desconocida — " + TypeError en .replace()
+  render CON LA PIEZA      : el campo NO se muestra (escalon 3)
+
+=== P1 y P2 — DECLARADOS SIN MOVIMIENTO, con el motivo medible ===
+  P1  src/components/verification/TransitRestrictionsBlock.jsx:62  INTACTO — fuera de los 5 puntos
+  P2  src/screens/P3_VoyageVerification.jsx:237  INTACTO — fuera de los 5 puntos
+  Los dos leen `capitania`/`gobernacion`, que esta pieza CONSERVA en la
+  respuesta y en el pasamanos. Movimiento esperado: 0 y 0.
+
+Ningun archivo fue escrito, en ninguno de los dos repositorios.
+================================================================================

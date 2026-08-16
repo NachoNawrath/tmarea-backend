@@ -1,0 +1,108 @@
+================================================================================
+LA PARTICION BACKEND / PWA — cada punto comprobado contra el codigo
+La PWA se leyo en SOLO LECTURA. Este instrumento no escribe nada.
+================================================================================
+
+=== SHA256 DE LOS ARCHIVOS DEL CABLEADO ===
+  backend:src/utils/capitanias.js                                5b1eedfcdd6b4be1eff3ae1bce81246c…
+  backend:src/services/capitania-de-bahia.js                     4a948dfe826c4fbe6705ef28680144c0…
+  backend:src/routes/sitport-routes.js                           1746234d1a7f9cec413cb158fc7360a1…
+  pwa:src/hooks/useVoyageVerification.js                         a31d8af17d422c2c6a0186e318b6d0f6…
+  pwa:src/components/verification/PortStatusBlock.jsx            a1427f734ce97bea95711828dadaea4c…
+  pwa:src/components/verification/NormativeBlock.jsx             7460aa3e17298d759ca01949fc5e965d…
+  pwa:src/screens/P3_VoyageVerification.jsx                      685092f085a13ad0fd84ed31dcf21ddc…
+  pwa:src/components/verification/TransitRestrictionsBlock.jsx   1ffcaabade18406ee5f3c17d7a3b476a…
+
+=== LOS PUNTOS DEL CABLEADO, COMPROBADOS UNO POR UNO ===
+
+  [  --  ] backend:src/utils/capitanias.js:55   OK
+           camino: P2 · P3 · P4 · weather-ruta
+           PRODUCTOR crudo del par. Devuelve la entrada del mapa tal cual.
+
+  [  --  ] backend:src/services/capitania-de-bahia.js:50   OK
+           camino: P1
+           PRODUCTOR con decreto. Unico punto donde decreto y mapa se cruzan.
+
+  [CAMBIA] backend:src/routes/sitport-routes.js:346   MOVIDO -> linea 347 o 840
+           camino: P2 · P3 · P4
+           SALIDA de /api/sitport/restricciones — la que alimenta P2, P3 y P4.
+
+  [  --  ] backend:src/routes/sitport-routes.js:479   MOVIDO -> linea 486
+           camino: weather-ruta
+           SALIDA de /api/sitport/weather-ruta, campo por bahia en ruta.
+
+  [  --  ] backend:src/routes/sitport-routes.js:833   MOVIDO -> linea 347 o 840
+           camino: P1
+           SALIDA de /api/sitport/restricciones-ruta — la que alimenta P1.
+
+  [CAMBIA] pwa:src/hooks/useVoyageVerification.js:246   OK
+           camino: P3 · P4
+           PASAMANOS. fetchPortStatus COPIA CAMPO POR CAMPO lo que el backend manda. Un campo nuevo del backend que no se agregue aca NO LLEGA al componente. Este punto es el que hace imposible cerrar la pieza solo del lado backend.
+
+  [CAMBIA] pwa:src/components/verification/PortStatusBlock.jsx:76   OK
+           camino: P3
+           CONSUMIDOR P3. Elige el nombre. Nunca mira `capitania`.
+
+  [CAMBIA] pwa:src/components/verification/PortStatusBlock.jsx:99   OK
+           camino: P3
+           RENDER P3. La etiqueta de nivel esta DURA en el JSX: no sale de ningun dato, asi que ningun cambio de backend puede corregirla solo.
+
+  [CAMBIA] pwa:src/hooks/useVoyageVerification.js:535   OK
+           camino: P4
+           CONSUMIDOR P4 — el recordatorio `r1_radio_aviso`. Lee EL MISMO PAR que P3 y lo rotula igual. No estaba enumerado en `0bc80d2`.
+
+  [CAMBIA] pwa:src/components/verification/NormativeBlock.jsx:81   OK
+           camino: P4
+           RENDER P4. Pone el TELEFONO dentro de un mensaje normativo, que es lo que la primera frase de INV-10.1 prohibe. Decision del owner.
+
+  [  --  ] pwa:src/screens/P3_VoyageVerification.jsx:237   OK
+           camino: P2
+           CONSUMIDOR P2 — arribada forzosa, etiqueta dura. FUERA DE ALCANCE de esta pieza; se lista para que el mapa este completo.
+
+  [  --  ] pwa:src/components/verification/TransitRestrictionsBlock.jsx:62   OK
+           camino: P1
+           CONSUMIDOR P1 — sin etiqueta de nivel. FUERA DE ALCANCE.
+
+  PUNTOS COMPROBADOS (comparaciones efectivas) : 12 de 12
+  puntos movidos de linea                      : 3
+
+=== EL REPARTO ===
+  puntos del cableado, en total          : 12
+  puntos que ESTA PIEZA obliga a tocar   : 6
+      en el backend : 1   sitport-routes.js:346
+      en la PWA     : 5   useVoyageVerification.js:246, PortStatusBlock.jsx:76, PortStatusBlock.jsx:99, useVoyageVerification.js:535, NormativeBlock.jsx:81
+  puntos fuera del alcance de esta pieza : 6
+  SUMA : 6 + 6 = 12
+
+=== LA PREGUNTA DEL PUNTO 3 DEL PLAN, CONTESTADA CON LO MEDIDO ===
+  "¿Puede el backend entregar {nivel, nombre, telefono} ya resuelto y el
+   componente solo consumirlo, cerrando la pieza casi entera del lado backend?"
+
+  NO, y el punto que lo impide esta medido: `useVoyageVerification.js:246` es
+  un PASAMANOS QUE COPIA CAMPO POR CAMPO. No hace spread del response: nombra
+  los tres campos uno a uno. Un `contacto` nuevo que el backend emita muere
+  ahi y no llega al componente.
+
+  Y hay una segunda razon, independiente de la primera: LA ETIQUETA DE NIVEL
+  ESTA DURA EN EL JSX (`PortStatusBlock.jsx:96`, comprobado arriba). No sale
+  de ningun campo del response. Ningun valor que el backend mande puede
+  cambiar un literal del JSX. Aunque el pasamanos hiciera spread, la etiqueta
+  seguiria diciendo "Gobernación Marítima de".
+
+  ES DECIR: la PWA se toca si o si, y no por una sino por dos causas
+  independientes. Lo que el backend SI puede hacer es que la PWA se toque
+  POCO y sin llevarse ninguna regla adentro.
+
+=== DONDE VIVE HOY EL INSUMO QUE DECIDIRIA EL NIVEL ===
+  archivos de src/ que hoy lo leen     : 1  src/services/contacto-por-escalon.js
+  archivos de scripts/ que hoy lo leen : 3  scripts/frente-contacto-aplicar-lote.js, scripts/frente-contacto-derivar-reparticiones.js, scripts/frente-contacto-pieza-a.js
+
+  CONSECUENCIA, dicha antes de que aparezca sola: si el backend resuelve el
+  nivel en tiempo de request, ese archivo pasa de DERIVADO DE GENERACION a
+  INSUMO VIVO del motor, y §5 del contrato reparte "un dato, una fuente
+  autorizada". Ese ascenso de estatus es contenido normativo y lo aprueba el
+  owner (CLAUDE.md §6). No se hace de costado.
+
+================================================================================
+MEDICION COMPLETA. Ningun archivo fue escrito, en ninguno de los dos repos.
+================================================================================

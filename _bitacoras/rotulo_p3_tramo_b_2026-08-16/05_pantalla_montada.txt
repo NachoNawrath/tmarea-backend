@@ -1,0 +1,144 @@
+================================================================================
+LA APP MONTADA — no es un test, es comprobar que monta y que dice lo que el
+instrumento dice que dice.
+2026-08-16
+================================================================================
+
+POR QUE ESTO EXISTE. Los 11 controles de `02_verificar.js` leen archivos y
+simulan el render. NINGUNO monta el componente, y la PWA no tiene suite. Un JSX
+puede pasar los 11 y reventar al montar. Esto lo descarta con la app corriendo.
+
+COMO SE LEVANTO
+--------------------------------------------------------------------------------
+    backend : npm start          -> http://localhost:3000   (`.claude/launch.json`)
+    PWA     : npm run dev (Vite) -> http://localhost:5173
+Puertos comprobados libres antes de levantar con `netstat -ano | findstr :3000`
+y `:5173`. No se mato ningun proceso: los dos puertos estaban libres.
+NINGUN ARCHIVO FUE ESCRITO PARA ESTA COMPROBACION, en ninguno de los dos repos.
+Los componentes se montaron en nodos sueltos desde la consola del navegador,
+importando los modulos REALES que sirve Vite.
+
+================================================================================
+1. LA TARJETA SOLA — `PortStatusBlock` real, con la respuesta REAL del backend
+================================================================================
+Payload armado exactamente como lo arma el pasamanos de
+`useVoyageVerification.js:246-252`, con lo que devuelve
+POST /api/sitport/restricciones.
+
+  CASO 1 — ESCALON 1, una de las 99      puerto: "Hornopiren"
+      contacto.nivel del backend : "capitania"
+      FILA RENDERIZADA           : 📞 Capitanía de Puerto de Hornopirén — +56 65 2217304
+      href del enlace            : tel:+56652217304
+
+  CASO 2 — ESCALON 2, una de las 65      puerto: "Valparaiso"
+      contacto.nivel del backend : "gobernacion"
+      FILA RENDERIZADA           : 📞 Gobernación Marítima de Valparaíso — +56 32 220 8905
+      href del enlace            : tel:+56322208905
+
+  CASO 3 — ESCALON 3, FORZADO            puerto: "Bahia Inventada Que No Existe"
+      contacto.nivel del backend : null   (motivo: "sin_contacto_resuelto")
+      FILA RENDERIZADA           : (NO HAY FILA DE CONTACTO)
+      href del enlace            : (sin enlace tel:)
+      filas de contacto en la tarjeta : 0
+
+  EL ESCALON 3 SE FUERZA CONTRA EL BACKEND REAL, sin tocar codigo ni dato: se
+  le pide un puerto que no resuelve a ninguna bahia. `getCapitaniaByBahiaId`
+  devuelve {'Desconocida','Desconocida',null} y el motor lo baja al escalon 3.
+  ES EL CASO QUE HOY REVIENTA: el render anterior armaba
+  `capitania.telefono.replace(...)` sobre null y rotulaba "Gobernación Marítima
+  de Desconocida". Ahora no hay fila y no hay TypeError.
+
+CONSOLA DEL NAVEGADOR: 0 errores, 0 advertencias. Solo `[vite] connected` y el
+aviso informativo de React DevTools.
+
+================================================================================
+2. LA CADENA ENTERA — pantalla P3 montada: hook + pasamanos + las dos tarjetas
+   + NormativeBlock, los 5 puntos juntos
+================================================================================
+Viaje real: Hornopiren -> Calbuco, lancha 15 m / 30 TRG / 9 kn.
+
+    veredicto              : BANDERA Q — Zarpe autorizado
+    tarjeta de ZARPE       : 📞 Capitanía de Puerto de Hornopirén — +56 65 2217304
+    tarjeta de RECALADA    : 📞 Capitanía de Puerto de Calbuco — +56 65 2462434
+    enlaces tel:           : tel:+56652217304 · tel:+56652462434
+    recordatorio r1        : "Avisar por radio a la Capitanía de Puerto de
+                              Hornopirén al iniciar la navegación"
+    pildoras 📞 dentro de mensajes normativos : 0
+
+Las DOS tarjetas se mueven, no solo la de zarpe: hasta ayer las dos decian
+"Gobernación Marítima de Puerto Montt". Y el recordatorio r1 quedo rotulado por
+el escalon y SIN telefono, que es D3(a) e INV-10.1 primera frase.
+
+Segunda corrida de la misma cadena, otro viaje:
+
+    ESCALON 2 — Valparaiso -> San Antonio
+        tarjeta de ZARPE    : 📞 Gobernación Marítima de Valparaíso — +56 32 220 8905
+        tarjeta de RECALADA : 📞 Gobernación Marítima de San Antonio — +56 35 258 4802
+        recordatorio r1     : "Avisar por radio a la Gobernación Marítima de
+                              Valparaíso al iniciar la navegación"
+        pildoras 📞 en mensajes normativos : 0
+
+    ESCALON 3 forzado — dos puertos inexistentes
+        tarjetas de contacto : NINGUNA — el campo no se muestra
+        recordatorio r1      : "Avisar por radio a la Capitanía más cercana al
+                               iniciar la navegación"   (sin nombre y sin telefono)
+        pildoras 📞 en mensajes normativos : 0
+
+MONTA, Y DICE LO QUE EL INSTRUMENTO DICE QUE DICE. Los tres escalones se ven en
+pantalla con el rotulo que `01_medir_rotulo.js` y V3 predijeron.
+
+================================================================================
+3. LO QUE ESTA COMPROBACION ENCONTRO Y LOS 11 CONTROLES NO PODIAN ENCONTRAR
+================================================================================
+>>> HAY UN CONSUMIDOR DE CONTACTO EN LA PWA QUE EL MAPA DE 12 PUNTOS DEL TRAMO A
+>>> NO ENUMERA. `src/components/verification/WeatherBlock.jsx:181-182` y `:195`.
+
+Se vio solo, en la corrida del ESCALON 2, como una CUARTA fila de contacto con
+un literal distinto que no estaba en ninguna lista:
+
+    📞 Gob. Marítima de Valparaíso — +56 32 220 8905
+    📞 Gob. Marítima de San Antonio — +56 35 258 4802
+
+QUE ES. El consumidor PWA del camino `weather-ruta`. Lee `b.gobernacion` y
+`b.telefono` de cada tramo de la ruta, los rotula "Gob. Marítima de" —un tercer
+literal, distinto de los dos que esta pieza unifico— y muestra el telefono en la
+primera bahia de cada jurisdiccion consecutiva.
+
+POR QUE EL MAPA NO LO TENIA, y esto es lo que hay que corregir del Tramo A: el
+mapa SI enumera el productor (`capitanias.js:55`, camino "P2 · P3 · P4 ·
+weather-ruta") y SI enumera la salida del backend (`sitport-routes.js:479`,
+camino weather-ruta). Lo que NUNCA enumero es el CONSUMIDOR de ese camino en la
+PWA. Los otros tres caminos tienen su consumidor listado; weather-ruta no. El
+mapa no tenia 12 puntos: tenia 12 de 13.
+
+QUE NO ES. No es un defecto que esta pieza haya introducido —el literal y el
+telefono estaban ahi antes— y no es el fallback de la PWA: `WeatherBlock` no
+consulta `getCapitania(lat,lng)`. En la corrida del escalon 3 forzado ese bloque
+sigue mostrando contacto porque `weather-ruta` resuelve las bahias por
+proximidad a las coordenadas de la ruta, que si existen.
+
+QUE TAN GRANDE ES, medido y sin suavizar:
+  · sobre el eje del DATO: es la misma particion ya medida. De las 164, **99**
+    llevan un numero que por la vara del escalon 1 es de la Capitania, y este
+    bloque las rotularia "Gob. Marítima de {gobernacion}". Mismo defecto que P3
+    tenia, en otra superficie;
+  · sobre el eje de la PANTALLA: **NO MEDIDO, y se dice en vez de estimarlo.**
+    Cuantos tramos aparecen y cuantos muestran telefono depende de la ruta y de
+    la regla `mostrarTel` (solo la primera bahia de cada jurisdiccion
+    consecutiva). No es un denominador de 164 y no se le inventa uno.
+
+POR QUE NO SE TOCO. Esta fuera de los 5 puntos autorizados, y ademas no se
+arregla solo del lado PWA: **`weather-ruta` (`sitport-routes.js:486`) NO emite
+`contacto`** —medido: un solo `contacto: contactoPorEscalon(...)` en todo el
+router, el de la salida que alimenta P2/P3/P4—. Cerrarlo pide un punto de
+backend y uno de PWA, o sea una pieza propia.
+
+RELACION CON P1, para que no se lea como algo distinto: P1
+(`TransitRestrictionsBlock.jsx:62`) ya estaba declarado abierto y muestra
+contacto de bahias intermedias. Este es el mismo frente —contacto en tramos de
+la ruta y no en el punto de zarpe y recalada, que es donde INV-10.1 lo pone—,
+con un consumidor mas que nadie habia contado.
+
+================================================================================
+Ningun archivo de los dos repositorios fue escrito por esta comprobacion.
+================================================================================

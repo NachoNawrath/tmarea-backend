@@ -1,0 +1,104 @@
+================================================================================
+VERIFICACION — TRAMO B DEL ROTULO DE P3
+Ancla del backend: commit fijo dc7d63e72b1787e0cd93bfc587eb8a2201f3753d
+Raiz de la PWA   : C:/Users/katia/tmarea-pwa  (la real)
+================================================================================
+
+=== LINEA BASE ===
+  HEAD del backend : dc7d63e72b1787e0cd93bfc587eb8a2201f3753d
+  esperado         : dc7d63e72b1787e0cd93bfc587eb8a2201f3753d
+
+=== V1 — LOS 5 PUNTOS QUEDARON ESCRITOS, cada uno en su archivo ===
+  Se exige el literal NUEVO y se exige que el VIEJO ya no este. Un control que
+  solo mirara el nuevo pasaria con los dos conviviendo.
+  punto 1 · pasamanos        nuevo:SI  viejo:(no aplica)
+  punto 2 · consumidor P3    nuevo:SI  viejo:retirado
+  punto 3 · render P3        nuevo:SI  viejo:retirado
+  punto 4 · r1_radio_aviso   nuevo:SI  viejo:retirado
+  punto 5 · render P4        nuevo:SI  viejo:retirado
+  COMPARACIONES EFECTIVAS : 5
+
+=== V2 — NADA FUERA DE LOS 5 PUNTOS, hunk por hunk ===
+  archivos modificados : 3
+      src/components/verification/NormativeBlock.jsx
+      src/components/verification/PortStatusBlock.jsx
+      src/hooks/useVoyageVerification.js
+  otras entradas de status (no modificadas): 1
+      ?? diff_transit.txt
+  hunk  1  src/components/verification/NormativeBlock.jsx  viejo 75-76  -> punto 5 — la pildora del telefono
+  hunk  2  src/components/verification/NormativeBlock.jsx  viejo 78-83  -> punto 5 — la pildora del telefono
+  hunk  3  src/components/verification/PortStatusBlock.jsx  viejo 3-3  -> punto 3 — import del rotulador
+  hunk  4  src/components/verification/PortStatusBlock.jsx  viejo 73-78  -> punto 2 — consumidor
+  hunk  5  src/components/verification/PortStatusBlock.jsx  viejo 94-96  -> punto 3 — render
+  hunk  6  src/components/verification/PortStatusBlock.jsx  viejo 99-105  -> punto 3 — render
+  hunk  7  src/hooks/useVoyageVerification.js  viejo 248-248  -> punto 1 — pasamanos
+  hunk  8  src/hooks/useVoyageVerification.js  viejo 521-521  -> punto 4 — helper del rotulo, insertado antes de buildNormativeReminders
+  hunk  9  src/hooks/useVoyageVerification.js  viejo 533-538  -> punto 4 — r1_radio_aviso
+  hunk 10  src/hooks/useVoyageVerification.js  viejo 541-542  -> punto 4 — r1_radio_aviso
+  hunk 11  src/hooks/useVoyageVerification.js  viejo 545-545  -> punto 4 — r1_radio_aviso
+  COMPARACIONES EFECTIVAS : 11 hunks · fuera de region : 0
+
+=== V3 — LA AFIRMACION CENTRAL: que rotula el render, entrada por entrada ===
+  Referencia independiente del resolvedor. Etiqueta tomada de la funcion REAL
+  de la PWA, ejecutada, no transcrita.
+  COMPARACIONES EFECTIVAS : 164
+      Capitanía de Puerto de      99
+      Gobernación Marítima de     65
+  la particion cierra: 99 + 65 + 0 = 164  de 164
+  numeros que NO son del escalon 1 rotulados "Capitanía de Puerto de" : 0
+
+=== V4 — EL ESCALON 3 SE HONRA Y NO SE RELLENA (casos construidos) ===
+  El dato de hoy no ejercita este camino: 0 de 164. Se construye desde cero.
+  bahia sin resolver                       nivel=null  etiqueta=null
+  sin telefono y sin nombres               nivel=null  etiqueta=null
+  telefono vacio                           nivel=null  etiqueta=null
+  hay telefono pero nadie a quien rotular  nivel=null  etiqueta=null
+  el render exige etiqueta y nombre para armar la fila : SI
+  COMPARACIONES EFECTIVAS : 5
+
+=== V5 — EL TypeError DE `.replace` Y EL `tel:` NO ATOMICO ===
+  el `tel:` se arma solo bajo `capitania.atomico`        : SI
+  el `.replace` esta dentro de esa rama                  : SI
+  la fila del telefono esta guardada por su presencia     : SI
+  COMPARACIONES EFECTIVAS : 3
+
+=== V6 — NINGUN MENSAJE NORMATIVO LLEVA TELEFONO (INV-10.1, primera frase) ===
+  recordatorios que el generador emite      : 9
+  de esos, los que llevan clave `telefono`  : 0   (antes: 1 — r1_radio_aviso)
+  el render consume `reminder.telefono`     : NO
+  COMPARACIONES EFECTIVAS : 10
+
+=== V7 — EL BACKEND NO SE TOCO ===
+  src/services/contacto-por-escalon.js       INTACTO
+  src/routes/sitport-routes.js               INTACTO
+  COMPARACIONES EFECTIVAS : 2
+
+=== V8 — EL DATO NO SE TOCO, entrada por entrada ===
+  COMPARACIONES EFECTIVAS : 164 · entradas distintas : 0
+
+=== V9 — P1 y P2 INTACTOS: ni su archivo ni su literal se movieron ===
+  P2  src/screens/P3_VoyageVerification.jsx:237  literal:OK  sha256:INTACTO
+  P1  src/components/verification/TransitRestrictionsBlock.jsx:62  literal:OK  sha256:INTACTO
+  COMPARACIONES EFECTIVAS : 2
+
+=== V10 — LA SUITE DEL BACKEND ===
+  pass : 86   fail : 0   (linea base al abrir: 86 / 0)
+  COMPARACIONES EFECTIVAS : 86
+
+=== V11 — LA ENMIENDA DEL CONTRATO: tachado, original visible, casillas quietas ===
+  la version bumpeo a 2.3                      OK
+  el changelog v2.3 existe                     OK
+  la frase del 108 quedo TACHADA               OK
+  el texto original sigue VISIBLE              OK
+  el 108 NO se borro                           OK
+  la enmienda lleva fecha e instrumento        OK
+  la nota del Tramo A quedo cumplida           OK
+  casilla 73 intacta                           OK
+  casilla 56 intacta                           OK
+  casilla 35 intacta                           OK
+  COMPARACIONES EFECTIVAS : 10
+
+================================================================================
+RESULTADO: VERDE — 11 controles, 0 fallas.
+Ningun archivo fue escrito por este instrumento, en ninguno de los dos repos.
+================================================================================

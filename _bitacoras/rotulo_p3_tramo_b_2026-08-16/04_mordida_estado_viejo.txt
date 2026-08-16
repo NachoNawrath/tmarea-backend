@@ -1,0 +1,73 @@
+================================================================================
+MORDIDA — TRAMO B DEL ROTULO DE P3   ·   estado del arbol: VIEJO
+================================================================================
+
+  copia de la PWA en : C:\Users\katia\AppData\Local\Temp\claude\C--Users-katia--claude\b7ef7ca0-9620-437c-ad10-8b076a9264f3\scratchpad\mordida_tramo_b\pwa
+  armada desde       : el commit 6157c29 (estado PRE-PIEZA)
+  la PWA real NO se escribe en ninguna de las dos corridas.
+
+=== LINEA BASE, ANTES DE INYECTAR NADA ===
+  el verificador contra la copia PRE-PIEZA sale exit 1
+  esperado: exit 1, y LA FALLA DEBE SER DE LOS CONTROLES QUE MIDEN LA PIEZA.
+  Un verificador que diera verde sin la pieza aplicada no probaria nada, y esa
+  es la primera cosa que esta corrida descarta.
+  exit distinto de 0                       : SI
+  la falla la levantan V1/V3 (los de la pieza): SI
+  fallas contra el estado PRE-PIEZA:
+      · V1: punto 1 · pasamanos — el literal nuevo no esta en src/hooks/useVoyageVerification.js
+      · V1: punto 2 · consumidor P3 — el literal nuevo no esta en src/components/verification/PortStatusBlock.jsx
+      · V1: punto 2 · consumidor P3 — el literal viejo sigue en src/components/verification/PortStatusBlock.jsx
+      · V1: punto 3 · render P3 — el literal nuevo no esta en src/components/verification/PortStatusBlock.jsx
+      · V1: punto 3 · render P3 — el literal viejo sigue en src/components/verification/PortStatusBlock.jsx
+      · V1: punto 4 · r1_radio_aviso — el literal nuevo no esta en src/hooks/useVoyageVerification.js
+      · V1: punto 4 · r1_radio_aviso — el literal viejo sigue en src/hooks/useVoyageVerification.js
+      · V1: punto 5 · render P4 — el literal viejo sigue en src/components/verification/NormativeBlock.jsx
+      · V3: no se pudo extraer `etiquetaDeNivel` de la PWA — el render no toma la etiqueta de un dato
+      · V5: el `tel:` no esta condicionado a la atomicidad que INV-10.1 exige
+      · V5: `.replace` puede invocarse sobre un telefono ausente — es el TypeError
+      · V6: 1 recordatorios siguen emitiendo telefono
+      · V6: NormativeBlock sigue renderizando `reminder.telefono` — la rama quedo abierta
+
+=== LAS FAMILIAS ===
+
+  B0  control negativo: sin inyectar nada, el verificador se comporta como la linea base
+      exit 1, y la linea base salio 1 -> SE COMPORTA COMO DEBE
+
+  B1  el pasamanos vuelve a NO copiar `contacto`: el campo muere ahi
+      NO APLICABLE en este estado: el literal a atacar no existe en src/hooks/useVoyageVerification.js
+
+  B2  la etiqueta vuelve a ser un LITERAL DURO en el JSX
+      NO APLICABLE en este estado: el literal a atacar no existe en src/components/verification/PortStatusBlock.jsx
+
+  B3  el escalon 3 se RELLENA con "Autoridad Marítima de" en vez de callar
+      NO APLICABLE en este estado: el literal a atacar no existe en src/hooks/useVoyageVerification.js
+
+  B4  el `tel:` se arma sin comprobar la atomicidad que INV-10.1 exige
+      NO APLICABLE en este estado: el literal a atacar no existe en src/components/verification/PortStatusBlock.jsx
+
+  B5  el TELEFONO vuelve al recordatorio r1, adentro del mensaje normativo
+      NO APLICABLE en este estado: el literal a atacar no existe en src/hooks/useVoyageVerification.js
+
+  B6  se toca un archivo de la PWA FUERA de los 5 puntos (el consumidor de P1)
+      exit 1 · el control lo NOMBRA: "V9: src/components/verification/TransitRestrictionsBlock.jsx cambio"   -> MORDIO
+
+  B7  el DATO se toca: una entrada cambia de telefono
+      exit 1 · el control lo NOMBRA: "del mapa cambio"   -> MORDIO
+
+  B8  el RESOLVEDOR del backend se toca, y esta pieza no escribe backend
+      exit 1 · el control lo NOMBRA: "V7: src/services/contacto-por-escalon.js cambio"   -> MORDIO
+
+  B9  la enmienda BORRA el texto original en vez de tacharlo (§3.3)
+      exit 1 · el control lo NOMBRA: "V11: el texto original sigue VISIBLE"   -> MORDIO
+
+=== LOS INSUMOS MUTABLES DEL BACKEND, REPUESTOS Y COMPROBADOS ===
+  src/data/bahia-capitania-map.json          REPUESTO OK
+  src/services/contacto-por-escalon.js       REPUESTO OK
+  CONTRATO_MOTOR.md                          REPUESTO OK
+  COMPARACIONES EFECTIVAS : 3 de 3
+
+================================================================================
+FAMILIAS DECLARADAS : 10   ·   EJERCITADAS : 5   ·   MORDIERON : 4   ·   TAPADAS : 0   ·   NO APLICABLES : 5
+TODAS LAS FAMILIAS HICIERON LO SUYO.
+La PWA real no fue escrita. Los mutables del backend quedaron repuestos.
+================================================================================

@@ -722,3 +722,41 @@ Se anota para que nadie lo lea como cobertura general: **se midieron las once
 bahias de las zonas de aviso, no las 164 del mapa.** Que dice el nivel
 Gobernacion en las otras 153 no lo contesta esta medicion.
 ================================================================================
+
+
+================================================================================
+NOTA AL PIE AGREGADA EL 2026-08-16 POR EL TRAMO B DEL ROTULO DE P3
+(CLAUDE.md §3.3 — se agrega, no se reescribe). Nada de lo de arriba se toco.
+================================================================================
+
+EL BLOQUE P3 DE `02_medir_pantalla.js` QUEDO VENCIDO. No el instrumento entero:
+sus bloques P1 y P2 siguen vigentes y se re-corrieron el 2026-08-16 dando
+**99/163 y 107/163**, idénticos.
+
+QUE VENCIO Y POR QUE. Ese instrumento modela los renders con literales ESCRITOS
+ADENTRO DEL PROPIO INSTRUMENTO —no abre un solo archivo de la PWA—, y su bloque
+P3 declara:
+
+    Render literal: "📞 Gobernacion Maritima de {data.gobernacion} — {data.telefono}".
+    NO lee `capitania` en ningun caso.
+
+Desde el Tramo B eso es falso: `PortStatusBlock.jsx` consume el campo `contacto`
+y la etiqueta sale del dato. El instrumento SEGUIRIA DEVOLVIENDO 108 sin
+enterarse, y esa cifra ya no describe ninguna pantalla — es exactamente la clase
+de cifra legible y falsa que estos instrumentos existen para no producir.
+
+QUE SIGUE SIENDO CIERTO DEL 108. Es una propiedad DEL ARCHIVO
+`bahia-capitania-map.json` —cuantas de sus 164 entradas traen un numero que
+figura en el indice de Capitanias— y como tal no se movio: sigue midiendo el
+frente de RE-ATRIBUCION. Lo que dejo de ser cierto es que "asi lee P3".
+CONTRATO_MOTOR.md §5.1 quedo enmendado el mismo dia con esa distincion, y el
+bump a v2.3 lo registra.
+
+QUE LO REEMPLAZA, para P3 y solo para P3:
+`_bitacoras/rotulo_p3_tramo_b_2026-08-16/01_medir_rotulo.js`, que LEE la PWA y
+ABORTA si el literal que modela no esta en su linea declarada — la puerta que
+este instrumento dejaba abierta. Da 99 escalon 1 · 65 escalon 2 · 0 escalon 3
+sobre las mismas 164, y 99 + 9 = 108 cierra con la vara de aca.
+
+QUIEN RE-CORRA `02_medir_pantalla.js` DEBE LEER SU P3 COMO HISTORICO. Sus P1 y
+P2 no necesitan esa advertencia.

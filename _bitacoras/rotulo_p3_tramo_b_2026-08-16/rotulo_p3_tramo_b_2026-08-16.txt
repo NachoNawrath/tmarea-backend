@@ -1,0 +1,564 @@
+================================================================================
+ROTULO DE P3 — TRAMO B: EL RENDER CONSUME EL CAMPO, Y DEJA DE ROTULAR
+"Gobernación Marítima de" SOBRE NUMEROS DE CAPITANIA.
+2026-08-16
+Sesion: P3-ROTULO-TRAMO-B. HEAD del backend al abrir y al cerrar: dc7d63e
+(sin commit). HEAD de la PWA al abrir y al cerrar: 6157c29 (sin commit).
+Frente: CONTACTO — el RENDER, no el dato (PLAN_JURISDICCION.md §7.1).
+NO es el frente de jurisdiccion del D.S. 991; no se abrio nada de ese frente.
+Escrito en `tmarea-pwa`: 3 archivos, 5 puntos. Escrito en el backend: la
+enmienda de `CONTRATO_MOTOR.md` y esta bitacora. CERO codigo de backend.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+El agente corrio los instrumentos con `node` desde Git Bash. Las lineas corren
+identicas en PowerShell desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\rotulo_p3_tramo_b_2026-08-16\01_medir_rotulo.js
+    node _bitacoras\rotulo_p3_tramo_b_2026-08-16\02_verificar.js
+    node _bitacoras\rotulo_p3_tramo_b_2026-08-16\03_mordida.js
+    node _bitacoras\rotulo_p3_tramo_b_2026-08-16\03_mordida.js --estado=viejo
+    node _bitacoras\rotulo_p3_2026-08-16\02_particion.js
+    node _bitacoras\auditoria_rotulos_2026-08-15\02_medir_pantalla.js
+    node _bitacoras\contrato_51_telefonos_2026-08-16\01_medir_niveles_telefono.js
+    npm test
+
+Para capturar salida SIN corromper tildes y ñ, en PowerShell:
+
+    node ... | Tee-Object -FilePath 01_medir_rotulo.txt
+
+`>` de PowerShell reencodea y convierte fines de linea; esta prohibido para
+medir (CLAUDE.md §7.2). Las salidas de este directorio se generaron con `>` de
+**bash**, no de PowerShell.
+
+ARRANQUE VERIFICADO
+--------------------------------------------------------------------------------
+backend: HEAD y `origin/main` en `dc7d63e72b1787e0cd93bfc587eb8a2201f3753d`.
+19 untracked, los 19 esperados. PWA: HEAD `6157c29`, arbol limpio salvo un
+`?? diff_transit.txt` preexistente que no es de esta sesion y no se toco.
+LINEA BASE DE LA SUITE: `npm test` -> **86 tests, 86 pass, 0 fail**, corrida al
+abrir sin haber tocado nada.
+
+INSUMOS, con sha256 del archivo en disco
+--------------------------------------------------------------------------------
+En el bloque de insumos de `01_medir_rotulo.txt`. Los que deciden algo:
+
+    src/data/bahia-capitania-map.json           e2b34432d9128153…  (SE LEE, NO SE TOCA)
+    data/contacto/reparticiones_publicadas.json 9524a3792e3d79d7…  (SE LEE, NO SE TOCA)
+    src/services/contacto-por-escalon.js        8078a2233c1feb8a…  (SE LEE, NO SE TOCA)
+
+LO QUE NO SE MIDE, y se dice: **si DIRECTEMAR publica hoy lo que el derivado de
+reparticiones dice.** Esta sesion no consulto DIRECTEMAR ni SITPORT en vivo para
+cotejar el derivado. SI se hablo con SITPORT a traves del backend para montar la
+app, que es otra cosa.
+
+
+================================================================================
+0. LO QUE ESTA SESION LE CORRIGE AL PLAN — una cosa, y es grande
+================================================================================
+Las cifras del Tramo A se confirmaron TODAS y exactas: 99 rotulos, 62 nombres,
+0 bajas, 65 quietas, suma 164. Los 5 puntos estaban donde el Tramo A los dejo.
+La correccion no esta en las cifras: esta en el MAPA.
+
+>>> EL MAPA DE 12 PUNTOS DEL TRAMO A TIENE 13. Falta el consumidor PWA del
+>>> camino `weather-ruta`: `WeatherBlock.jsx:181-182` y `:195`.
+
+Rotula "Gob. Marítima de {gobernacion}" —un TERCER literal, distinto de los dos
+que esta pieza unifico— y muestra el telefono por tramo de ruta.
+
+**No lo encontro ningun control: aparecio al MONTAR la app.** Los 11 controles
+leen archivos y simulan el render; este punto vive en un componente que ninguno
+de los 5 puntos nombra, y ningun instrumento que solo lea los archivos
+declarados podia toparse con el. Salio como una cuarta fila de contacto con un
+literal que no estaba en ninguna lista, en la corrida del escalon 2.
+
+POR QUE EL MAPA NO LO TENIA, Y ESTE ES EL PATRON QUE HAY QUE BUSCAR SI APARECE
+UN DECIMOCUARTO. El mapa del Tramo A enumera, del camino `weather-ruta`, **el
+PRODUCTOR** (`capitanias.js:55`, cuya linea de camino dice literalmente
+"P2 · P3 · P4 · weather-ruta") **y la SALIDA del backend**
+(`sitport-routes.js:479`, "SALIDA de /api/sitport/weather-ruta, campo por bahia
+en ruta"). Lo que NO enumera es **el CONSUMIDOR de ese camino en la PWA**.
+
+**La forma del hueco es exactamente esa: un camino con productor y salida
+listados, y sin consumidor.** Los otros tres caminos —P1, P2/P3, P4— tienen su
+consumidor PWA en el mapa; weather-ruta era el unico que no. Quien sospeche de
+un decimocuarto punto no tiene que releer la PWA entera: tiene que buscar en el
+mapa **que camino aparece nombrado en la columna de camino de algun productor o
+salida y no tiene una fila `pwa:` propia**. Ese es el chequeo, y es barato.
+
+QUE TAN GRANDE ES:
+  · eje del DATO: la misma particion ya medida. De las 164, **99** llevan un
+    numero que por la vara del escalon 1 es de la Capitania, y ese bloque las
+    rotula "Gob. Marítima de {gobernacion}". El mismo defecto que P3 tenia, en
+    otra superficie;
+  · eje de la PANTALLA: **NO MEDIDO, y se dice en vez de estimarlo.** Cuantos
+    tramos aparecen y cuantos muestran telefono depende de la ruta y de la regla
+    `mostrarTel`. No hay denominador de 164 y no se le inventa uno.
+
+QUEDA ANOTADO Y NO ABIERTO. Esta fuera de los 5 puntos autorizados, y ademas no
+se cierra solo del lado PWA: **`weather-ruta` (`sitport-routes.js:486`) NO emite
+`contacto`** —medido: un solo `contacto: contactoPorEscalon(...)` en todo el
+router—. Cerrarlo pide un punto de backend y uno de PWA: es una pieza propia.
+Es el mismo frente que P1, que ya estaba declarado abierto: contacto en tramos
+intermedios y no en el punto de zarpe y recalada, que es donde INV-10.1 lo pone.
+Detalle en `05_pantalla_montada.txt` §3; nota al pie agregada a la bitacora del
+Tramo A.
+
+**LO QUE ESTO NO INVALIDA:** los 5 puntos, sus cifras, ni la enmienda. La pieza
+hace lo que dice que hace. Lo que queda corregido es la creencia de que cerraba
+TODA la superficie donde se rotula contacto en la PWA. No la cierra: cierra la
+tarjeta de zarpe y recalada y el recordatorio r1, que es su alcance declarado.
+
+
+================================================================================
+1. LOS 5 PUNTOS, RELEIDOS ANTES DE ESCRIBIR
+================================================================================
+Salida completa: `01_medir_rotulo.txt`. Cada punto comprobado EN SU LINEA
+DECLARADA, no por primera ocurrencia.
+
+    src/hooks/useVoyageVerification.js:246          OK   pasamanos (:246-:248)
+    src/components/verification/PortStatusBlock.jsx:76  OK   consumidor P3
+    src/components/verification/PortStatusBlock.jsx:99  OK   render P3, etiqueta dura
+    src/hooks/useVoyageVerification.js:535          OK   r1_radio_aviso
+    src/components/verification/NormativeBlock.jsx:81   OK   pildora del telefono
+
+    PUNTOS COMPROBADOS : 5 de 5 · movidos : 0
+
+DOS PRECISIONES SOBRE EL MAPA HEREDADO, dichas porque cuestan tiempo al que
+venga:
+  · **el primer punto es un BLOQUE, no una linea.** `:246` es `capitania:`,
+    `:247` `gobernacion:`, `:248` `telefono:`. Se modela por su primera linea;
+  · **`02_particion.js` re-corrido reporta 3 puntos movidos, los tres del
+    BACKEND** —`sitport-routes.js` 346->347, 479->486, 833->840—: los movio el
+    propio commit del Tramo A al insertar el campo. Ninguno de los 5 de la PWA
+    se movio. Ese instrumento REPORTA el movimiento y sale exit 0; no aborta.
+
+
+================================================================================
+2. LO QUE SE ESCRIBIO
+================================================================================
+En `tmarea-pwa` — 3 archivos, 11 hunks, todos adentro de los 5 puntos:
+
+    src/hooks/useVoyageVerification.js         +52 -9   puntos 1 y 4
+    src/components/verification/PortStatusBlock.jsx  +47 -16  puntos 2 y 3
+    src/components/verification/NormativeBlock.jsx   +9 -8    punto 5
+
+En el backend:
+
+    CONTRATO_MOTOR.md                          enmienda de §5.1 + bump a v2.3
+    _bitacoras/rotulo_p3_tramo_b_2026-08-16/   esta bitacora y sus instrumentos
+
+NO SE TOCO: ningun archivo de `src/` del backend —V7 lo comprueba por sha256
+contra el blob del ancla—; `bahia-capitania-map.json` —V8, entrada por
+entrada—; `data/decreto/`; los 2 archivos de la PWA que quedan fuera de alcance
+—V9, por literal y por sha256—; el motor BRE.
+
+LAS DOS INSERCIONES QUE NO CAEN EN LA LINEA DE SU PUNTO, declaradas para que no
+se lean como algo que se colo:
+  · `PortStatusBlock.jsx:3` — el import del rotulador. Lo pide el punto 3;
+  · `useVoyageVerification.js:521` — el helper `etiquetaDeNivel`, insertado
+    antes de `buildNormativeReminders`. Lo pide el punto 4.
+V2 las declara por nombre y region: un hunk que no caiga en una de las 7
+regiones declaradas pone el verificador en rojo.
+
+POR QUE HAY UN HELPER Y NO DOS LITERALES
+--------------------------------------------------------------------------------
+`etiquetaDeNivel(nivel)` vive en UN solo lugar y lo importan los dos
+consumidores. **El ESCALON no se decide en la PWA** —lo decide el motor y viaja
+en `contacto.nivel`—; lo unico que vive de este lado es COMO SE ESCRIBE cada
+nivel. Duplicar ese literal en dos archivos es la clase de divergencia que este
+repositorio ya pago con los dos criterios de atomicidad.
+
+LAS DOS AUSENCIAS QUE NO SON LA MISMA — D5(a) del owner
+--------------------------------------------------------------------------------
+    `contacto` ausente (null)   -> el backend no lo mando: se cae al fallback
+                                   `getCapitania(lat,lng)`, rotulado GOBERNACION.
+    `contacto.nivel` en null    -> ESCALON 3: el campo NO se muestra, sin texto
+                                   de reemplazo y sin mensaje sustituto.
+
+El fallback es el que §5.1 declara —"la copia de la PWA se usa SOLO como
+fallback"— y resuelve a nivel Gobernacion, asi que se rotula como Gobernacion y
+nunca como Capitania. **Y es ademas el guard de compatibilidad**: si el backend
+desplegado todavia es anterior a `dc7d63e`, el campo no llega y la pantalla se
+comporta como ayer en vez de vaciarse. Ese es el motivo que decidio la opcion,
+por decision del owner.
+
+EL FALLBACK NO ARMA `tel:`, y el criterio queda declarado: sin veredicto de
+atomicidad no se construye el enlace, porque INV-10.1 dice que un `tel:` roto es
+peor que ninguno. El criterio de atomicidad NO se reimplemento en la PWA —seria
+un segundo criterio en otro repositorio—: el veredicto viaja en
+`contacto.telefono_atomico`, que el motor calcula con el `esAtomico` versionado.
+
+EL TypeError, CERRADO CON EL ESCALON 3 Y NO APARTE
+--------------------------------------------------------------------------------
+`getCapitaniaByBahiaId` devuelve `{'Desconocida','Desconocida',null}` cuando la
+bahia no esta en el mapa. El render viejo armaba
+`capitania.telefono.replace(...)` sobre ese null y ademas rotulaba "Gobernación
+Marítima de Desconocida". El motor ya baja ese caso al escalon 3, asi que
+consumir `contacto` lo cierra: no hay fila, no hay `.replace`. **Comprobado
+montado**, no deducido — `05_pantalla_montada.txt` caso 3.
+
+D3(a) — EL TELEFONO SALE DEL RECORDATORIO
+--------------------------------------------------------------------------------
+Se retiro del EMISOR (`r1_radio_aviso` ya no lleva la clave `telefono`) y **del
+RENDER** (`NormativeBlock` ya no consume `reminder.telefono`). Las dos, a
+proposito: sacarlo solo del emisor dejaria la rama abierta para que cualquier
+recordatorio futuro vuelva a colar un telefono por ahi. El nombre queda, rotulado
+por su escalon. Las menciones a VHF Canal 16 NO se tocaron: las manda la norma
+citada, no somos nosotros (§10).
+
+
+================================================================================
+3. QUE LE LLEGA AL PATRON — LAS CIFRAS, CON SU DENOMINADOR
+================================================================================
+DENOMINADOR DECLARADO: **las 164 entradas** de `bahia-capitania-map.json`.
+COMPARACIONES EFECTIVAS: 164.
+
+  P3 — TARJETA DE ZARPE Y RECALADA
+                                          HOY      CON LA PIEZA
+      "Gobernación Marítima de X"         164            65
+      "Capitanía de Puerto de X"            0            99
+      el campo no se muestra                0             0
+
+      rotulos que SE MUEVEN                        :  99
+      de esos, los que CAMBIAN ADEMAS EL NOMBRE    :  62
+      BAJAS (dejan de mostrar el campo)            :   0
+      QUIETAS (misma etiqueta y mismo nombre)      :  65
+      SUMA : 99 + 0 + 65 = 164   de 164
+
+      telefonos NO atomicos que hoy se renderizan como `tel:` : 0 de 164.
+      Lo salva el DATO, no el render: hasta hoy el `tel:` se armaba siempre.
+
+  P4 — RECORDATORIO r1_radio_aviso     (mismas 164, leidas como bahia de ZARPE)
+      recordatorios que HOY llevan telefono    : 164 de 164
+      que lo llevarian con D3(a)               :   0 de 164
+      rotulos que se mueven / nombres que cambian : 99 / 62 — identicos a P3,
+      porque lee EL MISMO PAR.
+      Denominador del otro eje: r1 es **1 de los 9** tipos de recordatorio que el
+      generador emite, y era el unico que llevaba telefono.
+
+  P1 y P2 — NO SE MUEVEN. 0 y 0.
+      Re-medidos el mismo dia con el instrumento del 08-15 sin tocarlo:
+      **P1 99/163 · P2 107/163**, identicos. El motivo es medible y no supuesto:
+      los dos leen `capitania`/`gobernacion`, campos que esta pieza CONSERVA en
+      la respuesta y en el pasamanos, y sus dos puntos de render quedaron
+      intactos por literal y por sha256 (V9).
+
+  LAS DOS VARAS SIGUEN CERRANDO: 99 + 9 = 108. Las 9 llevan el numero de otra
+  reparticion que la que nombran, son DATO y son del frente de re-atribucion.
+  El techo de esta pieza era 99 y fue 99.
+
+
+================================================================================
+4. VERIFICACION — `02_verificar.txt`, exit 0, 11 controles
+================================================================================
+Anclada al COMMIT FIJO `dc7d63e`, no a HEAD.
+
+**LA VERDAD DE REFERENCIA NO SALE DEL RESOLVEDOR:** V3 reconstruye el escalon
+esperado leyendo `reparticiones_publicadas.json` con desarmado propio. Un guard
+que construye su universo del mismo codigo que valida es tautologico.
+**Y LA ETIQUETA NO SE TRANSCRIBE:** V3 EJECUTA la `etiquetaDeNivel` REAL de la
+PWA, extraida de su archivo. Transcribir el literal al instrumento seria validar
+mi propia transcripcion.
+
+    V1  los 5 puntos escritos: literal NUEVO presente
+        Y literal VIEJO retirado                          5 comparaciones
+    V2  NADA FUERA DE LOS 5 PUNTOS: 3 archivos modificados
+        y cada hunk adentro de una region declarada      11 hunks · 0 fuera
+    V3  LA AFIRMACION CENTRAL: 99 Capitania · 65
+        Gobernacion · 0 ocultas, y 0 mal rotuladas      164 comparaciones
+    V4  el escalon 3 se honra y NO se rellena
+        (casos construidos; el dato no lo ejercita)        5 comparaciones
+    V5  el `tel:` solo bajo atomicidad, y el `.replace`
+        guardado — el TypeError                            3 comparaciones
+    V6  ningun mensaje normativo lleva telefono           10 comparaciones
+    V7  el backend no se toco                              2 comparaciones
+    V8  el dato no se toco, entrada por entrada          164 comparaciones
+    V9  P1 y P2 intactos, por literal y por sha256         2 comparaciones
+    V10 la suite: 86 pass / 0 fail                        86 comparaciones
+    V11 la enmienda: tachado, original VISIBLE,
+        cinco casillas quietas                            10 comparaciones
+
+V2 ES EL CONTROL QUE EL OWNER PIDIO Y ES EL MAS DURO DE LOS ONCE. No se
+conforma con `git status`: parsea `git diff -U0` y exige que **cada hunk** caiga
+adentro de una de 7 regiones declaradas —los 5 puntos mas las 2 inserciones
+estructurales—. `status` dice que archivo; V2 dice que renglon.
+
+
+================================================================================
+5. MORDIDA — DIEZ FAMILIAS, EN VERDE Y EN ROJO
+================================================================================
+`03_mordida.txt` (verde, exit 0) y `04_mordida_estado_viejo.txt` (rojo, exit 0).
+
+    VERDE : 10 declaradas · 10 EJERCITADAS · 9 mordieron · 0 tapadas
+    ROJO  : 10 declaradas ·  5 ejercitadas · 4 mordieron · 0 tapadas
+                             5 NO APLICABLES, declaradas una por una
+
+LA PWA NO SE ESCRIBE EN NINGUNA DE LAS DOS CORRIDAS. Los defectos del lado PWA
+se aplican sobre una COPIA en el scratchpad y el verificador se apunta ahi con
+`--pwa=`. Restaurar in situ el otro repositorio dejaria, ante un corte, un estado
+que nadie pidio. Los del lado backend si tocan el arbol: se reponen y **se
+comprueba el sha256 al cerrar, en las DOS corridas** — exceptuar la de rojo le
+dejaria al instrumento una puerta para modificar el repositorio sin que nadie lo
+note. Los 3 mutables: REPUESTO OK, 3 de 3, en las dos.
+
+    B0  control negativo: sin inyectar, reproduce la linea base -> COMO DEBE
+    B1  el pasamanos vuelve a no copiar `contacto`
+        V1 lo nombra por punto                                   -> MORDIO
+    B2  la etiqueta vuelve a ser literal duro en el JSX
+        V1 acusa que el literal VIEJO volvio                     -> MORDIO
+    B3  el escalon 3 se rellena con "Autoridad Marítima de"
+        V4 acusa el relleno                                      -> MORDIO
+    B4  el `tel:` se arma sin comprobar atomicidad · V5          -> MORDIO
+    B5  el telefono vuelve al recordatorio r1 · V6               -> MORDIO
+    B6  se toca un archivo de la PWA fuera de los 5 puntos
+        V9 lo nombra por ruta                                    -> MORDIO
+    B7  el DATO se toca · V8 nombra la entrada                   -> MORDIO
+    B8  el resolvedor del backend se toca · V7                   -> MORDIO
+    B9  la enmienda BORRA el original en vez de tacharlo · V11   -> MORDIO
+
+LAS FAMILIAS CONSTRUYEN SU CASO DESDE CERO: el rotulo duro, la etiqueta
+inventada "Autoridad Marítima de", el telefono de Valparaiso de vuelta en el
+recordatorio. Ninguno sale de lo que el dato traiga hoy. Y **cada una declara
+QUE CONTROL debe nombrarla y con que texto**: el veredicto es sobre el MENSAJE,
+no sobre el exit.
+
+LA CORRIDA EN ROJO — que prueba y que no
+--------------------------------------------------------------------------------
+El estado pre-pieza es la PWA en `6157c29`. El backend NO se revierte: la pieza
+no escribe backend, y revertirlo mediria otra cosa.
+
+  · LO PRIMERO QUE MIDE: el verificador sale **exit 1** contra el estado
+    pre-pieza, y las fallas las levantan **V1 y V3, que son los que miden la
+    pieza**. Un verificador que diera verde sin la pieza aplicada no probaria
+    nada, y esa es la primera cosa que esta corrida descarta. Ademas V5 acusa el
+    TypeError y V6 el telefono en el mensaje normativo — o sea que el
+    verificador describe el estado viejo con precision;
+  · B6, B7, B8 y B9 **muerden igual** contra el estado pre-pieza: ya hacian lo
+    suyo antes de que el codigo les diera la razon;
+  · B1 a B5 quedan **NO APLICABLES y se declaran como tales**: atacan lineas que
+    en el estado pre-pieza todavia no existen. NO APLICABLE no es TAPADA ni es
+    MORDIO, y el instrumento las cuenta aparte.
+
+
+================================================================================
+6. LA APP MONTADA — porque ningun control monta un componente
+================================================================================
+Detalle completo en `05_pantalla_montada.txt`. Los 11 controles leen archivos y
+simulan el render; **un JSX puede pasar los 11 y reventar al montar**, y la PWA
+no tiene suite que lo cace. Se levantaron backend (3000) y Vite (5173) y se
+montaron los componentes REALES.
+
+    ESCALON 1  Hornopiren -> 📞 Capitanía de Puerto de Hornopirén — +56 65 2217304
+    ESCALON 2  Valparaiso -> 📞 Gobernación Marítima de Valparaíso — +56 32 220 8905
+    ESCALON 3  bahia que no resuelve -> (NO HAY FILA DE CONTACTO), sin `tel:`
+
+Y la cadena entera —hook + pasamanos + las dos tarjetas + NormativeBlock, los 5
+puntos juntos— con un viaje real Hornopiren -> Calbuco:
+
+    tarjeta de ZARPE    : 📞 Capitanía de Puerto de Hornopirén — +56 65 2217304
+    tarjeta de RECALADA : 📞 Capitanía de Puerto de Calbuco — +56 65 2462434
+    recordatorio r1     : "Avisar por radio a la Capitanía de Puerto de
+                          Hornopirén al iniciar la navegación"
+    pildoras 📞 dentro de mensajes normativos : 0
+
+CONSOLA: 0 errores, 0 advertencias.
+
+MONTA, Y DICE LO QUE EL INSTRUMENTO DICE QUE DICE. **Y encontro lo que ningun
+control podia encontrar** — el punto 13 de la seccion 0.
+
+
+================================================================================
+7. LA ENMIENDA DEL CONTRATO — v2.2 -> v2.3
+================================================================================
+Aprobada por el owner antes de escribirse, con el texto concreto a la vista
+(CLAUDE.md §6: el ciclo no se saltea).
+
+**LAS CINCO CASILLAS NO SE MOVIERON, Y SE MIDIO EN VEZ DE SUPONERLO.**
+Re-corrido `_bitacoras/contrato_51_telefonos_2026-08-16/01_medir_niveles_telefono.js`
+sobre el arbol en `dc7d63e`:
+
+    de una CAPITANIA y no de una Gobernacion   :  73
+    de una GOBERNACION y no de una Capitania   :  56
+    en LOS DOS universos (no distingue nivel)  :  35
+    en NINGUNO de los dos                      :   0
+    telefono null o vacio                      :   0
+    SUMA                                       : 164  de 164
+
+Identicas a las del ancla `01bf543`. Son propiedades DEL ARCHIVO y esta pieza es
+DEL RENDER. Tampoco se movio el 4,8 (34 valores distintos).
+
+**EL 108 NO SE BORRO Y NO ES FALSO.** 73 + 35 = 108 sigue siendo exacto como
+propiedad del archivo, y sigue midiendo el frente de re-atribucion. Lo que se
+tacho es la clausula *"Leído como lo lee P3, que sólo pregunta «¿este número es
+de una Capitanía?»"*, porque desde hoy P3 no lee asi. Por la vara del escalon 1
+son 99, y **99 + 9 = 108** cierra.
+
+Se enmendo ademas la nota del Tramo A que decia que la frase "no se toca hoy":
+la condicion que ella misma puso —"cuando P3 efectivamente deje de leer asi"— se
+cumplio, y una nota que dice "todavia no" cuando ya paso es la misma forma de
+envejecer en silencio que §5.1 existe para perseguir.
+
+EL BUMP. **No cambia ningun INVARIANTE** —INV-10.1 se cumple, por primera vez,
+sin que se le toque una letra—, **ninguna Verificacion, ninguna fuente
+autorizada, ninguna fila de §5 y ninguna de las cinco casillas.** Es el mismo
+criterio con el que entraron la v1.9 y la v2.1: bump para que la correccion sea
+encontrable desde el changelog. Lo que si cambia, y es la primera vez en este
+frente, es **lo que el patron ve**.
+
+
+================================================================================
+8. LA SUITE, Y LA DEUDA QUE NO SE ABRE
+================================================================================
+    linea base al abrir  -> 86 tests, 86 pass, 0 fail
+    al cerrar (V10)      -> 86 tests, 86 pass, 0 fail
+
+**No se movio, y no podia moverse:** esta pieza no escribe una linea de backend,
+y `cotejo-contrato.test.js` coteja §10, no §5.1.
+
+>>> D7 — `tmarea-pwa` NO TIENE RUNNER DE TESTS NI UN SOLO TEST. `package.json`
+>>> trae `dev/build/preview` y nada mas.
+
+Escrito con su peso real y no como una mejora deseable: **el cambio que mueve 99
+rotulos queda cubierto por el verificador de esta bitacora y por nada mas.** Ese
+verificador prueba que la pieza quedo bien HOY. No prueba que siga bien en seis
+meses, y no lo corre nadie que no lea esta bitacora. Si manana alguien vuelve a
+poner un literal duro en `PortStatusBlock.jsx`, **nada avisa**: no hay control
+vivo del lado de la PWA. Los 11 controles de acá son evidencia de una sesion, no
+un control permanente — la diferencia que §4.4 pide.
+
+Y hay un segundo motivo por el que el cotejo de render NO puede mudarse a la
+suite tal como esta: **estos instrumentos dependen de la ruta absoluta
+`C:/Users/katia/tmarea-pwa`**. Es precedente del Tramo A y es tolerable en
+`_bitacoras/`; en la suite violaria §3.4 —reproducible en cualquier maquina, sin
+depender del disco de nadie—. Cerrar D7 pide resolver eso tambien.
+
+Decision del owner en la parada del plan: **deuda declarada, no se abre.**
+
+
+================================================================================
+9. CINCO DEFECTOS DE INSTRUMENTO PAGADOS EN ESTA SESION
+================================================================================
+Escritos porque no se ven mirando el verde.
+
+(a) **El literal del punto 1 apuntaba a `telefono` y el punto es el BLOQUE
+    `:246-:248`.** El instrumento **aborto con exit 3** en vez de concluir, que
+    es lo que tenia que hacer. Sin el guard de linea declarada habria reportado
+    el punto como movido y la cifra habria sido falsa por culpa del ensayo.
+
+(b) **`.trim()` sobre la salida entera de `git status --short`.** Ese comando
+    marca el estado en las DOS primeras columnas y un modificado sin `add`
+    empieza con espacio: trimear el bloque le come ese espacio a la PRIMERA
+    linea, y el corte por posicion devolvia la ruta sin su primer caracter
+    (`rc/components/...`). V2 acusaba una diferencia que no existia.
+
+(c) **Un hunk `-N,0` modelado como si tocara N+1.** Una insercion no toca
+    ninguna linea vieja: su ancla es N. Modelarla mal dejaba fuera de su propia
+    region a los dos hunks que agregan al FINAL de un bloque —el campo del
+    pasamanos y el import—, que son legitimos.
+
+(d) **LA TRAMPA DEL CRLF, OTRA VEZ, y esta es la que mas cerca estuvo de pasar.**
+    Los archivos de la PWA estan en CRLF y los `de` de dos lineas se escribieron
+    con `\n`: B1 y B5 no encontraron su literal y se declararon NO APLICABLES
+    **en la corrida donde las lineas SI estaban**. El instrumento cerro exit 0
+    diciendo "TODAS LAS FAMILIAS HICIERON LO SUYO" con dos familias sin
+    ejercitar. Corregido en dos frentes: los patrones se traducen al fin de
+    linea real del archivo, **y NO APLICABLE pasa a ser FALLA cuando el estado
+    es verde** — en verde, que un ensayo no encuentre su literal significa que
+    la familia no corrio, y una corrida que se declara completa con familias sin
+    ejercitar es la cifra legible y falsa que estos instrumentos existen para no
+    producir. El Tramo A dejo escrita esta trampa y aca se cobro sola otra vez.
+
+(e) **La copia pre-pieza armada desde `git show` puso una linea falsa en
+    evidencia versionada.** `git show` devuelve EL BLOB, en LF, y el arbol esta
+    en CRLF: los archivos copiados cambiaban de sha256 sin haber cambiado, y V9
+    acusaba a `P3_VoyageVerification.jsx` de haber sido tocado. Una cifra falsa
+    producida por el instrumento y no por el codigo, dentro de un `.txt` que se
+    versiona. Corregido restituyendo el fin de linea del arbol antes de escribir
+    la copia, y la corrida en rojo se regenero.
+
+
+================================================================================
+10. PENDIENTES DECLARADOS — anotados, no abiertos
+================================================================================
+1. **`WeatherBlock.jsx:181-182` y `:195`** — el punto 13. Pide un punto de
+   backend (`weather-ruta` no emite `contacto`) y uno de PWA. Es del mismo
+   frente que P1.
+2. **D7** — la PWA sin suite, con el problema de la ruta absoluta adentro.
+3. Las **9 entradas** que llevan el numero de otra reparticion. Son DATO, viven
+   en el frente de RE-ATRIBUCION, y esta pieza no las arregla: solo deja de
+   mentir sobre ellas bajandolas al escalon 2. Listadas en la seccion 0 de la
+   bitacora del Tramo A.
+4. El numero atomico de **Baker (CdRep 260)**; la 127 sigue con
+   `capitania: null` y resolviendo al escalon 2.
+5. **`ambitos-publicados.js:306`**, el segundo resolvedor. Anotado, no abierto.
+6. **P1 y P2**: sus formas de render no se tocaron y sus cifras no se movieron.
+   P1 sigue mostrando contacto de bahias intermedias.
+7. Las re-atribuciones de fondo y la **Via 2** —indexar el contacto por
+   Capitania—, que es la condicion de retiro de las dos filas transitorias de §5.
+8. **`04_verificar.js` del Tramo A queda en rojo por diseno** — su V10 clavaba
+   la PWA por sha256 cuando era solo lectura. No se modifica: es constancia.
+   Nota al pie agregada alli.
+9. El **motor BRE**. No se abrio y nada de lo medido apunta ahi.
+
+EFECTO COLATERAL DE HABER LEVANTADO EL BACKEND — NO ES DE ESTA PIEZA Y NO ENTRA
+EN SU COMMIT
+--------------------------------------------------------------------------------
+Levantar el backend para montar la app disparo `src/services/drift-arranque.js`,
+que corre el control de drift AL ARRANCAR y **escribe
+`data/catalogo/estado_drift.json`**, que es un archivo versionado. Queda
+modificado en el arbol, **sin estagear**, por decision del owner: se descarta
+tirarlo —seria tirar una medicion en vivo— y se descarta meterlo en este commit
+—seria meter otro frente adentro de la pieza del rotulo—. Va a una sesion propia
+del frente de drift.
+
+Lo que la corrida en vivo del 2026-08-16T20:45:12Z dice, contra lo que el archivo
+traia del 2026-08-12:
+
+    veredicto        : DRIFT_DECLARADO_ABIERTO  ->  DRIFT_NO_DECLARADO
+    universo_sitport : 165  ->  166
+    divergencia nueva, clase `sitport_sin_catalogo`, estado `no_declarada`:
+        id_bahia        : 258
+        nombre_sitport  : "RÍO BUENO, SECTOR LLANCACURA"
+        detalle         : visto en consultaBahias
+
+>>> LO PRIMERO QUE HAY QUE MIRAR CUANDO SE ABRA ESE FRENTE, y por eso se escribe
+>>> la observacion entera y no el id suelto:
+
+**258 es el CdReparticion de Puerto Eden, y Puerto Eden no tiene ninguna
+relacion con "RÍO BUENO, SECTOR LLANCACURA"** —Rio Bueno desemboca en la Region
+de Los Rios; Puerto Eden esta en Magallanes, a mas de mil kilometros—. La
+divergencia guarda ese 258 bajo la clave `id_bahia`.
+
+De ahi salen dos lecturas, y hay que decidir cual antes de tocar nada:
+  (1) **el campo no es lo que su nombre dice**: `id_bahia` esta recibiendo un
+      CdReparticion en algun camino del control de drift; o
+  (2) **hay colision de identificadores**: existe una bahia 258 legitima y el
+      numero coincide con un CdReparticion, y entonces el problema no es el dato
+      sino que dos universos comparten rango sin que nada lo declare.
+
+Las dos son distintas y se arreglan en lugares distintos. Tratar esto como "una
+bahia nueva de SITPORT" antes de resolver cual de las dos es, es exactamente el
+error de tratar dos cosas como equivalentes que CLAUDE.md §2 persigue. **No se
+midio en esta sesion** —es otro frente— y se deja escrito para que el que lo
+abra no tenga que volver a notarlo.
+
+
+================================================================================
+11. LO QUE ESTA BITACORA NO RESPONDE
+================================================================================
+- **Cuanto pesa el punto 13 en pantalla.** Se midio su eje de dato (99 de 164
+  con el rotulo equivocado si aparecen como tramo); cuantos tramos y cuantos
+  telefonos se ven depende de la ruta, y no se le invento denominador.
+- **Si DIRECTEMAR publica hoy lo que el derivado de reparticiones dice.** No se
+  consulto en vivo para cotejarlo.
+- **Si hay MAS consumidores de contacto sin enumerar.** Aparecio uno montando la
+  app con dos rutas. No se hizo un barrido exhaustivo de la PWA, y decir que no
+  hay mas seria decir "no lo encontre con mi parser".
+- **Si `capitania` y `gobernacion` deben retirarse de la respuesta.** Esta pieza
+  los CONSERVA —P1 y P2 los leen— y no lo evalua.
+- **Como se ve en un telefono real.** Se monto en el navegador de escritorio a
+  1280x720.
+================================================================================

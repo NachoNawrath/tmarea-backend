@@ -11,8 +11,24 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 2.2
+Versión: 2.3
 Última actualización: 2026-08-16
+Cambios v2.3: **la frase del 108 de §5.1 dejó de ser cierta de P3, y se enmienda el día que
+deja de serlo.** Motivo: el Tramo B de la pieza del rótulo escribió los 5 puntos de la PWA, y
+desde este commit **P3 consume el campo `contacto`** —el escalón de INV-10.1 ya resuelto por el
+motor— en vez de preguntar *"¿este número es de una Capitanía?"*. **El 108 no se toca: sigue
+siendo exacto como propiedad del archivo** (73 + 35). Lo que se tacha es la cláusula que se lo
+atribuía a P3. Por la vara del escalón 1 son **99 de 164**, y las dos varas cierran:
+**99 + 9 = 108**. Medido con `_bitacoras/rotulo_p3_tramo_b_2026-08-16/01_medir_rotulo.js` sobre
+las 164 entradas: **99 pasan a rotularse "Capitanía de Puerto de" · 65 quedan en "Gobernación
+Marítima de" · 0 dejan de mostrar el campo**, suma 164; de las 99, **62 cambian además el
+nombre**. **Las cinco casillas (73 · 56 · 35 · 0 · 0) NO se mueven, y se midió en vez de
+suponerlo**: son propiedades de `bahia-capitania-map.json` y esta pieza es del render.
+**NO cambia ningún INVARIANTE** —INV-10.1 se cumple, por primera vez, sin que se le toque una
+letra—, **ninguna Verificación, ninguna fuente autorizada y ninguna fila de §5.** Lo que sí
+cambia, y es la primera vez en este frente, es **lo que el patrón ve**. Se enmienda además la
+nota del Tramo A que decía que esta frase no se tocaba "hoy": la condición que ella misma puso
+se cumplió. Evidencia: `_bitacoras/rotulo_p3_tramo_b_2026-08-16/`.
 Cambios v2.2: **§5 suma una fila por un insumo que ascendió a vivo.**
 `data/contacto/reparticiones_publicadas.json` era un derivado de generación —lo leían tres
 scripts y ningún archivo de `src/`— y desde `src/services/contacto-por-escalon.js` lo lee el
@@ -718,10 +734,24 @@ Lo que este archivo tiene de verdad, medido y sin suavizar:
   > | teléfono `null` o vacío | 0 |
   > | **total** | **164** |
   >
-  > Leído como lo lee P3, que sólo pregunta *"¿este número es de una Capitanía?"*: **108 de 164**
+  > ~~Leído como lo lee P3, que sólo pregunta *"¿este número es de una Capitanía?"*:~~ **108 de 164**
   > lo son (73 + 35). Es la misma cifra que devuelve el instrumento versionado
   > `_bitacoras/auditoria_rotulos_2026-08-15/02_medir_pantalla.js`, y las dos mediciones se
   > cruzaron.
+  >
+  > > **ENMENDADO 2026-08-16 (§3.3), Tramo B de la pieza del rótulo: el 108 sigue siendo cierto
+  > > DEL ARCHIVO y dejó de ser cierto DE P3.** El número no se toca —73 + 35 = 108 es una
+  > > propiedad del mapa, y esta pieza no lo toca: medido sobre el árbol en `dc7d63e`, las cinco
+  > > casillas dan **73 · 56 · 35 · 0 · 0**, idénticas a las de `01bf543`—. Lo que se tacha es la
+  > > cláusula que se lo atribuía a P3. **Desde este commit P3 no pregunta más "¿este número es
+  > > de una Capitanía?": consume el campo `contacto`, que trae el escalón de INV-10.1 ya
+  > > resuelto, y la pregunta del escalón 1 es más dura — "¿es el de LA Capitanía nombrada?".**
+  > > Por esa vara son **99 de 164**, y las **9** de diferencia llevan el número de otra
+  > > repartición que la que nombran. **Las dos varas cierran: 99 + 9 = 108.** Medido con
+  > > `_bitacoras/rotulo_p3_tramo_b_2026-08-16/01_medir_rotulo.js` sobre las 164 entradas:
+  > > **99 se rotulan "Capitanía de Puerto de" · 65 "Gobernación Marítima de" · 0 dejan de
+  > > mostrar el campo**, suma 164. **La vara del 108 sigue viva en otro lado y por eso no se
+  > > retira**: es la que mide el frente de re-atribución, y las 9 son suyas.
   >
   > **Las 35 de la tercera fila son un hecho de la fuente, no un empate sin resolver:**
   > DIRECTEMAR publica el mismo número para una Gobernación y para una Capitanía suya
@@ -836,6 +866,16 @@ por declaración y no por olvido.
 > **P1 99/163 · P2 107/163 · P3 108/164, las tres idénticas a antes de la pieza**. La frase
 > se enmienda cuando P3 efectivamente deje de leer así, y no antes: enmendarla hoy sería
 > declarar algo que todavía no pasó.
+>
+> > **CUMPLIDO 2026-08-16, el mismo día, en el Tramo B: P3 dejó de leer así, y la frase se
+> > enmendó donde vive.** La condición que este párrafo puso —"cuando P3 efectivamente deje de
+> > leer así"— se cumplió al escribir los 5 puntos de la PWA, y el pasamanos dejó de copiar
+> > campo por campo. **Lo que este párrafo dice de las cinco casillas sigue vigente y
+> > re-medido: no se movieron** (73 · 56 · 35 · 0 · 0 sobre `dc7d63e`, con el mismo instrumento
+> > versionado). **P1 y P2 tampoco se movieron, y tampoco se supuso**: re-medidos el mismo día,
+> > **99/163 y 107/163**, porque los dos leen `capitania`/`gobernacion`, campos que esta pieza
+> > conserva. Lo único vencido de este bloque es la frase sobre el 108, y su enmienda está más
+> > arriba, junto al texto que corrige.
 
 ### INV-5.1 — Clorofila etiquetada
 Mientras sea estimada, la respuesta lleva `clorofila_fuente` y la UI la muestra como

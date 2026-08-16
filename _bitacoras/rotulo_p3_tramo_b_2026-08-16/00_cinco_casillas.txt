@@ -1,0 +1,109 @@
+================================================================================
+DE QUE NIVEL ES CADA TELEFONO DEL MAPA — insumo de la correccion de §5.1
+Ancla: commit fijo 01bf543341b53f0a54b719952dbea494c75ef0b2
+NO escribe ningun archivo.
+================================================================================
+
+=== INSUMOS, con sha256 del archivo en disco ===
+  _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv  04cdf370c089e321a7085a58226d05d73f456a20f0e4c5479cfe5ae9dd242d4d
+  src/utils/capitanias.js                                        5b1eedfcdd6b4be1eff3ae1bce81246cf5f8bf416bdf43d0a5e7183e76ae8e0e
+  _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json aed48c23ffbb840cb8f09acde180b96827b159990d961d76daf1278cb473270b
+  data/contacto/reparticiones_publicadas.json                    9524a3792e3d79d7690d5a4c09b1c46191934dea45a734051f285420f89fef46
+  src/data/bahia-capitania-map.json  [del ancla, en CRLF]        376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da795fb41ce17aa0498a
+
+=== LOS DOS UNIVERSOS ===
+  CAPITANIA   : 65 numeros distintos, de 64 filas del CSV
+  GOBERNACION : 16 numeros distintos
+      leidos de src/utils/capitanias.js : 15
+      mas la GM Antartica Chilena, recuperada aparte : 1 (+56 32 2208557)
+  numeros que estan en LOS DOS universos : 6
+      56552630000  -> Capitania "ANTOFAGASTA"  ·  Gobernacion "Antofagasta"
+      56322100222  -> Capitania "HANGA ROA"  ·  Gobernacion "Hanga Roa"
+      56522315276  -> Capitania "CALDERA"  ·  Gobernacion "Caldera"
+      56512558100  -> Capitania "COQUIMBO"  ·  Gobernacion "Coquimbo"
+      56632276905  -> Capitania "VALDIVIA"  ·  Gobernacion "Valdivia"
+      56322208557  -> Capitania "BAHÍA PARAÍSO"  ·  Gobernacion "Antártica Chilena (recuperada, fuera de la tabla)"
+
+=== LA PARTICION DE LAS 164 ENTRADAS ===
+  DENOMINADOR DECLARADO : 164 entradas del mapa. Todas tienen la clave
+  `telefono`; la casilla "null" cuenta las que la traen en null o vacia.
+
+    de una CAPITANIA y no de una Gobernacion   :  73
+    de una GOBERNACION y no de una Capitania   :  56
+    en LOS DOS universos (no distingue nivel)  :  35
+    en NINGUNO de los dos                      :   0
+    telefono null o vacio                      :   0
+    ----------------------------------------------
+    SUMA                                       : 164  de 164
+
+  COMPARACIONES EFECTIVAS (entradas clasificadas) : 164
+
+  DETALLE de las casillas que no son masivas:
+    en LOS DOS : 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 104, 107, 139, 140, 144, 145, 146, 150, 151, 157, 158, 170, 172, 180, 202, 206, 207, 208, 236
+         74  +56 55 263 0000  -> Capitania "ANTOFAGASTA" y Gobernacion "Antofagasta"
+         75  +56 55 263 0000  -> Capitania "ANTOFAGASTA" y Gobernacion "Antofagasta"
+         76  +56 55 263 0000  -> Capitania "ANTOFAGASTA" y Gobernacion "Antofagasta"
+         77  +56 55 263 0000  -> Capitania "ANTOFAGASTA" y Gobernacion "Antofagasta"
+         78  +56 55 263 0000  -> Capitania "ANTOFAGASTA" y Gobernacion "Antofagasta"
+         79  +56 55 263 0000  -> Capitania "ANTOFAGASTA" y Gobernacion "Antofagasta"
+         80  +56 52 231 5276  -> Capitania "CALDERA" y Gobernacion "Caldera"
+         81  +56 52 231 5276  -> Capitania "CALDERA" y Gobernacion "Caldera"
+         82  +56 52 231 5276  -> Capitania "CALDERA" y Gobernacion "Caldera"
+         83  +56 52 231 5276  -> Capitania "CALDERA" y Gobernacion "Caldera"
+         84  +56 52 231 5276  -> Capitania "CALDERA" y Gobernacion "Caldera"
+         85  +56 51 255 8100  -> Capitania "COQUIMBO" y Gobernacion "Coquimbo"
+         86  +56 51 255 8100  -> Capitania "COQUIMBO" y Gobernacion "Coquimbo"
+         87  +56 51 255 8100  -> Capitania "COQUIMBO" y Gobernacion "Coquimbo"
+         88  +56 51 255 8100  -> Capitania "COQUIMBO" y Gobernacion "Coquimbo"
+         89  +56 32 210 0222  -> Capitania "HANGA ROA" y Gobernacion "Hanga Roa"
+        104  +56 63 227 6905  -> Capitania "VALDIVIA" y Gobernacion "Valdivia"
+        107  +56 63 227 6905  -> Capitania "VALDIVIA" y Gobernacion "Valdivia"
+        139  +56 32 2208557  -> Capitania "BAHÍA PARAÍSO" y Gobernacion "Antártica Chilena (recuperada, fuera de la tabla)"
+        140  +56 32 2208557  -> Capitania "BAHÍA PARAÍSO" y Gobernacion "Antártica Chilena (recuperada, fuera de la tabla)"
+        144  +56 63 227 6905  -> Capitania "VALDIVIA" y Gobernacion "Valdivia"
+        145  +56 63 227 6905  -> Capitania "VALDIVIA" y Gobernacion "Valdivia"
+        146  +56 63 227 6905  -> Capitania "VALDIVIA" y Gobernacion "Valdivia"
+        150  +56 51 255 8100  -> Capitania "COQUIMBO" y Gobernacion "Coquimbo"
+        151  +56 51 255 8100  -> Capitania "COQUIMBO" y Gobernacion "Coquimbo"
+        157  +56 52 231 5276  -> Capitania "CALDERA" y Gobernacion "Caldera"
+        158  +56 51 255 8100  -> Capitania "COQUIMBO" y Gobernacion "Coquimbo"
+        170  +56 63 227 6905  -> Capitania "VALDIVIA" y Gobernacion "Valdivia"
+        172  +56 52 231 5276  -> Capitania "CALDERA" y Gobernacion "Caldera"
+        180  +56 51 255 8100  -> Capitania "COQUIMBO" y Gobernacion "Coquimbo"
+        202  +56 51 255 8100  -> Capitania "COQUIMBO" y Gobernacion "Coquimbo"
+        206  +56 51 255 8100  -> Capitania "COQUIMBO" y Gobernacion "Coquimbo"
+        207  +56 63 227 6905  -> Capitania "VALDIVIA" y Gobernacion "Valdivia"
+        208  +56 63 227 6905  -> Capitania "VALDIVIA" y Gobernacion "Valdivia"
+        236  +56 55 263 0000  -> Capitania "ANTOFAGASTA" y Gobernacion "Antofagasta"
+    en NINGUNO : 0 entradas
+    null : (ninguna)
+
+=== LO QUE §5.1 AFIRMA, CONTRASTADO ===
+  "son 15 valores distintos, uno por Gobernacion"
+      MEDIDO: 34 valores distintos entre las 164 entradas con telefono.
+  "el mismo telefono se repite en promedio 11 veces"
+      MEDIDO: 4.8 veces en promedio.
+  "los 164 telefonos son de Gobernacion, sin una sola excepcion"
+      MEDIDO: 56 lo son sin ambiguedad; 73 son de una Capitania y no de una Gobernacion.
+  "ninguno es de una Capitania"
+      MEDIDO: 108 numeros figuran en el indice de Capitanias.
+
+  "tres de sus valores estan desactualizados ... alimentan 41 de las 164 entradas"
+      +56 58 220 6402    -> 0 entradas del mapa lo llevan
+      +56 41 226 6100    -> 0 entradas del mapa lo llevan
+      +56 65 256 1100    -> 0 entradas del mapa lo llevan
+      MEDIDO: los tres juntos alimentan 0 entradas, no 41.
+
+=== LA BAHIA 129 — nombre y CdReparticion, nada mas ===
+  campos del registro de SITPORT                 : IDBahia, CdReparticion, NMBahia, color, valor, Nom
+  nombre de la bahia en SITPORT (`NMBahia`)      : "PUERTO EDÉN"
+  CdReparticion                                  : 258
+  esa reparticion, en el derivado                : "Puerto Edén"  (CSV: "EDÉN")
+  lo que el mapa dice hoy para la 129            : capitania="Puerto Edén" · gobernacion="Aysén" · telefono="+56 61 2201164"
+
+  Nada mas sobre la 129 en esta medicion: la eleccion de fuente entre el mapa
+  y el decreto es normativa y es del owner.
+
+================================================================================
+MEDICION COMPLETA. Ningun archivo fue escrito.
+================================================================================

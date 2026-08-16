@@ -1,0 +1,55 @@
+================================================================================
+MORDIDA — TRAMO B DEL ROTULO DE P3   ·   estado del arbol: VERDE
+================================================================================
+
+  copia de la PWA en : C:\Users\katia\AppData\Local\Temp\claude\C--Users-katia--claude\b7ef7ca0-9620-437c-ad10-8b076a9264f3\scratchpad\mordida_tramo_b\pwa
+  armada desde       : el arbol de trabajo de la PWA
+  la PWA real NO se escribe en ninguna de las dos corridas.
+
+=== LINEA BASE, ANTES DE INYECTAR NADA ===
+  el verificador contra la copia limpia sale exit 0
+  esperado: exit 0. Sin linea base en verde el instrumento aborta en vez de concluir.
+
+=== LAS FAMILIAS ===
+
+  B0  control negativo: sin inyectar nada, el verificador se comporta como la linea base
+      exit 0, y la linea base salio 0 -> SE COMPORTA COMO DEBE
+
+  B1  el pasamanos vuelve a NO copiar `contacto`: el campo muere ahi
+      exit 1 · el control lo NOMBRA: "V1: punto 1 · pasamanos — el literal nuevo no esta"   -> MORDIO
+
+  B2  la etiqueta vuelve a ser un LITERAL DURO en el JSX
+      exit 1 · el control lo NOMBRA: "V1: punto 3 · render P3 — el literal viejo sigue"   -> MORDIO
+
+  B3  el escalon 3 se RELLENA con "Autoridad Marítima de" en vez de callar
+      exit 1 · el control lo NOMBRA: "el escalon 3 devuelve la etiqueta"   -> MORDIO
+
+  B4  el `tel:` se arma sin comprobar la atomicidad que INV-10.1 exige
+      exit 1 · el control lo NOMBRA: "V5: el `tel:` no esta condicionado a la atomicidad"   -> MORDIO
+
+  B5  el TELEFONO vuelve al recordatorio r1, adentro del mensaje normativo
+      exit 1 · el control lo NOMBRA: "recordatorios siguen emitiendo telefono"   -> MORDIO
+
+  B6  se toca un archivo de la PWA FUERA de los 5 puntos (el consumidor de P1)
+      exit 1 · el control lo NOMBRA: "V9: src/components/verification/TransitRestrictionsBlock.jsx cambio"   -> MORDIO
+
+  B7  el DATO se toca: una entrada cambia de telefono
+      exit 1 · el control lo NOMBRA: "del mapa cambio"   -> MORDIO
+
+  B8  el RESOLVEDOR del backend se toca, y esta pieza no escribe backend
+      exit 1 · el control lo NOMBRA: "V7: src/services/contacto-por-escalon.js cambio"   -> MORDIO
+
+  B9  la enmienda BORRA el texto original en vez de tacharlo (§3.3)
+      exit 1 · el control lo NOMBRA: "V11: el texto original sigue VISIBLE"   -> MORDIO
+
+=== LOS INSUMOS MUTABLES DEL BACKEND, REPUESTOS Y COMPROBADOS ===
+  src/data/bahia-capitania-map.json          REPUESTO OK
+  src/services/contacto-por-escalon.js       REPUESTO OK
+  CONTRATO_MOTOR.md                          REPUESTO OK
+  COMPARACIONES EFECTIVAS : 3 de 3
+
+================================================================================
+FAMILIAS DECLARADAS : 10   ·   EJERCITADAS : 10   ·   MORDIERON : 9   ·   TAPADAS : 0   ·   NO APLICABLES : 0
+TODAS LAS FAMILIAS HICIERON LO SUYO.
+La PWA real no fue escrita. Los mutables del backend quedaron repuestos.
+================================================================================
