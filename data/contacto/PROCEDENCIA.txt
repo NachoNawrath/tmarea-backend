@@ -1,0 +1,103 @@
+PROCEDENCIA — data/contacto/reparticiones_publicadas.json
+Registrado el 2026-08-15, al crear el derivado (frente de CONTACTO, Pieza A).
+
+QUE ES ESTE DIRECTORIO
+--------------------------------------------------------------------------------
+Un solo archivo: `reparticiones_publicadas.json`, el indice
+`CdReparticion -> { nombre publicado, telefono, direccion }` que consume
+`scripts/frente-contacto-pieza-a.js`.
+
+Es un DERIVADO REPRODUCIBLE. No se edita a mano. Se regenera con:
+
+    node scripts/frente-contacto-derivar-reparticiones.js
+
+(sintaxis identica en PowerShell y en Git Bash, desde la raiz del repositorio).
+
+POR QUE VIVE EN `data/` Y NO EN `_bitacoras/`
+--------------------------------------------------------------------------------
+CLAUDE.md §3.5: la prueba es si algun archivo del repositorio lo lee.
+`scripts/frente-contacto-pieza-a.js` lo lee. No es evidencia de como se llego a
+algo: es insumo de una construccion.
+
+SUS DOS FUENTES, Y QUE APORTA CADA UNA
+--------------------------------------------------------------------------------
+1. EL NOMBRE PUBLICADO — los 16 `gm_*.html` de DIRECTEMAR.
+
+   NO ESTAN EN HEAD. La poda del sondeo del 2026-08-12 los borro del arbol de
+   trabajo. Viven en el arbol git `a474ae4` y el derivador los lee de ahi con
+   `git show`, que es reproducible desde el propio repositorio (§3.4).
+
+   Su URL completa, su sha256, su tamano y QUE SE EXTRAJO DE CADA UNO estan ya
+   escritos, para los 18 archivos de esa captura, en:
+
+       _bitacoras/sondeo_catalogo_2026-08-12/PROCEDENCIA.txt
+
+   Ese archivo NO se duplica aca. Lo que si hay que leer de el antes de
+   verificar nada es su apartado "SOBRE QUE SE CALCULARON EL sha256 Y EL TAMANO":
+   los valores que registra son del ARCHIVO EN DISCO, en CRLF, y con
+   `core.autocrlf=true` el blob de git esta en LF y NO los reproduce. O sea que
+   `git show a474ae4:<archivo> | sha256sum` da OTRO hash, y eso no significa que
+   el archivo haya cambiado.
+
+   FECHA DE CAPTURA: 2026-08-12, ~16:10 (commit 8f734f4 del mismo dia).
+
+   QUE SE EXTRAE DE ELLOS AQUI, que es distinto de lo que el sondeo extrajo:
+   solo dos cosas por seccion — el TITULO `Capitania de Puerto de X` y, dentro
+   de su `<ul>`, la linea `<li>Teléfono: …</li>`. El titulo da el nombre; el
+   telefono se usa unicamente para IDENTIFICAR la reparticion cuando el nombre
+   no coincide, nunca como valor a escribir.
+
+2. EL TELEFONO Y LA DIRECCION — `capitanias_64_final.csv`.
+
+       _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv
+       sha256 del archivo en disco: 04cdf370c089e321a7085a58226d05d73f456a
+                                    20f0e4c5479cfe5ae9dd242d4d
+
+   Ese CSV esta versionado, asi que no necesita recaptura. Su columna
+   `Capitania` NO se usa como rotulo: ver la nota de abajo.
+
+NOTAS DE PARSEO QUE COSTARON TRABAJO — dejan de ser descubribles si el HTML no esta
+--------------------------------------------------------------------------------
+· LA FUENTE TRAE DOBLE ESPACIO EN UN TITULO. `gm_region-de-aysen.html` escribe
+  `Capitanía  de Puerto de Melinka` con DOS espacios despues de "Capitanía", y
+  varios titulos cierran con un espacio final. Un parser que no colapse espacios
+  declara AUSENTE a Melinka. La primera version del instrumento de medicion de
+  esta sesion lo hizo. Es la misma trampa que CLAUDE.md §2 lista como caso real
+  de este repositorio; el derivador colapsa espacios ANTES de parsear el titulo.
+
+· LAS SECCIONES SE DELIMITAN POR `id="vtxt_cuerpo_TN"`. El cuerpo de una seccion
+  es todo lo que va hasta la marca siguiente. No hay contenedor propio por
+  seccion del que colgarse.
+
+· LOS TITULOS DE ALCALDIA TIENEN LA MISMA FORMA QUE LOS DE CAPITANIA
+  (`Alcaldías de Mar de X`), y sus `<li>` son los nombres de las Alcaldias. El
+  derivador SOLO toma los titulos de Capitania. Medido el 2026-08-15: de las 64
+  filas del CSV, una —`RADA COVADONGA`, CdRep 291— aparece dentro de un bloque de
+  Alcaldias y no como titulo de Capitania, y por eso queda sin
+  `nombre_publicado`. Cero bahias de SITPORT cuelgan de esa reparticion, asi que
+  hoy no alcanza al campo; entraria si el CSV pasara a ser el contenido de una
+  tabla por Capitania.
+
+· LA COLUMNA `Capitania` DEL CSV ES LA CADENA CRUDA DE SITPORT. Medido contra
+  `_bitacoras/e01d_d7_y_257_2026-08-11/sitport_consultaCapuertoRestriccion.json`
+  quitandole el prefijo "CAPITANÍA DE PUERTO [DE]": coincide 64 de 64. Contra los
+  titulos de DIRECTEMAR coincide 57 de 64. Por eso el nombre NO sale de esa
+  columna. Es la decision R4 = opcion B del owner, 2026-08-15.
+
+· EL TELEFONO SE NORMALIZA ANTES DE ESCRIBIRSE: U+00A0 a U+0020 y colapso de
+  espacios repetidos, que es la regla que `85bc68a` fijo para este frente. El
+  campo `telefono_atomico` marca si el valor tiene UNICAMENTE '+', digitos y
+  espacios simples. Seis filas del CSV no lo son y quedan marcadas `false`; ese
+  defecto no se arregla normalizando la cadena, porque lo que falta es el numero.
+
+LO QUE ESTE ARCHIVO NO ES
+--------------------------------------------------------------------------------
+No es fuente de jurisdiccion. La jurisdiccion la fija el D.S. 991 via
+`data/decreto/` (INV-3.3). Este indice no dice que territorio le corresponde a
+nadie: dice como se llama, a que telefono se llama y donde queda.
+
+Tampoco es autoridad sobre la vigencia del contacto. El sondeo del 2026-08-12 se
+cerro SIN APLICAR y su propia bitacora pide re-verificar contra los raw. Lo que
+esta medido y se sostiene es que los telefonos del CSV coinciden con la ficha
+publicada en las cinco filas donde el cotejo por numero se pudo hacer
+(`_bitacoras/pieza_a_nulas_2026-08-15/`, bloque N11).

@@ -1,0 +1,39 @@
+================================================================================
+EL GUARD DE `sin_contacto` DE zonas-aviso.js CONTRA LA PIEZA A
+================================================================================
+
+  zonas declaradas : 10
+
+  zona                 decreto              bahia   ¿discrepaba en 0bc80d2?  ¿discrepa hoy?
+  juan_fernandez       Juan Fernandez          90   true                 true
+  lirquen              Lirquen                 97   true                 true
+  puerto_eden          Puerto Eden            129   true                 false
+  punta_delgada        Punta Delgada          131   true                 true
+  punta_delgada        Punta Delgada          132   true                 true
+  tierra_del_fuego     Tierra del Fuego       137   true                 true
+
+  COMPARACIONES EFECTIVAS : 6
+  discrepancias que siguen en pie : 5
+  discrepancias que DEJARON de existir : 1
+
+  ZONA 'puerto_eden' — su `sin_contacto` ya no es cierto:
+      el decreto la llama          : "Puerto Eden" (gobernacion "Punta Arenas")
+      el mapa decia en 0bc80d2      : capitania=null  telefono="+56 67 233 1405"
+      el mapa dice hoy             : capitania="Puerto Edén"  telefono="+56 61 2201164"
+      motivo declarado en el dato  : "Su bahia (129, Puerto Eden) no tiene Capitania atribuida en el mapa operativo, y la Gobernacion que el mapa le pone (Aysen) no es la que le da el decreto (Punta Arenas). Con las dos fuentes en desacuerdo sobre la Gobernacion, no se declara contacto hasta adjudicar cual manda."
+
+      LAS DOS MITADES DEL MOTIVO, por separado:
+        (i)  "no tiene Capitania atribuida"        -> HOY ES FALSO: dice "Puerto Edén"
+        (ii) "la Gobernacion del mapa no es la del decreto"
+             mapa="Aysén"  decreto="Punta Arenas"  -> sigue siendo CIERTO
+        El guard de zonas-aviso.js:108-110 solo mira la Gobernacion cuando
+        `capitania == null`. Escrita la Capitania, deja de mirarla. O sea que
+        la declaracion quedo MITAD FALSA y el control no puede decir cual
+        mitad. La Pieza A no toca `gobernacion` y no cerro esa discrepancia.
+
+  QUE SIGNIFICA, dicho sin suavizar: el guard NO fallo. Cazo que un dato
+  declarado como "no hay contacto que dar" dejo de ser cierto porque el
+  contacto aparecio. Corregir la declaracion cambia lo que el patron ve en el
+  aviso de esa zona, asi que no se resuelve de este lado (CLAUDE.md §0.4).
+  `data/decreto/zonas_aviso.json` NO se toco.
+================================================================================

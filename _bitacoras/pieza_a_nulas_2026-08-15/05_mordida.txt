@@ -1,0 +1,30 @@
+================================================================================
+MORDIDA DE LOS CONTROLES DE LA PIEZA A — CLAUDE.md §4.6
+================================================================================
+
+  LINEA BASE, sin inyectar nada:
+      verificador sobre el estado aplicado -> exit 0 (se espera 0)
+
+  B1 — el derivado dice que el rotulo sale de un titulo de ALCALDIA DE MAR (INV-3.3)
+      medido: exit=3, el motivo cita INV-3.3: true  -> **MORDIO**
+
+  B2 — telefono NO atomico con la bandera `telefono_atomico` MINTIENDO true
+      medido: exit=0, de las 9 de esa reparticion se escribieron 0, telefonos no atomicos escritos 0  -> **MORDIO**
+
+  B3 — la captura de `consultaBahias` reemplazada por un array vacio
+      medido: exit=3 (se espera != 0), y el mapa quedo sin tocar: true  -> **MORDIO**
+
+  B4 — una entrada FUERA de la lista de trabajo cambiada a mano
+      medido: exit=1 (se espera 1), y la falla nombra la entrada intrusa: true  -> **MORDIO**
+
+  B5 — una entrada escrita con su nombre y el telefono de OTRA reparticion
+      medido: exit=1 (se espera 1), y la falla es del par: true  -> **MORDIO**
+
+================================================================================
+  ENSAYOS: 5 · MORDIERON: 5
+  restaurado src/data/bahia-capitania-map.json
+  restaurado _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json
+  restaurado data/contacto/reparticiones_publicadas.json
+  verificador despues de todos los ensayos -> exit 0 (se espera 0)
+  RESULTADO: los cinco controles muerden y el arbol quedo como estaba.
+================================================================================

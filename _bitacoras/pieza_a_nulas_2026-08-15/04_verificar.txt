@@ -1,0 +1,41 @@
+================================================================================
+VERIFICACION DE LA PIEZA A
+Ancla: 0bc80d2:src/data/bahia-capitania-map.json (commit fijo, no HEAD)
+================================================================================
+
+  lineas antes   : 187
+  lineas despues : 187
+  entradas       : 164 -> 164
+
+  entradas en null en 0bc80d2 : 17
+  esperadas escritas           : 16
+  esperadas FUERA              : 1 -> 127
+
+  V1 — claves y `gobernacion`
+      COMPARACIONES EFECTIVAS : 164
+
+  V2 — que lineas se movieron
+      COMPARACIONES EFECTIVAS : 187 lineas · 164 entradas
+      lineas distintas        : 16
+      entradas distintas      : 16
+
+  V3 — EL PAR: nombre y telefono de la MISMA fila del derivado
+      COMPARACIONES EFECTIVAS : 16
+
+  V4 — el rotulo viene de un titulo de "Capitania de Puerto" (INV-3.3)
+      COMPARACIONES EFECTIVAS : 16
+
+  V5 — atomicidad de TODOS los telefonos del archivo (INV-10.1)
+      COMPARACIONES EFECTIVAS : 164
+      no atomicos             : 0
+
+  V6 — las nulas que quedan estan declaradas
+      COMPARACIONES EFECTIVAS : 17
+      nulas antes             : 17
+      nulas despues           : 1
+      127 sigue en null — el telefono de la reparticion 260 no es atomico: "Móvil: +569 5617 3241"
+
+================================================================================
+  sha256 del archivo en disco : bbb28e2f8e959c94011eb29efe75edeea1fbadb21bf43aeee23116e4835d9122
+  RESULTADO: TODO VERDE — V1 a V6 sin fallas.
+================================================================================

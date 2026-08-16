@@ -1,0 +1,479 @@
+================================================================================
+PIEZA A — LAS 17 NULAS. MEDICION PREVIA A ESCRIBIR NADA. 2026-08-15
+Sesion PIEZA-A-NULAS. Solo lectura. Ningun archivo fue escrito por este script.
+================================================================================
+
+N0 — INSUMOS, con sha256 del ARCHIVO EN DISCO (no del blob de git: con
+     core.autocrlf=true no son el mismo byte)
+--------------------------------------------------------------------------------
+    src/data/bahia-capitania-map.json                              (leido de 0bc80d2, no del disco)
+        sha256 del blob en 0bc80d2 : 630836e143be27662c20c89ff82946408b6ec43206052c6818aeac1485ff3e0b
+        sha256 del mismo contenido en CRLF, que es como vive en disco:
+        0225aa23959b51b1cf20f75018f0cba3e474bc83517db56a0103cb7c31b4b03b
+    _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json aed48c23ffbb840cb8f09acde180b96827b159990d961d76daf1278cb473270b
+    _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv  04cdf370c089e321a7085a58226d05d73f456a20f0e4c5479cfe5ae9dd242d4d
+    data/decreto/join_bahia_jurisdiccion.json                      62a3b5c2d85b6897d4431570f99ded4a88e5e9df2b8a60d1697bf68ab5e2e985
+    gm_*.html de DIRECTEMAR: NO estan en HEAD. Se leen del arbol a474ae4.
+
+    entradas del mapa                : 164
+    registros de consultaBahias      : 165
+    filas de datos del CSV           : 64
+    entradas del join                : 164
+
+================================================================================
+N1 — LA VIA D-R1/D-R3 APLICADA A LAS 164: COBERTURA Y EFECTO
+================================================================================
+  La via es `IDBahia -> CdReparticion` (SITPORT, D-R1) `-> fila del CSV`
+  (D-R3). La cadena de nombre de SITPORT no se compara contra nada.
+
+    COMPARACIONES EFECTIVAS (bahias con CdRep y con fila en el CSV) : 163
+    sin registro en consultaBahias                                  : 0
+    con CdRep pero SIN fila en el CSV                               : 1
+        CdRep 189 -> 1 bahia(s)
+
+    CAMPO `capitania` — que le pasaria a cada entrada si la via se aplicara
+    entera y VERBATIM (la cadena del CSV tal cual esta escrita):
+        hoy null, la via le escribe un nombre                : 17
+        hoy igual al CSV CARACTER POR CARACTER (no cambia)   : 0
+        hoy igual sólo tras normalizar — CAMBIA LA CADENA    : 84
+        hoy distinto tambien normalizado — CAMBIA EL NOMBRE  : 62
+        --- suma                                             : 163
+
+    La fila "igual sólo tras normalizar" es la que no se ve venir: son entradas
+    cuyo rotulo HOY nombra la misma reparticion y cuya CADENA cambiaria igual.
+
+    CAMPO `telefono` — mismo ejercicio:
+        hoy identico al del CSV                              : 29
+        CAMBIARIA                                            : 134
+
+================================================================================
+N2 — LAS 17 NULAS, FILA POR FILA
+================================================================================
+    entradas con `capitania` null : 17
+    ids: 96, 105, 106, 127, 129, 139, 140, 154, 209, 210, 231, 245, 246, 247, 248, 249, 250
+
+    id   CdRep  nombre SITPORT de la bahia        CSV.Capitania          CSV.Telefono          telefono HOY          gobernacion HOY
+     96     97  LAGO RAPEL                        LAGO RAPEL             +56 35 2584833        +56 35 258 4802       San Antonio
+    105    186  LAGO VILLARRICA                   VILLARRICA             +56 45 2524733        +56 63 227 6905       Valdivia
+    106    184  PANGUIPULLI                       PANGUIPULLI            +56 63 2276944        +56 63 227 6905       Valdivia
+    127    260  BAKER                             BAKER                  Móvil: +569 5617 3241 +56 67 233 1405       Aysén
+    129    258  PUERTO EDÉN                       EDÉN                   +56 61 2201164        +56 67 233 1405       Aysén
+    139    290  BAHÍA FILDES                      BAHÍA FILDES           +56 32 2208557        +56 61 262 4270       Puerto Williams
+    140    293  BAHÍA PARAÍSO                     BAHÍA PARAÍSO          +56 32 2208557        +56 61 262 4270       Puerto Williams
+    154    258  ISLA GUARELLO                     EDÉN                   +56 61 2201164        +56 61 220 1102       Punta Arenas
+    209    186  LAGO VILLARRICA SECTOR PUCÓN      VILLARRICA             +56 45 2524733        +56 63 227 6905       Valdivia
+    210    186  LAGO VILLARRICA SECTOR VILLARRICA VILLARRICA             +56 45 2524733        +56 63 227 6905       Valdivia
+    231    292  BAHÍA CHILE                       SOBERANÍA              +56 32 2509291        +56 61 262 4270       Puerto Williams
+    245    186  LAGO PELLAIFA                     VILLARRICA             +56 45 2524733        +56 63 227 6905       Valdivia
+    246    186  LAGO PULLINQUE                    VILLARRICA             +56 45 2524733        +56 63 227 6905       Valdivia
+    247    186  LAGO CALAFQUEN                    VILLARRICA             +56 45 2524733        +56 63 227 6905       Valdivia
+    248    186  LAGO RIÑIHUE                      VILLARRICA             +56 45 2524733        +56 63 227 6905       Valdivia
+    249    186  LAGO NELTUME                      VILLARRICA             +56 45 2524733        +56 63 227 6905       Valdivia
+    250    186  LAGO PIREHUICO                    VILLARRICA             +56 45 2524733        +56 63 227 6905       Valdivia
+
+    de las 17, la via les escribe nombre a : 17
+    quedan sin nombre por esta via         : 0
+
+    Y el cotejo que decide si la pieza toca UN campo o DOS: el telefono que
+    esas 17 tienen HOY contra el que el CSV le da a su CdRep.
+        COMPARACIONES EFECTIVAS : 17
+        telefono ya coincide    : 0
+        telefono DIFIERE        : 17
+         96  hoy="+56 35 258 4802"  CSV(LAGO RAPEL)="+56 35 2584833"
+        105  hoy="+56 63 227 6905"  CSV(VILLARRICA)="+56 45 2524733"
+        106  hoy="+56 63 227 6905"  CSV(PANGUIPULLI)="+56 63 2276944"
+        127  hoy="+56 67 233 1405"  CSV(BAKER)="Móvil: +569 5617 3241"
+        129  hoy="+56 67 233 1405"  CSV(EDÉN)="+56 61 2201164"
+        139  hoy="+56 61 262 4270"  CSV(BAHÍA FILDES)="+56 32 2208557"
+        140  hoy="+56 61 262 4270"  CSV(BAHÍA PARAÍSO)="+56 32 2208557"
+        154  hoy="+56 61 220 1102"  CSV(EDÉN)="+56 61 2201164"
+        209  hoy="+56 63 227 6905"  CSV(VILLARRICA)="+56 45 2524733"
+        210  hoy="+56 63 227 6905"  CSV(VILLARRICA)="+56 45 2524733"
+        231  hoy="+56 61 262 4270"  CSV(SOBERANÍA)="+56 32 2509291"
+        245  hoy="+56 63 227 6905"  CSV(VILLARRICA)="+56 45 2524733"
+        246  hoy="+56 63 227 6905"  CSV(VILLARRICA)="+56 45 2524733"
+        247  hoy="+56 63 227 6905"  CSV(VILLARRICA)="+56 45 2524733"
+        248  hoy="+56 63 227 6905"  CSV(VILLARRICA)="+56 45 2524733"
+        249  hoy="+56 63 227 6905"  CSV(VILLARRICA)="+56 45 2524733"
+        250  hoy="+56 63 227 6905"  CSV(VILLARRICA)="+56 45 2524733"
+
+================================================================================
+N3 — CdRep 189: LA ENTRADA 146, Y LA 258
+================================================================================
+    ¿el CSV lista el CdRep 189?  false
+    bahias que SITPORT cuelga del CdRep 189 : 1 -> 146
+        bahia 146  SITPORT="RIO BUENO"
+            mapa HOY      : capitania="Lago Ranco"  telefono="+56 63 227 6905"  gobernacion="Valdivia"
+            join          : jurisdiccion_id="lago_ranco"  respaldo="decreto"
+            ¿esta entre las 17 nulas? false
+
+    bahia 258 en consultaBahias : SI — "RÍO BUENO, SECTOR LLANCACURA", CdRep 188
+    bahia 258 en el mapa        : false
+    CSV para el CdRep 188 : "LAGO RANCO"
+
+    Lo que esto decide para la PIEZA A: si la 146 esta o no entre las entradas
+    que la pieza toca, y si la via deja o no alguna entrada sin nombre.
+
+================================================================================
+N4 — CdRep 430: "RIO NEGRO HORNOPIREN" CONTRA LAS 8 DE "Hornopiren"
+================================================================================
+    CSV, CdRep 430 : Capitania="RIO NEGRO HORNOPIRÉN"  Telefono="+56 65 2217304"  Gobernacion="Puerto Montt"
+    bahias que SITPORT cuelga del CdRep 430 : 8 -> 115, 181, 182, 183, 184, 185, 186, 187
+    entradas del mapa con rotulo "Hornopiren" : 8 -> 115, 181, 182, 183, 184, 185, 186, 187
+    en CdRep 430 y NO rotuladas "Hornopiren" : 0 -> (ninguna)
+    rotuladas "Hornopiren" y NO en CdRep 430 : 0 -> (ninguna)
+
+    id   nombre SITPORT                       rotulo HOY      telefono HOY          telefono CSV(430)
+    115  CANAL HORNOPIRÉN                     Hornopirén      +56 65 2217304        +56 65 2217304
+    181  CANAL CHOLGO                         Hornopirén      +56 65 2217304        +56 65 2217304
+    182  ESTERO COMAU                         Hornopirén      +56 65 2217304        +56 65 2217304
+    183  ESTERO PICHICOLO                     Hornopirén      +56 65 2217304        +56 65 2217304
+    184  ENSENADA HUALAIHUÉ                   Hornopirén      +56 65 2217304        +56 65 2217304
+    185  ENSENADA ROLECHA                     Hornopirén      +56 65 2217304        +56 65 2217304
+    186  SECTOR AYACARA                       Hornopirén      +56 65 2217304        +56 65 2217304
+    187  SECTOR BUILL                         Hornopirén      +56 65 2217304        +56 65 2217304
+
+    de las 8, ya traen el telefono del CSV : 8
+    O sea: el telefono de esta reparticion ya se adjudico y se escribio; el
+    rotulo del mismo registro no. Es el estado que la seccion 3 de la auditoria
+    describio y esto lo cuantifica por entrada.
+
+================================================================================
+N5 — EL ROTULO DE LAS 64 FILAS DEL CSV CONTRA DIRECTEMAR (INV-3.3)
+================================================================================
+    Fuente: los gm_*.html del sondeo del 2026-08-12, leidos del arbol a474ae4
+    con `git show`. No estan en HEAD (la poda del sondeo los saco).
+
+    archivos gm_*.html en a474ae4 : 16
+    secciones leidas                              : 132
+    titulos "Capitania de Puerto de X" distintos  : 63
+    items dentro de bloques "Alcaldias de Mar"    : 199
+
+    COTEJO de las 64 filas del CSV contra lo publicado. La igualdad es de
+    CADENA normalizada (INV-0.3): no afirma identidad de reparticion.
+
+    COMPARACIONES EFECTIVAS                                     : 64
+    publicada por DIRECTEMAR como "Capitania de Puerto de X"    : 57
+    NO publicada como Capitania y SI dentro de un bloque de     : 1
+        Alcaldias de Mar
+    en ninguno de los dos lugares                               : 6
+        CdRep 291  CSV="RADA COVADONGA"  ->  publicada como ALCALDIA "Rada Covadonga", bajo "Rada Covadonga" (gm_region-de-magallanes-y-antartica-chilena.html)
+        CdRep 144  CSV="LIRQUÉN"  ->  no figura con ese nombre en ningun titulo de Capitania ni en ningun bloque de Alcaldias
+        CdRep 430  CSV="RIO NEGRO HORNOPIRÉN"  ->  no figura con ese nombre en ningun titulo de Capitania ni en ningun bloque de Alcaldias
+        CdRep 241  CSV="CISNES"  ->  no figura con ese nombre en ningun titulo de Capitania ni en ningun bloque de Alcaldias
+        CdRep 239  CSV="AGUIRRE"  ->  no figura con ese nombre en ningun titulo de Capitania ni en ningun bloque de Alcaldias
+        CdRep 235  CSV="LAGO GRAL.CARRERA"  ->  no figura con ese nombre en ningun titulo de Capitania ni en ningun bloque de Alcaldias
+        CdRep 258  CSV="EDÉN"  ->  no figura con ese nombre en ningun titulo de Capitania ni en ningun bloque de Alcaldias
+
+    LA PREGUNTA QUE DECIDE SI ESTO LE TOCA A LA PIEZA A:
+    ¿alguna de las 164 bahias llega, por la via `CdRep -> CSV`, a una fila que
+    DIRECTEMAR no publica como Capitania de Puerto?
+        COMPARACIONES EFECTIVAS : 163
+        bahias alcanzadas       : 24
+        CdRep 144 ("LIRQUÉN") -> 1 bahia(s): 97
+        CdRep 430 ("RIO NEGRO HORNOPIRÉN") -> 8 bahia(s): 115, 181, 182, 183, 184, 185, 186, 187
+        CdRep 241 ("CISNES") -> 2 bahia(s): 123, 234
+        CdRep 239 ("AGUIRRE") -> 8 bahia(s): 125, 238, 239, 240, 241, 242, 243, 244
+        CdRep 235 ("LAGO GRAL.CARRERA") -> 3 bahia(s): 128, 203, 257
+        CdRep 258 ("EDÉN") -> 2 bahia(s): 129, 154
+
+    LOS TITULOS QUE DIRECTEMAR PUBLICA, literal, para las filas que el cotejo
+    de arriba no encontro. Se busca por SUBCADENA normalizada del nombre del
+    CSV dentro de cada titulo publicado: dice si el nombre esta CONTENIDO en
+    alguno, no que sean la misma reparticion.
+        CSV="LIRQUÉN"  ->  titulo publicado: "Capitanía de Puerto de Lirquén-Tomé"  (gm_region-de-bio-bio.html)
+        CSV="RIO NEGRO HORNOPIRÉN"  ->  titulo publicado: "Capitanía de Puerto de Hornopirén"  (gm_region-de-los-lagos.html)
+        CSV="CISNES"  ->  titulo publicado: "Capitanía de Puerto de Puerto Cisnes"  (gm_region-de-aysen.html)
+        CSV="AGUIRRE"  ->  titulo publicado: "Capitanía de Puerto de Puerto Aguirre"  (gm_region-de-aysen.html)
+        CSV="LAGO GRAL.CARRERA"  ->  ningun titulo publicado lo contiene
+        CSV="EDÉN"  ->  titulo publicado: "Capitanía de Puerto de Puerto Edén"  (gm_region-de-magallanes-punta-arenas.html)
+
+    LOS 63 TITULOS "Capitania de Puerto de X" PUBLICADOS, literal y completos,
+    para que la lectura de arriba se pueda auditar sin volver a la fuente:
+        "Capitanía de Puerto de Achao"  (gm_region-de-los-lagos-castro.html)
+        "Capitanía de Puerto de Algarrobo"  (gm_region-de-valparaiso-o-higgins.html)
+        "Capitanía de Puerto de Ancud"  (gm_region-de-los-lagos-castro.html)
+        "Capitanía de Puerto de Antofagasta"  (gm_region-de-antofagasta.html)
+        "Capitanía de Puerto de Arica"  (gm_region-arica-y-parinacota.html)
+        "Capitanía de Puerto de Bahía Fildes"  (gm_region-de-magallanes-y-antartica-chilena.html)
+        "Capitanía de Puerto de Bahía Paraíso"  (gm_region-de-magallanes-y-antartica-chilena.html)
+        "Capitanía de Puerto de Baker"  (gm_region-de-aysen.html)
+        "Capitanía de Puerto de Calbuco"  (gm_region-de-los-lagos.html)
+        "Capitanía de Puerto de Caldera"  (gm_region-de-atacama.html)
+        "Capitanía de Puerto de Carahue"  (gm_region-de-los-rios.html)
+        "Capitanía de Puerto de Castro"  (gm_region-de-los-lagos-castro.html)
+        "Capitanía de Puerto de Chacabuco"  (gm_region-de-aysen.html)
+        "Capitanía de Puerto de Chaitén"  (gm_region-de-los-lagos-castro.html)
+        "Capitanía de Puerto de Chañaral"  (gm_region-de-atacama.html)
+        "Capitanía de Puerto de Chonchi"  (gm_region-de-los-lagos-castro.html)
+        "Capitanía de Puerto de Cochamó"  (gm_region-de-los-lagos.html)
+        "Capitanía de Puerto de Constitución"  (gm_region-de-bio-bio.html)
+        "Capitanía de Puerto de Coquimbo"  (gm_region-de-coquimbo.html)
+        "Capitanía de Puerto de Coronel"  (gm_region-de-bio-bio.html)
+        "Capitanía de Puerto de Corral"  (gm_region-de-los-rios.html)
+        "Capitanía de Puerto de Hanga Roa"  (gm_region-de-valparaiso-hanga-roa.html)
+        "Capitanía de Puerto de Hornopirén"  (gm_region-de-los-lagos.html)
+        "Capitanía de Puerto de Huasco"  (gm_region-de-atacama.html)
+        "Capitanía de Puerto de Iquique"  (gm_region-de-tarapaca.html)
+        "Capitanía de Puerto de Juan Fernández"  (gm_region-de-valparaiso.html)
+        "Capitanía de Puerto de Lago General Carrera"  (gm_region-de-aysen.html)
+        "Capitanía de Puerto de Lago Ranco"  (gm_region-de-los-rios.html)
+        "Capitanía de Puerto de Lago Rapel"  (gm_region-de-valparaiso-o-higgins.html)
+        "Capitanía de Puerto de Lebu"  (gm_region-de-bio-bio.html)
+        "Capitanía de Puerto de Lirquén-Tomé"  (gm_region-de-bio-bio.html)
+        "Capitanía de Puerto de Los Vilos"  (gm_region-de-coquimbo.html)
+        "Capitanía de Puerto de Lota"  (gm_region-de-bio-bio.html)
+        "Capitanía de Puerto de Maullín"  (gm_region-de-los-lagos.html)
+        "Capitanía de Puerto de Mejillones"  (gm_region-de-antofagasta.html)
+        "Capitanía de Puerto de Melinka"  (gm_region-de-aysen.html)
+        "Capitanía de Puerto de Panguipulli"  (gm_region-de-los-rios.html)
+        "Capitanía de Puerto de Papudo"  (gm_region-de-valparaiso.html)
+        "Capitanía de Puerto de Patache"  (gm_region-de-tarapaca.html)
+        "Capitanía de Puerto de Pichilemu"  (gm_region-de-valparaiso-o-higgins.html)
+        "Capitanía de Puerto de Puerto Aguirre"  (gm_region-de-aysen.html)
+        "Capitanía de Puerto de Puerto Cisnes"  (gm_region-de-aysen.html)
+        "Capitanía de Puerto de Puerto Edén"  (gm_region-de-magallanes-punta-arenas.html)
+        "Capitanía de Puerto de Puerto Montt"  (gm_region-de-los-lagos.html)
+        "Capitanía de Puerto de Puerto Natales"  (gm_region-de-magallanes-punta-arenas.html)
+        "Capitanía de Puerto de Puerto Varas"  (gm_region-de-los-lagos.html)
+        "Capitanía de Puerto de Puerto Williams"  (gm_region-de-magallanes-puerto-williams.html)
+        "Capitanía de Puerto de Punta Arenas"  (gm_region-de-magallanes-punta-arenas.html)
+        "Capitanía de Puerto de Punta Delgada"  (gm_region-de-magallanes-punta-arenas.html)
+        "Capitanía de Puerto de Quellón"  (gm_region-de-los-lagos-castro.html)
+        "Capitanía de Puerto de Quemchi"  (gm_region-de-los-lagos-castro.html)
+        "Capitanía de Puerto de Quintero"  (gm_region-de-valparaiso.html)
+        "Capitanía de Puerto de San Antonio"  (gm_region-de-valparaiso-o-higgins.html)
+        "Capitanía de Puerto de San Vicente"  (gm_region-de-bio-bio.html)
+        "Capitanía de Puerto de Soberanía"  (gm_region-de-magallanes-y-antartica-chilena.html)
+        "Capitanía de Puerto de Talcahuano"  (gm_region-de-bio-bio.html)
+        "Capitanía de Puerto de Taltal"  (gm_region-de-antofagasta.html)
+        "Capitanía de Puerto de Tierra del Fuego"  (gm_region-de-magallanes-punta-arenas.html)
+        "Capitanía de Puerto de Tocopilla"  (gm_region-de-antofagasta.html)
+        "Capitanía de Puerto de Tongoy"  (gm_region-de-coquimbo.html)
+        "Capitanía de Puerto de Valdivia"  (gm_region-de-los-rios.html)
+        "Capitanía de Puerto de Valparaíso"  (gm_region-de-valparaiso.html)
+        "Capitanía de Puerto de Villarrica"  (gm_region-de-los-rios.html)
+
+================================================================================
+N11 — IDENTIFICACION POR EL NUMERO ENTRE EL CSV Y LA FICHA PUBLICADA
+================================================================================
+    Las 6 filas de N5 cuyo nombre DIRECTEMAR no publica plantean una pregunta
+    que el nombre no puede contestar. Se contesta POR EL TELEFONO, que es la
+    misma via que este repositorio ya uso para el contacto lacustre: se compara
+    el telefono de la fila del CSV contra el de la ficha publicada. No supone
+    ninguna equivalencia de rotulos.
+
+    fichas publicadas con telefono legible : 42 de 63
+        CdRep 291  CSV="RADA COVADONGA"  tel="(vacio)"
+            -> la fila no trae telefono: no se puede identificar por esta via
+        CdRep 144  CSV="LIRQUÉN"  tel="+56 41 3839697"
+            -> ninguna ficha publicada trae ese numero
+        CdRep 430  CSV="RIO NEGRO HORNOPIRÉN"  tel="+56 65 2217304"
+            -> MISMO NUMERO que la ficha "Capitanía de Puerto de Hornopirén"  (tel publicado "+56 65 2217304", gm_region-de-los-lagos.html)
+        CdRep 241  CSV="CISNES"  tel="+56 67 2346880"
+            -> MISMO NUMERO que la ficha "Capitanía de Puerto de Puerto Cisnes"  (tel publicado "+56 67 2346880", gm_region-de-aysen.html)
+        CdRep 239  CSV="AGUIRRE"  tel="+56 67 2361233"
+            -> MISMO NUMERO que la ficha "Capitanía de Puerto de Puerto Aguirre"  (tel publicado "+56 67 2361233", gm_region-de-aysen.html)
+        CdRep 235  CSV="LAGO GRAL.CARRERA"  tel="+56 67 2411111"
+            -> MISMO NUMERO que la ficha "Capitanía de Puerto de Lago General Carrera"  (tel publicado "+56 67 2411111", gm_region-de-aysen.html)
+        CdRep 258  CSV="EDÉN"  tel="+56 61 2201164"
+            -> MISMO NUMERO que la ficha "Capitanía de Puerto de Puerto Edén"  (tel publicado "+56 61 2201164", gm_region-de-magallanes-punta-arenas.html)
+
+    COMPARACIONES EFECTIVAS : 7
+    identificadas por el numero contra una ficha publicada : 5
+
+================================================================================
+N12 — DE DONDE SALE LA COLUMNA `Capitania` DEL CSV
+================================================================================
+    D-R3 dice "del CSV canonico, nunca de la cadena cruda de SITPORT". Esto
+    mide si esas dos cosas son distintas, contra la captura de
+    `consultaCapuertoRestriccion` del 2026-08-11.
+
+    _bitacoras/e01d_d7_y_257_2026-08-11/sitport_consultaCapuertoRestriccion.json
+        sha256 : fa4579c6c52cd8ed60688854211cdf989c53c3bfd6e65e03efa9daf7d59fafb5
+        reparticiones : 64
+
+    COMPARACIONES EFECTIVAS : 64
+    (se compara la columna `Capitania` del CSV contra el `NMBahia` de SITPORT
+     al que se le quita el prefijo "CAPITANÍA DE PUERTO [DE]")
+        coinciden normalizados : 64
+        difieren               : 0
+
+    Y el mismo cotejo contra los titulos publicados por DIRECTEMAR, para ver
+    de cual de las dos fuentes esta mas cerca la columna:
+        filas del CSV cuyo nombre coincide con un titulo de DIRECTEMAR : 57 de 64
+        filas del CSV cuyo nombre coincide con el NMBahia pelado de SITPORT : 64 de 64
+
+================================================================================
+N9 — UN NUMERO PARA DOS CAPITANIAS: REPETICIONES DENTRO DEL CSV
+================================================================================
+    La identificacion es POR EL NUMERO, no por el nombre: no supone ninguna
+    equivalencia de rotulos.
+
+    COMPARACIONES EFECTIVAS (filas con telefono) : 63
+    numeros distintos                            : 61
+    numeros que aparecen en MAS DE UNA fila      : 2
+        "+56 32 2930057"  ->  2 filas: PAPUDO (CdRep 83) · QUINTERO (CdRep 78)   [alcanza 2 bahia(s)]
+        "+56 32 2208557"  ->  2 filas: BAHÍA FILDES (CdRep 290) · BAHÍA PARAÍSO (CdRep 293)   [alcanza 2 bahia(s)]
+
+================================================================================
+N10 — SI SE ESCRIBE EL NOMBRE Y NO EL TELEFONO: ¿DE QUIEN ES EL NUMERO QUE
+      QUEDA AL LADO?
+================================================================================
+    Es la comprobacion que tumbo la decision del 2026-08-13 (PLAN §7.1): el
+    nombre de una Capitania con el telefono de otra. Se identifica POR EL
+    NUMERO contra las 64 filas del CSV, sin comparar nombres.
+
+    LAS 17 NULAS — escribiendo solo el nombre y dejando el telefono de hoy:
+        COMPARACIONES EFECTIVAS                              : 17
+        el numero es de la MISMA reparticion que el nombre    : 0
+        el numero es de OTRA reparticion del CSV              : 10
+        el numero no figura en el CSV (no identificable)      : 7
+         96  quedaria "LAGO RAPEL"  con  "+56 35 258 4802"  que es de: (no figura en el CSV)
+        105  quedaria "VILLARRICA"  con  "+56 63 227 6905"  que es de: VALDIVIA (CdRep 175)
+        106  quedaria "PANGUIPULLI"  con  "+56 63 227 6905"  que es de: VALDIVIA (CdRep 175)
+        127  quedaria "BAKER"  con  "+56 67 233 1405"  que es de: (no figura en el CSV)
+        129  quedaria "EDÉN"  con  "+56 67 233 1405"  que es de: (no figura en el CSV)
+        139  quedaria "BAHÍA FILDES"  con  "+56 61 262 4270"  que es de: (no figura en el CSV)
+        140  quedaria "BAHÍA PARAÍSO"  con  "+56 61 262 4270"  que es de: (no figura en el CSV)
+        154  quedaria "EDÉN"  con  "+56 61 220 1102"  que es de: (no figura en el CSV)
+        209  quedaria "VILLARRICA"  con  "+56 63 227 6905"  que es de: VALDIVIA (CdRep 175)
+        210  quedaria "VILLARRICA"  con  "+56 63 227 6905"  que es de: VALDIVIA (CdRep 175)
+        231  quedaria "SOBERANÍA"  con  "+56 61 262 4270"  que es de: (no figura en el CSV)
+        245  quedaria "VILLARRICA"  con  "+56 63 227 6905"  que es de: VALDIVIA (CdRep 175)
+        246  quedaria "VILLARRICA"  con  "+56 63 227 6905"  que es de: VALDIVIA (CdRep 175)
+        247  quedaria "VILLARRICA"  con  "+56 63 227 6905"  que es de: VALDIVIA (CdRep 175)
+        248  quedaria "VILLARRICA"  con  "+56 63 227 6905"  que es de: VALDIVIA (CdRep 175)
+        249  quedaria "VILLARRICA"  con  "+56 63 227 6905"  que es de: VALDIVIA (CdRep 175)
+        250  quedaria "VILLARRICA"  con  "+56 63 227 6905"  que es de: VALDIVIA (CdRep 175)
+
+    LAS 163 — mismo ejercicio, para dimensionar el resto:
+        COMPARACIONES EFECTIVAS                              : 163
+        el numero es de la MISMA reparticion que el nombre    : 45
+        el numero es de OTRA reparticion del CSV              : 37
+        el numero no figura en el CSV (no identificable)      : 81
+        (detalle omitido: 118 filas)
+
+================================================================================
+N13 — LAS DOS FORMAS DEL ROTULO, LADO A LADO
+================================================================================
+    Forma A = la cadena de la columna `Capitania` del CSV, verbatim (D-R3 tal
+              como esta escrita).
+    Forma B = el nombre del titulo que DIRECTEMAR publica para esa misma
+              reparticion, entrando igual por `CdReparticion`. La reparticion
+              se identifica por NOMBRE cuando coincide y por TELEFONO cuando
+              no (N11). Donde ninguna de las dos identifica, no hay forma B.
+
+    filas del CSV con forma B : 62 de 64
+        SIN forma B: CdRep 144 "LIRQUÉN" -> alcanza 1 bahia(s)
+        SIN forma B: CdRep 291 "RADA COVADONGA" -> alcanza 0 bahia(s)
+
+    COMPARACIONES EFECTIVAS (bahias con forma A y con forma B) : 162 de 163
+
+    Forma B contra lo que el mapa dice HOY:
+        identico caracter por caracter (no cambia) : 96
+        hoy null, B le escribe un nombre           : 17
+        CAMBIA la cadena                           : 49
+
+    Recordatorio del mismo cotejo para la forma A (N1): identicos 0.
+
+    LAS 17 NULAS, las dos formas:
+        id   forma A (CSV verbatim)   forma B (titulo DIRECTEMAR)
+         96  LAGO RAPEL               Lago Rapel
+        105  VILLARRICA               Villarrica
+        106  PANGUIPULLI              Panguipulli
+        127  BAKER                    Baker
+        129  EDÉN                     Puerto Edén
+        139  BAHÍA FILDES             Bahía Fildes
+        140  BAHÍA PARAÍSO            Bahía Paraíso
+        154  EDÉN                     Puerto Edén
+        209  VILLARRICA               Villarrica
+        210  VILLARRICA               Villarrica
+        231  SOBERANÍA                Soberanía
+        245  VILLARRICA               Villarrica
+        246  VILLARRICA               Villarrica
+        247  VILLARRICA               Villarrica
+        248  VILLARRICA               Villarrica
+        249  VILLARRICA               Villarrica
+        250  VILLARRICA               Villarrica
+
+================================================================================
+N6 — LA FORMA DE LA CADENA QUE LA VIA IMPRIMIRIA
+================================================================================
+    D-R3 fija que el nombre sale del CSV. Esto mide QUE CADENA es esa, sin
+    proponer ninguna transformacion.
+
+    filas del CSV cuyo nombre esta integramente en MAYUSCULAS : 64 de 64
+    entradas del mapa con rotulo hoy en MAYUSCULAS            : 0 de 146 no nulas
+
+    Filas del CSV cuya cadena tiene algo mas que la caja — se listan por lo que
+    la cadena ES, no por lo que deberia ser:
+        CdRep  32  "CHANARAL"  -> sin la ñ
+        CdRep 235  "LAGO GRAL.CARRERA"  -> trae un punto (abreviatura)
+
+    Cuantas bahias imprimirian cada una de esas cadenas:
+        "CHANARAL" -> 2 bahia(s)
+        "LAGO GRAL.CARRERA" -> 3 bahia(s)
+
+================================================================================
+N7 — ATOMICIDAD DE LOS TELEFONOS QUE LA VIA ESCRIBIRIA (INV-10.1)
+================================================================================
+    INV-10.1: "un valor que no sea un numero atomico no se renderiza como
+    enlace". Criterio usado, declarado: NO es atomico si trae `/`, la palabra
+    `ó`/`o`, `Movil`, `Anexo`, `(` o mas de un `+`.
+
+    COMPARACIONES EFECTIVAS (filas del CSV con telefono) : 63
+    filas con telefono NO atomico                        : 6
+        CdRep   2  "ARICA"  -> 1 bahia(s)  tel="+56 58 2356704 (Secretaría Protocolar) ó +56 58 2356747 (Guardia)"
+        CdRep  32  "CHANARAL"  -> 2 bahia(s)  tel="+56 52 2480047 /+56 52 2480442"
+        CdRep  86  "JUAN FERNÁNDEZ"  -> 1 bahia(s)  tel="+56 32 2751008 / +56 32 2751009"
+        CdRep 227  "QUEMCHI"  -> 1 bahia(s)  tel="+56 65 2691334 / +56981997435"
+        CdRep 260  "BAKER"  -> 1 bahia(s)  tel="Móvil: +569 5617 3241"
+        CdRep 252  "PUNTA DELGADA"  -> 2 bahia(s)  tel="Móvil: + 56 61 2201189"
+    de las 17 NULAS, cuantas recibirian un telefono no atomico : 1 -> 127
+    telefonos NO atomicos en el mapa HOY                       : 0 de 164
+
+================================================================================
+N8 — QUE CAMPO LEE CADA CAMINO A PANTALLA, LEIDO DEL CODIGO
+================================================================================
+    Se imprimen las lineas literales. No se supone ningun comportamiento.
+
+    src/routes/sitport-routes.js — 4 lineas
+         5: const { getCapitaniaByBahiaId } = require('../utils/capitanias');
+       339: const cap = bahiaId ? getCapitaniaByBahiaId(bahiaId) : null;
+       465: const cap = getCapitaniaByBahiaId(b.idBahia);
+       817: const cap = capitaniaDeBahia(idBahia, ambitosPublicados);
+
+    src/services/capitania-de-bahia.js — 17 lineas
+         3: // capitania-de-bahia.js — el UNICO punto donde el decreto y el mapa operativo
+        10: //   · el TELEFONO sigue saliendo de src/data/bahia-capitania-map.json, que es
+        16: // 21 no nombran bien su Capitania —14 con `capitania: null` que devuelven
+        17: // telefono igual, y 159/160/161 nombrando "Puerto Montt", una Capitania
+        28: // decidio sobre el nombre de la Capitania y el telefono; la pertenencia
+        35: const { getCapitaniaByBahiaId } = require('../utils/capitanias');
+        48: * @returns {{capitania, gobernacion, telefono, capitania_fuente}}
+        50: function capitaniaDeBahia(bahiaId, ambitosPublicados) {
+        53: capitania:   contacto?.capitania   ?? null,
+        54: gobernacion: contacto?.gobernacion ?? null,
+        55: telefono:    contacto?.telefono    ?? null,
+        56: capitania_fuente: 'mapa_operativo',
+        71: capitania: jur.nombre,          // el decreto, via el join de E0.3
+        72: gobernacion: delMapa.gobernacion,
+        73: telefono: delMapa.telefono,     // el mapa operativo, CONTRATO_MOTOR.md §5
+        74: capitania_fuente: 'decreto',
+        78: module.exports = { capitaniaDeBahia };
+
+    EFECTO DE LA PIEZA A SOBRE EL CAMINO P2 (la etiqueta dura "Capitanía de
+    Puerto de {nombre}" de P3_VoyageVerification.jsx:237, que hoy cae a
+    `rec.gobernacion` cuando `rec.capitania` es null):
+        entradas que hoy caen a gobernacion en ese camino : 17
+        entradas que seguirian cayendo tras la Pieza A    : 0
+
+    El resto de lo que ese camino hace —rotular con etiqueta dura, y rotular
+    "Gobernación Marítima de" un numero de Capitania en P3— no depende del
+    valor escrito y este bloque no lo mide: esta medido en
+    `_bitacoras/auditoria_rotulos_2026-08-15/02_medir_pantalla.txt`.
+
+================================================================================
+Ningun archivo fue escrito por este script.
+================================================================================

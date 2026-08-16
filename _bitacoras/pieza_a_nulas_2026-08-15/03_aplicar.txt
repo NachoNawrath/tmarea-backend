@@ -1,0 +1,46 @@
+================================================================================
+PIEZA A — NOMBRE Y TELEFONO DE CAPITANIA EN LAS ENTRADAS SIN ROTULO
+================================================================================
+
+  src/data/bahia-capitania-map.json
+      sha256 ANTES : 0225aa23959b51b1cf20f75018f0cba3e474bc83517db56a0103cb7c31b4b03b
+      fin de linea : CRLF
+      entradas     : 164
+      round-trip del emisor sobre las 164 lineas: OK
+
+  _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json   -> 165 registros
+  data/contacto/reparticiones_publicadas.json  -> 64 reparticiones
+
+  entradas con `capitania` null : 17
+
+  COMPARACIONES EFECTIVAS (nulas con reparticion en el derivado) : 17
+  se escriben  : 16
+  EXCLUIDAS    : 1
+      bahia 127 — el telefono de la reparticion 260 NO es atomico ("Móvil: +569 5617 3241"): INV-10.1 lo prohibe como enlace y hoy el mapa no tiene ninguno. Falta conseguir el numero atomico; no se arregla normalizando la cadena
+
+  QUE SE ESCRIBE
+      id   CdRep  capitania                telefono              identificada por
+       96     97  Lago Rapel               +56 35 2584833        nombre
+      105    186  Villarrica               +56 45 2524733        nombre
+      106    184  Panguipulli              +56 63 2276944        nombre
+      129    258  Puerto Edén              +56 61 2201164        telefono
+      139    290  Bahía Fildes             +56 32 2208557        nombre
+      140    293  Bahía Paraíso            +56 32 2208557        nombre
+      154    258  Puerto Edén              +56 61 2201164        telefono
+      209    186  Villarrica               +56 45 2524733        nombre
+      210    186  Villarrica               +56 45 2524733        nombre
+      231    292  Soberanía                +56 32 2509291        nombre
+      245    186  Villarrica               +56 45 2524733        nombre
+      246    186  Villarrica               +56 45 2524733        nombre
+      247    186  Villarrica               +56 45 2524733        nombre
+      248    186  Villarrica               +56 45 2524733        nombre
+      249    186  Villarrica               +56 45 2524733        nombre
+      250    186  Villarrica               +56 45 2524733        nombre
+
+  lineas modificadas : 16 de 187
+  lineas identicas   : 171
+  el resultado es JSON valido, con las mismas claves y sin cambios en `gobernacion`
+
+  ESCRITO: src/data/bahia-capitania-map.json
+      sha256 DESPUES : bbb28e2f8e959c94011eb29efe75edeea1fbadb21bf43aeee23116e4835d9122
+================================================================================

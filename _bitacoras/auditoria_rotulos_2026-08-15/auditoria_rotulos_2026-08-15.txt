@@ -568,3 +568,110 @@ P3 — LO QUE QUEDA ABIERTO Y NO ES DE ESTE PENDIENTE: los tres caminos a pantal
     {Gobernacion}" de P2, 17 de 17— siguen como estaban. D-R1 a D-R3 deciden QUE
     valor se escribe; no tocan DONDE ni CON QUE ETIQUETA se muestra.
 ================================================================================
+
+
+================================================================================
+ADDENDUM 2026-08-15 (segundo) — D-R3 SE CORRIGE. LA SESION PIEZA-A-NULAS.
+Se AGREGA, no se reescribe (CLAUDE.md §3.3). La seccion 11 de arriba queda como
+se escribio. Lo que cambia es que D-R3 tenia DOS mitades y solo una se sostiene.
+Evidencia e instrumentos: `_bitacoras/pieza_a_nulas_2026-08-15/`.
+================================================================================
+
+13. D-R3, CON LA MITAD FALSA TACHADA
+================================================================================
+Como se escribio en §11:
+
+    D-R3 — EL NOMBRE QUE SE MUESTRA SALE DEL CSV CANONICO, ENTRANDO POR
+        `CdReparticion`. ~~Nunca de la cadena cruda de SITPORT.~~
+        Reparto de roles: **SITPORT aporta la ATRIBUCION** (`IDBahia ->
+        CdReparticion`); ~~el CSV aporta la FORMA DEL ROTULO~~ y el TELEFONO.
+
+LO QUE SOBREVIVE, y no se re-abre:
+  · entrar por `CdReparticion`. Es lo que evita adjudicar equivalencias de
+    nombre, y sigue mandando;
+  · el TELEFONO sale del CSV, que para eso si es derivado de DIRECTEMAR —
+    cotejado POR EL NUMERO contra la ficha publicada en las cinco filas donde el
+    cotejo se pudo hacer.
+
+POR QUE LA OTRA MITAD ES FALSA, MEDIDO:
+    la columna `Capitania` del CSV ES la cadena cruda de SITPORT.
+    Contra `_bitacoras/e01d_d7_y_257_2026-08-11/
+    sitport_consultaCapuertoRestriccion.json`, quitandole el prefijo
+    "CAPITANÍA DE PUERTO [DE]":
+
+        COMPARACIONES EFECTIVAS                              64
+        coincide con la cadena de SITPORT pelada             64
+        difieren                                              0
+        y la misma columna coincide con un titulo DIRECTEMAR  57 de 64
+
+    El CSV no es una fuente de nombres distinta de SITPORT: es un JOIN — clave y
+    nombre de SITPORT, contacto de DIRECTEMAR. Pedirle la forma del rotulo es
+    pedirle lo unico que no tiene.
+
+================================================================================
+14. LO QUE LA REEMPLAZA — D-R4. LEER ESTO ANTES DE ESCRIBIR NINGUN ROTULO.
+================================================================================
+D-R4 — EL NOMBRE SALE DEL TITULO QUE DIRECTEMAR PUBLICA, entrando igual por
+    `CdReparticion`. La reparticion se identifica por NOMBRE cuando la cadena
+    coincide y POR TELEFONO cuando no.
+    Motivo escrito por el owner, 2026-08-15: §5.1 separa atribucion de rotulo.
+    SITPORT da el `CdReparticion` (D-R1, la atribucion); DIRECTEMAR da la forma
+    del nombre publicado.
+
+**LA OPCION DE ESCRIBIR LA CADENA DEL CSV VERBATIM ESTA DESCARTADA.** Se deja su
+efecto medido para que nadie la vuelva a proponer creyendo que es la barata:
+
+    cambia                                    163 de 163 rotulos
+    quedan identicos                            0
+    imprimiria `CHANARAL` sin la ñ            en 2 bahias
+    imprimiria `LAGO GRAL.CARRERA`            en 3 bahias
+    revertiria `f421949`, que escribio `Puerto Cisnes` citando el titulo
+    publicado por DIRECTEMAR
+
+    la opcion elegida (D-R4) cubre           162 de 163
+    y deja sin tocar                          96 rotulos
+
+    Reescribir 163 rotulos para arreglar 17 es la forma exacta de CLAUDE.md §0.3:
+    la opcion que deja todo prolijo sin cambiar nada de fondo.
+
+SIN COBERTURA POR ESTA VIA quedan dos reparticiones, y se dicen:
+  · `CdRep 144` (`LIRQUÉN`): su telefono no figura en ninguna ficha publicada y
+    el titulo que contiene la cadena es "Lirquén-Tomé". Alcanza a 1 bahia, la 97.
+    Si son la misma reparticion es adjudicacion, y no hizo falta para la Pieza A.
+  · `CdRep 291` (`RADA COVADONGA`): DIRECTEMAR la publica dentro de un bloque de
+    ALCALDIAS DE MAR, no como Capitania. **Cero bahias de SITPORT le cuelgan**,
+    asi que INV-3.3 no se viola hoy por esta via — pero entraria si el CSV pasara
+    a ser el contenido de una tabla por Capitania (Via 2 de §6 de arriba).
+
+================================================================================
+15. LO QUE ESTE ADDENDUM LE CORRIGE A LA SECCION 3
+================================================================================
+La seccion 3 conto "8 con nombre que no existe en ningun universo" — las 115 y
+181-187, que escriben "Hornopirén". El texto **no se borra y era cierto para el
+universo que uso**: {CSV, decreto}.
+
+Contra DIRECTEMAR son EXACTAS. Publica esa reparticion como "Capitanía de Puerto
+de Hornopirén". La identificacion se hizo POR EL TELEFONO: la fila `CdRep 430`
+del CSV y la ficha publicada traen el mismo `+56 65 2217304`. Lo que diverge es
+la cadena del CSV, `RIO NEGRO HORNOPIRÉN`. **No se tocaron y no hay que
+tocarlas.**
+
+================================================================================
+16. ESTADO DE P1 — LA PIEZA A SE APLICO
+================================================================================
+16 de las 17 escritas con NOMBRE Y TELEFONO JUNTOS, de la misma reparticion.
+Fuera la 127 (Baker): su telefono publicado es "Móvil: +569 5617 3241" y la regla
+de normalizacion vigente (`85bc68a`) solo admite '+', digitos y espacios simples.
+Queda en `null`, declarada. **Falta conseguir el numero atomico de Baker; no se
+resuelve normalizando la cadena.**
+
+POR QUE NO FUE UN SOLO CAMPO, que era como P1 la anotaba: medido, escribiendo
+solo el nombre, CERO de las 17 quedaba con el numero de su propia reparticion —
+diez con el de otra y siete con uno que el CSV no conoce. Es la combinacion que
+el owner reverso el 2026-08-13.
+
+P3 sigue como estaba: los telefonos nuevos llevan de 84 a 100 los numeros de
+Capitania que la tarjeta de zarpe rotula "Gobernación Marítima de". El render no
+se toco. El detalle completo, en `PLAN_JURISDICCION.md` §7.1, addendum del
+2026-08-15.
+================================================================================

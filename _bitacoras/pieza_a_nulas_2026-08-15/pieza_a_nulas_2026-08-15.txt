@@ -1,0 +1,559 @@
+================================================================================
+PIEZA A — LAS 17 NULAS. MEDICION PREVIA. 2026-08-15
+Estado: SOLO MEDICION Y PLAN. No se escribio ningun archivo de `src/`, de
+`data/` ni de la PWA. Lo unico que esta sesion agrega al repositorio es el
+instrumento de este directorio, su salida y este archivo.
+Sesion: PIEZA-A-NULAS. HEAD al abrir: 0bc80d2.
+Frente: CONTACTO y atribucion de bahias (PLAN_JURISDICCION.md §7.1).
+NO es el frente de jurisdiccion del D.S. 991; no se abrio nada de ese frente.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+El agente corrio el instrumento con `node` desde Git Bash. La linea corre
+identica en PowerShell desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\pieza_a_nulas_2026-08-15\01_medir_pieza_a.js
+
+La salida de este directorio se genero redirigiendo con `>` de **bash**, no de
+PowerShell. Para reproducirla en PowerShell sin corromper tildes y ñ:
+
+    node _bitacoras\pieza_a_nulas_2026-08-15\01_medir_pieza_a.js | Tee-Object -FilePath 01_medir_pieza_a.txt
+
+`>` de PowerShell reencodea y convierte fines de linea; esta prohibido para
+medir (CLAUDE.md §7.2).
+
+REPO DE SOLO LECTURA
+--------------------------------------------------------------------------------
+`C:/Users/katia/tmarea-pwa` se leyo, no se escribio, no se corrio git ahi. De
+ahi salen los tres puntos de render de la seccion 6, leidos literal.
+
+INSUMOS
+--------------------------------------------------------------------------------
+Los cuatro principales, con sha256 del archivo en disco, estan en el bloque N0
+de `01_medir_pieza_a.txt`. Dos mas entran despues:
+
+    _bitacoras/e01d_d7_y_257_2026-08-11/sitport_consultaCapuertoRestriccion.json
+                                                   fa4579c6c52cd8ed…  (N12)
+    los 16 `gm_*.html` de DIRECTEMAR del sondeo del 2026-08-12
+
+Los `gm_*.html` **no estan en HEAD**: la poda del sondeo los saco. Se leen del
+arbol `a474ae4` con `git show`, que es reproducible desde el propio repositorio
+(§3.4). Si el arbol no los tuviera, el bloque N5 ABORTA; no se degrada.
+
+LINEA BASE DE LA SUITE: `npm test` -> **84 tests, 84 pass, 0 fail**, corrida en
+esta sesion sin haber tocado `src/`.
+
+
+================================================================================
+0. LO QUE ESTA MEDICION LE CORRIGE AL PROMPT DE LA SESION
+================================================================================
+El prompt declaro sus cifras como indicativas. Una premisa no se sostiene y
+otra queda dada vuelta.
+
+(1) "el rotulo RIO NEGRO HORNOPIREN para CdRep 430" enunciado como el rotulo a
+    escribir -> **DIRECTEMAR publica esa reparticion como "Capitania de Puerto
+    de Hornopiren"**, y `bahia-capitania-map.json` ya dice `Hornopirén` en las
+    ocho entradas. Identificacion POR EL TELEFONO, no por el nombre: la fila
+    `CdRep 430` del CSV y la ficha publicada traen el mismo `+56 65 2217304`
+    (N11). O sea que las ocho **no estan equivocadas contra DIRECTEMAR**: lo que
+    diverge es la cadena del CSV. La auditoria del 2026-08-15 las llamo "de
+    nombre inexistente" y lo eran — contra el universo {CSV, decreto}, que fue
+    el que uso. Contra DIRECTEMAR son exactas.
+
+(2) "el CSV rotula sus 64 filas como Capitania de Puerto cuando al menos una es
+    Alcaldia de Mar" -> **cierto, y el numero es 1 de 64 por categoria y 6 mas
+    por cadena**. Ver seccion 3. Y para la Pieza A **no muerde**: cero de las
+    163 bahias llega a la fila de Rada Covadonga (N5).
+
+
+================================================================================
+1. LA VIA D-R1/D-R3, MEDIDA DE PUNTA A PUNTA
+================================================================================
+La via es `IDBahia -> CdReparticion` (SITPORT, D-R1) `-> fila del CSV` (D-R3).
+
+    COMPARACIONES EFECTIVAS                          163 de 164
+    sin registro en consultaBahias                     0
+    con CdRep pero SIN fila en el CSV                  1  -> bahia 146, CdRep 189
+
+Aplicada entera y VERBATIM, sobre el campo `capitania`:
+
+    hoy null, la via le escribe un nombre             17
+    hoy igual al CSV CARACTER POR CARACTER             0
+    hoy igual solo tras normalizar — CAMBIA LA CADENA 84
+    hoy distinto tambien normalizado                  62
+    --- suma                                         163
+
+**Cero identicos.** Las 64 filas del CSV estan integramente en MAYUSCULAS y las
+146 entradas no nulas del mapa, ninguna. Aplicar D-R3 verbatim no toca 62
+rotulos: toca los 163.
+
+Sobre el campo `telefono`: coincide en 29 y **cambiaria en 134**.
+
+
+================================================================================
+2. EL HALLAZGO QUE CAMBIA LA PIEZA — N10
+================================================================================
+Escribir el nombre y dejar el telefono de hoy, sobre las 17 nulas:
+
+    COMPARACIONES EFECTIVAS                            17
+    el numero es de la MISMA reparticion que el nombre   0
+    el numero es de OTRA reparticion del CSV            10
+    el numero no figura en el CSV                        7
+
+**Cero de diecisiete.** Siete de las diez quedarian rotuladas `Villarrica` con
+`+56 63 227 6905`, que el CSV le da a **VALDIVIA (CdRep 175)**. La
+identificacion es POR EL NUMERO contra las 64 filas, sin comparar nombres.
+
+Esa es exactamente la combinacion que el owner reverso el 2026-08-13
+(PLAN_JURISDICCION.md §7.1, "Una decision que se tomo y se revirtio el mismo
+dia"): *el nombre de una Capitania con el telefono de otra*, que el propio plan
+llama **"la peor de las dos posibles"**. La Pieza A, escrita como un solo campo,
+la reproduce diecisiete veces.
+
+Y el mismo ejercicio sobre las 163, para dimensionar: misma reparticion 45,
+otra reparticion 37, no identificable 81.
+
+
+================================================================================
+3. EL ROTULO DE LAS 64 FILAS DEL CSV CONTRA DIRECTEMAR — N5
+================================================================================
+Cotejo de las 64 contra los titulos publicados en los 16 `gm_*.html`:
+
+    COMPARACIONES EFECTIVAS                                    64
+    publicada como "Capitania de Puerto de X"                  57
+    NO publicada como Capitania y SI dentro de un bloque de
+      "Alcaldias de Mar"                                        1  -> RADA COVADONGA
+    con esa cadena en ninguno de los dos lugares                6
+
+Las 6 son `LIRQUÉN`, `RIO NEGRO HORNOPIRÉN`, `CISNES`, `AGUIRRE`,
+`LAGO GRAL.CARRERA` y `EDÉN`. **Cinco de las seis se identifican por el
+telefono** contra una ficha publicada (N11):
+
+    CISNES            -> "Capitania de Puerto de Puerto Cisnes"        +56 67 2346880
+    AGUIRRE           -> "Capitania de Puerto de Puerto Aguirre"       +56 67 2361233
+    LAGO GRAL.CARRERA -> "Capitania de Puerto de Lago General Carrera" +56 67 2411111
+    EDÉN              -> "Capitania de Puerto de Puerto Edén"          +56 61 2201164
+    RIO NEGRO HORNOPIRÉN -> "Capitania de Puerto de Hornopirén"        +56 65 2217304
+
+La sexta, `LIRQUÉN`, no: su `+56 41 3839697` no figura en ninguna ficha
+publicada, y el titulo que contiene la cadena es "Capitania de Puerto de
+Lirquén-Tomé". **Queda sin identificar por esta via y se dice, no se supone.**
+
+CUANTO ALCANZA ESTO A LA PIEZA
+--------------------------------------------------------------------------------
+Bahias que por la via `CdRep -> CSV` llegan a una fila que DIRECTEMAR no publica
+como Capitania de Puerto: **24 de 163**. Reparto: 430 -> 8, 239 -> 8,
+235 -> 3, 241 -> 2, 258 -> 2, 144 -> 1.
+
+**A la fila de Rada Covadonga (CdRep 291) llegan CERO bahias.** La prohibicion
+de INV-3.3 —"ningun valor del campo de Capitania puede ser el nombre de una
+Alcaldia de Mar"— **no se viola por esta via**, y no porque el rotulo del CSV
+sea correcto sino porque SITPORT no le cuelga ninguna bahia a esa reparticion,
+que es lo que la entrada 3 del registro de DIRECTEMAR ya habia medido. El
+rotulo del CSV sigue siendo falso para esa fila; lo que cambia es que la
+falsedad no llega al campo por este camino. **Si el CSV pasa a ser el contenido
+de una tabla por Capitania (Via 2 del plan), las 64 filas entran y ahi si
+muerde.**
+
+DEFECTO DE INSTRUMENTO PAGADO EN ESTA SESION, escrito porque no se ve mirando
+el resultado
+--------------------------------------------------------------------------------
+La primera version del parser de los `gm_*.html` **declaro ausente a Melinka**.
+La fuente escribe `Capitanía  de Puerto de Melinka` **con doble espacio**, y el
+parser no colapsaba espacios. Es la misma trampa que CLAUDE.md §2 ya lista como
+caso real de este repositorio —*"lo que fallo fue el parser, que se perdia en un
+doble espacio de la fuente"*—: la advertencia estaba escrita y no se busco. Se
+corrigio el parser, no la afirmacion. El conteo paso de 56/7 a 57/6, y
+`LAGO GRAL.CARRERA` dejo de ser "sin titulo publicado" para pasar a ser una
+abreviatura de uno que si existe.
+
+
+================================================================================
+4. DE DONDE SALE LA COLUMNA `Capitania` DEL CSV — N12
+================================================================================
+D-R3 dice que el nombre sale del CSV canonico **"nunca de la cadena cruda de
+SITPORT"**. Medido contra la captura de `consultaCapuertoRestriccion` del
+2026-08-11, quitandole el prefijo "CAPITANÍA DE PUERTO [DE]":
+
+    COMPARACIONES EFECTIVAS                                     64
+    la columna `Capitania` del CSV coincide con SITPORT pelado   64
+    difieren                                                      0
+
+    la misma columna coincide con un titulo de DIRECTEMAR        57 de 64
+
+**La columna `Capitania` del CSV ES la cadena cruda de SITPORT**, 64 de 64. El
+CSV no es una fuente de nombres distinta de SITPORT: es un JOIN — la clave y el
+nombre los pone SITPORT, y el telefono, la direccion y el jefe los pone
+DIRECTEMAR (N11 lo confirma por el numero en las cinco identificables).
+
+Esto **no toca D-R1 ni D-R2**, y no toca la parte de D-R3 que mas valia: entrar
+por `CdReparticion` sigue evitando toda adjudicacion de equivalencia de nombres.
+Lo que no se sostiene es el motivo escrito de D-R3 en su segunda mitad. Es
+decision del owner, y va con opciones al mensaje de sesion.
+
+
+================================================================================
+5. LAS DOS FORMAS DEL ROTULO, MEDIDAS — N13
+================================================================================
+    Forma A = la cadena del CSV, verbatim (D-R3 como esta escrita).
+    Forma B = el nombre del titulo publicado por DIRECTEMAR para esa misma
+              reparticion, entrando igual por `CdReparticion`; identificada por
+              nombre cuando coincide y por telefono cuando no.
+
+    filas del CSV con forma B : 62 de 64
+        sin forma B: CdRep 144 "LIRQUÉN"        -> alcanza 1 bahia
+        sin forma B: CdRep 291 "RADA COVADONGA" -> alcanza 0 bahias
+
+    COMPARACIONES EFECTIVAS : 162 de 163
+
+    forma B contra lo que el mapa dice HOY
+        identico caracter por caracter (no cambia)   96
+        hoy null, B le escribe un nombre             17
+        CAMBIA la cadena                             49
+
+    forma A contra lo que el mapa dice HOY
+        identico caracter por caracter                0
+
+Forma B deja quietas 96 de 162 y es **continua con lo que el repositorio ya
+escribio**: `f421949` puso `Puerto Cisnes` citando el titulo publicado
+(gm_region-de-aysen.html L978), que es forma B. Forma A lo revertiria a
+`CISNES`.
+
+OTRAS DOS COSAS QUE LA FORMA A IMPRIMIRIA, medidas (N6):
+    `CHANARAL`          — sin la ñ — en 2 bahias
+    `LAGO GRAL.CARRERA` — abreviado y sin espacio — en 3 bahias
+
+
+================================================================================
+6. QUE LE LLEGA AL PATRON, Y SI EL DATO ALCANZA — N8, leido del codigo
+================================================================================
+Los tres caminos, releidos literal en esta sesion (no se tomaron del reporte
+anterior):
+
+P1  BAHIAS INTERMEDIAS
+    backend  `src/routes/sitport-routes.js:817` -> `capitaniaDeBahia(...)`
+    PWA      `src/components/verification/TransitRestrictionsBlock.jsx:62`
+             `const nombreCap = r.capitania || r.gobernacion;`
+    Render   `📞 {nombreCap} — <a href={tel:...}>{tel}</a>`, SIN etiqueta de nivel.
+    -> el dato corrige la cadena. La falta de etiqueta de nivel es render.
+
+P2  AVISO DE ARRIBADA FORZOSA
+    backend  `src/routes/sitport-routes.js:339` -> `getCapitaniaByBahiaId` (mapa crudo)
+    PWA      `src/screens/P3_VoyageVerification.jsx:237`
+             `const nombre = rec?.capitania || rec?.gobernacion || rec?.nombre || 'destino';`
+    Render   `<strong>Capitanía de Puerto de {nombre}</strong>` — etiqueta DURA.
+    -> **el dato lo cierra entero**: hoy caen a `gobernacion` 17 de 17; escritas
+       las 17, caen 0. Registrado ademas un TERCER escalon que la auditoria
+       anterior no nombra: `rec?.nombre`, el nombre de la BAHIA, y despues el
+       literal `'destino'`. Con `gobernacion` nunca nula en el mapa no se
+       alcanza hoy por esta via; se alcanza por la divergencia que D14 dejo
+       abierta (`getCapitaniaByBahiaId` de un id que el mapa no tiene devuelve
+       `gobernacion: 'Desconocida'`).
+
+P3  TARJETA DE ZARPE Y RECALADA — el escalon que INV-10.1 gobierna
+    backend  `src/routes/sitport-routes.js:339` -> `getCapitaniaByBahiaId`
+    PWA      `src/components/verification/PortStatusBlock.jsx:76-77`
+             `data?.gobernacion` / `data?.telefono`
+    Render   `📞 Gobernación Marítima de {nombre} — <a href={tel:...}>{tel}</a>`
+    -> **NUNCA lee `capitania`.** Corregir el campo no le cambia una letra. Los
+       84 numeros de Capitania rotulados "Gobernación Marítima de" siguen igual.
+
+RESPUESTA MEDIDA: **el dato no alcanza.** Cierra P2 entero y corrige la cadena
+de P1; deja P3 exactamente como esta, y P3 es el unico punto de pantalla que
+INV-10.1 gobierna. Nada de esto se toco en esta sesion.
+
+Y una consecuencia de render que hoy no puede fallar y con la Pieza A si:
+los siete puntos con `tel:` arman el enlace con `tel.replace(/\s+/g,'')` sin
+comprobar atomicidad. Hoy hay **0 telefonos no atomicos en el mapa**. El CSV
+trae **6**, y uno de ellos —`CdRep 260 BAKER`, `"Móvil: +569 5617 3241"`— le
+tocaria a la bahia **127**, que es una de las 17. Escribir ese valor produce el
+primer `tel:` roto en produccion, que es lo que INV-10.1 prohibe con esas
+palabras.
+
+
+================================================================================
+7. LOS TRES HECHOS DE P1, CONTESTADOS
+================================================================================
+7.1 CdRep 189 / entrada 146 — **no bloquea la Pieza A.**
+    El CSV no lista el 189. SITPORT le cuelga **una sola bahia, la 146**, y esa
+    bahia **no esta entre las 17 nulas**: el mapa ya dice `Lago Ranco` y el join
+    la resuelve a `lago_ranco` con respaldo `decreto`. La 258 —"RÍO BUENO,
+    SECTOR LLANCACURA"— trae `CdRep 188`, que el CSV traduce a `LAGO RANCO`, y
+    **no esta en el mapa**. Consecuencia para el plan: la unica bahia que la via
+    no cubre ya tiene escrito el valor que las otras dos fuentes le dan. La
+    pregunta abierta del registro de DIRECTEMAR —que ES la reparticion 189— no
+    hay que contestarla para escribir esta pieza.
+
+7.2 CdRep 430 / los 8 de "Hornopirén" — **dado vuelta.** Ver seccion 0 (1).
+    Las 8 entradas ya traen el telefono del CSV, **8 de 8**, escrito por
+    `df684d7`. Su rotulo `Hornopirén` es el titulo que DIRECTEMAR publica. Lo
+    que diverge es la cadena del CSV, no el mapa.
+
+7.3 El rotulo "Capitania de Puerto" de las 64 filas — **falso para 1 por
+    categoria y 6 por cadena**, y **no muerde en esta pieza**: 0 bahias llegan a
+    Rada Covadonga. Ver seccion 3.
+
+
+================================================================================
+8. LO QUE ESTA BITACORA NO RESPONDE
+================================================================================
+- **Que dice SITPORT hoy.** Se midio contra la captura del 2026-08-13. No se
+  consulto en vivo.
+- **Que dice DIRECTEMAR hoy.** Los `gm_*.html` son del 2026-08-12 y se leyeron
+  del arbol `a474ae4`. No se recapturaron.
+- **Si `LIRQUÉN` (CdRep 144) y "Lirquén-Tomé" son la misma reparticion.** El
+  telefono no las une y el nombre no decide. Alcanza a 1 bahia, la 97.
+- **Que es la reparticion 189.** Sigue abierta en el registro de DIRECTEMAR, y
+  esta medicion no la necesita.
+- **Cual de las dos formas del rotulo debe verse.** Es del owner: decide que lee
+  el patron.
+- **Si `capitanias_64_final.csv` es dato vigente.** El sondeo del 2026-08-12 se
+  cerro SIN APLICAR y su bitacora pide re-verificar contra los raw. Aca se uso
+  como indice `CdRep -> telefono/direccion` —cotejado contra las fichas por el
+  numero en las cinco de N11— y como universo de nombres, no como autoridad.
+- **El motor BRE** no se abrio. Nada de lo medido apunta ahi.
+================================================================================
+
+
+================================================================================
+ADDENDUM 2026-08-15 — FASE 2 CORRIDA. Se AGREGA, no se reescribe (§3.3).
+Todo lo de arriba es la medicion PREVIA y queda como se escribio.
+Autorizacion del owner: Fase 2 con R4 = opcion B, acotada a las 17.
+HEAD al cerrar: 0bc80d2 (sin commit). `git add` con rutas exactas, sin commit.
+================================================================================
+
+9. LO QUE SE ESCRIBIO
+================================================================================
+INSTRUMENTO VERSIONADO PRIMERO, y en este orden:
+
+    scripts/frente-contacto-derivar-reparticiones.js
+        -> data/contacto/reparticiones_publicadas.json  (+ PROCEDENCIA.txt)
+           64 reparticiones · 57 identificadas por NOMBRE · 5 por NUMERO
+           · 2 sin identificar (CdRep 144 LIRQUÉN, CdRep 291 RADA COVADONGA)
+    scripts/frente-contacto-pieza-a.js
+        -> src/data/bahia-capitania-map.json, 16 entradas
+
+    sha256 del mapa ANTES   0225aa23959b51b1cf20f75018f0cba3e474bc83517db56a…
+    sha256 del mapa DESPUES bbb28e2f8e959c94011eb29efe75edeea1fbadb21bf43aee…
+
+    lineas modificadas 16 de 187 · lineas identicas 171
+
+LAS 16, con el par completo (salida sin editar en `03_aplicar.txt`):
+
+     96 / CdRep  97  "Lago Rapel"      +56 35 2584833   (por nombre)
+    105 / CdRep 186  "Villarrica"      +56 45 2524733   (por nombre)
+    106 / CdRep 184  "Panguipulli"     +56 63 2276944   (por nombre)
+    129 / CdRep 258  "Puerto Edén"     +56 61 2201164   (por TELEFONO)
+    139 / CdRep 290  "Bahía Fildes"    +56 32 2208557   (por nombre)
+    140 / CdRep 293  "Bahía Paraíso"   +56 32 2208557   (por nombre)
+    154 / CdRep 258  "Puerto Edén"     +56 61 2201164   (por TELEFONO)
+    209 / CdRep 186  "Villarrica"      +56 45 2524733   (por nombre)
+    210 / CdRep 186  "Villarrica"      +56 45 2524733   (por nombre)
+    231 / CdRep 292  "Soberanía"       +56 32 2509291   (por nombre)
+    245..250 / CdRep 186  "Villarrica" +56 45 2524733   (por nombre)
+
+NO SE ESCRIBIO, y con su motivo:
+    127 (Baker) — el telefono de su reparticion es "Móvil: +569 5617 3241". La
+    regla de normalizacion vigente en este frente (`85bc68a`) solo admite el
+    signo mas, digitos y espacios simples. Queda en `null`. FALTA CONSEGUIR EL
+    NUMERO ATOMICO DE BAKER, y eso no se resuelve normalizando la cadena.
+
+NO SE TOCO: `gobernacion` en ninguna entrada; ningun archivo de codigo de
+`src/`; la PWA; `CONTRATO_MOTOR.md`; `data/decreto/`.
+
+DOS GUARDS DEL GENERADOR SE CORRIGIERON ANTES DE APLICAR, y se dice por que:
+  · el del "universo de nombres" era TAUTOLOGICO — construia el universo del
+    mismo archivo que validaba, asi que no podia fallar. Se reemplazo por uno
+    que si puede: el rotulo tiene que venir de un titulo que empiece
+    "Capitanía de Puerto" (INV-3.3). Es el que muerde en B1.
+  · la atomicidad se estaba tomando de la bandera `telefono_atomico` del
+    insumo. Se recalcula en el generador (§5.3): un insumo que mienta su propia
+    bandera no puede hacer que se escriba un enlace `tel:` roto. Muerde en B2.
+
+10. VERIFICACION — `04_verificar.txt`, exit 0
+================================================================================
+Anclada al COMMIT FIJO `0bc80d2`, no a HEAD. Un verificador que se compare
+contra HEAD deja de medir en cuanto alguien commitea. Compara LINEA A LINEA y no
+por bytes, porque `git show` entrega el blob en LF y el disco esta en CRLF.
+
+    V1 claves y `gobernacion` intactas            164 comparaciones · sin fallas
+    V2 se movieron 16 lineas y 16 entradas, y son exactamente las esperadas
+    V3 EL PAR: nombre y telefono de la MISMA fila   16 comparaciones · sin fallas
+    V4 el rotulo viene de un titulo de Capitania    16 comparaciones · sin fallas
+    V5 telefonos no atomicos en todo el archivo    164 comparaciones · 0
+    V6 nulas 17 -> 1, y la que queda esta declarada con su motivo
+
+11. MORDIDA — `05_mordida.txt`, exit 0. CINCO ENSAYOS, CINCO MORDIERON
+================================================================================
+Linea base comprobada antes de inyectar: el verificador en exit 0. Los ensayos
+que atacan al generador reponen el mapa al estado del ancla, reconstruido del
+blob y convertido a CRLF, con su sha256 comprobado contra el que tenia en disco
+(`0225aa23…`): sin eso los ensayos no correrian sobre el estado que dicen.
+
+    B1  el derivado dice que el rotulo sale de un titulo de ALCALDIA DE MAR
+        esperado: el generador aborta citando INV-3.3
+        medido exit=3, cita INV-3.3                      -> MORDIO
+    B2  telefono NO atomico con la bandera `telefono_atomico` MINTIENDO true
+        esperado: se excluyen igual, cero escritas de esa reparticion
+        medido exit=0, 0 de 9 escritas, 0 no atomicos    -> MORDIO
+    B3  la captura de `consultaBahias` reemplazada por un array vacio
+        esperado: exit distinto de 0 y el mapa sin tocar, NUNCA "0 cambios" en
+        verde
+        medido exit=3, mapa intacto                      -> MORDIO
+    B4  una entrada FUERA de la lista cambiada a mano (la 71)
+        esperado: el verificador falla y nombra la intrusa
+        medido exit=1, la nombra                         -> MORDIO
+    B5  la 105 con su nombre y el telefono de OTRA reparticion — el defecto de
+        N10, el que tumbo la decision del 2026-08-13
+        esperado: el verificador falla en V3
+        medido exit=1, falla del par                     -> MORDIO
+
+    Los tres insumos quedaron restaurados por sha256 y el verificador volvio a
+    exit 0 despues de todos los ensayos.
+
+12. LO QUE NO QUEDO VERDE, Y NO ES DEL GENERADOR
+================================================================================
+`npm test` -> 84 tests, 69 pass, 15 fail. Linea base antes de escribir: 84/84.
+
+Las 15 son la MISMA causa: el guard de `src/services/zonas-aviso.js:105-113`
+cazo que la zona `puerto_eden` declara un contacto `sin_contacto` cuya
+discrepancia DEJO DE EXISTIR — la bahia 129 ahora dice "Puerto Edén", que es lo
+que el decreto le da. El guard NO fallo: hizo lo que fue escrito para hacer,
+impedir que un "no hay contacto" esconda un contacto que si se puede dar.
+
+Medicion completa y regenerable: `06_guard_zonas_aviso.txt`.
+
+    COMPARACIONES EFECTIVAS                             6 (5 zonas)
+    discrepancias declaradas que SIGUEN en pie          5
+    discrepancias que dejaron de existir                1  -> puerto_eden / 129
+
+Y el matiz que la medicion separa y el control no puede: el `motivo` declara DOS
+discrepancias y el guard mide UNA.
+
+    (i)  "no tiene Capitania atribuida"          -> HOY ES FALSO: "Puerto Edén"
+    (ii) "la Gobernacion del mapa (Aysén) no es la del decreto (Punta Arenas)"
+                                                 -> SIGUE SIENDO CIERTO
+
+El guard solo mira la Gobernacion cuando `capitania == null`; escrita la
+Capitania, deja de mirarla. La declaracion quedo MITAD FALSA y el control no
+puede decir cual mitad. La Pieza A no toca `gobernacion`.
+
+NO SE RESOLVIO DE ESTE LADO. `data/decreto/zonas_aviso.json` no se toco: cambiar
+el aviso de esa zona cambia lo que el patron ve (CLAUDE.md §0.4) y es del owner.
+
+13. LO QUE ESTA FASE NO CAMBIO
+================================================================================
+- P3, la tarjeta de zarpe y recalada, sigue igual: `PortStatusBlock.jsx:76-77`
+  nunca lee `capitania`. Los 16 telefonos nuevos llevan de 84 a 100 los numeros
+  de Capitania rotulados "Gobernación Marítima de". Declarado y aceptado por el
+  owner antes de escribir.
+- P2 SI se cierra: la etiqueta dura "Capitanía de Puerto de {Gobernacion}" era
+  17 de 17 y pasa a 0 de 17.
+- P1 corrige la cadena; le sigue faltando la etiqueta de nivel, que es render.
+- Las ~49 re-atribuciones de fondo (P-III) no se tocaron.
+- Los 8 de "Hornopirén" no se tocaron, y la seccion 15 del addendum de la
+  auditoria explica por que no hay que tocarlas.
+================================================================================
+
+
+================================================================================
+ADDENDUM 2026-08-15 (cierre) — LA SESION CIERRA CON LA SUITE EN ROJO, A
+PROPOSITO. Se AGREGA, no se reescribe (§3.3).
+Anotado sin desarrollar, por decision del owner. HEAD al cerrar: 0bc80d2, sin
+commit; todo lo escrito queda stageado.
+================================================================================
+
+14. ESTADO DE LA SUITE AL CERRAR
+================================================================================
+    npm test -> 84 tests, 69 pass, 15 fail
+    linea base antes de escribir -> 84/84
+
+CAUSA EXACTA, una sola para las 15: el guard de
+`src/services/zonas-aviso.js:105-113` caza que la zona `puerto_eden` declara un
+contacto `sin_contacto` cuya discrepancia dejo de existir — la bahia 129 ahora
+dice "Puerto Edén", que es lo que el decreto le da. El guard NO fallo.
+
+Evidencia regenerable: `06_guard_zonas_aviso.txt` (instrumento `06_...js`).
+De 6 discrepancias declaradas en 5 zonas, 5 siguen en pie y solo cayo esta.
+El `motivo` declara DOS discrepancias y el guard mide UNA: la Gobernacion que el
+mapa le pone (Aysén) sigue sin ser la del decreto (Punta Arenas), y la Pieza A
+no toca `gobernacion`.
+
+15. LA MEDICION DEL ULTIMO TURNO — EL ESQUEMA TOLERA, NO DECLARA
+================================================================================
+El owner autorizo pasar `puerto_eden` a contacto de Capitania con la condicion
+de que la mitad viva del motivo quedara escrita como discrepancia declarada y
+pendiente, y pidio parar si el esquema no lo admitia.
+
+Medido escribiendo el contacto y corriendo el cargador (con restauracion
+comprobada por sha256 — `data/decreto/zonas_aviso.json` quedo intacto):
+
+    LA CARGA PASA: true
+    contacto resuelto que viaja al consumidor:
+      { "tipo": "capitania", "nombre": "Puerto Edén",
+        "telefono": "+56 61 2201164", "gobernacion": "Aysén",
+        "bahia_id": 129, "motivo": null }
+    ¿el campo extra sobrevive a la resolucion?  false
+    ¿sobrevive bahias_en_discrepancia?          false
+
+QUE SIGNIFICA: el cargador no tiene lista blanca de claves, asi que el campo
+entra sin romper nada; pero `resolverContacto` arma un objeto de forma FIJA para
+`tipo: 'capitania'`, y el campo NO sobrevive. Nada lo lee, nada lo valida,
+ningun control lo mantiene cierto. **El esquema tolera escribirlo y no admite
+declararlo.**
+
+Y lo que decidio la parada: el contacto resuelto viaja con `gobernacion: "Aysén"`
+—la que el decreto contradice— y `motivo: null`. La discrepancia no queda solo
+sin declarar: el valor que la encarna viaja SIN NINGUNA MARCA, al lado del
+telefono correcto.
+
+16. LAS TRES OPCIONES, Y POR QUE SE DESCARTARON DOS
+================================================================================
+(1) EL CAMPO INERTE — contacto de Capitania mas un campo declarativo con la
+    mitad viva del motivo.
+    GANA: cierra hoy, sin tocar codigo; la suite vuelve a verde (medido: la
+    carga pasa).
+    PIERDE: la declaracion queda en prosa que nada verifica, y `Aysén` sigue
+    viajando sin marca. Es la forma de falla que `PLAN_JURISDICCION.md` §7.1 ya
+    tiene anotada para este mismo archivo: *"el dato divergio del contrato y
+    nada lo detecto"*.
+    DESCARTADA por el owner, 2026-08-15.
+
+(2) AMPLIAR EL ESQUEMA en `src/services/zonas-aviso.js`: una rama que acepte una
+    discrepancia declarada sobre un contacto que SI se da, con la misma
+    exigencia de comprobabilidad que ya tiene `sin_contacto`, y que viaje
+    resuelta.
+    GANA: la declaracion queda viva y con control propio; el mismo guard que
+    cazo esto pasaria a cuidarla.
+    PIERDE: toca `src/services/` y necesita su propia mordida.
+    ELEGIDA. Ver punto 17.
+
+(3) DEJAR LA 129 FUERA DE LA PIEZA A — revertir una de las 16; el `sin_contacto`
+    vuelve a ser cierto entero y la suite vuelve a verde.
+    GANA: minimo, y no toca nada.
+    PIERDE: preserva a proposito una discrepancia para apagar un control. Es
+    CLAUDE.md §0.3 con otro nombre.
+    DESCARTADA por el owner, 2026-08-15.
+
+MOTIVO ESCRITO DEL OWNER, para que el rojo no se lea como olvido:
+    "Las dos compran verde con deuda. La suite roja con la causa medida y
+    escrita es un estado honesto; la verde con la declaracion muerta no lo es."
+
+17. PENDIENTE AUTORIZADO — LA (2), CON LA RESTRICCION LEVANTADA
+================================================================================
+Decidido por el owner el 2026-08-15 para la proxima sesion.
+
+    Se levanta la restriccion sobre `src/services/zonas-aviso.js`, SOLO para la
+    rama que acepte una discrepancia declarada sobre un contacto que si se da,
+    con la misma exigencia de comprobabilidad que ya tiene `sin_contacto`, y que
+    viaje resuelta. Con su propia mordida.
+
+Hasta que eso se haga, la suite queda en 69/84 y `data/decreto/zonas_aviso.json`
+queda como estaba.
+
+OTRO PENDIENTE PROPIO, que no depende de lo anterior: falta conseguir el numero
+atomico de la Capitania de Baker (CdRep 260). La bahia 127 sigue en `null` por
+eso, y no se resuelve normalizando la cadena.
+================================================================================

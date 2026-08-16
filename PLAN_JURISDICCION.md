@@ -1812,6 +1812,102 @@ principal, que es lo que decide el nombre. **No se deja así a propósito: se de
 arreglarla bien es este frente**, y arreglarla a medias —eligiendo una principal, o parchando
 la 160— cuesta más de lo que ahorra.
 
+##### ADDENDUM 2026-08-15 — la PIEZA A se aplicó, y con ella se corrigen tres cosas de más arriba
+
+> **Se agrega, no se reescribe (§3.3).** Todo lo anterior queda como se escribió, incluido lo que
+> este addendum reencuadra. Evidencia completa e instrumentos re-ejecutables en
+> `_bitacoras/pieza_a_nulas_2026-08-15/`.
+
+**QUÉ SE ESCRIBIÓ.** `src/data/bahia-capitania-map.json`, **16 entradas** de las 17 que tenían
+`capitania: null` — 96, 105, 106, 129, 139, 140, 154, 209, 210, 231, 245, 246, 247, 248, 249, 250 —
+con **nombre y teléfono juntos, de la misma repartición**. Generador programático
+`scripts/frente-contacto-pieza-a.js` sobre el derivado `data/contacto/reparticiones_publicadas.json`.
+Verificado V1–V6 en verde y los cinco controles con mordida comprobada.
+
+**La 127 (Baker) queda en `null`, declarada.** El teléfono que su repartición publica es
+`"Móvil: +569 5617 3241"`, y la regla de normalización vigente en este frente (`85bc68a`) sólo
+admite `+`, dígitos y espacios simples. Hoy el mapa tiene **cero** teléfonos no atómicos y los
+siete puntos de render arman el `tel:` sin comprobar nada: escribirlo estrenaría el defecto que
+INV-10.1 prohíbe. **Falta conseguir el número atómico de Baker, y eso no se resuelve normalizando
+la cadena.** Queda anotado como pendiente propio.
+
+**(1) Los 8 rótulos "Hornopirén" NO estaban equivocados.** La auditoría del 2026-08-15 los contó
+como *"nombre que no existe en ningún universo"* y lo eran contra el universo `{CSV, decreto}`, que
+fue el que usó. Contra **DIRECTEMAR** son exactos: publica esa repartición como *"Capitanía de
+Puerto de Hornopirén"*, y la identificación se hizo **por el teléfono** —la fila `CdRep 430` del CSV
+y la ficha publicada traen el mismo `+56 65 2217304`—, no por el nombre. Lo que diverge es la
+cadena del CSV, `RIO NEGRO HORNOPIRÉN`. **No se tocaron y no hay que tocarlas.**
+
+**(2) La línea sobre el teléfono de la GM Antártica Chilena queda desactualizada.** Este apartado
+dice que es *"uno que no existe en ningún archivo vivo del repositorio"*. ~~Sigue siendo cierto~~ —
+**dejó de serlo con esta pieza**: las bahías 139 y 140 ahora llevan `+56 32 2208557` en `src/`. Y
+hay que decir con qué alcance: DIRECTEMAR publica **ese mismo número** para la Gobernación Marítima
+Antártica Chilena **y** para sus dos Capitanías (Bahía Fildes y Bahía Paraíso), verificado en
+`_bitacoras/frente_contacto_2026-08-13/gm_antartica_chilena_RECUPERADO.md`. O sea que el valor es
+fiel a la fuente, y **ese número no distingue el escalón 1 del escalón 2 de INV-10.1**. Decisión
+del owner del 2026-08-15, tomada sobre esa medición.
+
+**(3) D-R3 se corrige. Su primera mitad manda; la segunda es falsa.**
+
+> D-R3, como se escribió el 2026-08-15 (`_bitacoras/auditoria_rotulos_2026-08-15/`, §11):
+> *"EL NOMBRE QUE SE MUESTRA SALE DEL CSV CANÓNICO, ENTRANDO POR `CdReparticion`.* ~~*Nunca de la
+> cadena cruda de SITPORT.*~~ *SITPORT aporta la ATRIBUCIÓN (`IDBahia → CdReparticion`);* ~~*el CSV
+> aporta la FORMA DEL RÓTULO*~~ *y el TELÉFONO."*
+
+**Lo que sobrevive:** entrar por `CdReparticion`. Es lo que evita adjudicar equivalencias de
+nombre, y no se toca. **El teléfono sigue saliendo del CSV**, que para eso sí es derivado de
+DIRECTEMAR — cotejado por el número contra la ficha publicada en las cinco filas cotejables.
+
+**Por qué la segunda mitad es falsa, medido:** la columna `Capitania` del CSV **es** la cadena cruda
+de SITPORT. Contra `_bitacoras/e01d_d7_y_257_2026-08-11/sitport_consultaCapuertoRestriccion.json`,
+quitándole el prefijo *"CAPITANÍA DE PUERTO [DE]"*, coincide **64 de 64**. Contra los títulos de
+DIRECTEMAR coincide **57 de 64**. El CSV no es una fuente de nombres distinta de SITPORT: es un
+**join** —clave y nombre de SITPORT, contacto de DIRECTEMAR—, y pedirle la forma del rótulo es
+pedirle lo único que no tiene.
+
+**LO QUE LA REEMPLAZA — D-R4, decidida por el owner el 2026-08-15. LEER ESTO ANTES DE ESCRIBIR
+NINGÚN RÓTULO:**
+
+> **El nombre sale del título que DIRECTEMAR publica**, entrando igual por `CdReparticion`. La
+> repartición se identifica por nombre cuando la cadena coincide y **por teléfono** cuando no.
+> Motivo escrito por el owner: §5.1 separa atribución de rótulo — SITPORT da el `CdReparticion`
+> (D-R1, la atribución), DIRECTEMAR da la forma del nombre publicado.
+>
+> **La opción de escribir la cadena del CSV verbatim está DESCARTADA, y con su efecto medido:**
+> cambiaría **163 de 163** rótulos —cero idénticos, todo a mayúsculas—, imprimiría `CHANARAL` sin
+> la ñ en 2 bahías y `LAGO GRAL.CARRERA` en 3, y **revertiría `f421949`**, que escribió
+> `Puerto Cisnes` citando el título publicado. Reescribir 163 rótulos para arreglar 17 es la forma
+> exacta de §0.3. La opción elegida cubre **162 de 163** y deja **96 rótulos sin tocar**.
+>
+> Sin cobertura por esta vía quedan dos reparticiones: **`CdRep 144` (`LIRQUÉN`)** —su teléfono no
+> figura en ninguna ficha publicada y el título que contiene la cadena es *"Lirquén-Tomé"*; alcanza
+> a **1 bahía, la 97**— y **`CdRep 291` (`RADA COVADONGA`)**, que DIRECTEMAR publica dentro de un
+> bloque de **Alcaldías de Mar** y no como Capitanía. A esa última **no llega ninguna bahía** de
+> SITPORT, así que INV-3.3 no se viola hoy por esta vía; **entraría si el CSV pasara a ser el
+> contenido de una tabla por Capitanía** (la Vía 2 de este frente).
+
+**LO QUE QUEDA ABIERTO Y ES DEL OWNER — la suite está en 69/84 y el motivo no es un fallo del
+generador.** El guard de `src/services/zonas-aviso.js:105-113` cazó que la zona **`puerto_eden`**
+declara un contacto `sin_contacto` cuya discrepancia **dejó de existir**: la bahía 129 ahora dice
+`Puerto Edén`, que es lo que el decreto le da. El guard hizo exactamente lo que fue escrito para
+hacer — impedir que un *"no hay contacto"* esconda un contacto que sí se puede dar. Medición
+completa: `_bitacoras/pieza_a_nulas_2026-08-15/06_guard_zonas_aviso.txt`. **De las 6 discrepancias
+declaradas en 5 zonas, 5 siguen en pie y sólo ésta cayó.**
+
+Y hay un matiz que la medición separa y el control no puede: **el `motivo` declara dos
+discrepancias y el guard mide una.** Decía *"no tiene Capitanía atribuida"* —hoy falso— *"y la
+Gobernación que el mapa le pone (Aysén) no es la que le da el decreto (Punta Arenas)"* —**hoy sigue
+siendo cierto**, porque esta pieza no toca `gobernacion`—. El guard sólo mira la Gobernación cuando
+`capitania == null`, así que al escribirse la Capitanía dejó de mirarla. **La declaración quedó
+mitad falsa.** No se resolvió de este lado: `data/decreto/zonas_aviso.json` **no se tocó**, cambiar
+el aviso de esa zona cambia lo que el patrón ve (§0.4) y decidirlo es del owner.
+
+**Declarado y aceptado por el owner antes de escribir:** los 16 teléfonos nuevos llevan a **100 de
+164** los números de Capitanía que P3 rotula *"Gobernación Marítima de"*, contra 84 antes. **P3 no
+se tocó en esta sesión.** Corregir el dato **no alcanza** para que la pantalla deje de mentir: cierra
+entero el defecto de P2 —la etiqueta dura *"Capitanía de Puerto de {Gobernación}"*, que era 17 de 17
+y pasa a 0— y **deja P3 igual**, porque `PortStatusBlock.jsx:76-77` nunca lee `capitania`.
+
 ### 7.2 Control del estado del plan — DECIDIDO (camino A), pendiente de implementar
 
 > **Decisión del owner, 2026-08-12: se hace, por el camino A — dentro de `npm test`.** No se
