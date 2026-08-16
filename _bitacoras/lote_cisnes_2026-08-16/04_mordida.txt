@@ -1,0 +1,81 @@
+================================================================================
+MORDIDA — LOTE CISNES.  estado del mapa = VERDE
+================================================================================
+
+  RESPALDO DE LOS INSUMOS MUTABLES, con su sha256 de partida:
+      src/data/bahia-capitania-map.json                            376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da795fb41ce17aa0498a
+      _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json aed48c23ffbb840cb8f09acde180b96827b159990d961d76daf1278cb473270b
+      data/contacto/reparticiones_publicadas.json                  9524a3792e3d79d7690d5a4c09b1c46191934dea45a734051f285420f89fef46
+      data/contacto/lotes_rotulo.json                              90acbc22598aecfdcba8f48e6c3304721866f5677e9e346e2d5d217ac7cc58c9
+
+  MAPA EN ESTADO "verde"  sha256 376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da795fb41ce17aa0498a
+  MAPA PRE-PIEZA (para las familias del generador)  sha256 bbb28e2f8e959c94011eb29efe75edeea1fbadb21bf43aeee23116e4835d9122
+      reconstruido del blob de bd75c494 y convertido a CRLF
+
+=== LINEA BASE, antes de inyectar nada ===
+  verificador: exit 0   (esperado en estado "verde": 0)
+
+=== FAMILIAS ===
+
+  B0  control negativo: sin inyectar nada, el verificador se comporta como la linea base
+      esperado : exit 0 (la pieza esta escrita y bien)
+      medido   : exit 0
+      -> ACEPTA COMO DEBE
+
+  B1  el derivado dice que el rotulo de una reparticion del lote sale de un titulo de ALCALDIA DE MAR
+      esperado : el generador ABORTA citando INV-3.3, y no escribe nada
+      medido   : exit 3 · ¿aborta por el titulo, citando INV-3.3? true · ¿mapa intacto? true
+      -> MORDIO
+
+  B2  telefono NO atomico con la bandera `telefono_atomico` mintiendo true
+      esperado : las bahias de esa reparticion se EXCLUYEN igual; cero telefonos no atomicos escritos
+      medido   : exit 0 · exclusiones por no atomico: 9 · escritas con ese numero: 0 · no atomicos en el archivo: 0
+      -> MORDIO
+
+  B3  la captura de `consultaBahias` reemplazada por un array vacio
+      esperado : exit distinto de 0 y el mapa SIN TOCAR — nunca "0 cambios" en verde
+      medido   : exit 3 · ¿aborta POR LA CAPTURA vacia? true · ¿mapa intacto? true · ¿salio "0 cambios" en verde? false
+      -> MORDIO
+
+  B4  una entrada FUERA del lote cambiada a mano (la 71)
+      esperado : el verificador falla y NOMBRA a la 71 (V6 y V2)
+      medido   : exit 1 · ¿nombra a la 71? true
+      -> MORDIO
+
+  B5  una del lote con su nombre y el telefono de OTRA reparticion — el defecto que tumbo la decision del 2026-08-13
+      esperado : el verificador falla en V3, el control del PAR
+      medido   : exit 1 · ¿falla V3 nombrando a la 124? true
+      -> MORDIO
+
+  B6  la lista `bahias_esperadas` del lote deja de coincidir con su `criterio` (se le saca una bahia)
+      esperado : el generador ABORTA, y su diagnostico dice que esto NO es "ya se aplico"
+      medido   : exit 3 · ¿lo dice? true · ¿trae diagnostico medido? true · ¿mapa intacto? true
+      -> MORDIO
+
+  B7  el lote declara un `criterio` que el generador no sabe evaluar
+      esperado : ABORTA nombrando los admitidos — no cae al generico (CLAUDE.md §4.2)
+      medido   : exit 3 · ¿nombra los admitidos? true · ¿mapa intacto? true
+      -> MORDIO
+
+=== RESTAURACION DE LOS INSUMOS, comprobada por sha256 ===
+  src/data/bahia-capitania-map.json                            OK
+  _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json OK
+  data/contacto/reparticiones_publicadas.json                  OK
+  data/contacto/lotes_rotulo.json                              OK
+
+=== RESUMEN ===
+  COMPARACIONES EFECTIVAS (familias corridas) : 8
+  B0  ACEPTA COMO DEBE       control negativo: sin inyectar nada, el verificador se comporta como la 
+  B1  MORDIO                 el derivado dice que el rotulo de una reparticion del lote sale de un ti
+  B2  MORDIO                 telefono NO atomico con la bandera `telefono_atomico` mintiendo true
+  B3  MORDIO                 la captura de `consultaBahias` reemplazada por un array vacio
+  B4  MORDIO                 una entrada FUERA del lote cambiada a mano (la 71)
+  B5  MORDIO                 una del lote con su nombre y el telefono de OTRA reparticion — el defect
+  B6  MORDIO                 la lista `bahias_esperadas` del lote deja de coincidir con su `criterio`
+  B7  MORDIO                 el lote declara un `criterio` que el generador no sabe evaluar
+
+  mordieron : 7 · aceptan como deben : 1 · tapadas declaradas : 0 · sin hacer lo suyo : 0
+
+================================================================================
+RESULTADO: las 8 familias hicieron lo suyo, con el mapa en estado VERDE.
+================================================================================

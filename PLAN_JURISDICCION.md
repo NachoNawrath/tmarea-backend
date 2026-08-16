@@ -1902,9 +1902,17 @@ siendo cierto**, porque esta pieza no toca `gobernacion`—. El guard sólo mira
 mitad falsa.** No se resolvió de este lado: `data/decreto/zonas_aviso.json` **no se tocó**, cambiar
 el aviso de esa zona cambia lo que el patrón ve (§0.4) y decidirlo es del owner.
 
-**Declarado y aceptado por el owner antes de escribir:** los 16 teléfonos nuevos llevan a **100 de
-164** los números de Capitanía que P3 rotula *"Gobernación Marítima de"*, contra 84 antes. **P3 no
-se tocó en esta sesión.** Corregir el dato **no alcanza** para que la pantalla deje de mentir: cierra
+**Declarado y aceptado por el owner antes de escribir:** los 16 teléfonos nuevos llevan a ~~**100 de
+164**~~ los números de Capitanía que P3 rotula *"Gobernación Marítima de"*, contra 84 antes. **P3 no
+se tocó en esta sesión.**
+
+> **CORRECCIÓN 2026-08-16, §3.3: el 100 nunca se midió. Son 90.** Medido con el mismo instrumento
+> —`_bitacoras/auditoria_rotulos_2026-08-15/02_medir_pantalla.js`, sin tocarlo— sobre el mapa antes
+> y después de `f3936b8`: **84 → 90**, no 84 → 100. El 100 es 84+16 hecho de cabeza: varias de las
+> 17 nulas **ya** llevaban el número de una Capitanía (el de **otra**), así que reemplazarlo no
+> sumaba al conteo. **El delta real de la Pieza A fue +6.** Lo que el párrafo afirma —que corregir
+> el dato empeora P3 y que P3 no se tocó— **no se mueve**; lo que era falso es la magnitud.
+> Evidencia: `_bitacoras/lote_cisnes_2026-08-16/08_pantalla_antes.txt` y `01_medir_lote.txt`. Corregir el dato **no alcanza** para que la pantalla deje de mentir: cierra
 entero el defecto de P2 —la etiqueta dura *"Capitanía de Puerto de {Gobernación}"*, que era 17 de 17
 y pasa a 0— y **deja P3 igual**, porque `PortStatusBlock.jsx:76-77` nunca lee `capitania`.
 

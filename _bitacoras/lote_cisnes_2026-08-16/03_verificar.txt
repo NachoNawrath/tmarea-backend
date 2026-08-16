@@ -1,0 +1,74 @@
+================================================================================
+VERIFICACION — LOTE CISNES. Ancla: commit fijo bd75c494
+================================================================================
+
+  entradas en el ancla : 164
+  entradas hoy         : 164
+  lote declarado       : 18 bahias
+
+=== V1 — las CLAVES y el campo `gobernacion` quedaron intactos ===
+  COMPARACIONES EFECTIVAS : 164
+  claves identicas y en el mismo orden · `gobernacion` sin cambios : SI
+
+=== V2 — se movieron EXACTAMENTE las lineas del lote, y ninguna otra ===
+  COMPARACIONES EFECTIVAS (lineas) : 187
+  lineas movidas : 18
+  ids movidos    : 251, 252, 253, 255, 175, 254, 176, 256, 124, 238, 240, 123, 239, 242, 241, 243, 244, 125
+  todas las movidas son del lote y todo el lote se movio : SI
+
+=== V3 — EL PAR: nombre y telefono de la MISMA reparticion, en cada entrada del lote ===
+  Es el criterio de pieza de `f3936b8`. La identificacion NO compara nombres:
+  entra por `CdReparticion` (D-R1) y cotea contra la fila del derivado.
+   id  CdRep  capitania         telefono           ¿del mismo CdRep?
+  123    241  Puerto Cisnes     +56 67 2346880     SI
+  124    234  Melinka           +56 67 2431555     SI
+  125    239  Puerto Aguirre    +56 67 2361233     SI
+  175    234  Melinka           +56 67 2431555     SI
+  176    234  Melinka           +56 67 2431555     SI
+  238    239  Puerto Aguirre    +56 67 2361233     SI
+  239    239  Puerto Aguirre    +56 67 2361233     SI
+  240    239  Puerto Aguirre    +56 67 2361233     SI
+  241    239  Puerto Aguirre    +56 67 2361233     SI
+  242    239  Puerto Aguirre    +56 67 2361233     SI
+  243    239  Puerto Aguirre    +56 67 2361233     SI
+  244    239  Puerto Aguirre    +56 67 2361233     SI
+  251    234  Melinka           +56 67 2431555     SI
+  252    234  Melinka           +56 67 2431555     SI
+  253    234  Melinka           +56 67 2431555     SI
+  254    234  Melinka           +56 67 2431555     SI
+  255    234  Melinka           +56 67 2431555     SI
+  256    234  Melinka           +56 67 2431555     SI
+  COMPARACIONES EFECTIVAS : 18
+
+=== V4 — el rotulo escrito viene de un titulo de "Capitania de Puerto" (INV-3.3) ===
+  La Alcaldia de Mar no es unidad de jurisdiccion y su nombre no puede ocupar
+  este campo. Se comprueba contra el TITULO publicado, no contra el nombre.
+  COMPARACIONES EFECTIVAS : 18
+  los 18 rotulos del lote vienen de un titulo de Capitania de Puerto : SI
+
+=== V5 — CERO telefonos no atomicos en TODO el archivo (INV-10.1) ===
+  El universo son las 164, no las del lote: un `tel:` roto en cualquier
+  entrada es el defecto, venga de esta pieza o de otra.
+  COMPARACIONES EFECTIVAS : 164
+  telefonos NO atomicos : 0
+
+=== V6 — las entradas que NO son del lote, IDENTICAS contra el blob del ancla ===
+  Identicas caracter por caracter DENTRO de la linea, y ademas identicas como
+  valor JSON. El terminador de linea no se compara: el blob viene en LF y el
+  disco esta en CRLF, y eso es propiedad del repositorio, no de la entrada.
+  COMPARACIONES EFECTIVAS (entradas fuera del lote) : 146
+  con la LINEA distinta : 0
+  con el VALOR distinto : 0
+
+=== V7 — las entradas con `capitania` null siguen siendo las declaradas ===
+  nulas en el ancla : 1 -> 127
+  nulas hoy         : 1 -> 127
+  COMPARACIONES EFECTIVAS : 1 (el conjunto de nulas, antes contra despues)
+  La 127 (Baker) sigue en null a proposito: el telefono que su reparticion
+  publica es "Móvil: +569 5617 3241" y no es atomico. Pendiente propio,
+  declarado desde `f3936b8`, y esta pieza no lo toca.
+
+================================================================================
+RESULTADO: V1–V7 en verde.
+  V1 164 · V2 187 lineas · V3 18 · V4 18 · V5 164 · V6 146 · V7 1
+================================================================================

@@ -3,9 +3,25 @@ Registrado el 2026-08-15, al crear el derivado (frente de CONTACTO, Pieza A).
 
 QUE ES ESTE DIRECTORIO
 --------------------------------------------------------------------------------
-Un solo archivo: `reparticiones_publicadas.json`, el indice
+~~Un solo archivo:~~ `reparticiones_publicadas.json`, el indice
 `CdReparticion -> { nombre publicado, telefono, direccion }` que consume
 `scripts/frente-contacto-pieza-a.js`.
+
+    ACTUALIZADO 2026-08-16 (§3.3): son DOS archivos, y no son la misma clase de
+    cosa. El de abajo es DERIVADO —se regenera y no se edita a mano—; el segundo
+    es DECLARADO.
+
+    `lotes_rotulo.json` — los LOTES del frente de CONTACTO: que subconjunto de
+    bahias toca cada pieza y por que ese subconjunto existe. Lo consume
+    `scripts/frente-contacto-aplicar-lote.js`. NO es derivado y NO se regenera:
+    se escribe a mano y cada lote lleva su `criterio` Y su `bahias_esperadas`,
+    que el aplicador coteja entre si abortando si no describen el mismo conjunto.
+    Vive en `data/` por la misma prueba de §3.5 que el otro: un archivo del
+    repositorio lo lee. Su procedencia es la decision del owner que abrio la
+    pieza, citada en el campo `motivo` de cada lote.
+
+    Tambien consume el derivado `scripts/frente-contacto-aplicar-lote.js`, no
+    solo el de la Pieza A.
 
 Es un DERIVADO REPRODUCIBLE. No se edita a mano. Se regenera con:
 

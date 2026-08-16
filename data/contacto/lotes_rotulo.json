@@ -1,0 +1,21 @@
+{
+  "que_es": "Los LOTES declarados del frente de CONTACTO: conjuntos de bahias de `src/data/bahia-capitania-map.json` a los que se les reescribe el par (nombre, telefono) de la reparticion que SITPORT les atribuye, por la via D-R1 + D-R4. Lo consume `scripts/frente-contacto-aplicar-lote.js`.",
+  "que_NO_es": "NO es fuente de jurisdiccion, ni de atribucion, ni de rotulo. No dice de quien es una bahia: dice QUE SUBCONJUNTO se toca en una pieza y por que ese subconjunto existe. La atribucion la da SITPORT (D-R1) y la forma del nombre el titulo publicado por DIRECTEMAR (D-R4), las dos por `data/contacto/reparticiones_publicadas.json`.",
+  "por_que_el_lote_es_dato_y_no_una_rama_del_codigo": "CLAUDE.md §4.3: una regla que nombra a una entidad no es una regla. Un generador con `capitania === 'Puerto Cisnes'` adentro seria exactamente eso. Aca el alcance de la pieza es una propiedad DECLARADA, y el generador es generico.",
+  "por_que_cada_lote_lleva_criterio_Y_extension": "Una lista de ids sola envejece en silencio el dia que alguien mueve una entrada. Un criterio solo cambia de alcance sin avisar. El generador computa el conjunto desde el `criterio` y ABORTA si no es identico a `bahias_esperadas`: ninguno de los dos puede derivar sin que se detenga.",
+  "el_criterio_describe_el_estado_ANTERIOR_a_la_pieza": "De eso se sigue que el generador NO es idempotente: una vez aplicado el lote, el criterio deja de seleccionarlo y la corrida ABORTA. Es correcto —el alcance ya no existe— y el aborto trae su diagnostico medido: cuenta cuantas de las declaradas ya llevan el par (nombre, telefono) que la pieza escribiria, para distinguir 'ya se aplico' de 'alguien movio entradas'. Para reproducir una pieza hay que reponer el mapa a su ancla primero, que es lo que hace la mordida.",
+  "campos_de_criterio_admitidos": {
+    "capitania_igual_a": "el valor exacto (sin normalizar) del campo `capitania` del mapa. Conjunto exhaustivo y sin caso por defecto (§4.2): un `criterio` con cualquier otra clave detiene la corrida en vez de caer al generico."
+  },
+  "lotes": [
+    {
+      "id": "cisnes_f421949",
+      "declarado": "2026-08-16",
+      "sesion": "LOTE-CISNES",
+      "motivo": "Las entradas que `f421949` renombro de `Cisnes` a `Puerto Cisnes` por prolijidad de rotulo, SIN re-atribuir. El rotulo nuevo calza exacto contra el insumo y por eso dejo de chirriar, que es la forma de CLAUDE.md §0.3: la opcion que deja todo prolijo sin cambiar nada de fondo. Es el caso que origino el frente entero — PLAN_JURISDICCION.md §5.1, rotulo y atribucion no se conflatan.",
+      "medicion_previa": "_bitacoras/lote_cisnes_2026-08-16/01_medir_lote.txt",
+      "criterio": { "capitania_igual_a": "Puerto Cisnes" },
+      "bahias_esperadas": [123, 124, 125, 175, 176, 238, 239, 240, 241, 242, 243, 244, 251, 252, 253, 254, 255, 256]
+    }
+  ]
+}

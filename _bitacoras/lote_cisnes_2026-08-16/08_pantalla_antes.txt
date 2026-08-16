@@ -1,0 +1,164 @@
+================================================================================
+P1/P2/P3 ANTES DE LA PIEZA — instrumento del 2026-08-15, sin tocarlo
+Mapa repuesto al ancla bd75c494. Instrumento: _bitacoras/auditoria_rotulos_2026-08-15/02_medir_pantalla.js
+================================================================================
+
+  sha256 del mapa en disco antes de reponer : 376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da795fb41ce17aa0498a
+  sha256 del mapa del ancla, en CRLF        : bbb28e2f8e959c94011eb29efe75edeea1fbadb21bf43aeee23116e4835d9122
+  sha256 del mapa despues de restaurar      : 376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da795fb41ce17aa0498a  OK
+
+  el instrumento salio con exit 0
+
+--- SALIDA LITERAL DEL INSTRUMENTO DEL 2026-08-15, CON EL MAPA EN EL ANCLA ---
+
+================================================================================
+QUE LE LLEGA AL PATRON — TRES CAMINOS DE CONTACTO, MEDIDOS POR SEPARADO
+2026-08-15
+================================================================================
+
+=== AMBITOS PUBLICADOS HOY (deciden el nombre solo en P1) ===
+  maritima           publicado=false
+  lacustre           publicado=true
+  antartica          publicado=false
+  insular_remota     publicado=false
+  ambitosPublicados efectivo = [lacustre]
+  Nota: en la ruta real ese arreglo sale de ensancheVigente(pool) contra la base,
+  no de este archivo. Aca se mide el archivo declarado, que es lo que el gate lee.
+
+=== P1 — bahias INTERMEDIAS de la ruta (TransitRestrictionsBlock) ===
+  Render literal: "📞 {r.capitania || r.gobernacion} — {r.telefono}", sin etiqueta.
+  entradas cuyo nombre sale del DECRETO hoy (ambito publicado): 21
+  entradas donde `capitania` es null y el JSX cae a `gobernacion`: 1
+      -> 127:"Aysén"
+  COMPARACIONES EFECTIVAS : 163
+  el nombre mostrado ES el que SITPORT atribuye : 90
+  el nombre mostrado NO lo es                   : 73
+
+=== P2 — aviso de ARRIBADA FORZOSA (P3_VoyageVerification.jsx:237) ===
+  Render literal: "Capitania de Puerto de {rec.capitania || rec.gobernacion}".
+  Lee del MAPA CRUDO (estado-puerto :339 -> getCapitaniaByBahiaId): el decreto
+  NO participa en este camino, este por publicado el ambito que este.
+  COMPARACIONES EFECTIVAS : 163
+  el nombre rotulado "Capitania de Puerto de X" ES el que SITPORT atribuye : 98
+  NO lo es                                                                : 65
+  entradas donde lo rotulado "Capitania de Puerto de" es un nombre de GOBERNACION: 1 de 1
+      127  capitania=null -> muestra "Capitania de Puerto de Aysén"  (¿es nombre de Gobernacion? true)
+
+=== P3 — tarjeta de ZARPE y RECALADA (PortStatusBlock.jsx:76-77) ===
+  Render literal: "📞 Gobernacion Maritima de {data.gobernacion} — {data.telefono}".
+  NO lee `capitania` en ningun caso. Es el escalon que INV-10.1 gobierna.
+  entradas con telefono                                       : 164
+  cuyo numero es de una CAPITANIA del CSV verificado           : 90
+  cuyo numero no figura en el CSV de Capitanias (Gobernacion u otro): 74
+  De las que SI: el numero de una Capitania se muestra bajo la etiqueta
+  "Gobernacion Maritima de {Gobernacion}". Reparto por Capitania duena del numero:
+      COQUIMBO                  10
+      VILLARRICA                 9
+      VALDIVIA                   8
+      PUERTO MONTT               8
+      RIO NEGRO HORNOPIRÉN       8
+      ANTOFAGASTA                7
+      CALDERA                    7
+      TALCAHUANO                 4
+      MAULLÍN                    4
+      CALBUCO                    3
+      CARAHUE                    3
+      CORONEL                    2
+      CONSTITUCIÓN               2
+      CHAITÉN                    2
+      EDÉN                       2
+      BAHÍA PARAÍSO              2
+      COCHAMÓ                    2
+      ARICA                      1
+      HANGA ROA                  1
+      LAGO RAPEL                 1
+      LEBU                       1
+      PANGUIPULLI                1
+      PUERTO VARAS               1
+      SOBERANÍA                  1
+
+=== LO PELIGROSO: nombre creible y equivocado que SI llega a pantalla ===
+  P1 (transito)           : 64 creibles-y-equivocadas de 73 equivocadas
+  P2 (arribada forzosa)   : 56 creibles-y-equivocadas de 65 equivocadas
+
+  --- detalle P1, el camino donde el rotulo del mapa llega tal cual ---
+     73  muestra "Iquique" (mapa_operativo)  ·  SITPORT dice "PATACHE"  ·  tel +56 57 240 1902
+     74  muestra "Antofagasta" (mapa_operativo)  ·  SITPORT dice "TOCOPILLA"  ·  tel +56 55 263 0000
+     76  muestra "Antofagasta" (mapa_operativo)  ·  SITPORT dice "MEJILLONES"  ·  tel +56 55 263 0000
+     79  muestra "Antofagasta" (mapa_operativo)  ·  SITPORT dice "TALTAL"  ·  tel +56 55 263 0000
+     80  muestra "Caldera" (mapa_operativo)  ·  SITPORT dice "CHANARAL"  ·  tel +56 52 231 5276
+     87  muestra "Coquimbo" (mapa_operativo)  ·  SITPORT dice "TONGOY"  ·  tel +56 51 255 8100
+     90  muestra "Valparaíso" (mapa_operativo)  ·  SITPORT dice "JUAN FERNÁNDEZ"  ·  tel +56 32 220 8905
+     94  muestra "San Antonio" (mapa_operativo)  ·  SITPORT dice "ALGARROBO"  ·  tel +56 35 258 4802
+     95  muestra "San Antonio" (mapa_operativo)  ·  SITPORT dice "PICHILEMU"  ·  tel +56 35 258 4802
+     97  muestra "Talcahuano" (mapa_operativo)  ·  SITPORT dice "LIRQUÉN"  ·  tel +56 41 3831100
+     99  muestra "Talcahuano" (mapa_operativo)  ·  SITPORT dice "SAN VICENTE"  ·  tel +56 41 3831100
+    102  muestra "Coronel" (mapa_operativo)  ·  SITPORT dice "LOTA"  ·  tel +56 41 3839692
+    105  muestra "Lago Villarrica" (decreto)  ·  SITPORT dice "VILLARRICA"  ·  tel +56 45 2524733
+    106  muestra "Lago Panguipulli" (decreto)  ·  SITPORT dice "PANGUIPULLI"  ·  tel +56 63 2276944
+    115  muestra "Hornopirén" (mapa_operativo)  ·  SITPORT dice "RIO NEGRO HORNOPIRÉN"  ·  tel +56 65 2217304
+    123  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "CISNES"  ·  tel +56 67 233 1405
+    124  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "MELINKA"  ·  tel +56 67 233 1405
+    125  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "AGUIRRE"  ·  tel +56 67 233 1405
+    127  muestra "Aysén" (mapa_operativo)  ·  SITPORT dice "BAKER"  ·  tel +56 67 233 1405
+    128  muestra "Lago General Carrera" (decreto)  ·  SITPORT dice "LAGO GRAL.CARRERA"  ·  tel +56 67 233 1405
+    129  muestra "Puerto Edén" (mapa_operativo)  ·  SITPORT dice "EDÉN"  ·  tel +56 61 2201164
+    131  muestra "Punta Arenas" (mapa_operativo)  ·  SITPORT dice "PUNTA DELGADA"  ·  tel +56 61 220 1102
+    132  muestra "Punta Arenas" (mapa_operativo)  ·  SITPORT dice "TIERRA DEL FUEGO"  ·  tel +56 61 220 1102
+    137  muestra "Punta Arenas" (mapa_operativo)  ·  SITPORT dice "TIERRA DEL FUEGO"  ·  tel +56 61 220 1102
+    150  muestra "Coquimbo" (mapa_operativo)  ·  SITPORT dice "TONGOY"  ·  tel +56 51 255 8100
+    151  muestra "Coquimbo" (mapa_operativo)  ·  SITPORT dice "TONGOY"  ·  tel +56 51 255 8100
+    154  muestra "Puerto Edén" (mapa_operativo)  ·  SITPORT dice "EDÉN"  ·  tel +56 61 2201164
+    156  muestra "Punta Arenas" (mapa_operativo)  ·  SITPORT dice "PUNTA DELGADA"  ·  tel +56 61 220 1102
+    157  muestra "Caldera" (mapa_operativo)  ·  SITPORT dice "HUASCO"  ·  tel +56 52 231 5276
+    158  muestra "Coquimbo" (mapa_operativo)  ·  SITPORT dice "HUASCO"  ·  tel +56 51 255 8100
+    160  muestra "Lago Ranco" (decreto)  ·  SITPORT dice "PUERTO VARAS"  ·  tel +56 65 2205100
+    172  muestra "Caldera" (mapa_operativo)  ·  SITPORT dice "CHANARAL"  ·  tel +56 52 231 5276
+    175  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "MELINKA"  ·  tel +56 67 233 1405
+    176  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "MELINKA"  ·  tel +56 67 233 1405
+    181  muestra "Hornopirén" (mapa_operativo)  ·  SITPORT dice "RIO NEGRO HORNOPIRÉN"  ·  tel +56 65 2217304
+    182  muestra "Hornopirén" (mapa_operativo)  ·  SITPORT dice "RIO NEGRO HORNOPIRÉN"  ·  tel +56 65 2217304
+    183  muestra "Hornopirén" (mapa_operativo)  ·  SITPORT dice "RIO NEGRO HORNOPIRÉN"  ·  tel +56 65 2217304
+    184  muestra "Hornopirén" (mapa_operativo)  ·  SITPORT dice "RIO NEGRO HORNOPIRÉN"  ·  tel +56 65 2217304
+    185  muestra "Hornopirén" (mapa_operativo)  ·  SITPORT dice "RIO NEGRO HORNOPIRÉN"  ·  tel +56 65 2217304
+    186  muestra "Hornopirén" (mapa_operativo)  ·  SITPORT dice "RIO NEGRO HORNOPIRÉN"  ·  tel +56 65 2217304
+    187  muestra "Hornopirén" (mapa_operativo)  ·  SITPORT dice "RIO NEGRO HORNOPIRÉN"  ·  tel +56 65 2217304
+    195  muestra "Iquique" (mapa_operativo)  ·  SITPORT dice "PATACHE"  ·  tel +56 57 240 1902
+    196  muestra "Iquique" (mapa_operativo)  ·  SITPORT dice "PATACHE"  ·  tel +56 57 240 1902
+    197  muestra "Iquique" (mapa_operativo)  ·  SITPORT dice "PATACHE"  ·  tel +56 57 240 1902
+    198  muestra "Talcahuano" (mapa_operativo)  ·  SITPORT dice "SAN VICENTE"  ·  tel +56 41 3831100
+    203  muestra "Lago General Carrera" (decreto)  ·  SITPORT dice "LAGO GRAL.CARRERA"  ·  tel +56 67 233 1405
+    209  muestra "Lago Villarrica" (decreto)  ·  SITPORT dice "VILLARRICA"  ·  tel +56 45 2524733
+    210  muestra "Lago Villarrica" (decreto)  ·  SITPORT dice "VILLARRICA"  ·  tel +56 45 2524733
+    215  muestra "San Antonio" (mapa_operativo)  ·  SITPORT dice "ALGARROBO"  ·  tel +56 35 258 4802
+    219  muestra "Valparaíso" (mapa_operativo)  ·  SITPORT dice "QUINTERO"  ·  tel +56 32 220 8905
+    234  muestra "Chaitén" (mapa_operativo)  ·  SITPORT dice "CISNES"  ·  tel +56 65 2731267
+    235  muestra "Quemchi" (mapa_operativo)  ·  SITPORT dice "ACHAO"  ·  tel +56 65 262 9405
+    236  muestra "Antofagasta" (mapa_operativo)  ·  SITPORT dice "TOCOPILLA"  ·  tel +56 55 263 0000
+    238  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "AGUIRRE"  ·  tel +56 67 233 1405
+    239  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "AGUIRRE"  ·  tel +56 67 233 1405
+    240  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "AGUIRRE"  ·  tel +56 67 233 1405
+    241  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "AGUIRRE"  ·  tel +56 67 233 1405
+    242  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "AGUIRRE"  ·  tel +56 67 233 1405
+    243  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "AGUIRRE"  ·  tel +56 67 233 1405
+    244  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "AGUIRRE"  ·  tel +56 67 233 1405
+    245  muestra "Lago Panguipulli" (decreto)  ·  SITPORT dice "VILLARRICA"  ·  tel +56 45 2524733
+    246  muestra "Lago Panguipulli" (decreto)  ·  SITPORT dice "VILLARRICA"  ·  tel +56 45 2524733
+    247  muestra "Lago Panguipulli" (decreto)  ·  SITPORT dice "VILLARRICA"  ·  tel +56 45 2524733
+    248  muestra "Lago Panguipulli" (decreto)  ·  SITPORT dice "VILLARRICA"  ·  tel +56 45 2524733
+    249  muestra "Lago Panguipulli" (decreto)  ·  SITPORT dice "VILLARRICA"  ·  tel +56 45 2524733
+    250  muestra "Lago Panguipulli" (decreto)  ·  SITPORT dice "VILLARRICA"  ·  tel +56 45 2524733
+    251  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "MELINKA"  ·  tel +56 67 233 1405
+    252  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "MELINKA"  ·  tel +56 67 233 1405
+    253  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "MELINKA"  ·  tel +56 67 233 1405
+    254  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "MELINKA"  ·  tel +56 67 233 1405
+    255  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "MELINKA"  ·  tel +56 67 233 1405
+    256  muestra "Puerto Cisnes" (mapa_operativo)  ·  SITPORT dice "MELINKA"  ·  tel +56 67 233 1405
+    257  muestra "Lago General Carrera" (decreto)  ·  SITPORT dice "LAGO GRAL.CARRERA"  ·  tel +56 67 233 1405
+
+Ningun archivo de src/, data/ ni de la PWA fue escrito por este instrumento.
+================================================================================
+
+================================================================================
+El mapa quedo restaurado byte a byte.
+================================================================================

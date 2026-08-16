@@ -670,10 +670,19 @@ solo el nombre, CERO de las 17 quedaba con el numero de su propia reparticion �
 diez con el de otra y siete con uno que el CSV no conoce. Es la combinacion que
 el owner reverso el 2026-08-13.
 
-P3 sigue como estaba: los telefonos nuevos llevan de 84 a 100 los numeros de
+P3 sigue como estaba: los telefonos nuevos llevan de 84 a ~~100~~ los numeros de
 Capitania que la tarjeta de zarpe rotula "Gobernación Marítima de". El render no
 se toco. El detalle completo, en `PLAN_JURISDICCION.md` §7.1, addendum del
 2026-08-15.
+
+    CORRECCION 2026-08-16 (§3.3, se agrega y no se reescribe): EL 100 NUNCA SE
+    MIDIO. SON 90. Medido con `02_medir_pantalla.js` de este mismo directorio,
+    sin tocarlo, sobre el mapa antes y despues de `f3936b8`: 84 -> 90. El 100 es
+    84+16 hecho de cabeza — varias de las 17 nulas YA llevaban el numero de una
+    Capitania, el de OTRA, asi que reemplazarlo no sumaba al conteo. El delta
+    real de la Pieza A fue +6. Lo que este parrafo afirma —que P3 sigue como
+    estaba y que el render no se toco— no se mueve; lo falso era la magnitud.
+    Evidencia: `_bitacoras/lote_cisnes_2026-08-16/08_pantalla_antes.txt`.
 ================================================================================
 
 

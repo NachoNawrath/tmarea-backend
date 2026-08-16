@@ -1,0 +1,59 @@
+================================================================================
+APLICADOR DE LOTE — nombre y telefono de la reparticion que SITPORT atribuye
+================================================================================
+
+  LOTE DECLARADO
+      id       : cisnes_f421949
+      declarado: 2026-08-16
+      criterio : capitania_igual_a = "Puerto Cisnes"
+      esperadas: 18 bahias
+
+  src/data/bahia-capitania-map.json
+      sha256 ANTES : bbb28e2f8e959c94011eb29efe75edeea1fbadb21bf43aeee23116e4835d9122
+      fin de linea : CRLF
+      entradas     : 164
+      round-trip del emisor sobre las 164 lineas: OK
+
+  EL CONJUNTO — computado desde el criterio y cotejado contra la lista declarada
+      por el criterio : 18  -> 123, 124, 125, 175, 176, 238, 239, 240, 241, 242, 243, 244, 251, 252, 253, 254, 255, 256
+      declaradas      : 18  -> 123, 124, 125, 175, 176, 238, 239, 240, 241, 242, 243, 244, 251, 252, 253, 254, 255, 256
+      solo en el criterio : (ninguna)
+      solo en la lista    : (ninguna)
+      los dos describen el MISMO conjunto: OK
+
+  _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json   -> 165 registros
+  data/contacto/reparticiones_publicadas.json  -> 64 reparticiones
+
+  COMPARACIONES EFECTIVAS (bahias del lote con reparticion en el derivado) : 18
+  se escriben  : 18
+  EXCLUIDAS    : 0
+
+  QUE SE ESCRIBE
+      id   CdRep  capitania                telefono              identificada por
+      123    241  Puerto Cisnes            +56 67 2346880        telefono
+      124    234  Melinka                  +56 67 2431555        nombre
+      125    239  Puerto Aguirre           +56 67 2361233        telefono
+      175    234  Melinka                  +56 67 2431555        nombre
+      176    234  Melinka                  +56 67 2431555        nombre
+      238    239  Puerto Aguirre           +56 67 2361233        telefono
+      239    239  Puerto Aguirre           +56 67 2361233        telefono
+      240    239  Puerto Aguirre           +56 67 2361233        telefono
+      241    239  Puerto Aguirre           +56 67 2361233        telefono
+      242    239  Puerto Aguirre           +56 67 2361233        telefono
+      243    239  Puerto Aguirre           +56 67 2361233        telefono
+      244    239  Puerto Aguirre           +56 67 2361233        telefono
+      251    234  Melinka                  +56 67 2431555        nombre
+      252    234  Melinka                  +56 67 2431555        nombre
+      253    234  Melinka                  +56 67 2431555        nombre
+      254    234  Melinka                  +56 67 2431555        nombre
+      255    234  Melinka                  +56 67 2431555        nombre
+      256    234  Melinka                  +56 67 2431555        nombre
+
+  lineas modificadas : 18 de 187
+  lineas identicas   : 169
+  el resultado es JSON valido, con las mismas claves y sin cambios en `gobernacion`
+  entradas fuera de la lista comprobadas identicas : 146
+
+  ESCRITO: src/data/bahia-capitania-map.json
+      sha256 DESPUES : 376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da795fb41ce17aa0498a
+================================================================================

@@ -1,0 +1,191 @@
+================================================================================
+LOTE CISNES — MEDICION PREVIA. 2026-08-16
+Frente de CONTACTO (PLAN_JURISDICCION.md §7.1). NO escribe ningun archivo.
+================================================================================
+
+=== N0 — INSUMOS, con sha256 del archivo EN DISCO ===
+  _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json aed48c23ffbb840cb8f09acde180b96827b159990d961d76daf1278cb473270b
+  data/contacto/reparticiones_publicadas.json                    9524a3792e3d79d7690d5a4c09b1c46191934dea45a734051f285420f89fef46
+  data/decreto/join_bahia_jurisdiccion.json                      62a3b5c2d85b6897d4431570f99ded4a88e5e9df2b8a60d1697bf68ab5e2e985
+  data/decreto/zonas_aviso.json                                  8095e167a3de4634c0573454ac01a27ce01fede122b2ad9c2ea5d0999e38e9b1
+  _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv  04cdf370c089e321a7085a58226d05d73f456a20f0e4c5479cfe5ae9dd242d4d
+  data/decreto/jurisdicciones_v2.json                            10ef5af265b9a448dfe493855c25442c2d6905801a747c66cbb4e33554bee413
+
+  FECHA DE CAPTURA DEL SNAPSHOT DE SITPORT — declarada, no inferida:
+    _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json
+    capturado el 2026-08-13. Es el MISMO snapshot versionado que lee
+    `scripts/frente-contacto-pieza-a.js`, y por eso la medicion del plan y la
+    de la verificacion corren contra el mismo dato.
+    LO QUE NO SE MIDE: si SITPORT dice hoy lo mismo que el 2026-08-13.
+    Esta sesion NO consulta SITPORT en vivo.
+
+  EL MAPA NO SE LEE DEL DISCO — sale del ancla, para que esta medicion previa
+  se reproduzca igual despues de aplicada la pieza:
+  src/data/bahia-capitania-map.json  [bd75c494, en CRLF]         bbb28e2f8e959c94011eb29efe75edeea1fbadb21bf43aeee23116e4835d9122
+
+=== N1 — QUE ES EL LOTE, medido de DOS maneras independientes ===
+  (a) renombradas por f421949 a "Puerto Cisnes" : 18
+      rotulo del que venian                        : ["Cisnes"]
+  (b) entradas que HOY dicen "Puerto Cisnes"       : 18
+  ¿los dos conjuntos son el mismo?                 : true
+  LOTE = 123, 124, 125, 175, 176, 238, 239, 240, 241, 242, 243, 244, 251, 252, 253, 254, 255, 256
+
+  Que dice cada uno, y por que se miden los dos: (a) es "lo que el commit
+  hizo" y (b) es "lo que el archivo dice hoy". Que coincidan prueba que
+  ninguna entrada entro ni salio del lote entre f421949 y HEAD.
+
+=== N2 — ESTADO DE LAS 18 ANTES DE LA PIEZA (mapa del ancla), contra el dato ===
+  D-R4: el nombre sale del TITULO que DIRECTEMAR publica, entrando por
+  `CdReparticion`. El telefono sale del CSV por la misma clave. Las dos cosas
+  llegan por `data/contacto/reparticiones_publicadas.json`.
+
+   id  CdRep  join                 mapa: capitania    telefono          -> D-R4: nombre           telefono          ident
+  123    241  puerto_cisnes        Puerto Cisnes   +56 67 233 1405   -> Puerto Cisnes      +56 67 2346880    telefono
+  124    234  melinka              Puerto Cisnes   +56 67 233 1405   -> Melinka            +56 67 2431555    nombre
+  125    239  puerto_aguirre       Puerto Cisnes   +56 67 233 1405   -> Puerto Aguirre     +56 67 2361233    telefono
+  175    234  melinka              Puerto Cisnes   +56 67 233 1405   -> Melinka            +56 67 2431555    nombre
+  176    234  melinka              Puerto Cisnes   +56 67 233 1405   -> Melinka            +56 67 2431555    nombre
+  238    239  puerto_cisnes        Puerto Cisnes   +56 67 233 1405   -> Puerto Aguirre     +56 67 2361233    telefono
+  239    239  (sin_resolver)       Puerto Cisnes   +56 67 233 1405   -> Puerto Aguirre     +56 67 2361233    telefono
+  240    239  puerto_cisnes        Puerto Cisnes   +56 67 233 1405   -> Puerto Aguirre     +56 67 2361233    telefono
+  241    239  (sin_resolver)       Puerto Cisnes   +56 67 233 1405   -> Puerto Aguirre     +56 67 2361233    telefono
+  242    239  puerto_aguirre       Puerto Cisnes   +56 67 233 1405   -> Puerto Aguirre     +56 67 2361233    telefono
+  243    239  puerto_aguirre       Puerto Cisnes   +56 67 233 1405   -> Puerto Aguirre     +56 67 2361233    telefono
+  244    239  puerto_aguirre       Puerto Cisnes   +56 67 233 1405   -> Puerto Aguirre     +56 67 2361233    telefono
+  251    234  quellon              Puerto Cisnes   +56 67 233 1405   -> Melinka            +56 67 2431555    nombre
+  252    234  quellon              Puerto Cisnes   +56 67 233 1405   -> Melinka            +56 67 2431555    nombre
+  253    234  quellon              Puerto Cisnes   +56 67 233 1405   -> Melinka            +56 67 2431555    nombre
+  254    234  melinka              Puerto Cisnes   +56 67 233 1405   -> Melinka            +56 67 2431555    nombre
+  255    234  melinka              Puerto Cisnes   +56 67 233 1405   -> Melinka            +56 67 2431555    nombre
+  256    234  melinka              Puerto Cisnes   +56 67 233 1405   -> Melinka            +56 67 2431555    nombre
+
+  COMPARACIONES EFECTIVAS (bahias del lote con reparticion en el derivado) : 18
+  reparto por CdReparticion de SITPORT:
+      CdRep  234   9  -> "Melinka"  (CSV: "MELINKA")
+      CdRep  239   8  -> "Puerto Aguirre"  (CSV: "AGUIRRE")
+      CdRep  241   1  -> "Puerto Cisnes"  (CSV: "CISNES")
+
+  QUE CAMBIA, campo por campo:
+      el NOMBRE cambia en   : 17 de 18   (queda igual en 1: 123)
+      el TELEFONO cambia en : 18 de 18
+      la GOBERNACION        : no se toca. Valores distintos hoy en el lote: ["Aysén"]
+
+  DE QUIEN ES EL TELEFONO QUE LLEVAN HOY: ["+56 67 233 1405"]
+      "+56 67 233 1405" -> ¿es de alguna Capitania del CSV? NO   ·  lo llevan 32 entradas del mapa: 123, 124, 125, 126, 127, 128, 175, 176, 203, 220, 221, 222, 223, 224, 225, 226, 227, 228, 238, 239, 240, 241, 242, 243, 244, 251, 252, 253, 254, 255, 256, 257
+
+=== N3 — CRITERIO DE PIEZA (f3936b8): nombre y telefono de la MISMA reparticion ===
+  La atomicidad se RECALCULA aca, no se toma de la bandera del derivado:
+  un insumo que mienta su propia bandera no puede hacer pasar el criterio.
+
+  CUMPLEN el criterio (se pueden escribir con el par completo) : 18 de 18
+  NO cumplen                                                  : 0
+      (ninguna)
+
+  LOS DOS MODOS DE FALLA CONOCIDOS, probados por nombre sobre este lote:
+      · telefono NO atomico en la fuente : 0 de 18. Los 18 telefonos publicados son atomicos.
+      · CdReparticion ausente del CSV    : 0 de 18. Las 3 reparticiones del lote estan en el derivado.
+
+  CONTRA-PRUEBA — el caso que romperia el fundamento (§1.2): si se escribiera
+  SOLO el nombre y se dejara el telefono de hoy, ¿cuantas quedarian con el
+  numero de su propia reparticion?
+      el numero es de la MISMA reparticion que el nombre : 0
+      el numero es de OTRA reparticion del CSV           : 0
+      el numero no figura en el CSV de Capitanias        : 18
+      Es el mismo resultado que N10 de la Pieza A: escribir un campo solo NO
+      es una pieza mas chica, es la misma pieza fabricando credibilidad.
+
+=== N4 — CRUCE CON `data/decreto/zonas_aviso.json` ===
+   zona                  tipo            bahias declaradas      ¿toca el lote?
+   arica                capitania       71                     no
+   hanga_roa            capitania       89                     no
+   juan_fernandez       sin_contacto    90                     no
+   lirquen              sin_contacto    97                     no
+   talcahuano           capitania       98                     no
+   baker                gobernacion     127                    no
+   puerto_eden          capitania       129                    no
+   punta_delgada        sin_contacto    131,132                no
+   tierra_del_fuego     sin_contacto    137                    no
+   puerto_williams      capitania       138                    no
+
+  COMPARACIONES EFECTIVAS (zonas leidas) : 10
+  zonas que cruzan el lote               : 0
+  discrepancias declaradas vivas que el lote tocaria : 0
+  NINGUNA declaracion de `zonas_aviso.json` cae dentro del lote. El universo
+  declarado ahi son 11 bahias —71, 89, 90, 97, 98, 127, 129, 131, 132, 137,
+  138— y el lote son otras 18. La rama de la discrepancia de `bd75c494` no
+  se toca, y su retiro automatico (M24) no se dispara por esta pieza.
+
+=== N5 — LOS TRES CAMINOS A PANTALLA, hoy y con el lote aplicado ===
+  La forma de cada camino se re-leyo del codigo en esta sesion, backend y PWA,
+  y las lineas literales estan transcritas en la seccion 6 de la bitacora.
+  No se transcriben desde aca porque la PWA vive en OTRO repositorio y un
+  instrumento que la lea de disco deja de ser reproducible (§3.4).
+
+  --- ANTES DE LA PIEZA (mapa del ancla bd75c494) ---
+  P1 TransitRestrictionsBlock  NO SE MIDE ACA, y hay que decir por que: P1 toma el
+     nombre del DECRETO en las entradas de ambito publicado y del mapa en el resto,
+     mientras que P2 lee siempre el mapa crudo. Modelarlos con una sola regla es lo
+     que la seccion 4 de la auditoria del 08-15 advirtio que no se hiciera. P1 se mide
+     con su instrumento versionado: 08_pantalla_antes.txt y 07_pantalla_despues.txt.
+  P2 P3_VoyageVerification     "Capitanía de Puerto de {capitania || gobernacion}", etiqueta DURA
+     COMPARACIONES EFECTIVAS 163 · coincide: 98 · NO: 65 · entradas que caen a `gobernacion`: 1
+  P3 PortStatusBlock           "📞 Gobernación Marítima de {gobernacion} — {telefono}". NUNCA lee `capitania`
+     entradas con telefono 164 · cuyo numero es de una CAPITANIA del CSV: 90 · no figura en el CSV: 74
+  VARA REPARTICION (la de D-R1+D-R4) sobre el nombre mostrado en P2:
+     COMPARACIONES EFECTIVAS 162 · el nombre mostrado ES el nombre publicado de la reparticion que SITPORT atribuye: 112 · NO lo es: 50
+
+  --- CON EL LOTE APLICADO (simulado en memoria, no se escribio nada) ---
+  P1 TransitRestrictionsBlock  NO SE MIDE ACA, y hay que decir por que: P1 toma el
+     nombre del DECRETO en las entradas de ambito publicado y del mapa en el resto,
+     mientras que P2 lee siempre el mapa crudo. Modelarlos con una sola regla es lo
+     que la seccion 4 de la auditoria del 08-15 advirtio que no se hiciera. P1 se mide
+     con su instrumento versionado: 08_pantalla_antes.txt y 07_pantalla_despues.txt.
+  P2 P3_VoyageVerification     "Capitanía de Puerto de {capitania || gobernacion}", etiqueta DURA
+     COMPARACIONES EFECTIVAS 163 · coincide: 107 · NO: 56 · entradas que caen a `gobernacion`: 1
+  P3 PortStatusBlock           "📞 Gobernación Marítima de {gobernacion} — {telefono}". NUNCA lee `capitania`
+     entradas con telefono 164 · cuyo numero es de una CAPITANIA del CSV: 108 · no figura en el CSV: 56
+  VARA REPARTICION (la de D-R1+D-R4) sobre el nombre mostrado en P2:
+     COMPARACIONES EFECTIVAS 162 · el nombre mostrado ES el nombre publicado de la reparticion que SITPORT atribuye: 129 · NO lo es: 33
+
+  DELTA del lote:
+      P2 vara CADENA (cruda de SITPORT)   : 98 -> 107   (+9)
+      P2 vara REPARTICION (D-R1+D-R4)     : 112 -> 129   (+17)
+      LAS DOS VARAS NO MIDEN LO MISMO Y LA DIFERENCIA ES DEL LOTE: la vara
+      CADENA no le da el punto a "Puerto Aguirre" porque SITPORT escribe
+      "AGUIRRE", y D-R4 descarto justamente esa cadena como forma del rotulo.
+      Sobre las 18 del lote: por la vara REPARTICION pasan de 0 a 17.
+      P3 numeros de Capitania rotulados "Gobernación Marítima de" : 90 -> 108   (+18)
+      P3 EMPEORA. Es el mismo efecto que la Pieza A declaro y el owner acepto
+      antes de escribir: el dato mejora y el rotulo de P3 sigue mintiendo,
+      porque `PortStatusBlock.jsx:76-77` nunca lee `capitania`.
+
+  CONTROL DE UNA CIFRA HEREDADA — el "100 de 164" de P3:
+      mapa ANTES de la Pieza A (f3936b8^) : 84
+      mapa HOY (despues de la Pieza A)    : 90
+      lo que el plan y dos bitacoras dicen: "de 84 a 100"
+      MEDIDO: de 84 a 90. El 100 es 84+16 hecho de cabeza, no una medicion:
+      varias de las 17 nulas YA llevaban el numero de una Capitania —el de OTRA—,
+      asi que reemplazarlo no sumaba al conteo. El delta real de la Pieza A fue +6.
+
+=== N6 — EL SEGUNDO RESOLVEDOR: `src/services/ambitos-publicados.js:306` ===
+  Regla leida del codigo (no se toca en esta sesion): para cada jurisdiccion
+  recorre TODAS las entradas del mapa y toma la PRIMERA cuyo `capitania`
+  coincida con el nombre del decreto. El orden de las claves decide.
+  jurisdicciones que el join le da a las bahias del lote: ["puerto_cisnes","melinka","puerto_aguirre","quellon"]
+
+   jurisdiccion         nombre del decreto      HOY: bahia/telefono          CON EL LOTE: bahia/telefono
+   puerto_cisnes        Puerto Cisnes           123 / +56 67 233 1405        123 / +56 67 2346880
+   melinka              Melinka                 (ninguna — no emite contacto) 124 / +56 67 2431555
+   puerto_aguirre       Puerto Aguirre          (ninguna — no emite contacto) 125 / +56 67 2361233
+   quellon              Quellon                 117 / +56 65 262 9405        117 / +56 65 262 9405
+
+  COMPARACIONES EFECTIVAS (jurisdicciones del lote con nombre en el decreto) : 4
+
+=== N7 — LAS ENTRADAS QUE NO SON DEL LOTE ===
+  entradas fuera del lote        : 146
+  identicas tras aplicar el lote : 146
+  movidas                        : 0   (debe ser 0)
+
+================================================================================
+MEDICION COMPLETA. Ningun archivo fue escrito.
+================================================================================

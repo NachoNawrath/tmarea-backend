@@ -1,0 +1,579 @@
+================================================================================
+LOTE CISNES — LAS 18 ENTRADAS QUE `f421949` RENOMBRO SIN RE-ATRIBUIR. 2026-08-16
+Sesion: LOTE-CISNES. HEAD al abrir y al cerrar: bd75c494 (sin commit).
+Frente: CONTACTO y atribucion de bahias (PLAN_JURISDICCION.md §7.1).
+NO es el frente de jurisdiccion del D.S. 991; no se abrio nada de ese frente.
+Escrito: `src/data/bahia-capitania-map.json` (18 entradas), el aplicador
+generico, el lote declarado, y la enmienda con tachado de la cifra heredada.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+El agente corrio los instrumentos con `node` desde Git Bash. Las lineas corren
+identicas en PowerShell desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\lote_cisnes_2026-08-16\01_medir_lote.js
+    node scripts\frente-contacto-aplicar-lote.js --lote=cisnes_f421949 --dry-run
+    node scripts\frente-contacto-aplicar-lote.js --lote=cisnes_f421949
+    node _bitacoras\lote_cisnes_2026-08-16\03_verificar.js
+    node _bitacoras\lote_cisnes_2026-08-16\04_mordida.js
+    node _bitacoras\lote_cisnes_2026-08-16\04_mordida.js --estado=viejo
+    node _bitacoras\lote_cisnes_2026-08-16\08_pantalla_antes.js
+    node _bitacoras\auditoria_rotulos_2026-08-15\02_medir_pantalla.js
+    npm test
+
+Las salidas de este directorio se generaron redirigiendo con `>` de **bash**, no
+de PowerShell. Para reproducirlas en PowerShell sin corromper tildes y ñ:
+
+    node ... 01_medir_lote.js | Tee-Object -FilePath 01_medir_lote.txt
+
+`>` de PowerShell reencodea y convierte fines de linea; esta prohibido para
+medir (CLAUDE.md §7.2).
+
+REPO DE SOLO LECTURA
+--------------------------------------------------------------------------------
+`C:/Users/katia/tmarea-pwa` se leyo, no se escribio, no se corrio git ahi. De
+ahi salen las tres lineas de render de la seccion 6, transcritas literales.
+
+INSUMOS
+--------------------------------------------------------------------------------
+Los siete, con sha256 del archivo en disco, estan en el bloque N0 de
+`01_medir_lote.txt`. Los que deciden algo:
+
+    _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json
+                                              aed48c23ffbb840c…  (SITPORT)
+    data/contacto/reparticiones_publicadas.json
+                                              9524a3792e3d79d7…  (D-R4)
+    _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv
+                                              04cdf370c089e321…  (universo de P3)
+
+FUENTE SITPORT DE ESTA SESION — snapshot versionado, no consulta viva
+--------------------------------------------------------------------------------
+Decision del owner (c1). Se midio contra
+`_bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json`,
+**FECHA DE CAPTURA 2026-08-13**, que es el mismo snapshot que ya lee
+`scripts/frente-contacto-pieza-a.js`. Por eso la medicion del plan, la del
+generador y la de la verificacion corren contra el mismo dato.
+
+Respaldo de que el snapshot no envejecio EN ESTE CAMPO: la auditoria del
+2026-08-15 midio que el `CdReparticion` no se mueve entre las capturas del 11,
+del 12 y del 13 — 0 bahias cambian.
+
+LO QUE NO SE MIDE, y se dice: **si SITPORT dice hoy lo mismo que el
+2026-08-13.** Esta sesion no consulto SITPORT en vivo.
+
+LINEA BASE DE LA SUITE: `npm test` -> **84 tests, 84 pass, 0 fail**, corrida al
+abrir, sin haber tocado nada.
+
+
+================================================================================
+0. LO QUE ESTA SESION LE CORRIGE AL PROMPT
+================================================================================
+El prompt declaro sus cifras como indicativas. **Tres se confirman exactas y una
+heredada es falsa.**
+
+(1) "las 18"        -> son **18**, medidas de dos maneras independientes y
+    comparadas (N1): las que `f421949` renombro leyendo el arbol de git, y las
+    que hoy llevan el rotulo. Los dos conjuntos son el MISMO, asi que ninguna
+    entrada entro ni salio del lote entre `f421949` y HEAD. Venian todas de
+    `"Cisnes"`.
+
+(2) "1 Puerto Cisnes, 9 Melinka, 8 Puerto Aguirre" -> **exacto**, medido contra
+    SITPORT por `CdReparticion`: 241 -> 1 · 234 -> 9 · 239 -> 8.
+
+(3) "los 164"       -> son **164**.
+
+(4) "los 100"       -> **FALSO, y es el hallazgo del prompt.** `PLAN_JURISDICCION.md`
+    §7.1, `auditoria_rotulos_2026-08-15.txt` §16 y `pieza_a_nulas_2026-08-15.txt`
+    §13 dicen que la Pieza A llevo "de 84 a 100" los numeros de Capitania que P3
+    rotula "Gobernación Marítima de". Medido con el mismo instrumento y el mismo
+    desarmado del CSV: **de 84 a 90**. El 100 es 84+16 hecho de cabeza, no una
+    medicion — varias de las 17 nulas YA llevaban el numero de una Capitania (el
+    de OTRA), asi que reemplazarlo no sumaba al conteo. **El delta real de la
+    Pieza A fue +6.** Enmendado con tachado en los tres lugares; ver seccion 9.
+
+
+================================================================================
+1. EL LOTE, Y POR QUE ENTRA ENTERO
+================================================================================
+LOTE = 123, 124, 125, 175, 176, 238, 239, 240, 241, 242, 243, 244, 251, 252,
+253, 254, 255, 256.
+
+Antes de la pieza las 18 decian lo mismo, las 18: `"Puerto Cisnes"` ·
+`+56 67 233 1405` · Gobernacion `Aysén`.
+
+DE QUIEN ERA ESE TELEFONO, medido: **de ninguna Capitania del CSV.** Lo llevaban
+32 entradas del mapa. Es el numero de la Gobernacion de Aysén.
+
+    id   CdRep  join              -> D-R4: nombre publicado   telefono
+    123    241  puerto_cisnes        Puerto Cisnes            +56 67 2346880
+    124    234  melinka              Melinka                  +56 67 2431555
+    125    239  puerto_aguirre       Puerto Aguirre           +56 67 2361233
+    175    234  melinka              Melinka                  +56 67 2431555
+    176    234  melinka              Melinka                  +56 67 2431555
+    238    239  puerto_cisnes        Puerto Aguirre           +56 67 2361233
+    239    239  (sin_resolver)       Puerto Aguirre           +56 67 2361233
+    240    239  puerto_cisnes        Puerto Aguirre           +56 67 2361233
+    241    239  (sin_resolver)       Puerto Aguirre           +56 67 2361233
+    242    239  puerto_aguirre       Puerto Aguirre           +56 67 2361233
+    243    239  puerto_aguirre       Puerto Aguirre           +56 67 2361233
+    244    239  puerto_aguirre       Puerto Aguirre           +56 67 2361233
+    251    234  quellon              Melinka                  +56 67 2431555
+    252    234  quellon              Melinka                  +56 67 2431555
+    253    234  quellon              Melinka                  +56 67 2431555
+    254    234  melinka              Melinka                  +56 67 2431555
+    255    234  melinka              Melinka                  +56 67 2431555
+    256    234  melinka              Melinka                  +56 67 2431555
+
+    el NOMBRE cambia en 17 de 18. La 123 ya decia lo que D-R4 le da.
+    el TELEFONO cambia en 18 de 18, la 123 incluida: su rotulo estaba bien y su
+    numero no. La unica "bien rotulada" del lote lo estaba a medias.
+    `gobernacion` no se toca en ninguna.
+
+La columna `join` esta para el registro y **no manda aca**: D-R1 fija que para
+el rotulo de contacto manda SITPORT. Se deja escrita porque es la que decide en
+`ambitos-publicados.js:306` (seccion 7).
+
+CRITERIO DE PIEZA (`f3936b8`): **18 de 18 CUMPLEN. Cero exclusiones.**
+Los dos modos de falla conocidos del frente, probados por nombre:
+
+    · telefono NO atomico en la fuente : 0 de 18 — es lo que dejo a la 127
+      (Baker) en null, y no aparece aca. Los tres telefonos son atomicos.
+    · `CdReparticion` ausente del CSV  : 0 de 18 — es el caso del 189. Las tres
+      reparticiones del lote estan en el derivado, con nombre y titulo.
+
+CONTRA-PRUEBA, el caso que romperia el fundamento (§1.2): escribiendo SOLO el
+nombre y dejando el telefono de hoy, **0 de 18** quedarian con el numero de su
+propia reparticion y **18 de 18** con uno que el CSV no conoce. Es el mismo
+resultado que N10 de la Pieza A. Un campo solo no es una pieza mas chica.
+
+POR QUE ENTRA ENTERO, con el criterio escrito: las 18 cumplen el criterio de
+pieza sin una sola exclusion declarable, ninguna cruza una declaracion viva, y
+ninguna de las 146 restantes se mueve. Cortarlo dejaria el archivo a medias sin
+comprar nada medible, y partirlo por reparticion daria tres piezas cuyo unico
+criterio de corte seria el tamaño.
+
+
+================================================================================
+2. CRUCE CON `zonas_aviso.json` — CERO
+================================================================================
+Las 10 zonas declaran 11 bahias: 71, 89, 90, 97, 98, 127, 129, 131, 132, 137,
+138. **Ninguna esta en el lote.** COMPARACIONES EFECTIVAS: 10 zonas.
+
+De ahi se sigue lo que el punto 3 del plan preguntaba: la rama de la
+discrepancia declarada de `bd75c494` **no se toca**, y su retiro automatico
+—la familia M24, que detiene la carga si la discrepancia dejo de existir— no se
+dispara por esta pieza. La suite lo confirma: 84/84 al cerrar.
+
+
+================================================================================
+3. LO QUE SE ESCRIBIO
+================================================================================
+INSUMO DECLARADO PRIMERO, y en este orden:
+
+    data/contacto/lotes_rotulo.json          el lote, con su `criterio` Y su
+                                             `bahias_esperadas`
+    scripts/frente-contacto-aplicar-lote.js  el aplicador generico
+        -> src/data/bahia-capitania-map.json, 18 entradas
+
+    sha256 del mapa ANTES   bbb28e2f8e959c94011eb29efe75edeea1fbadb21bf43aee…
+    sha256 del mapa DESPUES 376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da79…
+
+    lineas modificadas 18 de 187 · lineas identicas 169
+    entradas fuera de la lista comprobadas identicas por el propio generador: 146
+
+Salida sin editar en `02_aplicar.txt`, precedida de la corrida `--dry-run`.
+
+NO SE TOCO: `gobernacion` en ninguna entrada; ningun archivo de `src/services/`
+ni de `src/routes/`; la PWA; `CONTRATO_MOTOR.md`; `data/decreto/`.
+
+POR QUE UN GENERADOR NUEVO Y NO EL DE LA PIEZA A
+--------------------------------------------------------------------------------
+`scripts/frente-contacto-pieza-a.js` selecciona por `capitania === null`, y estas
+18 no lo son. Resuelto de este lado (§0.4 — arquitectura y metodo), con el
+criterio declarado:
+
+  · el alcance de una pieza sale del CODIGO y pasa al DATO. Un generador con
+    `capitania === 'Puerto Cisnes'` adentro es una regla que nombra a una
+    entidad, que es lo que §4.3 prohibe. Ahora el generador es generico y el
+    lote es un registro de `lotes_rotulo.json`;
+  · cada lote lleva `criterio` **y** `bahias_esperadas`. El generador computa el
+    conjunto desde el criterio y ABORTA si no es identico a la lista: ni la
+    lista puede envejecer en silencio ni el criterio puede cambiar de alcance
+    sin avisar. Es la familia B6;
+  · el `criterio` se evalua con un mapeo exhaustivo SIN caso por defecto (§4.2):
+    una clave que el generador no sepa evaluar detiene la corrida en vez de caer
+    al generico. Es la familia B7;
+  · `frente-contacto-pieza-a.js` NO se toca. Es la constancia de lo que se
+    escribio y esta citado por nombre en el commit `f3936b8`, en
+    `PLAN_JURISDICCION.md` §7.1 y en dos bitacoras. **Queda declarado que hoy es
+    terminal**: la unica entrada nula que queda es la 127 y su telefono publicado
+    no es atomico, asi que si se corriera abortaria sin escribir nada. Retirarlo
+    es una pieza propia, no un efecto lateral de esta.
+
+UNA CONSECUENCIA DEL DISEÑO, DICHA ANTES DE QUE ALGUIEN LA DESCUBRA
+--------------------------------------------------------------------------------
+El `criterio` describe el estado ANTERIOR a la pieza, asi que **el generador no
+es idempotente**: una vez aplicado el lote, el criterio selecciona 1 entrada
+—la 123, que conservo el rotulo— contra las 18 declaradas, y la corrida aborta.
+
+Eso es correcto —el alcance ya no existe— pero el aborto seria AMBIGUO entre "ya
+se aplico" y "alguien movio entradas". Se desambigua con el dato, no con una
+suposicion: el aborto cuenta cuantas de las declaradas ya llevan el par
+(nombre, telefono) que la pieza escribiria, y lo dice. Para reproducir una pieza
+hay que reponer el mapa a su ancla primero, que es exactamente lo que hace la
+mordida.
+
+
+================================================================================
+4. VERIFICACION — `03_verificar.txt`, exit 0
+================================================================================
+Anclada al COMMIT FIJO `bd75c494`, no a HEAD. Un verificador que se compare
+contra HEAD deja de medir en cuanto alguien commitea. Compara LINEA A LINEA y no
+por bytes del archivo entero, porque `core.autocrlf=true` deja el blob en LF y
+el disco en CRLF: el archivo completo nunca daria el mismo sha.
+
+    V1 claves y `gobernacion` intactas               164 comparaciones · sin fallas
+    V2 se movieron exactamente 18 lineas, y son las
+       del lote                                      187 lineas comparadas
+    V3 EL PAR: nombre y telefono de la MISMA fila     18 comparaciones · sin fallas
+    V4 el rotulo viene de un titulo de "Capitania de
+       Puerto" (INV-3.3)                              18 comparaciones · sin fallas
+    V5 telefonos no atomicos en TODO el archivo      164 comparaciones · 0
+    V6 las entradas que NO son del lote, IDENTICAS
+       contra el blob del ancla                      146 comparaciones · 0 con la
+                                                     linea distinta · 0 con el
+                                                     valor distinto
+    V7 el conjunto de nulas no cambio: {127} -> {127}
+
+V6 es la que el plan pedia explicitamente. Su alcance, dicho sin suavizar:
+identicas caracter por caracter DENTRO de la linea, y ademas identicas como
+valor JSON. El terminador de linea no se compara, y no es una concesion: es
+propiedad del repositorio, no de la entrada.
+
+Los denominadores cierran: 164 = 18 del lote + 146 fuera. 187 lineas = 164
+entradas + 23 lineas de estructura y separacion.
+
+
+================================================================================
+5. MORDIDA — OCHO FAMILIAS, EN VERDE Y EN ROJO
+================================================================================
+`04_mordida.txt` (verde, exit 0) y `05_mordida_dato_viejo.txt` (rojo, exit 0).
+COMPARACIONES EFECTIVAS: 8 familias en cada corrida; el instrumento aborta si son
+cero. Los cuatro insumos mutables se reponen y se comprueba el sha256 al cerrar:
+los cuatro OK en las dos corridas.
+
+LAS FAMILIAS CONSTRUYEN SU CASO DESDE CERO. El valor ofensivo esta escrito
+literal en el ensayo —el titulo de Alcaldia, el `"Móvil: +569 5617 3241"`, el
+numero de Valdivia, la clave de criterio inventada— y no se saca de lo que el
+dato traiga hoy. Una familia que se apoyara en la forma nueva dejaria de probar
+el dia que el dato cambie, sin avisar.
+
+    B0  control negativo: sin inyectar nada, el verificador se comporta como la
+        linea base                                                -> ACEPTA COMO DEBE
+    B1  el derivado dice que el rotulo sale de un titulo de ALCALDIA DE MAR
+        medido exit=3, aborta POR EL TITULO citando INV-3.3, mapa intacto -> MORDIO
+    B2  telefono NO atomico con la bandera `telefono_atomico` MINTIENDO true
+        medido exit=0, 9 exclusiones por no atomico, 0 escritas con ese numero,
+        0 no atomicos en el archivo                                      -> MORDIO
+    B3  la captura de `consultaBahias` reemplazada por un array vacio
+        medido exit=3 POR LA CAPTURA, mapa intacto, sin "0 cambios" en verde
+                                                                         -> MORDIO
+    B4  una entrada FUERA del lote cambiada a mano (la 71)
+        medido exit=1 y la nombra                                        -> MORDIO
+    B5  una del lote con su nombre y el telefono de OTRA reparticion — el defecto
+        que tumbo la decision del 2026-08-13
+        medido exit=1, falla V3 nombrando a la 124                       -> MORDIO
+    B6  la lista `bahias_esperadas` deja de coincidir con su `criterio`
+        medido exit=3, lo dice y trae su diagnostico medido, mapa intacto -> MORDIO
+    B7  el lote declara un `criterio` que el generador no sabe evaluar
+        medido exit=3 nombrando los admitidos, mapa intacto              -> MORDIO
+
+LA CORRIDA EN ROJO, `05_mordida_dato_viejo.txt` — QUE PRUEBA Y QUE NO
+--------------------------------------------------------------------------------
+Con el mapa repuesto al ancla, o sea SIN la pieza aplicada:
+
+  · LO PRIMERO QUE MIDE: el verificador sale **exit 1**, y sus fallas son de V2 y
+    V3, que son las que miden la pieza. Un verificador que diera verde con el
+    lote sin aplicar no probaria nada, y esa es la primera cosa que esta corrida
+    descarta;
+  · B1, B2, B3, B6 y B7 **muerden igual** contra el dato viejo. Ya hacian lo suyo
+    antes de que el dato les diera la razon: el verde de despues no es "verde
+    porque escribi el control para que calzara con lo que escribi en el dato";
+  · B4 y B5 quedan **TAPADAS, y se declara**: atacan al verificador, que contra
+    el dato viejo ya esta en rojo por la causa de fondo, asi que su exit no
+    distingue. Se anota como tapada, no como mordida.
+
+DEFECTO DE INSTRUMENTO PAGADO EN ESTA SESION, escrito porque no se ve mirando el
+verde
+--------------------------------------------------------------------------------
+**La primera version de la mordida corrio B1, B2 y B3 con el mapa YA ESCRITO.**
+Con la pieza aplicada el criterio del lote selecciona 1 entrada y la lista
+declara 18, asi que el generador ABORTA en ese guard ANTES de llegar al derivado
+y a la captura. Resultado de esa corrida:
+
+    B1 -> NO MORDIO   (correcto: no midio lo que dice)
+    B2 -> NO MORDIO   (correcto: no midio lo que dice)
+    B3 -> **MORDIO**  (FALSO: salio exit 3 por el guard del criterio, no por la
+                      captura vacia. El ensayo solo miraba `exit != 0`)
+
+Es el `process.exit` temprano que aborta la carga antes de la mordida — la cuarta
+variante de esa forma en este repositorio— y ademas un control que imprime el
+veredicto correcto por la razon equivocada. **Dos correcciones, las dos al
+instrumento y ninguna al control** (§0.3 — no se afloja nada):
+
+    · las familias que atacan al generador ponen el mapa en el estado PRE-pieza,
+      que es el unico en el que el lote es seleccionable;
+    · TODAS afirman sobre el MENSAJE del aborto, no sobre el codigo de salida. Un
+      ensayo que solo mira el exit no distingue que guard disparo.
+
+Con las dos correcciones, B3 pasa a comprobar que el aborto dice "no trae
+registros" y que la salida NO contiene "se escriben: 0" en verde.
+
+
+================================================================================
+6. QUE LE LLEGA AL PATRON — LOS TRES CAMINOS, CONFIRMADOS Y MEDIDOS
+================================================================================
+6.1 LA FORMA DE CADA CAMINO SIGUE SIENDO LA DE `0bc80d2`
+--------------------------------------------------------------------------------
+Re-leida literal en esta sesion, backend y PWA. No cambio una letra.
+
+P1  BAHIAS INTERMEDIAS
+    backend  `src/routes/sitport-routes.js:817`
+             `const cap = capitaniaDeBahia(idBahia, ambitosPublicados);`
+    PWA      `src/components/verification/TransitRestrictionsBlock.jsx:61`
+             `const nombreCap = r.capitania || r.gobernacion;`
+    Render   `📞 {nombreCap} — {tel}`, SIN etiqueta de nivel.
+
+P2  AVISO DE ARRIBADA FORZOSA
+    backend  `src/routes/sitport-routes.js:339`
+             `const cap = bahiaId ? getCapitaniaByBahiaId(bahiaId) : null;`  (mapa crudo)
+    PWA      `src/screens/P3_VoyageVerification.jsx:237`
+             `const nombre = rec?.capitania || rec?.gobernacion || rec?.nombre || 'destino';`
+    Render   `<strong>Capitanía de Puerto de {nombre}</strong>` — etiqueta DURA.
+
+P3  TARJETA DE ZARPE Y RECALADA — el escalon que INV-10.1 gobierna
+    backend  `src/routes/sitport-routes.js:339` -> `getCapitaniaByBahiaId`
+    PWA      `src/components/verification/PortStatusBlock.jsx:76-77`
+             `const capNombre = data?.gobernacion || …`
+             `const capTel    = data?.telefono    || …`
+    Render   `📞 Gobernación Marítima de {nombre} — {tel}`.
+    **NUNCA lee `capitania`.** Confirmado hoy.
+
+6.2 LAS CIFRAS, todas del instrumento versionado del 2026-08-15, sin tocarlo
+--------------------------------------------------------------------------------
+ANTES: `08_pantalla_antes.txt` (mapa repuesto al ancla, restaurado y comprobado
+por sha256). DESPUES: `07_pantalla_despues.txt`.
+
+    camino                      denominador   ANTES   DESPUES   delta
+    P1  el nombre mostrado ES
+        el que SITPORT atribuye     163         90       99       +9
+    P2  idem, etiqueta dura         163         98      107       +9
+    P3  numeros de CAPITANIA
+        rotulados "Gobernación
+        Marítima de"                164         90      108      +18
+
+LOS TRES DENOMINADORES, DECLARADOS — que se excluye en cada uno y por que
+--------------------------------------------------------------------------------
+    164   las 164 entradas del mapa. Es el denominador de P3 porque las 164
+          tienen `telefono`: no hay ninguna que quede fuera de la comparacion.
+
+    163   = 164 - 1. Sale la bahia **146**, `CdRep 189`, que el CSV no lista —
+          "la que no existe" del registro de DIRECTEMAR (auditoria del 08-15,
+          §2A: "sin CdRep resoluble 1 -> bahia 146"). Sin fila no hay contra que
+          comparar el nombre, asi que no se compara: no se cuenta como acierto
+          ni como error. Es el denominador de P1 y de P2.
+
+    162   = 163 - 1. Sale ademas la bahia **97**, `CdRep 144` (`LIRQUÉN`), la
+          unica bahia viva cuya reparticion NO tiene nombre publicado por
+          DIRECTEMAR: su telefono no figura en ninguna ficha y el titulo que
+          contiene la cadena es "Capitania de Puerto de Lirquén-Tomé", que es
+          adjudicacion y no se hizo (pieza_a_nulas_2026-08-15, §5). La otra
+          reparticion sin nombre publicado —`CdRep 291`, RADA COVADONGA— no
+          resta nada: **cero bahias de SITPORT le cuelgan**. Es el denominador
+          de la vara REPARTICION, que exige un nombre publicado contra el cual
+          comparar.
+
+    Las tres cifras cierran: 164 = 163 + la 146 = 162 + la 146 + la 97.
+
+    P1 y P2 dan distinto y NO es un error: P1 toma el nombre del DECRETO en las
+    21 entradas de ambito publicado y del mapa en el resto; P2 lee siempre el
+    mapa crudo. Medirlos con una sola regla es lo que la seccion 4 de la
+    auditoria del 08-15 advirtio que no se hiciera — y es el defecto que la
+    medicion previa de ESTA sesion cometio; ver la seccion 8.
+
+UNA VARA MAS, porque la de arriba castiga al rotulo correcto
+--------------------------------------------------------------------------------
+La vara de `02_medir_pantalla.js` compara contra la CADENA CRUDA de SITPORT, y
+D-R4 descarto justamente esa cadena como forma del rotulo: "Puerto Aguirre" no
+es "AGUIRRE" y por eso las 8 de esa reparticion no suman por esa vara. Con la
+vara que D-R1+D-R4 definen —¿el nombre mostrado es el nombre PUBLICADO de la
+reparticion que SITPORT atribuye?—, sobre el nombre que P2 muestra:
+
+    denominador 162, declarado arriba.
+    ANTES 112 · DESPUES 129 · delta +17
+
+    Las dos varas cierran entre si: +9 por cadena y +17 por reparticion, y la
+    diferencia son exactamente las 8 de `Puerto Aguirre`. 9 + 8 = 17.
+
+LA CIFRA TITULAR DE LA PIEZA, Y CON QUE VARA — SON DOS Y NO SE MEZCLAN
+--------------------------------------------------------------------------------
+La primera version de este cierre escribio "de 0/18 a 17/18, la que falta es la
+123, que ya cumplia". **No cierra consigo mismo**: si la 123 ya cumplia esta
+contada en el antes Y en el despues, y ademas por la vara del PAR no cumplia
+antes —tenia el nombre bien y el telefono de la Gobernacion de Aysén—. El 0
+salio de una vara y el 17 de otra. Escritas por separado, cada una consistente
+en sus dos extremos:
+
+    VARA DEL PAR — el criterio de pieza de `f3936b8`: ¿el nombre Y el telefono
+    de la entrada son de la MISMA reparticion?
+        ANTES     0 de 18   (N3, contra-prueba: ninguna. La 123 tampoco: su
+                             rotulo era el correcto y su numero era el de la
+                             Gobernacion de Aysén, que no es de ninguna
+                             Capitania del CSV)
+        DESPUES  18 de 18   (V3, 18 comparaciones sin fallas)
+        delta   +18
+
+    **ESTA ES LA CIFRA TITULAR DE LA PIEZA: 0 de 18 -> 18 de 18.** Es la que el
+    criterio de pieza define y la que el verificador comprueba entrada por
+    entrada.
+
+    VARA DEL NOMBRE — la vara REPARTICION: ¿el nombre mostrado es el nombre
+    publicado de la reparticion que SITPORT atribuye? Mira SOLO el rotulo.
+        ANTES     1 de 18   (la 123, y solo ella)
+        DESPUES  18 de 18
+        delta   +17
+
+        Y ese +17 es el mismo +17 del total: 112 -> 129 sobre 162. Cierra.
+
+    Que la 123 aparezca en el antes de una vara y no de la otra es el hecho, no
+    una inconsistencia: **su rotulo estaba bien y su contacto no**, que es
+    exactamente la razon por la que el criterio de pieza mira los dos campos
+    juntos y no el nombre solo.
+
+QUE LE LLEGA HOY Y QUE DESPUES
+--------------------------------------------------------------------------------
+HOY, con estas 18: P1 y P2 dejan de mostrar `Puerto Cisnes` en 17 bahias que no
+son de esa Capitania, y el telefono que las acompaña pasa a ser el de la
+reparticion nombrada. **P3 EMPEORA**: 18 numeros mas de Capitania rotulados
+"Gobernación Marítima de", de 90 a 108 sobre 164. Declarado y aceptado por el
+owner antes de escribir (decision a1).
+
+DESPUES, y ninguna de las tres es de este frente: la etiqueta de nivel que le
+falta a P1; la etiqueta dura de P2, que hoy alcanza a 1 entrada —la 127, que
+renderiza "Capitanía de Puerto de Aysén"—; y los 108 de P3, que solo se cierran
+cuando `PortStatusBlock.jsx:76-77` aprenda a leer `capitania`. El render no se
+toco.
+
+
+================================================================================
+7. EL SEGUNDO RESOLVEDOR — `ambitos-publicados.js:306`
+================================================================================
+Anotado y no abierto. Se midio porque es consumidor del campo que esta pieza
+escribe. Su regla, leida del codigo: para cada jurisdiccion recorre TODAS las
+entradas del mapa y toma la PRIMERA cuyo `capitania` coincida con el nombre del
+decreto — el orden de las claves decide.
+
+    jurisdiccion      ANTES                              DESPUES
+    puerto_cisnes     123 / +56 67 233 1405              123 / +56 67 2346880
+    melinka           (ninguna — no emite contacto)      124 / +56 67 2431555
+    puerto_aguirre    (ninguna — no emite contacto)      125 / +56 67 2361233
+    quellon           117 / +56 65 262 9405              117 / +56 65 262 9405
+
+    COMPARACIONES EFECTIVAS: 4 jurisdicciones.
+
+**Dos jurisdicciones empiezan a entregar un contacto que hoy no existe**, y es
+cambio en lo que el patron ve: decision b1 del owner, tomada sobre esta
+medicion. `puerto_cisnes` conserva su bahia y cambia de un numero de Gobernacion
+al de su Capitania. `quellon` no se mueve: resuelve por la 117, que no es del
+lote.
+
+
+================================================================================
+8. UN DEFECTO DE LA MEDICION PREVIA DE ESTA MISMA SESION, CORREGIDO
+================================================================================
+Se escribe porque el owner leyo esas cifras en la parada del plan, y §2 pide que
+una afirmacion mal fundada se corrija explicitamente.
+
+**La primera corrida de `01_medir_lote.js` modelo P1 con la regla de P2.** Reporto
+para P1 el mismo numero que para P2 —98 antes, 107 despues— cuando P1 antes era
+**90** y despues es **99**. La causa: P1 toma el nombre del decreto en las
+entradas de ambito publicado y el instrumento le aplico `capitania ||
+gobernacion` a las 164. **La cifra de P2 y la de P3 no se movieron por esto**, y
+la conclusion tampoco: P1 mejora, solo que 9 en vez de los 9 que se le
+atribuyeron por la vara equivocada — el numero coincide por casualidad de la
+resta, no por haberlo medido bien.
+
+DOS CORRECCIONES, las dos al instrumento:
+
+  · **P1 sale de `01_medir_lote.js`.** No se re-implementa mejor: se deja de
+    duplicar una medicion que ya tiene instrumento versionado, y se corre ese
+    (`08_pantalla_antes.js` lo corre sin tocarlo, con el mapa repuesto al ancla);
+  · **el instrumento lee el mapa del ANCLA y no del disco.** Leyendolo del disco
+    dejaba de reproducir su propia medicion previa en cuanto la pieza se aplicaba
+    — el mismo defecto que un verificador anclado a HEAD. `01_medir_lote.txt` es
+    la salida regenerada con esa correccion, y hoy da lo mismo corrido antes o
+    despues de la pieza.
+
+
+================================================================================
+9. LA ENMIENDA CON TACHADO — LA CIFRA HEREDADA DEL "100"
+================================================================================
+Zona de escritura ampliada por el owner SOLO para esto, y solo a tres lugares.
+El valor escrito es **90**, el medido al ancla; el 108 vive en esta bitacora y no
+va retroactivo a documentos que registran otro momento (instruccion del owner).
+
+    PLAN_JURISDICCION.md §7.1, addendum del 08-15
+    _bitacoras/auditoria_rotulos_2026-08-15/auditoria_rotulos_2026-08-15.txt §16
+    _bitacoras/pieza_a_nulas_2026-08-15/pieza_a_nulas_2026-08-15.txt §13
+
+En los tres el texto original queda y se le agrega el tachado con la medicion
+(§3.3). Aplicada como ULTIMO paso, despues de la verificacion.
+
+NO ENTRA, por decision del owner: `CONTRATO_MOTOR.md` §5.1, la linea "los 164
+telefonos son de Gobernacion, sin una sola excepcion". **Es falsa de otra manera
+—no por el conteo sino por la afirmacion entera— y es del owner.** Queda anotada
+aca como PENDIENTE DECLARADO y no se toco.
+
+
+================================================================================
+10. ESTADO DE LA SUITE
+================================================================================
+    npm test -> **84 tests, 84 pass, 0 fail**   (`06_suite.txt`)
+    linea base al abrir -> 84/84
+
+Sin movimiento, y el fundamento estaba medido antes de escribir: el lote no toca
+ninguna bahia declarada en `zonas_aviso.json`, no toca `gobernacion`, y las 146
+entradas fuera del lote quedan identicas.
+
+
+================================================================================
+11. LO QUE ESTA BITACORA NO RESPONDE
+================================================================================
+- **Que dice SITPORT hoy.** Se midio contra la captura del 2026-08-13. No se
+  consulto en vivo. Es la decision c1 del owner, con su limite declarado.
+- **Que dice DIRECTEMAR hoy.** El derivado sale de los `gm_*.html` del
+  2026-08-12, leidos del arbol `a474ae4`. No se recapturaron.
+- **Si el decreto y SITPORT coinciden en estas 18.** No coinciden en varias
+  —251, 252 y 253 son `quellon` para el join y CdRep 234 para SITPORT— y **esta
+  pieza no lo resuelve ni lo pretende**: D-R1 fija que para el rotulo de contacto
+  manda SITPORT, y D-R2 dejo cerrado que esa comparacion no es conflicto de
+  atribucion. La jurisdiccion la sigue fijando el decreto (INV-3.3).
+- **Que son las bahias 239 y 241 para el decreto.** El join las deja
+  `sin_resolver`. No hizo falta para escribir esta pieza.
+- **Si `capitanias_64_final.csv` es dato vigente.** El sondeo del 2026-08-12 se
+  cerro SIN APLICAR y su bitacora pide re-verificar contra los raw. Aca se uso
+  como indice `CdRep -> telefono` y como universo de nombres, no como autoridad.
+- **El motor BRE** no se abrio. Nada de lo medido apunta ahi.
+
+PENDIENTES QUE ESTA SESION NO TOCO NI CERRO
+- el numero atomico de la Capitania de Baker (CdRep 260); la bahia 127 sigue en
+  `null` por eso;
+- `CONTRATO_MOTOR.md` §5.1, la linea de los 164 (seccion 9);
+- las re-atribuciones de fondo fuera de este lote;
+- los 8 de "Hornopirén", que no hay que tocar;
+- el render: P1 sin etiqueta de nivel, la etiqueta dura de P2, y los 108 de P3;
+- `ambitos-publicados.js:306`, el segundo resolvedor: sigue anotado y no abierto;
+- retirar `scripts/frente-contacto-pieza-a.js`, hoy terminal.
+================================================================================

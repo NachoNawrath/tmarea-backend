@@ -446,9 +446,19 @@ el aviso de esa zona cambia lo que el patron ve (CLAUDE.md §0.4) y es del owner
 13. LO QUE ESTA FASE NO CAMBIO
 ================================================================================
 - P3, la tarjeta de zarpe y recalada, sigue igual: `PortStatusBlock.jsx:76-77`
-  nunca lee `capitania`. Los 16 telefonos nuevos llevan de 84 a 100 los numeros
+  nunca lee `capitania`. Los 16 telefonos nuevos llevan de 84 a ~~100~~ los numeros
   de Capitania rotulados "Gobernación Marítima de". Declarado y aceptado por el
   owner antes de escribir.
+
+      CORRECCION 2026-08-16 (§3.3, se agrega y no se reescribe): EL 100 NUNCA SE
+      MIDIO. SON 90. Medido con `_bitacoras/auditoria_rotulos_2026-08-15/
+      02_medir_pantalla.js`, sin tocarlo, sobre el mapa antes y despues de
+      `f3936b8`: 84 -> 90. El 100 es 84+16 hecho de cabeza — varias de las 17
+      nulas YA llevaban el numero de una Capitania, el de OTRA, asi que
+      reemplazarlo no sumaba al conteo. El delta real de esta pieza fue +6.
+      Lo que este punto afirma —que P3 sigue igual porque nunca lee `capitania`—
+      no se mueve; lo falso era la magnitud. Evidencia:
+      `_bitacoras/lote_cisnes_2026-08-16/08_pantalla_antes.txt`.
 - P2 SI se cierra: la etiqueta dura "Capitanía de Puerto de {Gobernacion}" era
   17 de 17 y pasa a 0 de 17.
 - P1 corrige la cadena; le sigue faltando la etiqueta de nivel, que es render.
