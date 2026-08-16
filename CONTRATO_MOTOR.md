@@ -11,8 +11,24 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 2.0
-Última actualización: 2026-08-14
+Versión: 2.1
+Última actualización: 2026-08-16
+Cambios v2.1: **§5 y §5.1 decían cuatro cosas falsas sobre un archivo vivo, y ninguna llevaba
+fecha.** Motivo: `bahia-capitania-map.json` cambió cuatro veces desde que se escribieron
+—`85bc68a`, `df684d7`, `f3936b8`, `01bf543`— y nada ató esas afirmaciones a una medición, así que
+envejecieron en silencio. Se corrigen con tachado (`CLAUDE.md` §3.3), **el texto original queda
+visible**, y cada corrección lleva **fecha, commit e instrumento** para que la próxima vez
+envejezca a la vista. Lo corregido: (1) *"los 164 teléfonos son de Gobernación, ninguno es de una
+Capitanía"* → medido en `01bf543`, **73 de Capitanía · 56 de Gobernación · 35 que no distinguen
+el nivel · 0 en ninguno · 0 nulos**, suma 164; (2) la fila **Contacto de Capitanía** de §5, que
+decía que no existe fuente viva → **el teléfono sí existe** (108 de 164), la dirección no; (3)
+*"se repite en promedio 11 veces"* → **4,8**; (4) *"los tres números desactualizados alimentan 41
+de las 164"* → **0**, y el 41 contaba otra cosa. Se agrega además una precisión sobre la primera
+viñeta: la entrada **127 (Baker)** trae `capitania: null`, declarada y con su motivo.
+**NO cambia ningún INVARIANTE, ninguna Verificación, ni qué fuente está autorizada para qué
+dato.** El bump es para que la corrección sea encontrable desde este changelog, que es lo que la
+v1.9 ya hizo con una corrección de la misma sección; leerlo como cambio de regla sería leerlo mal.
+Evidencia: `_bitacoras/contrato_51_telefonos_2026-08-16/`.
 Cambios v2.0: **entra el DFL 292 como fuente normativa, y con él la regla de las Alcaldías de
 Mar.** Motivo: el sistema venía aplicando un criterio que no estaba escrito en ninguna parte. Se
 usó en la entrada 86 —`Guayacán`, que DIRECTEMAR lista como Alcaldía de Mar de la Capitanía de
@@ -616,7 +632,7 @@ sirve otra cosa (causa del bug del perfil pescador).
 | Bahías + jurisdicciones | PostGIS `bahias_sitport` + `bahia_jurisdicciones` (Voronoi recortado por costa) | OK |
 | Nodos marítimos | PostGIS `nodos_maritimos` (781+ nodos) | OK |
 | Atribución bahía → Capitanía | `data/decreto/join_bahia_jurisdiccion.json` (164 entradas, 158 resueltas) | OK |
-| **Contacto de Capitanía** (teléfono, dirección) | ⚠️ NO EXISTE fuente viva — ningún archivo de `src/` tiene teléfono ni dirección de Capitanía | ⚠️ PENDIENTE |
+| **Contacto de Capitanía** (teléfono, dirección) | ~~⚠️ NO EXISTE fuente viva — ningún archivo de `src/` tiene teléfono ni dirección de Capitanía~~ · **CORREGIDO 2026-08-16:** el **teléfono SÍ existe** — `src/data/bahia-capitania-map.json` trae **108 de 164** números de Capitanía (medido en `01bf543`, ver §5.1). La **dirección sigue sin existir** en ninguna fuente viva | ⚠️ PENDIENTE — sólo por la dirección |
 | **Contacto de Gobernación** (teléfono) | `src/data/bahia-capitania-map.json` (164 entradas, indexado por bahía) | ⚠️ TRANSITORIA — ver §5.1 |
 | Mareas | Motor harmónico propio (`tidal-constants.json`, 21 estaciones) | OK |
 | Ruteo | Raster A* (5 tiles, Arica–Cabo de Hornos) | OK con bugs de snap |
@@ -629,22 +645,107 @@ sirve otra cosa (causa del bug del perfil pescador).
 ### 5.1 — El contacto de Gobernación es fuente TRANSITORIA, y por qué se declara igual
 
 `bahia-capitania-map.json` **no es la fuente que este sistema quiere**: está indexado por
-bahía y no por Capitanía, así que el mismo teléfono se repite en promedio 11 veces y un cambio
+bahía y no por Capitanía, así que el mismo teléfono se repite en promedio ~~11 veces~~ y un cambio
 de atribución arrastra el contacto con él. Aun así se declara, porque **hoy es de donde el
 motor lee** y un dato vivo sin declarar es peor que un dato malo declarado — es la situación
 que la primera línea de §5 existe para impedir.
 
+> **CORRECCIÓN 2026-08-16 (§3.3): son 4,8 veces, no 11.** Medido sobre el archivo en el commit
+> `01bf543` con `_bitacoras/contrato_51_telefonos_2026-08-16/01_medir_niveles_telefono.js`:
+> **34 valores distintos** entre las 164 entradas con teléfono, o sea **4,8 repeticiones en
+> promedio**. El 11 salía de suponer 15 valores distintos, uno por Gobernación, que es la
+> afirmación que se corrige más abajo. **El argumento del párrafo no se mueve** —el archivo
+> sigue indexado por bahía y una re-atribución sigue arrastrando el contacto—; lo que era falso
+> es la magnitud, y bajó porque las piezas del frente de contacto metieron números de Capitanía,
+> que son muchos más y se repiten menos. **Esta cifra se mueve con cada pieza:** lleva fecha,
+> commit e instrumento, y quien la actualice corre el instrumento y cambia las tres cosas.
+
 Lo que este archivo tiene de verdad, medido y sin suavizar:
 
-- Sus **164** entradas traen `capitania`, `gobernacion` y `telefono`.
-- Los **164 teléfonos son de Gobernación**, sin una sola excepción: son 15 valores distintos,
-  uno por Gobernación. **Ninguno es de una Capitanía.** Hasta la v1.8 el sistema los rotulaba
+- Sus **164** entradas traen ~~`capitania`,~~ `gobernacion` y `telefono`.
+
+  > **PRECISIÓN 2026-08-16 (§3.3): la frase es cierta leída como "traen la clave" y falsa leída
+  > como "las 164 traen valor". Se escribe con las dos lecturas resueltas para que no haga falta
+  > elegir una.** Las tres claves están presentes en las 164 entradas. Pero **la entrada 127
+  > (Baker) trae `capitania: null`**, y es la única: `gobernacion` y `telefono` no tienen ningún
+  > nulo, y `capitania` tiene exactamente ese uno. Medido sobre el archivo en el commit
+  > `01bf543` con `_bitacoras/contrato_51_telefonos_2026-08-16/01_medir_niveles_telefono.js`,
+  > y comprobado en cada corrida por V7 de
+  > `_bitacoras/lote_cisnes_2026-08-16/03_verificar.js`. **El null es deliberado y está
+  > declarado:** el teléfono que su repartición publica es `"Móvil: +569 5617 3241"`, que no es
+  > un número atómico, e INV-10.1 prohíbe renderizar como enlace un valor que no lo sea.
+  > Escribirle el nombre sin el teléfono dejaría el nombre de una Capitanía con el contacto de
+  > otra. **Falta conseguir el número atómico de Baker (CdRep 260); no se resuelve normalizando
+  > la cadena.** El día que se consiga, esta precisión se retira y la frase original vuelve a ser
+  > cierta en las dos lecturas.
+
+- ~~Los **164 teléfonos son de Gobernación**, sin una sola excepción: son 15 valores distintos,
+  uno por Gobernación. **Ninguno es de una Capitanía.**~~ Hasta la v1.8 el sistema los rotulaba
   como si lo fueran; INV-10.1 cierra eso.
+
+  > **CORRECCIÓN 2026-08-16 (§3.3): la afirmación tachada es falsa, y el texto original queda
+  > para que se vea desde dónde se corrigió.** El archivo tiene teléfonos de Capitanía desde
+  > `85bc68a` y `df684d7` (2026-08-13), y el conteo se movió dos veces más: `f3936b8` (Pieza A,
+  > 16 entradas) y `01bf543` (lote Cisnes, 18 entradas).
+  >
+  > **MEDIDO EL 2026-08-16 SOBRE EL ARCHIVO EN EL COMMIT `01bf543`**, con
+  > `_bitacoras/contrato_51_telefonos_2026-08-16/01_medir_niveles_telefono.js`.
+  > **Denominador: las 164 entradas.** Las 164 traen teléfono; ninguna lo trae en `null`.
+  >
+  > | de qué nivel es el número | entradas |
+  > |---|---|
+  > | de una **Capitanía** y no de una Gobernación | **73** |
+  > | de una **Gobernación** y no de una Capitanía | **56** |
+  > | figura en **los dos** índices — el número no distingue el nivel | **35** |
+  > | en ninguno de los dos | 0 |
+  > | teléfono `null` o vacío | 0 |
+  > | **total** | **164** |
+  >
+  > Leído como lo lee P3, que sólo pregunta *"¿este número es de una Capitanía?"*: **108 de 164**
+  > lo son (73 + 35). Es la misma cifra que devuelve el instrumento versionado
+  > `_bitacoras/auditoria_rotulos_2026-08-15/02_medir_pantalla.js`, y las dos mediciones se
+  > cruzaron.
+  >
+  > **Las 35 de la tercera fila son un hecho de la fuente, no un empate sin resolver:**
+  > DIRECTEMAR publica el mismo número para una Gobernación y para una Capitanía suya
+  > —Antofagasta, Caldera, Coquimbo, Valdivia, Hanga Roa, y la Antártica con Bahía Paraíso—.
+  > Ese número **no distingue el escalón 1 del escalón 2 de INV-10.1**.
+  >
+  > **De dónde salen los dos índices, y qué NO son.** Nivel Capitanía:
+  > `capitanias_64_final.csv`. Nivel Gobernación: la tabla de `src/utils/capitanias.js` más el
+  > número de la GM Antártica Chilena recuperado en `_bitacoras/frente_contacto_2026-08-13/`.
+  > **Ninguno de los dos es fuente autorizada** —esta misma sección lo dice de la tabla— y aquí
+  > no se usan como tal: se usan como índice para preguntar de quién es un número. Un número de
+  > Gobernación que no esté en ese índice cae en "ninguno", no en "Gobernación".
+  >
+  > **ESTA CIFRA VA A MOVERSE Y ESO ES LO ESPERADO.** Se mueve con cada pieza del frente de
+  > contacto que re-atribuya entradas, y se moverá cuando se corrija P3. Por eso lleva **fecha,
+  > commit e instrumento**: una declaración con fecha envejece a la vista; una sin fecha envejece
+  > en silencio, que es exactamente lo que produjo la línea tachada. Quien la actualice corre el
+  > instrumento y cambia las tres cosas y los cinco números — no uno solo.
 - **No trae dirección.** La dirección que INV-10.1 manda mostrar no existe en ninguna fuente
   viva del repositorio.
 - Tres de sus valores están **desactualizados** contra lo que DIRECTEMAR publica hoy, y entre
-  los tres alimentan **41 de las 164 entradas**. Corregirlos no requiere cambiar la estructura
+  los tres alimentan ~~**41 de las 164 entradas**~~. Corregirlos no requiere cambiar la estructura
   ni esperar a la fuente definitiva.
+
+  > **CORRECCIÓN 2026-08-16 (§3.3): alimentan CERO entradas, no 41 — y por eso la frase entera
+  > dejó de tener objeto.** Medido sobre el archivo en el commit `01bf543` con
+  > `_bitacoras/contrato_51_telefonos_2026-08-16/01_medir_niveles_telefono.js`, número por
+  > número: `+56 58 220 6402` → **0**, `+56 41 226 6100` → **0**, `+56 65 256 1100` → **0**.
+  > Denominador: las 164 entradas.
+  >
+  > **Estuvieron y ya no están.** Los puso `35c63d9` y los sacaron `85bc68a` y `df684d7` el
+  > 2026-08-13. El 41 nunca contó entradas que llevaran esos números: contaba entradas cuya
+  > **Gobernación** es una de las tres — 1 Arica + 12 Talcahuano + 28 Puerto Montt —, que es
+  > otra cosa. `PLAN_JURISDICCION.md` §7.1 ya lo había enmendado el 2026-08-14; **este contrato
+  > no se enteró, y ése es el defecto que las tres correcciones de esta sección tienen en
+  > común**: afirmaciones sobre un archivo vivo escritas sin fecha ni instrumento.
+  >
+  > **Dónde siguen vivos los tres números, para que no se lea como cerrado:** en la tabla
+  > hardcodeada de `src/utils/capitanias.js`, que esta misma sección declara que **no es
+  > fuente** y que alimenta el fallback de la PWA. Corregirlos ahí no es este trabajo y no se
+  > hizo.
 
 **Lo que NO es fuente, y se dice para que nadie lo trate como tal:** la tabla de Gobernaciones
 de `src/utils/capitanias.js` resuelve por franja de latitud, lo que contradice INV-3.3 y ya

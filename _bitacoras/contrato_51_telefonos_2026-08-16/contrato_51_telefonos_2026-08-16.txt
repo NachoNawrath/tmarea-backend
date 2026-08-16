@@ -1,0 +1,285 @@
+================================================================================
+CONTRATO_MOTOR.md §5 Y §5.1 — CUATRO AFIRMACIONES FALSAS SOBRE UN ARCHIVO VIVO,
+CORREGIDAS CON TACHADO. Y CLAUDE.md §6, QUE ERA LA QUE LO IMPEDIA. 2026-08-16
+Sesion: CONTRATO-5.1. HEAD al abrir y al cerrar: 01bf543 (sin commit).
+Objetivo unico. No se toco ningun dato, ningun servicio, ningun render.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+El agente corrio el instrumento con `node` desde Git Bash. La linea corre
+identica en PowerShell desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\contrato_51_telefonos_2026-08-16\01_medir_niveles_telefono.js
+    npm test
+
+La salida se genero redirigiendo con `>` de **bash**, no de PowerShell. Para
+reproducirla en PowerShell sin corromper tildes y ñ:
+
+    node ... 01_medir_niveles_telefono.js | Tee-Object -FilePath 01_medir_niveles_telefono.txt
+
+`>` de PowerShell reencodea y convierte fines de linea; esta prohibido para
+medir (CLAUDE.md §7.2).
+
+INSUMOS, con sha256 del archivo en disco
+--------------------------------------------------------------------------------
+Los cuatro estan en el encabezado de `01_medir_niveles_telefono.txt`. Mas el
+mapa, que NO se lee del disco:
+
+    src/data/bahia-capitania-map.json  [del ancla 01bf543, en CRLF]
+                                              376a1726ab1ae538a46db59176583e2e…
+
+POR QUE DEL ANCLA Y NO DEL DISCO: la declaracion que se escribe en el contrato
+CITA una cifra, y una cifra citada tiene que estar atada a un commit y no a lo
+que haya en el disco de alguien. Es el mismo defecto que un verificador anclado
+a HEAD, aplicado a una declaracion.
+
+LINEA BASE Y CIERRE DE LA SUITE: `npm test` -> **84 tests, 84 pass, 0 fail**.
+Esta sesion no toca codigo; se corre igual para no afirmar sin medir.
+
+
+================================================================================
+1. EL PROBLEMA, Y CUAL ERA SU FORMA
+================================================================================
+`CONTRATO_MOTOR.md` §5.1 declaraba que los 164 telefonos de
+`bahia-capitania-map.json` son de Gobernacion y que ninguno es de una Capitania.
+Es falso, y el grep del documento encontro la MISMA afirmacion con el signo dado
+vuelta en otra seccion: la fila **Contacto de Capitania** de la tabla de §5,
+que decia que no existe fuente viva con telefono de Capitania.
+
+LO QUE EL GREP DESCARTO, y se dice para que no parezca que no se miro:
+  · §5, fila **Contacto de Gobernacion** — sólo dice donde vive el dato. Cierta.
+  · el changelog de la v1.9 — habla de otra correccion de §5, no de esta.
+  · la Verificacion de INV-10.1 — es una prohibicion, no un conteo. Cierta.
+
+LA FORMA DEL DEFECTO, que es lo que importa mas que los numeros: **cuatro
+afirmaciones sobre un archivo VIVO, escritas sin fecha, sin commit y sin
+instrumento.** `bahia-capitania-map.json` cambio cuatro veces desde que se
+escribieron —`85bc68a`, `df684d7`, `f3936b8`, `01bf543`— y nada ataba esas frases
+a una medicion. No envejecieron mal: envejecieron **en silencio**, que es otra
+cosa y es peor.
+
+La prueba de que el silencio era el problema y no el descuido: la cuarta
+afirmacion —el "41 de las 164"— **ya estaba enmendada en `PLAN_JURISDICCION.md`
+§7.1 desde el 2026-08-14**. El contrato no se entero. Dos documentos del mismo
+repositorio dijeron cosas distintas sobre el mismo archivo durante dos dias.
+
+
+================================================================================
+2. LA MEDICION — `01_medir_niveles_telefono.txt`
+================================================================================
+Sobre `src/data/bahia-capitania-map.json` en el commit `01bf543`.
+**DENOMINADOR DECLARADO: las 164 entradas del mapa.** Las 164 traen la clave
+`telefono` con valor; ninguna la trae en `null` ni vacia.
+
+QUE SE REUSO Y QUE NO — no se duplica una medicion que ya tiene instrumento
+--------------------------------------------------------------------------------
+`_bitacoras/auditoria_rotulos_2026-08-15/02_medir_pantalla.js` **ya mide una de
+las casillas** —"cuyo numero es de una CAPITANIA del CSV verificado"— y su cifra
+se reusa con el MISMO desarmado del CSV, para que sea la misma cifra y no una
+parecida.
+
+**No alcanzaba para el resto, y por eso hizo falta instrumento nuevo:** ese
+instrumento parte el archivo en dos —"es de una Capitania" contra "no figura en
+el CSV (Gobernacion u otro)"— y §5.1 afirma justamente sobre esa segunda bolsa,
+que el no abre. Tampoco cuenta nulos. Lo que se agrega es el universo del nivel
+GOBERNACION y la particion completa.
+
+LOS DOS INDICES, con sus limites declarados
+--------------------------------------------------------------------------------
+    CAPITANIA   : los telefonos de `capitanias_64_final.csv`, desarmados igual
+                  que en el instrumento del 08-15. 65 numeros distintos de 64
+                  filas.
+    GOBERNACION : la tabla de `src/utils/capitanias.js` —14 Gobernaciones +
+                  Hanga Roa, LEIDA DEL ARCHIVO y no transcrita— mas el numero de
+                  la GM Antartica Chilena recuperado en
+                  `_bitacoras/frente_contacto_2026-08-13/`. 16 en total.
+
+**NINGUNO DE LOS DOS ES FUENTE AUTORIZADA, y aca no se usan como tal:** se usan
+como INDICE para preguntar de quien es un numero, que es el papel que el CSV ya
+cumplia en las sesiones anteriores. La propia §5.1 declara que la tabla de
+`capitanias.js` no es fuente, y esa declaracion no se toca. Sus limites, que
+cambian la lectura: tres de sus valores estan desactualizados contra DIRECTEMAR
+y le falta la Antartica, que por eso se agrega aparte. **Un numero de Gobernacion
+que no este en ese indice cae en "ninguno", no en "Gobernacion".**
+
+LA PARTICION
+--------------------------------------------------------------------------------
+    de una CAPITANIA y no de una Gobernacion   :  73
+    de una GOBERNACION y no de una Capitania   :  56
+    en LOS DOS indices (no distingue nivel)    :  35
+    en NINGUNO de los dos                      :   0
+    telefono null o vacio                      :   0
+    ------------------------------------------------
+    SUMA                                       : 164  de 164
+
+    COMPARACIONES EFECTIVAS (entradas clasificadas) : 164. El instrumento aborta
+    si la suma no da el total de entradas.
+
+CRUCE ENTRE LOS DOS INSTRUMENTOS: **73 + 35 = 108**, que es exactamente lo que
+`02_medir_pantalla.js` devuelve para "cuyo numero es de una CAPITANIA del CSV
+verificado". Las dos mediciones, hechas por caminos distintos, cierran.
+
+LAS CINCO CASILLAS SON CINCO Y NO CUATRO, Y ESE ES EL HALLAZGO
+--------------------------------------------------------------------------------
+**35 numeros estan en los dos indices**, y no es un empate sin resolver: es un
+hecho de la fuente. DIRECTEMAR publica el mismo numero para una Gobernacion y
+para una Capitania suya. Las seis parejas, medidas:
+
+    +56 55 263 0000   ANTOFAGASTA / Antofagasta      -> 7 entradas
+    +56 52 231 5276   CALDERA / Caldera              -> 7 entradas
+    +56 51 255 8100   COQUIMBO / Coquimbo            -> 10 entradas
+    +56 63 227 6905   VALDIVIA / Valdivia            -> 8 entradas
+    +56 32 210 0222   HANGA ROA / Hanga Roa          -> 1 entrada
+    +56 32 2208557    BAHIA PARAISO / Antartica Ch.  -> 2 entradas
+
+**Ese numero no distingue el escalon 1 del escalon 2 de INV-10.1.** Meter las 35
+en una sola bolsa —cualquiera de las dos— seria elegir en silencio, que es la
+forma exacta del defecto que esta sesion corrige. Por eso la particion tiene
+cinco casillas.
+
+LO QUE §5.1 AFIRMABA, PUNTO POR PUNTO
+--------------------------------------------------------------------------------
+    "los 164 telefonos son de Gobernacion, sin una sola excepcion"
+        -> 56 lo son sin ambiguedad. 73 son de una Capitania y no de una
+           Gobernacion.
+    "ninguno es de una Capitania"
+        -> 108 figuran en el indice de Capitanias.
+    "son 15 valores distintos, uno por Gobernacion"
+        -> 34 valores distintos.
+    "el mismo telefono se repite en promedio 11 veces"
+        -> 4,8 veces. Bajo porque las piezas del frente metieron numeros de
+           Capitania, que son muchos mas y se repiten menos.
+    "tres de sus valores desactualizados alimentan 41 de las 164 entradas"
+        -> los tres alimentan 0. Medido numero por numero:
+           +56 58 220 6402 -> 0 · +56 41 226 6100 -> 0 · +56 65 256 1100 -> 0.
+           Estuvieron (los puso `35c63d9`) y los sacaron `85bc68a` y `df684d7`.
+           El 41 nunca conto entradas que llevaran esos numeros: contaba
+           entradas cuya GOBERNACION es una de las tres, que es otra cosa.
+
+
+================================================================================
+3. LO QUE SE ESCRIBIO — CINCO BLOQUES DE ENMIENDA, TODOS CON TACHADO
+================================================================================
+`CONTRATO_MOTOR.md`. El texto original queda VISIBLE y tachado; al lado, el
+bloque de correccion (CLAUDE.md §3.3). Cada bloque lleva **fecha, commit e
+instrumento**, que es el requisito de forma que el owner puso: una declaracion
+con fecha envejece a la vista, una sin fecha envejece en silencio.
+
+    §5, fila "Contacto de Capitania"   el telefono SI existe (108 de 164); la
+                                       direccion sigue sin existir. La fila queda
+                                       PENDIENTE — sólo por la direccion.
+    §5.1, parrafo de entrada           "11 veces" -> 4,8.
+    §5.1, viñeta 1                     PRECISION: la 127 (Baker) trae
+                                       `capitania: null`.
+    §5.1, viñeta 2                     la correccion principal, con la tabla de
+                                       las cinco casillas.
+    §5.1, viñeta 4                     "41 de las 164" -> 0.
+
+SOBRE LA VIÑETA 1, y por que es "PRECISION" y no "CORRECCION": la frase *"sus 164
+entradas traen `capitania`, `gobernacion` y `telefono`"* es **cierta leida como
+"traen la clave" y falsa leida como "las 164 traen valor"**. El bloque resuelve
+las dos lecturas en vez de elegir una: las tres claves estan en las 164, y **la
+entrada 127 (Baker) trae `capitania: null`**, que es la unica —`gobernacion` y
+`telefono` no tienen ningun nulo—. Se declara ademas que el null es deliberado,
+con su motivo (el telefono publicado no es atomico e INV-10.1 lo prohibe como
+enlace), y su condicion de retiro: el dia que se consiga el numero atomico de
+Baker, la precision se retira y la frase original vuelve a ser cierta en las dos
+lecturas. Comprobado en cada corrida por V7 de
+`_bitacoras/lote_cisnes_2026-08-16/03_verificar.js`.
+
+EL BUMP DE VERSION — DECIDIDO Y PROPUESTO POR EL AGENTE: v2.0 -> v2.1
+--------------------------------------------------------------------------------
+Motivo escrito: **§5 es una tabla normativa y su contenido cambio**, y el numero
+de version es lo que hace la correccion encontrable desde el changelog. El
+precedente es la propia v1.9, que fue exactamente eso — una correccion de una
+fila de §5, sin invariante nuevo.
+
+Y lo que el bump NO significa, dicho en el changelog para que nadie lo lea de
+mas: **no cambia ningun INVARIANTE, ninguna Verificacion, ni que fuente esta
+autorizada para que dato.** La fila sigue PENDIENTE y
+`bahia-capitania-map.json` sigue siendo fuente TRANSITORIA con su condicion de
+retiro intacta.
+
+La linea `Versión:` se SOBRESCRIBE, no se tacha, y conviene decir por que la
+regla del tachado no la alcanza: un numero de version es un puntero al estado
+vigente, no una afirmacion sobre el mundo. Sobrescribirlo es su operacion
+normal —v1.1 a v2.0 se sobrescribieron todas— y tacharlo dejaria una cadena de
+versiones tachadas que no le sirve a nadie. Lo que §3.3 protege es la constancia
+de COMO SE RAZONO, y eso vive en el changelog, que se agrega y no se reescribe.
+
+
+================================================================================
+4. CLAUDE.md §6 — LA REGLA QUE IMPEDIA CORREGIR EL DEFECTO
+================================================================================
+Corregida con tachado por decision del owner, tomada sobre la objecion que esta
+sesion levanto en su parada de plan.
+
+QUE DECIA (tachado, visible):
+    "`CONTRATO_MOTOR.md` no se edita. Se lee para conocer los invariantes
+    vigentes. Las modificaciones las escribe el owner; tu propones el texto y lo
+    muestras antes."
+
+QUE DICE AHORA: el contrato **no se edita por iniciativa propia, y se edita por
+el ciclo**. Lo que se reparte no es el teclado, es la autoridad:
+
+    · el CONTENIDO NORMATIVO lo aprueba el owner — que obliga el contrato, que
+      invariante existe, que fuente queda autorizada, que se le muestra al
+      patron;
+    · la REDACCION y la APLICACION son del agente — escribir el texto, ubicarlo,
+      enmendar con tachado, redactar el changelog, decidir y proponer el bump;
+    · el CICLO no se saltea: propones -> el owner revisa -> el owner autoriza el
+      commit. La aprobacion es del TEXTO CONCRETO que se mostro, no del tema.
+
+POR QUE SE CORRIGE Y NO SE BORRA: lo que la regla vieja protegia sigue
+protegido —el contrato no se toca de costado, ni como efecto lateral de otro
+trabajo, ni para hacer pasar una verificacion—. Lo que hacia mal era confundir
+*"la autoridad es del owner"* con *"el archivo es de solo lectura"*, y de ahi
+salia el peor resultado posible: **una declaracion medida como falsa que se queda
+escrita porque corregirla estaba prohibido.** El costo se vio en esta misma
+sesion: el owner tuvo que levantar la restriccion a mano para que se pudiera
+corregir una linea que llevaba dias declarada falsa. Es §0.1 —callar una objecion
+que despues resulta correcta— con otra forma.
+
+QUE SIGUE AFUERA DEL CICLO Y NO SE TOCA NI CON AUTORIZACION: dar por aprobada
+una verificacion sin correrla, y aflojar un control para que la auditoria pase
+(§0.3). Eso no cambio.
+
+
+================================================================================
+5. LA BAHIA 129
+================================================================================
+Pedido puntual del owner, y nada mas que esto:
+
+    NMBahia (nombre en `consultaBahias`) : "PUERTO EDÉN"
+    CdReparticion                        : 258
+
+Del snapshot versionado del 2026-08-13. **La eleccion de fuente entre el mapa y
+el decreto es normativa y es del owner; esta bitacora no la toca.**
+
+
+================================================================================
+6. LO QUE ESTA BITACORA NO RESPONDE
+================================================================================
+- **Si los numeros del indice de Gobernaciones estan vigentes.** La tabla de
+  `src/utils/capitanias.js` tiene tres valores desactualizados contra DIRECTEMAR
+  y no se corrigieron: no es este trabajo y esa tabla no es fuente. Un numero de
+  Gobernacion correcto que no este en ella cae en "ninguno", y hoy esa casilla
+  da 0 — pero eso es sobre este indice, no sobre el mundo.
+- **Si `capitanias_64_final.csv` es dato vigente.** El sondeo del 2026-08-12 se
+  cerro SIN APLICAR. Aca se uso como indice, no como autoridad.
+- **Que dice DIRECTEMAR hoy.** No se recapturo nada.
+- **Cual de los dos niveles corresponde mostrar en cada caso.** Eso lo fija
+  INV-10.1 y no se toco.
+- **El motor BRE** no se abrio. Nada de lo medido apunta ahi.
+
+PENDIENTES QUE ESTA SESION NO TOCO
+- P3 y el render: `PortStatusBlock.jsx:76-77` sigue rotulando "Gobernación
+  Marítima de" sobre 108 numeros de Capitania. Va en sesion propia, y **cuando se
+  arregle, las cifras de §5.1 se mueven**: por eso quedaron con fecha, commit e
+  instrumento;
+- el numero atomico de Baker (CdRep 260); la 127 sigue en `null`;
+- las tres franjas desactualizadas de `src/utils/capitanias.js`;
+- las re-atribuciones de fondo y la Via 2.
+================================================================================

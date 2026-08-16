@@ -284,8 +284,35 @@ elige uno.
 
 - **El motor de reglas es intocable**: parser SITPORT, motor de reglas y evaluador de
   ruta. Si un hallazgo apunta ahí, se anota y se detiene.
-- **`CONTRATO_MOTOR.md` no se edita.** Se lee para conocer los invariantes vigentes. Las
-  modificaciones las escribe el owner; tú propones el texto y lo muestras antes.
+- ~~**`CONTRATO_MOTOR.md` no se edita.** Se lee para conocer los invariantes vigentes. Las
+  modificaciones las escribe el owner; tú propones el texto y lo muestras antes.~~
+
+  > **CORREGIDO 2026-08-16 (§3.3), por el owner. El texto tachado describía mal la regla real,
+  > y el costo salió a la luz cuando el propio owner tuvo que levantar la restricción para que
+  > se corrigiera una línea falsa de §5.1 que llevaba días declarada.**
+  >
+  > **`CONTRATO_MOTOR.md` no se edita por iniciativa propia, y se edita por el ciclo.** Lo que
+  > se reparte no es el teclado, es la autoridad:
+  >
+  > - **El contenido normativo lo aprueba el owner.** Qué obliga el contrato, qué invariante
+  >   existe, qué fuente queda autorizada, qué se le muestra al patrón: eso no se decide de este
+  >   lado ni se escribe sin aprobación, por impecable que sea la medición de la que salga
+  >   (§0.4).
+  > - **La redacción y la aplicación son tuyas.** Escribir el texto, ubicarlo, enmendar con
+  >   tachado, redactar el párrafo del changelog y decidir y proponer el bump de versión.
+  > - **El ciclo es siempre el mismo y no se saltea: propones → el owner revisa → el owner
+  >   autoriza el commit.** La aprobación es del texto concreto que se mostró, no del tema; un
+  >   texto que cambió después de aprobado vuelve a pasar por el ciclo.
+  >
+  > **Lo que la regla vieja protegía sigue protegido**, y por eso se corrige en vez de borrarse:
+  > el contrato no se toca de costado, ni como efecto lateral de otro trabajo, ni para hacer
+  > pasar una verificación. Lo que la regla vieja hacía mal era confundir *"la autoridad es del
+  > owner"* con *"el archivo es de sólo lectura"*, y de ahí salía el peor resultado posible:
+  > **una declaración medida como falsa que se queda escrita porque corregirla estaba
+  > prohibido.** Eso es lo que §0.1 llama callar una objeción, con otra forma.
+  >
+  > **Sigue afuera del ciclo y no se toca ni con autorización:** dar por aprobada una
+  > verificación sin correrla, y aflojar un control para que la auditoría pase (§0.3).
 - **Sin commits sin autorización.** Nunca `git add .`; siempre rutas exactas, y se muestra
   `git status` y la lista de archivos antes de commitear.
 - **Reconocer antes de tocar.** Ninguna modificación sin haber levantado antes qué hay.
