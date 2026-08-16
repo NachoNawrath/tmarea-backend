@@ -1,0 +1,77 @@
+================================================================================
+MORDIDA DEL TRAMO A — CORRIDA EN VERDE
+Ancla: 9bbd80a364b38fdacf7b793c62a1cab59b2a400a
+================================================================================
+
+=== SHA256 DE LOS INSUMOS MUTABLES AL ABRIR ===
+  data/contacto/reparticiones_publicadas.json    9524a3792e3d79d7690d5a4c09b1c461…
+  src/data/bahia-capitania-map.json              e2b34432d9128153f10ae75abae4ee3b…
+  src/routes/sitport-routes.js                   1746234d1a7f9cec413cb158fc7360a1…
+  src/services/contacto-por-escalon.js           8078a2233c1feb8a933c580e950f4bda…
+
+================================================================================
+LAS FAMILIAS
+================================================================================
+
+  B0  control negativo: sin inyectar nada, el verificador se comporta como la linea base
+      exit 0 · esperado 0 para este estado
+      -> SE COMPORTA COMO DEBE
+
+  B1  el insumo de reparticiones queda SIN reparticiones
+      el resolvedor ABORTA citando el escalon 2 silencioso · salida: ABORTO: contacto-por-escalon: C:\Users\katia\tmarea-backend\data\contacto\reparticiones_publicadas.json no trae reparticiones. Sin
+      -> MORDIO
+
+  B2  una reparticion del insumo cambia de telefono: su entrada tiene que BAJAR de escalon
+      exit 1 · ¿V2 acusa el escalon 1 movido? true · V2: el escalon 1 da 98 y la medicion previa dio 99
+      -> MORDIO
+
+  B3  una entrada del mapa pasa a nombrar una Capitania que la fuente no publica
+      entrada 71 · exit 1 · V7 acusa el mapa tocado: true · V2 acusa el escalon movido: true
+      -> MORDIO
+
+  B4  una de las 9 que mandan a otra reparticion SUBE a escalon 1 indebidamente
+      exit 1 · V4 nombra la 75: true · V8 acusa el insumo tocado: true
+      -> MORDIO
+
+  B5  la salida del backend deja de emitir `contacto`
+      exit 1 · ¿V9 lo acusa por nombre? true
+      -> MORDIO
+
+  B6  V10 distingue un archivo de la PWA cambiado — SIN escribir en la PWA
+      exit 1 · V10 nombra el archivo: true · la PWA no se escribio: el defecto va en una copia del verificador que se borra al cerrar
+      -> MORDIO
+
+  B7  el resolvedor empieza a leer la tabla que §5.1 declara que NO es fuente
+      exit 1 · ¿V11 lo acusa citando §5.1? true
+      -> MORDIO
+
+  B8  el escalon 3 empieza a llenarse con un texto de reemplazo
+      exit 1 · ¿V5 acusa el escalon 3 relleno? true
+      -> MORDIO
+
+================================================================================
+COMPROBACION DE REPOSICION — sha256 al cerrar contra el de apertura
+================================================================================
+  data/contacto/reparticiones_publicadas.json    REPUESTO OK
+  src/data/bahia-capitania-map.json              REPUESTO OK
+  src/routes/sitport-routes.js                   REPUESTO OK
+  src/services/contacto-por-escalon.js           REPUESTO OK
+
+================================================================================
+RESUMEN
+================================================================================
+  COMPARACIONES EFECTIVAS (familias ejercitadas) : 9
+    B0  SE COMPORTA COMO DEBE
+    B1  MORDIO
+    B2  MORDIO
+    B3  MORDIO
+    B4  MORDIO
+    B5  MORDIO
+    B6  MORDIO
+    B7  MORDIO
+    B8  MORDIO
+  familias con el veredicto esperado : 9 de 9
+
+================================================================================
+TODAS LAS FAMILIAS MORDIERON. Insumos repuestos y comprobados por sha256.
+================================================================================

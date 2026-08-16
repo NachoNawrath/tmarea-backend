@@ -1,0 +1,119 @@
+
+> tmarea-backend@0.1.0 test
+> node --test src/services/__tests__/*.test.js
+
+✔ un trozo clasificado aviso produce tarjeta y bandera U (18.5239ms)
+✔ sin trozos descubiertos la bandera de cobertura es Q (0.3718ms)
+✔ un trozo atribuible al recorte no produce tarjeta pero si defecto (0.3124ms)
+✔ INV-3.6: un hueco de capa se muestra Y se registra como defecto (0.3971ms)
+✔ INV-3.6 tope duro: ninguna combinacion lleva el aviso a U+V (2.419ms)
+✔ INV-3.6 tope duro: tampoco lo levanta un ambito no publicado (1.6199ms)
+✔ INV-1.2: el aviso se marca como no-restriccion y no trae campos de restriccion (0.3658ms)
+✔ sin Capitania que nombrar, deriva al contacto generico y no inventa telefono (1.4044ms)
+✔ el texto del aviso es el transcrito del §10, no uno redactado en el codigo (0.3959ms)
+✔ hoy ninguna zona declara ambito, asi que ninguna reclama un tramo (0.4922ms)
+✔ la capa que se consulta es la declarada, no una escrita en el codigo (0.5764ms)
+✔ E0.2: un trozo en ambito no publicado es causa (a), no un defecto de construccion (0.8625ms)
+✔ E0.2: un ambito PUBLICADO ya no reclama — su aviso se retira solo (E3, paso 5) (0.5098ms)
+✔ E0.2: el ambito no publicado nombra la Capitania cuando el mapa la atribuye (1.1782ms)
+✔ E0.2: una zona declarada gana sobre el ambito — la declaracion mas especifica manda (4.5561ms)
+✔ E0.2: un trozo que ningun ambito reclama sigue siendo hueco de capa (b) (0.5244ms)
+✔ la prelacion de INV-10.1 reparte las entradas del mapa sin dejar ninguna afuera (5.6356ms)
+✔ los tres escalones de INV-10.1, con casos construidos desde cero (0.3593ms)
+▶ el dato transcrito dice lo que el contrato dice (§10) — cotejo dato ↔ contrato
+  ✔ capa 1 dice lo que el catalogo dice (1.2954ms)
+  ✔ capa 2 con Capitania dice lo que el catalogo dice (0.2768ms)
+  ✔ la bandera del codigo es la que declara el catalogo (0.1774ms)
+✔ el dato transcrito dice lo que el contrato dice (§10) — cotejo dato ↔ contrato (21.4607ms)
+▶ los .json de src/data/ los lee el lector estricto (sin BOM)
+  ✔ src\data\bahia-capitania-map.json no arranca con BOM (1.5864ms)
+  ✔ src\data\bahia-capitania-map.json lo parsea JSON.parse(fs.readFileSync) (1.2704ms)
+✔ los .json de src/data/ los lee el lector estricto (sin BOM) (6.2902ms)
+▶ INV-4.1 — límite efectivo = min(licencia, clasificación, degradación_vela)
+  ✔ CDC + COSTERA_60 + ámbito 70 → UV (licencia CDC limita a 60) (2.0128ms)
+  ✔ CDAM + COSTERA_12 + ámbito 15 → UV (clasificación manda sobre licencia) (0.3299ms)
+  ✔ vela + motor_operativo=false → tope 12 MN; ámbito 15 → UV (0.2595ms)
+  ✔ contra-prueba: vela + motor_operativo=true → sin degradación; CDAM+ALTA_MAR+100 → Q (0.2267ms)
+  ✔ CDC + COSTERA_12 + ámbito 13 → UV (clasificación 12 < licencia 60) (0.2036ms)
+  ✔ CDAM + COSTERA_60 + ámbito 55 → Q (dentro del límite) (0.1812ms)
+  ✔ CDAM + COSTERA_60 + ámbito 61 → UV (excede 60) (0.3652ms)
+  ✔ CDC + COSTERA_60 + ámbito 60 → Q (exactamente en el límite, no excede) (0.2487ms)
+  ✔ CDAM + ALTA_MAR + ámbito 500 → Q (sin tope, Infinity) (1.8546ms)
+  ✔ vela + motor_operativo=undefined → alerta warning, no UV por sí sola (0.6571ms)
+  ✔ CDAM + COSTERA_12 + vela + motor_operativo=false + ámbito 10 → Q (min(∞,12,12)=12, 10≤12) (2.8391ms)
+  ✔ PDB + COSTERA_12 + ámbito 5 → UV (licencia PDB limita a bahía=0) (1.3696ms)
+  ✔ todo válido sin navegación → Q (no hay ámbito que comparar) (0.3344ms)
+✔ INV-4.1 — límite efectivo = min(licencia, clasificación, degradación_vela) (14.107ms)
+▶ INV-4.2 — PLDB solo habilita motor
+  ✔ PLDB + vela → UV (0.4691ms)
+  ✔ PLDB + mixto → UV (0.2371ms)
+  ✔ PLDB + motor → no bloquea por INV-4.2 (0.204ms)
+✔ INV-4.2 — PLDB solo habilita motor (1.1978ms)
+▶ INV-4.4 — AB derivado de eslora (RGDN Art. 28)
+  ✔ eslora 8 m → AB 5.0 (0.4618ms)
+  ✔ eslora 15 m → AB 22.3 (0.1169ms)
+  ✔ eslora 10 m → AB 10.0 (0.1462ms)
+  ✔ eslora 23.99 m → AB 50.0 (tope tabla) (0.132ms)
+  ✔ eslora >= 24 → null (fuera de tabla) (0.0954ms)
+  ✔ eslora <= 0 → null (0.156ms)
+  ✔ eslora null/undefined → null (0.0842ms)
+  ✔ AB derivado se refleja en resultado del validador (eslora 12 → AB 15.0) (0.1902ms)
+  ✔ AB explícito no se sobreescribe por derivación (0.1612ms)
+  ✔ tabla tiene 17 filas y esloraMax ascendente (0.1399ms)
+✔ INV-4.4 — AB derivado de eslora (RGDN Art. 28) (2.0886ms)
+▶ datos críticos faltantes/fuera de enum → UV
+  ✔ licencia ausente → UV (0.3836ms)
+  ✔ licencia fuera de enum → UV (0.2042ms)
+  ✔ clasificación ausente → UV (0.1231ms)
+  ✔ clasificación fuera de enum → UV (0.1308ms)
+  ✔ propulsión ausente → UV (0.1585ms)
+  ✔ propulsión fuera de enum → UV (0.1136ms)
+  ✔ eslora negativa → UV (0.1648ms)
+  ✔ motor_hp negativo → UV (0.1851ms)
+  ✔ arqueo_bruto negativo → UV (0.1838ms)
+  ✔ perfilNave null → UV (graceful) (0.1383ms)
+✔ datos críticos faltantes/fuera de enum → UV (2.1976ms)
+▶ sentinel bahía=0 — bahía en bahía → Q; bahía + ámbito>0 → UV
+  ✔ PDB + BAHIA_MOTOR + ámbito "bahia" → Q (0.1795ms)
+  ✔ PDB + BAHIA_VELA + vela + motor_op=true + ámbito "bahia" → Q (0.0814ms)
+  ✔ PLDB + BAHIA_MOTOR + motor + ámbito "bahia" → Q (0.0839ms)
+  ✔ PDB + BAHIA_MOTOR + ámbito 0 → Q (sentinel numérico) (0.0611ms)
+  ✔ CDC + BAHIA_MOTOR + ámbito "bahia" → Q (clasificación manda sobre licencia) (0.0668ms)
+  ✔ PDB + BAHIA_MOTOR + ámbito 1 → UV (0.0806ms)
+  ✔ PDB + BAHIA_VELA + vela + motor_op=true + ámbito 5 → UV (0.1199ms)
+  ✔ PLDB + BAHIA_MOTOR + motor + ámbito 0.5 → UV (0.2942ms)
+  ✔ PDB + BAHIA_MOTOR + ámbito 12 → UV (0.1125ms)
+  ✔ CDC + BAHIA_MOTOR + ámbito 60 → UV (clasificación 0 < licencia 60) (0.0715ms)
+✔ sentinel bahía=0 — bahía en bahía → Q; bahía + ámbito>0 → UV (1.407ms)
+▶ escalamiento de bandera — ninguna baja a la otra
+  ✔ múltiples causas UV → bandera UV, todos los motivos presentes (0.189ms)
+  ✔ una sola causa UV → bandera UV (0.0896ms)
+  ✔ todo válido + ámbito dentro de límite → Q, 0 motivos (0.082ms)
+  ✔ UV temprano (licencia) + checks posteriores válidos → UV se mantiene (0.0571ms)
+  ✔ checks tempranos válidos + UV tardío (INV-4.1) → UV se escala (0.0767ms)
+✔ escalamiento de bandera — ninguna baja a la otra (0.6829ms)
+▶ NUEVO — BAHIA_* → ámbito bahia por clasificación, independiente de distancia de ruta
+  ✔ BAHIA_VELA + PDB + ámbito "bahia" → Q (0.2107ms)
+  ✔ BAHIA_MOTOR + PDB + ámbito "bahia" → Q (0.0813ms)
+  ✔ BAHIA_MOTOR + PLDB + ámbito "bahia" → Q (0.0631ms)
+✔ NUEVO — BAHIA_* → ámbito bahia por clasificación, independiente de distancia de ruta (0.4814ms)
+[SITPORT] consultaRestricciones: 1 registros obtenidos
+[SITPORT] consultaBahias: 1 registros obtenidos
+[SITPORT] consultaBahias: usando cache
+[SITPORT] consultaRestricciones: 1 registros obtenidos
+[SITPORT] totalPronostico: 1 registros obtenidos
+✔ consultaRestricciones retorna datos en llamada exitosa (3.2442ms)
+✔ consultaBahias usa cache en la segunda llamada (0.8836ms)
+✔ consultaRestricciones desenvuelve el formato { recordsets: [[...]] } de DIRECTEMAR (0.6459ms)
+✔ totalPronostico envía headers Accept y Referer (0.7015ms)
+✔ consultaRestricciones maneja timeout (0.9687ms)
+✔ consultaBahias maneja error HTTP (404) (0.6783ms)
+✔ totalPronostico maneja error de red (0.6075ms)
+ℹ tests 86
+ℹ suites 7
+ℹ pass 86
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 336.1962

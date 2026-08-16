@@ -11,8 +11,24 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 2.1
+Versión: 2.2
 Última actualización: 2026-08-16
+Cambios v2.2: **§5 suma una fila por un insumo que ascendió a vivo.**
+`data/contacto/reparticiones_publicadas.json` era un derivado de generación —lo leían tres
+scripts y ningún archivo de `src/`— y desde `src/services/contacto-por-escalon.js` lo lee el
+motor en tiempo de request, para resolver cuál de los dos escalones de INV-10.1 aplica a cada
+bahía. Se declara en el mismo commit en que asciende, que es lo que la v1.9 tuvo que corregir
+después de unas horas. La fila nombra el límite del insumo —**2 de 64 reparticiones sin nombre
+publicado: `CdRep 144` (LIRQUÉN) y `CdRep 291` (RADA COVADONGA)**, hoy sin costo medido: 0 de
+164—, y §5.1 suma el párrafo con qué cubre, qué no y su condición de retiro. Medido sobre las
+164 entradas: **99 alcanzan el escalón 1 · 65 el escalón 2 · 0 el escalón 3**, suma 164; el 108
+de la vara anterior y el 99 de ésta cierran entre sí porque 9 entradas llevan el número de otra
+repartición que la que nombran. **NO cambia ningún INVARIANTE** —INV-10.1 se cumple mejor sin
+que se le toque una letra—, **ninguna Verificación, ninguna fuente normativa, y no reasigna
+ninguna fuente ya declarada**. **Tampoco cambia lo que el patrón ve, y eso está medido**: P1
+99/163 · P2 107/163 · P3 108/164, idénticas antes y después. Por eso **las cinco casillas de
+§5.1 y la frase del 108 quedan como están**, con su motivo escrito al pie de la sección.
+Evidencia: `_bitacoras/rotulo_p3_2026-08-16/`.
 Cambios v2.1: **§5 y §5.1 decían cuatro cosas falsas sobre un archivo vivo, y ninguna llevaba
 fecha.** Motivo: `bahia-capitania-map.json` cambió cuatro veces desde que se escribieron
 —`85bc68a`, `df684d7`, `f3936b8`, `01bf543`— y nada ató esas afirmaciones a una medición, así que
@@ -634,6 +650,7 @@ sirve otra cosa (causa del bug del perfil pescador).
 | Atribución bahía → Capitanía | `data/decreto/join_bahia_jurisdiccion.json` (164 entradas, 158 resueltas) | OK |
 | **Contacto de Capitanía** (teléfono, dirección) | ~~⚠️ NO EXISTE fuente viva — ningún archivo de `src/` tiene teléfono ni dirección de Capitanía~~ · **CORREGIDO 2026-08-16:** el **teléfono SÍ existe** — `src/data/bahia-capitania-map.json` trae **108 de 164** números de Capitanía (medido en `01bf543`, ver §5.1). La **dirección sigue sin existir** en ninguna fuente viva | ⚠️ PENDIENTE — sólo por la dirección |
 | **Contacto de Gobernación** (teléfono) | `src/data/bahia-capitania-map.json` (164 entradas, indexado por bahía) | ⚠️ TRANSITORIA — ver §5.1 |
+| **Escalón de contacto** (qué nivel se rotula: Capitanía o Gobernación) | `data/contacto/reparticiones_publicadas.json` — índice CdReparticion → nombre publicado y teléfono, derivado de las fichas de DIRECTEMAR por `scripts/frente-contacto-derivar-reparticiones.js`. **Límite del insumo: 2 de sus 64 reparticiones no traen nombre publicado — `CdRep 144` (LIRQUÉN) y `CdRep 291` (RADA COVADONGA)** — y quedan fuera del índice: una bahía que las nombrara no alcanza el escalón 1 y cae al 2. Medido el 2026-08-16: **hoy eso no le cuesta ninguna entrada — 0 de 164** | ⚠️ TRANSITORIA — ver §5.1 |
 | Mareas | Motor harmónico propio (`tidal-constants.json`, 21 estaciones) | OK |
 | Ruteo | Raster A* (5 tiles, Arica–Cabo de Hornos) | OK con bugs de snap |
 | **SST (temperatura agua)** | Open-Meteo Marine (`sea_surface_temperature`) | OK — real |
@@ -757,6 +774,68 @@ dos es fuente autorizada, y ninguna de las dos debe empezar a serlo.
 indexada por Capitanía. Ese día `bahia-capitania-map.json` deja de alimentar contacto y el
 escalón 2 de INV-10.1 pasa a leer de la fuente nueva. Mientras tanto, la fila es transitoria
 por declaración y no por olvido.
+
+> **El insumo de reparticiones pasó a vivo el 2026-08-16.** Hasta ese día
+> `data/contacto/reparticiones_publicadas.json` era un derivado de generación: lo leían
+> tres scripts y **ningún archivo de `src/`**. Desde `src/services/contacto-por-escalon.js`
+> lo lee el motor en tiempo de request, para resolver **cuál de los dos escalones de
+> INV-10.1 aplica** a cada bahía. Se declara porque hoy es de donde el motor lee, y un dato
+> vivo sin declarar es peor que un dato malo declarado — es la situación que la primera
+> línea de §5 existe para impedir, y es la misma que la v1.9 corrigió con
+> `bahia-capitania-map.json`.
+>
+> **QUÉ CUBRE.** Contesta una sola pregunta: *"¿este teléfono es el que la fuente publica
+> para esta Capitanía?"*, que es la condición del escalón 1. Medido el 2026-08-16 sobre las
+> 164 entradas del mapa, con `_bitacoras/rotulo_p3_2026-08-16/01_medir_precedencia.js`:
+> **99 la cumplen, 65 caen al escalón 2, 0 al escalón 3**, suma 164. El escalón 1 es más
+> duro que *"el número es de alguna Capitanía"*, que da 108: las **9** de diferencia llevan
+> el número de otra repartición que la que nombran, y bajan al escalón 2 por eso. Las dos
+> varas cierran: 99 + 9 = 108.
+>
+> **QUÉ NO CUBRE, y es lo primero que hay que mirar cuando el resolvedor no resuelva una
+> bahía.** De sus 64 reparticiones, **2 no traen nombre publicado: `CdRep 144` (LIRQUÉN) y
+> `CdRep 291` (RADA COVADONGA)**. No se les inventa clave: quedan fuera del índice, y una
+> bahía que las nombrara no puede alcanzar el escalón 1 porque no hay nombre contra el cual
+> cotejar. **Hoy eso no le cuesta ninguna entrada — 0 de 164, medido**: ninguna bahía viva
+> nombra a esas dos reparticiones. Es un límite latente y no un defecto activo, y se escribe
+> igual porque el día que una bahía caiga ahí, el motivo va a estar en el campo `motivo` y
+> la explicación acá.
+>
+> **NO ES fuente de jurisdicción.** Eso lo fija el D.S. 991 vía `data/decreto/` (INV-3.3), y
+> el propio archivo lo dice en su clave `que_NO_es`. **Tampoco es fuente del teléfono**: el
+> teléfono sigue saliendo de `bahia-capitania-map.json`. Este índice sólo decide **de quién
+> es** un número, no cuál es.
+>
+> **El escalón 2 no consulta ninguna tabla.** La prelación dice *"el de su Gobernación"*, y
+> cuál es su Gobernación lo trae la propia entrada del mapa. En particular **no se lee la
+> tabla de `src/utils/capitanias.js`**, que esta misma sección declara que no es fuente:
+> leerla en tiempo de request la convertiría en una. Lo vigila V11 de
+> `_bitacoras/rotulo_p3_2026-08-16/04_verificar.js`, y su mordida es B7.
+>
+> **Condición de retiro:** esta fila desaparece de §5 el día que exista una fuente de
+> contacto indexada por Capitanía — la misma condición que la fila de Gobernación, y por el
+> mismo motivo. Ese día el escalón 1 se contesta leyendo esa fuente y este índice deja de
+> hacer falta. Mientras tanto es transitoria por declaración y no por olvido.
+
+> **LO QUE ESTA PIEZA NO MUEVE DE §5.1, medido y dicho para que nadie lo busque en vano.**
+>
+> **Las cinco casillas (73 · 56 · 35 · 0 · 0) no se mueven, y la instrucción que las
+> acompaña presuponía que sí.** Esa instrucción dice que quien toque esto corra el
+> instrumento y cambie fecha, commit y los cinco números. Los cinco son propiedades **del
+> archivo** `bahia-capitania-map.json`, y esta pieza es **del render**: no lo toca. Medido
+> el 2026-08-16 entre `01bf543` —el ancla de esas cifras— y `9bbd80a`: **164 comparaciones,
+> 0 teléfonos distintos, 0 `capitania` distinta, 1 `gobernacion` distinta** (la 129, por
+> `9bbd80a`, que no altera ninguna casilla porque las casillas se cuentan sobre el
+> teléfono). Re-corridas con el instrumento versionado, las cinco dan lo mismo.
+>
+> **La frase del 108 tampoco se toca hoy.** Dice: *"Leído como lo lee P3, que sólo pregunta
+> «¿este número es de una Capitanía?»: 108 de 164"*. **Sigue siendo cierta**, porque P3
+> sigue leyendo así: la pieza del 2026-08-16 resuelve el escalón en el backend y el campo
+> viaja en la respuesta, pero **ningún render lo consume todavía** — el pasamanos de la PWA
+> copia campo por campo. Medido el mismo día con el instrumento del 2026-08-15 sin tocarlo:
+> **P1 99/163 · P2 107/163 · P3 108/164, las tres idénticas a antes de la pieza**. La frase
+> se enmienda cuando P3 efectivamente deje de leer así, y no antes: enmendarla hoy sería
+> declarar algo que todavía no pasó.
 
 ### INV-5.1 — Clorofila etiquetada
 Mientras sea estimada, la respuesta lleva `clorofila_fuente` y la UI la muestra como

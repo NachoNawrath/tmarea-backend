@@ -1,0 +1,111 @@
+================================================================================
+EN QUE ESCALON DE INV-10.1 CAE CADA ENTRADA — estado de hoy, sin tocar nada
+Ancla: commit fijo 9bbd80a364b38fdacf7b793c62a1cab59b2a400a
+NO escribe ningun archivo.
+================================================================================
+
+=== LINEA BASE (parte de la medicion, no un preambulo) ===
+  HEAD    : 9bbd80a364b38fdacf7b793c62a1cab59b2a400a
+  esperado: 9bbd80a364b38fdacf7b793c62a1cab59b2a400a
+
+=== INSUMOS, con sha256 del archivo en disco ===
+  src/data/bahia-capitania-map.json                              e2b34432d9128153f10ae75abae4ee3b8bb77d02d52f657029a352a813b6c92b
+  _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv  04cdf370c089e321a7085a58226d05d73f456a20f0e4c5479cfe5ae9dd242d4d
+  src/utils/capitanias.js                                        5b1eedfcdd6b4be1eff3ae1bce81246cf5f8bf416bdf43d0a5e7183e76ae8e0e
+  data/contacto/reparticiones_publicadas.json                    9524a3792e3d79d7690d5a4c09b1c46191934dea45a734051f285420f89fef46
+  _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json aed48c23ffbb840cb8f09acde180b96827b159990d961d76daf1278cb473270b
+
+=== LOS INDICES ===
+  reparticiones publicadas con nombre  : 62 nombres distintos, de 64 reparticiones
+      reparticiones SIN nombre publicado, excluidas del indice : 2
+  numeros de Capitania (CSV, vara del 108) : 65
+  numeros de Gobernacion (indice, NO fuente) : 16
+
+================================================================================
+LA PARTICION POR ESCALON DE INV-10.1
+================================================================================
+  DENOMINADOR DECLARADO : 164 entradas del mapa.
+
+  Las casillas, y el criterio EXACTO de cada una:
+   E1  el mapa nombra una Capitania Y trae el telefono que la fuente publica
+       PARA ESA Capitania -> escalon 1, se rotula "Capitania de Puerto de X".
+   E1x el mapa nombra una Capitania y trae un numero que ES de una Capitania
+       pero NO de la nombrada. NO cumple el escalon 1: el par nombre+numero
+       manda al patron a otra reparticion.
+   E2  el numero es de la Gobernacion -> escalon 2, "Gobernacion Maritima de X".
+   E3  sin telefono -> escalon 3, el campo NO se muestra.
+   E?  no clasificable con los indices de hoy. Se declara, no se reparte.
+
+   E1   escalon 1 CUMPLIDO en el dato                     :  99
+   E1x  numero de una Capitania que NO es la nombrada     :   9
+   E2   escalon 2 — el numero es de la Gobernacion        :  56
+   E3   escalon 3 — sin telefono, el campo no se muestra  :   0
+   E?   no clasificable con los indices de hoy            :   0
+        ----------------------------------------------------
+        SUMA                                              : 164  de 164
+
+  COMPARACIONES EFECTIVAS (entradas clasificadas) : 164
+
+  DETALLE de las casillas que no son masivas:
+    E3 : (ninguna)
+    E1x: 9 entradas
+         75  nombra "Mejillones"  tel +56 55 263 0000  -> ese numero es de "ANTOFAGASTA"
+         84  nombra "Huasco"  tel +56 52 231 5276  -> ese numero es de "CALDERA"
+         88  nombra "Los Vilos"  tel +56 51 255 8100  -> ese numero es de "COQUIMBO"
+        107  nombra "Corral"  tel +56 63 227 6905  -> ese numero es de "VALDIVIA"
+        144  nombra "Lago Ranco"  tel +56 63 227 6905  -> ese numero es de "VALDIVIA"
+        145  nombra "Lago Ranco"  tel +56 63 227 6905  -> ese numero es de "VALDIVIA"
+        146  nombra "Lago Ranco"  tel +56 63 227 6905  -> ese numero es de "VALDIVIA"
+        170  nombra "Corral"  tel +56 63 227 6905  -> ese numero es de "VALDIVIA"
+        180  nombra "Los Vilos"  tel +56 51 255 8100  -> ese numero es de "COQUIMBO"
+    E? : 0 entradas
+
+=== LAS DOS VARAS, Y SU DIFERENCIA ===
+  vara del 08-15  "el numero es de ALGUNA Capitania"      : 108 de 164
+  vara de INV-10.1 "el numero es de LA Capitania nombrada" : 99 de 164
+  diferencia                                               : 9
+  La diferencia son las E1x: entradas que la vara vieja cuenta como acierto y
+  el escalon 1 rechaza, porque el numero manda a otra reparticion que la nombrada.
+  CIERRA: 99 E1 + 9 E1x = 108
+
+=== QUE ROTULA P3 HOY, Y QUE ROTULARIA CON LA PRECEDENCIA APLICADA ===
+  HOY, literal (PortStatusBlock.jsx:76-77): "Gobernacion Maritima de {gobernacion}"
+  para las 164, sin mirar `capitania` ni una vez.
+
+  entradas cuyo ROTULO DE NIVEL cambia (Gobernacion -> Capitania) : 99
+  entradas cuyo NOMBRE mostrado cambia                            : 62
+  entradas que DEJAN de mostrar el campo (escalon 3)              : 0
+  entradas que no se mueven                                       : 65
+  SUMA : 99 + 0 + 65 = 164
+
+=== LA OPCION BARATA: decidir el escalon con `capitania != null` en el JSX ===
+  entradas que rotularia "Capitania de Puerto de X" : 163 de 164
+      de esas, el numero SI es de la Capitania nombrada  : 99
+      de esas, el numero es de OTRA Capitania            : 9
+      de esas, el numero es de la GOBERNACION            : 55
+  SUMA : 99 + 9 + 55 = 163 de 163
+
+  LO QUE ESO CUESTA, con su denominador: 55 de las 164 quedarian rotuladas
+  "Capitania de Puerto de X" sobre un numero que es de la GOBERNACION — que es
+  LITERALMENTE el defecto que INV-10.1 dice existir para cerrar. La opcion mas
+  barata construye la infraccion que el invariante nombra, en 64 entradas contando
+  las que mandan a otra Capitania.
+
+=== ATOMICIDAD DEL VALOR QUE SE RENDERIZA COMO `tel:` (INV-10.1) ===
+  El render de hoy arma `tel:` SIEMPRE, sin comprobar nada. Lo que hoy lo
+  salva es el DATO, no el render.
+  entradas con telefono                          : 164
+  entradas cuyo valor NO es un numero atomico    : 0  
+  Denominador: las 164 entradas.
+
+=== EL CUARTO CAMINO — no estaba enumerado en `0bc80d2` ===
+  `useVoyageVerification.js:535-547` arma el recordatorio `r1_radio_aviso`
+  leyendo `portStatus.zarpe.gobernacion` y `portStatus.zarpe.telefono` — el
+  MISMO par que P3 — y lo rotula "Gobernacion Maritima de {nombre}".
+  `NormativeBlock.jsx:81-83` lo renderiza con el telefono en una pastilla.
+  Los dos hechos se leyeron del codigo de la PWA, en SOLO LECTURA.
+  Alcance en entradas: el mismo par, asi que las mismas 99 de E1.
+
+================================================================================
+MEDICION COMPLETA. Ningun archivo fue escrito.
+================================================================================

@@ -1,0 +1,556 @@
+================================================================================
+ROTULO DE P3 — TRAMO A: LA PRELACION DE INV-10.1, RESUELTA EN EL BACKEND.
+2026-08-16
+Sesion: P3-ROTULO. HEAD al abrir y al cerrar: 9bbd80a (sin commit).
+Frente: CONTACTO — el RENDER, no el dato (PLAN_JURISDICCION.md §7.1).
+NO es el frente de jurisdiccion del D.S. 991; no se abrio nada de ese frente.
+Escrito en el backend: `src/services/contacto-por-escalon.js` (nuevo),
+`src/routes/sitport-routes.js` (2 lineas), y un test nuevo en la suite.
+`tmarea-pwa`: SOLO LECTURA. Cero escrituras, cero git.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+El agente corrio los instrumentos con `node` desde Git Bash. Las lineas corren
+identicas en PowerShell desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\rotulo_p3_2026-08-16\01_medir_precedencia.js
+    node _bitacoras\rotulo_p3_2026-08-16\02_particion.js
+    node _bitacoras\rotulo_p3_2026-08-16\04_verificar.js
+    node _bitacoras\rotulo_p3_2026-08-16\05_mordida.js
+    node _bitacoras\rotulo_p3_2026-08-16\05_mordida.js --estado=viejo
+    node _bitacoras\auditoria_rotulos_2026-08-15\02_medir_pantalla.js
+    npm test
+
+Las salidas de este directorio se generaron redirigiendo con `>` de **bash**, no
+de PowerShell. Para reproducirlas en PowerShell sin corromper tildes y ñ:
+
+    node ... 01_medir_precedencia.js | Tee-Object -FilePath 01_medir_precedencia.txt
+
+`>` de PowerShell reencodea y convierte fines de linea; esta prohibido para
+medir (CLAUDE.md §7.2).
+
+NO HAY NUMERACION 03 EN ESTE DIRECTORIO. La pieza no tuvo paso de aplicacion por
+generador —no escribe dato, escribe codigo—, y el hueco se deja en vez de
+renumerar para que el orden de los archivos siga siendo el orden en que se
+corrieron.
+
+REPO DE SOLO LECTURA
+--------------------------------------------------------------------------------
+`C:/Users/katia/tmarea-pwa` se leyo, no se escribio, no se corrio git ahi. De ahi
+salen las lineas de render transcritas literales y los cinco sha256 que V10
+comprueba en cada corrida del verificador. El owner decidio D1(a) —abrir
+escritura para los cinco puntos— y decidio ademas que **la apertura se hace
+efectiva al abrir el Tramo B**: en esta sesion no hubo escritura autorizada ahi,
+y no la hubo.
+
+ARRANQUE VERIFICADO
+--------------------------------------------------------------------------------
+HEAD y `origin/main` en `9bbd80a364b38fdacf7b793c62a1cab59b2a400a`. No se dio por
+bueno de palabra: se re-corrio
+`_bitacoras/bahia_129_gobernacion_2026-08-16/09_verificar_push.js` — **17 rutas,
+17 blobs identicos contra la API, 0 fallas**, anclado al commit fijo y no a HEAD.
+17 untracked, los 17 esperados.
+
+LINEA BASE DE LA SUITE: `npm test` -> **84 tests, 84 pass, 0 fail**, corrida al
+abrir sin haber tocado nada.
+
+INSUMOS
+--------------------------------------------------------------------------------
+Con sha256 del archivo en disco, en el bloque de insumos de
+`01_medir_precedencia.txt` y `04_verificar.txt`. Los que deciden algo:
+
+    src/data/bahia-capitania-map.json          e2b34432d9128153…  (SE LEE, NO SE TOCA)
+    data/contacto/reparticiones_publicadas.json 9524a3792e3d79d7…  (D-R4 — ASCIENDE)
+    _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv
+                                               04cdf370c089e321…  (indice, vara del 108)
+    src/utils/capitanias.js                    5b1eedfcdd6b4be1…  (indice, NO fuente)
+
+LO QUE NO SE MIDE, y se dice: **si DIRECTEMAR publica hoy lo que el derivado de
+reparticiones dice.** Esta sesion no consulto DIRECTEMAR ni SITPORT en vivo.
+
+
+================================================================================
+0. LO QUE ESTA SESION LE CORRIGE AL PROMPT — cuatro cosas
+================================================================================
+El prompt declaro sus cifras como indicativas. Una se confirma exacta y tres
+premisas no se sostienen.
+
+(1) "108 de 164" -> **el 108 es EXACTO, y no es el numero de esta pieza.**
+    Medido con el instrumento versionado del 08-15, sin tocarlo: 108. Pero esa
+    vara pregunta *"¿el numero es de ALGUNA Capitania?"*, y el escalon 1 de
+    INV-10.1 pregunta *"¿es el de LA Capitania nombrada?"*, que es mas duro.
+    Por la vara del invariante son **99**. Las 9 de diferencia llevan el numero
+    de otra reparticion que la que nombran:
+
+        75  Mejillones  -> +56 55 263 0000 es de ANTOFAGASTA
+        84  Huasco      -> +56 52 231 5276 es de CALDERA
+        88  Los Vilos   -> +56 51 255 8100 es de COQUIMBO
+       107  Corral      -> +56 63 227 6905 es de VALDIVIA
+       144  Lago Ranco  -> +56 63 227 6905 es de VALDIVIA
+       145  Lago Ranco  -> +56 63 227 6905 es de VALDIVIA
+       146  Lago Ranco  -> +56 63 227 6905 es de VALDIVIA
+       170  Corral      -> +56 63 227 6905 es de VALDIVIA
+       180  Los Vilos   -> +56 51 255 8100 es de COQUIMBO
+
+    Las dos varas cierran: **99 + 9 = 108**. El techo de esta pieza es 99.
+
+(2) "Es el UNICO punto que INV-10.1 gobierna" -> **FALSO. Hay un CUARTO camino a
+    pantalla que `0bc80d2` no enumero.** `useVoyageVerification.js:535-547` arma
+    el recordatorio `r1_radio_aviso` leyendo **el mismo par** que P3
+    —`portStatus.zarpe.gobernacion` y `.telefono`—, lo rotula igual, y
+    `NormativeBlock.jsx:81-83` lo renderiza **con el telefono adentro de un
+    mensaje normativo**. Eso incumple la PRIMERA FRASE de INV-10.1, antes de
+    llegar a la prelacion: *"se muestran solo en el punto de zarpe y en el de
+    recalada, nunca dentro de un mensaje normativo"*. Se llama P4 en esta
+    bitacora. Decision del owner: **D3(a) — se saca el telefono del
+    recordatorio**, y va en el Tramo B.
+
+(3) "Es render, no dato: el archivo ya esta correcto" -> **correcto para lo que
+    esta pieza puede hacer, con un matiz que cambia el alcance.** Las 9 de arriba
+    son un defecto DE DATO, y ningun render lo arregla: lo unico que el render
+    puede hacer es no mentir sobre ellas, bajandolas al escalon 2. Los 9 son del
+    frente de re-atribucion, que sigue fuera de alcance.
+
+(4) "Si el backend puede entregar el par ya resuelto... la pieza podria cerrarse
+    casi entera del lado backend" -> **NO, y por DOS causas independientes**,
+    medidas en `02_particion.txt`:
+      · `useVoyageVerification.js:246` es un PASAMANOS QUE COPIA CAMPO POR CAMPO.
+        No hace spread del response: nombra los tres campos uno a uno. Un
+        `contacto` nuevo del backend MUERE AHI;
+      · la etiqueta de nivel esta DURA EN EL JSX (`PortStatusBlock.jsx:99`). No
+        sale de ningun campo. Ningun valor que el backend mande cambia un literal.
+    El reparto real de los 6 puntos que la pieza obliga a tocar es **1 en el
+    backend y 5 en la PWA**, o sea el inverso de lo que el prompt esperaba.
+
+
+================================================================================
+1. EL ESTADO DE HOY, POR ESCALON DE INV-10.1
+================================================================================
+Salida completa: `01_medir_precedencia.txt`.
+DENOMINADOR DECLARADO: **las 164 entradas** de `bahia-capitania-map.json`.
+COMPARACIONES EFECTIVAS: 164.
+
+    E1   escalon 1 CUMPLIDO en el dato                     :  99
+    E1x  numero de una Capitania que NO es la nombrada     :   9
+    E2   escalon 2 — el numero es de la Gobernacion        :  56
+    E3   escalon 3 — sin telefono, el campo no se muestra  :   0
+    E?   no clasificable con los indices de hoy            :   0
+    ----------------------------------------------------------
+    SUMA                                                   : 164
+
+**EL ESCALON 3 TIENE CERO ENTRADAS, y eso se dice en vez de esconderse.** Las 164
+traen telefono, y las 9 de E1x caen limpias al escalon 2 —medido: 9 de 9 tienen
+su numero tambien en el indice de Gobernacion—. Es un camino de codigo que el
+dato de hoy NUNCA TOMA. Se implementa igual porque el invariante lo manda, y por
+eso V5 y B8 lo ejercitan con casos construidos: un camino que el dato no recorre
+no se da por bueno mirando el dato.
+
+**LA 127 (BAKER) NO ESTA EN E3.** Tiene `capitania: null` pero SI telefono
+—`+56 67 233 1405`, el de la GM Aysén—, asi que cae en el escalon 2 y se rotula
+Gobernacion. Es lo correcto por prelacion, y el numero atomico pendiente de
+CdRep 260 no la mueve de ahi: la moveria al escalon 1 el dia que llegue.
+
+LA OPCION BARATA, MEDIDA ANTES DE DESCARTARLA
+--------------------------------------------------------------------------------
+El componente YA RECIBE `data.capitania`. De ahi sale la opcion mas barata que
+existe: decidir el escalon en el JSX con `capitania != null`, sin tocar el
+backend. Medida sobre las 164:
+
+    rotularia "Capitania de Puerto de X" : 163
+        el numero SI es de la Capitania nombrada  :  99
+        el numero es de OTRA Capitania            :   9
+        el numero es de la GOBERNACION            :  55
+        SUMA : 99 + 9 + 55 = 163
+
+**55 de las 164 quedarian rotuladas "Capitania de Puerto de X" sobre un numero
+que es de la Gobernacion — que es LITERALMENTE el defecto que INV-10.1 dice
+existir para cerrar.** La opcion mas barata construye la infraccion que el
+invariante nombra, en 64 entradas contando las que mandan a otra Capitania.
+Descartada con numero, no con opinion (§0.2 — el descarte queda escrito).
+
+
+================================================================================
+2. LA PARTICION BACKEND / PWA — 12 puntos comprobados contra el codigo
+================================================================================
+Salida completa: `02_particion.txt`. **Los 12 puntos se comprueban en cada
+corrida contra el archivo real**: si el literal ya no esta, el instrumento
+ABORTA. Un mapa de cableado transcrito a mano envejece en silencio en cuanto
+alguien mueve una linea, y este repositorio ya pago esa forma.
+
+    PUNTOS COMPROBADOS : 12 de 12 · movidos de linea : 0
+    puntos que esta pieza obliga a tocar : 6
+        backend : 1   sitport-routes.js:346
+        PWA     : 5   useVoyageVerification.js:246 · PortStatusBlock.jsx:76 ·
+                      PortStatusBlock.jsx:99 · useVoyageVerification.js:535 ·
+                      NormativeBlock.jsx:81
+    fuera de alcance : 6      SUMA : 6 + 6 = 12
+
+EL CORTE, Y SU CRITERIO ESCRITO
+--------------------------------------------------------------------------------
+TRAMO A (esta sesion, backend): el resolvedor y el campo. **No mueve una sola
+cifra de pantalla.** TRAMO B (sesion siguiente, PWA): los 5 puntos; ahi se mueven
+las 99.
+
+El criterio: el Tramo A es **inerte a pantalla y verificable por si solo**, y no
+deja la suite en rojo — a diferencia de la bahia 129, donde la mitad de la pieza
+si la dejaba. La objecion a mi propio corte quedo dicha en el plan y se repite
+aca porque es §0.3: **el Tramo A es "la opcion que deja todo en verde sin cambiar
+nada de fondo"**, y solo es legitima porque el Tramo B quedo agendado en la misma
+decision, con D1(a) ya tomada. Si el Tramo B no se abriera, esto seria un campo
+muerto y no habria que haberlo escrito.
+
+
+================================================================================
+3. LO QUE SE ESCRIBIO
+================================================================================
+    src/services/contacto-por-escalon.js       NUEVO. Resuelve la prelacion.
+    src/routes/sitport-routes.js               +2 lineas (el require y el campo)
+    src/services/__tests__/contacto-por-escalon.test.js   NUEVO. 2 tests.
+
+NO SE TOCO: `src/data/bahia-capitania-map.json` —V7 lo comprueba entrada por
+entrada contra el blob del ancla—; `data/contacto/reparticiones_publicadas.json`
+—V8—; ningun otro archivo de `src/`; `data/decreto/`; `CONTRATO_MOTOR.md`; la
+PWA —V10, cinco archivos por sha256—.
+
+LA FORMA DEL CAMPO, y por que los tres viejos se conservan
+--------------------------------------------------------------------------------
+    contacto: { nivel, nombre, telefono, telefono_atomico, motivo }
+
+`nivel` es `'capitania'`, `'gobernacion'` o **`null`**. Null es el escalon 3 y
+significa EL CAMPO NO SE MUESTRA; por eso viaja con `nombre` y `telefono` en null
+tambien: quien lo consuma no puede rellenarlo con un texto de reemplazo, que es
+justo lo que el escalon 3 prohibe. B8 prueba que ese relleno se caza.
+
+`capitania`, `gobernacion` y `telefono` **siguen emitidos tal cual**. Retirarlos
+ahora romperia P1 y P2, que esta pieza no toca, y ademas son los campos que el
+frente de atribucion sigue midiendo. Su retiro es del Tramo B o posterior, con su
+propia medicion.
+
+`motivo` dice POR QUE cayo en ese escalon, y no es para el patron: es para que la
+razon quede en el dato en vez de deducirse leyendo el codigo (§4.2 — nada cae al
+caso general en silencio). V6 exige que viaje en las 164.
+
+`telefono_atomico` existe porque INV-10.1 dice que **un valor que no sea numero
+atomico se muestra como texto y no como enlace**. El render de hoy arma el `tel:`
+SIEMPRE, sin comprobar nada: lo que hoy lo salva es el DATO —0 no atomicos en las
+164—, no el render. El campo le da al Tramo B con que decidir.
+
+EL CRITERIO DE ATOMICIDAD NO SE INVENTO: es el mismo `esAtomico` de
+`scripts/frente-contacto-pieza-a.js:167`, `frente-contacto-aplicar-lote.js:262` y
+la V5 del lote Cisnes. Dos criterios de atomicidad conviviendo es la clase de
+divergencia que este repositorio ya pago.
+
+POR QUE EL ESCALON 2 NO CONSULTA NINGUNA TABLA
+--------------------------------------------------------------------------------
+`CONTRATO_MOTOR.md` §5.1 declara que la tabla de Gobernaciones de
+`src/utils/capitanias.js` **NO ES FUENTE**, y leerla en tiempo de request la
+convertiria en una. El escalon 2 no la necesita: la prelacion dice "el de su
+Gobernacion", y cual es su Gobernacion lo trae la propia entrada del mapa. **V11
+lo comprueba leyendo el codigo del resolvedor**, y B7 prueba que muerde.
+
+Que el escalon 2 sea la rama que recibe todo lo que no alcanza el escalon 1 NO es
+un caso por defecto silencioso de los que §4.2 prohibe: es el segundo escalon que
+el invariante nombra, y llega con el motivo de la bajada escrito. Y las dos
+razones por las que una entrada con nombre de Capitania NO alcanza el escalon 1
+se distinguen en el motivo, porque no son el mismo problema ni se arreglan en el
+mismo frente: un rotulo que la fuente no conoce, o un numero que manda a otra
+reparticion.
+
+EL ASCENSO DEL INSUMO, DICHO PORQUE OCURRE HOY Y NO EN EL TRAMO B
+--------------------------------------------------------------------------------
+Medido: `data/contacto/reparticiones_publicadas.json` lo leian **3 scripts y 0
+archivos de `src/`**. `contacto-por-escalon.js` es el primero de `src/`, o sea que
+**con este commit el archivo pasa de derivado de generacion a INSUMO VIVO del
+motor**. El ascenso ocurre en el Tramo A, no en el B.
+
+Por eso la fila de §5 se propone HOY y no despues: mandarla al Tramo B dejaria el
+contrato callado sobre un insumo vivo durante todo el intervalo, que es la misma
+forma de error que `4529b67` enmendo cinco veces. El texto propuesto esta en la
+seccion 8, y **no se escribio en `CONTRATO_MOTOR.md`**: el ciclo de CLAUDE.md §6
+no se saltea — se propone, el owner revisa, el owner autoriza el commit.
+
+
+================================================================================
+4. VERIFICACION — `04_verificar.txt`, exit 0
+================================================================================
+Anclada al COMMIT FIJO `9bbd80a`, no a HEAD. **La verdad de referencia de V1 y V3
+no sale del resolvedor**: el verificador reconstruye el escalon esperado leyendo
+el insumo de reparticiones por su cuenta, con su propio desarmado. Un guard que
+construye su universo del mismo codigo que valida es tautologico y no puede
+fallar.
+
+    V1  el resolvedor coincide con la referencia,
+        entrada por entrada                            164 comparaciones · 0 dif
+    V2  la particion cierra: 99 + 65 + 0 = 164         3 casillas
+    V3  LA AFIRMACION CENTRAL: ningun escalon 1 sobre
+        un numero que la fuente no le publica           99 comparaciones · 0 mal
+    V4  las 9 que mandan a otra reparticion NO llegan
+        al escalon 1, nombradas una por una              9 comparaciones · 9 OK
+    V5  el escalon 3 resuelve limpio con casos
+        construidos (el dato no lo ejercita)             4 comparaciones · 4 OK
+    V6  el `motivo` viaja en todas (§4.2)              164 comparaciones · 0 sin
+    V7  EL DATO NO SE TOCO: el mapa, identico al
+        blob del ancla como valor JSON                 164 comparaciones · 0 dif
+    V8  el insumo que ascendio tampoco se toco           1 comparacion
+    V9  la salida REAL del endpoint trae `contacto`
+        y conserva los tres campos viejos                4 comparaciones
+    V10 LA PWA INTACTA, por sha256                       5 comparaciones · 5 OK
+    V11 el resolvedor no lee la tabla que §5.1
+        declara que no es fuente                         1 comparacion
+
+DENOMINADORES QUE CIERRAN: 164 = 99 escalon 1 + 65 escalon 2 + 0 escalon 3. Y
+65 = 56 + 9, las 9 de E1x bajadas por decision declarada.
+
+V9 NO ES UNA LECTURA DEL TEXTO DEL ARCHIVO: invoca **el handler real** del
+endpoint, con el servicio de SITPORT pisado en el require cache para no salir a
+la red, y afirma sobre la respuesta que el router arma. El servicio se restaura
+despues de medir. **El handler es async y se ESPERA antes de afirmar**: sin la
+espera, el cuerpo seria null y el control diria "no viaja" sin haber medido.
+
+V2 CLAVA LOS TRES NUMEROS contra la medicion previa y no solo la suma. Una
+particion que cerrara en 164 con el reparto corrido pasaria un control que solo
+mirara la suma, y B2 prueba que este no lo hace: mover una entrada de escalon lo
+pone en rojo nombrando la cifra.
+
+
+================================================================================
+5. MORDIDA — NUEVE FAMILIAS, EN VERDE Y EN ROJO
+================================================================================
+`05_mordida.txt` (verde, exit 0) y `06_mordida_estado_viejo.txt` (rojo, exit 0).
+COMPARACIONES EFECTIVAS: 9 familias en cada corrida; el instrumento aborta si son
+cero. Los cuatro insumos mutables se reponen y se comprueba el sha256 al cerrar:
+los cuatro OK **en las dos corridas** — la de rojo tambien, porque exceptuarla
+seria dejarle al instrumento una puerta para modificar el repositorio sin que
+nadie lo note.
+
+LAS FAMILIAS CONSTRUYEN SU CASO DESDE CERO. El valor ofensivo esta escrito
+literal en el ensayo —el nombre inventado, el numero de Valparaiso, el `require`
+de la tabla prohibida, la reparticion "Mejillones" que no existe— y no se saca de
+lo que el dato traiga hoy.
+
+    B0  control negativo: sin inyectar nada, el verificador se comporta como
+        la linea base                                        -> SE COMPORTA COMO DEBE
+    B1  el insumo de reparticiones queda SIN reparticiones
+        el resolvedor ABORTA citando el escalon 2 silencioso -> MORDIO
+    B2  una reparticion cambia de telefono: V2 acusa "el escalon 1 da 98 y la
+        medicion previa dio 99"                              -> MORDIO
+    B3  una entrada del mapa nombra una Capitania que la fuente no publica
+        exit 1, V7 acusa el mapa tocado Y V2 el escalon movido -> MORDIO
+    B4  se le inventa a la fuente una reparticion "Mejillones" con el numero de
+        Antofagasta, para que la 75 suba al escalon 1 indebidamente
+        exit 1, V4 la nombra y V8 acusa el insumo tocado     -> MORDIO
+    B5  la salida deja de emitir `contacto`: V9 lo acusa por nombre -> MORDIO
+    B6  V10 distingue un archivo de la PWA cambiado, SIN escribir en la PWA
+        exit 1, V10 nombra el archivo                        -> MORDIO
+    B7  el resolvedor empieza a leer la tabla que §5.1 declara que no es fuente
+        exit 1, V11 lo acusa                                 -> MORDIO
+    B8  el escalon 3 se llena con "Autoridad Marítima" en vez de callar
+        exit 1, V5 acusa el escalon 3 relleno                -> MORDIO
+
+B6 NO TOCA LA PWA. El defecto va en una **copia del verificador** con el sha
+esperado alterado, que se borra al cerrar. Prueba lo mismo sin escribir un byte
+en el otro repositorio, que en esta sesion es solo lectura.
+
+LA CORRIDA EN ROJO — que prueba y que no
+--------------------------------------------------------------------------------
+El estado pre-pieza de esta pieza NO es un dato viejo: la pieza no toca dato. Es
+el ROUTER del ancla, sin la linea del campo. El resolvedor se deja en disco a
+proposito: borrarlo dejaria al verificador sin poder cargar, y eso no es "rojo",
+es "no midio".
+
+  · LO PRIMERO QUE MIDE: el verificador sale **exit 1** contra el estado
+    pre-pieza, y **la falla es de V9**, que es la que mide la pieza. Un
+    verificador que diera verde sin la pieza aplicada no probaria nada, y esa es
+    la primera cosa que esta corrida descarta;
+  · B1, B2, B3, B4, B6, B7 y B8 **muerden igual** contra el estado pre-pieza: ya
+    hacian lo suyo antes de que el codigo les diera la razon;
+  · B5 queda **TAPADA, y se declara**: ataca a V9, que contra el estado pre-pieza
+    ya esta en rojo por la causa de fondo, asi que su exit no distingue. Se anota
+    como tapada, no como mordida, y el instrumento la cuenta aparte.
+
+TRES DEFECTOS DE INSTRUMENTO PAGADOS EN ESTA SESION, escritos porque no se ven
+mirando el verde
+--------------------------------------------------------------------------------
+(a) **La medicion de atomicidad invento su propio criterio y devolvio 75 no
+    atomicos** contra los **0** que la V5 del lote Cisnes ya media. Cifra legible
+    y falsa. El regex propio matcheaba cualquier numero con espacios. Corregido
+    reusando el `esAtomico` versionado, y de ahi salio la regla que el resolvedor
+    tambien sigue: el criterio no se reescribe, se importa.
+
+(b) **El mapa de cableado buscaba la PRIMERA ocurrencia del literal** y reporto
+    `sitport-routes.js:833` como "movida a la :346", porque las dos salidas
+    emiten el mismo texto. Una cifra falsa producida por el instrumento y no por
+    el codigo. Corregido comprobando la linea declarada y listando todas las
+    ocurrencias cuando el literal se repite.
+
+(c) **B5 y B6 dieron veredicto equivocado en la primera corrida en verde, las dos
+    por la misma razon de fondo: el ensayo estaba mal, no el control.** B5 buscaba
+    `'…contacto: contactoPorEscalon(cap),\n'` con `\n` literal y el archivo esta
+    en CRLF, asi que el replace no cambiaba nada y la familia se declaraba TAPADA
+    en la corrida donde la linea SI estaba — la trampa del CRLF, otra vez. B6
+    escribia la copia del verificador en el scratchpad, y el verificador calcula
+    su raiz con `__dirname`: la copia apuntaba a un repositorio inexistente y
+    fallaba por una causa ajena al ensayo.
+
+    **B6 SALIO exit 1 LAS DOS VECES**, con el defecto y sin el. Un ensayo que
+    mirara solo el codigo de salida la habria contado como mordida. La cazo
+    exigir el MENSAJE — que V10 nombrara el archivo—, que es la correccion que la
+    sesion del lote Cisnes dejo escrita y que aca se cobro sola.
+
+
+================================================================================
+6. QUE LE LLEGA AL PATRON — NADA CAMBIA, Y ESO ES LO ESPERADO
+================================================================================
+Medido con el instrumento versionado del 08-15 sin tocarlo
+(`08_pantalla_despues.txt`), contra la corrida de la sesion anterior:
+
+    camino                                    denominador  ANTES  DESPUES  delta
+    P1  el nombre mostrado ES el que SITPORT
+        atribuye                                  163        99      99      0
+    P2  idem, etiqueta dura                       163       107     107      0
+    P3  numeros de CAPITANIA rotulados
+        "Gobernación Marítima de"                 164       108     108      0
+
+**Las tres identicas, y no es un resultado decepcionante: es la propiedad que
+define al Tramo A.** El campo `contacto` viaja en la respuesta y todavia no lo
+consume nadie, porque el pasamanos de la PWA copia campo por campo. La tarjeta de
+zarpe y recalada sigue diciendo hoy exactamente lo que decia ayer.
+
+**Lo que cambia y no tiene cifra de pantalla:** la prelacion de INV-10.1 dejo de
+estar sin resolver. Hasta ayer ningun punto del sistema decidia el escalon; hoy
+lo decide uno solo, del lado del motor, y esta verificado entrada por entrada.
+
+CUANTO SE MOVERA EN EL TRAMO B, ya medido: **99 de 164 cambian de rotulo de nivel
+(Gobernacion -> Capitania), 62 cambian ademas el nombre mostrado, 0 dejan de
+mostrar el campo, 65 no se mueven.** Suma: 99 + 0 + 65 = 164.
+
+
+================================================================================
+7. LA SUITE
+================================================================================
+    linea base al abrir      -> 84 tests, 84 pass, 0 fail
+    al cerrar (`07_suite.txt`) -> **86 tests, 86 pass, 0 fail**
+
+Los dos tests nuevos estan en `src/services/__tests__/contacto-por-escalon.test.js`
+y son distintos a proposito:
+
+  · el primero afirma sobre EL DATO REAL, las 164 entradas, y su reparto se mueve
+    con cada pieza del frente de contacto. **No clava el 99**: clavarlo
+    convertiria el control en un recordatorio de actualizar el test. Lo que
+    afirma es que el escalon 1 esta EJERCITADO —si cayera a cero, el resolvedor y
+    el insumo se separaron, y esa es la unica alarma que lo diria—, que la
+    particion cierra, que el escalon 3 nunca viaja relleno, y que el motivo
+    siempre esta;
+  · el segundo afirma sobre LA REGLA, con nueve casos escritos desde cero, y su
+    resultado no depende del dato de hoy. Cubre los TRES escalones —incluido el 3,
+    que el dato real no ejercita— y exige que los tres esten cubiertos: una tabla
+    que probara dos de tres pasaria en verde dejando un escalon sin cubrir.
+
+Por que en la suite y no solo en el verificador de esta bitacora: el verificador
+prueba que la pieza quedo bien el dia que se escribio; la suite prueba que sigue
+bien dentro de seis meses, y la corre quien no leyo esta bitacora. Es el mismo
+criterio del camino A con el que entro `cotejo-contrato.test.js`.
+
+
+================================================================================
+8. TEXTO PROPUESTO PARA `CONTRATO_MOTOR.md` §5 — NO ESCRITO
+================================================================================
+Se propone; no se escribio. CLAUDE.md §6: el contenido normativo lo aprueba el
+owner, y la aprobacion es del texto concreto que se mostro. Si el owner lo
+aprueba, entra en el MISMO commit que el resto de la pieza, que es lo que evita
+el intervalo con el contrato callado.
+
+FILA NUEVA en la tabla de §5, despues de "Contacto de Gobernación (teléfono)":
+
+| **Escalón de contacto** (qué nivel se rotula: Capitanía o Gobernación) | `data/contacto/reparticiones_publicadas.json` — índice CdReparticion → nombre publicado y teléfono, derivado de las fichas de DIRECTEMAR por `scripts/frente-contacto-derivar-reparticiones.js` | ⚠️ TRANSITORIA — ver §5.1 |
+
+PARRAFO que acompaña la fila, al final de §5.1:
+
+  > **El insumo de reparticiones pasó a vivo el 2026-08-16.** Hasta ese día
+  > `data/contacto/reparticiones_publicadas.json` era un derivado de generación:
+  > lo leían tres scripts y **ningún archivo de `src/`**. Desde
+  > `src/services/contacto-por-escalon.js` lo lee el motor en tiempo de request,
+  > para resolver **cuál de los dos escalones de INV-10.1 aplica** a cada bahía.
+  > Se declara porque hoy es de donde el motor lee, y un dato vivo sin declarar es
+  > peor que un dato malo declarado.
+  >
+  > **Para qué se usa y para qué no.** Se usa para contestar *"¿este teléfono es
+  > el que la fuente publica para esta Capitanía?"*, que es la condición del
+  > escalón 1. **No es fuente de jurisdicción** —eso lo fija el D.S. 991 vía
+  > `data/decreto/` (INV-3.3)— y el propio archivo lo dice en su clave
+  > `que_NO_es`. Tampoco es fuente del teléfono: el teléfono sigue saliendo de
+  > `bahia-capitania-map.json`.
+  >
+  > **Lo que no cubre, medido el 2026-08-16 sobre sus 64 reparticiones:** 2 no
+  > tienen nombre publicado (`CdRep 144` LIRQUÉN y `CdRep 291` RADA COVADONGA) y
+  > quedan fuera del índice; una bahía que las nombrara no alcanza el escalón 1 y
+  > cae al 2, con el motivo escrito en el propio campo. No se le inventa clave a
+  > una repartición sin nombre publicado.
+  >
+  > **Condición de retiro:** esta fila desaparece el día que exista una fuente de
+  > contacto indexada por Capitanía —la misma condición que la fila de
+  > Gobernación—. Ese día el escalón 1 se contesta leyendo esa fuente y este
+  > índice deja de hacer falta. Mientras tanto es transitoria por declaración y no
+  > por olvido.
+
+LO QUE **NO** SE PROPONE TOCAR HOY, y por que
+--------------------------------------------------------------------------------
+**Las cinco casillas de §5.1 (73 · 56 · 35 · 0 · 0) NO SE MUEVEN, medido.** Son
+propiedades del ARCHIVO, y esta pieza no lo toca. Comprobado ademas que el mapa
+entre `01bf543` —el ancla de esas cifras— y HEAD tiene **164 comparaciones, 0
+telefonos distintos, 0 `capitania` distinta y 1 `gobernacion` distinta** (la 129).
+La instruccion de §5.1 —"quien la actualice corre el instrumento y cambia las
+tres cosas y los cinco numeros"— presupone que corregir P3 los mueve; **no los
+mueve**, y eso queda dicho.
+
+**La frase del 108 tampoco se toca hoy.** Dice: *"Leído como lo lee P3, que sólo
+pregunta «¿este número es de una Capitanía?»: 108 de 164"*. Sigue siendo cierta
+mientras P3 lea asi, y **P3 lee asi hasta el Tramo B**. Se enmienda ahi, cuando
+efectivamente deje de leer asi, y no antes: enmendar hoy seria declarar algo que
+todavia no paso. Decision del owner, aceptada en la parada del plan.
+
+
+================================================================================
+9. PENDIENTES DECLARADOS — anotados, no abiertos
+================================================================================
+DEL TRAMO B, agendado con D1(a) ya decidida:
+1. Los 5 puntos de la PWA. Se abre la escritura al abrirlo.
+2. **El TypeError va con el escalón 3, no como objetivo aparte** (instruccion del
+   owner). `PortStatusBlock.jsx` arma `capitania.telefono.replace(...)` sin
+   comprobar que el telefono exista: si el backend no resuelve la bahia devuelve
+   `{'Desconocida','Desconocida',null}` y la tarjeta revienta, ademas de rotular
+   "Gobernación Marítima de Desconocida". Hoy el dato lo tapa —0 nulos en las
+   164—. Implementar el escalon 3 bien lo cierra.
+3. D3(a): sacar el telefono del recordatorio `r1_radio_aviso`.
+4. La enmienda de la frase del 108 en §5.1.
+
+QUE NO SE TOCO Y SIGUE ABIERTO:
+- **las 9 entradas que mandan a otra reparticion.** Son dato, no render, y viven
+  en el frente de RE-ATRIBUCION. Esta pieza no las arregla: solo deja de mentir
+  sobre ellas. Su nombre y su numero quedan listados en la seccion 0 para que el
+  dia que se abran no haya que volver a medirlos;
+- el numero atomico de Baker (CdRep 260); la 127 sigue con `capitania: null` y
+  resolviendo al escalon 2;
+- `ambitos-publicados.js:306`, el segundo resolvedor. Anotado, no abierto;
+- P1 y P2: sus formas de render no se tocaron y sus cifras no se movieron;
+- las re-atribuciones de fondo y la Via 2 —indexar el contacto por Capitania—.
+  **El escalon 1 de esta pieza es lo primero del repositorio que pregunta por
+  Capitania y no por bahia**, pero no cambia el indice del archivo;
+- el motor BRE. No se abrio y nada de lo medido apunta ahi.
+
+
+================================================================================
+10. LO QUE ESTA BITACORA NO RESPONDE
+================================================================================
+- **Si DIRECTEMAR publica hoy lo que el derivado dice.** No se consulto en vivo.
+  El derivado se leyo tal como esta versionado, con su sha256 declarado.
+- **Si el Tramo B rendira las 99 en pantalla.** Se midio que 99 CAMBIARIAN de
+  rotulo; medir lo que efectivamente se ve es del Tramo B, con la PWA escrita.
+- **Si las 9 de E1x son las unicas con el par nombre/numero cruzado.** Se midio
+  el cruce contra el indice de reparticiones publicadas; una reparticion sin
+  nombre publicado no puede aportar a esa cuenta, y son 2 de 64.
+- **Si `capitania` y `gobernacion` deben retirarse de la respuesta.** Esta pieza
+  los conserva y no lo evalua.
+================================================================================

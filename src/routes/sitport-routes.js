@@ -11,6 +11,7 @@ const {
   ensancheVigente, bahiasDelEnsanche,
 } = require('../services/cobertura-jurisdiccional');
 const { capitaniaDeBahia } = require('../services/capitania-de-bahia');
+const { contactoPorEscalon } = require('../services/contacto-por-escalon');
 const {
   construirResolutorCapitania, evaluarDriftEnRuta, noEvaluado, componerConDrift,
 } = require('../services/drift-ambito-a');
@@ -346,6 +347,12 @@ router.post('/restricciones', async (req, res) => {
       capitania: cap?.capitania || null,
       gobernacion: cap?.gobernacion || null,
       telefono: cap?.telefono || null,
+      // La prelación de INV-10.1, resuelta acá y no en cada consumidor. Los tres
+      // campos de arriba se conservan tal cual: son los que el frente de
+      // atribución sigue midiendo, y retirarlos ahora rompería P1 y P2 sin que
+      // esta pieza los toque. `contacto` es lo que un render debe consumir para
+      // rotular; `contacto.nivel === null` significa que el campo NO SE MUESTRA.
+      contacto: contactoPorEscalon(cap),
     });
   } catch (error) {
     res.status(502).json({ success: false, restricciones: [], error: error.message });

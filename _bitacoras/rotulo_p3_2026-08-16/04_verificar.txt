@@ -1,0 +1,98 @@
+================================================================================
+VERIFICACION DEL TRAMO A — el escalon de INV-10.1, resuelto en el backend
+Ancla: commit fijo 9bbd80a364b38fdacf7b793c62a1cab59b2a400a
+================================================================================
+
+=== LINEA BASE ===
+  HEAD : 9bbd80a364b38fdacf7b793c62a1cab59b2a400a   (ancla 9bbd80a364b38fdacf7b793c62a1cab59b2a400a)
+
+=== V1 — el resolvedor coincide con la referencia, entrada por entrada ===
+  La referencia se construyo arriba leyendo el insumo por su cuenta.
+  COMPARACIONES EFECTIVAS : 164
+  entradas donde difieren : 0
+
+=== V2 — la particion cierra contra el denominador declarado ===
+    escalon 1 (capitania)      :  99
+    escalon 2 (gobernacion)    :  65
+    escalon 3 (no se muestra)  :   0
+    ----------------------------------
+    SUMA                       : 164  de 164
+
+  Contra lo medido en `01_medir_precedencia.txt`: E1=99 · E2=56+9=65 · E3=0.
+  Las 9 de E1x bajan al escalon 2 por decision declarada en el plan, asi que
+  el escalon 2 del resolvedor tiene que dar 65 y no 56.
+
+=== V3 — LA AFIRMACION CENTRAL: ningun escalon 1 sobre un numero ajeno ===
+  Si el nivel es "capitania", el numero TIENE que ser el que la fuente publica
+  para esa Capitania. Es lo unico que esta pieza promete y lo que INV-10.1 pide.
+  COMPARACIONES EFECTIVAS (entradas en escalon 1) : 99
+  entradas mal rotuladas : 0
+
+=== V4 — las 9 que mandan a otra reparticion NO alcanzan el escalon 1 ===
+  Son el caso que romperia el fundamento de la pieza (§1.2): la vara vieja las
+  cuenta como acierto. Se nombran una por una y se exige el escalon 2.
+      75  nombra "Mejillones"  ->  nivel="gobernacion"  OK
+      84  nombra "Huasco"  ->  nivel="gobernacion"  OK
+      88  nombra "Los Vilos"  ->  nivel="gobernacion"  OK
+     107  nombra "Corral"  ->  nivel="gobernacion"  OK
+     144  nombra "Lago Ranco"  ->  nivel="gobernacion"  OK
+     145  nombra "Lago Ranco"  ->  nivel="gobernacion"  OK
+     146  nombra "Lago Ranco"  ->  nivel="gobernacion"  OK
+     170  nombra "Corral"  ->  nivel="gobernacion"  OK
+     180  nombra "Los Vilos"  ->  nivel="gobernacion"  OK
+  COMPARACIONES EFECTIVAS : 9
+
+=== V5 — el escalon 3 existe como camino aunque el dato no lo ejercite ===
+  Hoy 0 de 164 entradas caen ahi. Un camino que el dato nunca toma no se da
+  por bueno mirando el dato: se le pasa un caso construido.
+    sin telefono                 -> nivel=null nombre=null tel=null  OK
+    telefono vacio               -> nivel=null nombre=null tel=null  OK
+    sin nadie a quien rotular    -> nivel=null nombre=null tel=null  OK
+    sin contacto resuelto        -> nivel=null nombre=null tel=null  OK
+  COMPARACIONES EFECTIVAS : 4
+
+=== V6 — el motivo viaja siempre (§4.2: nada cae al general en silencio) ===
+  COMPARACIONES EFECTIVAS : 164
+  entradas sin motivo declarado : 0
+
+=== V7 — EL DATO NO SE TOCO: el mapa, identico al blob del ancla ===
+  Comparado como VALOR JSON entrada por entrada. El terminador de linea no se
+  compara: el blob viene en LF y el disco en CRLF, y eso es propiedad del
+  repositorio, no de la entrada.
+  COMPARACIONES EFECTIVAS : 164
+  entradas distintas : 0
+
+=== V8 — el insumo que ascendio a vivo TAMPOCO se toco ===
+  data/contacto/reparticiones_publicadas.json
+    sha256 del ancla (normalizado a LF) : 9524a3792e3d79d7690d5a4c09b1c461…
+    sha256 de hoy    (normalizado a LF) : 9524a3792e3d79d7690d5a4c09b1c461…
+    COMPARACIONES EFECTIVAS : 1
+
+=== V9 — la salida del backend: `contacto` viaja y los tres campos viejos siguen ===
+  Se invoca EL HANDLER REAL del endpoint, con el servicio de SITPORT pisado
+  para no salir a la red. No es una lectura del texto del archivo: es la
+  respuesta que el router arma.
+    la respuesta trae `contacto`   : true
+    la respuesta trae `capitania`  : true
+    la respuesta trae `gobernacion`: true
+    la respuesta trae `telefono`   : true
+    contacto = {"nivel":"capitania","nombre":"Arica","telefono":"+56 58 2356747","telefono_atomico":true,"motivo":"el numero es el que la fuente publica para esta Capitania"}
+  COMPARACIONES EFECTIVAS : 4
+
+=== V10 — LA PWA NO SE TOCO. Sha256 contra los medidos en `02_particion.txt` ===
+  En esta sesion `tmarea-pwa` es SOLO LECTURA por decision del owner: la
+  apertura de D1(a) se hace efectiva al abrir el Tramo B.
+    src/hooks/useVoyageVerification.js                       INTACTO
+    src/components/verification/PortStatusBlock.jsx          INTACTO
+    src/components/verification/NormativeBlock.jsx           INTACTO
+    src/screens/P3_VoyageVerification.jsx                    INTACTO
+    src/components/verification/TransitRestrictionsBlock.jsx INTACTO
+  COMPARACIONES EFECTIVAS : 5
+
+=== V11 — el resolvedor NO lee la tabla que §5.1 declara que no es fuente ===
+    ¿el codigo del resolvedor requiere `utils/capitanias` o usa GOBERNACIONES? : false
+    COMPARACIONES EFECTIVAS : 1
+
+================================================================================
+VERIFICACION OK. Ningun archivo fue escrito, en ninguno de los dos repos.
+================================================================================
