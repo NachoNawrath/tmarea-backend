@@ -1,0 +1,80 @@
+================================================================================
+MORDIDA — BAHIA 129.  estado = VERDE
+================================================================================
+
+  RESPALDO, con sha256 de partida:
+      src/data/bahia-capitania-map.json             e2b34432d9128153f10ae75abae4ee3b8bb77d02d52f657029a352a813b6c92b
+      data/decreto/zonas_aviso.json                 699a2e7593790e7a8daf1588d5d7b10f13b9d94554cf5436024545139ae3af68
+      data/contacto/correcciones_gobernacion.json   6cbea87266d896de0e78c582e292f845a445808ca2f491c5c6fb06c5e2b0aaf4
+
+  MAPA/ZONAS en estado "verde"
+  PRE-PIEZA (para las familias del generador):
+      src/data/bahia-capitania-map.json             376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da795fb41ce17aa0498a
+      data/decreto/zonas_aviso.json                 8095e167a3de4634c0573454ac01a27ce01fede122b2ad9c2ea5d0999e38e9b1
+
+=== LINEA BASE, antes de inyectar nada ===
+  verificador: exit 0   (esperado en "verde": 0)
+
+=== FAMILIAS ===
+
+  B0  control negativo: sin inyectar nada, el verificador se comporta como la base
+      esperado : exit 0
+      medido   : exit 0
+      -> ACEPTA COMO DEBE
+
+  B1  `valor_nuevo` que NO es el que el decreto le da a esa jurisdiccion
+      esperado : el generador ABORTA por el cotejo contra el decreto (guard 2), sin escribir
+      medido   : exit 3 · ¿aborta POR EL COTEJO con el decreto? true · ¿archivos intactos? true
+      -> MORDIO
+
+  B2  `valor_actual_esperado` que no es lo que el archivo dice hoy
+      esperado : el generador ABORTA por el guard 1, sin pisar nada
+      medido   : exit 3 · ¿aborta POR EL VALOR VIEJO? true · ¿archivos intactos? true
+      -> MORDIO
+
+  B3  la zona declarada no es la que `zonas_aviso.json` le da a esa bahia
+      esperado : el generador ABORTA por el guard 3 — dos archivos que no dicen lo mismo
+      medido   : exit 3 · ¿aborta POR LA ZONA? true · ¿archivos intactos? true
+      -> MORDIO
+
+  B4  la correccion declara un `campo` que el generador no sabe corregir
+      esperado : ABORTA nombrando los admitidos — no cae al generico (CLAUDE.md §4.2)
+      medido   : exit 3 · ¿nombra los admitidos? true · ¿archivos intactos? true
+      -> MORDIO
+
+  B5  la Gobernacion corregida y la declaracion SIN retirar — el retiro automatico de `bd75c494`
+      esperado : LA CARGA SE DETIENE, nombrando la discrepancia que hoy no existe (familia M24)
+      medido   : la carga se detiene · ¿por la discrepancia que ya no existe? true
+      -> MORDIO
+
+  B6  una entrada del mapa FUERA de la pieza, cambiada a mano (la 71)
+      esperado : el verificador falla en V3 y NOMBRA a la 71
+      medido   : exit 1 · ¿V3 nombra a la 71? true
+      -> MORDIO
+
+  B7  `discrepancias_declaradas: []` — declarar el campo vacio
+      esperado : LA CARGA SE DETIENE: declarar vacio no declara nada
+      medido   : la carga se detiene · ¿por el campo vacio? true
+      -> MORDIO
+
+=== RESTAURACION, comprobada por sha256 ===
+  src/data/bahia-capitania-map.json             OK
+  data/decreto/zonas_aviso.json                 OK
+  data/contacto/correcciones_gobernacion.json   OK
+
+=== RESUMEN ===
+  COMPARACIONES EFECTIVAS (familias corridas) : 8
+  B0  ACEPTA COMO DEBE       control negativo: sin inyectar nada, el verificador se comporta como
+  B1  MORDIO                 `valor_nuevo` que NO es el que el decreto le da a esa jurisdiccion
+  B2  MORDIO                 `valor_actual_esperado` que no es lo que el archivo dice hoy
+  B3  MORDIO                 la zona declarada no es la que `zonas_aviso.json` le da a esa bahia
+  B4  MORDIO                 la correccion declara un `campo` que el generador no sabe corregir
+  B5  MORDIO                 la Gobernacion corregida y la declaracion SIN retirar — el retiro au
+  B6  MORDIO                 una entrada del mapa FUERA de la pieza, cambiada a mano (la 71)
+  B7  MORDIO                 `discrepancias_declaradas: []` — declarar el campo vacio
+
+  mordieron : 7 · aceptan como deben : 1 · tapadas declaradas : 0 · sin hacer lo suyo : 0
+
+================================================================================
+RESULTADO: las 8 familias hicieron lo suyo, con los archivos en estado VERDE.
+================================================================================

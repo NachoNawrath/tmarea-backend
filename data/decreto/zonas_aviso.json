@@ -127,14 +127,8 @@
       "contacto": {
         "tipo": "capitania",
         "bahia_id": 129,
-        "discrepancias_declaradas": [
-          {
-            "bahia_id": 129,
-            "nivel": "gobernacion",
-            "motivo": "La Gobernacion que el mapa operativo le pone a la bahia 129 (Aysen) no es la que le da el decreto (Punta Arenas). La Capitania SI coincide, asi que el contacto de Capitania se puede dar y se da; lo que sigue sin adjudicar es cual de las dos fuentes manda sobre la Gobernacion. Pendiente: adjudicar leyendo el parrafo del decreto de las dos Gobernaciones en juego. Mientras no se adjudique, el valor 'Aysen' viaja en el contacto resuelto CON esta marca al lado, nunca solo."
-          }
-        ],
-        "nota_2026-08-16": "ESTE CONTACTO ERA `sin_contacto` HASTA HOY, y su motivo declaraba DOS discrepancias: (i) 'no tiene Capitania atribuida en el mapa operativo' y (ii) 'la Gobernacion que el mapa le pone (Aysen) no es la que le da el decreto (Punta Arenas)'. La Pieza A del 2026-08-15 (`f3936b8`) le escribio la Capitania a la bahia 129, y con eso la mitad (i) PASO A SER FALSA mientras la (ii) seguia en pie. El guard de `zonas-aviso.js` lo cazo y dejo la suite en 69/84 a proposito. La mitad muerta NO se conserva en el `motivo` porque el `motivo` es dato y el dato tiene que ser cierto; queda registrada aca y, entera, en `_bitacoras/pieza_a_nulas_2026-08-15/` §12 y §16 y en `_bitacoras/zonas_aviso_discrepancia_2026-08-16/`."
+        "nota_2026-08-16": "ESTE CONTACTO ERA `sin_contacto` HASTA HOY, y su motivo declaraba DOS discrepancias: (i) 'no tiene Capitania atribuida en el mapa operativo' y (ii) 'la Gobernacion que el mapa le pone (Aysen) no es la que le da el decreto (Punta Arenas)'. La Pieza A del 2026-08-15 (`f3936b8`) le escribio la Capitania a la bahia 129, y con eso la mitad (i) PASO A SER FALSA mientras la (ii) seguia en pie. El guard de `zonas-aviso.js` lo cazo y dejo la suite en 69/84 a proposito. La mitad muerta NO se conserva en el `motivo` porque el `motivo` es dato y el dato tiene que ser cierto; queda registrada aca y, entera, en `_bitacoras/pieza_a_nulas_2026-08-15/` §12 y §16 y en `_bitacoras/zonas_aviso_discrepancia_2026-08-16/`.",
+        "nota_2026-08-16_retiro": "RETIRADA LA DISCREPANCIA, 2026-08-16. La mitad (ii) de la `nota_2026-08-16` —la Gobernacion que el mapa le ponia a la bahia 129 (Aysen) contra la que le da el decreto (Punta Arenas)— quedo ADJUDICADA por el owner contra la fuente publicada por DIRECTEMAR (region de Magallanes, consultada el 2026-08-16): la Capitania de Puerto de Puerto Eden esta publicada bajo la Gobernacion Maritima de PUNTA ARENAS, y coincide con el decreto. El mapa paso a decir `Punta Arenas`, la discrepancia dejo de existir y la declaracion se retira, que es lo que el retiro automatico de `bd75c494` obliga a hacer. La `nota_2026-08-16` NO se toca: es la constancia de como se llego hasta aca (CLAUDE.md §3.3). Evidencia: `_bitacoras/bahia_129_gobernacion_2026-08-16/`."
       },
       "ambito": null,
       "motivo_sin_ambito": "El decreto da el limite Sur (50 33 00 S) y remite el Norte al limite Sur de la Gobernacion Maritima, sin coordenadas."

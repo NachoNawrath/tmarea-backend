@@ -1,0 +1,59 @@
+================================================================================
+VERIFICACION — BAHIA 129. Ancla: commit fijo 4529b67c37cce15adc4a2b123b5c7d91fa31e00d
+================================================================================
+
+  pieza declarada : bahia 129 · campo gobernacion · Aysén -> Punta Arenas · zona 'puerto_eden'
+  entradas en el ancla : 164 · hoy : 164
+  zonas en el ancla    : 10 · hoy : 10
+
+=== V1 — la `gobernacion` de la bahia de la pieza es la del DECRETO ===
+  mapa    : "Punta Arenas"
+  decreto : "Punta Arenas"   (jurisdiccion 'puerto_eden')
+  COMPARACIONES EFECTIVAS : 1
+
+=== V2 — `capitania` y `telefono` de esa bahia, SIN TOCAR contra el ancla ===
+  capitania  ancla="Puerto Edén"  hoy="Puerto Edén"
+  telefono   ancla="+56 61 2201164"  hoy="+56 61 2201164"
+  COMPARACIONES EFECTIVAS : 2
+
+=== V3 — las entradas del mapa que NO son la pieza, IDENTICAS contra el ancla ===
+  Identicas caracter por caracter DENTRO de la linea, y ademas como valor JSON.
+  El terminador de linea no se compara: es propiedad del repositorio.
+  COMPARACIONES EFECTIVAS : 163
+  con la LINEA distinta : 0
+  con el VALOR distinto : 0
+
+=== V4 — CERO telefonos no atomicos en TODO el mapa (INV-10.1) ===
+  COMPARACIONES EFECTIVAS : 164
+  no atomicos : 0
+
+=== V5 — el contacto de la zona 'puerto_eden': que se quito, que se agrego, que quedo ===
+  claves quitadas  : discrepancias_declaradas
+  claves agregadas : nota_2026-08-16_retiro
+  claves cambiadas : (ninguna)
+  ¿sigue la `nota_2026-08-16` original, sin tocar? true
+  COMPARACIONES EFECTIVAS (claves del contacto, union) : 5
+
+=== V6 — el resto de `zonas_aviso.json`, IDENTICO contra el ancla ===
+  COMPARACIONES EFECTIVAS : 9 zonas ajenas + 13 claves de raiz + 1 zona de la pieza fuera de su contacto
+  distintas : 0
+
+=== V7 — la CARGA REAL pasa, y la zona ya no arrastra discrepancias ===
+  OK|[]|"Punta Arenas"|10
+  COMPARACIONES EFECTIVAS : 1 (una carga completa)
+      discrepancias que viajan : []
+      gobernacion resuelta     : "Punta Arenas"
+      zonas cargadas           : 10
+
+=== V8 — el `ambito` de la zona 'puerto_eden' no se movio ===
+  ambito ancla=null · hoy=null
+  COMPARACIONES EFECTIVAS : 1
+  Nota: retirada la discrepancia, la zona RECUPERA el derecho a declarar ambito
+  (criterio de `bd75c494`). Hoy no cambia nada porque su ambito es null por otro
+  motivo — el decreto no le da el limite Norte con coordenadas — y esta pieza no
+  se lo declara. Queda como pendiente declarado en la bitacora.
+
+================================================================================
+RESULTADO: V1–V8 en verde.
+  V1 1 · V2 2 · V3 163 · V4 164 · V5 5 · V6 9+13 · V7 1 · V8 1
+================================================================================

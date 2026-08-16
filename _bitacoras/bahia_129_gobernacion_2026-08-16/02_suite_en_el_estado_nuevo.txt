@@ -1,0 +1,32 @@
+================================================================================
+LA SUITE EN LOS TRES ESTADOS — corrida, no razonada
+================================================================================
+
+  RESPALDO, con sha256 de partida:
+      src/data/bahia-capitania-map.json             376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da795fb41ce17aa0498a
+      data/decreto/zonas_aviso.json                 8095e167a3de4634c0573454ac01a27ce01fede122b2ad9c2ea5d0999e38e9b1
+
+  (1) BASE — el arbol como esta hoy
+      tests 84 · pass 84 · fail 0 · exit 0
+
+  (2) PARCIAL — SOLO "Punta Arenas" escrita, la declaracion SIN retirar
+      tests 84 · pass 69 · fail 15 · exit 1
+
+  (3) ENTERO — "Punta Arenas" escrita Y la declaracion RETIRADA
+      tests 84 · pass 84 · fail 0 · exit 0
+
+  RESTAURACION, comprobada por sha256:
+      src/data/bahia-capitania-map.json             OK
+      data/decreto/zonas_aviso.json                 OK
+
+  COMPARACIONES EFECTIVAS (corridas de la suite) : 3
+
+  QUE DICE LA COMPARACION DE LAS TRES:
+      base 84/84 -> parcial 69/84 -> entero 84/84
+      La pieza A MEDIAS deja la suite EN ROJO y la pieza ENTERA la deja en verde.
+      O sea que las dos mitades son UNA sola pieza: escribir la Gobernacion sin
+      retirar la declaracion no es un estado intermedio valido, es un arbol roto.
+
+================================================================================
+MEDICION COMPLETA. Los dos archivos quedaron repuestos y comprobados.
+================================================================================

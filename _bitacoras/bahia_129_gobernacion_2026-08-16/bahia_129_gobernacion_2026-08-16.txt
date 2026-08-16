@@ -1,0 +1,385 @@
+================================================================================
+BAHIA 129 — PUERTO EDEN. LA GOBERNACION PASA A PUNTA ARENAS, Y CON ELLA SE
+RETIRA LA DISCREPANCIA DECLARADA DE `bd75c494`. 2026-08-16
+Sesion: BAHIA-129. HEAD al abrir y al cerrar: 4529b67 (sin commit).
+Objetivo unico. Frente de CONTACTO (PLAN_JURISDICCION.md §7.1).
+NO es el frente de jurisdiccion del D.S. 991; no se abrio nada de ese frente.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+El agente corrio los instrumentos con `node` desde Git Bash. Las lineas corren
+identicas en PowerShell desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\bahia_129_gobernacion_2026-08-16\01_medir_129.js
+    node _bitacoras\bahia_129_gobernacion_2026-08-16\02_suite_en_el_estado_nuevo.js
+    node scripts\frente-contacto-corregir-gobernacion.js --correccion=bahia_129_gobernacion --dry-run
+    node scripts\frente-contacto-corregir-gobernacion.js --correccion=bahia_129_gobernacion
+    node _bitacoras\bahia_129_gobernacion_2026-08-16\04_verificar.js
+    node _bitacoras\bahia_129_gobernacion_2026-08-16\05_mordida.js
+    node _bitacoras\bahia_129_gobernacion_2026-08-16\05_mordida.js --estado=viejo
+    node _bitacoras\auditoria_rotulos_2026-08-15\02_medir_pantalla.js
+    npm test
+
+Las salidas se generaron redirigiendo con `>` de **bash**, no de PowerShell. Para
+reproducirlas en PowerShell sin corromper tildes y ñ, `| Tee-Object -FilePath`.
+`>` de PowerShell reencodea y convierte fines de linea; esta prohibido para medir.
+
+ARRANQUE VERIFICADO
+--------------------------------------------------------------------------------
+HEAD y `origin/main` en `4529b67`, y no se dio por bueno de palabra: se re-corrio
+`_bitacoras/contrato_51_telefonos_2026-08-16/02_verificar_push.js` — **5 rutas,
+5 blobs identicos, 0 fallas** contra la API. 15 untracked, los 15 esperados.
+
+INSUMOS
+--------------------------------------------------------------------------------
+Los cinco, con sha256 del archivo en disco, en el bloque N0 de `01_medir_129.txt`.
+El mapa NO se lee del disco en la medicion previa: sale del ancla `4529b67`, para
+que la medicion se reproduzca igual despues de aplicada la pieza.
+
+LINEA BASE DE LA SUITE: `npm test` -> **84 tests, 84 pass, 0 fail**.
+
+
+================================================================================
+1. LA DECISION Y LO QUE SE MIDIO DE ELLA
+================================================================================
+Adjudicacion del owner, 2026-08-16, contra la fuente publicada por DIRECTEMAR
+(https://www.directemar.cl/gobernaciones-maritimas/region-de-magallanes-punta-arenas):
+la Capitania de Puerto de Puerto Eden esta publicada bajo la **Gobernacion
+Maritima de PUNTA ARENAS**. Coincide con el decreto. Manda la fuente publicada.
+
+QUE DECIA LA 129 (mapa en el ancla):
+
+    capitania   : "Puerto Edén"
+    gobernacion : "Aysén"
+    telefono    : "+56 61 2201164"
+
+COTEJO CONTRA EL DECRETO, con `normalizarTexto` antes de comparar (INV-0.3),
+2 comparaciones efectivas:
+
+    capitania   mapa "Puerto Edén"  ·  decreto "Puerto Eden"    -> COINCIDEN
+    gobernacion mapa "Aysén"        ·  decreto "Punta Arenas"   -> DIFIEREN
+
+CONTEXTO, con denominador: el mapa reparte sus 164 entradas entre **15
+Gobernaciones distintas** — `Aysén` 33, `Punta Arenas` 13 —. Despues de la pieza,
+32 y 14.
+
+UN HECHO DEL DATO QUE CONVIENE TENER ESCRITO: **el join NO resuelve la 129.**
+`data/decreto/join_bahia_jurisdiccion.json` la trae como `sin_resolver`, sin
+`jurisdiccion_id`. El vinculo bahia -> jurisdiccion que esta pieza usa sale de la
+zona que la declara en `data/decreto/zonas_aviso.json` (`puerto_eden`, contacto
+con `bahia_id: 129`), que es **el mismo vinculo que usa el servicio**. No se
+invento un camino: se uso el que ya estaba.
+
+
+================================================================================
+2. EL TELEFONO — COTEJADO, Y NO SE ESCRIBIO NADA
+================================================================================
+El owner pidio cotejar `+56 61 2201164` contra el CSV y reportar si no coincidia.
+
+    COMPARACIONES EFECTIVAS (filas del CSV) : 64
+    filas con ese numero                    : 1  ->  CdRep 258 · EDÉN
+    la reparticion 258 en el derivado       : nombre_publicado "Puerto Edén",
+                                              telefono "+56 61 2201164",
+                                              identificado_por "telefono"
+    el mapa ya le ponia a la 129            : "+56 61 2201164"
+
+**COINCIDE en los tres lugares. No hay hallazgo y no habia nada que escribir.**
+El numero lo puso la Pieza A (`f3936b8`) entrando por `CdReparticion`, y esta
+pieza no lo toca: **es un numero de CAPITANIA, no de Gobernacion, asi que no
+cuelga del nivel que cambia**. Por eso la correccion no arrastra el telefono —
+no es que se haya decidido no arrastrarlo, es que no hay de donde.
+
+
+================================================================================
+3. EL RETIRO DE LA DISCREPANCIA — EJERCITADO, Y NO ES LO QUE PARECIA
+================================================================================
+Es la primera vez que se ejercita el retiro automatico que `bd75c494` construyo.
+Se midio antes de escribir nada, cargando TRES estados en procesos separados —el
+modulo cachea, y medirlos en el mismo proceso mediria el cache—:
+
+    (a) HOY: mapa con "Aysén", declaracion viva
+        -> LA CARGA PASA. La discrepancia viaja resuelta, con `dice_el_mapa` y
+           `dice_el_decreto` adentro.
+    (b) "Punta Arenas" escrita, declaracion SIN retirar
+        -> LA CARGA SE DETIENE. Mensaje literal:
+           "la bahia 129 declara una discrepancia en nivel 'gobernacion' que HOY
+            NO EXISTE: el mapa dice 'Punta Arenas' y el decreto dice 'Punta
+            Arenas', y coinciden."
+    (c) "Punta Arenas" escrita, declaracion RETIRADA
+        -> LA CARGA PASA, con `discrepancias: []`.
+
+    COMPARACIONES EFECTIVAS (estados cargados) : 3
+    Los dos archivos tocados quedaron repuestos y comprobados por sha256.
+
+**EL VEREDICTO, QUE CORRIGE COMO SE VENIA HABLANDO DEL MECANISMO: el retiro NO
+es automatico en el sentido de que el archivo se limpie solo. Lo automatico es la
+DETENCION.** El guard hace exactamente lo que `bd75c494` dice —es la familia M24,
+espejo de M20— pero su efecto es **forzar una edicion, no evitarla**. Escrita la
+Gobernacion correcta, el registro se planta hasta que alguien retire la
+declaracion.
+
+De ahi salio la parada del plan: esta pieza NO podia dejar `zonas_aviso.json` sin
+tocar, y el owner amplio la zona de escritura para eso, con la forma exacta.
+
+Y LA SEGUNDA MEDICION, la que decidio que las dos mitades van juntas —
+`02_suite_en_el_estado_nuevo.txt`, tres corridas de la suite:
+
+    base    84/84   el arbol como estaba
+    parcial 69/84   SOLO la Gobernacion escrita, declaracion sin retirar
+    entero  84/84   Gobernacion escrita Y declaracion retirada
+
+**La pieza a medias deja la suite en rojo; la pieza entera la deja en verde. El
+estado intermedio no es un paso: es un arbol roto.** Por eso el generador escribe
+los dos archivos en la misma corrida y REVIERTE LOS DOS si la carga no pasa.
+
+    Los 15 fallos del estado parcial son el mismo NUMERO y el mismo mecanismo que
+    el 2026-08-15 —la carga se detiene—. **No se midio si son literalmente los
+    mismos 15 tests, y no se afirma.**
+
+
+================================================================================
+4. LO QUE SE ESCRIBIO
+================================================================================
+INSUMO DECLARADO PRIMERO, y en este orden:
+
+    data/contacto/correcciones_gobernacion.json    la correccion, con su bahia,
+                                                   valor viejo, valor nuevo, la
+                                                   fuente publicada con url y
+                                                   fecha, y el retiro a hacer
+    scripts/frente-contacto-corregir-gobernacion.js  el aplicador generico
+        -> src/data/bahia-capitania-map.json   1 linea de 187
+        -> data/decreto/zonas_aviso.json       -7 lineas, +1
+
+    mapa          sha256 ANTES  376a1726ab1ae538a46db59176583e2e…
+                  sha256 DESPUES e2b34432d9128153f10ae75abae4ee3b…
+    zonas_aviso   sha256 ANTES  8095e167a3de4634c0573454ac01a27c…
+                  sha256 DESPUES 699a2e7593790e7a8daf1588d5d7b10f…
+
+LA LINEA DEL MAPA, antes y despues (salida sin editar en `03_aplicar.txt`):
+
+    antes  : "129": { "capitania": "Puerto Edén",     "gobernacion": "Aysén",           "telefono": "+56 61 2201164" },
+    despues: "129": { "capitania": "Puerto Edén",     "gobernacion": "Punta Arenas",    "telefono": "+56 61 2201164" },
+
+EN `zonas_aviso.json`, zona `puerto_eden`, y NADA MAS:
+    · se quita la clave `discrepancias_declaradas` ENTERA. Es la unica forma que
+      carga: dejarla en `[]` esta prohibido por el propio guard —"declarar el
+      campo vacio no declara nada"—, y eso lo prueba la familia B7;
+    · se agrega `nota_2026-08-16_retiro` AL LADO de la `nota_2026-08-16`, que
+      **no se toca**. La nota vieja es la constancia de como se llego hasta aca
+      (§3.3); la nueva registra la adjudicacion con su fuente y su fecha.
+
+NO SE TOCO: `capitania` ni `telefono` de la 129; ninguna otra entrada del mapa;
+ninguna otra zona ni ninguna clave de raiz de `zonas_aviso.json`; `src/services/`;
+la PWA; `CONTRATO_MOTOR.md`; el render.
+
+POR QUE UN GENERADOR Y NO UNA EDICION A MANO
+--------------------------------------------------------------------------------
+Porque una edicion a mano no trae guards. Los tres que este script no deja saltear:
+
+    guard 1  el archivo tiene que decir HOY `valor_actual_esperado`. Si se movio,
+             se detiene en vez de pisar. Muerde en B2.
+    guard 2  `valor_nuevo` tiene que coincidir con lo que el DECRETO le da a la
+             jurisdiccion de esa bahia. El script NO le cree al valor declarado:
+             lo coteja. Una correccion mal tipeada no entra. Muerde en B1.
+    guard 3  la jurisdiccion se resuelve por la zona de `zonas_aviso.json` que
+             declara esa bahia, y tiene que ser la MISMA que la correccion
+             declara. Dos archivos distintos diciendo lo mismo. Muerde en B3.
+
+Y el alcance sale del codigo y pasa al dato (§4.3): el script no nombra ninguna
+bahia. El `campo` se evalua con mapeo exhaustivo SIN caso por defecto (§4.2) —
+familia B4.
+
+Ninguno de los dos archivos se RESERIALIZA. Los dos estan formateados a mano
+—columnas alineadas en el mapa, objetos compactos en `zonas_aviso.json`— y
+reserializar `zonas_aviso.json` producia **141 lineas de diff para cambiar dos**,
+medido antes de escribir el generador. Se editan por linea.
+
+
+================================================================================
+5. VERIFICACION — `04_verificar.txt`, exit 0
+================================================================================
+Anclada al COMMIT FIJO `4529b67`, no a HEAD. Compara linea a linea y no por bytes
+del archivo entero: `core.autocrlf=true` deja el blob en LF y el mapa en disco en
+CRLF. La pieza se lee de su DECLARACION y no se transcribe: un verificador que
+hardcodee la bahia mide otra cosa el dia que la declaracion cambie.
+
+    V1 la `gobernacion` de la bahia es la del DECRETO        1 comparacion
+    V2 `capitania` y `telefono` SIN TOCAR contra el ancla    2 comparaciones
+    V3 las entradas del mapa que NO son la pieza,
+       IDENTICAS contra el blob del ancla                  163 comparaciones ·
+                                                           0 con la linea distinta ·
+                                                           0 con el valor distinto
+    V4 CERO telefonos no atomicos en TODO el mapa          164 comparaciones · 0
+    V5 el contacto de la zona: se quito `discrepancias_
+       declaradas`, se agrego `nota_2026-08-16_retiro`,
+       cambiaron 0 claves existentes, y la
+       `nota_2026-08-16` sigue igual                         5 claves
+    V6 el resto de `zonas_aviso.json` IDENTICO al ancla       9 zonas ajenas +
+                                                            13 claves de raiz +
+                                                             1 zona de la pieza
+                                                               fuera de su contacto
+                                                             -> 0 distintas
+    V7 la CARGA REAL pasa y la zona no arrastra
+       discrepancias                                         1 carga completa
+    V8 el `ambito` de la zona no se movio                     1 comparacion
+
+DENOMINADORES QUE CIERRAN: 164 = 1 de la pieza + 163 de V3. Las 10 zonas de
+`zonas_aviso.json` = 9 ajenas de V6 + 1 de la pieza.
+
+LO QUE V7 DEVUELVE, y es el detalle que vale: el contacto resuelto de
+`puerto_eden` viaja hoy con `gobernacion: "Punta Arenas"` y `discrepancias: []`.
+Hasta ayer viajaba con `"Aysén"` y la marca al lado. **El valor dejo de necesitar
+marca porque dejo de estar en desacuerdo.**
+
+
+================================================================================
+6. MORDIDA — OCHO FAMILIAS, EN VERDE Y EN ROJO
+================================================================================
+`05_mordida.txt` (verde, exit 0) y `06_mordida_dato_viejo.txt` (rojo, exit 0).
+COMPARACIONES EFECTIVAS: 8 familias en cada corrida; aborta si son cero. Los tres
+insumos mutables repuestos y comprobados por sha256 en las dos corridas.
+
+LAS FAMILIAS CONSTRUYEN SU CASO DESDE CERO: el valor ofensivo esta escrito literal
+—`"Coquimbo"`, `"Valparaíso"`, `"talcahuano"`, `"telefono"`— y no se saca de lo
+que el dato traiga hoy.
+
+    B0  control negativo: el verificador se comporta como la linea base -> ACEPTA
+    B1  `valor_nuevo` que no es el del decreto        exit 3, cita el cotejo -> MORDIO
+    B2  `valor_actual_esperado` que no es el de hoy   exit 3, cita el viejo  -> MORDIO
+    B3  la zona declarada no es la de zonas_aviso     exit 3, cita la zona   -> MORDIO
+    B4  `campo` que el generador no sabe corregir     exit 3, nombra admitidos -> MORDIO
+    B5  Gobernacion corregida, declaracion SIN retirar
+        la carga SE DETIENE por la discrepancia que ya no existe            -> MORDIO
+    B6  una entrada del mapa FUERA de la pieza, cambiada a mano (la 71)
+        el verificador falla en V3 y la nombra                              -> MORDIO
+    B7  `discrepancias_declaradas: []`  la carga se detiene por el vacio    -> MORDIO
+
+**B5 es la razon de ser de esta mordida:** prueba que el retiro automatico de
+`bd75c494` SIGUE mordiendo despues de la pieza. Si mañana alguien repone la
+declaracion sin motivo, el registro se planta igual que hoy.
+
+LA CORRIDA EN ROJO — que prueba y que no
+--------------------------------------------------------------------------------
+Con los dos archivos repuestos al ancla:
+
+  · LO PRIMERO QUE MIDE: el verificador sale **exit 1**, y sus fallas son de V1 y
+    V5, que son las que miden la pieza. Un verificador que diera verde con la
+    pieza sin aplicar no probaria nada;
+  · B1, B2, B3, B4, B5 y B7 **muerden igual** contra el dato viejo: ya hacian lo
+    suyo antes de que el dato les diera la razon;
+  · B6 queda **TAPADA, y se declara**: ataca al verificador, que contra el dato
+    viejo ya esta en rojo por la causa de fondo, asi que su exit no distingue.
+
+LAS FAMILIAS DEL GENERADOR CORREN SOBRE EL ESTADO PRE-PIEZA, y eso se aprendio
+pagandolo en la sesion del lote Cisnes: el guard 1 exige que el archivo diga hoy
+el valor viejo, asi que con la pieza aplicada abortan por ESE guard antes de
+llegar al que el ensayo quiere probar. Todas afirman sobre el MENSAJE del aborto
+y no sobre el codigo de salida.
+
+DEFECTO DE INSTRUMENTO PAGADO EN ESTA SESION, escrito porque no se ve mirando el
+verde
+--------------------------------------------------------------------------------
+**La primera version de `02_suite_en_el_estado_nuevo.js` salio en verde midiendo
+`null`.** Llamaba a `npm.cmd` por `spawnSync`, el proceso no arrancaba, las tres
+corridas devolvieron `null` en tests/pass/fail — y el instrumento igual imprimio
+"MEDICION COMPLETA" con exit 0. Un control que sale en verde sin haber medido.
+La segunda version paso el DIRECTORIO de tests al runner en vez del glob que
+`package.json` declara, y devolvio `tests 1 · pass 0 · fail 1`: cifras **legibles
+y falsas**, que es peor. Tres correcciones, todas al instrumento:
+
+    · se expande el glob `*.test.js` con `fs` y se pasan los archivos;
+    · cada cifra que no se pueda leer ABORTA con exit 3;
+    · **la linea base es parte de la medicion**: si el arbol de hoy no esta en
+      verde, el instrumento no puede concluir y sale 3 en vez de imprimir un
+      veredicto.
+
+
+================================================================================
+7. QUE LE LLEGA AL PATRON
+================================================================================
+Las formas de los tres caminos no cambiaron y no se tocaron.
+
+    P1  TransitRestrictionsBlock  "{capitania || gobernacion}"
+        La 129 tiene `capitania: "Puerto Edén"`, que no es nula: el `||` nunca
+        llega a `gobernacion`. NO CAMBIA NADA.
+    P2  P3_VoyageVerification     "Capitanía de Puerto de {capitania || gobernacion}"
+        Mismo `||`, misma conclusion. NO CAMBIA NADA.
+    P3  PortStatusBlock           "📞 Gobernación Marítima de {gobernacion} — {telefono}"
+        LEE `gobernacion` SIEMPRE. El rotulo de la 129 pasa de
+        "Gobernación Marítima de Aysén" a "Gobernación Marítima de Punta Arenas".
+        El telefono no se toca.
+
+ALCANCE, con su denominador: **cambia el rotulo de 1 de las 164 entradas.**
+
+Y LAS CIFRAS DE LOS TRES CAMINOS NO SE MUEVEN, medido con el instrumento
+versionado del 08-15 sin tocarlo (`08_pantalla_despues.txt`), contra la corrida
+de la sesion anterior:
+
+    P1  99 de 163   ·  P2  107 de 163  ·  P3  108 de 164     — identicas
+
+No se mueven porque ese instrumento cuenta NOMBRES DE CAPITANIA y NUMEROS, y esta
+pieza no toca ninguno de los dos. Lo que cambia es el rotulo de nivel al lado del
+numero, que ese instrumento no cuenta.
+
+**Lo que si mejoro y no tiene cifra: en esa tarjeta el numero es de la Capitania
+de Puerto Eden y la Gobernacion que se nombra al lado ahora es la correcta.** Que
+el rotulo diga "Gobernación Marítima" sobre un numero de Capitania sigue mal, y
+sigue siendo del render.
+
+
+================================================================================
+8. LA SUITE
+================================================================================
+    npm test -> **84 tests, 84 pass, 0 fail**   (`07_suite.txt`)
+    linea base al abrir -> 84/84
+
+Corrida despues de la mordida y con los dos archivos escritos.
+
+
+================================================================================
+9. PENDIENTES DECLARADOS — anotados, no abiertos
+================================================================================
+PEDIDOS EXPRESAMENTE POR EL OWNER:
+
+1. **`puerto_eden` RECUPERA EL DERECHO A DECLARAR AMBITO.** `bd75c494` fijo que
+   una zona cuyo contacto se da y que ademas arrastra una discrepancia declarada
+   no puede declarar `ambito`. Retirada la declaracion, esa restriccion deja de
+   alcanzarla. **Hoy no cambia nada**: su `ambito` sigue en `null` por otro
+   motivo —el decreto le da el limite Sur (50 33 00 S) y remite el Norte al
+   limite Sur de la Gobernacion Maritima, sin coordenadas— y esta pieza no se lo
+   declara. V8 lo comprueba: el `ambito` no se movio. Se anota para que nadie lo
+   lea como descuido el dia que aparezca el limite Norte.
+
+2. **NO SE MIDIO si la 129 es la unica entrada del mapa con la Gobernacion
+   divergente contra el decreto.** Contestarlo exige cotejar las 164 contra el
+   join, y eso es el frente de RE-ATRIBUCION, que esta fuera de alcance. Lo unico
+   que se midio de eso es el reparto: 15 Gobernaciones distintas sobre las 164.
+
+QUE NO SE TOCO Y SIGUE ABIERTO:
+- `CONTRATO_MOTOR.md` §5.1: **sus cifras NO se mueven con esta pieza**, medido —
+  la lista completa de los 164 telefonos es identica antes y despues, asi que las
+  cinco casillas (73 · 56 · 35 · 0 · 0) quedan como estan. El contrato no
+  necesita enmienda por esta pieza y no se toco;
+- el numero atomico de Baker (CdRep 260); la 127 sigue en `null`;
+- el render: P1 sin etiqueta de nivel, la etiqueta dura de P2, y los 108 de P3;
+- las re-atribuciones de fondo y la Via 2;
+- el join sigue diciendo `sin_resolver` para la 129. Esta pieza no lo cambia y no
+  lo necesita, pero queda escrito: la atribucion de esa bahia al decreto vive hoy
+  en `zonas_aviso.json` y no en el join.
+
+
+================================================================================
+10. LO QUE ESTA BITACORA NO RESPONDE
+================================================================================
+- **Que dice DIRECTEMAR hoy** mas alla de lo que el owner consulto y cito: la
+  pagina se consulto del lado del owner, no del agente, y su contenido no quedo
+  capturado en el repositorio. Lo que si esta versionado es la adjudicacion, con
+  url y fecha, en `data/contacto/correcciones_gobernacion.json`.
+- **Cual de las dos fuentes manda en general** sobre la Gobernacion. Esta pieza
+  adjudica UNA bahia contra una fuente publicada; no fija una regla.
+- **Que es la reparticion 189, ni que pasa con la 258 y la 146.** Sigue abierto
+  en el registro de DIRECTEMAR y esta medicion no lo necesita.
+- **El motor BRE** no se abrio. Nada de lo medido apunta ahi.
+================================================================================

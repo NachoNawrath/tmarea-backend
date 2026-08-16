@@ -1,0 +1,37 @@
+{
+  "que_es": "Las correcciones DECLARADAS del campo `gobernacion` de `src/data/bahia-capitania-map.json`: una entrada por bahia cuya Gobernacion se adjudico contra una fuente publicada. Lo consume `scripts/frente-contacto-corregir-gobernacion.js`.",
+  "que_NO_es": "NO es fuente de jurisdiccion ni de atribucion. No dice que territorio le corresponde a nadie: dice que valor se adjudico para UNA bahia, contra que fuente publicada, y quien la consulto.",
+  "por_que_es_dato_y_no_una_rama_del_codigo": "CLAUDE.md §4.3 — una regla que nombra a una entidad no es una regla. Un generador con `bahia 129` adentro seria exactamente eso. Aca el alcance es una propiedad DECLARADA y el generador es generico.",
+  "por_que_lleva_el_valor_VIEJO_ademas_del_nuevo": "El generador exige que el archivo diga hoy `valor_actual_esperado` antes de escribir. Sin eso, una correccion declarada hace semanas se aplicaria a ciegas sobre un archivo que ya se movio. Con eso, si el archivo cambio, la corrida se detiene en vez de pisar.",
+  "por_que_el_valor_nuevo_se_cruza_contra_el_decreto": "El generador NO confia en el valor escrito aca: lo coteja contra `data/decreto/jurisdicciones_v2.json` por la jurisdiccion de la bahia, y aborta si no coinciden. Una correccion mal tipeada no puede entrar.",
+  "campos_de_campo_admitidos": {
+    "gobernacion": "unico admitido. Conjunto exhaustivo y sin caso por defecto (§4.2): un `campo` desconocido detiene la corrida en vez de caer al generico."
+  },
+  "correcciones": [
+    {
+      "id": "bahia_129_gobernacion",
+      "declarado": "2026-08-16",
+      "sesion": "BAHIA-129",
+      "bahia_id": 129,
+      "campo": "gobernacion",
+      "valor_actual_esperado": "Aysén",
+      "valor_nuevo": "Punta Arenas",
+      "fuente": {
+        "publicada_por": "DIRECTEMAR",
+        "url": "https://www.directemar.cl/gobernaciones-maritimas/region-de-magallanes-punta-arenas",
+        "consultada_el": "2026-08-16",
+        "consultada_por": "owner",
+        "que_dice": "La Capitania de Puerto de Puerto Eden esta publicada bajo la Gobernacion Maritima de PUNTA ARENAS."
+      },
+      "motivo": "El mapa operativo le ponia `Aysén` y es el unico que lo decia: el decreto le da `Punta Arenas` y la fuente publicada por DIRECTEMAR coincide con el decreto. Manda la fuente publicada. Adjudicacion del owner, 2026-08-16. NO se toca `capitania` —ya coincidia— ni `telefono`, que es el de la Capitania (CdRep 258) y no cuelga del nivel que cambia.",
+      "retirar_discrepancia_declarada": {
+        "archivo": "data/decreto/zonas_aviso.json",
+        "zona": "puerto_eden",
+        "nivel": "gobernacion",
+        "por_que": "`bd75c494` declaro esa discrepancia como VIVA y le puso retiro automatico. Escrito `Punta Arenas`, la discrepancia deja de existir y el guard de `src/services/zonas-aviso.js` DETIENE la carga hasta que la declaracion se retire. Medido en `_bitacoras/bahia_129_gobernacion_2026-08-16/01_medir_129.txt`, bloque N4: con la Gobernacion corregida y la declaracion sin retirar, la carga se detiene y la suite cae a 69/84. Las dos mitades son UNA pieza.",
+        "clave_nota": "nota_2026-08-16_retiro",
+        "nota": "RETIRADA LA DISCREPANCIA, 2026-08-16. La mitad (ii) de la `nota_2026-08-16` —la Gobernacion que el mapa le ponia a la bahia 129 (Aysen) contra la que le da el decreto (Punta Arenas)— quedo ADJUDICADA por el owner contra la fuente publicada por DIRECTEMAR (region de Magallanes, consultada el 2026-08-16): la Capitania de Puerto de Puerto Eden esta publicada bajo la Gobernacion Maritima de PUNTA ARENAS, y coincide con el decreto. El mapa paso a decir `Punta Arenas`, la discrepancia dejo de existir y la declaracion se retira, que es lo que el retiro automatico de `bd75c494` obliga a hacer. La `nota_2026-08-16` NO se toca: es la constancia de como se llego hasta aca (CLAUDE.md §3.3). Evidencia: `_bitacoras/bahia_129_gobernacion_2026-08-16/`."
+      }
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+================================================================================
+BAHIA 129 — PUERTO EDEN. MEDICION PREVIA. 2026-08-16
+Ancla: commit fijo 4529b67c37cce15adc4a2b123b5c7d91fa31e00d
+================================================================================
+
+=== N0 — INSUMOS, con sha256 del archivo en disco ===
+  data/decreto/zonas_aviso.json                                  8095e167a3de4634c0573454ac01a27ce01fede122b2ad9c2ea5d0999e38e9b1
+  data/decreto/jurisdicciones_v2.json                            10ef5af265b9a448dfe493855c25442c2d6905801a747c66cbb4e33554bee413
+  _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv  04cdf370c089e321a7085a58226d05d73f456a20f0e4c5479cfe5ae9dd242d4d
+  _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json aed48c23ffbb840cb8f09acde180b96827b159990d961d76daf1278cb473270b
+  data/contacto/reparticiones_publicadas.json                    9524a3792e3d79d7690d5a4c09b1c46191934dea45a734051f285420f89fef46
+  src/data/bahia-capitania-map.json  [del ancla, en CRLF]        376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da795fb41ce17aa0498a
+
+=== N1 — QUE DICE HOY LA 129 EN EL MAPA, los tres campos ===
+  capitania   : "Puerto Edén"
+  gobernacion : "Aysén"
+  telefono    : "+56 61 2201164"
+
+=== N2 — QUE LE DA EL DECRETO A `puerto_eden` ===
+  nombre      : "Puerto Eden"
+  gobernacion : "Punta Arenas"
+
+  COTEJO campo por campo, con `normalizarTexto` antes de comparar (INV-0.3):
+    capitania   mapa="Puerto Edén" · decreto="Puerto Eden" -> COINCIDEN
+    gobernacion mapa="Aysén" · decreto="Punta Arenas" -> DIFIEREN
+  COMPARACIONES EFECTIVAS : 2
+
+  ¿ES LA UNICA DEL MAPA QUE DICE "Aysén" TENIENDO EL DECRETO OTRA COSA?
+  No se contesta aca y se dice por que: contestarlo exige cotejar las 164
+  contra el join, que es el frente de re-atribucion y esta fuera de alcance.
+  Lo que SI se midio, y alcanza para esta pieza: cuantas entradas del mapa
+  llevan cada Gobernacion.
+    "Aysén"       : 33 entradas
+    "Punta Arenas": 13 entradas
+    Gobernaciones distintas en el mapa: 15 · suma 164 de 164
+
+=== N3 — EL TELEFONO PUBLICADO POR DIRECTEMAR, COTEJADO CONTRA EL CSV ===
+  valor publicado (owner, 2026-08-16) : "+56 61 2201164"
+  COMPARACIONES EFECTIVAS (filas del CSV) : 64
+  filas del CSV con ese numero : 1
+      CdRep  258  EDÉN                   "+56 61 2201164"
+
+  la reparticion 258 en el derivado : nombre_publicado="Puerto Edén" · telefono="+56 61 2201164" · identificado_por="telefono"
+  el mapa hoy le pone a la 129      : "+56 61 2201164"
+
+  VEREDICTO: ¿el publicado coincide con el CSV Y con lo que el mapa ya tiene? SI
+
+=== N4 — EL RETIRO DE LA DISCREPANCIA, EJERCITADO. Primera vez. ===
+  Se toca `src/data/bahia-capitania-map.json` y `data/decreto/zonas_aviso.json`
+  y se REPONEN comprobando sha256 al final. Ningun cambio sobrevive a este bloque.
+
+  (a) HOY — mapa con "Aysén", declaracion viva
+      LA CARGA PASA
+      discrepancias resueltas que viajan: [{"bahia_id":129,"dice_el_mapa":{"capitania":"Puerto Edén","gobernacion":"Aysén","telefono":"+56 61 2201164"},"dice_el_decreto":{"capitania":"Puerto Eden","gobernacion":"Punta Arenas"},"nivel":"gobernacion","motivo":"La Gobernacion que el mapa operativo le pone a la bahia 129 (Aysen) no es la que le da el decreto (Punta Arenas). La Capitania SI coincide, asi que el contacto de Capitania se puede dar y se da; lo que sigue sin adjudicar es cual de las dos fuentes manda sobre la Gobernacion. Pendiente: adjudicar leyendo el parrafo del decreto de las dos Gobernaciones en juego. Mientras no se adjudique, el valor 'Aysen' viaja en el contacto resuelto CON esta marca al lado, nunca solo."}]
+
+  (b) CON "Punta Arenas" ESCRITA y la declaracion SIN RETIRAR
+      LA CARGA SE DETIENE
+      motivo: [zonas_aviso] zona 'puerto_eden': la bahia 129 declara una discrepancia en nivel 'gobernacion' que HOY NO EXISTE: el mapa dice 'Punta Arenas' y el decreto dice 'Punta Arenas', y coinciden. Una discrepancia declarada que se resolvio deja de declararse: mantenerla escrita haria que el registro afirme un desacuerdo que ya no hay. (Si el nivel declarado es el mismo del que sale el contacto, esto es lo que lo detiene: esa rama ya exigio que coincidiera.)
+
+  (c) CON "Punta Arenas" ESCRITA y la declaracion RETIRADA
+      LA CARGA PASA
+      discrepancias resueltas que viajan: []
+
+  RESTAURACION DE LOS DOS ARCHIVOS, comprobada por sha256:
+      src/data/bahia-capitania-map.json             OK
+      data/decreto/zonas_aviso.json                 OK
+
+  COMPARACIONES EFECTIVAS (estados cargados) : 3
+
+  VEREDICTO DEL MECANISMO, medido y no supuesto:
+      (a) pasa=true   (b) pasa=false   (c) pasa=true
+      EL RETIRO **NO ES AUTOMATICO EN EL SENTIDO DE QUE EL ARCHIVO SE LIMPIE SOLO**.
+      Lo automatico es la DETENCION: escrita la Gobernacion correcta, la carga se
+      detiene y OBLIGA a retirar la declaracion a mano. Retirada, vuelve a pasar.
+      O sea que esta pieza NO puede dejar `zonas_aviso.json` sin tocar.
+
+=== N5 — QUE LE LLEGA AL PATRON POR P1, P2 Y P3 ===
+  Las formas se re-leyeron del codigo en las sesiones anteriores y no cambiaron.
+  Este cambio toca SOLO `gobernacion`, asi que el efecto se razona campo por campo
+  y se mide donde el campo se lee.
+
+  P1 TransitRestrictionsBlock  "{capitania || gobernacion}" — la 129 tiene
+     capitania="Puerto Edén", que NO es nula, asi que el `||` nunca llega
+     a `gobernacion`. NO CAMBIA NADA.
+  P2 P3_VoyageVerification     "Capitanía de Puerto de {capitania || gobernacion}" —
+     mismo `||`, misma conclusion. NO CAMBIA NADA.
+  P3 PortStatusBlock           "📞 Gobernación Marítima de {gobernacion} — {telefono}"
+     LEE `gobernacion` SIEMPRE. Para la bahia 129 el rotulo pasa de
+     "Gobernación Marítima de Aysén" a "Gobernación Marítima de Punta Arenas".
+     El telefono NO se toca: sigue "+56 61 2201164".
+
+  ALCANCE, con su denominador: cambia el rotulo de 1 de las 164 entradas.
+  El conteo de numeros de Capitania rotulados "Gobernación Marítima de" NO se
+  mueve, porque esta pieza no toca ningun telefono. Se mide en N7.
+
+=== N6 — LAS ENTRADAS QUE NO SON LA 129 ===
+  entradas fuera de la pieza : 163
+  identicas                  : 163
+  movidas                    : 0   (debe ser 0)
+
+=== N7 — ¿SE MUEVEN LAS CIFRAS DE CONTRATO_MOTOR.md §5.1? ===
+  §5.1 declara una particion de los 164 TELEFONOS por nivel. Esta pieza no
+  toca ningun telefono, asi que la particion no deberia moverse — pero se
+  mide en vez de suponerse.
+  COMPARACIONES EFECTIVAS (telefonos comparados) : 164
+  ¿la lista completa de telefonos es identica antes y despues? true
+  Si es identica, las cinco casillas de §5.1 —73 · 56 · 35 · 0 · 0— no se mueven
+  y el contrato NO necesita enmienda por esta pieza.
+
+================================================================================
+MEDICION COMPLETA. Los insumos tocados quedaron repuestos y comprobados.
+================================================================================

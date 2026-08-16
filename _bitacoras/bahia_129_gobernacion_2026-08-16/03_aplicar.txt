@@ -1,0 +1,44 @@
+================================================================================
+CORRECCION DECLARADA DE `gobernacion`, y retiro de la discrepancia que deja sin objeto
+================================================================================
+
+  CORRECCION DECLARADA
+      id        : bahia_129_gobernacion
+      bahia     : 129
+      campo     : gobernacion
+      Aysén  ->  Punta Arenas
+      fuente    : DIRECTEMAR, consultada el 2026-08-16
+                  https://www.directemar.cl/gobernaciones-maritimas/region-de-magallanes-punta-arenas
+
+  src/data/bahia-capitania-map.json
+      sha256 ANTES : 376a1726ab1ae538a46db59176583e2eb1c1c4aa0772da795fb41ce17aa0498a
+      fin de linea : CRLF   entradas: 164
+      guard 1 — el archivo dice hoy "Aysén": OK
+      guard 3 — la zona de la bahia coincide en los dos archivos ('puerto_eden'): OK
+      guard 2 — `valor_nuevo` coincide con el decreto ("Punta Arenas"): OK
+      la zona declara 1 discrepancia, de la bahia 129 en nivel 'gobernacion': OK
+
+  MAPA — linea 162, 1 de 187
+      antes  : "129": { "capitania": "Puerto Edén",     "gobernacion": "Aysén",           "telefono": "+56 61 2201164" },
+      despues: "129": { "capitania": "Puerto Edén",     "gobernacion": "Punta Arenas",    "telefono": "+56 61 2201164" },
+      entradas fuera de la pieza comprobadas identicas : 163
+      `capitania` y `telefono` de la bahia 129: sin cambios
+
+  data/decreto/zonas_aviso.json — zona 'puerto_eden'
+      sha256 ANTES : 8095e167a3de4634c0573454ac01a27ce01fede122b2ad9c2ea5d0999e38e9b1
+      lineas borradas : 7 (el bloque `discrepancias_declaradas`, lineas 130-136)
+      lineas agregadas: 1 ('nota_2026-08-16_retiro')
+      claves quitadas : discrepancias_declaradas
+      claves agregadas: nota_2026-08-16_retiro
+      claves cambiadas: 0
+      zonas fuera de la pieza comprobadas identicas : 9
+      la `nota_2026-08-16` sigue en el contacto: true
+
+  ESCRITOS LOS DOS ARCHIVOS
+      src/data/bahia-capitania-map.json  sha256 DESPUES : e2b34432d9128153f10ae75abae4ee3b8bb77d02d52f657029a352a813b6c92b
+      data/decreto/zonas_aviso.json    sha256 DESPUES : 699a2e7593790e7a8daf1588d5d7b10f13b9d94554cf5436024545139ae3af68
+
+  LA CARGA REAL, despues de escribir:
+      OK []
+      la carga PASA y la zona ya no arrastra discrepancias declaradas.
+================================================================================
