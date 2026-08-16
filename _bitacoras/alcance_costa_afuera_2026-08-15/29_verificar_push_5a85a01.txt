@@ -1,0 +1,93 @@
+==============================================================================
+VERIFICACION DEL PUSH POR BLOB-SHA CONTRA LA API
+==============================================================================
+  repo   : NachoNawrath/tmarea-backend
+  commit : 5a85a01464d2a6d8afc46b4e3234b32d02edce37
+
+------------------------------------------------------------------------------
+1. EL COMMIT EXISTE DEL OTRO LADO
+------------------------------------------------------------------------------
+  ok  la API lo devuelve con el mismo sha
+      docs(jurisdiccion): la evidencia de la verificacion del push entra al repo — no puede qued
+
+------------------------------------------------------------------------------
+2. ARBOL COMPLETO, BLOB POR BLOB
+------------------------------------------------------------------------------
+  blobs locales (git ls-tree, cortado por TAB) : 884
+  blobs en la API                               : 884
+  COMPARACIONES efectivas                       : 884
+  blob-sha IGUALES                              : 884
+  blob-sha DISTINTOS                            : 0
+  solo local                                    : 0
+  solo en la API                                : 0
+
+------------------------------------------------------------------------------
+3. LOS ARCHIVOS DE ESTA SESION, UNO POR UNO
+------------------------------------------------------------------------------
+  ok  57e688aacb3b  PLAN_JURISDICCION.md
+  ok  c5820242f6ce  _bitacoras/alcance_costa_afuera_2026-08-15/.gitignore
+  ok  acbaf4cd9bac  _bitacoras/alcance_costa_afuera_2026-08-15/01_tripwire_antes.txt
+  ok  b85ad3caff24  _bitacoras/alcance_costa_afuera_2026-08-15/02_auditor_v2_antes.txt
+  ok  f170283fc403  _bitacoras/alcance_costa_afuera_2026-08-15/03_v2_contra_v1_antes.txt
+  ok  37a9ef97d6fe  _bitacoras/alcance_costa_afuera_2026-08-15/04_suite_js_antes.txt
+  ok  5cd056bf619b  _bitacoras/alcance_costa_afuera_2026-08-15/05_mascara_24mn.sql
+  ok  9bcad1216663  _bitacoras/alcance_costa_afuera_2026-08-15/05_mascara_24mn.txt
+  ok  b7d01dc32640  _bitacoras/alcance_costa_afuera_2026-08-15/05b_mascara_24mn_perfil.sql
+  ok  0d08a6fa5631  _bitacoras/alcance_costa_afuera_2026-08-15/05b_mascara_24mn_perfil.txt
+  ok  1b78c898ea19  _bitacoras/alcance_costa_afuera_2026-08-15/05c_lectura_mascaras.txt
+  ok  2e233b07fdea  _bitacoras/alcance_costa_afuera_2026-08-15/06_solo_generar_antes.txt
+  ok  565c6feb268b  _bitacoras/alcance_costa_afuera_2026-08-15/07_insertar_alcance_v1.py
+  ok  da1c1b8761f4  _bitacoras/alcance_costa_afuera_2026-08-15/07_insertar_alcance_v1.txt
+  ok  299077198875  _bitacoras/alcance_costa_afuera_2026-08-15/08_migrar_v2.txt
+  ok  5012b3224742  _bitacoras/alcance_costa_afuera_2026-08-15/09_corregir_testigos_medir.txt
+  ok  dc770892a52a  _bitacoras/alcance_costa_afuera_2026-08-15/09b_corregir_testigos_aplicar.txt
+  ok  7ba13ef0a459  _bitacoras/alcance_costa_afuera_2026-08-15/10_toponimos_igm.txt
+  ok  c98ab23adc92  _bitacoras/alcance_costa_afuera_2026-08-15/11_diff_v2.txt
+  ok  a3a4347fdadc  _bitacoras/alcance_costa_afuera_2026-08-15/12_v2_contra_v1_despues.txt
+  ok  f9fefaba8e04  _bitacoras/alcance_costa_afuera_2026-08-15/13_auditor_v2_despues.txt
+  ok  610d52fd3bf0  _bitacoras/alcance_costa_afuera_2026-08-15/14_tripwire_despues.txt
+  ok  c1deb0f283b6  _bitacoras/alcance_costa_afuera_2026-08-15/15_mordida_zonas_aviso.txt
+  ok  861ad149f9e7  _bitacoras/alcance_costa_afuera_2026-08-15/16_suite_js_despues.txt
+  ok  254bad78246c  _bitacoras/alcance_costa_afuera_2026-08-15/17_solo_generar_despues.txt
+  ok  c99990e209f8  _bitacoras/alcance_costa_afuera_2026-08-15/18_diff_sql.txt
+  ok  3fa971c29a66  _bitacoras/alcance_costa_afuera_2026-08-15/19_build_ensayo.txt
+  ok  91ae331d2ef0  _bitacoras/alcance_costa_afuera_2026-08-15/20_b12_verificar_22.txt
+  ok  f519463f1ddc  _bitacoras/alcance_costa_afuera_2026-08-15/21_build_aplicado.txt
+  ok  0fde5774bd6b  _bitacoras/alcance_costa_afuera_2026-08-15/22_areas_antes.csv
+  ok  98e76bbca60d  _bitacoras/alcance_costa_afuera_2026-08-15/22_areas_antes_despues.txt
+  ok  0fde5774bd6b  _bitacoras/alcance_costa_afuera_2026-08-15/22_areas_despues.csv
+  ok  030e50f2f901  _bitacoras/alcance_costa_afuera_2026-08-15/22_comparar_areas.py
+  ok  8670b0947d0e  _bitacoras/alcance_costa_afuera_2026-08-15/23_mordida_mecanismo.py
+  ok  be009ffa5ca9  _bitacoras/alcance_costa_afuera_2026-08-15/23_mordida_mecanismo.txt
+  ok  6c13a199c1c7  _bitacoras/alcance_costa_afuera_2026-08-15/23b_mordida_ensayo_crudo.txt
+  ok  9d3531f0acf4  _bitacoras/alcance_costa_afuera_2026-08-15/24_texto_propuesto_inv36.md
+  ok  78b9db1888a8  _bitacoras/alcance_costa_afuera_2026-08-15/25_resello_b12.txt
+  ok  0cc0a3351011  _bitacoras/alcance_costa_afuera_2026-08-15/26_auditor_v2_tras_resello.txt
+  ok  610d52fd3bf0  _bitacoras/alcance_costa_afuera_2026-08-15/27_tripwire_final.txt
+  ok  a0655f68ada1  _bitacoras/alcance_costa_afuera_2026-08-15/28_verificar_push.py
+  ok  cd1cc9320135  _bitacoras/alcance_costa_afuera_2026-08-15/28_verificar_push.txt
+  ok  93ffe8be339e  _bitacoras/alcance_costa_afuera_2026-08-15/PROCEDENCIA.txt
+  ok  f823cd0f9e58  _bitacoras/alcance_costa_afuera_2026-08-15/alcance_costa_afuera_2026-08-15.txt
+  ok  fe84a909ac32  data/decreto/adjudicacion_tramos.json
+  ok  8809f2a990ff  data/decreto/jurisdicciones_capitanias.json
+  ok  4d32d862580a  data/decreto/jurisdicciones_v2.json
+  ok  51f2354389f3  scripts/fase4_auditoria_v2.py
+  ok  d6bea7021296  scripts/fase4_migrar_insumo_v2.py
+  ok  3d4b558a4454  scripts/fase5_construir_capa_ds991.py
+  ok  82f4216ca3c5  scripts/fase5_validar_zonas_aviso.js
+  ok  787d0e23a917  src/services/zonas-aviso.js
+
+  archivos de la sesion comparados: 52
+
+------------------------------------------------------------------------------
+4. LO QUE NO DEBIA VIAJAR, NO VIAJO
+------------------------------------------------------------------------------
+  ok   _bitacoras/alcance_costa_afuera_2026-08-15/_v2_antes.json
+  ok   _bitacoras/alcance_costa_afuera_2026-08-15/_sql_antes.sql
+  ok   _bitacoras/alcance_costa_afuera_2026-08-15/_v2_respaldo_mordida.json
+  ok   scripts/fase5_capa_ds991.sql
+
+==============================================================================
+RESULTADO: 884 blobs comparados, 884 identicos,
+0 discrepancias. El push quedo verificado contra la API.
+==============================================================================

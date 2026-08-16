@@ -199,7 +199,13 @@ def main():
     else:
         p("RESULTADO: HAY DISCREPANCIAS. No se da por verificado.")
     p("=" * 78)
-    io.open(SALIDA, "w", encoding="utf-8", newline="").write("\n".join(L) + "\n")
+    # ESCRIBE A `salida`, LA DEL ARGUMENTO. Decia `SALIDA`, la constante que este
+    # mismo archivo renombro a SALIDA_POR_DEFECTO al tomar la ruta por argumento:
+    # el control CORRIA ENTERO, daba su veredicto en pantalla y MORIA con
+    # NameError justo antes de dejar el archivo. O sea que pasaba y no dejaba
+    # rastro — el modo de falla del BOM del 2026-08-12 y del UnicodeEncodeError
+    # del control v1/v2, por tercera vez y por una variable renombrada a medias.
+    io.open(salida, "w", encoding="utf-8", newline="").write("\n".join(L) + "\n")
     return 0 if ok else 1
 
 
