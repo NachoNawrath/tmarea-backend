@@ -1,0 +1,570 @@
+================================================================================
+AUDITORIA DE ROTULOS Y ATRIBUCION DE BAHIAS — RECONOCIMIENTO. 2026-08-15
+Estado: SOLO MEDICION Y PLAN. No se escribio ningun archivo de `src/`, de
+`data/` ni de la PWA. Lo unico que esta sesion agrega al repositorio son los
+tres instrumentos de este directorio, sus salidas y este archivo.
+Sesion: F5-ROTULOS. HEAD al abrir y al cerrar: e9f48ed.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+El agente corrio los instrumentos con `node` desde Git Bash. Las tres lineas
+corren identicas en PowerShell desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\auditoria_rotulos_2026-08-15\01_medir_rotulos.js
+    node _bitacoras\auditoria_rotulos_2026-08-15\02_medir_pantalla.js
+    node _bitacoras\auditoria_rotulos_2026-08-15\03_mordida.js
+
+Las salidas de este directorio se generaron redirigiendo con `>` de **bash**,
+no de PowerShell. Para reproducirlas en PowerShell sin corromper tildes y ñ:
+
+    node ... 01_medir_rotulos.js | Tee-Object -FilePath salida.txt
+
+`>` de PowerShell reencodea y convierte fines de linea; esta prohibido para
+medir (CLAUDE.md §7.2 y la advertencia de `frente_contacto_fallback_2026-08-14`).
+
+REPO DE SOLO LECTURA
+--------------------------------------------------------------------------------
+`C:/Users/katia/tmarea-pwa` se leyo, no se escribio, no se corrio git ahi. De
+ese repositorio salen los tres puntos de render de la seccion 4.
+
+INSUMOS, con sha256 del archivo en disco
+--------------------------------------------------------------------------------
+Los ocho, con su hash, estan al principio de `01_medir_rotulos.txt`. Los que
+deciden algo:
+
+    src/data/bahia-capitania-map.json                          0225aa23959b51b1…
+    _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json
+                                                               aed48c23ffbb840c…
+    _bitacoras/sondeo_catalogo_2026-08-12/sitport_bahias_raw.json
+                                                               2955decfba31e4cc…
+    _bitacoras/e01_drift_catalogo_2026-08-11/sitport_consultaBahias.json
+                                                               35990acbca7c229f…
+    _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv
+                                                               04cdf370c089e321…
+    data/decreto/join_bahia_jurisdiccion.json                  62a3b5c2d85b6897…
+
+FECHA DE CAPTURA DE LOS SNAPSHOT DE SITPORT, y por que hay tres
+--------------------------------------------------------------------------------
+Ninguna de las tres es consulta en vivo de esta sesion. Se midio contra las tres
+justamente porque un snapshot viejo produce el mismo error que un numero sacado
+de un resumen:
+
+    2026-08-11  _bitacoras/e01_drift_catalogo_2026-08-11/     164 registros
+    2026-08-12  _bitacoras/sondeo_catalogo_2026-08-12/        164 registros
+                (fecha y procedencia en PROCEDENCIA.txt, ~16:10, commit 8f734f4)
+    2026-08-13  _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/  165 registros
+
+**El `CdReparticion` no cambia entre capturas: 0 bahias se mueven entre el 12 y
+el 13.** El cotejo contra la del 12 y contra la del 13 da la MISMA cifra —146
+comparaciones, 84 coinciden, 62 difieren—. La del 13 trae un id mas, la **258**
+(`RIO BUENO, SECTOR LLANCACURA`), que el mapa no tiene; ninguna clave del mapa
+falta en la fuente. En este campo el snapshot no envejecio. **Lo que NO se
+midio: si SITPORT dice hoy lo mismo que el 2026-08-13.**
+
+
+================================================================================
+0. LO QUE ESTA MEDICION LE CORRIGE AL PROMPT DE LA SESION
+================================================================================
+El prompt declaro sus cifras como indicativas. Cuatro no coinciden.
+
+(1) "~20 entradas con rotulo null"        -> son **17**.
+    Eran 20 cuando `f421949` las dejo afuera. `3990490` escribio `Lago Ranco`
+    en 144, 145 y 146 el 2026-08-14. Ese tramo ya esta cerrado.
+
+(2) "diff_capitanias.csv documenta ~82 de 164 que necesitarian re-atribucion"
+    -> el archivo tiene **83 filas de datos**, y NO son 83 re-atribuciones:
+    **63 `DISTINTO` + 19 `NULO` + 1 `SIN_CAPITANIA`**. Las re-atribuciones son
+    63. Ademas el archivo **esta vetado como fuente** por el propio `f421949`
+    y el frente que lo produjo se cerro **sin aplicar** (§7.1 del plan).
+
+(3) "frente T6"  -> **no existe**. Cero ocurrencias de `T6` en `CLAUDE.md`,
+    `CONTRATO_MOTOR.md`, `PLAN_JURISDICCION.md` y las bitacoras. El frente que
+    el prompt describe es el que el plan llama **"El frente de CONTACTO"**,
+    §7.1, y su nombre real importa porque ahi esta escrito lo ya decidido.
+
+(4) "el Camino B: indexar por Capitania y leer la atribucion EN VIVO desde
+    SITPORT `consultaBahias`" -> el plan recomienda **indexar por Capitania y
+    resolver la Capitania POR EL JOIN**, no por SITPORT en vivo
+    (`PLAN_JURISDICCION.md`, "LA SOLUCION, ANOTADA"). La diferencia no es de
+    redaccion: `CONTRATO_MOTOR.md` §5 declara **`data/decreto/join_bahia_
+    jurisdiccion.json`** fuente autorizada de atribucion bahia->Capitania, y el
+    sondeo del 2026-08-12 se cerro midiendo que **SITPORT no sirve como fuente
+    de jurisdiccion**. Ver seccion 6.
+
+Y una que SI se confirmo, contra la sospecha del prompt:
+
+(5) "la copia backend de la tabla de Capitanias es codigo muerto; solo la de la
+    PWA llega a pantalla por fallback" -> **CIERTA**, y sigue siendolo.
+    `git grep` de `getCapitania(` sobre el backend: cero llamadas —el unico hit
+    es una cabecera de texto del decreto dentro de una bitacora—. En la PWA, dos
+    imports vivos: `PortStatusBlock.jsx:3` y `useVoyageVerification.js:3`.
+
+Y una del propio prompt que la medicion sostiene entera:
+
+(6) "el renombre a Puerto Cisnes produjo etiquetas creibles y equivocadas"
+    -> **CIERTO, y peor de lo enunciado**. Ver seccion 3.
+
+
+================================================================================
+1. ESTADO DEL ARCHIVO HOY — `src/data/bahia-capitania-map.json`
+================================================================================
+Salida completa: `01_medir_rotulos.txt`, bloque M1.
+
+    entradas                                 164
+    forma unica `capitania|gobernacion|telefono`   164 de 164
+    `capitania`   null = **17**   ''=0
+    `gobernacion` null = 0        ''=0
+    `telefono`    null = 0        ''=0
+
+    valores distintos de `capitania`   : 39
+    valores distintos de `gobernacion` : 15
+    valores distintos de `telefono`    : 25
+
+Las 17 nulas: 96, 105, 106, 127, 129, 139, 140, 154, 209, 210, 231, 245, 246,
+247, 248, 249, 250. **SITPORT atribuye Capitania a las 17** —LAGO RAPEL,
+VILLARRICA (x8), PANGUIPULLI, BAKER, EDÉN (x2), BAHÍA FILDES, BAHÍA PARAÍSO,
+SOBERANÍA—, y el join resuelve 14 de las 17. Ninguna esta sin candidato.
+
+
+================================================================================
+2. CUANTAS NO COINCIDEN — Y CONTRA QUE, PORQUE DA DISTINTO
+================================================================================
+Esta es la medicion que cambia el frente. **No hay "lo que SITPORT atribuye" a
+secas: hay dos fuentes candidatas y no dicen lo mismo.**
+
+    A) mapa contra SITPORT (`CdReparticion` -> `capitanias_64_final.csv`)
+       COMPARACIONES EFECTIVAS   146
+       coinciden                  84
+       DIFIEREN                 **62**
+       rotulo null (no compara)   17
+       sin CdRep resoluble         1  -> bahia 146, CdRep 189, sin fila en el CSV
+                                        (es "la que no existe" del registro de
+                                        DIRECTEMAR, ya anotada en §7.1 del plan)
+
+    B) mapa contra el JOIN del decreto (FUENTE AUTORIZADA, §5)
+       COMPARACIONES EFECTIVAS   144
+       coinciden                  83
+       DIFIEREN                 **61**
+       rotulo null (no compara)   14
+       sin_resolver en el join     6  -> 127, 129, 137, 154, 239, 241
+
+    C) SITPORT contra el JOIN, sin pasar por el mapa
+       COMPARACIONES EFECTIVAS   157
+       coinciden                 119
+       DIFIEREN                 **38**
+
+**C es el hallazgo.** 62 y 61 se parecen y no son el mismo conjunto: las dos
+fuentes candidatas discrepan entre si en 38 de 157 bahias. **Corregir el archivo
+"contra SITPORT" y corregirlo "contra el decreto" producen dos archivos
+distintos, y la eleccion entre esos dos NO es tecnica** (§0.4): decide que
+Capitania se le nombra al patron. Ejemplos del bloque M4b:
+
+    132  SITPORT="TIERRA DEL FUEGO"   decreto="Punta Delgada"
+    151  SITPORT="TONGOY"             decreto="Coquimbo"
+    160  SITPORT="PUERTO VARAS"       decreto="Lago Ranco"
+    234  SITPORT="CISNES"             decreto="Chaiten"
+    238  SITPORT="AGUIRRE"            decreto="Puerto Cisnes"
+    251  SITPORT="MELINKA"            decreto="Quellon"
+    245..250  SITPORT="VILLARRICA"    decreto="Lago Panguipulli"
+
+Parte de las 38 son variantes de nombre de la misma reparticion —`CISNES` /
+`Puerto Cisnes`, `AGUIRRE` / `Puerto Aguirre`, `LAGO GRAL.CARRERA` / `Lago
+General Carrera`, `SOBERANÍA` / `Puerto Soberania`—; **otra parte son entidades
+distintas** (132, 151, 160, 234, 238, 251, 245-250). Esta bitacora **no las
+separa**: separarlas es adjudicar, y adjudicar es del owner.
+
+
+================================================================================
+3. LAS CREIBLES Y EQUIVOCADAS
+================================================================================
+Definicion usada: rotulo NO nulo + el nombre existe en el universo de Capitanias
+(64 del CSV y/o 64 del decreto) + NO es la que la fuente atribuye. Un null se ve
+como falta; un nombre valido y equivocado no se ve.
+
+    contra SITPORT 2026-08-13 : **54** creibles-y-equivocadas + 8 con nombre
+                                 que no existe en ningun universo
+    contra el JOIN            : **53** creibles-y-equivocadas + los mismos 8
+
+Las 8 de nombre inexistente son 115, 181-187: escriben **"Hornopirén"**, que no
+figura ni en el CSV —lo lista `RIO NEGRO HORNOPIRÉN`— ni entre los 64 nombres
+del decreto. Es el mismo desencuentro de nombre que `df684d7` ya adjudico para
+el telefono; el rotulo quedo sin tocar.
+
+EL LOTE `Puerto Cisnes` DE `f421949`, APARTE (bloque M6)
+--------------------------------------------------------------------------------
+18 entradas llevan hoy ese rotulo: 123, 124, 125, 175, 176, 238, 239, 240, 241,
+242, 243, 244, 251, 252, 253, 254, 255, 256.
+
+    reparto segun SITPORT 2026-08-13     reparto segun el JOIN (decreto)
+      CISNES            1  -> 123          Puerto Cisnes   3  -> 123, 238, 240
+      MELINKA           9                  Melinka         6
+      AGUIRRE           8                  Puerto Aguirre  4
+                                           **Quellon       3  -> 251, 252, 253**
+                                           (sin_resolver)  2  -> 239, 241
+
+**La premisa del prompt se confirma contra SITPORT —una sola es de Cisnes— y se
+queda corta contra el decreto: aparece una CUARTA Capitania, `Quellon`, que la
+premisa no nombra, y dos entradas que el join no resuelve.** El renombre de
+`f421949` no creo la mala atribucion —ya existia bajo el nombre viejo, y el
+propio commit lo dice— pero **el rotulo nuevo es mas creible que el viejo**:
+`Cisnes` no calzaba con ningun `id` ni `nombre` del insumo y por eso chirriaba;
+`Puerto Cisnes` calza exacto y por eso ya no chirria. Esa es la forma exacta de
+CLAUDE.md §0.3: la opcion que deja todo prolijo sin cambiar nada de fondo.
+
+
+================================================================================
+4. QUE LE LLEGA AL PATRON — TRES CAMINOS, Y NO LEEN EL MISMO CAMPO
+================================================================================
+Salida completa: `02_medir_pantalla.txt`. Los tres caminos se leyeron del codigo,
+no se supusieron. Medirlos como uno solo es lo que dejo pasar el defecto.
+
+P1 — BAHIAS INTERMEDIAS de la ruta
+    backend `sitport-routes.js:817` -> `capitaniaDeBahia(id, ambitosPublicados)`
+    PWA     `TransitRestrictionsBlock.jsx:62` -> `r.capitania || r.gobernacion`
+    Render literal: "📞 {nombre} — {telefono}". **SIN etiqueta de nivel.**
+
+    ambitos publicados hoy = [lacustre] (maritima/antartica/insular_remota: no)
+    -> 21 entradas toman el nombre del DECRETO; el resto, del mapa.
+    COMPARACIONES EFECTIVAS 163
+    el nombre mostrado ES el que SITPORT atribuye        87
+    **NO lo es                                           76**  (66 creibles)
+    6 entradas con `capitania` null caen a `gobernacion` y muestran
+      "Aysén", "Puerto Williams" o "Punta Arenas" como si fuera la Capitania.
+
+P2 — AVISO DE ARRIBADA FORZOSA
+    backend `sitport-routes.js:339` -> `getCapitaniaByBahiaId` (**MAPA CRUDO**)
+    PWA     `P3_VoyageVerification.jsx:237` -> `rec.capitania || rec.gobernacion`
+    Render literal: **"Capitanía de Puerto de {nombre}"** — etiqueta DURA en el
+    JSX. El decreto NO participa de este camino, este publicado el ambito que
+    este.
+
+    COMPARACIONES EFECTIVAS 163
+    el nombre rotulado "Capitania de Puerto de X" ES el que SITPORT atribuye  84
+    **NO lo es                                                                79**
+    **entradas donde lo rotulado "Capitanía de Puerto de" es el nombre de una
+    GOBERNACION: 17 de 17** — las 17 nulas, todas. Ej.: la 245 renderiza
+    "Capitanía de Puerto de Valdivia", y `Valdivia` ahi es la GOBERNACION.
+
+P3 — TARJETA DE ZARPE Y RECALADA (el escalon que INV-10.1 gobierna)
+    backend `sitport-routes.js:339` -> `getCapitaniaByBahiaId` (**MAPA CRUDO**)
+    PWA     `PortStatusBlock.jsx:76-77` -> `data.gobernacion` / `data.telefono`
+    Render literal: "📞 **Gobernación Marítima de** {gobernacion} — {telefono}".
+    **NUNCA lee `capitania`.**
+
+    entradas con telefono                                        164
+    **cuyo numero es de una CAPITANIA del CSV verificado          84**
+    cuyo numero no figura en el CSV de Capitanias                 80
+
+    O sea: en 84 de 164 el patron ve el numero de la CAPITANIA rotulado
+    **"Gobernación Marítima de"**, y con el NOMBRE de la Gobernacion al lado.
+    Reparto por Capitania duena del numero: VALDIVIA 18, COQUIMBO 10, PUERTO
+    MONTT 8, RIO NEGRO HORNOPIRÉN 8, ANTOFAGASTA 7, CALDERA 7, y 12 mas.
+
+CONCLUSION DE ESTA SECCION
+--------------------------------------------------------------------------------
+**El rotulo equivocado SI se muestra, y por dos caminos distintos, uno de ellos
+con la palabra "Capitanía de Puerto" impresa al lado.** El telefono que lo
+acompana es, en P1, el del mapa —o sea el de la Capitania que el mapa declara,
+no el de la que la fuente atribuye—: en las 18 del lote `Puerto Cisnes`, las 17
+que no son de Cisnes muestran `+56 67 233 1405` bajo el nombre "Puerto Cisnes".
+
+
+================================================================================
+5. LO QUE CHOCA CON EL CONTRATO — cuatro cosas, medidas
+================================================================================
+`CONTRATO_MOTOR.md` no se edita de este lado (CLAUDE.md §6). Se reporta.
+
+(a) **§5.1 afirma algo que hoy es falso.** Dice: *"Los 164 telefonos son de
+    Gobernacion, sin una sola excepcion"*. Medido: **84 de 164 son de una
+    Capitania**, escritos por `85bc68a` (33) y `df684d7` (8) el 2026-08-13 mas
+    los que ya lo eran. La v2.0 del contrato es del 2026-08-14 y declara *"Nada
+    mas de la v1.9 cambia: §5 queda como esta"*: §5 se reviso DESPUES de esos
+    dos commits y no se actualizo.
+
+(b) **La fila "Contacto de Capitania" de §5 tambien.** Dice *"⚠️ NO EXISTE
+    fuente viva — ningun archivo de `src/` tiene telefono ni direccion de
+    Capitania"*. Hoy `src/data/bahia-capitania-map.json` tiene 84 telefonos de
+    Capitania. Sigue sin tener direccion: eso de la fila se mantiene.
+
+(c) **INV-10.1, los dos escalones, en las dos direcciones.**
+    · Su verificacion dice *"ninguna tarjeta muestra un numero de Gobernacion
+      bajo la etiqueta Capitania"*. En P2 lo que se muestra bajo "Capitanía de
+      Puerto de" es el NOMBRE de una Gobernacion, en 17 de 17 casos. Es la
+      misma mezcla de categorias con otro campo, y el JSX la rotula duro.
+    · En P3, el numero de una Capitania sale rotulado "Gobernación Marítima",
+      en 84 de 164. El escalon 1 se cumple en el numero y se incumple en el
+      rotulo. **El contrato no prohibe explicitamente esta direccion**, y por
+      eso se reporta en vez de declararla infraccion: la regla escrita nombra un
+      solo sentido.
+
+(d) **§5.1 sobre `src/utils/capitanias.js` sigue exacta.** *"La copia del
+    backend no la consume nadie; la de la PWA se usa solo como fallback"*:
+    reproducido hoy, sin cambios.
+
+
+================================================================================
+6. LAS DOS VIAS — Y POR QUE LA SEGUNDA NO ES LA QUE EL PLAN RECOMIENDA
+================================================================================
+VIA 1 — corregir los rotulos en el archivo, contra una fuente, de una vez.
+    Cuesta: un generador programatico (`capitanias_64_final.csv` +
+    `consultaBahias` o el join) y un resello. Toca 61 o 62 entradas segun la
+    fuente. **Requiere que el owner elija fuente ANTES**, porque las dos
+    difieren en 38 de 157 (seccion 2C). **No arregla la causa**: el archivo
+    sigue indexado por bahia, asi que la proxima re-atribucion vuelve a arrastrar
+    el telefono con ella — que es exactamente lo que el plan ya midio en E0.3
+    (34 de 42 re-atribuciones dejaban el nombre de una Capitania con el telefono
+    de otra).
+
+VIA 2 — la del plan: **indexar el contacto por CAPITANIA y resolver la Capitania
+    POR EL JOIN**. NO es "leer la atribucion en vivo desde SITPORT". El plan
+    (§7.1, "LA SOLUCION, ANOTADA") y §5 del contrato coinciden en el join, y el
+    sondeo del 2026-08-12 cerro midiendo que SITPORT no sirve como fuente de
+    jurisdiccion. Cuesta: tabla nueva por Capitania (el CSV de las 64 es su
+    contenido), el mapa deja de tener contacto, y **tres consumidores de `src/`
+    cambian de forma** (`capitanias.js`, `capitania-de-bahia.js`,
+    `sitport-routes.js` x3 salidas) mas los guards de `zonas-aviso.js` y
+    `ambitos-publicados.js` que hoy comparan `e.capitania` contra el decreto.
+
+    Fallo elegante si el join no resuelve (INV-0.2 / INV-3.6): el join ya declara
+    **6 sin_resolver** con su `fuente_a_consultar` escrita. Esas 6 caen al
+    escalon 2 de INV-10.1 —Gobernacion rotulada como tal— o al 3 —el campo no se
+    muestra—. Ninguna necesita red: el join es un archivo versionado. **Una via
+    que leyera SITPORT en vivo si necesitaria red, y ese es su costo propio:
+    `consultaBahias` caido dejaria sin nombre de Capitania a las 164.**
+
+
+================================================================================
+7. SI ESTO SE PUEDE CORTAR EN PIEZAS
+================================================================================
+Se puede, y la pieza mas chica no necesita abrir el frente entero. Va a la
+seccion de RECOMENDACION del mensaje de sesion; aca queda solo lo medido que la
+sostiene:
+
+  · las 17 nulas son un conjunto cerrado, con candidato en SITPORT para las 17
+    y en el join para 14, y **son las unicas que producen la etiqueta dura
+    "Capitanía de Puerto de {Gobernacion}"** de P2;
+  · el lote `Puerto Cisnes` son 18 entradas identificadas por su rotulo, sin
+    solape con las 17 nulas;
+  · las 8 de `Hornopirén` son un desencuentro de nombre ya adjudicado para el
+    telefono en `df684d7`, sin solape con los otros dos;
+  · los tres conjuntos suman 43 de las ~62 que difieren. Las ~19 restantes son
+    re-atribuciones de fondo y **no se pueden separar de la eleccion de fuente**.
+
+
+================================================================================
+8. LOS INSTRUMENTOS Y SU MORDIDA (CLAUDE.md §4.6)
+================================================================================
+`03_mordida.txt`, salida sin editar. Linea base: comparadas=146, difieren=62,
+rotuloNull=17, creibles=54.
+
+    B1  bahia 71: `capitania` "Arica" -> "Iquique" (nombre que existe, Capitania
+        equivocada)   esperado difieren 62->63 y creibles 54->55
+        medido igual  -> **MORDIO**
+    B2  bahia 71: `capitania` -> null
+        esperado rotuloNull 17->18 y comparadas 146->145
+        medido igual  -> **MORDIO**
+    B3  la captura de SITPORT reemplazada por un array vacio
+        esperado exit 3 con el motivo escrito, NUNCA "0 diferencias" en verde
+        medido exit=3  -> **MORDIO**
+
+DOS DEFECTOS DE INSTRUMENTO PAGADOS EN ESTA SESION, escritos porque no se ven
+mirando el verde:
+
+  1. **El cargador de capturas leia `recordsets` como si fuera el array de
+     datos.** Las capturas no tienen la misma forma: la del 08-13 es el array
+     pelado y la del 08-12 es el sobre de mssql `{recordsets:[[...]]}`. La del 12
+     entraba con UN registro y el cotejo salia con **cero comparaciones
+     efectivas**. **No salio en verde: salio por exit 3**, que es para lo que el
+     contador de comparaciones existe. El repositorio **ya habia pagado esta
+     trampa** —hay un test vivo que se llama *"consultaRestricciones desenvuelve
+     el formato { recordsets: [[...]] } de DIRECTEMAR"*—, y es el corolario de
+     CLAUDE.md §2: la advertencia estaba escrita y no se busco.
+
+  2. **El lector del propio ensayo de mordida escapaba la etiqueta dos veces**,
+     asi que el regex no calzaba nunca y la cifra salia `null` **hasta en la
+     linea base**. B2 se leyo como "NO MORDIO" cuando el que fallaba era el
+     lector. Se corrigio el lector, no el control, y se le agrego
+     `verificarLector()`, que aborta si alguna de las tres cifras no se lee. Un
+     ensayo cuyo lector no lee mide su propio regex.
+
+LINEA BASE DE LA SUITE: `npm test` -> **84 tests, 84 pass, 0 fail**, corrida en
+esta sesion sin haber tocado `src/`.
+
+
+================================================================================
+9. LO QUE ESTA BITACORA NO RESPONDE
+================================================================================
+- **Que dice SITPORT hoy.** Se midio contra tres capturas del repositorio, la
+  mas nueva del 2026-08-13. No se consulto en vivo.
+- **Cual de las dos fuentes es la correcta** para las 38 en que discrepan. Es
+  adjudicacion, y es del owner.
+- **Si `capitanias_64_final.csv` es dato vigente.** El sondeo del 2026-08-12 se
+  cerro SIN APLICAR y su propia bitacora pide re-verificar contra los raw. Aca se
+  uso como indice `CdRep -> nombre` y como universo de nombres, no como
+  autoridad. Y su rotulo de "Capitania de Puerto" para las 64 **es falso para al
+  menos una** (Rada Covadonga, Alcaldia de Mar), medido por `f421949`.
+- **Cuantas de las 62 son variante de nombre y cuantas son entidad distinta.**
+  Separarlas es adjudicar.
+- **Que efecto tiene aguas abajo** que 42 nombres resuelvan a otra bahia
+  (`frente_contacto_fallback_2026-08-14.txt` lo midio y lo dejo abierto). No se
+  volvio a tocar.
+- **La normalizacion de telefonos**: `85bc68a` y `df684d7` la cerraron para lo
+  que escribieron (U+00A0 a U+0020, colapso de espacios, 0 code 160 en el
+  archivo). No se re-verifico aca.
+- **El motor BRE** no se abrio. Nada de lo medido apunta ahi.
+================================================================================
+
+
+================================================================================
+ADDENDUM 2026-08-15 — CIERRE DE LA SESION F5-ROTULOS
+Se AGREGA, no se reescribe (CLAUDE.md §3.3). Todo lo de arriba queda como se
+escribio, incluido lo que este addendum reencuadra.
+Fase 2 NO se abrio. HEAD al cerrar: e9f48ed. Sin `git add`, sin commit.
+CORRIGE el encabezado de este archivo, que dice "los tres instrumentos de este
+directorio": son CINCO. 04_nulas_solape y 05_clave_del_join se agregaron despues
+de escribirse ese encabezado. No se sobrescribe (§3.3); se corrige aca.
+================================================================================
+
+10. DOS MEDICIONES MAS, PEDIDAS DESPUES DEL REPORTE
+================================================================================
+
+10.1 — LAS 17 NULAS: SITPORT CONTRA EL JOIN  (`04_nulas_solape.txt`)
+--------------------------------------------------------------------------------
+El reporte de sesion dijo "candidato en SITPORT para 17 y en el join para 14" y
+NO declaro el solape. Medido, con aborto armado si las comparaciones no daban 14:
+
+    con candidato en SITPORT                 17
+    con candidato en el JOIN                 14
+    con candidato en LOS DOS (comparables)   14   <- COMPARACIONES EFECTIVAS
+    solo SITPORT                              3  -> 127, 129, 154 (join sin_resolver)
+    solo JOIN                                 0
+    ninguno                                   0
+
+    coinciden (cadena normalizada)            3   -> 96, 139, 140
+    DISCREPAN                                11
+
+Las 11 que discrepan:
+
+    105  SITPORT="VILLARRICA"    JOIN="Lago Villarrica"    (CdRep 186 · lago_villarrica)
+    106  SITPORT="PANGUIPULLI"   JOIN="Lago Panguipulli"   (CdRep 184 · lago_panguipulli)
+    209  SITPORT="VILLARRICA"    JOIN="Lago Villarrica"    (CdRep 186 · lago_villarrica)
+    210  SITPORT="VILLARRICA"    JOIN="Lago Villarrica"    (CdRep 186 · lago_villarrica)
+    231  SITPORT="SOBERANÍA"     JOIN="Puerto Soberania"   (CdRep 292 · puerto_soberania)
+    245  SITPORT="VILLARRICA"    JOIN="Lago Panguipulli"   (CdRep 186 · lago_panguipulli)
+    246  SITPORT="VILLARRICA"    JOIN="Lago Panguipulli"   (CdRep 186 · lago_panguipulli)
+    247  SITPORT="VILLARRICA"    JOIN="Lago Panguipulli"   (CdRep 186 · lago_panguipulli)
+    248  SITPORT="VILLARRICA"    JOIN="Lago Panguipulli"   (CdRep 186 · lago_panguipulli)
+    249  SITPORT="VILLARRICA"    JOIN="Lago Panguipulli"   (CdRep 186 · lago_panguipulli)
+    250  SITPORT="VILLARRICA"    JOIN="Lago Panguipulli"   (CdRep 186 · lago_panguipulli)
+
+La igualdad es de CADENA (`normalizarTexto`, INV-0.3). No afirma ni niega que dos
+nombres distintos sean la misma reparticion.
+
+10.2 — CON QUE CLAVE RESUELVE EL JOIN  (`05_clave_del_join.txt`)
+--------------------------------------------------------------------------------
+**NO resuelve por `CdReparticion`.** Medido:
+
+    ocurrencias de "CdReparticion" en scripts/e03join_construir_join.js : 0
+    ocurrencias de "CdReparticion" en scripts/e03join_reconocimiento.js : 3
+      (las tres son el lado CONTRA el que se cotejaba, no la clave: :19 comentario,
+       :176 comentario, :178 `repDeBahia`)
+
+El constructor compone desde `particion.json`, `cierre.json`,
+`jurisdicciones_v2.json` y `zonas_aviso.json` (`e03join_construir_join.js:31-35`).
+Lo lacustre lo resuelve por identidad de CUERPO DE AGUA contra
+`cotejo_lacustre_adjudicado.json` (`e03join_reconocimiento.js:432,444,445,458,463`).
+
+QUE NOMBRA CADA LADO, contra el dato y no contra el nombre del campo:
+
+  · SITPORT: NUEVE lagos distintos —105, 209, 210, 245, 246, 247, 248, 249, 250—
+    traen el MISMO `CdReparticion` 186, que el CSV traduce a "VILLARRICA".
+  · JOIN: el `texto_decreto` de `lago_panguipulli` es *"Lagos Calafquen,
+    Panguipulli, Pellaifa, Pullinque, Rinihue, Neltume, Pirihueico, y los rios
+    Fuy y San Pedro."* y ENUMERA los lagos de 245-249; el de `lago_villarrica`
+    NO los enumera. Verificado por subcadena, uno por uno.
+  · La 250 da `false` en los dos: "PIREHUICO" (SITPORT) contra "Pirihueico"
+    (decreto) son cadenas distintas. NO se resolvio: es adjudicacion.
+
+LAS 38 DE 157, POR MECANISMO (campo `criterio` del join, verbatim):
+
+    11  cajon A2/A3 — el `criterio` registra que el mapa y SITPORT COINCIDEN
+        123, 126, 220, 221, 222, 223, 224, 225, 226, 227, 228
+    14  cuerpo de agua — cajon C/D, "V · identidad del cuerpo de agua",
+        "I · el decreto la nombra"
+        105, 106, 128, 160, 203, 209, 210, 245, 246, 247, 248, 249, 250, 257
+    10  geometria/coordenada — "II · poligono de vertices", "III · meridiano o
+        linea", "IV · banda de paralelos"
+        132, 151, 231, 234, 238, 240, 242, 251, 252, 253
+     3  cajon B — no se midio por que resuelve
+        125, 243, 244
+    --  suma 38.  Por ambito: maritima 23 · lacustre 14 · antartica 1.
+
+
+================================================================================
+11. DECISIONES DEL OWNER — 2026-08-15
+================================================================================
+Tomadas hoy sobre lo medido en las secciones 2, 10.1 y 10.2. Se registran como
+decisiones del owner, no como conclusiones del agente.
+
+D-R1 — PARA EL ROTULO DE CONTACTO DE BAHIA MANDA SITPORT.
+    Motivo escrito por el owner: el campo existe para que el patron llame a quien
+    le tramita el zarpe, y quien tramita es quien emite la restriccion. El join
+    resuelve por cuerpo de agua del decreto o por geometria: contesta OTRA
+    pregunta, y manda en la capa del D.S. 991, no aca.
+    Respaldo medido: 10.2 — el join no resuelve por `CdReparticion`; 14 de las 38
+    llegan por cuerpo de agua y 10 por geometria.
+    Alcance: el rotulo de contacto de bahia. NO toca INV-3.3 ni la resolucion de
+    jurisdiccion, donde el decreto sigue siendo la fuente.
+
+D-R2 — LAS "38 DE 157" NO SON CONFLICTO DE ATRIBUCION.
+    Quedan RECLASIFICADAS como comparacion de dos campos distintos, con el
+    desglose por mecanismo de 10.2 como respaldo. NO SE RE-ABRE.
+    Esto reencuadra lo que la seccion 2 de esta bitacora llamo "el hallazgo" y lo
+    que el reporte de sesion presento como "la decision de fuente": el texto de
+    arriba no se borra (§3.3), y lo que cambia es su lectura — las dos fuentes no
+    discrepaban sobre quien atribuye; se las comparo en campos que no son el mismo.
+
+D-R3 — EL NOMBRE QUE SE MUESTRA SALE DEL CSV CANONICO, ENTRANDO POR
+    `CdReparticion`. Nunca de la cadena cruda de SITPORT.
+    Reparto de roles, fijado por el owner: **SITPORT aporta la ATRIBUCION**
+    (`IDBahia -> CdReparticion`); **el CSV aporta la FORMA DEL ROTULO y el
+    TELEFONO** (`CdRep -> Capitania, Telefono`). §5.1.
+    Consecuencia: no hay adjudicacion de equivalencia de nombres en el camino —
+    la cadena de SITPORT no se compara contra nada, se usa el codigo.
+
+
+================================================================================
+12. PENDIENTE PARA LA PROXIMA SESION — anotado, no desarrollado
+================================================================================
+
+P1 — PIEZA A: LAS 17 NULAS, escribibles por la via de D-R1/D-R3 sin adjudicacion
+    de nombres. Las 17 tienen candidato en SITPORT (10.1). Tres hechos ya medidos
+    que la pieza va a encontrar y que NO se resuelven aca:
+      · la 146 trae `CdRep 189`, que el CSV no lista (seccion 2, "la que no
+        existe"); no esta entre las 17, pero esta en el mismo camino;
+      · el CSV rotula sus 64 filas como Capitania de Puerto y ese rotulo es falso
+        para al menos una (Rada Covadonga, Alcaldia de Mar), medido por `f421949`
+        — INV-3.3 exige que ningun valor del campo sea el nombre de una Alcaldia;
+      · el rotulo del CSV para `CdRep 430` es `RIO NEGRO HORNOPIRÉN`, que es el
+        que hoy no coincide con las 8 entradas de "Hornopirén" (seccion 3).
+
+P2 — LAS DOS FILAS DE §5 QUE HOY SON FALSAS, con el texto propuesto listo para
+    cuando el owner lo autorice. `CONTRATO_MOTOR.md` no se edita de este lado
+    (CLAUDE.md §6). Las dos, medidas en la seccion 5:
+      · §5.1: *"Los 164 telefonos son de Gobernacion, sin una sola excepcion"*
+        -> 84 de 164 son de una Capitania.
+      · §5 tabla, fila **Contacto de Capitania**: *"NO EXISTE fuente viva —
+        ningun archivo de `src/` tiene telefono ni direccion de Capitania"*
+        -> hay 84 telefonos de Capitania en `src/data/`. La direccion sigue sin
+        existir: esa mitad de la fila se mantiene.
+    D-R3 le agrega una tercera: §5.1 pasa a tener que declarar el reparto
+    SITPORT-atribucion / CSV-rotulo-y-telefono, que hoy no esta escrito en
+    ninguna parte del contrato.
+
+P3 — LO QUE QUEDA ABIERTO Y NO ES DE ESTE PENDIENTE: los tres caminos a pantalla
+    de la seccion 4 —en particular la etiqueta dura "Capitanía de Puerto de
+    {Gobernacion}" de P2, 17 de 17— siguen como estaban. D-R1 a D-R3 deciden QUE
+    valor se escribe; no tocan DONDE ni CON QUE ETIQUETA se muestra.
+================================================================================

@@ -1,0 +1,32 @@
+================================================================================
+PRUEBA DE MORDIDA — 01_medir_rotulos.js. 2026-08-15
+================================================================================
+
+LINEA BASE (archivos del repositorio, sin tocar)
+  exit=0  comparadas=146  difieren=62  rotuloNull=17  creibles=54
+
+B1 — bahia 71: capitania "Arica" -> "Iquique" (nombre que existe, Capitania equivocada)
+  esperado: difieren 62->63  creibles 54->55
+  medido  : difieren 62->63  creibles 54->55   exit=0
+  MORDIO: SI
+
+B2 — bahia 71: capitania "Arica" -> null
+  esperado: rotuloNull 17->18  comparadas 146->145
+  medido  : rotuloNull 17->18  comparadas 146->145   exit=0
+  MORDIO: SI
+
+B3 — la captura de SITPORT se reemplaza por un array vacio
+  esperado: exit 3 y el motivo escrito, NUNCA "0 diferencias" en verde
+  medido  : exit=3
+  motivo  : ABORTA — captura 2026-08-13 (e3 paso6): no se encontraron registros con IDBahia · cotejo SITPORT 2026-08-13 con CERO comparaciones efectivas · cotejo SITPORT-vs-JOIN con CERO comparaciones efectivas
+  MORDIO: SI
+
+=== VEREDICTO ===
+  B1: MORDIO
+  B2: MORDIO
+  B3: MORDIO
+  Los tres controles muerden.
+
+Copias del ensayo en: C:/Users/katia/AppData/Local/Temp/claude/C--Users-katia--claude/46adb630-73a5-4005-a2a1-60bf7991aac1/scratchpad/mordida_rotulos — fuera del repositorio, no se versionan.
+Ningun archivo del repositorio fue alterado por esta prueba.
+================================================================================

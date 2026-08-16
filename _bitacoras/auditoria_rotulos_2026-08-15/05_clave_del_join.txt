@@ -1,0 +1,150 @@
+================================================================================
+LA CLAVE DEL JOIN, Y QUE NOMBRA CADA LADO. 2026-08-15
+================================================================================
+
+=== Q1 — CON QUE CLAVE RESUELVE EL CONSTRUCTOR ===
+  ocurrencias de "CdReparticion" en scripts/e03join_construir_join.js : 0
+  ocurrencias de "CdReparticion" en scripts/e03join_reconocimiento.js       : 3
+
+  scripts/e03join_construir_join.js — sus insumos, literal:
+      31: const RUTAS = {
+      32:   particion: path.join(RAIZ, '_bitacoras', 'e03join_recon_2026-08-11', 'particion.json'),
+      33:   cierre:    path.join(RAIZ, '_bitacoras', 'e03join_cierre_2026-08-11', 'cierre.json'),
+      34:   insumo:    path.join(RAIZ, 'data', 'decreto', 'jurisdicciones_v2.json'),
+      35:   zonas:     path.join(RAIZ, 'data', 'decreto', 'zonas_aviso.json'),
+
+  scripts/e03join_reconocimiento.js — donde SI aparece CdReparticion, literal:
+      19: //     `consultaBahias.CdReparticion`) atribuyen Capitania a cada bahia del
+     176: // consultaBahias: IDBahia -> CdReparticion.  capuerto: Cdreparticion -> nombre.
+     178: const repDeBahia  = new Map(bahias.map(b => [Number(b.IDBahia), Number(b.CdReparticion)]));
+
+  scripts/e03join_reconocimiento.js — el bloque que resuelve lo lacustre, literal:
+     432: H('10. LO LACUSTRE — IDENTIDAD LITERAL CONTRA LOS CUERPOS QUE EL DECRETO NOMBRA');
+     434: console.log('`cotejo_lacustre_adjudicado.json` ya trae, adjudicado, QUE CUERPO DE AGUA NOMBRA');
+     444: const cotejo = leer(path.join(RAIZ, 'data', 'decreto', 'cotejo_lacustre_adjudicado.json'));
+     445: const cuerpoAJur = new Map(); // norm(nombre_decreto) -> [{jur, resolucion, fragmento}]
+     449: if (!cuerpoAJur.has(k)) cuerpoAJur.set(k, []);
+     450: cuerpoAJur.get(k).push({ jur: j.id, resolucion: cu.resolucion, fragmento: cu.fragmento_decreto });
+     453: const totalCuerpos = [...cuerpoAJur.values()].reduce((a, v) => a + v.length, 0);
+     454: console.log(`cuerpos nombrados por el decreto en el cotejo: ${totalCuerpos} (${cuerpoAJur.size} nombres distintos) en ${cotejo.jurisdicciones.length} jurisdicciones`);
+     458: const GENERICOS = /^(LAGO|LAGUNA|EMBALSE|RIO)\s+/;
+     459: const buscarCuerpo = (nombreBahia) => {
+     463: for (const [k, v] of cuerpoAJur) if (k === n || k.replace(GENERICOS, '') === desnudo) return v;
+
+=== Q2 — QUE NOMBRA CADA LADO, CONTRA EL DATO ===
+
+  LADO SITPORT. `consultaBahias` trae por bahia un `CdReparticion`, y el CSV
+  lo traduce a un nombre. Las 6 bahias de LAGO PELLAIFA/PULLINQUE/CALAFQUEN/
+  RIÑIHUE/NELTUME/PIREHUICO y las 3 del LAGO VILLARRICA, crudo:
+    bahia 105  "LAGO VILLARRICA                   "  CdRep 186 -> CSV.Capitania="VILLARRICA"  CSV.Gobernacion="Valdivia"
+    bahia 209  "LAGO VILLARRICA SECTOR PUCÓN      "  CdRep 186 -> CSV.Capitania="VILLARRICA"  CSV.Gobernacion="Valdivia"
+    bahia 210  "LAGO VILLARRICA SECTOR VILLARRICA "  CdRep 186 -> CSV.Capitania="VILLARRICA"  CSV.Gobernacion="Valdivia"
+    bahia 245  "LAGO PELLAIFA                     "  CdRep 186 -> CSV.Capitania="VILLARRICA"  CSV.Gobernacion="Valdivia"
+    bahia 246  "LAGO PULLINQUE                    "  CdRep 186 -> CSV.Capitania="VILLARRICA"  CSV.Gobernacion="Valdivia"
+    bahia 247  "LAGO CALAFQUEN                    "  CdRep 186 -> CSV.Capitania="VILLARRICA"  CSV.Gobernacion="Valdivia"
+    bahia 248  "LAGO RIÑIHUE                      "  CdRep 186 -> CSV.Capitania="VILLARRICA"  CSV.Gobernacion="Valdivia"
+    bahia 249  "LAGO NELTUME                      "  CdRep 186 -> CSV.Capitania="VILLARRICA"  CSV.Gobernacion="Valdivia"
+    bahia 250  "LAGO PIREHUICO                    "  CdRep 186 -> CSV.Capitania="VILLARRICA"  CSV.Gobernacion="Valdivia"
+    bahia 106  "PANGUIPULLI                       "  CdRep 184 -> CSV.Capitania="PANGUIPULLI"  CSV.Gobernacion="Valdivia"
+
+  LADO JOIN. El valor es un `jurisdiccion_id` del decreto. Lo que ese id trae
+  en jurisdicciones_v2.json, crudo:
+    id="lago_villarrica"  nombre="Lago Villarrica"  ambito="lacustre"  gobernacion="Valdivia"
+      texto_decreto: "Lagos Colico, Caburgua, Huilipilun y Villarrica, lagunas Conguillio, Galletue e Icalma, y el Rio Tolten. El Rio Tolten, desde su origen hasta la jurisdiccion de la comuna de Pitrufquen."
+      cuerpos_lacustres: 8 -> [{"nombre_decreto":"Lago Colico","fragmento_decreto":"Lagos Colico","resolucion":"exacta","anclaje":"nombre","shapefile_fid":[974],"shapefile_detalle":[{"fid":974,"num":975,"nombre":"LAGO COLICO","region":"IX","area_km2":54.955}],"motivo":"Coincidencia exacta de nombre normalizado."},{"nombre_decreto":"Lago Caburgua","fragmento_decreto":"Lagos ... Caburgua","resolucion":"aceptado","anclaje":"nombre","shapefile_fid":[975],"shapefile_detalle":[{"fid":975,"num":976,"nombre":"LAGO CABURGA","region":"IX","area_km2":52.274}],"motivo":"Diferencia de grafia del mismo toponimo."},{"nombre_decreto":"Lago Huilipilun","fragmento_decreto":"Lagos ... Huilipilun","resolucion":"exacta","anclaje":"nombre","shapefile_fid":[976],"shapefile_detalle":[{"fid":976,"num":977,"nombre":"LAGO HUILIPILUN","region":"IX","area_km2":11.328}],"motivo":"Coincidencia exacta de nombre normalizado."},{"nombre_decreto":"Lago Villarrica","fragmento_decreto":"Lagos ... y Villarrica","resolucion":"exacta","anclaje":"nombre","shapefile_fid":[977],"shapefile_detalle":[{"fid":977,"num":978,"nombre":"LAGO VILLARRICA","region":"IX","area_km2":174.971}],"motivo":"Coincidencia exacta de nombre normalizado."},{"nombre_decreto":"Laguna Conguillio","fragmento_decreto":"lagunas Conguillio","resolucion":"exacta","anclaje":"nombre","shapefile_fid":[964],"shapefile_detalle":[{"fid":964,"num":965,"nombre":"LAGUNA CONGUILLIO","region":"IX","area_km2":8.026}],"motivo":"Coincidencia exacta de nombre normalizado."},{"nombre_decreto":"Laguna Galletue","fragmento_decreto":"lagunas ... Galletue","resolucion":"aceptado","anclaje":"fid","shapefile_fid":[965],"shapefile_detalle":[{"fid":965,"num":966,"nombre":"LAGO GUALLETUE","region":"IX","area_km2":13.075}],"motivo":"D12, adjudicada por el owner el 2026-08-12. El decreto la escribe 'Galletue' y el catastro 'Gualletue'; esa grafia sale del parrafo de la Gobernacion Maritima de Valdivia, o sea del propio decreto y no de una fuente externa. Coincidencia unica en los 2.067 registros del catastro. Coherencia geografica con margen de 2x: 8,6 km de Icalma y 24,7 de Conguillio, los otros dos cuerpos de la misma frase del decreto, contra 51,9 km del siguiente candidato. SE ANCLA POR FID, no por nombre ni por geometria — ver GEMELOS_DECLARADOS.","gemelos_geometricos_declarados":{"965":{"gemelos_no_adjudicados":[960],"filas_para_el_mismo_poligono":2,"motivo":"El fid 960 no tiene nombre y su geometria es identica a la del 965: son dos filas del catastro para el mismo cuerpo. Se adjudica el 965, que es el que lleva el nombre. Un cotejo que seleccione por geometria traeria los dos y duplicaria la laguna sin que ningun control de area lo note."}}},{"nombre_decreto":"Laguna Icalma","fragmento_decreto":"lagunas ... e Icalma","resolucion":"aceptado","anclaje":"nombre","shapefile_fid":[966,967],"shapefile_detalle":[{"fid":966,"num":967,"nombre":"LAGUNA DE ICALMA","region":"IX","area_km2":9.901},{"fid":967,"num":968,"nombre":"LAGUNA DE ICALMA","region":"IX","area_km2":1.932}],"motivo":"Un cuerpo con dos partes en el catastro (9.901 y 1.932 km2). La jurisdiccion cubre las dos: se unen.","gemelos_geometricos_declarados":{"966":{"gemelos_no_adjudicados":[962],"filas_para_el_mismo_poligono":2,"motivo":"Mismo patron que 960/965: el fid 962 no tiene nombre y su geometria es identica a la del 966 (parte mayor de Icalma, 9,901 km2). Se adjudica el 966. Hallado por el control de gemelos el 2026-08-12; la adjudicacion vigente ya tomaba el correcto, pero porque empareja por nombre y el gemelo no lo tiene."},"967":{"gemelos_no_adjudicados":[963],"filas_para_el_mismo_poligono":2,"motivo":"Mismo patron: el fid 963 no tiene nombre y su geometria es identica a la del 967 (parte menor de Icalma, 1,932 km2). Se adjudica el 967."}}},{"nombre_decreto":"Rio Tolten","fragmento_decreto":"y el Rio Tolten","resolucion":"ausente","anclaje":"nombre","shapefile_fid":[],"shapefile_detalle":[],"motivo":"Cuerpo fluvial. El shapefile no contiene rios. Sin geometria, declarado (INV-3.6)."}]
+    id="lago_panguipulli"  nombre="Lago Panguipulli"  ambito="lacustre"  gobernacion="Valdivia"
+      texto_decreto: "Lagos Calafquen, Panguipulli, Pellaifa, Pullinque, Rinihue, Neltume, Pirihueico, y los rios Fuy y San Pedro."
+      cuerpos_lacustres: 9 -> [{"nombre_decreto":"Lago Calafquen","fragmento_decreto":"Lagos Calafquen","resolucion":"exacta","anclaje":"nombre","shapefile_fid":[982],"shapefile_detalle":[{"fid":982,"num":983,"nombre":"LAGO CALAFQUEN","region":"X","area_km2":114.886}],"motivo":"Coincidencia exacta de nombre normalizado."},{"nombre_decreto":"Lago Panguipulli","fragmento_decreto":"Lagos ... Panguipulli","resolucion":"exacta","anclaje":"nombre","shapefile_fid":[999],"shapefile_detalle":[{"fid":999,"num":1000,"nombre":"LAGO PANGUIPULLI","region":"X","area_km2":112.845}],"motivo":"Coincidencia exacta de nombre normalizado."},{"nombre_decreto":"Lago Pellaifa","fragmento_decreto":"Lagos ... Pellaifa","resolucion":"aceptado","anclaje":"nombre","shapefile_fid":[993],"shapefile_detalle":[{"fid":993,"num":994,"nombre":"LAGUNA PELLAIFA","region":"X","area_km2":7.677}],"motivo":"lago/laguna es nomenclatura, no identidad. Mismo cuerpo (X, Panguipulli)."},{"nombre_decreto":"Lago Pullinque","fragmento_decreto":"Lagos ... Pullinque","resolucion":"aceptado","anclaje":"nombre","shapefile_fid":[991],"shapefile_detalle":[{"fid":991,"num":992,"nombre":"LAGUNA PULLINGUE","region":"X","area_km2":5.99}],"motivo":"Diferencia de grafia del mismo toponimo, mas lago/laguna. Mismo cuerpo (X, Panguipulli)."},{"nombre_decreto":"Lago Rinihue","fragmento_decreto":"Lagos ... Rinihue","resolucion":"exacta","anclaje":"nombre","shapefile_fid":[1029],"shapefile_detalle":[{"fid":1029,"num":1030,"nombre":"LAGO RINIHUE","region":"X","area_km2":87.928}],"motivo":"Coincidencia exacta de nombre normalizado."},{"nombre_decreto":"Lago Neltume","fragmento_decreto":"Lagos ... Neltume","resolucion":"aceptado","anclaje":"nombre","shapefile_fid":[1028],"shapefile_detalle":[{"fid":1028,"num":1029,"nombre":"LAGUNA NELTUME","region":"X","area_km2":9.194}],"motivo":"lago/laguna es nomenclatura, no identidad. Mismo cuerpo (X, Panguipulli)."},{"nombre_decreto":"Lago Pirihueico","fragmento_decreto":"Lagos ... Pirihueico","resolucion":"exacta","anclaje":"nombre","shapefile_fid":[1042],"shapefile_detalle":[{"fid":1042,"num":1043,"nombre":"LAGO PIRIHUEICO","region":"X","area_km2":29.511}],"motivo":"Coincidencia exacta de nombre normalizado."},{"nombre_decreto":"Rio Fuy","fragmento_decreto":"los rios Fuy","resolucion":"ausente","anclaje":"nombre","shapefile_fid":[],"shapefile_detalle":[],"motivo":"Cuerpo fluvial. El shapefile no contiene rios. Sin geometria, declarado (INV-3.6)."},{"nombre_decreto":"Rio San Pedro","fragmento_decreto":"los rios ... y San Pedro","resolucion":"rechazado","anclaje":"nombre","shapefile_fid":[],"shapefile_detalle":[],"motivo":"El candidato LAGUNA GRANDE DE SAN PEDRO esta en la Region VIII (San Pedro de la Paz): es otro cuerpo que comparte palabra. Se rechaza. Sin geometria (INV-3.6)."}]
+
+  EL DATO QUE CONTESTA LA PREGUNTA, sin interpretar el nombre del campo:
+  el `texto_decreto` de `lago_panguipulli` ENUMERA los seis lagos de las
+  bahias 245-250 y el `texto_decreto` de `lago_villarrica` NO los enumera.
+
+    lago            ¿figura en texto_decreto de lago_panguipulli?  ¿y en el de lago_villarrica?
+    LAGO PELLAIFA      true                                           false
+    LAGO PULLINQUE     true                                           false
+    LAGO CALAFQUEN     true                                           false
+    LAGO RIÑIHUE       true                                           false
+    LAGO NELTUME       true                                           false
+    LAGO PIREHUICO     false                                          false
+
+    OJO: "PIREHUICO" (SITPORT) contra "Pirihueico" (decreto) son cadenas
+    distintas y la busqueda de subcadena da false. NO se resuelve aca: decidir
+    que son el mismo lago es adjudicar, y no es de este instrumento.
+
+=== Q3 — LAS 38 DE 157, AGRUPADAS POR EL `criterio` DEL JOIN ===
+  El agrupamiento es por el campo `criterio` de cada entrada del join, verbatim.
+  Dice COMO se resolvio esa bahia. No clasifica nombres ni decide equivalencias.
+
+  COMPARACIONES EFECTIVAS : 157
+  DIFIEREN                : 38
+
+  --- 10 entradas · criterio: "cajon A2: el mapa operativo y SITPORT coinciden, y la variante de nombre esta establecida por igualdad de conjunto"
+      126  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"  (ambito=maritima, respaldo=operativo)
+      220  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"  (ambito=maritima, respaldo=operativo)
+      221  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"  (ambito=maritima, respaldo=operativo)
+      222  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"  (ambito=maritima, respaldo=operativo)
+      223  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"  (ambito=maritima, respaldo=operativo)
+      224  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"  (ambito=maritima, respaldo=operativo)
+      225  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"  (ambito=maritima, respaldo=operativo)
+      226  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"  (ambito=maritima, respaldo=operativo)
+      227  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"  (ambito=maritima, respaldo=operativo)
+      228  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"  (ambito=maritima, respaldo=operativo)
+  --- 6 entradas · criterio: "cajon D: lago_panguipulli"
+      106  SITPORT="PANGUIPULLI"  decreto="Lago Panguipulli"  (ambito=lacustre, respaldo=decreto)
+      245  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"  (ambito=lacustre, respaldo=decreto)
+      246  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"  (ambito=lacustre, respaldo=decreto)
+      247  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"  (ambito=lacustre, respaldo=decreto)
+      248  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"  (ambito=lacustre, respaldo=decreto)
+      249  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"  (ambito=lacustre, respaldo=decreto)
+  --- 3 entradas · criterio: "cajon B: -> puerto_aguirre"
+      125  SITPORT="AGUIRRE"  decreto="Puerto Aguirre"  (ambito=maritima, respaldo=decreto)
+      243  SITPORT="AGUIRRE"  decreto="Puerto Aguirre"  (ambito=maritima, respaldo=decreto)
+      244  SITPORT="AGUIRRE"  decreto="Puerto Aguirre"  (ambito=maritima, respaldo=decreto)
+  --- 2 entradas · criterio: "cajon D: lago_general_carrera"
+      128  SITPORT="LAGO GRAL.CARRERA"  decreto="Lago General Carrera"  (ambito=lacustre, respaldo=decreto)
+      203  SITPORT="LAGO GRAL.CARRERA"  decreto="Lago General Carrera"  (ambito=lacustre, respaldo=decreto)
+  --- 2 entradas · criterio: "III · cae al Weste de la meridiano 073 15 00 W entre los paralelos 43 00 30 S y 43 44 25 S, a 24.27 km"
+      251  SITPORT="MELINKA"  decreto="Quellon"  (ambito=maritima, respaldo=decreto)
+      253  SITPORT="MELINKA"  decreto="Quellon"  (ambito=maritima, respaldo=decreto)
+  --- 1 entradas · criterio: "cajon D: lago_villarrica"
+      105  SITPORT="VILLARRICA"  decreto="Lago Villarrica"  (ambito=lacustre, respaldo=decreto)
+  --- 1 entradas · criterio: "cajon A3: el mapa operativo y SITPORT coinciden, y el nombre difiere solo en el prefijo "Puerto "/"Lago ""
+      123  SITPORT="CISNES"  decreto="Puerto Cisnes"  (ambito=maritima, respaldo=operativo)
+  --- 1 entradas · criterio: "III · al Este de la linea Punta Harry - Cabo San Vicente (Segunda Angostura) (73.71 km) y al Norte de Cabo San Vicente, donde arranca la linea de tierra_del_fuego"
+      132  SITPORT="TIERRA DEL FUEGO"  decreto="Punta Delgada"  (ambito=maritima, respaldo=decreto)
+  --- 1 entradas · criterio: "IV · de los dos candidatos, la banda del decreto solo contiene a este (lat -30.05)"
+      151  SITPORT="TONGOY"  decreto="Coquimbo"  (ambito=maritima, respaldo=decreto)
+  --- 1 entradas · criterio: "cajon C: lago_ranco + puerto_varas"
+      160  SITPORT="PUERTO VARAS"  decreto="Lago Ranco"  (ambito=lacustre, respaldo=decreto)
+  --- 1 entradas · criterio: "V · identidad del cuerpo de agua (distancia de edicion 0)"
+      209  SITPORT="VILLARRICA"  decreto="Lago Villarrica"  (ambito=lacustre, respaldo=decreto)
+  --- 1 entradas · criterio: "I · el decreto la nombra (exacta, exacta)"
+      210  SITPORT="VILLARRICA"  decreto="Lago Villarrica"  (ambito=lacustre, respaldo=decreto)
+  --- 1 entradas · criterio: "II · cae dentro del poligono de vertices que el decreto escribe"
+      231  SITPORT="SOBERANÍA"  decreto="Puerto Soberania"  (ambito=antartica, respaldo=decreto)
+  --- 1 entradas · criterio: "III · cae al Este de la meridiano 073 15 00 W entre los paralelos 43 00 30 S y 43 44 25 S, a 93.05 km"
+      234  SITPORT="CISNES"  decreto="Chaiten"  (ambito=maritima, respaldo=decreto)
+  --- 1 entradas · criterio: "III · cae al Este de la linea que divide el Canal Moraleda, a 20.57 km"
+      238  SITPORT="AGUIRRE"  decreto="Puerto Cisnes"  (ambito=maritima, respaldo=decreto)
+  --- 1 entradas · criterio: "IV · de los dos candidatos, la banda del decreto solo contiene a este (lat -44.7333)"
+      240  SITPORT="AGUIRRE"  decreto="Puerto Cisnes"  (ambito=maritima, respaldo=decreto)
+  --- 1 entradas · criterio: "III · cae al Weste de la linea Cayo Blanco - Punta San Andres - Puerto Perez - Islote Rodriguez - Isla Traiguen, a 9.33 km"
+      242  SITPORT="AGUIRRE"  decreto="Puerto Aguirre"  (ambito=maritima, respaldo=decreto)
+  --- 1 entradas · criterio: "V · identidad del cuerpo de agua (distancia de edicion 2)"
+      250  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"  (ambito=lacustre, respaldo=decreto)
+  --- 1 entradas · criterio: "III · cae al Weste de la meridiano 073 15 00 W entre los paralelos 43 00 30 S y 43 44 25 S, a 2.69 km"
+      252  SITPORT="MELINKA"  decreto="Quellon"  (ambito=maritima, respaldo=decreto)
+  --- 1 entradas · criterio: "cajon C: lago_general_carrera"
+      257  SITPORT="LAGO GRAL.CARRERA"  decreto="Lago General Carrera"  (ambito=lacustre, respaldo=decreto)
+
+  Reparto por ambito de la jurisdiccion del decreto:
+      lacustre           14
+      maritima           23
+      antartica          1
+
+Este instrumento NO clasifica las 38 en "conflicto real" contra "artefacto".
+Esa particion exige decidir si dos rotulos nombran la misma reparticion, y eso
+es adjudicacion del owner. Lo que entrega es el mecanismo de cada una.
+Ningun archivo fue escrito.
+================================================================================

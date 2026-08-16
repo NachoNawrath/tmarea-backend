@@ -1,0 +1,70 @@
+================================================================================
+LAS 17 NULAS — SITPORT contra el JOIN. 2026-08-15
+================================================================================
+
+INSUMOS
+    src/data/bahia-capitania-map.json                                0225aa23959b51b1…
+    _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json aed48c23ffbb840c…
+    _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv    04cdf370c089e321…
+    data/decreto/join_bahia_jurisdiccion.json                        62a3b5c2d85b6897…
+    data/decreto/jurisdicciones_v2.json                              10ef5af265b9a448…
+    captura de SITPORT: 2026-08-13 (_bitacoras/e3_paso6_2026-08-13/). No es consulta en vivo.
+
+=== UNIVERSO: entradas con `capitania` null : 17 ===
+    96, 105, 106, 127, 129, 139, 140, 154, 209, 210, 231, 245, 246, 247, 248, 249, 250
+
+=== TABLA CRUDA: los dos candidatos, las 17 ===
+    id   bahia (SITPORT)                        CdRep  candidato SITPORT      candidato JOIN
+     96  LAGO RAPEL                                97  LAGO RAPEL             Lago Rapel
+    105  LAGO VILLARRICA                          186  VILLARRICA             Lago Villarrica
+    106  PANGUIPULLI                              184  PANGUIPULLI            Lago Panguipulli
+    127  BAKER                                    260  BAKER                  (estado='sin_resolver')
+    129  PUERTO EDÉN                              258  EDÉN                   (estado='sin_resolver')
+    139  BAHÍA FILDES                             290  BAHÍA FILDES           Bahia Fildes
+    140  BAHÍA PARAÍSO                            293  BAHÍA PARAÍSO          Bahia Paraiso
+    154  ISLA GUARELLO                            258  EDÉN                   (estado='sin_resolver')
+    209  LAGO VILLARRICA SECTOR PUCÓN             186  VILLARRICA             Lago Villarrica
+    210  LAGO VILLARRICA SECTOR VILLARRICA        186  VILLARRICA             Lago Villarrica
+    231  BAHÍA CHILE                              292  SOBERANÍA              Puerto Soberania
+    245  LAGO PELLAIFA                            186  VILLARRICA             Lago Panguipulli
+    246  LAGO PULLINQUE                           186  VILLARRICA             Lago Panguipulli
+    247  LAGO CALAFQUEN                           186  VILLARRICA             Lago Panguipulli
+    248  LAGO RIÑIHUE                             186  VILLARRICA             Lago Panguipulli
+    249  LAGO NELTUME                             186  VILLARRICA             Lago Panguipulli
+    250  LAGO PIREHUICO                           186  VILLARRICA             Lago Panguipulli
+
+=== SOLAPE ===
+    con candidato en SITPORT            : 17
+    con candidato en el JOIN            : 14
+    con candidato en LOS DOS (comparables): 14
+    solo SITPORT                        : 3 -> 127 (estado='sin_resolver'), 129 (estado='sin_resolver'), 154 (estado='sin_resolver')
+    solo JOIN                           : 0 -> —
+    ninguno                             : 0 -> —
+
+=== COMPARACIONES EFECTIVAS : 14 ===
+    coinciden (cadena normalizada) : 3
+    DISCREPAN                      : 11
+
+=== LAS QUE COINCIDEN ===
+     96  SITPORT="LAGO RAPEL"  JOIN="Lago Rapel"
+    139  SITPORT="BAHÍA FILDES"  JOIN="Bahia Fildes"
+    140  SITPORT="BAHÍA PARAÍSO"  JOIN="Bahia Paraiso"
+
+=== LAS QUE DISCREPAN, una por linea ===
+    105  SITPORT="VILLARRICA"  JOIN="Lago Villarrica"   (CdRep 186 · jurisdiccion_id 'lago_villarrica' · respaldo=decreto)
+    106  SITPORT="PANGUIPULLI"  JOIN="Lago Panguipulli"   (CdRep 184 · jurisdiccion_id 'lago_panguipulli' · respaldo=decreto)
+    209  SITPORT="VILLARRICA"  JOIN="Lago Villarrica"   (CdRep 186 · jurisdiccion_id 'lago_villarrica' · respaldo=decreto)
+    210  SITPORT="VILLARRICA"  JOIN="Lago Villarrica"   (CdRep 186 · jurisdiccion_id 'lago_villarrica' · respaldo=decreto)
+    231  SITPORT="SOBERANÍA"  JOIN="Puerto Soberania"   (CdRep 292 · jurisdiccion_id 'puerto_soberania' · respaldo=decreto)
+    245  SITPORT="VILLARRICA"  JOIN="Lago Panguipulli"   (CdRep 186 · jurisdiccion_id 'lago_panguipulli' · respaldo=decreto)
+    246  SITPORT="VILLARRICA"  JOIN="Lago Panguipulli"   (CdRep 186 · jurisdiccion_id 'lago_panguipulli' · respaldo=decreto)
+    247  SITPORT="VILLARRICA"  JOIN="Lago Panguipulli"   (CdRep 186 · jurisdiccion_id 'lago_panguipulli' · respaldo=decreto)
+    248  SITPORT="VILLARRICA"  JOIN="Lago Panguipulli"   (CdRep 186 · jurisdiccion_id 'lago_panguipulli' · respaldo=decreto)
+    249  SITPORT="VILLARRICA"  JOIN="Lago Panguipulli"   (CdRep 186 · jurisdiccion_id 'lago_panguipulli' · respaldo=decreto)
+    250  SITPORT="VILLARRICA"  JOIN="Lago Panguipulli"   (CdRep 186 · jurisdiccion_id 'lago_panguipulli' · respaldo=decreto)
+
+Comparacion hecha con `normalizarTexto` de src/utils (INV-0.3). Es igualdad
+de CADENA: no afirma ni niega que dos nombres distintos sean la misma
+reparticion. Esa lectura no la hace este instrumento.
+Ningun archivo fue escrito.
+================================================================================

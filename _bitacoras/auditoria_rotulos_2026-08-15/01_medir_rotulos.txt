@@ -1,0 +1,319 @@
+================================================================================
+AUDITORIA DE ROTULOS Y ATRIBUCION — RECONOCIMIENTO. 2026-08-15
+================================================================================
+
+INSUMOS, con sha256 del archivo en disco
+--------------------------------------------------------------------------------
+    src/data/bahia-capitania-map.json                                     18325 b  0225aa23959b51b1…  mtime 2026-08-14
+    _bitacoras/sondeo_catalogo_2026-08-12/sitport_bahias_raw.json         39267 b  2955decfba31e4cc…  mtime 2026-08-12
+    _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json    24360 b  aed48c23ffbb840c…  mtime 2026-08-13
+    _bitacoras/e01_drift_catalogo_2026-08-11/sitport_consultaBahias.json    26469 b  35990acbca7c229f…  mtime 2026-08-11
+    _bitacoras/sondeo_catalogo_2026-08-12/capitanias_64_final.csv         10662 b  04cdf370c089e321…  mtime 2026-08-12
+    data/decreto/join_bahia_jurisdiccion.json                             82020 b  62a3b5c2d85b6897…  mtime 2026-08-11
+    data/decreto/jurisdicciones_v2.json                                  391501 b  10ef5af265b9a448…  mtime 2026-08-16
+    _bitacoras/sondeo_catalogo_2026-08-12/diff_capitanias.csv              5537 b  2c656fa840e991f0…  mtime 2026-08-12
+
+  jurisdicciones_v2.json se lee SOLO para traducir jurisdiccion_id -> nombre.
+  Esta en la ruta a pantalla: capitania-de-bahia.js lo requiere para armar el
+  contacto que ve el patron, asi que no es lectura del frente de jurisdiccion.
+
+=== M1 — estado de bahia-capitania-map.json HOY ===
+  entradas                        : 164
+  forma "capitania|gobernacion|telefono" : 164
+  capitania    null= 17  ''=0
+      ids null: 96, 105, 106, 127, 129, 139, 140, 154, 209, 210, 231, 245, 246, 247, 248, 249, 250
+  gobernacion  null=  0  ''=0
+  telefono     null=  0  ''=0
+  valores distintos de `capitania` (no nulos): 39
+      Achao | Ancud | Antofagasta | Arica | Calbuco | Caldera | Carahue | Castro | Chacabuco | Chaitén | Chonchi | Cochamó | Constitución | Coquimbo | Coronel | Corral | Hanga Roa | Hornopirén | Huasco | Iquique | Lago General Carrera | Lago Ranco | Lebu | Los Vilos | Maullín | Mejillones | Puerto Cisnes | Puerto Montt | Puerto Natales | Puerto Varas | Puerto Williams | Punta Arenas | Quellón | Quemchi | Quintero | San Antonio | Talcahuano | Valdivia | Valparaíso
+  valores distintos de `gobernacion`: 15
+      Antofagasta | Arica | Aysén | Caldera | Castro | Coquimbo | Hanga Roa | Iquique | Puerto Montt | Puerto Williams | Punta Arenas | San Antonio | Talcahuano | Valdivia | Valparaíso
+  valores distintos de `telefono`: 25
+
+=== M2 — universo de nombres de Capitania, por fuente ===
+  capitanias_64_final.csv          : 64 filas
+  jurisdicciones_v2.json           : 64 jurisdicciones del decreto
+  nombres normalizados distintos   : CSV=64  decreto=64
+  en el CSV y NO en el decreto (8): AGUIRRE | CHACABUCO | CISNES | EDEN | LAGO GRAL.CARRERA | PANGUIPULLI | SOBERANIA | VILLARRICA
+  en el decreto y NO en el CSV (8): LAGO GENERAL CARRERA | LAGO PANGUIPULLI | LAGO VILLARRICA | PUERTO AGUIRRE | PUERTO CHACABUCO | PUERTO CISNES | PUERTO EDEN | PUERTO SOBERANIA
+  NOTA: el CSV rotula sus 64 filas como Capitania de Puerto. f421949 midio que
+  ese rotulo es falso para al menos una (Rada Covadonga, Alcaldia de Mar), asi
+  que "existe en el CSV" NO prueba "es Capitania de Puerto" (INV-3.3).
+
+=== M3 — atribucion segun SITPORT CdReparticion ===
+  Las TRES capturas de consultaBahias que hay en el repositorio, con su fecha:
+  captura 2026-08-11                 164 registros · 164 ids distintos
+  captura 2026-08-12 (sondeo)        164 registros · 164 ids distintos
+  captura 2026-08-13 (e3 paso6)      165 registros · 165 ids distintos
+  Fecha de captura y procedencia: declaradas en
+    _bitacoras/sondeo_catalogo_2026-08-12/PROCEDENCIA.txt  (2026-08-12 ~16:10)
+    _bitacoras/e3_paso6_2026-08-13/  (2026-08-13)
+  NINGUNA es una consulta en vivo de esta sesion.
+  bahias cuyo CdReparticion cambia entre la captura del 12 y la del 13: 0
+  ids en el mapa y ausentes de la captura del 13: ninguno
+  ids en la captura del 13 y ausentes del mapa  : 258
+
+  --- contra la captura 2026-08-13 ---
+  COMPARACIONES EFECTIVAS : 146
+  coinciden               : 84
+  DIFIEREN                : 62
+  rotulo null (no compara): 17
+  sin CdRep resoluble     : 1 -> 146(CdRep 189 sin fila en el CSV)
+
+  --- contra la captura 2026-08-12 ---
+  COMPARACIONES EFECTIVAS : 146
+  coinciden               : 84
+  DIFIEREN                : 62
+  rotulo null (no compara): 17
+  sin CdRep resoluble     : 1 -> 146(CdRep 189 sin fila en el CSV)
+
+  --- las que DIFIEREN contra la captura del 2026-08-13 ---
+     73  PATACHE                                    mapa="Iquique"  SITPORT(CdRep 438)="PATACHE"
+     74  BAHÍA ALGODONALES                          mapa="Antofagasta"  SITPORT(CdRep 15)="TOCOPILLA"
+     76  CALETA MICHILLA                            mapa="Antofagasta"  SITPORT(CdRep 16)="MEJILLONES"
+     79  TAL TAL                                    mapa="Antofagasta"  SITPORT(CdRep 17)="TALTAL"
+     80  BAHÍA CHAÑARAL                             mapa="Caldera"  SITPORT(CdRep 32)="CHANARAL"
+     87  TONGOY                                     mapa="Coquimbo"  SITPORT(CdRep 51)="TONGOY"
+     90  ISLA ROBINSON CRUSOE                       mapa="Valparaíso"  SITPORT(CdRep 86)="JUAN FERNÁNDEZ"
+     94  BAHÍA ALGARROBO                            mapa="San Antonio"  SITPORT(CdRep 447)="ALGARROBO"
+     95  PICHILEMU                                  mapa="San Antonio"  SITPORT(CdRep 166)="PICHILEMU"
+     97  BAHÍA CONCEPCIÓN - LIRQUÉN                 mapa="Talcahuano"  SITPORT(CdRep 144)="LIRQUÉN"
+     99  BAHÍA SAN VICENTE                          mapa="Talcahuano"  SITPORT(CdRep 138)="SAN VICENTE"
+    102  LOTA                                       mapa="Coronel"  SITPORT(CdRep 167)="LOTA"
+    115  CANAL HORNOPIRÉN                           mapa="Hornopirén"  SITPORT(CdRep 430)="RIO NEGRO HORNOPIRÉN"
+    123  PUERTO CISNES                              mapa="Puerto Cisnes"  SITPORT(CdRep 241)="CISNES"
+    124  MELINKA                                    mapa="Puerto Cisnes"  SITPORT(CdRep 234)="MELINKA"
+    125  SECTOR BAHÍA DE PUERTO AGUIRRE             mapa="Puerto Cisnes"  SITPORT(CdRep 239)="AGUIRRE"
+    128  LAGO GENERAL CARRERA                       mapa="Lago General Carrera"  SITPORT(CdRep 235)="LAGO GRAL.CARRERA"
+    131  BAHÍA GREGORIO                             mapa="Punta Arenas"  SITPORT(CdRep 252)="PUNTA DELGADA"
+    132  BAHÍA CLARENCIA                            mapa="Punta Arenas"  SITPORT(CdRep 254)="TIERRA DEL FUEGO"
+    137  BAHÍA CHILOTA                              mapa="Punta Arenas"  SITPORT(CdRep 254)="TIERRA DEL FUEGO"
+    150  GUANAQUEROS                                mapa="Coquimbo"  SITPORT(CdRep 51)="TONGOY"
+    151  BARNES                                     mapa="Coquimbo"  SITPORT(CdRep 51)="TONGOY"
+    156  PRIMERA ANGOSTURA                          mapa="Punta Arenas"  SITPORT(CdRep 252)="PUNTA DELGADA"
+    157  PUERTO CARRIZAL BAJO                       mapa="Caldera"  SITPORT(CdRep 33)="HUASCO"
+    158  CALETA CHAÑARAL Y ENSENADA GAVIOTA         mapa="Coquimbo"  SITPORT(CdRep 33)="HUASCO"
+    159  LAGO TODOS LOS SANTOS                      mapa="Puerto Montt"  SITPORT(CdRep 201)="PUERTO VARAS"
+    160  LAGO PUYEHUE                               mapa="Puerto Montt"  SITPORT(CdRep 201)="PUERTO VARAS"
+    161  LAGO RUPANCO                               mapa="Puerto Montt"  SITPORT(CdRep 201)="PUERTO VARAS"
+    172  BAHÍA PAN DE AZÚCAR                        mapa="Caldera"  SITPORT(CdRep 32)="CHANARAL"
+    175  SECTOR REPOLLA ALTO                        mapa="Puerto Cisnes"  SITPORT(CdRep 234)="MELINKA"
+    176  SECTOR REPOLLA BAJO                        mapa="Puerto Cisnes"  SITPORT(CdRep 234)="MELINKA"
+    181  CANAL CHOLGO                               mapa="Hornopirén"  SITPORT(CdRep 430)="RIO NEGRO HORNOPIRÉN"
+    182  ESTERO COMAU                               mapa="Hornopirén"  SITPORT(CdRep 430)="RIO NEGRO HORNOPIRÉN"
+    183  ESTERO PICHICOLO                           mapa="Hornopirén"  SITPORT(CdRep 430)="RIO NEGRO HORNOPIRÉN"
+    184  ENSENADA HUALAIHUÉ                         mapa="Hornopirén"  SITPORT(CdRep 430)="RIO NEGRO HORNOPIRÉN"
+    185  ENSENADA ROLECHA                           mapa="Hornopirén"  SITPORT(CdRep 430)="RIO NEGRO HORNOPIRÉN"
+    186  SECTOR AYACARA                             mapa="Hornopirén"  SITPORT(CdRep 430)="RIO NEGRO HORNOPIRÉN"
+    187  SECTOR BUILL                               mapa="Hornopirén"  SITPORT(CdRep 430)="RIO NEGRO HORNOPIRÉN"
+    195  PATILLO                                    mapa="Iquique"  SITPORT(CdRep 438)="PATACHE"
+    196  BORDE COSTERO NORTE PATACHE                mapa="Iquique"  SITPORT(CdRep 438)="PATACHE"
+    197  BORDE COSTERO SUR PATACHE                  mapa="Iquique"  SITPORT(CdRep 438)="PATACHE"
+    198  SECTOR COSTERO PENINSULA DE HUALPEN        mapa="Talcahuano"  SITPORT(CdRep 138)="SAN VICENTE"
+    203  LAGO O'HIGGINS                             mapa="Lago General Carrera"  SITPORT(CdRep 235)="LAGO GRAL.CARRERA"
+    215  EL QUISCO                                  mapa="San Antonio"  SITPORT(CdRep 447)="ALGARROBO"
+    219  SECTOR NORTE QUINTERO                      mapa="Valparaíso"  SITPORT(CdRep 78)="QUINTERO"
+    234  RÍO PALENA                                 mapa="Chaitén"  SITPORT(CdRep 241)="CISNES"
+    235  CHEQUIAN                                   mapa="Quemchi"  SITPORT(CdRep 217)="ACHAO"
+    236  CALETA VIUDA                               mapa="Antofagasta"  SITPORT(CdRep 15)="TOCOPILLA"
+    238  SECTOR CANAL MORALEDA                      mapa="Puerto Cisnes"  SITPORT(CdRep 239)="AGUIRRE"
+    239  SECTOR CANAL FERRONAVE Y CANAL DEVIA       mapa="Puerto Cisnes"  SITPORT(CdRep 239)="AGUIRRE"
+    240  SECTOR CANAL PILCOMAYO Y CANAL RODRIGUEZ   mapa="Puerto Cisnes"  SITPORT(CdRep 239)="AGUIRRE"
+    241  SECTOR CANAL GOÑI Y CANAL NINUALAC         mapa="Puerto Cisnes"  SITPORT(CdRep 239)="AGUIRRE"
+    242  SECTOR CANAL CARRERA DEL CHIVATO Y CANAL   mapa="Puerto Cisnes"  SITPORT(CdRep 239)="AGUIRRE"
+    243  SECTOR CANAL DARWIN                        mapa="Puerto Cisnes"  SITPORT(CdRep 239)="AGUIRRE"
+    244  SECTOR CANAL TRANSITO                      mapa="Puerto Cisnes"  SITPORT(CdRep 239)="AGUIRRE"
+    251  CANAL GOLFO CORCOVADO (NORTE)              mapa="Puerto Cisnes"  SITPORT(CdRep 234)="MELINKA"
+    252  CANAL MORALEDA (ESTE)                      mapa="Puerto Cisnes"  SITPORT(CdRep 234)="MELINKA"
+    253  CANAL CHAFFERS NORTE                       mapa="Puerto Cisnes"  SITPORT(CdRep 234)="MELINKA"
+    254  CANAL CHAFFERS SUR                         mapa="Puerto Cisnes"  SITPORT(CdRep 234)="MELINKA"
+    255  CANAL PÉREZ NORTE                          mapa="Puerto Cisnes"  SITPORT(CdRep 234)="MELINKA"
+    256  CANAL PÉREZ SUR                            mapa="Puerto Cisnes"  SITPORT(CdRep 234)="MELINKA"
+    257  RÍO COCHRANE                               mapa="Lago General Carrera"  SITPORT(CdRep 235)="LAGO GRAL.CARRERA"
+
+  --- las de rotulo NULL, con lo que SITPORT SI atribuye ---
+     96  mapa=null   SITPORT(CdRep 97)="LAGO RAPEL"
+    105  mapa=null   SITPORT(CdRep 186)="VILLARRICA"
+    106  mapa=null   SITPORT(CdRep 184)="PANGUIPULLI"
+    127  mapa=null   SITPORT(CdRep 260)="BAKER"
+    129  mapa=null   SITPORT(CdRep 258)="EDÉN"
+    139  mapa=null   SITPORT(CdRep 290)="BAHÍA FILDES"
+    140  mapa=null   SITPORT(CdRep 293)="BAHÍA PARAÍSO"
+    154  mapa=null   SITPORT(CdRep 258)="EDÉN"
+    209  mapa=null   SITPORT(CdRep 186)="VILLARRICA"
+    210  mapa=null   SITPORT(CdRep 186)="VILLARRICA"
+    231  mapa=null   SITPORT(CdRep 292)="SOBERANÍA"
+    245  mapa=null   SITPORT(CdRep 186)="VILLARRICA"
+    246  mapa=null   SITPORT(CdRep 186)="VILLARRICA"
+    247  mapa=null   SITPORT(CdRep 186)="VILLARRICA"
+    248  mapa=null   SITPORT(CdRep 186)="VILLARRICA"
+    249  mapa=null   SITPORT(CdRep 186)="VILLARRICA"
+    250  mapa=null   SITPORT(CdRep 186)="VILLARRICA"
+
+=== M4 — atribucion segun join_bahia_jurisdiccion.json (FUENTE AUTORIZADA §5) ===
+  generado: 2026-08-11T22:10:47.576Z   conteo: {"total":164,"operativo":88,"decreto":69,"declaracion_versionada":1,"sin_resolver":6}
+  COMPARACIONES EFECTIVAS : 144
+  coinciden               : 83
+  DIFIEREN                : 61
+  rotulo null (no compara): 14
+  sin_resolver en el join : 6 -> 127, 129, 137, 154, 239, 241
+  jurisdiccion_id sin nombre en v2: 0
+
+  --- las que DIFIEREN contra el join ---
+     73  mapa="Iquique"  decreto="Patache" (patache, respaldo=decreto)
+     74  mapa="Antofagasta"  decreto="Tocopilla" (tocopilla, respaldo=decreto)
+     76  mapa="Antofagasta"  decreto="Mejillones" (mejillones, respaldo=decreto)
+     79  mapa="Antofagasta"  decreto="Taltal" (taltal, respaldo=decreto)
+     80  mapa="Caldera"  decreto="Chanaral" (chanaral, respaldo=decreto)
+     87  mapa="Coquimbo"  decreto="Tongoy" (tongoy, respaldo=decreto)
+     90  mapa="Valparaíso"  decreto="Juan Fernandez" (juan_fernandez, respaldo=declaracion_versionada)
+     94  mapa="San Antonio"  decreto="Algarrobo" (algarrobo, respaldo=decreto)
+     95  mapa="San Antonio"  decreto="Pichilemu" (pichilemu, respaldo=decreto)
+     97  mapa="Talcahuano"  decreto="Lirquen" (lirquen, respaldo=decreto)
+     99  mapa="Talcahuano"  decreto="San Vicente" (san_vicente, respaldo=decreto)
+    102  mapa="Coronel"  decreto="Lota" (lota, respaldo=decreto)
+    115  mapa="Hornopirén"  decreto="Rio Negro Hornopiren" (hornopiren, respaldo=operativo)
+    124  mapa="Puerto Cisnes"  decreto="Melinka" (melinka, respaldo=decreto)
+    125  mapa="Puerto Cisnes"  decreto="Puerto Aguirre" (puerto_aguirre, respaldo=decreto)
+    126  mapa="Chacabuco"  decreto="Puerto Chacabuco" (puerto_chacabuco, respaldo=operativo)
+    131  mapa="Punta Arenas"  decreto="Punta Delgada" (punta_delgada, respaldo=decreto)
+    132  mapa="Punta Arenas"  decreto="Punta Delgada" (punta_delgada, respaldo=decreto)
+    150  mapa="Coquimbo"  decreto="Tongoy" (tongoy, respaldo=decreto)
+    156  mapa="Punta Arenas"  decreto="Punta Delgada" (punta_delgada, respaldo=decreto)
+    157  mapa="Caldera"  decreto="Huasco" (huasco, respaldo=decreto)
+    158  mapa="Coquimbo"  decreto="Huasco" (huasco, respaldo=decreto)
+    159  mapa="Puerto Montt"  decreto="Puerto Varas" (puerto_varas, respaldo=decreto)
+    160  mapa="Puerto Montt"  decreto="Lago Ranco" (lago_ranco, respaldo=decreto)
+    161  mapa="Puerto Montt"  decreto="Puerto Varas" (puerto_varas, respaldo=decreto)
+    172  mapa="Caldera"  decreto="Chanaral" (chanaral, respaldo=decreto)
+    175  mapa="Puerto Cisnes"  decreto="Melinka" (melinka, respaldo=decreto)
+    176  mapa="Puerto Cisnes"  decreto="Melinka" (melinka, respaldo=decreto)
+    181  mapa="Hornopirén"  decreto="Rio Negro Hornopiren" (hornopiren, respaldo=operativo)
+    182  mapa="Hornopirén"  decreto="Rio Negro Hornopiren" (hornopiren, respaldo=operativo)
+    183  mapa="Hornopirén"  decreto="Rio Negro Hornopiren" (hornopiren, respaldo=operativo)
+    184  mapa="Hornopirén"  decreto="Rio Negro Hornopiren" (hornopiren, respaldo=operativo)
+    185  mapa="Hornopirén"  decreto="Rio Negro Hornopiren" (hornopiren, respaldo=operativo)
+    186  mapa="Hornopirén"  decreto="Rio Negro Hornopiren" (hornopiren, respaldo=operativo)
+    187  mapa="Hornopirén"  decreto="Rio Negro Hornopiren" (hornopiren, respaldo=operativo)
+    195  mapa="Iquique"  decreto="Patache" (patache, respaldo=decreto)
+    196  mapa="Iquique"  decreto="Patache" (patache, respaldo=decreto)
+    197  mapa="Iquique"  decreto="Patache" (patache, respaldo=decreto)
+    198  mapa="Talcahuano"  decreto="San Vicente" (san_vicente, respaldo=decreto)
+    215  mapa="San Antonio"  decreto="Algarrobo" (algarrobo, respaldo=decreto)
+    219  mapa="Valparaíso"  decreto="Quintero" (quintero, respaldo=decreto)
+    220  mapa="Chacabuco"  decreto="Puerto Chacabuco" (puerto_chacabuco, respaldo=operativo)
+    221  mapa="Chacabuco"  decreto="Puerto Chacabuco" (puerto_chacabuco, respaldo=operativo)
+    222  mapa="Chacabuco"  decreto="Puerto Chacabuco" (puerto_chacabuco, respaldo=operativo)
+    223  mapa="Chacabuco"  decreto="Puerto Chacabuco" (puerto_chacabuco, respaldo=operativo)
+    224  mapa="Chacabuco"  decreto="Puerto Chacabuco" (puerto_chacabuco, respaldo=operativo)
+    225  mapa="Chacabuco"  decreto="Puerto Chacabuco" (puerto_chacabuco, respaldo=operativo)
+    226  mapa="Chacabuco"  decreto="Puerto Chacabuco" (puerto_chacabuco, respaldo=operativo)
+    227  mapa="Chacabuco"  decreto="Puerto Chacabuco" (puerto_chacabuco, respaldo=operativo)
+    228  mapa="Chacabuco"  decreto="Puerto Chacabuco" (puerto_chacabuco, respaldo=operativo)
+    235  mapa="Quemchi"  decreto="Achao" (achao, respaldo=decreto)
+    236  mapa="Antofagasta"  decreto="Tocopilla" (tocopilla, respaldo=decreto)
+    242  mapa="Puerto Cisnes"  decreto="Puerto Aguirre" (puerto_aguirre, respaldo=decreto)
+    243  mapa="Puerto Cisnes"  decreto="Puerto Aguirre" (puerto_aguirre, respaldo=decreto)
+    244  mapa="Puerto Cisnes"  decreto="Puerto Aguirre" (puerto_aguirre, respaldo=decreto)
+    251  mapa="Puerto Cisnes"  decreto="Quellon" (quellon, respaldo=decreto)
+    252  mapa="Puerto Cisnes"  decreto="Quellon" (quellon, respaldo=decreto)
+    253  mapa="Puerto Cisnes"  decreto="Quellon" (quellon, respaldo=decreto)
+    254  mapa="Puerto Cisnes"  decreto="Melinka" (melinka, respaldo=decreto)
+    255  mapa="Puerto Cisnes"  decreto="Melinka" (melinka, respaldo=decreto)
+    256  mapa="Puerto Cisnes"  decreto="Melinka" (melinka, respaldo=decreto)
+
+=== M4b — SITPORT contra el JOIN, sin pasar por el mapa ===
+  COMPARACIONES EFECTIVAS : 157
+  coinciden               : 119
+  DIFIEREN                : 38
+    105  SITPORT="VILLARRICA"  decreto="Lago Villarrica"
+    106  SITPORT="PANGUIPULLI"  decreto="Lago Panguipulli"
+    123  SITPORT="CISNES"  decreto="Puerto Cisnes"
+    125  SITPORT="AGUIRRE"  decreto="Puerto Aguirre"
+    126  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"
+    128  SITPORT="LAGO GRAL.CARRERA"  decreto="Lago General Carrera"
+    132  SITPORT="TIERRA DEL FUEGO"  decreto="Punta Delgada"
+    151  SITPORT="TONGOY"  decreto="Coquimbo"
+    160  SITPORT="PUERTO VARAS"  decreto="Lago Ranco"
+    203  SITPORT="LAGO GRAL.CARRERA"  decreto="Lago General Carrera"
+    209  SITPORT="VILLARRICA"  decreto="Lago Villarrica"
+    210  SITPORT="VILLARRICA"  decreto="Lago Villarrica"
+    220  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"
+    221  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"
+    222  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"
+    223  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"
+    224  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"
+    225  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"
+    226  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"
+    227  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"
+    228  SITPORT="CHACABUCO"  decreto="Puerto Chacabuco"
+    231  SITPORT="SOBERANÍA"  decreto="Puerto Soberania"
+    234  SITPORT="CISNES"  decreto="Chaiten"
+    238  SITPORT="AGUIRRE"  decreto="Puerto Cisnes"
+    240  SITPORT="AGUIRRE"  decreto="Puerto Cisnes"
+    242  SITPORT="AGUIRRE"  decreto="Puerto Aguirre"
+    243  SITPORT="AGUIRRE"  decreto="Puerto Aguirre"
+    244  SITPORT="AGUIRRE"  decreto="Puerto Aguirre"
+    245  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"
+    246  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"
+    247  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"
+    248  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"
+    249  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"
+    250  SITPORT="VILLARRICA"  decreto="Lago Panguipulli"
+    251  SITPORT="MELINKA"  decreto="Quellon"
+    252  SITPORT="MELINKA"  decreto="Quellon"
+    253  SITPORT="MELINKA"  decreto="Quellon"
+    257  SITPORT="LAGO GRAL.CARRERA"  decreto="Lago General Carrera"
+
+=== M5 — CREIBLES Y EQUIVOCADAS ===
+  Definicion: rotulo NO nulo + el nombre existe en el universo de Capitanias
+  + NO es la que la fuente atribuye. Un null se ve como falta; esto no.
+  contra SITPORT 2026-08-13  : creibles-y-equivocadas=54  con nombre inexistente=8
+      nombre inexistente: 115="Hornopirén", 181="Hornopirén", 182="Hornopirén", 183="Hornopirén", 184="Hornopirén", 185="Hornopirén", 186="Hornopirén", 187="Hornopirén"
+  contra JOIN (decreto)      : creibles-y-equivocadas=53  con nombre inexistente=8
+      nombre inexistente: 115="Hornopirén", 181="Hornopirén", 182="Hornopirén", 183="Hornopirén", 184="Hornopirén", 185="Hornopirén", 186="Hornopirén", 187="Hornopirén"
+
+=== M6 — el lote `Puerto Cisnes` de f421949, aparte ===
+  entradas rotuladas "Puerto Cisnes" hoy: 18 -> 123, 124, 125, 175, 176, 238, 239, 240, 241, 242, 243, 244, 251, 252, 253, 254, 255, 256
+  reparto segun SITPORT 2026-08-13:
+      CISNES                    1  -> 123
+      MELINKA                   9  -> 124, 175, 176, 251, 252, 253, 254, 255, 256
+      AGUIRRE                   8  -> 125, 238, 239, 240, 241, 242, 243, 244
+  reparto segun el JOIN (decreto):
+      Puerto Cisnes             3  -> 123, 238, 240
+      Melinka                   6  -> 124, 175, 176, 254, 255, 256
+      Puerto Aguirre            4  -> 125, 242, 243, 244
+      (sin_resolver)            2  -> 239, 241
+      Quellon                   3  -> 251, 252, 253
+
+=== M7 — telefonos: de quien es cada numero ===
+  entradas cuyo telefono coincide con un numero de CAPITANIA del CSV : 84
+  entradas cuyo telefono NO figura en el CSV de Capitanias           : 80
+  reparto de las que si:
+      VALDIVIA               18
+      COQUIMBO               10
+      PUERTO MONTT           8
+      RIO NEGRO HORNOPIRÉN   8
+      ANTOFAGASTA            7
+      CALDERA                7
+      TALCAHUANO             4
+      MAULLÍN                4
+      CALBUCO                3
+      CARAHUE                3
+      CORONEL                2
+      CONSTITUCIÓN           2
+      CHAITÉN                2
+      COCHAMÓ                2
+      ARICA                  1
+      HANGA ROA              1
+      LEBU                   1
+      PUERTO VARAS           1
+
+=== RESUMEN DE COMPARACIONES EFECTIVAS ===
+  M3 SITPORT 08-13 : 146
+  M3 SITPORT 08-12 : 146
+  M4 JOIN          : 144
+  M4b SITPORT-JOIN : 157
+
+Ningun archivo de src/ ni de data/ fue escrito por este instrumento.
+================================================================================
