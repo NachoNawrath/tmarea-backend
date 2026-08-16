@@ -1,0 +1,85 @@
+================================================================================
+LA FORMA DEL CONTACTO RESUELTO — contrapunto de pieza_a_nulas §15
+================================================================================
+
+(1) ¿`discrepancias` viaja en las tres ramas, siempre?
+
+    zona                 tipo          ¿tiene `discrepancias`?  cuantas
+    arica                capitania     true                    0
+    hanga_roa            capitania     true                    0
+    juan_fernandez       sin_contacto  true                    1
+    lirquen              sin_contacto  true                    1
+    talcahuano           capitania     true                    0
+    baker                gobernacion   true                    0
+    puerto_eden          capitania     true                    1
+    punta_delgada        sin_contacto  true                    2
+    tierra_del_fuego     sin_contacto  true                    1
+    puerto_williams      capitania     true                    0
+
+    COMPARACIONES EFECTIVAS : 10
+
+(2) ¿Las entradas de las DOS ramas tienen las mismas claves?
+
+    zonas con discrepancia por 'sin_contacto'          : 4
+    zonas con discrepancia declarada sobre contacto    : 1
+
+    claves de 'sin_contacto'          : bahia_id, dice_el_decreto, dice_el_mapa, motivo, nivel
+    claves de 'discrepancias_declaradas': bahia_id, dice_el_decreto, dice_el_mapa, motivo, nivel
+    -> IDENTICAS. El consumidor ve una sola forma.
+    entradas comprobadas una por una : 6
+
+(3) El contacto resuelto de `puerto_eden`, volcado literal:
+
+    {
+      "tipo": "capitania",
+      "nombre": "Puerto Edén",
+      "telefono": "+56 61 2201164",
+      "gobernacion": "Aysén",
+      "bahia_id": 129,
+      "motivo": null,
+      "discrepancias": [
+        {
+          "bahia_id": 129,
+          "dice_el_mapa": {
+            "capitania": "Puerto Edén",
+            "gobernacion": "Aysén",
+            "telefono": "+56 61 2201164"
+          },
+          "dice_el_decreto": {
+            "capitania": "Puerto Eden",
+            "gobernacion": "Punta Arenas"
+          },
+          "nivel": "gobernacion",
+          "motivo": "La Gobernacion que el mapa operativo le pone a la bahia 129 (Aysen) no es la que le da el decreto (Punta Arenas). La Capitania SI coincide, asi que el contacto de Capitania se puede dar y se da; lo que sigue sin adjudicar es cual de las dos fuentes manda sobre la Gobernacion. Pendiente: adjudicar leyendo el parrafo del decreto de las dos Gobernaciones en juego. Mientras no se adjudique, el valor 'Aysen' viaja en el contacto resuelto CON esta marca al lado, nunca solo."
+        }
+      ]
+    }
+
+    LO QUE §15 MIDIO EL 2026-08-15, para comparar sin intermediarios:
+        { "tipo": "capitania", "nombre": "Puerto Edén",
+          "telefono": "+56 61 2201164", "gobernacion": "Aysén",
+          "bahia_id": 129, "motivo": null }
+        ¿el campo extra sobrevive a la resolucion?  false
+
+    LO QUE CAMBIA: `gobernacion` sigue diciendo "Aysén" —es lo que la fuente
+    dice, y borrarlo esconderia la medicion— pero ya no viaja solo. Al lado va
+    `discrepancias`, con el nivel declarado y con `dice_el_decreto` adentro.
+    La marca acompaña al valor; no lo reemplaza ni lo tapa.
+
+================================================================================
+LO QUE ESTE INSTRUMENTO NO PRUEBA, dicho para que nadie lo lea de mas
+================================================================================
+  Que la marca LLEGUE A PANTALLA. No llega, y no es un descuido:
+    · `puerto_eden` tiene ambito null, asi que no entra en `zonas_con_ambito`,
+      que es lo unico que `cobertura-jurisdiccional.js:360` consume. Su contacto
+      no alcanza `componerAvisos` hoy.
+    · y si lo alcanzara, `:405` mapea {nombre, telefono, tipo} y `discrepancias`
+      se perderia ahi. Ese archivo esta fuera de la zona de escritura de esta
+      pieza.
+  Lo que el validador SI garantiza es que ese hueco no sea silencioso: una zona
+  en esta condicion no puede declarar ambito, y la carga se detiene si alguien
+  se lo declara (familia M29 de la mordida).
+================================================================================
+
+RESULTADO: la forma resuelta es una sola y lleva la marca. Sin fallas.
+EXIT=0

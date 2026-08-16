@@ -1,0 +1,130 @@
+================================================================
+ZONAS DE AVISO — CARGA REAL
+================================================================
+version de la declaracion : 1
+zonas declaradas          : 10
+zonas que reclaman tramo  : 0 (las que tienen ambito declarado)
+derivacion sin Capitania  : VHF Canal 16 — CONTRATO_MOTOR.md INV-3.2 y §10 — la derivacion por VHF Canal 16 ya esta en el catalogo de mensajes. No se inventa ningun numero telefonico que la fuente no tenga.
+
+jurisdiccion         ambito        contacto      nombre / telefono
+-------------------- ------------- ------------- ---------------------------------------
+arica                maritima      capitania     Arica — +56 58 2356747
+hanga_roa            insular_remota capitania     Hanga Roa — +56 32 210 0222
+juan_fernandez       insular_remota sin_contacto  (sin contacto declarado)
+lirquen              maritima      sin_contacto  (sin contacto declarado)
+talcahuano           maritima      capitania     Talcahuano — +56 41 3831100
+baker                maritima      gobernacion   Aysén — +56 67 233 1405
+puerto_eden          maritima      capitania     Puerto Edén — +56 61 2201164
+punta_delgada        maritima      sin_contacto  (sin contacto declarado)
+tierra_del_fuego     maritima      sin_contacto  (sin contacto declarado)
+puerto_williams      maritima      capitania     Puerto Williams — +56 61 262 4270
+
+================================================================
+DISCREPANCIAS DE CLASE C — el mapa operativo contra el decreto
+================================================================
+  total: 5 bahia(s) en 4 jurisdiccion(es)
+
+  juan_fernandez  [nivel capitania]
+    bahia 90
+      el decreto dice : Capitania 'Juan Fernandez' / Gobernacion 'Valparaiso'
+      el mapa dice    : Capitania 'Valparaíso' / Gobernacion 'Valparaíso'
+      consecuencia    : sin contacto declarado; el aviso deriva al generico
+      motivo          : La unica bahia del catalogo en su territorio (90, Isla Robinson Crusoe) esta atribuida en el mapa operativo a la Capitania de Valparaiso, no a Juan Fernandez, a la que el decreto le da Capitania propia. Tomar ese telefono seria dejar que el mapa operativo revoque al decreto (INV-3.3).
+      pendiente       : adjudicar leyendo el parrafo del decreto de las dos Capitanias en juego (fase5R §3, clase C)
+
+  lirquen  [nivel capitania]
+    bahia 97
+      el decreto dice : Capitania 'Lirquen' / Gobernacion 'Talcahuano'
+      el mapa dice    : Capitania 'Talcahuano' / Gobernacion 'Talcahuano'
+      consecuencia    : sin contacto declarado; el aviso deriva al generico
+      motivo          : Su bahia homonima (97, Bahia Concepcion - Lirquen) esta atribuida en el mapa operativo a la Capitania de Talcahuano, y el decreto le da Capitania propia. Es una discrepancia de clase C: se registra, no se resuelve tomando el telefono del vecino.
+      pendiente       : adjudicar leyendo el parrafo del decreto de las dos Capitanias en juego (fase5R §3, clase C)
+
+  punta_delgada  [nivel capitania]
+    bahia 131
+      el decreto dice : Capitania 'Punta Delgada' / Gobernacion 'Punta Arenas'
+      el mapa dice    : Capitania 'Punta Arenas' / Gobernacion 'Punta Arenas'
+    bahia 132
+      el decreto dice : Capitania 'Punta Delgada' / Gobernacion 'Punta Arenas'
+      el mapa dice    : Capitania 'Punta Arenas' / Gobernacion 'Punta Arenas'
+      consecuencia    : sin contacto declarado; el aviso deriva al generico
+      motivo          : Las bahias de su sector (131 Gregorio, 132 Clarencia) estan atribuidas en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el telefono del vecino.
+      pendiente       : adjudicar leyendo el parrafo del decreto de las dos Capitanias en juego (fase5R §3, clase C)
+
+  tierra_del_fuego  [nivel capitania]
+    bahia 137
+      el decreto dice : Capitania 'Tierra del Fuego' / Gobernacion 'Punta Arenas'
+      el mapa dice    : Capitania 'Punta Arenas' / Gobernacion 'Punta Arenas'
+      consecuencia    : sin contacto declarado; el aviso deriva al generico
+      motivo          : Su bahia (137, Bahia Chilota, Porvenir) esta atribuida en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el telefono del vecino.
+      pendiente       : adjudicar leyendo el parrafo del decreto de las dos Capitanias en juego (fase5R §3, clase C)
+
+
+================================================================
+DISCREPANCIA DECLARADA CON CONTACTO QUE SI SE DA
+================================================================
+  total: 1 discrepancia(s) en 1 jurisdiccion(es)
+
+  puerto_eden  [contacto capitania: Puerto Edén — +56 61 2201164]
+    bahia 129  nivel DECLARADO: gobernacion
+      el decreto dice : Capitania 'Puerto Eden' / Gobernacion 'Punta Arenas'
+      el mapa dice    : Capitania 'Puerto Edén' / Gobernacion 'Aysén'
+      el valor que la encarna viaja en contacto.gobernacion = "Aysén"
+      motivo          : La Gobernacion que el mapa operativo le pone a la bahia 129 (Aysen) no es la que le da el decreto (Punta Arenas). La Capitania SI coincide, asi que el contacto de Capitania se puede dar y se da; lo que sigue sin adjudicar es cual de las dos fuentes manda sobre la Gobernacion. Pendiente: adjudicar leyendo el parrafo del decreto de las dos Gobernaciones en juego. Mientras no se adjudique, el valor 'Aysen' viaja en el contacto resuelto CON esta marca al lado, nunca solo.
+      ambito          : null — no reclama tramo (exigido mientras la marca no la cargue el consumidor)
+
+
+causa de la carencia, tal como la declara el insumo (no se copia, se lee):
+  arica: El limite Norte YA ESTA DECLARADO — ver 'limite_norte_convencion'. Lo que falta NO es el dato: es el MECANISMO DE ALCANCE. La convencion del owner cubre hasta 24 mn de la costa, y la unica receta disponible para una jurisdiccion sin contorno es 'banda_paralelos', que devuelve la franja entera hasta el limite exterior de 200 mn. Construirla asi adjudicaria como chilena el agua entre 24 y 200 mn que el propio paquete de DIFROL niega: su linea de ZEE termina 108,3 mn al Sur del paralelo del ancla. Por eso 'limite_norte_dec' queda en null A PROPOSITO — escribirlo antes que el mecanismo abre una ventana en la que cualquiera que regenere produce esa capa. El mecanismo se disena aparte y GENERICO, no como caso de Arica: 'baker' y 'puerto_eden' tienen exactamente esta forma —receta '-', contorno vacio, un paralelo faltante— y son sus clientes siguientes.
+  hanga_roa: sin islas adjudicadas: el decreto las nombra y el repositorio todavia no tiene una adjudicacion isla por isla que las ancle a una capa de tierra
+  juan_fernandez: sin islas adjudicadas: el decreto las nombra y el repositorio todavia no tiene una adjudicacion isla por isla que las ancle a una capa de tierra
+  lirquen: La prosa describe el contorno de la Bahia de Concepcion sin dar sus vertices. La poligonal registrada son los dos extremos explicitos.
+  talcahuano: El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al Sur de 36 42 25 S (limite sur declarado). El contorno de la bahia no viene con vertices. No se infiere.
+  baker: el decreto no entrega con que cerrar: falta el limite sur, y no hay contorno que lo supla. No se toma del vecino.
+  puerto_eden: el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno que lo supla. No se toma del vecino.
+  punta_delgada: falta UNICAMENTE el limite maritimo internacional por el Oriente, que el propio decreto invoca sin darlo en coordenadas. Su linea del Weste ya esta resuelta: Punta Harry y Cabo San Vicente estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). El owner acepto que ese limite es la linea Punta Dungeness - Cabo del Espiritu Santo del Tratado de 1881; falta el extremo argentino, que la capa chilena no trae. Ver el pendiente `limite_maritimo_internacional_oriente_magallanes`.
+  tierra_del_fuego: faltan DOS cosas, y ya no es la falta de coordenadas de sus accidentes: Cabo San Vicente y Punta Anxious estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). Falta (1) el limite oriental internacional — mismo pendiente que Punta Delgada, `limite_maritimo_internacional_oriente_magallanes` — y (2) un ancla que diga de que lado de la linea esta la jurisdiccion. El decreto dice 'el area oriental', pero la construccion no decide lados por letra cardinal; lo limpio es anclar en uno de los cuerpos que el propio parrafo le enumera (Bahia Gente Grande, Bahia Inutil, Canal Whiteside, Canal Gabriel, Seno Almirantazgo).
+  puerto_williams: No cerrable con el decreto: el limite norte pasa por el 'hito N 26' del Canal Beagle, que el texto nombra sin coordenadas, y por 'la delimitacion existente del Canal Beagle'. Falta dato de fuente, no de transcripcion.
+
+================================================================
+PRUEBA DE MORDIDA DEL VALIDADOR
+================================================================
+
+M0  control negativo — declaracion intacta          : NO muerde, 10 zonas. OK
+M1  jurisdiccion inexistente                        : muerde. [zonas_aviso] la zona 'no_existe' no corresponde a ninguna jurisdiccion del insumo.
+M2  la jurisdiccion recupero geometria ENTERA (retiro automatico): muerde. [zonas_aviso] la jurisdiccion 'arica' esta 'cerrable': su geometria cubre la jurisdiccion ENTERA. Su zona de a
+M2b una construida EN PARTE conserva su zona (el tercer estado): acepta, como debe. OK
+M2c un estado_geometria desconocido no cae a ningun lado: muerde. [zonas_aviso] la jurisdiccion 'arica' declara estado_geometria 'inventado', que no esta en el mapeo (cerrable,
+M3  aparece una nula sin zona declarada             : muerde. [zonas_aviso] hay jurisdicciones con carencia declarada y sin zona de aviso: baker. Sin su declaracion, una ru
+M4  zona declarada dos veces                        : muerde. [zonas_aviso] la jurisdiccion 'arica' esta declarada mas de una vez.
+M5  tipo de contacto desconocido                    : muerde. [zonas_aviso] zona 'arica': tipo de contacto 'inventado' desconocido. Aceptados: capitania, gobernacion, sin_c
+M6  contacto de Capitania que el mapa atribuye a otra: muerde. [zonas_aviso] zona 'arica': la bahia 98 esta atribuida a la Capitania 'Talcahuano', que no es 'Arica'. Usar es
+M7  la fuente cambia la atribucion bajo una zona ya declarada: muerde. [zonas_aviso] zona 'arica': la bahia 71 esta atribuida a la Capitania 'Iquique', que no es 'Arica'. Usar ese c
+M8  bahia de contacto que no existe en el mapa      : muerde. [zonas_aviso] zona 'arica': la bahia 999999 no existe en bahia-capitania-map.json.
+M9  contacto sin telefono utilizable                : muerde. [zonas_aviso] zona 'arica': la bahia 71 no trae telefono; no sirve como contacto.
+M10 derivar a Gobernacion cuando la fuente SI atribuye Capitania: muerde. [zonas_aviso] zona 'baker': la bahia 127 SI tiene Capitania atribuida ('Chacabuco'). Derivar a la Gobernacion 
+M11 derivar a Gobernacion que no coincide con la del decreto: muerde. [zonas_aviso] zona 'baker': la bahia 127 esta en la Gobernacion 'Castro' y el decreto pone la jurisdiccion en 
+M12 sin_contacto sin motivo escrito                 : muerde. [zonas_aviso] zona 'lirquen': un contacto 'sin_contacto' exige 'motivo' escrito.
+M13 sin ambito y sin motivo de la ausencia          : muerde. [zonas_aviso] zona 'arica': sin ambito declarado exige 'motivo_sin_ambito' escrito.
+M14 tipo de ambito desconocido                      : muerde. [zonas_aviso] zona 'arica': tipo de ambito 'circulo' desconocido. Aceptados: banda_latitud. No hay caso por de
+M15 banda de latitud dada vuelta                    : muerde. [zonas_aviso] zona 'arica': banda_latitud con lat_norte (-20) no mayor que lat_sur (-18). En el hemisferio sur
+M16 banda de latitud sin procedencia                : muerde. [zonas_aviso] zona 'arica': banda_latitud exige 'procedencia' — de donde salen esos paralelos.
+M17 carencia sin causa escrita en el insumo         : muerde. [zonas_aviso] la jurisdiccion 'arica' esta sin geometria pero no declara 'causa_sin_geometria' en el insumo. U
+M18 declaracion sin derivacion generica             : muerde. [zonas_aviso] la declaracion no trae "contacto_generico.texto", que es a donde deriva un aviso sin Capitania n
+M19 sin_contacto sin las bahias que prueban la discrepancia: muerde. [zonas_aviso] zona 'lirquen': 'sin_contacto' exige 'bahias_en_discrepancia' con al menos una bahia. Es lo que 
+M20 la discrepancia se resolvio y el sin_contacto la esconderia: muerde. [zonas_aviso] zona 'lirquen': la bahia 97 SI coincide hoy con el decreto (mapa: capitania='Lirquen', gobernaci
+M21 el mensaje pierde {nombre} y saldria sin nombrar la Capitania: muerde. [zonas_aviso] "mensaje.capa_2_con_capitania" no incluye la marca {nombre}: saldria a pantalla sin ese dato.
+M22 el mensaje reinyecta {telefono}, que INV-10.1 prohibe: muerde. [zonas_aviso] "mensaje.capa_2_con_capitania" lleva {telefono}, y INV-10.1 prohibe el telefono dentro de un men
+M23 discrepancia declarada con un nivel que nadie definio: muerde. [zonas_aviso] zona 'puerto_eden': la discrepancia de la bahia 129 declara nivel 'region', que no esta en (capi
+M24 la discrepancia declarada SE RESOLVIO y seguiria escrita: muerde. [zonas_aviso] zona 'puerto_eden': la bahia 129 declara una discrepancia en nivel 'gobernacion' que HOY NO EXIS
+M25 discrepancia declarada sin motivo escrito       : muerde. [zonas_aviso] zona 'puerto_eden': la discrepancia de la bahia 129 en nivel 'gobernacion' exige 'motivo' escrit
+M26 nivel capitania declarado sobre un contacto de capitania (contradiccion): muerde. [zonas_aviso] zona 'puerto_eden': la bahia 129 declara una discrepancia en nivel 'capitania' que HOY NO EXISTE
+M27 discrepancia sobre una bahia que el mapa no tiene: muerde. [zonas_aviso] zona 'puerto_eden': la bahia 999999 declarada en discrepancia no existe en bahia-capitania-map.j
+M28 el campo declarado vacio, que no declara nada   : muerde. [zonas_aviso] zona 'puerto_eden': 'discrepancias_declaradas' esta presente pero no es un arreglo con al menos 
+M29 zona con discrepancia viva que ademas reclama un tramo: muerde. [zonas_aviso] la zona 'puerto_eden' declara un contacto de tipo 'capitania' CON 1 discrepancia(s) declarada(s)
+M30 una discrepancia VIVA sobre un contacto que si se da: se acepta: acepta, como debe. OK
+M31 una zona `sin_contacto` con discrepancia SI puede reclamar tramo: acepta, como debe. OK
+
+================================================================
+RESULTADO: declaracion limpia y mordida 33/33 + control negativo.
+EXIT=0

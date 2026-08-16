@@ -1,0 +1,375 @@
+================================================================================
+LA DISCREPANCIA DECLARADA SOBRE UN CONTACTO QUE SI SE DA. 2026-08-16
+Estado: ESCRITA Y VERIFICADA. `src/services/zonas-aviso.js` tocado SOLO en la
+rama de la discrepancia, con la restriccion levantada por el owner el
+2026-08-15 (pieza_a_nulas §17).
+Sesion: ZONAS-AVISO-DISCREPANCIA. HEAD al abrir y al cerrar: f3936b8, sin commit.
+Frente: CONTACTO y atribucion de bahias (PLAN_JURISDICCION.md §7.1).
+NO es el frente de jurisdiccion del D.S. 991; no se abrio nada de ese frente.
+El motor BRE no se abrio: nada de lo medido apunta ahi.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+El agente corrio los instrumentos con `node` desde Git Bash. Las cuatro lineas
+corren identicas en PowerShell desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\zonas_aviso_discrepancia_2026-08-16\01_medir_niveles.js
+    node scripts\fase5_validar_zonas_aviso.js
+    node _bitacoras\zonas_aviso_discrepancia_2026-08-16\05_forma_resuelta.js
+    npm test
+
+Las salidas se generaron redirigiendo con `>` de **bash**, no de PowerShell.
+Para reproducirlas en PowerShell sin corromper tildes y ñ:
+
+    node ... 01_medir_niveles.js | Tee-Object -FilePath 01_medir_niveles.txt
+
+`>` de PowerShell reencodea y convierte fines de linea; esta prohibido para
+medir (CLAUDE.md §7.2).
+
+LINEA BASE AL ABRIR: `npm test` -> 84 tests, 69 pass, 15 fail. Es el rojo
+deliberado con el que cerro la sesion PIEZA-A-NULAS, con su motivo escrito.
+
+
+================================================================================
+0. LO QUE ESTA SESION LE CORRIGE AL PROMPT
+================================================================================
+El prompt declaro sus cifras como indicativas. Dos cosas se miden distinto.
+
+(1) "el contacto resuelto viaja con gobernacion 'Aysén' y motivo null — la
+    discrepancia encarnada, sin marca, AL LADO DEL TELEFONO CORRECTO."
+    -> **Cierto del OBJETO RESUELTO. Falso de la pantalla.** `puerto_eden`
+    tiene `ambito: null`, o sea que no entra en `zonas_con_ambito`, que es lo
+    UNICO que `cobertura-jurisdiccional.js:360` consume. Su contacto no llega
+    hoy a `componerAvisos`. La otra via —`contactosDeJurisdicciones` de
+    `ambitos-publicados.js:299`— tampoco lo alcanza, y por un motivo medido:
+    consulta `jurisdicciones_decreto WHERE geom IS NOT NULL`, y las DIEZ
+    jurisdicciones con zona tienen `con_geom = f` ahi (medido con psql, §5).
+    No cambia la decision —la (2) se eligio para que la declaracion quedara
+    viva y controlada, no porque estuviera en pantalla— pero si cambia contra
+    que se puede verificar "que viaje resuelta". Ver seccion 5.
+
+(2) "instrumento versionado primero (§7.1)".
+    -> El precedente de la Pieza A aplica a dato DERIVADO. `zonas_aviso.json`
+    es dato DECLARADO: sus `motivo` los escribe una persona, y generarlo desde
+    un script falsificaria autoria. Aca el instrumento versionado es el
+    CONTROL, y ya existia: `scripts/fase5_validar_zonas_aviso.js`. Se extendio.
+
+Y una tercera que no venia del prompt sino del propio archivo: ver seccion 6.
+
+
+================================================================================
+1. LA MEDICION QUE DECIDIO EL DISEÑO — `01_medir_niveles.txt`
+================================================================================
+El instrumento 06 de `pieza_a_nulas_2026-08-15` medio las discrepancias de las
+zonas `sin_contacto`. Este mide LOS DOS NIVELES de TODAS las zonas, incluidas
+las que si dan contacto — que era la poblacion que nadie habia mirado.
+
+    COMPARACIONES EFECTIVAS                            11
+    discrepa SOLO el nivel Capitania                    6
+    discrepa SOLO el nivel Gobernacion                  1  -> puerto_eden / 129
+    coinciden los dos niveles                           4
+    discrepan los dos                                   0
+
+**LA POBLACION DE LA CONDICION NUEVA ES 1.** Ninguna otra zona con contacto que
+si se da esconde un desacuerdo en el otro nivel. Las cuatro de `tipo: capitania`
+—arica/71, hanga_roa/89, talcahuano/98, puerto_williams/138— coinciden en los
+dos niveles, y `baker`/127 tambien coincide en Gobernacion.
+
+POR QUE NADIE LO HABIA MIRADO, leido del codigo:
+
+    coincideGob = e.capitania == null && mismoNombre(e.gobernacion, jur.gobernacion)
+
+El corto-circuito. Escrita la Capitania, la Gobernacion deja de mirarse. Ese es
+el defecto que el instrumento 06 nombro el 2026-08-15 y que esta medicion
+cuantifica: alcanzaba a UNA zona, y era la que ya estaba en rojo.
+
+LAS CINCO DISCREPANCIAS EN PIE, RE-VERIFICADAS: se re-corrio
+`_bitacoras/pieza_a_nulas_2026-08-15/06_guard_zonas_aviso.js` SIN TOCARLO ->
+6 comparaciones, 5 en pie, 1 caida. Identico a lo escrito ayer. Y esta medicion
+agrega su nivel: **las cinco son de nivel `capitania`**, todas "ATRIBUIDA A
+OTRA" (el mapa nombra una Capitania distinta de la del decreto).
+
+DEFECTO DE INSTRUMENTO PAGADO EN ESTA SESION, escrito porque no se ve mirando
+el resultado
+--------------------------------------------------------------------------------
+La primera version de `01_medir_niveles.js` imprimio a `baker` bajo el rotulo
+"LAS QUE YA ESTAN DECLARADAS `sin_contacto`". **`baker` es `tipo: gobernacion`.**
+El conteo estaba bien —su nivel Capitania no coincide, porque `capitania: null`
+y `mismoNombre` devuelve false para el vacio— y el ROTULO era falso. Se corrigio
+el rotulo y de paso se separaron las dos formas de no coincidir, que no son la
+misma cosa: ATRIBUIDA A OTRA y SIN ATRIBUIR. La segunda es la que habilita el
+`tipo: gobernacion` en vez de `sin_contacto`.
+
+Es exactamente el modo de falla que CLAUDE.md §2 persigue: la cifra correcta
+bajo una afirmacion que el dato no sostiene.
+
+
+================================================================================
+2. EL DISEÑO, Y POR QUE ESA FORMA Y NO OTRA
+================================================================================
+DECISION DEL OWNER, 2026-08-16: campo ORTOGONAL, no cuarto tipo.
+
+    "contacto": {
+      "tipo": "capitania",
+      "bahia_id": 129,
+      "discrepancias_declaradas": [
+        { "bahia_id": 129, "nivel": "gobernacion", "motivo": "..." }
+      ]
+    }
+
+QUE ACEPTA: un contacto que se da y coexiste con un desacuerdo vivo en OTRO
+nivel. El `tipo` sigue diciendo QUE CONTACTO SE DA; la discrepancia dice QUE
+SIGUE EN DESACUERDO. Son preguntas distintas y por eso son campos distintos.
+
+QUE EXIGE COMPROBABLE — UNA sola cosa, la misma vara de `sin_contacto` con el
+signo puesto por `nivel`:
+
+    el nivel declarado tiene que DISCREPAR HOY contra la fuente.
+
+Mas la forma: `nivel` en (capitania, gobernacion) con mapeo exhaustivo y sin
+caso por defecto (§4.2); `bahia_id` entero que exista en el mapa; `motivo`
+escrito. Y el campo, si esta, no puede estar vacio: declarar `[]` no declara
+nada.
+
+DE ESA UNICA EXIGENCIA CAE SOLA LA CONTRADICCION, y por eso NO hay regla que la
+nombre (§4.3): declarar `nivel: 'capitania'` sobre la bahia de un contacto
+`tipo: 'capitania'` es imposible, porque la rama `capitania` ya exigio que ese
+nivel COINCIDIERA y la discrepancia exige lo contrario. Se detiene por la
+medicion. Es la familia M26 de la mordida, y su expresion esperada es la MISMA
+de M24 a proposito: es la misma exigencia haciendo el trabajo.
+
+MOTIVO ESCRITO DEL OWNER PARA DESCARTAR EL CUARTO TIPO, 2026-08-16:
+    "Con el cuarto tipo la marca sobrevive el mapeo de :405 sin ser honrada —el
+    filtro es tipo !== 'sin_contacto' y se renderiza como Capitania nombrable
+    igual. Un campo que llega y no se honra es peor que uno que no llega."
+
+COMO VIAJA RESUELTA — `05_forma_resuelta.txt`:
+  · `discrepancias` viaja SIEMPRE, en las TRES ramas, arreglo vacio cuando no
+    hay. 10 de 10 zonas. Un consumidor no puede olvidarse de un campo que
+    siempre esta;
+  · las entradas de `sin_contacto` y las de `discrepancias_declaradas` tienen
+    LAS MISMAS CINCO CLAVES —bahia_id, dice_el_mapa, dice_el_decreto, nivel,
+    motivo—, comprobado una por una sobre las 6 entradas vivas. Dos formas para
+    el mismo concepto es la trampa de §2 y este modulo no la estrena.
+
+Para lograr esa identidad se le agrego `motivo` a las entradas resueltas de
+`sin_contacto` (copiado del motivo de contacto, que es donde vive en esa rama).
+Es lo unico que se toco de `sin_contacto` y no afloja nada: agrega una clave.
+
+
+================================================================================
+3. QUE PASA CON EL "Aysén"
+================================================================================
+SE MARCA, NO SE BORRA. `gobernacion` conserva "Aysén" porque es lo que la fuente
+dice y borrarlo esconderia la medicion; al lado viaja `discrepancias` con el
+nivel declarado y con `dice_el_decreto: { gobernacion: "Punta Arenas" }` adentro.
+
+El volcado literal esta en `05_forma_resuelta.txt` §3, puesto al lado del que
+`pieza_a_nulas_2026-08-15` §15 midio, que era:
+
+    { "tipo": "capitania", ..., "gobernacion": "Aysén", "motivo": null }
+    ¿el campo extra sobrevive a la resolucion?  false
+
+HASTA DONDE LLEGA LA MARCA, dicho sin suavizar: **no llega a pantalla, y no es
+un descuido.** Dos razones medidas, las dos fuera de la zona de escritura:
+
+  · `puerto_eden` tiene `ambito: null` -> no entra en `zonas_con_ambito` -> su
+    contacto no alcanza `componerAvisos` hoy;
+  · y si lo alcanzara, `cobertura-jurisdiccional.js:405` mapea
+    `{nombre, telefono, tipo}` y `discrepancias` se pierde ahi.
+
+LO QUE SI SE HIZO DESDE ADENTRO para que el hueco no sea silencioso: una zona
+cuyo contacto SE DA y ademas arrastra una discrepancia declarada **no puede
+declarar `ambito`**. El dia que alguien se lo declare, la carga se detiene con
+el motivo en vez de dejar caer la marca en el mapeo.
+
+    CRITERIO DEL AGENTE, NO NORMA. Etiquetado asi por decision del owner.
+    CONDICION DE REVOCACION, escrita: se levanta el dia que el consumidor sepa
+    cargar la marca. No antes, y no por conveniencia de que una zona reclame.
+
+NO ALCANZA A `sin_contacto`: esa rama no entrega contacto —el consumidor la
+filtra en :404 y deriva al generico—, asi que no hay marca que perder. Las
+cinco zonas que hoy la usan conservan su derecho a declarar ambito. Eso lo
+prueba la familia M31, que DEBE ACEPTAR: sin ella, M29 podria ser una
+prohibicion general disfrazada de criterio acotado.
+
+
+================================================================================
+4. LA MORDIDA — Y LA CORRIDA EN ROJO, QUE ES LA QUE VALE
+================================================================================
+Pedido explicito del owner, 2026-08-16:
+    "La corrida de la mordida contra el dato VIEJO, en rojo, queda versionada
+    en la bitacora. No solo la de verde. Un control que solo se vio en verde no
+    se distingue de uno que no muerde, y este repo ya pago eso tres veces."
+
+CAMBIO QUE HUBO QUE HACER PARA PODER VERLO. Hasta hoy
+`fase5_validar_zonas_aviso.js` hacia `process.exit(1)` en el acto si la carga
+real fallaba, y con eso el estado de TODAS las familias quedaba sin medir: una
+declaracion rota escondia si los controles muerden. Ahora registra la falla,
+SIGUE a la mordida, y sale 1 igual. **No se afloja nada (§0.3): ningun caso que
+salia en rojo sale en verde por este cambio; lo unico que cambia es cuanto se
+ve del rojo.**
+
+LAS NUEVE FAMILIAS NUEVAS CONSTRUYEN SU CONTACTO DESDE CERO en vez de mutar el
+que el dato real trae. Es deliberado: una familia que se apoyara en que la
+declaracion YA tiene la forma nueva dejaria de probar el dia que el dato cambie,
+sin avisar. Construidas asi, muerden igual contra el dato viejo y contra el
+nuevo — y eso es lo que hace que la corrida en rojo signifique algo.
+
+`02_mordida_dato_viejo.txt` — exit 1, con el dato SIN TOCAR en disco
+--------------------------------------------------------------------------------
+    RESULTADO: 6 problema(s).
+
+    Los 6, todos con LA MISMA causa —el `sin_contacto` viejo de puerto_eden—:
+      · FALLA AL CARGAR LA DECLARACION REAL
+      · M0  control negativo : MUERDE cuando no debia
+      · M2b, M3, M4, M31     : el guard viejo dispara primero y las tapa
+
+    Y LO QUE PRUEBA, que es el punto:
+      M23 nivel desconocido                          -> MUERDE
+      M24 la discrepancia declarada SE RESOLVIO      -> MUERDE
+      M25 sin motivo escrito                         -> MUERDE
+      M26 nivel = tipo (contradiccion)               -> MUERDE
+      M27 bahia que el mapa no tiene                 -> MUERDE
+      M28 el campo declarado vacio                   -> MUERDE
+      M29 discrepancia viva + ambito                 -> MUERDE
+      M30 discrepancia VIVA: se acepta               -> ACEPTA
+
+    **Las ocho que muerden y la que acepta ya hacian lo suyo ANTES de que el
+    dato les diera la razon.** El verde de despues no es "verde porque escribi
+    el control para que calzara con lo que escribi en el dato".
+
+`03_verificar.txt` — exit 0, con el dato nuevo
+--------------------------------------------------------------------------------
+    RESULTADO: declaracion limpia y mordida 33/33 + control negativo.
+
+    M24 ES EL ESPEJO EXACTO DE M20 y es la razon de ser de toda la rama: la
+    declaracion nueva tiene el MISMO retiro automatico que `sin_contacto`. Si
+    alguien corrige la Gobernacion de la bahia 129 a "Punta Arenas", la
+    discrepancia dejo de existir y la carga se detiene obligando a retirarla.
+    El registro no puede afirmar un desacuerdo que ya no hay.
+
+    TRES FAMILIAS DEBEN ACEPTAR y aceptan: M2b (el tercer estado, que ya
+    estaba), M30 y M31. Un mapeo se prueba por todas sus ramas, y las que
+    aceptan son tan parte del control como las que rechazan: sin ellas, un
+    guard que rechazara TODO pasaria las treinta restantes.
+
+
+================================================================================
+5. LO QUE SE ESCRIBIO
+================================================================================
+`src/services/zonas-aviso.js` — SOLO la rama de la discrepancia:
+    · `NIVELES_DISCREPANCIA`, conjunto exhaustivo sin caso por defecto;
+    · `resolverDiscrepanciasDeclaradas()`, con la unica exigencia y su forma;
+    · `discrepancias` en las tres formas resueltas, siempre presente;
+    · `motivo` en las entradas resueltas de `sin_contacto`, para que la forma
+      sea una sola;
+    · la exigencia de ambito, con su etiqueta de criterio y su condicion de
+      revocacion escritas en el propio comentario.
+  NO se toco: la resolucion de `capitania`, la de `gobernacion`, la validacion
+  del mensaje, el mapeo `ZONA_POR_ESTADO`, ni el guard de `sin_contacto`.
+
+`data/decreto/zonas_aviso.json`:
+    sha256 ANTES   373c29bc675807d118ae47f4c72d2b927ef6d7e99adfd994906ed14930ba223c
+    sha256 DESPUES 8095e167a3de4634c0573454ac01a27ce01fede122b2ad9c2ea5d0999e38e9b1
+    (calculados sobre el archivo EN DISCO, que con core.autocrlf=true no es el
+    mismo byte que el blob de git.)
+
+    · `puerto_eden` pasa de `sin_contacto` a `capitania`/129 con su discrepancia
+      declarada de nivel `gobernacion`;
+    · `nota_2026-08-16` dentro del contacto, con las DOS mitades del motivo
+      viejo y cual murio. **La mitad muerta NO se conserva en el `motivo`
+      porque el `motivo` es dato y el dato tiene que ser cierto**; queda
+      registrada en la nota y, entera, en las bitacoras;
+    · `derivacion_de_contacto` suma tres claves que documentan el campo nuevo,
+      su unica exigencia y por que no puede reclamar tramo;
+    · el bloque `reversibilidad`, corregido. Ver seccion 6.
+
+`scripts/fase5_validar_zonas_aviso.js`:
+    · la carga real deja de abortar el script;
+    · bloque de salida nuevo para las discrepancias con contacto que si se da;
+    · nueve familias, M23 a M31.
+
+NO SE TOCO: `src/data/bahia-capitania-map.json` (Pieza A cerrada),
+`src/services/ambitos-publicados.js`, `cobertura-jurisdiccional.js`, la PWA,
+`CONTRATO_MOTOR.md`, `PLAN_JURISDICCION.md`, ni nada del motor BRE.
+
+MEDICION DE LA SEGUNDA VIA, hecha con psql para no suponerla:
+    SELECT id, ambito, (geom IS NOT NULL AND NOT ST_IsEmpty(geom)) AS con_geom
+      FROM jurisdicciones_decreto WHERE id IN (las diez con zona);
+    -> **con_geom = f en las DIEZ.**
+    `contactosDeJurisdicciones` (ambitos-publicados.js:299) no consulta
+    `zonas_aviso.json` en absoluto: barre el mapa por nombre de Capitania y solo
+    comprueba ESE nivel. El dia que `puerto_eden` tenga geometria, nombra
+    "Puerto Edén" con su telefono y la discrepancia de Gobernacion le es
+    invisible. **Hoy esa via esta cerrada por AUSENCIA DE GEOMETRIA, no por un
+    guard.** El propio archivo declara la duplicacion y la manda a E0.3. Se
+    anota y NO se abre, por decision del owner.
+
+
+================================================================================
+6. LA TERCERA CORRECCION — UNA AFIRMACION FALSA DENTRO DEL PROPIO DATO
+================================================================================
+El bloque `reversibilidad` de `zonas_aviso.json` decia:
+
+    "Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria
+     en el insumo ~~(participa_matching = false)~~."
+
+**ERA FALSO desde que entro el tercer estado** (`8267461`, 2026-08-15): el guard
+dejo de colgar de `participa_matching` y pasa a leer `estado_geometria`, y una
+jurisdiccion `cerrable_parcial` tiene `participa_matching: true` y CONSERVA su
+zona. El criterio escrito en el dato daba por retirada una zona que el codigo
+mantiene.
+
+Autorizado por el owner para entrar en esta pieza, con su motivo:
+    "Es una afirmacion falsa dentro de la zona ya abierta y en el mismo archivo.
+    Mismo criterio que usamos ayer con D-R3."
+
+Se corrige y se deja `correccion_2026-08-16_del_bloque_reversibilidad` con el
+texto viejo y el tachado, en vez de sobrescribir en silencio (§2 y §3.3).
+**No cambia ninguna zona: las diez son `no_cerrable` hoy.**
+
+
+================================================================================
+7. VERIFICACION
+================================================================================
+    01_medir_niveles.txt      exit 0   11 comparaciones efectivas
+    02_mordida_dato_viejo.txt exit 1   6 problemas — EL ROJO, versionado
+    03_verificar.txt          exit 0   33/33 + control negativo
+    05_forma_resuelta.txt     exit 0   10 zonas, 6 entradas, claves identicas
+    04_suite.txt              exit 0   **84 tests, 84 pass, 0 fail**
+
+LA SUITE VUELVE A 84/84. Los 15 fallos eran 15 de los 16 tests de
+`cobertura-jurisdiccional.test.js`, todos con el mismo stack: `cargarZonasAviso`
+lanzando. El 16.º no la llama y ya pasaba. Las dos aserciones de las que
+dependia el retorno se cumplen y se comprobaron: `zonas.length === 10` (no se
+agrego ni saco zona) y `zonas_con_ambito.length === 0` (no se declaro ambito, y
+para esta zona la exigencia nueva lo PROHIBE).
+
+APARTE, porque no es la suite: `node scripts/fase5_validar_zonas_aviso.js`
+pasa de **exit 1** a **exit 0**. Ese script NO corre con `npm test`
+—`node --test src/services/__tests__/*.test.js`— y meterlo ahi es cambio de
+alcance, no autorizado. Se corre a mano y su salida esta en `03_verificar.txt`.
+
+
+================================================================================
+8. LO QUE ESTA BITACORA NO RESPONDE
+================================================================================
+- **Cual de las dos fuentes manda sobre la Gobernacion de la bahia 129.** Sigue
+  sin adjudicar, que es exactamente lo que la declaracion nueva registra. Es
+  del owner: exige leer el parrafo del decreto de las dos Gobernaciones.
+- **Si la marca llega a pantalla.** No llega, por dos motivos medidos, los dos
+  fuera de la zona de escritura. Ver seccion 3.
+- **La asimetria entre las dos ramas EN LA ENTRADA.** `sin_contacto` INFIERE el
+  nivel del dato (`capitania == null ? 'gobernacion' : 'capitania'`) y
+  `discrepancias_declaradas` lo DECLARA. La forma RESUELTA quedo unificada; la
+  de entrada no. Unificarla toca cinco zonas que estan en verde y no se hizo
+  hoy. **Deuda declarada.**
+- **Los 100 telefonos de Capitania rotulados "Gobernación Marítima de" en P3.**
+  Siguen ahi. Fuera de alcance por el prompt.
+- **El numero atomico de Baker (CdRep 260).** Sigue pendiente de la sesion
+  anterior. La bahia 127 sigue en `null`.
+- **El motor BRE** no se abrio. Nada de lo medido apunta ahi.
+================================================================================

@@ -1,0 +1,50 @@
+================================================================
+ZONAS DE AVISO — CARGA REAL
+================================================================
+FALLA AL CARGAR LA DECLARACION REAL: [zonas_aviso] zona 'puerto_eden': la bahia 129 SI coincide hoy con el decreto (mapa: capitania='Puerto Edén', gobernacion='Aysén'). La discrepancia que declara el motivo ya no existe: hay contacto que se puede dar y este 'sin_contacto' lo estaria escondiendo.
+
+La carga real NO paso. El script SIGUE hasta la prueba de mordida: un control
+que solo se vio en verde no se distingue de uno que no muerde. Sale 1 igual.
+
+================================================================
+PRUEBA DE MORDIDA DEL VALIDADOR
+================================================================
+
+M0  control negativo — declaracion intacta          : MUERDE cuando no debia -> [zonas_aviso] zona 'puerto_eden': la bahia 129 SI coincide hoy con el decreto (mapa: capitania='Puerto Edén', gobernacion='Aysén'). La discrepancia que declara el motivo ya no existe: hay contacto que se puede dar y este 'sin_contacto' lo estaria escondiendo.
+M1  jurisdiccion inexistente                        : muerde. [zonas_aviso] la zona 'no_existe' no corresponde a ninguna jurisdiccion del insumo.
+M2  la jurisdiccion recupero geometria ENTERA (retiro automatico): muerde. [zonas_aviso] la jurisdiccion 'arica' esta 'cerrable': su geometria cubre la jurisdiccion ENTERA. Su zona de a
+M2b una construida EN PARTE conserva su zona (el tercer estado): MUERDE cuando debia aceptar -> [zonas_aviso] zona 'puerto_eden': la bahia 129 SI coincide hoy con el decreto (mapa: capitania='Puerto Edén', gobernacion='Aysén'). La discrepancia que declara el motivo ya no existe: hay contacto que se puede dar y este 'sin_contacto' lo estaria escondiendo.
+M2c un estado_geometria desconocido no cae a ningun lado: muerde. [zonas_aviso] la jurisdiccion 'arica' declara estado_geometria 'inventado', que no esta en el mapeo (cerrable,
+M3  aparece una nula sin zona declarada             : muerde con otro motivo -> [zonas_aviso] zona 'puerto_eden': la bahia 129 SI coincide hoy con el decreto (mapa: capitania='Puerto Edén', gobernacion='Aysén'). La discrepancia que declara el motivo ya no existe: hay contacto que se puede dar y este 'sin_contacto' lo estaria escondiendo.
+M4  zona declarada dos veces                        : muerde con otro motivo -> [zonas_aviso] zona 'puerto_eden': la bahia 129 SI coincide hoy con el decreto (mapa: capitania='Puerto Edén', gobernacion='Aysén'). La discrepancia que declara el motivo ya no existe: hay contacto que se puede dar y este 'sin_contacto' lo estaria escondiendo.
+M5  tipo de contacto desconocido                    : muerde. [zonas_aviso] zona 'arica': tipo de contacto 'inventado' desconocido. Aceptados: capitania, gobernacion, sin_c
+M6  contacto de Capitania que el mapa atribuye a otra: muerde. [zonas_aviso] zona 'arica': la bahia 98 esta atribuida a la Capitania 'Talcahuano', que no es 'Arica'. Usar es
+M7  la fuente cambia la atribucion bajo una zona ya declarada: muerde. [zonas_aviso] zona 'arica': la bahia 71 esta atribuida a la Capitania 'Iquique', que no es 'Arica'. Usar ese c
+M8  bahia de contacto que no existe en el mapa      : muerde. [zonas_aviso] zona 'arica': la bahia 999999 no existe en bahia-capitania-map.json.
+M9  contacto sin telefono utilizable                : muerde. [zonas_aviso] zona 'arica': la bahia 71 no trae telefono; no sirve como contacto.
+M10 derivar a Gobernacion cuando la fuente SI atribuye Capitania: muerde. [zonas_aviso] zona 'baker': la bahia 127 SI tiene Capitania atribuida ('Chacabuco'). Derivar a la Gobernacion 
+M11 derivar a Gobernacion que no coincide con la del decreto: muerde. [zonas_aviso] zona 'baker': la bahia 127 esta en la Gobernacion 'Castro' y el decreto pone la jurisdiccion en 
+M12 sin_contacto sin motivo escrito                 : muerde. [zonas_aviso] zona 'lirquen': un contacto 'sin_contacto' exige 'motivo' escrito.
+M13 sin ambito y sin motivo de la ausencia          : muerde. [zonas_aviso] zona 'arica': sin ambito declarado exige 'motivo_sin_ambito' escrito.
+M14 tipo de ambito desconocido                      : muerde. [zonas_aviso] zona 'arica': tipo de ambito 'circulo' desconocido. Aceptados: banda_latitud. No hay caso por de
+M15 banda de latitud dada vuelta                    : muerde. [zonas_aviso] zona 'arica': banda_latitud con lat_norte (-20) no mayor que lat_sur (-18). En el hemisferio sur
+M16 banda de latitud sin procedencia                : muerde. [zonas_aviso] zona 'arica': banda_latitud exige 'procedencia' — de donde salen esos paralelos.
+M17 carencia sin causa escrita en el insumo         : muerde. [zonas_aviso] la jurisdiccion 'arica' esta sin geometria pero no declara 'causa_sin_geometria' en el insumo. U
+M18 declaracion sin derivacion generica             : muerde. [zonas_aviso] la declaracion no trae "contacto_generico.texto", que es a donde deriva un aviso sin Capitania n
+M19 sin_contacto sin las bahias que prueban la discrepancia: muerde. [zonas_aviso] zona 'lirquen': 'sin_contacto' exige 'bahias_en_discrepancia' con al menos una bahia. Es lo que 
+M20 la discrepancia se resolvio y el sin_contacto la esconderia: muerde. [zonas_aviso] zona 'lirquen': la bahia 97 SI coincide hoy con el decreto (mapa: capitania='Lirquen', gobernaci
+M21 el mensaje pierde {nombre} y saldria sin nombrar la Capitania: muerde. [zonas_aviso] "mensaje.capa_2_con_capitania" no incluye la marca {nombre}: saldria a pantalla sin ese dato.
+M22 el mensaje reinyecta {telefono}, que INV-10.1 prohibe: muerde. [zonas_aviso] "mensaje.capa_2_con_capitania" lleva {telefono}, y INV-10.1 prohibe el telefono dentro de un men
+M23 discrepancia declarada con un nivel que nadie definio: muerde. [zonas_aviso] zona 'puerto_eden': la discrepancia de la bahia 129 declara nivel 'region', que no esta en (capi
+M24 la discrepancia declarada SE RESOLVIO y seguiria escrita: muerde. [zonas_aviso] zona 'puerto_eden': la bahia 129 declara una discrepancia en nivel 'gobernacion' que HOY NO EXIS
+M25 discrepancia declarada sin motivo escrito       : muerde. [zonas_aviso] zona 'puerto_eden': la discrepancia de la bahia 129 en nivel 'gobernacion' exige 'motivo' escrit
+M26 nivel capitania declarado sobre un contacto de capitania (contradiccion): muerde. [zonas_aviso] zona 'puerto_eden': la bahia 129 declara una discrepancia en nivel 'capitania' que HOY NO EXISTE
+M27 discrepancia sobre una bahia que el mapa no tiene: muerde. [zonas_aviso] zona 'puerto_eden': la bahia 999999 declarada en discrepancia no existe en bahia-capitania-map.j
+M28 el campo declarado vacio, que no declara nada   : muerde. [zonas_aviso] zona 'puerto_eden': 'discrepancias_declaradas' esta presente pero no es un arreglo con al menos 
+M29 zona con discrepancia viva que ademas reclama un tramo: muerde. [zonas_aviso] la zona 'puerto_eden' declara un contacto de tipo 'capitania' CON 1 discrepancia(s) declarada(s)
+M30 una discrepancia VIVA sobre un contacto que si se da: se acepta: acepta, como debe. OK
+M31 una zona `sin_contacto` con discrepancia SI puede reclamar tramo: MUERDE cuando debia aceptar -> [zonas_aviso] zona 'puerto_eden': la bahia 129 SI coincide hoy con el decreto (mapa: capitania='Puerto Edén', gobernacion='Aysén'). La discrepancia que declara el motivo ya no existe: hay contacto que se puede dar y este 'sin_contacto' lo estaria escondiendo.
+
+================================================================
+RESULTADO: 6 problema(s). NO se da por buena.
+EXIT=1

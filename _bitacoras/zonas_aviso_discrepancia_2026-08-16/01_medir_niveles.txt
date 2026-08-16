@@ -1,0 +1,62 @@
+================================================================================
+LOS DOS NIVELES DE CADA ZONA — que mira el guard y que no
+================================================================================
+
+  zonas declaradas : 10
+
+  zona                 tipo          bahia  mapa.cap             decr.cap             coincCap  mapa.gob         decr.gob         coincGob
+  -------------------- ------------- -----  -------------------- -------------------- --------  ---------------- ---------------- --------
+  arica                capitania        71 Arica                Arica                true     Arica            Arica            true
+  hanga_roa            capitania        89 Hanga Roa            Hanga Roa            true     Hanga Roa        Hanga Roa        true
+  juan_fernandez       sin_contacto     90 Valparaíso           Juan Fernandez       false    Valparaíso       Valparaiso       true
+  lirquen              sin_contacto     97 Talcahuano           Lirquen              false    Talcahuano       Talcahuano       true
+  talcahuano           capitania        98 Talcahuano           Talcahuano           true     Talcahuano       Talcahuano       true
+  baker                gobernacion     127 null                 Baker                false    Aysén            Aysen            true
+  puerto_eden          sin_contacto    129 Puerto Edén          Puerto Eden          true     Aysén            Punta Arenas     false
+  punta_delgada        sin_contacto    131 Punta Arenas         Punta Delgada        false    Punta Arenas     Punta Arenas     true
+  punta_delgada        sin_contacto    132 Punta Arenas         Punta Delgada        false    Punta Arenas     Punta Arenas     true
+  tierra_del_fuego     sin_contacto    137 Punta Arenas         Tierra del Fuego     false    Punta Arenas     Punta Arenas     true
+  puerto_williams      capitania       138 Puerto Williams      Puerto Williams      true     Puerto Williams  Puerto Williams  true
+
+  COMPARACIONES EFECTIVAS : 11
+
+  REPARTO POR NIVEL QUE DISCREPA
+    discrepa SOLO el nivel Capitania   : 6
+    discrepa SOLO el nivel Gobernacion : 1
+    coinciden los dos niveles          : 4
+    discrepan los dos                  : 0
+
+  EL QUE EL GUARD DE HOY NO PUEDE VER — discrepa la Gobernacion con la
+  Capitania escrita, o sea que `coincideGob` de :110 ni se evalua:
+
+    zona 'puerto_eden'  bahia 129  [tipo declarado hoy: sin_contacto]
+      nivel Capitania  : mapa "Puerto Edén"  ==  decreto "Puerto Eden"   -> COINCIDE, el contacto se puede dar
+      nivel Gobernacion: mapa "Aysén"  !=  decreto "Punta Arenas"  -> DISCREPA, y viaja sin marca
+      telefono que el mapa ofrece : "+56 61 2201164"
+
+  LAS QUE DISCREPAN EN EL NIVEL CAPITANIA, con el tipo que HOY declaran.
+  Se separan las dos formas de no coincidir, porque no son lo mismo:
+    ATRIBUIDA A OTRA — el mapa nombra una Capitania distinta de la del decreto;
+    SIN ATRIBUIR     — el mapa no atribuye ninguna (`capitania: null`). `mismoNombre`
+                       devuelve false para el vacio, y eso es correcto —un dato
+                       faltante no calza— pero la lectura humana es otra, y es la
+                       que habilita el `tipo: gobernacion` en vez de `sin_contacto`.
+    juan_fernandez       bahia   90  [sin_contacto] ATRIBUIDA A OTRA  mapa "Valparaíso" != decreto "Juan Fernandez"
+    lirquen              bahia   97  [sin_contacto] ATRIBUIDA A OTRA  mapa "Talcahuano" != decreto "Lirquen"
+    baker                bahia  127  [gobernacion ] SIN ATRIBUIR     mapa null != decreto "Baker"
+    punta_delgada        bahia  131  [sin_contacto] ATRIBUIDA A OTRA  mapa "Punta Arenas" != decreto "Punta Delgada"
+    punta_delgada        bahia  132  [sin_contacto] ATRIBUIDA A OTRA  mapa "Punta Arenas" != decreto "Punta Delgada"
+    tierra_del_fuego     bahia  137  [sin_contacto] ATRIBUIDA A OTRA  mapa "Punta Arenas" != decreto "Tierra del Fuego"
+
+  LAS QUE COINCIDEN EN LOS DOS NIVELES — no tienen nada que declarar:
+    arica                bahia   71  [capitania]
+    hanga_roa            bahia   89  [capitania]
+    talcahuano           bahia   98  [capitania]
+    puerto_williams      bahia  138  [capitania]
+
+================================================================================
+  QUE CONTESTA ESTA MEDICION: cuantas zonas estan en la condicion de
+  `puerto_eden` —contacto que SI se da, con el otro nivel en desacuerdo— y
+  que el guard de hoy no puede ver. La respuesta es el conteo de arriba, no
+  una lista escrita a mano.
+================================================================================

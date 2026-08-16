@@ -30,14 +30,27 @@ console.log('================================================================');
 console.log('ZONAS DE AVISO — CARGA REAL');
 console.log('================================================================');
 
-let cargado;
+// LA CARGA REAL YA NO ABORTA EL SCRIPT — 2026-08-16. Hasta hoy un fallo aca
+// hacia `process.exit(1)` en el acto, y con eso el estado de TODAS las familias
+// de mordida quedaba sin medir: una declaracion rota escondia si los controles
+// muerden o no. Es lo contrario de lo que este script existe para hacer, y es
+// justo el caso que la pieza del 2026-08-16 necesitaba ver — la mordida contra
+// el dato VIEJO, en rojo, para que el verde de despues signifique algo.
+// Ahora se registra la falla, se sigue a la mordida, y el exit sigue siendo 1.
+// NO se afloja nada (CLAUDE.md §0.3): ningun caso que salia en rojo sale en
+// verde por este cambio; lo unico que cambia es cuanto se ve del rojo.
+let cargado = null;
 try {
   cargado = cargarZonasAviso({ recargar: true });
 } catch (e) {
   console.log(`FALLA AL CARGAR LA DECLARACION REAL: ${e.message}`);
-  process.exit(1);
+  console.log('');
+  console.log('La carga real NO paso. El script SIGUE hasta la prueba de mordida: un control');
+  console.log('que solo se vio en verde no se distingue de uno que no muerde. Sale 1 igual.');
+  fallas++;
 }
 
+if (cargado) {
 console.log(`version de la declaracion : ${cargado.version}`);
 console.log(`zonas declaradas          : ${cargado.zonas.length}`);
 console.log(`zonas que reclaman tramo  : ${cargado.zonas_con_ambito.length} (las que tienen ambito declarado)`);
@@ -80,11 +93,42 @@ for (const z of conDiscrepancia) {
   console.log(`      pendiente       : adjudicar leyendo el parrafo del decreto de las dos Capitanias en juego (fase5R §3, clase C)`);
   console.log('');
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DISCREPANCIA DECLARADA SOBRE UN CONTACTO QUE SI SE DA — 2026-08-16.
+// El bloque de arriba lista las zonas que NO dan contacto. Este lista las que
+// SI lo dan y ademas arrastran un desacuerdo vivo en el otro nivel. Son casos
+// distintos y por eso se imprimen aparte: en el primero no hay telefono que
+// mostrar; en este si, y la discrepancia viaja al lado.
+// ─────────────────────────────────────────────────────────────────────────────
+const conMarca = cargado.zonas.filter(z => z.contacto.tipo !== 'sin_contacto' && z.contacto.discrepancias.length > 0);
+console.log('');
+console.log('================================================================');
+console.log('DISCREPANCIA DECLARADA CON CONTACTO QUE SI SE DA');
+console.log('================================================================');
+console.log(`  total: ${conMarca.reduce((n, z) => n + z.contacto.discrepancias.length, 0)} discrepancia(s) ` +
+            `en ${conMarca.length} jurisdiccion(es)`);
+console.log('');
+for (const z of conMarca) {
+  console.log(`  ${z.jurisdiccion_id}  [contacto ${z.contacto.tipo}: ${z.contacto.nombre} — ${z.contacto.telefono}]`);
+  for (const d of z.contacto.discrepancias) {
+    console.log(`    bahia ${d.bahia_id}  nivel DECLARADO: ${d.nivel}`);
+    console.log(`      el decreto dice : Capitania '${d.dice_el_decreto.capitania}' / Gobernacion '${d.dice_el_decreto.gobernacion}'`);
+    console.log(`      el mapa dice    : Capitania '${d.dice_el_mapa.capitania}' / Gobernacion '${d.dice_el_mapa.gobernacion}'`);
+    console.log(`      el valor que la encarna viaja en contacto.gobernacion = ${JSON.stringify(z.contacto.gobernacion)}`);
+    console.log(`      motivo          : ${d.motivo}`);
+  }
+  console.log(`      ambito          : ${z.ambito === null ? 'null — no reclama tramo (exigido mientras la marca no la cargue el consumidor)' : JSON.stringify(z.ambito)}`);
+  console.log('');
+}
+if (conMarca.length === 0) console.log('  (ninguna)\n');
+
 console.log('');
 console.log('causa de la carencia, tal como la declara el insumo (no se copia, se lee):');
 for (const z of cargado.zonas) {
   console.log(`  ${z.jurisdiccion_id}: ${z.causa_sin_geometria}`);
 }
+} // fin de `if (cargado)`
 
 // ─────────────────────────────────────────────────────────────────────────────
 console.log('');
@@ -234,6 +278,106 @@ const FAMILIAS = [
         d.mensaje.capa_2_con_capitania.replace('{nombre} antes', '{nombre}: {telefono} antes');
       return [d, INSUMO, CONTACTOS]; },
     /INV-10\.1 prohibe el telefono dentro de un mensaje del catalogo/],
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // M23–M31 — LA DISCREPANCIA DECLARADA SOBRE UN CONTACTO QUE SI SE DA.
+  // 2026-08-16.
+  //
+  // LAS NUEVE CONSTRUYEN SU CONTACTO DESDE CERO en vez de mutar el que el dato
+  // real trae. Es deliberado: una familia que se apoyara en que la declaracion
+  // YA tiene la forma nueva dejaria de probar el dia que el dato cambie, sin
+  // avisar — el modo de falla de CLAUDE.md §4.6 aplicado a la propia mordida.
+  // Construidas asi, muerden igual contra el dato viejo y contra el nuevo, y por
+  // eso la corrida en rojo del 2026-08-16 vale como evidencia: los controles ya
+  // mordian ANTES de que el dato les diera la razon.
+  // ───────────────────────────────────────────────────────────────────────────
+
+  ['M23 discrepancia declarada con un nivel que nadie definio',
+    () => { const d = clonar(DECL);
+            zonaDe(d, 'puerto_eden').contacto = { tipo: 'capitania', bahia_id: 129,
+              discrepancias_declaradas: [{ bahia_id: 129, nivel: 'region', motivo: 'prueba' }] };
+            return [d, INSUMO, CONTACTOS]; },
+    /declara nivel 'region', que no esta en/],
+
+  // M24 ES EL ESPEJO EXACTO DE M20 y la razon de ser de toda la rama: la
+  // declaracion nueva tiene el MISMO retiro automatico que `sin_contacto`. Si el
+  // mapa se corrige y la Gobernacion pasa a ser la del decreto, la discrepancia
+  // dejo de existir y el dato tiene que retirarse.
+  ['M24 la discrepancia declarada SE RESOLVIO y seguiria escrita',
+    () => { const d = clonar(DECL); const c = clonar(CONTACTOS);
+            zonaDe(d, 'puerto_eden').contacto = { tipo: 'capitania', bahia_id: 129,
+              discrepancias_declaradas: [{ bahia_id: 129, nivel: 'gobernacion', motivo: 'prueba' }] };
+            c['129'].gobernacion = 'Punta Arenas';
+            return [d, INSUMO, c]; },
+    /declara una discrepancia en nivel 'gobernacion' que HOY NO EXISTE/],
+
+  ['M25 discrepancia declarada sin motivo escrito',
+    () => { const d = clonar(DECL);
+            zonaDe(d, 'puerto_eden').contacto = { tipo: 'capitania', bahia_id: 129,
+              discrepancias_declaradas: [{ bahia_id: 129, nivel: 'gobernacion' }] };
+            return [d, INSUMO, CONTACTOS]; },
+    /en nivel 'gobernacion' exige 'motivo' escrito/],
+
+  // M26 — LA CONTRADICCION, Y QUE CAE SIN REGLA QUE LA NOMBRE. Declarar que
+  // discrepa el MISMO nivel del que sale el contacto es imposible: la rama
+  // `capitania` ya exigio que coincidiera. Se detiene por la medicion y no por
+  // un caso particular en el codigo (CLAUDE.md §4.3). Su expresion esperada es
+  // la de M24 A PROPOSITO: es la misma exigencia haciendo el trabajo.
+  ['M26 nivel capitania declarado sobre un contacto de capitania (contradiccion)',
+    () => { const d = clonar(DECL);
+            zonaDe(d, 'puerto_eden').contacto = { tipo: 'capitania', bahia_id: 129,
+              discrepancias_declaradas: [{ bahia_id: 129, nivel: 'capitania', motivo: 'prueba' }] };
+            return [d, INSUMO, CONTACTOS]; },
+    /declara una discrepancia en nivel 'capitania' que HOY NO EXISTE/],
+
+  ['M27 discrepancia sobre una bahia que el mapa no tiene',
+    () => { const d = clonar(DECL);
+            zonaDe(d, 'puerto_eden').contacto = { tipo: 'capitania', bahia_id: 129,
+              discrepancias_declaradas: [{ bahia_id: 999999, nivel: 'gobernacion', motivo: 'prueba' }] };
+            return [d, INSUMO, CONTACTOS]; },
+    /declarada en discrepancia no existe en bahia-capitania-map/],
+
+  ['M28 el campo declarado vacio, que no declara nada',
+    () => { const d = clonar(DECL);
+            zonaDe(d, 'puerto_eden').contacto = { tipo: 'capitania', bahia_id: 129,
+              discrepancias_declaradas: [] };
+            return [d, INSUMO, CONTACTOS]; },
+    /o se escribe la discrepancia, o se omite el campo/],
+
+  // M29 — EL CRITERIO DEL AGENTE DEL 2026-08-16, con su mordida. Una zona que da
+  // contacto y arrastra una discrepancia no puede reclamar tramo, porque el
+  // consumidor (cobertura-jurisdiccional.js:405) se queda con tres campos y la
+  // marca se pierde ahi. Es criterio, no norma, y se levanta el dia que el
+  // consumidor sepa cargarla; hasta entonces esto es lo que impide que el hueco
+  // sea silencioso.
+  ['M29 zona con discrepancia viva que ademas reclama un tramo',
+    () => { const d = clonar(DECL); const z = zonaDe(d, 'puerto_eden');
+            z.contacto = { tipo: 'capitania', bahia_id: 129,
+              discrepancias_declaradas: [{ bahia_id: 129, nivel: 'gobernacion', motivo: 'prueba' }] };
+            z.ambito = { tipo: 'banda_latitud', lat_norte: -49, lat_sur: -50.55, procedencia: 'prueba' };
+            return [d, INSUMO, CONTACTOS]; },
+    /se pierde en ese mapeo/],
+
+  // M30 Y M31 SON LAS DOS QUE DEBEN ACEPTAR, y van juntas por el mismo motivo
+  // que M2b: un guard que rechazara TODO pasaria las ocho familias de arriba y
+  // pareceria perfecto. Estas son las que lo distinguen de uno que discrimina.
+  ['M30 una discrepancia VIVA sobre un contacto que si se da: se acepta',
+    () => { const d = clonar(DECL);
+            zonaDe(d, 'puerto_eden').contacto = { tipo: 'capitania', bahia_id: 129,
+              discrepancias_declaradas: [{ bahia_id: 129, nivel: 'gobernacion', motivo: 'prueba' }] };
+            return [d, INSUMO, CONTACTOS]; },
+    null],
+
+  // M31 — el criterio de M29 NO se derrama sobre `sin_contacto`. Esa rama no
+  // entrega contacto, el consumidor la filtra y deriva al generico: no hay marca
+  // que perder, y las cinco zonas que hoy la usan conservan su derecho a
+  // declarar ambito. Sin esta familia, M29 podria ser una prohibicion general
+  // disfrazada de criterio acotado.
+  ['M31 una zona `sin_contacto` con discrepancia SI puede reclamar tramo',
+    () => { const d = clonar(DECL);
+            zonaDe(d, 'lirquen').ambito = { tipo: 'banda_latitud', lat_norte: -36, lat_sur: -36.736111, procedencia: 'prueba' };
+            return [d, INSUMO, CONTACTOS]; },
+    null],
 ];
 
 // Control negativo: la declaracion intacta NO puede morder. Sin esto, un

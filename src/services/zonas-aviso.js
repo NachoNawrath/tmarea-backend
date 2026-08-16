@@ -27,6 +27,36 @@ const RUTA_CONTACTOS    = path.join(__dirname, '..', 'data', 'bahia-capitania-ma
 const TIPOS_CONTACTO = new Set(['capitania', 'gobernacion', 'sin_contacto']);
 const TIPOS_AMBITO   = new Set(['banda_latitud']);
 
+// ─── LA DISCREPANCIA DECLARADA SOBRE UN CONTACTO QUE SI SE DA ───────────────
+// Hasta el 2026-08-16 este modulo tenia dos estados para la coincidencia entre
+// el mapa operativo y el decreto: o coincidia y el contacto se daba, o no
+// coincidia y se declaraba `sin_contacto`. Con eso alcanzaba mientras la
+// coincidencia fuera UNA.
+//
+// No lo es: son DOS NIVELES —Capitania y Gobernacion— y pueden caer distinto.
+// El guard de :110 los colapsaba con un corto-circuito:
+//
+//     coincideGob = e.capitania == null && mismoNombre(e.gobernacion, ...)
+//
+// o sea que escrita la Capitania, la Gobernacion dejaba de mirarse. Medido en
+// `_bitacoras/zonas_aviso_discrepancia_2026-08-16/01_medir_niveles.txt`: 11
+// comparaciones, y UNA cae en esa sombra —`puerto_eden`/129, con la Capitania
+// coincidiendo y la Gobernacion en desacuerdo con el decreto—. Su declaracion
+// `sin_contacto` quedo MITAD FALSA y no habia forma de decir cual mitad.
+//
+// NO SE AGREGA UN CUARTO TIPO. El `tipo` dice QUE CONTACTO SE DA; la
+// discrepancia es ORTOGONAL a eso y cruzarlas haria crecer el vocabulario por
+// producto (nivel x tipo). Se agrega un campo declarativo, admisible en los
+// tipos que si dan contacto, con UNA sola exigencia: el nivel declarado tiene
+// que discrepar HOY contra la fuente.
+//
+// DE ESA UNICA EXIGENCIA CAE SOLA LA CONTRADICCION, y por eso no hay regla que
+// la nombre (CLAUDE.md §4.3): declarar `nivel: 'capitania'` sobre la bahia de
+// un contacto `tipo: 'capitania'` es imposible, porque la rama ya exigio
+// coincidencia en ese nivel y la discrepancia exige lo contrario. Se detiene
+// por la medicion, no por un caso particular en el codigo.
+const NIVELES_DISCREPANCIA = new Set(['capitania', 'gobernacion']);
+
 // ─── EL TERCER ESTADO ────────────────────────────────────────────────────────
 // Hasta el 2026-08-15 las dos exigencias de este modulo colgaban del MISMO
 // booleano: `participa_matching === false` decidia a la vez que una zona pueda
@@ -82,6 +112,69 @@ class ErrorZonasAviso extends Error {
 const exigir = (cond, mensaje) => { if (!cond) throw new ErrorZonasAviso(mensaje); };
 const textoNoVacio = (v) => typeof v === 'string' && v.trim().length > 0;
 
+// ─── Discrepancia declarada sobre un contacto que SI se da ──────────────────
+/**
+ * Valida y resuelve `contacto.discrepancias_declaradas`. Devuelve SIEMPRE un
+ * arreglo —vacio cuando no hay— para que la forma del contacto resuelto no
+ * dependa de si la zona declaro algo: un consumidor no puede "olvidarse" de un
+ * campo que siempre esta.
+ *
+ * La forma resuelta es LA MISMA que la de `sin_contacto`. Dos formas para el
+ * mismo concepto es la trampa de CLAUDE.md §2 —dos campos con rol parecido— y
+ * este modulo no la va a estrenar.
+ */
+function resolverDiscrepanciasDeclaradas(zona, jur, contactos) {
+  const d = zona.contacto.discrepancias_declaradas;
+  if (d === null || d === undefined) return [];
+
+  exigir(Array.isArray(d) && d.length > 0,
+    `zona '${zona.jurisdiccion_id}': 'discrepancias_declaradas' esta presente pero no es un arreglo con al menos ` +
+    `un elemento. Declarar el campo vacio no declara nada: o se escribe la discrepancia, o se omite el campo.`);
+
+  return d.map(item => {
+    exigir(item && typeof item === 'object',
+      `zona '${zona.jurisdiccion_id}': cada discrepancia declarada es un objeto con 'bahia_id', 'nivel' y 'motivo'.`);
+    exigir(Number.isInteger(item.bahia_id),
+      `zona '${zona.jurisdiccion_id}': discrepancia declarada sin 'bahia_id' entero.`);
+    exigir(NIVELES_DISCREPANCIA.has(item.nivel),
+      `zona '${zona.jurisdiccion_id}': la discrepancia de la bahia ${item.bahia_id} declara nivel '${item.nivel}', ` +
+      `que no esta en (${[...NIVELES_DISCREPANCIA].join(', ')}). No hay caso por defecto: el nivel decide contra ` +
+      `que campo se comprueba, y adivinarlo comprobaria otra cosa.`);
+    // El motivo se exige con la misma vara que `sin_contacto`: una discrepancia
+    // sin motivo escrito es prosa que nadie puede adjudicar despues.
+    exigir(textoNoVacio(item.motivo),
+      `zona '${zona.jurisdiccion_id}': la discrepancia de la bahia ${item.bahia_id} en nivel '${item.nivel}' ` +
+      `exige 'motivo' escrito.`);
+
+    const e = contactos[String(item.bahia_id)];
+    exigir(e,
+      `zona '${zona.jurisdiccion_id}': la bahia ${item.bahia_id} declarada en discrepancia no existe en ` +
+      `bahia-capitania-map.json.`);
+
+    // LA EXIGENCIA. Es el espejo de la que ya tiene `sin_contacto` en :111, con
+    // el signo puesto por `nivel` y SIN el corto-circuito que hacia invisible al
+    // nivel Gobernacion. Si el mapa paso a coincidir en el nivel declarado, la
+    // discrepancia dejo de existir y la declaracion tiene que retirarse: es la
+    // misma reversibilidad que el encabezado promete para la zona entera.
+    const delMapa    = item.nivel === 'capitania' ? e.capitania   : e.gobernacion;
+    const delDecreto = item.nivel === 'capitania' ? jur.nombre    : jur.gobernacion;
+    exigir(!mismoNombre(delMapa, delDecreto),
+      `zona '${zona.jurisdiccion_id}': la bahia ${item.bahia_id} declara una discrepancia en nivel ` +
+      `'${item.nivel}' que HOY NO EXISTE: el mapa dice '${delMapa}' y el decreto dice '${delDecreto}', y ` +
+      `coinciden. Una discrepancia declarada que se resolvio deja de declararse: mantenerla escrita haria ` +
+      `que el registro afirme un desacuerdo que ya no hay. (Si el nivel declarado es el mismo del que sale ` +
+      `el contacto, esto es lo que lo detiene: esa rama ya exigio que coincidiera.)`);
+
+    return {
+      bahia_id: item.bahia_id,
+      dice_el_mapa:    { capitania: e.capitania, gobernacion: e.gobernacion, telefono: e.telefono },
+      dice_el_decreto: { capitania: jur.nombre, gobernacion: jur.gobernacion },
+      nivel: item.nivel,
+      motivo: item.motivo.trim(),
+    };
+  });
+}
+
 // ─── Resolucion del contacto ────────────────────────────────────────────────
 // Cada tipo declara que tiene que cumplirse en la fuente para poder usarlo. La
 // coincidencia se comprueba SIEMPRE: si el mapa operativo dejo de coincidir con
@@ -117,7 +210,15 @@ function resolverContacto(zona, jur, contactos) {
         dice_el_mapa: { capitania: e.capitania, gobernacion: e.gobernacion, telefono: e.telefono },
         dice_el_decreto: { capitania: jur.nombre, gobernacion: jur.gobernacion },
         // Que nivel es el que discrepa, para poder trabajarlas una por una.
+        // OJO: aca el nivel se INFIERE del dato; en `discrepancias_declaradas`
+        // se DECLARA. La asimetria esta anotada como deuda en la bitacora del
+        // 2026-08-16 y no se salda hoy: cambiar la forma de entrada de
+        // `sin_contacto` toca cinco zonas que estan en verde.
         nivel: e.capitania == null ? 'gobernacion' : 'capitania',
+        // El motivo vive a nivel de contacto en esta rama. Se copia a cada
+        // entrada para que la forma resuelta sea IDENTICA a la de
+        // `discrepancias_declaradas` y el consumidor vea una sola.
+        motivo: c.motivo.trim(),
       };
     });
     return {
@@ -125,6 +226,11 @@ function resolverContacto(zona, jur, contactos) {
       bahia_id: null, discrepancias,
     };
   }
+
+  // Los dos tipos que SI dan contacto pueden traer discrepancias declaradas.
+  // Se resuelven ANTES de armar el objeto para que una declaracion invalida
+  // detenga la carga en vez de viajar al lado de un telefono correcto.
+  const discrepancias = resolverDiscrepanciasDeclaradas(zona, jur, contactos);
 
   exigir(Number.isInteger(c.bahia_id),
     `zona '${zona.jurisdiccion_id}': contacto '${c.tipo}' exige 'bahia_id' entero.`);
@@ -141,7 +247,13 @@ function resolverContacto(zona, jur, contactos) {
       `operativo revoque al decreto (INV-3.3). Declarar 'sin_contacto' con su motivo, o corregir la fuente.`);
     return {
       tipo: 'capitania', nombre: entrada.capitania, telefono: entrada.telefono,
+      // `gobernacion` conserva lo que dice el MAPA, no lo que dice el decreto:
+      // es el valor de la fuente y borrarlo esconderia la medicion. Cuando esa
+      // Gobernacion es la que el decreto contradice, `discrepancias` lo dice al
+      // lado, con `dice_el_decreto` adentro. La marca acompaña al valor; no lo
+      // reemplaza ni lo tapa.
       gobernacion: entrada.gobernacion || null, bahia_id: c.bahia_id, motivo: null,
+      discrepancias,
     };
   }
 
@@ -156,6 +268,7 @@ function resolverContacto(zona, jur, contactos) {
   return {
     tipo: 'gobernacion', nombre: entrada.gobernacion, telefono: entrada.telefono,
     gobernacion: entrada.gobernacion, bahia_id: c.bahia_id, motivo: null,
+    discrepancias,
   };
 }
 
@@ -247,6 +360,35 @@ function validarDeclaracion(decl, insumo, contactos) {
       `la jurisdiccion '${id}' esta sin geometria pero no declara 'causa_sin_geometria' en el insumo. ` +
       `Un aviso sin causa escrita no se publica.`);
 
+    const contacto = resolverContacto(zona, jur, contactos);
+    const ambito   = validarAmbito(zona);
+
+    // ─── CRITERIO DEL AGENTE, NO NORMA. Revocable, y con su condicion escrita.
+    // Una zona cuyo contacto SE DA y ademas arrastra una discrepancia declarada
+    // no puede reclamar un tramo de ruta.
+    //
+    // POR QUE: la marca de la discrepancia viaja en el contacto resuelto, pero
+    // el consumidor no la carga. Medido el 2026-08-16 en
+    // `cobertura-jurisdiccional.js:405`: de la zona reclamante se mapean tres
+    // campos —`{nombre, telefono, tipo}`— y `discrepancias` se pierde ahi. Ese
+    // archivo esta fuera de la zona de escritura de esta pieza, asi que lo unico
+    // que se puede hacer desde aca es que el hueco NO SEA SILENCIOSO: el dia que
+    // alguien le declare un ambito a una zona en esta condicion, la carga se
+    // detiene con el motivo en vez de dejar caer la marca en el mapeo.
+    //
+    // CONDICION DE REVOCACION: se levanta el dia que el consumidor sepa cargar
+    // la marca. No antes, y no por conveniencia de que una zona reclame.
+    //
+    // NO alcanza a `sin_contacto`: esa rama no entrega contacto —el consumidor
+    // la filtra en :404 y deriva al generico—, asi que no hay marca que perder.
+    // Las cinco zonas que hoy la usan conservan su derecho a declarar ambito.
+    exigir(!(contacto.tipo !== 'sin_contacto' && contacto.discrepancias.length > 0 && ambito !== null),
+      `la zona '${id}' declara un contacto de tipo '${contacto.tipo}' CON ${contacto.discrepancias.length} ` +
+      `discrepancia(s) declarada(s) y ademas un ambito. Hoy el consumidor de una zona reclamante ` +
+      `(cobertura-jurisdiccional.js) se queda con nombre, telefono y tipo: la marca de la discrepancia se ` +
+      `pierde en ese mapeo y el valor que la encarna llegaria sin ella. Criterio del agente (2026-08-16), no ` +
+      `norma: se levanta cuando el consumidor sepa cargar la marca.`);
+
     zonas.push({
       jurisdiccion_id: id,
       nombre: jur.nombre,
@@ -258,8 +400,8 @@ function validarDeclaracion(decl, insumo, contactos) {
       // (INV-3.6); la distincion es del registro interno.
       estado_geometria: estadoDe(jur),
       causa_sin_geometria: jur.causa_sin_geometria,
-      contacto: resolverContacto(zona, jur, contactos),
-      ambito: validarAmbito(zona),
+      contacto,
+      ambito,
       motivo_sin_ambito: zona.ambito ? null : zona.motivo_sin_ambito.trim(),
     });
   }

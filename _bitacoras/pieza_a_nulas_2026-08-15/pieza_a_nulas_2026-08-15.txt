@@ -557,3 +557,55 @@ OTRO PENDIENTE PROPIO, que no depende de lo anterior: falta conseguir el numero
 atomico de la Capitania de Baker (CdRep 260). La bahia 127 sigue en `null` por
 eso, y no se resuelve normalizando la cadena.
 ================================================================================
+
+
+================================================================================
+ADDENDUM 2026-08-16 — LA (2) DEL §16 SE EJECUTO. EL §17 QUEDA CERRADO.
+Se AGREGA, no se reescribe (§3.3). Todo lo de arriba queda como se escribio y
+NO lleva tachado: lo que las secciones 12, 14 y 15 midieron era cierto DEL
+ESQUEMA QUE MIDIERON, y deja de serlo por el cambio, no por error.
+Sesion: ZONAS-AVISO-DISCREPANCIA. Evidencia:
+`_bitacoras/zonas_aviso_discrepancia_2026-08-16/`.
+================================================================================
+
+18. QUE CAMBIO DE LO QUE ESTA BITACORA MIDIO
+================================================================================
+§15 midio, y era cierto: "el esquema tolera escribirlo y no admite declararlo",
+con `¿el campo extra sobrevive a la resolucion? false`. **Hoy si lo admite.**
+`resolverContacto` arma una forma fija que ahora incluye `discrepancias`, y la
+declaracion viaja resuelta. El volcado nuevo esta puesto al lado del de §15 en
+`05_forma_resuelta.txt`, para comparar sin intermediarios.
+
+§12 y §14 midieron: "la declaracion quedo MITAD FALSA y el control no puede
+decir cual mitad". **Hoy si puede.** La mitad viva —el nivel Gobernacion— se
+declara con su `nivel` y se comprueba contra la fuente en cada carga; la mitad
+muerta —"no tiene Capitania atribuida"— salio del `motivo`, porque el motivo es
+dato y el dato tiene que ser cierto, y quedo registrada en
+`zonas_aviso.json` -> `puerto_eden.contacto.nota_2026-08-16`.
+
+LO QUE NO CAMBIO, y conviene no leer de mas: la marca **no llega a pantalla**.
+`puerto_eden` tiene ambito nulo y no entra en `zonas_con_ambito`; y si entrara,
+`cobertura-jurisdiccional.js:405` mapea tres campos y la perderia. Lo unico que
+se pudo hacer desde la zona de escritura autorizada es que ese hueco no sea
+silencioso: una zona en esta condicion no puede declarar ambito, y la carga se
+detiene si alguien se lo declara.
+
+19. LAS CINCO DISCREPANCIAS EN PIE — RE-VERIFICADAS
+================================================================================
+Se re-corrio `06_guard_zonas_aviso.js` SIN TOCARLO, contra el mismo ancla:
+6 comparaciones efectivas, 5 en pie, 1 caida. **Identico a lo escrito el
+2026-08-15.** La medicion nueva les agrega el nivel: las cinco son de nivel
+`capitania`, todas del tipo "el mapa nombra una Capitania distinta de la del
+decreto". Detalle en `01_medir_niveles.txt`.
+
+20. ESTADO DE LA SUITE
+================================================================================
+    npm test -> 84 tests, 84 pass, 0 fail
+
+El rojo deliberado con el que cerro esta sesion queda cerrado por donde el §17
+dijo que se cerraria. Los 15 fallos eran 15 de los 16 tests de
+`cobertura-jurisdiccional.test.js`, todos con el mismo stack.
+
+PENDIENTES QUE ESTA SESION NO TOCO: el numero atomico de Baker (CdRep 260)
+sigue abierto y la bahia 127 sigue en `null`.
+================================================================================
