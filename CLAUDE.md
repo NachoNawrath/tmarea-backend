@@ -317,6 +317,37 @@ elige uno.
   `git status` y la lista de archivos antes de commitear.
 - **Reconocer antes de tocar.** Ninguna modificación sin haber levantado antes qué hay.
 
+### 6.1 — Una restricción de escritura no suspende el deber de redactar
+
+Una sesión puede tener prohibido escribir un archivo: por el reparto de autoría de arriba,
+por el alcance que el owner le fijó, o porque la pieza es de otro frente. Esa prohibición es
+sobre **el archivo**, nunca sobre **la redacción**.
+
+Si en el trabajo se mide que una declaración vigente es falsa y corregirla cae fuera de la
+zona de escritura de la sesión, la corrección **se redacta igual** y se entrega en la
+bitácora, que sí está autorizada. Entrega, en ese caso:
+
+- **la afirmación vigente citada literal**, con archivo, sección y versión;
+- **la medición que la contradice**, con su instrumento y su salida versionados. Si el
+  instrumento todavía no existe, se escribe en la bitácora de esa sesión y se cita; una
+  medición sin instrumento es "no la encontré con mi parser" (§2), y como tal se declara;
+- **el texto de reemplazo redactado y listo para aplicar**, en la forma que el archivo exige
+  — tachado, fecha, commit e instrumento, cuando el archivo la pide (§3.3);
+- **las opciones, si hay más de una redacción posible**, con recomendación y motivo (§0.2);
+- **qué pieza y qué autorización harían falta** para aplicarlo.
+
+**Redactar no es aplicar.** La propuesta en bitácora no toca el archivo, no adelanta la
+decisión del owner y **no requiere autorización previa**: es evidencia, y §3.1 ya la pide.
+Aplicarla sí la requiere, y por el ciclo de §6 — se propone, el owner revisa, el owner
+autoriza el commit.
+
+**Una declaración medida como falsa que se queda escrita porque corregirla estaba fuera de
+zona es el peor resultado posible de una sesión.** Es la misma falla que §0.1 llama callar
+una objeción, y la misma que el bloque de arriba ya corrigió para el caso del contrato: la
+línea falsa sobrevive porque el único que la vio no tenía el teclado. Lo que la sesión no
+puede hacer es dejarla sin escribir. Qué se hace con el texto lo decide el owner; que el
+texto exista no es una decisión suya.
+
 ---
 
 ## 7. ENTORNO — WINDOWS

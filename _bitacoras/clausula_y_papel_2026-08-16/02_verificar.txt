@@ -1,0 +1,111 @@
+================================================================================
+VERIFICACION — CLAUSULA-Y-PAPEL
+ancla HEAD (pre-commit) : d5305d2c893414633ffd2aefc2e00d22a3edf070
+fecha                   : 2026-08-16T23:11:39.699Z
+================================================================================
+
+V1 — CLAUDE.md §6.1 existe y cubre las cuatro cosas exigidas
+--------------------------------------------------------------------------------
+  ✓ V1.0  la subseccion §6.1 existe con su titulo
+  ✓ V1.1  dice que la restriccion NO suspende el deber de redactar
+  ✓ V1.2  enumera las CINCO cosas que la bitacora entrega
+  ✓ V1.3  declara que redactar no es aplicar
+  ✓ V1.4  declara el peor resultado posible de una sesion
+  ✓ V1.5  §7 y §8 conservan su numero — no hubo renumeracion
+  ✓ V1.6  el bloque corregido de §6 quedo INTACTO
+
+V2 — el contrato subio a v2.4 y su changelog esta escrito
+--------------------------------------------------------------------------------
+  ✓ V2.0  la version dice 2.4
+  ✓ V2.1  no quedo ninguna linea "Versión: 2.3" (se sobrescribe, no se tacha)
+  ✓ V2.2  el changelog de v2.4 existe
+  ✓ V2.3  los changelogs anteriores siguen ahi
+  ✓ V2.4  v2.4 esta ARRIBA de v2.3, como el resto del changelog
+
+V3 — LAS ENMIENDAS LLEVAN FECHA, COMMIT E INSTRUMENTO
+--------------------------------------------------------------------------------
+  ✓ E1-celda  enmienda de la direccion, celda de §5
+        fecha:si · commit:dc7d63e,f3936b8 · instrumento:01_medir_direccion.js · §3.3:si
+  ✓ E2-celda  enmienda del "0 de 164", celda de §5
+        fecha:si · commit:n/a (puntero) · puntero:Ver §5.1 · §3.3:si
+  ✓ E2-bloque  enmienda del "0 de 164", bloque de §5.1
+        fecha:si · commit:d5305d2 · instrumento:01_medir_universo.js · §3.3:si
+  ✓ E3-retiroA  enmienda de la condicion de retiro, fila de Gobernacion
+        fecha:si · commit:dc7d63e,d5305d2 · instrumento:01_medir_direccion.js · §3.3:si
+  ✓ E3-retiroB  enmienda de la condicion de retiro, fila del escalon
+        fecha:si · commit:d5305d2 · instrumento:01_medir_direccion.js · §3.3:si
+
+V4 — TODO INSTRUMENTO CITADO EXISTE EN LA RUTA QUE SE CITA
+--------------------------------------------------------------------------------
+      ok   _bitacoras/auditoria_rotulos_2026-08-15/02_medir_pantalla.js
+      ok   _bitacoras/clausula_y_papel_2026-08-16/01_medir_direccion.js
+      ok   _bitacoras/contrato_51_telefonos_2026-08-16/01_medir_niveles_telefono.js
+      ok   _bitacoras/e01d_d7_y_257_2026-08-11/sitport_consultaCapuertoRestriccion.json
+      ok   _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json
+      ok   _bitacoras/lote_cisnes_2026-08-16/03_verificar.js
+      ok   _bitacoras/lote_cisnes_2026-08-16/08_pantalla_antes.txt
+      ok   _bitacoras/reatribucion_reconocimiento_2026-08-16/01_medir_universo.js
+      ok   _bitacoras/reatribucion_reconocimiento_2026-08-16/02_medir_arrastre.txt
+      ok   _bitacoras/rotulo_p3_2026-08-16/01_medir_precedencia.js
+      ok   _bitacoras/rotulo_p3_2026-08-16/04_verificar.js
+      ok   _bitacoras/rotulo_p3_tramo_b_2026-08-16/01_medir_rotulo.js
+  ✓ V4.0  las 12 rutas citadas existen en disco
+        faltan: 0
+  ✓ V4.01_medir_direccion.js  existe _bitacoras/clausula_y_papel_2026-08-16/01_medir_direccion.js
+  ✓ V4.01_medir_direccion.txt  existe _bitacoras/clausula_y_papel_2026-08-16/01_medir_direccion.txt
+  ✓ V4.01_medir_universo.js  existe _bitacoras/reatribucion_reconocimiento_2026-08-16/01_medir_universo.js
+  ✓ V4.02_medir_arrastre.txt  existe _bitacoras/reatribucion_reconocimiento_2026-08-16/02_medir_arrastre.txt
+
+V5 — el texto enmendado sigue VISIBLE con tachado (§3.3: se enmienda, no se borra)
+--------------------------------------------------------------------------------
+  ✓ V5.1  el texto viejo de la direccion sigue visible, tachado
+  ✓ V5.2  el "0 de 164" de la celda sigue visible, tachado
+  ✓ V5.3  el "0 de 164" del bloque sigue visible, tachado
+  ✓ V5.4  la condicion de retiro A sigue visible, tachada
+  ✓ V5.5  la condicion de retiro B sigue visible, tachada
+
+V6 — D-R5 entro y D-R1/D-R2/D-R4 quedaron como se escribieron
+--------------------------------------------------------------------------------
+  ✓ V6.0  el addendum cuarto existe
+  ✓ V6.1  D-R5 esta escrita en la forma de D-R1/D-R2/D-R4
+  ✓ V6.2  D-R5 habilita las 32 explicitamente
+  ✓ V6.3  D-R5 declara que no es pregunta normativa y no se escala
+  ✓ V6.4  el registro es el del ancla MAS texto agregado al final — nada anterior se reescribio
+        42976 bytes antes, 47727 ahora, +4751
+  ✓ V6.D-R1  D-R1 sigue con su texto
+  ✓ V6.D-R2  D-R2 sigue con su texto
+  ✓ V6.D-R4  D-R4 sigue con su texto
+
+V7 — no se escribio nada fuera de la zona autorizada
+--------------------------------------------------------------------------------
+      autorizado  CLAUDE.md
+      autorizado  CONTRATO_MOTOR.md
+      autorizado  _bitacoras/auditoria_rotulos_2026-08-15/auditoria_rotulos_2026-08-15.txt
+      preexistente data/catalogo/estado_drift.json
+  ✓ V7.0  ningun archivo modificado fuera de la zona
+        fuera: ninguno
+  ✓ V7.1  lo unico nuevo es el directorio de bitacora de esta sesion
+        _bitacoras/clausula_y_papel_2026-08-16/
+  ✓ V7.2  cero `src/`, cero `data/contacto/`, cero `data/decreto/`
+
+V8 — ningun archivo escrito quedo con CRLF (CLAUDE.md §7.2)
+--------------------------------------------------------------------------------
+  ✓ V8.CLAUDE.md  CLAUDE.md sin CRLF
+  ✓ V8.CONTRATO_MOTOR.md  CONTRATO_MOTOR.md sin CRLF
+  ✓ V8.auditoria_rotulos_2026-08-15.txt  _bitacoras/auditoria_rotulos_2026-08-15/auditoria_rotulos_2026-08-15.txt sin CRLF
+  ✓ V8.01_medir_direccion.js  _bitacoras/clausula_y_papel_2026-08-16/01_medir_direccion.js sin CRLF
+  ✓ V8.01_medir_direccion.txt  _bitacoras/clausula_y_papel_2026-08-16/01_medir_direccion.txt sin CRLF
+  ✓ V8.clausula_y_papel_2026-08-16.txt  _bitacoras/clausula_y_papel_2026-08-16/clausula_y_papel_2026-08-16.txt sin CRLF
+
+MORDIDA DEL PROPIO VERIFICADOR (CLAUDE.md §4.6)
+--------------------------------------------------------------------------------
+  ✓ M1  enmienda sin fecha -> MUERDE
+  ✓ M2  enmienda sin instrumento citado -> MUERDE
+  ✓ M3  ventana que arranca en el ancla pierde el rotulo (§3.3); la corregida lo ve -> MUERDE
+  ✓ M4  ruta partida en dos lineas que no existe: se re-pega y se caza igual -> MUERDE
+  ✓ M5  `trim()` sobre la salida entera corta el nombre; el parseo corregido no -> MUERDE
+  ✓ M6  un archivo de `src/` modificado cae fuera de la zona -> MUERDE
+
+================================================================================
+VEREDICTO : TODOS LOS CONTROLES PASAN
+================================================================================

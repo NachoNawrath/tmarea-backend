@@ -11,8 +11,37 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 2.3
+Versión: 2.4
 Última actualización: 2026-08-16
+Cambios v2.4: **§5 declara el papel de `bahia-capitania-map.json`, y corrige dos afirmaciones
+más que envejecieron sin fecha.** Motivo: de leer ese archivo como si fuera jurisdiccional salió
+una conclusión equivocada —tratar una divergencia de atribución de contacto como pregunta
+normativa que hay que escalar—, y el archivo no da pie: se llama `bahia-capitania-map`, su campo
+se llama `capitania`, y el frente del D.S. 991 corre en paralelo en el mismo repositorio. §5.1
+abre ahora declarando **qué es y qué no es**, con la precisión que la medición obliga: tres
+consumidores **sí cotejan** su campo `capitania` contra el nombre de la jurisdicción del decreto,
+y en `zonas-aviso.js:244` **el decreto manda y la carga aborta** si el mapa no coincide; el
+consumidor del lado de jurisdicción, `join-bahia-jurisdiccion.js:49`, lee **sólo las claves**. El
+archivo **se cruza** con la capa de jurisdicción y **en ningún cruce decide**. La decisión que
+cierra la lectura es **D-R5** (`_bitacoras/auditoria_rotulos_2026-08-15/` §19), del owner:
+SITPORT reporta condición de puerto y es la fuente de la atribución de contacto por
+`CdReparticion`; **no designa jurisdicciones**, y una divergencia contra él **no se escala**.
+Lo corregido de §5: (1) *"la dirección sigue sin existir en ninguna fuente viva"* → **existe, en
+63 de 64 reparticiones** de `data/contacto/reparticiones_publicadas.json`, viva desde `dc7d63e`;
+lo que volvió falsa la frase fue el **ascenso del insumo a vivo**, no un dato nuevo, y la fila
+sigue PENDIENTE por otra causa: **ningún archivo de `src/` lee `direccion`**; (2) *"hoy eso no le
+cuesta ninguna entrada — 0 de 164"* → **cierto del escalón 1 y falso del frente de
+re-atribución**: SITPORT le atribuye la `CdRep 144` a la bahía 97 y eso cuesta **1 entrada no
+medible**. Y se enmienda una tercera cosa que ninguna sesión había mirado: **la condición de
+retiro de las dos filas transitorias ya disparaba tal como estaba escrita**, porque
+`reparticiones_publicadas.json` es una fuente de contacto indexada por repartición — la fila del
+escalón declaraba desaparecer el día que existiera lo que ella misma es. Se le agrega la mitad
+que falta, el **puente vivo bahía→repartición**, y la fila del escalón pasa a **referir** esa
+definición en vez de re-enunciarla. **NO cambia ningún INVARIANTE, ninguna Verificación, ninguna
+fuente autorizada, y no cambia lo que el patrón ve** —las tres piezas son declarativas; suite
+86/86 antes y después—. La regla que hacía falta para que esto se escribiera es **`CLAUDE.md`
+§6.1**, nueva: una restricción de escritura no suspende el deber de redactar. Evidencia:
+`_bitacoras/clausula_y_papel_2026-08-16/`.
 Cambios v2.3: **la frase del 108 de §5.1 dejó de ser cierta de P3, y se enmienda el día que
 deja de serlo.** Motivo: el Tramo B de la pieza del rótulo escribió los 5 puntos de la PWA, y
 desde este commit **P3 consume el campo `contacto`** —el escalón de INV-10.1 ya resuelto por el
@@ -664,9 +693,9 @@ sirve otra cosa (causa del bug del perfil pescador).
 | Bahías + jurisdicciones | PostGIS `bahias_sitport` + `bahia_jurisdicciones` (Voronoi recortado por costa) | OK |
 | Nodos marítimos | PostGIS `nodos_maritimos` (781+ nodos) | OK |
 | Atribución bahía → Capitanía | `data/decreto/join_bahia_jurisdiccion.json` (164 entradas, 158 resueltas) | OK |
-| **Contacto de Capitanía** (teléfono, dirección) | ~~⚠️ NO EXISTE fuente viva — ningún archivo de `src/` tiene teléfono ni dirección de Capitanía~~ · **CORREGIDO 2026-08-16:** el **teléfono SÍ existe** — `src/data/bahia-capitania-map.json` trae **108 de 164** números de Capitanía (medido en `01bf543`, ver §5.1). La **dirección sigue sin existir** en ninguna fuente viva | ⚠️ PENDIENTE — sólo por la dirección |
+| **Contacto de Capitanía** (teléfono, dirección) | ~~⚠️ NO EXISTE fuente viva — ningún archivo de `src/` tiene teléfono ni dirección de Capitanía~~ · **CORREGIDO 2026-08-16:** el **teléfono SÍ existe** — `src/data/bahia-capitania-map.json` trae **108 de 164** números de Capitanía (medido en `01bf543`, ver §5.1). ~~La **dirección sigue sin existir** en ninguna fuente viva~~ · **ENMENDADO 2026-08-16 (§3.3): la dirección TAMBIÉN existe, y desde `dc7d63e`.** `data/contacto/reparticiones_publicadas.json` trae `direccion` en **63 de sus 64** reparticiones —la única sin ella es `CdRep 291` (RADA COVADONGA), que es también una de las dos sin nombre publicado: es la misma carencia de la misma ficha, no dos huecos— y ese archivo es **fuente viva** desde `dc7d63e`, leído por `src/services/contacto-por-escalon.js:52`. El campo existe desde `f3936b8` y el archivo es byte-idéntico desde entonces: **lo que volvió falsa la frase fue el ascenso del insumo a vivo, no un dato nuevo**. **Lo que sigue faltando es el consumidor: ningún archivo de `src/` lee `direccion`** — 0 lecturas, medido el 2026-08-16 sobre el árbol en `d5305d2` con `_bitacoras/clausula_y_papel_2026-08-16/01_medir_direccion.js` | ⚠️ PENDIENTE — ~~sólo por la dirección~~ **por el consumidor de la dirección, no por su fuente** (2026-08-16) |
 | **Contacto de Gobernación** (teléfono) | `src/data/bahia-capitania-map.json` (164 entradas, indexado por bahía) | ⚠️ TRANSITORIA — ver §5.1 |
-| **Escalón de contacto** (qué nivel se rotula: Capitanía o Gobernación) | `data/contacto/reparticiones_publicadas.json` — índice CdReparticion → nombre publicado y teléfono, derivado de las fichas de DIRECTEMAR por `scripts/frente-contacto-derivar-reparticiones.js`. **Límite del insumo: 2 de sus 64 reparticiones no traen nombre publicado — `CdRep 144` (LIRQUÉN) y `CdRep 291` (RADA COVADONGA)** — y quedan fuera del índice: una bahía que las nombrara no alcanza el escalón 1 y cae al 2. Medido el 2026-08-16: **hoy eso no le cuesta ninguna entrada — 0 de 164** | ⚠️ TRANSITORIA — ver §5.1 |
+| **Escalón de contacto** (qué nivel se rotula: Capitanía o Gobernación) | `data/contacto/reparticiones_publicadas.json` — índice CdReparticion → nombre publicado y teléfono, derivado de las fichas de DIRECTEMAR por `scripts/frente-contacto-derivar-reparticiones.js`. **Límite del insumo: 2 de sus 64 reparticiones no traen nombre publicado — `CdRep 144` (LIRQUÉN) y `CdRep 291` (RADA COVADONGA)** — y quedan fuera del índice: una bahía que las nombrara no alcanza el escalón 1 y cae al 2. Medido el 2026-08-16: ~~**hoy eso no le cuesta ninguna entrada — 0 de 164**~~ · **ENMENDADO 2026-08-16 (§3.3): cierto del escalón 1 y falso del frente de re-atribución.** Ninguna bahía las **nombra** —el escalón 1 sigue pagando 0 de 164—, pero SITPORT le **atribuye** la `CdRep 144` a la bahía 97, y eso cuesta **1 entrada de 164 que no se puede medir**. Ver §5.1 | ⚠️ TRANSITORIA — ver §5.1 |
 | Mareas | Motor harmónico propio (`tidal-constants.json`, 21 estaciones) | OK |
 | Ruteo | Raster A* (5 tiles, Arica–Cabo de Hornos) | OK con bugs de snap |
 | **SST (temperatura agua)** | Open-Meteo Marine (`sea_surface_temperature`) | OK — real |
@@ -676,6 +705,28 @@ sirve otra cosa (causa del bug del perfil pescador).
 | **Umbrales AB de mal tiempo** | Resoluciones locales de Capitanía vía SITPORT | Jurisdiccional |
 
 ### 5.1 — El contacto de Gobernación es fuente TRANSITORIA, y por qué se declara igual
+
+**QUÉ ES ESTE ARCHIVO Y QUÉ NO ES — declarado el 2026-08-16 porque su nombre engaña.**
+`bahia-capitania-map.json` es **fuente del contacto a mostrar**: contesta *"¿a qué repartición
+llama el patrón desde esta bahía?"*. **NO es fuente de jurisdicción.** Los límites
+jurisdiccionales los fija el D.S. 991 vía `data/decreto/` (INV-3.3), y **ningún consumidor de
+este archivo consulta una norma ni decide un límite a partir de él.** Se declara porque el
+archivo se llama `bahia-capitania-map` y su campo se llama `capitania` —dos nombres que suenan
+jurisdiccionales— mientras el frente del D.S. 991 corre en paralelo en el mismo repositorio; y
+porque de esa lectura ya salió una conclusión equivocada: tratar una divergencia de atribución
+de contacto como pregunta normativa que hay que escalar. La cierra **D-R5**
+(`_bitacoras/auditoria_rotulos_2026-08-15/`, §19).
+
+> **La precisión que la medición obliga a escribir, para que la frase no se lea más ancha de lo
+> que se midió.** Tres consumidores —`zonas-aviso.js`, `ambitos-publicados.js` y
+> `cobertura-jurisdiccional.js`— **sí cotejan el campo `capitania` de este archivo contra el
+> nombre de la jurisdicción del decreto**. Ese cruce no invierte el orden: en
+> `zonas-aviso.js:244` **el decreto manda y la carga aborta** si el mapa no coincide, en vez de
+> que el mapa imponga su nombre. Y el consumidor que está del lado de jurisdicción,
+> `join-bahia-jurisdiccion.js:49`, lee de este archivo **sólo las claves** —la lista de ids de
+> bahía válidos— y **no su campo `capitania`**. O sea: el archivo **se cruza** con la capa de
+> jurisdicción y **en ningún cruce decide**. Medido el 2026-08-16, consumidor por consumidor,
+> en `_bitacoras/reatribucion_reconocimiento_2026-08-16/` §2.
 
 `bahia-capitania-map.json` **no es la fuente que este sistema quiere**: está indexado por
 bahía y no por Capitanía, así que el mismo teléfono se repite en promedio ~~11 veces~~ y un cambio
@@ -800,10 +851,39 @@ está anotado como bug abierto en §7. Medido: **la copia del backend no la cons
 de la PWA se usa **sólo como fallback** cuando el backend no manda contacto. Ninguna de las
 dos es fuente autorizada, y ninguna de las dos debe empezar a serlo.
 
-**Condición de retiro:** esta fila desaparece de §5 el día que exista una fuente de contacto
-indexada por Capitanía. Ese día `bahia-capitania-map.json` deja de alimentar contacto y el
-escalón 2 de INV-10.1 pasa a leer de la fuente nueva. Mientras tanto, la fila es transitoria
-por declaración y no por olvido.
+**Condición de retiro:** esta fila desaparece de §5 el día que exista ~~una fuente de contacto
+indexada por Capitanía~~ **las DOS mitades de abajo**. Ese día `bahia-capitania-map.json` deja
+de alimentar contacto y el escalón 2 de INV-10.1 pasa a leer de la fuente nueva. Mientras
+tanto, la fila es transitoria por declaración y no por olvido.
+
+> **ENMENDADO 2026-08-16 (§3.3): tal como estaba escrita, esta condición YA DISPARABA, y no
+> debía.** `data/contacto/reparticiones_publicadas.json` **es** una fuente de contacto viva
+> indexada por repartición —64 reparticiones, con teléfono en todas y `direccion` en 63—, así
+> que "existe una fuente de contacto indexada por Capitanía" es cierto **desde `dc7d63e`**. Una
+> sesión que leyera esta línea al pie de la letra estaría autorizada a retirar dos filas vivas.
+> Medido con `_bitacoras/clausula_y_papel_2026-08-16/01_medir_direccion.js` sobre el árbol en
+> `d5305d2`.
+>
+> **Lo que falta, y es la mitad que la condición nunca nombró: el puente.** Hoy el motor va de
+> bahía a contacto **por este mapa**. El único `bahía → CdReparticion` que existe en el
+> repositorio es el snapshot de SITPORT del 2026-08-13
+> (`_bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaBahias.json`), que **no es fuente
+> viva declarada** y que ni siquiera está fresco — la corrida de drift del 2026-08-16 vio 166
+> bahías contra las 165 del snapshot. Retirar esta fila sin ese puente dejaría al motor sin cómo
+> llegar de una bahía a su repartición.
+>
+> **LA CONDICIÓN, ENTERA Y CON SUS DOS MITADES.** Esta fila desaparece de §5 el día que existan
+> las dos:
+> 1. **una fuente de contacto indexada por Capitanía** — hoy **CUMPLIDA** por
+>    `reparticiones_publicadas.json`, con la salvedad de que sus 64 reparticiones **no son** las
+>    64 Capitanías: `CdRep 291` (RADA COVADONGA) es Alcaldía de Mar, y dos no traen nombre
+>    publicado;
+> 2. **un puente vivo de bahía a repartición que no dependa de este mapa** — hoy **NO
+>    CUMPLIDA**.
+>
+> Dicho de una vez y sin las dos mitades: **el disparador real es el día que el contacto deje de
+> derivarse de `bahia-capitania-map.json`.** Las dos mitades son lo que hace falta para que ese
+> día llegue, y se escriben separadas porque una ya está y la otra no.
 
 > **El insumo de reparticiones pasó a vivo el 2026-08-16.** Hasta ese día
 > `data/contacto/reparticiones_publicadas.json` era un derivado de generación: lo leían
@@ -826,10 +906,27 @@ por declaración y no por olvido.
 > bahía.** De sus 64 reparticiones, **2 no traen nombre publicado: `CdRep 144` (LIRQUÉN) y
 > `CdRep 291` (RADA COVADONGA)**. No se les inventa clave: quedan fuera del índice, y una
 > bahía que las nombrara no puede alcanzar el escalón 1 porque no hay nombre contra el cual
-> cotejar. **Hoy eso no le cuesta ninguna entrada — 0 de 164, medido**: ninguna bahía viva
-> nombra a esas dos reparticiones. Es un límite latente y no un defecto activo, y se escribe
+> cotejar. ~~**Hoy eso no le cuesta ninguna entrada — 0 de 164, medido**: ninguna bahía viva
+> nombra a esas dos reparticiones. Es un límite latente y no un defecto activo~~, y se escribe
 > igual porque el día que una bahía caiga ahí, el motivo va a estar en el campo `motivo` y
 > la explicación acá.
+>
+> > **ENMENDADO 2026-08-16 (§3.3): el "0 de 164" es cierto DEL ESCALÓN 1 y falso del frente de
+> > re-atribución.** La frase mide una sola vara —cuántas bahías **NOMBRAN** a esas dos
+> > reparticiones— y por esa vara **sigue en 0 de 164**: ninguna las nombra, así que el escalón
+> > 1 no paga nada. Lo que no midió es la vara de enfrente: **SITPORT le ATRIBUYE la `CdRep 144`
+> > (LIRQUÉN) a la bahía 97**, cuyo mapa dice "Talcahuano". Como esa repartición no tiene nombre
+> > publicado, **no hay contra qué cotejar**: esa entrada **no se puede medir**, ni a favor ni en
+> > contra, y le cuesta al frente de re-atribución **1 entrada de 164**. Medido el 2026-08-16
+> > sobre el árbol en `d5305d2` con
+> > `_bitacoras/reatribucion_reconocimiento_2026-08-16/01_medir_universo.js`; la salida la lista
+> > por nombre bajo `CDREP_FUERA_DEL_PUENTE`. **El límite dejó de ser latente en una de sus dos
+> > varas** — que es exactamente lo que este párrafo manda mirar cuando el resolvedor no resuelva
+> > una bahía. La bahía **146** cae en la misma bolsa por otra causa (`CdRep 189`, que no está en
+> > el insumo) y no la cubre esta fila.
+> >
+> > **Esta enmienda es sobre el COSTO del límite. La condición de retiro de esta misma fila
+> > recibe otra enmienda, de causa distinta, más abajo.**
 >
 > **NO ES fuente de jurisdicción.** Eso lo fija el D.S. 991 vía `data/decreto/` (INV-3.3), y
 > el propio archivo lo dice en su clave `que_NO_es`. **Tampoco es fuente del teléfono**: el
@@ -842,10 +939,37 @@ por declaración y no por olvido.
 > leerla en tiempo de request la convertiría en una. Lo vigila V11 de
 > `_bitacoras/rotulo_p3_2026-08-16/04_verificar.js`, y su mordida es B7.
 >
-> **Condición de retiro:** esta fila desaparece de §5 el día que exista una fuente de
-> contacto indexada por Capitanía — la misma condición que la fila de Gobernación, y por el
+> **Condición de retiro:** esta fila desaparece de §5 el día que exista ~~una fuente de
+> contacto indexada por Capitanía~~ **lo que la condición de retiro de la fila de Gobernación
+> define, con sus dos mitades** — la misma condición que la fila de Gobernación, y por el
 > mismo motivo. Ese día el escalón 1 se contesta leyendo esa fuente y este índice deja de
 > hacer falta. Mientras tanto es transitoria por declaración y no por olvido.
+>
+> > **ENMENDADO 2026-08-16 (§3.3), y esta fila lo tenía peor que la otra: su condición se
+> > cumplía a sí misma.** Esta fila describe `reparticiones_publicadas.json`, que **es** una
+> > fuente de contacto indexada por repartición. Escrita como estaba, la fila declaraba
+> > desaparecer el día que existiera **lo que ella misma es** — un bucle, y del tipo que no
+> > avisa: la próxima sesión que la leyera al pie de la letra la habría retirado y con ella la
+> > declaración del insumo vivo, que es exactamente lo que la primera línea de §5 existe para
+> > impedir.
+> >
+> > **Por qué esta enmienda REFIERE en vez de repetir.** La condición es una sola y la define la
+> > fila de Gobernación, ahora con sus dos mitades —fuente indexada por Capitanía **y** puente
+> > vivo bahía→repartición—. Copiar acá el texto del puente dejaría dos definiciones que pueden
+> > divergir, que es el motivo por el que la v2.0 no partió INV-3.3 en dos. La frase *"la misma
+> > condición que la fila de Gobernación"* ya hacía lo correcto: lo que fallaba es que apuntaba
+> > a un texto que disparaba solo. Enmendada aquélla, ésta vuelve a ser cierta por referencia.
+> >
+> > **Y la mitad del puente le aplica igual, aunque no se note.** Podría leerse que a este
+> > índice no le hace falta el puente, porque él ya está indexado por repartición. No es así:
+> > mientras el teléfono se derive del mapa, el cotejo del escalón 1 **sigue haciendo falta**,
+> > porque el número del mapa puede no ser el de la Capitanía que el mapa nombra — que es
+> > justamente lo que este índice existe para cazar. El día que el contacto deje de derivarse
+> > del mapa, no hay nada que cotejar y las dos filas se retiran juntas.
+> >
+> > **Esta enmienda es sobre la CONDICIÓN DE RETIRO. El "0 de 164" de esta misma fila recibe
+> > otra enmienda, de causa distinta, más arriba.** Medido con
+> > `_bitacoras/clausula_y_papel_2026-08-16/01_medir_direccion.js` sobre el árbol en `d5305d2`.
 
 > **LO QUE ESTA PIEZA NO MUEVE DE §5.1, medido y dicho para que nadie lo busque en vano.**
 >

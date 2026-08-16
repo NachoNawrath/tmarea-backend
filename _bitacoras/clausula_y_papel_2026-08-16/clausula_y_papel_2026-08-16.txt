@@ -1,0 +1,346 @@
+================================================================================
+CLAUSULA Y PAPEL — LA REGLA QUE FALTABA PARA QUE UNA LINEA FALSA NO SOBREVIVA A
+LA SESION QUE LA MIDE, Y EL PAPEL DEL ARCHIVO QUE SE VENIA LEYENDO COMO
+JURISDICCIONAL. TRES ENMIENDAS A §5, NO DOS.
+2026-08-16
+Sesion: CLAUSULA-Y-PAPEL. HEAD del backend al abrir: d5305d2, y al cerrar el
+mismo (sin commit). La PWA NO SE ABRIO, ni de lectura.
+Frente: CONTACTO — el DATO (PLAN_JURISDICCION.md §7.1).
+NO se abrio el frente de jurisdiccion del D.S. 991. NO se toco el motor BRE.
+ESCRITO: CLAUDE.md (§6.1 nueva), CONTRATO_MOTOR.md (v2.4), el registro de
+decisiones (D-R5) y este directorio. Cero dato, cero render, cero PWA, cero
+`src/`.
+================================================================================
+
+SHELL DECLARADA (CLAUDE.md §7.3)
+--------------------------------------------------------------------------------
+El agente corrio el instrumento con `node` desde Git Bash. La linea corre
+identica en PowerShell desde la raiz del repositorio:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\clausula_y_papel_2026-08-16\01_medir_direccion.js
+
+El instrumento escribe su propio `.txt` en UTF-8 con `fs.writeFileSync`; no se
+uso `>` de ninguna shell para medir (CLAUDE.md §7.2). Las ediciones de los tres
+archivos de texto se hicieron linea a linea, no reserializando.
+
+ARRANQUE VERIFICADO — Y EL CONTEO NO DIO LO ESPERADO
+--------------------------------------------------------------------------------
+HEAD y `origin/main` en d5305d2c893414633ffd2aefc2e00d22a3edf070.
+`data/catalogo/estado_drift.json` modificado sin estagear, a proposito.
+
+UNTRACKED: 26, no los 25 que el prompt esperaba. NO ES PARADA, y la diferencia
+esta explicada: la entrada 26 es `_bitacoras/reatribucion_reconocimiento_2026-08-16/`,
+con mtime 2026-08-16 17:38 — la creo la sesion anterior. Su propia bitacora
+declara "25 untracked, los 25 esperados" (linea 31), medido ANTES de escribir su
+directorio. El baseline de 25 es anterior a la salida que este prompt manda leer.
+
+
+================================================================================
+0. LO QUE ESTA SESION LE CORRIGE AL PROMPT
+================================================================================
+Tres cosas, y la segunda cambio el trabajo.
+
+(1) EL CONTEO DE UNTRACKED. Arriba. Sin consecuencia.
+
+(2) LA MEDICION DE LA DIRECCION NO ESTABA VERSIONADA. El prompt dice que las
+    dos mediciones de §5 "ya estan hechas y versionadas en
+    `_bitacoras/reatribucion_reconocimiento_2026-08-16/`". La del `0 de 164` SI
+    esta (bitacora lineas 189-195, respaldada por `01_medir_universo.txt`). La
+    de la direccion NO: grep por `direcci` sobre ese directorio da CERO.
+    Consecuencia: la enmienda 1 no tenia instrumento, y la clausula que esta
+    misma sesion escribe EXIGE instrumento y salida versionados. Se escribio
+    `01_medir_direccion.js` antes de redactar la enmienda, para que la cita
+    fuera cierta en el momento de escribirse y no despues.
+    >>> Es el primer caso de uso de §6.1, y lo ejercito la propia sesion que la
+    >>> escribio: la clausula pide instrumento, no habia, se hizo.
+
+(3) EL CONTEO DE "SEIS LINEAS FALSAS". Por el conteo de este repositorio, v2.1
+    corrigio CUATRO afirmaciones falsas mas UNA precision (la de Baker), no
+    cinco falsas; v2.3, una. Con estas, son 6 falsas + 1 precision. No cambia
+    nada de lo escrito.
+
+
+================================================================================
+1. LAS DOS MEDICIONES DEL PROMPT, VERIFICADAS CONTRA LA SALIDA ANTES DE REDACTAR
+================================================================================
+La advertencia de premisas del prompt se cumplio: las dos se verificaron contra
+la salida versionada antes de escribir una letra. LAS DOS SE SOSTIENEN.
+
+MEDICION A — LA DIRECCION. Salida: `01_medir_direccion.txt` (de esta sesion).
+
+    reparticiones en el insumo   : 64
+    con `direccion` no vacia     : 63
+    sin `direccion`              :  1   -> CdRep 291 RADA COVADONGA (null)
+    SUMA : 63 + 1 = 64 de 64   CIERRA
+
+    Y LO QUE LA MEDICION AGREGA AL PROMPT, en dos cosas:
+
+    (a) LA UNICA SIN DIRECCION ES UNA DE LAS DOS SIN NOMBRE PUBLICADO. CdRep 291
+        (RADA COVADONGA) es la misma que §5 ya declara sin `nombre_publicado`.
+        Es la misma carencia de la misma ficha, no dos huecos distintos, y por
+        eso el hueco de la direccion no abre un frente nuevo.
+
+    (b) NADIE CONSUME LA DIRECCION. Barridos los 75 `.js` de `src/`: DOS nombran
+        `reparticiones_publicadas` —`contacto-por-escalon.js` y su test— y las
+        apariciones del campo `direccion` dentro de un consumidor del insumo son
+        CERO. INV-10.1 manda mostrar la direccion y ningun render la recibe.
+        >>> ESO CAMBIA EL REEMPLAZO. La fila sigue en PENDIENTE; lo que cambia
+        >>> es su CAUSA. No falta la fuente: falta el consumidor. Escribir
+        >>> "resuelto" habria sido cambiar una linea falsa por otra.
+
+    POR QUE `dc7d63e` Y NO `f3936b8`. El campo existe desde `f3936b8`, y el blob
+    de git es IDENTICO en f3936b8, dc7d63e, a0eb892, d5305d2 y en disco
+    (`ef528ce604e535707202c74e182dff0102e35129`): el archivo no cambio nunca.
+    Lo que volvio falsa la frase no fue un dato nuevo — fue la palabra "VIVA".
+    Hasta `dc7d63e` el insumo era derivado de generacion, lo leian tres scripts
+    y ningun archivo de `src/`, y §5.1 lo dice literal. Desde `dc7d63e` lo lee
+    `src/services/contacto-por-escalon.js:52`. La frase envejecio por un ascenso
+    de estado, no por un cambio de contenido, y ese es un modo de envejecer que
+    §5.1 no tenia registrado.
+
+MEDICION B — EL "0 DE 164". Salida ya versionada:
+`_bitacoras/reatribucion_reconocimiento_2026-08-16/01_medir_universo.txt`.
+
+    CDREP_FUERA_DEL_PUENTE (2):
+        {"id":"97","cap":"Talcahuano","cdSit":144,"sitport":"LIRQUÉN"}
+        {"id":"146","cap":"Lago Ranco","cdSit":189,"sitport":"CdRep NO esta en el insumo"}
+
+    La frase mide UNA vara —cuantas bahias NOMBRAN a esas dos reparticiones— y
+    por esa vara sigue en 0 de 164. La vara de enfrente no se midio: SITPORT le
+    ATRIBUYE la CdRep 144 a la bahia 97, y sin nombre publicado no hay contra
+    que cotejar. Es 1 entrada de 164 que NO SE PUEDE MEDIR — ni a favor ni en
+    contra. La 146 cae en la misma bolsa por otra causa y no la cubre esa fila.
+
+
+================================================================================
+2. LA TERCERA ENMIENDA — LA QUE NADIE PIDIO Y SALIO DE LA MEDICION A
+================================================================================
+No estaba en el prompt. Salio de medir la direccion y mirar que archivo la
+tiene.
+
+LO QUE DECIA, en las DOS filas transitorias y con frases DISTINTAS:
+
+  A) fila Contacto de Gobernacion (§5.1):
+     "esta fila desaparece de §5 el dia que exista una fuente de contacto
+      indexada por Capitania. Ese dia `bahia-capitania-map.json` deja de
+      alimentar contacto y el escalon 2 de INV-10.1 pasa a leer de la fuente
+      nueva."
+
+  B) fila Escalon de contacto (§5.1):
+     "esta fila desaparece de §5 el dia que exista una fuente de contacto
+      indexada por Capitania — LA MISMA CONDICION QUE LA FILA DE GOBERNACION, y
+      por el mismo motivo. Ese dia el escalon 1 se contesta leyendo esa fuente y
+      este indice deja de hacer falta."
+
+EL DEFECTO, MEDIDO: `reparticiones_publicadas.json` ES una fuente de contacto
+viva indexada por reparticion —64 reparticiones, telefono en todas, direccion en
+63—. O sea que "existe una fuente de contacto indexada por Capitania" ES CIERTO
+DESDE `dc7d63e`. LAS DOS CONDICIONES YA DISPARABAN. Una sesion que las leyera al
+pie de la letra estaria autorizada a retirar dos filas vivas de §5.
+
+Y LA FILA B LO TENIA PEOR: describe `reparticiones_publicadas.json`, o sea que
+declaraba desaparecer el dia que existiera LO QUE ELLA MISMA ES. Un bucle.
+
+POR QUE NO SE CUMPLE DE VERDAD — LA MITAD QUE LA CONDICION NUNCA NOMBRO:
+el PUENTE. Hoy el motor va de bahia a contacto POR EL MAPA. El unico
+`bahia -> CdReparticion` del repositorio es el snapshot de SITPORT del 08-13,
+que no es fuente viva declarada y que ademas no esta fresco —el drift del 08-16
+vio 166 bahias contra 165 del snapshot—. Sin puente, retirar la fila deja al
+motor sin como llegar de una bahia a su reparticion.
+
+TRES COSAS QUE ESTA ENMIENDA RESOLVIO, Y SE ESCRIBEN PORQUE NINGUNA ERA OBVIA:
+
+  (1) SON DOS FRASES, NO UNA. Comparten la primera oracion casi literal y
+      divergen despues. Enmendar solo A habria dejado a B afirmando "la misma
+      condicion que la fila de Gobernacion" cuando ya no lo seria: la enmienda
+      de A volvia FALSA a B por efecto lateral. Se enmendaron las dos.
+
+  (2) EL DISPARADOR ES UNO SOLO, Y B YA LO DECIA BIEN. Las dos filas se retiran
+      por el mismo evento: el dia que el contacto deje de derivarse del mapa. Asi
+      que A lleva la DEFINICION con sus dos mitades y B la REFIERE. Copiar el
+      texto del puente en B habria dejado dos definiciones que pueden divergir —
+      es el motivo por el que la v2.0 no partio INV-3.3 en dos. Lo que fallaba en
+      B no era la referencia: era que apuntaba a un texto que disparaba solo.
+
+  (3) EL PUENTE LE APLICA A B AUNQUE NO SE NOTE. Podria leerse que a este indice
+      no le hace falta, porque el ya esta indexado por reparticion. No: mientras
+      el telefono se derive del mapa, el cotejo del escalon 1 SIGUE HACIENDO
+      FALTA, porque el numero del mapa puede no ser el de la Capitania que el
+      mapa nombra — que es lo que este indice existe para cazar.
+
+DOS ENMIENDAS SOBRE LA MISMA FILA, Y CADA UNA ROTULADA CON SU CAUSA. La fila del
+escalon recibe la del "0 de 164" (COSTO del limite, en la celda de §5 y en el
+bloque QUE NO CUBRE) y la de la condicion de retiro (RETIRO, en su parrafo). Cada
+una dice en su texto cual es la otra y donde vive, para que nadie las lea como
+una sola corrida.
+
+
+================================================================================
+3. EL PAPEL DEL ARCHIVO — Y POR QUE "NINGUN CONSUMIDOR" NO ERA EXACTO
+================================================================================
+El prompt pidio declarar que `bahia-capitania-map.json` es fuente del contacto a
+mostrar y NO de jurisdiccion, y pregunto si "ningun consumidor de este archivo
+los consulta" era exacto contra la medicion del punto 2 del 08-16.
+
+NO ERA EXACTO tal como estaba escrito, y la correccion es de PRECISION, no de
+sentido. Medido consumidor por consumidor:
+
+  join-bahia-jurisdiccion.js:49   SOLO LAS CLAVES (`Object.keys`) — la lista de
+                                  ids de bahia validos. Esta en el camino de
+                                  jurisdiccion y NO LEE `capitania`.
+  zonas-aviso.js:244              COTEJA `capitania` contra `jur.nombre` del
+                                  decreto y ABORTA LA CARGA si no coinciden.
+  ambitos-publicados.js:306       usa `capitania` como CLAVE DE JOIN contra el
+                                  nombre de la jurisdiccion.
+  cobertura-jurisdiccional.js:411 igual, aguas abajo del anterior.
+  capitanias.js:52                contacto. No toca jurisdiccion.
+  catalogo-bahias.js:133          inventario de ids. No toca jurisdiccion.
+
+TRES CONSUMIDORES SI CRUZAN el campo `capitania` contra la capa del decreto.
+NINGUNO DECIDE un limite con el, y en `zonas-aviso.js` el cruce es un guard donde
+EL DECRETO GANA Y EL MAPA ABORTA. Leida como "nadie decide un limite a partir de
+este archivo", la frase es exacta; leida como "este archivo nunca se cruza con la
+capa de jurisdiccion", es falsa.
+
+Se escribio con LAS DOS LECTURAS RESUELTAS, que es lo que §5.1 ya habia hecho con
+la frase de Baker: la afirmacion en el cuerpo y la precision en bloque citado
+abajo. Asi nadie tiene que elegir una lectura.
+
+
+================================================================================
+4. D-R5 — POR QUE NO ES REDUNDANTE CON D-R1
+================================================================================
+Se pregunto explicitamente si D-R1 ya la contenia. RESPUESTA MEDIDA CONTRA EL
+TEXTO: D-R1 tiene la PREMISA completa y NO tiene la CONSECUENCIA.
+
+D-R1, literal (§11):
+    "PARA EL ROTULO DE CONTACTO DE BAHIA MANDA SITPORT. [...] Alcance: el rotulo
+     de contacto de bahia. NO toca INV-3.3 ni la resolucion de jurisdiccion,
+     donde el decreto sigue siendo la fuente."
+
+D-R1 dice QUE MANDA. No dice que hacer con una DIVERGENCIA, ni que una
+divergencia no sea pregunta normativa. Su clausula de "Alcance" se leyo como
+LIMITACION de D-R1 cuando es CERCO alrededor del frente de jurisdiccion, y de esa
+lectura salio el escalamiento de las 32.
+
+D-R5 se escribio DERIVADA de D-R1, citandola como premisa, y no compitiendo con
+ella. Descartado, con motivo: reescribir D-R1 (§3.3 lo prohibe, y no hay nada
+falso en D-R1) y dejarlo como nota al pie de D-R1 (quedaba enterrado en §11, y es
+el modo exacto en que la mitad falsa de D-R3 sobrevivio sin que nadie la viera).
+
+LO QUE D-R5 HABILITA Y LO QUE NO. Habilita aplicar las 32 en pares
+nombre+telefono sin adjudicacion caso a caso. NO habilita la 127 (Baker), la 97
+(CdRep 144) ni la 146 (CdRep 189), que no son parte de las 32 y tienen causa
+propia. Y NO EJECUTA NADA: aplicar las 32 es la sesion que sigue.
+
+
+================================================================================
+5. LO QUE SE ESCRIBIO, ARCHIVO POR ARCHIVO
+================================================================================
+CLAUDE.md
+    §6.1 NUEVA — "Una restriccion de escritura no suspende el deber de
+    redactar". Colgada de §6 y no de §0.4, con motivo escrito: la falla no
+    ocurre cuando aparece el hallazgo sino cuando el que lo tiene choca contra
+    el limite de escritura, y §6 es lo que se lee en ese momento. No obliga a
+    renumerar nada: §6 era la unica seccion sin subsecciones.
+    EL BLOQUE CORREGIDO DE §6 NO SE TOCO. §6.1 lo cita como precedente.
+    Unificarlos es pieza aparte, y el owner lo dejo dicho.
+
+CONTRATO_MOTOR.md — v2.3 -> v2.4
+    · version sobrescrita (un numero de version no se tacha; lo que §3.3 protege
+      vive en el changelog) y parrafo de v2.4 agregado arriba de v2.3;
+    · §5.1 abre con la DECLARACION DE PAPEL, con la precision de los tres
+      cotejos en bloque citado;
+    · §5 celda "Contacto de Capitania" — enmienda de la direccion, con tachado,
+      fecha, commit e instrumento; el Estado pasa de "solo por la direccion" a
+      "por el consumidor de la direccion, no por su fuente";
+    · §5 celda "Escalon de contacto" — enmienda del "0 de 164", con puntero a
+      §5.1;
+    · §5.1 bloque QUE NO CUBRE — enmienda del "0 de 164", completa;
+    · §5.1 condicion de retiro de la fila de Gobernacion — DEFINICION con sus
+      dos mitades;
+    · §5.1 condicion de retiro de la fila del escalon — REFERENCIA a la
+      anterior, mas el bucle propio.
+
+_bitacoras/auditoria_rotulos_2026-08-15/auditoria_rotulos_2026-08-15.txt
+    ADDENDUM CUARTO + §19 con D-R5, en la forma de D-R1/D-R2/D-R4 y sin tildes,
+    como los tres. Se AGREGO al final; nada de lo anterior se toco, y el
+    addendum lo declara.
+
+_bitacoras/clausula_y_papel_2026-08-16/
+    `01_medir_direccion.js` + `.txt` — instrumento nuevo, con las tres mordidas
+    de §4.6 declaradas y corriendo.
+    esta bitacora.
+
+
+================================================================================
+6. LO QUE ESTA BITACORA NO RESPONDE
+================================================================================
+- SI LA DIRECCION QUE EL INSUMO TRAE ES LA CORRECTA. Se midio que EXISTE, en 63
+  de 64, y de donde sale (las fichas de DIRECTEMAR, via
+  `scripts/frente-contacto-derivar-reparticiones.js`). No se coteja contra nada
+  ni se salio a la fuente. Que diga la verdad es otra medicion.
+- QUE HACE FALTA PARA QUE LA DIRECCION LLEGUE A PANTALLA. INV-10.1 la manda
+  mostrar con la misma prelacion que el telefono, y hoy no la recibe ningun
+  render. No se abrio: es pieza, y toca los cinco caminos, tres de ellos ya
+  declarados ABIERTOS por la sesion anterior.
+- SI HAY MAS CONSUMIDORES DEL CAMPO `direccion` POR INDIRECCION. El barrido es
+  LEXICO, con el parser escrito en el instrumento. Un acceso por variable o un
+  destructuring con renombre no lo caza. Se declara como "no lo encontre con mi
+  parser" (CLAUDE.md §2), no como ausencia.
+- CUANTAS DE LAS 32 TIENEN RAZON. D-R5 dice que la pregunta no es normativa y
+  que se resuelven por D-R1. NO dice que el mapa este mal en las 32: dice que
+  adjudicar cual de las dos fuentes acierta no es la pregunta que hay que
+  contestar para escribirlas.
+- LA CONDICION DE RETIRO, UNA VEZ CUMPLIDA. Se escribio que hace falta el
+  puente. NO se diseño el puente, ni se midio que costaria.
+================================================================================
+
+================================================================================
+7. EL VERIFICADOR FALLO EN SU PRIMERA CORRIDA, Y NINGUNA FALLA ERA DEL TEXTO
+================================================================================
+Se escribe porque el archivo es el entregable y no el resumen (§3.1), y porque
+la conclusion —"eran defectos del control, no del texto"— es exactamente la que
+un agente puede querer dar por buena sin probarla.
+
+`02_verificar.js` dio 7 controles en rojo en su primera corrida. Las SIETE eran
+defectos del verificador. Cada una se diagnostico contra el arbol ANTES de
+tocarlo, y ninguna se resolvio bajando la severidad de nada (§0.3):
+
+  E1/E2/E3 (cinco fallas, todas "§3.3:NO")
+      LA VENTANA ARRANCABA EN EL ANCLA. Cada enmienda se ubica por un fragmento
+      de su texto, pero el rotulo `ENMENDADO 2026-08-16 (§3.3)` va DELANTE de
+      ese fragmento. La ventana empezaba despues del rotulo y declaraba
+      ausente lo que estaba escrito tres palabras antes.
+      Ademas E3-retiroB daba fecha:NO y commit:NO por ventana CORTA: su bloque
+      pasa de 1400 caracteres.
+      Arreglo: la ventana arranca 300 caracteres ANTES del ancla, y E3-retiroB
+      pasa a 2200. Mordida M3.
+
+  V4.0  UNA RUTA CITADA "NO EXISTIA".
+      `_bitacoras/e01d_d7_y_257_2026-08-11/sitport_consultaCapuertoRestriccion.json`.
+      COMPROBADO ANTES DE TOCAR NADA: el archivo EXISTE. La cita esta en el
+      registro desde antes —linea 598, y `git diff` da 0 coincidencias en lo que
+      esta sesion agrego—, partida en dos lineas por el ancho de columna. El
+      regex se comio el salto de linea y la indentacion.
+      Arreglo: las rutas capturadas se re-pegan antes de buscarlas en disco.
+      Mordida M4.
+      >>> Si esto no se hubiera diagnosticado, la salida decia "una cita rota" y
+      >>> la cita estaba bien. Es el modo de falla de §2 con los papeles al
+      >>> reves: un control que afirma un defecto que no existe.
+
+  V7.0  "LAUDE.md" MODIFICADO FUERA DE LA ZONA.
+      `git status --porcelain` codifica el estado en las DOS primeras columnas,
+      y el verificador hacia `.trim()` sobre la salida ENTERA antes de partirla
+      en lineas. Eso se come el espacio inicial de la PRIMERA linea y solo de
+      esa, asi que `slice(3)` corta una letra del primer archivo. El archivo era
+      `CLAUDE.md`, autorizado.
+      Arreglo: se parte en lineas primero y se filtran las vacias; nunca se
+      trimea la salida entera. Mordida M5.
+
+LO QUE ESTO DEJA ESCRITO, y vale mas que los siete arreglos: el verificador se
+toco DESPUES de su primera corrida, asi que se le agrego mordida propia —M1 a
+M6— porque un control que se modifica y despues pasa no prueba que mida:
+prueba que dejo de quejarse (§4.6). Las seis muerden.
+================================================================================

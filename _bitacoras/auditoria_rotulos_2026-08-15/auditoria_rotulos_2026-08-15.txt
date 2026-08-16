@@ -760,3 +760,77 @@ sobre las mismas 164, y 99 + 9 = 108 cierra con la vara de aca.
 
 QUIEN RE-CORRA `02_medir_pantalla.js` DEBE LEER SU P3 COMO HISTORICO. Sus P1 y
 P2 no necesitan esa advertencia.
+
+
+================================================================================
+ADDENDUM 2026-08-16 (cuarto) — D-R5, EL PAPEL DE SITPORT EN UNA DIVERGENCIA DE
+CONTACTO. Se AGREGA, no se reescribe (CLAUDE.md §3.3), y NO lleva tachado: D-R1,
+D-R2 y D-R4 quedan como se escribieron y ninguna se toco. D-R5 no las corrige:
+declara una consecuencia de D-R1 que D-R1 no dice, y que por no estar dicha se
+leyo al reves. Sesion: CLAUSULA-Y-PAPEL.
+Evidencia: `_bitacoras/clausula_y_papel_2026-08-16/`.
+================================================================================
+
+19. D-R5 — UNA DIVERGENCIA CONTRA SITPORT ES DE CONTACTO, NO ES NORMATIVA Y NO
+    SE ESCALA
+================================================================================
+El reconocimiento del 2026-08-16 midio 32 entradas donde el mapa atribuye otra
+reparticion que SITPORT, y las dejo escaladas al owner porque "adjudicar cada
+una es del owner". Esa conclusion trato DOS preguntas como una sola.
+
+D-R5 — SITPORT REPORTA CONDICION DE PUERTO Y ES LA FUENTE DE LA ATRIBUCION DE
+    CONTACTO, ENTRANDO POR `CdReparticion` (D-R1). NO DESIGNA JURISDICCIONES.
+    Una divergencia entre `bahia-capitania-map.json` y SITPORT es divergencia de
+    CONTACTO. Se resuelve por D-R1 y D-R4 —entra por `CdReparticion`, el nombre
+    sale del titulo que DIRECTEMAR publica— y NO ES PREGUNTA NORMATIVA: no se
+    escala.
+    Motivo escrito por el owner: son dos preguntas distintas y solo una es del
+    decreto. A que Capitania PERTENECE legalmente una bahia lo manda la norma
+    (INV-3.3, D.S. 991). Que nombre y telefono SE MUESTRAN al patron desde esa
+    bahia lo decidio D-R1, y entra por `CdReparticion` de SITPORT. SITPORT
+    reporta condicion de puerto: contesta la segunda pregunta y nunca compitio
+    con la norma en la primera.
+    Alcance: el rotulo y el contacto de bahia. NO toca INV-3.3, ni el D.S. 991,
+    ni la resolucion de jurisdiccion, donde el decreto sigue siendo la fuente.
+    Es el mismo alcance que D-R1 ya se habia puesto, dicho ahora en su forma
+    negativa, que es la que faltaba.
+    Consecuencia operativa: LAS 32 MEDIDAS EL 2026-08-16 QUEDAN HABILITADAS para
+    aplicarse en pares nombre+telefono, sin adjudicacion caso a caso.
+    Respaldo medido, y es el que hace que habilitar no salga gratis
+    (`_bitacoras/reatribucion_reconocimiento_2026-08-16/02_medir_arrastre.txt`):
+      · el par se puede escribir con la estructura de hoy — ya se hizo 17 veces
+        en el lote Cisnes, y el telefono siguio a la nueva Capitania 17 de 17;
+      · escribir el NOMBRE SOLO es una REGRESION MEDIDA: 32 de 32 caerian al
+        escalon 2, y 18 entradas que hoy estan en escalon 1 lo perderian;
+      · con el par escrito: 29 de 32 alcanzan escalon 1, y 3 no —Chanaral x2 y
+        Juan Fernandez x1—, porque su valor publicado trae dos numeros y
+        `soloDigitos` del valor entero no coincide con ninguno de los dos trozos.
+    LO QUE D-R5 NO HABILITA, y no son parte de las 32: la 127 (Baker,
+    `capitania: null`), la 97 (CdRep 144, sin nombre publicado) y la 146
+    (CdRep 189, fuera del insumo). Cada una tiene su causa declarada aparte.
+
+POR QUE D-R5 EXISTE SI D-R1 YA DECIA CASI ESTO
+--------------------------------------------------------------------------------
+D-R1 tiene la premisa COMPLETA y no tiene la consecuencia. Dice que para el
+rotulo de contacto de bahia manda SITPORT, y se pone un alcance: "NO toca
+INV-3.3 ni la resolucion de jurisdiccion, donde el decreto sigue siendo la
+fuente". Lo que D-R1 no dice es que hacer con una DIVERGENCIA, ni que una
+divergencia no sea pregunta normativa. Esa clausula de alcance se leyo como
+LIMITACION de D-R1 cuando es CERCO alrededor del frente de jurisdiccion, y de
+esa lectura salio el escalamiento.
+
+Se descarto, con su motivo (CLAUDE.md §0.2):
+  · reescribir D-R1 — §3.3 lo prohibe y no hay nada falso en D-R1;
+  · dejarlo como nota al pie de D-R1 — la aclaracion quedaba enterrada en §11 y
+    la sesion que aplique las 32 tendria que citar "D-R1 mas su nota", que es el
+    modo exacto en que la mitad falsa de D-R3 sobrevivio sin que nadie la viera.
+
+LO QUE ESTO DEJA ESCRITO EN EL CONTRATO
+--------------------------------------------------------------------------------
+CONTRATO_MOTOR.md §5.1 abre desde hoy declarando que `bahia-capitania-map.json`
+es fuente del CONTACTO A MOSTRAR y NO de jurisdiccion, con la precision medida:
+tres consumidores SI cotejan su campo `capitania` contra el nombre de la
+jurisdiccion del decreto, y en `zonas-aviso.js:244` el decreto manda y la carga
+ABORTA si el mapa no coincide. El archivo se cruza con la capa de jurisdiccion y
+en ningun cruce decide. Bump a v2.4.
+================================================================================

@@ -1,0 +1,75 @@
+================================================================================
+LA DIRECCION DE CAPITANIA — existe en fuente viva, y no la consume nadie
+ancla HEAD : d5305d2c893414633ffd2aefc2e00d22a3edf070
+fecha      : 2026-08-16T23:02:56.984Z
+================================================================================
+
+PROCEDENCIA DEL INSUMO
+--------------------------------------------------------------------------------
+  ruta       : data/contacto/reparticiones_publicadas.json
+  sha256     : 9524a3792e3d79d7690d5a4c09b1c46191934dea45a734051f285420f89fef46
+  bytes      : 27153
+  mtime      : 2026-08-16T19:41:30.797Z   (mtime de checkout, NO fecha de captura)
+
+  blob de git por commit — dice si el archivo es EL MISMO, no si se parece:
+    f3936b8  ef528ce604e535707202c74e182dff0102e35129
+    dc7d63e  ef528ce604e535707202c74e182dff0102e35129
+    a0eb892  ef528ce604e535707202c74e182dff0102e35129
+    d5305d2  ef528ce604e535707202c74e182dff0102e35129
+    en disco   ef528ce604e535707202c74e182dff0102e35129
+  identico al de hoy en: f3936b8, dc7d63e, a0eb892, d5305d2
+
+(1) ¿EXISTE LA DIRECCION EN EL INSUMO?
+--------------------------------------------------------------------------------
+  reparticiones en el insumo        : 64
+  con `direccion` no vacia          : 63
+  sin `direccion`                   : 1
+      -> CdRep 291  RADA COVADONGA  direccion=null
+  SUMA : 63 + 1 = 64  de 64   CIERRA
+
+  Y LO QUE NO ES UNA CASUALIDAD, dicho para que no se lea como dos defectos:
+  reparticiones sin `nombre_publicado` : 2  -> 144 (LIRQUÉN) · 291 (RADA COVADONGA)
+  la unica sin direccion, ¿esta tambien sin nombre publicado? : SI  -> 291
+  Es la misma carencia de la misma ficha, no dos huecos distintos.
+
+(2) ¿QUIEN LEE EL INSUMO, Y QUIEN LEE EL CAMPO `direccion`?
+--------------------------------------------------------------------------------
+  archivos .js barridos bajo src/          : 75
+  que nombran `reparticiones_publicadas`   : 2
+      -> src/services/__tests__/contacto-por-escalon.test.js
+      -> src/services/contacto-por-escalon.js
+
+  apariciones de `direccion` como campo en src/ : 0
+
+  >>> apariciones dentro de un CONSUMIDOR del insumo : 0
+  >>> NINGUN archivo de src/ lee la direccion del insumo : CONFIRMADO
+
+  ALCANCE DE ESTA NEGATIVA (CLAUDE.md §2): es un barrido LEXICO sobre el
+  arbol, con el parser escrito arriba. No se monto la app. Un consumidor que
+  llegara al campo por indireccion —destructuring con renombre, acceso por
+  variable— no lo caza este parser, y se dice en vez de afirmar cobertura.
+
+MORDIDA — se le inyecta el defecto que debe cazar (CLAUDE.md §4.6)
+--------------------------------------------------------------------------------
+  B1  una reparticion pierde su direccion (CdRep 2)
+      esperado 62, medido 62  -> MUERDE
+  B2  un consumidor ficticio del insumo que SI lee `direccion`
+      esperado 1 consumidor y 1 hit marcado [CONSUMIDOR], medido 1 y 1  -> MUERDE
+      (el archivo NO existe: el texto se le pasa al analizador en memoria)
+  B3  ruido del arbol real: `direccion_viento`, `direccion_deg`, `direccionDeriva`
+      esperado 0 hits, medido 0  -> MUERDE
+
+================================================================================
+VEREDICTO
+================================================================================
+  (1) la direccion EXISTE en fuente viva : 63 de 64   como se declara
+  (2) la direccion NO la consume nadie   : 0 lecturas en src/   como se declara
+  mordida B1·B2·B3                       : las tres muerden
+
+  LO QUE ESTO LE CORRIGE A §5: la fila dice que la direccion "sigue sin
+  existir en ninguna fuente viva". EXISTE, en 63 de 64, y el archivo es
+  fuente viva desde `dc7d63e` —lo lee `src/services/contacto-por-escalon.js`—.
+  LO QUE NO CAMBIA: la fila sigue en PENDIENTE. Cambia su causa: no falta la
+  fuente, falta el consumidor. INV-10.1 manda mostrar la direccion y hoy
+  ningun render la recibe.
+================================================================================
