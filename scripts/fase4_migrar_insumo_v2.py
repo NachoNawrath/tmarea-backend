@@ -98,6 +98,12 @@ from shapely.validation import make_valid
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 V1 = os.path.join(REPO, "data", "decreto", "jurisdicciones_capitanias.json")
 LACUSTRE = os.path.join(REPO, "data", "decreto", "cotejo_lacustre_adjudicado.json")
+# Adjudicacion de islas del ambito insular remoto, analoga a la lacustre. TODAVIA
+# NO EXISTE: el repositorio no tiene una adjudicacion isla por isla. Su ausencia es
+# un estado legitimo y se declara — en el `derivado_de` del v2, que la escribe como
+# null, y en la causa que la rama insular pone en el dato. Lo que NO se hace es
+# suponer la carencia desde el codigo, que es de lo que esta rama venia.
+INSULAR = os.path.join(REPO, "data", "decreto", "cotejo_insular_adjudicado.json")
 SEED_BAHIAS = os.path.join(REPO, "scripts", "seed-bahias-sitport.js")
 ADJUDICACION = os.path.join(REPO, "data", "decreto", "adjudicacion_tramos.json")
 # Borde de la caja de trabajo, para resolver los puntos que el decreto deja
@@ -335,13 +341,14 @@ def banda(cap, contorno):
 
 # ── estado de geometria: se declara, no se deduce al construir ───────────────
 
-def declarar_estado(cap, contorno, cerrado, cuerpos):
+def declarar_estado(cap, contorno, cerrado, cuerpos, islas):
     """(receta, estado, causa). Misma pregunta que hace la auditoria, pero aqui la
     respuesta queda ESCRITA EN EL DATO, que es lo que INV-3.6 exige.
 
     La receta v2 es una sola y uniforme, sin letras cardinales:
 
       union_cuerpos   lacustre: la union de los cuerpos adjudicados en Fase 2.
+      union_islas     insular remoto: la union de las islas adjudicadas.
       anillo          el contorno cierra sobre si mismo.
       corte_y_ancla   el contorno abierto parte una caja en dos y el ancla elige
                       el trozo. La caja se acota con los paralelos que el decreto
@@ -366,10 +373,29 @@ def declarar_estado(cap, contorno, cerrado, cuerpos):
             return "union_cuerpos", "no_cerrable", "sin cuerpos de agua adjudicados"
         return "union_cuerpos", "cerrable", None
 
+    # SIMETRICA CON LA LACUSTRE, y por el mismo motivo. Hasta el 2026-08-15 esta
+    # rama devolvia `no_cerrable` INCONDICIONALMENTE para todo el ambito, con la
+    # causa escrita dentro del `return`: no miraba `cap`, ni el contorno, ni ningun
+    # insumo. De ahi se seguian dos cosas. Una, que el estado no era una lectura del
+    # dato sino una constante del codigo — lo contrario de lo que INV-3.6 pide, que
+    # es que el estado quede escrito en el dato. Y otra, que la causa era la MISMA
+    # palabra por palabra para las dos, siendo que su segunda mitad ("el insumo no
+    # trae capa de islas") es FALSA para `juan_fernandez`: sus islas estan en
+    # `costa_osm`, la capa que la construccion lee, medidas en
+    # _bitacoras/reclasificacion_insular_2026-08-15/. Una causa que sale de un
+    # `return` no puede dejar de ser falsa cuando el mundo cambia.
+    #
+    # Ahora pregunta lo mismo que pregunta la lacustre: si hay adjudicacion. Hoy no
+    # la hay para ninguna de las dos y las dos siguen `no_cerrable` — el conteo no
+    # se mueve —, pero la causa pasa a ser verdadera y el dia que la adjudicacion
+    # se escriba, el estado cambia solo.
     if amb == "insular_remota":
-        return ("-", "no_cerrable",
-                "el decreto nombra las islas sin coordenadas y el insumo no trae capa "
-                "de islas; requiere fuente externa")
+        if not [a for i in islas for a in (i.get("anclas") or [])]:
+            return ("union_islas", "no_cerrable",
+                    "sin islas adjudicadas: el decreto las nombra y el repositorio "
+                    "todavia no tiene una adjudicacion isla por isla que las ancle a "
+                    "una capa de tierra")
+        return "union_islas", "cerrable", None
 
     if cerrado:
         if len(pts) < 3:
@@ -1045,6 +1071,59 @@ def punto_de_geometria(geom, que):
                        f"de {que}. Cae sobre agua por definicion.")}, None
 
 
+def leer_adjudicacion_insular(caps):
+    """{id: [islas adjudicadas]} para el ambito insular remoto. Analogo exacto del
+    cotejo lacustre, con una diferencia declarada: EL ARCHIVO TODAVIA NO EXISTE.
+
+    Que el archivo falte es un estado legitimo del dato y se declara como tal
+    (CLAUDE.md §4.2, excepcion): el repositorio no tiene todavia una adjudicacion
+    isla por isla. Mientras falte, las insulares salen `no_cerrable` con esa causa
+    escrita, que es verdadera. Lo que NO se hace es tratar la ausencia como si fuera
+    una propiedad del ambito.
+
+    Precedente de forma en este mismo modulo: ADJUDICACION se lee si existe y su
+    forma se exige en cuanto existe. Mismo criterio aca — la tolerancia es a que el
+    archivo falte, no a que este mal.
+
+    CUANDO EXISTA, la validacion es la misma que la del cotejo lacustre y por el
+    mismo motivo: un id que sobra o una insular sin entrada detienen la corrida. Con
+    un default silencioso la jurisdiccion quedaria declarada 'sin islas adjudicadas',
+    que seria una causa FALSA — el problema seria el id, no la fuente.
+
+    QUE FORMA TIENE QUE TENER, y por que no es la del cotejo lacustre. El anclaje
+    lacustre es por `shapefile_fid` contra un shapefile VERSIONADO en el repositorio
+    con su sha256. Para las islas esa forma no es reproducible: la capa de tierra es
+    `costa_osm`, cuyo origen se regenera A DIARIO (ver `advertencia_origen` en
+    geodata/costa/capas_costa.json), cuyo zip de 925 MB no se versiona, y cuyo `fid`
+    es el indice de fila del RECORTE — cambia si la caja cambia. Por eso la
+    adjudicacion insular se ancla POR PUNTO, que es lo que ya hacen
+    `ancla_seleccion` y `punto_interior`: una coordenada por isla, y la construccion
+    se queda con el poligono de tierra que la contiene. Sobrevive a un cambio de
+    capa, de recorte y de sha.
+    """
+    ids_ins = {c["id"] for c in caps if c["ambito"] == "insular_remota"}
+    if not os.path.exists(INSULAR):
+        return {i: [] for i in ids_ins}
+    d = json.load(open(INSULAR, encoding="utf-8"))
+    if not isinstance(d.get("jurisdicciones"), list):
+        raise Alto(f"{os.path.relpath(INSULAR, REPO)} no trae un arreglo "
+                   f"'jurisdicciones'")
+    por_id = {}
+    for j in d["jurisdicciones"]:
+        if j.get("id") in por_id:
+            raise Alto(f"{os.path.relpath(INSULAR, REPO)}: la jurisdiccion "
+                       f"'{j.get('id')}' esta declarada mas de una vez")
+        por_id[j["id"]] = j.get("islas") or []
+    ids_juris = {c["id"] for c in caps}
+    sobran = set(por_id) - ids_juris
+    faltan = ids_ins - set(por_id)
+    if sobran or faltan:
+        raise Alto(f"ids del cotejo insular que no existen entre las jurisdicciones: "
+                   f"{sorted(sobran)}; jurisdicciones insulares sin entrada en el "
+                   f"cotejo: {sorted(faltan)}")
+    return por_id
+
+
 def main():
     v1 = json.load(open(V1, encoding="utf-8"))
     lac = json.load(open(LACUSTRE, encoding="utf-8"))
@@ -1063,6 +1142,7 @@ def main():
         raise Alto(f"ids del cotejo lacustre que no existen entre las jurisdicciones: "
                    f"{sorted(sobran)}; jurisdicciones lacustres sin entrada en el "
                    f"cotejo: {sorted(faltan)}")
+    islas_ins = leer_adjudicacion_insular(caps)
     adj_raw = (json.load(open(ADJUDICACION, encoding="utf-8"))
                if os.path.exists(ADJUDICACION) else {"tramos": []})
     if os.path.exists(ADJUDICACION) and "tramos" not in adj_raw:
@@ -1126,7 +1206,8 @@ def main():
         cid = cap["id"]
         cont = contornos[cid]
         receta, estado, causa = declarar_estado(cap, cont, cerrados[cid],
-                                                cuerpos_lac.get(cid, []))
+                                                cuerpos_lac.get(cid, []),
+                                                islas_ins.get(cid, []))
         estados[cid] = estado
 
         pr, motivo = None, None
@@ -1238,6 +1319,12 @@ def main():
         "derivado_de": {
             "jurisdicciones_capitanias.json": sha(V1),
             "cotejo_lacustre_adjudicado.json": sha(LACUSTRE),
+            # null mientras el archivo no exista. La clave viaja igual y desde ya:
+            # una huella que aparece el dia que alguien crea el archivo deja la
+            # ventana en que el insumo existio sin quedar registrado. Declarada la
+            # ausencia, el sha se llena solo.
+            "cotejo_insular_adjudicado.json": (sha(INSULAR)
+                                               if os.path.exists(INSULAR) else None),
             "seed-bahias-sitport.js": sha(SEED_BAHIAS),
         },
         # Contra que texto se coteja este insumo, con su sha256 y su fecha. Viaja al

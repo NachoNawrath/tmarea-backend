@@ -2006,6 +2006,59 @@ Escrito para que no se lea como más cerrado de lo que está.
   > `participa_matching = (estado == "cerrable")`). Es **campo muerto en la fuente, contradicho
   > por su propio derivado**. No se corrige acá: entra al frente insular, o al de los 50 fallos
   > del auditor del v1, que ya reclama por estas dos.
+  >
+  > **2026-08-15 — TACHADO DEL RÓTULO, no de los números: ~~las SEIS islas que el D.S. 991
+  > enumera por nombre~~ son CUATRO, y hay una QUINTA pieza que nadie contó.** Medido contra el
+  > texto del v1 y contra `costa_osm` en la sesión de la Pieza A
+  > (`_bitacoras/rama_insular_simetrica_2026-08-15/`). El decreto dice, literal: `hanga_roa`
+  > *"comprende la isla de Pascua e isla Sala y Gomez"*; `juan_fernandez` *"Comprende las islas
+  > de San Felix, San Ambrosio y el **Archipielago de Juan Fernandez**"*. **Nombra CUATRO islas
+  > y un COLECTIVO SIN ENUMERAR.** Robinson Crusoe y Alejandro Selkirk **no aparecen en el texto
+  > del decreto**: entran por interpretación del colectivo. Y esa misma interpretación arrastra
+  > una tercera que ninguna medición de este frente había contado — **Isla Santa Clara,
+  > 2,2356 km², `−78,9427 / −33,7065`, presente en `costa_osm`**, entre Alejandro Selkirk
+  > (54,3946) y Robinson Crusoe (47,8983). **Son SIETE piezas de tierra, no seis.**
+  >
+  > **NO INVALIDA NINGÚN NÚMERO de las tres sesiones que usaron la frase** —el simplify borró lo
+  > que borró, el buffer midió lo que midió, el operador recuperó lo que recuperó—: **invalida
+  > el RÓTULO con que se contaron**. Y deja una pregunta de lado, que es la que importa: **qué
+  > islas comprende "el Archipiélago de Juan Fernández" es interpretación de la fuente normativa
+  > y es del owner** (§0.4), no un dato que se lea de una capa. **PENDIENTE, no resuelto acá.**
+  >
+  > **DECLARADO Y NO TOCADO:** la frase vive también en el comentario del constructor
+  > (`fase5_construir_capa_ds991.py:857`) y en el SQL que emite (`fase5_capa_ds991.sql:844`).
+  > Corregirla ahí cambia el SQL emitido y exige build; queda fuera del alcance de la Pieza A y
+  > se anota para la sesión que vuelva a tocar el constructor.
+  >
+  > **2026-08-15 — LA MITAD DE CÓDIGO ESTÁ HECHA. ~~La reclasificación queda EN PAUSA~~ se
+  > partió en dos y la PIEZA A está aplicada y verificada** (`_bitacoras/rama_insular_simetrica_2026-08-15/`).
+  > `fase4_migrar_insumo_v2.py:369` **deja de devolver `no_cerrable` incondicionalmente** y pasa
+  > a interrogar el dato, simétrica con la lacustre: lee `data/decreto/cotejo_insular_adjudicado.json`
+  > —que **no existe todavía**— con la misma validación sin defaults del cotejo lacustre.
+  > **Los conteos no se movieron: 44/8 · 54/10 antes y después**, medido contra el v2; las dos
+  > siguen `no_cerrable`. **Lo que cambió es que la causa dejó de ser falsa**: donde decía *"el
+  > insumo no trae capa de islas"* —falso para `juan_fernandez`, cuyas islas están en `costa_osm`—
+  > ahora dice *"sin islas adjudicadas"*, que es verdad para las dos. **El diff del v2 es de cinco
+  > líneas de contenido sobre 64 jurisdicciones**, y la rama trae su prueba de mordida (§4.6):
+  > con adjudicación escrita **pasa a `cerrable` sola**, y con el insumo mal formado **se detiene**
+  > en vez de degradar. **B12 mordió** —el v2 se movió— y se reselló con autorización del owner:
+  > `ddff10f4… → 7e9b2f0c…`, con las **22 adjudicaciones verificadas como vigentes** antes de sellar.
+  >
+  > **LA PIEZA B SIGUE SIN EJECUTARSE Y AHORA TIENE TRES PREGUNTAS, NO UNA:** además del Art. 2
+  > ya escrito arriba, (1) **qué islas comprende el Archipiélago** —Santa Clara incluida—;
+  > (2) que **`zonas-aviso.js:196` mide "construible" donde debería mirar "publicada"**, y la
+  > ventana entre las dos **la abrió el gate por ámbito de D3**: pasar una insular a `cerrable`
+  > obliga hoy a retirar su zona de aviso mientras la carencia sigue existiendo; y (3) que **una
+  > jurisdicción de isla sola, sin buffer, no la alcanza ningún punto de ruta** (INV-3.3 resuelve
+  > por contención y un punto de ruta va por agua), con lo que publicarla pasaría C1, C4 y C5
+  > **sin cubrir a nadie**. Las tres están medidas y ninguna se resuelve de este lado.
+  >
+  > **Y una precisión de forma que la Pieza B necesita entera: el ancla insular NO puede ser
+  > `shapefile_fid` contra OSM.** El anclaje lacustre funciona porque su shapefile está versionado
+  > con sha256; para las islas las tres condiciones se rompen a la vez —el zip de 925 MB no se
+  > versiona, su origen **se regenera a diario**, y el `fid` es el **índice de fila del recorte**,
+  > que la Opción B de `hanga_roa` cambia—. La forma reproducible es **anclaje por punto**, con
+  > precedente en `ancla_seleccion` y `punto_interior`.
 - **De quién es el mar de las islas oceánicas — el buffer ZEE del límite exterior.** Frente
   abierto el 2026-08-15, **medido y NO diagnosticado**. El límite exterior se materializa
   bufferizando 200 mn la unión de la capa del rol `limite_exterior` (`ne_10m_land`) recortada a
@@ -2092,9 +2145,19 @@ Escrito para que no se lea como más cerrado de lo que está.
   > toca ninguna caja declarada. La Opción A no hace falta para **medir**; hace falta para
   > **construir**.
   >
-  > **3. Lo que esto le hace al rótulo del frente:** de las **seis islas que el D.S. 991 enumera
-  > por nombre**, el simplify borra **dos — San Félix y Sala y Gómez—, una por cada Capitanía
+  > **3. Lo que esto le hace al rótulo del frente:** de las ~~**seis islas que el D.S. 991 enumera
+  > por nombre**~~ **CUATRO islas que el decreto nombra, más un colectivo sin enumerar**, el
+  > simplify borra **dos — San Félix y Sala y Gómez—, una por cada Capitanía
   > insular.** No es un caso de borde de `juan_fernandez`.
+  >
+  > > **TACHADO EL 2026-08-15 (§3.3), Pieza A.** El decreto nombra **cuatro**: Pascua y Sala y
+  > > Gómez (`hanga_roa`), San Félix y San Ambrosio (`juan_fernandez`). Robinson Crusoe y
+  > > Alejandro Selkirk entran por interpretación del **"Archipiélago de Juan Fernández"**, y con
+  > > ellas entra **Isla Santa Clara (2,2356 km², `−78,9427 / −33,7065`)**, que ninguna medición
+  > > de este frente contó: son **siete piezas de tierra**. **Los números de este bullet no se
+  > > mueven** —las ocho piezas borradas, las áreas y las coordenadas siguen siendo las medidas—:
+  > > lo que cambia es el rótulo. Qué comprende el colectivo es del owner. Ver el bullet insular
+  > > y `_bitacoras/rama_insular_simetrica_2026-08-15/`.
   >
   > **4. RESUELTO Y NO APLICADO (§0.4) — el arreglo genérico es cambiar el operador:**
   > `ST_Simplify` → **`ST_SimplifyPreserveTopology`**, misma tolerancia 0,01, en

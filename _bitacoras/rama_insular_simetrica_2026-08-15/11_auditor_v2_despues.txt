@@ -1,0 +1,295 @@
+FASE 4 — ETAPA A, SEGUNDA PASADA. AUDITORIA DEL INSUMO v2
+insumo   : data\decreto\jurisdicciones_v2.json
+fuente   : D.S. (M.) N 991, de 26 de octubre de 1987, Ministerio de Defensa Nacional, Subsecretaria de Marina. Texto consolidado, ultima version 12-NOV-2020 (mod. D.S. 391, D.O. 12.11.2020). Fuente: BCN Ley Chile, idNorma=142425.
+generado : 2026-08-09 por scripts/fase4_migrar_insumo_v2.py
+No escribe en la base de datos ni deja geometria persistida.
+
+  sha256[:16] 7e9b2f0c765c1395  data\decreto\jurisdicciones_v2.json
+  sha256[:16] 4e28dd8865261743  data\decreto\jurisdicciones_capitanias.json
+  sha256[:16] c3c5d5b1e189f802  data\decreto\cotejo_lacustre_adjudicado.json
+  sha256[:16] 548fdda8bc0afb53  data\decreto\adjudicacion_tramos.json
+  sha256[:16] 566462915e1658bb  scripts\fase4_auditoria_v2.py
+
+==============================================================================
+B0 — FIDELIDAD DE LA MIGRACION: la estructura cambio, el contenido no
+==============================================================================
+  ok     el v2 deriva del v1 que esta en disco (sha256 coincide)
+  ok     64 jurisdicciones, los mismos ids que el v1
+  ok     todo punto del v1 esta en el contorno del v2
+  ok     textos del decreto y correcciones, identicos al v1
+  ok     toda frontera apunta a jurisdicciones existentes
+  ok     DMS y decimal coinciden en todo el contorno
+  ok     todas traen los campos obligatorios
+  ok     todo punto del contorno cae en el ambito geografico esperado
+  ok     los puntos que nombran un punto notable coinciden con el catalogo
+
+==============================================================================
+B1 — CIERRE DETERMINADO
+==============================================================================
+  JURISDICCION           AMBITO          RECETA           PTS  TROZOS  ESTADO
+  ----------------------------------------------------------------------------------
+  Arica                  maritima        -                0    -       no_cerrable
+  Iquique                maritima        banda_paralelos  0    -       cerrable
+  Patache                maritima        banda_paralelos  0    -       cerrable
+  Tocopilla              maritima        banda_paralelos  0    -       cerrable
+  Mejillones             maritima        banda_paralelos  0    -       cerrable
+  Antofagasta            maritima        banda_paralelos  0    -       cerrable
+  Taltal                 maritima        banda_paralelos  0    -       cerrable
+  Chanaral               maritima        banda_paralelos  0    -       cerrable
+  Caldera                maritima        banda_paralelos  0    -       cerrable
+  Huasco                 maritima        banda_paralelos  0    -       cerrable
+  Hanga Roa              insular_remota  union_islas      0    -       no_cerrable
+  Coquimbo               maritima        banda_paralelos  0    -       cerrable
+  Tongoy                 maritima        banda_paralelos  0    -       cerrable
+  Los Vilos              maritima        banda_paralelos  0    -       cerrable
+  Papudo                 maritima        banda_paralelos  0    -       cerrable
+  Quintero               maritima        banda_paralelos  0    -       cerrable
+  Valparaiso             maritima        banda_paralelos  0    -       cerrable
+  Juan Fernandez         insular_remota  union_islas      0    -       no_cerrable
+  Algarrobo              maritima        banda_paralelos  0    -       cerrable
+  San Antonio            maritima        banda_paralelos  0    -       cerrable
+  Pichilemu              maritima        banda_paralelos  0    -       cerrable
+  Lago Rapel             lacustre        union_cuerpos    0    -       cerrable
+  Constitucion           maritima        banda_paralelos  0    -       cerrable
+  Lirquen                maritima        corte_y_ancla    2    2       no_cerrable
+  Talcahuano             maritima        corte_y_ancla    2    2       no_cerrable
+  San Vicente            maritima        banda_paralelos  0    -       cerrable
+  Coronel                maritima        banda_paralelos  0    -       cerrable
+  Lota                   maritima        banda_paralelos  0    -       cerrable
+  Lebu                   maritima        banda_paralelos  0    -       cerrable
+  Carahue                maritima        banda_paralelos  0    -       cerrable
+  Lago Villarrica        lacustre        union_cuerpos    0    -       cerrable
+  Lago Panguipulli       lacustre        union_cuerpos    0    -       cerrable
+  Lago Ranco             lacustre        union_cuerpos    0    -       cerrable
+  Valdivia               maritima        corte_y_ancla    4    2       cerrable
+  Corral                 maritima        corte_y_ancla    4    2       cerrable
+  Puerto Varas           lacustre        union_cuerpos    0    -       cerrable
+  Puerto Montt           maritima        anillo           5    -       cerrable
+  Maullin                maritima        corte_y_ancla    2    2       cerrable
+  Calbuco                maritima        anillo           5    -       cerrable
+  Rio Negro Hornopiren   maritima        anillo           4    -       cerrable
+  Cochamo                maritima        corte_y_ancla    2    2       cerrable
+  Ancud                  maritima        corte_y_ancla    4    2       cerrable
+  Quemchi                maritima        corte_y_ancla    2    2       cerrable
+  Chaiten                maritima        corte_y_ancla    5    2       cerrable
+  Achao                  maritima        anillo           11   -       cerrable
+  Castro                 maritima        corte_y_ancla    11   2       cerrable
+  Chonchi                maritima        corte_y_ancla    11   2       cerrable
+  Quellon                maritima        corte_y_ancla    6    2       cerrable
+  Melinka                maritima        corte_y_ancla    4    2       cerrable
+  Puerto Cisnes          maritima        corte_y_ancla    5    2       cerrable
+  Puerto Aguirre         maritima        corte_y_ancla    5    2       cerrable
+  Puerto Chacabuco       maritima        corte_y_ancla    4    2       cerrable
+  Lago General Carrera   lacustre        union_cuerpos    0    -       cerrable
+  Baker                  maritima        -                0    -       no_cerrable
+  Puerto Eden            maritima        -                0    -       no_cerrable
+  Puerto Natales         maritima        banda_paralelos  0    -       cerrable
+  Punta Arenas           maritima        banda_paralelos  0    -       cerrable
+  Punta Delgada          maritima        -                0    -       no_cerrable
+  Tierra del Fuego       maritima        -                0    -       no_cerrable
+  Puerto Williams        maritima        corte_y_ancla    2    2       no_cerrable
+  Bahia Fildes           antartica       anillo           5    -       cerrable
+  Puerto Soberania       antartica       anillo           5    -       cerrable
+  Rada Covadonga         antartica       anillo           3    -       cerrable
+  Bahia Paraiso          antartica       anillo           4    -       cerrable
+
+  ok     toda jurisdiccion cerrable tiene los ingredientes de su receta y produce una figura unica
+
+  B1 bis — contornos que desbordan su paralelo limite declarado
+  aviso  Talcahuano: el contorno llega a -36.736111 y su limite sur declarado es -36.706944
+  aviso  Maullin: el contorno llega a -41.783333 y su limite sur declarado es -41.744444
+  aviso  Quemchi: el contorno llega a -42.391667 y su limite sur declarado es -42.333333
+  aviso  Castro: el contorno llega a -42.661111 y su limite sur declarado es -42.583333
+  aviso  Chonchi: el contorno llega a -42.558333 y su limite norte declarado es -42.583333
+  aviso  Chonchi: el contorno llega a -43.008333 y su limite sur declarado es -42.833333
+
+==============================================================================
+B2 — VECINAS EN LADOS OPUESTOS DE LA FRONTERA QUE COMPARTEN
+==============================================================================
+  B2.0 — dos que ocupan la franja oceanica completa no pueden solaparse
+  ok     26 jurisdicciones de banda, ninguna se solapa en latitud
+
+  B2.0 bis — cobertura en latitud del litoral continental
+  ok     cobertura continua entre -19.216667 y -54.550000
+
+  61 fronteras: 41 por paralelo, 20 poligonales
+
+  VECINA A              VECINA B              PTS  A SEPARA  B EXCLUYE  VEREDICTO
+  ----------------------------------------------------------------------------------------
+  Achao                 Castro                6    True       True       opuestos
+  Bahia Fildes          Puerto Soberania      2    None       None       n/a
+  Bahia Fildes          Rada Covadonga        2    None       None       n/a
+  Calbuco               Ancud                 2    True       True       opuestos
+  Calbuco               Rio Negro Hornopiren  2    True       True       opuestos
+  Castro                Chonchi               4    True       True       opuestos
+  Chaiten               Quellon               2    True       True       opuestos
+  Chonchi               Quellon               4    True       True       opuestos
+  Lirquen               Talcahuano            2    True       True       opuestos
+  Maullin               Ancud                 2    True       True       opuestos
+  Melinka               Puerto Cisnes         4    True       True       opuestos
+  Puerto Aguirre        Puerto Chacabuco      4    True       True       opuestos
+  Puerto Cisnes         Puerto Aguirre        2    True       True       opuestos
+  Puerto Montt          Calbuco               3    True       True       opuestos
+  Puerto Montt          Cochamo               2    True       True       opuestos
+  Puerto Soberania      Bahia Paraiso         2    None       None       n/a
+  Quemchi               Achao                 2    True       True       opuestos
+  Quemchi               Rio Negro Hornopiren  2    True       True       opuestos
+  Rada Covadonga        Bahia Paraiso         2    None       None       n/a
+  Valdivia              Corral                4    True       True       opuestos
+
+  ok     en las 41 fronteras por paralelo, cada vecina queda de su lado
+  aviso  ancud y maullin comparten 2 fronteras distintas: ['par__maullin__ancud', 'pol__maullin__ancud']
+  aviso  castro y chonchi comparten 2 fronteras distintas: ['par__castro__chonchi', 'pol__castro__chonchi']
+  aviso  chonchi y quellon comparten 2 fronteras distintas: ['par__chonchi__quellon', 'pol__chonchi__quellon']
+
+==============================================================================
+B3 — NINGUNA MAS CHICA QUE SU DESCRIPCION EN EL DECRETO
+==============================================================================
+  ok     ninguna figura deja afuera una coordenada que su propio texto cita
+
+  Amparadas por una correccion registrada (INV-3.7):
+    Mejillones — '22 30 00 S'
+
+==============================================================================
+B4 — LAS DECLARADAS SIN GEOMETRIA SON EXACTAMENTE LAS NO CERRABLES
+==============================================================================
+  declaradas no cerrables en el dato : 10  ['arica', 'baker', 'hanga_roa', 'juan_fernandez', 'lirquen', 'puerto_eden', 'puerto_williams', 'punta_delgada', 'talcahuano', 'tierra_del_fuego']
+  recalculadas por el auditor        : 10  ['arica', 'baker', 'hanga_roa', 'juan_fernandez', 'lirquen', 'puerto_eden', 'puerto_williams', 'punta_delgada', 'talcahuano', 'tierra_del_fuego']
+
+  ok     la declaracion del dato y el recalculo del auditor coinciden
+
+  ok     toda la que quedara sin geometria trae su causa y no participa del matching
+
+  Causa declarada de cada una:
+    Arica                  El limite Norte YA ESTA DECLARADO — ver 'limite_norte_convencion'. Lo que falta NO es el dato: es el MECANISMO DE ALCANCE. La convencion del owner cubre hasta 24 mn de la costa, y la unica receta disponible para una jurisdiccion sin contorno es 'banda_paralelos', que devuelve la franja entera hasta el limite exterior de 200 mn. Construirla asi adjudicaria como chilena el agua entre 24 y 200 mn que el propio paquete de DIFROL niega: su linea de ZEE termina 108,3 mn al Sur del paralelo del ancla. Por eso 'limite_norte_dec' queda en null A PROPOSITO — escribirlo antes que el mecanismo abre una ventana en la que cualquiera que regenere produce esa capa. El mecanismo se disena aparte y GENERICO, no como caso de Arica: 'baker' y 'puerto_eden' tienen exactamente esta forma —receta '-', contorno vacio, un paralelo faltante— y son sus clientes siguientes.
+    Baker                  el decreto no entrega con que cerrar: falta el limite sur, y no hay contorno que lo supla. No se toma del vecino.
+    Hanga Roa              sin islas adjudicadas: el decreto las nombra y el repositorio todavia no tiene una adjudicacion isla por isla que las ancle a una capa de tierra
+    Juan Fernandez         sin islas adjudicadas: el decreto las nombra y el repositorio todavia no tiene una adjudicacion isla por isla que las ancle a una capa de tierra
+    Lirquen                La prosa describe el contorno de la Bahia de Concepcion sin dar sus vertices. La poligonal registrada son los dos extremos explicitos.
+    Puerto Eden            el decreto no entrega con que cerrar: falta el limite norte, y no hay contorno que lo supla. No se toma del vecino.
+    Puerto Williams        No cerrable con el decreto: el limite norte pasa por el 'hito N 26' del Canal Beagle, que el texto nombra sin coordenadas, y por 'la delimitacion existente del Canal Beagle'. Falta dato de fuente, no de transcripcion.
+    Punta Delgada          falta UNICAMENTE el limite maritimo internacional por el Oriente, que el propio decreto invoca sin darlo en coordenadas. Su linea del Weste ya esta resuelta: Punta Harry y Cabo San Vicente estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). El owner acepto que ese limite es la linea Punta Dungeness - Cabo del Espiritu Santo del Tratado de 1881; falta el extremo argentino, que la capa chilena no trae. Ver el pendiente `limite_maritimo_internacional_oriente_magallanes`.
+    Talcahuano             El decreto menciona 36 44 10 S (Andalien, dentro de Bahia Concepcion) al Sur de 36 42 25 S (limite sur declarado). El contorno de la bahia no viene con vertices. No se infiere.
+    Tierra del Fuego       faltan DOS cosas, y ya no es la falta de coordenadas de sus accidentes: Cabo San Vicente y Punta Anxious estan verificados contra la capa de Toponimos del IGM (ver puntos_notables). Falta (1) el limite oriental internacional — mismo pendiente que Punta Delgada, `limite_maritimo_internacional_oriente_magallanes` — y (2) un ancla que diga de que lado de la linea esta la jurisdiccion. El decreto dice 'el area oriental', pero la construccion no decide lados por letra cardinal; lo limpio es anclar en uno de los cuerpos que el propio parrafo le enumera (Bahia Gente Grande, Bahia Inutil, Canal Whiteside, Canal Gabriel, Seno Almirantazgo).
+
+==============================================================================
+B5 — PUNTO REPRESENTATIVO SOBRE AGUA
+==============================================================================
+  testigos que caen dentro de su figura : 46
+  testigos fuera                        : 0
+  testigos pendientes de la costa       : 2
+  cerrables sin testigo                 : 6
+
+  decl   Papudo: sin testigo, declarado — ninguna bahia SITPORT tiene a esta Capitania como su sede mas cercana: no hay punto sobre agua con que probar su geometria
+  decl   Valparaiso: sin testigo, declarado — su punto representativo no sirve como testigo: cae en tierra y el agua mas cercana esta a 580 m, por encima del umbral de correccion de 500 m. El punto y su medicion quedan en punto_representativo_descartado.
+  decl   Constitucion: sin testigo, declarado — su punto representativo no sirve como testigo: cae en tierra y el agua mas cercana esta a 1412 m, por encima del umbral de correccion de 500 m. El punto y su medicion quedan en punto_representativo_descartado.
+  decl   Lebu: sin testigo, declarado — su punto representativo no sirve como testigo: cae en tierra y el agua mas cercana esta a 565 m, por encima del umbral de correccion de 500 m. El punto y su medicion quedan en punto_representativo_descartado.
+  decl   Valdivia: sin testigo, declarado — su punto representativo esta declarado fuera de la correccion al agua — Valdivia es un frente aparte y no entra en la correccion de testigos contra la capa de costa. Su punto no es una orilla mal puesta por unos metros: es un puerto FLUVIAL, rio arriba. El Art. 2 del D.S. 991 incluye los rios navegables en la jurisdiccion, pero una capa de costa no los trae — hacen falta datos de hidrografia, que son un tercer insumo y no una costa. Correr este punto al mar mas cercano lo sacaria del rio que es justamente su jurisdiccion. — y sin corregir cae en tierra, a 3380 m del agua. No se mueve y no se usa como testigo. El punto y su medicion quedan en punto_representativo_descartado.
+  decl   Puerto Chacabuco: sin testigo, declarado — su punto representativo no sirve como testigo: cae en tierra y el agua mas cercana esta a 1007 m, por encima del umbral de correccion de 500 m. El punto y su medicion quedan en punto_representativo_descartado.
+  pend   Puerto Montt: testigo (-41.4826, -72.9494) — fuera del anillo pero del mismo lado que el ancla: cae en el ensanche hacia tierra. Lo confirma la Etapa B con la capa de costa; aqui no hay con que
+  pend   Rio Negro Hornopiren: testigo (-42.0000, -72.5000) — fuera del anillo pero del mismo lado que el ancla: cae en el ensanche hacia tierra. Lo confirma la Etapa B con la capa de costa; aqui no hay con que
+
+==============================================================================
+B6 — ADJUDICACION LACUSTRE Y TRASLAPE DELIBERADO
+==============================================================================
+  ok     los ids del cotejo lacustre y las jurisdicciones lacustres coinciden
+  traslapes declarados como deliberados: 1
+    LAGO PUYEHUE -> ['lago_ranco', 'puerto_varas']
+  ok     todo cuerpo compartido esta declarado como traslape deliberado
+  ok     4 cuerpos sin geometria, todos con resolucion declarada
+
+==============================================================================
+B7 — INTEGRIDAD DEL GRAFO DE FRONTERAS
+==============================================================================
+  ok     61 ids de frontera unicos
+  (la existencia de los lados de cada frontera se comprueba en B0, antes
+   de que cualquier control indexe por esos ids)
+  ok     las referencias jurisdiccion <-> frontera son consistentes en ambos sentidos
+
+==============================================================================
+B8 — TRAMOS DEL CONTORNO
+==============================================================================
+  El constructor lee el tipo de cada tramo para saber cual ensancha hacia
+  tierra. Un tramo mal marcado mueve un limite sin que nada avise, asi que
+  el marcado se audita entero, no por muestreo.
+
+  100 tramos: litoral=4, frontera=91, abierto=5, otros=0
+  origen de la marca: adjudicado=22, cierto=78
+
+  ok     todo tramo tiene un tipo de los tres; ninguno indeterminado
+  ok     ningun tramo quedo sin adjudicar
+  ok     cada contorno trae exactamente los tramos que sus puntos exigen
+  ok     ningun tramo de litoral coincide con una frontera compartida
+  ok     todo tramo clasificado trae el fragmento del decreto que lo respalda
+  ok     sigue_litoral coincide con los tramos en toda jurisdiccion
+  ok     todo tramo 'abierto' toca un punto resuelto al lado abierto
+  ok     las 22 adjudicaciones registradas se aplicaron todas
+
+  Adjudicaciones que revierten la propuesta automatica:
+    Puerto Montt           litoral -> frontera
+    Cochamo                litoral -> frontera
+    Chaiten                litoral -> frontera
+    Chaiten                litoral -> frontera
+
+==============================================================================
+B9 — FRONTERA DECLARADA Y RESPETO DEL ALCANCE
+==============================================================================
+  Una frontera DECLARADA no sale de vertices que dos jurisdicciones
+  compartan: la puso una transcripcion. Y su ALCANCE — hasta donde vale —
+  decide cuanta superficie recorta. Ensanchar un alcance le hace decir al
+  decreto lo que no dice, y le come territorio a la vecina sin que se vea:
+  la figura sale mas chica y no hay error en ningun lado.
+
+  fronteras declaradas por transcripcion : 1
+  fronteras con alcance declarado        : 1
+
+  ok     toda frontera declarada trae su motivo y la cita de sus dos lados
+  ok     todo alcance declarado esta respaldado en las citas, contiene a su propia frontera y acota el eje que corresponde
+    pol__quemchi__hornopiren: lat -42.5 .. -42.0  lon -73.0 .. -73.0
+
+==============================================================================
+B10 — EL COTEJO DECLARADO SIGUE VIVO
+==============================================================================
+  El insumo declara contra que texto oficial se cotejo. Si ese documento
+  no esta, o no es el que dice, la declaracion es una afirmacion sin
+  respaldo — y no saber contra que version se transcribio es la causa raiz
+  que ese bloque existe para cerrar.
+
+  documento : TM-025 A, actualizado al 4 de junio de 2025 (DIRECTEMAR)
+  cotejado  : 2026-08-11
+  ok     data/decreto/fuente/TM-025-A_2025-06-04.txt esta en el repositorio
+  ok     data/decreto/fuente/TM-025-A_2025-06-04.pdf esta en el repositorio
+  ok     data/decreto/fuente/PROCEDENCIA.md esta en el repositorio
+  ok     el texto oficial en disco es el declarado (sha256 e14cb905b4895422)
+
+==============================================================================
+B11 — LO QUE EL V1 DECLARA LLEGA AL V2
+==============================================================================
+  El v2 es derivado y es lo que consultan los servicios. Un bloque que el
+  v1 declara y el migrador deja de copiar desapareceria sin que nada
+  avise: el v1 seguiria completo y el v2 no. Es B0 un nivel mas alla.
+
+  ok     cotejado_contra llega al v2 sin cambios (1 entrada(s))
+  ok     gobernaciones llega al v2 sin cambios (16 entrada(s))
+  ok     articulos llega al v2 sin cambios (1 entrada(s))
+  ok     diferencias_no_incorporadas llega al v2 sin cambios (6 entrada(s))
+  ok     las 16 Gobernaciones cubren las 64 Capitanias, cada una exactamente una vez
+
+==============================================================================
+B12 — EL SELLO DE LA ADJUDICACION DE TRAMOS
+==============================================================================
+  adjudicacion_tramos.json lleva una adjudicacion del owner y declara
+  contra que insumo se tomo. Si el insumo se movio debajo, tiene que
+  GRITAR: re-sellarlo solo esconderia que la decision se tomo mirando otra
+  cosa. Se re-sella con scripts/tm025a_p7_sellar_adjudicacion.py, que exige
+  la autorizacion del owner y comprueba antes que las adjudicaciones sigan
+  aplicando.
+
+  ok     la adjudicacion se tomo sobre el insumo que esta en disco (sha256 7e9b2f0c765c1395)
+
+==============================================================================
+VEREDICTO DE LA SEGUNDA PASADA
+==============================================================================
+
+  AUDITORIA LIMPIA. El insumo permite construir una capa correcta.
+  No se construye nada: la Etapa B requiere autorizacion del owner.

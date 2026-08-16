@@ -2,7 +2,7 @@
  "generado": "2026-08-10",
  "fase": "Fase 4 — Etapa 1, marcado de tramos",
  "insumo": {
-  "jurisdicciones_v2.json": "ddff10f45a8e4f77d441690ef6ba265705393e794d4a56b15aabafc33a4a5354"
+  "jurisdicciones_v2.json": "7e9b2f0c765c139588993bd9975bd8402798a028a417f4a8e90d5b6dcd23a531"
  },
  "autorizacion": "Autorizado por el owner el 2026-08-10. El owner decide que dice el decreto; esta adjudicacion registra esa decision para que el marcado no dependa de una regla de posicion textual que no acierta en todos los casos.",
  "por_que_hace_falta": "El decreto coloca la palabra que califica un tramo en posiciones incompatibles entre si: CP Calbuco la pone antes del vertice de partida ('el litoral desde la Punta Capacho'), CP Hornopiren despues del vertice de llegada como aposicion que lo ubica ('en la costa Este del estero Renihue'), y CP Cochamo la usa para el ambito de la jurisdiccion y no para un tramo ('las aguas y el litoral del Estero Reloncavi'). Ninguna regla de posicion acierta en los tres. Los 76 tramos cuyo parrafo no menciona litoral, costa ni ribera no necesitan adjudicacion: no hay nada que pueda calificarlos.",
@@ -440,8 +440,8 @@
  ],
  "sellado": {
   "fecha": "2026-08-15",
-  "autorizacion": "Autorizo el resellado de adjudicacion_tramos.json por movimiento de v2 ajeno a la adjudicación. v2 se toca porque se cierra la divergencia de causa entre v1 y v2 en punta_delgada y tierra_del_fuego (Opción 2, 2026-08-15): bajan al v1 las dos causas vigentes, los 4 topónimos IGM y el bloque pendientes, y se espejan en v2 por inserción quirúrgica. Ninguna de las dos jurisdicciones se cierra: siguen no_cerrable, 44/8 marítimas y 54/10 sobre las 64. Los 22 tramos y su adjudicación NO se modifican: el sello se renueva por integridad del encadenamiento, no por una decisión nueva sobre tramos. — Nacho, owner, 2026-08-15",
-  "sello_anterior": "98fbd67feb9ff361330e23d0509dc6b631c0fe2b20320a86a500ebf48ec2719b",
+  "autorizacion": "Owner, 2026-08-15, sesion F3-INSULAR (Pieza A). El resello de B12 va autorizado: el v2 cambia porque la rama insular de fase4_migrar_insumo_v2.py pasa a interrogar el dato en vez de devolver no_cerrable incondicionalmente. La adjudicacion de los 22 tramos NO se revisa ni se modifica: cambia el sha256 del insumo debajo de ella, no su contenido.",
+  "sello_anterior": "ddff10f45a8e4f77d441690ef6ba265705393e794d4a56b15aabafc33a4a5354",
   "verificado_antes_de_sellar": "Las 22 adjudicaciones siguen aplicando: cada tramo existe en el v2 con las mismas coordenadas y el tipo que el owner adjudico. Comprobado por este script antes de escribir.",
   "por": "scripts/tm025a_p7_sellar_adjudicacion.py"
  }

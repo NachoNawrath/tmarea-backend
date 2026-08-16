@@ -1,0 +1,40 @@
+PRUEBA DE MORDIDA DE LA RAMA INSULAR (§4.6)
+==============================================================================
+  v2 al abrir, sha256 : 7e9b2f0c765c139588993bd9975bd8402798a028a417f4a8e90d5b6dcd23a531
+  estado al abrir     : {"hanga_roa": ["no_cerrable", "union_islas", false, "sin islas adjudicadas: el decreto las nombra y el repositorio todavia no tiene una adjudicacion isla por isla que las ancle a una capa de tierra"], "juan_fernandez": ["no_cerrable", "union_islas", false, "sin islas adjudicadas: el decreto las nombra y el repositorio todavia no tiene una adjudicacion isla por isla que las ancle a una capa de tierra"]}
+
+1. CON ADJUDICACION ESCRITA — la rama tiene que pasar a `cerrable`
+------------------------------------------------------------------------------
+  migrador exit=0
+  hanga_roa        estado=cerrable     receta=union_islas  participa_matching=True
+  juan_fernandez   estado=cerrable     receta=union_islas  participa_matching=True
+  -> MUERDE: con el dato escrito el estado cambia solo.
+     Con la rama vieja esto habria dado `no_cerrable` igual, porque el
+     `return` era incondicional. Esa es la capacidad que se midio.
+
+2. ID QUE NO EXISTE ENTRE LAS JURISDICCIONES — tiene que detenerse
+------------------------------------------------------------------------------
+  migrador exit=2
+  motivo: MIGRACION DETENIDA: ids del cotejo insular que no existen entre las jurisdicciones: ['isla_que_no_existe']; jurisdicciones insulares sin entrada en el cotejo: []
+  -> MUERDE: no cae al caso por defecto (§4.2).
+
+3. UNA INSULAR SIN ENTRADA EN EL COTEJO — tiene que detenerse
+------------------------------------------------------------------------------
+  migrador exit=2
+  motivo: MIGRACION DETENIDA: ids del cotejo insular que no existen entre las jurisdicciones: []; jurisdicciones insulares sin entrada en el cotejo: ['juan_fernandez']
+  -> MUERDE: la ausencia no se supone vacia.
+     Con un default, `juan_fernandez` habria quedado declarada 'sin islas
+     adjudicadas', que seria una causa FALSA: el problema seria el id.
+
+RESTAURACION — el repositorio queda como se encontro
+------------------------------------------------------------------------------
+  cotejo de prueba borrado : True
+  migrador exit=0 · corregir_testigos --aplicar exit=0
+  movidos al agua          : 30
+  v2 al abrir  : 7e9b2f0c765c139588993bd9975bd8402798a028a417f4a8e90d5b6dcd23a531
+  v2 al cerrar : 7e9b2f0c765c139588993bd9975bd8402798a028a417f4a8e90d5b6dcd23a531
+  -> IDENTICO BYTE A BYTE
+
+VEREDICTO
+------------------------------------------------------------------------------
+  LA RAMA MUERDE EN LAS TRES DIRECCIONES y no dejo rastro.

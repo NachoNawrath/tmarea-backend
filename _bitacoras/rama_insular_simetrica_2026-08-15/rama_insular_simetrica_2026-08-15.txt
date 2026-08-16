@@ -1,0 +1,380 @@
+LA RAMA INSULAR PASA A INTERROGAR EL DATO — PIEZA A, APLICADA Y VERIFICADA
+2026-08-15 · sesion F3-INSULAR
+================================================================================
+
+QUE FUE ESTA SESION, Y QUE NO FUE
+--------------------------------------------------------------------------------
+Corrigio la mala clasificacion insular DONDE VIVE, que es el codigo:
+scripts/fase4_migrar_insumo_v2.py devolvia `no_cerrable` incondicionalmente para
+todo el ambito `insular_remota`. Ahora pregunta lo mismo que pregunta la rama
+lacustre — si hay adjudicacion escrita — y el estado sale de esa pregunta.
+
+NO SE CONSTRUYO NINGUNA GEOMETRIA, no se cargo ninguna capa, no se corrio el
+build y NO SE ADJUDICO NINGUNA ISLA. La Pieza B —adjudicacion insular, receta en
+el constructor, capa de tierra propia para hanga_roa (Opcion B), retiro de las
+dos zonas de aviso— quedo FUERA DE ESTA SESION por decision del owner, con tres
+preguntas suyas por delante que estan al pie de esta bitacora.
+
+LAS DOS INSULARES SIGUEN `no_cerrable` Y LOS CONTEOS NO SE MOVIERON: 44/8
+maritima, 54/10 sobre las 64, medido contra el v2 antes y despues. Lo que cambio
+es que ahora la causa es VERDADERA y el estado sale del dato.
+
+Shell: los comandos se ejecutaron en Git Bash y en PowerShell. La forma
+reproducible para el owner esta en PowerShell, en la cabecera de cada
+instrumento. El .txt de psql lo escribio psql con -o, NUNCA con el '>' de
+PowerShell, que reencoda (§7.2).
+
+Estado del repositorio al abrir: HEAD e5c4d0b, cinco untracked viejos (08-08 y
+08-12). Sin commits en esta sesion.
+
+  NOTA DE INSTRUMENTO: la sesion abrio con el directorio de trabajo en
+  C:\Users\katia\.claude, que no es el repositorio. Se apunto a
+  C:/Users/katia/tmarea-backend antes del primer git, como el prompt indicaba.
+
+
+1. EL DEFECTO, Y POR QUE ERA DEL CODIGO Y NO DEL DATO
+--------------------------------------------------------------------------------
+Lo que habia en fase4_migrar_insumo_v2.py:369-372:
+
+    if amb == "insular_remota":
+        return ("-", "no_cerrable",
+                "el decreto nombra las islas sin coordenadas y el insumo no trae "
+                "capa de islas; requiere fuente externa")
+
+Una rama que no mira NADA: ni `cap`, ni el contorno, ni ningun insumo. La vecina
+—lacustre, doce lineas mas arriba— si interroga un cuarto argumento que le llega
+desde afuera:
+
+    if amb == "lacustre":
+        if not [f for c in cuerpos for f in (c.get("shapefile_fid") or [])]:
+            return "union_cuerpos", "no_cerrable", "sin cuerpos de agua adjudicados"
+        return "union_cuerpos", "cerrable", None
+
+DE AHI SE SEGUIAN DOS COSAS, Y LA SEGUNDA ES LA CARA:
+
+  (i) el estado no era una lectura del dato sino una CONSTANTE DEL CODIGO, que es
+      lo contrario de lo que INV-3.6 pide — que el estado quede escrito en el
+      dato;
+
+  (ii) la causa era la MISMA PALABRA POR PALABRA para las dos, y su segunda mitad
+       —"el insumo no trae capa de islas"— es FALSA para juan_fernandez: sus
+       islas estan en costa_osm, la tabla que la construccion lee. Lo midio
+       _bitacoras/reclasificacion_insular_2026-08-15/ y por eso este frente
+       existe. UNA CAUSA QUE SALE DE UN `return` NO PUEDE DEJAR DE SER FALSA
+       CUANDO EL MUNDO CAMBIA.
+
+
+2. LO QUE SE ESCRIBIO
+--------------------------------------------------------------------------------
+Un solo archivo del sistema: scripts/fase4_migrar_insumo_v2.py.
+
+  (a) constante INSULAR — data/decreto/cotejo_insular_adjudicado.json, el analogo
+      de LACUSTRE. EL ARCHIVO NO EXISTE Y NO SE CREO.
+
+  (b) leer_adjudicacion_insular(caps) — devuelve {id: [islas]}. Si el archivo no
+      esta, devuelve las dos con lista vacia. Si esta, exige su forma y CORTA sin
+      defaults: un id que sobra o una insular sin entrada detienen la corrida,
+      mismo criterio que el cotejo lacustre (:1058-1065) y por el mismo motivo —
+      con un default la jurisdiccion quedaria declarada "sin islas adjudicadas",
+      que seria una causa FALSA: el problema seria el id, no la fuente.
+
+      PRECEDENTE DE FORMA, en este mismo modulo: ADJUDICACION se lee si existe y
+      su forma se exige en cuanto existe. La tolerancia es a que el archivo
+      falte, no a que este mal.
+
+  (c) declarar_estado(...) toma un quinto argumento y la rama insular queda
+      simetrica con la lacustre:
+
+        if amb == "insular_remota":
+            if not [a for i in islas for a in (i.get("anclas") or [])]:
+                return ("union_islas", "no_cerrable",
+                        "sin islas adjudicadas: el decreto las nombra y el "
+                        "repositorio todavia no tiene una adjudicacion isla por "
+                        "isla que las ancle a una capa de tierra")
+            return "union_islas", "cerrable", None
+
+  (d) derivado_de suma la clave del cotejo insular, con valor null mientras el
+      archivo no exista. La clave viaja DESDE YA y no el dia que el archivo
+      aparezca: una huella que se materializa sola deja sin registrar la ventana
+      en que el insumo existio y nadie lo sello.
+
+QUE NO SE TOCO, Y POR QUE. `participa_matching` sigue derivandose de
+`estado == "cerrable"` (:1177). Es el campo muerto que §9 ya tenia anotado, y
+esta sesion NO LO NECESITO: al no moverse el estado, no se mueve el derivado y
+las diez entradas de zonas_aviso.json siguen correspondiendo exactamente con las
+diez `participa_matching: false`. Tocarlo es inevitable el dia que una insular
+pase a cerrable — zonas-aviso.js:196 lo exige — y ese dia es Pieza B.
+
+
+3. POR QUE ESTO NO ES "UN if QUE NO CAMBIA NADA": LA PRUEBA DE MORDIDA
+--------------------------------------------------------------------------------
+  Instrumento: 08_mordida.py -> 08_mordida.txt
+
+EL CONTEO QUIETO NO PRUEBA NADA, y es importante decirlo: las insulares seguian
+`no_cerrable` ANTES del cambio tambien. Lo que hay que probar es que la rama
+AHORA MIRA EL DATO. Con la rama vieja, las tres pruebas de abajo habrian dado el
+mismo resultado pasara lo que pasara con el insumo (§4.6: un control que no puede
+fallar no prueba nada).
+
+  1. CON ADJUDICACION ESCRITA -> las dos pasan a `cerrable`, receta `union_islas`,
+     participa_matching True. MUERDE. La rama vieja habria devuelto no_cerrable.
+  2. ID QUE NO EXISTE entre las jurisdicciones -> exit 2, con el id nombrado.
+     MUERDE: no cae al caso por defecto (§4.2).
+  3. UNA INSULAR SIN ENTRADA en el cotejo -> exit 2, con el id nombrado. MUERDE:
+     la ausencia no se supone vacia.
+
+Y LA PRUEBA SE LIMPIA SOLA: escribe el cotejo de laboratorio, lo borra, regenera
+el v2 y VERIFICA POR sha256 que quedo identico byte a byte
+(7e9b2f0c765c1395... antes y despues de las tres pruebas). Si no coincidiera,
+falla ruidoso y lo dice. Las anclas que usa son de laboratorio y el propio
+archivo lo declara en un campo ES_DE_PRUEBA: NO son una adjudicacion.
+
+
+4. EL DIFF DEL v2: CINCO LINEAS DE CONTENIDO SOBRE 64 JURISDICCIONES
+--------------------------------------------------------------------------------
+  Instrumento: 07_diff_v2.txt
+
+  8a9   > "cotejo_insular_adjudicado.json": null,
+  3078  "receta": "-"  ->  "union_islas"                     (hanga_roa)
+  3080  causa: "...el insumo no trae capa de islas..."  ->  "sin islas adjudicadas..."
+  3503  "receta": "-"  ->  "union_islas"                     (juan_fernandez)
+  3505  misma causa
+
+TODO LO DEMAS ES IDENTICO BYTE A BYTE, incluidos los 30 testigos corregidos. Era
+el control central de esta pieza, del mismo tipo que el diff de una linea del SQL
+en _bitacoras/operador_preservetopology_2026-08-15/.
+
+  sha256 del v2   antes  ddff10f45a8e4f77d441690ef6ba265705393e794d4a56b15aabafc33a4a5354
+                  despues 7e9b2f0c765c139588993bd9975bd8402798a028a417f4a8e90d5b6dcd23a531
+
+REGENERACION, en orden y las dos corridas: fase4_migrar_insumo_v2.py (exit 0) y
+fase5_corregir_testigos.py --aplicar (exit 0, "movidos al agua: 30", que
+reproduce). El v2 NUNCA se regenera entero de un solo golpe y esta sesion no fue
+la excepcion.
+
+POR QUE `receta` PASA A `union_islas` AUNQUE SIGA SIENDO no_cerrable, y por que
+eso no rompe nada — medido contra el codigo, no supuesto:
+
+  · el constructor NUNCA pasa una no_cerrable por la tabla RECETAS
+    (fase5_construir_capa_ds991.py:1338: si no es cerrable, arma la fila como
+    `nula_declarada` y sigue). La receta viaja al SQL como texto de columna.
+  · B1 del auditor SALTA las no_cerrables (fase4_auditoria_v2.py:769-770), asi
+    que una receta que su tabla no conoce no dispara fallo.
+  · La lacustre ya hacia esto: declara `union_cuerpos` incluso cuando esta
+    no_cerrable. La receta dice COMO SE CERRARIA, no que este cerrada.
+
+
+5. VERIFICACION — TODA CORRIDA, NINGUNA DADA POR BUENA
+--------------------------------------------------------------------------------
+                                        ANTES            DESPUES
+  auditor del v2 (B0..B12)              exit 0 LIMPIA    exit 0 LIMPIA   (11)
+  verificar_v2_contra_v1.py             exit 0           exit 0          (12)
+    114 diferencias · 114 declaradas · 0 abiertas · 0 no declaradas, en los dos.
+    Comparado contra el 04_v2_contra_v1.txt de causa_pd_tdf_2026-08-15/, que es
+    el VIGENTE. NO contra el de arica_limite_norte_, que es el estado viejo
+    (exit 3) y simula una regresion que no existe.
+  suite JS (npm test)                   84/84 exit 0     84/84 exit 0    (04,14)
+  fase5_registrar_toponimos_igm.py      —                exit 0          (13)
+  tripwire contra el v2                 44/8 · 54/10     44/8 · 54/10    (01,15)
+
+B12 MORDIO, Y ESO ERA LO ESPERADO. El v2 cambia, asi que el sello de
+adjudicacion_tramos.json quedo apuntando a un insumo que ya no esta:
+
+  09_auditor_v2_antes_del_resello.txt   exit 1, 1 fallo, B12:
+    "adjudicacion_tramos.json declara el insumo ddff10f45a8e4f77 y el v2 en disco
+     es 7e9b2f0c765c1395: el insumo se movio debajo de una adjudicacion del owner
+     (22 tramos). NO se re-sella solo"
+
+  Esto es mordida real de un control, no un tramite: se deja el crudo del fallo
+  ANTES del resello a proposito, porque un control que solo se ve en verde no se
+  distingue de uno que no muerde.
+
+RESELLO, AUTORIZADO POR EL OWNER (10_resello_b12.txt, exit 0):
+
+    ddff10f45a8e4f77 -> 7e9b2f0c765c1395
+
+  Y el sellador verifico lo que importa antes de sellar: las 22 adjudicaciones
+  SIGUEN APLICANDO — mismos tramos, mismos tipos, 0 no encontrados, 0 con otro
+  tipo. El sello registra que el insumo se movio DEBAJO de la adjudicacion; la
+  adjudicacion no se reviso ni se modifico.
+
+EL TRIPWIRE, CON SUS TRES CUENTAS SEPARADAS (01_tripwire.py). Se separan porque
+se confunden con facilidad y una de ellas era la pregunta del prompt:
+
+  cerrable/no_cerrable      maritima 44/8 · las 64 54/10     NO SE MUEVE
+  jurisdicciones por ambito insular_remota 2                 NO SE MUEVE
+  participa_matching=false  10, correspondencia exacta       NO SE MUEVE
+                            con las 10 zonas de zonas_aviso.json
+
+  ambitos-publicados.js:112 NO SE ROMPE, y no se habria roto ni aunque el estado
+  hubiera cambiado: ese control compara `jurisdicciones_esperadas` contra
+  cuentaPorAmbito (:66), que cuenta FILAS por ambito, no estados. insular_remota
+  tiene 2 jurisdicciones y va a seguir teniendo 2. El tripwire y ese control
+  miden cosas distintas y por eso el instrumento las imprime por separado.
+
+
+6. EL HALLAZGO QUE OBLIGO A CUATRO ENMIENDAS: "LAS SEIS ISLAS" ES FALSO
+--------------------------------------------------------------------------------
+  Instrumento: 16_islas_archipielago.sql -> .txt (psql -o)
+
+Salio de medir una premisa antes de construir sobre ella (§1.2). Tres sesiones de
+este frente escribieron "las SEIS islas que el D.S. 991 enumera por nombre". El
+texto del v1 dice, literal:
+
+  hanga_roa       "Su jurisdiccion comprende la isla de Pascua e isla Sala y
+                   Gomez."
+  juan_fernandez  "Comprende las islas de San Felix, San Ambrosio y el
+                   ARCHIPIELAGO DE JUAN FERNANDEZ."
+
+EL DECRETO NOMBRA CUATRO ISLAS Y UN COLECTIVO SIN ENUMERAR. Robinson Crusoe y
+Alejandro Selkirk NO APARECEN EN EL TEXTO: entran por interpretacion del
+colectivo, que es cosa distinta de estar nombradas.
+
+Y si entran ellas, la pregunta que nadie habia hecho es QUE MAS entra. Medido
+contra costa_osm —la tabla que la construccion lee, no el zip—, en la caja del
+archipielago hay TRES piezas por encima de 0,5 km2 y no dos:
+
+    -80,7917 / -33,7676   54,3946 km2   (Alejandro Selkirk)
+    -78,8469 / -33,6470   47,8983 km2   (Robinson Crusoe)
+    -78,9427 / -33,7065    2,2356 km2   ISLA SANTA CLARA
+
+SANTA CLARA NO APARECE EN NINGUNA MEDICION ANTERIOR DE ESTE FRENTE. Pertenece al
+mismo colectivo y con el mismo derecho que las otras dos. SON SIETE PIEZAS DE
+TIERRA, NO SEIS. Los nombres son IDENTIFICACION POR COORDENADA; lo medido son las
+coordenadas y las areas.
+
+NO INVALIDA NINGUN NUMERO DE LAS TRES SESIONES. El simplify borro las ocho piezas
+que borro; el buffer midio los 976.448,7 y los 742.627,0 que midio; el operador
+recupero San Felix de 0,0000 a 0,8260 y destapo 37.106,1 km2. INVALIDA EL ROTULO
+CON QUE SE CONTARON — la idea de que esa lista de seis cubria el universo de
+islas del decreto. Cubria las seis que se buscaron.
+
+  ENMENDADO CON TACHADO (§3.3), sin reescribir nada, en los cinco lugares donde
+  la frase gobernaba una conclusion:
+    PLAN_JURISDICCION.md §9, bullet insular          (al pie, con el numero)
+    PLAN_JURISDICCION.md §9, bullet del ST_Simplify  (punto 3, tachado + nota)
+    _bitacoras/reclasificacion_insular_2026-08-15/   §1
+    _bitacoras/simplify_precondicion_2026-08-15/     §3
+    _bitacoras/operador_preservetopology_2026-08-15/ §3
+
+  DECLARADO Y NO TOCADO: la misma frase vive en el comentario del constructor
+  (fase5_construir_capa_ds991.py:857) y en el SQL que emite
+  (fase5_capa_ds991.sql:844). Corregirla ahi cambia el SQL emitido y exige build,
+  o sea que es escritura de otra sesion. Se anota para la que vuelva a tocar el
+  constructor, que es donde la correccion sale gratis.
+
+  Y NO ESTA MEDIDO, se dice en vez de suponerse: QUE LE HACE EL SIMPLIFY A SANTA
+  CLARA. Las mediciones del operador se hicieron sobre una lista de seis que no
+  la incluia. Con 2,2356 km2 en costa_osm esta por encima de la ventana de
+  0,9387-1,5117 que definio el umbral descartado, pero eso es sobre OTRA CAPA:
+  sobre ne_land, que es la que el simplify toca, no se midio.
+
+
+7. LO QUE QUEDA DECLARADO Y NO SE RESUELVE ACA
+--------------------------------------------------------------------------------
+(i) QUE ISLAS COMPRENDE "EL ARCHIPIELAGO DE JUAN FERNANDEZ". El decreto nombra
+    cuatro islas por nombre; Robinson Crusoe, Alejandro Selkirk y Santa Clara
+    entran por interpretacion del colectivo. Es INTERPRETACION DE LA FUENTE
+    NORMATIVA y es del owner (§0.4). No se contesta midiendo una capa. Sin eso,
+    la adjudicacion insular de la Pieza B no se puede escribir: no se sabe que
+    filas lleva.
+
+(ii) EL ANCLA INSULAR NO PUEDE SER `shapefile_fid` CONTRA OSM. El anclaje
+     lacustre funciona porque Inventario_Lagos.shp esta VERSIONADO en el
+     repositorio con su sha256 y su fid es estable para ese archivo. Para las
+     islas la capa es costa_osm, y las tres condiciones se rompen a la vez:
+       · el zip de 925 MB NO se versiona (en_el_repo: false);
+       · su origen SE REGENERA A DIARIO —lo declara advertencia_origen en
+         geodata/costa/capas_costa.json—, asi que una descarga nueva no da el
+         mismo sha y no es "corrupta": es otra costa;
+       · el `fid` de la tabla es el INDICE DE FILA DEL RECORTE
+         (fase5_cargar_costa.py:194-196, :227), asi que cambia si cambia la caja
+         — y la Opcion B de hanga_roa cambia justamente la caja.
+     LA FORMA REPRODUCIBLE ES ANCLAJE POR PUNTO: una coordenada por isla, y la
+     construccion se queda con el poligono de tierra que la contiene. Sobrevive a
+     un cambio de capa, de recorte y de sha (§3.4, INV-3.7). Precedente en el
+     propio insumo, dos veces: `ancla_seleccion` y `punto_interior`. Queda
+     escrito en el docstring de leer_adjudicacion_insular() para que la Pieza B
+     no repita el atajo.
+
+(iii) zonas-aviso.js:196 MIDE "CONSTRUIBLE" DONDE DEBERIA MIRAR "PUBLICADA".
+      Exige participa_matching === false para que una zona de aviso exista, con
+      el motivo "YA participa del matching: tiene geometria CONSTRUIBLE". Entre
+      construible y publicada hay una ventana, Y LA ABRIO EL GATE POR AMBITO DE
+      D3: un ambito se construye y se retira en la misma transaccion si no esta
+      habilitado. En esa ventana la carencia SIGUE EXISTIENDO y el validador
+      obligaria a retirar el aviso que la declara.
+      NO SE VIO ANTES porque el lacustre —el unico caso hasta hoy— se construyo y
+      se publico en el mismo movimiento. Esta sesion no lo dispara: al no moverse
+      el estado, no se mueve participa_matching. LO DISPARA LA PIEZA B, y el dia
+      que lo haga, cambiar ese criterio ES CAMBIAR LO QUE UN CONTROL MIDE — lo
+      que §0.3 permite con autorizacion y motivo escrito, nunca aflojandolo.
+
+(iv) UNA JURISDICCION DE ISLA SOLA, SIN BUFFER, NO LA ALCANZA NINGUN PUNTO DE
+     RUTA. El motor resuelve jurisdiccion por CONTENCION de un punto en el
+     poligono del decreto (INV-3.3, verificacion). Un punto de ruta va por agua;
+     una figura que es tierra no lo contiene nunca. Publicar la isla sola daria
+     una jurisdiccion que pasa C1, C4 y C5 y no cubre a nadie — la forma que §0.3
+     manda mirar primero: la opcion que deja todo en verde sin cambiar nada de
+     fondo. Es la mitad de la pregunta normativa que §9 tiene abierta desde el
+     2026-08-15 ("isla sola, o isla mas alcance costa-afuera") y por eso se anota
+     aca, no se resuelve.
+
+(v) EL CAMPO MUERTO SIGUE MUERTO. El v1 declara participa_matching: true para las
+    dos y el v2 lo deriva false. No hizo falta tocarlo (punto 2) y no se toco.
+    Se vuelve inevitable en la Pieza B.
+
+
+8. OBJECIONES QUE QUEDAN EN PIE
+--------------------------------------------------------------------------------
+· LA CAUSA NUEVA ES VERDADERA PERO SIGUE SIENDO NUESTRA, no del decreto: "sin
+  islas adjudicadas" describe el estado de este repositorio, no una carencia del
+  D.S. 991. La carencia del decreto —que nombra las islas sin coordenadas— sigue
+  siendo cierta y no es la que impide cerrar: lo que impide cerrar es que nadie
+  adjudico todavia que poligono de tierra es cada isla.
+
+· ESTA PIEZA NO ACERCA NI UN METRO CUADRADO DE COBERTURA AL PATRON. Corrige una
+  causa falsa en el dato y le da a la rama la capacidad de cambiar de estado. Una
+  ruta a Juan Fernandez o a Pascua sigue exactamente igual que ayer. Se dice
+  porque una pieza que deja todos los controles en verde y no mueve ningun conteo
+  se puede leer como mas de lo que es.
+
+· LAS DIEZ ZONAS DE AVISO SIGUEN SIN RECLAMAR NINGUN TRAMO. Las diez tienen
+  ambito null y `zonas_con_ambito` esta vacio — lo asserta la propia suite. O sea
+  que el aviso de INV-3.6 para estas dos insulares hoy no se dispara por esa via.
+  Es anterior a esta sesion y no lo empeora; queda dicho porque el punto (iii)
+  habla de "retirar el aviso" y conviene saber cuanto aviso hay.
+
+· QUE LE HACE EL SIMPLIFY A SANTA CLARA: NO DETERMINADO. Ver el punto 6.
+
+
+9. INVENTARIO DEL DIRECTORIO
+--------------------------------------------------------------------------------
+  01_tripwire.py                        las tres cuentas, separadas a proposito
+  01_tripwire_antes.txt                 44/8 · 54/10, v2 ddff10f4
+  02_auditor_v2_antes.txt               exit 0, AUDITORIA LIMPIA
+  03_v2_contra_v1_antes.txt             exit 0, 114 · 114 · 0 · 0
+  03_v2_contra_v1_antes_consola.txt     la consola de esa corrida
+  04_suite_js_antes.txt                 84/84
+  05_migrar_v2.txt                      regeneracion del v2, exit 0
+  06_corregir_testigos_aplicar.txt      exit 0, movidos al agua: 30
+  07_diff_v2.txt                        EL CONTROL CENTRAL: 5 lineas de contenido
+  08_mordida.py                         prueba de mordida, se limpia sola
+  08_mordida.txt                        muerde en las tres direcciones
+  09_auditor_v2_antes_del_resello.txt   exit 1, B12 mordiendo (crudo del fallo)
+  10_resello_b12.txt                    exit 0, ddff10f4 -> 7e9b2f0c, 22/22
+  11_auditor_v2_despues.txt             exit 0, AUDITORIA LIMPIA
+  12_v2_contra_v1_despues.txt           exit 0, 114 · 114 · 0 · 0
+  13_toponimos_igm.txt                  exit 0 (hoy verifica, ya no escribe)
+  14_suite_js_despues.txt               84/84
+  15_tripwire_despues.txt               44/8 · 54/10, v2 7e9b2f0c
+  16_islas_archipielago.sql / .txt      Santa Clara, y las cuatro nombradas
+  rama_insular_simetrica_2026-08-15.txt esta bitacora
+
+Los .txt de psql los produjo psql con -o corriendo el .sql de este mismo
+directorio. Los de los scripts .py y de npm son la salida literal de la corrida,
+redirigida en Git Bash (no en PowerShell).
+
+No hay PROCEDENCIA.txt: no se uso ningun archivo crudo pesado sin versionar
+(§3.5). Los insumos son el v1, el v2 y la tabla costa_osm, cuya procedencia ya
+vive en geodata/costa/capas_costa.json y geodata/costa/PROCEDENCIA.txt.

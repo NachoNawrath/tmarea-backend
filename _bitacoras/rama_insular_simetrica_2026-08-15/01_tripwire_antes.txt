@@ -1,0 +1,42 @@
+TRIPWIRE DE CONTEOS — medido contra el v2
+==============================================================================
+  insumo : data/decreto/jurisdicciones_v2.json
+  sha256 : ddff10f45a8e4f77d441690ef6ba265705393e794d4a56b15aabafc33a4a5354
+  total  : 64 jurisdicciones
+
+1. CERRABLE / NO_CERRABLE POR AMBITO — el tripwire
+------------------------------------------------------------------------------
+  antartica          4 cerrable /   0 no_cerrable
+  insular_remota     0 cerrable /   2 no_cerrable
+  lacustre           6 cerrable /   0 no_cerrable
+  maritima          44 cerrable /   8 no_cerrable
+  las 64            54 cerrable /  10 no_cerrable
+
+2. CUENTA DE JURISDICCIONES POR AMBITO — lo que mira ambitos-publicados.js:112
+------------------------------------------------------------------------------
+  No es el tripwire: cuenta FILAS, no estados. Un cambio de estado no lo mueve.
+  antartica          4
+  insular_remota     2
+  lacustre           6
+  maritima          52
+
+3. participa_matching == false — lo que gobierna zonas-aviso.js:196 y :216
+------------------------------------------------------------------------------
+  participa_matching=false : 10
+  entradas en zonas_aviso  : 10
+  correspondencia exacta   : SI
+  ids: arica, baker, hanga_roa, juan_fernandez, lirquen, puerto_eden, puerto_williams, punta_delgada, talcahuano, tierra_del_fuego
+
+4. EL AMBITO insular_remota, FILA POR FILA
+------------------------------------------------------------------------------
+  hanga_roa
+    estado_geometria    : no_cerrable
+    receta              : -
+    participa_matching  : False
+    causa_sin_geometria : el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; requiere fuente externa
+  juan_fernandez
+    estado_geometria    : no_cerrable
+    receta              : -
+    participa_matching  : False
+    causa_sin_geometria : el decreto nombra las islas sin coordenadas y el insumo no trae capa de islas; requiere fuente externa
+
