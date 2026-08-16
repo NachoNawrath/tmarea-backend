@@ -1,0 +1,94 @@
+================================================================================
+PROCEDENCIA — las dos lineas base que este directorio NO versiona
+Escrito segun CLAUDE.md 3.5. Precedente: geodata/costa/PROCEDENCIA.txt.
+================================================================================
+
+POR QUE ESTE ARCHIVO EXISTE
+--------------------------------------------------------------------------------
+Los diffs de esta sesion —11_diff_v2.txt y 18_diff_sql.txt— se calcularon contra
+dos archivos que pesan 388 KB y 2,5 MB. El corte de 3.5 esta en ~100 KB por
+archivo, asi que son CRUDO PESADO y no se versionan.
+
+Y hay un motivo mas fuerte que el tamano: LAS DOS SE RECUPERAN EXACTAS DESDE EL
+PROPIO REPOSITORIO. Versionarlas seria guardar por segunda vez algo que git ya
+tiene. Lo que si se versiona es el DERIVADO —los dos diffs— y el instrumento que
+los produce.
+
+
+1. _v2_antes.json — el insumo v2 ANTES de esta sesion
+--------------------------------------------------------------------------------
+  bytes    387.497
+  sha256   7e9b2f0c765c139588993bd9975bd8402798a028a417f4a8e90d5b6dcd23a531
+
+  SOBRE QUE SE CALCULO EL SHA256: sobre el archivo en disco, tal como lo dejo la
+  sesion de la Pieza A. Es el MISMO sha que el v2 sellado en `adjudicacion_
+  tramos.json` hasta el re-sello de esta sesion, y el mismo que imprime
+  01_tripwire_antes.txt. La distincion importa en este repositorio: con
+  core.autocrlf=true el blob de git y el archivo en disco no son los mismos bytes
+  para texto. Este archivo es JSON escrito con newline='' y sin CRLF, asi que no
+  hay diferencia; se declara igual para que la huella diga de que es huella.
+
+  COMO SE RECUPERA — PowerShell, desde la raiz del repositorio:
+
+      git show b78fc4b:data/decreto/jurisdicciones_v2.json > _v2_antes.json
+
+  b78fc4b es el HEAD con el que empezo esta sesion (la Pieza A). Si el comando se
+  corre desde otro HEAD, hay que nombrar ese commit y no "HEAD".
+
+  QUE SE EXTRAJO DE EL: la comparacion objeto por objeto de 11_diff_v2.txt —
+  claves de nivel superior (16 -> 17), bloques que cambiaron (`derivado_de` y
+  `alcance_costa_afuera`) y, la que decide, JURISDICCIONES CON ALGUN CAMBIO:
+  NINGUNA. Esa ultima no sale del diff de texto sino de comparar los 64 objetos
+  uno por uno, que es lo que un diff de lineas no prueba.
+
+
+2. _sql_antes.sql — el SQL emitido por el constructor ANTES de esta sesion
+--------------------------------------------------------------------------------
+  bytes    2.576.593
+  sha256   c2a028fd6c2129474c9721d2ec158cddac369d2bb441ebe66a8ab8883a4cb8a2
+
+  OJO, Y ESTO COSTO UNA LINEA BASE MAL TOMADA: `scripts/fase5_capa_ds991.sql`
+  ESTA GITIGNORED (.gitignore:56). Es un artefacto regenerable, no un archivo
+  versionado. La copia que habia en disco al empezar esta sesion venia de la
+  sesion del operador —o sea ANTERIOR a la Pieza A: traia el v2 `ddff10f4…` y la
+  causa insular vieja—, porque la Pieza A cambio el v2 y no corrio ningun build.
+  Tomarla como linea base habria hecho que el diff del SQL mezclara DOS cambios:
+  el de la Pieza A y el de esta sesion.
+
+  LA LINEA BASE CORRECTA SE REGENERO, no se copio:
+
+      & "tools\raster-build\.venv\Scripts\python.exe" `
+        "scripts\fase5_construir_capa_ds991.py" --solo-generar
+
+  corrido con el v2 en `7e9b2f0c…` y con el constructor todavia sin tocar. El
+  sha256 de arriba es el de esa regeneracion, no el del archivo que estaba.
+
+  COMO SE RECUPERA: hay que volver el constructor a b78fc4b y volver a emitir.
+  En PowerShell, desde la raiz, y DEJANDO EL ARBOL COMO ESTABA:
+
+      git stash push scripts/fase5_construir_capa_ds991.py data/decreto/jurisdicciones_v2.json data/decreto/jurisdicciones_capitanias.json
+      & "tools\raster-build\.venv\Scripts\python.exe" "scripts\fase5_construir_capa_ds991.py" --solo-generar
+      Copy-Item scripts\fase5_capa_ds991.sql _sql_antes.sql
+      git stash pop
+      & "tools\raster-build\.venv\Scripts\python.exe" "scripts\fase5_construir_capa_ds991.py" --solo-generar
+
+  La ultima linea NO es adorno: sin ella queda en disco un SQL que no corresponde
+  al insumo, que es exactamente el estado que abrio este parrafo.
+
+  QUE SE EXTRAJO DE EL: 18_diff_sql.txt — 62 lineas de diff, 37 de ellas
+  comentario, y la comprobacion que sostiene la aceptacion del tramo: NINGUNA
+  SENTENCIA QUE PRODUCE GEOMETRIA CAMBIO. Las unicas dos lineas del diff que
+  mencionan `_zee`, `ST_Buffer` o `ST_SimplifyPreserveTopology` son comentarios
+  reflowados.
+
+
+3. LO QUE ESTE DIRECTORIO SI VERSIONA, Y POR QUE
+--------------------------------------------------------------------------------
+  · los dos diffs y todos los .txt de corrida — son el derivado que hace
+    verificable cada numero de la bitacora;
+  · 22_areas_antes.csv y 22_areas_despues.csv — 64 filas cada uno, pesan poco, y
+    sin ellos "la capa no se movio" seria una afirmacion sin respaldo;
+  · los tres instrumentos (.py, .sql) — sin ellos la medicion no se rehace;
+  · 05_mascara_24mn.txt, que tiene 193 bytes y esta INCOMPLETO A PROPOSITO: es la
+    constancia de que el instrumento fiel NO TERMINO. Un archivo que falta y un
+    archivo que prueba que algo no termino no son lo mismo.

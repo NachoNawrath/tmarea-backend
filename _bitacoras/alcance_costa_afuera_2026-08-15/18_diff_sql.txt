@@ -1,0 +1,77 @@
+115,122c115,122
+< INSERT INTO jurisdicciones_ds991_convenciones VALUES (10, 'constructor', 'El limite exterior del espacio maritimo se materializa como 200 millas nauticas (370400 m). El Art. 2 nombra ZEE y plataforma continental sin darles geometria.');
+< INSERT INTO jurisdicciones_ds991_convenciones VALUES (11, 'constructor', 'La separacion lateral entre Capitanias dentro de la franja oceanica: el decreto fija hasta donde llega mar afuera, no como se reparte ese espacio entre vecinas. La reparten el contorno y las fronteras declaradas.');
+< INSERT INTO jurisdicciones_ds991_convenciones VALUES (12, 'constructor', 'Donde el decreto dice ''el litoral'', el poligono se cierra generosamente hacia tierra con un corredor de 60 km y despues se resta la tierra, en vez de trazar la costa a mano. La profundidad del corredor no fija el limite: lo fijan la resta de tierra, la conectividad por agua y las fronteras.');
+< INSERT INTO jurisdicciones_ds991_convenciones VALUES (13, 'constructor', 'Del corredor de ensanche solo se conserva el agua que queda conectada con la figura base. Un cuerpo de agua separado por tierra no es alcanzable desde la jurisdiccion.');
+< INSERT INTO jurisdicciones_ds991_convenciones VALUES (14, 'constructor', 'Ninguna figura cruza las fronteras que el insumo le declara. Cada frontera recorta SOLO dentro de su alcance: se extiende perpendicular a si misma, nunca a lo largo. Prolongarla mas alla de sus extremos le haria decir lo que el decreto no dice ahi.');
+< INSERT INTO jurisdicciones_ds991_convenciones VALUES (15, 'constructor', 'PARALELO COMPARTIDO. Cuando dos vecinas declaran el MISMO paralelo como su limite comun, ese paralelo las separa EN TODA SU EXTENSION, no solo cerca de la costa: nada en el decreto lo acota. Antes no recortaba, y la franja se armaba solo con banda(), que deja que las latitudes citadas del contorno la EXTIENDAN. Eso hacia que dos vecinas se pisaran mar afuera — Castro y Chonchi, 882 km2 en una tira de 2,8 km de alto por 350 km de largo — porque las dos citan coordenadas que cruzan su propio paralelo compartido. El fundamento de la correccion: esas coordenadas describen el TRAZO LOCAL del limite, no la franja oceanica. Por eso el paralelo recorta en todos lados MENOS dentro del alcance de las fronteras poligonales que declara la misma pareja: ahi, y solo ahi, el decreto dibuja el limite fino y ese dibujo manda. Decidido por la owner el 2026-08-10.');
+< INSERT INTO jurisdicciones_ds991_convenciones VALUES (16, 'constructor', 'La caja de trabajo es un artificio de calculo para poder cortar, no un limite juridico.');
+< INSERT INTO jurisdicciones_ds991_convenciones VALUES (17, 'constructor', 'El ambito antartico no resta tierra ni se acota al limite exterior: el decreto lo define como un area delimitada por lineas imaginarias.');
+---
+> INSERT INTO jurisdicciones_ds991_convenciones VALUES (10, 'constructor', 'La separacion lateral entre Capitanias dentro de la franja oceanica: el decreto fija hasta donde llega mar afuera, no como se reparte ese espacio entre vecinas. La reparten el contorno y las fronteras declaradas.');
+> INSERT INTO jurisdicciones_ds991_convenciones VALUES (11, 'constructor', 'Donde el decreto dice ''el litoral'', el poligono se cierra generosamente hacia tierra con un corredor de 60 km y despues se resta la tierra, en vez de trazar la costa a mano. La profundidad del corredor no fija el limite: lo fijan la resta de tierra, la conectividad por agua y las fronteras.');
+> INSERT INTO jurisdicciones_ds991_convenciones VALUES (12, 'constructor', 'Del corredor de ensanche solo se conserva el agua que queda conectada con la figura base. Un cuerpo de agua separado por tierra no es alcanzable desde la jurisdiccion.');
+> INSERT INTO jurisdicciones_ds991_convenciones VALUES (13, 'constructor', 'Ninguna figura cruza las fronteras que el insumo le declara. Cada frontera recorta SOLO dentro de su alcance: se extiende perpendicular a si misma, nunca a lo largo. Prolongarla mas alla de sus extremos le haria decir lo que el decreto no dice ahi.');
+> INSERT INTO jurisdicciones_ds991_convenciones VALUES (14, 'constructor', 'PARALELO COMPARTIDO. Cuando dos vecinas declaran el MISMO paralelo como su limite comun, ese paralelo las separa EN TODA SU EXTENSION, no solo cerca de la costa: nada en el decreto lo acota. Antes no recortaba, y la franja se armaba solo con banda(), que deja que las latitudes citadas del contorno la EXTIENDAN. Eso hacia que dos vecinas se pisaran mar afuera — Castro y Chonchi, 882 km2 en una tira de 2,8 km de alto por 350 km de largo — porque las dos citan coordenadas que cruzan su propio paralelo compartido. El fundamento de la correccion: esas coordenadas describen el TRAZO LOCAL del limite, no la franja oceanica. Por eso el paralelo recorta en todos lados MENOS dentro del alcance de las fronteras poligonales que declara la misma pareja: ahi, y solo ahi, el decreto dibuja el limite fino y ese dibujo manda. Decidido por la owner el 2026-08-10.');
+> INSERT INTO jurisdicciones_ds991_convenciones VALUES (15, 'constructor', 'La caja de trabajo es un artificio de calculo para poder cortar, no un limite juridico.');
+> INSERT INTO jurisdicciones_ds991_convenciones VALUES (16, 'constructor', 'El ambito antartico no resta tierra ni se acota al limite exterior: el decreto lo define como un area delimitada por lineas imaginarias.');
+> INSERT INTO jurisdicciones_ds991_convenciones VALUES (17, 'constructor', 'EL ALCANCE COSTA-AFUERA LO DECLARA EL INSUMO, no este constructor. El default vigente son 370400 m (200 millas nauticas) y lo aplica toda maritima que no declare el suyo. El D.S. 991 NO fija el borde exterior de ninguna Capitania: su Art. 2 nombra ZEE y plataforma continental sin darles geometria, asi que esto es convencion nuestra y su texto lo dice. Jurisdicciones con alcance propio en esta corrida: ninguna.');
+128c128
+< INSERT INTO jurisdicciones_ds991_procedencia VALUES ('insumo_sha256', '7e9b2f0c765c139588993bd9975bd8402798a028a417f4a8e90d5b6dcd23a531');
+---
+> INSERT INTO jurisdicciones_ds991_procedencia VALUES ('insumo_sha256', '10ef5af265b9a448dfe493855c25442c2d6905801a747c66cbb4e33554bee413');
+133c133,134
+< INSERT INTO jurisdicciones_ds991_procedencia VALUES ('limite_exterior_m', '370400');
+---
+> INSERT INTO jurisdicciones_ds991_procedencia VALUES ('limite_exterior_m', '370400 (200 millas nauticas), declarado en el insumo en ''alcance_costa_afuera.por_defecto''; capa del rol ''limite_exterior''');
+> INSERT INTO jurisdicciones_ds991_procedencia VALUES ('alcance_propio', 'ninguna: las maritimas construidas toman el default');
+141c142
+<   estado_geometria TEXT NOT NULL CHECK (estado_geometria IN ('construida','nula_declarada')),
+---
+>   estado_geometria TEXT NOT NULL CHECK (estado_geometria IN ('construida','construida_parcial','nula_declarada')),
+835,840c836,851
+< -- Limite exterior: solo lo maritimo. La capa sale del rol 'limite_exterior'
+< -- del manifiesto, no de un nombre puesto aca. Ahi la resolucion gruesa es
+< -- adecuada A PROPOSITO: el error de una costa 1:10m son cientos de metros,
+< -- cuatro ordenes por debajo de las 200 millas, y ademas se simplifica antes
+< -- de bufferear. Usar la capa fina costaria horas para mover un borde que esta
+< -- a 370 km de la costa.
+---
+> -- EL ALCANCE COSTA-AFUERA: solo lo maritimo. NO es una constante de este
+> -- constructor desde el 2026-08-15: lo declara el insumo en su bloque
+> -- 'alcance_costa_afuera', y de ahi salen tanto el default como el de cada
+> -- jurisdiccion que se aparte de el. El decreto NO fija el borde exterior de
+> -- ninguna Capitania —su Art. 2 nombra ZEE y plataforma continental sin
+> -- darles geometria—, asi que esto es convencion nuestra y queda declarado
+> -- como tal en la tabla de convenciones de la capa.
+> -- default declarado: 370400 m (200 millas nauticas).
+> -- La capa sale del rol declarado en el manifiesto, no de un nombre puesto
+> -- aca. Ahi la resolucion gruesa es adecuada A PROPOSITO: el error de una
+> -- costa 1:10m son cientos de metros, cuatro ordenes por debajo de las 200
+> -- millas, y ademas se simplifica antes de bufferear. Usar la capa fina
+> -- costaria horas para mover un borde que esta a 370 km de la costa. ESE
+> -- ARGUMENTO ES DEL DEFAULT Y NO SE TRASLADA a un alcance corto: a 24 mn la
+> -- distancia entre los dos ordenes es de DOS, no de cuatro, y por eso un
+> -- alcance propio declara su propia capa y el constructor no le pone una.
+844,848c855,858
+< -- Sala y Gomez, dos de las seis islas que el D.S. 991 enumera por nombre— y
+< -- ningun control lo cazaba, porque la figura que queda no es nula, ni vacia,
+< -- ni invalida, ni de area cero. ST_SimplifyPreserveTopology conserva todos
+< -- los anillos por construccion, comprime igual (5.950 vertices contra 5.980)
+< -- y cuesta 0,4 s mas de buffer. Medido en
+---
+> -- Sala y Gomez— y ningun control lo cazaba, porque la figura que queda no es
+> -- nula, ni vacia, ni invalida, ni de area cero. ST_SimplifyPreserveTopology
+> -- conserva todos los anillos por construccion, comprime igual (5.950
+> -- vertices contra 5.980) y cuesta 0,4 s mas de buffer. Medido en
+850a861,866
+> -- NOTA DE ROTULO (2026-08-15): aca decia 'dos de las SEIS islas que el
+> -- D.S. 991 enumera por nombre'. El decreto nombra CUATRO —Pascua y Sala y
+> -- Gomez, San Felix y San Ambrosio— mas el 'Archipielago de Juan Fernandez',
+> -- un colectivo SIN ENUMERAR. Los numeros de arriba no se mueven; lo que era
+> -- falso era el rotulo. Que islas comprende el colectivo es interpretacion de
+> -- la fuente normativa y es del owner.
+951c967
+< FROM _amb a LEFT JOIN jurisdicciones_ds991 x ON x.ambito = a.ambito AND (x.estado_geometria = 'construida' AND (x.geom IS NULL OR ST_IsEmpty(x.geom) OR NOT ST_IsValid(x.geom) OR ST_Area(x.geom::geography) = 0))
+---
+> FROM _amb a LEFT JOIN jurisdicciones_ds991 x ON x.ambito = a.ambito AND (x.estado_geometria IN ('construida','construida_parcial') AND (x.geom IS NULL OR ST_IsEmpty(x.geom) OR NOT ST_IsValid(x.geom) OR ST_Area(x.geom::geography) = 0))

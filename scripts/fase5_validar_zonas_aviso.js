@@ -98,15 +98,45 @@ const FAMILIAS = [
     () => { const d = clonar(DECL); zonaDe(d, 'arica').jurisdiccion_id = 'no_existe'; return [d, INSUMO, CONTACTOS]; },
     /no corresponde a ninguna jurisdiccion/],
 
-  ['M2  la jurisdiccion recupero geometria (retiro automatico)',
+  // M2 INYECTA EL ESTADO, NO EL BOOLEANO, DESDE EL 2026-08-15. Antes ponia
+  // `participa_matching = true` y con eso alcanzaba, porque el guard colgaba de
+  // ese campo. Con la regla de tres estados el guard mira `estado_geometria`, y
+  // seguir inyectando solo el booleano habria dejado a M2 SIN MORDER sin que
+  // nada avisara: el modo de falla de CLAUDE.md 4.6 cayendole justo al control
+  // que vigila el retiro automatico. Se inyectan los dos campos, como los
+  // escribe el migrador cuando una jurisdiccion se cierra de verdad.
+  ['M2  la jurisdiccion recupero geometria ENTERA (retiro automatico)',
     () => { const i = clonar(INSUMO);
-            i.jurisdicciones.find(j => j.id === 'arica').participa_matching = true;
+            const j = i.jurisdicciones.find(j => j.id === 'arica');
+            j.estado_geometria = 'cerrable';
+            j.participa_matching = true;
             return [DECL, i, CONTACTOS]; },
-    /YA participa del matching/],
+    /esta 'cerrable'/],
+
+  // M2b ES LA QUE PRUEBA EL TERCER ESTADO, Y ES LA UNICA QUE NO DEBE MORDER.
+  // Una jurisdiccion que pasa a construirse EN PARTE conserva su zona: la
+  // carencia de la porcion no cubierta sigue existiendo, y retirarle el aviso
+  // seria la causa (a) de INV-3.6 vuelta silencio. Va con `esperado: null`.
+  // Si algun dia el guard volviera a colgar de `participa_matching`, esta
+  // familia se cae — que es exactamente para lo que esta.
+  ['M2b una construida EN PARTE conserva su zona (el tercer estado)',
+    () => { const i = clonar(INSUMO);
+            const j = i.jurisdicciones.find(j => j.id === 'arica');
+            j.estado_geometria = 'cerrable_parcial';
+            j.participa_matching = true;
+            return [DECL, i, CONTACTOS]; },
+    null],
+
+  // M2c — un estado que nadie declaro no cae para ningun lado.
+  ['M2c un estado_geometria desconocido no cae a ningun lado',
+    () => { const i = clonar(INSUMO);
+            i.jurisdicciones.find(j => j.id === 'arica').estado_geometria = 'inventado';
+            return [DECL, i, CONTACTOS]; },
+    /no esta en el mapeo/],
 
   ['M3  aparece una nula sin zona declarada',
     () => { const d = clonar(DECL); d.zonas = d.zonas.filter(z => z.jurisdiccion_id !== 'baker'); return [d, INSUMO, CONTACTOS]; },
-    /sin geometria que no tienen zona de aviso/],
+    /con carencia declarada y sin zona de aviso/],
 
   ['M4  zona declarada dos veces',
     () => { const d = clonar(DECL); d.zonas.push(clonar(zonaDe(d, 'arica'))); return [d, INSUMO, CONTACTOS]; },
@@ -226,7 +256,18 @@ for (const [nombre, romper, esperado] of FAMILIAS) {
   } catch (e) {
     resultado = e;
   }
-  if (!resultado) {
+  // Una familia con `esperado: null` es un caso que el validador DEBE ACEPTAR.
+  // No es una excepcion al metodo: un mapeo de tres ramas se prueba por sus tres
+  // ramas, y la que acepta es tan parte del control como las que rechazan. Sin
+  // ella, un guard que rechazara TODO pasaria todas las demas familias.
+  if (esperado === null) {
+    if (resultado) {
+      console.log(`${nombre.padEnd(52)}: MUERDE cuando debia aceptar -> ${resultado.message}`);
+      fallas++;
+    } else {
+      console.log(`${nombre.padEnd(52)}: acepta, como debe. OK`);
+    }
+  } else if (!resultado) {
     console.log(`${nombre.padEnd(52)}: NO MUERDE — el validador acepto un dato malo`);
     fallas++;
   } else if (!(resultado instanceof ErrorZonasAviso)) {

@@ -111,7 +111,43 @@ AMBITO_CAPA = "(capa)"
 MARCA_PUBLICACION = "PUBLICACION ::"
 
 # ── Parametros. Convencion nuestra, ninguno es un caso particular ─────────────
-LIMITE_ZEE_M = 370400          # 200 millas nauticas
+# EL ALCANCE COSTA-AFUERA YA NO VIVE ACA. Hasta el 2026-08-15 era
+# `LIMITE_ZEE_M = 370400`, constante de este archivo aplicada a todo el ambito
+# maritimo sin excepcion posible. Ahora lo declara el insumo, en su bloque
+# `alcance_costa_afuera`, y este modulo lo LEE — la misma forma que CAPAS_TIERRA
+# y CAPA_LIMITE_EXTERIOR, que dejaron de vivir en el codigo por el mismo motivo.
+#
+# POR QUE SE MOVIO. INV-3.7 pide que el archivo de definicion de jurisdicciones
+# sea el dato fuente versionado y la geometria un derivado reproducible desde el.
+# Una convencion que fija el borde exterior de 44 jurisdicciones construidas y
+# que solo existe adentro de un .py no cumple eso: no se puede citar, no se puede
+# cotejar contra el decreto, y no admite que una jurisdiccion se aparte de ella
+# sin escribir una rama con su nombre — que es lo que CLAUDE.md 4.3 prohibe.
+#
+# EL VALOR NO CAMBIA: el default declarado son los mismos 370.400 m y la capa no
+# se mueve. Medido en _bitacoras/alcance_costa_afuera_2026-08-15/.
+ALCANCE = {}                   # lo llena leer_alcance()
+TABLA_POR_ROL = {}             # lo llena capas_declaradas()
+
+# LOS DOS VOCABULARIOS DE `estado_geometria`, y el puente entre ellos. NO son el
+# mismo conjunto de palabras y confundirlos ya tenia donde costar caro: el insumo
+# dice si el decreto permite cerrar la jurisdiccion; la capa dice que quedo
+# efectivamente construido. Escribir el puente aca, exhaustivo y en un solo
+# lugar, es lo que hace que agregar un estado obligue a decidir su destino en vez
+# de dejarlo caer del lado que salga (CLAUDE.md 4.2).
+#
+#   cerrable         -> construida         la figura entera.
+#   cerrable_parcial -> construida_parcial  se construye, y una PARTE declarada
+#                       queda sin cubrir. Al 2026-08-15 NINGUNA jurisdiccion esta
+#                       en este estado: el valor existe para que ningun lector lo
+#                       trate como desconocido en silencio, y la derivacion que lo
+#                       produce es de la pieza siguiente.
+#   no_cerrable      -> nula_declarada     no hay con que construirla.
+ESTADO_EN_LA_CAPA = {
+    "cerrable": "construida",
+    "cerrable_parcial": "construida_parcial",
+    "no_cerrable": "nula_declarada",
+}
 X_W, X_E = -85.0, -65.0        # caja de trabajo, longitudes
 Y_S, Y_N = -60.0, -17.0        # caja de trabajo, latitudes continentales
 MARGEN = 0.5
@@ -136,7 +172,28 @@ CAPAS_TIERRA = []          # lo llena capas_declaradas()
 CAPA_LIMITE_EXTERIOR = None
 COSTA_DECLARADA = {}       # huella de la capa de tierra, para el control C0
 
-CONVENCIONES_CONSTRUCTOR = [
+def convenciones_constructor():
+    """Las convenciones que el constructor deja escritas en la capa.
+
+    Es funcion y no lista de modulo desde el 2026-08-15: una de ellas cita el
+    alcance costa-afuera, que ya no es constante de este archivo sino dato del
+    insumo, y no se puede leer a la hora de importar.
+    """
+    return _CONVENCIONES_FIJAS + [
+        f"EL ALCANCE COSTA-AFUERA LO DECLARA EL INSUMO, no este constructor. El "
+        f"default vigente son {ALCANCE['defecto']['metros']} m "
+        f"({ALCANCE['defecto']['equivalencia']}) y lo aplica toda maritima que no "
+        f"declare el suyo. El D.S. 991 NO fija el borde exterior de ninguna "
+        f"Capitania: su Art. 2 nombra ZEE y plataforma continental sin darles "
+        f"geometria, asi que esto es convencion nuestra y su texto lo dice. "
+        f"Jurisdicciones con alcance propio en esta corrida: "
+        + (", ".join(f"{k} ({v['metros']} m)"
+                     for k, v in sorted(ALCANCE["propios"].items()))
+           if ALCANCE["propios"] else "ninguna") + ".",
+    ]
+
+
+_CONVENCIONES_FIJAS = [
     "RESTAR LA TIERRA ES CONVENCION NUESTRA, NO DECRETO. El Art. 2 del D.S. 991 "
     "dice que la jurisdiccion comprende el litoral, los lagos y rios navegables, "
     "las aguas interiores, el mar territorial, la zona contigua, la ZEE y la "
@@ -146,9 +203,6 @@ CONVENCIONES_CONSTRUCTOR = [
     "acotar la jurisdiccion. De ahi se siguen dos cosas: que la capa de costa se "
     "elige por su fidelidad al agua real y no por su autoridad administrativa, y "
     "que ante la duda se yerra hacia incluir de mas, nunca hacia excluir.",
-    "El limite exterior del espacio maritimo se materializa como 200 millas "
-    f"nauticas ({LIMITE_ZEE_M} m). El Art. 2 nombra ZEE y plataforma continental "
-    "sin darles geometria.",
     "La separacion lateral entre Capitanias dentro de la franja oceanica: el "
     "decreto fija hasta donde llega mar afuera, no como se reparte ese espacio "
     "entre vecinas. La reparten el contorno y las fronteras declaradas.",
@@ -230,6 +284,133 @@ def buscar_psql():
     raise Alto("no se encontro psql. Ponelo en el PATH o exporta PSQL con su ruta.")
 
 
+def emitir_alcances_propios(A, tabla):
+    """La mascara de las jurisdicciones que declaran un alcance MENOR que el
+    default. Recorta; nunca agranda.
+
+    NO EMITE NADA cuando ninguna declara uno propio, que es el estado al
+    2026-08-15. Eso no es una optimizacion: es la aceptacion de la pieza que
+    trajo este mecanismo — con cero alcances propios el SQL emitido tiene que
+    ser el mismo de antes, y por eso la capa no se mueve ni un km2.
+
+    POR QUE ESTO NO PUEDE ROMPER LA PUBLICACION DEL LACUSTRE. Una mascara que
+    solo INTERSECA no puede crear un traslape que no existiera, asi que ni
+    C3 ni C8 —los dos controles de alcance (capa) que miran geometria— pueden
+    pasar a fallar por su causa; C7 mira el indice y es indiferente. Y ademas
+    el UPDATE lleva su propio WHERE por id: ningun ambito que no sea el de la
+    jurisdiccion nombrada queda al alcance de esta sentencia.
+
+    NO HAY NINGUNA RAMA CON EL NOMBRE DE UNA JURISDICCION (CLAUDE.md 4.3): se
+    recorre lo que el insumo declara, y una jurisdiccion se agrega escribiendo
+    su bloque en el dato, no tocando este archivo.
+    """
+    propios = ALCANCE["propios"]
+    if not propios:
+        return
+    A("")
+    A("-- ALCANCES COSTA-AFUERA PROPIOS. Cada una de estas jurisdicciones declara")
+    A("-- en el insumo un borde exterior MAS CORTO que el default, con su motivo y")
+    A("-- con la capa sobre la que se traza. La parte de su banda que queda mas")
+    A("-- alla NO se construye y NO se adjudica a nadie: es carencia declarada, y")
+    A("-- quien la declara es el dato, no este SQL.")
+    for jid, a in sorted(propios.items()):
+        rol = a["capa_rol"]
+        capa = TABLA_POR_ROL.get(rol)
+        if not capa:
+            raise Alto(f"{jid}: su alcance declara la capa del rol '{rol}', que el "
+                       f"manifiesto no trae. Los roles disponibles son "
+                       f"{', '.join(sorted(TABLA_POR_ROL)) or 'ninguno'}")
+        # El id viaja a un nombre de tabla temporal, asi que se comprueba antes de
+        # interpolarlo. Los ids del insumo son minusculas y guion bajo; uno que no
+        # lo fuera detiene la emision en vez de producir SQL invalido o peor.
+        if not (jid.replace("_", "").isalnum() and jid[0].isalpha()):
+            raise Alto(f"el id '{jid}' declara alcance propio y no es un "
+                       f"identificador SQL usable; no se interpola a ciegas")
+        tmp = f"_alc_{jid}"
+        A("")
+        A(f"-- {jid}: {a['metros']} m ({a['equivalencia']}), rol '{rol}' -> {capa}.")
+        A(f"--   decidido por: {a['decidido_por']}")
+        A(f"DROP TABLE IF EXISTS {tmp};")
+        A(f"CREATE TEMP TABLE {tmp} AS")
+        A("SELECT ST_ReducePrecision(ST_MakeValid(ST_Buffer(")
+        A("  ST_Union(ST_MakeValid(ST_Intersection(ST_MakeValid(l.geom), b.caja)))"
+          "::geography,")
+        A(f"  {a['metros']})::geometry), 1e-8) AS geom")
+        A(f"  FROM {capa} l, (SELECT ST_Envelope(ST_Buffer("
+          f"ST_Envelope(j.geom)::geography, {a['metros']})::geometry) AS caja")
+        A(f"          FROM {tabla} j WHERE j.id = {sql_str(jid)}) b")
+        A(" WHERE ST_Intersects(l.geom, b.caja);")
+        # La figura se recorta contra su propia mascara. Si la mascara saliera
+        # vacia la figura quedaria vacia y C1 lo cazaria, que es lo que tiene que
+        # pasar: una mascara que no interseca nada es un alcance mal declarado, no
+        # una jurisdiccion sin agua.
+        A(f"UPDATE {tabla} j SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(")
+        A("  ST_Intersection(ST_ReducePrecision(j.geom, 1e-8), m.geom)), 3))")
+        A(f"  FROM {tmp} m WHERE j.id = {sql_str(jid)} AND j.geom IS NOT NULL;")
+    A("")
+
+
+def leer_alcance(v2):
+    """El alcance costa-afuera, leido del insumo. Sin ningun default de codigo.
+
+    Deja en ALCANCE dos cosas:
+      'defecto'  el bloque `por_defecto` del insumo — lo que se aplica a toda
+                 maritima que no declare el suyo.
+      'propios'  {id: bloque} de las que SI declaran uno. Al 2026-08-15 esta
+                 vacio, y esa es la aceptacion de la pieza que trajo el
+                 mecanismo: la capa no se mueve porque nadie se aparta todavia.
+
+    NO HAY DEFAULT DE CODIGO, y no es una precaucion teorica. Si el bloque
+    faltara y este modulo cayera a 370400 escrito aca, el insumo podria declarar
+    otra cosa y la capa saldria construida contra un numero que nadie declaro,
+    sin que nada avise. Se detiene (CLAUDE.md 4.1, 4.2).
+    """
+    global ALCANCE
+    b = v2.get("alcance_costa_afuera")
+    if not isinstance(b, dict) or not isinstance(b.get("por_defecto"), dict):
+        raise Alto("el insumo no trae el bloque 'alcance_costa_afuera' con su "
+                   "'por_defecto'. De ahi sale el borde exterior de las maritimas; "
+                   "este constructor NO tiene un valor propio al que caer")
+    d = b["por_defecto"]
+    if not isinstance(d.get("metros"), int) or d["metros"] <= 0:
+        raise Alto(f"'alcance_costa_afuera.por_defecto.metros' no es un entero "
+                   f"positivo de metros: {d.get('metros')!r}")
+    if not d.get("capa_rol"):
+        raise Alto("'alcance_costa_afuera.por_defecto' no declara 'capa_rol': "
+                   "sobre que capa se bufferiza el borde no se adivina")
+
+    propios = {}
+    for j in v2["jurisdicciones"]:
+        a = j.get("alcance_costa_afuera")
+        if a is None:
+            continue
+        if j["ambito"] != "maritima":
+            raise Alto(f"{j['nombre']}: declara 'alcance_costa_afuera' y su ambito "
+                       f"es '{j['ambito']}'. El alcance costa-afuera es del ambito "
+                       f"maritimo; en otro ambito no hay borde exterior que acotar")
+        # Cada campo se exige por separado, con su motivo. Un alcance sin motivo
+        # escrito es una convencion sin declarar (CLAUDE.md 1.1); uno sin capa es
+        # un borde que no se sabe contra que se traza.
+        for campo in ("metros", "equivalencia", "tipo", "decidido_por", "motivo",
+                      "capa_rol"):
+            if not a.get(campo):
+                raise Alto(f"{j['nombre']}: su 'alcance_costa_afuera' no trae "
+                           f"'{campo}'")
+        if not isinstance(a["metros"], int) or a["metros"] <= 0:
+            raise Alto(f"{j['nombre']}: 'alcance_costa_afuera.metros' no es un "
+                       f"entero positivo: {a['metros']!r}")
+        if a["metros"] > d["metros"]:
+            raise Alto(f"{j['nombre']}: declara un alcance de {a['metros']} m, "
+                       f"MAYOR que el default de {d['metros']} m. El mecanismo solo "
+                       f"acorta: agrandarlo adjudicaria agua mas alla del borde "
+                       f"exterior que el insumo declara para todas, y eso no se "
+                       f"hace desde una jurisdiccion sola")
+        propios[j["id"]] = a
+
+    ALCANCE = {"defecto": d, "propios": propios, "bloque": b}
+    return ALCANCE
+
+
 def capas_declaradas():
     """Trae del manifiesto las capas de los roles 'tierra' y 'limite_exterior'. Este
     modulo no nombra capas: si el manifiesto declara otra costa, la construccion la
@@ -272,6 +453,10 @@ def capas_declaradas():
     ct, tabla_tierra = elegidas["tierra"]
     CAPAS_TIERRA = [tabla_tierra]
     CAPA_LIMITE_EXTERIOR = elegidas["limite_exterior"][1]
+    # Rol -> tabla, para que un alcance costa-afuera pueda declarar SOBRE QUE
+    # CAPA se traza su borde sin que este modulo nombre ninguna.
+    TABLA_POR_ROL.clear()
+    TABLA_POR_ROL.update({nombre: t for nombre, (_, t) in elegidas.items()})
     COSTA_DECLARADA = {"id": ct["id"], "sha256": ct["sha256"],
                        "tabla_base": ct["tabla"], "tabla": tabla_tierra}
     return man
@@ -659,7 +844,7 @@ def emitir_ddl(A, tabla):
       "('maritima','lacustre','antartica','insular_remota')),")
     A("  participa_matching BOOLEAN NOT NULL, receta TEXT,")
     A("  estado_geometria TEXT NOT NULL CHECK (estado_geometria IN "
-      "('construida','nula_declarada')),")
+      "('construida','construida_parcial','nula_declarada')),")
     A("  causa_sin_geometria TEXT, sigue_litoral BOOLEAN NOT NULL,")
     A("  tramos_litoral INT NOT NULL, fronteras_aplicadas TEXT, km2_ensanche NUMERIC,")
     A("  punto_representativo geometry(Point, 4326), causa_sin_punto_representativo TEXT,")
@@ -747,7 +932,7 @@ def emitir_sql(v2, lac, filas, sectores, habilitados, ensayo):
     for t in v2.get("convenciones", []):
         n += 1
         A(f"INSERT INTO {TABLA}_convenciones VALUES ({n}, 'insumo v2', {sql_str(t)});")
-    for t in CONVENCIONES_CONSTRUCTOR:
+    for t in convenciones_constructor():
         n += 1
         A(f"INSERT INTO {TABLA}_convenciones VALUES ({n}, 'constructor', {sql_str(t)});")
     A("")
@@ -762,7 +947,19 @@ def emitir_sql(v2, lac, filas, sectores, habilitados, ensayo):
                  ("ensanche_litoral", f"{ENSANCHE_KM:.0f} km" if CAPAS_TIERRA else
                   "NO APLICADO: el ensanche exige capa de tierra que lo recorte; "
                   "sin ella el corredor es una losa que solo pisa a las vecinas"),
-                 ("limite_exterior_m", str(LIMITE_ZEE_M))):
+                 # El borde exterior deja constancia de su VALOR y de DONDE SALE.
+                 # Antes decia solo el numero, y el numero solo no distingue una
+                 # convencion declarada en el insumo de una constante de codigo:
+                 # es justamente la distincion que esta pieza vino a hacer.
+                 ("limite_exterior_m",
+                  f"{ALCANCE['defecto']['metros']} "
+                  f"({ALCANCE['defecto']['equivalencia']}), declarado en el insumo "
+                  f"en 'alcance_costa_afuera.por_defecto'; capa del rol "
+                  f"'{ALCANCE['defecto']['capa_rol']}'"),
+                 ("alcance_propio",
+                  ", ".join(f"{k}={v['metros']} m"
+                            for k, v in sorted(ALCANCE["propios"].items()))
+                  or "ninguna: las maritimas construidas toman el default")):
         A(f"INSERT INTO {TABLA}_procedencia VALUES ({sql_str(k)}, {sql_str(v)});")
     A("")
     emitir_ddl(A, TABLA)
@@ -845,32 +1042,50 @@ def emitir_sql(v2, lac, filas, sectores, habilitados, ensayo):
     A("")
     A(f"UPDATE {TABLA} SET geom = _base WHERE ambito IN ('lacustre', 'antartica');")
     A("")
-    A("-- Limite exterior: solo lo maritimo. La capa sale del rol 'limite_exterior'")
-    A("-- del manifiesto, no de un nombre puesto aca. Ahi la resolucion gruesa es")
-    A("-- adecuada A PROPOSITO: el error de una costa 1:10m son cientos de metros,")
-    A("-- cuatro ordenes por debajo de las 200 millas, y ademas se simplifica antes")
-    A("-- de bufferear. Usar la capa fina costaria horas para mover un borde que esta")
-    A("-- a 370 km de la costa.")
+    defecto = ALCANCE["defecto"]
+    A("-- EL ALCANCE COSTA-AFUERA: solo lo maritimo. NO es una constante de este")
+    A("-- constructor desde el 2026-08-15: lo declara el insumo en su bloque")
+    A("-- 'alcance_costa_afuera', y de ahi salen tanto el default como el de cada")
+    A("-- jurisdiccion que se aparte de el. El decreto NO fija el borde exterior de")
+    A("-- ninguna Capitania —su Art. 2 nombra ZEE y plataforma continental sin")
+    A("-- darles geometria—, asi que esto es convencion nuestra y queda declarado")
+    A("-- como tal en la tabla de convenciones de la capa.")
+    A(f"-- default declarado: {defecto['metros']} m ({defecto['equivalencia']}).")
+    A("-- La capa sale del rol declarado en el manifiesto, no de un nombre puesto")
+    A("-- aca. Ahi la resolucion gruesa es adecuada A PROPOSITO: el error de una")
+    A("-- costa 1:10m son cientos de metros, cuatro ordenes por debajo de las 200")
+    A("-- millas, y ademas se simplifica antes de bufferear. Usar la capa fina")
+    A("-- costaria horas para mover un borde que esta a 370 km de la costa. ESE")
+    A("-- ARGUMENTO ES DEL DEFAULT Y NO SE TRASLADA a un alcance corto: a 24 mn la")
+    A("-- distancia entre los dos ordenes es de DOS, no de cuatro, y por eso un")
+    A("-- alcance propio declara su propia capa y el constructor no le pone una.")
     A("-- EL OPERADOR NO ES INTERCAMBIABLE, y esto no es preferencia de estilo.")
     A("-- ST_Simplify es Douglas-Peucker y puede eliminar un ANILLO ENTERO: con esta")
     A("-- misma tolerancia borraba OCHO piezas de la union —entre ellas San Felix y")
-    A("-- Sala y Gomez, dos de las seis islas que el D.S. 991 enumera por nombre— y")
-    A("-- ningun control lo cazaba, porque la figura que queda no es nula, ni vacia,")
-    A("-- ni invalida, ni de area cero. ST_SimplifyPreserveTopology conserva todos")
-    A("-- los anillos por construccion, comprime igual (5.950 vertices contra 5.980)")
-    A("-- y cuesta 0,4 s mas de buffer. Medido en")
+    A("-- Sala y Gomez— y ningun control lo cazaba, porque la figura que queda no es")
+    A("-- nula, ni vacia, ni invalida, ni de area cero. ST_SimplifyPreserveTopology")
+    A("-- conserva todos los anillos por construccion, comprime igual (5.950")
+    A("-- vertices contra 5.980) y cuesta 0,4 s mas de buffer. Medido en")
     A("-- _bitacoras/simplify_precondicion_2026-08-15/ y aplicado en")
     A("-- _bitacoras/operador_preservetopology_2026-08-15/. No volver al anterior.")
+    A("-- NOTA DE ROTULO (2026-08-15): aca decia 'dos de las SEIS islas que el")
+    A("-- D.S. 991 enumera por nombre'. El decreto nombra CUATRO —Pascua y Sala y")
+    A("-- Gomez, San Felix y San Ambrosio— mas el 'Archipielago de Juan Fernandez',")
+    A("-- un colectivo SIN ENUMERAR. Los numeros de arriba no se mueven; lo que era")
+    A("-- falso era el rotulo. Que islas comprende el colectivo es interpretacion de")
+    A("-- la fuente normativa y es del owner.")
     A("CREATE TEMP TABLE _zee AS")
     A("SELECT ST_ReducePrecision(ST_MakeValid(ST_Buffer(")
     A("  ST_SimplifyPreserveTopology(ST_Union(ST_MakeValid(ST_Intersection("
       "ST_MakeValid(l.geom),")
     A(f"    ST_MakeEnvelope({X_W}, {Y_S}, {X_E}, {Y_N}, {CRS})))), 0.01)::geography,")
-    A(f"  {LIMITE_ZEE_M})::geometry), 1e-8) AS geom FROM {CAPA_LIMITE_EXTERIOR} l")
+    A(f"  {defecto['metros']})::geometry), 1e-8) AS geom "
+      f"FROM {CAPA_LIMITE_EXTERIOR} l")
     A(f"WHERE ST_Intersects(l.geom, ST_MakeEnvelope({X_W}, {Y_S}, {X_E}, {Y_N}, {CRS}));")
     A(f"UPDATE {TABLA} j SET geom = ST_Multi(ST_CollectionExtract(ST_MakeValid(")
     A("  ST_Intersection(ST_ReducePrecision(j.geom, 1e-8), z.geom)), 3))")
     A("FROM _zee z WHERE j.ambito = 'maritima' AND j.geom IS NOT NULL;")
+    emitir_alcances_propios(A, TABLA)
     A("")
     A(f"UPDATE {TABLA} SET geom = ST_MakeValid(geom)")
     A("WHERE geom IS NOT NULL AND NOT ST_IsValid(geom);")
@@ -1056,8 +1271,13 @@ def emitir_controles(A, tabla, permitidos):
     A("CREATE TEMP TABLE _amb AS SELECT DISTINCT ambito FROM " + tabla + ";")
     A(f"INSERT INTO _amb VALUES ({sql_str(AMBITO_CAPA)});")
     A("")
+    # C1 vale para TODO estado que trae geometria. Se enumeran los dos en vez de
+    # escribir "<> 'nula_declarada'": si manana aparece un cuarto estado, la
+    # negacion lo meteria aca sin que nadie lo decidiera, y una lista lo deja
+    # afuera hasta que alguien lo nombre (CLAUDE.md 4.2).
     control_por_fila(A, tabla, "C1 sin geometria vacia, de area cero o invalida",
-                     "x.estado_geometria = 'construida' AND (x.geom IS NULL OR "
+                     "x.estado_geometria IN ('construida','construida_parcial') AND "
+                     "(x.geom IS NULL OR "
                      "ST_IsEmpty(x.geom) OR NOT ST_IsValid(x.geom) OR "
                      "ST_Area(x.geom::geography) = 0)")
     control_por_fila(A, tabla, "C2 toda nula declarada con su causa",
@@ -1319,6 +1539,7 @@ def main():
     capas_declaradas()
     habilitados = habilitados_declarados()
     v2 = json.load(open(V2, encoding="utf-8"))
+    leer_alcance(v2)
     lac = json.load(open(LACUSTRE, encoding="utf-8"))
     gdf = gpd.read_file(SHP_LAGOS).to_crs(epsg=CRS)
     fronteras = {f["id"]: f for f in v2["fronteras"]}
@@ -1335,7 +1556,23 @@ def main():
              "testigo": j.get("punto_representativo"),
              "causa_sin_testigo": j.get("causa_sin_punto_representativo")}
 
-        if j["estado_geometria"] != "cerrable":
+        # EL PUENTE ENTRE LOS DOS VOCABULARIOS DE `estado_geometria`, y no son el
+        # mismo. El del insumo es cerrable / cerrable_parcial / no_cerrable; el de
+        # la capa construida es construida / construida_parcial / nula_declarada.
+        # Hasta el 2026-08-15 esto era `if j["estado_geometria"] != "cerrable"`,
+        # que con DOS estados era correcto y con TRES deja caer al tercero del lado
+        # equivocado sin avisar: una jurisdiccion construida en parte se declararia
+        # NULA teniendo geometria. Es el mapeo por clave con caso por defecto
+        # silencioso de CLAUDE.md 4.2, escrito como un `!=`. Ahora es un mapeo
+        # explicito y exhaustivo que se detiene ante un estado que no conoce.
+        destino = ESTADO_EN_LA_CAPA.get(j["estado_geometria"])
+        if destino is None:
+            raise Alto(f"{j['nombre']}: el insumo la declara "
+                       f"'{j['estado_geometria']}', que no esta en el mapeo a "
+                       f"estados de la capa ({', '.join(sorted(ESTADO_EN_LA_CAPA))}). "
+                       f"Un estado que este constructor no sabe traducir no se "
+                       f"construye por defecto ni se declara nulo por defecto")
+        if destino == "nula_declarada":
             causa = j.get("causa_sin_geometria")
             if not causa:
                 raise Alto(f"{j['nombre']} viene declarada no cerrable y sin causa. "
@@ -1344,7 +1581,7 @@ def main():
             f.update(estado="nula_declarada", causa=causa)
         else:
             base, amplia, apl, nlit = construir_figura(j, ctx, fronteras)
-            f.update(estado="construida", base=base, amplia=amplia,
+            f.update(estado=destino, base=base, amplia=amplia,
                      fronteras_aplicadas=apl, n_litoral=nlit)
             for s in (j.get("sectores") or []):
                 sectores.append({"id": f"{j['id']}__{s['id']}", "jurisdiccion": j["id"],
@@ -1355,12 +1592,16 @@ def main():
         diag.append((j["nombre"], j["ambito"], j["receta"], f["n_litoral"],
                      f["estado"], ",".join(f["fronteras_aplicadas"])))
 
-    # Conteos contra el insumo. Si no cuadran, algo se perdio en el camino.
-    esperadas = sum(1 for j in v2["jurisdicciones"] if j["estado_geometria"] == "cerrable")
-    obtenidas = sum(1 for f in filas if f["estado"] == "construida")
-    if esperadas != obtenidas:
-        raise Alto(f"el insumo declara {esperadas} cerrables y se construyeron "
-                   f"{obtenidas}")
+    # Conteos contra el insumo. Si no cuadran, algo se perdio en el camino. Se
+    # cuenta POR ESTADO y no "las que no son nulas": un conteo agregado dejaria
+    # pasar que una parcial saliera construida entera, o al reves.
+    for origen, destino_esperado in sorted(ESTADO_EN_LA_CAPA.items()):
+        esperadas = sum(1 for j in v2["jurisdicciones"]
+                        if j["estado_geometria"] == origen)
+        obtenidas = sum(1 for f in filas if f["estado"] == destino_esperado)
+        if esperadas != obtenidas:
+            raise Alto(f"el insumo declara {esperadas} '{origen}' y la capa trae "
+                       f"{obtenidas} '{destino_esperado}'")
     if len(filas) != len(v2["jurisdicciones"]):
         raise Alto("se perdieron filas entre el insumo y la capa")
 
@@ -1453,7 +1694,11 @@ def informe(filas, diag, sectores, habilitados):
     print(f"  tierra   : {', '.join(CAPAS_TIERRA) or 'no se resta (ver convencion)'}"
           + (f"   [{COSTA_DECLARADA['id']}, sha {COSTA_DECLARADA['sha256'][:12]}]"
              if COSTA_DECLARADA else ""))
-    print(f"  ext.     : {CAPA_LIMITE_EXTERIOR}, buffer de {LIMITE_ZEE_M} m")
+    print(f"  ext.     : {CAPA_LIMITE_EXTERIOR}, buffer de "
+          f"{ALCANCE['defecto']['metros']} m  [declarado en el insumo]"
+          + (f"   propios: " + ", ".join(f"{k}={v['metros']}"
+                                         for k, v in sorted(ALCANCE["propios"].items()))
+             if ALCANCE["propios"] else ""))
     print(f"  ensanche : {ENSANCHE_KM:.0f} km, solo en tramos litoral"
           + ("" if CAPAS_TIERRA else "  — NO APLICADO: exige capa de tierra"))
     print()
@@ -1476,8 +1721,15 @@ def informe(filas, diag, sectores, habilitados):
     print(f"SECTORES construidos: {len(sectores)}")
     print("NULAS DECLARADAS, CON SU CAUSA")
     for f in filas:
-        if f["estado"] != "construida":
+        if f["estado"] == "nula_declarada":
             print(f"  {f['nombre']:<24} {str(f['causa'])[:80]}")
+    parciales = [f for f in filas if f["estado"] == "construida_parcial"]
+    if parciales:
+        print("CONSTRUIDAS EN PARTE, CON SU ALCANCE DECLARADO")
+        for f in parciales:
+            a = ALCANCE["propios"][f["id"]]
+            print(f"  {f['nombre']:<24} alcance {a['metros']} m "
+                  f"({a['equivalencia']}) — {a['decidido_por']}")
 
 
 if __name__ == "__main__":

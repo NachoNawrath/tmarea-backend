@@ -27,6 +27,51 @@ const RUTA_CONTACTOS    = path.join(__dirname, '..', 'data', 'bahia-capitania-ma
 const TIPOS_CONTACTO = new Set(['capitania', 'gobernacion', 'sin_contacto']);
 const TIPOS_AMBITO   = new Set(['banda_latitud']);
 
+// ─── EL TERCER ESTADO ────────────────────────────────────────────────────────
+// Hasta el 2026-08-15 las dos exigencias de este modulo colgaban del MISMO
+// booleano: `participa_matching === false` decidia a la vez que una zona pueda
+// existir (:196) y que sea obligatoria (:216). Con dos estados eso alcanzaba.
+//
+// Con TRES no alcanza, y falla en la peor direccion. Una jurisdiccion construida
+// EN PARTE —geometria hasta su alcance declarado, y una porcion declarada sin
+// cubrir— tiene `participa_matching: true`, porque tiene geometria y sacarla del
+// matching perderia lo que si se construyo. Con el criterio viejo su zona pasaba
+// a estar PROHIBIDA por :196 y a la vez dejaba de ser exigida por :216: los dos
+// guards se rompian juntos y el hueco declarado se volvia invisible. Eso es la
+// causa (a) de INV-3.6 implementada como silencio, que es exactamente lo que el
+// invariante existe para impedir.
+//
+// Ahora la pregunta se le hace a `estado_geometria`, que tiene los tres valores,
+// con mapeo EXHAUSTIVO y sin caso por defecto. NO SE AFLOJA NINGUN CONTROL
+// (CLAUDE.md 0.3): las dos exigencias de antes siguen enteras en sus filas
+// —'cerrable' prohibe, 'no_cerrable' obliga— y lo que se agrega es una tercera
+// fila donde antes no habia nada.
+//
+//   cerrable          la geometria cubre la jurisdiccion entera -> NO lleva zona.
+//   cerrable_parcial  se construyo y una parte declarada quedo sin cubrir ->
+//                     lleva zona, y la zona declara LA PARTE NO CUBIERTA.
+//   no_cerrable       no hay con que construirla -> lleva zona por la entera.
+const ZONA_POR_ESTADO = {
+  cerrable:         'prohibida',
+  cerrable_parcial: 'obligatoria',
+  no_cerrable:      'obligatoria',
+};
+
+// `estado_geometria` es el campo que gobierna. Se exige que ESTE: un insumo que
+// no lo traiga no se resuelve mirando `participa_matching`, porque ese es
+// justamente el desfase que este bloque vino a cerrar.
+function estadoDe(jur) {
+  const e = jur.estado_geometria;
+  if (!ZONA_POR_ESTADO[e]) {
+    throw new ErrorZonasAviso(
+      `la jurisdiccion '${jur.id}' declara estado_geometria '${e}', que no esta en ` +
+      `el mapeo (${Object.keys(ZONA_POR_ESTADO).join(', ')}). No hay caso por defecto: ` +
+      `un estado nuevo decide si su carencia se le declara al patron o no, y eso no ` +
+      `se adivina.`);
+  }
+  return e;
+}
+
 class ErrorZonasAviso extends Error {
   constructor(mensaje) {
     super(`[zonas_aviso] ${mensaje}`);
@@ -176,10 +221,10 @@ function validarDeclaracion(decl, insumo, contactos) {
   const porId = new Map();
   for (const j of insumo.jurisdicciones) porId.set(j.id, j);
 
-  // Las que el insumo declara sin geometria hoy. Es la lista contra la que se
-  // exige correspondencia exacta en los dos sentidos.
-  const sinGeometria = insumo.jurisdicciones
-    .filter(j => j.participa_matching === false)
+  // Las que necesitan zona de aviso hoy. Es la lista contra la que se exige
+  // correspondencia exacta en los dos sentidos.
+  const conCarencia = insumo.jurisdicciones
+    .filter(j => ZONA_POR_ESTADO[estadoDe(j)] === 'obligatoria')
     .map(j => j.id);
 
   const vistos = new Set();
@@ -193,9 +238,11 @@ function validarDeclaracion(decl, insumo, contactos) {
 
     const jur = porId.get(id);
     exigir(jur, `la zona '${id}' no corresponde a ninguna jurisdiccion del insumo.`);
-    exigir(jur.participa_matching === false,
-      `la jurisdiccion '${id}' YA participa del matching: tiene geometria construible. ` +
-      `Su zona de aviso perdio la carencia que la justificaba y debe retirarse de zonas_aviso.json.`);
+    exigir(ZONA_POR_ESTADO[estadoDe(jur)] === 'obligatoria',
+      `la jurisdiccion '${id}' esta 'cerrable': su geometria cubre la jurisdiccion ENTERA. ` +
+      `Su zona de aviso perdio la carencia que la justificaba y debe retirarse de zonas_aviso.json. ` +
+      `(Si lo que pasa es que se construyo solo en parte, el estado que corresponde es ` +
+      `'cerrable_parcial' y la zona se queda, declarando la parte no cubierta.)`);
     exigir(textoNoVacio(jur.causa_sin_geometria),
       `la jurisdiccion '${id}' esta sin geometria pero no declara 'causa_sin_geometria' en el insumo. ` +
       `Un aviso sin causa escrita no se publica.`);
@@ -205,6 +252,11 @@ function validarDeclaracion(decl, insumo, contactos) {
       nombre: jur.nombre,
       gobernacion: jur.gobernacion,
       ambito_jurisdiccion: jur.ambito,
+      // Viaja resuelto para que quien consuma la zona sepa si la carencia es de
+      // la jurisdiccion ENTERA ('no_cerrable') o de una PARTE declarada de ella
+      // ('cerrable_parcial'). Al patron se le dice lo mismo en los dos casos
+      // (INV-3.6); la distincion es del registro interno.
+      estado_geometria: estadoDe(jur),
       causa_sin_geometria: jur.causa_sin_geometria,
       contacto: resolverContacto(zona, jur, contactos),
       ambito: validarAmbito(zona),
@@ -212,10 +264,12 @@ function validarDeclaracion(decl, insumo, contactos) {
     });
   }
 
-  const faltantes = sinGeometria.filter(id => !vistos.has(id));
+  const faltantes = conCarencia.filter(id => !vistos.has(id));
   exigir(faltantes.length === 0,
-    `hay jurisdicciones sin geometria que no tienen zona de aviso declarada: ${faltantes.join(', ')}. ` +
-    `Sin su declaracion, una ruta que las cruce volveria a callar (INV-3.6).`);
+    `hay jurisdicciones con carencia declarada y sin zona de aviso: ${faltantes.join(', ')}. ` +
+    `Sin su declaracion, una ruta que las cruce volveria a callar (INV-3.6). ` +
+    `Una 'cerrable_parcial' cuenta acá igual que una 'no_cerrable': su parte no cubierta ` +
+    `produce el mismo silencio.`);
 
   return {
     version: decl.version,

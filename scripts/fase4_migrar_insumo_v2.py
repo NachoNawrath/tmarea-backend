@@ -339,6 +339,79 @@ def banda(cap, contorno):
     return (min(cs), max(cn))
 
 
+# ── el alcance costa-afuera, leido del v1 sin ningun default ─────────────────
+
+# Los estados posibles de `estado_geometria` en el INSUMO. No es el mismo
+# vocabulario que el de la capa construida — ahi los estados son 'construida',
+# 'construida_parcial' y 'nula_declarada' — y confundirlos ya tiene un lugar
+# donde costaria caro: el puente entre los dos, en
+# fase5_construir_capa_ds991.py. Se escriben aca, en un solo lugar, para que
+# agregar un estado obligue a decidir su destino en vez de dejarlo caer.
+#
+#   cerrable          el decreto entrega con que construirla entera.
+#   cerrable_parcial  se construye, y una PARTE declarada queda sin cubrir. Al
+#                     2026-08-15 NINGUNA jurisdiccion esta en este estado: el
+#                     valor existe en el vocabulario y la derivacion que lo
+#                     produce es de la pieza siguiente. Vive desde ya para que
+#                     ningun lector de `estado_geometria` pueda tratarlo como
+#                     desconocido en silencio.
+#   no_cerrable       falta el ingrediente de su receta.
+ESTADOS = ("cerrable", "cerrable_parcial", "no_cerrable")
+
+# Que estados participan del matching. Mapeo EXPLICITO y exhaustivo: hasta el
+# 2026-08-15 esto era `estado == "cerrable"`, que con dos estados era correcto y
+# con tres deja caer al tercero del lado equivocado sin avisar (CLAUDE.md 4.2).
+# `cerrable_parcial` participa: TIENE geometria, y sacarla del matching seria
+# perder la parte que si se construyo.
+PARTICIPA_MATCHING = {
+    "cerrable": True,
+    "cerrable_parcial": True,
+    "no_cerrable": False,
+}
+
+
+def participa_matching(estado):
+    if estado not in PARTICIPA_MATCHING:
+        raise Alto(f"estado_geometria '{estado}' no esta en el mapeo de "
+                   f"participa_matching ({', '.join(ESTADOS)}). No hay caso por "
+                   f"defecto: un estado nuevo decide si su jurisdiccion entra o no "
+                   f"al matching, y eso no se adivina")
+    return PARTICIPA_MATCHING[estado]
+
+
+def alcance_declarado(v1):
+    """El bloque `alcance_costa_afuera` del v1, validado y sin defaults.
+
+    Es CONVENCION NUESTRA — el D.S. 991 no fija el borde exterior de ninguna
+    Capitania — y por eso su texto tiene que declararlo. Lo que se exige aca es
+    que el bloque exista y traiga el default con su numero y su motivo; el texto
+    largo no se valida palabra por palabra, pero su ausencia si se caza.
+    """
+    b = v1.get("alcance_costa_afuera")
+    if not isinstance(b, dict):
+        raise Alto("el v1 no trae el bloque 'alcance_costa_afuera'. Es de donde "
+                   "sale el borde exterior de las 44 maritimas construidas; sin el "
+                   "el constructor tendria que poner un numero propio, que es "
+                   "justamente lo que este bloque existe para terminar")
+    d = b.get("por_defecto")
+    if not isinstance(d, dict):
+        raise Alto("'alcance_costa_afuera' no trae 'por_defecto'. Un default que "
+                   "no esta declarado es el caso por defecto silencioso que "
+                   "CLAUDE.md 4.2 prohibe")
+    for campo in ("metros", "equivalencia", "tipo", "capa_rol", "aplica_a",
+                  "de_donde_viene_este_numero"):
+        if not d.get(campo):
+            raise Alto(f"'alcance_costa_afuera.por_defecto' no trae '{campo}'")
+    if not isinstance(d["metros"], int) or d["metros"] <= 0:
+        raise Alto(f"'alcance_costa_afuera.por_defecto.metros' tiene que ser un "
+                   f"entero positivo de metros y es {d['metros']!r}")
+    if not b.get("de_que_norma_sale"):
+        raise Alto("'alcance_costa_afuera' no declara 'de_que_norma_sale'. Es "
+                   "convencion nuestra y presentarla sin decirlo es fabricar "
+                   "autoridad normativa (CLAUDE.md 1.1)")
+    return b
+
+
 # ── estado de geometria: se declara, no se deduce al construir ───────────────
 
 def declarar_estado(cap, contorno, cerrado, cuerpos, islas):
@@ -1208,6 +1281,12 @@ def main():
         receta, estado, causa = declarar_estado(cap, cont, cerrados[cid],
                                                 cuerpos_lac.get(cid, []),
                                                 islas_ins.get(cid, []))
+        if estado not in ESTADOS:
+            raise Alto(f"{cap['nombre']}: declarar_estado() devolvio "
+                       f"'{estado}', que no esta en el vocabulario "
+                       f"({', '.join(ESTADOS)}). El estado gobierna el matching, "
+                       f"la zona de aviso y la construccion; uno que nadie "
+                       f"declaro no se deja pasar")
         estados[cid] = estado
 
         pr, motivo = None, None
@@ -1255,7 +1334,7 @@ def main():
             "nombre": cap["nombre"],
             "gobernacion": cap["gobernacion"],
             "ambito": cap["ambito"],
-            "participa_matching": estado == "cerrable",
+            "participa_matching": participa_matching(estado),
             "receta": receta,
             "estado_geometria": estado,
             "causa_sin_geometria": causa,
@@ -1332,6 +1411,17 @@ def main():
         # saberlo, porque no saberlo es la causa raiz de todo este frente.
         "cotejado_contra": v1.get("cotejado_contra"),
         "nota_construccion": v1.get("nota_construccion"),
+        # Linea de PASO, sin logica, por el mismo motivo que
+        # `limite_norte_convencion` mas abajo: el emisor tiene lista de campos FIJA
+        # y un bloque del v1 que no se nombre aca NO llega nunca al v2, que es lo
+        # que leen el auditor, el constructor y los dos validadores.
+        #
+        # SE EXIGE, no se toma con .get(). El constructor saca de aca el borde
+        # exterior de las 44 maritimas construidas; si el bloque no viajara, la
+        # alternativa seria que el constructor cayera a un valor propio, y un
+        # default de codigo que reemplaza en silencio a un dato ausente es
+        # exactamente el modo de falla de CLAUDE.md 4.2. Falla ruidoso (4.1).
+        "alcance_costa_afuera": alcance_declarado(v1),
         "convenciones": [
             "El lado de una poligonal lo decide 'ancla_seleccion' (la sede de la "
             "Capitania), no una letra cardinal. La jurisdiccion es el trozo que "

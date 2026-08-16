@@ -4,7 +4,7 @@
  "generado": "2026-08-09",
  "generado_por": "scripts/fase4_migrar_insumo_v2.py",
  "derivado_de": {
-  "jurisdicciones_capitanias.json": "4e28dd88652617439dae8bc6e0fb3063e8780de9f35f7dafc8bce87b91b4da28",
+  "jurisdicciones_capitanias.json": "10122572e3418d44ccb88d364557be58877363de6bcce66cae6284aff568892f",
   "cotejo_lacustre_adjudicado.json": "c3c5d5b1e189f802053b9bad069bbe753f81b761ea35eeab015a75e6ad2ee014",
   "cotejo_insular_adjudicado.json": null,
   "seed-bahias-sitport.js": "b57af4af0e9f6fefeb07e05e36518d2bb97e82bc44049f60860c70dcfa8848e8"
@@ -30,6 +30,25 @@
   }
  },
  "nota_construccion": "Donde el decreto dice 'siguiendo el litoral', el poligono se cierra generosamente hacia tierra y se recorta con ST_Difference contra la capa de tierra. No se traza la costa a mano.",
+ "alcance_costa_afuera": {
+  "que_es": "Hasta donde mar afuera llega la jurisdiccion de una Capitania de ambito maritimo. Es el borde EXTERIOR de la figura: el que no describe ningun tramo del contorno y que hasta el 2026-08-15 no existia como dato.",
+  "de_que_norma_sale": "DE NINGUNA. El D.S. 991 guarda SILENCIO ABSOLUTO sobre el alcance costa afuera de todas sus Capitanias. Su Art. 2 dice que las jurisdicciones comprenden el litoral, lagos y rios navegables, aguas interiores, mar territorial, zona contigua, ZEE y plataforma continental, y NO fija el borde exterior de ninguna. Esto es CONVENCION NUESTRA y su texto lo declara, para no fabricar autoridad normativa (CLAUDE.md 1.1). Quien lea este bloque buscando el articulo que lo respalda no lo va a encontrar, y eso es correcto.",
+  "por_defecto": {
+   "metros": 370400,
+   "equivalencia": "200 millas nauticas",
+   "tipo": "convencion_nuestra",
+   "declarada_el": "2026-08-15",
+   "aplica_a": "toda jurisdiccion de ambito maritimo que no declare un `alcance_costa_afuera` propio.",
+   "capa_rol": "limite_exterior",
+   "de_donde_viene_este_numero": "Hasta el 2026-08-15 era LIMITE_ZEE_M, constante de codigo en scripts/fase5_construir_capa_ds991.py:114. EL VALOR NO CAMBIA: cambia donde vive. INV-3.7 pide que el archivo de definicion de jurisdicciones sea el dato fuente versionado y la geometria un derivado reproducible desde el; una convencion que gobierna el borde exterior de 44 jurisdicciones construidas y que solo existe adentro de un .py no cumple eso. La capa no se mueve ni un km2 por este cambio, y esa es la aceptacion de la pieza que lo hizo.",
+   "por_que_se_declara_UNA_vez_y_no_52_veces": "CLAUDE.md 4.2 prohibe el mapeo por clave con caso por defecto silencioso, con excepcion unica cuando la ausencia es un estado legitimo del dato Y SE DECLARA COMO TAL. Este bloque es esa declaracion: el default deja de ser silencioso porque esta en el dato, con nombre, con motivo y con el silencio del decreto citado. Repetir el mismo numero 52 veces seria peor — CLAUDE.md 4.3, y 52 lugares donde el mismo valor envejece distinto.",
+   "por_que_la_capa_gruesa_alcanza_para_200_mn": "El rol `limite_exterior` es `ne_land`, 1:10m. El error de una costa a esa resolucion son cientos de metros, CUATRO ORDENES DE MAGNITUD por debajo de las 200 millas. Ese argumento es del constructor y sigue siendo cierto PARA ESTE VALOR. NO se traslada automaticamente a un alcance corto: a 24 mn la distancia entre los dos ordenes es de DOS, no de cuatro. Ver `nota_sobre_la_capa_de_un_alcance_corto`."
+  },
+  "como_se_declara_uno_propio": "Una jurisdiccion que se aparta del default escribe su propio `alcance_costa_afuera` con `metros`, `equivalencia`, `tipo`, `decidido_por`, `motivo` y `capa_rol`. El constructor lo lee del dato; NO hay ninguna rama en el codigo que nombre una jurisdiccion (CLAUDE.md 4.3). Al 2026-08-15 NINGUNA lo declara: `arica` tiene su alcance de 24 mn decidido y escrito EN PROSA dentro de `limite_norte_convencion.alcance`, y pasarlo a este bloque es lo que promueve `arica` al tercer estado de `estado_geometria` — trabajo de la pieza siguiente, no de esta.",
+  "nota_sobre_la_capa_de_un_alcance_corto": "PENDIENTE, DEL OWNER, MEDIDO Y NO DECIDIDO. Un alcance corto puede bufferizarse sobre el rol `limite_exterior` (`ne_land`, gruesa) o sobre el rol `tierra` (`costa_osm`, fina). No es umbral tecnico: mueve el borde que el patron ve, asi que es del owner (CLAUDE.md 0.4). Los dos bordes estan medidos sobre la banda de `arica` en _bitacoras/alcance_costa_afuera_2026-08-15/05_mascara_24mn.txt. Mientras no este decidido, `capa_rol` de un alcance propio NO tiene default: el constructor se detiene si falta.",
+  "lo_que_este_bloque_NO_hace": "No construye nada, no adjudica agua a nadie y no cambia ningun `estado_geometria`. Declara el borde exterior que ya estaba en uso y le da un lugar en el dato a los que se aparten de el.",
+  "evidencia": "_bitacoras/alcance_costa_afuera_2026-08-15/"
+ },
  "convenciones": [
   "El lado de una poligonal lo decide 'ancla_seleccion' (la sede de la Capitania), no una letra cardinal. La jurisdiccion es el trozo que contiene esa ancla.",
   "Cada tramo del contorno lleva su tipo — litoral, frontera o abierto — transcrito del parrafo que lo describe, con el fragmento literal que lo respalda. Solo los tramos 'litoral' ensanchan hacia tierra. Un tramo 'abierto' sale a mar afuera y no tiene tierra que capturar.",

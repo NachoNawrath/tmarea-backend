@@ -1305,7 +1305,8 @@ el propio paquete de DIFROL niega. D no abre esa ventana.*
 
 **La objeción que produjo la decisión, medida antes de proponerla:** `receta_banda_paralelos`
 devuelve `box(X_W, sur, X_E, norte)` recortado por el buffer de 200 mn, y **no hay ningún campo
-de alcance en el insumo** —`alcance` aparece 0 veces en `jurisdicciones_v2.json`—. O sea que
+de alcance en el insumo** —~~`alcance` aparece 0 veces en `jurisdicciones_v2.json`~~ **el
+conteo quedó vencido el mismo día: ver la nota al pie de D16**—. O sea que
 "hasta 24 mn" **no es expresable con las recetas de hoy**: escribir el paralelo produce la
 banda entera. Estimación de rectángulo, declarada como tal: de los ~35.700 km² de la figura,
 ~31.400 quedarían fuera de lo autorizado. Y el propio paquete lo niega: su línea de ZEE termina
@@ -1320,6 +1321,28 @@ a byte. **El mecanismo se diseña GENÉRICO, no como caso de `arica`** (§4.3): 
 `puerto_eden` tienen la misma forma y son sus clientes siguientes.
 
 Evidencia: `_bitacoras/arica_limite_norte_2026-08-15/`.
+
+> **TACHADO DEL CONTEO, NO DE LA CONCLUSIÓN — 2026-08-15 (§3.3).** La frase
+> ~~*"`alcance` aparece 0 veces en `jurisdicciones_v2.json`"*~~ **es falsa desde el mismo día
+> en que se escribió, y la envejeció esta propia decisión.** Medido: el string aparece **4
+> veces en 3 líneas**. Desglosado, porque el desglose es lo que decide — una es la clave
+> `alcance` dentro de `cotejado_contra`, que es el alcance del **cotejo textual** y no tiene
+> nada que ver; una es prosa dentro de `convenciones`; y la tercera es
+> **`arica.limite_norte_convencion.alcance`, que la escribió D16**.
+>
+> **La conclusión NO se mueve y por eso no se tacha**: ese campo es **prosa**
+> —*"24 millas nauticas (44.448 m) desde la costa. Mas alla de 24 mn esta jurisdiccion NO SE
+> CUBRE…"*— y no un número que el constructor pueda consumir. "Hasta 24 mn" seguía sin ser
+> expresable, que es lo que la objeción decía. Lo que estaba mal era **medir la ausencia con
+> un `grep` de una palabra**: es la forma del §2 —*una afirmación de ausencia se escribe con
+> el comando que la midió*—, y el comando dejó de decir lo mismo en cuanto alguien escribió
+> esa palabra en otro sentido.
+>
+> **Contestado el 2026-08-15: ya existe un campo de alcance consumible**, y es del insumo
+> entero, no de `arica`: el bloque `alcance_costa_afuera` con su `por_defecto` de 370.400 m
+> declarado. `arica` **sigue con su alcance en prosa** y pasarlo al bloque es lo que la
+> promueve al tercer estado — pieza siguiente, no ésta. Ver
+> `_bitacoras/alcance_costa_afuera_2026-08-15/`.
 
 ### D7/D8 — por qué son dos y no una. Medido el 2026-08-11.
 
@@ -1920,7 +1943,8 @@ Escrito para que no se lea como más cerrado de lo que está.
 - **Cómo se construye una jurisdicción con alcance costa-afuera acotado.** Abierta el
   2026-08-15 con D16 y **diferida a propósito**. Hoy `receta_banda_paralelos` devuelve la franja
   entera hasta el límite exterior de 200 mn y el insumo no tiene ningún campo de alcance
-  (`alcance`: 0 apariciones, medido). Tres preguntas cuelgan de ahí y **ninguna se contestó**:
+  (~~`alcance`: 0 apariciones, medido~~ — **conteo tachado, conclusión intacta: ver la nota
+  al pie de D16**). Tres preguntas cuelgan de ahí y **ninguna se contestó**:
   si el hueco entre 24 y 200 mn en la banda de `arica` es causa **(a)** o **(b)** de INV-3.6;
   qué es el **tercer estado** de `estado_geometria`, hoy binario, que una jurisdicción
   construida en parte necesita —y que los dos validadores de `zonas_aviso.json` no admiten
@@ -1929,6 +1953,111 @@ Escrito para que no se lea como más cerrado de lo que está.
   `fase5_corregir_testigos.py` con una jurisdicción más, que **deja de reproducir byte a byte**.
   Se diseña **genérico**, no como caso de `arica` (§4.3): `baker` y `puerto_eden` tienen la
   misma forma.
+  > **2026-08-15 — EL MECANISMO ESTÁ, EL TERCER ESTADO ESTÁ EN EL VOCABULARIO, Y NADIE SE
+  > PROMOVIÓ TODAVÍA. Tramo 1 de dos, aplicado y verificado**
+  > (`_bitacoras/alcance_costa_afuera_2026-08-15/`). El frente se partió porque no entraba en
+  > una sesión, con el precedente de Pieza A/B, y el corte va donde **no queda ninguna
+  > ventana abierta**: nada se promueve, así que ninguna regeneración intermedia produce la
+  > capa que D16 existe para impedir.
+  >
+  > **Lo que cambió.** `LIMITE_ZEE_M` **deja de ser constante de código** y pasa a ser dato
+  > declarado: bloque `alcance_costa_afuera` en el v1 → v2, con `por_defecto` de **370.400 m
+  > (200 mn)**, su `capa_rol`, y **el silencio del decreto escrito como motivo** —el Art. 2
+  > nombra ZEE y plataforma continental y **no fija el borde exterior de ninguna Capitanía**,
+  > así que esto es convención nuestra y su texto lo dice (§1.1)—. El constructor lo **lee**;
+  > si el bloque falta, **se detiene**: no tiene un valor propio al que caer. Una jurisdicción
+  > que se aparte declara el suyo en el dato y el constructor emite su máscara — **sin ninguna
+  > rama con nombre propio** (§4.3), y **sólo hacia abajo**: un alcance mayor que el default
+  > levanta `Alto`.
+  >
+  > **Se declara la convención de las 44, que hasta hoy no tenía rótulo.** Era el mismo número
+  > que la decisión 2 del owner manda rotular para las insulares, y dejarlo en el código
+  > habría dejado **dos convenciones idénticas con distinto estatus**. Cuesta **un bloque, no
+  > 52 declaraciones**: §4.2 admite el default cuando la ausencia es estado legítimo **y se
+  > declara como tal**, y eso es exactamente lo que el bloque es.
+  >
+  > **El tercer estado ya no puede caer en silencio, y ése era el hallazgo que cambió el
+  > diseño: `estado_geometria` tiene DOS VOCABULARIOS, no uno.** El del insumo es
+  > `cerrable`/`no_cerrable`; el de la capa construida es **`construida`/`nula_declarada`**,
+  > con `CHECK` propio. El puente entre los dos era `if estado != "cerrable"`, o sea que un
+  > tercer valor **se declaraba NULO teniendo geometría** — el `get(k, default)` de §4.2
+  > escrito como un `!=`. Ahora son **`cerrable_parcial` → `construida_parcial`** en un mapeo
+  > exhaustivo que **aborta ante un estado que no conoce**, y lo mismo en los otros **cinco**
+  > lugares que preguntaban por `!= "cerrable"` (auditor del v2) y en `C1`, que enumera los
+  > dos estados con geometría en vez de negar el nulo.
+  >
+  > **`zonas-aviso.js`: los dos guards se rompían JUNTOS y ahora son una regla de tres ramas.**
+  > `:196` y `:216` colgaban del mismo booleano; una `cerrable_parcial` tiene
+  > `participa_matching: true`, así que su zona pasaba a estar **prohibida por uno y no
+  > exigida por el otro** — la causa (a) de INV-3.6 vuelta silencio. La regla nueva pregunta
+  > por `estado_geometria`: `cerrable` prohíbe · `no_cerrable` obliga · **`cerrable_parcial`
+  > obliga, y la zona declara la parte no cubierta**. **No se aflojó nada** (§0.3): las dos
+  > exigencias viejas siguen enteras en sus filas y lo que se agrega es una tercera.
+  >
+  > **Y la mordida cazó lo que iba a perderse sola:** `M2` inyectaba `participa_matching =
+  > true`, y con el guard mirando el estado **habría dejado de morder sin avisar** — §4.6
+  > cayéndole justo al control que vigila el retiro automático. Ahora inyecta el estado.
+  > Se sumaron **M2b** —una parcial **conserva** su zona; es la única familia que **no debe
+  > morder**, y el runner aprendió a exigir eso— y **M2c** —un estado que nadie declaró no cae
+  > para ningún lado—. **24/24 más el control negativo.**
+  >
+  > **NO SE MOVIÓ NADA, que es la aceptación.** Tripwire **44/8 · 54/10**, `participa_matching
+  > =false` en **10**, correspondencia exacta con `zonas_aviso.json`. El diff del v2 son **el
+  > bloque nuevo y el sha del v1**: **ninguna jurisdicción cambió**, comprobado una por una.
+  > En el SQL emitido **ninguna sentencia que produce geometría se movió** —la máscara `_zee`
+  > sale byte a byte igual y `emitir_alcances_propios()` no emite nada mientras nadie declare
+  > un alcance propio—. `verificar_v2_contra_v1.py` **exit 0** (114·114·0·0), testigos
+  > `movidos al agua: 30`, suite **84/84**.
+  >
+  > **Lo que sí costó: B12 mordió** —el v2 se movió— y **B0 no**. Re-sello con autorización
+  > del owner y las 22 adjudicaciones verificadas antes de sellar.
+  >
+  > **Corregidos de paso, como estaba anotado:** los dos rastros de ~~"las seis islas que el
+  > D.S. 991 enumera por nombre"~~ en el comentario del constructor y en el SQL que emite.
+  > Quedan con su nota de rótulo: el decreto nombra **cuatro** más un colectivo sin enumerar,
+  > y qué comprende el colectivo es del owner.
+  >
+  > **DEUDA EXPLÍCITA DEL TRAMO 2 — tres cosas, nombradas una por una.** Se escriben acá y no
+  > se dejan derivadas de *"el v1 se toca igual"*: una deuda implícita en otra tarea es una
+  > deuda que se pierde cuando esa tarea cambia de forma.
+  > 1. **Escribir el párrafo en `CONTRATO_MOTOR.md`.** Aprobado por el owner sin cambios el
+  >    2026-08-15 y **queda como propuesto, no escrito** — el contrato lo escribe el owner
+  >    (§6). Entra con el Tramo 2, que es cuando `arica` se promueve y el párrafo empieza a
+  >    hacer falta. Texto literal aprobado en
+  >    `_bitacoras/alcance_costa_afuera_2026-08-15/24_texto_propuesto_inv36.md`.
+  > 2. **Corregir la nota del v1 sobre la capa de un alcance corto**, que dice *"PENDIENTE,
+  >    DEL OWNER, MEDIDO Y NO DECIDIDO"* y **hoy es falsa**: está decidida —`ne_land`— desde
+  >    el 2026-08-15. No se corrigió en el Tramo 1 porque cuesta un segundo re-sello de B12 el
+  >    mismo día por una línea de texto.
+  > 3. **Mover el alcance de `arica` de la prosa a la estructura**: hoy vive como texto dentro
+  >    de `limite_norte_convencion.alcance` —*"24 millas nauticas (44.448 m) desde la costa…"*—
+  >    y tiene que pasar al bloque `alcance_costa_afuera` como `metros: 44448` con su
+  >    `capa_rol`. **Ese movimiento ES la promoción**: es lo que lleva a `arica` a
+  >    `cerrable_parcial`.
+  >
+  > **LA CAPA DE UN ALCANCE CORTO QUEDÓ DECIDIDA (owner, 2026-08-15): `ne_land`, la gruesa** —
+  > la misma del default. Lo que la sostiene está medido y no es "la fina no corrió": el
+  > desacuerdo entre las dos costas a 24 mn va de **−1.474 a +1.045 m** (3,32 % del alcance,
+  > promedio absoluto 348 m) y acota **33,5 km²**, que son **un milésimo — 1 en 937** del hueco
+  > de ~31.400 km² que la propia `arica` declara. Discutir cuál costa usar sería discutir el
+  > milésimo con el 999 por mil declarado y sin cubrir. **Y no se hereda:** el *"cuatro órdenes
+  > por debajo"* que el constructor tiene escrito es optimista por uno **en su propio terreno**
+  > (3,03 en promedio contra 200 mn, 2,40 en el peor caso), y **a 24 mn el margen cae a 1,48
+  > órdenes en el peor caso**. Un alcance más corto que aparezca mañana **se decide con medición
+  > nueva**; por eso `capa_rol` es obligatorio por jurisdicción y el constructor se detiene si
+  > falta. El instrumento fiel **no terminó dos veces** —2.664 piezas contra 1— y eso se declara
+  > como lo que es: una limitación del instrumento, no un argumento. Detalle en
+  > `_bitacoras/alcance_costa_afuera_2026-08-15/05c_lectura_mascaras.txt` §5.
+  >
+  > **Declarado y no tocado:** el bloque del v1 todavía dice que esa decisión está **pendiente**.
+  > Corregirlo regenera el v2, hace morder a B12 y cuesta un **segundo re-sello** el mismo día
+  > por una línea de texto; el Tramo 2 toca el v1 igual. No es peligroso mientras tanto: la nota
+  > yerra hacia **detenerse**, no hacia construir.
+  >
+  > **Declarado y no tocado:** `scripts/fase5_capa_ds991.sql` está **gitignored** —artefacto
+  > regenerable, no versionado— y la copia local venía de la sesión del operador, **anterior a
+  > Pieza A**. No viaja al repositorio, así que no engaña a nadie que clone; sí engaña a quien
+  > lo lea entre sesiones creyendo que corresponde al insumo en disco.
   > **2026-08-15 — la disyuntiva (a)/(b) de INV-3.6 ya tiene DOS casos medidos, no uno.** Al hueco
   > de ~31.400 km² de `arica` se suma que **arreglar el `ST_Simplify` del límite exterior destapa
   > 21.661,0 km² sobre Diego Ramírez que no le tocan a ninguna de las 44 marítimas**, porque caen

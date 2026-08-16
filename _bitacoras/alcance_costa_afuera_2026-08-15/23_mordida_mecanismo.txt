@@ -1,0 +1,50 @@
+==============================================================================
+MORDIDA DEL MECANISMO DE ALCANCE COSTA-AFUERA
+==============================================================================
+  v2 original sha256 : 10ef5af265b9a448dfe493855c25442c2d6905801a747c66cbb4e33554bee413
+  victima elegida    : taltal  (la maritima construida de mayor area,
+                        elegida por medicion contra la linea base)
+
+------------------------------------------------------------------------------
+A. EL SQL EMITIDO PASA A TRAER LA MASCARA PROPIA
+------------------------------------------------------------------------------
+  antes de inyectar : el SQL NO trae _alc_taltal
+  con el alcance    : el SQL SI trae _alc_taltal   (exit 0)
+      | DROP TABLE IF EXISTS _alc_taltal;
+      | CREATE TEMP TABLE _alc_taltal AS
+      |   FROM _alc_taltal m WHERE j.id = 'taltal' AND j.geom IS NOT NULL;
+  >>> MUERDE. Sin alcance declarado no emite nada; con uno, emite.
+
+------------------------------------------------------------------------------
+D. UN ALCANCE MAYOR QUE EL DEFAULT SE DETIENE
+------------------------------------------------------------------------------
+  alcance 999999 m contra default 370400 m -> exit 1
+      | Taltal: declara un alcance de 999999 m, MAYOR que el default de 370400 m. El mecanismo solo acorta: agrandarlo
+  >>> MUERDE. El mecanismo solo acorta; agrandar se detiene.
+
+------------------------------------------------------------------------------
+B y C. CONTRA LA BASE, EN ENSAYO CON ROLLBACK
+------------------------------------------------------------------------------
+  build --ensayo exit 3  (crudo en 23b_…)
+      | psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:1165: NOTICE:    [retiene] antartica         habilitado=
+      | psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:1165: NOTICE:    [retiene] insular_remota    habilitado=
+      | psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:1165: NOTICE:    [PUBLICA] lacustre          habilitado=
+      | psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:1165: NOTICE:    [retiene] maritima          habilitado=
+      | psql:C:/Users/katia/tmarea-backend/scripts/fase5_capa_ds991.sql:1165: NOTICE:  PUBLICACION :: publicados=[lacustre] rete
+  el gate sigue publicando el lacustre : SI
+
+  NOTA: el ensayo termina en ROLLBACK, asi que la capa en la base NO
+  cambio. Lo que esta prueba demuestra es que el mecanismo LLEGA hasta
+  la base y que el gate no se rompe; el km2 exacto de la figura
+  achicada es del Tramo 2, cuando haya un alcance declarado de verdad.
+
+------------------------------------------------------------------------------
+RESTAURACION DEL INSUMO
+------------------------------------------------------------------------------
+  v2 restaurado sha256 : 10ef5af265b9a448dfe493855c25442c2d6905801a747c66cbb4e33554bee413
+  ok  identico al original, byte a byte.
+  SQL regenerado contra el v2 real: exit 0
+
+==============================================================================
+RESULTADO: mordida completa, el mecanismo muerde.
+==============================================================================

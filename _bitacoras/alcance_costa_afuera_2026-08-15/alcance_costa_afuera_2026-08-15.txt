@@ -1,0 +1,601 @@
+================================================================================
+EL ALCANCE COSTA-AFUERA — TRAMO 1 DE 2
+El mecanismo generico, el tercer estado en el vocabulario, y NADIE promovido.
+2026-08-15
+================================================================================
+
+SHELL DE ESTA BITACORA (CLAUDE.md 7.3). El agente ejecuto en Git Bash llamando al
+interprete del venv del repositorio. Los comandos que aparecen aca para que el
+owner los repita van en PowerShell, que es su terminal. Cuando las dos formas
+difieren, se escriben las dos y se dice cual es cual.
+
+  Interprete (python NO esta en el PATH):
+    tools\raster-build\.venv\Scripts\python.exe
+
+  psql:
+    C:\Program Files\PostgreSQL\16\bin\psql.exe
+
+HEAD al empezar: b78fc4b. Untracked: los 5 viejos (08-08 y 08-12), ninguno nuevo.
+
+
+--------------------------------------------------------------------------------
+0. QUE SE HIZO, EN UNA LINEA
+--------------------------------------------------------------------------------
+
+El alcance costa-afuera deja de ser una constante de codigo y pasa a ser dato
+declarado; el tercer estado de `estado_geometria` entra al vocabulario de los DOS
+lugares donde ese campo vive; los dos guards de `zonas-aviso.js` pasan a ser una
+regla de tres ramas. NINGUNA JURISDICCION CAMBIA DE ESTADO Y LA CAPA NO SE MUEVE.
+
+Eso ultimo no es un efecto lateral: ES LA ACEPTACION. Un mecanismo que se declara
+generico y de paso mueve la geometria no se puede distinguir de uno que la movio
+por error.
+
+
+--------------------------------------------------------------------------------
+1. POR QUE ESTO ES UN TRAMO Y NO LA SESION ENTERA
+--------------------------------------------------------------------------------
+
+El frente completo son cinco piezas acopladas —dato, migrador, constructor, dos
+validadores JS y la mordida—, dos builds de 20 minutos y un re-sello en el medio.
+No entra en una sesion, y se dijo antes de empezar en vez de descubrirlo a mitad
+(CLAUDE.md 5.4). Precedente: Pieza A/B se partio asi.
+
+EL CORTE VA DONDE NO QUEDA NINGUNA VENTANA ABIERTA. La objecion de D16 es que
+escribir `limite_norte_dec` antes que el mecanismo abre una ventana en la que
+cualquiera que regenere produce una capa que adjudica agua que el propio paquete
+de DIFROL niega. Este tramo NO PROMUEVE A NADIE: el mecanismo existe, nadie lo
+usa todavia, y ninguna regeneracion intermedia puede producir esa capa.
+
+  Tramo 1 (este)  el mecanismo + el vocabulario del tercer estado + los guards.
+  Tramo 2         `arica` a `cerrable_parcial`, el origen `alcance_declarado`,
+                  el tipo de ambito `fuera_de_alcance`, y la mordida (a)/(b).
+
+COSTO DEL CORTE, DICHO ENTERO: son DOS re-sellos de B12 en vez de uno. Se paga a
+cambio de que este tramo tenga una aceptacion binaria —"no se movio nada"— que un
+tramo unico no puede tener.
+
+
+--------------------------------------------------------------------------------
+2. LO QUE CHOCA CON EL CONTRATO, Y QUE SE HIZO CON ESO
+--------------------------------------------------------------------------------
+
+INV-3.6 PARTICIONA POR JURISDICCION Y EL TERCER ESTADO PARTICIONA ADENTRO DE UNA.
+El invariante define (a) como "una jurisdiccion declarada sin geometria" y (b)
+como "un hueco de la propia capa, una zona que ninguna jurisdiccion reclama". Una
+`cerrable_parcial` TIENE geometria, y el agua mas alla de su alcance no la reclama
+nadie: bajo el texto literal cae en (b), no en (a).
+
+La decision del owner —que es causa (a), porque el D.S. 991 guarda silencio
+absoluto sobre el alcance costa afuera y no puede haber defecto por no alcanzar un
+borde que el decreto no define— es defendible Y EL INVARIANTE NO LA DICE HOY. Se
+reporto antes de construir, con esas palabras (CLAUDE.md 1.1: si la norma no dice
+nada, se dice con esas palabras).
+
+DECIDIDO POR EL OWNER: parrafo nuevo en INV-3.6, escrito por el. El texto
+propuesto va en la parada de este tramo; CLAUDE.md 6 prohibe que el agente edite
+el contrato. Se descarto la otra via —origen nuevo en el dato, sin tocar el
+contrato, con el precedente de E0.2— con su motivo: E0.2 seguia siendo
+granularidad de jurisdiccion ("un ambito entero sin construir ES jurisdicciones
+sin geometria cargada") y esto no, asi que habria sido estirar el invariante en
+silencio.
+
+MIENTRAS TANTO SE CONSTRUYE CON LA IMPLEMENTACION, que es la misma pieza: el
+parrafo no cambia una linea de codigo, cambia la autoridad.
+
+
+--------------------------------------------------------------------------------
+3. ENMIENDA CON TACHADO (CLAUDE.md 3.3)
+--------------------------------------------------------------------------------
+
+Se tacho, en TRES lugares —PLAN §9, D16 §5 y la nota al pie nueva de D16—, el
+conteo "`alcance`: 0 apariciones, medido".
+
+  MEDIDO HOY: el string aparece 4 VECES EN 3 LINEAS del v2.
+    · `cotejado_contra.alcance`  -> el alcance del COTEJO TEXTUAL. Nada que ver.
+    · prosa dentro de `convenciones`.
+    · `arica.limite_norte_convencion.alcance` -> LO ESCRIBIO D16.
+
+LA CONCLUSION NO SE MUEVE Y POR ESO NO SE TACHA: ese campo es PROSA
+—"24 millas nauticas (44.448 m) desde la costa. Mas alla de 24 mn esta
+jurisdiccion NO SE CUBRE…"— y no un numero que el constructor pueda consumir.
+"Hasta 24 mn" seguia sin ser expresable, que es lo que la objecion decia.
+
+LO QUE ESTABA MAL ERA EL INSTRUMENTO: medir una ausencia con un grep de UNA
+PALABRA. Es la forma exacta del CLAUDE.md 2 —"una afirmacion de ausencia se
+escribe con el comando que la midio"—, y el comando dejo de decir lo mismo en
+cuanto alguien escribio esa palabra en otro sentido. La frase envejecio por obra
+de la sesion que la escribio, EL MISMO DIA.
+
+
+--------------------------------------------------------------------------------
+4. EL HALLAZGO QUE CAMBIO EL DISENO: SON DOS VOCABULARIOS, NO UNO
+--------------------------------------------------------------------------------
+
+`estado_geometria` existe en DOS lugares y NO son el mismo conjunto de palabras:
+
+  insumo (v2)        cerrable / no_cerrable
+  capa construida    construida / nula_declarada     <- CHECK propio en la tabla
+
+Y el puente entre los dos era, en fase5_construir_capa_ds991.py:
+
+    if j["estado_geometria"] != "cerrable":
+        ... estado = "nula_declarada"
+
+UN TERCER VALOR CAE SOLO, EN SILENCIO, DEL LADO NULO: `arica` construida en parte
+se declararia NULA teniendo geometria. Es el mapeo por clave con caso por defecto
+silencioso que CLAUDE.md 4.2 prohibe, escrito como un `!=` — que es justo la forma
+en que no se ve.
+
+DE AHI SE SIGUE QUE EL TERCER ESTADO SON DOS VALORES, NO UNO:
+
+  cerrable_parcial (insumo)  ->  construida_parcial (capa)
+
+y el puente pasa a ser un mapeo explicito y exhaustivo que SE DETIENE ante un
+estado que no conoce. Lo mismo en los otros lugares que preguntaban por
+`!= "cerrable"`:
+
+  fase4_auditoria_v2.py   CINCO sitios -> `construible(j)`, con vocabulario
+                          nombrado y `SystemExit` ante un estado desconocido.
+                          Los cinco son controles que la geometria de una parcial
+                          SI tiene que pasar: receta, puntos citados, testigo y
+                          fronteras. Con el `!=` se los habria salteado.
+  fase4_migrar_insumo_v2  `participa_matching = (estado == "cerrable")` ->
+                          mapeo PARTICIPA_MATCHING, exhaustivo. Una parcial
+                          participa: TIENE geometria y sacarla del matching
+                          perderia la parte que si se construyo.
+  C1 (en el SQL)          `= 'construida'` -> `IN ('construida',
+                          'construida_parcial')`. Se ENUMERA en vez de negar el
+                          nulo: si manana aparece un cuarto estado, la negacion lo
+                          meteria aca sin que nadie lo decidiera; la lista lo deja
+                          afuera hasta que alguien lo nombre.
+
+B4 se reviso y se deja como esta: compara `== "no_cerrable"` contra el
+recalculo, una parcial no es no_cerrable, y si alguna vez el recalculo dijera
+no_cerrable sobre una declarada parcial, B4 la caza. Es el comportamiento correcto.
+
+
+--------------------------------------------------------------------------------
+5. EL MECANISMO — COMO SE DECLARA Y COMO SE CONSUME
+--------------------------------------------------------------------------------
+
+BLOQUE NUEVO EN EL V1 (la fuente, INV-3.7) -> pasa al v2 por linea de PASO en el
+emisor, que tiene lista de campos FIJA:
+
+  alcance_costa_afuera:
+    de_que_norma_sale : "DE NINGUNA. El D.S. 991 guarda SILENCIO ABSOLUTO sobre
+                         el alcance costa afuera de todas sus Capitanias. Su
+                         Art. 2 dice que las jurisdicciones comprenden [...] ZEE
+                         y plataforma continental, y NO fija el borde exterior de
+                         ninguna. Esto es CONVENCION NUESTRA y su texto lo
+                         declara, para no fabricar autoridad normativa."
+    por_defecto:
+      metros            370400
+      equivalencia      "200 millas nauticas"
+      capa_rol          "limite_exterior"
+      aplica_a          toda maritima que no declare el suyo
+
+POR QUE UNA VEZ Y NO 52. CLAUDE.md 4.2 admite el default cuando la ausencia es un
+estado legitimo del dato Y SE DECLARA COMO TAL. El bloque ES esa declaracion: deja
+de ser silencioso porque esta en el dato, con nombre, con motivo y con el silencio
+del decreto citado. Repetirlo 52 veces seria peor —CLAUDE.md 4.3, y 52 lugares
+donde el mismo numero envejece distinto—.
+
+Y ALCANZA A LAS 44 A PROPOSITO. Era el mismo numero que la decision 2 del owner
+manda rotular como convencion declarada para las insulares. Dejarlo en el codigo
+habria dejado DOS CONVENCIONES IDENTICAS CON DISTINTO ESTATUS, y la del codigo
+seria la que gobierna la capa que existe.
+
+EL CONSTRUCTOR LO LEE, NO LO TIENE:
+  · `leer_alcance(v2)` valida sin ningun default. Si el bloque falta, SE DETIENE:
+    este modulo ya no tiene un 370400 al que caer. Un default de codigo que
+    reemplaza en silencio a un dato ausente es el modo de falla de CLAUDE.md 4.1.
+  · un alcance propio se declara en el dato con `metros`, `equivalencia`, `tipo`,
+    `decidido_por`, `motivo` y `capa_rol`, y `emitir_alcances_propios()` emite su
+    mascara recorriendo lo que el insumo declara. NO HAY NINGUNA RAMA CON EL
+    NOMBRE DE UNA JURISDICCION (CLAUDE.md 4.3).
+  · SOLO ACORTA. Un alcance MAYOR que el default levanta Alto: agrandarlo
+    adjudicaria agua mas alla del borde que el insumo declara para todas, y eso no
+    se hace desde una jurisdiccion sola.
+  · con CERO alcances propios NO EMITE NADA. Por eso el SQL de la mascara sale
+    byte a byte igual y la capa no se mueve.
+
+LA CAPA DE UN ALCANCE CORTO NO TIENE DEFAULT, Y ES A PROPOSITO. El constructor
+justifica la capa gruesa para 200 mn: "el error de una costa 1:10m son cientos de
+metros, CUATRO ORDENES por debajo de las 200 millas". A 24 mn esa distancia pasa a
+DOS ORDENES y el argumento deja de valer. Se declara en el bloque y en el SQL
+emitido, y un alcance propio DEBE traer su `capa_rol`. La eleccion es del owner
+(CLAUDE.md 0.4: mueve el borde que el patron ve) y esta medida en 05.
+
+
+--------------------------------------------------------------------------------
+6. `zonas-aviso.js` — LOS DOS GUARDS SE ROMPIAN JUNTOS
+--------------------------------------------------------------------------------
+
+Hasta hoy los dos colgaban del MISMO booleano:
+
+  :196  exige `participa_matching === false` para que una zona EXISTA
+  :216  exige que toda `participa_matching === false` TENGA zona
+
+Una `cerrable_parcial` tiene `participa_matching: true`. Con el criterio viejo su
+zona quedaba PROHIBIDA por :196 y a la vez DEJABA DE SER EXIGIDA por :216: los dos
+se rompen en la MISMA direccion, y el hueco declarado se vuelve invisible. Eso es
+la causa (a) de INV-3.6 implementada como silencio — exactamente lo que la
+condicion del owner prohibe.
+
+LA REGLA NUEVA PREGUNTA POR `estado_geometria`, exhaustiva y sin caso por defecto:
+
+  cerrable          zona PROHIBIDA     (la exigencia vieja de :196, entera)
+  no_cerrable       zona OBLIGATORIA   (la exigencia vieja de :216, entera)
+  cerrable_parcial  zona OBLIGATORIA, y la zona declara LA PARTE NO CUBIERTA
+
+NO SE AFLOJO NINGUN CONTROL (CLAUDE.md 0.3). Las dos exigencias de antes siguen
+enteras en sus filas; lo que se agrega es una tercera fila donde no habia nada.
+
+MEDIDO, NO SUPUESTO — "publicada" NO esta disponible para este modulo:
+  · `zonas-aviso.js` es SINCRONO y sin `pool`; sus tres entradas son require() de
+    JSON.
+  · la publicacion POR AMBITO vive en un archivo (`ambitos_publicados.json`), pero
+    quien la contrasta contra la base es `ambitos-publicados.js`, que ES async y
+    recibe `pool`.
+  · la publicacion POR JURISDICCION no existe en ningun archivo: vive en la base y
+    ADEMAS POR AUSENCIA — el gate hace DELETE de lo que no publica. Medido hoy:
+    `jurisdicciones_ds991` tiene 6 filas lacustres y ninguna maritima.
+  Hacer que :196 mire "publicada" obligaria a volver `cargarZonasAviso()` async y
+  tocaria a sus 5 llamadores. NO SE HIZO: los dos ejes son ortogonales y cada uno
+  ya tiene su archivo. El eje "publicada" lo cubre el registro de ambitos, que
+  produce causa (a) origen `ambito_no_publicado`.
+
+
+--------------------------------------------------------------------------------
+7. LA MORDIDA QUE SE IBA A PERDER SOLA (CLAUDE.md 4.6)
+--------------------------------------------------------------------------------
+
+`fase5_validar_zonas_aviso.js` tenia la familia M2:
+
+    i.jurisdicciones.find(j => j.id === 'arica').participa_matching = true;
+    esperado: /YA participa del matching/
+
+Con el guard mirando `estado_geometria`, ESA INYECCION HABRIA DEJADO DE MORDER Y
+NADA LO HABRIA AVISADO. Es el modo de falla de CLAUDE.md 4.6 cayendole justo al
+control que vigila el retiro automatico de un aviso de INV-3.6.
+
+  M2   ahora inyecta ESTADO Y BOOLEANO, como los escribe el migrador cuando una
+       jurisdiccion se cierra de verdad. Muerde.
+  M2b  NUEVA, y es la unica familia que NO DEBE MORDER: una parcial CONSERVA su
+       zona. El runner aprendio a exigir eso (`esperado: null`). Sin ella, un
+       guard que rechazara TODO pasaria las otras 23.
+  M2c  NUEVA: un `estado_geometria` desconocido no cae para ningun lado.
+
+RESULTADO: 24/24 + control negativo (M0: la declaracion intacta NO muerde,
+10 zonas).
+
+
+--------------------------------------------------------------------------------
+8. VERIFICACION — TODA CORRIDA, CON SU LINEA BASE
+--------------------------------------------------------------------------------
+
+                                          ANTES              DESPUES
+  tripwire maritima                       44 / 8             44 / 8
+  tripwire las 64                         54 / 10            54 / 10
+  participa_matching = false              10                 10
+  entradas en zonas_aviso.json            10                 10
+  correspondencia exacta                  SI                 SI
+  verificar_v2_contra_v1.py               exit 0             exit 0
+    diferencias / declaradas / abiertas /
+    no declaradas                         114/114/0/0        114/114/0/0
+  fase5_corregir_testigos --aplicar        movidos 30         movidos 30
+  suite JS                                84 / 84            84 / 84
+  mordida zonas_aviso                     21/21              24/24
+  auditor v2 (antes del re-sello)         exit 0 LIMPIA      exit 1, SOLO B12
+  auditor v2 (tras el re-sello)           —                  exit 0 LIMPIA
+  areas, las 64 filas                     —                  0 suben, 0 bajan
+
+  v2 sha256   7e9b2f0c765c1395…  ->  10ef5af265b9a448…
+  v1 sha256   (+19 lineas)       ->  10122572e3418d44…
+
+DIFF DEL V2 — 29 lineas, y la comprobacion que importa se hizo objeto por objeto,
+no por diff:
+    claves de nivel superior : 16 -> 17   (nueva: alcance_costa_afuera)
+    bloques que cambiaron    : derivado_de (el sha del v1) y alcance_costa_afuera
+    JURISDICCIONES CON ALGUN CAMBIO : NINGUNA
+
+DIFF DEL SQL EMITIDO — 62 lineas, de las cuales 37 son comentario. Lo que cambia
+fuera de comentarios:
+    · las convenciones se renumeran 10..17 (sale la vieja del limite exterior,
+      entra la nueva del alcance declarado, al final);
+    · `insumo_sha256` (esperado: el v2 se movio);
+    · `limite_exterior_m` ahora dice DE DONDE SALE, y se suma `alcance_propio`;
+    · el CHECK de `estado_geometria` gana 'construida_parcial';
+    · el predicado de C1 pasa a IN (...).
+
+    NINGUNA SENTENCIA QUE PRODUCE GEOMETRIA CAMBIO. Se comprobo con un grep sobre
+    el propio diff: las unicas dos lineas que mencionan `_zee`, `ST_Buffer` o
+    `ST_SimplifyPreserveTopology` son COMENTARIOS reflowados. La mascara sale byte
+    a byte igual.
+
+EL BUILD APLICADO, Y LA ACEPTACION DEL TRAMO:
+
+  exit 3, veredicto identico al del ensayo y al de la sesion anterior:
+    PUBLICACION :: publicados=[lacustre] retenidos_por_falla=[maritima]
+                   retenidos_por_declaracion=[antartica,insular_remota]
+  C3 con los mismos SEIS pares y los mismos km2 al milesimo.
+  Los tres controles de alcance (capa) —C3, C7, C8— siguen en ok.
+
+  AREAS, LAS 64 FILAS, CONTRA LA LINEA BASE VOLCADA ANTES DEL COMMIT:
+    suben  : 0
+    bajan  : 0
+    quedan : 64        <- LA CAPA NO SE MOVIO. Es la aceptacion del Tramo 1.
+    cambios de estado_geometria : ninguno
+    totales   antartica 1.357.462,8 · lacustre 4.479,4 · maritima 2.038.426,8
+              identicos antes y despues.
+
+  Se comparan LAS 64 FILAS y no los totales: dos totales iguales no prueban que
+  ninguna figura se movio, porque una que gana lo que otra pierde da el mismo
+  total. Y se dan las tres cifras —suben, bajan, quedan— y no el neto.
+
+
+B12 MORDIO Y B0 NO. Un solo fallo, el esperado: el v2 se movio debajo de una
+adjudicacion del owner (22 tramos). Las 22 se verificaron ANTES de pedir la
+autorizacion —`--verificar`, exit 0, "las 22 adjudicaciones siguen aplicando:
+mismos tramos, mismos tipos"— para que se diera sobre un hecho medido y no sobre
+una promesa.
+
+RE-SELLADO CON AUTORIZACION DEL OWNER (2026-08-15), y en este orden a proposito:
+DESPUES de la mordida del mecanismo, que toca el v2 y lo restaura. Sellar antes
+habria sellado contra un insumo que todavia podia moverse.
+
+  ddff10f4… (Pieza A)  ->  7e9b2f0c…  ->  10ef5af265b9a448…
+
+  autorizacion literal: "Re-sello de B12 autorizado — 22/22 verificadas vigentes."
+  crudo en 25_resello_b12.txt, con las 22 re-comprobadas por el propio script
+  antes de escribir el sello.
+
+DESPUES DEL RE-SELLO, la regresion entera vuelve a correr:
+  auditor v2                  exit 0, AUDITORIA LIMPIA
+  tripwire                    44/8 · 54/10 · participa_matching=false 10 ·
+                              correspondencia exacta SI
+  mordida de zonas_aviso      exit 0, 24/24 + control negativo
+  suite JS                    exit 0, 84/84
+
+
+LA MORDIDA DEL MECANISMO (23_mordida_mecanismo.py), que es lo unico que ejecuta
+el SQL de mascara propia contra la base — hasta aca nunca habia corrido:
+
+  victima: `taltal`, la maritima construida de MAYOR AREA, elegida POR MEDICION
+  contra la linea base y no por nombre escrito en el script. No se usa `arica`
+  porque es `no_cerrable`: no tiene figura que achicar y no probaria nada.
+
+  A. sin alcance declarado el SQL NO trae `_alc_taltal`; con uno, SI.   MUERDE
+  B/C. contra la base, en --ensayo con ROLLBACK: exit 3 y el gate sigue
+       diciendo `publicados=[lacustre]`. El lacustre no se cae.          OK
+  D. un alcance de 999.999 m contra el default de 370.400 -> exit 1,
+     "MAYOR que el default. El mecanismo solo acorta".                   MUERDE
+
+  RESTAURACION: v2 vuelve a `10ef5af265b9a448…`, IDENTICO byte a byte, y el SQL
+  se regenera contra el insumo real. El script lo comprueba y GRITA si no.
+
+
+--------------------------------------------------------------------------------
+9. RIESGO SOBRE LA PUBLICACION DEL LACUSTRE, Y COMO SE ACOTO
+--------------------------------------------------------------------------------
+
+`capa.rota` es global: cualquier control de alcance "(capa)" en falla y NINGUN
+ambito publica, con lo que el lacustre vivo desde el 2026-08-13 se cae.
+
+MEDIDO: los controles "(capa)" son EXACTAMENTE TRES, y los tres estan en ok.
+  (capa) C3 cero traslapes fuera de los declarados   ok
+  (capa) C7 indice espacial presente                  ok
+  (capa) C8 el ensanche no crea traslapes             ok
+Los seis pares que fallan son todos de ambito `maritima`, no estructurales.
+
+EL ACOTAMIENTO ES ESTRUCTURAL, NO CUIDADO DE QUIEN LO CORRE. Una mascara de
+alcance SOLO INTERSECA:
+  · C3 — achicar dos figuras no puede crear un traslape que no existiera;
+  · C8 — achicar los dos lados con la misma mascara no puede subir la diferencia;
+  · C7 — mira el indice, es indiferente a la geometria.
+Y hay una segunda barrera independiente: el UPDATE del default lleva
+`WHERE ambito = 'maritima'` y el de un alcance propio lleva ademas `WHERE j.id =`.
+El lacustre no lo toca ninguna.
+
+Y SE VERIFICO EN VEZ DE ARGUMENTARSE: el build corrio primero en --ensayo, que
+imprime la linea PUBLICACION y las filas de _verificacion ANTES de deshacer la
+transaccion. Resultado, exit 3, IDENTICO PALABRA POR PALABRA al de la sesion
+anterior:
+
+  PUBLICACION :: publicados=[lacustre] retenidos_por_falla=[maritima]
+                 retenidos_por_declaracion=[antartica,insular_remota]
+
+  [PUBLICA] lacustre        habilitado=t  controles=ok        6/6 con geometria
+  [retiene] maritima        habilitado=t  controles=EN FALLA  44/52
+  [retiene] antartica       habilitado=f  controles=ok        4/4
+  [retiene] insular_remota  habilitado=f  controles=ok        0/2
+
+Y C3 con LOS MISMOS SEIS PARES Y LOS MISMOS km2 AL MILESIMO:
+  Calbuco x Maullin 40.833 · Maullin x Puerto Montt 755.491 · Cochamo x Maullin
+  2947.340 · Cochamo x Rio Negro Hornopiren 531.757 · Chaiten x Chonchi 1798.518 ·
+  Castro x Chonchi 28.254
+
+Y la linea nueva del informe, que es donde se ve que el numero ya no sale del
+codigo:  `ext. : ne_land, buffer de 370400 m  [declarado en el insumo]`
+
+
+UNA TRAMPA QUE CASI SE LLEVA LA MEDICION, ESCRITA PARA LA PROXIMA SESION:
+`jurisdicciones_ds991_areas` ES A LA VEZ LA LINEA BASE Y UNA SALIDA DEL BUILD. El
+constructor la DROPea y la vuelve a crear dentro de su transaccion, asi que en
+cuanto el build commitea LA LINEA BASE DEJA DE EXISTIR. Aca se volco con el build
+ya lanzado y todavia sin commitear —la transaccion abierta no la habia borrado
+para las demas sesiones— y salio bien POR POCO. La forma correcta es volcarla
+ANTES de lanzar el build. Queda escrito en el encabezado de 22_comparar_areas.py.
+
+
+--------------------------------------------------------------------------------
+10. OBJECIONES QUE QUEDAN EN PIE
+--------------------------------------------------------------------------------
+
+· ESTA PIEZA NO ACERCA NI UN METRO CUADRADO DE COBERTURA AL PATRON. Mueve una
+  convencion del codigo al dato y le da al modelo un tercer estado que todavia
+  nadie ocupa. Una ruta a Arica sigue exactamente igual que ayer. Se dice porque
+  una pieza que deja todo en verde y no mueve ningun conteo se puede leer como mas
+  de lo que es — y porque CLAUDE.md 0.3 manda sospechar primero de esa forma.
+  Lo que la distingue de "no hizo nada" es la mordida: M2b prueba que el tercer
+  estado CONSERVA el aviso, que es lo que el Tramo 2 va a necesitar.
+
+· EL TERCER ESTADO ESTA EN EL VOCABULARIO Y SU DERIVACION NO EXISTE.
+  `declarar_estado()` no devuelve `cerrable_parcial` todavia: ninguna jurisdiccion
+  puede llegar a ese estado por el camino normal. Se escribio asi a proposito —el
+  vocabulario primero, para que ningun lector pueda tratarlo como desconocido en
+  silencio— pero quien lea el codigo y busque quien lo produce no va a encontrar a
+  nadie. Es Tramo 2.
+
+· `arica` TIENE SU ALCANCE EN DOS LUGARES CON DISTINTO ESTATUS: en prosa dentro de
+  `limite_norte_convencion.alcance` (lo escribio D16) y NO en el bloque nuevo. Es
+  duplicacion en potencia y se deja declarada en vez de resolverla a medias:
+  moverla ES promoverla, y promoverla es Tramo 2.
+
+· EL PARRAFO DE INV-3.6 NO ESTA ESCRITO. Hasta que el owner lo escriba, la
+  implementacion sostiene una lectura que el invariante no dice. Se construyo con
+  su autorizacion explicita y con el choque declarado, no en silencio.
+
+
+--------------------------------------------------------------------------------
+11. DECLARADO Y NO TOCADO
+--------------------------------------------------------------------------------
+
+· `scripts/fase5_capa_ds991.sql` esta GITIGNORED (.gitignore:56): es artefacto
+  regenerable, no versionado. La copia local venia de la sesion del operador, o
+  sea ANTERIOR a Pieza A —traia el v2 `ddff10f4…` y la causa insular vieja—,
+  porque Pieza A cambio el v2 sin correr un build. No viaja al repositorio y no
+  engana a quien clone; SI engana a quien lo lea entre sesiones creyendo que
+  corresponde al insumo en disco. La linea base de esta sesion se tomo
+  REGENERANDOLO contra el v2 vigente, no copiando el archivo que estaba.
+
+· Los dos rastros de "las seis islas que el D.S. 991 enumera por nombre" quedaron
+  CORREGIDOS, como estaba anotado para la sesion que volviera a tocar el
+  constructor. Llevan su nota: el decreto nombra CUATRO mas un colectivo sin
+  enumerar, los numeros medidos no se mueven, y que comprende el colectivo es del
+  owner.
+
+· La tolerancia 0,01 del simplify sigue LITERAL dentro de la cadena del SQL y no
+  como constante nombrada. Es la misma asimetria que la sesion del operador dejo
+  declarada. Esta sesion movio el alcance, no la tolerancia.
+
+
+--------------------------------------------------------------------------------
+12. ARCHIVOS DE ESTE DIRECTORIO
+--------------------------------------------------------------------------------
+
+  01_tripwire_antes.txt              conteos antes, medidos contra el v2
+  02_auditor_v2_antes.txt            exit 0, AUDITORIA LIMPIA
+  03_v2_contra_v1_antes.txt          exit 0, 114/114/0/0
+  04_suite_js_antes.txt              84/84
+  05_mascara_24mn.sql / .txt         instrumento fiel — NO TERMINO, ver 05c
+  05b_mascara_24mn_perfil.sql/.txt   instrumento barato — si termino
+  05c_lectura_mascaras.txt           la lectura y los dos caminos, para el owner
+  06_solo_generar_antes.txt          emision del SQL con el v2 vigente
+  07_insertar_alcance_v1.py / .txt   la insercion en el v1, re-ejecutable
+  08_migrar_v2.txt                   primer escritor del v2
+  09_corregir_testigos_medir.txt     segundo escritor, --medir
+  09b_corregir_testigos_aplicar.txt  segundo escritor, --aplicar (movidos 30)
+  10_toponimos_igm.txt               tercer escritor
+  11_diff_v2.txt                     el diff, y la comprobacion objeto por objeto
+  12_v2_contra_v1_despues.txt        exit 0, 114/114/0/0
+  13_auditor_v2_despues.txt          exit 1, SOLO B12
+  14_tripwire_despues.txt            44/8 · 54/10 · 10
+  15_mordida_zonas_aviso.txt         24/24 + control negativo
+  16_suite_js_despues.txt            84/84
+  17_solo_generar_despues.txt        emision del SQL con el mecanismo
+  18_diff_sql.txt                    el control central del tramo
+  19_build_ensayo.txt                build con ROLLBACK
+  20_b12_verificar_22.txt            las 22 adjudicaciones, ANTES de pedir el sello
+  21_build_aplicado.txt              build aplicado
+  22_areas_antes_despues.txt         km2 por jurisdiccion, contra la linea base
+  22_comparar_areas.py               el comparador, y la trampa de la linea base
+  22_areas_antes.csv / _despues.csv  km2 por jurisdiccion, las 64
+  23_mordida_mecanismo.py / .txt     el alcance propio inyectado, y restaurado
+  23b_mordida_ensayo_crudo.txt       crudo del ensayo con el alcance inyectado
+  24_texto_propuesto_inv36.md        el parrafo que el owner tiene que aprobar
+
+  _v2_antes.json, _sql_antes.sql     lineas base, para poder rehacer los diffs
+
+
+--------------------------------------------------------------------------------
+13. DEUDA EXPLICITA DEL TRAMO 2 — tres cosas, nombradas una por una
+--------------------------------------------------------------------------------
+
+Se escriben aca y NO se dejan derivadas de "el v1 se toca igual". Una deuda
+implicita en otra tarea es una deuda que se pierde cuando esa tarea cambia de
+forma, y este frente ya perdio una mitad asi: la del cuadro de `no_cerrables`
+que decia "las 2 FUERA de la caja" y se evaporo al condensarse en un bullet.
+
+  1. ESCRIBIR EL PARRAFO EN CONTRATO_MOTOR.md.
+     Aprobado por el owner SIN CAMBIOS el 2026-08-15, y QUEDA COMO PROPUESTO, NO
+     ESCRITO: el contrato lo escribe el owner (CLAUDE.md 6). Entra con el Tramo 2,
+     que es cuando `arica` se promueve y el parrafo empieza a hacer falta — antes
+     de eso no hay ninguna jurisdiccion en el tercer estado y el parrafo no
+     gobernaria nada.
+     Texto literal aprobado: 24_texto_propuesto_inv36.md, en este directorio.
+
+  2. CORREGIR LA NOTA DEL V1 SOBRE LA CAPA DE UN ALCANCE CORTO.
+     `alcance_costa_afuera.nota_sobre_la_capa_de_un_alcance_corto` dice hoy
+     "PENDIENTE, DEL OWNER, MEDIDO Y NO DECIDIDO". ES FALSO desde el 2026-08-15:
+     esta decidida, es `ne_land`. No se corrigio en el Tramo 1 porque regenerar el
+     v2 hace morder a B12 y cuesta un SEGUNDO re-sello el mismo dia por una linea
+     de texto. Ver 05c seccion 5.4 para el motivo entero y por que mientras tanto
+     no es peligroso.
+
+  3. MOVER EL ALCANCE DE `arica` DE LA PROSA A LA ESTRUCTURA.
+     Hoy vive como texto dentro de `limite_norte_convencion.alcance` —"24 millas
+     nauticas (44.448 m) desde la costa. Mas alla de 24 mn esta jurisdiccion NO SE
+     CUBRE…"— y tiene que pasar al bloque `alcance_costa_afuera` como
+     `metros: 44448`, con `equivalencia`, `tipo`, `decidido_por`, `motivo` y
+     `capa_rol`.
+     ESE MOVIMIENTO ES LA PROMOCION: no es una tarea de limpieza que acompana al
+     Tramo 2, es lo que LLEVA a `arica` a `cerrable_parcial`. Mientras el alcance
+     sea prosa, `declarar_estado()` no tiene que leer y la jurisdiccion no puede
+     cambiar de estado.
+
+
+--------------------------------------------------------------------------------
+14. LO QUE LE QUEDA AL OWNER
+--------------------------------------------------------------------------------
+
+1. EL PARRAFO DE INV-3.6 — APROBADO SIN CAMBIOS el 2026-08-15, y no escrito
+   todavia a proposito. Pasa a ser deuda 13.1. Al owner ya no le queda nada que
+   decidir sobre el; le queda escribirlo, con el Tramo 2.
+
+2. EL RE-SELLO DE B12. El v2 se movio y B12 mordio, que es el control haciendo su
+   trabajo. Las 22 adjudicaciones se verificaron ANTES de pedirlo: `--verificar`,
+   exit 0, "las 22 adjudicaciones siguen aplicando: mismos tramos, mismos tipos"
+   (20_b12_verificar_22.txt). El comando, en PowerShell, desde la raiz:
+
+     & "tools\raster-build\.venv\Scripts\python.exe" `
+       "scripts\tm025a_p7_sellar_adjudicacion.py" --sellar `
+       --autorizacion "<lo que el owner escriba>"
+
+   NO SE CORRIO. Un sello sin autorizacion escrita es el re-sellado automatico que
+   este repositorio ya descarto.
+
+3. LA CAPA DE UN ALCANCE CORTO — DECIDIDA POR EL OWNER el 2026-08-15:
+   `ne_land`, LA GRUESA. Fundamento entero en 05c_lectura_mascaras.txt seccion 5,
+   con las tres cosas que el owner pidio que quedaran escritas y no solo la
+   eleccion: (1) el corrimiento medido y que sus 33,5 km2 de desacuerdo son UN
+   MILESIMO del hueco de ~31.400 km2 que la propia `arica` declara; (2) que el
+   instrumento fiel NO termino dos veces y que la eleccion NO se apoya en eso
+   sino en que la diferencia esta acotada — apoyarse en lo que no corrio seria la
+   forma de CLAUDE.md 0.3; (3) que el argumento NO ESCALA y NO SE HEREDA: a 24 mn
+   el margen es de 1,48 ordenes en el peor caso, y un alcance mas corto que
+   aparezca manana se decide con medicion nueva.
+
+   CORRECCION DE PREMISA, hecha antes de escribirla (CLAUDE.md 1.2): el owner
+   cito "~2,4 ordenes a 24 mn". Ese 2,40 es el peor caso contra 200 mn, no contra
+   24. A 24 mn son 1,48 en el peor caso y 2,11 en promedio. La conclusion del
+   owner no se debilita: se refuerza, porque el margen real es menor que el que
+   habia supuesto. Los cuatro numeros quedan en una tabla en 05c 5.3 para que las
+   columnas no se vuelvan a confundir.
+
+   QUEDA DESALINEADO Y DECLARADO: el bloque del v1 sigue diciendo que esta
+   decision esta PENDIENTE. Corregirlo cuesta un segundo re-sello de B12 el mismo
+   dia por una linea de texto, y el Tramo 2 toca el v1 igual. No es peligroso
+   mientras tanto: la nota yerra hacia detenerse, y `capa_rol` sigue siendo
+   obligatorio por jurisdiccion. Ver 05c 5.4.

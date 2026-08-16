@@ -307,6 +307,30 @@ def testigo(j):
     return (t["lat"], t["lon"])
 
 
+# LOS ESTADOS DEL INSUMO, Y CUALES TRAEN GEOMETRIA. Hasta el 2026-08-15 este
+# auditor preguntaba `estado_geometria != "cerrable"` en cinco lugares, que con
+# DOS estados era correcto y con TRES deja caer al tercero del lado de las que no
+# se construyen: una jurisdiccion construida en parte se saltearia los controles
+# de receta, de puntos citados, de testigo y de fronteras, que son justamente los
+# que su geometria SI tiene que pasar. Es el caso por defecto silencioso de
+# CLAUDE.md 4.2 escrito como un `!=`, y por eso pasa a ser una lista con nombre.
+ESTADOS = ("cerrable", "cerrable_parcial", "no_cerrable")
+CON_GEOMETRIA = ("cerrable", "cerrable_parcial")
+
+
+def construible(j):
+    """¿Esta jurisdiccion trae geometria construida? Sin caso por defecto: un
+    estado que este auditor no conoce lo detiene, en vez de dejarlo caer del lado
+    que no se audita — que es el lado silencioso."""
+    e = j.get("estado_geometria")
+    if e not in ESTADOS:
+        raise SystemExit(
+            f"ALTO: {j.get('id')} declara estado_geometria {e!r}, que no esta en el "
+            f"vocabulario ({', '.join(ESTADOS)}). Un estado nuevo decide que "
+            f"controles le tocan; no se adivina.")
+    return e in CON_GEOMETRIA
+
+
 def recalcular_estado(j, cuerpos):
     """El estado que el auditor deduce por su cuenta, para contrastarlo con el
     que el dato declara. Una declaracion que nadie contrasta no garantiza nada."""
@@ -766,7 +790,7 @@ def main():
 
     inf.p("")
     for j in J:
-        if j["estado_geometria"] != "cerrable":
+        if not construible(j):
             continue
         pts, r = usables(j), j["receta"]
         if r == "union_cuerpos":
@@ -957,7 +981,7 @@ def main():
 
     afuera, no_eval, amparadas, pend_lit = [], [], [], []
     for j in J:
-        if j["estado_geometria"] != "cerrable" or j["receta"] == "union_cuerpos":
+        if not construible(j) or j["receta"] == "union_cuerpos":
             continue
         corr = j.get("correccion_aplicada") or ""
         pares, sueltas = puntos_citados(j["texto_decreto"])
@@ -1043,7 +1067,7 @@ def main():
 
     sin_t, fuera_t, pend_t, ok_t = [], [], [], 0
     for j in J:
-        if j["estado_geometria"] != "cerrable":
+        if not construible(j):
             continue
         t = testigo(j)
         if t is None:
@@ -1147,7 +1171,7 @@ def main():
     if not inconsist:
         inf.ok("las referencias jurisdiccion <-> frontera son consistentes en ambos sentidos")
     sin_f = [j["nombre"] for j in J
-             if j["estado_geometria"] == "cerrable" and not j["fronteras"]
+             if construible(j) and not j["fronteras"]
              and j["ambito"] == "maritima"]
     if sin_f:
         inf.aviso(f"maritimas cerrables sin ninguna frontera declarada: {sin_f}")

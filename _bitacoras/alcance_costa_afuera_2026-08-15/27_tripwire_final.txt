@@ -1,0 +1,42 @@
+TRIPWIRE DE CONTEOS — medido contra el v2
+==============================================================================
+  insumo : data/decreto/jurisdicciones_v2.json
+  sha256 : 10ef5af265b9a448dfe493855c25442c2d6905801a747c66cbb4e33554bee413
+  total  : 64 jurisdicciones
+
+1. CERRABLE / NO_CERRABLE POR AMBITO — el tripwire
+------------------------------------------------------------------------------
+  antartica          4 cerrable /   0 no_cerrable
+  insular_remota     0 cerrable /   2 no_cerrable
+  lacustre           6 cerrable /   0 no_cerrable
+  maritima          44 cerrable /   8 no_cerrable
+  las 64            54 cerrable /  10 no_cerrable
+
+2. CUENTA DE JURISDICCIONES POR AMBITO — lo que mira ambitos-publicados.js:112
+------------------------------------------------------------------------------
+  No es el tripwire: cuenta FILAS, no estados. Un cambio de estado no lo mueve.
+  antartica          4
+  insular_remota     2
+  lacustre           6
+  maritima          52
+
+3. participa_matching == false — lo que gobierna zonas-aviso.js:196 y :216
+------------------------------------------------------------------------------
+  participa_matching=false : 10
+  entradas en zonas_aviso  : 10
+  correspondencia exacta   : SI
+  ids: arica, baker, hanga_roa, juan_fernandez, lirquen, puerto_eden, puerto_williams, punta_delgada, talcahuano, tierra_del_fuego
+
+4. EL AMBITO insular_remota, FILA POR FILA
+------------------------------------------------------------------------------
+  hanga_roa
+    estado_geometria    : no_cerrable
+    receta              : union_islas
+    participa_matching  : False
+    causa_sin_geometria : sin islas adjudicadas: el decreto las nombra y el repositorio todavia no tiene una adjudicacion isla por isla que las ancle a una capa de tierra
+  juan_fernandez
+    estado_geometria    : no_cerrable
+    receta              : union_islas
+    participa_matching  : False
+    causa_sin_geometria : sin islas adjudicadas: el decreto las nombra y el repositorio todavia no tiene una adjudicacion isla por isla que las ancle a una capa de tierra
+

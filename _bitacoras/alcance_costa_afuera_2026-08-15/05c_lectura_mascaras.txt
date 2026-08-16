@@ -1,0 +1,227 @@
+================================================================================
+LA CAPA DE UN ALCANCE CORTO: `ne_land` GRUESA CONTRA `costa_osm` FINA
+Lectura de la medicion. LA DECISION ES DEL OWNER (CLAUDE.md 0.4).
+2026-08-15
+================================================================================
+
+QUE SE PREGUNTA. La mascara de 200 mn se bufferiza sobre el rol `limite_exterior`
+(`ne_land`, 1:10m). Un alcance corto —24 mn para `arica`— podria usar la misma o
+el rol `tierra` (`costa_osm`, la fina). No es umbral tecnico: MUEVE EL BORDE QUE
+EL PATRON VE, asi que se mide y no se elige de este lado.
+
+
+--------------------------------------------------------------------------------
+1. LO QUE COSTO MEDIRLO, Y POR QUE HAY DOS INSTRUMENTOS
+--------------------------------------------------------------------------------
+
+EL INSTRUMENTO FIEL NO TERMINO, Y SE DICE. `05_mascara_24mn.sql` construye las dos
+mascaras enteras y compara areas — hace lo mismo que haria el constructor. La de
+`ne_land` sale enseguida; la de `costa_osm` NO TERMINO en dos corridas, la segunda
+con el buffer ya pasado a proyectado (EPSG:32719) y con statement_timeout. En la
+banda de `arica` las dos capas son:
+
+    ne_land        1 pieza        105 vertices
+    costa_osm  2.664 piezas    86.688 vertices
+
+SEGUNDO INSTRUMENTO, QUE SI TERMINO: `05b_mascara_24mn_perfil.sql`. En vez de
+construir las mascaras, mide DONDE ESTA LA COSTA QUE MIRA AL OCEANO en cada capa,
+latitud por latitud, con paso de 0,005 grados (~556 m). El borde de una mascara de
+alcance corto es esa costa corrida 44.448 m al Oeste, asi que la diferencia entre
+las dos columnas ES el corrimiento del borde. Corrio en segundos.
+
+LO QUE EL SEGUNDO NO CONTESTA, DICHO: no da el area exacta de la diferencia ni
+separa el borde que se movio hacia adentro del que se movio hacia afuera. Da el
+CORRIMIENTO y una COTA del area. Si hace falta el area exacta, la da el caro.
+
+
+--------------------------------------------------------------------------------
+2. LO MEDIDO
+--------------------------------------------------------------------------------
+
+  latitudes evaluadas                                174
+  con costa en la gruesa                             174
+  con costa en la fina                               174
+  latitudes que resuelven en una sola capa             0
+
+    ^ NINGUNA capa pierde litoral entero en esta banda. Es el primer resultado y
+      descarta el modo de falla mas grave: que la costa gruesa se saltee un tramo.
+
+  CORRIMIENTO DEL BORDE (positivo = la fina esta mas al Oeste)
+    minimo                                       -1.474,0 m
+    maximo                                       +1.045,0 m
+    promedio                                        -74,5 m
+    promedio del VALOR ABSOLUTO                    +347,8 m
+    peor caso, en % de las 24 mn                      3,32 %
+
+  COTA del area en que las dos mascaras difieren        33,5 km2
+
+EL PROMEDIO ES LA CIFRA QUE MIENTE, Y POR ESO NO VA SOLA. -74,5 m parece nada; el
+promedio absoluto es 347,8 m y los extremos van de -1.474 a +1.045. EL BORDE SE
+MUEVE EN LOS DOS SENTIDOS y el promedio los compensa. Es la misma trampa que la
+sesion del operador ya pago con el neto de las areas.
+
+
+--------------------------------------------------------------------------------
+3. HALLAZGO LATERAL, DECLARADO: "CUATRO ORDENES" ES OPTIMISTA
+--------------------------------------------------------------------------------
+
+El constructor justifica la capa gruesa para las 200 mn con esta frase, que viaja
+al SQL emitido:
+
+    "el error de una costa 1:10m son cientos de metros, CUATRO ORDENES por debajo
+     de las 200 millas"
+
+Medido contra `costa_osm` en esta banda:
+
+    error medio absoluto   347,8 m  ->  1 : 1.065 contra 370.400 m  ~ 3 ordenes
+    peor caso            1.474,0 m  ->  1 :   251 contra 370.400 m  ~ 2,4 ordenes
+
+"Cientos de metros" es correcto en promedio y se queda corto en la cola. "Cuatro
+ordenes" es optimista por aproximadamente uno.
+
+ESTO NO CAMBIA LA ELECCION PARA LAS 200 mn: 0,40 % en el peor caso sigue siendo
+despreciable, y la capa gruesa sigue siendo la correcta ahi. Se declara porque la
+frase esta escrita en el codigo y en la capa, y porque su numero no lo sostiene la
+medicion (CLAUDE.md 2). NO SE TOCO EN ESTA SESION: cambiarla mueve el SQL emitido,
+que era el control central del Tramo 1, y no es lo que esta pieza vino a hacer.
+
+
+--------------------------------------------------------------------------------
+4. LOS DOS CAMINOS, CON SU COSTO. NO SE ELIGE ACA.
+--------------------------------------------------------------------------------
+
+(A) LA GRUESA, `ne_land` — misma capa que el default.
+    GANA  una sola capa para los dos alcances; el constructor no cambia de rol
+          segun la distancia; el buffer sale en segundos.
+    PIERDE el borde queda hasta 1.474 m fuera de lugar contra la costa fina, o sea
+          3,32 % del alcance declarado. Sobre una figura de `arica` del orden de
+          4.300 km2, la cota de desacuerdo es 33,5 km2 (~0,8 %).
+    Y HAY QUE DECIRLO ENTERO: el argumento escrito en el constructor —"cuatro
+          ordenes por debajo"— NO cubre este caso. A 24 mn son 1,5 ordenes.
+
+(B) LA FINA, `costa_osm` — el rol `tierra`.
+    GANA  el borde queda donde esta el agua real, que es el criterio que el propio
+          constructor declara para elegir capa de costa: "se elige por su
+          fidelidad al agua real y no por su autoridad administrativa".
+    PIERDE es cara: el buffer de las 2.664 piezas NO TERMINO en dos intentos, uno
+          de ellos ya proyectado. Antes de elegirla hay que resolver como se
+          construye —simplificar antes de bufferizar, o bufferizar por pieza y
+          unir despues—, y eso es trabajo con su propia medicion.
+
+LO QUE RECOMENDE, y era recomendacion, no decision: (B) POR EL CRITERIO Y (A) POR
+EL ESTADO DE LA EVIDENCIA. El criterio del repositorio apunta a la fina; el hecho
+medido es que hoy no sabemos construirla en tiempo razonable.
+
+LO QUE NO SE PUEDE HACER ES DEJARLO SIN DECLARAR. Por eso `capa_rol` es campo
+OBLIGATORIO de un alcance propio y el constructor se detiene si falta: la capa
+sobre la que se traza un borde no se hereda en silencio del default.
+
+
+================================================================================
+5. DECIDIDO POR EL OWNER, 2026-08-15: `ne_land`, LA GRUESA
+================================================================================
+
+La decision es del owner (CLAUDE.md 0.4) y esta tomada: un alcance corto se traza
+sobre el rol `limite_exterior` — `ne_land`, la misma capa del default.
+
+El owner pidio expresamente que quedaran escritas TRES cosas y no solo la
+eleccion, porque una eleccion sin su fundamento medido es indistinguible de una
+preferencia. Van las tres.
+
+
+5.1 — EL CORRIMIENTO MEDIDO, Y CONTRA QUE SE LO COMPARA
+--------------------------------------------------------------------------------
+  minimo                -1.474,0 m
+  maximo                +1.045,0 m
+  promedio absoluto       +347,8 m
+  peor caso, en % de las 24 mn        3,32 %
+  COTA del area en desacuerdo          33,5 km2
+
+  Y LA PROPORCION QUE VUELVE ACEPTABLE ESA CIFRA: el hueco que `arica` deja
+  declarado entre 24 y 200 mn es del orden de 31.400 km2 (estimacion de
+  rectangulo de D16, declarada como tal). Entonces:
+
+      33,5 / 31.400 = 0,001067   ->   UN MILESIMO. 1 en 937.
+
+  El desacuerdo entre las dos capas es TRES ORDENES MAS CHICO que la carencia que
+  la propia jurisdiccion declara. Discutir cual de las dos costas trazar el borde
+  seria discutir el milesimo mientras el 999 por mil esta declarado y sin cubrir.
+
+
+5.2 — LA ELECCION SE SOSTIENE EN QUE LA DIFERENCIA ESTA ACOTADA, NO EN QUE LA
+      FINA NO CORRIO
+--------------------------------------------------------------------------------
+  EL INSTRUMENTO FIEL NO TERMINO, DOS VECES. La primera con buffer en `geography`;
+  la segunda ya con el buffer proyectado a EPSG:32719 y con statement_timeout. Las
+  dos veces se corto construyendo la mascara de `costa_osm` — 2.664 piezas y
+  86.688 vertices contra 1 pieza y 105 vertices de `ne_land`.
+
+  ESO NO ES EL MOTIVO DE LA ELECCION, Y SE ESCRIBE ASI A PROPOSITO. "La otra no
+  corrio" no es un argumento a favor de esta: seria elegir por lo que no se pudo
+  medir, que es la forma exacta que CLAUDE.md 0.3 manda mirar primero — la opcion
+  que gana porque la alternativa no llego a discutirse.
+
+  EL MOTIVO ES QUE LA DIFERENCIA ESTA MEDIDA Y ACOTADA. El segundo instrumento
+  —05b, el perfil del borde latitud por latitud— SI corrio, y da las tres cifras
+  de 5.1 mas el resultado que descarta el modo de falla grave: LAS 174 LATITUDES
+  RESUELVEN COSTA EN LAS DOS CAPAS, ninguna capa se saltea un tramo de litoral
+  entero. Si esa columna hubiera dado latitudes que resuelven en una sola, la
+  decision seria otra y el tamano del desacuerdo no la salvaria.
+
+  O sea: se elige (A) porque se sabe CUANTO se pierde y ese cuanto es un milesimo
+  del hueco declarado. No porque (B) no haya terminado.
+
+
+5.3 — EL ARGUMENTO NO ESCALA, Y NO SE HEREDA
+--------------------------------------------------------------------------------
+  El constructor justifica la capa gruesa con esta frase, que ademas viaja al SQL
+  emitido y a la tabla de convenciones de la capa:
+
+      "el error de una costa 1:10m son cientos de metros, CUATRO ORDENES por
+       debajo de las 200 millas"
+
+  MEDIDO, LOS CUATRO NUMEROS, PARA QUE NO SE VUELVAN A CONFUNDIR LAS COLUMNAS:
+
+                          contra 44.448 m (24 mn)   contra 370.400 m (200 mn)
+      peor      1.474,0 m      1,48 ordenes  3,32 %      2,40 ordenes  0,398 %
+      medio abs   347,8 m      2,11 ordenes  0,78 %      3,03 ordenes  0,094 %
+
+  DE AHI SALEN DOS COSAS, Y LA PRIMERA CORRIGE A LA FRASE DEL CONSTRUCTOR EN SU
+  PROPIO TERRENO: "cuatro ordenes por debajo de las 200 millas" es optimista por
+  aproximadamente UNO — son 3,03 en promedio y 2,40 en el peor caso. La eleccion
+  para las 200 mn NO cambia (0,4 % en el peor caso sigue siendo despreciable),
+  pero el numero escrito no lo sostiene la medicion (CLAUDE.md 2).
+
+  Y LA SEGUNDA ES LA QUE IMPORTA PARA MANANA: A 24 mn EL MARGEN ES DE 1,48
+  ORDENES EN EL PEOR CASO. El argumento del constructor NO SE TRASLADA a un
+  alcance corto: lo que a 200 mn es ruido, a 24 mn es 3,3 %.
+
+  POR LO TANTO, Y ESTO ES REGLA, NO OBSERVACION: UN ALCANCE MAS CORTO QUE APAREZCA
+  MANANA SE DECIDE CON MEDICION NUEVA, NO HEREDANDO ESTA. Esta decision vale para
+  24 mn y para el hueco de 31.400 km2 contra el que se la comparo. A 12 mn, a 6 mn
+  o a 3 mn el peor corrimiento de 1.474 m pasa a ser 6,6 %, 13,3 % y 26,6 % del
+  alcance, y la proporcion contra el hueco declarado tambien cambia. Nadie puede
+  citar esta seccion como respaldo de un alcance distinto sin volver a correr 05b.
+
+  ES POR ESTO QUE `capa_rol` ES CAMPO OBLIGATORIO POR JURISDICCION y no un default
+  del bloque. El constructor se detiene si falta. Un alcance nuevo tiene que
+  NOMBRAR su capa, y nombrarla obliga a haber pensado cual — que es lo que esta
+  seccion existe para que no se saltee.
+
+
+5.4 — LO QUE QUEDA DESALINEADO, DECLARADO Y NO TOCADO
+--------------------------------------------------------------------------------
+  EL BLOQUE DEL V1 TODAVIA DICE QUE ESTO ESTA PENDIENTE. El campo
+  `alcance_costa_afuera.nota_sobre_la_capa_de_un_alcance_corto` dice "PENDIENTE,
+  DEL OWNER, MEDIDO Y NO DECIDIDO", y desde hoy eso es falso.
+
+  NO SE CORRIGIO EN ESTA SESION, con su motivo: tocar el v1 regenera el v2, hace
+  morder a B12 y cuesta UN SEGUNDO RE-SELLO — el mismo dia y por una linea de
+  texto. El Tramo 2 toca el v1 igual, para promover `arica`, y ahi entra sin
+  costo adicional.
+
+  MIENTRAS TANTO NO ES PELIGROSO Y SE DICE POR QUE: la nota dice "pedile al owner
+  que decida", o sea que yerra hacia detenerse, no hacia construir. Y el
+  constructor sigue exigiendo `capa_rol` explicito, asi que nadie puede declarar
+  un alcance heredando una capa en silencio. Si el owner prefiere corregirlo
+  ahora, es un re-sello mas y se hace.
