@@ -1,0 +1,184 @@
+================================================================================
+ALCANCE-UNION — FASE 2. VERIFICACION SOBRE LOS 444.
+Denominador de la sesion: 167 restricciones · 335 filas cerradas.
+================================================================================
+
+--------------------------------------------------------------------------------
+(0) INSUMOS — SHA256 AL ARRANQUE
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json    5a3bf064eeef7d630e404db390679e80
+    restricciones_2026-07-31_16-32.json    8e5270eaabbd2800dfcf2da664c80cbb
+    restricciones_2026-07-31_20-32.json    e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-07-31_21-01.json    e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-08-01_13-14.json    9ed8c7c15c52a05f6740b99b3da6d7b4
+    check_ahora.json                       c306aea459dc5124af4099d703b854eb
+
+--------------------------------------------------------------------------------
+(0b) EL "ANTES" SE RECONSTRUYE DE 0e385858, NO SE HEREDA DE BITACORA
+--------------------------------------------------------------------------------
+    recuperado de git show 0e385858 — 13227 bytes, sha256 b41c890fb320b288a34b5f6c0ad08776
+    unico cambio: el especificador require('./sitport-parser') -> ruta absoluta (1 ocurrencia, controlada).
+    se carga como modulo aparte; el archivo temporal se borra al cierre.
+
+--------------------------------------------------------------------------------
+(1) LO QUE LA UNION NO DEBE TOCAR
+--------------------------------------------------------------------------------
+    filas cuyo estado / via / razon_sin_cierre / texto_original cambio : 0 / 444
+    cerrados: 335 filas — sin cambio
+
+--------------------------------------------------------------------------------
+(2) R3 — LA PARTICION NUEVA CONTRA LA PREDICCION DE FASE 1
+--------------------------------------------------------------------------------
+    tipo                   filas  vig.         restr  vig.
+    umbral                   214   214 OK       109   109 OK
+    total                     16    16 OK        12    12 OK
+    menores_sin_umbral        90    90 OK        36    36 OK
+    no_legible                15    15 OK        10    10 OK
+    suma 335 / 335 — CIERRA  (particion / filas)
+    suma 167 / 167 — CIERRA  (particion / restricciones)
+    >>> LA MEDIDA COINCIDE CON LA PARTICION VIGENTE
+
+--------------------------------------------------------------------------------
+(3) R2 — QUIEN CAMBIA Y QUIEN NO
+--------------------------------------------------------------------------------
+    multiples que CAMBIAN          :  10 restr ·  23 filas
+    multiples que NO cambian       :  10 restr ·  13 filas
+    alcance unico que NO cambia    : 143 restr · 295 filas
+    alcance unico que CAMBIA       :   4 restr ·   4 filas
+        ID 95201 · BAHÍA SAN VICENTE                  · no_legible           -> total
+        ID 95169 · PUERTO QUEMCHI                     · no_legible           -> menores_sin_umbral
+        ID 95202 · SECTOR COSTERO PENINSULA DE HUALPEN · no_legible           -> total
+        ID 95342 · ISLA DE PASCUA                     · umbral               -> menores_sin_umbral
+      >>> son EXACTAMENTE los 4 de la opcion A que NO son multiples. El quinto
+          de la opcion A —94985— es MULTIPLE y esta contado en la bolsa de arriba.
+    suma 167 / 167 — CIERRA  (reparto / restricciones)
+    suma 335 / 335 — CIERRA  (reparto / filas)
+      cambian  -> 94985, 95071, 95062, 95099, 95075, 95100, 95155, 95220, 95219, 95352
+      multiples que no -> 95060, 95061, 95116, 95117, 95205, 95184, 95185, 95214, 95213, 95347
+    suma 20 / 20 — CIERRA  (multiples / restricciones)
+    suma 36 / 36 — CIERRA  (multiples / filas)
+
+--------------------------------------------------------------------------------
+(4) LOS 9 QUE EMITIAN EL MAS ANGOSTO — UNO POR UNO, ANTES Y DESPUES
+--------------------------------------------------------------------------------
+    reproducen: 9 restricciones · 22 filas
+
+    ID       bahia                    ANTES                  AHORA                  sigue dejando?
+    95062    BORDE COSTERO-VALDIVIA   umbral 25 AB           umbral 100 AB          no
+    95071    BAHÍA QUELLÓN            umbral 50 AB           umbral 100 AB          no
+    95075    QUEILEN                  umbral 25 AB           umbral 50 AB           no
+    95099    BAHÍA CONCHALÍ           menores_sin_umbral     total                  no
+    95100    BAHIA PICHIDANGUI        menores_sin_umbral     total                  no
+    95155    BAHÍA QUELLÓN            umbral 50 AB           umbral 100 AB          no
+    95219    SECTOR CHAIHUÍN          umbral 50 AB           total                  no
+    95220    BAHÍA CORRAL             umbral 50 AB           total                  no
+    95352    BAHÍA QUELLÓN            umbral 50 AB           umbral 100 AB          no
+
+    >>> siguen dejando naves sin aviso : 0 de 9   OK
+
+    LOS 4 DE COLA ABIERTA, EXPLICITOS:
+      ID 95219 · SECTOR CHAIHUÍN          · umbral 50              -> total    OK
+      ID 95220 · BAHÍA CORRAL             · umbral 50              -> total    OK
+      ID 95099 · BAHÍA CONCHALÍ           · menores_sin_umbral     -> total    OK
+      ID 95100 · BAHIA PICHIDANGUI        · menores_sin_umbral     -> total    OK
+
+--------------------------------------------------------------------------------
+(5) LOS `num+num` — LA PARTICION SOLA NO LOS VE
+--------------------------------------------------------------------------------
+    son 15 restricciones · 27 filas   (esperado 15 · 27)
+
+    ID       bahia                    declara              umbral antes   umbral ahora   tipo
+    95060    BAHÍA CORRAL             100/25               100            100            umbral
+    95061    SECTOR CHAIHUÍN          100/25               100            100            umbral
+    95062    BORDE COSTERO-VALDIVIA   100/25               25             100            umbral
+    95071    BAHÍA QUELLÓN            50/100               50             100            umbral
+    95075    QUEILEN                  25/50                25             50             umbral
+    95116    BAHÍA MAULLÍN            50/25                50             50             umbral
+    95117    ENSENADA ESTAQUILLA      50/25                50             50             umbral
+    95155    BAHÍA QUELLÓN            50/100/25            50             100            umbral
+    95184    ENSENADA ESTAQUILLA      25/50                50             50             umbral
+    95185    RADA DE	CARELMAPU        25/50                50             50             umbral
+    95205    BAHÍA DE CALBUCO         25/50                50             50             umbral
+    95213    BORDE COSTERO-VALDIVIA   100/50               100            100            umbral
+    95214    VALDIVIA CONECTIVIDAD    100/50               100            100            umbral
+    95347    PUERTO CISNES            50/25                50             50             umbral
+    95352    BAHÍA QUELLÓN            50/100               50             100            umbral
+
+--------------------------------------------------------------------------------
+(6) LOS 10 DESCARTADOS POR LECTURA — NO SE ENSANCHAN
+--------------------------------------------------------------------------------
+    Un lexico que lea "NAVES MAYORES" sin exigir gobierno por predicado de
+    cierre ensancha 5 que nadie declaro multiples (M3: 8 disparos, 3 aciertos).
+
+    ID 94977 · LEBU                     · menores_sin_umbral -> menores_sin_umbral igual
+    ID 95027 · CANAL TENGLO             · umbral 25          -> umbral 25          igual
+    ID 95028 · PUERTO MONTT             · umbral 25          -> umbral 25          igual
+    ID 95029 · BAHÍA CHINCUI            · umbral 25          -> umbral 25          igual
+    ID 95072 · CANAL CHACAO             · menores_sin_umbral -> menores_sin_umbral igual
+    ID 95156 · BAHÍA CATALINA           · umbral 100         -> umbral 100         igual
+    ID 95157 · PUNTA ARENAS             · umbral 100         -> umbral 100         igual
+    ID 95158 · CABO NEGRO               · umbral 100         -> umbral 100         igual
+    ID 95159 · LAREDO                   · umbral 100         -> umbral 100         igual
+    ID 95193 · SENO RELONCAVI           · umbral 25          -> umbral 25          igual
+
+    >>> descartados que se movieron : 0 de 10
+    OK — ninguno se ensancho.
+
+--------------------------------------------------------------------------------
+(7) aviso_modo — EL DELTA DE 94985 Y CERO OTROS
+--------------------------------------------------------------------------------
+    ID 94985 · BAHÍA CONCEPCIÓN - LIRQUÉN · generico -> detalle   (1 fila/s)
+    ID 95201 · BAHÍA SAN VICENTE          · generico -> detalle   (1 fila/s)
+    ID 95169 · PUERTO QUEMCHI             · generico -> detalle   (1 fila/s)
+    ID 95202 · SECTOR COSTERO PENINSULA DE HUALPEN · generico -> detalle   (1 fila/s)
+
+    filas  : detalle 316 -> 320   ·   generico 19 -> 15
+    restr. : detalle 153 -> 157   ·   generico 14 -> 10
+    suma 335 / 335 — CIERRA  (aviso_modo ahora / filas)
+    suma 167 / 167 — CIERRA  (aviso_modo ahora / restricciones)
+    >>> se movieron EXACTAMENTE los 4 de la opcion A, todos generico->detalle — OK
+
+--------------------------------------------------------------------------------
+(8) TEXTO LEIDO A MEDIAS — LA UNION QUE NO SE PUDO SUMAR
+--------------------------------------------------------------------------------
+    cerradas con componentes leidos y union NO sumable : 0 de 167 restricciones
+      -> NINGUNA
+    Esperado 0. El genérico ya salio; no se completa con un alcance que no se leyo.
+
+    DE DONDE SALIERON LOS COMPONENTES (denominador 167 restricciones):
+      solo del PISO (parser)   : 16      <- sin el piso, estas perderian su alcance
+      solo del LEXICO (texto)  : 4
+      de los dos              : 137
+      de ninguno (no_legible)  : 10
+    suma 167 / 167 — CIERRA  (procedencia / restricciones)
+
+--------------------------------------------------------------------------------
+(9) CONTROL DE CONTENCION — PARSER Y DERIVADOR SOBRE LOS 444
+--------------------------------------------------------------------------------
+    Todo umbral que el parser extrae tiene que estar CONTENIDO en la union.
+    NO los obliga a ser iguales —D-C6 amplia a proposito— pero caza que se
+    separen HACIA ABAJO: si el derivador emitiera menos que el parser, es falla.
+
+    comparaciones efectivas del control : 217
+    fallos                              : 0
+    resueltos por la rama menores_sin_umbral : 1  ->  95342
+    OK — ninguna union quedo por debajo del parser, y la rama de clase cubre
+    exactamente el caso que el owner acepto.
+
+    NOTA sobre `no_legible` en este control: se acepta porque el genérico es
+    el PISO de D-C4 y alcanza a TODOS — es mas ancho, no mas angosto. Medido
+    arriba: los cerrados que quedan no_legible son 10 restricciones / 15 filas,
+    y ninguno viene de PERDER un umbral que el parser tenia — los 4 de §(3)
+    que cambian con alcance unico van todos hacia MAS ancho, no hacia menos,
+    y el conteo de fallos de este control es 0 sobre 217 comparaciones.
+
+--------------------------------------------------------------------------------
+(10) CIERRE
+--------------------------------------------------------------------------------
+    los 6 sha256 de insumo identicos al arranque — OK
+    el modulo temporal del "antes" fue borrado — OK
+    comparaciones efectivas : 2290
+    controles fallidos      : 0
+================================================================================
+SIN FALLAS.
+================================================================================

@@ -1,0 +1,553 @@
+================================================================================
+ALCANCE-UNION — D-C6: EL ALCANCE DEL CIERRE ES LA UNION DE TODO LO QUE EL TEXTO
+NOMBRE. Sesion del 2026-08-17, sobre 0e385858f9a8f8f59dd2175c3158a6bb95b6093c.
+================================================================================
+
+ESTADO: COMPLETO Y VERIFICADO. Sin commit, sin `git add`.
+
+DENOMINADOR DE LA SESION: 167 restricciones · 335 filas cerradas.
+Toda cifra en restricciones va contra 167 salvo que se nombre otra. Cuando se usa
+213 (restricciones distintas del material, sobre 444 filas) o 254 (filas con el
+literal de cierre, sin deduplicar) se dice con su nombre.
+
+ZONA DE ESCRITURA RESPETADA. Tocado:
+  src/services/cierre-derivador.js                 MODIFICADO
+  src/services/__tests__/cierre-derivador.test.js  MODIFICADO
+  _bitacoras/alcance_union_2026-08-17/             instrumentos, salidas, esto
+NO tocado: sitport-routes.js, la PWA (ni de lectura), data/, CONTRATO_MOTOR.md,
+CLAUDE.md, y los TRES ARCHIVOS DEL MOTOR — comprobado con `git status --short`
+sobre los cuatro: salida vacia.
+
+SUITES:  npm test  122 -> 157  (pass 157 · fail 0 · skipped 0 · 16 suites)
+         cierre-derivador.test.js  36 -> 71  (pass 71 · fail 0)
+         157 - 122 = 35, que son exactamente los tests nuevos. Cierra.
+
+--------------------------------------------------------------------------------
+0. LO QUE ESTA SESION HIZO, EN UNA LINEA
+--------------------------------------------------------------------------------
+
+    Los 9 registros que emitian el alcance mas angosto de los que el texto
+    declara —dejando naves sin aviso— dejan de hacerlo. Los cuatro que dejaban
+    COLA ABIERTA, sin techo, salen a `total`. Y cinco registros que el codigo
+    viejo no sabia leer pasan a leerse: CUATRO de alcance unico y UNO —94985— de
+    los 20 multiples.
+
+    9 restricciones · 22 filas    dejaban naves sin aviso  ->  0 quedan asi
+    4 restricciones               dejaban cola abierta     ->  las 4 a `total`
+    5 restricciones               alcance no leido         ->  leido
+                                  (4 de alcance unico + 94985, que es multiple)
+
+    [ENMENDADO 2026-08-17, antes del commit. La version anterior de este parrafo
+     decia "cinco registros de alcance unico", y es FALSO: 94985 esta entre los
+     20 multiples —forma G3 de la TABLA de `alcance_multiple`— y en la bolsa (II)
+     de su §3. Lo dice el reparto de R2 en §4.3 de este mismo archivo: "multiples
+     que CAMBIAN 10 restr · 23 filas" son los 9 (22 filas) MAS 94985 (1 fila), y
+     "alcance unico que CAMBIA 4" son 95201, 95202, 95169 y 95342. El parrafo se
+     contradecia con su propia medicion tres secciones mas abajo.]
+
+--------------------------------------------------------------------------------
+1. ARRANQUE VERIFICADO
+--------------------------------------------------------------------------------
+
+  HEAD 0e385858f9a8f8f59dd2175c3158a6bb95b6093c = origin/main
+  Modificado tracked al arrancar: solo data/catalogo/estado_drift.json, NO tocado.
+  Untracked: 35 entradas — las 34 declaradas mas
+  `_bitacoras/alcance_union_2026-08-17/`, que la Fase 1 de esta sesion creo.
+
+  LOS DOS INSTRUMENTOS DE FASE 1, CORRIDOS ANTES DE ESCRIBIR: exit 0 los dos.
+  sha256 de los seis insumos, identicos al arranque y al cierre:
+    restricciones_2026-07-30_19-42.json  5a3bf064eeef7d630e404db390679e80
+    restricciones_2026-07-31_16-32.json  8e5270eaabbd2800dfcf2da664c80cbb
+    restricciones_2026-07-31_20-32.json  e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-07-31_21-01.json  e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-08-01_13-14.json  9ed8c7c15c52a05f6740b99b3da6d7b4
+    check_ahora.json                     c306aea459dc5124af4099d703b854eb
+
+  OBSERVACION DEL MATERIAL: los sha256 de 20-32 y 21-01 son IDENTICOS.
+  `alcance_no_legible` §0 lo habia deducido del tamano y concluido "son cinco
+  CONTENIDOS distintos". El hash lo confirma con evidencia mas fuerte: no son dos
+  archivos parecidos, son el mismo byte a byte. No mueve ningun conteo —el
+  denominador es la fila— y se anota para que nadie lo re-deduzca.
+
+  AVISO SOBRE LOS INSTRUMENTOS DE FASE 1: despues de este cambio, 01_denominador.js
+  y 02_opciones.js YA NO REPRODUCEN — abortan con exit 3, porque asertan la
+  particion vieja 217/5/94/19. Es correcto y a proposito: son los instrumentos de
+  la LINEA BASE, y por eso se corrieron ANTES de escribir. No se los "arregla".
+
+--------------------------------------------------------------------------------
+2. QUE SE ESCRIBIO, Y POR QUE ASI
+--------------------------------------------------------------------------------
+
+2.1 — LA FUENTE. El alcance se lee del TEXTO, no de la salida del parser.
+
+  Medido en Fase 1 (02_opciones.txt): de los 41 alcances distintos que los 20
+  textos multiples declaran, solo 21 sobreviven a `extraerUmbrales` — el parser
+  YA colapso. Las dos ranuras del parser arreglan 1 de los 9 casos rotos; leer
+  del texto arregla 9 de 9.
+
+  EL COSTO, DECLARADO: el derivador tiene lexico de extraccion propio, que
+  DUPLICA del parser la lectura de numero+unidad y de las expresiones
+  universales. Los dos lectores pueden separarse con el tiempo. Por eso existe el
+  CONTROL DE CONTENCION (§4.9): todo umbral que el parser extrae tiene que estar
+  CONTENIDO en la union. No los obliga a ser iguales —D-C6 amplia a proposito—
+  pero caza que se separen HACIA ABAJO.
+
+2.2 — EL GOBIERNO POR PREDICADO DE CIERRE, Y CUAL MECANISMO LO SOSTIENE DE VERDAD.
+
+  Nombrar una clase de nave no la vuelve un alcance. `alcance_multiple` §7 midio
+  que "dos clases de nave" dispara 8 veces y acierta 3, y que separar los cinco
+  falsos positivos "exige leer QUE GOBIERNA el sintagma ... eso no es una marca:
+  es analisis sintactico". Este archivo NO hace analisis sintactico. Hace algo
+  acotado: solo lee alcances dentro de una VENTANA abierta por `PARA`, precedida
+  por un predicado de cierre, y cortada en el primer TERMINADOR.
+
+  >>> Y ACA HAY UN HALLAZGO SOBRE MI PROPIO CODIGO, que destapo la mordida M3.
+      Yo habia atribuido el efecto a los DOS mecanismos. Anular el guard de
+      precedencia NO pone la suite en rojo. Medido sobre los 444:
+
+          ocurrencias de PARA                                     402
+          ventanas que el guard RECHAZA                            63
+          filas cuyo NUMERO DE COMPONENTES cambia sin el guard      36
+          filas cuyo ALCANCE EMITIDO cambia sin el guard             0
+
+      En este material lo que mantiene afuera a 95156-95159 y a 95072 es la
+      VENTANA —el ancla `PARA` y el TERMINADOR—, no la precedencia. El guard
+      filtra componentes que la union despues absorbe sin mover el resultado.
+
+      EL GUARD SE CONSERVA, y por el mismo motivo que las cuatro alternativas de
+      FAMILIA_CIERRE que dan 0 (§4.5): es la DEFINICION de "gobernado por un
+      predicado de cierre", no un ajuste a este material. Un texto que abriera
+      con "PARA TODA NAVE MENOR..." sin declarar cierre antes lo necesita.
+      LO QUE NO SE HACE es atribuirle un efecto que no tiene. La mordida se
+      reapunto al TERMINADOR, que es donde vive el mecanismo, y ahi muerde.
+
+  ES UN LIMITE, NO UNA SOLUCION GENERAL, y se dice: una Capitania que escriba
+  "cerrado para X, y para el traslado de naves mayores rige otra cosa" volveria a
+  entrar. La suite lo vigila con el conjunto negativo de diez.
+
+2.3 — R1 · `rama_parser` ELIMINADO.
+
+  El prompt lo planteo como "el segundo camino a `total` no sale de una rama del
+  parser". La medicion amplio el planteo: bajo fuente B el derivador no decide
+  por rama del parser en NINGUN caso, asi que `'umbral_extraido'` tampoco era
+  verdad. No era un valor nuevo que no encajaba: era el nombre entero que dejo de
+  describir lo que pasa.
+
+  OPCIONES (§0.2)
+    (a) agregarle un valor 'union:mayores+menores'. Deja el campo con dos
+        vocabularios — el defecto de `nivel` y el de `estado_geometria`.
+        DESCARTADA.
+    (b) conservarlo solo cuando la union tiene un componente de origen parser.
+        `null` pasaria a significar "no se leyo" Y "se leyo por otro camino": el
+        mismo null sobrecargado que D-C3 existio para partir. DESCARTADA.
+    (c) ELIMINARLO. La procedencia baja a `componentes[i].regla`, un solo eje.
+        Valores: 'parser:umbral_extraido' · 'parser:69' · 'parser:92' ·
+        'parser:95' · 'lexico:para'.   APLICADA.
+
+  EL SEGUNDO FILO, contestado: D-C3 separo `null` "menores sin numero" de `null`
+  "no se pudo leer" POR LA RAMA DEL PARSER. La separacion SIGUE EN PIE y sale de
+  mejor lugar:
+      menores_sin_umbral  <->  el lexico leyo un componente `menores` sin numero
+      no_legible          <->  el lexico no leyo NINGUN componente
+  Deja de inferirse "que quiso decir el null" y pasa a decirse "que se leyo".
+  `componentes.length` carga lo que `rama_parser` insinuaba: 0 / 1 / mas de 1.
+
+2.4 — LA FORMA DE LA SALIDA. `alcance` conserva `tipo`/`umbral`/`unidad` como
+  RESULTADO de la union y agrega `componentes[]`. Para las 143 restricciones de
+  alcance unico que no cambian, los tres campos salen identicos a antes y
+  `componentes` tiene largo 1: la forma no se complica para el caso simple.
+
+  VOCABULARIO DE `alcance.tipo`, CERRADO Y SIN CAMBIOS:
+      'umbral' | 'total' | 'menores_sin_umbral' | 'no_legible'
+  `mayores` existe como COMPONENTE —el texto lo nombra— pero NO como resultado.
+  No hay valor para "solo las mayores" y esta sesion no lo agrega: agregarlo
+  cambia que ve el patron y eso es del owner (§0.4). Un cierre que alcanzara solo
+  a las mayores cae al generico, que es el piso de D-C4 y alcanza a todos.
+
+2.5 — EL PISO. `derivarAlcance` sigue leyendo `umbral_ab_fuera` y `bloqueo_total`
+  para producir UN componente. No decide: entra a la union como uno mas, y la
+  union solo amplia. MEDIDO por que hace falta (§4.8): 16 restricciones de 167
+  obtienen su alcance SOLO del piso — sin el, lo perderian. Son los textos cuyo
+  alcance no viene introducido por PARA ("SE SUSPENDE EL TRAFICO DE EE.MM. DE 25
+  AB", ID 95027).
+
+      solo del PISO (parser)    16 / 167
+      solo del LEXICO (texto)    4 / 167
+      de los dos               137 / 167
+      de ninguno (no_legible)   10 / 167     suma 167  CIERRA
+
+--------------------------------------------------------------------------------
+3. LA DECISION DEL OWNER — OPCION A, Y COMO SE LLEGO A ELLA
+--------------------------------------------------------------------------------
+
+  LA PARADA QUE LA MOTIVO. El prompt de Fase 2 declaraba: "94985 ... Unico
+  registro cuyo `aviso_modo` se mueve. Si medis otro, PARA y avisa con el ID."
+  Se midieron CUATRO, y la sesion paro.
+
+  DE DONDE SALIO LA PREMISA FALSA, Y ES MIA. La prediccion "solo 94985" la hice
+  en Fase 1 sobre la TABLA de lectura de los 20 multiples. Esa tabla solo cubre
+  registros que declaran MAS DE UN alcance. Nunca conto los registros de alcance
+  UNICO cuyo alcance el codigo viejo no leia — que es justo lo que la fuente B
+  viene a arreglar. La prediccion no era conservadora: era incompleta por
+  construccion. La cazo el conteo "alcance unico que CAMBIA", que existia para
+  ser cero.
+
+  LOS CINCO, ACEPTADOS POR EL OWNER (opcion A). CUATRO son de alcance unico y
+  UNO —94985— es MULTIPLE: hay que decirlo porque los dos grupos se cazaron por
+  motivos distintos. 94985 estaba en la prediccion de Fase 1 y no es sorpresa;
+  los otros cuatro son los que la prediccion no podia ver.
+
+    94985  BAHIA CONCEPCION - LIRQUEN   generico -> detalle · -> total   MULTIPLE
+           "EMBARCACIONES MAYORES Y MENORES"  (forma G3, bolsa (II) de
+           `alcance_multiple` §3 — declaraba dos alcances y no dejaba a nadie
+           afuera, pero no los leia)
+    95201  BAHIA SAN VICENTE            generico -> detalle · -> total
+           "PARA NAVES Y EMBARCACIONES"
+    95202  PENINSULA DE HUALPEN         generico -> detalle · -> total
+           idem 95201, otra bahia
+    95169  PUERTO QUEMCHI               generico -> detalle · -> menores_sin_umbral
+           "CERRADO PARA EE MM"  — SALDA O4b de `alcance_no_legible`
+    95342  ISLA DE PASCUA               aviso_modo NO cambia
+           umbral 50 TRG -> menores_sin_umbral
+
+  EL GENERICO SIGUE SALIENDO: ES PISO. El detalle se suma encima, no lo
+  reemplaza. Es la misma forma que D-C1 le dio al cierre y la condicion.
+
+  LA OPCION B —aceptar solo 94985— quedo descartada por el owner con el motivo
+  que esta sesion misma habia dado: exigiria mutilar el vocabulario que
+  `alcance_multiple` §1 dejo emergido del dato para que el resultado coincida con
+  una prediccion mia. Es §0.3 en estado puro.
+
+  95342 SE ACEPTA COMO ESTA Y NO SE ABRE — PENDIENTE DEL OWNER, ANOTADO.
+    Literal, sin normalizar: "SE ESTABLECE CONDICION DE PUERTO VARIABLE CERRADO
+    PARA EMBARCACIONES MENORES DENTRO Y FUERA DE LA BAHIA HASTA 50 TRG POR AVISO
+    DE MAREJADAS HASTA 05 AGO Y AVISO DE MAL TIEMPO HASTA 06 AGO".
+    El "HASTA 50 TRG" cae DESPUES de "DENTRO Y FUERA", donde la ventana termina.
+    La union de "todas las menores" con "menores de 50 TRG" es la clase entera:
+    AMPLIA, no achica, y nadie queda sin aviso.
+    POR QUE NO SE TOCO: recuperar el numero exige mover el TERMINADOR, que es
+    exactamente el mecanismo que sostiene que los 10 descartados no se ensanchen
+    —medido en §2.2 y mordido en §5— y ese ensanche es el riesgo real del cambio
+    (M3: 8 disparos / 3 aciertos). Se cambiaria un caso ganado por cinco perdidos.
+    NO SE IMPLEMENTA. Queda del owner.
+
+--------------------------------------------------------------------------------
+4. VERIFICACION — TODO CORRIDO, CON SU NUMERO
+--------------------------------------------------------------------------------
+
+Instrumento: 03_verificar_union.js -> 03_verificar_union.txt, exit 0, SIN FALLAS,
+2.290 comparaciones efectivas. El "ANTES" no se hereda de bitacora: se
+reconstruye con `git show 0e385858:src/services/cierre-derivador.js` (13.227
+bytes, sha256 b41c890f...), se le reemplaza UNICAMENTE el especificador
+`require('./sitport-parser')` por su ruta absoluta —una ocurrencia, controlada—
+y se carga como modulo aparte. El temporal se borra, tambien al abortar.
+
+4.1 — LO QUE LA UNION NO DEBE TOCAR
+    filas cuyo estado / via / razon_sin_cierre / texto_original cambio : 0 / 444
+    cerrados: 335 filas / 167 restricciones — sin cambio
+
+4.2 — LA PARTICION NUEVA (R3). La VIGENTE es la MEDIDA, no la predicha.
+    La prediccion de Fase 1 —215/14/88/18 y 110/10/34/13— quedo RETIRADA.
+
+    tipo                  filas   restr
+    umbral                  214     109
+    total                    16      12
+    menores_sin_umbral       90      36
+    no_legible               15      10
+    -------------------------------------
+    suma                    335     167    CIERRAN las dos
+
+    LA DIFERENCIA CON LA PREDICCION SE EXPLICA ENTERA CON LOS CINCO IDs, sin
+    residuo: +2 total (95201, 95202) · +1 menores (95169) · +1 menores y -1
+    umbral (95342) · -3 no_legible. Los cuatro aportan 1 fila cada uno, asi que
+    el delta es identico en filas y en restricciones.
+
+4.3 — EL REPARTO (R2). El del prompt de Fase 2 no cerraba, y el ID que lo rompia
+    era 94985: esta en la bolsa (II) de `alcance_multiple` §3 —los 11 que no
+    dejan a nadie afuera— y a la vez su aviso_modo se mueve. La bolsa (II) mide
+    "no deja a nadie afuera", que no es "no cambia".
+
+    multiples que CAMBIAN         10 restr ·  23 filas
+    multiples que NO cambian      10 restr ·  13 filas
+    alcance unico que NO cambia  143 restr · 295 filas
+    alcance unico que CAMBIA       4 restr ·   4 filas   (los de §3, decision)
+    ----------------------------------------------------
+                                 167 restr · 335 filas   CIERRA en las dos
+    y sobre los 20 multiples:  10 + 10 = 20 restr · 23 + 13 = 36 filas  CIERRA
+
+    Los 10 que no cambian: 95060 95061 95116 95117 95184 95185 95205 95213 95214
+    95347 — la bolsa (II) menos 94985, y son exactamente los diez que
+    `alcance_multiple` §5 llamo "el detalle que el camino al generico perderia".
+
+4.4 — LOS 9 QUE EMITIAN EL MAS ANGOSTO, UNO POR UNO
+
+    ID      bahia                    ANTES                AHORA
+    95062   BORDE COSTERO-VALDIVIA   umbral  25 AB        umbral 100 AB
+    95071   BAHIA QUELLON            umbral  50 AB        umbral 100 AB
+    95075   QUEILEN                  umbral  25 AB        umbral  50 AB
+    95099   BAHIA CONCHALI           menores_sin_umbral   total
+    95100   BAHIA PICHIDANGUI        menores_sin_umbral   total
+    95155   BAHIA QUELLON            umbral  50 AB        umbral 100 AB
+    95219   SECTOR CHAIHUIN          umbral  50 AB        total
+    95220   BAHIA CORRAL             umbral  50 AB        total
+    95352   BAHIA QUELLON            umbral  50 AB        umbral 100 AB
+
+    >>> siguen dejando naves sin aviso : 0 de 9.
+    El veredicto se CALCULA contra la tabla de lectura importada de
+    `alcance_multiple`, no se declara.
+
+4.5 — LOS 4 DE COLA ABIERTA. Los cuatro a `total`, el unico valor del vocabulario
+    sin techo: 95219 · 95220 · 95099 · 95100.
+
+4.6 — LOS 15 `num+num`. 15 restricciones · 27 filas. Cambian de NUMERO sin
+    cambiar de `tipo`, asi que la particion sola no los ve. Los quince emiten el
+    maximo de lo declarado. Tabla completa en 03_verificar_union.txt §(5).
+
+4.7 — EL CONJUNTO NEGATIVO. 0 de 10 se movieron.
+
+      94977 LEBU                menores_sin_umbral -> menores_sin_umbral
+      95027 CANAL TENGLO        umbral 25          -> umbral 25
+      95028 PUERTO MONTT        umbral 25          -> umbral 25
+      95029 BAHIA CHINCUI       umbral 25          -> umbral 25
+      95072 CANAL CHACAO        menores_sin_umbral -> menores_sin_umbral
+      95156 BAHIA CATALINA      umbral 100         -> umbral 100
+      95157 PUNTA ARENAS        umbral 100         -> umbral 100
+      95158 CABO NEGRO          umbral 100         -> umbral 100
+      95159 LAREDO              umbral 100         -> umbral 100
+      95193 SENO RELONCAVI      umbral 25          -> umbral 25
+
+    Los cinco que M3 ensanchaba —95072 y 95156-95159— NO se ensancharon.
+
+4.8 — TEXTO LEIDO A MEDIAS: 0 de 167 restricciones. El generico ya salio y el
+    alcance no se completa con lo que no se leyo. La procedencia de los
+    componentes esta en §2.5.
+
+4.9 — CONTROL DE CONTENCION DE LA FUENTE B.
+      comparaciones efectivas : 217 filas (112 restricciones donde el parser
+                                extrae umbral)
+      fallos                  : 0
+      resueltos por la rama `menores_sin_umbral` : 1  ->  95342
+
+    >>> LOS 217 / 112 SON DEL PARSER, NO DEL DERIVADOR. SE DECLARA PORQUE INVITAN
+        A CONFUNDIRSE. Son las filas y restricciones donde `normalizarRestriccion`
+        devuelve `umbral_ab_fuera != null` — o sea, el universo que este control
+        puede comparar. COINCIDEN con la particion VIEJA del derivador (217 filas
+        / 112 restricciones de `tipo='umbral'`) por un motivo que ya no vale: el
+        derivador viejo pasaba el umbral del parser TAL CUAL, asi que los dos
+        conjuntos eran el mismo por construccion. Desde D-C6 dejaron de serlo: la
+        particion VIGENTE del derivador es 214 filas / 109 restricciones de
+        `umbral` (§4.2), y la diferencia con 217/112 son 95219, 95220 y 95342, que
+        salieron del bucket `umbral` sin que el parser cambiara nada.
+        LEER 217 o 112 el mes que viene como "cifra del derivador" seria falso.
+        La cifra vigente del derivador es 214 / 109; 217 / 112 es del parser.
+
+    LA RELACION DE CONTENCION SE DECLARA ENTERA EN EL INSTRUMENTO y NO se importa
+    del derivador: un control que tomara la reticula del archivo que valida seria
+    tautologico.
+      total               contiene todo — es el tope
+      umbral U            contiene al umbral P del parser si U >= P
+      menores_sin_umbral  contiene a "las menores de P" — `menores_sin_umbral`
+                          significa TODAS las menores (parser :90) y P se leyo
+                          bajo la clase MENORES
+      no_legible          sale por el generico, que es el PISO de D-C4 y alcanza
+                          a todos: es mas ancho, no mas angosto
+
+    LA RAMA `menores_sin_umbral` SE AGREGO Y SE DECLARA POR QUE. La primera
+    version del control no la tenia y murio con exit 9 en 95342. NO se bajo la
+    severidad para que pasara (§0.3): lo que faltaba era una relacion verdadera
+    del dominio. Y como admitirla le quita al control la capacidad de cazar un
+    angostamiento HACIA esa clase, se COMPENSA PINCHANDO EL CONJUNTO: los
+    registros que caen en esa rama tienen que ser exactamente {95342}. Un segundo
+    caso muerde con exit 9 igual.
+
+--------------------------------------------------------------------------------
+5. LA MORDIDA — LAS TRES, CORRIDAS Y MOSTRADAS (§4.6)
+--------------------------------------------------------------------------------
+
+Instrumento: 04_mordida.js -> 04_mordida.txt, exit 0, "LAS TRES MORDIERON".
+Se muerde SOBRE VERDE (linea base 71/71 comprobada antes de inyectar), que es lo
+unico que prueba algo. El archivo se restaura y el sha256 se comprueba de ida y
+vuelta; la restauracion corre tambien si el proceso muere.
+
+  M1 · la union toma el MINIMO en vez del maximo
+       -> tests 71 · pass 65 · FAIL 6
+          ✖ los 9 · ID 95062 · 95071 · 95075 · 95155 · 95352
+          ✖ contencion · todo umbral del parser esta CONTENIDO en la union
+
+  M2 · el lexico deja de leer el componente `todas`
+       -> tests 71 · pass 62 · FAIL 9
+          ✖ los 9 · ID 95219 · 95220
+          ✖ los 4 de cola abierta salen a `total`
+          ✖ opcion A · los 4 que pasan de generico a detalle
+          ✖ los cuatro estados de alcance suman 335 · la particion en RESTRICCIONES
+
+  M3 · la ventana deja de cortarse en el TERMINADOR
+       -> tests 71 · pass 57 · FAIL 14
+          ✖ negativo · ID 95156 · 95157 · 95158 · 95159 NO se ensancha
+          ✖ negativo · los 5 que M3 ensanchaba siguen sin nombrar a las mayores
+
+       M3 APUNTABA ORIGINALMENTE AL GUARD DE PRECEDENCIA Y NO MORDIO: la suite
+       quedo 71/71 en verde. Se midio por que en vez de aflojar el control, y el
+       resultado se repite ACA y no solo en §2.2, porque una cifra que vive en un
+       comentario del codigo no la lee nadie que audite la bitacora:
+
+           ocurrencias de PARA sobre los 444                        402
+           ventanas que el guard de precedencia RECHAZA              63
+           filas cuyo NUMERO DE COMPONENTES cambia sin el guard       36
+           filas cuyo ALCANCE EMITIDO cambia sin el guard              0
+
+       O sea: el guard NO es codigo muerto —rechaza 63 ventanas y poda 36 filas
+       de componentes— pero es INERTE PARA EL RESULTADO sobre este material. El
+       mecanismo que sostiene a los diez descartados es la VENTANA (el ancla
+       `PARA` y el TERMINADOR), no la precedencia. La mordida se reapunto ahi y
+       muerde. Lo que cambio fue una DECLARACION del codigo, no el codigo: el
+       encabezado del derivador les atribuia el efecto a los dos mecanismos.
+
+       LIMITE MEDIDO DE M3: 95072 NO se mueve con esta inyeccion, porque su
+       segunda mencion ("NAVES SUPERIORES A 25 AB") absorbe un numero IGUAL al de
+       la primera y la union no cambia. Se dice en vez de contarlo como cazado.
+
+  sha256 de cierre-derivador.js, de ida y vuelta: IDENTICO.
+  Suite tras restaurar: tests 71 · pass 71 · fail 0.
+
+--------------------------------------------------------------------------------
+6. LOS TESTS — 36 -> 71
+--------------------------------------------------------------------------------
+
+  CAMBIAN DE EXPECTATIVA 6, y los seis se anticiparon antes de escribir:
+    por R1 (`rama_parser` ya no existe) ......... 3
+    por la particion nueva ...................... 3
+  Los otros 30 pasan sin tocarse: `estado`, `via`, `razon_sin_cierre` y
+  `texto_original` no se movieron en ninguna de las 444 filas — medido, 0/444.
+
+  SE AGREGAN 35, en el describe `D-C6: la union`:
+    los 9 que emitian el mas angosto, uno por test ................  9
+    los 4 de cola abierta, explicitos ............................  1
+    los 5 de la opcion A (4 de aviso_modo + 95342 + el agregado) ..  3
+    un alcance unico que NO cambia (ID 95208) ....................  1
+    `total` por dos caminos, distinguidos por componentes[i].regla   1
+    el conjunto negativo, uno por descartado .....................  10
+    los 5 de M3, y 94977 como universal modificado ...............  2
+    los tres defectos de la primera corrida ......................  3
+    texto leido a medias: sintetico + los 0 del material .........  2
+    el control de contencion .....................................  1
+    la particion en RESTRICCIONES (no existia) ...................  1
+    el campo `rama_parser` ya no existe ..........................  1
+    ------------------------------------------------------------------
+                                                                    35
+
+  LOS CASOS CON ID SE RESUELVEN CONTRA EL REGISTRO REAL DEL SONDAJE, no contra un
+  texto tipeado a mano: un literal transcrito ya se pago dos veces en este frente.
+  Si un ID no esta en el material, el helper TIRA — es falla, no "no aplicable".
+
+--------------------------------------------------------------------------------
+7. LOS TRES DEFECTOS MIOS QUE LA PRIMERA CORRIDA DESTAPO
+--------------------------------------------------------------------------------
+
+  Se declaran porque se corrigieron y si no no habria rastro. La primera corrida
+  del instrumento dio exit 7 y OCHO registros de alcance unico movidos. Cuatro de
+  esos ocho eran defectos mios, no D-C6. Cada uno quedo con su test.
+
+  D1. VOCABULARIO INCONSISTENTE DENTRO DE MI PROPIO LEXICO. La rama del universal
+      modificado emitia `'menores'` y el barrido general `'menores_sin_umbral'`
+      para la misma cosa. La union recibia dos tipos distintos, no encontraba el
+      par en la reticula y devolvia null. Afectaba 94977. Es la misma clase de
+      defecto que R1 viene a cerrar, y me lo hice dentro de una funcion de veinte
+      lineas.
+
+  D2. `menores_sin_umbral ∪ umbral(N)` NO ESTABA EN LA RETICULA.
+      `menores_sin_umbral` significa TODAS las menores —lo declara el parser en su
+      :90— y contiene a "las menores de N". Afectaba 95072, 95118, 95342.
+
+  D3. DOS MARCAS DE LA MISMA CLASE SEGUIDAS SE CONTABAN COMO DOS EXPRESIONES.
+      "EE MM MENORES DE 25 AB" (ID 94993) nombra la clase dos veces y denota UN
+      conjunto. Es §1 de `alcance_multiple` —"dos expresiones son la misma si
+      denotan el mismo conjunto"— que yo habia CITADO en el encabezado del archivo
+      y NO habia implementado.
+
+  Y UNO MAS, del segundo tramo, que no cambio conducta pero si una declaracion:
+  D4. LE ATRIBUI AL GUARD DE PRECEDENCIA UN EFECTO QUE NO TIENE. Lo destapo la
+      mordida M3 al no morder. Medido y corregido en el encabezado del derivador
+      (§2.2). El codigo no se toco; lo que era falso era el comentario.
+
+  >>> LOS CUATRO LOS CAZO UN CONTEO QUE EXISTIA PARA SER CERO, o una mordida que
+      existia para ponerse roja. Ninguno lo habria cazado la suite en verde.
+
+--------------------------------------------------------------------------------
+8. §6.1 — REDACTADO, NO APLICADO
+--------------------------------------------------------------------------------
+
+  E1 · LA PREMISA "SOLO 94985" ES FALSA — YA RETIRADA POR EL OWNER.
+       Vivia en el prompt de Fase 2 y en mi respuesta de Fase 1. Medicion que la
+       contradice: 03_verificar_union.js §(7), salida versionada al lado.
+       Son CUATRO: 94985, 95201, 95169, 95202. Queda consignado por si la cifra
+       se hereda desde alguno de esos dos lugares.
+
+  O4b QUEDA SALDADO. `alcance_no_legible` O4b decia: "Lo que falta es la rama sin
+       numero, que para EMBARCACIONES MENORES existe (:92) y para EE.MM. no. Se
+       anota el hecho. La rama no se propone."
+       Bajo fuente B la rama existe EN EL DERIVADOR —no en el parser, que no se
+       toco— y 95169 pasa de no_legible a menores_sin_umbral. Que se haga con la
+       nota de aquella bitacora es del owner.
+
+  PENDIENTE 95342 · el TERMINADOR y el "HASTA 50 TRG". Literal y motivo en §3.
+       No se implementa. Es del owner.
+
+  NADA MAS SE CRUZO. No se abrio O1, ni O2/95155, ni el sobre-alcance de la zona
+  angosta (10 restricciones · 13 filas), ni el rotulo de zona falso del parser
+  (15 de 34), ni 95346 y el eje de equipamiento, ni F2, ni el frente del D.S. 991.
+
+--------------------------------------------------------------------------------
+9. LO QUE ESTA SESION NO HIZO Y ALGUIEN PODRIA CREER QUE SI
+--------------------------------------------------------------------------------
+
+  - No cableo la PWA. El aviso se enciende en otra pieza; esto es backend.
+  - No toco `sitport-routes.js`. Medido en Fase 1: ningun punto suyo lee
+    `alcance.tipo` ni `aviso_modo`; el objeto se serializa entero en :362 y :852.
+    Agregar `componentes[]` no rompe un consumidor JSON.
+  - No midio si estos son todos los casos que existen o solo los de ESTE
+    material. Con un pico meteorologico detras (O7b), lo segundo es lo unico
+    afirmable.
+  - No fijo la frontera normativa menor/mayor. Sigue sin medirse y sin
+    inventarse: por eso `mayores` no es un valor de `alcance.tipo`.
+  - No probo que el lexico lea BIEN todo texto futuro. Probo que sobre estos 444
+    no angosta ninguno, no ensancha los diez descartados, y que tres defectos
+    inyectados lo ponen rojo.
+
+--------------------------------------------------------------------------------
+10. REPRODUCIR
+--------------------------------------------------------------------------------
+
+  PowerShell, desde C:\Users\katia\tmarea-backend (§7.3):
+
+      npm test
+      node --test .\src\services\__tests__\cierre-derivador.test.js
+      node .\_bitacoras\alcance_union_2026-08-17\03_verificar_union.js
+      node .\_bitacoras\alcance_union_2026-08-17\04_mordida.js
+      Get-Content .\_bitacoras\alcance_union_2026-08-17\03_verificar_union.txt -Encoding UTF8
+      Get-Content .\_bitacoras\alcance_union_2026-08-17\04_mordida.txt -Encoding UTF8
+
+  Los cuatro salen exit 0. Codigos de 03: exit 3 un conteo que no cierra · exit 4
+  extraccion fallida · exit 5 cero comparaciones · exit 6 insumo cambiado · exit 7
+  un descartado ensanchado · exit 8 un aviso_modo inesperado · exit 9 la
+  contencion fallida. Los exit 7, 8 y 9 MORDIERON DE VERDAD durante esta sesion,
+  y esa es la prueba no simulada de que el instrumento muerde.
+
+--------------------------------------------------------------------------------
+11. LO QUE QUEDA DEL OWNER
+--------------------------------------------------------------------------------
+
+  D1. EL COMMIT. Archivos a estagear, con ruta exacta:
+        git add src/services/cierre-derivador.js
+        git add src/services/__tests__/cierre-derivador.test.js
+        git add _bitacoras/alcance_union_2026-08-17/
+      NUNCA `git add .`. `data/catalogo/estado_drift.json` sigue modificado y sin
+      estagear: NO se toca.
+
+  D2. 95342 y el TERMINADOR. §3, con su literal y el motivo por el que no se toco.
+
+  D3. La PWA. Es la sesion siguiente, y arranca con esto ya commiteado.
+
+================================================================================
+FIN
+================================================================================

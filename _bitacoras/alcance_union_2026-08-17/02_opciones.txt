@@ -1,0 +1,110 @@
+================================================================================
+ALCANCE-UNION — FASE 1, PUNTO 0. DE DONDE SE LEEN LOS ALCANCES QUE SE SUMAN.
+Costo medido de las dos fuentes, contra la union verdadera de la tabla de lectura.
+================================================================================
+
+--------------------------------------------------------------------------------
+(1) LOS 20, UNO POR UNO — VERDAD, FUENTE A Y FUENTE B
+--------------------------------------------------------------------------------
+    verdad  = union de los alcances que la tabla de lectura declara
+    fuente A = max(umbral_ab_dentro, umbral_ab_fuera) del parser, o `todas`
+               si bloqueo_total. Campos que el parser YA devuelve.
+    fuente B = leer del texto. Se mide su TECHO: la verdad misma.
+
+    ID       bahia                      emite hoy              verdad       fuente A     veredicto A     
+    94985    BAHÍA CONCEPCIÓN - LIRQUÉN no_legible             SIN_VALOR    NADA         verdad_sin_valor
+    95060    BAHÍA CORRAL               umbral 100             num 100      num 100      exacto          
+    95061    SECTOR CHAIHUÍN            umbral 100             num 100      num 100      exacto          
+    95062    BORDE COSTERO-VALDIVIA     umbral 25              num 100      num 25       sub             
+    95071    BAHÍA QUELLÓN              umbral 50              num 100      num 50       sub             
+    95075    QUEILEN                    umbral 25              num 50       num 25       sub             
+    95099    BAHÍA CONCHALÍ             menores_sin_umbral     SIN_VALOR    NADA         verdad_sin_valor
+    95100    BAHIA PICHIDANGUI          menores_sin_umbral     SIN_VALOR    NADA         verdad_sin_valor
+    95116    BAHÍA MAULLÍN              umbral 50              num 50       num 50       exacto          
+    95117    ENSENADA ESTAQUILLA        umbral 50              num 50       num 50       exacto          
+    95155    BAHÍA QUELLÓN              umbral 50              num 100      num 100      exacto          
+    95184    ENSENADA ESTAQUILLA        umbral 50              num 50       num 50       exacto          
+    95185    RADA DE	CARELMAPU          umbral 50              num 50       num 50       exacto          
+    95205    BAHÍA DE CALBUCO           umbral 50              num 50       num 50       exacto          
+    95213    BORDE COSTERO-VALDIVIA     umbral 100             num 100      num 100      exacto          
+    95214    VALDIVIA CONECTIVIDAD      umbral 100             num 100      num 100      exacto          
+    95219    SECTOR CHAIHUÍN            umbral 50              todas        num 50       sub             
+    95220    BAHÍA CORRAL               umbral 50              todas        num 50       sub             
+    95347    PUERTO CISNES              umbral 50              num 50       num 50       exacto          
+    95352    BAHÍA QUELLÓN              umbral 50              num 100      num 50       sub             
+
+    fuente A · exacto                11 restricciones ·  16 filas   ->  95060, 95061, 95116, 95117, 95155, 95184, 95185, 95205, 95213, 95214, 95347
+    fuente A · sub                    6 restricciones ·  13 filas   ->  95062, 95071, 95075, 95219, 95220, 95352
+    fuente A · sobre                  0 restricciones ·   0 filas   ->  —
+    fuente A · verdad_sin_valor       3 restricciones ·   7 filas   ->  94985, 95099, 95100
+    fuente A · no_comparable          0 restricciones ·   0 filas   ->  —
+    suma 20 / 20 — CIERRA  (fuente A / restricciones)
+    suma 36 / 36 — CIERRA  (fuente A / filas)
+
+    fuente B · exacto                17 restricciones ·  29 filas
+    fuente B · verdad_sin_valor       3 restricciones ·   7 filas   ->  94985, 95099, 95100
+    suma 20 / 20 — CIERRA  (fuente B / restricciones)
+
+    LO QUE LA FUENTE B NO PRUEBA, y hay que decirlo (§1.2, §2): es un TECHO.
+    Mide "si un lector del texto leyera tan bien como leyo la sesion
+    ALCANCE-MULTIPLE, cuanto de los 20 quedaria exacto". NO prueba que una
+    implementacion concreta lo alcance: eso hay que medirlo con el lexico
+    escrito, y esta sesion todavia no lo escribio.
+
+--------------------------------------------------------------------------------
+(2) LOS 9 QUE HOY DEJAN NAVES AFUERA — CUANTOS ARREGLA CADA FUENTE
+--------------------------------------------------------------------------------
+    los que dejan naves afuera: 9 restricciones · 22 filas — reproduce
+
+    ID       emite hoy            fuente A da    arregla A?   fuente B da    arregla B?  
+    95062    umbral 25            num 25         no           num 100        SI          
+    95071    umbral 50            num 50         no           num 100        SI          
+    95075    umbral 25            num 25         no           num 50         SI          
+    95099    menores_sin_umbral   NADA           no           SIN_VALOR      no          
+    95100    menores_sin_umbral   NADA           no           SIN_VALOR      no          
+    95155    umbral 50            num 100        SI           num 100        SI          
+    95219    umbral 50            num 50         no           todas          SI          
+    95220    umbral 50            num 50         no           todas          SI          
+    95352    umbral 50            num 50         no           num 100        SI          
+
+    FUENTE A arregla 1 de 9 (3 de 22 filas). No arregla: 95062, 95071, 95075, 95099, 95100, 95219, 95220, 95352
+    FUENTE B arregla 7 de 9 (16 de 22 filas). No arregla: 95099, 95100
+    suma 9 / 9 — CIERRA  (fuente A sobre los 9)
+    suma 9 / 9 — CIERRA  (fuente B sobre los 9)
+
+--------------------------------------------------------------------------------
+(3) EL RIESGO DE LA FUENTE A, MEDIDO Y NO ARGUMENTADO
+--------------------------------------------------------------------------------
+    Las dos ranuras del parser estan ROTULADAS por zona (dentro / fuera) y
+    ese rotulo puede ser falso: se compara el rotulo del parser contra la
+    zona que la tabla de lectura le asigna a ese mismo numero.
+
+    rotulos de ranura que COINCIDEN con la lectura : 19
+    rotulos de ranura FALSOS                       : 15
+      95060 ranura dentro=100 — la lectura lo ubica en "fuera"
+      95061 ranura dentro=100 — la lectura lo ubica en "fuera"
+      95062 ranura fuera=25 — la lectura lo ubica en "dentro"
+      95071 ranura dentro=50 — la lectura lo ubica en "fuera-norte"
+      95075 ranura fuera=25 — la lectura lo ubica en "dentro"
+      95116 ranura dentro=50 — la lectura lo ubica en "fuera"
+      95117 ranura dentro=50 — la lectura lo ubica en "fuera"
+      95155 ranura dentro=100 — la lectura lo ubica en "fuera-sur"
+      95213 ranura dentro=100 — la lectura lo ubica en "fuera"
+      95214 ranura dentro=100 — la lectura lo ubica en "fuera"
+      95219 ranura fuera=50 — la lectura lo ubica en "dentro"
+      95220 ranura fuera=50 — la lectura lo ubica en "dentro"
+      95347 ranura dentro=50 — la lectura lo ubica en "Corcovado/Moraleda/Jacaf"
+      95347 ranura fuera=50 — la lectura lo ubica en "Corcovado/Moraleda/Jacaf"
+      95352 ranura dentro=50 — la lectura lo ubica en "fuera-norte"
+
+    POR QUE IMPORTA PARA D-C6 Y NO PARA HOY: la union no usa el rotulo —
+    suma los conjuntos sin preguntar de que zona vino cada uno. Un rotulo
+    falso no la ensucia. Lo que SI la ensucia es una ranura que perdio un
+    alcance, y eso es lo que mide (1).
+
+    los 6 sha256 de insumo identicos al arranque — OK
+    comparaciones efectivas : 598
+    controles fallidos      : 0
+================================================================================
+SIN FALLAS.
+================================================================================

@@ -1,0 +1,230 @@
+================================================================================
+ALCANCE-UNION — FASE 1. Sesion 2026-08-17, sobre 0e385858.
+Los DOS denominadores, la particion vigente, y de donde salen los alcances.
+================================================================================
+
+--------------------------------------------------------------------------------
+(0) INSUMOS — SHA256 AL ARRANQUE
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json    5a3bf064eeef7d630e404db390679e80
+    restricciones_2026-07-31_16-32.json    8e5270eaabbd2800dfcf2da664c80cbb
+    restricciones_2026-07-31_20-32.json    e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-07-31_21-01.json    e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-08-01_13-14.json    9ed8c7c15c52a05f6740b99b3da6d7b4
+    check_ahora.json                       c306aea459dc5124af4099d703b854eb
+
+    SEIS ficheros. CINCO se llaman restricciones_*.json y el sexto es
+    check_ahora.json. Se declara porque "seis capturas" se lee como seis
+    restricciones_*.json y en el directorio hay cinco.
+
+--------------------------------------------------------------------------------
+(0b) CRITERIOS EXTRAIDOS DE SU ARCHIVO VERSIONADO — NO TRANSCRITOS
+--------------------------------------------------------------------------------
+    CRITERIO (el del 254), extraido de ejes_cierre_2026-08-16/01_medir_ejes.js:
+        /PUERTO CERRADO|CONDICION\s*DE\s*PUERTO/
+    TABLA de lectura de los multiples, extraida de
+        alcance_multiple_2026-08-17/01_medir_multiple.js  —  30 IDs, 8478 bytes
+
+--------------------------------------------------------------------------------
+(1) LOS DOS DENOMINADORES — 213 Y 254. QUE CUENTA CADA UNO.
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json     73 filas  (rowsAffected coincide)
+    restricciones_2026-07-31_16-32.json     83 filas  (rowsAffected coincide)
+    restricciones_2026-07-31_20-32.json     83 filas  (rowsAffected coincide)
+    restricciones_2026-07-31_21-01.json     83 filas  (rowsAffected coincide)
+    restricciones_2026-08-01_13-14.json     83 filas  (rowsAffected coincide)
+    check_ahora.json                        39 filas  (rowsAffected coincide)
+    TOTAL                                  444 filas
+
+  DENOMINADOR A — "213"
+    UNIDAD           : la RESTRICCION.
+    UNIVERSO         : las 444 filas del material, cerradas y no cerradas.
+    CRITERIO DE UNICIDAD : valor distinto de `IDRestriccion`, comparado como
+                       cadena. No interviene la captura: un mismo ID en seis
+                       capturas cuenta UNA vez.
+    MEDIDO           : 213 restricciones distintas sobre 444 filas
+    ESPERADO 213 — OK
+
+  DENOMINADOR B — "254"
+    UNIDAD           : la FILA (registro-captura), no la restriccion.
+    UNIVERSO         : las mismas 444 filas.
+    CRITERIO         : el literal de cierre, con la expresion IMPORTADA de
+                       ejes_cierre/01_medir_ejes.js:  /PUERTO CERRADO|CONDICION\s*DE\s*PUERTO/
+                       evaluada sobre `normalizarTexto(Observacion)`.
+    CRITERIO DE UNICIDAD : NINGUNO. No deduplica. Cada fila cuenta.
+    MEDIDO           : 254 filas sobre 444
+    ESPERADO 254 — OK
+    Y SUS RESTRICCIONES DISTINTAS : 114 sobre las 213 del material
+
+  >>> POR QUE 254 NO CABE EN 213: NO SON LA MISMA UNIDAD.
+      213 son RESTRICCIONES (IDs distintos) sobre las 444 filas.
+      254 son FILAS que traen el literal de cierre, sin deduplicar.
+      Esas 254 filas son 114 restricciones distintas, y 114 <= 213.
+      No hay contradiccion y ninguno de los dos viene de un resumen: los dos
+      reproducen exactos contra el material.
+    suma 444 / 444 — CIERRA  (bolsa del literal / filas)
+
+  CONTROL — LAS MEDICIONES QUE CITAN 254 CUENTAN FILAS. SE REPRODUCEN DOS:
+    249/254 (D-C1, estado y causa conviven)   medido: 249 / 254
+    254/254 (entities HTML en NaveRecibe)     medido: 254 / 254
+    Las dos cuentan FILAS. Confirma la unidad del denominador B.
+
+--------------------------------------------------------------------------------
+(2) LA PARTICION VIGENTE — 217/5/94/19 EN FILAS · 112/5/36/14 EN RESTRICCIONES
+--------------------------------------------------------------------------------
+    umbral                  217 filas   esperado  217   OK
+    total                     5 filas   esperado    5   OK
+    menores_sin_umbral       94 filas   esperado   94   OK
+    no_legible               19 filas   esperado   19   OK
+    suma 335 / 335 — CIERRA  (alcance / filas)
+
+    umbral                  112 restr.  esperado  112   OK
+    total                     5 restr.  esperado    5   OK
+    menores_sin_umbral       36 restr.  esperado   36   OK
+    no_legible               14 restr.  esperado   14   OK
+    suma 167 / 167 — CIERRA  (alcance / restricciones)
+
+    CERRADOS: 335 filas / 167 restricciones.
+    Y el complemento: 109 filas / 46 restricciones sin cierre declarado.
+
+--------------------------------------------------------------------------------
+(3) PUNTO 0 — DE DONDE PODRIAN SALIR LOS ALCANCES QUE SE SUMAN
+--------------------------------------------------------------------------------
+    Se vuelca la salida CRUDA de `normalizarRestriccion` (sitport-parser.js:119)
+    para 95155 y para un caso de cada forma. Es LO UNICO que el derivador ve
+    del parser: `derivarAlcance` lee `umbral_ab_fuera` y `bloqueo_total`.
+
+    control: la tabla extraida declara 20 multiples · 36 filas — OK
+             y 10 candidatos descartados por lectura · 21 filas
+
+    ── ID 95155 · BAHÍA QUELLÓN · forma G1 · 3 fila(s)
+       declara por lectura : num 50 [fuera-norte]  ·  num 100 [fuera-sur]  ·  num 25 [dentro]
+       parser devuelve     : umbral_ab_dentro=100  umbral_ab_fuera=50  bloqueo_total=false
+                             area="DENTRO_Y_FUERA"  afecta_menores=true  afecta_mayores=false
+       derivador emite     : tipo=umbral umbral=50 unidad="AB" aviso_modo=detalle
+
+    ── ID 95060 · BAHÍA CORRAL · forma G1 · 1 fila(s)
+       declara por lectura : num 100 [fuera]  ·  num 25 [dentro]
+       parser devuelve     : umbral_ab_dentro=100  umbral_ab_fuera=100  bloqueo_total=false
+                             area="DENTRO_Y_FUERA"  afecta_menores=true  afecta_mayores=false
+       derivador emite     : tipo=umbral umbral=100 unidad="AB" aviso_modo=detalle
+
+    ── ID 95219 · SECTOR CHAIHUÍN · forma G2 · 1 fila(s)
+       declara por lectura : todas [fuera]  ·  num 50 [dentro]
+       parser devuelve     : umbral_ab_dentro=50  umbral_ab_fuera=50  bloqueo_total=false
+                             area="DENTRO_Y_FUERA"  afecta_menores=true  afecta_mayores=false
+       derivador emite     : tipo=umbral umbral=50 unidad="AB" aviso_modo=detalle
+
+    ── ID 95099 · BAHÍA CONCHALÍ · forma G3 · 3 fila(s)
+       declara por lectura : mayores [bahia de Conchali]  ·  menores [bahia de Conchali]
+       parser devuelve     : umbral_ab_dentro=null  umbral_ab_fuera=null  bloqueo_total=false
+                             area="DENTRO_Y_FUERA"  afecta_menores=true  afecta_mayores=true
+       derivador emite     : tipo=menores_sin_umbral umbral=null unidad=null aviso_modo=detalle
+
+  AGREGADO SOBRE LOS 20 MULTIPLES — CUANTOS ALCANCES LE LLEGAN AL DERIVADOR
+    "el parser expone DOS" = umbral_ab_dentro y umbral_ab_fuera son los dos
+    no-nulos Y distintos entre si. Es el unico caso en que el parser conserva
+    mas de un alcance; en cualquier otro devuelve una sola ranura util.
+
+    dos_distintos      4 restricciones ·   6 filas   ->  95155, 95184, 95185, 95205
+    dos_iguales       13 restricciones ·  23 filas   ->  95060, 95061, 95062, 95071, 95075, 95116, 95117, 95213, 95214, 95219, 95220, 95347, 95352
+    uno_solo           0 restricciones ·   0 filas   ->  —
+    ninguno            3 restricciones ·   7 filas   ->  94985, 95099, 95100
+    suma 20 / 20 — CIERRA  (parser expone / restricciones)
+    suma 36 / 36 — CIERRA  (parser expone / filas)
+
+  CUANTOS ALCANCES DECLARA EL TEXTO vs CUANTOS SOBREVIVEN AL PARSER:
+    alcances DISTINTOS declarados por los 20 textos   : 41
+    ranuras DISTINTAS que el parser conserva de ellos : 21
+    perdidos dentro del parser                        : 20
+
+--------------------------------------------------------------------------------
+(4) PUNTO 3 — CUANTOS DECLARAN UN ALCANCE LEGIBLE Y OTRO QUE NO SE LEE
+--------------------------------------------------------------------------------
+    CRITERIO: un registro esta en esa situacion si la tabla de lectura le
+    declara al menos DOS alcances y al menos UNO de ellos no se reduce a un
+    conjunto de naves acotable. Las clases que la tabla usa son:
+      mayores      3 apariciones entre los 20
+      menores      3 apariciones entre los 20
+      num         33 apariciones entre los 20
+      todas        2 apariciones entre los 20
+
+    >>> REGISTROS CON UN COMPONENTE NO ACOTABLE : 0 restricciones · 0 filas
+        sobre los 20 multiples · 36 filas.  ->  NINGUNO
+
+    EL LIMITE DE ESTE CERO, declarado: la tabla es una LECTURA, y una lectura
+    solo anota lo que pudo resolver. Lo que este conteo afirma es que ninguno
+    de los 20 quedo con un alcance sin resolver, NO que no exista texto
+    ilegible en el material. El contraste que lo sostiene va abajo.
+
+  CONTRASTE — LOS CERRADOS QUE HOY SALEN no_legible, Y SI ADEMAS SON MULTIPLES:
+    no_legible : 14 restricciones · 19 filas
+    de esos, la tabla los declara MULTIPLES : 1 -> 94985
+    de esos, la tabla NO los declara multiples : 13
+    suma 14 / 14 — CIERRA  (no_legible / restricciones)
+
+--------------------------------------------------------------------------------
+(5) PUNTO 4 — LOS PARES DE CLASES QUE LA UNION TIENE QUE RESOLVER
+--------------------------------------------------------------------------------
+    Se enumera, sobre los 20, cada par NO ORDENADO de clases declaradas en un
+    mismo registro. Es lo que la suma tiene que saber hacer, medido y no supuesto.
+
+    mayores + menores      3 restricciones ·   7 filas   ->  94985, 95099, 95100
+    num + num             15 restricciones ·  27 filas   ->  95060, 95061, 95062, 95071, 95075, 95116, 95117, 95155, 95184, 95185, 95205, 95213, 95214, 95347, 95352
+    num + todas            2 restricciones ·   2 filas   ->  95219, 95220
+
+    NOTA: `num + num` incluye 95155, que declara TRES numeros y por eso aporta
+    tres pares. El conteo de arriba es de PARES, no de registros, y por eso un
+    mismo ID puede aparecer en mas de una fila si declarara clases distintas.
+
+--------------------------------------------------------------------------------
+(6) LA UNION DE D-C6 APLICADA A LOS 20 — CUANTOS CAMBIAN Y CUANTOS NO
+--------------------------------------------------------------------------------
+    RETICULA DECLARADA, y es lo unico que este instrumento asume:
+      num(N) u num(M) = num(max(N,M))     el mayor contiene al menor
+      X u todas       = todas             `todas` es el tope
+      menores u mayores = SIN VALOR EN EL VOCABULARIO ACTUAL  <- se marca
+      cualquier otro par no medido = SIN VALOR                <- se marca
+    El caso `menores u mayores` NO se resuelve aca: si esa union vale `total`
+    es una pregunta del vocabulario y va al owner (punto 2 del plan).
+
+    CAMBIAN de valor emitido : 7 restricciones · 16 filas
+      ID 95062 · BORDE COSTERO-VALDIVIA           · umbral 25              ->  num 100   (4 fila/s)
+      ID 95071 · BAHÍA QUELLÓN                    · umbral 50              ->  num 100   (2 fila/s)
+      ID 95075 · QUEILEN                          · umbral 25              ->  num 50   (4 fila/s)
+      ID 95155 · BAHÍA QUELLÓN                    · umbral 50              ->  num 100   (3 fila/s)
+      ID 95219 · SECTOR CHAIHUÍN                  · umbral 50              ->  todas   (1 fila/s)
+      ID 95220 · BAHÍA CORRAL                     · umbral 50              ->  todas   (1 fila/s)
+      ID 95352 · BAHÍA QUELLÓN                    · umbral 50              ->  num 100   (1 fila/s)
+
+    NO cambian (la union ya es lo emitido) : 10 restricciones · 13 filas
+      -> 95060, 95061, 95116, 95117, 95184, 95185, 95205, 95213, 95214, 95347
+
+    SIN VALOR EN EL VOCABULARIO : 3 restricciones · 7 filas
+      ID 94985 · BAHÍA CONCEPCIÓN - LIRQUÉN       · hoy emite no_legible           · union de {mayores, menores}   (1 fila/s)
+      ID 95099 · BAHÍA CONCHALÍ                   · hoy emite menores_sin_umbral   · union de {mayores, menores}   (3 fila/s)
+      ID 95100 · BAHIA PICHIDANGUI                · hoy emite menores_sin_umbral   · union de {mayores, menores}   (3 fila/s)
+    suma 20 / 20 — CIERRA  (union / restricciones)
+    suma 36 / 36 — CIERRA  (union / filas)
+
+  LOS 9 QUE HOY EMITEN EL MAS ANGOSTO — SE RECALCULAN, NO SE HEREDAN:
+    DEJAN NAVES SIN AVISO : 9 restricciones · 22 filas
+      -> 95062, 95071, 95075, 95099, 95100, 95155, 95219, 95220, 95352
+    ESPERADO 9 restricciones · 22 filas   OK
+
+    LOS 4 DE COLA ABIERTA, verificados uno por uno:
+      ID 95219 · SECTOR CHAIHUÍN          · en la bolsa que deja afuera: SI · union -> todas
+      ID 95220 · BAHÍA CORRAL             · en la bolsa que deja afuera: SI · union -> todas
+      ID 95099 · BAHÍA CONCHALÍ           · en la bolsa que deja afuera: SI · union -> SIN_VALOR
+      ID 95100 · BAHIA PICHIDANGUI        · en la bolsa que deja afuera: SI · union -> SIN_VALOR
+
+--------------------------------------------------------------------------------
+(7) CIERRE DEL INSTRUMENTO
+--------------------------------------------------------------------------------
+    los 6 sha256 de insumo son identicos al arranque — OK
+    comparaciones efectivas : 2014
+    controles fallidos      : 0
+
+================================================================================
+SIN FALLAS.
+================================================================================

@@ -1,0 +1,81 @@
+================================================================================
+ALCANCE-UNION — FASE 2. MORDIDA (§4.6).
+Tres defectos inyectados, uno por vez. Cada uno tiene que poner la suite en rojo.
+================================================================================
+
+    objetivo : src/services/cierre-derivador.js
+    sha256 ANTES  90441031abbf6e09bc842e5605516aa099655fa5af7150e05fc89b076c01c46a
+
+--------------------------------------------------------------------------------
+(0) LINEA BASE — LA SUITE EN VERDE ANTES DE INYECTAR
+--------------------------------------------------------------------------------
+    tests 71 · pass 71 · fail 0
+    OK — se muerde sobre verde, que es lo unico que prueba algo.
+
+--------------------------------------------------------------------------------
+(1) M1 · la union toma el MINIMO en vez del maximo
+--------------------------------------------------------------------------------
+    esperado: los 9 que emitian el mas angosto vuelven a emitirlo
+    -> tests 71 · pass 65 · FAIL 6
+       ✖ los 9 · ID 95062 (BORDE COSTERO-VALDIVIA): antes umbral 25 → umbral 100
+       ✖ los 9 · ID 95071 (BAHIA QUELLON): antes umbral 50 → umbral 100
+       ✖ los 9 · ID 95075 (QUEILEN): antes umbral 25 → umbral 50
+       ✖ los 9 · ID 95155 (BAHIA QUELLON): antes umbral 50 → umbral 100
+       ✖ los 9 · ID 95352 (BAHIA QUELLON): antes umbral 50 → umbral 100
+       ✖ contención · todo umbral del parser está CONTENIDO en la unión
+       ✖ cierre-derivador — D-C6: la unión
+    OK — los IDs exigidos estan todos en rojo: 95062, 95071, 95075, 95155, 95352
+
+--------------------------------------------------------------------------------
+(2) M2 · el lexico deja de leer el componente `todas`
+--------------------------------------------------------------------------------
+    esperado: 95219 y 95220 pierden la cola abierta y vuelven a umbral 50
+    -> tests 71 · pass 62 · FAIL 9
+       ✖ los cuatro estados de alcance suman 335 en filas
+       ✖ la misma partición en RESTRICCIONES suma 167
+       ✖ los que no traen alcance legible caen al genérico y NO desaparecen
+       ✖ todo umbral extraído trae su unidad — cero huecos
+       ✖ cierre-derivador — sondaje real, 444 registros
+       ✖ los 9 · ID 95219 (SECTOR CHAIHUIN): antes umbral 50 → total
+       ✖ los 9 · ID 95220 (BAHIA CORRAL): antes umbral 50 → total
+       ✖ los 4 de cola abierta salen a `total`, que es el único valor sin techo
+       ✖ opción A · los 4 que pasan de genérico a detalle, con su alcance
+       ✖ opción A · NINGÚN otro registro mueve su aviso_modo
+       ✖ cierre-derivador — D-C6: la unión
+    OK — los IDs exigidos estan todos en rojo: 95219, 95220
+
+--------------------------------------------------------------------------------
+(3) M3 · la ventana deja de cortarse en el TERMINADOR
+--------------------------------------------------------------------------------
+    esperado: la ventana se come el resto del texto y los cuatro de la remision se ensanchan
+    NOTA: 95072 NO se mueve con esta inyeccion y se dice por que: su segunda mencion ("NAVES SUPERIORES A 25 AB") absorbe un numero IGUAL al de la primera, asi que la union no cambia. Es un limite del conjunto negativo, medido.
+    -> tests 71 · pass 57 · FAIL 14
+       ✖ los cuatro estados de alcance suman 335 en filas
+       ✖ la misma partición en RESTRICCIONES suma 167
+       ✖ los que no traen alcance legible caen al genérico y NO desaparecen
+       ✖ todo umbral extraído trae su unidad — cero huecos
+       ✖ cierre-derivador — sondaje real, 444 registros
+       ✖ opción A · 95342 cambia de tipo sin cambiar de aviso_modo
+       ✖ opción A · NINGÚN otro registro mueve su aviso_modo
+       ✖ negativo · ID 95156 (remisión) NO se ensancha
+       ✖ negativo · ID 95157 (remisión) NO se ensancha
+       ✖ negativo · ID 95158 (remisión) NO se ensancha
+       ✖ negativo · ID 95159 (remisión) NO se ensancha
+       ✖ negativo · los 5 que M3 ensanchaba siguen sin nombrar a las mayores
+       ✖ defecto 2 · `menores_sin_umbral` ∪ `umbral(N)` es la clase entera
+       ✖ sobre el material, los que caen a medias son CERO
+       ... y 2 mas
+    OK — los IDs exigidos estan todos en rojo: 95156, 95157, 95158, 95159
+
+--------------------------------------------------------------------------------
+(4) RESTAURACION
+--------------------------------------------------------------------------------
+    sha256 DESPUES 90441031abbf6e09bc842e5605516aa099655fa5af7150e05fc89b076c01c46a
+    IDENTICO al de antes — el archivo quedo como estaba.
+    suite tras restaurar : tests 71 · pass 71 · fail 0
+
+    comparaciones efectivas : 19
+    controles fallidos      : 0
+================================================================================
+LAS TRES MORDIERON.
+================================================================================
