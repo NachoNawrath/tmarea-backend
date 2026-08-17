@@ -1,0 +1,127 @@
+================================================================================
+SALIDA DEL CONTROL — CABLEO DE CIERRE, TRAMO A (Z2)
+2026-08-17 · sin salir a la API · sin tocar ningún insumo
+================================================================================
+
+INSTRUMENTO: control_cableo_cierre.mjs, en el SCRATCHPAD DE SESIÓN, fuera de los
+dos repos (decisión del owner: Fase 1 y Tramo A no escriben instrumentos dentro
+de tmarea-backend ni de tmarea-pwa).
+Se corre con:  node control_cableo_cierre.mjs        (corrida normal)
+               node control_cableo_cierre.mjs --vacio (mordida M-F)
+
+Importa, sin reescribir ningún criterio:
+  derivarCierre                                tmarea-backend/src/services/cierre-derivador.js
+  mapearRespuestaPuerto, cierresDeclarados,
+  hayCierreDeclarado, calcularVeredicto        tmarea-pwa/src/hooks/useVoyageVerification.js
+Arma la respuesta con la forma exacta de       tmarea-backend/src/routes/sitport-routes.js:343-363
+
+sha256 del archivo bajo prueba, base y tras CADA restauración:
+  DD35A2FC4FA51DE83A602FC32A0B83EAAF1F9D271AE01F890402FE9A71E3E847
+
+--------------------------------------------------------------------------------
+(0) CORRIDA BASE — TODOS EN VERDE
+--------------------------------------------------------------------------------
+CONTROL DEL CABLEO DE CIERRE — TRAMO A (Z2)
+ficheros: 6  ·  filas: 444  ·  restricciones: 213  ·  bahías: 98
+
+  OK    C1   restricciones que producen aviso (den. 213)          esperado   167  obtenido   167  335 filas (den. 444)
+  OK    C2   avisos sobre restricciones sin cierre (den. 46)      esperado     0  obtenido     0
+  OK    C4   cierres con DETALLE y alcance bien formado           esperado   157  obtenido   157  320 filas (esp. 320)
+  OK    C5   cierres con GENÉRICO y alcance no_legible            esperado    10  obtenido    10  15 filas (esp. 15)
+  OK    C6   texto_original === Observacion cruda (2ª lectura)    esperado   335  obtenido   335  comparadas 335
+  OK    C8   veredicto idéntico con y sin `cierre` (den. 98)      esperado    98  obtenido    98  banderas encendidas: 83
+
+  C7    comparaciones efectivas: 1149
+
+TODOS LOS CONTROLES EN VERDE.   EXIT=0
+
+--------------------------------------------------------------------------------
+(1) M-A — quitar `cierre` del pasamanos. Es el defecto que tenía la app hoy.
+--------------------------------------------------------------------------------
+  ROJO  C1   restricciones que producen aviso (den. 213)          esperado   167  obtenido     0  0 filas
+  OK    C2   avisos sobre restricciones sin cierre (den. 46)      esperado     0  obtenido     0
+  ROJO  C4   cierres con DETALLE y alcance bien formado           esperado   157  obtenido     0
+  ROJO  C5   cierres con GENÉRICO y alcance no_legible            esperado    10  obtenido     0
+  ROJO  C6   texto_original === Observacion cruda (2ª lectura)    esperado   335  obtenido     0  comparadas 0
+  OK    C8   veredicto idéntico con y sin `cierre` (den. 98)      esperado    98  obtenido    98  banderas encendidas: 0
+  C7    comparaciones efectivas: 144                                                 EXIT=1
+
+  LECTURA: C2 y C8 quedan verdes y está bien — sin dato no hay aviso indebido y el
+  veredicto no se mueve. Los controles miden el cableado, no un mock.
+  Restaurado · sha256 COINCIDE con la base.
+
+--------------------------------------------------------------------------------
+(2) M-B — la compuerta lee `aviso_modo` en vez de `estado`. El defecto que D-C7 corta.
+--------------------------------------------------------------------------------
+  OK    C1   restricciones que producen aviso (den. 213)          esperado   167  obtenido   167  350 filas
+  ROJO  C2   avisos sobre restricciones sin cierre (den. 46)      esperado     0  obtenido    10
+  ROJO  C4   cierres con DETALLE y alcance bien formado           esperado   157  obtenido   167  350 filas
+  ROJO  C5   cierres con GENÉRICO y alcance no_legible            esperado    10  obtenido     0
+  ROJO  C6   texto_original === Observacion cruda (2ª lectura)    esperado   335  obtenido   350  comparadas 350
+  OK    C8   veredicto idéntico con y sin `cierre` (den. 98)      esperado    98  obtenido    98  banderas encendidas: 85
+  C7    comparaciones efectivas: 1194                                                EXIT=1
+
+  LECTURA — LA IMPORTANTE: C1 SE QUEDÓ EN 167 Y HABRÍA PASADO EN VERDE con el
+  mecanismo equivocado. 157 cerradas con detalle + 10 sin cierre con detalle = 167,
+  la misma cifra por el camino errado. Sin C2 y sin esta mordida, D-C7 no tendría
+  instrumento. Los 10 son exactamente los que la Fase 1 predijo.
+  Restaurado · sha256 COINCIDE con la base.
+
+--------------------------------------------------------------------------------
+(3) M-D1 — el pasamanos normaliza `texto_original` (.trim().toUpperCase()).
+--------------------------------------------------------------------------------
+  ROJO  C6   texto_original === Observacion cruda (2ª lectura)    esperado   335  obtenido   300  comparadas 335
+  (C1, C2, C4, C5, C8 verdes)                                                        EXIT=1
+
+  LECTURA: se mueven 35 de 335. Las otras 300 ya venían en mayúsculas y la
+  transformación es INVISIBLE en ellas — que una normalización sea invisible en 300
+  de 335 es exactamente la paráfrasis silenciosa que C6 existe para cazar (D-C4).
+  Restaurado.
+
+--------------------------------------------------------------------------------
+(4) M-D2 — el pasamanos deja caer `alcance`.
+--------------------------------------------------------------------------------
+  ROJO  C4   cierres con DETALLE y alcance bien formado           esperado   157  obtenido     0
+  ROJO  C5   cierres con GENÉRICO y alcance no_legible            esperado    10  obtenido     0
+  (C1, C2, C6, C8 verdes)                                                            EXIT=1
+
+  LECTURA: aislamiento limpio — C1 sigue viendo los 167 avisos y C6 el texto
+  intacto; lo único que se pierde es la carga del detalle.
+  Restaurado · sha256 COINCIDE con la base.
+
+--------------------------------------------------------------------------------
+(5) M-G — la bandera entra al veredicto (`veredictoRecalada = 'UV'`).
+--------------------------------------------------------------------------------
+  ROJO  C8   veredicto idéntico con y sin `cierre` (den. 98)      esperado    98  obtenido    15  banderas: 83
+  (C1, C2, C4, C5, C6 verdes)                                                        EXIT=1
+
+  LECTURA: guarda la promesa central de Z2 — cero veredictos movidos. Las 83 bahías
+  con cierre lo moverían. Es la mordida que impide que el Tramo A se lleve puesto al
+  Tramo C por la puerta de atrás.
+  Restaurado · sha256 COINCIDE con la base.
+
+--------------------------------------------------------------------------------
+(6) M-F — el instrumento sin material (`--vacio`).
+--------------------------------------------------------------------------------
+ficheros: 0  ·  filas: 0  ·  restricciones: 0  ·  bahías: 0
+  ROJO  C1, C4, C5, C6
+  OK    C2   esperado 0  obtenido 0
+  OK    C8   esperado 0  obtenido 0
+  C7    comparaciones efectivas: 0
+  ROJO  C7 · CERO COMPARACIONES EFECTIVAS — el instrumento no midió nada. ABORTA.
+                                                                                     EXIT=2
+
+  LECTURA: con cero material C2 y C8 informaban "OK". Un instrumento que da verde
+  sobre nada es peor que ninguno, y por eso C7 existe y aborta.
+
+--------------------------------------------------------------------------------
+(7) COMPILACIÓN
+--------------------------------------------------------------------------------
+  npm run build (tmarea-pwa): 83 módulos transformados, built in 4.33s, sin errores.
+  `dist/` está en .gitignore (.gitignore:2), así que el build no ensucia el árbol.
+  git status --short de la PWA tras todo: ` M src/hooks/useVoyageVerification.js`
+  y `?? diff_transit.txt` (que no se tocó).
+
+  Un instrumento no se da por bueno porque compila: los siete controles de arriba
+  se corrieron, y las seis mordidas también.
+================================================================================

@@ -1,0 +1,565 @@
+================================================================================
+CABLEO DE CIERRE — hacer visible el frente del cierre en la PWA
+Sesión CABLEO-CIERRE · 2026-08-17
+================================================================================
+
+Backend  a050ac797e6940ef3bddc56bede82627fa14960b  — NO SE TOCÓ. Cero piezas.
+PWA      b119ab0ef4c75c001112d433b18b398ad5922cc7  — un archivo modificado.
+
+Esta bitácora documenta un frente cuya escritura es de PWA. Vive acá por
+precedente: todas las bitácoras del proyecto están en tmarea-backend/_bitacoras/.
+Es documentación, sin código, y no mueve el HEAD del backend.
+
+UNIVERSO DE MEDICIÓN (todas las cifras de este documento):
+  sondaje-sitport/, SEIS ficheros versionados — los cinco restricciones_*.json
+  (30-07 19:42 · 31-07 16:32 · 31-07 20:32 · 31-07 21:01 · 01-08 13:14) MÁS
+  check_ahora.json (03-08 17:18).
+  444 filas / 213 restricciones (IDRestriccion distintos).
+  Bolsa de cierre: 335 filas / 167 restricciones.
+  Sin salir a la API. Sin tocar ningún insumo.
+
+================================================================================
+§0 · LA DÉCIMA PREMISA FALSA — Y SALIÓ DEL PROMPT, NO DE UNA MEDICIÓN
+================================================================================
+
+El gate de entrada de la Fase 1 la cazó antes de medir nada.
+
+  El enunciado de §4 decía: "los CINCO ficheros restricciones_*.json, 444 filas,
+  del 30-07 al 03-08". Las tres mitades no describen el mismo universo:
+
+    CINCO restricciones_*      405 filas · 185 restricciones · 30-07 → 01-08
+    SEIS (+check_ahora.json)   444 filas · 213 restricciones · 30-07 → 03-08
+
+  Los cinco ficheros dan 405, no 444. Sólo el universo de SEIS reproduce las
+  cuatro cifras que el propio prompt manda usar y verificar: 444 · 213 · 167/335
+  · el rango hasta el 03-08. Corroborado desde el código: cierre-derivador.js:258
+  dice "Medido sobre los 444" y :440 "cero registros de 167".
+
+ORIGEN DECLARADO: error de redacción del enunciado, no del material. El traspaso
+dice seis capturas y cinco ficheros restricciones_*, siendo la sexta
+check_ahora.json; al redactar §4 se pegó la lista de cinco con las cifras de seis.
+Los números de la bitácora nunca estuvieron en duda.
+
+ES LA DÉCIMA PREMISA FALSA DEL FRENTE Y LA PRIMERA QUE SALE DEL PROMPT.
+Queda anotada como control de que el gate muerde.
+
+--------------------------------------------------------------------------------
+LA UNDÉCIMA — y es la SEGUNDA SEGUIDA que sale del prompt y no de una medición
+--------------------------------------------------------------------------------
+Al cerrar el Tramo A, la sesión llevó al owner una decisión (a)/(b)/(c) sobre en
+qué orden commitear, fundada en que commitear el Tramo A solo dejaría "al patrón
+viendo un estado intermedio" — el aviso encendido con el copy que D-C8 reemplaza.
+
+LA PREMISA ERA FALSA: commitear no publica. No hay ninguna ruta desde estos repos
+a una pantalla que mire un patrón. Medido y escrito en §10: BACKEND_URL
+hardcodeado a localhost en seis archivos, sin `.github/` en ninguno de los dos
+repos, sin netlify/vercel/render/fly/Procfile/Dockerfile, `dist/` en .gitignore.
+
+ORIGEN DECLARADO: salió del prompt, NO de una medición. Es la SEGUNDA SEGUIDA con
+ese origen — la décima fue la lista de cinco ficheros de §4. LAS DOS VINIERON DE
+AFUERA DE CLAUDE CODE.
+
+LO QUE ENSEÑA, y por eso se anota en vez de borrarse: el gate de entrada cazó la
+décima porque la Fase 1 EXIGÍA verificar las premisas del enunciado antes de
+medir. La undécima pasó porque una premisa sobre el ENTORNO —dónde corre esto,
+quién lo ve— no estaba en ninguna lista de verificación: se dio por sabida. Un
+enunciado sobre despliegue es tan verificable como uno sobre el dato, y cuesta
+dos greps. La regla que queda: ANTES DE LLEVARLE UNA DECISIÓN AL OWNER, VERIFICAR
+LA PREMISA QUE LA HACE UNA DECISIÓN. Si la premisa cae, la decisión no existía.
+
+La corrección de esta premisa NO valida las demás por contagio. Verificadas en
+Fase 1: a050ac7 · b119ab0 · :362 · :852 · los cuatro valores de alcance.tipo ·
+los dos de aviso_modo · D7 · 167/335 · 213 · 254. SIGUEN SIN VERIFICAR: :486 y
+:840 (fuera de alcance, no se abrieron).
+
+================================================================================
+§1 · POR QUÉ EL AVISO NUNCA SE RENDERIZÓ — TRES SALTOS MUERTOS
+================================================================================
+
+`cierre_total`: 1 ocurrencia en la PWA, 0 en el código del backend.
+Control del grep: en tmarea-backend/src/**, `cierre_total` = 0 y `derivarCierre`
+= 5. El grep muerde. Control sobre el dato: el campo `nivel` NO EXISTE en 0 de
+las 444 filas — los registros de `restricciones` son crudos de SITPORT
+(sitport-routes.js:345, `restricciones: filtradas`) y sus 20 campos no lo traen.
+
+La cadena, tal como estaba hasta este commit:
+
+  useVoyageVerification.js:236  r.nivel === 'cierre_total'   → false SIEMPRE
+                          :237  else if (length > 0)         → el puerto cae a 'ambar'
+                          :155  estado==='rojo' ? 'UV'       → nunca 'UV'
+                          :160  if (recaladaRaw==='UV')      → arribadaForzosa nunca true
+  P3_VoyageVerification.jsx:236 {arribadaForzosa && (...)}   → el bloque nunca se evalúa
+
+CORRECCIÓN AL TRASPASO: el aviso de arribada forzosa ESTÁ ESCRITO Y COMPLETO en
+P3:236-291 —título, cuerpo, rótulo por rotularContacto y el mensaje de VHF Canal
+16 en :283/:285, con estilos en :552-577—. "Nunca se renderizó" es exacto, pero
+la causa no es que falte el aviso: es que un literal muerto apaga la única
+compuerta que lo enciende.
+
+CONSECUENCIA COLATERAL MEDIDA: `estado: 'rojo'` tampoco salió nunca. El badge
+🔴 "Cerrado" de PortStatusBlock.jsx:30-35 es código vivo que jamás se pintó.
+Zarpe cerrado = bloqueo absoluto tampoco se estaba mostrando. Ver §5 (D-C9).
+
+================================================================================
+§2 · LOS DOS PASAMANOS SE COMPORTAN DISTINTO
+================================================================================
+
+  /api/sitport/restricciones      cierre en :362  → fetchPortStatus (hook :209) → P3
+  /api/sitport/restricciones-ruta cierre en :852  → fetchTransitRestrictions (:353) → P3
+  /api/sitport/weather-ruta       sin cierre      → hook :319 y P4_ActiveVoyage.jsx:242
+
+P4 (mapa de travesía) NO CONSUME NINGUNA de las dos rutas que emiten cierre.
+
+  fetchPortStatus  copia CAMPO POR CAMPO y `cierre` no estaba nombrado: el dato
+                   llegaba al navegador y moría en el hook.  ← lo que arregla este commit
+  fetchTransitRestrictions  pasa `restricciones_intermedias` ENTERA (:371): el
+                   cierre de :852 YA ESTABA en la PWA, sin consumidor.
+
+Consumo de `cierre` en toda la PWA antes de este commit: CERO.
+TransitRestrictionsBlock lee evaluacion/aplica/capitania/observacion/
+condicion_legible/fondeadero_previo — nunca `cierre`.
+
+RECORTE DECLARADO: TransitRestrictionsBlock es la pieza P1, fuera de alcance.
+Este frente hace visible la salida :362 ÚNICAMENTE. El cierre de :852 sigue
+llegando y sin renderizar por decisión de recorte, no por olvido.
+
+================================================================================
+§3 · LA PARTICIÓN, CON DENOMINADOR — Y EL CONTRASTE
+================================================================================
+
+Eje: `estado` × `alcance.tipo`. (OBS-3, abajo, explica por qué NO es el cruce
+alcance.tipo × aviso_modo.)
+
+  estado                alcance.tipo          aviso_modo   filas   restr.
+  cerrado               umbral                detalle        214      109
+  cerrado               menores_sin_umbral    detalle         90       36
+  cerrado               total                 detalle         16       12
+  cerrado               no_legible            generico        15       10
+  sin_cierre_declarado  umbral                detalle         24        7
+  sin_cierre_declarado  menores_sin_umbral    detalle          6        3
+  sin_cierre_declarado  no_legible            generico        79       36
+  sin_cierre_declarado  total                 detalle          0        0   ← cero MEDIDO
+                                                             ---      ---
+  cerrado                                                    335      167
+  total                                                      444      213   CIERRA
+
+CONTRASTE — NO DIVERGE:
+  _bitacoras/alcance_union_2026-08-17/03_verificar_union.txt:33-36  214/16/90/15 · 109/12/36/10
+  _bitacoras/alcance_union_2026-08-17/alcance_union_2026-08-17.txt:253-256  idem
+  Coincidencia exacta.
+
+  _bitacoras/alcance_no_legible_2026-08-17/01_medir_alcance.txt:36-39  217/5/94/19
+  NO es divergencia: es la partición ANTERIOR a D-C6. 03_verificar_union.txt:48-51
+  la trae como columna "antes → ahora" con los cuatro movimientos nombrados por ID
+  (95201, 95169, 95202, 95342). El commit que la mueve es a050ac7, el HEAD medido.
+
+OBS-3 · `aviso_modo` ES FUNCIÓN PURA DE `alcance.tipo` (cierre-derivador.js:490,
+`alcance.tipo === 'no_legible' ? 'generico' : 'detalle'`). No aporta información
+propia al cruce: los cuatro ceros del cruce alcance.tipo × aviso_modo son
+ESTRUCTURALES, NO MEDIDOS. No es un frente y no se abre: es una nota.
+
+EL 254 — ATADO. Criterio importado verbatim de
+_bitacoras/sondaje_cierre_2026-08-16/03_contraste_texto.js:84
+(/PUERTO CERRADO|CONDICION\s*DE\s*PUERTO/ sobre norm(Observacion)), corrido sobre
+las 444: bolsa A = 254 filas, bolsa B = 190, suma 444. La partición se sostiene.
+NO es la bolsa del cierre: A∩cerrado = 221 · A\cerrado = 33 · cerrado\A = 114.
+Ninguno contiene al otro. De las 33: CERO dicen "PUERTO CERRADO"; las 33 dicen
+sólo "CONDICION DE PUERTO", que es la CAUSA (D-C1), sobre 14 restricciones.
+El derivador no pierde ni un cierre literal. Confirmación de D-C1, no hallazgo.
+
+--------------------------------------------------------------------------------
+NOTA · LOS DOS 114 NO SON EL MISMO Y NO SE CITAN JUNTOS SIN DENOMINADOR
+--------------------------------------------------------------------------------
+  (a) 114 RESTRICCIONES — las que producen las 254 filas de la bolsa
+      /PUERTO CERRADO|CONDICION DE PUERTO/ (traspaso). Denominador: 254/444 filas.
+  (b) 114 FILAS — cerradas por el derivador que NO están en esa bolsa (§3 de acá).
+      Denominador: 335/444 filas.
+  Escrito antes de que sea la premisa once.
+
+================================================================================
+§4 · LAS DECISIONES QUE ESTE FRENTE IMPLEMENTA
+================================================================================
+
+D-C7 · EL AVISO SE ENGANCHA AL ESTADO, NO AL MODO.  (owner, 2026-08-17)
+  El aviso de cierre sale si y sólo si `cierre.estado === 'cerrado'`.
+  `aviso_modo` no decide si el aviso sale: decide, DENTRO de ese conjunto, si sale
+  sólo el piso o el piso más el detalle. Universo del aviso: 335 filas / 167
+  restricciones. Las 46 restricciones / 109 filas con `sin_cierre_declarado` NO
+  reciben aviso, tengan el alcance que tengan; siguen mostrándose por `condicion`
+  y `condicion_legible`.
+  MOTIVO: la línea 1 de D-C4 —"si hay restricción"— es redacción suelta de un
+  frente donde todo lo medido era cierre. La línea 5 —"sale siempre que hay
+  cierre"— es la que rige. D-C7 no deroga a D-C4: le fija el conjunto.
+  CONSECUENCIA MEDIDA Y ACEPTADA: los 10 registros sin cierre que emiten `detalle`
+  habrían mostrado un alcance sin cierre que lo gobierne — aviso creíble y
+  equivocado. Eso es lo que D-C7 corta. La mordida M-B lo comprueba: 0 → 10.
+
+D-C8 · EL HECHO SE NOMBRA. LA ACCIÓN ES UNA SOLA.  (owner, 2026-08-17)
+  El piso nombra el estado que corresponde y las dos ramas terminan con LA MISMA
+  frase de acción — el mismo string compartido, no dos copias parecidas.
+    cerrado               → «Puerto de recalada cerrado, » + ACCIÓN
+    sin_cierre_declarado  → «Puerto con restricciones, »   + ACCIÓN
+    ACCIÓN (literal único)→ «comunícate con la capitanía respectiva»
+  Redacción exacta y mayúsculas: Tramo B. Lo decidido acá es la ESTRUCTURA.
+  MOTIVO: la acción del patrón no cambia entre los dos estados, pero el hecho sí,
+  y el dato de cierre es firme (una sola forma léxica, cero negaciones en 334
+  ocurrencias). Descartada la frase única para los dos estados: dejaba la línea de
+  VHF Canal 16 —que sale sólo en el cierre— sin nada arriba que la explique.
+  DESCARTADA la variante A1 propuesta por la sesión: "declarar puerto alternativo
+  o solicitar arribada forzosa" afirma un procedimiento que Art. 24 Regl. de
+  Despacho y Art. 89 D.L. 2222 no respaldan, y el piso sale 167 veces. No se
+  redacta procedimiento sin fuente.
+
+COPY: B1 (rótulo técnico del alcance, en tercera persona) + C1 (la frase de VHF
+  intacta, P3:283/:285, sin tocar una letra). En los 10 `no_legible`: nada.
+  DESCARTADA B2 (segunda persona, "te alcanza / no te alcanza"): convierte un
+  estado de puerto en un veredicto por nave, que es lo que cierre-derivador.js:5-12
+  dice que no puede hacerse. DESCARTADA C2 (citar el artículo en el aviso).
+
+================================================================================
+§5 · D-C9 · EL ZARPE NO SE BLOQUEA EN ESTE FRENTE
+================================================================================
+MARCO NORMATIVO DEL OWNER — CERRADO. NO SE PIDE FUENTE, NO SE RE-ABRE.
+
+· D.S. 364/1980, Reglamento de Recepción y Despacho de Naves. Alcance nacional.
+  Art. 29 clasifica las embarcaciones para determinar qué autoridades intervienen
+  en el despacho, e incluye expresamente las naves menores nacionales
+  (categoría E) — o sea, cubre al usuario de Tmarea. Art. 30 y correlativos: para
+  obtener autorización de zarpe la nave presenta documentación y cumple las
+  disposiciones de seguridad de la Autoridad Marítima. Ninguna nave inicia
+  navegación sin despacho.
+· El acto operativo —llamar por VHF Canal 16 o por teléfono al soltar amarras— lo
+  fija la resolución local de cada Capitanía. Misma estructura que el cierre:
+  marco nacional que obliga, forma local.
+
+CONSECUENCIA: hay un funcionario de la Autoridad Marítima entre la app y el
+zarpe, por norma, siempre. Un aviso equivocado se corrige ahí; un botón apagado
+no lo destraba nadie. Por eso el aviso tolera el defecto de atribución y el
+bloqueo no.
+
+LÍMITE DECLARADO, para que no se apoye en lo que no dice: lo que sostiene a D-C9
+es que EL DESPACHO ES OBLIGATORIO. NO que el funcionario avise sobre el puerto de
+destino — el despacho verifica documentación y seguridad, y avisar la condición
+del puerto de recalada no está en el reglamento. El argumento no se apoya en eso.
+
+ESTE MARCO VA AL CONTRATO DEL FRENTE, NO A LA PANTALLA: el copy sigue siendo
+B1 + C1, y C2 (citar el artículo en el aviso) ya fue descartada.
+
+Sin esta redacción, dentro de tres meses el zarpe sin bloqueo parece un olvido y
+alguien lo "arregla".
+
+--------------------------------------------------------------------------------
+LO QUE PRODUCE `estado === 'rojo'` EN EL CAMINO DE ZARPE — MEDIDO
+--------------------------------------------------------------------------------
+  hook :148-150 → 'UV' (SIN tope; recalada sí tiene tope, :158-163, Art. 24)
+  maxVeredicto  → veredicto global 'UV'
+  VoyageVerdict.jsx:63-64  razón «Puerto de zarpe "X" cerrado»
+  VoyageVerdict.jsx:33-41  🟥 Bandera U+V · «Navegación no recomendada» · «No zarpar.»
+  P3:330-341    CTA `disabled`, gris, onClick undefined → onStartVoyage nunca se
+                llama → P4 INALCANZABLE. Es bloqueo efectivo del viaje.
+  EFECTO SECUNDARIO: VoyageVerdict.jsx:141 mostraría «Puedes navegar hasta X»
+  junto a «No zarpar» en la misma tarjeta.
+
+DE LOS 167, CUÁNTOS EN ZARPE Y CUÁNTOS EN RECALADA: LA PREGUNTA NO TIENE
+RESPUESTA DEL LADO DEL DATO, y eso es el hallazgo. Zarpe y recalada se resuelven
+con LA MISMA llamada (hook :820 y :826), el mismo endpoint y el mismo filtro. Una
+restricción no "es" de zarpe ni de recalada: es de una bahía, y el rol lo fija el
+viaje. No hay partición; hay la misma bolsa expuesta dos veces. Cualquier cifra
+"X en zarpe / Y en recalada" sería inventada.
+
+EXPOSICIÓN (lo que sí se mide):
+  bahías distintas (bahia+GLBahia) en las 444 ........ 98
+  bahías con >=1 restricción CERRADA ................. 83 / 98
+
+================================================================================
+§6 · Z3 · Z2 AHORA, EL ZARPE COMO TRAMO C
+================================================================================
+
+TRAMO A (este commit): `arribadaForzosa` deja de derivarse de
+`recaladaRaw === 'UV'` y pasa a leer `portStatus.recalada.cierre` directo.
+La línea del `cierre_total` NO SE TOCA.
+
+CERO VEREDICTOS MOVIDOS, y está medido (C8, 98/98): hoy 'ambar' da 'U' en
+recalada, y un 'rojo' de recalada también da 'U' por el tope del Art. 24 — es el
+MISMO valor. Mismo botón, misma bandera. Se suma el aviso y nada más.
+
+TRAMO C (después, no ahora): el camino de zarpe, con Z-C1..Z-C5 y sus mordidas.
+NO ARRANCA hasta que esté resuelto el filtro de sitport-routes.js:333-338.
+
+CONSECUENCIA ACEPTADA DE Z2 — declarada acá para no descubrirla en el Tramo C:
+el aviso de recalada TAMBIÉN queda expuesto al filtro por subcadena. Los 8 falsos
+siguen vivos. Un patrón que recale en Corral Bajo puede ver «Puerto de recalada
+cerrado» por un cierre de Bahía Corral. Se acepta porque hoy ese mismo patrón ya
+ve «puerto con restricciones» por la misma vía equivocada: Z2 no crea el defecto,
+le cambia la frase. Y por D-C9 hay un despacho obligatorio entre medio.
+
+--------------------------------------------------------------------------------
+§6.1 · HALLAZGO FUERA DE ALCANCE — EL FILTRO DE PUERTO sitport-routes.js:333-338
+        REDACTADO, NO APLICADO. Backend, fuera de alcance de escritura.
+--------------------------------------------------------------------------------
+El filtro compara con `p.includes(w)` — SUBCADENA, NO PALABRA (línea :337).
+
+Los 8 casos, medidos con el filtro importado verbatim sobre el catálogo PROXY
+caletas_chile.json (ver LÍMITE abajo):
+
+  "BAHÍA CHILOTA" (Porvenir, Magallanes) → bahía 102 LOTA (Biobío): "chilota"
+        contiene "lota".                                       5 filas cerradas ajenas
+  "RIO NEGRO - HORNOPIREN" → 135 CABO NEGRO (Magallanes)       5
+  "VILLARRICA(LEBU)"       → 101 LEBU                          5
+  "CORRAL BAJO"            → 107 BAHÍA CORRAL                  6
+  "LOTA BAJO"              → 102 LOTA                          5
+  "MANZANO (HUALAIHUE)"    → 147 RADA MANZANO + 184 ENSENADA HUALAIHUÉ   11
+  "EL ESTERO"              → 182 ESTERO COMAU + 183 ESTERO PICHICOLO      6
+  "ESTERO COPA"            → 182 ESTERO COMAU + 183 ESTERO PICHICOLO      6
+
+8 tokens genéricos quedan fuera del `skip` y son compartidos entre bahías:
+  "sector" (16 bahías, 60 filas, 51 cerradas) · "carahue" (3, 7, 7) ·
+  "quintero" (2, 29, 6) · "concepcion" (2, 25, 10) · "borde" (2, 11, 11) ·
+  "costero" (2, 10, 10) · "estero" (2, 6, 6) · "valdivia" (2, 2, 2).
+
+POR QUÉ IMPORTA Y POR QUÉ NO SE APLICA: hoy la mala atribución produce 'ambar'
+—cosmético, no bloquea—. Encender 'rojo' la convertiría en BLOQUEO DURO del zarpe
+por un cierre de otra bahía a 2.000 km. El cambio no agrega un aviso: le sube la
+severidad a un defecto de atribución que ya existe.
+OPCIONES: (a) comparar por palabra y no por subcadena; (b) ampliar el `skip` con
+los tokens genéricos; (c) anclar por idBahia en vez de por nombre.
+RECOMENDACIÓN: (c) — es la única que no depende del léxico. Se parece más al
+frente de atribución en pausa que a este. EL OWNER DECIDE APARTE si es frente
+propio.
+
+LÍMITE DECLARADO DE LAS CIFRAS 61/481 Y 8/481: el catálogo real de zarpe sale de
+/api/puertos, que es POSTGRES (src/services/puertos-service.js:1, `new Pool`) y NO
+ES MEDIBLE OFFLINE. 61/481 y 8/481 son del PROXY tmarea-pwa/src/data/
+caletas_chile.json, versionado, 481 nombres distintos — NO del catálogo real. Se
+nombran así cada vez que se usan.
+  consulta → ROJO (>=1 cerrada)  61 / 481   ← hoy 'ambar'; con el zarpe encendido, bloqueo
+  consulta → ámbar (sin cierre)  20 / 481
+  consulta → sin restricciones  400 / 481
+  consultas que mezclan >1 bahía   8 / 481
+
+================================================================================
+§7 · LA PIEZA — tmarea-pwa/src/hooks/useVoyageVerification.js
+================================================================================
+UN SOLO ARCHIVO. Backend en a050ac7, cero piezas, sin verificación nueva.
+
+  (1) `mapearRespuestaPuerto` (:255) — el pasamanos sale de dentro de
+      `fetchPortStatus` y se exporta. La lógica NO cambia: son las mismas líneas,
+      con `ahora` inyectable para que la medición sea determinística. Motivo: el
+      pasamanos es DONDE EL DATO SE PIERDE, así que tiene que poder ser sujeto de
+      un control y no una parte inalcanzable de una función async.
+  (2) `cierre: data?.cierre || null` (:301) — el campo se nombra. `null` = el
+      backend no lo mandó; `[]` = lo mandó y no hay nada. No se colapsan.
+      El texto NO se toca al pasar (D-C4): una normalización de paso sería una
+      paráfrasis silenciosa. Control C6, mordida M-D1.
+  (3) `cierresDeclarados` (:173) / `hayCierreDeclarado` (:179) — la compuerta de
+      D-C7, exportadas.
+  (4) `calcularVeredicto` (:183) — exportada. La bandera pasa a
+      `hayCierreDeclarado(portStatus?.recalada)` (:209). EL TOPE DEL ART. 24 SE
+      CONSERVA INTACTO aunque su rama no se alcance todavía: el Tramo C lo
+      enciende y tiene que estar ahí cuando eso pase. Lo que se separó es la
+      BANDERA, que dejó de ser efecto lateral del tope.
+
+--------------------------------------------------------------------------------
+NOTA · LÍNEAS QUE SE MUEVEN CON ESTE COMMIT — para el frente de drift
+--------------------------------------------------------------------------------
+  `fetchPortStatus:240` (`nombre: nombrePuerto`, campo `nombre`, frente de drift)
+  NO SE TOCÓ en este frente, pero el rótulo :240 deja de ser válido: el campo se
+  movió a `mapearRespuestaPuerto` y ahora está en :276.
+  La línea del `cierre_total` —la que este frente cita como :236— se movió a :272.
+  Sin esta nota, el frente de drift persigue una línea movida.
+
+================================================================================
+§8 · LOS CONTROLES — D7, LA PWA NO TIENE SUITE
+================================================================================
+Instrumento: scratchpad de sesión, FUERA de los dos repos. Importa
+`derivarCierre` del backend y `mapearRespuestaPuerto`/`cierresDeclarados`/
+`hayCierreDeclarado`/`calcularVeredicto` de la PWA — sobre la implementación, no
+sobre una copia. Arma la respuesta con la forma exacta de sitport-routes.js:343-363.
+No aplica el filtro por nombre a propósito: su sobre-alcance es un hallazgo
+declarado (§6.1) y meterlo acá mezclaría el defecto de atribución con lo medido.
+
+CORRIDA FINAL — TODOS EN VERDE. 1149 comparaciones efectivas.
+
+  C1  restricciones que producen aviso (den. 213) ........ 167   OK   (335 filas/444)
+  C2  avisos sobre restricciones sin cierre (den. 46) ....   0   OK
+  C4  cierres con DETALLE y alcance bien formado ......... 157   OK   (320 filas)
+  C5  cierres con GENÉRICO y alcance no_legible ..........  10   OK   (15 filas)
+  C6  texto_original === Observacion cruda (2ª lectura) .. 335   OK
+  C8  veredicto idéntico con y sin `cierre` (den. 98) .....  98   OK   (83 banderas)
+  C7  comparaciones efectivas ........................... 1149   > 0
+
+ALCANCES DECLARADOS DE LOS CONTROLES:
+  C6 guarda EL PASAMANOS, no el derivador. Que `derivarCierre` no deforme el texto
+     lo cubre la suite del backend, NO este instrumento. Compara contra una SEGUNDA
+     LECTURA INDEPENDIENTE del fichero: un control que compara la salida contra la
+     misma entrada que él pasó es tautológico.
+  C4/C5 en el Tramo A NO miden el render: miden que el payload del detalle
+     sobreviva al pasamanos entero y bien formado.
+  C3 (piso presente en 167/167) es propiedad DEL RENDER y no tiene sujeto en el
+     Tramo A. Se corre en el Tramo B junto con su mordida M-C.
+  M-E queda EN EL TRAMO B por el mismo motivo: el único código que lee
+     `aviso_modo` es el render. Una mordida sobre el instrumento no prueba nada.
+
+LAS MORDIDAS — CORRIDAS, con el archivo restaurado y sha256 comprobado en cada
+vuelta (base DD35A2FC4FA51DE83A602FC32A0B83EAAF1F9D271AE01F890402FE9A71E3E847):
+
+  M-A  quitar `cierre` del pasamanos (el defecto de hoy)
+       → C1 167→0 · C4 157→0 · C5 10→0 · C6 335→0 · C2 y C8 quedan verdes
+       Prueba que los controles miden el cableado y no un mock.
+  M-B  la compuerta lee `aviso_modo` en vez de `estado`
+       → C2 0→10 · C5 10→0 · C4 157→167 · C6 335→350
+       LO IMPORTANTE: C1 SE QUEDÓ EN 167 Y HABRÍA PASADO EN VERDE con el mecanismo
+       equivocado (157 cerradas con detalle + 10 sin cierre con detalle = 167).
+       Sin C2 y sin M-B, D-C7 no tendría instrumento. Es el motivo por el que el
+       conjunto negativo existe.
+  M-D1 el pasamanos normaliza `texto_original` (.trim().toUpperCase())
+       → C6 335→300, y SÓLO C6. Se mueven 35: las otras 300 ya venían en
+       mayúsculas y la transformación es invisible en ellas — que una
+       normalización sea invisible en 300 de 335 es exactamente la paráfrasis
+       silenciosa que C6 existe para cazar.
+  M-D2 el pasamanos deja caer `alcance`
+       → C4 157→0 y C5 10→0, y sólo ellos. C1 y C6 quedan verdes.
+  M-G  la bandera entra al veredicto (`veredictoRecalada = 'UV'`)
+       → C8 98→15, y sólo C8. Guarda la promesa central de Z2: las 83 bahías con
+       cierre moverían el veredicto.
+  M-F  el instrumento sin material (`--vacio`, re-corrible sin editarlo)
+       → C7 = 0 comparaciones, ABORTA con exit 2. Nota: con cero material, C2 y C8
+       informaban "OK" — un instrumento que da verde sobre nada es peor que
+       ninguno, y por eso C7 existe.
+
+  `npm run build` de la PWA: OK, 83 módulos, built in 4.33s. `dist/` está en
+  .gitignore, así que el build no ensucia el árbol.
+
+================================================================================
+§9 · FRENTES ANOTADOS, NO ABIERTOS
+================================================================================
+
+REFRESCO DE CONDICIÓN EN NAVEGACIÓN (owner). Iniciada la navegación las
+condiciones cambian y la app debería ofrecer refrescar la condición del puerto de
+recalada. Hoy P4 no consume ninguna de las dos rutas que emiten `cierre` — su
+único endpoint SITPORT es weather-ruta (medido, §2). Pide abrir un consumo nuevo:
+es pieza propia, con su decisión de qué se refresca y cada cuánto. NO SE ABRE.
+
+PortStatusBlock.jsx:42-65 · `evaluarRestriccionTRG` PARAFRASEA Y AFIRMA CIERRE POR
+SU CUENTA. Emite el literal "Puerto cerrado para naves < N TRG. Tu embarcación
+(X TRG) puede navegar…". Medido sobre las 444 filas: `trg_minimo` 0/444 ·
+`limite_trg` 0/444 · `vigente_desde` 0/444 · `descripcion` 0/444. Las dos ramas
+que producen esa frase son INALCANZABLES con el payload real y hoy siempre cae al
+fallback :50 (Observacion cruda, que sí cumple D-C4). Dos problemas si algún campo
+apareciera: (a) es paráfrasis, prohibida por D-C4; (b) diría "Puerto cerrado"
+mientras el badge de la misma tarjeta dice "Con restricciones", y DECIDE POR NAVE
+lo que es estado de puerto. OPCIONES: borrar las dos ramas muertas y dejar el
+fallback / dejarlo y anotarlo / reemplazarlo por el cotejo de `alcance`.
+RECOMENDACIÓN: borrar las ramas muertas, EN SESIÓN APARTE. REDACTADO, NO APLICADO.
+
+TRAMO C · el camino de zarpe. Controles diseñados, no corridos:
+  Z-C1 puertos que pasan de U a UV sobre el catálogo REAL /api/puertos
+       → NO MEDIBLE OFFLINE (Postgres). Declarado, no silenciado.
+  Z-C2 veredicto global por puerto, antes vs. después (catálogo proxy).
+  Z-C3 pureza de atribución: toda fila cerrada devuelta pertenece a la bahía del
+       puerto consultado. Esperado 0 mezclas; hoy 8/481 (proxy).
+  Z-C4 CTA deshabilitado <=> veredicto === 'UV'.
+  Z-C5 recalada nunca produce 'UV' (tope del Art. 24 vivo).
+  Z-M1 inyectar una fila cerrada de otra bahía → Z-C3 rojo.
+  Z-M2 quitar el tope :158-163 → Z-C5 rojo (recalada bloquearía zarpe).
+
+================================================================================
+§10 · COMMITEAR NO PUBLICA — MEDIDO, y corrige una premisa de esta misma sesión
+================================================================================
+
+La sesión planteó que commitear el Tramo A solo dejaría "al patrón viendo un
+estado intermedio" (el aviso encendido con el copy que D-C8 reemplaza). ESA
+PREMISA ES FALSA y se corrige acá. Medido:
+
+  · BACKEND_URL / API_BASE están HARDCODEADOS a http://localhost:3000 en SEIS
+    archivos de la PWA, incluido el que este frente modifica
+    (useVoyageVerification.js:6). Un build de este árbol no puede hablar con
+    ningún backend que no sea el de la máquina de desarrollo.
+  · No hay `.github/` en ninguno de los dos repos. No hay netlify/vercel/render/
+    fly/railway/Procfile/Dockerfile. No hay mención de deploy en el README.
+  · `dist/` está en .gitignore (.gitignore:2): el build ni siquiera se versiona.
+
+CONSECUENCIA: entre el commit y una pantalla que mire un patrón no hay ninguna
+ruta en estos repos. El "estado intermedio" es un riesgo del DESPLIEGUE, y acá no
+hay despliegue. Ordenar el commit del Tramo A no expone nada.
+
+Queda anotado también como límite del frente: cuando exista una ruta a
+producción, esta cuenta hay que rehacerla — la conclusión vale para el árbol tal
+como está hoy, no para siempre.
+
+================================================================================
+§11 · TRASPASO AL TRAMO B — lo que la sesión nueva necesita y no está arriba
+================================================================================
+
+ESTADO AL MOMENTO DEL TRASPASO
+  Tramo A commiteado en main de tmarea-pwa. `arribadaForzosa` YA SE ENCIENDE:
+  P3_VoyageVerification.jsx:236 renderiza hoy, con su copy viejo y blando
+  («Puerto de recalada con restricciones… tiene restricciones activas»), que
+  SUBDECLARA el hecho en los 167 casos donde el dato dice cerrado. Eso es
+  exactamente lo que el Tramo B viene a reemplazar, y en desarrollo es el insumo
+  para redactarlo: se mira en pantalla, no se imagina.
+
+ARCHIVO AUTORIZADO DEL TRAMO B: tmarea-pwa/src/screens/P3_VoyageVerification.jsx.
+  Backend: cero piezas. El hook ya no necesita más cambios.
+
+LO QUE EL HOOK YA EXPORTA Y EL RENDER DEBE CONSUMIR (no reimplementar):
+  cierresDeclarados(puerto)   → array de los `cierre` con estado 'cerrado'
+  hayCierreDeclarado(puerto)  → booleano, la compuerta de D-C7
+  rotularContacto(contacto, fallbackNombre)  → la frase rotulada, YA COMPARTIDA
+                                con el recordatorio r1. NO se duplica.
+
+LA ESTRUCTURA DEL RENDER — acumulador de sólo-empuje, NO ternario:
+
+    if (!hayCierreDeclarado(rec)) return null;    // D-C7 · única compuerta
+    const bloques = [];
+    bloques.push(<Piso .../>);                    // INCONDICIONAL
+    if (c.aviso_modo === 'detalle') bloques.push(<Detalle alcance={c.alcance}/>);
+    bloques.push(<Cita texto={c.texto_original}/>);
+
+  POR QUÉ ASÍ Y NO CON TERNARIO: `modo === 'detalle' ? <Detalle/> : <Generico/>`
+  hace desaparecer el piso justo en los 157 de 167 casos donde SÍ hay texto — el
+  reverso de D-C4. Con el acumulador, `aviso_modo` sólo se lee en una posición
+  donde el piso YA fue empujado: no existe rama que pueda saltarlo. Un `else` no
+  puede aparecer sin borrar la línea del piso, que es un cambio visible en el
+  diff; invertir un ternario no lo es.
+
+LAS CUATRO PANTALLAS (D-C3), con su conteo:
+  umbral              109 restr / 214 filas   piso + «naves menores de {umbral} {unidad}» + cita
+  menores_sin_umbral   36 / 90                piso + «naves menores (el texto no declara tonelaje)» + cita
+  total                12 / 16                piso + «todas las naves» + cita
+  no_legible           10 / 15                PISO SOLO + cita — no se agrega nada
+
+CAMPOS: van a pantalla `alcance.tipo/umbral/unidad` y `texto_original`.
+  NO van, y es decisión: `via`, `razon_sin_cierre` (siempre null en los 167 por
+  construcción), `alcance.componentes[]` (trazabilidad de ingeniería, no
+  información de navegación), `estado` (gobierna, no se muestra), `aviso_modo`
+  (bandera, no texto).
+  Ruido del texto en las 335 filas de cierre: 0 vacías · 0 entidades HTML sin
+  decodificar (viven en NaveRecibe, no en Observacion) · 44 con doble espacio ·
+  73 con comilla doble. Se muestra TAL CUAL; el colapso de doble espacio lo hace
+  HTML solo y no es paráfrasis.
+
+LO QUE NO SE TOCA EN P3: las líneas :263-287 —el rótulo por `rotularContacto`, el
+  escalón 3 sin etiqueta, y la frase de VHF Canal 16— quedan intactas (C1
+  aceptada). El teléfono NO va: es mensaje normativo (INV-10.1, primera frase).
+
+CONTROLES DEL TRAMO B:
+  C3   el piso está presente en 167/167 avisos.
+  M-C  convertir el acumulador en ternario → C3 167→10. ES LA MORDIDA DEL PISO.
+  M-E  invertir el test de `aviso_modo` → C4 157→10 y C5 10→157.
+  El instrumento del Tramo A ya importa lo necesario; C3 exige alcanzar el
+  render, así que hay que decidir si se extrae una función pura que arme el
+  payload del aviso (medible sin React) o si se mide sobre el DOM del smoke.
+  RECOMENDACIÓN: función pura en el hook o en P3, exportada, y el smoke aparte —
+  medir sobre el DOM ata el control al maquetado.
+
+SMOKE VISUAL (una vez, no es control):
+  netstat -ano | findstr :3000  →  taskkill /PID [n] /F   (NUNCA Stop-Process
+  -Name node: mata Vite al mismo tiempo). Backend en 3000, PWA en 5173.
+  SITPORT en vivo puede no tener ningún puerto cerrado el día que se corra —el
+  sondaje se capturó durante un temporal—, así que el smoke prueba que el bloque
+  se pinta, NO los conteos. Los conteos son del instrumento.
+
+================================================================================
+FIN — Tramo A. Sin commit hasta autorización explícita del owner.
+================================================================================
