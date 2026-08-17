@@ -1,0 +1,398 @@
+================================================================================
+EJES DEL CIERRE — PASADA 1: PARTICION, EJE "A QUIEN", EJE "DONDE", VOCABULARIO
+Instrumento: _bitacoras/ejes_cierre_2026-08-16/01_medir_ejes.js
+Corrida: 2026-08-17T01:36:04.275Z · sin salir a la API
+================================================================================
+
+--------------------------------------------------------------------------------
+(0) MATERIAL
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json    73 registros  sha256 5a3bf064eeef7d63
+    restricciones_2026-07-31_16-32.json    83 registros  sha256 8e5270eaabbd2800
+    restricciones_2026-07-31_20-32.json    83 registros  sha256 e9d4d084202d7935
+    restricciones_2026-07-31_21-01.json    83 registros  sha256 e9d4d084202d7935
+    restricciones_2026-08-01_13-14.json    83 registros  sha256 9ed8c7c15c52a05f
+    check_ahora.json                       39 registros  sha256 c306aea459dc5124
+    capturas: 6 · DENOMINADOR GLOBAL: 444
+
+    NORMALIZACIONES DECLARADAS:
+      norm  = NFD sin diacriticos + espacios colapsados + trim + MAYUSCULAS
+              (VERBATIM de 03_contraste_texto.js:37-39 — es el que produjo el 254)
+      N1    = norm + entities HTML decodificadas (&LT; &GT; &AMP; &QUOT;)
+      N3    = N1 + toda puntuacion a espacio, recolapsado
+      El normalizador del MOTOR (normalizarTexto) NO colapsa espacios y NO
+      decodifica entities. Se usa el del motor solo donde corre el motor.
+
+================================================================================
+(1) PARTICION — CRITERIO VERBATIM DE 03_contraste_texto.js:84
+================================================================================
+    /PUERTO CERRADO|CONDICION\s*DE\s*PUERTO/.test(norm(r.Observacion))
+
+    bolsa A (declaran cierre) : 254
+    bolsa B (no lo declaran)  : 190
+    suma                      : 444
+    solape (captura+IDRestriccion) : 0
+
+    >>> PARTICION REPRODUCIDA: 254 / 190, suma 444, solape 0.
+
+    DESGLOSE DEL CRITERIO (las dos ramas se solapan y se declara):
+      contiene "PUERTO CERRADO"        : 173 / 254
+      contiene "CONDICION DE PUERTO"   : 169 / 254
+      contiene LAS DOS                 : 88 / 254
+      solo "PUERTO CERRADO"            : 85 / 254
+      solo "CONDICION DE PUERTO"       : 81 / 254
+      suma de los disjuntos            : 254 / 254
+
+    MOTOR CORRIDO sobre los 444 registros: 444 objetos normalizados, claves unicas.
+
+================================================================================
+(2) EJE "A QUIEN" — DENOMINADOR 254 (bolsa A)
+================================================================================
+
+  2.1 — `NaveRecibe` CRUDO (sin decodificar, tal como viene). Clases de valor:
+        valor                     254 / 254
+
+       valores distintos, CRUDOS:
+         225 / 254   "NAVE MENOR (&LT;100 AB)"
+          16 / 254   "NAVE MAYOR (&GT;=100 AB)"
+          13 / 254   "NAVE MAYOR (&GT;=100 AB), NAVE MENOR (&LT;100 AB)"
+
+       con entities HTML sin decodificar en NaveRecibe : 254 / 254
+
+       valores distintos, N1 (entities decodificadas):
+         225 / 254   "NAVE MENOR (<100 AB)"
+          16 / 254   "NAVE MAYOR (>=100 AB)"
+          13 / 254   "NAVE MAYOR (>=100 AB), NAVE MENOR (<100 AB)"
+
+  2.2 — LO QUE EL MOTOR DERIVA DE AHI (afecta_menores / afecta_mayores):
+        menores=true mayores=false          225 / 254
+        menores=true mayores=true            15 / 254
+        menores=false mayores=true           14 / 254
+        suma                                254 / 254   CIERRA
+
+  2.3 — UMBRAL NUMERICO, POR LA IMPLEMENTACION VERSIONADA (normalizarRestriccion):
+        con algun umbral extraido : 148 / 254
+        sin ningun umbral         : 106 / 254
+        suma                      : 254 / 254 CIERRA
+
+       NUMEROS QUE APARECEN — umbral_ab_fuera (el unico que alguna regla consulta):
+        null        106 / 254
+        25           79 / 254
+        50           31 / 254
+        100          28 / 254
+        12            5 / 254
+        99            5 / 254
+        suma        254 / 254 CIERRA
+
+       NUMEROS QUE APARECEN — umbral_ab_dentro (hecho muerto: ninguna regla lo consulta):
+        null        106 / 254
+        25           80 / 254
+        100          31 / 254
+        50           27 / 254
+        12            5 / 254
+        99            5 / 254
+        suma        254 / 254 CIERRA
+
+       registros donde DENTRO != FUERA : 4 / 254
+         ID 95155 · BAHÍA QUELLÓN · dentro=100 fuera=50
+         ID 95155 · BAHÍA QUELLÓN · dentro=100 fuera=50
+         ID 95155 · BAHÍA QUELLÓN · dentro=100 fuera=50
+         ID 95185 · RADA DE	CARELMAPU · dentro=25 fuera=50
+
+  2.4 — LOS ONCE PATRONES DEL PARSER: COBERTURA SOBRE LOS 254
+       (AB_PATTERNS extraidos como texto de sitport-parser.js:46-58 y evaluados;
+        se aplican sobre normalizarTexto(Observacion), que es lo que el parser usa)
+
+        patron  1    37 / 254   EMBARCACIONES\s+MENORES?\s+DE\s+(\d+)\s*A\/?\.?B
+        patron  2    15 / 254   EMBARCACIONES\s+MENORES?\s+DE\s+(\d+)\s+ARQUEO\s+BRU
+        patron  3     6 / 254   EMBARCACIONES\s+MENORES?\s+A\s+(\d+)\s*A\.?B
+        patron  4    16 / 254   NAVES?\s+MENORES?\s+DE\s+(\d+)\s*A\.?B
+        patron  5    32 / 254   EE\.?MM\.?\s*(?:(?:DE|A)\s+)?(\d+)\s*A\.?B
+        patron  6     5 / 254   EE\.?MM\.?\s*-\s*(\d+)\s*A\.?B
+        patron  7     9 / 254   EE\.?MM\.?\s*<\s*(\d+)\s*A\.?B
+        patron  8     6 / 254   EE\.?MM\.?\s*(?:(?:DE|A)\s+)?(\d+)\s*TRG
+        patron  9     5 / 254   NAVES?\s+MENORES?\s+DE\s+(\d+)\s+ARQUEO\s+BRUTO
+        patron 10     5 / 254   NAVE\s+MENOR\s+A\s+(\d+)\s*TRG
+        patron 11    12 / 254   (\d+)\s*(?:A\.?B|TRG)\b
+        NINGUNO     106 / 254
+        suma        254 / 254 CIERRA
+
+       >>> "cobertura" = cual de los once es el PRIMERO que matchea. Es la
+           semantica de extraerUmbralDeTexto (:61-65), que devuelve el primero.
+
+       algun patron matchea PERO el parser no deja umbral_fuera : 0 / 254
+       ningun patron matchea PERO el parser SI deja umbral      : 0 / 254
+       (la diferencia la produce extraerUmbrales :68-101, que antepone
+        TODO TIPO DE NAVES y la rama separada DENTRO/FUERA)
+
+  2.5 — LOS QUE NO PERMITEN EXTRAER UN NUMERO, Y POR QUE. Causa primaria, disjunta.
+          61 / 106   C3 "MENORES" sin numero — rama :92, null = TODAS las menores
+               ej. ID 95066 · BAHÍA COQUIMBO
+                   "SE ESTABLECE CONDICIÓN DE PUERTO CERRADO POR AVISO DE MAL TIEMPO PARA NAVES MENORES, DENTRO Y FUERA DE LA BAHÍA."
+          23 / 106   C4 el texto no tiene NINGUN digito
+               ej. ID 94985 · BAHÍA CONCEPCIÓN - LIRQUÉN
+                   "SE ESTABLECE CONDICION DE PUERTO CERRADO PARA  EMBARCACIONES MAYORES Y MENORES DENTRO Y FUERA DE LA BAHIA, POR AVISO DE MAL TIEMPO Y TEMPORAL VIGENTE."
+          14 / 106   C5 hay digitos pero ninguno junto a una unidad que los once patrones reconozcan
+               ej. ID 95112 · BAHÍA DE QUINTERO
+                   "SE ESTABLECE CONDICION DE PUERTO A \"MAL TIEMPO N°224\" "
+           5 / 106   C2 "TODO TIPO DE EMBARCACIONES" — rama :95, devuelve null a proposito
+               ej. ID 94977 · LEBU
+                   "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE, PUERTO CERRADO POR AVISO DE MAL TIEMPO Y TEMPORAL EN ÁREA OCEÁNICA Y COSTERA DESDE PUNTA BOYERUCA A CORRAL."
+           3 / 106   C1 bloqueo_total (TODO TIPO DE NAVES) — no hay numero porque no hace falta
+               ej. ID 95056 · BAHÍA CONCEPCIÓN - TALCAHUANO
+                   "SE ESTABLECE CONDICIÓN DE PUERTO TEMPORAL, PUERTO CERRADO PARA TODO TIPO DE NAVES Y EMBARCACIONES.\r\nAVISO DE MAL TIEMPO AREA OCEANICA Y COSTERA SECTOR"
+         106 / 106   suma CIERRA
+
+  2.6 — UNIDADES QUE APARECEN. Se saca DEL DATO: el token que sigue a un numero.
+        NO se convierte ninguna. Se cuenta y se conserva tal como vino.
+
+        ocurrencias totales de "numero + token" en la bolsa A: 201
+        tokens, por frecuencia (los que aparecen 2+ veces):
+           54  A.B.
+           47  AB
+           28  ARQUEO
+           26  AB.
+            8  DE
+            8  HRS.
+            6  H
+            6  TRG
+            6  TRG///
+            2  HORA
+
+        tokens que aparecen UNA sola vez:
+        A · AGO · AGO. · CERRAZON · JUL · NDS · SE · TRG// · UTC · VRS
+
+        LO MISMO SOBRE NaveRecibe (N1):
+          267  AB
+
+================================================================================
+(3) EJE "DONDE" — DENOMINADOR 254 (bolsa A)
+================================================================================
+
+  3.1 — `AreaRestriccion` CRUDO. Clases de valor, sin colapsar:
+        valor                     238 / 254
+        null                       16 / 254
+        suma                      254 / 254 CIERRA
+
+       valores distintos, CRUDOS:
+         148 / 254   "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+          51 / 254   "FUERA DEL LÍMITE DEL PUERTO"
+          16 / 254   null
+          12 / 254   "DENTRO DEL LÍMITE DEL PUERTO"
+          12 / 254   "OTRA ÁREA FIJADA POR LA AML"
+          11 / 254   "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO, OTRA ÁREA FIJADA POR LA AML"
+           4 / 254   "FUERA DEL LÍMITE DEL PUERTO, OTRA ÁREA FIJADA POR LA AML"
+         254 / 254   suma CIERRA
+
+  3.2 — DENTRO / FUERA / AMBOS / NULO, LEIDO DEL CAMPO:
+        AMBOS (dice DENTRO y FUERA)                   159 / 254
+        solo FUERA                                     55 / 254
+        NULO o vacio                                   16 / 254
+        con valor, pero no dice ni DENTRO ni FUERA     12 / 254
+        solo DENTRO                                    12 / 254
+        suma                                          254 / 254 CIERRA
+
+  3.3 — LO QUE EL MOTOR DEJA EN `area` (detectarArea :106-114, defecto DENTRO_Y_FUERA):
+        DENTRO_Y_FUERA        187 / 254
+        FUERA                  55 / 254
+        DENTRO                 12 / 254
+        suma                  254 / 254 CIERRA
+
+  3.4 — LO QUE DICE EL TEXTO (Observacion, N1):
+        texto dice DENTRO y FUERA           129 / 254
+        texto no dice ni DENTRO ni FUERA    105 / 254
+        texto dice solo FUERA                16 / 254
+        texto dice solo DENTRO                4 / 254
+        suma                                254 / 254 CIERRA
+
+  3.5 — CRUCE CAMPO x TEXTO. Los 254, sin solape:
+         104  AMBOS (dice DENTRO y FUERA)                  | texto dice DENTRO y FUERA
+          51  AMBOS (dice DENTRO y FUERA)                  | texto no dice ni DENTRO ni FUERA
+          29  solo FUERA                                   | texto no dice ni DENTRO ni FUERA
+          16  solo FUERA                                   | texto dice DENTRO y FUERA
+          10  con valor, pero no dice ni DENTRO ni FUERA   | texto no dice ni DENTRO ni FUERA
+          10  solo FUERA                                   | texto dice solo FUERA
+           8  NULO o vacio                                 | texto no dice ni DENTRO ni FUERA
+           7  solo DENTRO                                  | texto no dice ni DENTRO ni FUERA
+           6  NULO o vacio                                 | texto dice solo FUERA
+           5  solo DENTRO                                  | texto dice DENTRO y FUERA
+           4  AMBOS (dice DENTRO y FUERA)                  | texto dice solo DENTRO
+           2  con valor, pero no dice ni DENTRO ni FUERA   | texto dice DENTRO y FUERA
+           2  NULO o vacio                                 | texto dice DENTRO y FUERA
+         254  suma CIERRA
+
+  3.6 — ZONA EN EL TEXTO Y NO EN EL CAMPO (campo nulo, texto habla):
+        8 / 254
+         ID 95043 · BAHÍA SAN VICENTE · texto=texto dice DENTRO y FUERA · motor area=DENTRO_Y_FUERA
+            "A CONTAR DE LAS 11:30 HRS., DEL DÍA 30 DE JULIO DE 2026, SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO PARA PARA TODO TIPO DE NAVES DENTRO Y FUERA DE LA"
+         ID 95044 · SECTOR COSTERO PENINSULA DE HUALPEN · texto=texto dice DENTRO y FUERA · motor area=DENTRO_Y_FUERA
+            "A CONTAR DE LAS 11:30 HRS., DEL DÍA 30 DE JULIO DE 2026, SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO PARA PARA TODO TIPO DE NAVES DENTRO Y FUERA DE LA"
+         ID 95188 · BAHÍA DE QUINTERO · texto=texto dice solo FUERA · motor area=DENTRO_Y_FUERA
+            "SE ESTABLECE CONDICION DE PUERTO MAREJADA, RESTRINGIENDO ATRAQUE A PVSA Y OXIQUIM POR FUERA DE PARAMETROS, CARGA O DESCARGA DE VIVERES Y PERTRECHOS, FONDEOS DE NAVES EXTR"
+         ID 95189 · BAHÍA DE QUINTERO · texto=texto dice solo FUERA · motor area=DENTRO_Y_FUERA
+            "SE ESTABLECE CONDICION DE PUERTO MAREJADA, RESTRINGIENDO ATRAQUE A PVSA Y OXIQUIM POR FUERA DE PARAMETROS, CARGA O DESCARGA DE VIVERES Y PERTRECHOS, FONDEOS DE NAVES EXTR"
+         ID 95187 · BAHÍA DE QUINTERO · texto=texto dice solo FUERA · motor area=DENTRO_Y_FUERA
+            "SE ESTABLECE CONDICION DE PUERTO MAREJADA, RESTRINGIENDO ATRAQUE A PVSA Y OXIQUIM POR FUERA DE PARAMETROS, CARGA O DESCARGA DE VIVERES Y PERTRECHOS, FONDEOS DE NAVES EXTR"
+         ID 95190 · BAHÍA DE QUINTERO · texto=texto dice solo FUERA · motor area=DENTRO_Y_FUERA
+            "SE ESTABLECE CONDICION DE PUERTO MAREJADA, RESTRINGIENDO ATRAQUE A PVSA Y OXIQUIM POR FUERA DE PARAMETROS, CARGA O DESCARGA DE VIVERES Y PERTRECHOS, FONDEOS DE NAVES EXTR"
+         ID 95191 · BAHÍA DE QUINTERO · texto=texto dice solo FUERA · motor area=DENTRO_Y_FUERA
+            "SE ESTABLECE CONDICION DE PUERTO MAREJADA, RESTRINGIENDO ATRAQUE A PVSA Y OXIQUIM POR FUERA DE PARAMETROS, CARGA O DESCARGA DE VIVERES Y PERTRECHOS, FONDEOS DE NAVES EXTR"
+         ID 95192 · BAHÍA DE QUINTERO · texto=texto dice solo FUERA · motor area=DENTRO_Y_FUERA
+            "SE ESTABLECE CONDICION DE PUERTO MAREJADA, RESTRINGIENDO ATRAQUE A PVSA Y OXIQUIM POR FUERA DE PARAMETROS, CARGA O DESCARGA DE VIVERES Y PERTRECHOS, FONDEOS DE NAVES EXTR"
+
+  3.7 — CONTRADICCIONES CAMPO vs TEXTO. Criterio declarado: el campo nombra
+        exactamente una de las dos y el texto nombra exactamente la OTRA.
+        0 / 254
+
+  3.8 — ESTRECHAMIENTO: el campo dice AMBOS y el texto nombra una sola.
+        4 / 254
+         ID 95062 · BORDE COSTERO-VALDIVIA · texto dice solo DENTRO
+            "SE ESTABLECE CONDICIÓN DE MAL TIEMPO. PUERTO CERRADO  PARA EE.MM. DE 100 AB.  ENTRE PUNTA NIEBLA HASTA PUNTA RONCA (MEHUÍN). ACTIVIDADES DE PESCA, BUCEO, REMOLQUES Y DEPO"
+         ID 95062 · BORDE COSTERO-VALDIVIA · texto dice solo DENTRO
+            "SE ESTABLECE CONDICIÓN DE MAL TIEMPO. PUERTO CERRADO  PARA EE.MM. DE 100 AB.  ENTRE PUNTA NIEBLA HASTA PUNTA RONCA (MEHUÍN). ACTIVIDADES DE PESCA, BUCEO, REMOLQUES Y DEPO"
+         ID 95062 · BORDE COSTERO-VALDIVIA · texto dice solo DENTRO
+            "SE ESTABLECE CONDICIÓN DE MAL TIEMPO. PUERTO CERRADO  PARA EE.MM. DE 100 AB.  ENTRE PUNTA NIEBLA HASTA PUNTA RONCA (MEHUÍN). ACTIVIDADES DE PESCA, BUCEO, REMOLQUES Y DEPO"
+         ID 95062 · BORDE COSTERO-VALDIVIA · texto dice solo DENTRO
+            "SE ESTABLECE CONDICIÓN DE MAL TIEMPO. PUERTO CERRADO  PARA EE.MM. DE 100 AB.  ENTRE PUNTA NIEBLA HASTA PUNTA RONCA (MEHUÍN). ACTIVIDADES DE PESCA, BUCEO, REMOLQUES Y DEPO"
+
+  3.9 — LUGARES NOMBRADOS EN EL TEXTO DISTINTOS DE "BAHIA". Se saca del dato:
+        token que sigue a DENTRO DE / FUERA DE / DENTRO Y FUERA DE.
+           46  BAHIA
+           33  BAHIA DE
+           13  BAHIA SE
+           12  BAHIA TRABAJOS
+            7  BAHIA CERRADO
+            6  BAHIA CONDICION
+            6  BAHIA PARA
+            6  BAHIA SECTOR
+            6  BARRA DEL
+            6  PARAMETROS CARGA
+            4  BAHIA ANCUD
+            4  BAHIA LAS
+            4  BAHIA NIEBLA
+            3  BARRA CONDICION
+            1  BAHIA AVISO
+            1  BAHIA DENTRO
+            1  BAHIA DESDE
+            1  BAHIA FAENAS
+            1  BAHIA HASTA
+            1  BAHIA POR
+            1  BAHIA SECTORES
+            1  BAHIA Y
+            1  BARAR DEL
+            1  BARRA CERRADO
+            1  BARRA DE
+            1  LIMITES DEL
+
+================================================================================
+(4) VOLCADO DE VOCABULARIO — INSUMO DEL INSTRUMENTO 02, NO ES MEDICION DEL EJE 3
+================================================================================
+
+  4.1 — FRECUENCIA DE PALABRAS EN LA BOLSA A (N3). Todas las de 3+ apariciones:
+        tokens totales 4765 · distintos 255
+
+        PUERTO:310                CONDICION:270             PARA:256                  
+        ESTABLECE:243             CERRADO:219               TIEMPO:198                
+        MENORES:169               BAHIA:163                 FUERA:149                 
+        DENTRO:134                VARIABLE:130              MAL:120                   
+        EMBARCACIONES:116         FAENAS:101                POR:85                    
+        NAVES:74                  AVISO:73                  BUCEO:50                  
+        TRABAJOS:48               SECTOR:45                 CANAL:42                  
+        CARTAS:42                 SUSPENDIDAS:42            CONTINUIDAD:38            
+        CENTROS:36                TOTALIDAD:36              JURISDICCION:35           
+        LAS:34                    ACEPTAN:29                CULTIVOS:29               
+        REMOLQUES:29              SUSPENDIDOS:29            TEMPORAL:29               
+        ARQUEO:28                 BRUTO:28                  NORMAL:28                 
+        PUNTA:26                  TIPO:26                   CORRAL:25                 
+        SUSPENDEN:25              TODO:24                   DEL:23                    
+        NAVEGACION:22             DESDE:21                  CON:20                    
+        VIGENTE:19                REMOLQUE:18               TRAFICO:18                
+        CALETA:17                 DECRETANDO:17             BARRA:16                  
+        CAPITANIA:16              AREA:15                   BOYERUCA:15               
+        OCEANICA:15               COSTERA:14                FAENA:14                  
+        MAREJADA:14               HASTA:13                  RECEPCIONAN:13            
+        RIO:13                    SUSPENDIDO:13             TRG:13                    
+        NIEBLA:12                 PICHILEMU:12              ALAO:10                   
+        CHAULINEC:10              CULTIVO:10                LOS:10                    
+        SAN:10                    VALIDO:10                 VICENTE:10                
+        ALCALDIA:9                BOCA:9                    DECRETANDOSE:9            
+        MAR:9                     CHONCHI:8                 CONTAR:8                  
+        DALCAHUE:8                DIA:8                     HRS:8                     
+        JULIO:8                   MORALEDA:8                RESTRICCIONES:8           
+        SIGUIENTES:8              SUR:8                     TODA:8                    
+        ADYACENTES:7              ATRAQUE:7                 CANALES:7                 
+        DEPORTIVAS:7              QUEDAN:7                  100AB:6                   
+        CARGA:6                   CHAIHUIN:6                CISNES:6                  
+        CORCOVADO:6               DEPORTES:6                DESCARGA:6                
+        EEMM:6                    EXTRANJERAS:6             FONDEOS:6                 
+        GOLFO:6                   JACAF:6                   LOCAL:6                   
+        MEHUIN:6                  MENOR:6                   MUELLE:6                  
+        NAUTICOS:6                OXIQUIM:6                 PARAMETROS:6              
+        PERTRECHOS:6              PESCA:6                   PRECAUCION:6              
+        PUYUHUAPI:6               PVSA:6                    RAMPA:6                   
+        RESTRINGIENDO:6           SECTORES:6                SEGUN:6                   
+        VIENTO:6                  VIVERES:6                 ACTIVIDADES:5             
+        ACUICOLAS:5               ANCUD:5                   APIAO:5                   
+        AUMENTO:5                 BUENO:5                   CANCELAN:5                
+        CASTRO:5                  ESTERO:5                  HUDSON:5                  
+        INCLUYE:5                 INTENCIDAD:5              ISLAS:5                   
+        JURISDICCIONAL:5          LAGO:5                    LLANCACURA:5              
+        MEDIDAS:5                 MOLINO:5                  NAVE:5                    
+        ORO:5                     QUEDA:5                   RANCO:5                   
+        RESOLUCION:5              RESTRICCION:5             RONCA:5                   
+        SEGURIDAD:5               SUSPENDE:5                TRABAJO:5                 
+        TRUMAO:5                  WICKHAM:5                 WILLIAMS:5                
+        ZARPES:5                  AGO:4                     ALGARROBO:4               
+        AMARRAS:4                 ARMADORES:4               BUCALEMU:4                
+        CALBUCO:4                 CALETAS:4                 CENTRO:4                  
+        CONECTIVIDAD:4            DEBERAN:4                 ENTRE:4                   
+        ESTABLCE:4                FONDEADAS:4               FUERTES:4                 
+        HUASCO:4                  MANSA:4                   MANTENER:4                
+        MATANZAS:4                PATRONES:4                PROCEDER:4                
+        QUINCHAO:4                QUISCO:4                  RAPEL:4                   
+        REFORZAR:4                RESPECTIVOS:4             SUPERFICIE:4              
+        SUSPENSION:4              VIENTOS:4                 NORTE:3                   
+        QUE:3                     
+
+  4.2 — CLAUSULAS QUE SIGUEN A UN MARCADOR DE SUSPENSION/PROHIBICION.
+        Marcadores buscados (si uno no aparece, se declara como FALLA):
+        SUSPEND             114 / 254
+        PROHIB                1 / 254
+        RESTRING              7 / 254
+        PARALIZ               0 / 254   *** NO ENCONTRADO — FALLA, no "no aplica"
+        NO SE AUTORIZA        0 / 254   *** NO ENCONTRADO — FALLA, no "no aplica"
+        NO SE PERMITE         0 / 254   *** NO ENCONTRADO — FALLA, no "no aplica"
+        CERRAD              202 / 254
+        CANCEL                5 / 254
+        IMPEDID               0 / 254   *** NO ENCONTRADO — FALLA, no "no aplica"
+
+        FRAGMENTOS DISTINTOS que siguen a SUSPEND|PROHIB (90 chars, N3), con conteo:
+          38  SUSPENDIDAS
+          10  SUSPENDIDOS SE ACEPTAN CARTAS DE CONTINUIDAD
+           9  SUSPENDEN TRABAJOS EN CENTROS DE CULTIVOS FAENAS DE REMOLQUE Y DE BUCEO SE RECEPCIONAN CAR
+           6  SUSPENDIDO PARA EMBARCACIONES MENORES DENTRO Y FUERA DE LA BAHIA DE SAN VICENTE AVISO DE M
+           5  SUSPENDIDOS 3 NO SE ACEPTAN CARTAS DE CONTINUIDAD
+           4  SUSPENDE EL TRAFICO DE EE MM A 25 A B DENTRO Y FUERA DE LA BAHIA LAS EMBARCACIONES FONDEAD
+           4  SUSPENDEN FAENAS DE REMOLQUE BUCEO Y TRABAJOS EN CENTRO DE CULTIVO NO SE RECEPCIONAN CARTA
+           4  SUSPENDIDAS DENTRO DE LA BAHIA NIEBLA CERRADO PARA EMBARCACIONES MENORES DE 25 AB
+           4  SUSPENDIDOS
+           4  SUSPENDIDOS LOS ZARPES PARA TODA NAVE MENOR A 12 TRG Y SE CANCELAN TODO TIPO DE FAENA LAGO
+           4  SUSPENDIDOS NO SE ACEPTAN CARTAS DE CONTINUIDAD
+           3  SUSPENDEN FAENAS DE BUCEO FAENAS
+           3  SUSPENDEN FAENAS DE BUCEO FAENAS EN CENTROS DE CULTIVOS
+           3  SUSPENDEN FAENAS DE REMOLQUE Y ACUICOLAS NO SE ACEPTAN CARTAS CONTINUIDAD DE FAENA
+           3  SUSPENDIDO PARA EMBARCACIONES MENORES DENTRO Y FUERA DE LA BAHIA
+           2  SUSPENDEN FAENAS DE REMOLQUE Y ACUICOLAS SE ACEPTAN CARTAS CONTINUIDAD FAENA
+           2  SUSPENDIDO PARA NAVES Y EMBARCACIONES DENTRO Y FUERA DE LA BAHIA DE SAN VICENTE
+           2  SUSPENDIDO PARA PARA TODO TIPO DE NAVES DENTRO Y FUERA DE LA BAHIA DE SAN VICENTE AVISO DE
+           1  PROHIBICION DE ZARPE DE NAVES MENORES
+           1  SUSPENDE EL TRAFICO DE EE MM MENORES DE 25 AB FUERA DE LA BAHIA FAENAS DE BUCEO TRABAJOS E
+           1  SUSPENDEN TODO TIPO DE FAENAS EN SECTORES CON RESTRI
+           1  SUSPENDIDOS LOS ZARPES PARA TODA NAVE MENOR A 12 TRG Y SE CANCELAN TODO TIPO DE FAENAS
+           1  SUSPENDIDOS NO SE ACEPTAN CARTAS DE CONTINUIDAD 2 DENTRO DE LA BAHIA CONDICION DE PUERTO N
+
+================================================================================
+CONTROLES: particion reproducida (254/190/solape 0) · AB_PATTERNS extraidos = 11
+comparaciones efectivas: 444 registros normalizados por el motor, 254 en bolsa A
+exit 0
+================================================================================

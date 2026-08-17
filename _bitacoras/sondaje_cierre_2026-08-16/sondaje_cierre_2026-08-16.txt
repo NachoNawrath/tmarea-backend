@@ -1,0 +1,564 @@
+================================================================================
+SONDAJE-CIERRE-RECONOCIMIENTO — QUE MANDA SITPORT EN LOS CAMPOS DE CIERRE
+Sesion de reconocimiento, 2026-08-16. NO decide, NO implementa, NO propone regla.
+================================================================================
+
+LINEA BASE DE ARRANQUE, verificada antes de la primera lectura:
+  tmarea-backend  HEAD b672e0e71226675ddb6fa5caaa6d7dad2ba14a33 = origin/main
+                  30 untracked · sin estagear solo data/catalogo/estado_drift.json
+                  (no tocado)
+  La PWA no se abrio, ni de lectura. No se salio a la API de SITPORT.
+
+ZONA DE ESCRITURA RESPETADA: solo este directorio. Ningun archivo de src/, data/,
+CLAUDE.md, CONTRATO_MOTOR.md ni de la PWA fue modificado. scripts/ no se uso.
+
+INSTRUMENTOS, los tres en este directorio, los tres corridos (exit 0):
+  01_medir_cierre_sitport.js / .txt   inventario, estructura, valores, movimiento,
+                                      combinaciones, `nivel`, centinelas, varas
+  02_medir_no_cero.js        / .txt   los 13 registros no-cero citados enteros
+  03_contraste_texto.js      / .txt   el caso que rompe la lectura facil, y que
+                                      consume/ignora el parser
+
+  Los .txt estan en UTF-8 sin BOM (los escribe Node). Para leerlos desde
+  PowerShell 5.1 hace falta `Get-Content -Encoding UTF8`; sin eso los acentos
+  salen rotos y es artefacto del lector, no del archivo.
+
+--------------------------------------------------------------------------------
+PRIMER PASO PEDIDO: `_sondeo_cadencia/` — QUE ERA
+--------------------------------------------------------------------------------
+No es de este sondaje. Es el reconocimiento de CADENCIA DE PUBLICACION de dos
+fuentes oceanograficas del sur: CHONOS de IFOP (`monitor_chonos.ps1`, dataset
+`croco_chiloe_1km_*`, 24 corridas cada 2h del 08-08 al 11-08, `cadencia_chonos.csv`)
+y SAPO/WCS (temperatura superficial y clorofila, `cadencia_sapo.csv`,
+`cadencia_edad_sapo.csv`). No trae ninguna conclusion sobre SITPORT, ni sobre
+restricciones, ni sobre estado de puerto. Leido y anotado; no aporta a esta pieza.
+
+
+================================================================================
+>>> EL HALLAZGO QUE VA PRIMERO — LA PREMISA DEL PROMPT ES FALSA EN DOS PUNTOS
+================================================================================
+
+La medicion del 08-16 (`_bitacoras/rotulo_p2_2026-08-16/03_medir_cierre_total.txt`)
+dice, y con razon para SU dia y SU denominador:
+
+    paralizar : {"0":9}   nzarpe : {"0":9}   nrecalada : {"0":9}
+
+Contra las seis capturas —444 registros, 30-07 al 03-08— eso NO se sostiene como
+descripcion del campo. Dos cosas, las dos medidas:
+
+  (1) LOS TRES NO ESTAN SIEMPRE EN 0. Trece registros de 444 traen algo distinto.
+
+  (2) NO SON BANDERAS BINARIAS. Los valores observados no son {0,1}:
+
+        paralizar   ∈ { 0 (433/444),  11 (9/444),  1 (2/444) }
+        nzarpe      ∈ { 0 (444/444) }                        <- constante
+        nrecalada   ∈ { 0 (433/444),  2 (9/444),   8 (2/444) }
+
+      Los tres son `number` en 444/444. No hay strings "0", ni null, ni "", ni
+      campo ausente: la particion 0 / "0" / null / "" / AUSENTE se conto por
+      separado y el unico habitado es `number`. Ningun centinela: -999, 999 y -1
+      no aparecen en ningun campo de ningun registro (444 x 20).
+
+Y el tercero, que es el que cambia la pregunta entera:
+
+  (3) LA SEÑAL DE CIERRE NO VIVE EN LOS TRES CAMPOS. Vive en el texto.
+
+        registros cuyo `Observacion` declara PUERTO CERRADO o CONDICION DE
+        PUERTO                                            : 254 / 444
+          · de esos, con algun campo de cierre != 0       :   4
+          · de esos, CON LOS TRES EN 0                    : 250
+
+      Doscientos cincuenta registros dicen en castellano que el puerto esta
+      cerrado y traen `paralizar=0 nzarpe=0 nrecalada=0`. Y al reves: de los 13
+      no-cero, 9 tienen un texto que NO menciona cierre (son medidas preventivas
+      ante aviso de mal tiempo en Quintero).
+
+      >>> Esto es §1.2 aplicado a mi propia lectura: la conclusion facil de (1) y
+      >>> (2) era "encontramos la señal de cierre". Medido el caso que la rompe,
+      >>> la señal de cierre esta en `Observacion` —que el parser YA LEE— y los
+      >>> tres campos son otra cosa que todavia no sabemos que es.
+
+
+================================================================================
+1. INVENTARIO DEL MATERIAL — CON SU SHA256 Y SU DENOMINADOR
+================================================================================
+Directorio: `sondaje-sitport/`. Siete .json; se excluye `bahias_sitport.json`
+(es `consultaBahias`, otra consulta) y queda declarado excluido, no omitido.
+Las seis restantes son capturas de `consultaRestricciones`, todas con la misma
+forma: `{recordsets:[[...]], recordset, output, rowsAffected}`.
+
+Orden cronologico por mtime de disco:
+
+ archivo                                bytes   registros  sha256 (16 primeros)
+ restricciones_2026-07-30_19-42.json   103.736     73      5a3bf064eeef7d63
+ restricciones_2026-07-31_16-32.json   117.014     83      8e5270eaabbd2800
+ restricciones_2026-07-31_20-32.json   116.892     83      e9d4d084202d7935
+ restricciones_2026-07-31_21-01.json   116.892     83      e9d4d084202d7935
+ restricciones_2026-08-01_13-14.json   118.762     83      9ed8c7c15c52a05f
+ check_ahora.json                       53.952     39      c306aea459dc5124
+
+ DENOMINADOR GLOBAL:  73+83+83+83+83+39 = 444 registros
+
+Los sha256 completos estan en `01_medir_cierre_sitport.txt`, seccion (0).
+Los tamaños y las fechas del prompt se verificaron contra el disco: coinciden los
+seis. `rowsAffected` de cada archivo coincide con el largo de `recordsets[0]` en
+los seis (73/83/83/83/83/39) — control interno de que no se trunco ninguna.
+
+IDENTICAS ENTRE SI POR SHA256:
+  restricciones_2026-07-31_20-32.json == restricciones_2026-07-31_21-01.json
+  (e9d4d084202d7935192ae130cc9e51ffb67e2ca51e9328216a817b5ffb572a8b)
+  El mismo tamaño con media hora de diferencia NO era coincidencia: es el mismo
+  contenido byte a byte. Grupos distintos de contenido: 5 sobre 6 capturas.
+  CONSECUENCIA PARA LA MEDICION: ese par aporta 83 comparaciones que por
+  construccion no pueden mostrar cambio. Se cuentan igual y se declara.
+
+LA FECHA DE CAPTURA NO VIVE ADENTRO DEL ARCHIVO. Las unicas claves con forma de
+fecha en un registro son `FCinicio` y `FCTermino`, y fechan LA RESTRICCION, no la
+consulta. La hora en que se le pregunto a SITPORT existe solo en el NOMBRE del
+archivo y en el mtime del disco. `check_ahora.json` ni siquiera la lleva en el
+nombre: su unica fecha es el mtime (2026-08-03 17:18:24 local). Son datos NO
+autofechados: copiar, restaurar o renombrar cualquiera de los seis lo hace
+envejecer en silencio y nada adentro lo delata.
+
+
+================================================================================
+2. LA ESTRUCTURA DE UN REGISTRO — LOS 20 CAMPOS, Y UNO CITADO ENTERO
+================================================================================
+Union de claves sobre los 444 registros: 20 campos. UNA sola forma de registro:
+444/444 traen los 20, ninguno trae uno de mas ni de menos. Presencia 444/444 en
+los veinte, ausencias 0.
+
+  AreaRestriccion · Detalle · FCTermino · FCinicio · FrenteAtraque · GLBahia ·
+  IDRestriccion · MotivoRestriccion · NaveRecibe · NombreInstalacion ·
+  Observacion · SitioAtraque · bahia · glnombre · idipbahia · nrecalada ·
+  nzarpe · paralizar · tipo · tiporestriccion
+
+CONTROL CRUZADO (H2): esos 20 son exactamente los 20 que la bitacora del 08-16
+declaro sobre 9 registros vivos. Ni uno de mas ni de menos, entre el 30-07 y el
+08-16. El esquema no se movio en diecisiete dias.
+
+UN REGISTRO CITADO ENTERO — `restricciones_2026-07-30_19-42.json`, `recordsets[0][0]`:
+
+    {
+      "bahia": 71,
+      "FCinicio": "29 Jul 2026 11:32:00:000",
+      "FCTermino": null,
+      "tipo": "INSTALACION ",
+      "NombreInstalacion": "TM COMAP - ",
+      "FrenteAtraque": null,
+      "SitioAtraque": "TODAS",
+      "Detalle": "OLA - MAREJADA DE 1.4 MT. , OLA - MAREJADA DE 12 SEG. ",
+      "Observacion": "SEGÚN LIMITES OPERACIONALES",
+      "paralizar": 0,
+      "nzarpe": 0,
+      "nrecalada": 0,
+      "tiporestriccion": "LIMITES OPERACIONALES",
+      "MotivoRestriccion": "OLA - MAREJADA",
+      "AreaRestriccion": null,
+      "NaveRecibe": "NAVE MAYOR (&GT;=100 AB)",
+      "IDRestriccion": 94972,
+      "GLBahia": "BAHÍA DE ARICA",
+      "idipbahia": null,
+      "glnombre": null
+    }
+
+Lo que se ve y no buscabamos: `tipo` y `NombreInstalacion` traen espacio final
+("INSTALACION ", "TM COMAP - "); `NaveRecibe` viene con HTML entities sin
+decodificar ("&GT;=100 AB", "&LT;100 AB"); `FCinicio` no es ISO sino
+"29 Jul 2026 11:32:00:000", con mes en INGLES abreviado y milisegundos separados
+por dos puntos; `AreaRestriccion`, `idipbahia`, `glnombre`, `FrenteAtraque` y
+`FCTermino` pueden ser null.
+
+
+================================================================================
+3. LOS TRES CAMPOS DE CIERRE — VALORES Y FRECUENCIAS, SOBRE 444
+================================================================================
+                                                   suma
+  paralizar    0 : 433 · 11 : 9 · 1 : 2            444  CIERRA
+  nzarpe       0 : 444                             444  CIERRA
+  nrecalada    0 : 433 ·  2 : 9 · 8 : 2            444  CIERRA
+
+POR CAPTURA (cada una con su denominador propio):
+
+  restricciones_2026-07-30_19-42.json  n=73
+      paralizar {0:64, 11:9} · nzarpe {0:73} · nrecalada {0:64, 2:9}
+  restricciones_2026-07-31_16-32.json  n=83
+      paralizar {0:83} · nzarpe {0:83} · nrecalada {0:83}
+  restricciones_2026-07-31_20-32.json  n=83
+      paralizar {0:83} · nzarpe {0:83} · nrecalada {0:82, 8:1}
+  restricciones_2026-07-31_21-01.json  n=83
+      paralizar {0:83} · nzarpe {0:83} · nrecalada {0:82, 8:1}   (== la anterior)
+  restricciones_2026-08-01_13-14.json  n=83
+      paralizar {0:82, 1:1} · nzarpe {0:83} · nrecalada {0:83}
+  check_ahora.json                     n=39
+      paralizar {0:38, 1:1} · nzarpe {0:39} · nrecalada {0:39}
+
+TIPO DEL VALOR, contado sin colapsar: los 444 son `number`. Cero casos de
+string "0", cero null, cero "", cero campo ausente. En estos tres campos la
+distincion "vale cero" / "no viene" no se presenta: SIEMPRE viene, y vale cero
+casi siempre. Un consumidor que hiciera `if (r.paralizar)` no se encontraria con
+un undefined — se encontraria con 11 y con 2, que son verdaderos.
+
+BARRIDO INDEPENDIENTE — ¿HAY OTRO CAMPO DE CIERRE?
+Se midio la cardinalidad de TODOS los 20 campos para encontrar banderas por el
+dato y no por el nombre. Los de cardinalidad baja:
+
+  SitioAtraque      1 valor    "TODAS" en 444/444           <- constante
+  nzarpe            1 valor    0 en 444/444                 <- constante
+  FCTermino         2 valores  null 443 · una fecha 1
+  tiporestriccion   2 valores  LIMITES OPERACIONALES 426 ·
+                               PARALIZACIÓN DE FAENAS DE TRANSFERENCIA 18
+  NaveRecibe        3 valores  menor 367 · mayor 48 · ambas 29
+  nrecalada         3 valores
+  paralizar         3 valores
+  tipo              3 valores  TODOS 366 · FRENTE ATRAQUE 64 · INSTALACION 14
+  AreaRestriccion   7 valores
+
+  >>> `tiporestriccion` es el UNICO otro campo con forma de bandera de cierre, y
+      es TEXTO: nombra "PARALIZACIÓN DE FAENAS DE TRANSFERENCIA" en 18 de 444.
+      NO coincide con `paralizar != 0`, que son 11. Los dos conjuntos son
+      DISJUNTOS: los 18 que la fuente rotula como paralizacion traen
+      `paralizar=0`, y los 11 con `paralizar != 0` estan rotulados "LIMITES
+      OPERACIONALES". El campo que se llama `paralizar` no marca lo que la fuente
+      llama paralizacion.
+
+
+================================================================================
+4. COMO SE MUEVEN — LO QUE UNA FOTO SOLA NO DA
+================================================================================
+IDENTIDAD, declarada y comprobada ANTES de usarla: `IDRestriccion` es unica
+dentro de cada captura en las seis (73/73, 83/83, 83/83, 83/83, 83/83, 39/39) y
+sin nulos. Sobre eso se emparejan las capturas consecutivas. Se reporta al lado
+la identidad de `comparar.ps1` (por `GLBahia`), que es el criterio versionado.
+
+  30-07 19:42 -> 31-07 16:32 : 73->83 · comunes 32 · nuevos 51 · se van 41
+  31-07 16:32 -> 31-07 20:32 : 83->83 · comunes 72 · nuevos 11 · se van 11
+  31-07 20:32 -> 31-07 21:01 : 83->83 · comunes 83 · nuevos  0 · se van  0
+  31-07 21:01 -> 01-08 13:14 : 83->83 · comunes 33 · nuevos 50 · se van 50
+  01-08 13:14 -> 03-08 17:18 : 83->39 · comunes 11 · nuevos 28 · se van 72
+
+  COMPARACIONES EFECTIVAS (pares con la misma identidad): 231.  No es cero.
+
+CAMPOS QUE CAMBIARON, sobre esas 231 comparaciones:
+
+      2 / 231   FCinicio
+      2 / 231   Observacion
+      1 / 231   FCTermino
+      TODO LO DEMAS: 0. Incluidos los tres de cierre.
+
+  >>> LOS TRES CAMPOS DE CIERRE NO CAMBIARON NUNCA. Ni uno, en 231 comparaciones,
+      en tres dias. `nzarpe` ademas es 0 en 444/444: constante en el universo
+      entero. UN CAMPO CONSTANTE NO PUEDE SER LA SEÑAL — no distingue ningun caso
+      del resto.
+
+Y LO QUE SI SE MUEVE, entero, porque son dos y caben (es el dato central de §4):
+
+  ID 95040 · 30-07 19:42 -> 31-07 16:32 · `Observacion`
+     DE : "SE ESTABLECE CONDICION DE TIEMPO VARIABLE, PUERTO CERRADO PARA
+           EMBARCACIONES MENORES DE 25 AB FUERA DEL ESTERO CASTRO. …"
+     A  : "SE ESTABLECE CONDICION DE MAL TIEMPO, PUERTO CERRADO PARA
+           EMBARCACIONES MENORES DE 25 AB DENTRO Y FUERA DEL ESTERO CASTRO. …"
+     (y su `FCinicio`: "30 Jul 2026 14:47:00:000" -> "31 Jul 2026 19:18:35:733")
+
+  ID 95071 · 30-07 19:42 -> 31-07 16:32 · `Observacion`
+     DE : "SE ESTABLECE CONDICION DE MAL TIEMPO 1.- NAVEGACION DENTRO DE BAHIA
+           NORMAL. 2.- NAVEGACION FUERA DE BAHIA SECTOR NORTE CERRADO -50 AB. …"
+     A  : "SE ESTABLECE CONDICION DE MAL TIEMPO 1.- NAVEGACION DENTRO DE LA
+           BAHIA CERRADO PARA EMBARCACION -25 AB. 2.- NAVEGACION FUERA DE BAHIA
+           SECTOR N… "
+     (`FCinicio` movido y `FCTermino` de null a "31 Jul 2026 22:14:00:000")
+
+  >>> EN LOS DOS CASOS EL CIERRE SE AGRANDA —de "fuera del estero" a "dentro y
+      fuera", de "dentro normal" a "dentro cerrado para -25 AB"— Y LOS TRES
+      CAMPOS SE QUEDAN EN 0. La unica evolucion de una condicion de puerto que
+      estas seis capturas contienen ocurrio integramente dentro de `Observacion`.
+
+CONTRASTE con la identidad por `GLBahia` (criterio de comparar.ps1): bahias
+distintas 58 -> 76 -> 76 -> 76 -> 73 -> 32. Cero `GLBahia` con doble espacio en
+los 444 (INV-0.3 comprobado, no supuesto).
+
+
+================================================================================
+5. LAS COMBINACIONES QUE EXISTEN, Y LOS HUECOS
+================================================================================
+Tupla (paralizar | nzarpe | nrecalada), denominador 444. OBSERVADAS: 4.
+
+      431 / 444   ( 0 | 0 | 0 )
+        9 / 444   ( 11 | 0 | 2 )
+        2 / 444   ( 0 | 0 | 8 )
+        2 / 444   ( 1 | 0 | 0 )
+      suma 444 — CIERRA
+
+De las 8 combinaciones binarias teoricas, aparecen DOS —(0,0,0) y (1,0,0)— y
+faltan SEIS. Las otras dos combinaciones reales (11,0,2) y (0,0,8) no estan entre
+las ocho teoricas porque los valores no son binarios:
+
+      paralizar=0 nzarpe=0 nrecalada=0  ->  431 registros
+      paralizar=0 nzarpe=0 nrecalada=1  ->  NUNCA APARECE
+      paralizar=0 nzarpe=1 nrecalada=0  ->  NUNCA APARECE
+      paralizar=0 nzarpe=1 nrecalada=1  ->  NUNCA APARECE
+      paralizar=1 nzarpe=0 nrecalada=0  ->  2 registros
+      paralizar=1 nzarpe=0 nrecalada=1  ->  NUNCA APARECE
+      paralizar=1 nzarpe=1 nrecalada=0  ->  NUNCA APARECE
+      paralizar=1 nzarpe=1 nrecalada=1  ->  NUNCA APARECE
+
+  >>> EL HUECO MAS GRANDE: `nzarpe` no aparece encendido en NINGUNA combinacion,
+      ni sola ni acompañada, en 444 registros. Incluido el registro cuyo texto
+      dice PUERTO CERRADO PARA TODA LA JURISDICCION (ver §6). Sobre este material,
+      `nzarpe` no distingue nada.
+
+  >>> Y `nrecalada` NUNCA aparece sin compañia con valor 2 (siempre con
+      paralizar=11), y NUNCA aparece con valor 1.
+
+
+================================================================================
+6. LOS TRECE REGISTROS NO-CERO — QUE SON, EN CASTELLANO
+================================================================================
+Citados enteros en `02_medir_no_cero.txt` (A). Resumen, con su ID:
+
+GRUPO A — nueve registros, ( 11 | 0 | 2 ), captura del 30-07 19:42.
+    ID 95030..95038 · los nueve en `bahia` 91 · BAHÍA DE QUINTERO · el MISMO
+    `FCinicio` "30 Jul 2026 14:00:00:000" · tiporestriccion LIMITES OPERACIONALES
+    · MotivoRestriccion MAL TIEMPO · NaveRecibe NAVE MAYOR.
+    Observacion, identica en los nueve:
+      "MEDIDAS PREVENTIVAS ANTE AVISO DE MAL TIEMPO DESDE HUASCO HASTA PICHILEMU
+       A CONTAR DE 310600 HASTA 311700"
+    Los nueve son la MISMA medida desagregada por instalacion y frente de atraque
+    (Oxiquim Norte, Oxiquim Sur, Sitios 2/3/5 de Ventanas, TM El Bato, TM LPG,
+    TM Monoboya, TM Multicrudo). Y son las 9 unicas filas de esa bahia en esa
+    captura.
+    >>> SU TEXTO NO DICE CIERRE. Dice medidas preventivas ante un aviso.
+
+GRUPO B — dos registros, ( 0 | 0 | 8 ), 31-07 20:32 y 21:01 (las dos identicas).
+    ID 95152 · bahia 91 · BAHÍA DE QUINTERO · tipo TODOS · NaveRecibe NAVE MAYOR.
+      "SE ESTABLECE CONDICIÓN DE PUERTO N° 226 \"MAREJADA\"."
+    Es UN solo registro visto en dos capturas identicas. No estaba en la de las
+    16:32 y ya no esta en la del 01-08.
+
+GRUPO C — dos registros, ( 1 | 0 | 0 ), en dos capturas distintas y dos bahias
+    distintas. Son los DOS UNICOS del material cuyo texto declara una condicion
+    de puerto Y traen bandera:
+
+      ID 95171 · 01-08 13:14 · bahia 90 · ISLA ROBINSON CRUSOE
+        "SE ESTABLECE CONDICIONDE PUERTO CERRADO PARA TODA LA JURISDICCION DE
+         JUAN FERNANDEZ."
+        NaveRecibe: NAVE MAYOR **Y** NAVE MENOR · AreaRestriccion: DENTRO Y FUERA
+        DEL LÍMITE DEL PUERTO · MotivoRestriccion: MAL TIEMPO, VIENTO.
+        >>> ESTE ES EL REGISTRO MAS CERCANO A UN CIERRE TOTAL QUE HAY EN TODO EL
+        >>> MATERIAL: puerto cerrado, toda la jurisdiccion, mayores y menores,
+        >>> dentro y fuera. Y trae `nzarpe = 0`.
+
+      ID 95351 · 03-08 17:18 · bahia 91 · BAHÍA DE QUINTERO
+        "SE ESTABLECE CONDICION DE PUERTO N° 234 CERRAZÓN DE NIEBLA , SE
+         RESTRINGUE AMARRE DE NAVES MAYORES A TT.MM. Y TRANSITO DE NAVES MENORES
+         QUE NO POSEEN  RADARES."
+        (dos espacios en "POSEEN  RADARES" — la fuente los trae; INV-0.3)
+
+EL VALOR NO CAMBIA: EL REGISTRO ENTRA Y SALE. Perseguidos los 12 IDRestriccion
+no-cero por las seis capturas, ninguno aparece en dos capturas con valores
+distintos. Los nueve del grupo A existen solo en la del 30-07; el 95152 solo en
+las dos identicas del 31-07; el 95171 solo en la del 01-08; el 95351 solo en
+check_ahora. Es decir: en este material el estado de esos campos nunca se
+actualiza sobre un registro vivo — el registro se reemplaza.
+
+
+================================================================================
+7. EL CAMPO `nivel` — NO EXISTE, Y NUNCA EXISTIO EN ESTE MATERIAL
+================================================================================
+  (D1) clave `nivel`, insensible a mayusculas, sobre 444 registros : 0
+       formas de la clave encontradas                              : ninguna
+  (D2) literal `"nivel"` en el texto crudo de cada archivo         : 0, en los 6
+       la cadena `nivel` en cualquier lugar, incluido texto libre   : 0, en los 6
+  (D3) literal `cierre_total` en el texto crudo                    : 0, en los 6
+
+Tres dias de material dicen lo mismo que los 9 registros del 08-16, y ademas
+dicen mas: `nivel` no aparece ni siquiera como palabra suelta dentro de una
+Observacion. No es un campo que a veces venga. En este material NO EXISTE.
+
+DE DONDE SALIO LA IDEA DE QUE EXISTIA — lo que se puede afirmar y lo que no:
+  · SE PUEDE AFIRMAR que el unico lugar de los dos repositorios donde `nivel`
+    aparece con el valor `cierre_total` es el consumidor que lo busca
+    (`tmarea-pwa/src/hooks/useVoyageVerification.js:236` y su copia en el bundle
+    `dist/`), medido el 08-16 en `03_medir_cierre_total.txt`.
+  · SE PUEDE AFIRMAR que en el backend el literal no existe: `cierre_total`,
+    `nrecalada`, `nzarpe` y `paralizar` dan 0 ocurrencias en src/, scripts/ y
+    CONTRATO_MOTOR.md.
+  · NO SE PUEDE AFIRMAR de donde salio la idea. Esta sesion no abrio la PWA (el
+    prompt lo prohibe, ni de lectura) y no hay en el backend rastro de un
+    productor, ni actual ni historico. La pregunta "de donde salio" queda ABIERTA
+    y su respuesta esta en la historia del repo de la PWA, no aca.
+
+
+================================================================================
+8. QUE LEE HOY EL PARSER, Y DE DONDE SALE `recalada.estado`
+================================================================================
+LEIDO, NO TOCADO. `src/services/sitport-parser.js` no se modifico.
+
+DE LOS 20 CAMPOS, EL PARSER LEE 7 E IGNORA 13. La particion se comprobo contra
+el archivo —cada campo de la lista "lee" tiene su `registro.<campo>` en el
+codigo, y ningun campo de la lista "ignora" aparece— y el instrumento aborta con
+exit 3 si el control falla; corrio en verde.
+
+  LEE (7)     Observacion · MotivoRestriccion · NaveRecibe · bahia · GLBahia ·
+              FCinicio · AreaRestriccion
+  IGNORA (13) Detalle · FCTermino · FrenteAtraque · IDRestriccion ·
+              NombreInstalacion · SitioAtraque · glnombre · idipbahia ·
+              **nrecalada · nzarpe · paralizar** · tipo · tiporestriccion
+
+  campo por campo, lo que hace con lo que lee:
+    Observacion        -> normaliza (NFD, mayusculas, arregla UTF-8 doble-
+                          codificado) y de ahi saca `condicion` (TEMPORAL /
+                          MAL_TIEMPO / VARIABLE / OTRO), `afecta_menores`,
+                          `afecta_mayores` y los umbrales de AB/TRG por regex
+    MotivoRestriccion  -> normaliza; entra al mismo diccionario de condicion
+    NaveRecibe         -> normaliza; MENOR / MAYOR / TODO
+    AreaRestriccion    -> DENTRO / FUERA / DENTRO_Y_FUERA (por defecto
+                          DENTRO_Y_FUERA cuando no dice ninguna)
+    bahia              -> `bahia_id` tal cual
+    GLBahia            -> `bahia_nombre` normalizado
+    FCinicio           -> `timestamp`, con `new Date().toISOString()` de fallback
+
+  El objeto que devuelve tiene 10 campos y NINGUNO se llama `nivel`.
+
+  >>> LOS TRES CAMPOS DE CIERRE NO SOLO NO SE USAN: NO SOBREVIVEN AL PARSER. Lo
+      que sale de `normalizarRestriccion` ya no los tiene.
+
+PERO EL CAMINO DEL ESTADO DE PUERTO NO PASA POR EL PARSER.
+`POST /api/sitport/restricciones` (`src/routes/sitport-routes.js:320-360`) filtra
+por nombre de puerto y devuelve `restricciones: filtradas` — que son los
+REGISTROS CRUDOS de SITPORT. `sitport-service.js` solo desenvuelve
+`recordsets[0]` y cachea 10 minutos; no reescribe ningun campo.
+
+  >>> `paralizar`, `nzarpe` y `nrecalada` LLEGAN ENTEROS A LA PWA por ese
+      endpoint. El backend no los descarta. Lo que no hay del otro lado es quien
+      los lea. Y el consumidor lee un campo —`nivel`— que ese endpoint nunca puso
+      ahi porque SITPORT nunca lo mando.
+
+DE DONDE SALE `recalada.estado`: NO SE PUEDE MEDIR DESDE ACA, y se declara como
+tal en vez de suponerlo. En el backend no existe: `grep` de `estado` en
+sitport-routes.js da `cobertura.estado` ('evaluada'/'no_evaluada'), el `estado`
+de una evaluacion de restriccion ('indeterminado', 'no_afecta') y el 'evaluado'
+del veredicto — ninguno es `recalada.estado`, y el endpoint del §anterior no
+devuelve ningun campo `estado`. Lo unico documentado es lo que la bitacora del
+08-16 midio y cito, en la PWA, que esta sesion no abrio:
+
+    `useVoyageVerification.js:236`
+      if (restricciones.some((r) => r.nivel === 'cierre_total')) estado = 'rojo';
+
+    y la cadena: `r.nivel === 'cierre_total'` -> `recalada.estado === 'rojo'` ->
+    `recaladaRaw === 'UV'` (:155) -> `arribadaForzosa = true` (:160-162) -> se
+    renderiza el aviso.
+
+  CORRECCION AL PROMPT DE ESTA SESION, dos lineas: el prompt dice que
+  `arribadaForzosa` "exige `recalada.estado === 'cierre_total'`". No es asi segun
+  la medicion del 08-16: `cierre_total` es un valor de `nivel` DE CADA
+  RESTRICCION, y lo que `recalada.estado` toma es `'rojo'`. No cambia el
+  problema; cambia donde hay que mirar. Que valores puede tomar `recalada.estado`
+  en total es pregunta de la PWA y esta sesion no la puede contestar sin abrirla.
+
+
+================================================================================
+9. OBSERVACIONES DEL DATO — SIN RECOMENDACION DE REGLA
+================================================================================
+Son observaciones de comportamiento. NO son candidatas propuestas, NO hay
+recomendacion, y la lectura normativa de "recalada cerrada" es del owner.
+
+O1. `nzarpe` es constante 0 en 444/444 y en 231 comparaciones. Se comporta como
+    un campo que en este material no se puebla. Incluye el caso extremo: el
+    registro que declara PUERTO CERRADO PARA TODA LA JURISDICCION trae nzarpe=0.
+
+O2. `paralizar` y `nrecalada` se mueven JUNTOS y solo en dos formas: (11,2) en
+    los nueve de Quintero, y por separado (1,0) y (0,8). Nunca (1,1), nunca
+    (0,1). Su rango observado —1, 2, 8, 11— no tiene forma de booleano; tiene
+    forma de codigo o de conteo. Se probo si coincidian con algun conteo del
+    propio material: los nueve con paralizar=11 son 9 filas de su bahia, no 11;
+    el de nrecalada=8 es la unica fila de su bahia. Ninguna coincidencia. Lo que
+    codifican NO se puede determinar con este material — haria falta la
+    documentacion de la fuente o mas capturas con mas variedad.
+
+O3. `paralizar` no marca lo que la fuente llama paralizacion. Los 18 registros
+    con `tiporestriccion = "PARALIZACIÓN DE FAENAS DE TRANSFERENCIA"` traen
+    `paralizar = 0`; los 11 con `paralizar != 0` estan rotulados "LIMITES
+    OPERACIONALES". Conjuntos disjuntos.
+
+O4. El texto de `Observacion` SI se comporta como señal, y es un campo que el
+    parser ya lee: 254/444 declaran PUERTO CERRADO o CONDICION DE PUERTO, y la
+    unica evolucion de una condicion que hay en el material —los dos registros
+    de §4— ocurrio integramente dentro de ese texto. Cambio la extension del
+    cierre ("fuera" -> "dentro y fuera") sin que ningun campo numerico se moviera.
+
+O5. El texto no es uniforme y trae ruido de fuente: "CONDICIONDE" pegado en el
+    registro de Juan Fernandez, "RESTRICCIONESDE" pegado en el de Huasco,
+    "RESTRINGUE" por "RESTRINGE", doble espacio en "POSEEN  RADARES", entities
+    HTML sin decodificar en `NaveRecibe`. Cualquier lectura del texto se topa con
+    esto; el normalizador del parser arregla acentos y mayusculas, no palabras
+    pegadas.
+
+O6. Un cierre en este material no se ACTUALIZA: se REEMPLAZA. Ninguno de los 12
+    IDRestriccion no-cero aparece en dos capturas con valores distintos, y de las
+    231 comparaciones solo 5 campos cambiaron en total. La rotacion es de
+    registros —entran y salen decenas entre capturas— no de valores.
+
+O7. La cadencia del material no es pareja: 30-07 19:42, 31-07 16:32, 31-07 20:32,
+    31-07 21:01, 01-08 13:14, 03-08 17:18. Dos de esas seis son el mismo
+    contenido. Lo que hay son 5 momentos distintos en 4 dias y medio, y uno solo
+    de ellos (30-07) contiene el grupo de 9. Cualquier frecuencia que se calcule
+    sobre esto tiene ese n.
+
+O8. `check_ahora.json` es la mitad de grande que las demas (39 registros contra
+    83) y comparte solo 11 IDs con la anterior. No se sabe si eso es una tarde
+    tranquila o una consulta distinta: no lleva marca de que consulta la produjo.
+
+
+================================================================================
+10. FUERA DE ALCANCE CRUZADO — §6.1, REDACTADO Y NO APLICADO
+================================================================================
+
+F1. NO SE MIDIO NINGUNA DECLARACION VIGENTE COMO FALSA por este sondaje, y se
+    dice explicitamente para que no se lea silencio como ausencia de busqueda.
+    Se comprobo: CLAUDE.md §0.2/§0.4/§1.2/§2/§6.1 no afirman nada sobre estos
+    campos; CONTRATO_MOTOR.md no nombra `paralizar`, `nzarpe`, `nrecalada` ni
+    `cierre_total` en ninguna linea (0 ocurrencias, medido). La bitacora del
+    08-16 acota sus tres cifras con "su valor hoy" y con "9 registros", asi que
+    es cierta en su ambito; lo que esta sesion agrega es que ese ambito no
+    describe el campo.
+
+F2. EN TENSION, NO FALSA — y por eso se entrega como observacion y no como
+    correccion. `CONTRATO_MOTOR.md` v2.4, INV-2.2 (linea 345) e INV-2.3 (linea
+    356), citados literales:
+        "Se marca flag `arribadaForzosa` disponible y se muestra teléfono de la
+         capitanía."
+        "…recalada cerrada devuelve U + flag `arribadaForzosa` + teléfono."
+    La pieza P2 (`b119ab0` en la PWA) saco el telefono DEL BLOQUE DEL AVISO por
+    INV-10.1, y lo dejo en la tarjeta de recalada de `PortStatusBlock`, en la
+    misma pantalla (verificado alli: 0 enlaces `tel:` dentro del aviso, 2 en
+    PortStatusBlock). Si esas dos lineas hablan de LA PANTALLA, siguen siendo
+    ciertas; si hablan DEL AVISO, ya no lo son. Cual de las dos cosas dicen es
+    lectura del contrato y es del owner. NO SE REDACTA REEMPLAZO porque el texto
+    de reemplazo depende de esa lectura, y redactar uno seria adelantar la
+    decision. Qué haría falta para aplicarlo: que el owner fije el alcance de la
+    frase, y una pieza con autorizacion por el ciclo de §6.
+
+F3. El registro ID 95171 —el unico "PUERTO CERRADO PARA TODA LA JURISDICCION"—
+    es de ISLA ROBINSON CRUSOE, bahia 90. El frente de jurisdiccion del D.S. 991
+    esta fuera de alcance por el prompt y no se abrio; se consigna solo que ahi
+    es donde cayo el caso, como dato, sin analisis.
+
+F4. Deuda de material, no de codigo: los seis archivos no llevan adentro la
+    marca de cuando se consultaron ni con que consulta. Si se vuelve a capturar
+    alguna vez —cosa que esta sesion no hizo ni propone—, conviene que el que
+    capture escriba esa marca dentro del archivo. Se anota; no se toca
+    `capturar.ps1`, que esta fuera de la zona de escritura de esta sesion.
+
+
+================================================================================
+11. ESTADO AL CIERRE
+================================================================================
+Sin commit. HEAD sigue en b672e0e71226675ddb6fa5caaa6d7dad2ba14a33 = origin/main.
+`data/catalogo/estado_drift.json` no fue tocado. No se salio a la API. No se
+abrio la PWA. El motor BRE se leyo y no se modifico. Ningun insumo se toco, asi
+que no hubo nada que restaurar: los sha256 de las seis capturas de §1 son los que
+tenian al empezar y los que tienen al terminar.
+Nuevo untracked en tmarea-backend: este directorio, con 3 instrumentos, sus 3
+salidas y esta bitacora.
+================================================================================

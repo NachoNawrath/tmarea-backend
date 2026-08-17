@@ -1,0 +1,376 @@
+================================================================================
+SONDAJE DE CIERRE — QUE MANDA SITPORT EN LOS CAMPOS DE CIERRE
+Instrumento: _bitacoras/sondaje_cierre_2026-08-16/01_medir_cierre_sitport.js
+Corrida: 2026-08-17T00:43:23.100Z · sin salir a la API
+================================================================================
+
+(0) INVENTARIO DEL MATERIAL
+    .json en sondaje-sitport/ : 7
+    excluidos, con motivo     : bahias_sitport.json (es consultaBahias, no restricciones)
+    capturas medidas          : 6
+
+  restricciones_2026-07-30_19-42.json
+      ruta          : sondaje-sitport/restricciones_2026-07-30_19-42.json
+      sha256        : 5a3bf064eeef7d630e404db390679e8086ccb6c27dcc912d2adc65d5933dc07c
+      tamaño        : 103736 bytes
+      mtime (disco) : 2026-07-30 23:42:01Z  /  local 2026-07-30 19:42:01
+      fecha en nombre: 2026-07-30 19:42
+      claves top     : recordsets, recordset, output, rowsAffected · rowsAffected=[73]
+      registros      : 73
+  restricciones_2026-07-31_16-32.json
+      ruta          : sondaje-sitport/restricciones_2026-07-31_16-32.json
+      sha256        : 8e5270eaabbd2800dfcf2da664c80cbb052a713f0aa1cca3230c697400b4538c
+      tamaño        : 117014 bytes
+      mtime (disco) : 2026-07-31 20:32:27Z  /  local 2026-07-31 16:32:27
+      fecha en nombre: 2026-07-31 16:32
+      claves top     : recordsets, recordset, output, rowsAffected · rowsAffected=[83]
+      registros      : 83
+  restricciones_2026-07-31_20-32.json
+      ruta          : sondaje-sitport/restricciones_2026-07-31_20-32.json
+      sha256        : e9d4d084202d7935192ae130cc9e51ffb67e2ca51e9328216a817b5ffb572a8b
+      tamaño        : 116892 bytes
+      mtime (disco) : 2026-08-01 00:32:28Z  /  local 2026-07-31 20:32:28
+      fecha en nombre: 2026-07-31 20:32
+      claves top     : recordsets, recordset, output, rowsAffected · rowsAffected=[83]
+      registros      : 83
+  restricciones_2026-07-31_21-01.json
+      ruta          : sondaje-sitport/restricciones_2026-07-31_21-01.json
+      sha256        : e9d4d084202d7935192ae130cc9e51ffb67e2ca51e9328216a817b5ffb572a8b
+      tamaño        : 116892 bytes
+      mtime (disco) : 2026-08-01 01:01:58Z  /  local 2026-07-31 21:01:58
+      fecha en nombre: 2026-07-31 21:01
+      claves top     : recordsets, recordset, output, rowsAffected · rowsAffected=[83]
+      registros      : 83
+  restricciones_2026-08-01_13-14.json
+      ruta          : sondaje-sitport/restricciones_2026-08-01_13-14.json
+      sha256        : 9ed8c7c15c52a05f6740b99b3da6d7b4694f47286baad4569efaf4aff5e787d8
+      tamaño        : 118762 bytes
+      mtime (disco) : 2026-08-01 17:14:13Z  /  local 2026-08-01 13:14:13
+      fecha en nombre: 2026-08-01 13:14
+      claves top     : recordsets, recordset, output, rowsAffected · rowsAffected=[83]
+      registros      : 83
+  check_ahora.json
+      ruta          : sondaje-sitport/check_ahora.json
+      sha256        : c306aea459dc5124af4099d703b854ebd8ea657ebb0ed8511df687e998419836
+      tamaño        : 53952 bytes
+      mtime (disco) : 2026-08-03 21:18:24Z  /  local 2026-08-03 17:18:24
+      fecha en nombre: — NO la lleva en el nombre —
+      claves top     : recordsets, recordset, output, rowsAffected · rowsAffected=[39]
+      registros      : 39
+
+    DENOMINADOR GLOBAL — registros de restriccion sumados: 444
+      73 + 83 + 83 + 83 + 83 + 39 = 444
+
+    IDENTICAS ENTRE SI POR SHA256 (no por bytes):
+      e9d4d084202d7935192ae130cc9e51ff…  ->  restricciones_2026-07-31_20-32.json  ==  restricciones_2026-07-31_21-01.json
+    grupos distintos de contenido: 5 sobre 6 capturas
+
+    claves con pinta de fecha DENTRO del registro: FCTermino, FCinicio
+    >>> Ninguna de ellas fecha LA CAPTURA: fechan la restriccion. La hora en
+        que se consulto a SITPORT vive SOLO en el nombre del archivo y en el
+        mtime del disco — dato NO autofechado; si el archivo se copia o se
+        renombra, envejece en silencio. check_ahora.json ni siquiera la lleva
+        en el nombre: su unica fecha es el mtime.
+
+================================================================================
+(A) ESTRUCTURA — TODOS LOS CAMPOS QUE SITPORT EMITE
+================================================================================
+    campos distintos en la union de las 6 capturas: 20
+    formas de registro distintas (firma de claves): 1
+      444/444 registros: 20 campos
+
+    campo                    presentes / total     ausentes
+      AreaRestriccion          444 / 444          0
+      Detalle                  444 / 444          0
+      FCTermino                444 / 444          0
+      FCinicio                 444 / 444          0
+      FrenteAtraque            444 / 444          0
+      GLBahia                  444 / 444          0
+      IDRestriccion            444 / 444          0
+      MotivoRestriccion        444 / 444          0
+      NaveRecibe               444 / 444          0
+      NombreInstalacion        444 / 444          0
+      Observacion              444 / 444          0
+      SitioAtraque             444 / 444          0
+      bahia                    444 / 444          0
+      glnombre                 444 / 444          0
+      idipbahia                444 / 444          0
+      nrecalada                444 / 444          0
+      nzarpe                   444 / 444          0
+      paralizar                444 / 444          0
+      tipo                     444 / 444          0
+      tiporestriccion          444 / 444          0
+
+    UN REGISTRO CITADO ENTERO — restricciones_2026-07-30_19-42.json, recordsets[0][0]:
+      {
+        "bahia": 71,
+        "FCinicio": "29 Jul 2026 11:32:00:000",
+        "FCTermino": null,
+        "tipo": "INSTALACION ",
+        "NombreInstalacion": "TM COMAP - ",
+        "FrenteAtraque": null,
+        "SitioAtraque": "TODAS",
+        "Detalle": "OLA - MAREJADA DE 1.4 MT. , OLA - MAREJADA DE 12 SEG. ",
+        "Observacion": "SEGÚN LIMITES OPERACIONALES",
+        "paralizar": 0,
+        "nzarpe": 0,
+        "nrecalada": 0,
+        "tiporestriccion": "LIMITES OPERACIONALES",
+        "MotivoRestriccion": "OLA - MAREJADA",
+        "AreaRestriccion": null,
+        "NaveRecibe": "NAVE MAYOR (&GT;=100 AB)",
+        "IDRestriccion": 94972,
+        "GLBahia": "BAHÍA DE ARICA",
+        "idipbahia": null,
+        "glnombre": null
+      }
+
+================================================================================
+(B) LOS TRES CAMPOS DE CIERRE — QUE VALORES TOMAN, SOBRE EL TOTAL
+================================================================================
+    paralizar  (denominador 444)
+         433 / 444   number 0
+           9 / 444   number 11
+           2 / 444   number 1
+        suma 444 — CIERRA
+
+    nzarpe  (denominador 444)
+         444 / 444   number 0
+        suma 444 — CIERRA
+
+    nrecalada  (denominador 444)
+         433 / 444   number 0
+           9 / 444   number 2
+           2 / 444   number 8
+        suma 444 — CIERRA
+
+    DESGLOSE POR CAPTURA (denominador propio de cada una):
+      restricciones_2026-07-30_19-42.json  (n=73)
+          paralizar={number 0:64, number 11:9}
+          nzarpe={number 0:73}
+          nrecalada={number 0:64, number 2:9}
+      restricciones_2026-07-31_16-32.json  (n=83)
+          paralizar={number 0:83}
+          nzarpe={number 0:83}
+          nrecalada={number 0:83}
+      restricciones_2026-07-31_20-32.json  (n=83)
+          paralizar={number 0:83}
+          nzarpe={number 0:83}
+          nrecalada={number 0:82, number 8:1}
+      restricciones_2026-07-31_21-01.json  (n=83)
+          paralizar={number 0:83}
+          nzarpe={number 0:83}
+          nrecalada={number 0:82, number 8:1}
+      restricciones_2026-08-01_13-14.json  (n=83)
+          paralizar={number 0:82, number 1:1}
+          nzarpe={number 0:83}
+          nrecalada={number 0:83}
+      check_ahora.json  (n=39)
+          paralizar={number 0:38, number 1:1}
+          nzarpe={number 0:39}
+          nrecalada={number 0:39}
+
+================================================================================
+(C) BARRIDO DE CARDINALIDAD — buscar campos de cierre POR EL DATO, no por el nombre
+================================================================================
+    denominador 444 registros
+    SitioAtraque           valores distintos:    1
+           444   string "TODAS"
+    nzarpe                 valores distintos:    1
+           444   number 0
+    FCTermino              valores distintos:    2
+           443   null
+             1   string "31 Jul 2026 22:14:00:000"
+    tiporestriccion        valores distintos:    2
+           426   string "LIMITES OPERACIONALES"
+            18   string "PARALIZACIÓN DE FAENAS DE TRANSFERENCIA"
+    NaveRecibe             valores distintos:    3
+           367   string "NAVE MENOR (&LT;100 AB)"
+            48   string "NAVE MAYOR (&GT;=100 AB)"
+            29   string "NAVE MAYOR (&GT;=100 AB), NAVE MENOR (&LT;100 AB)"
+    nrecalada              valores distintos:    3
+           433   number 0
+             9   number 2
+             2   number 8
+    paralizar              valores distintos:    3
+           433   number 0
+             9   number 11
+             2   number 1
+    tipo                   valores distintos:    3
+           366   string "TODOS"
+            64   string "FRENTE ATRAQUE "
+            14   string "INSTALACION "
+    AreaRestriccion        valores distintos:    7
+           260   string "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+            82   string "FUERA DEL LÍMITE DEL PUERTO"
+            48   null
+            19   string "DENTRO DEL LÍMITE DEL PUERTO"
+            15   string "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO, OTRA ÁREA FIJADA POR LA AML"
+            12   string "OTRA ÁREA FIJADA POR LA AML"
+             8   string "FUERA DEL LÍMITE DEL PUERTO, OTRA ÁREA FIJADA POR LA AML"
+    MotivoRestriccion      valores distintos:   12
+    glnombre               valores distintos:   13
+    idipbahia              valores distintos:   15
+    FrenteAtraque          valores distintos:   22
+    NombreInstalacion      valores distintos:   27
+    Detalle                valores distintos:   39
+    GLBahia                valores distintos:   98
+    bahia                  valores distintos:   98
+    Observacion            valores distintos:  152
+    FCinicio               valores distintos:  169
+    IDRestriccion          valores distintos:  213
+
+================================================================================
+(D) EL CAMPO `nivel` — ¿aparece en ALGUNA de las capturas?
+================================================================================
+    (D1) por clave, insensible a mayusculas, sobre 444 registros: 0
+         formas de la clave encontradas: (ninguna)
+    (D2) por texto crudo del archivo — literal `"nivel"` en el JSON tal cual llego:
+         restricciones_2026-07-30_19-42.json    "nivel": 0   ·  la cadena nivel (en cualquier lugar, incl. texto libre): 0
+         restricciones_2026-07-31_16-32.json    "nivel": 0   ·  la cadena nivel (en cualquier lugar, incl. texto libre): 0
+         restricciones_2026-07-31_20-32.json    "nivel": 0   ·  la cadena nivel (en cualquier lugar, incl. texto libre): 0
+         restricciones_2026-07-31_21-01.json    "nivel": 0   ·  la cadena nivel (en cualquier lugar, incl. texto libre): 0
+         restricciones_2026-08-01_13-14.json    "nivel": 0   ·  la cadena nivel (en cualquier lugar, incl. texto libre): 0
+         check_ahora.json                       "nivel": 0   ·  la cadena nivel (en cualquier lugar, incl. texto libre): 0
+    (D3) `cierre_total` como literal en las capturas:
+         restricciones_2026-07-30_19-42.json    0
+         restricciones_2026-07-31_16-32.json    0
+         restricciones_2026-07-31_20-32.json    0
+         restricciones_2026-07-31_21-01.json    0
+         restricciones_2026-08-01_13-14.json    0
+         check_ahora.json                       0
+
+================================================================================
+(E) CENTINELAS — -999 y parientes, en cualquier campo (INV-0.2)
+================================================================================
+    ninguno, sobre 444 registros x 20 campos.
+
+================================================================================
+(F) COMO SE MUEVEN — captura contra captura consecutiva
+================================================================================
+    (F0) IDENTIDAD DE UN REGISTRO ENTRE CAPTURAS — comprobada antes de usarla
+         restricciones_2026-07-30_19-42.json    IDRestriccion: 73 distintos / 73 registros · nulos 0
+         restricciones_2026-07-31_16-32.json    IDRestriccion: 83 distintos / 83 registros · nulos 0
+         restricciones_2026-07-31_20-32.json    IDRestriccion: 83 distintos / 83 registros · nulos 0
+         restricciones_2026-07-31_21-01.json    IDRestriccion: 83 distintos / 83 registros · nulos 0
+         restricciones_2026-08-01_13-14.json    IDRestriccion: 83 distintos / 83 registros · nulos 0
+         check_ahora.json                       IDRestriccion: 39 distintos / 39 registros · nulos 0
+         IDRestriccion es identidad valida en TODAS las capturas: SI
+
+    restricciones_2026-07-30_19-42.json  ->  restricciones_2026-07-31_16-32.json
+        registros: 73 -> 83 · comunes por ID: 32 · nuevos: 51 · desaparecidos: 41
+        de los 32 comunes, con AL MENOS un campo distinto: 2
+
+    restricciones_2026-07-31_16-32.json  ->  restricciones_2026-07-31_20-32.json
+        registros: 83 -> 83 · comunes por ID: 72 · nuevos: 11 · desaparecidos: 11
+        de los 72 comunes, con AL MENOS un campo distinto: 0
+
+    restricciones_2026-07-31_20-32.json  ->  restricciones_2026-07-31_21-01.json
+        registros: 83 -> 83 · comunes por ID: 83 · nuevos: 0 · desaparecidos: 0
+        de los 83 comunes, con AL MENOS un campo distinto: 0
+
+    restricciones_2026-07-31_21-01.json  ->  restricciones_2026-08-01_13-14.json
+        registros: 83 -> 83 · comunes por ID: 33 · nuevos: 50 · desaparecidos: 50
+        de los 33 comunes, con AL MENOS un campo distinto: 0
+
+    restricciones_2026-08-01_13-14.json  ->  check_ahora.json
+        registros: 83 -> 39 · comunes por ID: 11 · nuevos: 28 · desaparecidos: 72
+        de los 11 comunes, con AL MENOS un campo distinto: 0
+
+    COMPARACIONES EFECTIVAS (pares de registro con misma identidad): 231
+
+    CAMPOS QUE CAMBIARON, y en cuantos pares (denominador: las comparaciones de arriba):
+            2 / 231   FCinicio
+            2 / 231   Observacion
+            1 / 231   FCTermino
+
+    TODO CAMBIO, CON SU DIRECCION (son pocos: caben enteros):
+        _2026-07-30_19-4 -> _2026-07-31_16-3 · ID 95040 · FCinicio
+              DE : string "30 Jul 2026 14:47:00:000"
+              A  : string "31 Jul 2026 19:18:35:733"
+        _2026-07-30_19-4 -> _2026-07-31_16-3 · ID 95040 · Observacion
+              DE : string "SE ESTABLECE CONDICION DE TIEMPO VARIABLE, PUERTO CERRADO PARA EMBARCACIONES MENORES DE 25 AB FUERA DEL ESTERO CASTRO. FAENAS DE BUCEO, REMOLQ…
+              A  : string "SE ESTABLECE CONDICION DE MAL TIEMPO, PUERTO CERRADO PARA EMBARCACIONES MENORES DE 25 AB DENTRO Y FUERA DEL ESTERO CASTRO. FAENAS DE BUCEO, RE…
+        _2026-07-30_19-4 -> _2026-07-31_16-3 · ID 95071 · FCinicio
+              DE : string "30 Jul 2026 21:51:00:000"
+              A  : string "31 Jul 2026 11:14:11:460"
+        _2026-07-30_19-4 -> _2026-07-31_16-3 · ID 95071 · FCTermino
+              DE : null
+              A  : string "31 Jul 2026 22:14:00:000"
+        _2026-07-30_19-4 -> _2026-07-31_16-3 · ID 95071 · Observacion
+              DE : string "SE ESTABLECE CONDICION DE MAL TIEMPO 1.- NAVEGACION DENTRO DE BAHIA NORMAL. 2.- NAVEGACION FUERA DE BAHIA SECTOR NORTE CERRADO -50 AB. 3.- NAV…
+              A  : string "SE ESTABLECE CONDICION DE MAL TIEMPO 1.- NAVEGACION DENTRO DE LA BAHIA CERRADO PARA EMBARCACION -25 AB. 2.- NAVEGACION FUERA DE BAHIA SECTOR N…
+
+    CAMBIOS EN LOS TRES CAMPOS DE CIERRE, uno por uno:
+        NINGUNO. Los tres campos son CONSTANTES en las 231 comparaciones.
+
+    (F2) CONTRASTE con la identidad de comparar.ps1 (GLBahia, normalizado INV-0.3):
+         restricciones_2026-07-30_19-42.json -> restricciones_2026-07-31_16-32.json: bahias 58 -> 76 · comunes 52 · entran 24 · salen 6
+         restricciones_2026-07-31_16-32.json -> restricciones_2026-07-31_20-32.json: bahias 76 -> 76 · comunes 73 · entran 3 · salen 3
+         restricciones_2026-07-31_20-32.json -> restricciones_2026-07-31_21-01.json: bahias 76 -> 76 · comunes 76 · entran 0 · salen 0
+         restricciones_2026-07-31_21-01.json -> restricciones_2026-08-01_13-14.json: bahias 76 -> 73 · comunes 60 · entran 13 · salen 16
+         restricciones_2026-08-01_13-14.json -> check_ahora.json: bahias 73 -> 32 · comunes 28 · entran 4 · salen 45
+         GLBahia con doble espacio (INV-0.3): 0
+
+================================================================================
+(G) COMBINACIONES DE LOS TRES QUE EXISTEN EN EL DATO REAL
+================================================================================
+    orden de la tupla: paralizar | nzarpe | nrecalada   ·   denominador 444
+       431 / 444   ( number 0 | number 0 | number 0 )
+         9 / 444   ( number 11 | number 0 | number 2 )
+         2 / 444   ( number 0 | number 0 | number 8 )
+         2 / 444   ( number 1 | number 0 | number 0 )
+      suma 444 — CIERRA
+    combinaciones distintas OBSERVADAS: 4
+
+    LAS 8 TEORICAS 0/1, y cual falta (el hueco tambien es informacion):
+      paralizar=0 nzarpe=0 nrecalada=0  ->  431 registros
+      paralizar=0 nzarpe=0 nrecalada=1  ->  NUNCA APARECE
+      paralizar=0 nzarpe=1 nrecalada=0  ->  NUNCA APARECE
+      paralizar=0 nzarpe=1 nrecalada=1  ->  NUNCA APARECE
+      paralizar=1 nzarpe=0 nrecalada=0  ->  2 registros
+      paralizar=1 nzarpe=0 nrecalada=1  ->  NUNCA APARECE
+      paralizar=1 nzarpe=1 nrecalada=0  ->  NUNCA APARECE
+      paralizar=1 nzarpe=1 nrecalada=1  ->  NUNCA APARECE
+
+    por captura:
+      restricciones_2026-07-30_19-42.json (n=73):
+            64   ( number 0 | number 0 | number 0 )
+             9   ( number 11 | number 0 | number 2 )
+      restricciones_2026-07-31_16-32.json (n=83):
+            83   ( number 0 | number 0 | number 0 )
+      restricciones_2026-07-31_20-32.json (n=83):
+            82   ( number 0 | number 0 | number 0 )
+             1   ( number 0 | number 0 | number 8 )
+      restricciones_2026-07-31_21-01.json (n=83):
+            82   ( number 0 | number 0 | number 0 )
+             1   ( number 0 | number 0 | number 8 )
+      restricciones_2026-08-01_13-14.json (n=83):
+            82   ( number 0 | number 0 | number 0 )
+             1   ( number 1 | number 0 | number 0 )
+      check_ahora.json (n=39):
+            38   ( number 0 | number 0 | number 0 )
+             1   ( number 1 | number 0 | number 0 )
+
+================================================================================
+(H) CONTROLES CRUZADOS CONTRA VARAS QUE NO SALEN DE ESTE INSTRUMENTO
+================================================================================
+    (H1) La vara de resumen.ps1 (criterio versionado): total · bahias por GLBahia · NaveRecibe~MENOR
+         restricciones_2026-07-30_19-42.json    Total: 73 | Bahias: 58 | Afectan menores: 58
+         restricciones_2026-07-31_16-32.json    Total: 83 | Bahias: 76 | Afectan menores: 79
+         restricciones_2026-07-31_20-32.json    Total: 83 | Bahias: 76 | Afectan menores: 78
+         restricciones_2026-07-31_21-01.json    Total: 83 | Bahias: 76 | Afectan menores: 78
+         restricciones_2026-08-01_13-14.json    Total: 83 | Bahias: 73 | Afectan menores: 73
+         check_ahora.json                       Total: 39 | Bahias: 32 | Afectan menores: 30
+
+    (H2) Los 20 campos que la bitacora rotulo_p2 (03_medir_cierre_total.txt, 08-16,
+         9 registros vivos) declaro como emitidos por la fuente — contra la union de acá.
+         declarados el 08-16 : 20
+         union de las 6 capturas (30-07 al 03-08) : 20
+         estan el 08-16 y NO en las capturas : (ninguno)
+         estan en las capturas y NO el 08-16 : (ninguno)
+
+================================================================================
+FIN — capturas: 6 · registros: 444 · comparaciones efectivas: 231
+      campos distintos: 20 · combinaciones observadas de los tres: 4
+================================================================================

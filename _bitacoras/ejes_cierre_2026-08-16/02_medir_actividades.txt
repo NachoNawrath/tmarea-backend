@@ -1,0 +1,332 @@
+================================================================================
+EJES DEL CIERRE — PASADA 2: EJE "QUE QUEDA SUSPENDIDO", PERFILES, CONVIVENCIA, BOLSA B
+Instrumento: _bitacoras/ejes_cierre_2026-08-16/02_medir_actividades.js
+Corrida: 2026-08-17T01:39:12.047Z · sin salir a la API
+Universo 444 · bolsa A 254 · bolsa B 190
+================================================================================
+
+================================================================================
+(5) EJE "QUE QUEDA SUSPENDIDO" — DENOMINADOR 254
+================================================================================
+
+  PROCEDENCIA DE CADA TERMINO: al lado va su frecuencia en la tabla 4.1 de
+  01_medir_ejes.txt, que es de donde salio. Los tres del prompt que NO estaban
+  en esa tabla se miden igual y se declaran.
+
+  5.1 — CONTEO POR ACTIVIDAD, sobre los 254 (mencion en el texto):
+        actividad                        en A  con marcador  procedencia
+        BUCEO                              50            50  4.1 BUCEO:50
+        CENTROS DE CULTIVO                 39            39  4.1 CENTROS:36 CULTIVOS:29
+        REMOLQUE                           47            47  4.1 REMOLQUES:29 REMOLQUE:18
+        FAENAS ACUICOLAS                    5             5  4.1 ACUICOLAS:5
+        TRABAJOS (generico)                48            48  4.1 TRABAJOS:48 TRABAJO:5
+        NAVEGACION                         22            22  4.1 NAVEGACION:22
+        TRAFICO                            18            18  4.1 TRAFICO:18
+        ZARPE                               6             6  4.1 ZARPES:5
+        ATRAQUE                             7             7  4.1 ATRAQUE:7
+        CARGA / DESCARGA                    6             6  4.1 CARGA:6 DESCARGA:6
+        VIVERES / PERTRECHOS                6             6  4.1 VIVERES:6 PERTRECHOS:6
+        FONDEO                             10            10  4.1 FONDEOS:6 FONDEADAS:4
+        DEPORTIVAS / DEPORTES              13            13  4.1 DEPORTIVAS:7 DEPORTES:6
+        NAUTICOS                            6             6  4.1 NAUTICOS:6
+        PESCA                               6             6  4.1 PESCA:6
+        CONECTIVIDAD                        4             4  4.1 CONECTIVIDAD:4
+        CARTAS DE CONTINUIDAD              38            38  4.1 CARTAS:42 CONTINUIDAD:38
+        TRANSFERENCIA                       0             0  del prompt — NO estaba en 4.1
+        PESCA ARTESANAL                     0             0  del prompt — NO estaba en 4.1
+        RECREATIVAS                         2             2  del prompt — NO estaba en 4.1
+        TURISTICAS                          0             0  del prompt — NO estaba en 4.1
+        ACTIVIDADES MARITIMAS PORT.         0             0  del prompt — NO estaba en 4.1
+
+        *** TERMINOS CON CERO APARICIONES EN LA BOLSA A:
+            TRANSFERENCIA
+            PESCA ARTESANAL
+            TURISTICAS
+            ACTIVIDADES MARITIMAS PORT.
+        Se declaran en cero, no como "no aplicable". Todos vienen del prompt,
+        no del dato — la tabla 4.1 no los tenia.
+
+        CONTROL: ¿aparecen en ALGUN lugar de las seis capturas, en cualquier campo?
+            TRANSFERENCIA                    18 / 444 registros (cualquier campo)
+                ID 95063 · campo tiporestriccion = "PARALIZACIÓN DE FAENAS DE TRANSFERENCIA"
+                ID 92306 · campo tiporestriccion = "PARALIZACIÓN DE FAENAS DE TRANSFERENCIA"
+                ID 92307 · campo tiporestriccion = "PARALIZACIÓN DE FAENAS DE TRANSFERENCIA"
+            PESCA ARTESANAL                  16 / 444 registros (cualquier campo)
+                ID 95066 · campo NombreInstalacion = "FRENTE DE ATRAQUE  - ATRACADERO ARTESANAL CALETA COQUIMBO"
+                ID 95067 · campo NombreInstalacion = "MUELLE SAN PEDRO  - ATRACADERO ARTESANAL CALETA COQUIMBO"
+                ID 95068 · campo NombreInstalacion = "CABEZO DEL MUELLE LADO ESTRIBOR - ATRACADERO ARTESANAL CALETA GUAYACÁN "
+            TURISTICAS                        0 / 444 registros (cualquier campo)
+            ACTIVIDADES MARITIMAS PORT.       0 / 444 registros (cualquier campo)
+
+  5.2 — ¿CUANTOS ENUMERAN ACTIVIDADES Y CUANTOS NO?
+        enumeran al menos una actividad : 122 / 254
+        no nombran ninguna              : 132 / 254
+        suma                            : 254 / 254 CIERRA
+
+        CUANTAS ACTIVIDADES POR REGISTRO:
+            0 actividad(es)   132 / 254
+            1 actividad(es)    56 / 254
+            5 actividad(es)    28 / 254
+            4 actividad(es)    16 / 254
+            2 actividad(es)    11 / 254
+            6 actividad(es)     6 / 254
+            3 actividad(es)     5 / 254
+          suma               254 / 254 CIERRA
+
+  5.3 — NOMBRAR ALGUNAS vs SUSPENDER TODO.
+        "dice TODO/TOTALIDAD" = /TODO TIPO DE FAENAS|TOTALIDAD|TODAS LAS (ACTIVIDADES|FAENAS)/
+        NOMBRAN actividades y NO dicen "todo"      : 95 / 254
+        NOMBRAN actividades Y ADEMAS dicen "todo"  : 27 / 254
+        dicen "todo" SIN nombrar ninguna           : 25 / 254
+        ni nombran ni dicen "todo"                 : 107 / 254
+        suma                                       : 254 / 254
+        (total que dicen "todo": 52)
+
+        LOS QUE DICEN "TODO/TOTALIDAD" — clausulas distintas:
+            15  EMBARCACIONES MENORES DE 25 A B FAENAS EN SU TOTALIDAD SUSPENDIDAS
+            12  EMBARCACIONES MENORES DE 50 A B FAENAS EN SU TOTALIDAD SUSPENDIDAS
+             7  PARA NAVES MENORES DE 25 A B Y FAENAS EN SU TOTALIDAD SUSPENDIDAS
+             5  DE LA BAHIA CONDICION DE PUERTO NORMAL PARA TODO TIPO DE FAENA Y TRABAJO
+             4  PARA TODA NAVE MENOR A 12 TRG Y SE CANCELAN TODO TIPO DE FAENA LAGO RANCO CONDICION NORMAL
+             4  UYUHUAPI Y BAHIA CISNES NORMAL SUSPENSION DE TODO TIPO DE FAENAS EN SECTORES CON RESTRICCION
+             2  PARA NAVES MENORES DE 50 A B Y FAENAS EN SU TOTALIDAD SUSPENDIDAS
+             1  G BAHIA CISNES CONDICION NORMAL SE SUSPENDEN TODO TIPO DE FAENAS EN SECTORES CON RESTRI
+             1  PARA TODA NAVE MENOR A 12 TRG Y SE CANCELAN TODO TIPO DE FAENAS
+             1  VARIABLE CERRADO PARA NAVES MENORES DE 25 AB TODO TIPO DE FAENAS QUEDAN SUPENDIDAS
+
+  5.4 — FORMAS DISTINTAS DE ENUMERAR. Firma = conjunto ordenado de actividades.
+        firmas distintas: 20
+           132  (ninguna)
+            28  BUCEO + CARTAS DE CONTINUIDAD + CENTROS DE CULTIVO + REMOLQUE + TRABAJOS (generico)
+            22  NAVEGACION
+            13  TRAFICO
+             8  BUCEO + CENTROS DE CULTIVO + REMOLQUE + TRABAJOS (generico)
+             6  ATRAQUE + CARGA / DESCARGA + DEPORTIVAS / DEPORTES + FONDEO + NAUTICOS + VIVERES / PERTRECHOS
+             6  TRABAJOS (generico)
+             6  ZARPE
+             5  CARTAS DE CONTINUIDAD + FAENAS ACUICOLAS + REMOLQUE
+             4  BUCEO + DEPORTIVAS / DEPORTES + PESCA + REMOLQUE
+             4  CARTAS DE CONTINUIDAD + TRABAJOS (generico)
+             4  CONECTIVIDAD
+             4  FONDEO + TRAFICO
+             3  BUCEO
+             3  BUCEO + CENTROS DE CULTIVO
+             2  BUCEO + DEPORTIVAS / DEPORTES + PESCA + RECREATIVAS
+             1  ATRAQUE
+             1  BUCEO + CARTAS DE CONTINUIDAD + REMOLQUE + TRABAJOS (generico)
+             1  BUCEO + REMOLQUE + TRABAJOS (generico) + TRAFICO
+             1  DEPORTIVAS / DEPORTES
+           254  suma CIERRA
+
+  5.5 — POLARIDAD: las clausulas de CARTAS DE CONTINUIDAD, que no es una
+        actividad sino una EXCEPCION. Se separan SE ACEPTAN de NO SE ACEPTAN.
+        registros con la frase: 38 / 254
+             9  OLQUES SUSPENDIDOS SE ACEPTAN CARTAS DE CONTINUIDAD
+             9  QUE Y DE BUCEO SE RECEPCIONAN CARTAS DE CONTINUIDAD
+             5  N SUSPENDIDOS 3 NO SE ACEPTAN CARTAS DE CONTINUIDAD
+             4  O PARA EE MM 25 AB SE ACEPTAN CARTAS DE CONTINUIDAD PARA TRABAJOS EN SUPERFI
+             4  VOS SUSPENDIDOS NO SE ACEPTAN CARTAS DE CONTINUIDAD
+             3  QUE Y ACUICOLAS NO SE ACEPTAN CARTAS CONTINUIDAD DE FAENA
+             2  MOLQUE Y ACUICOLAS SE ACEPTAN CARTAS CONTINUIDAD FAENA
+             1  LTIVOS SUSPENDIDOS SE ACEPTAN CARTAS DE CONTINUIDAD
+             1  ROS SUSPENDIDOS NO SE ACEPTAN CARTAS DE CONTINUIDAD 2 DENTRO DE LA BAHIA CON
+        NO se aceptan : 13   ·   SI se aceptan : 25   ·   suma 38 / 38
+
+================================================================================
+(6) CRUCE CON LOS PERFILES DE PATRON — DENOMINADOR 254
+================================================================================
+
+  MAPEO DECLARADO actividad -> perfil. Lo AMBIGUO se marca y NO se resuelve.
+    comercial       : NAVEGACION, TRAFICO, ZARPE, ATRAQUE, CARGA/DESCARGA,
+                      VIVERES/PERTRECHOS, FONDEO, CONECTIVIDAD
+    acuicultura     : CENTROS DE CULTIVO, FAENAS ACUICOLAS
+    pesca artesanal : PESCA
+    deportivo       : DEPORTIVAS/DEPORTES, NAUTICOS
+    AMBIGUOS (no se asignan): BUCEO, REMOLQUE, TRABAJOS (generico),
+                      CARTAS DE CONTINUIDAD
+
+  6.1 — CUANTOS PERFILES ALCANZA CADA REGISTRO (solo por actividad nombrada):
+            0 perfil(es)   146 / 254
+            1 perfil(es)    96 / 254
+            2 perfil(es)    12 / 254
+          suma             254 / 254 CIERRA
+
+  6.2 — QUE COMBINACIONES DE PERFIL APARECEN:
+           146  (ninguno nombrado)
+            51  comercial
+            44  acuicultura
+             6  comercial + deportivo
+             6  deportivo + pesca artesanal
+             1  deportivo
+           254  suma CIERRA
+
+  6.3 — LA PREGUNTA DEL PROMPT: ¿cuantos suspenden a UNOS perfiles y no a otros?
+        alcanzan 1..3 perfiles (asimetricos) : 108 / 254
+        alcanzan los 4                       : 0 / 254
+        no nombran actividad de ningun perfil: 146 / 254
+        suma                                 : 254 / 254
+
+  6.4 — EL CASO QUE ROMPERIA LA LECTURA FACIL (§1.2): MISMA BAHIA + MISMO
+        umbral + MISMA captura, y perfiles alcanzados DISTINTOS.
+        grupos con 2+ registros comparables : 10
+        grupos donde los perfiles DIVERGEN  : 0
+
+
+  6.5 — LOS AMBIGUOS, CONTADOS Y NO RESUELTOS:
+        BUCEO                        50 / 254
+        REMOLQUE                     47 / 254
+        TRABAJOS (generico)          48 / 254
+        CARTAS DE CONTINUIDAD        38 / 254
+        registros con al menos un ambiguo            : 65 / 254
+        registros cuya UNICA actividad es ambigua    : 14 / 254
+        >>> en esos, el perfil alcanzado NO se puede determinar del texto.
+
+================================================================================
+(7) CONVIVENCIA DE ESTADO Y CAUSA — DENOMINADOR 444, DESGLOSADO POR BOLSA
+================================================================================
+
+  CAUSAS sacadas del dato (tabla 4.1) — no de una lista traida:
+        causa                  en A   en B  procedencia
+        MAL TIEMPO              117     72  4.1 MAL:120 TIEMPO:198
+        TIEMPO VARIABLE         129     60  4.1 VARIABLE:130
+        TEMPORAL                 29     23  4.1 TEMPORAL:29
+        MAREJADA                 15      0  4.1 MAREJADA:14
+        VIENTO                   10      7  4.1 VIENTO:6 VIENTOS:4
+        CERRAZON/NIEBLA           8      0  4.1 NIEBLA:12 · 4.2 CERRAZON
+        VISIBILIDAD               0      0  de derivarCondicion, bitacora anterior
+
+  7.1 — LOS 444, POR LAS DOS DIMENSIONES A LA VEZ:
+        declaran CIERRE  Y  causa   : 249
+        declaran CIERRE, sin causa  : 5
+        solo causa, sin cierre      : 134
+        ni cierre ni causa          : 56
+        suma                        : 444 / 444 CIERRA
+        (dentro de la bolsa A: 249 conviven, 5 no — suma 254 / 254)
+
+  7.2 — RECONCILIACION DE "157 de 173" DE LA SESION ANTERIOR:
+        denominador 173 = bolsa A con el literal "PUERTO CERRADO" : 173
+        (los otros 81 entran a la bolsa A por "CONDICION DE PUERTO")
+        de esos 173, cuantos dicen TAMBIEN TEMPORAL|MAL TIEMPO|TIEMPO VARIABLE : 158
+        de esos 173, a cuantos derivarCondicion NO les devuelve 'Puerto Cerrado' : 157
+        a cuantos SI                                                            : 16
+        suma 173 / 173 CIERRA
+
+  7.3 — LA MISMA CONVIVENCIA CON EL DENOMINADOR 254:
+        de los 254, dicen TEMPORAL|MAL TIEMPO|TIEMPO VARIABLE : 189 / 254
+        de los 254, NO dicen ninguna de las tres              : 65 / 254
+
+  7.4 — QUE DEVUELVE derivarCondicion SOBRE LAS DOS BOLSAS (control de herencia):
+        etiqueta                               A     B
+        Asociados a elemento y/o ip            0    18
+        Mal Tiempo                            88    60
+        Mal tiempo                             0     7
+        Mal tiempo, viento                     4     0
+        Ola - marejada                         8    12
+        Puerto Cerrado                        39     7
+        Temporal                              29    23
+        Temporal, viento                       0     1
+        Tiempo Variable                       71    48
+        Viento                                11    14
+        Viento, visibilidad                    3     0
+        Visibilidad                            1     0
+        suma                                 254   190  CIERRAN
+
+================================================================================
+(8) LOS 190 QUE NO DECLARAN CIERRE — ¿LA PARTICION ES POROSA?
+================================================================================
+
+  8.1 — de los 190, ¿cuantos NOMBRAN alguna actividad? : 94 / 190
+        actividad                        en B
+        BUCEO                              63
+        CENTROS DE CULTIVO                 49
+        REMOLQUE                           53
+        TRABAJOS (generico)                58
+        NAVEGACION                         22
+        TRAFICO                            32
+        ATRAQUE                             8
+        FONDEO                              3
+        DEPORTIVAS / DEPORTES               4
+        PESCA                               1
+        CONECTIVIDAD                        6
+        CARTAS DE CONTINUIDAD               9
+
+  8.2 — de los 190, ¿cuantos traen UMBRAL de nave (por el parser)? : 93 / 190
+        sin umbral : 97 / 190  ·  suma 190 / 190
+
+  8.3 — de los 190, ¿cuantos usan un marcador de SUSPENSION/PROHIBICION? : 73 / 190
+
+  8.4 — LOS QUE SUSPENDEN ACTIVIDADES SIN DECIR CIERRE — "cierre bajo otro nombre":
+        67 / 190
+         ID 95028 · PUERTO MONTT · actividades=[BUCEO, CENTROS DE CULTIVO, TRABAJOS (generico), TRAFICO]
+            "SE SUSPENDE EL TRÁFICO DE EMBARCACIONES MENORES DE 25 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE TRABAJOS DE BUCEO, FAENAS EXTRACTIVAS EN CENTROS DE CULTIVOS DE S"
+         ID 95052 · LAGO LLANQUIHUE · actividades=[BUCEO, REMOLQUE, TRABAJOS (generico), TRAFICO]
+            "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE EN EL LAGO LLANQUIHUE, CERRADO PARA EL TRAFICO DE NAVES MENORES DE 25 A.B. FUERA DE LA BAHÍA, SE SUSPENDE FAENAS DE BUCEO, "
+         ID 95071 · BAHÍA QUELLÓN · actividades=[REMOLQUE, NAVEGACION]
+            "SE ESTABLECE CONDICION DE MAL TIEMPO 1.- NAVEGACION DENTRO DE BAHIA NORMAL. 2.- NAVEGACION FUERA DE BAHIA SECTOR NORTE CERRADO -50 AB. 3.- NAVEGACION FUERA DE BAHIA "
+         ID 95045 · BAKER · actividades=[BUCEO, REMOLQUE, NAVEGACION]
+            "SE ESTABLECE CONDICIÓN DE TEMPORAL, RESTRICCIÓN DE NAVEGACIÓN PARA EMBARCACIONES MENORES, SECTOR GOLFO DE PENAS Y CANAL MESSIER, FIORDO MITCHELL Y CALETA TORTEL ASIM"
+         ID 95025 · COCHAMO · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico)]
+            "SE ESTABLECE CONDICION DE TIEMPO VARIABLE, CERRADO PARA EMBARCACIONES DE 25 A.B. DENTRO Y FUERA DE LA BAHÍA DE COCHAMÓ TRABAJOS EN CENTROS DE CULTIVOS, FAENAS DE BUC"
+         ID 94993 · QUEILEN · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico), NAVEGACION]
+            "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE CON LAS SIGUIENTES RESTRICCIONES:\r\n \r\n1.- NAVEGACION DENTRO DE LA BAHIA NORMAL.\r\n2-. FUERA DE LA BAHIA, CERRADO PARA EE.MM."
+         ID 95001 · ENSENADA HUALAIHUÉ · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico)]
+            "SE ESTABLECE \"CONDICION DE TIEMPO VARIABLE\", CERRADO PARA EE.MM. DE 25 A.B. DENTRO Y FUERA DE LA BAHÍA. TRABAJOS EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE S"
+         ID 95072 · CANAL CHACAO · actividades=[BUCEO, CENTROS DE CULTIVO, TRABAJOS (generico)]
+            "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE, CERRADO PARA EMBARCACIONES MENORES DE 25 (AB),  DENTRO Y FUERA DE LA BAHÍA, 1) SE SUSPENDE FAENAS DE BUCEO. 2) SE SUSPENDE"
+         ID 95051 · FIORDO AYSEN · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico)]
+            "SE ESTABLECE CONDICION DE TIEMPO VARIABLE CERRADO PARA EEMM A 25 AB SECTOR FIORDO AYSEN, SE SUSPENDEN FAENAS DE BUCEO, FAENAS DE REMOLQUE, TRABAJOS POR ALTURA Y TRAB"
+         ID 95026 · SENO RELONCAVI · actividades=[CENTROS DE CULTIVO, REMOLQUE, TRAFICO]
+            "SE SUSPENDE EL TRÁFICO DE NAVES HASTA 100 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE FAENA PORTUARIAS, TOTALIDAD DE ACTIVIDADES EN LOS CENTROS DE CULTIVO, TODO TI"
+         ID 95071 · BAHÍA QUELLÓN · actividades=[REMOLQUE, NAVEGACION]
+            "SE ESTABLECE CONDICION DE MAL TIEMPO 1.- NAVEGACION DENTRO DE LA BAHIA CERRADO PARA EMBARCACION -25 AB. 2.- NAVEGACION FUERA DE BAHIA SECTOR NORTE CERRADO -50 AB. 3."
+         ID 95138 · BAKER · actividades=[BUCEO, REMOLQUE, NAVEGACION]
+            "SE ESTABLECE CONDICIÓN DE TEMPORAL, RESTRICCIÓN DE NAVEGACIÓN PARA EMBARCACIONES MENORES, SECTOR GOLFO DE PENAS Y CANAL MESSIER, BAHIA TORTEL, CANAL BAKER,  FIORDO M"
+         ID 95124 · COCHAMO · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico)]
+            "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE, CERRADO PARA EMBARCACIONES DE 50 A.B. FUERA DE LA BAHÍA DE COCHAMÓ TRABAJOS EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMO"
+         ID 95075 · QUEILEN · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico), NAVEGACION]
+            "- NAVEGACIÓN DENTRO DE LA BAHÍA Y CANAL QUEILEN, CERRADO PARA NAVES MENORES DE 25 AB.\r\n- NAVEGACIÓN HACIA NORTE, SUR Y CRUCE GOLFO CORCOVADO, CERRADO PARA NAVES MENO"
+         ID 95104 · ENSENADA HUALAIHUÉ · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico)]
+            "SE ESTABLECE CONDICIÓN DE \"MAL TIEMPO\" CERRADO PARA EE.MM DE 50 AB DENTRO Y FUERA DE LA BAHIA, TRABAJOS EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUES SUSPENDID"
+         ID 95177 · BAHÍA CONCEPCIÓN - TALCAHUANO · actividades=[TRAFICO]
+            "SE ESTABLECE CONDICIÓN DE TIEMPO, “MAL TIEMPO”, TRÁFICO SUSPENDIDO PARA TODO TIPO DE NAVES Y EMBARCACIONES DENTRO Y FUERA DE LA BAHÍA DE CONCEPCIÓN.\r\nAVISO DE TEMPOR"
+         ID 95222 · VALDIVIA FLUVIAL · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico), DEPORTIVAS / DEPORTES, PESCA]
+            "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE, CERRADO PARA EMBARCACIONES MENORES A 50 AB., EN RIO VALDIVIA Y SUS AFLUENTES, ACTIVIDADES DE PESCA, TRABAJOS EN CENTRO DE "
+         ID 95208 · PUERTO MONTT · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico), CARTAS DE CONTINUIDAD]
+            "SE ESTABLECE CONDICION DE MAL TIEMPO, PURTO CERRADO PARA EMBARCACIONES MENORES DE 50 A/B. DENTRO Y FUERA DE LA BAHIA ,SE SUSPENDE FAENAS DE BUCEO ,REMOLQUES, Y TRABA"
+         ID 95212 · CHONCHI · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico), NAVEGACION, CONECTIVIDAD, CARTAS DE CONTINUIDAD]
+            "1.- NAVEGACIÓN DENTRO Y FUERA DE LA BAHÍA, CERRADO PARA NAVES MENORES DE 50 A.B. \r\n2.- FAENAS DE BUCEO, REMOLQUES, FAENAS POR ALTO Y TRABAJOS DE SUPERFICIE EN CENTRO"
+         ID 95162 · BAHÍA GREGORIO · actividades=[BUCEO, TRABAJOS (generico), TRAFICO, CONECTIVIDAD]
+            "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE, TRÁFICO SUSPENDIDO PARA NAVES MENORES FUERA DE LAS BAHÍAS DE LA JURISDICCIÓN.\r\nSE SUSPENDEN FAENAS DE BUCEO, COMBUSTIBLE Y"
+         ID 95204 · COCHAMO · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico)]
+            "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE, CERRADO PARA EMBARCACIONES DE 25 A.B. FUERA DE LA BAHÍA DE COCHAMÓ TRABAJOS EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMO"
+         ID 95181 · ENSENADA HUALAIHUÉ · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico), CARTAS DE CONTINUIDAD]
+            "SE ESTABLECE CONDICIÓN DE \"TIEMPO VARIABLE\" CERRADO PARA EE.MM DE 25 AB DENTRO Y FUERA DE LA BAHIA, TRABAJOS EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUES SUSP"
+         ID 95193 · SENO RELONCAVI · actividades=[BUCEO, CENTROS DE CULTIVO, TRABAJOS (generico), TRAFICO]
+            "CONDICION DE TIEMPO VARIABLE: SE SUSPENDE EL TRÁFICO DE EMBARCACIONES MENORES DE 25 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE TRABAJOS DE BUCEO, FAENAS EXTRACTIV"
+         ID 95352 · BAHÍA QUELLÓN · actividades=[NAVEGACION]
+            "SE ESTABLECE CONDICION DE TIEMPO \"MAL TIEMPO\" CON SIGUIENTES RESTRICCIONES:1.- NAVEGACIÓN FUERA DE LA BAHIA SECTOR NORTE  CERRADO PARA NAVES MENORES A 50 AB. 2.-NAVE"
+         ID 95343 · QUEILEN · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico), CARTAS DE CONTINUIDAD]
+            "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE CERRADO PARA EE.MM DE 25 AB DENTRO Y FUERA DE LA BAHÍA , FAENAS DE BUCEO, REMOLQUE Y TRABAJO EN CENTRO DE CULTIVO SUSPENDID"
+         ID 95295 · ENSENADA HUALAIHUÉ · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico), CARTAS DE CONTINUIDAD]
+            "SE ESTABLECE CONDICION DE TIEMPO \"VARIABLE\"\", PARA EE.MM DE 25 AB DENTRO Y FUERA DE LA BAHIA, TRABAJOS EN CENTRO DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDOS,"
+         ID 95323 · ENSENADA ROLECHA · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico)]
+            "SE ESTABLECE \"CONDICIÓN DE MAL TIEMPO\", CERRADO PARA EE.MM. DE 50 A.B. DENTRO Y FUERA DE LA BAHÍA. TRABAJOS EN CENTROS DE CULTIVOS, FAENAS BUCEO Y REMOLQUE SUSPENDID"
+         ID 95309 · SECTOR AYACARA · actividades=[BUCEO, CENTROS DE CULTIVO, REMOLQUE, TRABAJOS (generico)]
+            "SE ESTABLECE \"CONDICION DE TIEMPO VARIABLE\", CERRADO PARA EE.MM. DE 25 A.B. DENTRO Y FUERA DE LA BAHÍA. TRABAJOS EN CENTROS DE CULTIVOS, FAENAS BUCEO Y REMOLQUE SUSP"
+        (textos distintos mostrados: 28 de 67 registros)
+
+  8.5 — de los 190, ¿cuantos contienen la palabra CERRADO/CERRADA suelta? : 96 / 190
+         ID 95020 · "1-.SE ESTABLECE CONDICION DE TIEMPO VARIABLE, CERRADO PARA NAVES MENORES DENTRO Y FUERA DE LA BAHIA DE CORONEL Y SECTOR ISLA SANTA MARIA\r\n2-. AVISO DE"
+         ID 95052 · "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE EN EL LAGO LLANQUIHUE, CERRADO PARA EL TRAFICO DE NAVES MENORES DE 25 A.B. FUERA DE LA BAHÍA, SE SUSPENDE FA"
+         ID 95014 · "VARIABLE, CERRADO PARA EE.MM., DE 25 AB., FUERA DE LA BARRA DEL RÍO. MANTENER PRECAUCIÓN ANTE AVISO DE MAL TIEMPO VIGENTE DESDE CORRAL A GOLFO DE PENA"
+         ID 95071 · "SE ESTABLECE CONDICION DE MAL TIEMPO 1.- NAVEGACION DENTRO DE BAHIA NORMAL. 2.- NAVEGACION FUERA DE BAHIA SECTOR NORTE CERRADO -50 AB. 3.- NAVEGACION "
+         ID 95065 · "CONDICION DE “MAL TIEMPO”, BAJO LAS SGTES. RESTRICCIONES: 1. G.CORCOVADO Y C. MORALEDA CERRADO PARA EE.MM -50AB 2. C. INTERIORES Y B. MELINKA CERRADO "
+         ID 95015 · "VARIABLE, CERRADO PARA EE.MM., DE 25 AB., DENTRO Y FUERA DE LA BAHÍA. MANTENER PRECAUCIÓN ANTE AVISO DE MAL TIEMPO VIGENTE DESDE CORRAL A GOLFO DE PEN"
+         ID 95025 · "SE ESTABLECE CONDICION DE TIEMPO VARIABLE, CERRADO PARA EMBARCACIONES DE 25 A.B. DENTRO Y FUERA DE LA BAHÍA DE COCHAMÓ TRABAJOS EN CENTROS DE CULTIVOS"
+         ID 94993 · "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE CON LAS SIGUIENTES RESTRICCIONES:\r\n \r\n1.- NAVEGACION DENTRO DE LA BAHIA NORMAL.\r\n2-. FUERA DE LA BAHIA, CERR"
+
+================================================================================
+CONTROLES: particion 254/190 reproducida · derivarCondicion extraido y ejecutado
+comparaciones efectivas: 10 grupos comparables en 6.4 · 444 registros
+exit 0
+================================================================================

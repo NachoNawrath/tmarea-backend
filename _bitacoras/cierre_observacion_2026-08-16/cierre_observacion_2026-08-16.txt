@@ -1,0 +1,750 @@
+================================================================================
+CIERRE-EN-OBSERVACION-RECONOCIMIENTO — QUE SABE EXTRAER EL MOTOR DE `Observacion`
+Sesion de reconocimiento, 2026-08-16. NO decide, NO implementa, NO propone regla.
+================================================================================
+
+LINEA BASE DE ARRANQUE, verificada antes de la primera lectura:
+  tmarea-backend  HEAD b672e0e71226675ddb6fa5caaa6d7dad2ba14a33 = origin/main
+                  (rev-parse de HEAD y de origin/main, identicos)
+                  sin estagear: solo data/catalogo/estado_drift.json (no tocado)
+                  untracked: 32 entradas con directorios colapsados,
+                             112 archivos con --untracked-files=all
+  No se salio a la API de SITPORT. La PWA no se abrio, ni de lectura.
+  El motor BRE se leyo y se corrio su suite; NO se modifico.
+
+ZONA DE ESCRITURA RESPETADA: solo este directorio. Ningun archivo de src/,
+data/, CLAUDE.md, CONTRATO_MOTOR.md ni de la PWA fue modificado. scripts/ no se
+uso: el unico instrumento vive aca.
+
+INSTRUMENTO, uno solo, corrido (exit 0, 0 controles fallidos):
+  01_medir_capacidad_observacion.js / .txt
+
+  IMPORTA el motor (`require` de sitport-parser, restriction-rules-engine y
+  route-restriction-evaluator) en vez de escribir un extractor propio, porque el
+  motor ES la implementacion versionada de lectura de `Observacion`. El criterio
+  de particion 254/190 se copia VERBATIM de la sesion anterior
+  (_bitacoras/sondaje_cierre_2026-08-16/03_contraste_texto.js:84). Y el segundo
+  lector que aparecio a mitad de camino —`derivarCondicion`— se EXTRAE del
+  archivo como texto y se ejecuta ese mismo texto, no se reescribe.
+
+  El .txt esta en UTF-8 sin BOM (lo escribe Node). Para leerlo desde PowerShell
+  5.1 hace falta `Get-Content -Encoding UTF8`.
+
+--------------------------------------------------------------------------------
+DEFECTOS DE MI PROPIO INSTRUMENTO, DECLARADOS — se corrigieron y se re-corrio
+--------------------------------------------------------------------------------
+Tres, y los tres del mismo tipo: un ROTULO que no describia lo que el numero
+media. El numero estaba bien las tres veces; la linea que lo presentaba, no.
+
+  (1) "DE LAS 11, LAS QUE NACEN DEL TEXTO DE Observacion" listo las once, porque
+      el filtro hacia regex sobre la prosa de la tabla y la cadena "NO es
+      Observacion" tambien contiene la palabra. Corregido con un booleano
+      explicito por propiedad. Son SIETE de once, no once.
+  (2) "de esos, a cuantos derivarCondicion les devuelve 'Puerto Cerrado': 39"
+      presentaba como subconjunto de 173 un total de bolsa. Se veia porque
+      21+75+61 ya sumaban 157 y 157+39 = 196 > 173. Corregido con el desglose
+      completo, que ahora cierra 173/173.
+  (3) el delimitador del cuerpo de `derivarCondicion` buscaba el literal '\n}\n'
+      y el archivo viene con CRLF: `indexOf` devolvia -1 y la extraccion salia
+      con un caracter. Lo cazo el control, que aborto con exit 4 en vez de medir
+      basura. Corregido con regex /\r?\n\}\r?\n/.
+
+  >>> Los tres son la misma leccion que este repositorio ya pago: el instrumento
+      se corre, y despues se LEE lo que imprimio. (3) lo agarro un control; (1)
+      y (2) los agarro la aritmetica al no cerrar. Se declaran porque el .txt
+      versionado es el de la ultima corrida y sin esto no habria rastro.
+
+
+================================================================================
+>>> ADVERTENCIA DE PREMISAS — DOS DEL PROMPT NO SE SOSTIENEN
+================================================================================
+
+SE SOSTIENEN, re-medidas y no heredadas:
+  444 registros en seis capturas de `consultaRestricciones`     ... SI
+  254 declaran cierre en `Observacion` / 190 no                 ... SI
+  bolsas disjuntas (por captura+IDRestriccion, solape 0)        ... SI
+  250 declaran cierre con los tres campos en 0                  ... SI (§ anterior)
+
+NO SE SOSTIENEN:
+
+  P1. "29 tests". SON 37. `node --test src/services/__tests__/bre-test.js`
+      devuelve: tests 37 · suites 6 · pass 37 · fail 0 · skipped 0.
+      No es una diferencia de conteo de bloques: son 37 `it()` que corren.
+      Ninguno se saltea (el bloque `sondaje real` tiene su guarda por si falta
+      el archivo, y el archivo esta, asi que sus 3 corren).
+
+  P2. "`nivel` no existe y nunca existio: 0 ocurrencias en las seis capturas y
+      0 en 137 archivos del backend."
+      La primera mitad SI se sostiene y es de la bitacora anterior (§7 D1/D2:
+      0 ocurrencias como clave y 0 como cadena en los seis .json).
+      LA SEGUNDA MITAD ES FALSA, y falsa justo donde importa:
+
+        `\bnivel\b` en src/          : 92 ocurrencias en 75 archivos .js
+        `\bnivel\b` en todo el repo  : 518 ocurrencias en 138 archivos
+        `nivel` en el motor BRE      : restriction-rules-engine.js, 14 veces
+
+      >>> EL MOTOR PRODUCE UN CAMPO LLAMADO EXACTAMENTE `nivel`.
+          restriction-rules-engine.js:23 lo emite con valor 'UV';
+          restriction-rules-engine.js:111 con valor 'U'.
+          route-restriction-evaluator.js:51 lo exporta por restriccion.
+          sitport-routes.js:871 lo emite al API.
+
+      De donde salio la premisa: la bitacora anterior (§7) midio 0 ocurrencias
+      en el backend de `cierre_total`, `nrecalada`, `nzarpe` y `paralizar` — NO
+      de `nivel`. La bitacora es correcta en su ambito; la compresion del prompt
+      metio `nivel` en una lista a la que no pertenece.
+
+      Re-verificado aparte: `cierre_total` en src/ = 0 ocurrencias. Eso si.
+
+      >>> POR QUE ESTO CAMBIA LA PREGUNTA: el consumidor de la PWA que la sesion
+          anterior cito —`r.nivel === 'cierre_total'`— busca un campo que el
+          motor SI produce, con un valor que el motor NUNCA produce. No es un
+          campo inventado: es el campo correcto con el vocabulario equivocado.
+
+
+================================================================================
+1. QUE EXTRAE HOY EL MOTOR DE `Observacion` — LA LISTA, CON SU LINEA
+================================================================================
+`normalizarRestriccion` devuelve ONCE propiedades. La lista se tomo del objeto
+que el motor devuelve, no se escribio a mano; la tabla de nacimiento tiene un
+control que aborta si nombra una propiedad que el motor no produce o si falta
+alguna que si produce. Corrio en verde.
+
+  prop.                 linea                   lee Observacion   nace de
+  ----------------------------------------------------------------------------
+  bahia_id             sitport-parser.js:137    no    registro.bahia
+  bahia_nombre         sitport-parser.js:138    no    registro.GLBahia
+  condicion            sitport-parser.js:124    SI    Observacion + MotivoRestriccion
+  afecta_menores       sitport-parser.js:126    SI    NaveRecibe + Observacion
+  afecta_mayores       sitport-parser.js:130    SI    NaveRecibe + Observacion
+  umbral_ab_dentro     sitport-parser.js:142    SI    Observacion (regex AB/TRG)
+  umbral_ab_fuera      sitport-parser.js:143    SI    Observacion (regex AB/TRG)
+  bloqueo_total        sitport-parser.js:144    SI    Observacion ("TODO TIPO DE NAVES")
+  texto_original       sitport-parser.js:145    SI    Observacion (copia cruda)
+  timestamp            sitport-parser.js:146    no    registro.FCinicio
+  area                 sitport-parser.js:147    no    registro.AreaRestriccion
+
+  SIETE de once leen `Observacion`. Cuatro no la tocan.
+
+LAS FUNCIONES QUE TOCAN EL TEXTO:
+  normalizarTexto          sitport-parser.js:8    (NFD, mayusculas, UTF-8 roto)
+  detectarCondicion        sitport-parser.js:26
+  AB_PATTERNS              sitport-parser.js:46   (once patrones de tonelaje)
+  extraerUmbralDeTexto     sitport-parser.js:60
+  extraerUmbrales          sitport-parser.js:68
+  detectarArea             sitport-parser.js:106
+  normalizarRestriccion    sitport-parser.js:119
+
+LO QUE EL PROMPT PIDE POR SEPARADO:
+
+  TONELAJE — SI, y es lo mejor resuelto que tiene. Once patrones (:46-58) para
+    las formas de la fuente: "EMBARCACIONES MENORES DE N A.B", "EE.MM. <N AB",
+    "EEMM-N AB", "NAVE MENOR A N TRG", y un patron generico "(\d+) (A.B|TRG)".
+    Distingue umbral DENTRO de umbral FUERA (:74-85).
+
+  TIPO DE NAVE — NO sale de `Observacion`. Sale de `NaveRecibe` (:126-132), y se
+    colapsa a dos booleanos. `Observacion` solo aporta el caso "TODO TIPO DE
+    NAVES / DE EMBARCACIONES". Sobre la bolsa A, `NaveRecibe` tiene tres valores
+    y los 254 traen entities HTML sin decodificar (`&LT;` / `&GT;`).
+
+  ALCANCE GEOGRAFICO — SI, pero NO del texto. `area` sale de `AreaRestriccion`
+    (:147), no de `Observacion`. Del texto solo salen los DOS UMBRALES separados
+    dentro/fuera, y con la restriccion de que solo se leen si aparecen los DOS.
+
+  ESTADO DE PUERTO — NO. Ninguna de las once propiedades se llama, ni significa,
+    "el puerto esta cerrado". La mas cercana es `bloqueo_total`, y no es eso
+    (ver §2).
+
+
+================================================================================
+2. ¿ALGUNA DE ESAS PROPIEDADES RESPONDE "RECALADA CERRADA"? — NO. PARCIAL Y POR
+   ACCIDENTE
+================================================================================
+
+PRIMERO, LO QUE NI SIQUIERA LLEGA AL VEREDICTO. Medido sobre el codigo del
+motor de reglas, no supuesto:
+
+  prop. del parser     se pasa como hecho    alguna regla la consulta
+  --------------------------------------------------------------------
+  condicion                  SI                      SI
+  afecta_menores             SI                      SI
+  umbral_ab_fuera            SI                      SI
+  bloqueo_total              SI                      SI
+  afecta_mayores             SI                      NO   <-- hecho muerto
+  umbral_ab_dentro           SI                      NO   <-- hecho muerto
+  area                       no                      NO   <-- ni se pasa
+  bahia_id / bahia_nombre / texto_original / timestamp   no / NO
+
+  >>> DE LAS SIETE QUE NACEN DEL TEXTO, SOLO CUATRO LLEGAN AL VEREDICTO.
+      `umbral_ab_dentro` se extrae del texto, se pasa como hecho al motor de
+      reglas, y NINGUNA de las siete reglas lo consulta. `afecta_mayores`,
+      igual. `area` ni siquiera se pasa.
+
+LO QUE `bloqueo_total` ES Y NO ES. Es la unica propiedad con forma de "puerto
+cerrado", y nace de UN literal: /TODO\s+TIPO\s+DE\s+NAVES/ (sitport-parser.js:69).
+
+    bolsa A (254 declaran cierre) con bloqueo_total=true :   3
+    bolsa B (190 no lo declaran)  con bloqueo_total=true :   2
+
+  Tres de doscientos cincuenta y cuatro. Y dos de los que NO declaran cierre.
+  No responde la pregunta: responde otra, mas angosta, y la responde bien.
+
+RESPONDE PARCIALMENTE, Y ESTA ES LA PARTE QUE CUBRE: para la nave concreta que
+pregunta, el motor SI contesta "podes o no podes". Es `nivel` = UV / U / null,
+que es un veredicto de NAVEGABILIDAD PARA ESA NAVE. Lo que no contesta —y lo
+que "recalada cerrada" pide— es un ESTADO DEL PUERTO, que no depende de quien
+pregunte. Son dos preguntas distintas y el motor solo tiene la primera.
+
+  LA PRUEBA, y es la medicion que rompe la lectura facil (§1.2): si el veredicto
+  del motor fuera el estado del puerto, no podria depender del AB de la nave. Y
+  depende. El MISMO registro que dice "PUERTO CERRADO PARA EMBARCACIONES MENORES
+  DE 25 AB" da UV a una nave de 15 AB y null a una de 60. El puerto no se abre
+  porque cambie la nave; el veredicto si.
+
+
+================================================================================
+3. EL MOTOR CORRIDO SOBRE LAS DOS BOLSAS — 2.664 EVALUACIONES EFECTIVAS
+================================================================================
+EL MOTOR SI SE PUEDE CORRER AISLADO sobre un registro suelto:
+`normalizarRestriccion(registro)` -> `evaluarRestriccion(norm, nave_ab)`. No
+necesita ruta, ni red, ni base de datos. Se corrieron los 444, uno por uno, con
+seis valores de AB. 444 x 6 = 2.664 evaluaciones. No es cero.
+
+BOLSAS: A = 254 (declaran cierre) · B = 190 (no) · suma 444 · solape 0.
+
+D.1 — LAS CUATRO PROPIEDADES VIVAS, CRUZADAS CONTRA LA BOLSA
+
+  condicion          bolsa A (254)   bolsa B (190)
+    MAL_TIEMPO             98             73
+    OTRO                   19             47
+    TEMPORAL               33             25
+    VARIABLE              104             45
+    suma                  254            190   CIERRA
+
+  bloqueo_total      bolsa A         bolsa B
+    false                 251            188
+    true                    3              2
+
+  afecta_menores     bolsa A         bolsa B
+    false                  14             32
+    true                  240            158
+
+  umbral_ab_fuera    bolsa A         bolsa B
+    null                  106             97
+    25                     79             30
+    50                     31             39
+    100                    28             15
+    12 / 99                10              0
+    20                      0              9
+    suma                  254            190   CIERRA
+
+  >>> NINGUNA DE LAS CUATRO PARTE LAS BOLSAS. Los cuatro valores de `condicion`
+      aparecen en las dos; `bloqueo_total=true` aparece en las dos; el umbral
+      nulo es 106 en una y 97 en la otra. No hay un valor que este solo de un
+      lado.
+
+D.2 — VEREDICTO POR BOLSA Y POR AB. Denominadores al lado.
+
+    AB       bolsa      UV        U     null    UV%
+    sin AB     A        86      152       16   33.9%
+    sin AB     B        38      104       48   20.0%
+    5          A       131      104       19   51.6%
+    5          B        89       45       56   46.8%
+    15         A       127      103       24   50.0%
+    15         B        89       45       56   46.8%
+    43         A       110       41      103   43.3%
+    43         B        76       26       88   40.0%
+    60         A       103       20      131   40.6%
+    60         B        46       23      121   24.2%
+    150        A        86       14      154   33.9%
+    150        B        38       18      134   20.0%
+
+  CONTRASTE UV% de A contra UV% de B:
+    sin AB  33.9 vs 20.0  ->  13.9 pts
+    AB 5    51.6 vs 46.8  ->   4.7 pts
+    AB 15   50.0 vs 46.8  ->   3.2 pts
+    AB 43   43.3 vs 40.0  ->   3.3 pts
+    AB 60   40.6 vs 24.2  ->  16.3 pts
+    AB 150  33.9 vs 20.0  ->  13.9 pts
+
+  >>> CUANTOS DE CADA BOLSA PRODUCEN UNA SALIDA QUE DISTINGA CIERRE DE
+      NO-CIERRE: CERO, de las dos. Ninguna salida del motor toma un valor que
+      exista en una bolsa y no en la otra. Para la nave chica —AB 15, que es la
+      que le importa a este producto— la separacion es de 3,2 puntos: el motor
+      bloquea a la mitad de la bolsa A y a casi la misma mitad de la bolsa B.
+
+      A la inversa, y es igual de importante: el motor da UV a 89 registros de
+      la bolsa B con AB 15. Ochenta y nueve casos en que el texto NO declara
+      cierre y el motor bloquea igual — correctamente, porque bloquea por otra
+      cosa (mal tiempo con umbral). Eso confirma que `nivel=UV` mide otra
+      variable, no el cierre.
+
+
+================================================================================
+4. QUE DE LOS 254 EL MOTOR NO PUEDE RESOLVER, POR CAUSA
+================================================================================
+DEFINICION OPERATIVA DECLARADA: "no puede resolver" = el motor no produce una
+salida cuyo valor dependa de que el texto declare cierre; o la produce perdiendo
+una distincion que el texto SI trae. Los grupos se solapan y se declara; abajo
+va ademas la asignacion a causa primaria, que es disjunta y cierra en 254.
+
+  G1  condicion=OTRO — ninguna regla dispara con ningun AB ......... 19 / 254
+      ID 95152 · BAHIA DE QUINTERO
+      "SE ESTABLECE CONDICIÓN DE PUERTO N° 226 \"MAREJADA\"."
+      motor: condicion=OTRO bloqueo_total=false umbral=null/null
+      El texto declara una condicion de puerto numerada y el motor no tiene
+      ninguna casilla donde ponerla.
+
+  G2  el texto dice cerrado y el motor lo lee VARIABLE -> U, no UV . 104 / 254
+      ID 95055 · BAHIA PUERTO HUASCO
+      "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE POR INTENSIDAD DE VIENTO A 20
+       NDS NW. SE ESTABLECE RESTRICCIONESDE PUERTO CERRADO EN LAS I.P. DE NAVES
+       MENORES Y PARA MOVIMIENTOS DE NAVES MENORES A 50 AB DENTRO Y FUERA DE LA
+       BAHÍA."
+      motor: condicion=VARIABLE umbral=50/50 -> nivel U (precaucion)
+      El texto dice PUERTO CERRADO y el veredicto es amarillo.
+
+  G3  el texto trae umbrales DISTINTOS dentro y fuera ............... 4 / 254
+      ID 95155 · BAHIA QUELLÓN
+      "SE ESTABLECE CONDICION DE PUERTO CERRADO CON SIGUIENTES RESTRICCIONES:
+       FUERA DE LA BAHIA SECTOR NORTE PARA EMBARCACIONES MENORES A 50 A.B.,
+       FUERA DE LA BAHIA SECTOR SUR PARA EMBARCACIONES MENORES A 100 A.B.
+       DENTRO DE LA BAHIA PARA EMBARCACIONES MENORES A 25 A.B. …"
+      motor: umbral_dentro=100 umbral_fuera=50 · condicion=OTRO
+      Tres sectores y tres umbrales en el texto; el motor extrae dos y el de
+      DENTRO no lo consulta ninguna regla. El 25 real de dentro se pierde.
+
+  G4  el texto nombra DENTRO/FUERA y `AreaRestriccion` viene null ... 8 / 254
+      ID 95043 · BAHIA SAN VICENTE
+      "…SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO PARA
+       PARA TODO TIPO DE NAVES DENTRO Y FUERA DE LA BAHÍA DE SAN VICENTE…"
+      `area` sale del campo, no del texto, y con el campo en null cae al
+      DEFECTO 'DENTRO_Y_FUERA' (sitport-parser.js:113).
+
+  G5  hay umbral de tonelaje: el cierre es condicional al AB ...... 148 / 254
+      (mismo caso citado que G2)
+      No es un defecto del motor: es la forma real del dato. Mas de la mitad de
+      los cierres declarados NO son del puerto entero, son de un segmento de
+      flota. Lo que el motor no tiene es donde decir eso.
+
+  G6  el texto declara cierre TOTAL y bloqueo_total sale false ..... 22 / 254
+      ID 94977 · LEBU
+      "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE, PUERTO CERRADO POR AVISO DE
+       MAL TIEMPO Y TEMPORAL EN ÁREA OCEÁNICA Y COSTERA DESDE PUNTA BOYERUCA A
+       CORRAL. PUERTO CERRADO PARA TODO TIPO DE EMBARCACIONES MENORES."
+      El literal de :69 es "TODO TIPO DE NAVES"; el texto dice "TODO TIPO DE
+      EMBARCACIONES", que :95 atrapa por otra rama y devuelve umbral null en vez
+      de bloqueo_total. Y ademas: este registro sale condicion=TEMPORAL, o sea
+      UV para TODA nave —incluida una de 150 AB— cuando el texto acota el
+      cierre a las MENORES. El motor sobre-bloquea.
+
+  G7  el texto declara cierre y el motor no saca ni umbral ni
+      bloqueo_total ................................................ 103 / 254
+      ID 95066 · BAHIA COQUIMBO
+      "SE ESTABLECE CONDICIÓN DE PUERTO CERRADO POR AVISO DE MAL TIEMPO PARA
+       NAVES MENORES, DENTRO Y FUERA DE LA BAHÍA."
+      Un cierre sin numero. El motor lo resuelve por la rama "MAL_TIEMPO sin
+      umbral + afecta_menores" y da UV a las menores, que es razonable; pero lo
+      que produce sigue siendo un veredicto por nave, no un estado.
+
+  ASIGNACION A CAUSA PRIMARIA (prioridad G1>G6>G3>G2>G5>G4>G7, disjunta):
+      92 / 254   G2  lo lee VARIABLE -> U, no UV
+      66 / 254   G7  sin umbral ni bloqueo_total
+      51 / 254   G5  umbral de tonelaje presente
+      22 / 254   G6  cierre total leido como no-total
+      19 / 254   G1  condicion=OTRO
+       2 / 254   G4  alcance geografico desde campo nulo
+       1 / 254   G3  umbrales distintos dentro/fuera
+       1 / 254   sin causa — el motor lo resuelve
+      suma 254 — CIERRA
+
+  >>> UNO. De doscientos cincuenta y cuatro registros que declaran cierre, hay
+      UNO al que ninguna de las siete causas le aplica.
+
+
+================================================================================
+5. LOS TESTS — SON 37, NO 29. QUE CUBREN Y QUE NO
+================================================================================
+`node --test src/services/__tests__/bre-test.js`
+  tests 37 · suites 6 · pass 37 · fail 0 · cancelled 0 · skipped 0 · todo 0
+
+  suite                      n   que cubre
+  ------------------------------------------------------------------------
+  normalizarTexto            3   acentos correctos, sin acentos, vacio/null
+  normalizarRestriccion     13   deteccion de condicion (TEMPORAL/MAL_TIEMPO/
+                                 VARIABLE), prioridad entre ellas, fallback a
+                                 MotivoRestriccion, cinco formatos de umbral de
+                                 AB/TRG, "TODO TIPO DE NAVES", "MENORES sin
+                                 numero"
+  evaluarRestriccion        10   las siete reglas contra AB por encima, por
+                                 debajo y ausente; UV/U/no_afecta/sin_ab
+  evaluarRuta                6   escalamiento al maximo, fail-fast, ultimo
+                                 tramo seguro, ruta vacia, sub-zona de Melinka
+  integracion INV-1.2        2   que una restriccion que no aplica sigue en la
+                                 salida como informativa (`aplica:false`)
+  sondaje real               3   los 83 registros de una captura: que normalicen
+                                 sin excepcion, que `condicion` caiga siempre en
+                                 el vocabulario de cuatro, y una corrida de 10
+                                 evaluaciones sin romper
+
+  ¿ALGUNO PRUEBA EXTRACCION DE CIERRE? NO. NINGUNO DE LOS 37.
+    · cero `assert` sobre un campo que signifique "puerto cerrado";
+    · la unica propiedad que se le acerca, `bloqueo_total`, tiene UN test
+      (bre-test.js:112) y prueba el literal "TODO TIPO DE NAVES", no el cierre;
+    · la frase "PUERTO CERRADO" no aparece en ningun caso de prueba del archivo;
+    · el test de datos reales (bre-test.js:425) afirma solo que hay "al menos 2
+      tipos de condicion" — un umbral que pasa con cualquier dato.
+
+  LO QUE LOS 37 NO CUBREN, ademas del cierre:
+    · `umbral_ab_dentro`: se afirma su valor en dos tests (:108, :179) y nunca
+      se prueba que llegue a un veredicto — no llega, y el test no lo notaria;
+    · `area`: cero tests. Ni el defecto 'DENTRO_Y_FUERA' con campo null;
+    · `afecta_mayores`: cero asserts;
+    · doble espacio en el texto: cero tests. La entrada 'MAL  TIEMPO' no esta
+      probada y no la detecta (comprobado directo, ver §7);
+    · entities HTML: aparecen en el INPUT de dos tests (`&LT;25 AB` en :189,
+      :324) pero nunca se afirma nada sobre decodificarlas — pasan porque el
+      umbral se saca del "25", no del "<".
+
+
+================================================================================
+6. EL MOTOR NO PRODUCE LA SEÑAL. QUIEN CONSUME SU SALIDA, Y QUE TAMAÑO TIENE
+================================================================================
+
+6.1 — QUIEN CONSUME LA SALIDA DEL MOTOR HOY
+
+  El motor tiene UN solo consumidor en el backend, y esta entero en un endpoint:
+
+    src/routes/sitport-routes.js:6    require normalizarRestriccion
+    src/routes/sitport-routes.js:7    require evaluarRuta
+    src/routes/sitport-routes.js:825  norm = normalizarRestriccion(r)  [por bahia]
+    src/routes/sitport-routes.js:857  evaluacion = await evaluarRuta(intermedias, nave_ab)
+    src/routes/sitport-routes.js:860-875  enriquecer cada intermedia
+    src/routes/sitport-routes.js:903-919  res.json
+
+  Y la forma en que sale al API:
+
+    restricciones_intermedias[i].evaluacion.nivel     <- sitport-routes.js:871
+    restricciones_intermedias[i].evaluacion.bloquea   <- :868
+    restricciones_intermedias[i].evaluacion.estado    <- :869
+    restricciones_intermedias[i].evaluacion.umbral_ab <- :870
+    restricciones_intermedias[i].condicion            <- :835 (del motor)
+    restricciones_intermedias[i].condicion_legible    <- :836 (NO del motor, §6.2)
+    veredicto / bandera_final                         <- :905, :906
+
+  >>> `nivel` SALE ANIDADO: `r.evaluacion.nivel`, no `r.nivel`. Es un dato del
+      backend y se declara como tal; que hace la PWA con eso no se midio en esta
+      sesion, que no la abrio.
+
+6.2 — EL SEGUNDO LECTOR DE `Observacion`, Y ES EL HALLAZGO DE ESTA SESION
+
+  `derivarCondicion`, src/routes/sitport-routes.js:532. NO es parte del motor y
+  NO esta vetada. Se extrajo su codigo del archivo y se ejecuto verbatim:
+
+    function derivarCondicion(r) {
+      const t = (r.Observacion || '').toUpperCase();
+      if (t.includes('TEMPORAL')) return 'Temporal';
+      if (t.includes('MAL TIEMPO')) return 'Mal Tiempo';
+      if (t.includes('TIEMPO VARIABLE')) return 'Tiempo Variable';
+      if (t.includes('PUERTO CERRADO') || t.includes('CERRADO')) return 'Puerto Cerrado';
+      const m = (r.MotivoRestriccion || '').trim();
+      return m ? m.charAt(0).toUpperCase() + m.slice(1).toLowerCase() : null;
+    }
+
+  Su comentario de cabecera (:527-530) dice, literal, que SITPORT "no expone un
+  campo estructurado de condicion; la publica dentro de Observacion". Alguien ya
+  sabia esto y escribio la rama.
+
+  >>> LA RAMA DE CIERRE EXISTE: sitport-routes.js:537. Y su salida YA VIAJA al
+      API como `condicion_legible` (sitport-routes.js:836).
+
+  QUE DEVUELVE SOBRE LAS DOS BOLSAS (suma 254 / 190, CIERRA):
+
+    etiqueta                  bolsa A    bolsa B
+    Mal Tiempo                     88         60
+    Tiempo Variable                71         48
+    Puerto Cerrado                 39          7
+    Temporal                       29         23
+    Viento                         11         14
+    Ola - marejada                  8         12
+    Mal tiempo, viento              4          0
+    Viento, visibilidad             3          0
+    Visibilidad                     1          0
+    Mal tiempo                      0          7
+    Temporal, viento                0          1
+    Asociados a elemento y/o ip     0         18
+
+  Y ACA ESTA EL DEFECTO, medido:
+
+    registros de la bolsa A cuyo texto dice literalmente "PUERTO CERRADO": 173
+    de esos 173, que devuelve derivarCondicion:
+         75 / 173   'Mal Tiempo'        <- la rama de cierre nunca se alcanza
+         61 / 173   'Tiempo Variable'   <- idem
+         21 / 173   'Temporal'          <- idem
+         16 / 173   'Puerto Cerrado'
+        suma 173 — CIERRA
+      >>> TAPADOS: 157 de 173 (90,8%).
+
+    Y al reves: de los 39 que devuelven 'Puerto Cerrado', 23 NO contienen la
+    frase — entran por la palabra "CERRADO" sola. Caso: ID 94984,
+    "…CONDICIÓN DE PUERTO VARIABLE CON SIGUIENTES RESTRICCIONES; CERRADO
+    NAVEGACIÓN DE EMBARCACIONES MENORES DENTRO Y FUERA DE LA BAHÍA."
+
+  El orden de las ramas es de MAYOR A MENOR SEVERIDAD, que es correcto para lo
+  que la funcion dice hacer —rotular la condicion— y es exactamente lo que la
+  hace inservible para el cierre: en este dato el cierre CONVIVE con la
+  condicion, no la reemplaza. "PUERTO CERRADO POR AVISO DE MAL TIEMPO" es las
+  dos cosas a la vez, y la funcion tiene que elegir una.
+
+  Ademas NO usa el normalizador central (INV-0.3): no llama a `normalizarTexto`,
+  no quita acentos, no colapsa espacios. Solo `.toUpperCase()`. Los literales
+  que busca no llevan acento, asi que el acento no la rompe; el doble espacio si
+  la rompe y hay 58 registros con doble espacio en la bolsa A.
+
+6.3 — TAMAÑO DE CONSTRUIRLO, EN PIEZAS, Y QUE TOCARIA EL MOTOR
+
+  La respuesta a la pregunta de la sesion es la TERCERA de las tres: NO LO
+  EXTRAE. Pero no es "hay que construirlo desde cero": hay una pieza escrita y
+  cableada al API que apunta al lugar correcto y falla por precedencia.
+
+  Se declaran las piezas con el lado del veto de cada una. NO se propone
+  ejecutar ninguna: esta sesion no cablea.
+
+    P-a  DECIDIR QUE ES "recalada cerrada". Normativa y de producto.
+         >>> DEL OWNER. Sin esto ninguna otra pieza tiene criterio de exito.
+         Lo que esta sesion aporta a esa decision son las cuatro dimensiones que
+         el dato trae juntas y que hoy nadie separa: (i) si hay cierre, (ii) a
+         que flota lo acota, (iii) a que area lo acota, (iv) con que causa.
+
+    P-b  UN CAMPO NUEVO DE SALIDA en el objeto normalizado.
+         >>> TOCA EL MOTOR (sitport-parser.js). VETADO en esta sesion.
+         Tamaño: una funcion nueva y una linea en el return.
+
+    P-c  UNA REGLA NUEVA en el motor de reglas que consuma ese campo.
+         >>> TOCA EL MOTOR (restriction-rules-engine.js). VETADO.
+         Depende de P-a: sin la definicion no se sabe que bandera da.
+
+    P-d  ARREGLAR LA PRECEDENCIA de `derivarCondicion`.
+         >>> NO TOCA EL MOTOR: es sitport-routes.js:532. Fuera del veto.
+         Es donde estan los 157 tapados. Pero cambiar el orden de las ramas
+         cambia `condicion_legible`, que es texto que ve el patron -> por §0.4
+         de CLAUDE.md, ESO ES DEL OWNER aunque el arreglo sea de tres lineas.
+
+    P-e  CABLEAR la señal a `recalada.estado`.
+         >>> Vive en la PWA. Fuera de alcance de esta sesion, y depende de P-a.
+
+    P-f  TESTS de extraccion de cierre. Hoy son cero de 37.
+         >>> El archivo de tests NO es uno de los tres vetados, pero probar P-b
+         exige que P-b exista.
+
+  LO QUE SE PUEDE AFIRMAR DEL TAMAÑO: la capacidad de LEER el texto ya existe y
+  esta probada (37/37). Lo que no existe es una CASILLA DONDE PONER EL CIERRE:
+  ni en la salida del parser, ni en el vocabulario del motor de reglas, ni en el
+  API. Y la unica casilla parecida que existe —`condicion_legible`— es de una
+  sola ranura y el cierre no cabe ahi porque convive con la condicion.
+
+
+================================================================================
+7. LA VARIEDAD REAL DEL TEXTO EN LOS 254
+================================================================================
+NIVELES DE NORMALIZACION, declarados:
+  N0  crudo, tal cual viene de la fuente
+  N1  N0 + entities HTML decodificadas + NFD sin diacriticos + espacios
+      colapsados + trim + mayusculas   (INV-0.3)
+  N2  N1 + toda corrida de digitos -> "#"
+  N3  N2 + toda puntuacion -> espacio, recolapsado
+
+  formas distintas en la bolsa A (n=254):
+    N0 (crudo)                    91
+    N1 (normalizado)              91
+    N2 (numeros a #)              91
+    N3 (sin puntuacion)           89
+    prefijo de 40 chars sobre N3  36
+
+  >>> NORMALIZAR NO JUNTA CASI NADA: 91 formas crudas y 91 normalizadas. El
+      ruido de encoding y de espacios NO es lo que multiplica las formas —la
+      redaccion lo es—. Numeros a "#" tampoco junta ninguna.
+
+  de las 89 formas N3: 46 aparecen UNA sola vez (51,7%).
+  las 10 mas frecuentes cubren 88 de 254.
+
+  LAS PLANTILLAS DE APERTURA (primeras 6 palabras de N3): 33 distintas.
+      52x  "SE ESTABLECE CONDICION DE PUERTO CERRADO"
+      41x  "SE ESTABLECE CONDICION DE TIEMPO VARIABLE"
+      39x  "SE ESTABLECE CONDICION DE MAL TIEMPO"
+      37x  "SE ESTABLECE CONDICION DE PUERTO VARIABLE"
+      27x  "SE ESTABLECE CONDICION DE PUERTO TIEMPO"
+       8x  "A CONTAR DE LAS # #"
+       6x  "SE ESTABLECE CONDICION DE PUERTO MAL"
+       6x  "SE ESTABLECE CONDICION DE PUERTO MAREJADA"
+       5x  "# SE ESTABLECE CONDICION DE MAL"
+       4x  "SE ESTABLCE CONDICION DE PUERTO MAL"   <- "ESTABLCE", tipeo de fuente
+       3x  "# SE ESTABLECE CONDICION DE PUERTO"
+       3x  "CONDICION VARIABLE FUERA DE LA BAHIA"
+      esos 12 cubren 231 de 254.
+
+  >>> LA RESPUESTA A "¿CINCO PLANTILLAS O DOSCIENTAS FRASES LIBRES?" ES: LAS
+      DOS, Y EN CAPAS DISTINTAS.
+        · LA APERTURA ES CASI UNA PLANTILLA. Cinco prefijos cubren 196 de 254
+          (77%), y los doce primeros cubren 231 (91%). Todos son variantes de
+          "SE ESTABLECE CONDICION DE …".
+        · EL CUERPO ES FRASE LIBRE. 89 formas para 254 registros, y la mitad de
+          esas formas aparece una sola vez. Ahi es donde viven el umbral, el
+          alcance geografico, el tipo de nave y las excepciones — o sea, todo lo
+          que el motor todavia no puede resolver (§4).
+
+  RUIDO DE FUENTE MEDIDO DENTRO DE LA BOLSA A:
+    doble espacio o mas            58 / 254
+    acento presente               195 / 254
+    comillas escapadas             45 / 254
+    "CONDICIONDE" pegado            1 / 254
+    entities HTML en Observacion    0 / 254   <- estan en NaveRecibe, no aca
+
+  CONTROLES DIRECTOS SOBRE EL NORMALIZADOR DEL MOTOR:
+    normalizarTexto("MAL  TIEMPO")            = "MAL  TIEMPO"
+      ¿contiene "MAL TIEMPO"? NO   -> el motor NO colapsa espacios y su
+      deteccion de condicion es por `includes` de literal con un solo espacio.
+      Registros de la bolsa A donde ese doble espacio cae DENTRO de una frase
+      que el motor busca literal: 0. El defecto existe y hoy no muerde.
+    normalizarTexto("NAVE MENOR (&LT;25 AB)") = "NAVE MENOR (&LT;25 AB)"
+      -> el motor NO decodifica entities. Los 254 de la bolsa A traen `&LT;` o
+      `&GT;` en NaveRecibe y el motor lee sobre eso.
+
+
+================================================================================
+8. OBSERVACIONES DEL DATO — SIN REGLA PROPUESTA
+================================================================================
+Observaciones de comportamiento. NO son candidatas de regla, NO hay
+recomendacion, y la lectura normativa de "recalada cerrada" es del owner.
+
+O1. EL CIERRE Y LA CONDICION CONVIVEN, NO SE REEMPLAZAN. 157 de los 173
+    registros que dicen "PUERTO CERRADO" dicen TAMBIEN "MAL TIEMPO", "TIEMPO
+    VARIABLE" o "TEMPORAL" en la misma frase. Cualquier estructura de una sola
+    ranura para "condicion" tiene que elegir una de las dos y pierde la otra.
+    Es lo que le pasa hoy a `condicion_legible` y lo que le pasa a `condicion`
+    del motor.
+
+O2. EL CIERRE CASI NUNCA ES DEL PUERTO ENTERO. 148 de 254 traen un umbral de
+    tonelaje, o sea que el texto acota el cierre a un segmento de flota. Solo 3
+    de 254 dicen "TODO TIPO DE NAVES". Un estado booleano de puerto no tiene
+    donde poner esa acotacion.
+
+O3. `bloqueo_total` responde una pregunta mas angosta que la que su nombre
+    sugiere: nace de UN literal, /TODO TIPO DE NAVES/. El texto tambien dice
+    "TODO TIPO DE EMBARCACIONES" (22 registros) y eso cae por otra rama.
+
+O4. TRES PROPIEDADES SE EXTRAEN DEL TEXTO Y MUEREN. `umbral_ab_dentro` se
+    calcula, se pasa como hecho al motor de reglas y ninguna regla lo consulta.
+    `afecta_mayores`, igual. `area` ni se pasa. El trabajo de leer el alcance
+    dentro/fuera ya esta hecho y no llega a ningun veredicto.
+
+O5. EL ALCANCE GEOGRAFICO NO SALE DEL TEXTO. `area` sale de `AreaRestriccion`.
+    Cuando ese campo viene null cae al defecto 'DENTRO_Y_FUERA'. El caso ID
+    95040 lo muestra completo: su texto cambio de "FUERA DEL ESTERO CASTRO" a
+    "DENTRO Y FUERA DEL ESTERO CASTRO" —el cierre se agrando— y `area` se quedo
+    en 'FUERA' en las dos versiones, porque no lee el texto. Lo unico que se
+    movio fue nada: el veredicto es UV/null en las dos.
+
+O6. EL VEREDICTO DEL MOTOR DEPENDE DE QUIEN PREGUNTA; UN ESTADO DE PUERTO NO
+    PUEDE. Mismo registro, AB 15 -> UV; AB 60 -> null. Es correcto para lo que
+    el motor hace y es la razon por la que su salida no puede leerse como
+    estado de puerto sin cambiarle el significado.
+
+O7. HAY UN SOBRE-BLOQUEO MEDIDO EN LA DIRECCION CONTRARIA. 22 registros
+    declaran cierre acotado a menores y el motor los lee TEMPORAL, que dispara
+    la regla de prioridad 10 sin mirar tonelaje: UV para toda nave, incluida
+    una de 150 AB. El texto de ID 94977 dice "PUERTO CERRADO PARA TODO TIPO DE
+    EMBARCACIONES MENORES" y el motor bloquea a las mayores tambien.
+
+O8. LA APERTURA DEL TEXTO ES PLANTILLA Y EL CUERPO NO. Cinco prefijos cubren el
+    77% y doce el 91%; pero 46 de las 89 formas completas aparecen una sola vez.
+    La parte formulaica es justo la que ya se sabe leer (la condicion); la parte
+    libre es justo donde vive lo que falta (umbral, alcance, excepciones).
+
+O9. `derivarCondicion` NO PASA POR EL NORMALIZADOR CENTRAL. Solo
+    `.toUpperCase()`. INV-0.3 dice "todo texto que entre desde una fuente
+    externa DEBE pasar por la funcion de normalizacion central ANTES de
+    cualquier parseo o matching". Esta funcion parsea texto de SITPORT sin
+    hacerlo. Hoy no muerde por los literales que busca; se consigna como
+    observacion, no como correccion (ver §9).
+
+O10. EL PARSER TIENE UNA SEGUNDA VIA DE CONDICION QUE NO ES DEL TEXTO.
+    `detectarCondicion` mira `MotivoRestriccion` como fallback y tambien cuando
+    `Observacion` NO esta vacia (sitport-parser.js:28, 33, 37). En la bolsa B
+    —los que NO declaran cierre— eso produce 73 MAL_TIEMPO y 25 TEMPORAL, que
+    es de donde salen los 89 UV de la bolsa B con AB 15. Es deliberado y esta
+    comentado como bug fix; se consigna porque explica por que las dos bolsas
+    no se separan.
+
+
+================================================================================
+9. FUERA DE ALCANCE CRUZADO — §6.1, REDACTADO Y NO APLICADO
+================================================================================
+
+F1. NINGUNA DECLARACION VIGENTE SE MIDIO COMO FALSA, y se dice explicitamente
+    para que no se lea silencio como ausencia de busqueda. Se comprobo:
+    CONTRATO_MOTOR.md v2.4 no declara nada sobre que el motor extraiga estado de
+    puerto de `Observacion`; INV-2.2 (linea 339) e INV-2.3 (linea 347) hablan de
+    "puerto de recalada cerrado" como una ENTRADA que el motor recibe, no como
+    algo que el motor derive. No dicen de donde sale, asi que no dicen nada
+    falso. INV-5.3 (linea 1014) si declara, y es CIERTO, que "el motor los toma
+    del texto real de SITPORT por bahia" hablando de umbrales de AB — esa
+    afirmacion se verifico y se sostiene (once patrones, 148 de 254 con umbral
+    extraido).
+
+F2. LO QUE EL CONTRATO NO DICE, Y ES UN HUECO, NO UNA FALSEDAD. §9 del contrato
+    (linea 1141) declara la fila "Zarpe cerrado" con su texto de doble capa. No
+    hay fila equivalente que declare de donde sale el hecho "puerto cerrado".
+    Como no hay afirmacion, no hay correccion que redactar: hay una decision del
+    owner que tomar (P-a de §6.3). Se consigna para que el hueco quede escrito.
+
+F3. INV-0.3 Y `derivarCondicion` — EN TENSION, NO FALSA, y por eso va como
+    observacion (O9) y no como correccion. INV-0.3 (CONTRATO_MOTOR.md:244) dice
+    literal:
+        "Todo texto que entre desde una fuente externa (SITPORT, MOP, SHOA,
+         Sernapesca, cualquier API) DEBE pasar por la función de normalización
+         central ANTES de cualquier parseo o matching"
+    y su verificacion dice "todo servicio nuevo que consuma datos externos
+    importa y usa la utilidad de normalización compartida".
+    `derivarCondicion` (sitport-routes.js:532) hace matching sobre texto de
+    SITPORT con solo `.toUpperCase()`. Si INV-0.3 alcanza a una funcion privada
+    de un archivo de rutas, esta en falta; si su "servicio nuevo" acota el
+    alcance a los servicios de src/services/, no. Cual de las dos cosas dice es
+    lectura del contrato y es del owner.
+    NO SE REDACTA REEMPLAZO porque el arreglo tiene dos formas posibles con
+    consecuencias distintas y la eleccion depende de P-a: (a) hacerla llamar a
+    `normalizarTexto` sin tocar el orden de las ramas —barato, no cambia ninguna
+    de las 444 salidas medidas, 0 registros afectados hoy—; o (b) rehacerla
+    entera cuando el owner defina el cierre, que es P-d. Recomendar (a) hoy
+    seria gastar una pieza en algo que (b) va a reescribir.
+    Que autorizacion haria falta: el ciclo de §6 de CLAUDE.md, y ademas la
+    decision de §0.4 porque `condicion_legible` es texto que ve el patron.
+
+F4. EL REGISTRO ID 95171 —"PUERTO CERRADO PARA TODA LA JURISDICCION DE JUAN
+    FERNANDEZ"— vuelve a aparecer como el caso extremo del material. Se midio su
+    salida completa del motor y se deja en el .txt del instrumento (seccion H).
+    Lo relevante para ESTA pregunta: el motor le da UV para toda nave, y se lo
+    da por `condicion=MAL_TIEMPO` heredado de `MotivoRestriccion`, no por leer
+    "PUERTO CERRADO PARA TODA LA JURISDICCION". Da la respuesta correcta por el
+    camino equivocado. El frente del D.S. 991 esta fuera de alcance por el
+    prompt y no se abrio.
+
+F5. `derivarCondicion` devuelve la etiqueta "Asociados a elemento y/o ip" en 18
+    registros de la bolsa B. Sale del fallback a `MotivoRestriccion` (:538-539),
+    que es un rotulo interno de la fuente y no una condicion de puerto. Es texto
+    que llega al API como `condicion_legible`. Se consigna como dato; que se
+    haga con el es de la misma decision que P-d.
+
+
+================================================================================
+10. ESTADO AL CIERRE
+================================================================================
+Sin commit. HEAD sigue en b672e0e71226675ddb6fa5caaa6d7dad2ba14a33 = origin/main.
+`data/catalogo/estado_drift.json` no fue tocado. No se salio a la API. No se
+abrio la PWA. Los tres archivos del motor se leyeron y se corrio su suite (37/37
+en verde); no se modificaron. Ningun insumo se toco, asi que no hubo nada que
+restaurar: los sha256 de las seis capturas son los mismos al empezar y al
+terminar y estan en la seccion (0) del .txt del instrumento.
+Nuevo untracked en tmarea-backend: este directorio, con 1 instrumento, su salida
+y esta bitacora.
+================================================================================

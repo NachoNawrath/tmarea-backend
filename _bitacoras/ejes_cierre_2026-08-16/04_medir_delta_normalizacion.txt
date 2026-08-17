@@ -1,0 +1,19 @@
+================================================================================
+EJES DEL CIERRE — PASADA 4: ¿NORMALIZAR CAMBIA ALGUNA SALIDA DE derivarCondicion?
+Corrida: 2026-08-17T01:41:46.063Z · 444 registros
+================================================================================
+
+  Se corre derivarCondicion sobre el registro CRUDO y sobre una copia con
+  Observacion y MotivoRestriccion normalizados (INV-0.3). Se comparan.
+
+  comparaciones efectivas : 444 / 444
+  salidas que CAMBIAN     : 0 / 444
+
+  NOTA: la segunda corrida normaliza tambien MotivoRestriccion, asi que un
+  cambio puede venir del fallback (:538-539) y no de las cuatro ramas. Se
+  distingue abajo: cuantos de los que cambian traen Observacion no vacia.
+  de los 0 que cambian, con Observacion no vacia: 0
+
+================================================================================
+exit 0
+================================================================================

@@ -1,0 +1,893 @@
+================================================================================
+EJES-DEL-CIERRE-RECONOCIMIENTO — LOS 254 MIRADOS POR LOS TRES EJES DEL OWNER
+Sesion de reconocimiento, 2026-08-16. NO decide, NO implementa, NO propone regla.
+================================================================================
+
+LINEA BASE DE ARRANQUE, verificada antes de la primera lectura:
+  tmarea-backend  HEAD b672e0e71226675ddb6fa5caaa6d7dad2ba14a33 = origin/main
+                  (rev-parse de HEAD y de origin/main, identicos)
+                  sin estagear: solo data/catalogo/estado_drift.json (no tocado)
+                  untracked: 32 entradas con directorios colapsados
+  No se salio a la API de SITPORT. La PWA no se abrio, ni de lectura.
+  El motor BRE se leyo y se corrio su suite; NO se modifico.
+
+ZONA DE ESCRITURA RESPETADA: solo este directorio. Ningun archivo de src/,
+data/, CLAUDE.md, CONTRATO_MOTOR.md ni de la PWA fue modificado. scripts/ no se
+uso: los cinco instrumentos viven aca. Se aviso antes de escribirlos.
+
+INSTRUMENTOS, los cinco corridos (exit 0), con su salida versionada al lado:
+  01_medir_ejes.js              particion, eje "a quien", eje "donde", volcado
+                                de vocabulario
+  02_medir_actividades.js       eje "que queda suspendido", perfiles,
+                                convivencia, bolsa B
+  03_medir_porosidad.js         el borde de la particion, en las dos puntas
+  04_medir_delta_normalizacion  ¿normalizar cambia alguna salida? (control)
+  05_medir_delta_158_157.js     el registro que explica una diferencia de UNO
+                                en mi propia pasada 2
+
+  Los .txt estan en UTF-8 sin BOM (los escribe Node). Para leerlos desde
+  PowerShell 5.1 hace falta `Get-Content -Encoding UTF8`.
+
+  UNA MEDICION SE CORRIO EN LINEA y se declara con su comando, porque no dejo
+  archivo: el barrido de TAB en los campos de texto (§9, O7). Comando completo
+  en O7. Se declara como tal y no como salida de instrumento.
+
+--------------------------------------------------------------------------------
+LO QUE SE IMPORTO EN VEZ DE REESCRIBIR
+--------------------------------------------------------------------------------
+  · `normalizarRestriccion` — require del motor. Corrido sobre los 444.
+  · `AB_PATTERNS` — NO esta exportado. Se EXTRAE COMO TEXTO de
+    sitport-parser.js:46-58 y se evalua ese texto. Control: si no son 11 RegExp,
+    el instrumento aborta con exit 4. Son 11 y corrio.
+  · `derivarCondicion` — se extrae de sitport-routes.js:532 como texto y se
+    ejecuta ese texto. Misma tecnica que la sesion anterior.
+  · El criterio de particion 254/190 — VERBATIM de
+    _bitacoras/sondaje_cierre_2026-08-16/03_contraste_texto.js:84, con su
+    normalizador local (:37-39), que NO es el del motor.
+
+NORMALIZACIONES DECLARADAS (INV-0.3):
+  norm = NFD sin diacriticos + \s+ colapsado + trim + MAYUSCULAS   <- el del criterio
+  N1   = norm + entities HTML decodificadas (&LT; &GT; &AMP; &QUOT;)
+  N3   = N1 + toda puntuacion a espacio, recolapsado
+  El normalizador del MOTOR (`normalizarTexto`) NO colapsa espacios y NO
+  decodifica entities. Donde corre el motor se usa el del motor, y se dice.
+
+
+================================================================================
+0. LAS PREMISAS DEL PROMPT, VERIFICADAS UNA POR UNA
+================================================================================
+  444 registros en seis capturas                 ... SI  (73+83+83+83+83+39)
+  particion 254 / 190, disjunta, suma 444        ... SI  (reproducida, solape 0)
+  once patrones de tonelaje                      ... SI  (11 RegExp extraidos)
+  37 tests, no 29                                ... SI  (tests 37 · pass 37 ·
+                                                     fail 0 · skipped 0)
+  "157 de 173" de la sesion anterior             ... SI, y ademas se reconcilia
+                                                     con el denominador 254 (§7)
+
+  LO QUE NO SE SOSTIENE — y no es del prompt sino de la lista de actividades
+  que el prompt ofrecio como ejemplo. El prompt ya advertia "NO uses mi lista
+  como universo", asi que esto CONFIRMA la advertencia en vez de contradecirla:
+
+    "turisticas"                    0 / 444 en CUALQUIER campo de los 444
+    "actividades maritimas port."   0 / 444 en CUALQUIER campo
+    "transferencia"                 0 / 254 en Observacion — pero 18 / 444 en
+                                    `tiporestriccion` ("PARALIZACION DE FAENAS
+                                    DE TRANSFERENCIA"), que el parser IGNORA
+    "pesca artesanal"               0 / 254 en Observacion — 16 / 444 en
+                                    `NombreInstalacion` ("ATRACADERO ARTESANAL
+                                    CALETA COQUIMBO"), que el parser IGNORA
+    "recreativas"                   2 / 254
+
+  >>> El caso de referencia de Hanga Roa que el owner capturo en la web NO
+      aparece en las seis capturas, y su vocabulario tampoco: "TURISTICAS",
+      "ACTIVIDADES MARITIMAS PORTUARIAS" y "PESCA ARTESANAL" son cero en este
+      material. Sirve como referencia de FORMA —los tres ejes en tres campos—,
+      no como muestra de vocabulario. El vocabulario real esta en §5.
+
+
+================================================================================
+>>> EL HALLAZGO QUE VA PRIMERO — LA PARTICION 254/190 ES POROSA EN LAS DOS PUNTAS
+================================================================================
+El prompt pedia medir la porosidad en el punto 6 y solo hacia un lado. Es de los
+dos lados, y el numero grande esta del lado que no se preguntaba.
+
+  DE LOS 190 "QUE NO DECLARAN CIERRE":
+      96 / 190   contienen la palabra CERRADO / CERRADA
+      89 / 190   contienen "CERRADO PARA ..." — un cierre dirigido a un
+                 segmento de flota, con todas las letras
+     100 / 190   traen algun predicado de cierre (CERRADO PARA, CERRADO EL,
+                 TRAFICO SUSPENDIDO, SE SUSPENDE EL TRAFICO, PROHIBICION DE
+                 ZARPE)
+      67 / 190   suspenden actividades nombradas SIN decir "puerto cerrado"
+      93 / 190   traen umbral de tonelaje extraible por el parser
+
+     Ejemplo, ID 95025 · COCHAMO, bolsa B:
+       "SE ESTABLECE CONDICION DE TIEMPO VARIABLE, CERRADO PARA EMBARCACIONES DE
+        25 A.B. DENTRO Y FUERA DE LA BAHIA DE COCHAMO TRABAJOS EN CENTROS DE
+        CULTIVOS, FAENAS DE BUCEO..."
+     Dice CERRADO, dice para quien, dice donde y dice que se suspende. Los tres
+     ejes completos. Y esta del lado "no declara cierre" porque no dice la
+     palabra PUERTO pegada a CERRADO.
+
+  Y AL REVES, DE LOS 254:
+      81 / 254   entran a la bolsa A SOLO por "CONDICION DE PUERTO"
+      34 / 254   de esos, NO traen CERRADO ni ningun predicado de cierre
+
+     Ejemplo, ID 95139 · LAGO VILLARRICA SECTOR PUCON, bolsa A:
+       "SE ESTABLECE CONDICION DE PUERTO VARIABLE, POR AUMENTO INTENCIDAD DE
+        VIENTO."
+     No cierra nada. Esta en la bolsa "declaran cierre".
+
+  EL CASO DEL TIPEO — UNA LETRA CRUZA LA LINEA:
+     Barrido de /\bP[A-Z]{2,6}\s+CERRAD[OA]S?\b/ sobre los 444:
+        184  "PUERTO CERRADO"   <- el criterio lo atrapa
+          1  "PURTO CERRADO"    <- el criterio NO lo atrapa
+     ID 95208 · PUERTO MONTT:
+       "SE ESTABLECE CONDICION DE MAL TIEMPO, PURTO CERRADO PARA EMBARCACIONES
+        MENORES DE 50 A/B. DENTRO Y FUERA DE LA BAHIA, SE SUSPENDE FAENAS DE
+        BUCEO, REMOLQUES, Y TRABAJOS EN CENTROS DE CULTIVO"
+     Un cierre completo, con sus tres ejes, del lado B por una vocal.
+
+  >>> ESTO NO PROPONE UN CRITERIO NUEVO Y NO INVALIDA LOS 254. Lo que dice es
+      que "los 254" no es "los puertos cerrados": es "los que matchean dos
+      literales". Todo numero de esta bitacora va con ese denominador y con ese
+      significado, y las dos sesiones anteriores tienen las suyas con el mismo.
+      Qué es un cierre es la decision P-a que la sesion anterior ya dejo del
+      owner; esta medicion le pone tamaño al borde: ~100 de un lado, 34 del otro.
+
+
+================================================================================
+1. EJE "A QUIEN" — DENOMINADOR 254
+================================================================================
+
+1.1 — `NaveRecibe`: TRES FORMAS, Y NINGUNA TRAE EL UMBRAL DEL CIERRE
+
+     225 / 254   "NAVE MENOR (&LT;100 AB)"
+      16 / 254   "NAVE MAYOR (&GT;=100 AB)"
+      13 / 254   "NAVE MAYOR (&GT;=100 AB), NAVE MENOR (&LT;100 AB)"
+     suma 254 — CIERRA
+
+     clases de valor, sin colapsar: `valor` 254/254. Cero null, cero "", cero 0,
+     cero "0", cero AUSENTE.
+     entities HTML sin decodificar: 254 / 254. Confirmado, no heredado.
+
+     >>> EL 100 DE `NaveRecibe` NO ES EL UMBRAL DEL CIERRE. Es la definicion
+         administrativa de "nave menor". El umbral del cierre esta en el texto y
+         vale 25 en 79 registros. Los dos numeros conviven en el mismo registro
+         y significan cosas distintas.
+
+     Lo que el motor deriva de ahi (dos booleanos):
+       menores=true  mayores=false   225 / 254
+       menores=true  mayores=true     15 / 254
+       menores=false mayores=true     14 / 254
+       suma 254 — CIERRA
+     (15 y 14 no son 13 y 16 porque `afecta_menores` tambien mira el texto:
+      "TODO TIPO DE NAVES / DE EMBARCACIONES", sitport-parser.js:126-132)
+
+1.2 — CUANTOS TRAEN UMBRAL NUMERICO — por la implementacion versionada
+
+     con algun umbral extraido : 148 / 254
+     sin ningun umbral         : 106 / 254
+     suma 254 — CIERRA        (coincide con la cifra de la sesion anterior)
+
+     NUMEROS Y FRECUENCIA — `umbral_ab_fuera`, el unico que alguna regla consulta:
+       null 106 · 25: 79 · 50: 31 · 100: 28 · 12: 5 · 99: 5     suma 254 CIERRA
+     `umbral_ab_dentro`, hecho muerto (ninguna regla lo consulta):
+       null 106 · 25: 80 · 100: 31 · 50: 27 · 12: 5 · 99: 5     suma 254 CIERRA
+
+     >>> SON CINCO NUMEROS EN TODO EL MATERIAL: 12, 25, 50, 99 y 100. No es una
+         escala continua; es un vocabulario corto. El 99 aparece 5 veces y es el
+         unico que no es redondo.
+
+     DENTRO != FUERA en 4 / 254:
+       ID 95155 · BAHIA QUELLON     dentro=100 fuera=50  (en 3 capturas)
+       ID 95185 · RADA DE\tCARELMAPU dentro=25  fuera=50  (en 1)
+     Son DOS restricciones distintas vistas en cuatro filas. Se dice porque el
+     conteo por filas y el conteo por restriccion no son el mismo numero.
+
+1.3 — LOS ONCE PATRONES: COBERTURA EXACTA SOBRE LOS 254
+
+     "cobertura" = cual de los once es el PRIMERO que matchea, que es la
+     semantica de `extraerUmbralDeTexto` (:61-65).
+
+       patron  1  EMBARCACIONES MENORES DE (n) A/.B ............  37 / 254
+       patron  5  EE.MM. (DE|A) (n) A.B ........................  32 / 254
+       patron  4  NAVES MENORES DE (n) A.B .....................  16 / 254
+       patron  2  EMBARCACIONES MENORES DE (n) ARQUEO BRUTO ....  15 / 254
+       patron 11  (n) (A.B|TRG) — el generico ..................  12 / 254
+       patron  7  EE.MM. < (n) A.B .............................   9 / 254
+       patron  3  EMBARCACIONES MENORES A (n) A.B ..............   6 / 254
+       patron  8  EE.MM. (DE|A) (n) TRG ........................   6 / 254
+       patron  6  EE.MM. - (n) A.B .............................   5 / 254
+       patron  9  NAVES MENORES DE (n) ARQUEO BRUTO ............   5 / 254
+       patron 10  NAVE MENOR A (n) TRG .........................   5 / 254
+       NINGUNO ..........................................         106 / 254
+       suma 254 — CIERRA
+
+     CONTROL DE COHERENCIA, en las dos direcciones:
+       algun patron matchea pero el parser no deja umbral_fuera :  0 / 254
+       ningun patron matchea pero el parser SI deja umbral      :  0 / 254
+     >>> Los once patrones explican EXACTAMENTE la extraccion. No hay ningun
+         umbral que entre ni salga por otro lado. Los 148 son los once patrones
+         y nada mas.
+
+     >>> LOS ONCE NO SON REDUNDANTES: el generico (11) cubre 12 y los diez
+         especificos cubren 136. Y el mas productivo (37) y el segundo (32) son
+         dos redacciones de la misma cosa — "EMBARCACIONES MENORES DE" y
+         "EE.MM.".
+
+1.4 — LOS 106 QUE NO PERMITEN EXTRAER UN NUMERO, Y POR QUE. Causa primaria,
+      disjunta, denominador 106:
+
+       61 / 106  "MENORES" sin numero — rama :92. null NO es "no se pudo": es
+                 "todas las menores", y el parser lo dice a proposito.
+       23 / 106  el texto no tiene NINGUN digito
+       14 / 106  hay digitos pero ninguno junto a una unidad de los once
+                 patrones. Caso: "CONDICION DE PUERTO A \"MAL TIEMPO N°224\"" —
+                 el 224 es el numero del aviso, no un tonelaje.
+        5 / 106  "TODO TIPO DE EMBARCACIONES" — rama :95, null a proposito
+        3 / 106  bloqueo_total ("TODO TIPO DE NAVES") — no hay numero porque no
+                 hace falta
+      suma 106 — CIERRA
+
+     >>> DE LOS 106 SIN NUMERO, 69 (61+5+3) NO SON UN FALLO DE EXTRACCION: son
+         un cierre sin umbral, dicho asi por la fuente, y el parser lo codifica
+         como null a proposito. Los que si son un hueco son 37 (23 sin digito +
+         14 con digito que no es tonelaje).
+         `null` esta hoy sobrecargado: significa "todas las menores" y significa
+         "no se pudo leer". Es el unico lugar del eje donde el dato y el
+         no-dato comparten valor.
+
+1.5 — UNIDADES QUE APARECEN. Sacadas del dato: el token que sigue a un numero
+      en la bolsa A. NO SE CONVIERTE NINGUNA, por decision del owner.
+
+      201 ocurrencias de "numero + token". Las de tonelaje:
+        A.B.      54        AB.       26        TRG///     6
+        AB        47        TRG        6        TRG//      1
+        ARQUEO    28   (de "ARQUEO BRUTO")
+      El resto son de otra dimension y se declaran para que no se cuelen:
+        HRS. 8 · DE 8 · H 6 · HORA 2 · NDS 1 (nudos) · JUL/AGO/AGO. (fechas) ·
+        UTC 1 · CERRAZON 1 · SE 1 · VRS 1 · A 1
+      En `NaveRecibe`: "AB" 267 veces y nada mas.
+
+      >>> DOS UNIDADES, SIETE GRAFIAS. AB se escribe "A.B.", "AB", "AB." y
+          "ARQUEO BRUTO"; TRG se escribe "TRG", "TRG//" y "TRG///". Las barras
+          de "TRG///" son de la fuente, no del lector.
+      >>> NO SE PROPONE NORMALIZARLAS y no hace falta: los once patrones ya
+          absorben las siete grafias, y el control de 1.3 lo prueba (0
+          discrepancias). El numero se lee; la unidad se conserva.
+      >>> LA UNIDAD NO SE PIERDE PORQUE NO SE GUARDA. `umbral_ab_dentro` /
+          `umbral_ab_fuera` son enteros pelados: 25 de "25 A.B." y 12 de "12
+          TRG" quedan indistinguibles en la salida del parser. Se consigna como
+          dato, sin proponer donde iria la unidad.
+
+
+================================================================================
+2. EJE "DONDE" — DENOMINADOR 254
+================================================================================
+
+2.1 — `AreaRestriccion`: SEIS VALORES Y UN NULL
+
+     148 / 254   "DENTRO DEL LIMITE DEL PUERTO, FUERA DEL LIMITE DEL PUERTO"
+      51 / 254   "FUERA DEL LIMITE DEL PUERTO"
+      16 / 254   null
+      12 / 254   "DENTRO DEL LIMITE DEL PUERTO"
+      12 / 254   "OTRA AREA FIJADA POR LA AML"
+      11 / 254   "DENTRO DEL LIMITE DEL PUERTO, FUERA DEL LIMITE DEL PUERTO,
+                  OTRA AREA FIJADA POR LA AML"
+       4 / 254   "FUERA DEL LIMITE DEL PUERTO, OTRA AREA FIJADA POR LA AML"
+     suma 254 — CIERRA
+     clases de valor: `valor` 238 · `null` 16. Cero "", cero AUSENTE.
+
+     >>> EL CAMPO TIENE TRES TERMINOS, NO DOS. "OTRA AREA FIJADA POR LA AML"
+         aparece en 27 de 254 (12 sola + 11 + 4) y es un tercer alcance
+         —jurisdiccional, fijado por la Autoridad Maritima Local— que
+         `detectarArea` (:106-114) no mira: solo busca DENTRO y FUERA. Los 12
+         que la traen SOLA caen al defecto 'DENTRO_Y_FUERA' igual que un null.
+
+2.2 — DENTRO / FUERA / AMBOS / NULO, LEIDO DEL CAMPO
+
+       AMBOS (dice DENTRO y FUERA)                  159 / 254
+       solo FUERA                                    55 / 254
+       NULO o vacio                                  16 / 254
+       con valor pero no dice ni DENTRO ni FUERA     12 / 254
+       solo DENTRO                                   12 / 254
+       suma 254 — CIERRA
+
+2.3 — LO QUE EL MOTOR DEJA EN `area`
+
+       DENTRO_Y_FUERA  187 / 254        FUERA  55 / 254        DENTRO  12 / 254
+       suma 254 — CIERRA
+
+     >>> 187 = 159 declarados + 16 nulls + 12 "OTRA AREA". VEINTIOCHO DE 254
+         (11,0%) salen 'DENTRO_Y_FUERA' POR DEFECTO, no porque nadie lo dijera.
+         La salida no distingue "el campo dijo ambos" de "el campo no dijo".
+
+2.4 — LO QUE DICE EL TEXTO
+
+       texto dice DENTRO y FUERA          129 / 254
+       texto no dice ni DENTRO ni FUERA   105 / 254
+       texto dice solo FUERA               16 / 254
+       texto dice solo DENTRO               4 / 254
+       suma 254 — CIERRA
+
+     >>> 105 DE 254 NO NOMBRAN ZONA EN EL TEXTO. El campo es la unica fuente de
+         alcance para el 41% de la bolsa A.
+
+2.5 — CRUCE CAMPO x TEXTO, los 254 sin solape (13 celdas, suma 254 CIERRA):
+
+       104  campo AMBOS      | texto AMBOS          <- concuerdan
+        51  campo AMBOS      | texto calla
+        29  campo solo FUERA | texto calla
+        16  campo solo FUERA | texto AMBOS          <- el texto es MAS ancho
+        10  campo otro valor | texto calla
+        10  campo solo FUERA | texto solo FUERA     <- concuerdan
+         8  campo NULO       | texto calla
+         7  campo solo DENTRO| texto calla
+         6  campo NULO       | texto solo FUERA     <- solo el texto lo dice
+         5  campo solo DENTRO| texto AMBOS          <- el texto es MAS ancho
+         4  campo AMBOS      | texto solo DENTRO    <- el texto es MAS angosto
+         2  campo otro valor | texto AMBOS
+         2  campo NULO       | texto AMBOS          <- solo el texto lo dice
+
+2.6 — LAS TRES PREGUNTAS DEL PROMPT, CONTESTADAS
+
+     (a) ZONA EN EL TEXTO Y NO EN EL CAMPO: 8 / 254. Los ocho, citados en
+         01_medir_ejes.txt §3.6. Dos son de BAHIA SAN VICENTE y PENINSULA DE
+         HUALPEN ("...DENTRO Y FUERA DE LA BAHIA...", campo null); seis son de
+         BAHIA DE QUINTERO ("...POR FUERA DE PARAMETROS...", campo null) y en
+         esos SEIS el "FUERA" del texto NO es geografico: es "fuera de
+         parametros operacionales". Se declara porque un lector del texto que
+         busque FUERA se los lleva puestos, y esta medicion los cuenta.
+         >>> Zona geografica real solo en el texto: 2 de 254. Los otros 6 son un
+             falso positivo de mi propio criterio y lo digo yo.
+
+     (b) CONTRADICCIONES ESTRICTAS (campo dice una, texto dice la otra): 0 / 254.
+         Criterio declarado: campo == solo DENTRO y texto == solo FUERA, o al
+         reves. Ninguno.
+
+     (c) DESACUERDOS NO ESTRICTOS, que si existen: 25 / 254.
+           16  campo solo FUERA, texto dice DENTRO Y FUERA
+            5  campo solo DENTRO, texto dice DENTRO Y FUERA
+            4  campo AMBOS, texto dice solo DENTRO
+         En los 21 primeros el TEXTO es mas ancho que el campo y el motor
+         publica el campo. En los 4 ultimos el texto es mas angosto.
+         Los 4 son ID 95062 · BORDE COSTERO-VALDIVIA, visto en 4 capturas:
+           "PUERTO CERRADO  PARA EE.MM. DE 100 AB.  ENTRE PUNTA NIEBLA HASTA
+            PUNTA RONCA (MEHUIN). ACTIVIDADES DE PESCA, BUCEO, REMOLQUES Y
+            DEPORTES NAUTICOS SUSPENDIDAS DENTRO DE LA BAHIA NIEBLA..."
+         >>> Es UNA restriccion en cuatro filas, no cuatro casos.
+
+     El caso ID 95040 que la sesion anterior conto entero —el que cambio de
+     "FUERA DEL ESTERO CASTRO" a "DENTRO Y FUERA DEL ESTERO CASTRO" con `area`
+     quieta en 'FUERA'— cae en la celda de 16 de arriba. No es un caso aparte:
+     es el ejemplar citado de una familia de 16.
+
+2.7 — LUGARES QUE EL TEXTO NOMBRA, sacados del dato (token tras DENTRO DE /
+      FUERA DE / DENTRO Y FUERA DE):
+        BAHIA en sus formas ..... 108 apariciones
+        BARRA (del rio) ......... 8
+        LIMITES DEL ............. 1
+      Y por fuera de esa construccion, en la tabla de frecuencias: CANAL 42,
+      SECTOR 45, JURISDICCION 35, CALETA 17, RIO 13, ESTERO 5, LAGO 5, GOLFO 6,
+      ISLAS 5, CANALES 7, ADYACENTES 7.
+      >>> EL ALCANCE GEOGRAFICO REAL DEL TEXTO NO ES BINARIO DENTRO/FUERA. Es
+          una geografia con nombre propio —canales, esteros, golfos, lagos,
+          sectores, barras de rio— y el campo la colapsa a dos terminos y medio.
+
+
+================================================================================
+3. EJE "QUE QUEDA SUSPENDIDO" — DENOMINADOR 254. NADIE LO HABIA MEDIDO.
+================================================================================
+
+PROCEDENCIA: cada termino de esta lista salio de la tabla de frecuencias de la
+bolsa A (01_medir_ejes.txt §4.1) o del volcado de clausulas (§4.2). Los que el
+prompt ofrecio y el dato no tiene estan en §0 y se declaran en cero.
+
+3.1 — CONTEO POR ACTIVIDAD. Los grupos se solapan (un registro nombra varias) y
+      por eso NO suman 254; la bolsa que si cierra es 3.2.
+
+       BUCEO ......................  50 / 254
+       TRABAJOS (generico) ........  48 / 254
+       REMOLQUE ...................  47 / 254
+       CENTROS DE CULTIVO .........  39 / 254
+       CARTAS DE CONTINUIDAD ......  38 / 254   <- NO es actividad, ver 3.5
+       NAVEGACION .................  22 / 254
+       TRAFICO ....................  18 / 254
+       DEPORTIVAS / DEPORTES ......  13 / 254
+       FONDEO .....................  10 / 254
+       ATRAQUE ....................   7 / 254
+       ZARPE ......................   6 / 254
+       CARGA / DESCARGA ...........   6 / 254
+       VIVERES / PERTRECHOS .......   6 / 254
+       NAUTICOS ...................   6 / 254
+       PESCA ......................   6 / 254
+       FAENAS ACUICOLAS ...........   5 / 254
+       CONECTIVIDAD ...............   4 / 254
+       RECREATIVAS ................   2 / 254
+       TRANSFERENCIA / PESCA ARTESANAL / TURISTICAS / ACT. MARITIMAS ... 0
+
+     CONTROL DE POLARIDAD: los 254 se cruzaron contra un marcador de suspension
+     (/SUSPEND|PROHIB|RESTRING|CANCELA|CERRAD|QUEDAN/). En LAS DIECIOCHO
+     actividades, el conteo "con marcador" es IGUAL al conteo de menciones. No
+     hay ninguna actividad nombrada en un registro que no traiga marcador.
+     >>> Es un control, no una prueba de que cada mencion sea una suspension: el
+         marcador puede estar en otra oracion del mismo registro. Lo que prueba
+         es que no hay menciones sueltas de actividad en textos sin suspension.
+
+3.2 — CUANTOS ENUMERAN Y CUANTOS NO
+
+       enumeran al menos una actividad : 122 / 254
+       no nombran ninguna              : 132 / 254
+       suma 254 — CIERRA
+
+       por cantidad:  0 act.: 132 · 1: 56 · 2: 11 · 3: 5 · 4: 16 · 5: 28 · 6: 6
+       suma 254 — CIERRA
+
+     >>> MAS DE LA MITAD DE LOS CIERRES (132 de 254) NO DICE QUE QUEDA
+         SUSPENDIDO. El tercer eje esta VACIO en el 52% de la bolsa A. No es que
+         no se pueda extraer: no esta escrito.
+
+3.3 — NOMBRAR ALGUNAS vs SUSPENDER TODO
+
+       NOMBRAN actividades y NO dicen "todo"      :  95 / 254
+       NOMBRAN actividades Y ADEMAS dicen "todo"  :  27 / 254
+       dicen "todo" SIN nombrar ninguna           :  25 / 254
+       ni nombran ni dicen "todo"                 : 107 / 254
+       suma 254 — CIERRA
+
+     >>> LA RESPUESTA A LA PREGUNTA DEL OWNER: 95 de 254 nombran un subconjunto
+         y no dicen "todas". 52 dicen "todo/totalidad" (25 solas + 27 con
+         lista). Y 107 no dicen ni una cosa ni la otra.
+     >>> Y UNA QUE COMPLICA: 27 registros dicen "TODO" Y ADEMAS enumeran. La
+         forma dominante es "...FAENAS EN SU TOTALIDAD SUSPENDIDAS" precedida
+         del umbral (15 con "25 A.B.", 12 con "50 A.B.", 7 con "NAVES MENORES DE
+         25 A.B.", 2 con "50 A.B."). Enumerar y decir "todas" NO se excluyen en
+         este dato.
+
+     Las clausulas de "todo", distintas (10 formas, citadas enteras en
+     02_medir_actividades.txt §5.3). Dos de ellas dicen ademas lo contrario en
+     otra parte de la misma frase:
+       5x  "...DE LA BAHIA CONDICION DE PUERTO NORMAL PARA TODO TIPO DE FAENA Y
+            TRABAJO"                                      <- aca "todo" ABRE
+       4x  "...PARA TODA NAVE MENOR A 12 TRG Y SE CANCELAN TODO TIPO DE FAENA
+            LAGO RANCO CONDICION NORMAL"                  <- cierra y abre
+     >>> "TODO TIPO DE FAENAS" no siempre suspende: en 5 registros califica a
+         "CONDICION DE PUERTO NORMAL". El literal solo no alcanza; hay que mirar
+         el verbo que lo gobierna. Se consigna, no se resuelve.
+
+3.4 — CUANTAS FORMAS DISTINTAS DE ENUMERAR HAY: VEINTE firmas.
+      Firma = conjunto de actividades del registro. Suma 254 — CIERRA.
+
+       132  (ninguna)
+        28  BUCEO + CARTAS + CENTROS DE CULTIVO + REMOLQUE + TRABAJOS
+        22  NAVEGACION
+        13  TRAFICO
+         8  BUCEO + CENTROS DE CULTIVO + REMOLQUE + TRABAJOS
+         6  ATRAQUE + CARGA/DESCARGA + DEPORTIVAS + FONDEO + NAUTICOS + VIVERES
+         6  TRABAJOS
+         6  ZARPE
+         5  CARTAS + FAENAS ACUICOLAS + REMOLQUE
+         4  BUCEO + DEPORTIVAS + PESCA + REMOLQUE
+         4  CARTAS + TRABAJOS
+         4  CONECTIVIDAD
+         4  FONDEO + TRAFICO
+         3  BUCEO
+         3  BUCEO + CENTROS DE CULTIVO
+         2  BUCEO + DEPORTIVAS + PESCA + RECREATIVAS
+         1  ATRAQUE   ·   1  BUCEO+CARTAS+REMOLQUE+TRABAJOS
+         1  BUCEO+REMOLQUE+TRABAJOS+TRAFICO   ·   1  DEPORTIVAS
+
+     >>> VEINTE FORMAS PARA 254 REGISTROS, Y SEIS DE ELLAS CUBREN 105 DE LOS 122
+         QUE ENUMERAN. Contra las 89 formas de texto que midio la sesion
+         anterior: el eje de actividades es MUCHO mas regular que la prosa que
+         lo contiene. La redaccion varia; el repertorio de actividades no.
+     >>> LA FIRMA DOMINANTE (28) ES ACUICOLA: buceo + centros de cultivo +
+         remolque + trabajos + cartas de continuidad. Es una industria entera
+         nombrada junta, y es el paquete mas frecuente del material.
+
+3.5 — CARTAS DE CONTINUIDAD: NO ES UNA ACTIVIDAD, ES UNA EXCEPCION
+       registros con la frase : 38 / 254
+         SI se aceptan : 25        NO se aceptan : 13        suma 38 — CIERRA
+     Formas: "SE ACEPTAN CARTAS DE CONTINUIDAD", "SE RECEPCIONAN CARTAS DE
+     CONTINUIDAD", "NO SE ACEPTAN CARTAS DE CONTINUIDAD", "SE ACEPTAN CARTAS DE
+     CONTINUIDAD PARA TRABAJOS EN SUPERFICIE".
+     >>> ES UNA CUARTA DIMENSION QUE NINGUN EJE DEL MARCO CONTIENE: sobre el
+         mismo cierre, con el mismo umbral y la misma zona, 25 registros dejan
+         una via de excepcion abierta y 13 la cierran. No es a quien, ni donde,
+         ni que: es "con que permiso igual se puede".
+
+
+================================================================================
+4. EL CRUCE CON LOS PERFILES DE PATRON — DENOMINADOR 254
+================================================================================
+
+MAPEO DECLARADO. Lo ambiguo NO se resuelve, se lista (instruccion del prompt).
+  comercial       NAVEGACION, TRAFICO, ZARPE, ATRAQUE, CARGA/DESCARGA,
+                  VIVERES/PERTRECHOS, FONDEO, CONECTIVIDAD
+  acuicultura     CENTROS DE CULTIVO, FAENAS ACUICOLAS
+  pesca artesanal PESCA
+  deportivo       DEPORTIVAS/DEPORTES, NAUTICOS, (RECREATIVAS)
+  AMBIGUOS        BUCEO, REMOLQUE, TRABAJOS (generico), CARTAS DE CONTINUIDAD
+
+4.1 — CUANTOS PERFILES ALCANZA CADA REGISTRO
+       0 perfiles  146 / 254        1 perfil  96 / 254        2 perfiles  12 / 254
+       suma 254 — CIERRA
+
+4.2 — QUE COMBINACIONES APARECEN
+       146  (ninguno nombrado)      51  comercial          44  acuicultura
+         6  comercial + deportivo    6  deportivo + pesca artesanal
+         1  deportivo
+       suma 254 — CIERRA
+
+4.3 — LA PREGUNTA DEL OWNER: ¿CUANTOS SUSPENDEN A UNOS PERFILES Y NO A OTROS?
+       alcanzan 1..3 perfiles (asimetricos)  : 108 / 254
+       alcanzan los CUATRO                   :   0 / 254
+       no nombran actividad de ningun perfil : 146 / 254
+       suma 254 — CIERRA
+
+     >>> CIENTO OCHO DE 254 SON ASIMETRICOS. Y NINGUNO alcanza a los cuatro
+         perfiles por enumeracion: cero de 254. Un registro que suspende "todas
+         las actividades" para los cuatro perfiles no existe en este material
+         por la via de nombrarlas — los 52 que dicen "todo" lo dicen sin
+         desglosar, y el desglose es lo unico que permite mapear a perfil.
+     >>> LA ASIMETRIA MAS GRANDE ES ACUICULTURA vs PESCA ARTESANAL: 44
+         registros alcanzan acuicultura sin tocar pesca artesanal, y ninguno al
+         reves. La pesca artesanal aparece en 6, siempre acompañada de
+         deportivo. En este material, el cierre que nombra actividades nombra
+         mucho mas a la acuicultura que a la pesca artesanal.
+
+4.4 — EL CASO QUE ROMPERIA LA LECTURA FACIL (§1.2), MEDIDO
+     La lectura facil de 4.3 seria "dos patrones distintos en el mismo puerto y
+     con el mismo tonelaje reciben prohibiciones distintas". Se midio
+     directamente: grupos de MISMA captura + MISMA bahia + MISMO umbral_fuera,
+     con 2 o mas registros.
+
+       grupos con 2+ registros comparables : 10        (no es cero)
+       grupos donde los perfiles DIVERGEN  :  0
+
+     >>> EN ESTE MATERIAL ESO NO PASA. Cero de diez. Dos restricciones del mismo
+         puerto, la misma captura y el mismo umbral siempre alcanzan al mismo
+         conjunto de perfiles.
+     >>> EL n ES DIEZ Y SE DECLARA. Diez grupos no autorizan a decir "nunca
+         pasa"; autorizan a decir "no pasa en las seis capturas". La asimetria
+         de 4.3 es REAL y esta medida, pero es ENTRE PUERTOS, no dentro del
+         mismo puerto. Eso cambia la lectura de la pregunta del owner: hoy el
+         aviso no tiene que resolver dos patrones contradictorios en el mismo
+         muelle; tiene que resolver que el mismo patron ve cosas distintas
+         segun el puerto.
+
+4.5 — LOS AMBIGUOS, CONTADOS Y NO RESUELTOS
+       BUCEO 50 · TRABAJOS (generico) 48 · REMOLQUE 47 · CARTAS 38
+       registros con al menos un ambiguo         : 65 / 254
+       registros cuya UNICA actividad es ambigua : 14 / 254
+
+     Por que cada uno es ambiguo, sin resolverlo:
+       BUCEO      — el texto no distingue buceo profesional de centro de cultivo
+                    del buceo deportivo. Aparece 28 veces junto a CENTROS DE
+                    CULTIVO (acuicultura) y 6 veces junto a DEPORTIVAS + PESCA.
+       REMOLQUE   — remolque portuario (comercial) y remolque de modulos de
+                    cultivo (acuicultura) se escriben igual.
+       TRABAJOS   — "TRABAJOS EN CENTROS DE CULTIVO" es acuicola; "TRABAJOS POR
+                    ALTURA", "TRABAJOS DE SUPERFICIE" no dicen de quien.
+       CARTAS DE CONTINUIDAD — no es actividad (3.5).
+     >>> EN 14 DE 254 EL PERFIL NO SE PUEDE DETERMINAR DEL TEXTO. No se resuelve
+         aca; se lista, que es lo que el prompt pidio.
+
+
+================================================================================
+5. LA CONVIVENCIA DE ESTADO Y CAUSA, CON EL MARCO NUEVO
+================================================================================
+
+CAUSAS SACADAS DEL DATO (tabla de frecuencias), no de una lista traida:
+       causa               en A (254)   en B (190)
+       MAL TIEMPO              117          72
+       TIEMPO VARIABLE         129          60
+       TEMPORAL                 29          23
+       MAREJADA                 15           0
+       VIENTO                   10           7
+       CERRAZON / NIEBLA         8           0
+       VISIBILIDAD               0           0
+     (los grupos se solapan: un registro nombra mas de una causa)
+     >>> VISIBILIDAD: 0 / 444 en `Observacion`. `derivarCondicion` devuelve
+         "Visibilidad" en 1 registro y "Viento, visibilidad" en 3 — los cuatro
+         por el FALLBACK a `MotivoRestriccion`, no por el texto. La etiqueta
+         existe; la palabra en el texto no.
+
+5.1 — LOS 444 POR LAS DOS DIMENSIONES A LA VEZ. Bolsas disjuntas, suma 444.
+
+       declaran CIERRE  Y  causa   : 249
+       declaran CIERRE, sin causa  :   5
+       solo causa, sin cierre      : 134
+       ni cierre ni causa          :  56
+       suma 444 — CIERRA
+
+     >>> LA CONVIVENCIA ES CASI TOTAL: 249 de los 254 traen las dos cosas
+         (98,0%). Solo CINCO registros declaran cierre sin nombrar causa. El
+         marco del owner —"el cierre es el estado, la condicion es la causa, no
+         compiten por una ranura"— esta medido: en este material las dos cosas
+         estan juntas casi siempre, y una salida de una sola ranura tiene que
+         tirar una de las dos en 249 de 254 casos.
+
+5.2 — RECONCILIACION DE "157 DE 173" DE LA SESION ANTERIOR
+
+     LAS DOS CIFRAS SON CORRECTAS Y TIENEN DENOMINADORES DISTINTOS:
+       173 = los de la bolsa A cuyo texto trae el literal "PUERTO CERRADO".
+             Los otros 81 de los 254 entran por "CONDICION DE PUERTO".
+             173 + 81 = 254 — CIERRA
+       157 = de esos 173, a cuantos `derivarCondicion` NO les devuelve
+             'Puerto Cerrado'. Los otros 16 si. 157 + 16 = 173 — CIERRA
+
+     Re-medido con el denominador 254, que es el que pide este prompt:
+       de los 254, dicen TEMPORAL | MAL TIEMPO | TIEMPO VARIABLE : 189 / 254
+       de los 254, no dicen ninguna de las tres                  :  65 / 254
+     Y con la lista completa de causas (5.1): 249 / 254 conviven.
+     >>> Las tres cifras —157/173, 189/254, 249/254— miden lo mismo con tres
+         denominadores y tres vocabularios. No se contradicen. La que responde
+         la pregunta del marco nuevo es 249/254.
+
+     UNA DIFERENCIA DE UNO, PERSEGUIDA HASTA EL REGISTRO. Mi propia medicion dio
+     158/173 conviviendo sobre N3 y 157/173 tapados. Se midio, no se estimo:
+       ID 95185 · RADA DE\tCARELMAPU · captura del 01-08
+         "SE ESTABLECE CONDICION DE TIEMPO \"VARIABLE\" PUERTO CERRADO PARA
+          EMBARCACIONES MENOR A 25 AB DENTRO DE LA BAHIA Y 50 AB FUERA..."
+       Las COMILLAS entre TIEMPO y VARIABLE rompen el literal 'TIEMPO VARIABLE'
+       de `derivarCondicion` (:536). La rama no dispara y el registro cae a la
+       rama de cierre (:537), que devuelve 'Puerto Cerrado'.
+     >>> DE LOS 16 QUE HOY DEVUELVEN 'Puerto Cerrado' ENTRE LOS 173, UNO LO
+         DEVUELVE POR UN DEFECTO DE COMILLAS. Son 15 por diseño y 1 por
+         accidente. Y el accidente da la respuesta que el owner quiere.
+
+     CONTROL SOBRE LA AFIRMACION DE LA SESION ANTERIOR (F3, opcion (a)):
+     "hacerla llamar a `normalizarTexto` no cambia ninguna de las 444 salidas
+      medidas, 0 registros afectados hoy".
+       Se corrio `derivarCondicion` sobre los 444 crudos y sobre los 444 con
+       Observacion y MotivoRestriccion normalizados (acentos + espacios):
+         salidas que cambian: 0 / 444.
+     >>> LA AFIRMACION SE SOSTIENE Y NO SE CORRIGE. Lo que ademas se aprende es
+         POR QUE: el defecto que si muerde no es de acentos ni de espacios, es
+         de PUNTUACION, y `normalizarTexto` tampoco quita puntuacion. Un
+         normalizador que la quitara SI cambiaria esa salida — de 'Puerto
+         Cerrado' a 'Tiempo Variable'. Se consigna sin proponer nada: tocar esa
+         funcion es del owner por §0.4 (`condicion_legible` es texto que ve el
+         patron) y ya esta declarado como P-d.
+
+5.3 — `derivarCondicion` SOBRE LAS DOS BOLSAS — control de herencia
+     Las doce etiquetas y sus conteos reproducen EXACTAMENTE la tabla de la
+     sesion anterior (§6.2), incluidos 'Puerto Cerrado' 39 en A y 7 en B, y
+     'Asociados a elemento y/o ip' 18 en B. Suma 254 y 190 — CIERRAN.
+     >>> Es un control de que estoy midiendo el mismo universo con el mismo
+         lector. Pasa.
+
+
+================================================================================
+6. LOS 190 QUE NO DECLARAN CIERRE — LA MEDICION COMPLETA
+================================================================================
+Esta seccion es el desarrollo del hallazgo de arriba. Denominador 190.
+
+       nombran alguna actividad ................  94 / 190
+       traen umbral de nave (por el parser) ....  93 / 190
+       usan marcador de suspension/prohibicion .  73 / 190
+       suspenden actividades SIN decir cierre ..  67 / 190
+       contienen CERRADO / CERRADA .............  96 / 190
+       contienen "CERRADO PARA ..." ............  89 / 190
+       traen algun predicado de cierre .........  100 / 190  ·  sin el: 90 / 190
+
+     ACTIVIDADES EN LA BOLSA B — y son MAS que en la A en varias:
+       BUCEO 63 (vs 50 en A) · TRABAJOS 58 (vs 48) · REMOLQUE 53 (vs 47) ·
+       CENTROS DE CULTIVO 49 (vs 39) · TRAFICO 32 (vs 18) · NAVEGACION 22 (=22) ·
+       CARTAS 9 · ATRAQUE 8 · CONECTIVIDAD 6 · DEPORTIVAS 4 · FONDEO 3 · PESCA 1
+
+     >>> LA RESPUESTA A LA PREGUNTA DEL PROMPT ES SI, Y POR MAS DE LO QUE
+         PREGUNTABA. No es que "alguno" tenga actividades o umbral: la mitad de
+         la bolsa B tiene las dos cosas Y ademas la palabra CERRADO. La bolsa B
+         contiene MAS menciones de buceo, de centros de cultivo y de trabajos
+         que la bolsa A.
+     >>> LA PARTICION NO SEPARA CIERRES DE NO-CIERRES. Separa dos redacciones:
+         la que dice "PUERTO CERRADO" / "CONDICION DE PUERTO" y la que dice
+         "CONDICION DE TIEMPO VARIABLE, CERRADO PARA ...". Las dos cierran.
+     >>> ESTO NO INVALIDA NINGUNA CIFRA PUBLICADA por las dos sesiones
+         anteriores: todas van con su denominador declarado y el denominador es
+         correcto. Lo que cambia es la LECTURA de ese denominador.
+
+
+================================================================================
+7. QUE SE PUEDE EXTRAER HOY, POR EJE — INVENTARIO, SIN PROPONER COMO CONSTRUIR
+================================================================================
+
+EJE "A QUIEN"
+  EXISTE Y LLEGA AL VEREDICTO:
+    `afecta_menores`  (parser :126) — lo consulta alguna regla
+    `umbral_ab_fuera` (parser :143) — lo consulta alguna regla
+  EXISTE Y MUERE ANTES DEL VEREDICTO:
+    `afecta_mayores`   (:130) — cero reglas lo consultan
+    `umbral_ab_dentro` (:142) — cero reglas lo consultan
+  NO EXISTE:
+    la UNIDAD del umbral (AB vs TRG) — se lee el numero y se descarta la grafia
+    la distincion entre `null` = "todas las menores" y `null` = "no se pudo leer"
+  COBERTURA: 148 / 254 con numero; los once patrones lo explican exactamente.
+
+EJE "DONDE"
+  EXISTE:
+    `area` (parser :147) — DENTRO / FUERA / DENTRO_Y_FUERA, desde
+    `AreaRestriccion`, NO desde el texto.
+  EXISTE Y NI SIQUIERA SE PASA AL MOTOR DE REGLAS:
+    `area` no se pasa como hecho (medido por la sesion anterior, §2). Cero
+    reglas lo consultan porque no llega.
+  NO EXISTE:
+    el tercer termino del campo ("OTRA AREA FIJADA POR LA AML", 27 / 254)
+    la distincion entre 'DENTRO_Y_FUERA' declarado y 'DENTRO_Y_FUERA' por
+      defecto (28 / 254 son por defecto)
+    la geografia con nombre propio del texto (canal, estero, golfo, lago,
+      sector, barra) — 105 / 254 no dicen ni DENTRO ni FUERA
+    cualquier lectura de zona desde `Observacion`
+
+EJE "QUE QUEDA SUSPENDIDO"
+  EXISTE: NADA. Cero de las once propiedades del parser nombra una actividad.
+    `bloqueo_total` es lo mas cercano y no es esto: nace del literal /TODO TIPO
+    DE NAVES/ y vale true en 3 / 254 (medido por la sesion anterior).
+  LO QUE HAY EN EL DATO Y NO SE LEE: 18 actividades distintas, 20 firmas, 122 de
+    254 registros que las enumeran, y la excepcion de cartas de continuidad
+    (38 / 254, 25 SI / 13 NO).
+  >>> EL TERCER EJE NO SE EXTRAE NI PARCIALMENTE NI POR ACCIDENTE. Es el unico
+      de los tres que esta en cero.
+
+LOS TRES A LA VEZ
+  Ninguna salida del motor ni del API combina los tres. `condicion_legible`
+  (sitport-routes.js:836) es de una sola ranura y hoy pone ahi la CAUSA en 157
+  de 173 casos donde el texto tambien declara el ESTADO.
+
+
+================================================================================
+8. OBSERVACIONES DEL DATO — SIN REGLA PROPUESTA NI ESTRUCTURA SUGERIDA
+================================================================================
+
+O1. LOS TRES EJES NO ESTAN IGUAL DE POBLADOS EN LA FUENTE. Sobre 254:
+      "a quien"  254 / 254 lo dicen (por `NaveRecibe`, siempre presente);
+                 148 con umbral numerico.
+      "donde"    238 / 254 por campo, 149 / 254 por texto, 8 solo por texto.
+      "que"      122 / 254 lo enumeran; 132 no dicen nada.
+    El tercer eje es el mas vacio de los tres EN LA FUENTE, no en el parser.
+
+O2. EL UMBRAL DEL CIERRE Y EL UMBRAL DE `NaveRecibe` SON DOS NUMEROS DISTINTOS
+    QUE CONVIVEN EN EL MISMO REGISTRO. `NaveRecibe` dice "<100 AB" en 225 de
+    254 —es la definicion de nave menor— y el texto dice 25 en 79. Un lector
+    que tome el 100 de `NaveRecibe` como umbral del cierre se equivoca en el
+    caso mas frecuente del material.
+
+O3. `null` EN EL UMBRAL ESTA SOBRECARGADO. De los 106 sin numero, 69 son un
+    cierre sin umbral dicho asi por la fuente (el parser lo codifica null a
+    proposito, ramas :92 y :95) y 37 son un texto que no se pudo leer. Los dos
+    salen del parser con el mismo valor.
+
+O4. LA UNIDAD SE PIERDE EN LA EXTRACCION, Y HOY NO MUERDE. Siete grafias
+    ("A.B.", "AB", "AB.", "ARQUEO BRUTO", "TRG", "TRG//", "TRG///") entran a los
+    once patrones y salen como un entero pelado. 12 TRG y 12 AB serian
+    indistinguibles. En este material el 12 aparece 5 veces y siempre es TRG, y
+    los 25/50/100 siempre son AB, asi que hoy no hay colision. La decision del
+    owner —se lee el numero, no se convierte— no queda contradicha por nada de
+    lo medido.
+
+O5. EL CAMPO DE ALCANCE TIENE TRES TERMINOS Y EL MOTOR LEE DOS. "OTRA AREA
+    FIJADA POR LA AML" esta en 27 de 254 y `detectarArea` no la mira. Los 12 que
+    la traen SOLA salen 'DENTRO_Y_FUERA' por el mismo defecto que un campo null.
+
+O6. VEINTIOCHO DE 254 SALEN 'DENTRO_Y_FUERA' SIN QUE NADIE LO HAYA DICHO
+    (16 nulls + 12 "OTRA AREA"). La salida no distingue declarado de defecto.
+
+O7. RUIDO DE FUENTE NUEVO, NO DECLARADO ANTES: `GLBahia` trae un TAB en 4 de
+    los 444 registros — "RADA DE\tCARELMAPU". Medido en linea con:
+      node -e "...filtro /\t/ sobre GLBahia y otros seis campos de texto..."
+      total 444 · GLBahia con TAB 4 · GLBahia doble espacio 0 ·
+      TAB en Observacion / tipo / NombreInstalacion / AreaRestriccion /
+      NaveRecibe / MotivoRestriccion: 0 en los seis.
+    No contradice a la sesion anterior, que midio doble espacio en `GLBahia` y
+    dio 0 correctamente: un TAB no es un doble espacio. Importa porque `GLBahia`
+    es la identidad de `comparar.ps1` y la fuente de `bahia_nombre`, y el
+    normalizador del motor (`normalizarTexto`) no colapsa \s+ — asi que el TAB
+    sobrevive a la normalizacion del motor y NO sobrevive a la del criterio de
+    particion. Los dos normalizadores dan nombres distintos para esa bahia.
+
+O8. LA CONVIVENCIA ES 249 DE 254. Cinco registros declaran cierre sin nombrar
+    causa. Cualquier salida de una sola ranura tiene que descartar una de las
+    dos en el 98% de la bolsa A.
+
+O9. HAY UNA CUARTA DIMENSION QUE EL MARCO DE TRES EJES NO CONTIENE: la
+    EXCEPCION. 38 registros hablan de cartas de continuidad, 25 para aceptarlas
+    y 13 para negarlas. Sobre el mismo cierre, con el mismo umbral y la misma
+    zona, dos registros pueden diferir solo en si dejan una via abierta.
+
+O10. EL REPERTORIO DE ACTIVIDADES ES CORTO Y LA PROSA ES LARGA. 20 firmas de
+    actividad para 254 registros, contra 89 formas de texto que midio la sesion
+    anterior sobre los mismos 254. Seis firmas cubren 105 de los 122 que
+    enumeran. Lo que varia es como se redacta, no que se suspende.
+
+O11. LA ASIMETRIA ENTRE PERFILES ES ENTRE PUERTOS, NO DENTRO DEL PUERTO. 108 de
+    254 alcanzan a unos perfiles y no a otros, pero en los 10 grupos comparables
+    (misma captura, misma bahia, mismo umbral) los perfiles NUNCA divergen. El
+    n es 10 y se declara.
+
+O12. NINGUN REGISTRO ALCANZA A LOS CUATRO PERFILES POR ENUMERACION: 0 de 254.
+    Los 52 que dicen "todo/totalidad" lo dicen sin desglosar, y el desglose es
+    lo unico que permite mapear a perfil. "Todas las actividades" y "estas
+    cuatro actividades" son, en este dato, dos formas que no se tocan.
+
+O13. "TODO TIPO DE FAENAS" NO SIEMPRE SUSPENDE. En 5 registros califica a
+    "CONDICION DE PUERTO NORMAL" ("...DE LA BAHIA CONDICION DE PUERTO NORMAL
+    PARA TODO TIPO DE FAENA Y TRABAJO"). El literal solo no alcanza; hace falta
+    el verbo que lo gobierna.
+
+O14. DIECISEIS REGISTROS DEVUELVEN 'Puerto Cerrado' HOY Y UNO LO HACE POR UN
+    DEFECTO. Las comillas de "TIEMPO \"VARIABLE\"" en ID 95185 rompen el literal
+    de la rama anterior de `derivarCondicion`. Arreglar la normalizacion de esa
+    funcion —sin tocar la precedencia— convertiria ese registro de 'Puerto
+    Cerrado' a 'Tiempo Variable'. Es el unico caso medido en que normalizar
+    EMPEORA la respuesta que el owner quiere.
+
+O15. EL VOCABULARIO DEL CASO DE REFERENCIA NO ESTA EN ESTE MATERIAL.
+    "TURISTICAS" y "ACTIVIDADES MARITIMAS PORTUARIAS" dan 0 / 444 en cualquier
+    campo; "PESCA ARTESANAL" da 0 en `Observacion` (16 en `NombreInstalacion`);
+    "TRANSFERENCIA" da 0 en `Observacion` (18 en `tiporestriccion`). El caso de
+    Hanga Roa sirve como referencia de FORMA —tres ejes en tres campos— y no
+    como muestra de vocabulario. Las seis capturas son del 30-07 al 03-08 y
+    Hanga Roa fue capturado el 08-16: no es que falte, es que es de otro dia.
+
+
+================================================================================
+9. FUERA DE ALCANCE CRUZADO — §6.1, REDACTADO Y NO APLICADO
+================================================================================
+
+F1. NINGUNA DECLARACION VIGENTE SE MIDIO COMO FALSA, y se dice explicitamente
+    para que no se lea silencio como ausencia de busqueda. Se comprobo contra lo
+    que esta sesion tenia autorizado leer: CLAUDE.md §0.2/§0.4/§1.2/§2/§6.1 no
+    afirman nada sobre estos ejes. Las dos bitacoras de hoy tampoco: sus cifras
+    van con su denominador y todas se reprodujeron. La unica afirmacion que
+    parecia en riesgo —"normalizar no cambia ninguna de las 444 salidas de
+    `derivarCondicion`", F3(a) de cierre_observacion_2026-08-16— SE MIDIO Y SE
+    SOSTIENE: 0 / 444 (instrumento 04). No se redacta correccion porque no hay
+    nada que corregir.
+
+F2. LO QUE SI HACE FALTA ANOTAR ES UNA PRECISION, NO UNA CORRECCION. La misma
+    F3(a) dice que la opcion (a) es "barata" y "no cambia ninguna salida". Es
+    cierto para `normalizarTexto`. Esta sesion agrega el dato que la acota: si
+    el normalizador que se le pusiera quitara PUNTUACION —cosa que
+    `normalizarTexto` no hace—, SI cambiaria una salida, la de ID 95185, y la
+    cambiaria en la direccion contraria a la que el owner busca (de 'Puerto
+    Cerrado' a 'Tiempo Variable'). No es una falsedad de la bitacora anterior:
+    es el borde de su afirmacion, medido.
+    Que autorizacion haria falta: ninguna para anotarlo; la de §0.4 + el ciclo
+    de §6 para tocar la funcion, que es P-d y ya estaba del owner.
+
+F3. LA PARTICION 254/190 ES UN CRITERIO, NO UNA LINEA NATURAL — y eso alcanza a
+    TRES bitacoras, incluida esta. Ninguna de las tres afirma que los 254 sean
+    "los puertos cerrados"; las tres dicen "los que declaran cierre en
+    Observacion", que es exacto. No hay texto que corregir. Lo que esta sesion
+    entrega es el tamaño del borde para que cualquier lectura futura lo tenga:
+    100 de los 190 traen predicado de cierre, y 34 de los 254 no traen ninguno.
+    Si el owner decide en P-a que "cierre" es otra cosa que estos dos literales,
+    los tres numeros —254, 190 y todos los derivados— se recalculan. Se anota
+    para que ese recalculo no se descubra tarde.
+
+F4. NO SE ABRIO NADA DEL FRENTE DEL D.S. 991 NI DE TM-025, ni de lectura. El
+    registro ID 95171 de Juan Fernandez no volvio a mirarse en esta sesion. Se
+    consigna para que el silencio no se lea como omision.
+
+F5. DEUDA DE MATERIAL, HEREDADA Y NO SALDADA: sigue valiendo lo que la primera
+    bitacora anoto en su F4 —las seis capturas no llevan adentro la marca de
+    cuando ni con que consulta se tomaron—. Esta sesion tampoco toco
+    `capturar.ps1`, que esta fuera de su zona.
+
+
+================================================================================
+10. ESTADO AL CIERRE
+================================================================================
+Sin commit. HEAD sigue en b672e0e71226675ddb6fa5caaa6d7dad2ba14a33 = origin/main.
+`data/catalogo/estado_drift.json` no fue tocado. No se salio a la API. No se
+abrio la PWA. Los tres archivos del motor se leyeron y se corrio su suite
+(tests 37 · pass 37 · fail 0 · skipped 0); no se modificaron. Ningun insumo se
+toco, asi que no hubo nada que restaurar: los sha256 de las seis capturas estan
+en la seccion (0) de 01_medir_ejes.txt y son los que tenian al empezar.
+Nuevo untracked en tmarea-backend: este directorio, con 5 instrumentos, sus 5
+salidas y esta bitacora.
+Los ocho puntos del prompt estan medidos. Ninguno quedo cortado.
+================================================================================

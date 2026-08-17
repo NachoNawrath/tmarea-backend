@@ -1,0 +1,451 @@
+================================================================================
+CIERRE-EN-OBSERVACION — QUE EXTRAE HOY EL MOTOR DE `Observacion`
+Instrumento: _bitacoras/cierre_observacion_2026-08-16/01_medir_capacidad_observacion.js
+Corrida: 2026-08-17T01:01:12.963Z · sin salir a la API · motor IMPORTADO, no reimplementado
+================================================================================
+
+================================================================================
+(0) UNIVERSO Y DENOMINADOR — re-medido, no heredado de la bitacora anterior
+================================================================================
+    restricciones_2026-07-30_19-42.json    n= 73  sha256 5a3bf064eeef7d63
+    restricciones_2026-07-31_16-32.json    n= 83  sha256 8e5270eaabbd2800
+    restricciones_2026-07-31_20-32.json    n= 83  sha256 e9d4d084202d7935
+    restricciones_2026-07-31_21-01.json    n= 83  sha256 e9d4d084202d7935
+    restricciones_2026-08-01_13-14.json    n= 83  sha256 9ed8c7c15c52a05f
+    check_ahora.json                       n= 39  sha256 c306aea459dc5124
+    TOTAL                                  n=444
+    premisa del prompt "444 registros de seis capturas": SE SOSTIENE
+
+================================================================================
+(A) LAS DOS BOLSAS — particion por el texto de `Observacion`
+================================================================================
+    CRITERIO, copiado verbatim de _bitacoras/sondaje_cierre_2026-08-16/03_contraste_texto.js:84
+        /PUERTO CERRADO|CONDICION\s*DE\s*PUERTO/  sobre Observacion normalizada
+    NORMALIZACION DECLARADA (INV-0.3): NFD + borrado de diacriticos, colapso de
+    espacios repetidos a uno, trim, mayusculas. NO se decodifican entities HTML
+    en este criterio (se miden aparte en (F)).
+
+    BOLSA A — Observacion declara cierre  : 254 / 444
+    BOLSA B — no lo declara               : 190 / 444
+    suma 444 — CIERRA
+    solapamiento A∩B (por captura+IDRestriccion): 0  (disjuntas)
+    premisa del prompt "254 declaran / 190 no": SE SOSTIENE
+
+================================================================================
+(B) LAS PROPIEDADES QUE `normalizarRestriccion` PRODUCE — lista tomada del objeto,
+    no escrita a mano, y cada una con la linea del parser donde nace
+================================================================================
+    propiedades de salida: 11
+
+    prop.                 linea            lee Observacion   nace de
+    ----------------------------------------------------------------------------
+    bahia_id             sitport-parser.js:137   no              registro.bahia
+    bahia_nombre         sitport-parser.js:138   no              registro.GLBahia
+    condicion            sitport-parser.js:124   SI              Observacion + MotivoRestriccion
+    afecta_menores       sitport-parser.js:126   SI              NaveRecibe + Observacion
+    afecta_mayores       sitport-parser.js:130   SI              NaveRecibe + Observacion
+    umbral_ab_dentro     sitport-parser.js:142   SI              Observacion (regex de AB/TRG)
+    umbral_ab_fuera      sitport-parser.js:143   SI              Observacion (regex de AB/TRG)
+    bloqueo_total        sitport-parser.js:144   SI              Observacion ("TODO TIPO DE NAVES")
+    texto_original       sitport-parser.js:145   SI              Observacion (copia cruda)
+    timestamp            sitport-parser.js:146   no              registro.FCinicio
+    area                 sitport-parser.js:147   no              registro.AreaRestriccion
+
+    DE LAS 11, LAS QUE NACEN DEL TEXTO DE `Observacion`:
+        condicion
+        afecta_menores
+        afecta_mayores
+        umbral_ab_dentro
+        umbral_ab_fuera
+        bloqueo_total
+        texto_original
+        (7 de 11)
+    LAS QUE NO LO LEEN (vienen de otros campos del registro):
+        bahia_id             <- registro.bahia
+        bahia_nombre         <- registro.GLBahia
+        timestamp            <- registro.FCinicio
+        area                 <- registro.AreaRestriccion
+        (4 de 11)
+
+    LAS FUNCIONES QUE TOCAN EL TEXTO, con su linea:
+        normalizarTexto          sitport-parser.js:8
+        detectarCondicion        sitport-parser.js:26
+        AB_PATTERNS              sitport-parser.js:46
+        extraerUmbralDeTexto     sitport-parser.js:60
+        extraerUmbrales          sitport-parser.js:68
+        detectarArea             sitport-parser.js:106
+        normalizarRestriccion    sitport-parser.js:119
+
+    NUMERO DE PATRONES DE TONELAJE (AB_PATTERNS): 11
+
+================================================================================
+(C) CUALES DE ESAS PROPIEDADES LLEGAN AL VEREDICTO — medido sobre el codigo del motor
+================================================================================
+    hechos (`fact:`) que alguna regla del motor consulta : 6
+        afecta_menores, bloqueo_total, condicion, nave_ab, nave_ab_definido, umbral_ab_fuera
+    propiedades del parser que se pasan como hecho          : 6
+        afecta_mayores, afecta_menores, bloqueo_total, condicion, umbral_ab_dentro, umbral_ab_fuera
+
+    prop. del parser        se pasa al motor    alguna regla la consulta
+    --------------------------------------------------------------------------
+    bahia_id               no                  NO
+    bahia_nombre           no                  NO
+    condicion              SI                  SI
+    afecta_menores         SI                  SI
+    afecta_mayores         SI                  NO
+    umbral_ab_dentro       SI                  NO
+    umbral_ab_fuera        SI                  SI
+    bloqueo_total          SI                  SI
+    texto_original         no                  NO
+    timestamp              no                  NO
+    area                   no                  NO
+
+    >>> PROPIEDADES QUE NINGUNA REGLA CONSULTA (no llegan al veredicto):
+            bahia_id
+            bahia_nombre
+            afecta_mayores   (se pasa como hecho y no se usa)
+            umbral_ab_dentro   (se pasa como hecho y no se usa)
+            texto_original
+            timestamp
+            area
+
+    Y lo que el evaluador de ruta exporta de cada restriccion:
+        condicion <- condicion
+        bloquea <- bloquea
+        umbral_ab <- umbral_ab_fuera
+        motivo <- motivo
+        estado <- estado
+        nivel <- nivel
+
+    >>> EL MOTOR SI PRODUCE UN CAMPO LLAMADO `nivel`: restriction-rules-engine.js:23 (UV) y :111 (U).
+        valores que puede tomar en TODO el motor: 'UV', 'U' (y null cuando no hay evento)
+        ocurrencias del literal 'cierre_total' en los tres archivos del motor: 0
+
+================================================================================
+(D) EL MOTOR CORRIDO SOBRE LAS DOS BOLSAS — denominadores declarados
+================================================================================
+    El motor SI se puede correr aislado sobre un registro suelto:
+    normalizarRestriccion(registro) -> evaluarRestriccion(norm, nave_ab). No
+    necesita ruta, ni red, ni base. Se corren los 444, uno por uno.
+
+    D.1 — LAS PROPIEDADES QUE LLEGAN AL VEREDICTO, CRUZADAS CONTRA LA BOLSA
+
+      condicion
+        valor                 bolsa A (254)   bolsa B (190)
+        MAL_TIEMPO                 98         73
+        OTRO                       19         47
+        TEMPORAL                   33         25
+        VARIABLE                  104         45
+        suma                      254        190  CIERRA
+
+      bloqueo_total
+        valor                 bolsa A (254)   bolsa B (190)
+        false                     251        188
+        true                        3          2
+        suma                      254        190  CIERRA
+
+      afecta_menores
+        valor                 bolsa A (254)   bolsa B (190)
+        false                      14         32
+        true                      240        158
+        suma                      254        190  CIERRA
+
+      umbral_ab_fuera
+        valor                 bolsa A (254)   bolsa B (190)
+        100                        28         15
+        12                          5          0
+        20                          0          9
+        25                         79         30
+        50                         31         39
+        99                          5          0
+        null                      106         97
+        suma                      254        190  CIERRA
+
+    D.2 — VEREDICTO DEL MOTOR POR BOLSA Y POR AB DE LA NAVE
+          (`nivel` es la salida del motor: UV bloquea, U precaucion, null nada)
+
+      AB      | bolsa |     UV       U    null  |  UV%
+      ------------------------------------------------------------------
+      sin AB  |   A   |     86     152      16  |  33.9%
+      sin AB  |   B   |     38     104      48  |  20.0%
+      5       |   A   |    131     104      19  |  51.6%
+      5       |   B   |     89      45      56  |  46.8%
+      15      |   A   |    127     103      24  |  50.0%
+      15      |   B   |     89      45      56  |  46.8%
+      43      |   A   |    110      41     103  |  43.3%
+      43      |   B   |     76      26      88  |  40.0%
+      60      |   A   |    103      20     131  |  40.6%
+      60      |   B   |     46      23     121  |  24.2%
+      150     |   A   |     86      14     154  |  33.9%
+      150     |   B   |     38      18     134  |  20.0%
+
+    >>> LO QUE ESTA TABLA CONTESTA: si la salida del motor distinguiera cierre de
+        no-cierre, la columna UV de la bolsa A tendria que separarse de la de la
+        bolsa B. Contraste, para cada AB (UV% A contra UV% B):
+          AB sin AB  A 33.9%   B 20.0%   separacion 13.9 pts
+          AB 5       A 51.6%   B 46.8%   separacion 4.7 pts
+          AB 15      A 50.0%   B 46.8%   separacion 3.2 pts
+          AB 43      A 43.3%   B 40.0%   separacion 3.3 pts
+          AB 60      A 40.6%   B 24.2%   separacion 16.3 pts
+          AB 150     A 33.9%   B 20.0%   separacion 13.9 pts
+
+    D.3 — `bloqueo_total`, la unica propiedad del motor con forma de "puerto cerrado":
+          bolsa A (declaran cierre en texto) con bloqueo_total=true : 3 / 254
+          bolsa B (no lo declaran)           con bloqueo_total=true : 2 / 190
+
+================================================================================
+(E) LA BOLSA A POR CAUSA DE NO-RESOLUCION — denominador 254
+================================================================================
+    DEFINICION OPERATIVA DECLARADA: "no puede resolver" = el motor no produce,
+    a partir de ese registro, ninguna salida cuyo valor dependa de que el texto
+    declare cierre; o la produce perdiendo una distincion que el texto SI trae.
+    Los grupos se solapan a proposito y se declara el solape; abajo va tambien
+    la asignacion a causa PRIMARIA por prioridad, que si es disjunta y cierra.
+
+    G1  condicion=OTRO — ninguna regla dispara con ningun AB
+        19 / 254
+        caso citado literal · restricciones_2026-07-31_20-32.json · ID 95152 · BAHÍA DE QUINTERO
+          Observacion: "SE ESTABLECE CONDICIÓN DE PUERTO N° 226 \"MAREJADA\"."
+          motor: condicion=OTRO bloqueo_total=false umbral_dentro=null umbral_fuera=null area=DENTRO_Y_FUERA afecta_menores=false
+
+    G2  texto dice cerrado y el motor lo lee VARIABLE -> U, no UV
+        104 / 254
+        caso citado literal · restricciones_2026-07-30_19-42.json · ID 95055 · BAHÍA PUERTO HUASCO
+          Observacion: "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE POR INTENSIDAD DE VIENTO A 20 NDS NW. SE ESTABLECE RESTRICCIONESDE PUERTO CERRADO EN LAS I.P. DE NAVES MENORES Y PARA MOVIMIENTOS DE NAVES MENORES A 50 AB DENTRO Y FUERA DE LA BAHÍA."
+          motor: condicion=VARIABLE bloqueo_total=false umbral_dentro=50 umbral_fuera=50 area=DENTRO_Y_FUERA afecta_menores=true
+
+    G3  alcance geografico: el texto distingue DENTRO/FUERA con umbrales distintos
+        4 / 254
+        caso citado literal · restricciones_2026-07-31_20-32.json · ID 95155 · BAHÍA QUELLÓN
+          Observacion: "SE ESTABLECE CONDICION DE PUERTO CERRADO CON SIGUIENTES RESTRICCIONES: FUERA DE LA BAHIA SECTOR NORTE PARA EMBARCACIONES MENORES A 50 A.B., FUERA DE LA BAHIA SECTOR SUR PARA EMBARCACIONES MENORES A 100 A.B. DENTRO DE LA BAHIA PARA EMBARCACIONES MENORES A 25 A.B. SE SUSPENDEN FAENAS DE BUCEO, FAENAS "
+          motor: condicion=OTRO bloqueo_total=false umbral_dentro=100 umbral_fuera=50 area=DENTRO_Y_FUERA afecta_menores=true
+
+    G4  el texto nombra DENTRO o FUERA pero `area` no sale del texto sino de AreaRestriccion, que viene null
+        8 / 254
+        caso citado literal · restricciones_2026-07-30_19-42.json · ID 95043 · BAHÍA SAN VICENTE
+          Observacion: "A CONTAR DE LAS 11:30 HRS., DEL DÍA 30 DE JULIO DE 2026, SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO PARA PARA TODO TIPO DE NAVES DENTRO Y FUERA DE LA BAHÍA DE SAN VICENTE.\r\nAVISO DE MAL TIEMPO Y TEMPORAL EN ÁREA OCEÁNICA Y COSTERA SECTOR PUNTA BOYERUCA A CORRAL,VALIDO DESDE 2912"
+          motor: condicion=TEMPORAL bloqueo_total=true umbral_dentro=null umbral_fuera=null area=DENTRO_Y_FUERA afecta_menores=true
+
+    G5  umbral de tonelaje presente: el cierre es condicional al AB, no del puerto
+        148 / 254
+        caso citado literal · restricciones_2026-07-30_19-42.json · ID 95055 · BAHÍA PUERTO HUASCO
+          Observacion: "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE POR INTENSIDAD DE VIENTO A 20 NDS NW. SE ESTABLECE RESTRICCIONESDE PUERTO CERRADO EN LAS I.P. DE NAVES MENORES Y PARA MOVIMIENTOS DE NAVES MENORES A 50 AB DENTRO Y FUERA DE LA BAHÍA."
+          motor: condicion=VARIABLE bloqueo_total=false umbral_dentro=50 umbral_fuera=50 area=DENTRO_Y_FUERA afecta_menores=true
+
+    G6  el texto declara cierre TOTAL (toda la jurisdiccion / todo tipo) y bloqueo_total sale false
+        22 / 254
+        caso citado literal · restricciones_2026-07-30_19-42.json · ID 94977 · LEBU
+          Observacion: "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE, PUERTO CERRADO POR AVISO DE MAL TIEMPO Y TEMPORAL EN ÁREA OCEÁNICA Y COSTERA DESDE PUNTA BOYERUCA A CORRAL. PUERTO CERRADO PARA TODO TIPO DE EMBARCACIONES MENORES."
+          motor: condicion=TEMPORAL bloqueo_total=false umbral_dentro=null umbral_fuera=null area=DENTRO_Y_FUERA afecta_menores=true
+
+    G7  el texto declara cierre y el motor no extrae ningun umbral ni bloqueo_total
+        103 / 254
+        caso citado literal · restricciones_2026-07-30_19-42.json · ID 95066 · BAHÍA COQUIMBO
+          Observacion: "SE ESTABLECE CONDICIÓN DE PUERTO CERRADO POR AVISO DE MAL TIEMPO PARA NAVES MENORES, DENTRO Y FUERA DE LA BAHÍA."
+          motor: condicion=MAL_TIEMPO bloqueo_total=false umbral_dentro=null umbral_fuera=null area=DENTRO_Y_FUERA afecta_menores=true
+
+    ASIGNACION A CAUSA PRIMARIA (prioridad G1>G6>G3>G2>G5>G4>G7, disjunta):
+          92 / 254   G2  texto dice cerrado y el motor lo lee VARIABLE -> U, no UV
+          66 / 254   G7  el texto declara cierre y el motor no extrae ningun umbral ni bloqueo_total
+          51 / 254   G5  umbral de tonelaje presente
+          22 / 254   G6  el texto declara cierre TOTAL (toda la jurisdiccion / todo tipo) y bloqueo_total sale false
+          19 / 254   G1  condicion=OTRO
+           2 / 254   G4  el texto nombra DENTRO o FUERA pero `area` no sale del texto sino de AreaRestriccion, que viene null
+           1 / 254   sin causa — el motor lo resuelve
+           1 / 254   G3  alcance geografico
+        suma 254 — CIERRA
+
+    TIPO DE NAVE — lo que el motor extrae y de donde:
+         225 / 254   NaveRecibe = "NAVE MENOR (&LT;100 AB)"
+          16 / 254   NaveRecibe = "NAVE MAYOR (&GT;=100 AB)"
+          13 / 254   NaveRecibe = "NAVE MAYOR (&GT;=100 AB), NAVE MENOR (&LT;100 AB)"
+        >>> el tipo de nave NO sale de `Observacion`: sale de `NaveRecibe`, y el
+            motor lo colapsa a dos booleanos (afecta_menores / afecta_mayores).
+        entities HTML sin decodificar en NaveRecibe dentro de la bolsa A: 254 / 254
+
+================================================================================
+(F) CUANTAS FORMAS DISTINTAS DE DECLARAR CIERRE HAY EN LA BOLSA A
+================================================================================
+    NIVELES DE NORMALIZACION DECLARADOS:
+      N0  texto crudo tal cual viene de la fuente
+      N1  N0 + entities HTML decodificadas + NFD sin diacriticos + espacios
+          colapsados + trim + mayusculas   (INV-0.3)
+      N2  N1 + toda corrida de digitos reemplazada por "#"
+      N3  N2 + toda puntuacion reemplazada por espacio y recolapsada
+
+      formas distintas en la bolsa A (n=254):
+        N0 (crudo)                  : 91
+        N1 (normalizado)            : 91
+        N2 (numeros a #)            : 91
+        N3 (sin puntuacion)         : 89
+        prefijo de 40 chars sobre N3: 36
+
+      de las 89 formas N3: 46 aparecen UNA sola vez (51.7%)
+      las 10 mas frecuentes cubren 88 / 254 registros:
+          24x  "SE ESTABLECE CONDICION DE PUERTO CERRADO POR AVISO DE MAL TIEMPO PARA NAVES MENORES DENTRO Y FUERA DE LA BAHIA"
+           9x  "SE ESTABLECE CONDICION DE PUERTO TIEMPO VARIABLE DECRETANDO PUERTO CERRADO PARA LA NAVEGACION A EMBARCACIONES MENORES DE"
+           9x  "SE ESTABLECE CONDICION DE TIEMPO VARIABLE PUERTO CERRADO PARA EE MM DE # AB DENTRO Y FUERA DE LA BAHIA TRABAJOS EN CENTR"
+           8x  "SE ESTABLECE CONDICION DE TIEMPO VARIABLE PARA LA JURISDICCION DE LA CAPITANIA DE PUERTO DE CHONCHI PUERTO CERRADO PARA "
+           8x  "SE ESTABLECE CONDICION DE PUERTO TIEMPO VARIABLE DECRETANDO PUERTO CERRADO PARA LA NAVEGACION EMBARCACIONES MENORES DE #"
+           6x  "SE ESTABLECE CONDICION DE PUERTO CERRADO POR AVISO DE MAL TIEMPO VIGENTE"
+           6x  "A CONTAR DE LAS # # HRS DEL DIA # DE JULIO DE # SE ESTABLECE CONDICION DE PUERTO VARIABLE TRAFICO SUSPENDIDO PARA EMBARC"
+           6x  "SE ESTABLECE CONDICION DE TIEMPO VARIABLE PUERTO CERRADO PARA NAVES MENORES DE #AB TRABAJOS EN RAMPA Y MUELLE CON PRECAU"
+           6x  "SE ESTABLECE CONDICION DE PUERTO MAREJADA RESTRINGIENDO ATRAQUE A PVSA Y OXIQUIM POR FUERA DE PARAMETROS CARGA O DESCARG"
+           6x  "SE ESTABLECE CONDICION DE PUERTO CERRADO POR MAREJADA N #"
+
+      PREFIJOS (primeras 6 palabras de N3) — la "plantilla de apertura":
+        prefijos distintos: 33
+          52x  "SE ESTABLECE CONDICION DE PUERTO CERRADO"
+          41x  "SE ESTABLECE CONDICION DE TIEMPO VARIABLE"
+          39x  "SE ESTABLECE CONDICION DE MAL TIEMPO"
+          37x  "SE ESTABLECE CONDICION DE PUERTO VARIABLE"
+          27x  "SE ESTABLECE CONDICION DE PUERTO TIEMPO"
+           8x  "A CONTAR DE LAS # #"
+           6x  "SE ESTABLECE CONDICION DE PUERTO MAL"
+           6x  "SE ESTABLECE CONDICION DE PUERTO MAREJADA"
+           5x  "# SE ESTABLECE CONDICION DE MAL"
+           4x  "SE ESTABLCE CONDICION DE PUERTO MAL"
+           3x  "# SE ESTABLECE CONDICION DE PUERTO"
+           3x  "CONDICION VARIABLE FUERA DE LA BAHIA"
+        esos 12 cubren 231 / 254
+
+      RUIDO DE FUENTE MEDIDO DENTRO DE LA BOLSA A (sobre el texto crudo):
+        doble espacio o mas              58 / 254
+        CONDICIONDE pegado                1 / 254
+        entities HTML en Observacion      0 / 254
+        acento presente                 195 / 254
+        comillas escapadas               45 / 254
+
+      LA NORMALIZACION DEL MOTOR NO COLAPSA ESPACIOS — control directo:
+        normalizarTexto("MAL  TIEMPO") = "MAL  TIEMPO"
+        ¿contiene "MAL TIEMPO"? NO
+        registros de la bolsa A con doble espacio DENTRO de una frase que el motor busca literal: 0
+
+      Y EL MOTOR TAMPOCO DECODIFICA ENTITIES — control directo:
+        normalizarTexto("NAVE MENOR (&LT;25 AB)") = "NAVE MENOR (&LT;25 AB)"
+
+================================================================================
+(G) LOS DOS REGISTROS CUYO `Observacion` CAMBIO — el motor corrido sobre antes y despues
+    (son la unica evolucion de una condicion de puerto que el material contiene)
+================================================================================
+    ID 95040 · 5 apariciones · 2 textos distintos
+      texto: "SE ESTABLECE CONDICION DE TIEMPO VARIABLE, PUERTO CERRADO PARA EMBARCACIONES MENORES DE 25 AB FUERA DEL ESTERO CASTRO. FAENAS DE BUCEO, REMOLQUES Y TR"
+        motor -> condicion=MAL_TIEMPO umbral_dentro=25 umbral_fuera=25 bloqueo_total=false area=FUERA
+        veredicto AB 15 = UV (bloquea) · AB 60 = null (no_afecta)
+      texto: "SE ESTABLECE CONDICION DE MAL TIEMPO, PUERTO CERRADO PARA EMBARCACIONES MENORES DE 25 AB DENTRO Y FUERA DEL ESTERO CASTRO. FAENAS DE BUCEO, REMOLQUES "
+        motor -> condicion=MAL_TIEMPO umbral_dentro=25 umbral_fuera=25 bloqueo_total=false area=FUERA
+        veredicto AB 15 = UV (bloquea) · AB 60 = null (no_afecta)
+
+    ID 95071 · 2 apariciones · 2 textos distintos
+      texto: "SE ESTABLECE CONDICION DE MAL TIEMPO 1.- NAVEGACION DENTRO DE BAHIA NORMAL. 2.- NAVEGACION FUERA DE BAHIA SECTOR NORTE CERRADO -50 AB. 3.- NAVEGACION "
+        motor -> condicion=MAL_TIEMPO umbral_dentro=50 umbral_fuera=50 bloqueo_total=false area=FUERA
+        veredicto AB 15 = UV (bloquea) · AB 60 = null (no_afecta)
+      texto: "SE ESTABLECE CONDICION DE MAL TIEMPO 1.- NAVEGACION DENTRO DE LA BAHIA CERRADO PARA EMBARCACION -25 AB. 2.- NAVEGACION FUERA DE BAHIA SECTOR NORTE CER"
+        motor -> condicion=MAL_TIEMPO umbral_dentro=25 umbral_fuera=50 bloqueo_total=false area=FUERA
+        veredicto AB 15 = UV (bloquea) · AB 60 = null (no_afecta)
+
+================================================================================
+(H) EL CASO MAS CERCANO A UN CIERRE TOTAL DEL MATERIAL — ID 95171
+================================================================================
+    restricciones_2026-08-01_13-14.json · ISLA ROBINSON CRUSOE
+    Observacion: "SE ESTABLECE CONDICIONDE PUERTO CERRADO PARA TODA LA JURISDICCION DE JUAN FERNANDEZ."
+    NaveRecibe : "NAVE MAYOR (&GT;=100 AB), NAVE MENOR (&LT;100 AB)"
+    AreaRestriccion: "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+    MotivoRestriccion: "MAL TIEMPO, VIENTO"
+    SALIDA DEL MOTOR, propiedad por propiedad:
+        bahia_id             90
+        bahia_nombre         "ISLA ROBINSON CRUSOE"
+        condicion            "MAL_TIEMPO"
+        afecta_menores       true
+        afecta_mayores       true
+        umbral_ab_dentro     null
+        umbral_ab_fuera      null
+        bloqueo_total        false
+        texto_original       "SE ESTABLECE CONDICIONDE PUERTO CERRADO PARA TODA LA JURISDICCION DE JUAN FERNANDEZ."
+        timestamp            "01 Aug 2026 06:06:00:000"
+        area                 "DENTRO_Y_FUERA"
+    VEREDICTO POR AB:
+        AB sin AB  nivel=UV bloquea=true estado=bloquea
+        AB 5       nivel=UV bloquea=true estado=bloquea
+        AB 15      nivel=UV bloquea=true estado=bloquea
+        AB 43      nivel=UV bloquea=true estado=bloquea
+        AB 60      nivel=UV bloquea=true estado=bloquea
+        AB 150     nivel=UV bloquea=true estado=bloquea
+    Y por evaluarRuta con AB 15: veredicto=UV · nivel de la restriccion=UV
+
+================================================================================
+(J) EL OTRO LECTOR DE `Observacion`: `derivarCondicion` en src/routes/sitport-routes.js
+================================================================================
+    extraida verbatim de sitport-routes.js:532 — 9 lineas, ejecutada tal cual
+    CUERPO CITADO LITERAL:
+      | function derivarCondicion(r) {
+      |   const t = (r.Observacion || '').toUpperCase();
+      |   if (t.includes('TEMPORAL')) return 'Temporal';
+      |   if (t.includes('MAL TIEMPO')) return 'Mal Tiempo';
+      |   if (t.includes('TIEMPO VARIABLE')) return 'Tiempo Variable';
+      |   if (t.includes('PUERTO CERRADO') || t.includes('CERRADO')) return 'Puerto Cerrado';
+      |   const m = (r.MotivoRestriccion || '').trim();
+      |   return m ? m.charAt(0).toUpperCase() + m.slice(1).toLowerCase() : null;
+      | }
+
+    >>> LA RAMA QUE DICE CIERRE EXISTE: sitport-routes.js:537
+    >>> y su salida viaja al API como `condicion_legible`: sitport-routes.js:836
+
+    QUE DEVUELVE SOBRE LAS DOS BOLSAS:
+      etiqueta                        bolsa A (254)   bolsa B (190)
+      Asociados a elemento y/o ip             0         18
+      Mal Tiempo                             88         60
+      Mal tiempo                              0          7
+      Mal tiempo, viento                      4          0
+      Ola - marejada                          8         12
+      Puerto Cerrado                         39          7
+      Temporal                               29         23
+      Temporal, viento                        0          1
+      Tiempo Variable                        71         48
+      Viento                                 11         14
+      Viento, visibilidad                     3          0
+      Visibilidad                             1          0
+      suma                                  254        190  CIERRA
+
+    >>> registros de la bolsa A cuyo texto dice literalmente "PUERTO CERRADO": 173 / 254
+    >>> registros de la bolsa A a los que derivarCondicion devuelve 'Puerto Cerrado': 39 / 254
+        (los dos conjuntos NO son el mismo: la rama tambien dispara con la palabra
+         "CERRADO" sola, y esta ANTECEDIDA por TEMPORAL / MAL TIEMPO / TIEMPO
+         VARIABLE, que devuelven antes. Se desglosa la interseccion:)
+
+        DE LOS 173 QUE DICEN "PUERTO CERRADO", que devuelve derivarCondicion:
+            75 / 173   'Mal Tiempo'   <- TAPADO: la rama de cierre nunca se alcanza
+            61 / 173   'Tiempo Variable'   <- TAPADO: la rama de cierre nunca se alcanza
+            21 / 173   'Temporal'   <- TAPADO: la rama de cierre nunca se alcanza
+            16 / 173   'Puerto Cerrado'
+          suma 173 / 173 — CIERRA
+          >>> TAPADOS EN TOTAL: 157 / 173 (90.8%)
+
+        Y AL REVES: de los 39 que devuelven 'Puerto Cerrado', 23 NO contienen
+        la frase "PUERTO CERRADO" — entran por la palabra "CERRADO" sola.
+          caso citado: ID 94984 · "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE CON SIGUIENTES RESTRICCIONES; CERRADO NAVEGACIÓN DE EMBARCACIONES MENORES DENTRO Y FUERA DE LA BAHÍA."
+
+    CONTROL — esta funcion NO usa el normalizador central (INV-0.3):
+        ¿llama a normalizarTexto? NO
+        ¿quita acentos?          NO
+        ¿colapsa espacios?       NO
+        registros de la bolsa A con acento en Observacion: 195 / 254
+        (los literales que busca —TEMPORAL, MAL TIEMPO, TIEMPO VARIABLE, PUERTO
+         CERRADO, CERRADO— no llevan acento, asi que el acento no los rompe; lo
+         que si los rompe es el doble espacio, que tampoco colapsa)
+        registros de la bolsa A con doble espacio en Observacion: 58 / 254
+
+    Y DONDE VIAJA `nivel` DEL MOTOR EN LA RESPUESTA DEL BACKEND:
+        sitport-routes.js:871 — se emite ANIDADO: restricciones_intermedias[i].evaluacion.nivel
+        ocurrencias de un `nivel` de restriccion en el nivel superior del objeto: 0 (medido: el
+        unico `nivel:` del bloque enriquecedor esta dentro de `evaluacion: { ... }`)
+
+================================================================================
+CIERRE DEL INSTRUMENTO
+================================================================================
+    registros medidos      : 444
+    bolsa A / bolsa B      : 254 / 190  (suma 444)
+    corridas del motor     : 2664 evaluaciones efectivas (6 AB x 444 registros)
+    controles fallidos     : 0
+    ningun archivo de src/, data/, CLAUDE.md, CONTRATO_MOTOR.md ni de la PWA fue tocado.
+================================================================================

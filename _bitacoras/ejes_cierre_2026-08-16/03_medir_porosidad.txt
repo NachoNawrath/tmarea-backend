@@ -1,0 +1,87 @@
+================================================================================
+EJES DEL CIERRE — PASADA 3: LA POROSIDAD DE LA PARTICION 254/190
+Corrida: 2026-08-17T01:40:28.566Z · sin salir a la API · A=254 B=190
+================================================================================
+
+  9.1 — LA PALABRA CERRADO/CERRADA EN LA BOLSA B (los que "no declaran cierre"):
+        contienen CERRADO/CERRADA         : 96 / 190
+        contienen "CERRADO PARA ..."      : 89 / 190
+        (predicado de cierre dirigido a un segmento de flota)
+        sin la palabra                    : 94 / 190
+        suma 190 / 190
+
+  9.2 — QUE SUJETO LLEVA ESE "CERRADO" EN LA BOLSA B. 6 palabras alrededor:
+          13  DE MAL TIEMPO CERRADO PARA EE MM DE
+          11  DE TIEMPO VARIABLE CERRADO PARA EE MM DE
+           9  DE TIEMPO VARIABLE CERRADO PARA EL TRAFICO DE
+           8  DE MAL TIEMPO CERRADO PARA EL TRAFICO DE
+           6  ESTADO DEL PUERTO CERRADO EN LA BAHIA DE
+           5  Y C MORALEDA CERRADO PARA EE MM 50AB
+           5  Y B MELINKA CERRADO PARA EE MM 50AB
+           5  TIEMPO MAL TIEMPO CERRADO PARA EMBARCACIONES MENORES DE
+           5  LA BAHIA Y CERRADO PARA EMBARCACIONES MENORES DE
+           4  EL LAGO LLANQUIHUE CERRADO PARA EL TRAFICO DE
+           4  DE TIEMPO VARIABLE CERRADO PARA EMBARCACIONES MENORES DE
+           4  Y CANAL QUEILEN CERRADO PARA NAVES MENORES DE
+           4  CRUCE GOLFO CORCOVADO CERRADO PARA NAVES MENORES DE
+           3  DE TIEMPO VARIABLE CERRADO PARA NAVES MENORES FUERA
+           3  DE TIEMPO VARIABLE CERRADO PARA EMBARCACIONES DE 50
+           2  VARIABLE CERRADO PARA EE MM DE
+           2  BAHIA SECTOR NORTE CERRADO 50 AB 3 NAVEGACION
+           2  BAHIA SECTOR SUR CERRADO PARA EMBARCACION 100 AB
+           2  DE TIEMPO VARIABLE CERRADO PARA EMBARCACIONES DE 25
+           2  TIEMPO MAL TIEMPO CERRADO PARA EMBARCACIONES MENOR A
+           2  DE LA BAHIA CERRADO PARA NAVES MENORES DE
+        (+ 14 contextos que aparecen una sola vez)
+
+  9.3 — EL CASO DEL TIPEO: variantes de "PUERTO" mal escritas que el criterio
+        no atrapa. Busqueda: token de 4-7 letras que empieza P y sigue CERRADO.
+         184  "PUERTO CERRADO"   (criterio SI lo atrapa)
+           1  "PURTO CERRADO"   (criterio NO lo atrapa)
+
+        registros de la bolsa B con la forma "P??? CERRADO" no-PUERTO: 1
+          ID 95208 · PUERTO MONTT
+             "SE ESTABLECE CONDICION DE MAL TIEMPO, PURTO CERRADO PARA EMBARCACIONES MENORES DE 50 A/B. DENTRO Y FUERA DE LA BAHIA ,SE SUSPENDE FAENAS DE BUCEO ,REMOLQUES, Y TRABAJOS EN CENTROS DE CULTIVO"
+
+  9.4 — LOS 190, PARTIDOS POR "TRAE PREDICADO DE CIERRE" (medicion, no criterio nuevo):
+        con predicado de cierre : 100 / 190
+        sin predicado           : 90 / 190
+        suma 190 / 190
+
+        >>> ESTO NO PROPONE UN CRITERIO. Mide cuanto material queda del lado
+            "no declara cierre" trayendo una frase que cierra algo.
+
+  9.5 — Y EL CASO INVERSO, que es el que rompe mi propia medicion: registros
+        de la bolsa A que entran SOLO por "CONDICION DE PUERTO" y cuyo texto
+        NO trae ningun predicado de cierre.
+        entran solo por "CONDICION DE PUERTO"        : 81 / 254
+        de esos, sin CERRADO ni predicado de cierre  : 34 / 254
+          ID 95053 · LAGO RANCO
+             "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), LLANCACURA, MOLINO DE ORO, LA BARRA, QUEDA"
+          ID 95048 · BOCA WICKHAM
+             "SE ESTABLECE CONDICIÓN DE PUERTO \"TIEMPO VARIABLE\",  SECTOR DE BOCA WICKHAM  PARA LAS EMBARCACIONES MENORES DE 25 A.B.,FAENAS EN SU TOTALIDAD SUSPENDI"
+          ID 95049 · CANAL WILLIAMS
+             "SE ESTABLECE CONDICIÓN DE PUERTO \"TIEMPO VARIABLE\",  SECTOR DE WILLIAMS PARA LAS EMBARCACIONES MENORES DE 25 A.B.,FAENAS EN SU TOTALIDAD SUSPENDIDAS."
+          ID 95112 · BAHÍA DE QUINTERO
+             "SE ESTABLECE CONDICION DE PUERTO A \"MAL TIEMPO N°224\" "
+          ID 95139 · LAGO VILLARRICA SECTOR PUCÓN
+             "SE ESTABLECE CONDICION DE PUERTO VARIABLE, POR AUMENTO INTENCIDAD DE VIENTO."
+          ID 95113 · SECTOR NORTE QUINTERO
+             "SE ESTABLCE CONDICION DE PUERTO MAL TIEMPO N°224"
+          ID 95152 · BAHÍA DE QUINTERO
+             "SE ESTABLECE CONDICIÓN DE PUERTO N° 226 \"MAREJADA\"."
+          ID 95188 · BAHÍA DE QUINTERO
+             "SE ESTABLECE CONDICION DE PUERTO MAREJADA, RESTRINGIENDO ATRAQUE A PVSA Y OXIQUIM POR FUERA DE PARAMETROS, CARGA O DESCARGA DE VIVERES Y PERTRECHOS, F"
+          ID 95163 · LAGO RANCO
+             "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LAGO RANCO, LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), LLANCACURA, MOLINO DE ORO, LA "
+          ID 95351 · BAHÍA DE QUINTERO
+             "SE ESTABLECE CONDICION DE PUERTO N° 234 CERRAZÓN DE NIEBLA , SE RESTRINGUE AMARRE DE NAVES MAYORES A TT.MM. Y TRANSITO DE NAVES MENORES QUE NO POSEEN "
+        (textos distintos mostrados: 10)
+
+        >>> LA BOLSA A NO ES "LOS QUE ESTAN CERRADOS": es "los que matchean
+            dos literales". Las dos puntas del borde estan medidas arriba.
+
+================================================================================
+comparaciones efectivas: 444 registros · 96 contextos de CERRADO en B
+exit 0
+================================================================================
