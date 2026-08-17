@@ -1,0 +1,521 @@
+================================================================================
+FRENTE DEL FILTRO — sitport-routes.js:333-338
+Sesión FILTRO-PUERTO · 2026-08-17
+================================================================================
+
+Backend  a044437714933fce972c200228fa5340cbf23081 — CERO PIEZAS DE CÓDIGO.
+         `src/` byte por byte igual a a050ac7 (tree-sha 946bc5d7…, verificado en
+         HEAD, HEAD~1, 437d4a4 y a050ac7: los cuatro dan el mismo árbol).
+         Lo único escrito por esta sesión es documentación: esta bitácora y las
+         cuatro enmiendas a `cableo_cierre_2026-08-17/`.
+PWA      6443178493b8b3c35c11a37253c4b5bd1884ea55 — NO SE TOCÓ.
+
+OBJETIVO: medir el universo real de mala atribución y traer el diseño del
+arreglo como opciones con recomendación. NO se escribió el arreglo.
+
+--------------------------------------------------------------------------------
+UNIVERSOS DE MEDICIÓN — cada cifra de este documento nombra el suyo
+--------------------------------------------------------------------------------
+CATÁLOGOS
+  REAL   /api/puertos → `nodos_maritimos WHERE fuente <> 'SITPORT'` (LIMIT 2000,
+         no trunca). 693 filas · 688 NOMBRES DISTINTOS · 198 nombres con
+         `bahia_sitport_id` (199 filas en la base: hay 5 nombres duplicados).
+         Congelado 2026-08-17T23:02:53.110Z ·
+         sha256 1593941c953464f98e1be0e8b5079d532770a2a4c23bd3d7370e181950b76750
+         ES EL CATÁLOGO DEL ZARPE: `P2_VoyageSetup.jsx:843` usa `tipo="puerto"`,
+         que pega a /api/puertos.
+  PROXY  caletas_chile.json, versionado, 481 nombres. NO es el catálogo del
+         zarpe: alimenta la búsqueda `caladero`, que sólo puede ser DESTINO.
+
+MATERIAL
+  SONDAJE  sondaje-sitport/, SEIS ficheros versionados.
+           444 filas · 213 restricciones · 98 bahías · 335 filas cerradas.
+           Es el material PRIMARIO: es estable y se puede volver a correr.
+  VIVO     captura CONGELADA 2026-08-17T23:02:53.110Z ·
+           sha256 296472bbb27e7e309461f82c148ab3dbf7656ea71cb68b3eeae29ffbdcc3dda8
+           26 filas · 26 restricciones · 15 bahías · 16 filas cerradas ·
+           8 bahías con >=1 cerrada.
+
+  EL MATERIAL VIVO NO ES UN DENOMINADOR SIN HORA. Tres fotos del mismo día:
+      ~22:45Z (sonda de esta sesión) ....... 16 filas / 16 restricciones
+       23:02Z (captura congelada) .......... 26 filas / 26 restricciones
+       smoke del Tramo B (§7) .............. 13 filas CERRADAS en 7 bahías
+  Son tres unidades y tres momentos. El prompt de esta sesión heredó «VIVO 16»
+  sin unidad; eran FILAS, y coincidían con restricciones distintas porque ese
+  minuto no traía duplicados. Se congela una captura y todo el documento mide
+  contra ella.
+
+================================================================================
+§1 · EL UNIVERSO REAL
+================================================================================
+
+CATÁLOGO REAL 688 × SONDAJE 444, con el filtro EXTRAÍDO VERBATIM de
+`sitport-routes.js` (delimitado por estructura, no por ventana de líneas):
+
+  nombres que reciben >=1 fila ........... 358 / 688
+  nombres proyectados ROJO (>=1 cerrada) . 331 / 688
+  nombres proyectados ámbar .............. 27 / 688
+  nombres que MEZCLAN >1 bahía ........... 218 / 688
+  reparto total .......................... 9.255 filas · 4.671 restricciones
+
+  «PROYECTADO ROJO» ES UNA PROYECCIÓN DEL TRAMO C, no el estado de hoy. Hoy
+  `estado` NUNCA vale 'rojo': el campo `nivel` no existe en el dato y el propio
+  código lo declara (`useVoyageVerification.js:272`).
+
+Comparación con el universo que el frente venía citando:
+                              PROXY 481    REAL 688
+  reciben >=1 fila ........        81         358
+  proyectados rojo ........        61         331
+  mezclan >1 bahía ........         8         218
+
+--------------------------------------------------------------------------------
+§1.1 · LAS CLASES DE DEFECTO SON CUATRO, NO DOS
+--------------------------------------------------------------------------------
+La bitácora del cableo nombra dos: subcadena y token genérico. Medidas sobre
+REAL 688 × SONDAJE 444 (un nombre puede caer en varias):
+
+  D1 · SUBCADENA — el token de la bahía vive dentro de una
+       pieza del nombre del puerto ........................... 17 / 688
+  D2 · TOKEN COMPARTIDO ENTRE BAHÍAS DEL MATERIAL ........... 187 / 688
+  D3 · TOKEN GENÉRICO CONTRA EL ESPACIO DE NOMBRES DE PUERTO  250 / 688
+  D4 · DOBLE ATRIBUCIÓN — la misma respuesta trae más de una
+       bahía, y `:340` `filtradas[0]?.bahia` desempata por el
+       ORDEN DEL FEED ...................................... 218 / 688
+  nombres tocados por al menos una clase .................... 262 / 688
+
+  D3 es la clase DOMINANTE y no estaba nombrada. Criterio declarado: un token es
+  genérico de catálogo si aparece como pieza en >= 10 nombres de puerto (1,5 %
+  de 688). Medidos: sector(113) · costero(97) · borde(81) · conectividad(49) ·
+  norte(18) · bajo(10). SÓLO TRES coinciden con la lista de ocho del cableo.
+  Los otros cinco de esa lista —carahue, quintero, concepcion, estero,
+  valdivia— son TOPÓNIMOS: meterlos en el `skip` desconecta a un puerto de
+  Quintero de la bahía de Quintero.
+
+  D1 es la clase MENOR: 17 de 688. El frente venía tratándola como la principal.
+
+--------------------------------------------------------------------------------
+§1.2 · CONTRA VERDAD DE TERRENO — 198 puertos con `bahia_sitport_id`
+--------------------------------------------------------------------------------
+Es el único cotejo duro que hay: el catálogo declara a qué bahía SITPORT
+pertenece el puerto. Denominador 198 nombres, material SONDAJE 444.
+
+  el filtro de hoy incluye SU PROPIA bahía ......  36 / 198
+  recibe ÚNICAMENTE bahías ajenas ...............  63 / 198
+  recibe alguna ajena (con o sin la propia) .....  83 / 198
+  no recibe nada (su bahía no tiene filas) ......  99 / 198
+  el RÓTULO de capitanía sale correcto ..........  26 / 198
+  el RÓTULO sale de una bahía AJENA .............  73 / 198
+
+  DE LOS 99 QUE HOY RECIBEN RESPUESTA, 63 RECIBEN SÓLO BAHÍAS AJENAS Y SÓLO 36
+  INCLUYEN LA PROPIA. El rótulo de capitanía sale ajeno en 73 de 99. Ésta es la
+  cifra del frente, y no se podía tener antes porque exige el catálogo real.
+
+--------------------------------------------------------------------------------
+§1.3 · HALLAZGOS LATERALES DEL CATÁLOGO
+--------------------------------------------------------------------------------
+  · 5 NOMBRES DUPLICADOS en el catálogo real (2 filas cada uno, coordenadas
+    distintas): "Caleta Pesquera El Manzano" · "Caleta Pesquera Maitencillo" ·
+    "Defensa Costera Huasco" · "Embarcadero Rampa Isla Quehui - Sector Los
+    Angeles" · "Rampa de Conectividad Isla Quinchao - Sector Coyumbue".
+    UN FILTRO QUE RECIBE UN NOMBRE NO PUEDE DISTINGUIRLOS, por construcción.
+    Un dedup ingenuo (`new Map`, gana el último) PIERDE UN ANCLA EN SILENCIO:
+    198 nombres anclados pasan a 197. Detectado por descuadre contra psql.
+  · LA VERDAD DE TERRENO TIENE SUS PROPIOS OUTLIERS: distancia del puerto a la
+    bahía que él mismo declara — p50 8,1 km · p90 40,1 km · p99 556,5 km ·
+    máx 563,3 km. 34 anclas a más de 25 km, 12 a más de 100 km, 6 a más de 200.
+    Se usa igual como verdad, pero se declara que no es limpia.
+
+================================================================================
+§2 · LOS CAMINOS
+================================================================================
+Escritos como funciones en el instrumento y medidos, no razonados.
+
+  O0  HOY ............ `p.includes(w)` sobre tokens de GLBahia, skip de 11.
+  O1  PALABRA ........ el token tiene que ser una PIEZA del nombre del puerto.
+  O2  SKIP+ .......... skip ampliado con los 6 tokens genéricos MEDIDOS,
+                       manteniendo subcadena.
+  O3  PALABRA+SKIP+ .. las dos anteriores juntas.
+  O4  ID → O3 ........ si el puerto trae `bahia_sitport_id`, se sirven las filas
+                       de ESA bahía; si no, O3.
+  O5  GEO 25 km ...... la bahía más cercana en `BAHIA_COORDS` dentro del radio.
+                       Sin nombres.
+  O6  ID → GEO ....... id cuando existe, geográfico cuando no.
+
+COSTO DE CONTRATO — es lo que separa a los caminos tanto como el acierto:
+  O0..O3  una línea del backend. Sin contrato nuevo.
+  O4, O6  EXIGEN QUE LA PWA MANDE EL ID. Hoy el body es `{puerto, lat, lng}`
+          (`useVoyageVerification.js:319`). Es cambio en los DOS repos.
+          Y sólo 198 de 688 nombres tienen ancla: el otro 71 % cae al fallback.
+  O5      NO EXIGE NADA NUEVO. `lat`/`lng` YA VIAJAN en el body y la ruta los
+          IGNORA (`:323` desestructura sólo `puerto`). Y `BAHIA_COORDS` ya vive
+          en el mismo archivo (`:33`, 163 bahías) y cubre las 98 bahías del
+          material SIN UN SOLO HUECO.
+
+--------------------------------------------------------------------------------
+RESULTADO — REAL 688 × SONDAJE 444
+--------------------------------------------------------------------------------
+  camino            recibe   proyRojo   mezcla    filas   restr
+  O0 hoy               358        331      218     9255    4671
+  O1 palabra           352        325      215     9169    4646
+  O2 skip+             199        170       14     1011     423
+  O3 palabra+skip+     190        164        9      929     400
+  O4 id→O3             306        274        7     1599     721
+  O5 geo 25km          397        354        0     2175     965
+  O6 id→geo            427        382        0     2322    1039
+
+CONTRA VERDAD DE TERRENO (198):
+  camino            acierto   sóloAjenas   rótulo✓   rótuloAjeno
+  O0 hoy                 36           63        26            73
+  O1 palabra             36           60        26            70
+  O2 skip+               34           23        33            24
+  O3 palabra+skip+       34           20        34            20
+  O4 id→O3              170            0       170             0
+  O5 geo 25km           137            3       137             3
+  O6 id→geo             170            0       170             0
+
+  LO QUE ESTA TABLA DICE Y NO SE VE EN LA DE ARRIBA: LOS CAMINOS LÉXICOS NO
+  ATRIBUYEN MEJOR, APAGAN. O3 baja «sólo ajenas» de 63 a 20 —parece un arreglo—
+  pero baja el ACIERTO de 36 a 34 y sube «no recibe nada» de 99 a 144. Arregla
+  la mala atribución dejando de atribuir. Los caminos con ANCLA son los únicos
+  que suben el acierto: 36 → 137 (geo) o 36 → 170 (id).
+
+================================================================================
+§3 · AGUAS ABAJO — LAS DOS DIRECCIONES POR SEPARADO
+================================================================================
+REAL 688 × SONDAJE 444, contra O0. Unidad: restricciones distintas, sumadas
+sobre puertos. «−rojo» / «+rojo» son puertos que dejan o empiezan a proyectar
+bloqueo bajo el Tramo C.
+
+  camino          cambian  DEJAN  EMPIEZAN  pierdenTodo  gananDe0  −rojo  +rojo  rótuloCambia
+  O1 palabra           17     25         0            6         0      6      0            10
+  O2 skip+            249   4248         0          159         0    161      0           201
+  O3 palabra+skip+    258   4271         0          168         0    167      0           211
+  O4 id→O3            350   4300       350          135        83    136     79           305
+  O5 geo 25km         450   4368       662          117       156    127    150           408
+  O6 id→geo           472   4368       736          109       178    120    171           430
+
+REAL 688 × VIVO 26 (captura congelada):
+  camino          cambian  DEJAN  EMPIEZAN  pierdenTodo  gananDe0  −rojo  +rojo
+  O1 / O2 / O3          0      0         0            0         0      0      0
+  O4 id→O3             29      9        34            1        26      1     11
+  O5 geo 25km          77     16       104           10        67      3     22
+  O6 id→geo            86     16       115            8        76      2     29
+
+  SOBRE EL MATERIAL DE HOY, LOS TRES CAMINOS LÉXICOS NO MUEVEN NADA. Ni una
+  restricción, ni un rótulo. El defecto que arreglan no está en el feed de hoy y
+  la cobertura que quitarían tampoco. Sólo las anclas mueven.
+
+SENSIBILIDAD DEL RADIO (O5, REAL 688 × SONDAJE 444) — es un parámetro, no un
+hecho, y lo elige el owner:
+     10 km → recibe 298 · proyRojo 261
+     25 km → recibe 397 · proyRojo 354
+     50 km → recibe 474 · proyRojo 427
+    100 km → recibe 505 · proyRojo 453
+VALIDACIÓN DEL ANCLA GEOGRÁFICA: la bahía más cercana COINCIDE con la que el
+puerto declara en 193 de 198.
+
+================================================================================
+§4 · RECOMENDACIÓN
+================================================================================
+NO ENCENDER EL TRAMO C CON O0, O1, O2 NI O3. Ninguno mejora la atribución: O1
+mueve 17 nombres de 688 y deja el acierto en 36; O2 y O3 dejan de repartir más
+de 4.200 restricciones y bajan el acierto. El bloqueo duro del zarpe se apoyaría
+en un resolvedor que acierta 34 de 198 donde se puede comprobar.
+
+RECOMENDADO: **O6, EN DOS PIEZAS QUE SE DECIDEN POR SEPARADO.**
+
+  PIEZA 1 — EL ANCLA GEOGRÁFICA (O5). Backend solo, sin contrato nuevo, con
+  insumos que ya están en el mismo archivo. Sube el acierto de 36 a 137 sobre
+  198, deja «sólo ajenas» en 3, y LLEVA LA DOBLE ATRIBUCIÓN A CERO — que es la
+  clase D4, la que hoy hace que el rótulo de capitanía lo decida el orden del
+  feed. Es la pieza que más compra por lo que cuesta.
+  LO QUE HAY QUE DECIDIR ANTES: el radio. Y hay que mirar de frente que O5
+  ENCIENDE 150 PUERTOS NUEVOS EN ROJO sobre el sondaje. Son atribuciones
+  geográficamente fundadas —donde se puede comprobar, sólo 3 salen ajenas— pero
+  son BLOQUEOS NUEVOS bajo el Tramo C, y eso es del owner, no mío.
+
+  PIEZA 2 — EL ANCLA POR ID. Sube el acierto de 137 a 170 y lleva «sólo ajenas»
+  a 0. Cuesta un cambio de contrato en los dos repos y sólo cubre 198 de 688
+  nombres. Se decide después de la pieza 1 y con su costo a la vista.
+
+DESCARTADA LA RECOMENDACIÓN ANTERIOR TAL COMO ESTABA ESCRITA: el cableo
+recomendaba «(c) anclar por idBahia … es la única que no depende del léxico».
+La dirección era correcta; la ejecución no cierra sola, porque el ancla por id
+sólo existe para el 29 % del catálogo y exige contrato nuevo. El ancla que NO
+depende del léxico Y está disponible para el 100 % es la geográfica, y no estaba
+en la lista.
+
+================================================================================
+§5 · EL INSTRUMENTO
+================================================================================
+Vive en el scratchpad de la sesión (`g5_universo.js`). Extrae el filtro y
+`BAHIA_COORDS` VERBATIM de `sitport-routes.js` delimitando por la ESTRUCTURA del
+texto, con aserción de literales: un literal ausente es FALLA, no «no aplica».
+Importa `derivarCierre` de la implementación versionada. Piso por unidad y
+aborto en cero.
+
+  SEIS MORDIDAS, LAS SEIS MUERDEN:
+    M-A  resolvedor que devuelve siempre vacío → conFilas 0 · acierto 0
+    M-B  verdad de terreno falseada con un id inexistente → acierto 0 · rótulo✓ 0
+    M-C  material vacío → la corrida ABORTA
+    M-D  `BAHIA_COORDS` vaciado → el camino geográfico cae a 0 (era 397)
+    M-E  CONTROL POSITIVO: el delta de un camino CONTRA SÍ MISMO da CERO en los
+         diez contadores. Si no diera cero, ninguna cifra del §3 valdría nada.
+    M-F  catálogo vacío → la corrida ABORTA
+
+  DEFECTO PROPIO, CAZADO Y ANOTADO PORQUE ES LA LECCIÓN: la primera versión de
+  la mordida del filtro hacía `.replace('p.includes(w)', …)`. Ese literal aparece
+  TAMBIÉN dentro de `skip.includes(w)` —«ski|p.includes(w)»—, así que el parche
+  cayó sobre el `skip` y no sobre el mecanismo que decía medir. INFORMÓ
+  «✓ MUERDE» con 81→0, un número perfectamente creíble. Es M-B textual: un
+  control que se mueve por el camino equivocado pasa en verde. Corregido
+  anclando en `w => p.includes(w)`; con el ancla buena el delta es 81→36.
+  REGLA QUE QUEDA: un parche por literal se ancla en el TOKEN SINTÁCTICO
+  completo, nunca en una subcadena del fuente — es el mismo defecto que este
+  frente está midiendo, aplicado al instrumento que lo mide.
+
+================================================================================
+§6 · HALLAZGOS FUERA DE ALCANCE — REDACTADOS, NO APLICADOS
+================================================================================
+
+6.1 · `sitport-routes.js:340` — EL RÓTULO DE CAPITANÍA LO DECIDE EL ORDEN DEL FEED.
+  `const bahiaId = filtradas[0]?.bahia ?? resolverBahiaIdPorNombre(puerto)`.
+  Cuando la respuesta trae más de una bahía —218 de 688 hoy— el `[0]` toma la
+  que SITPORT haya devuelto primero, que no es un criterio. Medido: el rótulo
+  sale de una bahía ajena en 73 de los 99 puertos anclados que reciben respuesta.
+  ES ATRIBUCIÓN DE CONTACTO, NO DE RESTRICCIONES. Se ESCALA al frente de
+  contacto y NO se diagnostica acá; no se tocó, no se unificó con ningún
+  resolvedor y no se mezcló con el caso de Chañaral.
+  OPCIONES: (a) escalarlo al frente de contacto con esta medición adjunta;
+  (b) dejarlo anotado. RECOMENDACIÓN: (a).
+
+6.2 · 5 NOMBRES DUPLICADOS EN `nodos_maritimos`.
+  Dos filas con el mismo `nombre` y coordenadas distintas. Cualquier resolución
+  POR NOMBRE los confunde por construcción; una resolución por id o por
+  coordenada no. No es un defecto del filtro: es del catálogo, y el filtro lo
+  hereda.
+  OPCIONES: (a) desambiguar en el catálogo; (b) resolver por id/coordenada y que
+  deje de importar; (c) anotarlo. RECOMENDACIÓN: (b) — cae solo con la pieza 1.
+
+6.3 · LA VERDAD DE TERRENO TIENE 6 ANCLAS A MÁS DE 200 km DEL PUERTO.
+  Máximo 563,3 km. O el `bahia_sitport_id` está mal en esas filas o
+  `BAHIA_COORDS` lo está. No se diagnosticó: no es de este frente y no cambia
+  ninguna recomendación —son 6 de 198—, pero sí acota cuánto vale «170/198».
+  OPCIONES: (a) sesión propia de cotejo; (b) anotarlo. RECOMENDACIÓN: (b) hoy,
+  (a) antes de que el ancla por id sea la pieza que decide un bloqueo.
+
+================================================================================
+§5.1 · F1 — EL JOIN DERIVADO Y NO APLICADO
+================================================================================
+CERO CÓDIGO EN PRODUCCIÓN. `src/` en 946bc5d7. Nadie consume el artefacto.
+
+  data/catalogo/join_puerto_bahia.json ....... 688 filas
+       sha256 dfd072361faa5607b7c487b73d5d45796d16ec10cbd99a613a5df7db351168f5
+  _bitacoras/filtro_puerto_2026-08-17/F1_adjudicacion.tsv ... 74 filas
+       sha256 0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788
+
+REPARTO DE LOS 688:
+    confirmado_declarado ... 198   ya traía bahia_sitport_id; no se derivó nada
+    derivado_limpio ........ 194   una sola candidata en radio, o margen >= 10 km
+    desempatado ............ 109   C2 razón 55 · C3 comuna 50 · C4 nombre 3 · C5 capitanía 1
+    a_adjudicar ............  74   ningún criterio la resuelve. bahia_id NULL A PROPÓSITO
+    sin_bahia_en_catalogo .. 113   no hay bahía en el radio: no hay nada que atribuir
+
+EL VOCABULARIO VA DECLARADO DENTRO DEL ARCHIVO, y con él la advertencia que este
+frente ya pagó una vez: `bahia_id: null` NO significa lo mismo en `a_adjudicar`
+—no sabemos cuál— que en `sin_bahia_en_catalogo` —no hay ninguna—. El `estado`
+los distingue y NO SE COLAPSAN. Es el mismo defecto que tuvo `estado_geometria`
+con sus dos vocabularios.
+
+EL RADIO ES 30 km Y EL MOTIVO VA ESCRITO EN EL ARCHIVO: la atribución ajena se
+satura en 5/198 a partir de los 20 km y no vuelve a crecer, así que pasados 20 km
+ampliar no cuesta error; a 30 km la curva de acierto se dobla (167/198) y deja
+113 nodos SIN bahía, que es el modo de falla seguro para una decisión de bloqueo.
+
+--------------------------------------------------------------------------------
+LA HOJA DE ADJUDICACIÓN — PRIORIZADA, Y CON QUIÉN LA CONTESTA
+--------------------------------------------------------------------------------
+CRITERIO DE «QUIÉN ADJUDICA», MEDIDO CON `getCapitaniaByBahiaId` Y NO OPINADO:
+si TODAS las candidatas comparten capitanía y gobernación, elegir mal no cambia
+a quién se contacta —sólo qué restricciones llegan— y alcanza con conocer la
+costa. Si están en capitanías distintas, la elección CAMBIA LA JURISDICCIÓN y eso
+lo dice la Autoridad Marítima.
+
+    capitania ....  11   hay que consultar
+    costa ........  63   alcanza con conocer la costa
+    catalogo .....   0
+    de las 74, tocan una bahía CON CIERRES ....... 63
+
+  CORRECCIÓN DEL 44 → 63, CON LAS DOS DEFINICIONES AL LADO. El 44 circuló como
+  si fuera el tamaño del trabajo y no lo era. Son dos preguntas distintas y las
+  dos respuestas son correctas:
+
+    44 de 74 · «LA CANDIDATA MÁS CERCANA tiene cierres en el sondaje 444».
+               Mide la bahía que ganaría si se resolviera por proximidad sola.
+               NO se usó para nada.
+    63 de 74 · «ALGUNA de las candidatas empatadas tiene cierres».
+               Mide si la fila puede cambiar un veredicto se resuelva como se
+               resuelva. ES LA QUE ORDENA LA HOJA — criterio (1) de la prioridad.
+
+  NO SE SUMAN NI SE SUSTITUYEN: el 44 es un subconjunto del 63.
+
+ORDEN DE LA HOJA, declarado (no implícito): (1) toca bahía con cierres · (2) el
+que exige Capitanía antes que el de costa · (3) nodo más operativo — Puerto,
+Terminal, Caleta, Muelle, Infraestructura, Embarcadero, Rampa, Defensa Costera ·
+(4) menos candidatas primero · (5) nodo_id, para que el orden sea reproducible.
+
+--------------------------------------------------------------------------------
+LAS 74 FILAS SON 26 PREGUNTAS — agrupadas por RACIMO (misma pareja o terna de
+bahías candidatas). Es el número que dice si esto se destraba.
+--------------------------------------------------------------------------------
+    11 filas «capitania» → CUATRO consultas reales
+    63 filas «costa» ....→ VEINTIDÓS decisiones reales
+    ────────────────────────────────────────────────
+    74 filas ............→ 26 preguntas
+
+  SON CUATRO CONSULTAS, NO CINCO. El owner pidió dejar escrito «cinco»; medido
+  sobre la hoja da CUATRO racimos, y se anota la diferencia en vez de escribir el
+  número pedido: 8 + 1 + 1 + 1 = 11.
+     8 filas · 219 SECTOR NORTE QUINTERO vs 91 BAHÍA DE QUINTERO
+     1 fila  · 233 SENO RELONCAVI vs 115 CANAL HORNOPIRÉN  (Puelche)
+     1 fila  · 163/122/116/235  (Curaco de Vélez)
+     1 fila  · 114/118/120/149/213/214  (Linao)
+
+  EL RACIMO DE QUINTERO SON OCHO FILAS, NO SIETE. Esta sesión dijo «las primeras
+  siete»: eran las siete que entraban en una vista de ocho renglones donde el
+  segundo era Puelche. El racimo completo es 8, y UNA SOLA RESPUESTA DE LA
+  CAPITANÍA LAS CIERRA LAS OCHO: Puerto Ventanas, Zapallar, Horcón, Maitencillo,
+  Loncura, Ventanas, Borde Costero de Horcón y una más, todas partidas entre las
+  mismas dos bahías, que están en capitanías distintas.
+  Y «quintero» era uno de los ocho tokens genéricos del cableo: el mismo lugar
+  aparece por los dos frentes y por dos mecanismos distintos.
+
+  EL RACIMO MÁS GRANDE DE «costa» son 10 filas entre las tres bahías de CARAHUE
+  —otro de los ocho tokens—, y el segundo son 8 filas entre `118` y `214`, que
+  es el par duplicado de §6.4.
+
+--------------------------------------------------------------------------------
+CONTROLES Y MORDIDAS DE F1 — el banco lee el ARCHIVO DEL DISCO, no la estructura
+en memoria del generador, que es la única forma de medir el entregable
+--------------------------------------------------------------------------------
+  C1 cobertura: una fila por nodo, sin duplicados ....... 688/688
+  C2 vocabulario cerrado ................................ 0 fuera
+  C3 coherencia estado ↔ bahia_id ↔ via ................. 0 incoherentes
+  C4 las confirmadas dicen lo que dice la base .......... 198/198
+  C5 toda bahia_id emitida existe ....................... 501 emitidas, 0 inexistentes
+  C6 ninguna a_adjudicar elige por defecto .............. 74, 0 con bahía puesta
+  C7 la hoja es exactamente las a_adjudicar, prioridad 1..N sin huecos
+  C8 ningún nombre con control o borde sucio ............ 0
+  C9 piso por unidad, aborta en cero .................... 3.599 comparaciones
+
+  NUEVE MORDIDAS, LAS NUEVE MUERDEN, sobre COPIAS: borrar una fila (C1) · estado
+  inventado (C2) · una `a_adjudicar` con bahía puesta (C6+C3) · bahia_id
+  inexistente (C5) · ancla cambiada en una confirmada (C4) · `\r` reinyectado en
+  un nombre (C8+C1) · la hoja con una fila de menos (C7) · artefacto vacío
+  (ABORTA) · estado y bahia_id incoherentes (C3).
+  sha256 del artefacto y de la hoja comprobados IGUALES antes y después.
+
+--------------------------------------------------------------------------------
+DEFECTO DE INSUMO CAZADO AL ARMAR F1 — Y NO ES DEL FILTRO
+--------------------------------------------------------------------------------
+EL NODO 542 «Defensa Costera Sector Boca Budi» TIENE UN RETORNO DE CARRO DENTRO
+DEL CAMPO `nombre`. Volcado a TSV, partía la fila en dos; los dos fragmentos
+entraban con `idBahia = NaN`, que NO es `null`, así que LOS DOS SE CONTABAN COMO
+ANCLADOS: 200 anclas donde hay 199 y 689 nombres donde hay 688. Los nodos 38 y
+253 traen espacio al final del nombre.
+REGLA QUE QUEDA: un separador que el dato puede contener no es un separador. El
+volcado pasó a JSON, y C8 vigila que ningún nombre del artefacto los tenga.
+
+================================================================================
+§6.4 · HALLAZGO FUERA DE ALCANCE — DOS BAHÍAS DUPLICADAS EN EL CATÁLOGO
+        REDACTADO, NO APLICADO. NO SE DEDUPLICÓ.
+================================================================================
+`118 «Bahía Ancud y Canal Chacao»` y `214 «Bahía Ancud»` tienen COORDENADAS
+IDÉNTICAS —0,00 km— en `BAHIA_COORDS`. Es el único par a menos de 1 km entre las
+163: se midieron los 13.203 pares.
+
+CONSECUENCIA MEDIDA, Y ES MÁS GRANDE DE LO QUE ESTA SESIÓN DIJO PRIMERO: el par
+`118+214` es el racimo de OCHO FILAS de `a_adjudicar` —no una—, el segundo más
+grande de todos. NO ES UNA AMBIGÜEDAD GEOGRÁFICA: es la misma bahía dos veces, a
+0,00 km. Un humano que abra cualquiera de esas ocho filas no puede contestarla,
+porque la pregunta está mal hecha.
+
+ES CATÁLOGO DE BAHÍAS, NO DE PUERTOS, y por eso no se tocó: deduplicar una bahía
+cambia qué publica SITPORT bajo qué id y toca el frente de atribución, no éste.
+
+OPCIONES: (a) deduplicar en `BAHIA_COORDS` eligiendo un id y mapeando el otro;
+(b) dejar las dos y que el join las trate como una sola por coordenada, sin tocar
+el catálogo; (c) preguntar a DIRECTEMAR cuál de las dos está vigente; (d) dejarlo
+anotado.
+RECOMENDACIÓN DE LA SESIÓN: (c) primero y (a) después.
+DECIDIDO POR EL OWNER 2026-08-17: **(d) por ahora, anotado.** La consulta a
+DIRECTEMAR NO SALE SUELTA: va junto con las consultas de adjudicación, en un solo
+envío. (b) queda descartada por el mismo motivo que la sesión dio: esconde la
+pregunta dentro del join y la vuelve a perder.
+MIENTRAS TANTO: las ocho filas quedan en la hoja como están. NO bloquean F2 —F2
+las trata como silencio, igual que a las otras 66—, pero SÍ bloquean a quien se
+siente a adjudicar: son el segundo racimo más grande y no tienen respuesta
+posible hasta que DIRECTEMAR conteste.
+
+================================================================================
+§7 · LO QUE SE ESCRIBIÓ EN LOS REPOS
+================================================================================
+NINGUNA LÍNEA DE CÓDIGO. Cuatro enmiendas de documentación, autorizadas por el
+owner, todas en `_bitacoras/cableo_cierre_2026-08-17/`:
+
+  cableo_cierre_2026-08-17.txt
+    §5   los rangos `P3:330-341` y `VoyageVerdict.jsx:141` tachados y corregidos
+         a `P3:450-451` y `:144`, más la segunda copia en
+         `TransitRestrictionsBlock.jsx:147` que el traspaso no nombraba.
+    §6.1 los 8 casos tachados y reemplazados: la clase «subcadena» es falsa para
+         7 de 8, y 4 filas nombraban como ajena a la bahía correcta (49 → 27
+         cerradas ajenas). Más el noveno token genérico, `"bajo"`.
+    §6.1 el censo de tokens CONFIRMADO exacto, con la unidad de la tripleta
+         declarada y su límite de criterio.
+    §6.1 «NO ES MEDIBLE OFFLINE» tachado: era VERDADERA el día que se escribió y
+         CADUCÓ.
+
+  tramo_b_render_2026-08-17.txt
+    §0   entradas (15), (16) y (17) en la lista única.
+
+Y F1, que NO es código y no lo consume nadie:
+  data/catalogo/join_puerto_bahia.json                     (nuevo)
+  _bitacoras/filtro_puerto_2026-08-17/F1_adjudicacion.tsv  (nuevo)
+  _bitacoras/filtro_puerto_2026-08-17/filtro_puerto_2026-08-17.txt (esta bitácora)
+
+`src/` VERIFICADO EN 946bc5d7 AL CERRAR. Nada obligó a tocarlo.
+SIN COMMIT. Sin `git add`. La autorización fue para escribir, no para publicar.
+
+================================================================================
+§8 · QUÉ NECESITA F2 PARA ARRANCAR EN SESIÓN NUEVA
+================================================================================
+F2 = el filtro consume el join y NADA MÁS. Bahía resuelta → sirve esa bahía; sin
+resolver → devuelve vacío Y LO DICE. El filtro por nombre se retira entero.
+
+LO QUE F2 TIENE QUE DECIDIR ANTES DE ESCRIBIR — ninguna es de implementación:
+  (1) SI EL SILENCIO SE DISTINGUE EN LA RESPUESTA. `sin_bahia_en_catalogo` y
+      `a_adjudicar` son dos silencios distintos y hoy el endpoint sólo sabe
+      devolver `restricciones: []`. Si no se distinguen, la PWA no puede decir
+      «no hay nada» versus «no sabemos», y son mensajes distintos para el patrón.
+  (2) QUÉ PASA CON `bahiaId = filtradas[0]?.bahia` EN `:340`. Hoy el rótulo de
+      capitanía sale de ahí. Con el join, `bahia_id` ya está resuelto y ese `[0]`
+      deja de tener sentido — pero tocarlo entra en atribución de CONTACTO (§6.1),
+      que está escalado. F2 tiene que decidir si lo deja como está o si lo alimenta
+      del join sin unificar resolvedores.
+  (3) SI EL JOIN SE LEE DE `data/catalogo/` O SE MIGRA A `nodos_maritimos`. La
+      columna `bahia_sitport_id` ya existe y está al 29 %. Escribirla es tocar la
+      base; leer el JSON no. Son costos distintos y consecuencias distintas.
+  (4) EL DENOMINADOR DEL TRAMO C. Con F2, 501 de 688 puertos reciben atribución y
+      187 no. De esos 187, 113 son «no hay nada que decir» y 74 son «no sabemos».
+
+LO QUE F2 NO NECESITA: que F3 esté hecha. Las 74 pueden entrar como
+`a_adjudicar` y F2 las trata como silencio hasta que alguien las conteste.
+
+INSUMOS LISTOS: el artefacto con su sha256, la hoja priorizada, los instrumentos
+en el scratchpad de esta sesión (`f1_generar.js`, `f1_controles.js`,
+`g5_universo.js`, `g7_desempate.js`) — que son EFÍMEROS, y §8 del Tramo B ya
+recomendó versionarlos sin que se aplicara.
+
+================================================================================
+FIN — Frente del filtro, F1. F2 y F3 pendientes. El Tramo C sigue sin arrancar.
+================================================================================
