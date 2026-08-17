@@ -255,10 +255,25 @@ LO QUE PRODUCE `estado === 'rojo'` EN EL CAMINO DE ZARPE — MEDIDO
   maxVeredicto  → veredicto global 'UV'
   VoyageVerdict.jsx:63-64  razón «Puerto de zarpe "X" cerrado»
   VoyageVerdict.jsx:33-41  🟥 Bandera U+V · «Navegación no recomendada» · «No zarpar.»
-  P3:330-341    CTA `disabled`, gris, onClick undefined → onStartVoyage nunca se
+  ~~P3:330-341~~  CTA `disabled`, gris, onClick undefined → onStartVoyage nunca se
                 llama → P4 INALCANZABLE. Es bloqueo efectivo del viaje.
-  EFECTO SECUNDARIO: VoyageVerdict.jsx:141 mostraría «Puedes navegar hasta X»
+  EFECTO SECUNDARIO: ~~VoyageVerdict.jsx:141~~ mostraría «Puedes navegar hasta X»
   junto a «No zarpar» en la misma tarjeta.
+
+  ENMENDADO 2026-08-17 POR EL GATE DEL FRENTE DEL FILTRO — LOS DOS RANGOS SE
+  MOVIERON CON EL TRAMO B. EL MECANISMO NO: los dos siguen siendo exactos.
+  El commit `6443178` reescribió `P3_VoyageVerification.jsx`, y hoy :330-341 son
+  el aviso de cierre que ese mismo tramo escribió — no el CTA.
+      CTA .................. `P3:450-451`
+                             onClick={veredicto !== 'UV' ? onStartVoyage : undefined}
+                             disabled={veredicto === 'UV'}
+      «Puedes navegar hasta» `src/components/verification/VoyageVerdict.jsx:144`
+                             (:141 es la guarda del bloque)
+  Y HAY UNA SEGUNDA COPIA que el traspaso no nombra: el mismo string está en
+  `TransitRestrictionsBlock.jsx:147`. Quien encienda el Tramo C tiene que mirar
+  las dos, o arreglará una y dejará la otra diciendo lo contrario del veredicto.
+  Sin esta nota el Tramo C persigue una línea movida — es el mismo cuidado que
+  §7 de esta bitácora ya tomó para el frente de drift.
 
 DE LOS 167, CUÁNTOS EN ZARPE Y CUÁNTOS EN RECALADA: LA PREGUNTA NO TIENE
 RESPUESTA DEL LADO DEL DATO, y eso es el hallazgo. Zarpe y recalada se resuelven
@@ -299,7 +314,7 @@ le cambia la frase. Y por D-C9 hay un despacho obligatorio entre medio.
 --------------------------------------------------------------------------------
 El filtro compara con `p.includes(w)` — SUBCADENA, NO PALABRA (línea :337).
 
-Los 8 casos, medidos con el filtro importado verbatim sobre el catálogo PROXY
+~~Los 8 casos, medidos con el filtro importado verbatim sobre el catálogo PROXY
 caletas_chile.json (ver LÍMITE abajo):
 
   "BAHÍA CHILOTA" (Porvenir, Magallanes) → bahía 102 LOTA (Biobío): "chilota"
@@ -310,12 +325,83 @@ caletas_chile.json (ver LÍMITE abajo):
   "LOTA BAJO"              → 102 LOTA                          5
   "MANZANO (HUALAIHUE)"    → 147 RADA MANZANO + 184 ENSENADA HUALAIHUÉ   11
   "EL ESTERO"              → 182 ESTERO COMAU + 183 ESTERO PICHICOLO      6
-  "ESTERO COPA"            → 182 ESTERO COMAU + 183 ESTERO PICHICOLO      6
+  "ESTERO COPA"            → 182 ESTERO COMAU + 183 ESTERO PICHICOLO      6~~
+
+  ENMENDADO 2026-08-17 POR EL GATE DEL FRENTE DEL FILTRO — DOS DEFECTOS EN EL
+  MISMO BLOQUE: LA CLASE Y LA COLUMNA.
+
+  (a) LA CLASE «SUBCADENA» ES FALSA PARA 7 DE LOS 8. Declarando la normalización
+      (INV-0.3): se parte el nombre del puerto por NO-ALFANUMÉRICO y se pregunta
+      si el token de la bahía es una de esas piezas. Sólo UNO entra por
+      subcadena; los otros siete entran por PALABRA ENTERA:
+
+        BAHÍA CHILOTA        → 102 LOTA           ←"lota"        SUBCADENA ← el único
+        RIO NEGRO-HORNOPIREN → 135 CABO NEGRO     ←"negro"       palabra
+        VILLARRICA(LEBU)     → 209 LAGO VILLARRICA←"villarrica"  palabra
+        CORRAL BAJO          → 157 CARRIZAL BAJO  ←"bajo"        palabra
+        LOTA BAJO            → 157 CARRIZAL BAJO  ←"bajo"        palabra
+        MANZANO (HUALAIHUE)  → 147 RADA MANZANO   ←"manzano"     palabra
+        EL ESTERO            → 182/183 ESTERO…    ←"estero"      palabra
+        ESTERO COPA          → 182/183 ESTERO…    ←"estero"      palabra
+
+      CONSECUENCIA SOBRE LA RECOMENDACIÓN DE ABAJO: la opción (a) —comparar por
+      palabra— arregla 1 de 8, no 8 de 8. Medido después sobre el catálogo real:
+      mueve 17 nombres de 688 y quita 25 restricciones. No es un arreglo.
+
+  (b) EN CUATRO DE LAS OCHO FILAS, LA BAHÍA NOMBRADA COMO AJENA ES LA CORRECTA.
+      Desglose por bahía, separando filas de CERRADAS (mismo material, 444):
+
+        "VILLARRICA(LEBU)"  Biobío/LEBU        101 LEBU              5 filas · 5 CERRADAS ← su comuna
+                                               209 LAGO VILLARRICA   5 filas · 0 cerradas ← la ajena
+        "CORRAL BAJO"       Los Ríos/CORRAL    107 BAHÍA CORRAL      6 filas · 6 CERRADAS ← su comuna
+                                               157 CARRIZAL BAJO     4 filas · 0 cerradas ← la ajena
+        "LOTA BAJO"         Biobío/LOTA        102 LOTA              5 filas · 5 CERRADAS ← su comuna
+                                               157 CARRIZAL BAJO     4 filas · 0 cerradas ← la ajena
+        "MANZANO(HUALAIHUE)" L.Lagos/HUALAIHUÉ 184 ENSENADA HUALAIHUÉ 6 filas · 6 CERRADAS ← su comuna
+                                               147 RADA MANZANO      5 filas · 5 cerradas ← la ajena
+
+      La columna «filas cerradas ajenas» sumaba 49. Lo AJENO CERRADO medido es
+      27. En VILLARRICA, CORRAL BAJO y LOTA BAJO el aporte ajeno cerrado es CERO:
+      la bahía intrusa no tenía cierres, y las cerradas contadas eran las de la
+      bahía propia. Las otras cuatro filas —CHILOTA 5, RIO NEGRO 5, EL ESTERO 6,
+      ESTERO COPA 6— están bien contadas.
+
+  (c) LO QUE LAS DOS DESTAPAN JUNTAS, y es lo que importa para el arreglo: EL
+      MODO DE FALLA NO ES «ATRIBUIR MAL», ES ATRIBUIR DOS VECES. Los ocho
+      devuelven la bahía correcta Y una ajena en la misma respuesta. Y `:340`
+      hace `filtradas[0]?.bahia`, así que el rótulo de capitanía lo decide EL
+      ORDEN EN QUE SITPORT DEVOLVIÓ LAS FILAS. Se deja dicho como hecho de este
+      archivo; es atribución de CONTACTO y se escala, no se diagnostica acá.
+
+  (d) `"bajo"` ES UN NOVENO TOKEN GENÉRICO y no está ni en el `skip` ni en la
+      lista de ocho de abajo. Se le escapó al censo porque el censo pregunta
+      «¿compartido entre bahías?» y `"bajo"` vive en UNA sola bahía del material:
+      es genérico contra el espacio de NOMBRES DE PUERTO, que es otro conjunto.
+
+  ORIGEN DECLARADO: medición propia de esta bitácora, leída con la clase supuesta
+  de antemano. El filtro se importó verbatim —eso estuvo bien—, pero al mirar la
+  salida se rotuló «subcadena» sin volver a preguntárselo al dato, y se anotó
+  como ajena la primera bahía que aparecía sin cotejarla contra la comuna de la
+  caleta, que estaba en el mismo fichero. Un dato que se tiene a mano y no se
+  consulta es peor que uno que falta: da la sensación de haber mirado.
 
 8 tokens genéricos quedan fuera del `skip` y son compartidos entre bahías:
   "sector" (16 bahías, 60 filas, 51 cerradas) · "carahue" (3, 7, 7) ·
   "quintero" (2, 29, 6) · "concepcion" (2, 25, 10) · "borde" (2, 11, 11) ·
   "costero" (2, 10, 10) · "estero" (2, 6, 6) · "valdivia" (2, 2, 2).
+
+  CONFIRMADO 2026-08-17 POR EL GATE DEL FRENTE DEL FILTRO — LAS OCHO TRIPLETAS
+  REPRODUCEN EXACTO, token por token, y el conjunto de tokens compartidos por más
+  de una bahía en el material es EXACTAMENTE ése: ni uno más. LA TRIPLETA ES
+  (bahías, filas, CERRADAS) — se anota porque un traspaso posterior copió sólo el
+  tercer número y quedó una cifra sin unidad.
+  LÍMITE DEL CENSO, que es lo que lo hace incompleto: su criterio es «compartido
+  entre bahías DEL MATERIAL». Bajo el criterio que hace falta —«genérico contra
+  el espacio de NOMBRES DE PUERTO»— el catálogo real da SEIS tokens y sólo tres
+  coinciden con esta lista: sector(113 nombres) · costero(97) · borde(81) ·
+  conectividad(49) · norte(18) · bajo(10). "carahue", "quintero", "concepcion",
+  "estero" y "valdivia" NO son genéricos: son topónimos, y meterlos en el `skip`
+  desconectaría a un puerto de Quintero de la bahía de Quintero.
 
 POR QUÉ IMPORTA Y POR QUÉ NO SE APLICA: hoy la mala atribución produce 'ambar'
 —cosmético, no bloquea—. Encender 'rojo' la convertiría en BLOQUEO DURO del zarpe
@@ -328,10 +414,34 @@ frente de atribución en pausa que a este. EL OWNER DECIDE APARTE si es frente
 propio.
 
 LÍMITE DECLARADO DE LAS CIFRAS 61/481 Y 8/481: el catálogo real de zarpe sale de
-/api/puertos, que es POSTGRES (src/services/puertos-service.js:1, `new Pool`) y NO
-ES MEDIBLE OFFLINE. 61/481 y 8/481 son del PROXY tmarea-pwa/src/data/
+/api/puertos, que es POSTGRES (src/services/puertos-service.js:1, `new Pool`) y ~~NO
+ES MEDIBLE OFFLINE~~. 61/481 y 8/481 son del PROXY tmarea-pwa/src/data/
 caletas_chile.json, versionado, 481 nombres distintos — NO del catálogo real. Se
 nombran así cada vez que se usan.
+
+  ENMENDADO 2026-08-17 POR EL GATE DEL FRENTE DEL FILTRO — «NO ES MEDIBLE
+  OFFLINE» ERA VERDADERA EL DÍA QUE SE ESCRIBIÓ. CADUCÓ, NO FUE UN ERROR.
+  Ese día no había base a mano y la frase describía bien el estado del mundo.
+  Hoy sí la hay: psql 16.14 en C:\Program Files\PostgreSQL\16\bin, base
+  `mapa_navegacion`, y además el backend levantado en :3000 contestando
+  /api/puertos. El catálogo real es 693 filas / 688 nombres distintos
+  (`nodos_maritimos WHERE fuente <> 'SITPORT'`; el LIMIT 2000 no trunca).
+
+  Y HAY UNA SEGUNDA MITAD QUE ESTA NOTA NO DICE: el proxy no es un proxy del
+  camino que importa. `P2_VoyageSetup.jsx:843` — el buscador de ZARPE es
+  `tipo="puerto"` y pega a /api/puertos. `caletas_chile.json` alimenta la
+  búsqueda `caladero`, que sólo puede ser DESTINO. El Tramo C enciende el ZARPE.
+  O sea que 61/481 y 8/481 miden un universo que NO CUBRE el camino del bloqueo
+  duro. Medido sobre el catálogo real, mismo material y mismo filtro verbatim:
+  358/688 con filas · 331/688 proyectados rojo · 218/688 con más de una bahía.
+
+  LO QUE ENSEÑA, Y ES EL APRENDIZAJE Y NO EL DATO: la afirmación no envejeció mal
+  por descuido de quien la escribió —era cierta y venía con su origen—, envejeció
+  porque NADIE LA VOLVIÓ A PREGUNTAR. Sobrevivió a la redacción de esta bitácora,
+  al traspaso y a dos prompts, viajando como si fuera una propiedad del sistema
+  cuando era una foto de una tarde. UN LÍMITE DECLARADO TIENE FECHA DE MEDICIÓN Y
+  SE VUELVE A MEDIR ANTES DE CITARSE; si citarlo cuesta menos que remedirlo, es
+  que el límite ya no se está verificando, se está heredando.
   consulta → ROJO (>=1 cerrada)  61 / 481   ← hoy 'ambar'; con el zarpe encendido, bloqueo
   consulta → ámbar (sin cierre)  20 / 481
   consulta → sin restricciones  400 / 481
