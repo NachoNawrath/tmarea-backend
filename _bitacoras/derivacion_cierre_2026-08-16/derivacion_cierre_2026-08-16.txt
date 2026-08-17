@@ -1,0 +1,650 @@
+================================================================================
+DERIVACION-DE-CIERRE — EL BACKEND DERIVA Y EMITE EL ESTADO DE CIERRE
+Sesion de escritura, 2026-08-16. Implementa D-C1 a D-C5. NO cablea la PWA.
+================================================================================
+
+LINEA BASE DE ARRANQUE, verificada antes de la primera lectura:
+  tmarea-backend  HEAD 5c39dddfc9623849e8ad20974ff772e24dd4391b = origin/main
+                  (rev-parse de HEAD y de origin/main, identicos)
+                  sin estagear: solo data/catalogo/estado_drift.json (no tocado)
+                  untracked: 32 entradas con directorios colapsados
+  La bitacora de predicado_cierre NO estaba commiteada: sigue untracked.
+  No se salio a la API de SITPORT. La PWA no se abrio, ni de lectura.
+  El motor BRE se leyo y se corrio su suite; NO se modifico.
+
+SHELL DECLARADO (§7.3): el agente ejecuto en bash (Git Bash) y en PowerShell 5.1.
+Los comandos que este archivo transcribe PARA QUE EL OWNER LOS REPITA van en
+PowerShell y estan marcados como tales.
+
+ZONA DE ESCRITURA RESPETADA. Tocado:
+  src/services/cierre-derivador.js               NUEVO
+  src/services/__tests__/cierre-derivador.test.js NUEVO
+  src/routes/sitport-routes.js                   MODIFICADO (3 hunks, aditivos)
+  _bitacoras/derivacion_cierre_2026-08-16/       NUEVO (instrumento + salida + esto)
+NO tocado: la PWA (ni de lectura), data/, CONTRATO_MOTOR.md, CLAUDE.md,
+scripts/, y los TRES ARCHIVOS DEL MOTOR — comprobado con `git status --short`
+sobre los tres: salida vacia.
+
+Los .txt estan en UTF-8 sin BOM (los escribe Node). Para leerlos desde
+PowerShell 5.1 hace falta `Get-Content -Encoding UTF8`.
+
+
+================================================================================
+>>> LO QUE VA PRIMERO — DOS CIFRAS DE LAS DECISIONES SE MIDIERON DISTINTO
+================================================================================
+
+Ninguna de las dos invalida una decision. Las dos cambian un reparto.
+
+(1) D-C3 decia "'Menores' sin numero ... medido, 99 de 118 son asi".
+    SON 94 DE 118. Los otros 5 son cierre TOTAL declarado ("TODO TIPO DE
+    NAVES"), que es la rama :69 del parser y no la :92. Plegarlos a "menores"
+    les ANGOSTA el alcance: son cierres que alcanzan a todas.
+    >>> ESCALADO EN FASE 1, RESUELTO POR EL OWNER: `total` queda como cuarto
+        estado de alcance. D-C3 tiene cuatro estados, no tres. Los cinco estan
+        listados con su ID en §4 de este archivo y en (3) del instrumento.
+
+(2) D-C5 dice "siete grafias" de la unidad de tonelaje.
+    SON OCHO. La octava es "A/B." con BARRA — ID 95208, PUERTO MONTT, captura
+    del 01-08: "EMBARCACIONES MENORES DE 50 A/B.".
+    NO invalida la medicion de `ejes_cierre` §1.5: su metodo contaba "el token
+    que sigue a un numero" y la barra parte el token. Es el BORDE de su metodo.
+    El parser YA la leia —sitport-parser.js:47 acepta `A\/?\.?B`— y por eso el
+    umbral 50 salia bien; lo que faltaba era leerle la UNIDAD.
+    >>> COMO APARECIO, y es lo que importa: mi primer lector de unidad devolvio
+        `null` en 1 de 217. El conteo lo delato. Si hubiera escrito "null = no
+        aplicable" en vez de perseguirlo, la octava grafia seguiria sin
+        descubrirse y un "12" de esa forma quedaria sin unidad en la salida.
+        Un literal que no se encuentra es FALLA, no "no aplicable".
+
+
+================================================================================
+1. LAS PREMISAS, VERIFICADAS ANTES DE USARLAS
+================================================================================
+Todas re-medidas en esta sesion, no heredadas.
+
+  444 filas en seis capturas ................ SI  (73+83+83+83+83+39; y
+                                                   `rowsAffected` coincide con
+                                                   `recordsets[0]` en las seis)
+  particion 254 / 190 ....................... SI  (criterio IMPORTADO, ver §7)
+  327 predicado amplio (Ba) ................. SI
+  335 Opcion D .............................. SI
+  red de tres ejes: 8 filas / 4 restricc. ... SI  (94987, 95163, 95205, 95295)
+  157 de 173 tapados por la causa ........... SI
+  118 sin umbral en D ....................... SI  (= 99 + 19; y el 99 se parte
+                                                   en 94 + 5, ver arriba)
+  249 de 254 conviven estado y causa ........ SI  (con el criterio IMPORTADO)
+  37 tests del motor ........................ SI  (tests 37 · pass 37 · fail 0)
+  once patrones de tonelaje ................. SI  (11 RegExp, :46-58)
+  26 registros sin texto en `Observacion` ... SI
+
+DEFECTO MIO EN LA FASE 1, DECLARADO PORQUE SE CORRIGIO Y NO HABRIA RASTRO:
+  el 249/254 lo REESCRIBI en vez de importarlo y me dio 215. Mi regex de causa
+  no era la de `ejes_cierre`. En la Fase 2 se extrae `RE_CAUSA` del instrumento
+  versionado (02_medir_actividades.js:339) y se evalua ese texto: da 249, y la
+  matriz completa cierra en 444 (249 · 5 · 134 · 56).
+  Lo mismo paso con el criterio 254/190: lo transcribi como
+  /PUERTO CERRADO|CONDICION DE PUERTO/ y el original dice
+  /PUERTO CERRADO|CONDICION\s*DE\s*PUERTO/. Sobre este material los dos dan
+  254, pero NO SON EL MISMO CRITERIO — el original tambien alcanza la forma
+  pegada. Ahora se extrae del archivo. El instrumento ABORTO CON EXIT 4 la
+  primera vez que corrio, justamente por esto, y esa es la prueba de que su
+  control de importacion muerde.
+
+  >>> ES LA MISMA LECCION QUE LA REGLA YA TRAIA ESCRITA: "no inventes criterios
+      que ya tienen implementacion versionada: importalos". La pague dos veces
+      en la misma sesion.
+
+
+================================================================================
+2. QUE SE ESCRIBIO, Y POR QUE AHI
+================================================================================
+
+2.1 — `src/services/cierre-derivador.js` — NUEVO. 282 lineas.
+
+  FUERA DEL MOTOR. El motor contesta "¿puede navegar ESTA nave?" y su salida
+  depende del AB de quien pregunta (medido por `cierre_observacion` §2: el mismo
+  registro da UV a una nave de 15 AB y null a una de 60). Un estado de puerto no
+  puede depender de quien pregunta. Meterlo adentro le cambiaria el significado
+  a `nivel`.
+
+  FUERA DE LA RUTA. `derivarCondicion` (sitport-routes.js:532) ya mostro el
+  costo de poner logica de dominio en la capa de transporte: cero tests de los
+  37, sin normalizador central, y un defecto de precedencia que vivio sin que
+  nada lo cazara.
+
+  EN `src/services/`. Es donde INV-0.3 fija su verificacion, y es lo unico que
+  se prueba sin red, sin DB y sin ruta.
+
+  Importa por `require`, sin modificar: `normalizarRestriccion` y
+  `normalizarTexto` de sitport-parser.js.
+
+2.2 — `src/services/__tests__/cierre-derivador.test.js` — NUEVO. 36 tests.
+
+  Termina en `.test.js`, asi que entra a `npm test`. `bre-test.js` no se toco.
+
+2.3 — `src/routes/sitport-routes.js` — MODIFICADO. Tres hunks, los tres
+  ADITIVOS. Ninguna linea existente cambio de comportamiento. Diff exacto en §6.
+
+2.4 — LO QUE NO SE ESCRIBIO, Y SE DECLARA:
+  · `derivarCondicion`: CERO lineas modificadas. `condicion_legible` no cambia
+    ninguna de sus 444 salidas — medido, §5.
+  · el motor BRE: cero. `git status --short` sobre los tres archivos: vacio.
+  · `:486` (weather-ruta): no se toco. Consume `Totalpronostico`, que NO trae
+    `Observacion`: no tiene de donde derivar un cierre. No es una omision.
+
+
+================================================================================
+3. LA FORMA DE LA SALIDA — D-C1, ESTADO Y CAUSA SEPARADOS
+================================================================================
+
+Objeto `cierre`, seis claves. Muestra REAL, tomada de la corrida sobre el
+sondaje (ID 95208, PUERTO MONTT, el del tipeo):
+
+    {
+      "estado": "cerrado",
+      "via": "predicado",
+      "razon_sin_cierre": null,
+      "alcance": {
+        "tipo": "umbral",
+        "umbral": 50,
+        "unidad": "AB",
+        "rama_parser": "umbral_extraido"
+      },
+      "aviso_modo": "detalle",
+      "texto_original": "SE ESTABLECE CONDICION DE MAL TIEMPO, PURTO CERRADO
+        PARA EMBARCACIONES MENORES DE 50 A/B. DENTRO Y FUERA DE LA BAHIA ,SE
+        SUSPENDE FAENAS DE BUCEO ,REMOLQUES, Y TRABAJOS EN CENTROS DE CULTIVOS
+        .\"NO SE ACEPTAN CARTAS DE CONTINUIDAD DE TRABAJO \"."
+    }
+
+  VOCABULARIOS, cerrados:
+    estado            'cerrado' | 'sin_cierre_declarado'
+    via               'predicado' | 'ejes' | null
+    razon_sin_cierre  'sin_texto' | 'texto_sin_cierre' | null
+    alcance.tipo      'umbral' | 'total' | 'menores_sin_umbral' | 'no_legible'
+    alcance.unidad    'AB' | 'TRG' | null
+    aviso_modo        'detalle' | 'generico'
+
+  EL DERIVADOR NO EMITE NINGUNA CLAVE DE CAUSA NI DE VEREDICTO. Medido como
+  control, no afirmado: las seis claves se cruzaron contra
+  /condicion|causa|nivel|bandera|veredicto/ y el resultado es CERO. La causa
+  sigue siendo de `condicion` (motor) y `condicion_legible` (ruta); el veredicto
+  sigue siendo de `evaluacion.nivel`.
+
+  DESCARTADO, con su motivo escrito: emitir `nivel: 'cierre_total'`, que es
+  literalmente lo que el consumidor de la PWA busca. Es el atajo que deja todo
+  en verde sin cambiar nada de fondo, y por eso se sospecho primero (§0.3):
+  `nivel` lo produce el motor y significa veredicto-por-nave. Meterle un valor
+  de estado lo dejaria con dos vocabularios — el defecto que este repositorio ya
+  pago en `estado_geometria`. El cableado se hace del lado de la PWA, en otra
+  pieza.
+
+  EL TEXTO ORIGINAL (D-C4). El parser ya lo conservaba —`texto_original:
+  registro.Observacion || ''`, sitport-parser.js:145— asi que SIRVE y no hizo
+  falta nada nuevo. El derivador lo toma de ahi y no lo toca. Medido sobre los
+  444: identico byte a byte en 444 / 444. El derivador normaliza para DECIDIR y
+  nunca para PRODUCIR.
+
+  CUANDO FALTA EL DATO. `Observacion` vacia o solo espacios: 26 / 444. Salen
+  `estado='sin_cierre_declarado'` y `razon_sin_cierre='sin_texto'`. NO se
+  infiere de `MotivoRestriccion` ni de `AreaRestriccion` (INV-0.2): 14 de esos
+  26 traen zona por campo, y a ninguno de los 26 se le invento un cierre —
+  medido, cero.
+
+
+================================================================================
+4. D-C3 · LOS CUATRO ESTADOS DE ALCANCE — Y LOS CINCO DE `total`
+================================================================================
+Denominador 335 (la Opcion D). `null` deja de estar sobrecargado, y NO por una
+heuristica nueva: por LA RAMA DEL PARSER que produjo ese null.
+
+    umbral (con numero) ............................ 217 / 335
+    total (parser:69, TODO TIPO DE NAVES) ...........   5 / 335
+    menores_sin_umbral (parser:92 / :95) ............  94 / 335
+    no_legible ......................................  19 / 335
+    suma 335 — CIERRA
+
+LOS CINCO DE `total`, CON SU ID (pedido del owner, para que se vea que NO son
+"menores"):
+
+  ID 95056 · BAHIA CONCEPCION - TALCAHUANO · captura 30-07 19:42
+     NaveRecibe: "NAVE MAYOR (&GT;=100 AB), NAVE MENOR (&LT;100 AB)"
+     "SE ESTABLECE CONDICION DE PUERTO TEMPORAL, PUERTO CERRADO PARA TODO TIPO
+      DE NAVES Y EMBARCACIONES..."
+  ID 95043 · BAHIA SAN VICENTE · captura 30-07 19:42
+     NaveRecibe: "NAVE MAYOR (&GT;=100 AB)"
+     "...SE ESTABLECE CONDICION DE PUERTO MAL TIEMPO, TRAFICO SUSPENDIDO PARA
+      PARA TODO TIPO..."
+  ID 95044 · SECTOR COSTERO PENINSULA DE HUALPEN · captura 30-07 19:42
+     NaveRecibe: "NAVE MAYOR (&GT;=100 AB)"
+     (mismo texto que 95043 — es la misma medida en dos jurisdicciones)
+  ID 95177 · BAHIA CONCEPCION - TALCAHUANO · captura 01-08 13:14
+     NaveRecibe: "NAVE MENOR (&LT;100 AB)"
+     "SE ESTABLECE CONDICION DE TIEMPO, "MAL TIEMPO", TRAFICO SUSPENDIDO PARA
+      TODO TIPO DE NAVES Y EMBARCACIONES DENTRO Y FUERA DE LA BAHIA..."
+  ID 95176 · BAHIA CONCEPCION - TALCAHUANO · captura 01-08 13:14
+     NaveRecibe: "NAVE MENOR (&LT;100 AB)"
+     (mismo texto que 95177)
+
+  >>> LOS CINCO DICEN "TODO TIPO DE NAVES" O "TODO TIPO DE NAVES Y
+      EMBARCACIONES". Ninguno dice "menores". Tres de los cinco traen
+      `NaveRecibe = NAVE MAYOR`, o sea que ni siquiera son un registro dirigido
+      a la flota menor. Plegarlos a `menores_sin_umbral` habria dicho que un
+      cierre que alcanza a todas alcanza solo a las chicas.
+
+  CONTROL, sobre los cinco: `bloqueo_total === true` y `umbral_ab_fuera ===
+  null`, los dos leidos del parser. Es LA MISMA RAMA que el motor ya usa para
+  "Puerto cerrado para todo tipo de naves" (restriction-rules-engine.js:40): no
+  es un criterio nuevo, es el que ya estaba, leido por su rama en vez de por su
+  null.
+
+  LA RAMA :95 (`TODO TIPO DE EMBARCACIONES`) DA CERO, y se declara para que el
+  cero no se lea como no medido: esos registros traen ademas "EMBARCACIONES
+  MENORES" y caen antes por :92.
+
+D-C5 · LA UNIDAD, sobre los 217 con numero:
+    AB 209 · TRG 8 · sin unidad 0    suma 217 — CIERRA
+  El cero de "sin unidad" es un control, no un adorno: es lo que destapo la
+  octava grafia. Ninguna unidad se convierte; no hay tabla de equivalencia y no
+  se construyo ninguna.
+
+
+================================================================================
+5. D-C1 · LA CAUSA NO SE MOVIO
+================================================================================
+`derivarCondicion` se extrajo de sitport-routes.js COMO TEXTO y se ejecuto ese
+texto —no se transcribio a mano—, sobre los 444:
+
+    Mal Tiempo 148 · Tiempo Variable 119 · Temporal 52 · Puerto Cerrado 46 ·
+    Viento 25 · Ola - marejada 20 · Asociados a elemento y/o ip 18 ·
+    Mal tiempo 7 · Mal tiempo, viento 4 · Viento, visibilidad 3 ·
+    Temporal, viento 1 · Visibilidad 1
+    suma 444 — CIERRA
+
+  Es la MISMA tabla que publicaron `cierre_observacion` §6.2 y `ejes_cierre`
+  §5.3 sobre las dos bolsas: 39 + 7 = 46 'Puerto Cerrado', 18 'Asociados a
+  elemento y/o ip'. Los dos se controlaron por separado y pasaron.
+
+LA CONVIVENCIA, con RE_CAUSA importada verbatim:
+    declaran CIERRE  Y  causa   : 249
+    declaran CIERRE, sin causa  :   5
+    solo causa, sin cierre      : 134
+    ni cierre ni causa          :  56
+    suma 444 — CIERRA
+
+Y LA MEDICION QUE CIERRA EL ARGUMENTO DE D-C1:
+    de los 173 con el literal "PUERTO CERRADO", `derivarCondicion` tapa 157.
+    de esos 157 tapados, cuantos el DERIVADOR declara cerrados : 157 / 157.
+
+  >>> LOS 157 QUE LA CAUSA TAPABA ESTAN LOS 157, DECLARADOS POR EL ESTADO. No
+      compiten: conviven. Y por eso `derivarCondicion` no habia que arreglarla —
+      no estaba eligiendo mal, estaba eligiendo con una sola ranura para dos
+      cosas.
+
+
+================================================================================
+6. DIFF EXACTO DE LO MODIFICADO
+================================================================================
+Un solo archivo versionado se modifico. Los otros dos de src/ son nuevos.
+
+  $ git diff -- src/routes/sitport-routes.js
+
+  @@ -5,6 +5,7 @@
+   const { evaluarRuta } = require('../services/route-restriction-evaluator');
+  +const { derivarCierre } = require('../services/cierre-derivador');
+
+  @@ -353,6 +354,12 @@   (dentro del res.json de POST /restricciones)
+        contacto: contactoPorEscalon(cap),
+  +      // ESTADO DE CIERRE (D-C1: el cierre es el estado, la condicion es la causa).
+  +      // Va como ARRAY HERMANO alineado por `IDRestriccion`, y NO enriqueciendo los
+  +      // registros de `restricciones`: enriquecerlos los dejaria de ser los
+  +      // registros crudos de SITPORT, que es lo que este endpoint promete devolver.
+  +      // Decision del owner, 2026-08-16.
+  +      cierre: filtradas.map(r => ({ IDRestriccion: r.IDRestriccion, ...derivarCierre(r) })),
+       });
+
+  @@ -833,7 +840,16 @@   (dentro del push de intermedias, restricciones-ruta)
+           condicion: norm.condicion,
+  +      // LA CAUSA. `derivarCondicion` NO se toco y `condicion_legible` no
+  +      // cambia ninguna de sus salidas: los 157 de 173 que "tapaba" el cierre
+  +      // dejan de ser un defecto en cuanto el cierre tiene su propia ranura
+  +      // (D-C1). No compiten: conviven, y el dato las trae juntas en 249 de
+  +      // 254 de la bolsa que declara cierre.
+           condicion_legible: derivarCondicion(r),
+  +      // EL ESTADO. Estado de puerto, no veredicto por nave: no depende del AB
+  +      // de quien pregunta. Se emite aca y NO como `evaluacion.nivel`, que es
+  +      // del motor y significa otra cosa.
+  +      cierre: derivarCierre(r),
+           motivo: r.MotivoRestriccion || null,
+
+  LOS TRES HUNKS SON ADITIVOS. Ninguna linea existente cambio. `derivarCondicion`
+  conserva sus seis lineas de cuerpo intactas — lo unico que se le agrego arriba
+  es un comentario.
+
+  LOS TRES PUNTOS DE SALIDA:
+    :355  POST /restricciones   -> array hermano `cierre`, alineado por
+                                   IDRestriccion. Los registros crudos siguen
+                                   crudos.
+    :486  POST /weather-ruta    -> NO SE TOCO. Consume `Totalpronostico`, que no
+                                   trae `Observacion`.
+    :840  POST /restricciones-ruta -> clave `cierre` en cada intermedia.
+
+  QUIEN CONSUME LO QUE SE TOCO: `condicion_legible` tiene CERO consumidores en
+  el backend (medido). `restricciones_intermedias` lo consume la PWA, que esta
+  sesion no abrio. Agregar claves a un `res.json` no rompe un consumidor JSON, y
+  ningun `.filter()` ni `.map()` aguas abajo depende de la forma del objeto.
+
+
+================================================================================
+7. VERIFICACION — TODO CORRIDO, CON SU NUMERO
+================================================================================
+
+7.1 — LAS SUITES, ANTES Y DESPUES
+
+    `npm test`                        ANTES  86 / 7 suites   DESPUES 122 / 15
+                                      pass 86 · fail 0        pass 122 · fail 0
+    `node --test .../bre-test.js`     ANTES  37 · pass 37     DESPUES 37 · pass 37
+                                      (el motor no se toco)
+
+    122 - 86 = 36, que son exactamente los tests nuevos. Cierra.
+
+    Para el owner, en PowerShell:
+      cd C:\Users\katia\tmarea-backend
+      npm test
+      node --test src/services/__tests__/bre-test.js
+
+7.2 — LOS TESTS NUEVOS: 36, EN 8 SUITES, TODOS CORRIDOS
+
+    D-C1 el cierre es el estado ....................  3
+    D-C2 predicado y red, sin fuzzy ................  6
+    D-C3 el umbral define el alcance ...............  5
+    D-C4 el aviso sale siempre; el generico es piso   5
+    D-C5 se lee el numero, la unidad se conserva ...  4
+    ruido de fuente (INV-0.3) ......................  4
+    MORDIDA (§4.6) .................................  3
+    sondaje real, 444 registros ....................  6
+    suma 36 — CIERRA · pass 36 · fail 0 · skipped 0
+
+7.3 — LA MORDIDA, CORRIDA Y MOSTRADA (§4.6)
+
+  Un control que no puede fallar no prueba nada. Se le inyecto al derivador el
+  defecto que cada control debe cazar, se corrio la suite, y se restauro
+  comprobando el sha256.
+
+    sha256 ANTES  b41c890fb320b288a34b5f6c0ad087765126f727900bff12ee2b50671476c054
+
+    [familia] FAMILIA_CIERRE = /CERR/  (caza por raiz, sin \b)
+              -> tests 36 · pass 32 · FAIL 4
+                 ✖ CERRAZON DE NIEBLA NO entra por la familia (ID 95351)
+                 ✖ MORDIDA NEGATIVA: se inyecta CERRAZON y NO la caza
+                 ✖ los conteos de la Opcion D cierran contra lo medido
+                 ✖ los cuatro estados de alcance suman 335
+
+    [total]   `total` plegado a `menores_sin_umbral`
+              -> tests 36 · pass 34 · FAIL 2
+                 ✖ cierre TOTAL es su propio estado y NO se pliega a menores
+                 ✖ los cuatro estados de alcance suman 335
+
+    [ejes]    la red deja de exigir el tercer eje (la actividad)
+              -> tests 36 · pass 31 · FAIL 5
+                 ✖ la red exige LOS TRES ejes: con dos no alcanza
+                 ✖ MORDIDA DE LA RED: se le saca un eje y deja de entrar
+                 ✖ los conteos de la Opcion D cierran contra lo medido
+                 ✖ los cuatro estados de alcance suman 335
+                 ✖ todo umbral extraido trae su unidad — cero huecos
+
+    [texto]   `texto_original` normalizado antes de salir
+              -> tests 36 · pass 34 · FAIL 2
+                 ✖ el texto de la Capitania viaja TAL CUAL
+                 ✖ el texto original sale byte a byte en los 444
+
+    sha256 RESTAURADO  b41c890fb320b288a34b5f6c0ad087765126f727900bff12ee2b50671476c054
+                       IDENTICO al de antes.
+
+  >>> LOS CUATRO DEFECTOS FUERON CAZADOS. Los dos que el owner pidio ver
+      explicitamente:
+        · se inyecta un cierre y el derivador lo caza     -> MORDIDA POSITIVA, pasa
+        · se inyecta CERRAZON y el derivador NO la caza   -> MORDIDA NEGATIVA,
+          y cuando se rompe el predicado a /CERR/, ESE TEST SE PONE ROJO.
+      El script de inyeccion vivio en el scratchpad de la sesion y no se
+      versiona: lo que se versiona es este registro y el sha256 de ida y vuelta.
+
+7.4 — LA DERIVACION SOBRE LOS 444 — INSTRUMENTO CORRIDO, EXIT 0
+
+    _bitacoras/derivacion_cierre_2026-08-16/01_verificar_derivacion.js
+    salida versionada al lado (.txt). IMPORTA el derivador de src/, no lo copia.
+
+      comparaciones efectivas : 2.108   (no es cero)
+      controles fallidos      : 0
+      exit                    : 0
+
+      D  = predicado amplio U red de ejes ....  335 / 444   esperado 335  OK
+      Ba = predicado amplio (via=predicado) ..  327 / 444   esperado 327  OK
+      red de tres ejes, en FILAS .............    8 / 444   esperado   8  OK
+      sin cierre declarado ...................  109 / 444   esperado 109  OK
+      suma 444 — CIERRA
+
+      red en RESTRICCIONES distintas: 4 — 94987 · 95163 · 95205 · 95295
+        (94987 PANGUIPULLI aparece en 5 capturas: por eso 8 filas y 4
+         restricciones. Los dos numeros van siempre juntos.)
+
+      alcance: 217 · 5 · 94 · 19    suma 335 — CIERRA
+      unidad:  AB 209 · TRG 8 · sin unidad 0   suma 217 — CIERRA
+      aviso_modo: detalle 316 · generico 19    suma 335 — CIERRA
+      texto_original identico byte a byte: 444 / 444
+      convivencia: 249 · 5 · 134 · 56          suma 444 — CIERRA
+      157 de 173 tapados, y 157/157 declarados por el derivador
+
+      sha256 de las seis capturas: IDENTICOS al arranque y al cierre. Ningun
+      insumo se abrio en escritura, asi que no hubo nada que restaurar.
+
+    Para el owner, en PowerShell:
+      cd C:\Users\katia\tmarea-backend
+      node _bitacoras\derivacion_cierre_2026-08-16\01_verificar_derivacion.js
+      Get-Content _bitacoras\derivacion_cierre_2026-08-16\01_verificar_derivacion.txt -Encoding UTF8
+
+    EL INSTRUMENTO ABORTO DE VERDAD DOS VECES antes de esta corrida, las dos con
+    exit 4 y las dos con razon: no pudo extraer un criterio versionado que yo
+    habia transcrito mal. Se declara porque el .txt versionado es el de la
+    ULTIMA corrida y sin esto no habria rastro — y porque es la prueba, no
+    simulada, de que su control de importacion muerde.
+
+7.5 — LOS 19 SIN UMBRAL LEGIBLE: CAEN AL GENERICO Y NO DESAPARECEN
+
+      aviso_modo='generico' dentro de D ...... 19 / 335
+      de esos, siguen con estado='cerrado' ... 19 / 19
+      de esos, conservan texto_original ...... 19 / 19
+      19 filas = 14 restricciones distintas
+
+    Los catorce estan listados con su ID y su texto en (5) del .txt del
+    instrumento. Entre ellos: 94978 BAHIA CONSTITUCION (6 filas), 95171 ISLA
+    ROBINSON CRUSOE, 95186 LIRQUEN, 95201 SAN VICENTE.
+
+    >>> EL GENERICO ES UN PISO Y SE MIDIO QUE NO ES UN REEMPLAZO: los otros 316
+        conservan su detalle — 217 con umbral y unidad, 5 con cierre total, 94
+        con "menores sin umbral" dicho asi por la fuente.
+
+
+================================================================================
+8. OBSERVACIONES DEL DATO Y DEL CODIGO — SIN REGLA PROPUESTA
+================================================================================
+
+O1. EL CIERRE MAS TOTAL DEL MATERIAL SALE POR EL GENERICO. ID 95171, "SE
+    ESTABLECE CONDICIONDE PUERTO CERRADO PARA TODA LA JURISDICCION DE JUAN
+    FERNANDEZ": estado=cerrado, alcance=no_legible, aviso_modo=generico. Es
+    correcto por la regla —no dice a quien ni con que umbral— y a la vez pierde
+    que el cierre es de TODA LA JURISDICCION, que el texto SI dice.
+    `no_legible` hoy no distingue "no dice nada" de "dice toda la jurisdiccion
+    sin umbral". NO SE RESUELVE ACA: que se le muestra al patron en ese caso es
+    del owner (§0.4). Se anota con su ID para que la decision tenga el caso.
+
+O2. EL ALCANCE QUE SE EMITE ES EL DE *FUERA*. `umbral` sale de
+    `umbral_ab_fuera`, que es el unico que alguna regla del motor consulta.
+    Cuando el texto trae umbrales distintos dentro y fuera —4 filas, 2
+    restricciones: ID 95155 QUELLON (dentro 100 / fuera 50) e ID 95185 RADA DE
+    CARELMAPU (dentro 25 / fuera 50)— el de DENTRO no sale en `cierre`.
+    `umbral_ab_dentro` ya se calcula en el parser y ninguna regla lo consulta
+    (hecho muerto, medido por `cierre_observacion` §2). Esta sesion no lo
+    revive: hacerlo cambiaria que alcance se le muestra al patron.
+
+O3. LA RED DE TRES EJES NO CAZA EL TIPEO, Y ESO ES LO CONTRARIO DE LO QUE
+    PARECIA. "PURTO CERRADO" (ID 95208) entra por el PREDICADO SOLO, porque
+    CERRADO esta intacto y lo que se rompio fue PUERTO. Verificado en el
+    instrumento: estado=cerrado, via=predicado. Lo que la red captura son otras
+    cuatro restricciones que nunca dicen cerrado.
+
+O4. CERRAZON SE COMPORTO COMO ESTABA PREVISTO, Y SE MIDIO EN LOS DOS CASOS.
+    2 registros de 444 la traen. ID 95351: sin_cierre_declarado (no trae la
+    familia). ID 95346: cerrado, PERO trae "CERRADO" aparte — no entra POR
+    cerrazon. `\bCERRAD[OA]S?\b` no la alcanza por construccion. El control
+    negativo lo afirma registro por registro, no en agregado.
+
+O5. LAS CUATRO ALTERNATIVAS DEL PREDICADO QUE DAN CERO SE CONSERVAN.
+    CIERRE/CERRAR/CIERRA/CLAUSURA dan 0 / 444 en los doce campos. Se dejan en la
+    expresion porque son la definicion del predicado y no un ajuste a este
+    material (§4.5). Si una Capitania escribe "SE CIERRA EL PUERTO" manana, el
+    derivador ya la lee.
+
+O6. EL PREDICADO ESTRICTO (Be) SE IMPLEMENTO COMO "TRAE LA FAMILIA", SIN
+    CLASIFICADOR DE DECLARATIVIDAD. `predicado_cierre` §1.2 midio 334 / 334
+    ocurrencias declarativas: cero negaciones, cero condicionales, cero
+    subordinadas. Un clasificador daria hoy el MISMO conjunto y seria codigo que
+    no muerde. Se declara el limite con su n: son 334 ocurrencias en 5 momentos
+    de 4 dias y medio. Una redaccion futura como "NO SE CERRARA EL PUERTO"
+    entraria como cierre, y hoy no existe ninguna.
+
+O7. MI PRIMER LECTOR DE UNIDAD FALLO EN 1 DE 217 Y ESO FUE LO UTIL. El conteo
+    "sin unidad" existia para ser cero; no lo fue, y ahi aparecio la octava
+    grafia. Si el conteo no hubiera estado, el bug habria salido como un `null`
+    silencioso en la salida del API.
+
+O8. EL ARRAY HERMANO DE :355 SE ALINEA POR `IDRestriccion`, Y ESE CAMPO ES
+    UNICO DENTRO DE CADA CAPTURA (medido por `sondaje_cierre` §4: 73/73, 83/83
+    x4, 39/39, sin nulos). Se usa el ID y no el indice del array para que un
+    reordenamiento aguas arriba no desalinee el dato.
+
+O9. `npm test` NO CORRE `bre-test.js`. El script es
+    `node --test src/services/__tests__/*.test.js` y `bre-test.js` no termina en
+    `.test.js`. Los 37 del motor son un comando aparte y hay que acordarse de
+    correrlo. Se consigna como dato del entorno; no se toco `package.json`.
+
+
+================================================================================
+9. FUERA DE ALCANCE CRUZADO — §6.1, REDACTADO Y NO APLICADO
+================================================================================
+
+F1. NINGUNA DECLARACION DE UN ARCHIVO VERSIONADO SE MIDIO COMO FALSA, y se dice
+    explicitamente para que el silencio no se lea como ausencia de busqueda. Se
+    comprobo: CONTRATO_MOTOR.md v2.4 no declara de donde sale el hecho "puerto
+    cerrado" (el hueco que `cierre_observacion` F2 ya habia consignado);
+    CLAUDE.md §0.2/§0.4/§1.2/§2/§6.1 no afirman nada sobre esto. Las cifras de
+    las cuatro bitacoras del frente van con su denominador y todas las que esta
+    sesion volvio a medir reprodujeron.
+
+F2. LO QUE SI SE MIDIO IMPRECISO ES UNA CIFRA DE `ejes_cierre` §1.5, Y NO ES
+    FALSA SINO INCOMPLETA. Texto vigente, citado literal:
+      "DOS UNIDADES, SIETE GRAFIAS. AB se escribe "A.B.", "AB", "AB." y
+       "ARQUEO BRUTO"; TRG se escribe "TRG", "TRG//" y "TRG///"."
+    Medicion que la acota: son OCHO. Falta "A/B." con barra, en ID 95208
+    (PUERTO MONTT, captura del 01-08). Instrumento:
+    _bitacoras/derivacion_cierre_2026-08-16/01_verificar_derivacion.js §(4),
+    salida versionada al lado.
+    TEXTO DE REEMPLAZO REDACTADO Y LISTO PARA APLICAR, en la forma que §3.3 pide:
+      "DOS UNIDADES, ~~SIETE~~ **OCHO** GRAFIAS. AB se escribe "A.B.", "AB",
+       "AB.", **"A/B."** y "ARQUEO BRUTO"; TRG se escribe "TRG", "TRG//" y
+       "TRG///".
+       > **ENMENDADO 2026-08-16 (§3.3) por la sesion DERIVACION-DE-CIERRE.** La
+       > octava grafia no aparecio en esta tabla porque el metodo contaba "el
+       > token que sigue a un numero" y la barra parte el token: es el borde del
+       > metodo, no un error de la medicion. El parser ya la leia
+       > (sitport-parser.js:47 acepta `A\/?\.?B`), asi que ningun umbral se
+       > perdio por esto."
+    OPCIONES: (a) enmendar la bitacora con tachado, como arriba — recomendada,
+    es donde la cifra vive y es donde se la va a heredar; (b) dejar la bitacora
+    como esta y anotar la correccion solo aca — mas barato y deja la cifra
+    falsa en el lugar donde se la lee. Se recomienda (a).
+    QUE AUTORIZACION HARIA FALTA: el ciclo de §6 — se propone, el owner revisa,
+    el owner autoriza el commit. `ejes_cierre` es una bitacora de otra sesion y
+    esta fuera de la zona de escritura de esta.
+
+F3. LA DEUDA DE LOS 16 QUE DEVUELVEN 'Puerto Cerrado' COMO CAUSA SIGUE ABIERTA,
+    y el owner ya dijo que la decide aparte. Lo que esta sesion agrega es que
+    ahora es MAS visible, no menos: con `cierre` emitido, un registro puede
+    salir con `condicion_legible = 'Puerto Cerrado'` (una etiqueta de estado en
+    la ranura de la causa) y `cierre.estado = 'cerrado'` al lado. No se
+    contradicen, pero la primera dejo de aportar. Uno de los 16 (ID 95185) lo
+    hace por un defecto de comillas. No se toco nada: es P-d y es del owner por
+    §0.4.
+
+F4. LA TENSION DE INV-0.3 CON `derivarCondicion` (F3 de `cierre_observacion`)
+    NO SE ABRIO, por instruccion del prompt. Se consigna que el archivo nuevo SI
+    pasa por un normalizador y declara cual: el de sitport-parser.js:8, que es
+    el que el motor uso para producir los hechos que este archivo consume. Usar
+    otro haria que el texto que decide la rama no sea el texto sobre el que la
+    rama se decidio.
+
+F5. NO SE ABRIO NADA DEL FRENTE DEL D.S. 991 NI DE TM-025, ni de lectura. El ID
+    95171 aparece dos veces en este archivo (O1 y §7.5) solo como caso de
+    `no_legible`; su jurisdiccion no se miro. Tampoco se tocaron: el cuarto eje
+    de cartas de continuidad, las 32, la Via 2, las 19 de
+    contactosDeJurisdicciones, las 9 E1x, P1, P5, `fetchPortStatus:240`,
+    `estado_drift.json` ni D7.
+
+F6. DEUDA DE MATERIAL, HEREDADA Y NO SALDADA: las seis capturas siguen sin
+    llevar adentro la marca de cuando ni con que consulta se tomaron (F4 de
+    `sondaje_cierre`, F5 de `ejes_cierre`, F6 de `predicado_cierre`).
+    `capturar.ps1` sigue fuera de zona.
+
+
+================================================================================
+10. LO QUE QUEDA DEL OWNER
+================================================================================
+
+D1. EL COMMIT. Nada se commiteo. Archivos a estagear, con ruta exacta:
+      git add src/services/cierre-derivador.js
+      git add src/services/__tests__/cierre-derivador.test.js
+      git add src/routes/sitport-routes.js
+      git add _bitacoras/derivacion_cierre_2026-08-16/
+    NUNCA `git add .`. `data/catalogo/estado_drift.json` sigue modificado y sin
+    estagear: NO se toca.
+
+D2. F2 — la enmienda de las ocho grafias en `ejes_cierre` §1.5. Texto de
+    reemplazo redactado arriba, con dos opciones y recomendacion.
+
+D3. O1 — que ve el patron cuando el cierre alcanza a TODA LA JURISDICCION y el
+    texto no trae umbral (ID 95171). Hoy sale por el generico, que es correcto
+    por la regla y pierde informacion que el texto trae.
+
+D4. O2 — si el alcance emitido debe traer tambien el umbral de DENTRO cuando
+    difiere del de FUERA (4 filas, 2 restricciones). Revivir
+    `umbral_ab_dentro` cambia que alcance se le muestra al patron.
+
+
+================================================================================
+11. ESTADO AL CIERRE
+================================================================================
+Sin commit. HEAD sigue en 5c39dddfc9623849e8ad20974ff772e24dd4391b = origin/main.
+`data/catalogo/estado_drift.json` no fue tocado. No se salio a la API de SITPORT.
+No se abrio la PWA, ni de lectura. El motor BRE se leyo (require) y se corrio su
+suite —tests 37 · pass 37 · fail 0 · skipped 0—; NO se modifico, comprobado con
+`git status --short` sobre sus tres archivos.
+
+Ningun insumo se abrio en escritura: los sha256 de las seis capturas al terminar
+son los mismos que al empezar y estan en (0) y (10) del .txt del instrumento.
+El unico archivo que se modifico para medir fue `src/services/cierre-derivador.js`
+—las cuatro inyecciones de mordida— y se restauro comprobando sha256:
+b41c890fb320b288a34b5f6c0ad087765126f727900bff12ee2b50671476c054 de ida y vuelta.
+
+Suites: `npm test` 86 -> 122 (pass 122 · fail 0) · motor 37 -> 37 (pass 37).
+
+Nuevo en tmarea-backend:
+  src/services/cierre-derivador.js                 (nuevo, sin versionar)
+  src/services/__tests__/cierre-derivador.test.js  (nuevo, sin versionar)
+  src/routes/sitport-routes.js                     (modificado, sin estagear)
+  _bitacoras/derivacion_cierre_2026-08-16/         (instrumento, salida, esto)
+
+El objetivo de la sesion esta cumplido: el backend DERIVA y EMITE el estado de
+cierre desde `Observacion`, segun D-C1 a D-C5, y el dato es verificable desde el
+backend sin tocar la PWA. Lo que NO se hizo, y estaba fuera de alcance: cablear
+la PWA. El aviso de arribada forzosa se enciende en otra pieza.
+================================================================================

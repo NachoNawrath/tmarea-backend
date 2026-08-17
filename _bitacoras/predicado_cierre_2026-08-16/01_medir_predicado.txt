@@ -1,0 +1,810 @@
+================================================================================
+PREDICADO-DE-CIERRE — QUE CUENTA COMO CIERRE, LAS CUATRO FORMAS MEDIDAS
+Instrumento: _bitacoras/predicado_cierre_2026-08-16/01_medir_predicado.js
+Corrida: 2026-08-17T02:21:26.368Z · sin salir a la API de SITPORT
+================================================================================
+
+--------------------------------------------------------------------------------
+(0) MATERIAL — seis capturas, sha256. Ningun insumo se abre en escritura.
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json    n= 73  5a3bf064eeef7d63
+    restricciones_2026-07-31_16-32.json    n= 83  8e5270eaabbd2800
+    restricciones_2026-07-31_20-32.json    n= 83  e9d4d084202d7935
+    restricciones_2026-07-31_21-01.json    n= 83  e9d4d084202d7935
+    restricciones_2026-08-01_13-14.json    n= 83  9ed8c7c15c52a05f
+    check_ahora.json                       n= 39  c306aea459dc5124
+    excluido (otra consulta): bahias_sitport.json
+
+    DENOMINADOR GLOBAL DE ESTA SESION: 444 filas
+    "fila" = captura x registro. Una misma restriccion vista en dos capturas
+    cuenta dos veces. Es el mismo denominador de las tres bitacoras previas.
+
+--------------------------------------------------------------------------------
+(0.b) NORMALIZACIONES DECLARADAS — INV-0.3, y que arregla cada una
+--------------------------------------------------------------------------------
+    norm  NFD sin diacriticos + \s+ colapsado (TAB incluido) + trim + MAYUS.
+          <- ES EL DEL CRITERIO 254/190, verbatim. No es el del motor.
+    N1    norm + entities HTML decodificadas (&LT; &GT; &AMP; &QUOT;)
+    n3    N1 + toda puntuacion a espacio, recolapsado
+          <- desarma comillas escapadas (ID 95185) y "CONDICIONDE" NO: pegado
+             queda pegado, la puntuacion no lo separa. Se declara el limite.
+    normalizarTexto  el DEL MOTOR (sitport-parser.js:8). NO colapsa espacios,
+          NO decodifica entities. Donde corre el motor se usa el del motor.
+    Lo que ninguna normaliza: palabras pegadas ("CONDICIONDE",
+          "RESTRICCIONESDE") y tipeos ("PURTO", "ESTABLCE", "RESTRINGUE").
+          NO SE APLICA NINGUNA APROXIMACION para cazarlos (prohibido por prompt).
+
+--------------------------------------------------------------------------------
+(0.c) CRITERIOS IMPORTADOS POR EXTRACCION DE TEXTO — no reescritos
+--------------------------------------------------------------------------------
+    AB_PATTERNS      11 RegExp  <- src/services/sitport-parser.js:46-58
+    CRITERIO 254/190 /PUERTO CERRADO|CONDICION\s*DE\s*PUERTO/  <- 03_contraste_texto.js:84 (VERBATIM)
+    RE_PRED          <- 03_medir_porosidad.js:86 (cinco predicados)
+                     /\bCERRAD[OA]S?\s+PARA\b|\bCERRAD[OA]S?\s+EL\b|\bTRAFICO\s+SUSPENDIDO\b|\bSE\s+SUSPENDE\s+EL\s+TRAFICO\b|\bPROHIBICION\s+DE\s+ZARPE\b/
+    ACTIVIDADES      22 terminos <- 02_medir_actividades.js:94-117
+    TODAS            /\bTODO\s+TIPO\s+DE\s+FAENAS?\b|\bTOTALIDAD\b|\bTODAS?\s+LAS\s+(?:ACTIVIDADES|FAENAS)\b/
+    MARCADOR_SUSP    /\bSUSPEND\w*|\bPROHIB\w*|\bRESTRING\w*|\bCANCELA\w*|\bCERRAD[OA]S?\b|\bQUEDAN?\b/
+    normalizarRestriccion / normalizarTexto  <- require() del motor. NO se modifica.
+
+--------------------------------------------------------------------------------
+(1) LA PARTICION 254/190, REPRODUCIDA CON EL CRITERIO VERBATIM
+--------------------------------------------------------------------------------
+    bolsa A (matchea el criterio) : 254
+    bolsa B (no lo matchea)       : 190
+    suma 444 — CIERRA
+    >>> REPRODUCE. Se usa como REFERENCIA, no como universo.
+
+--------------------------------------------------------------------------------
+(2) LAS PREMISAS DEL PROMPT, VERIFICADAS UNA POR UNA
+--------------------------------------------------------------------------------
+    444 filas en seis capturas ................. SI
+    particion 254 / 190 disjunta ............... SI (reproducida arriba)
+    once patrones de tonelaje .................. SI
+    89 de los 190 dicen "CERRADO PARA" ......... 89 / 190  SI
+    34 de los 254 no cierran nada .............. 34 / 254  SI
+    132 de los 254 no nombran actividad ........ 132 / 254  SI
+
+    LA PREMISA QUE NO SE SOSTIENE — y no es de las bitacoras, es de la
+    compresion del prompt:
+      "89 de los 190 dicen CERRADO PARA CON LOS TRES EJES COMPLETOS"
+      La bitacora ejes_cierre mide 89/190 con "CERRADO PARA" y NO afirma que
+      esos 89 tengan los tres ejes: el "tres ejes completos" sale del UNICO
+      caso citado (ID 95025). El numero real esta medido en (5.4).
+
+================================================================================
+(3) PUNTO 1 — TODAS LAS FORMAS DE CIERRE EN LAS 444, POR FORMA Y POR CAMPO
+================================================================================
+
+  3.1 — OCURRENCIAS POR FORMA Y POR CAMPO. Denominador de "registros": 444.
+        "ocurr." = ocurrencias totales (un registro puede traer varias).
+        Texto normalizado n3. Campos con 0 en todas las formas se omiten y
+        se declaran al pie.
+
+        forma                                 reg.  ocurr.   campos donde aparece
+        CERRADO / CERRADA / -OS / -AS          298     334   Observacion:334
+        CIERRE / CIERRES                         0       0   (ninguno)
+        CERRAR / CERRARA / CERRARSE              0       0   (ninguno)
+        CIERRA / CIERRAN                         0       0   (ninguno)
+        CLAUSURA / CLAUSURAD*                    0       0   (ninguno)
+        SUSPENSION TOTAL                         0       0   (ninguno)
+        SUSPEND* (suspendido/se suspende)      187     196   Observacion:196
+        PROHIB*                                  1       1   Observacion:1
+        PARALIZ*                                18      18   tiporestriccion:18
+        CANCELA*                                 5       5   Observacion:5
+        RESTRING* / RESTRICCION*                55      63   Observacion:63
+        CERRAZON  (NIEBLA — NO es cierre)        2       2   Observacion:2
+
+        *** FORMAS CON CERO APARICIONES EN LOS 444 — es FALLA declarada, no
+            "no aplicable" (regla de instrumento):
+              CIERRE / CIERRES   0 / 444 en los doce campos de texto
+              CERRAR / CERRARA / CERRARSE   0 / 444 en los doce campos de texto
+              CIERRA / CIERRAN   0 / 444 en los doce campos de texto
+              CLAUSURA / CLAUSURAD*   0 / 444 en los doce campos de texto
+              SUSPENSION TOTAL   0 / 444 en los doce campos de texto
+
+        campos de texto sin ninguna forma de cierre: Detalle, MotivoRestriccion, NombreInstalacion, AreaRestriccion, NaveRecibe, GLBahia, glnombre, tipo, SitioAtraque, FrenteAtraque
+
+  3.2 — LA FAMILIA DEL CIERRE (CERRAD*/CIERRE*/CERRAR*/CLAUSUR*), POR CAMPO,
+        contada en REGISTROS. Es la que decide si el predicado sirve.
+
+        Observacion           298 / 444
+        Detalle                 0 / 444
+        MotivoRestriccion       0 / 444
+        tiporestriccion         0 / 444
+        NombreInstalacion       0 / 444
+        AreaRestriccion         0 / 444
+        NaveRecibe              0 / 444
+        GLBahia                 0 / 444
+        glnombre                0 / 444
+        tipo                    0 / 444
+        SitioAtraque            0 / 444
+        FrenteAtraque           0 / 444
+
+        registros con la familia en Observacion            : 298 / 444
+        registros con la familia SOLO fuera de Observacion : 0 / 444
+        registros sin la familia en ningun campo           : 146 / 444
+        suma 444 — CIERRA
+
+  3.3 — DECLARACION vs NO-DECLARACION. Clasificacion por OCURRENCIA, sobre
+        `Observacion` (n3), con ventana de 4 palabras antes y 4 despues.
+
+        ocurrencias de la familia en Observacion : 334
+        en 298 registros distintos de 444
+
+        clase                                         ocurr.
+        DECLARACION SIMPLE                               334
+        suma 334 — CIERRA
+
+        NEGACION — 0 ocurrencia(s)
+            *** CERO. Se declara como falla de busqueda, no como "no aplica":
+                la forma se busco con regex declarada y el dato no la trae.
+
+        CONDICIONAL / FUTURO — 0 ocurrencia(s)
+            *** CERO. Se declara como falla de busqueda, no como "no aplica":
+                la forma se busco con regex declarada y el dato no la trae.
+
+        SUBORDINADA TEMPORAL ("una vez cerrado") — 0 ocurrencia(s)
+            *** CERO. Se declara como falla de busqueda, no como "no aplica":
+                la forma se busco con regex declarada y el dato no la trae.
+
+        DECLARACION CON TERMINO ("cerrado hasta") — 0 ocurrencia(s)
+            *** CERO. Se declara como falla de busqueda, no como "no aplica":
+                la forma se busco con regex declarada y el dato no la trae.
+
+  3.4 — QUE ES LO QUE SE DECLARA CERRADO. Token(s) alrededor de la ocurrencia.
+        Sirve para la pregunta "el cierre referido a otra cosa que no sea el
+        puerto o la bahia".
+
+        sujeto del cierre                               ocurr.
+        antes: PUERTO (o su tipeo)                         185
+        despues: PARA <flota> (sujeto elidido)              85
+        despues: ACTIVIDAD (cerrado <actividad>)            23
+        antes: CANAL / ESTERO / GOLFO / LAGO / RIO / BARRA      21
+        antes: BAHIA / RADA / CALETA                        12
+        antes: SECTOR / ZONA / AREA / JURISDICCION           6
+        SIN SUJETO IDENTIFICADO por el clasificador          2
+        suma 334 — CIERRA
+
+        RESIDUO DEL CLASIFICADOR: 2 ocurrencias. Se listan enteras
+        para que el residuo no se lea como cero:
+            "CERRADO FUERA DENTRO NORMAL VARIABLE"  (ID 95019)
+            "CONDICION DE TIEMPO VARIABLE CERRADO BAJO LAS SGTES RESTRICCIONES"  (ID 95353)
+            (contextos distintos: 2; mostrados 2)
+
+        >>> CIERRE REFERIDO A UNA ACTIVIDAD Y NO AL PUERTO/BAHIA: 23 ocurrencias
+            caso citado literal · ID 94984 · LOTA 
+            "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE CON SIGUIENTES RESTRICCIONES; CERRADO NAVEGACIÓN DE EMBARCACIONES MENORES DENTRO Y FUERA DE LA BAHÍA."
+
+  3.5 — USOS NO GEOGRAFICOS. El falso positivo "FUERA DE PARAMETROS", medido
+        sobre las 444 y no heredado de la bolsa A:
+        registros con "FUERA" en Observacion            : 251 / 444
+        de esos, "FUERA DE PARAMETROS" (NO geografico)  : 6 / 444
+        caso citado · ID 95188 · BAHÍA DE QUINTERO
+        "SE ESTABLECE CONDICION DE PUERTO MAREJADA, RESTRINGIENDO ATRAQUE A PVSA Y OXIQUIM POR FUERA DE PARAMETROS, CARGA O DESCARGA DE VIVERES Y PERTRECHOS, FONDEOS DE NAVES EXTRANJERAS Y DEPORTES NAUTICOS."
+
+  3.6 — VECINO LEXICO QUE NO ES CIERRE: CERRAZON (niebla).
+        registros con CERRAZON en Observacion : 2 / 444
+        de esos, que ADEMAS traen la familia del cierre : 1
+        >>> /CERRAD[OA]/ NO lo atrapa (no comparte sufijo). Un predicado
+            escrito como /CERR/ SI lo atraparia. Se declara el borde.
+        caso citado · ID 95351 · "SE ESTABLECE CONDICION DE PUERTO N° 234 CERRAZÓN DE NIEBLA , SE RESTRINGUE AMARRE DE NAVES MAYORES A TT.MM. Y TRANSITO DE NAVES MENORES QUE NO POSEEN  RADARES."
+
+  3.7 — EL TIPEO, SIN APROXIMACION. Barrido literal de la forma
+        /\b(P[A-Z]{2,6})\s+CERRAD[OA]S?\b/ sobre las 444 (mismo de la sesion
+        anterior, re-corrido con denominador 444):
+         184  "PUERTO CERRADO"   <- el criterio SI lo atrapa
+           1  "PURTO CERRADO"   <- el criterio NO lo atrapa
+        >>> Esto NO es fuzzy matching: es una clase de caracteres explicita.
+            Atrapa cualquier token P?? seguido de CERRADO, y por eso mismo
+            atraparia tambien un token que no sea "puerto". Se declara.
+
+================================================================================
+(4) LOS TRES EJES MATERIALMENTE PRESENTES — DEFINICIONES DECLARADAS
+================================================================================
+
+  EJE 1 "A QUIEN" = umbral de nave extraible. Implementacion versionada:
+        `normalizarRestriccion(r).umbral_ab_fuera != null`, que la sesion
+        anterior probo equivalente a "alguno de los once patrones matchea"
+        (0 discrepancias en las dos direcciones). Se re-corre el control.
+  EJE 2 "DONDE" = zona por campo O por texto.
+        campo: /DENTRO|FUERA/ sobre normalizarTexto(AreaRestriccion)
+        texto: /\bDENTRO\b|\bFUERA\b/ sobre n3(Observacion)  <- criterio de
+               01_medir_ejes.js:348, importado por forma
+        VARIANTE Z2: la misma, restando "FUERA DE PARAMETROS" (no geografico).
+  EJE 3 "QUE" = enumera actividad suspendida.
+        Q1 = >=1 de los 22 terminos de ACTIVIDADES (reproduce el 122/254
+             versionado; 4 de los 22 dan cero en el dato)
+        Q2 = Q1 sin CARTAS DE CONTINUIDAD (que la bitacora midio como
+             EXCEPCION y no como actividad) — es la definicion PRIMARIA
+        Q3 = Q2 union TODAS ("todo tipo de faenas" / "totalidad")
+
+  CONTROL once patrones <-> umbral_ab_fuera, sobre las 444:
+        patron matchea y el parser NO deja umbral : 0 / 444
+        ningun patron y el parser SI deja umbral  : 0 / 444
+        >>> 0 y 0. Equivalentes tambien sobre las 444, no solo sobre los 254.
+
+  4.1 — LOS TRES EJES SOBRE LAS 444 (cada uno por separado):
+        eje 1  umbral extraible ............  241 / 444   (sin umbral: 203)
+        eje 2  zona Z1 (campo o texto) .....  394 / 444   (sin zona: 50)
+        eje 2  zona Z2 (sin falso positivo)   388 / 444   (sin zona: 56)
+        eje 3  Q1 (con CARTAS) .............  216 / 444
+        eje 3  Q2 (sin CARTAS) .............  216 / 444   <- PRIMARIA
+        eje 3  Q3 (Q2 + "todas") ...........  241 / 444
+
+        CONTROL de reproduccion contra la bitacora versionada (denominador 254):
+          Q1 sobre la bolsa A : 122 / 254   (la bitacora dice 122)
+          umbral en bolsa A   : 148 / 254   (la bitacora dice 148)
+
+        POR QUE Q1 == Q2 — no es un error de copia, se mide:
+          registros que nombran CARTAS DE CONTINUIDAD    : 47 / 444
+          de esos, cuya UNICA "actividad" son las cartas : 0
+          >>> Sacar las cartas del vocabulario no mueve a nadie: ningun registro
+              las nombra solas. Q1 y Q2 coinciden por el DATO, no por definicion.
+
+        EL PISO DEL TEXTO — registros sin texto en `Observacion`:
+          Observacion vacia o solo espacios : 26 / 444
+          de esos, en bolsa A : 0 · en bolsa B : 26
+          de esos, con zona por CAMPO (unica via que no es texto) : 14
+          >>> NINGUNA opcion basada en texto puede capturarlos. Es el techo
+              comun de A, B, C y D y no depende de cual se elija.
+
+================================================================================
+(5) PUNTO 2 — CUANTOS CAPTURA CADA OPCION. DENOMINADOR: 444.
+================================================================================
+
+  DEFINICIONES OPERATIVAS, declaradas. Ninguna se recomienda.
+    A1 = el criterio VIGENTE, verbatim: /PUERTO CERRADO|CONDICION DE PUERTO/
+         sobre norm(Observacion). Es "lo que hay hoy".
+    A2 = el LITERAL solo: /PUERTO CERRADO/ sobre norm(Observacion).
+         >>> A1 y A2 no son la misma cosa y el prompt las nombra juntas. La
+             diferencia es exactamente el termino "CONDICION DE PUERTO".
+    Be = PREDICADO ESTRICTO: familia lexica del cierre en uso DECLARATIVO
+         (excluye negacion, condicional/futuro y subordinada temporal de 3.3).
+    Ba = PREDICADO AMPLIO: Be union RE_PRED (los cinco predicados versionados,
+         que agregan TRAFICO SUSPENDIDO / SE SUSPENDE EL TRAFICO /
+         PROHIBICION DE ZARPE, que no son la palabra "cerrado").
+    C  = LOS TRES EJES: umbral && Z2 && Q2. (Variantes en 5.5.)
+    D  = Ba union C.  (Variante De = Be union C en 5.5.)
+
+  5.1 — CUANTOS ENTRAN, SOBRE LAS 444
+
+        opcion                                  entran  quedan fuera
+        A1  criterio vigente (2 literales)         254           190   suma 444 — CIERRA
+        A2  literal "PUERTO CERRADO"               173           271   suma 444 — CIERRA
+        Be  predicado estricto                     298           146   suma 444 — CIERRA
+        Ba  predicado amplio                       327           117   suma 444 — CIERRA
+        C   los tres ejes                          153           291   suma 444 — CIERRA
+        D   Ba union C                             335           109   suma 444 — CIERRA
+
+  5.2 — CONTRA LOS 254 Y CONTRA LOS 190. Las dos puntas, por opcion.
+
+        opcion                                  de A(254)  de B(190)   total
+        A1  criterio vigente (2 literales)            254          0     254   suma 254 — CIERRA
+        A2  literal "PUERTO CERRADO"                  173          0     173   suma 173 — CIERRA
+        Be  predicado estricto                        202         96     298   suma 298 — CIERRA
+        Ba  predicado amplio                          220        107     327   suma 327 — CIERRA
+        C   los tres ejes                              86         67     153   suma 153 — CIERRA
+        D   Ba union C                                221        114     335   suma 335 — CIERRA
+
+  5.3 — LOS QUE CADA OPCION DEJA AFUERA DE LOS 254, Y POR QUE.
+        Causa primaria, disjunta, denominador = los que salen.
+
+        A1  criterio vigente (2 literales)  —  deja fuera 0 de los 254
+            (ninguno)
+
+        A2  literal "PUERTO CERRADO"  —  deja fuera 81 de los 254
+              34  no trae ninguna forma de cierre ni predicado
+              29  trae cierre declarativo — sale solo por no traer el literal exacto
+              18  trae predicado de suspension pero no la palabra cerrado
+            suma 81 — CIERRA
+            caso · ID 95043 · BAHÍA SAN VICENTE
+               "A CONTAR DE LAS 11:30 HRS., DEL DÍA 30 DE JULIO DE 2026, SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO PARA PARA TODO TIPO DE NAVES DENTRO Y FUERA DE LA BAHÍA DE SAN VICENT"
+
+        Be  predicado estricto  —  deja fuera 52 de los 254
+              34  no trae ninguna forma de cierre ni predicado
+              18  trae predicado de suspension pero no la palabra cerrado
+            suma 52 — CIERRA
+            caso · ID 95043 · BAHÍA SAN VICENTE
+               "A CONTAR DE LAS 11:30 HRS., DEL DÍA 30 DE JULIO DE 2026, SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO PARA PARA TODO TIPO DE NAVES DENTRO Y FUERA DE LA BAHÍA DE SAN VICENT"
+
+        Ba  predicado amplio  —  deja fuera 34 de los 254
+              34  no trae ninguna forma de cierre ni predicado
+            suma 34 — CIERRA
+            caso · ID 95053 · LAGO RANCO
+               "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), LLANCACURA, MOLINO DE ORO, LA BARRA, QUEDA SUSPENDIDOS LOS ZARPES PARA TODA NAVE M"
+
+        C   los tres ejes  —  deja fuera 168 de los 254
+              71  falta a-quien + que
+              52  falta que
+              21  falta a-quien
+               9  falta donde
+               8  falta a-quien + donde + que
+               6  falta a-quien + donde
+               1  falta donde + que
+            suma 168 — CIERRA
+            caso · ID 95055 · BAHÍA PUERTO HUASCO
+               "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE POR INTENSIDAD DE VIENTO A 20 NDS NW. SE ESTABLECE RESTRICCIONESDE PUERTO CERRADO EN LAS I.P. DE NAVES MENORES Y PARA MOVIMIENTOS DE NAVES MENORES A"
+
+        D   Ba union C  —  deja fuera 33 de los 254
+              11  no trae ninguna forma de cierre ni predicado  ||  falta a-quien + que
+              10  no trae ninguna forma de cierre ni predicado  ||  falta que
+               6  no trae ninguna forma de cierre ni predicado  ||  falta a-quien + donde
+               4  no trae ninguna forma de cierre ni predicado  ||  falta donde
+               2  no trae ninguna forma de cierre ni predicado  ||  falta a-quien + donde + que
+            suma 33 — CIERRA
+            caso · ID 95053 · LAGO RANCO
+               "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), LLANCACURA, MOLINO DE ORO, LA BARRA, QUEDA SUSPENDIDOS LOS ZARPES PARA TODA NAVE M"
+
+  5.4 — LOS QUE CADA OPCION METE DE LOS 190, Y POR QUE ENTRAN.
+
+        A1  criterio vigente (2 literales)  —  mete 0 de los 190
+            (ninguno)
+
+        A2  literal "PUERTO CERRADO"  —  mete 0 de los 190
+            (ninguno)
+
+        Be  predicado estricto  —  mete 96 de los 190
+              89  dice "CERRADO PARA ..." (cierre dirigido a flota)
+               7  trae la familia del cierre en otra forma
+            suma 96 — CIERRA
+
+        Ba  predicado amplio  —  mete 107 de los 190
+              89  dice "CERRADO PARA ..." (cierre dirigido a flota)
+              11  trae predicado de suspension (no la palabra cerrado)
+               7  trae la familia del cierre en otra forma
+            suma 107 — CIERRA
+
+        C   los tres ejes  —  mete 67 de los 190
+              54  dice "CERRADO PARA ..." (cierre dirigido a flota)
+               7  entra SOLO por los tres ejes
+               5  trae predicado de suspension (no la palabra cerrado)
+               1  trae la familia del cierre en otra forma
+            suma 67 — CIERRA
+
+        D   Ba union C  —  mete 114 de los 190
+              89  dice "CERRADO PARA ..." (cierre dirigido a flota)
+              11  trae predicado de suspension (no la palabra cerrado)
+               7  entra SOLO por los tres ejes
+               7  trae la familia del cierre en otra forma
+            suma 114 — CIERRA
+
+  >>> Y LA PREMISA DEL PROMPT, AHORA CON NUMERO: de los 89 de la bolsa B que
+      dicen "CERRADO PARA", cuantos traen LOS TRES EJES:
+        de los 89: con los TRES ejes ......... 54
+        de los 89: con al menos DOS ejes ..... 83
+        de los 89: con umbral 70 · con zona 89 · con actividad 67
+        >>> El prompt decia "los tres ejes completos" para los 89. El numero
+            real es 54. La afirmacion no se sostiene tal como venia.
+
+  5.5 — LO QUE MIDE SI UNA OPCION *LIMPIA* O SOLO AMPLIA:
+        los 34 de la bolsa A que hoy entran SIN cerrar nada.
+
+        opcion                                   de los 34 quedan afuera  siguen adentro
+        A1  criterio vigente (2 literales)                             0              34   suma 34 — CIERRA
+        A2  literal "PUERTO CERRADO"                                  34               0   suma 34 — CIERRA
+        Be  predicado estricto                                        34               0   suma 34 — CIERRA
+        Ba  predicado amplio                                          34               0   suma 34 — CIERRA
+        C   los tres ejes                                             33               1   suma 34 — CIERRA
+        D   Ba union C                                                33               1   suma 34 — CIERRA
+
+        Y el caso citado de esos 34:
+          ID 95053 · LAGO RANCO
+          "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), LLANCACURA, MOLINO DE ORO, LA BARRA, QUEDA SUSPENDIDOS LOS ZARPES PARA TODA NAVE MENOR A 12 "
+
+  5.6 — QUE LAS BOLSAS CIERREN Y NO SE SOLAPEN SIN DECIRLO — inclusiones
+        medidas, no supuestas:
+        A2 subset de A1                    SI
+        A2 subset de Be                    SI
+        A1 subset de Be                    NO — 52 violaciones
+        Be subset de Ba                    SI
+        Ba subset de D                     SI
+        C subset de D                      SI
+
+        SOLAPE DE Ba Y C (los dos componentes de D):
+          solo Ba 182 · solo C 8 · ambos 145 · ninguno 109
+          suma 444 — CIERRA
+          D = 335
+
+  5.7 — VARIANTES DE C Y DE D, porque la definicion de los ejes no es unica.
+        Se dan todas para que el owner vea la sensibilidad, sin elegir ninguna.
+
+        C  umbral && Z2 && Q2  (primaria)        C= 153   D(Ba)= 335   D(Be)= 316
+        C  umbral && Z1 && Q1  (Z y Q laxas)     C= 153   D(Ba)= 335   D(Be)= 316
+        C  umbral && Z2 && Q3  (Q con "todas")   C= 177   D(Ba)= 345   D(Be)= 326
+        C  umbral && Z2 && Q1  (Q con CARTAS)    C= 153   D(Ba)= 335   D(Be)= 316
+
+        >>> Si dos variantes dan el MISMO numero no es un error de copia: se
+            mide abajo cuantos registros mueve cada relajacion por separado.
+            Z1 sin Z2 (solo "fuera de parametros")  : 6 / 444
+            de esos, que ademas tienen umbral y Q2  : 0
+            Q1 sin Q2 (solo cartas de continuidad)  : 0 / 444
+            Q3 sin Q2 (solo dice "todas")           : 25 / 444
+            de esos, que ademas tienen umbral y Z2  : 24
+
+  5.8 — UNA QUINTA FORMA QUE EL DATO SUGIERE. Se describe con su conteo y
+        NO se recomienda. Sale de 3.4: el sujeto del cierre esta escrito.
+
+        E = predicado declarativo CUYO SUJETO ES GEOGRAFICO o elidido tras
+            "PARA <flota>". Es Be MENOS los registros donde lo unico cerrado
+            es una actividad. No exige literal fijo ni los tres ejes.
+
+        E entran .................................  275 / 444
+        Be entran ................................  298 / 444
+        Be que E deja afuera .....................   23
+           de esos, solo se cierra una ACTIVIDAD .   23
+           de esos, residuo sin sujeto clasificado    0
+        suma 298 — CIERRA
+        de A(254) : 197   de B(190) : 78
+        de los 34 que hoy no cierran nada, quedan afuera : 34 / 34
+        permiten umbral: 190 / 275  ·  zona Z2: 263 / 275
+        caso de los que E deja afuera · ID 94984 · LOTA 
+        "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE CON SIGUIENTES RESTRICCIONES; CERRADO NAVEGACIÓN DE EMBARCACIONES MENORES DENTRO Y FUERA DE LA BAHÍA."
+        >>> Se consigna porque el dato la trae escrita, no porque convenga.
+            Su costo esta a la vista: depende de un clasificador de sujeto
+            que en 3.4 dejo 2 ocurrencias sin clasificar sobre 334.
+
+================================================================================
+(6) PUNTO 3 — LA RED SECUNDARIA DE LA OPCION D, DIMENSIONADA
+================================================================================
+
+    La red = los que entran por EJES y NO por predicado. Es lo que D agrega
+    sobre B. Si es cero, la red no captura nada y la opcion D es igual a B.
+
+    ---- red contra Ba (amplio) ----
+      con LOS TRES ejes y sin predicado  : 8 / 444 filas · 4 restricciones distintas
+      con DOS de los tres y sin predicado: 40 / 444 filas · 16 restricciones distintas
+      IDRestriccion de la red de TRES: 94987, 95163, 95205, 95295
+      IDRestriccion de la red de DOS : 94987, 95045, 95048, 95049, 95053, 95054, 95107, 95108, 95109, 95133, 95134, 95135, 95138, 95163, 95205, 95295
+      >>> La fila es captura x registro. Una misma restriccion vista en cinco
+          capturas son cinco filas y UNA restriccion. Los dos numeros van juntos.
+
+      TRES EJES — 8 registro(s):
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-30_19-42.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-31_16-32.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-31_20-32.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-31_21-01.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 94987 · PANGUIPULLI · restricciones_2026-08-01_13-14.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 95205 · BAHÍA DE CALBUCO · restricciones_2026-08-01_13-14.json
+           umbral=50 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE MAL TIEMPO EN BAHÍA CALBUCO, SE RESTRINGE NAVEGACIÓN A EMBARCACIONES MENORES A 25 AB DENTRO DE LA BAHÍA, Y MENORES A 50 AB FUERA DE LA BAHÍA, SE RESTRINGEN TRABAJOS POR ALTO, FAENAS DE"
+        ID 95163 · LAGO RANCO · restricciones_2026-08-01_13-14.json
+           umbral=12 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LAGO RANCO, LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), LLANCACURA, MOLINO DE ORO, LA BARRA, QUEDA SUSPENDIDOS LOS ZARPES PARA TODA NAVE MENOR A 1"
+        ID 95295 · ENSENADA HUALAIHUÉ · check_ahora.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICION DE TIEMPO \"VARIABLE\"\", PARA EE.MM DE 25 AB DENTRO Y FUERA DE LA BAHIA, TRABAJOS EN CENTRO DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDOS, SE ACEPTAN CARTAS DE CONTINUIDAD"
+
+      DOS DE TRES — 40 registro(s):
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-30_19-42.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 95045 · BAKER · restricciones_2026-07-30_19-42.json
+           umbral=null zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE TEMPORAL, RESTRICCIÓN DE NAVEGACIÓN PARA EMBARCACIONES MENORES, SECTOR GOLFO DE PENAS Y CANAL MESSIER, FIORDO MITCHELL Y CALETA TORTEL ASIMISMO SE SUSPENDEN FAENAS DE REMOLQUE, BUCEO Y"
+        ID 95053 · LAGO RANCO · restricciones_2026-07-30_19-42.json
+           umbral=12 zonaCampo=false zonaTexto=false act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), LLANCACURA, MOLINO DE ORO, LA BARRA, QUEDA SUSPENDIDOS LOS ZARPES PARA TODA NAVE MENOR A 12 TRG Y SE C"
+        ID 95054 · PUERTO CARRIZAL BAJO · restricciones_2026-07-30_19-42.json
+           umbral=50 zonaCampo=true zonaTexto=true act=false
+           "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE POR INTENSIDAD DE VIENTO A 20 NDS NW. SE ESTABLECE RESTRICCIONES EN LAS I.P. DE NAVES MENORES Y PARA MOVIMIENTOS DE NAVES MENORES A 50 AB DENTRO Y FUERA DE LA BAHÍA."
+        ID 95048 · BOCA WICKHAM · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=false act=false
+           "SE ESTABLECE CONDICIÓN DE PUERTO \"TIEMPO VARIABLE\",  SECTOR DE BOCA WICKHAM  PARA LAS EMBARCACIONES MENORES DE 25 A.B.,FAENAS EN SU TOTALIDAD SUSPENDIDAS."
+        ID 95049 · CANAL WILLIAMS · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=false act=false
+           "SE ESTABLECE CONDICIÓN DE PUERTO \"TIEMPO VARIABLE\",  SECTOR DE WILLIAMS PARA LAS EMBARCACIONES MENORES DE 25 A.B.,FAENAS EN SU TOTALIDAD SUSPENDIDAS."
+        ID 95133 · BAHÍA PUERTO HUASCO · restricciones_2026-07-31_16-32.json
+           umbral=20 zonaCampo=true zonaTexto=true act=false
+           "SE ESTABLECE CONDICIÓN DE MAL TIEMPO,  RESTRICCIONES EN LAS I.P. DE NAVES MENORES Y PARA MOVIMIENTOS DE NAVES MENORES A 20 AB DENTRO Y FUERA DE LA BAHÍA."
+        ID 95107 · BAHÍA DE VALPARAÍSO · restricciones_2026-07-31_16-32.json
+           umbral=null zonaCampo=true zonaTexto=false act=true
+           "EN ATENCIÓN A CONDICIONES METEOROLÓGICAS PRESENTES SE ESTABLECE A CONTAR DE LAS 05:43 HORAS, DEL DÍA 31 DE JULIO DE 2026\r\nCONDICIÓN DE TEMPORAL. LOS TERMINALES MARÍTIMOS, RECINTOS PORTUARIOS, AGENCIAS DE NAVES,"
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-31_16-32.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 95138 · BAKER · restricciones_2026-07-31_16-32.json
+           umbral=null zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE TEMPORAL, RESTRICCIÓN DE NAVEGACIÓN PARA EMBARCACIONES MENORES, SECTOR GOLFO DE PENAS Y CANAL MESSIER, BAHIA TORTEL, CANAL BAKER,  FIORDO MITCHELL ASIMISMO SE SUSPENDEN FAENAS DE REMOL"
+        ID 95053 · LAGO RANCO · restricciones_2026-07-31_16-32.json
+           umbral=12 zonaCampo=false zonaTexto=false act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), LLANCACURA, MOLINO DE ORO, LA BARRA, QUEDA SUSPENDIDOS LOS ZARPES PARA TODA NAVE MENOR A 12 TRG Y SE C"
+        ID 95134 · PUERTO CARRIZAL BAJO · restricciones_2026-07-31_16-32.json
+           umbral=20 zonaCampo=true zonaTexto=true act=false
+           "SE ESTABLECE CONDICIÓN DE MAL TIEMPO, RESTRICCION PARA MOVIMIENTOS DE NAVES MENORES A 20 AB DENTRO Y FUERA DE LA CALETA."
+        (mostrados 12 de 40)
+
+    ---- red contra Be (estricto) ----
+      con LOS TRES ejes y sin predicado  : 18 / 444 filas · 11 restricciones distintas
+      con DOS de los tres y sin predicado: 69 / 444 filas · 34 restricciones distintas
+      IDRestriccion de la red de TRES: 94987, 95018, 95026, 95027, 95028, 95029, 95064, 95163, 95193, 95205, 95295
+      IDRestriccion de la red de DOS : 94987, 95018, 95026, 95027, 95028, 95029, 95043, 95044, 95045, 95048, 95049, 95053, 95054, 95064, 95073, 95082, 95083, 95107, 95108, 95109, 95133, 95134, 95135, 95138, 95161, 95162, 95163, 95176, 95177, 95193, 95201, 95202, 95205, 95295
+      >>> La fila es captura x registro. Una misma restriccion vista en cinco
+          capturas son cinco filas y UNA restriccion. Los dos numeros van juntos.
+
+      TRES EJES — 18 registro(s):
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-30_19-42.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 95028 · PUERTO MONTT · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE SUSPENDE EL TRÁFICO DE EMBARCACIONES MENORES DE 25 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE TRABAJOS DE BUCEO, FAENAS EXTRACTIVAS EN CENTROS DE CULTIVOS DE SALMONES Y MITILIDOS, EXCEPTO AQUELLOS QUE CUE"
+        ID 95029 · BAHÍA CHINCUI · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE SUSPENDE EL TRÁFICO DE EMBARCACIONES MENORES DE 25 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE TRABAJOS DE BUCEO, FAENAS EXTRACTIVAS EN CENTROS DE CULTIVOS DE SALMONES Y MITILIDOS, EXCEPTO AQUELLOS QUE CUE"
+        ID 95018 · BAHÍA DE CALBUCO · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE EN LA BAHÍA DE CALBUCO, SE SUSPENDE EL TRAFICO DE EE.MM MENORES DE 25 AB FUERA DE LA BAHÍA, FAENAS DE BUCEO, TRABAJOS EN ALTOS, REMOLQUES DE NAVAES MENORES, SEGÚN RESOL"
+        ID 95064 · RADA MANZANO · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO \"VARIABLE\" POR FUERTES VIENTOS PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE BAHÍA MANSA, SE SUSPENDE EL TRAFICO DE EE.MM. A 25 A.B. DENTRO Y FUERA DE LA BAHÍA. LAS EMBARCACIONE"
+        ID 95027 · CANAL TENGLO · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE SUSPENDE EL TRÁFICO DE EMBARCACIONES MENORES DE 25 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE TRABAJOS DE BUCEO, FAENAS EXTRACTIVAS EN CENTROS DE CULTIVOS DE SALMONES Y MITILIDOS, EXCEPTO AQUELLOS QUE CUE"
+        ID 95026 · SENO RELONCAVI · restricciones_2026-07-30_19-42.json
+           umbral=100 zonaCampo=true zonaTexto=true act=true
+           "SE SUSPENDE EL TRÁFICO DE NAVES HASTA 100 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE FAENA PORTUARIAS, TOTALIDAD DE ACTIVIDADES EN LOS CENTROS DE CULTIVO, TODO TIPOS DE REMOLQUES SUSPENDIDAS. REMOLCADOR DE G"
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-31_16-32.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 95064 · RADA MANZANO · restricciones_2026-07-31_16-32.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO \"VARIABLE\" POR FUERTES VIENTOS PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE BAHÍA MANSA, SE SUSPENDE EL TRAFICO DE EE.MM. A 25 A.B. DENTRO Y FUERA DE LA BAHÍA. LAS EMBARCACIONE"
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-31_20-32.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 95064 · RADA MANZANO · restricciones_2026-07-31_20-32.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO \"VARIABLE\" POR FUERTES VIENTOS PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE BAHÍA MANSA, SE SUSPENDE EL TRAFICO DE EE.MM. A 25 A.B. DENTRO Y FUERA DE LA BAHÍA. LAS EMBARCACIONE"
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-31_21-01.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 95064 · RADA MANZANO · restricciones_2026-07-31_21-01.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO \"VARIABLE\" POR FUERTES VIENTOS PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE BAHÍA MANSA, SE SUSPENDE EL TRAFICO DE EE.MM. A 25 A.B. DENTRO Y FUERA DE LA BAHÍA. LAS EMBARCACIONE"
+        ID 94987 · PANGUIPULLI · restricciones_2026-08-01_13-14.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 95205 · BAHÍA DE CALBUCO · restricciones_2026-08-01_13-14.json
+           umbral=50 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE MAL TIEMPO EN BAHÍA CALBUCO, SE RESTRINGE NAVEGACIÓN A EMBARCACIONES MENORES A 25 AB DENTRO DE LA BAHÍA, Y MENORES A 50 AB FUERA DE LA BAHÍA, SE RESTRINGEN TRABAJOS POR ALTO, FAENAS DE"
+        ID 95163 · LAGO RANCO · restricciones_2026-08-01_13-14.json
+           umbral=12 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LAGO RANCO, LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), LLANCACURA, MOLINO DE ORO, LA BARRA, QUEDA SUSPENDIDOS LOS ZARPES PARA TODA NAVE MENOR A 1"
+        ID 95193 · SENO RELONCAVI · restricciones_2026-08-01_13-14.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "CONDICION DE TIEMPO VARIABLE: SE SUSPENDE EL TRÁFICO DE EMBARCACIONES MENORES DE 25 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE TRABAJOS DE BUCEO, FAENAS EXTRACTIVAS EN CENTROS DE CULTIVOS DE SALMONES Y MITIL"
+        ID 95295 · ENSENADA HUALAIHUÉ · check_ahora.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICION DE TIEMPO \"VARIABLE\"\", PARA EE.MM DE 25 AB DENTRO Y FUERA DE LA BAHIA, TRABAJOS EN CENTRO DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDOS, SE ACEPTAN CARTAS DE CONTINUIDAD"
+
+      DOS DE TRES — 69 registro(s):
+        ID 95043 · BAHÍA SAN VICENTE · restricciones_2026-07-30_19-42.json
+           umbral=null zonaCampo=false zonaTexto=true act=true
+           "A CONTAR DE LAS 11:30 HRS., DEL DÍA 30 DE JULIO DE 2026, SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO PARA PARA TODO TIPO DE NAVES DENTRO Y FUERA DE LA BAHÍA DE SAN VICENTE.\r\nAVISO DE MAL TIE"
+        ID 94987 · PANGUIPULLI · restricciones_2026-07-30_19-42.json
+           umbral=100 zonaCampo=true zonaTexto=false act=true
+           "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO PARA TODOS LOS LAGOS DE LA JURISDICCION. "
+        ID 95028 · PUERTO MONTT · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE SUSPENDE EL TRÁFICO DE EMBARCACIONES MENORES DE 25 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE TRABAJOS DE BUCEO, FAENAS EXTRACTIVAS EN CENTROS DE CULTIVOS DE SALMONES Y MITILIDOS, EXCEPTO AQUELLOS QUE CUE"
+        ID 95029 · BAHÍA CHINCUI · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE SUSPENDE EL TRÁFICO DE EMBARCACIONES MENORES DE 25 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE TRABAJOS DE BUCEO, FAENAS EXTRACTIVAS EN CENTROS DE CULTIVOS DE SALMONES Y MITILIDOS, EXCEPTO AQUELLOS QUE CUE"
+        ID 95018 · BAHÍA DE CALBUCO · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE EN LA BAHÍA DE CALBUCO, SE SUSPENDE EL TRAFICO DE EE.MM MENORES DE 25 AB FUERA DE LA BAHÍA, FAENAS DE BUCEO, TRABAJOS EN ALTOS, REMOLQUES DE NAVAES MENORES, SEGÚN RESOL"
+        ID 95045 · BAKER · restricciones_2026-07-30_19-42.json
+           umbral=null zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE TEMPORAL, RESTRICCIÓN DE NAVEGACIÓN PARA EMBARCACIONES MENORES, SECTOR GOLFO DE PENAS Y CANAL MESSIER, FIORDO MITCHELL Y CALETA TORTEL ASIMISMO SE SUSPENDEN FAENAS DE REMOLQUE, BUCEO Y"
+        ID 95053 · LAGO RANCO · restricciones_2026-07-30_19-42.json
+           umbral=12 zonaCampo=false zonaTexto=false act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), LLANCACURA, MOLINO DE ORO, LA BARRA, QUEDA SUSPENDIDOS LOS ZARPES PARA TODA NAVE MENOR A 12 TRG Y SE C"
+        ID 95064 · RADA MANZANO · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE ESTABLECE CONDICIÓN DE PUERTO \"VARIABLE\" POR FUERTES VIENTOS PARA LA JURISDICCIÓN DE LA ALCALDÍA DE MAR DE BAHÍA MANSA, SE SUSPENDE EL TRAFICO DE EE.MM. A 25 A.B. DENTRO Y FUERA DE LA BAHÍA. LAS EMBARCACIONE"
+        ID 95054 · PUERTO CARRIZAL BAJO · restricciones_2026-07-30_19-42.json
+           umbral=50 zonaCampo=true zonaTexto=true act=false
+           "SE ESTABLECE CONDICIÓN DE TIEMPO VARIABLE POR INTENSIDAD DE VIENTO A 20 NDS NW. SE ESTABLECE RESTRICCIONES EN LAS I.P. DE NAVES MENORES Y PARA MOVIMIENTOS DE NAVES MENORES A 50 AB DENTRO Y FUERA DE LA BAHÍA."
+        ID 95044 · SECTOR COSTERO PENINSULA DE HUALPEN · restricciones_2026-07-30_19-42.json
+           umbral=null zonaCampo=false zonaTexto=true act=true
+           "A CONTAR DE LAS 11:30 HRS., DEL DÍA 30 DE JULIO DE 2026, SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO PARA PARA TODO TIPO DE NAVES DENTRO Y FUERA DE LA BAHÍA DE SAN VICENTE.\r\nAVISO DE MAL TIE"
+        ID 95027 · CANAL TENGLO · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=true act=true
+           "SE SUSPENDE EL TRÁFICO DE EMBARCACIONES MENORES DE 25 AB., DENTRO Y FUERA DE LA BAHÍA, TODO TIPO DE TRABAJOS DE BUCEO, FAENAS EXTRACTIVAS EN CENTROS DE CULTIVOS DE SALMONES Y MITILIDOS, EXCEPTO AQUELLOS QUE CUE"
+        ID 95048 · BOCA WICKHAM · restricciones_2026-07-30_19-42.json
+           umbral=25 zonaCampo=true zonaTexto=false act=false
+           "SE ESTABLECE CONDICIÓN DE PUERTO \"TIEMPO VARIABLE\",  SECTOR DE BOCA WICKHAM  PARA LAS EMBARCACIONES MENORES DE 25 A.B.,FAENAS EN SU TOTALIDAD SUSPENDIDAS."
+        (mostrados 12 de 69)
+
+    Y el caso que el prompt nombra — el tipeo de Puerto Montt:
+      registros con "PURTO CERRADO" : 1 / 444
+        ID 95208 · PUERTO MONTT
+           A1=false A2=false Be=true Ba=true C=true D=true
+           "SE ESTABLECE CONDICION DE MAL TIEMPO, PURTO CERRADO PARA EMBARCACIONES MENORES DE 50 A/B. DENTRO Y FUERA DE LA BAHIA ,SE SUSPENDE FAENAS DE BUCEO ,REMOLQUES, Y TRABAJOS EN CENTROS DE CULTIVOS .\"NO SE ACEPTAN CARTAS DE CONTINUIDAD "
+      >>> Entra o no entra por opcion, arriba. Sin aproximacion de ningun tipo.
+
+================================================================================
+(7) PUNTO 4 — DE LOS QUE ENTRAN CON CADA OPCION: UMBRAL Y ZONA
+================================================================================
+
+    `null` de umbral esta SOBRECARGADO (medido por la sesion anterior). Se
+    parte en dos, con la rama del parser que lo produce:
+      SIN UMBRAL A PROPOSITO = el texto dice a quien alcanza sin numero:
+         /TODO TIPO DE NAVES/ (:69, bloqueo_total)
+         /EMBARCACIONES MENORES|NAVES MENORES/ sin numero (:92)
+         /TODO TIPO DE EMBARCACIONES/ (:95)
+      NO SE PUDO LEER = umbral null y ninguna de esas tres ramas.
+
+    ---- A1  criterio vigente (2 literales) · denominador 254 ----
+      permiten extraer umbral ..................  148 / 254
+      sin umbral ...............................  106 / 254
+         de esos, CIERRE SIN UMBRAL (a proposito)   69
+         de esos, NO SE PUDO LEER (hueco real) ..   37
+      suma 254 — CIERRA
+             66  CIERRE SIN UMBRAL — MENORES sin numero (:92)
+             23  NO SE PUDO LEER — el texto no tiene ningun digito
+             14  NO SE PUDO LEER — hay digitos pero ninguno junto a unidad de los 11 patrones
+              3  CIERRE SIN UMBRAL — bloqueo_total (:69)
+
+      zona por CAMPO (AreaRestriccion) .........  226 / 254
+      zona por TEXTO (sin falso positivo) ......  143 / 254
+      zona SOLO por texto ......................    4 / 254
+      SIN ZONA por ninguna via .................   24 / 254
+      suma 254 — CIERRA
+
+      >>> NI A QUIEN NI DONDE (no se puede armar el aviso): 14 / 254
+
+    ---- A2  literal "PUERTO CERRADO" · denominador 173 ----
+      permiten extraer umbral ..................  109 / 173
+      sin umbral ...............................   64 / 173
+         de esos, CIERRE SIN UMBRAL (a proposito)   48
+         de esos, NO SE PUDO LEER (hueco real) ..   16
+      suma 173 — CIERRA
+             47  CIERRE SIN UMBRAL — MENORES sin numero (:92)
+             10  NO SE PUDO LEER — el texto no tiene ningun digito
+              6  NO SE PUDO LEER — hay digitos pero ninguno junto a unidad de los 11 patrones
+              1  CIERRE SIN UMBRAL — bloqueo_total (:69)
+
+      zona por CAMPO (AreaRestriccion) .........  159 / 173
+      zona por TEXTO (sin falso positivo) ......  103 / 173
+      zona SOLO por texto ......................    2 / 173
+      SIN ZONA por ninguna via .................   12 / 173
+      suma 173 — CIERRA
+
+      >>> NI A QUIEN NI DONDE (no se puede armar el aviso): 6 / 173
+
+    ---- Be  predicado estricto · denominador 298 ----
+      permiten extraer umbral ..................  199 / 298
+      sin umbral ...............................   99 / 298
+         de esos, CIERRE SIN UMBRAL (a proposito)   82
+         de esos, NO SE PUDO LEER (hueco real) ..   17
+      suma 298 — CIERRA
+             81  CIERRE SIN UMBRAL — MENORES sin numero (:92)
+             10  NO SE PUDO LEER — el texto no tiene ningun digito
+              7  NO SE PUDO LEER — hay digitos pero ninguno junto a unidad de los 11 patrones
+              1  CIERRE SIN UMBRAL — bloqueo_total (:69)
+
+      zona por CAMPO (AreaRestriccion) .........  284 / 298
+      zona por TEXTO (sin falso positivo) ......  207 / 298
+      zona SOLO por texto ......................    2 / 298
+      SIN ZONA por ninguna via .................   12 / 298
+      suma 298 — CIERRA
+
+      >>> NI A QUIEN NI DONDE (no se puede armar el aviso): 6 / 298
+
+    ---- Ba  predicado amplio · denominador 327 ----
+      permiten extraer umbral ..................  209 / 327
+      sin umbral ...............................  118 / 327
+         de esos, CIERRE SIN UMBRAL (a proposito)   99
+         de esos, NO SE PUDO LEER (hueco real) ..   19
+      suma 327 — CIERRA
+             94  CIERRE SIN UMBRAL — MENORES sin numero (:92)
+             12  NO SE PUDO LEER — el texto no tiene ningun digito
+              7  NO SE PUDO LEER — hay digitos pero ninguno junto a unidad de los 11 patrones
+              5  CIERRE SIN UMBRAL — bloqueo_total (:69)
+
+      zona por CAMPO (AreaRestriccion) .........  311 / 327
+      zona por TEXTO (sin falso positivo) ......  236 / 327
+      zona SOLO por texto ......................    4 / 327
+      SIN ZONA por ninguna via .................   12 / 327
+      suma 327 — CIERRA
+
+      >>> NI A QUIEN NI DONDE (no se puede armar el aviso): 6 / 327
+
+    ---- C   los tres ejes · denominador 153 ----
+      permiten extraer umbral ..................  153 / 153
+      sin umbral ...............................    0 / 153
+         de esos, CIERRE SIN UMBRAL (a proposito)    0
+         de esos, NO SE PUDO LEER (hueco real) ..    0
+      suma 153 — CIERRA
+
+      zona por CAMPO (AreaRestriccion) .........  153 / 153
+      zona por TEXTO (sin falso positivo) ......  122 / 153
+      zona SOLO por texto ......................    0 / 153
+      SIN ZONA por ninguna via .................    0 / 153
+      suma 153 — CIERRA
+
+      >>> NI A QUIEN NI DONDE (no se puede armar el aviso): 0 / 153
+
+    ---- D   Ba union C · denominador 335 ----
+      permiten extraer umbral ..................  217 / 335
+      sin umbral ...............................  118 / 335
+         de esos, CIERRE SIN UMBRAL (a proposito)   99
+         de esos, NO SE PUDO LEER (hueco real) ..   19
+      suma 335 — CIERRA
+             94  CIERRE SIN UMBRAL — MENORES sin numero (:92)
+             12  NO SE PUDO LEER — el texto no tiene ningun digito
+              7  NO SE PUDO LEER — hay digitos pero ninguno junto a unidad de los 11 patrones
+              5  CIERRE SIN UMBRAL — bloqueo_total (:69)
+
+      zona por CAMPO (AreaRestriccion) .........  319 / 335
+      zona por TEXTO (sin falso positivo) ......  238 / 335
+      zona SOLO por texto ......................    4 / 335
+      SIN ZONA por ninguna via .................   12 / 335
+      suma 335 — CIERRA
+
+      >>> NI A QUIEN NI DONDE (no se puede armar el aviso): 6 / 335
+
+    ---- POR QUE "NO SE PUDO LEER" BAJA DE 37 (A1) A 19 (Ba). Medido, no
+         estimado: cuanto de esa baja lo explican los 34 que no cierran nada.
+      no-leibles dentro de A1 (254) ................ 37
+      no-leibles dentro de los 34 que no cierran ... 18
+      no-leibles dentro de Ba (327) ................ 19
+      >>> de los 37 no-leibles de A1, 18 son de los 34. Los otros
+          19 salen de A1 por otra via o siguen adentro de Ba.
+
+================================================================================
+(8) INSUMOS PARA OBSERVACIONES DEL DATO
+================================================================================
+
+  8.1 — CLASES DE VALOR DE `Observacion` sobre las 444, sin colapsar:
+        string          418 / 444
+        ""               26 / 444
+        suma 444 — CIERRA
+
+  8.2 — CLASES DE VALOR DE `AreaRestriccion` sobre las 444:
+        valor           396 / 444
+        null             48 / 444
+        suma 444 — CIERRA
+
+  8.3 — RUIDO DE FUENTE, medido sobre las 444 (no heredado):
+        doble espacio o mas en Observacion          108 / 444
+        TAB en Observacion                            0 / 444
+        TAB en GLBahia                                4 / 444
+        comillas escapadas en Observacion            86 / 444
+        "CONDICIONDE" pegado                          1 / 444
+        "RESTRICCIONESDE" pegado                      1 / 444
+        entities HTML en Observacion                  0 / 444
+        entities HTML en NaveRecibe                 444 / 444
+        acento presente en Observacion              330 / 444
+
+  8.4 — ¿CAMBIA ALGUNA OPCION SI NO SE NORMALIZA? Control de la normalizacion:
+        A1 con norm vs A1 con solo toUpperCase : 56 registros cambian de bolsa
+        familia del cierre, n3 vs toUpperCase   : 0 registros cambian
+
+  8.5 — LA FAMILIA DEL CIERRE CONTRA LOS TRES CAMPOS NUMERICOS:
+        registros con familia del cierre en Observacion : 298 / 444
+          de esos, con algun campo numerico != 0        : 1
+          de esos, con los tres en 0                    : 297
+        suma 298 — CIERRA
+
+================================================================================
+CONTROLES FINALES
+================================================================================
+  comparaciones efectivas : 29194
+  controles de suma       : todos CIERRAN
+  insumos tocados         : ninguno (solo lectura). Nada que restaurar.
+  motor BRE               : require() de sitport-parser.js. NO modificado.
+
+exit 0
+================================================================================

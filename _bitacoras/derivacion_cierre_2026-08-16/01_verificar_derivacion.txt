@@ -1,0 +1,271 @@
+================================================================================
+VERIFICACION DE LA DERIVACION DEL ESTADO DE CIERRE — OPCION D (D-C1..D-C5)
+Sesion DERIVACION-DE-CIERRE, 2026-08-16. Mide src/services/cierre-derivador.js
+================================================================================
+
+  El derivador se IMPORTA de src/, no se copia. Lo que se mide es el codigo
+  que corre en el backend, no una reconstruccion de el.
+
+--------------------------------------------------------------------------------
+(0) INSUMOS — SHA256 AL ARRANQUE
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json    5a3bf064eeef7d630e404db390679e80
+    restricciones_2026-07-31_16-32.json    8e5270eaabbd2800dfcf2da664c80cbb
+    restricciones_2026-07-31_20-32.json    e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-07-31_21-01.json    e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-08-01_13-14.json    9ed8c7c15c52a05f6740b99b3da6d7b4
+    check_ahora.json                       c306aea459dc5124af4099d703b854eb
+
+    Ningun insumo se abre en escritura. Los sha256 se recomprueban al cierre.
+
+--------------------------------------------------------------------------------
+(1) EL DENOMINADOR — 444 FILAS, CON SU CONTROL INTERNO
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json     73 registros  (rowsAffected coincide)
+    restricciones_2026-07-31_16-32.json     83 registros  (rowsAffected coincide)
+    restricciones_2026-07-31_20-32.json     83 registros  (rowsAffected coincide)
+    restricciones_2026-07-31_21-01.json     83 registros  (rowsAffected coincide)
+    restricciones_2026-08-01_13-14.json     83 registros  (rowsAffected coincide)
+    check_ahora.json                        39 registros  (rowsAffected coincide)
+    TOTAL                                  444
+
+    "Fila" = captura x registro. Una misma restriccion vista en cinco capturas
+    son cinco filas y UNA restriccion. Donde la diferencia importa se dan los
+    dos numeros.
+
+--------------------------------------------------------------------------------
+(2) LA DERIVACION CORRIDA SOBRE LOS 444 — CONTEOS CONTRA LO MEDIDO
+--------------------------------------------------------------------------------
+
+                                                medido  esperado
+    D  = predicado amplio U red de ejes            335       335   OK
+    Ba = predicado amplio (via=predicado)          327       327   OK
+    red de tres ejes (via=ejes), en FILAS            8         8   OK
+    sin cierre declarado                           109       109   OK
+    suma 444 / 444 — CIERRA  (estado)
+
+    LA RED EN RESTRICCIONES DISTINTAS: 4 (esperado 4)
+      ID 94987 · PANGUIPULLI                · en 5 captura(s)
+         "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO, SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES "
+      ID 95163 · LAGO RANCO                 · en 1 captura(s)
+         "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LAGO RANCO, LA ALCALDÍA DE MAR DE TRUMAO (RIO BUENO), "
+      ID 95205 · BAHÍA DE CALBUCO           · en 1 captura(s)
+         "SE ESTABLECE CONDICIÓN DE MAL TIEMPO EN BAHÍA CALBUCO, SE RESTRINGE NAVEGACIÓN A EMBARCACIONES MENORES A 25 AB DENTRO DE"
+      ID 95295 · ENSENADA HUALAIHUÉ         · en 1 captura(s)
+         "SE ESTABLECE CONDICION DE TIEMPO \"VARIABLE\"\", PARA EE.MM DE 25 AB DENTRO Y FUERA DE LA BAHIA, TRABAJOS EN CENTRO DE CULT"
+
+    >>> LA RED NO ES EL TIPEO DE PUERTO MONTT. "PURTO CERRADO" (ID 95208) trae
+        CERRADO intacto y entra por el PREDICADO, sin ninguna aproximacion. Lo
+        que la red captura son cuatro restricciones que NUNCA dicen cerrado.
+        ID 95208 · estado=cerrado · via=predicado
+
+--------------------------------------------------------------------------------
+(3) D-C3 · LOS CUATRO ESTADOS DE ALCANCE — DENOMINADOR 335
+--------------------------------------------------------------------------------
+
+    umbral (con numero)                            217       217   OK
+    total (parser:69, TODO TIPO DE NAVES)            5         5   OK
+    menores_sin_umbral (parser:92/:95)              94        94   OK
+    no_legible                                      19        19   OK
+    suma 335 / 335 — CIERRA  (alcance)
+
+    >>> LA CORRECCION DEL OWNER, MEDIDA: el prompt de esta sesion traia
+        "99 de 118 son MENORES sin numero". Son 94. Los otros 5 son cierre
+        TOTAL declarado, y plegarlos a "menores" les ANGOSTA el alcance.
+
+    LOS CINCO DE `total`, LISTADOS CON SU ID — para que se vea que NO son
+    "menores" (pedido del owner):
+      ID 95056 · BAHÍA CONCEPCIÓN - TALCAHUANO · restricciones_2026-07-30_19-42.json
+         NaveRecibe: "NAVE MAYOR (&GT;=100 AB), NAVE MENOR (&LT;100 AB)"
+         "SE ESTABLECE CONDICIÓN DE PUERTO TEMPORAL, PUERTO CERRADO PARA TODO TIPO DE NAVES Y EMBARCACIONES.\r\nAVISO DE MAL TIEMPO AREA OCEANICA Y COST"
+      ID 95043 · BAHÍA SAN VICENTE        · restricciones_2026-07-30_19-42.json
+         NaveRecibe: "NAVE MAYOR (&GT;=100 AB)"
+         "A CONTAR DE LAS 11:30 HRS., DEL DÍA 30 DE JULIO DE 2026, SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO PARA PARA TODO TIPO"
+      ID 95044 · SECTOR COSTERO PENINSULA DE HUALPEN · restricciones_2026-07-30_19-42.json
+         NaveRecibe: "NAVE MAYOR (&GT;=100 AB)"
+         "A CONTAR DE LAS 11:30 HRS., DEL DÍA 30 DE JULIO DE 2026, SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO PARA PARA TODO TIPO"
+      ID 95177 · BAHÍA CONCEPCIÓN - TALCAHUANO · restricciones_2026-08-01_13-14.json
+         NaveRecibe: "NAVE MENOR (&LT;100 AB)"
+         "SE ESTABLECE CONDICIÓN DE TIEMPO, “MAL TIEMPO”, TRÁFICO SUSPENDIDO PARA TODO TIPO DE NAVES Y EMBARCACIONES DENTRO Y FUERA DE LA BAHÍA DE CON"
+      ID 95176 · BAHÍA CONCEPCIÓN - TALCAHUANO · restricciones_2026-08-01_13-14.json
+         NaveRecibe: "NAVE MENOR (&LT;100 AB)"
+         "SE ESTABLECE CONDICIÓN DE TIEMPO, “MAL TIEMPO”, TRÁFICO SUSPENDIDO PARA TODO TIPO DE NAVES Y EMBARCACIONES DENTRO Y FUERA DE LA BAHÍA DE CON"
+
+    Los cinco traen `bloqueo_total=true` del parser (sitport-parser.js:69) y
+    umbral null. Es la MISMA rama que el motor ya usa para "Puerto cerrado para
+    todo tipo de naves" (restriction-rules-engine.js:40): no es un criterio
+    nuevo, es el que ya estaba, leido por su rama en vez de por su null.
+
+--------------------------------------------------------------------------------
+(4) D-C5 · LA UNIDAD SE LEE Y NO SE CONVIERTE — DENOMINADOR 217
+--------------------------------------------------------------------------------
+
+    unidad AB  :  209
+    unidad TRG :    8
+    sin unidad :    0   <- tiene que ser CERO
+    suma 217 / 217 — CIERRA  (unidad)
+
+    HALLAZGO DE ESTA SESION — SON OCHO GRAFIAS, NO SIETE.
+    `ejes_cierre` §1.5 publica siete (A.B. · AB · AB. · ARQUEO · TRG · TRG// ·
+    TRG///). La octava es "A/B." con BARRA, y aparece en ID 95208 (PUERTO
+    MONTT, captura del 01-08): "EMBARCACIONES MENORES DE 50 A/B.".
+      ID 95208 · umbral=50 · unidad="AB"
+    NO invalida esa medicion: su metodo contaba "el token que sigue a un
+    numero" y la barra parte el token. Es el BORDE de su metodo, no un error.
+    El parser YA la leia (sitport-parser.js:47 acepta A\/?\.?B) — el umbral 50
+    salia bien; lo que faltaba era leerle la unidad.
+
+--------------------------------------------------------------------------------
+(5) D-C4 · LOS 19 SIN UMBRAL LEGIBLE — CAEN AL GENERICO Y SIGUEN EN EL RESULTADO
+--------------------------------------------------------------------------------
+
+    aviso_modo = 'generico' dentro de D : 19 / 335   (esperado 19)
+    de esos, siguen con estado='cerrado'  : 19 / 19
+    de esos, conservan texto_original     : 19 / 19
+
+    LOS DIECINUEVE, CON SU ID Y SU RESTRICCION:
+    (19 filas = 14 restricciones distintas)
+      ID 94978 · BAHÍA CONSTITUCIÓN       · 6 fila(s) · via=predicado
+         "SE ESTABLECE CONDICIÓN DE PUERTO CERRADO POR AVISO DE MAL TIEMPO VIGENTE"
+      ID 94985 · BAHÍA CONCEPCIÓN - LIRQUÉN · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICION DE PUERTO CERRADO PARA  EMBARCACIONES MAYORES Y MENORES DENTRO Y FUERA DE LA BAHIA, POR AVISO"
+      ID 95169 · PUERTO QUEMCHI           · 1 fila(s) · via=predicado
+         "1. CONDICIÓN MAL TIEMPO, FUERA DE LA BAHÍA: CERRADO PARA EE.MM., FAENAS DE BUCEO, REMOLQUES Y TRABAJOS EN CENTROS SU"
+      ID 95171 · ISLA ROBINSON CRUSOE     · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICIONDE PUERTO CERRADO PARA TODA LA JURISDICCION DE JUAN FERNANDEZ."
+      ID 95186 · BAHÍA CONCEPCIÓN - LIRQUÉN · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICIÓN DE MAL TIEMPO, PUERTO CERRADO EN LA JURISDICCIÓN DE PUERTO DE LIRQUÉN."
+      ID 95201 · BAHÍA SAN VICENTE        · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICIÓN DE PUERTO \"MAL TIEMPO\", TRAFICO SUSPENDIDO PARA NAVES Y EMBARCACIONES DENTRO  Y FUERA DE LA B"
+      ID 95202 · SECTOR COSTERO PENINSULA DE HUALPEN · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICIÓN DE PUERTO \"MAL TIEMPO\", TRAFICO SUSPENDIDO PARA NAVES Y EMBARCACIONES DENTRO  Y FUERA DE LA B"
+      ID 95327 · BAHÍA DE QUINTERO        · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+      ID 95328 · BAHÍA DE QUINTERO        · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+      ID 95329 · BAHÍA DE QUINTERO        · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+      ID 95330 · BAHÍA DE QUINTERO        · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+      ID 95331 · BAHÍA DE QUINTERO        · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+      ID 95332 · BAHÍA DE QUINTERO        · 1 fila(s) · via=predicado
+         "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+      ID 95346 · BAHÍA DE VALPARAÍSO      · 1 fila(s) · via=predicado
+         "CONSIDERANDO CONDICIONES METEOROLÓGICAS PRESENTES, ESTA AUTORIDAD MARÍTIMA ESTABLECE CONDICIÓN DE PUERTO CERRADO POR"
+
+    >>> EL GENERICO ES UN PISO, NO UN REEMPLAZO. Los otros 316 de D conservan
+        su detalle: 217 con umbral y unidad, 5 con cierre total, 94 con
+        "menores sin umbral" dicho asi por la fuente.
+        aviso_modo='detalle' dentro de D : 316 / 335
+    suma 335 / 335 — CIERRA  (aviso_modo)
+
+--------------------------------------------------------------------------------
+(6) D-C4 · EL TEXTO DE LA CAPITANIA VIAJA TAL CUAL — 444 COMPARACIONES
+--------------------------------------------------------------------------------
+
+    texto_original identico byte a byte a Observacion : 444 / 444
+
+    El derivador normaliza para DECIDIR y nunca para PRODUCIR. La normalizacion
+    no toca el texto que sale.
+
+--------------------------------------------------------------------------------
+(7) D-C1 · LA CAUSA NO SE MOVIO — `condicion_legible` INTACTA
+--------------------------------------------------------------------------------
+
+    `derivarCondicion` se EXTRAE de sitport-routes.js como texto y se ejecuta
+    ese texto — no se transcribe a mano. Misma tecnica que las tres sesiones
+    de medicion anteriores.
+
+    las etiquetas de `condicion_legible` sobre los 444:
+      Mal Tiempo                        148
+      Tiempo Variable                   119
+      Temporal                           52
+      Puerto Cerrado                     46
+      Viento                             25
+      Ola - marejada                     20
+      Asociados a elemento y/o ip        18
+      Mal tiempo                          7
+      Mal tiempo, viento                  4
+      Viento, visibilidad                 3
+      Temporal, viento                    1
+      Visibilidad                         1
+    suma 444 / 444 — CIERRA  (condicion_legible)
+
+    ESTA SESION NO TOCO `derivarCondicion`: cero lineas modificadas. La tabla
+    de arriba es la MISMA que publicaron cierre_observacion §6.2 y ejes_cierre
+    §5.3 sobre las dos bolsas (39+7 = 46 "Puerto Cerrado", 18 "Asociados a
+    elemento y/o ip"). El estado ahora sale por su propia ranura y la causa se
+    queda con la suya.
+
+--------------------------------------------------------------------------------
+(8) D-C1 · LA CONVIVENCIA — 249 DE 254, CON EL CRITERIO IMPORTADO VERBATIM
+--------------------------------------------------------------------------------
+
+    El 249 se hereda de ejes_cierre §5.1. En la Fase 1 lo REESCRIBI y me dio
+    215 — porque mi regex no era la suya. Aca se IMPORTA del instrumento
+    versionado en vez de transcribirlo: se extrae RE_CAUSA como texto de
+    _bitacoras/ejes_cierre_2026-08-16/02_medir_actividades.js:339 y se evalua
+    ese texto. Si el literal no esta, es FALLA (exit 4), no "no aplicable".
+
+    RE_CAUSA importada: /\bMAL\s+TIEMPO\b|\bVARIABLE\b|\bTEMPORAL\b|\bMAREJADAS?\b|\bVIENTOS?\b|\bCERRAZON\b|\bNIEBLA\b|\bVISIBILIDAD\b/
+    CRITERIO 254/190 importado de 03_contraste_texto.js:84: /PUERTO CERRADO|CONDICION\s*DE\s*PUERTO/
+
+    bolsa A (declara cierre por el criterio de 254) : 254
+    bolsa B                                         : 190
+    suma 444 / 444 — CIERRA  (particion 254/190)
+
+    declaran CIERRE  Y  causa   :  249   (esperado 249)
+    declaran CIERRE, sin causa  :    5   (esperado   5)
+    solo causa, sin cierre      :  134   (esperado 134)
+    ni cierre ni causa          :   56   (esperado  56)
+    suma 444 / 444 — CIERRA  (convivencia)
+
+    >>> REPRODUCE. Y esa es la razon por la que el estado necesita su propia
+        ranura: en 249 de 254 el dato trae las dos cosas, asi que una salida
+        de una sola ranura tiene que tirar una de las dos en el 98% de los
+        casos. Es lo que le pasaba a `condicion_legible`, que tapaba 157 de
+        173 cierres — y deja de pasarle porque ya no compite con nada.
+
+    los 157 de 173, remedidos: literal "PUERTO CERRADO" = 173, tapados = 157
+    de esos 157 tapados, cuantos el DERIVADOR declara cerrados : 157 / 157
+
+    >>> LOS 157 QUE LA CAUSA TAPABA ESTAN LOS 157 DECLARADOS POR EL ESTADO.
+        Eso es D-C1 medido: no compiten, conviven.
+
+--------------------------------------------------------------------------------
+(9) CONTROLES NEGATIVOS — LO QUE EL DERIVADOR NO DEBE HACER
+--------------------------------------------------------------------------------
+
+    registros con CERRAZON (niebla, una CAUSA) : 2 / 444
+      ID 95351 · estado=sin_cierre_declarado   trae CERRAD* aparte: false
+      ID 95346 · estado=cerrado                trae CERRAD* aparte: true
+
+    >>> NINGUNO de los que declara cierre lo hace POR la palabra CERRAZON.
+        El que sale cerrado trae CERRADO aparte. `\bCERRAD[OA]S?\b` no
+        alcanza a CERRAZON por construccion, no por excepcion.
+
+    Observacion vacia o solo espacios  : 26 / 444   (esperado 26)
+    de esos, con zona por CAMPO        : 14
+    de esos, a los que se les invento un cierre : 0   <- CERO (INV-0.2)
+
+    claves que emite el derivador : alcance · aviso_modo · estado · razon_sin_cierre · texto_original · via
+    de esas, que pisen la ranura de la causa o del motor : 0   <- CERO
+
+--------------------------------------------------------------------------------
+(10) INSUMOS — SHA256 AL CIERRE
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json    IDENTICO
+    restricciones_2026-07-31_16-32.json    IDENTICO
+    restricciones_2026-07-31_20-32.json    IDENTICO
+    restricciones_2026-07-31_21-01.json    IDENTICO
+    restricciones_2026-08-01_13-14.json    IDENTICO
+    check_ahora.json                       IDENTICO
+
+================================================================================
+CIERRE DEL INSTRUMENTO
+================================================================================
+    comparaciones efectivas : 2108
+    controles fallidos      : 0
+    >>> TODOS LOS CONTEOS CIERRAN CONTRA LO MEDIDO Y PUBLICADO.
+================================================================================

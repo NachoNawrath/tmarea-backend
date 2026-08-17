@@ -1,0 +1,669 @@
+================================================================================
+PREDICADO-DE-CIERRE-RECONOCIMIENTO — QUE CUENTA COMO CIERRE, LAS CUATRO FORMAS
+Sesion de reconocimiento, 2026-08-16. NO decide, NO recomienda, NO implementa.
+================================================================================
+
+LINEA BASE DE ARRANQUE, verificada antes de la primera lectura:
+  tmarea-backend  HEAD 5c39dddfc9623849e8ad20974ff772e24dd4391b = origin/main
+                  (rev-parse de HEAD y de origin/main, identicos)
+                  sin estagear: solo data/catalogo/estado_drift.json (no tocado)
+                  untracked: 32 entradas con directorios colapsados
+  No se salio a la API de SITPORT. La PWA no se abrio, ni de lectura.
+  El motor BRE se leyo y se corrio su suite; NO se modifico.
+
+ZONA DE ESCRITURA RESPETADA: solo este directorio. Ningun archivo de src/,
+data/, CLAUDE.md, CONTRATO_MOTOR.md ni de la PWA fue modificado. scripts/ no se
+uso: el unico instrumento vive aca. Se aviso antes de escribirlo.
+
+INSTRUMENTO, uno solo, corrido (exit 0, 0 controles de suma fallidos):
+  01_medir_predicado.js / .txt      29.194 comparaciones efectivas (no es cero)
+
+  El .txt esta en UTF-8 sin BOM (lo escribe Node). Para leerlo desde PowerShell
+  5.1 hace falta `Get-Content -Encoding UTF8`.
+
+DENOMINADOR DE TODA LA SESION: LAS 444 FILAS. No los 254. Cada cifra de abajo
+va con su denominador al lado. "Fila" = captura x registro: una misma
+restriccion vista en cinco capturas son cinco filas y UNA restriccion, y donde
+la diferencia importa —la red del punto 3— se dan los dos numeros.
+
+--------------------------------------------------------------------------------
+LO QUE SE IMPORTO EN VEZ DE REESCRIBIR (con su control de extraccion, exit 4)
+--------------------------------------------------------------------------------
+  · AB_PATTERNS        — extraido como texto de sitport-parser.js:46-58.
+                         Control: si no son 11 RegExp, aborta. Son 11.
+  · CRITERIO 254/190   — VERBATIM de sondaje_cierre/03_contraste_texto.js:84
+  · RE_PRED            — de ejes_cierre/03_medir_porosidad.js:86 (5 predicados)
+  · ACTIVIDADES        — de ejes_cierre/02_medir_actividades.js:94-116
+  · TODAS, MARCADOR_SUSP — del mismo archivo
+  · normalizarRestriccion / normalizarTexto — require() del motor, sin tocarlo.
+
+  UN CONTROL MIO ABORTO Y TENIA RAZON: espere 23 entradas en ACTIVIDADES y son
+  22. Corregido y re-corrido. Las "18 actividades" de la bitacora anterior son
+  esas 22 menos las 4 que dan cero en el dato. Se declara porque el instrumento
+  versionado es el de la ultima corrida y sin esto no habria rastro.
+
+NORMALIZACIONES DECLARADAS (INV-0.3):
+  norm = NFD sin diacriticos + \s+ colapsado (TAB incluido) + trim + MAYUSCULAS
+         <- ES EL DEL CRITERIO. No es el del motor.
+  N1   = norm + entities HTML decodificadas (&LT; &GT; &AMP; &QUOT;)
+  n3   = N1 + toda puntuacion a espacio, recolapsado
+  El del MOTOR (`normalizarTexto`) NO colapsa espacios y NO decodifica entities.
+  LO QUE NINGUNA ARREGLA, y se declara: palabras pegadas ("CONDICIONDE",
+  "RESTRICCIONESDE") y tipeos ("PURTO", "ESTABLCE", "RESTRINGUE"). NO se aplico
+  ninguna aproximacion para cazarlos.
+
+NO HAY FUZZY MATCHING EN NINGUNA PARTE de este instrumento: cero distancia de
+edicion, cero Levenshtein, cero similitud. Todo match es literal o regex
+declarada. Donde el prompt pedia opinion sobre eso, esta en O11.
+
+
+================================================================================
+0. LAS PREMISAS, VERIFICADAS — Y LA QUE NO SE SOSTIENE
+================================================================================
+  444 filas en seis capturas              ... SI  (73+83+83+83+83+39)
+  particion 254/190, reproducida verbatim ... SI  (solape 0, suma 444)
+  once patrones de tonelaje               ... SI  (11 RegExp extraidos)
+  37 tests                                ... SI  (tests 37 · suites 6 · pass 37
+                                                   · fail 0 · skipped 0, exit 0)
+  34 de los 254 no cierran nada           ... SI  (34 / 254)
+  132 de los 254 no nombran actividad     ... SI  (132 / 254)
+  89 de los 190 dicen "CERRADO PARA"      ... SI  (89 / 190)
+
+  NO SE SOSTIENE — y no viene de las bitacoras sino de la compresion del prompt:
+
+    "89 de los 190 dicen 'CERRADO PARA...' CON LOS TRES EJES COMPLETOS"
+
+    La bitacora `ejes_cierre` mide 89/190 con "CERRADO PARA" y NO afirma en
+    ningun lado que esos 89 traigan los tres ejes: el "tres ejes completos"
+    sale del UNICO caso que cito, ID 95025. Medido:
+
+        de los 89, con LOS TRES ejes ...... 54
+        de los 89, con al menos DOS ....... 83
+        de los 89: umbral 70 · zona 89 · actividad 67
+
+    Son 54, no 89. La bitacora anterior no dice nada falso; el prompt de esta
+    sesion generalizo un ejemplar a la familia. Se corrige aca y no cambia
+    ninguna cifra publicada.
+
+  SEGUNDA IMPRECISION, y esta vale 81 registros. El prompt escribe
+  "A · POR LITERAL 'PUERTO CERRADO' — es lo que hay hoy". Son DOS cosas:
+    lo que hay hoy es /PUERTO CERRADO|CONDICION DE PUERTO/  ->  254
+    el literal solo es /PUERTO CERRADO/                     ->  173
+  La diferencia es exactamente el termino "CONDICION DE PUERTO". Se miden las
+  dos, con el mismo denominador, como A1 y A2. No se elige entre ellas.
+
+
+================================================================================
+>>> EL HALLAZGO QUE VA PRIMERO — "CUALQUIER FORMA DE DECIR CERRADO" ES UNA SOLA
+================================================================================
+La opcion B esta enunciada como "cualquier forma de declarar que algo esta
+cerrado, no un literal fijo". Medido sobre las 444, en los DOCE campos de texto
+del registro:
+
+    CERRADO / CERRADA / CERRADOS / CERRADAS ....  298 reg · 334 ocurrencias
+    CIERRE / CIERRES ...........................    0 / 444
+    CERRAR / CERRARA / CERRARSE ................    0 / 444
+    CIERRA / CIERRAN ...........................    0 / 444
+    CLAUSURA / CLAUSURAD* ......................    0 / 444
+    SUSPENSION TOTAL ...........................    0 / 444
+
+Los cinco ceros se declaran como FALLA de busqueda, no como "no aplicable": se
+buscaron con regex declarada sobre los doce campos y el dato no las trae.
+
+  >>> EL PREDICADO NO TIENE QUE COMPETIR CON UN ABANICO DE FORMAS: en este
+      material la unica forma de decir "cerrado" es el participio. "Por
+      predicado" y "por el participio CERRAD*" son, sobre estas 444, el mismo
+      conjunto. Eso ABARATA la opcion B y a la vez le quita el argumento de que
+      captura una variedad que el literal se pierde: la variedad no esta en el
+      VERBO, esta en el SUJETO y en el resto de la frase.
+
+Y donde vive: la familia del cierre aparece en `Observacion` en 298 de 444, y
+en CERO de los otros once campos de texto. Registros con la familia SOLO fuera
+de `Observacion`: 0. Registros sin la familia en ningun campo: 146 / 444.
+Suma 298 + 0 + 146 = 444 — CIERRA.
+
+  >>> UN PREDICADO QUE LEA SOLO `Observacion` NO PIERDE NADA. Medido, no
+      supuesto: no hay un solo registro cuyo cierre este escrito en otro campo.
+
+
+================================================================================
+1. PUNTO 1 — QUE FORMAS TOMA "CERRADO", Y CUALES NO SON DECLARACION
+================================================================================
+
+1.1 — TODAS LAS FORMAS BUSCADAS, CON SU CAMPO. Denominador 444.
+
+    forma                                 reg.  ocurr.   campo
+    CERRADO/CERRADA/-OS/-AS                298     334   Observacion:334
+    CIERRE/CIERRES                           0       0   —
+    CERRAR/CERRARA/CERRARSE                  0       0   —
+    CIERRA/CIERRAN                           0       0   —
+    CLAUSURA/CLAUSURAD*                      0       0   —
+    SUSPENSION TOTAL                         0       0   —
+    ---- vecinos de suspension, que NO son "cerrado" ----
+    SUSPEND* (suspendido / se suspende)    187     196   Observacion:196
+    RESTRING* / RESTRICCION*                55      63   Observacion:63
+    PARALIZ*                                18      18   tiporestriccion:18
+    CANCELA*                                 5       5   Observacion:5
+    PROHIB*                                  1       1   Observacion:1
+    ---- vecino lexico que NO es cierre ----
+    CERRAZON (niebla)                        2       2   Observacion:2
+
+    >>> PARALIZ* NO APARECE NUNCA EN `Observacion`: sus 18 estan en
+        `tiporestriccion` ("PARALIZACION DE FAENAS DE TRANSFERENCIA"), que el
+        parser ignora. Concuerda con lo que ya midio el sondaje: el campo que
+        se llama `paralizar` y el rotulo que dice "paralizacion" son cosas
+        distintas y ninguna de las dos coincide con el texto que cierra.
+
+1.2 — DECLARACION vs NO-DECLARACION. Clasificacion POR OCURRENCIA (n=334),
+      ventana de 4 palabras antes y 4 despues, sobre n3(`Observacion`).
+
+       DECLARACION SIMPLE .................................. 334 / 334
+       NEGACION ("no se cerrara", "no esta cerrado") .......   0 / 334
+       CONDICIONAL / FUTURO ("podra cerrarse", "se cerrara")   0 / 334
+       SUBORDINADA TEMPORAL ("una vez cerrado") ............   0 / 334
+       DECLARACION CON TERMINO ("cerrado hasta ...") .......   0 / 334
+       suma 334 — CIERRA
+
+    >>> ESTA ES LA RESPUESTA A LA PREGUNTA QUE DECIDE SI EL PREDICADO SIRVE.
+        El riesgo que el prompt le atribuye a B —"texto que dice cerrado sin
+        cerrar el puerto" por negacion o condicional— NO SE MATERIALIZA EN
+        ESTE MATERIAL: las 334 ocurrencias son declaraciones directas.
+    >>> Y EL LIMITE DE ESA AFIRMACION, QUE VA PEGADO: son seis capturas de
+        cuatro dias y medio. Cero negaciones en 334 ocurrencias no autoriza a
+        decir "no las hay"; autoriza a decir "no las hay en las seis capturas".
+        El caso que romperia esto es una redaccion futura que escriba
+        "SE MANTENDRA CERRADO HASTA NUEVO AVISO" o "NO SE CERRARA EL PUERTO",
+        y las dos se buscaron con literal y dan cero hoy.
+
+1.3 — QUE ES LO QUE SE DECLARA CERRADO. Sujeto de las 334 ocurrencias.
+
+       antes: PUERTO (o su tipeo) ...........................  185
+       despues: PARA <flota>, sujeto elidido ................   85
+       antes: CANAL / ESTERO / GOLFO / LAGO / RIO / BARRA ...   21
+       despues: ACTIVIDAD  ("CERRADO NAVEGACION ...") ......   23
+       antes: BAHIA / RADA / CALETA ........................   12
+       antes: SECTOR / ZONA / AREA / JURISDICCION ..........    6
+       SIN SUJETO IDENTIFICADO por mi clasificador .........    2
+       suma 334 — CIERRA
+
+    EL RESIDUO SE LISTA ENTERO para que no se lea como cero:
+       "CERRADO FUERA DENTRO NORMAL VARIABLE"                     (ID 95019)
+       "CONDICION DE TIEMPO VARIABLE CERRADO BAJO LAS SGTES
+        RESTRICCIONES"                                            (ID 95353)
+
+    (a) EL CIERRE REFERIDO A OTRA COSA QUE NO SEA EL PUERTO O LA BAHIA:
+        23 ocurrencias, y no son un error de la fuente sino otra construccion.
+        Caso citado literal, ID 94984 · LOTA:
+          "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE CON SIGUIENTES
+           RESTRICCIONES; CERRADO NAVEGACIÓN DE EMBARCACIONES MENORES DENTRO
+           Y FUERA DE LA BAHÍA."
+        Lo cerrado es la NAVEGACION, no el puerto — y sin embargo es el mismo
+        hecho operativo. Se consigna; que sea o no un cierre es de la decision.
+
+    (b) VEINTIUNO de las 334 tienen sujeto geografico que NO es puerto ni
+        bahia: canal, estero, golfo, lago, rio, barra. Concuerda con lo que la
+        sesion anterior midio del alcance: la geografia de la fuente tiene
+        nombre propio y no es binaria.
+
+1.4 — USOS NO GEOGRAFICOS: el falso positivo de "FUERA", re-medido sobre 444
+      (la sesion anterior lo midio sobre 254 y dio 6).
+
+       registros con "FUERA" en `Observacion` .............. 251 / 444
+       de esos, "FUERA DE PARAMETROS" (no geografico) .....    6 / 444
+       Caso, ID 95188 · BAHIA DE QUINTERO:
+         "...RESTRINGIENDO ATRAQUE A PVSA Y OXIQUIM POR FUERA DE PARAMETROS,
+          CARGA O DESCARGA DE VIVERES Y PERTRECHOS..."
+       >>> Los 6 son los mismos 6. El falso positivo no crece al ampliar el
+           denominador: vive entero en la bolsa A.
+
+1.5 — EL VECINO LEXICO QUE HAY QUE DECLARAR: CERRAZON (= niebla, una CAUSA).
+       registros con CERRAZON en `Observacion` ............    2 / 444
+       de esos, que ademas traen la familia del cierre ....    1
+       Caso, ID 95351:
+         "SE ESTABLECE CONDICION DE PUERTO N° 234 CERRAZÓN DE NIEBLA , SE
+          RESTRINGUE AMARRE DE NAVES MAYORES A TT.MM. ..."
+    >>> /CERRAD[OA]/ NO lo atrapa. Un predicado escrito como /CERR/ SI. Se
+        declara el borde porque es el unico lugar del vocabulario donde la
+        raiz del cierre nombra una causa meteorologica y no un cierre.
+
+1.6 — EL TIPEO, SIN NINGUNA APROXIMACION. Barrido literal de
+      /\b(P[A-Z]{2,6})\s+CERRAD[OA]S?\b/ sobre las 444:
+        184  "PUERTO CERRADO"   <- el criterio vigente SI lo atrapa
+          1  "PURTO CERRADO"    <- el criterio vigente NO lo atrapa
+      Es una clase de caracteres explicita, no una medida de similitud. Y por
+      eso mismo atraparia cualquier token de 3 a 7 letras que empiece con P.
+      Se declara el costo junto con el hallazgo.
+
+1.7 — EL PISO QUE NINGUNA OPCION PUEDE LEVANTAR:
+       `Observacion` vacia o solo espacios ..............   26 / 444
+         de esas, en bolsa A: 0   ·   en bolsa B: 26
+         de esas, con zona por CAMPO (unica via no textual): 14
+    >>> VEINTISEIS REGISTROS NO TIENEN TEXTO. Ninguna de las cuatro opciones
+        puede capturarlos, porque las cuatro leen texto. Es el techo comun de
+        A, B, C y D y no depende de cual se elija. Se dice ahora para que no
+        aparezca despues como sorpresa de cobertura.
+
+
+================================================================================
+2. PUNTO 2 — CUANTOS CAPTURA CADA OPCION. DENOMINADOR: 444.
+================================================================================
+
+DEFINICIONES OPERATIVAS, declaradas. Ninguna se recomienda.
+
+  A1 = criterio VIGENTE, verbatim: /PUERTO CERRADO|CONDICION DE PUERTO/ sobre
+       norm(`Observacion`). Es "lo que hay hoy".
+  A2 = el LITERAL solo: /PUERTO CERRADO/ sobre norm(`Observacion`).
+  Be = PREDICADO ESTRICTO: familia lexica del cierre en uso declarativo.
+       Como 1.2 midio 0 no-declarativas, hoy Be == "trae CERRAD*".
+  Ba = PREDICADO AMPLIO: Be union RE_PRED, o sea Be mas los predicados que
+       cierran sin usar la palabra: TRAFICO SUSPENDIDO, SE SUSPENDE EL TRAFICO,
+       PROHIBICION DE ZARPE.
+  C  = LOS TRES EJES materialmente: umbral extraible (once patrones) && zona
+       (campo o texto, sin el falso positivo) && enumera actividad.
+  D  = Ba union C.   (variante De = Be union C, tambien medida)
+
+2.1 — CUANTOS ENTRAN, Y LAS DOS PUNTAS
+
+  opcion                            entran   fuera   de A(254)  de B(190)
+  A1  criterio vigente                 254     190         254          0
+  A2  literal "PUERTO CERRADO"         173     271         173          0
+  Be  predicado estricto               298     146         202         96
+  Ba  predicado amplio                 327     117         220        107
+  C   los tres ejes                    153     291          86         67
+  D   Ba union C                       335     109         221        114
+  E   quinta forma (ver 2.6)           275     169         197         78
+  Las siete filas cierran contra 444 y contra su propio A+B. Verificado.
+
+2.2 — QUE DEJA AFUERA DE LOS 254 CADA OPCION, Y POR QUE.
+      Causa disjunta, decompuesta POR LO QUE LA OPCION TESTEA (una opcion de
+      ejes no se explica con causas lexicas).
+
+  A1  deja fuera   0 de los 254   (es la definicion de los 254)
+
+  A2  deja fuera  81 de los 254
+        34  no trae ninguna forma de cierre ni predicado
+        29  trae cierre declarativo — sale solo por no traer el literal exacto
+        18  trae predicado de suspension pero no la palabra cerrado
+        suma 81 — CIERRA
+
+  Be  deja fuera  52 de los 254
+        34  no trae ninguna forma de cierre ni predicado
+        18  trae predicado de suspension pero no la palabra cerrado
+        suma 52 — CIERRA
+        Caso de los 18, ID 95043 · BAHIA SAN VICENTE:
+          "...SE ESTABLECE CONDICIÓN DE PUERTO MAL TIEMPO, TRÁFICO SUSPENDIDO
+           PARA PARA TODO TIPO DE NAVES DENTRO Y FUERA DE LA BAHÍA..."
+
+  Ba  deja fuera  34 de los 254
+        34  no trae ninguna forma de cierre ni predicado
+        suma 34 — CIERRA
+
+  C   deja fuera 168 de los 254
+        71  falta a-quien + que          52  falta que
+        21  falta a-quien                 9  falta donde
+         8  falta a-quien + donde + que   6  falta a-quien + donde
+         1  falta donde + que
+        suma 168 — CIERRA
+        Caso, ID 95055 · BAHIA PUERTO HUASCO: dice PUERTO CERRADO, trae umbral
+        y trae zona, y sale porque no enumera ninguna actividad.
+
+  D   deja fuera  33 de los 254 — los 33 no traen ninguna forma de cierre ni
+        predicado. Descompuestos ademas por eje faltante en el .txt (§5.3).
+
+  >>> EL RESULTADO MAS LIMPIO DE ESTA SECCION, Y NO ES UNA RECOMENDACION:
+      el conjunto que Ba deja fuera de los 254 ES EXACTAMENTE el conjunto de
+      los 34 que hoy entran sin cerrar nada. Ni uno mas ni uno menos —los dos
+      conteos dan 34 y los 34 estan contenidos en el descarte—. D deja fuera
+      33 de esos mismos 34: el que rescata lo rescata por ejes, no por cierre.
+
+2.3 — QUE METE DE LOS 190 CADA OPCION, Y POR QUE ENTRA
+
+  A1  mete   0     A2  mete   0
+
+  Be  mete  96 de los 190
+        89  dice "CERRADO PARA ..." (cierre dirigido a un segmento de flota)
+         7  trae la familia del cierre en otra forma
+        suma 96 — CIERRA
+
+  Ba  mete 107 de los 190
+        89  "CERRADO PARA ..."   ·   11  predicado de suspension   ·   7  otra
+        forma de la familia.  suma 107 — CIERRA
+
+  C   mete  67 de los 190
+        54  "CERRADO PARA ..."   ·    7  entra SOLO por los tres ejes
+         5  predicado de suspension  ·  1  otra forma. suma 67 — CIERRA
+
+  D   mete 114 de los 190
+        89 + 11 + 7 (solo ejes) + 7 = 114 — CIERRA
+
+2.4 — QUE LAS BOLSAS CIERREN Y NO SE SOLAPEN SIN DECIRLO. Inclusiones MEDIDAS:
+
+       A2 subset de A1 .... SI          Be subset de Ba .... SI
+       A2 subset de Be .... SI          Ba subset de D ..... SI
+       C  subset de D ..... SI
+       A1 subset de Be .... NO — 52 violaciones
+
+    >>> LA UNICA INCLUSION QUE NO SE CUMPLE ES LA QUE PARECERIA OBVIA: el
+        criterio de hoy NO esta contenido en el predicado. 52 de los 254
+        entran hoy sin traer la palabra "cerrado". Son los 34 que no cierran
+        nada mas los 18 que cierran con otro verbo. Elegir B no es "ampliar A":
+        es cambiar de conjunto, y 52 registros salen.
+
+    SOLAPE DE Ba Y C, los dos componentes de D (suma 444 — CIERRA):
+       solo Ba 182  ·  solo C 8  ·  ambos 145  ·  ninguno 109   ->  D = 335
+
+2.5 — LO QUE MIDE SI UNA OPCION *LIMPIA* O SOLO AMPLIA.
+      Los 34 de la bolsa A que hoy entran sin cerrar nada:
+
+       opcion                  de los 34 quedan afuera   siguen adentro
+       A1  criterio vigente                          0               34
+       A2  literal                                  34                0
+       Be  predicado estricto                       34                0
+       Ba  predicado amplio                         34                0
+       C   los tres ejes                            33                1
+       D   Ba union C                               33                1
+       E   quinta forma                             34                0
+       Cada fila cierra en 34.
+
+    >>> LAS CINCO OPCIONES QUE NO SON A1 LIMPIAN. A2, Be, Ba y E sacan los 34
+        completos; C y D sacan 33 y dejan uno, que entra por tener los tres
+        ejes sin declarar cierre. Osea: la pregunta "amplia o limpia" tiene
+        respuesta y es "las dos cosas a la vez" en todas menos A1.
+    >>> El unico de los 34 que sobrevive a C y a D es un registro que suspende
+        zarpes con umbral y actividades y nunca dice "cerrado". Que eso sea un
+        cierre o no es exactamente la decision que esta sesion no toma.
+
+2.6 — LA QUINTA FORMA QUE EL DATO SUGIERE — OBSERVACION, SIN RECOMENDACION
+
+    Sale de 1.3, no de una idea: el sujeto del cierre esta escrito en el texto.
+
+    E = predicado declarativo CUYO SUJETO ES GEOGRAFICO (puerto, bahia, rada,
+        caleta, canal, estero, golfo, lago, rio, barra, sector, zona, area,
+        jurisdiccion) o elidido tras "PARA <flota>". No exige literal fijo ni
+        exige los tres ejes.
+
+       E entran ..................................  275 / 444
+       Be entran .................................  298 / 444
+       lo que E le saca a Be .....................   23
+          de esos, lo unico cerrado es una ACTIVIDAD   23
+          de esos, residuo sin sujeto clasificado ..    0
+       suma 275 + 23 + 0 = 298 — CIERRA
+       de A(254): 197  ·  de B(190): 78
+       de los 34 que no cierran nada, deja afuera: 34 / 34
+       permiten umbral: 190 / 275   ·   zona Z2: 263 / 275
+
+    >>> E es Be menos los 23 "CERRADO <actividad>". Se consigna porque el dato
+        la trae escrita, NO porque convenga. Su costo esta a la vista y se
+        declara: depende de un clasificador de SUJETO, y mi propio clasificador
+        dejo 2 ocurrencias sin clasificar sobre 334. Un criterio que necesita
+        distinguir "CERRADO NAVEGACION" de "PUERTO CERRADO" necesita una lista
+        de sustantivos, y esa lista es un artefacto nuevo que hoy no existe.
+
+
+================================================================================
+3. PUNTO 3 — LA RED SECUNDARIA DE LA OPCION D, DIMENSIONADA
+================================================================================
+La red = los que entran por EJES y NO por predicado. Es lo que D agrega sobre B.
+
+                                     filas / 444    restricciones distintas
+  contra Ba (amplio)
+     con LOS TRES ejes                    8                    4
+     con DOS de los tres                 40                   16
+  contra Be (estricto)
+     con LOS TRES ejes                   18                   11
+     con DOS de los tres                 69                   34
+
+  LOS CUATRO DE LA RED DE TRES CONTRA Ba, listados (el prompt pedia listarlos):
+     ID 94987 · PANGUIPULLI      (en 5 capturas — 5 de las 8 filas)
+       "SE ESTABLECE CONDICION DE TIEMPO VARIABLE POR CONDICIONES DE VIENTO,
+        SE RESTRINGE NAVEGACION PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO
+        PARA TODOS LOS LAGOS DE LA JURISDICCION."
+     ID 95205 · BAHIA DE CALBUCO
+       "SE ESTABLECE CONDICIÓN DE MAL TIEMPO EN BAHÍA CALBUCO, SE RESTRINGE
+        NAVEGACIÓN A EMBARCACIONES MENORES A 25 AB DENTRO DE LA BAHÍA, Y
+        MENORES A 50 AB FUERA DE LA BAHÍA, SE RESTRINGEN TRABAJOS POR ALTO..."
+     ID 95163 · LAGO RANCO
+       "SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE PARA LA JURISDICCIÓN DE LAGO
+        RANCO... QUEDA SUSPENDIDOS LOS ZARPES PARA TODA NAVE MENOR A 12 TRG..."
+     ID 95295 · ENSENADA HUALAIHUÉ
+       "SE ESTABLECE CONDICION DE TIEMPO \"VARIABLE\"\", PARA EE.MM DE 25 AB
+        DENTRO Y FUERA DE LA BAHIA, TRABAJOS EN CENTRO DE CULTIVOS, FAENAS DE
+        BUCEO Y REMOLQUE SUSPENDIDOS, SE ACEPTAN CARTAS DE CONTINUIDAD"
+
+  >>> LA RED NO ES EL TIPEO DE PUERTO MONTT, Y ESTO CONTESTA LA PREGUNTA DEL
+      PROMPT EN LA DIRECCION CONTRARIA A LA QUE ESPERABA. Medido:
+        ID 95208 "PURTO CERRADO"  ->  A1=false A2=false Be=TRUE Ba=TRUE
+                                      C=TRUE D=TRUE
+      El tipeo lo captura EL PREDICADO SOLO, sin ninguna red y sin ninguna
+      aproximacion, porque "PURTO CERRADO" contiene la palabra CERRADO intacta.
+      Lo que rompio el criterio vigente fue la vocal de "PUERTO", no la de
+      "CERRADO". La red secundaria de D no hace falta para ese caso.
+
+  >>> LO QUE LA RED SI CAPTURA es otra cosa: registros que NUNCA dicen cerrado
+      —dicen "SE RESTRINGE NAVEGACION", "QUEDA SUSPENDIDOS LOS ZARPES"— y traen
+      los tres ejes. Cuatro restricciones en 4 dias y medio. Si eso vale la
+      complejidad de una segunda via es de la decision, no de esta medicion.
+
+  >>> EXIGIR LOS TRES NO DEJA LA RED EN CERO, PERO CASI: 4 restricciones contra
+      Ba, 11 contra Be. Con DOS de los tres son 16 y 34. Los dos numeros van
+      juntos porque la eleccion entre 3 y 2 multiplica la red por cuatro y por
+      tres respectivamente, y la de Ba vs Be la multiplica por tres.
+      Y la advertencia que va pegada: con DOS de tres, "umbral + zona" sin
+      actividad captura registros que restringen movimientos sin suspender
+      nada nombrado — se ven en el .txt §6 y no se juzgan aca.
+
+  SENSIBILIDAD DE LA DEFINICION DE C, medida porque tres variantes dan el mismo
+  numero y eso parece un error de copia y no lo es:
+       Z1 sin Z2 (solo "fuera de parametros") ...  6 / 444
+          de esos, que ademas tienen umbral y Q2:  0   <- por eso C no se mueve
+       Q1 sin Q2 (solo cartas de continuidad) ...  0 / 444
+          ningun registro nombra las cartas como unica actividad
+       Q3 sin Q2 (solo dice "todas") ............ 25 / 444
+          de esos, con umbral y zona ............ 24   <- por eso C sube a 177
+    >>> LA UNICA VARIANTE QUE MUEVE C ES ACEPTAR "FAENAS EN SU TOTALIDAD
+        SUSPENDIDAS" como enumeracion: C pasa de 153 a 177 y D de 335 a 345.
+        Es la decision de si "todas" cuenta como enumerar, y es del owner.
+
+
+================================================================================
+4. PUNTO 4 — LO QUE DECIDE SI ESTO ES IMPLEMENTABLE, POR OPCION
+================================================================================
+`null` de umbral esta SOBRECARGADO (medido por la sesion anterior). Se parte en
+dos con la rama del parser que lo produce, y se declara cual:
+  CIERRE SIN UMBRAL (a proposito) = /TODO TIPO DE NAVES/ (:69) ·
+    /EMBARCACIONES MENORES|NAVES MENORES/ sin numero (:92) ·
+    /TODO TIPO DE EMBARCACIONES/ (:95)
+  NO SE PUDO LEER = umbral null y ninguna de esas tres ramas.
+
+  opcion  denom.  umbral   sin umbral =  a proposito + no se pudo leer
+  A1        254     148        106            69            37
+  A2        173     109         64            48            16
+  Be        298     199         99            82            17
+  Ba        327     209        118            99            19
+  C         153     153          0             0             0
+  D         335     217        118            99            19
+  Cada fila cierra contra su denominador.
+
+  opcion  denom.  zona campo  zona texto  solo texto  SIN ZONA
+  A1        254        226         143           4        24
+  A2        173        159         103           2        12
+  Be        298        284         207           2        12
+  Ba        327        311         236           4        12
+  C         153        153         122           0         0
+  D         335        319         238           4        12
+  Cada fila cierra: (con zona por alguna via) + SIN ZONA = denominador.
+
+  NI A QUIEN NI DONDE — no se puede armar el aviso, y no es por diseño de la
+  fuente (se excluyen los que declaran cierre sin umbral a proposito):
+       A1  14 / 254      A2  6 / 173      Be  6 / 298
+       Ba   6 / 327      C   0 / 153      D   6 / 335
+
+  >>> EL HUECO REAL NO CRECE AL AMPLIAR. A1 tiene 37 registros cuyo umbral no
+      se pudo leer sobre 254 (14,6%); Ba tiene 19 sobre 327 (5,8%). Ampliar el
+      criterio de cierre BAJA la proporcion de material ilegible, porque lo que
+      entra de mas es material mejor escrito. El numero absoluto de "no se pudo
+      leer" tambien baja de 37 a 19, y la baja se explica ENTERA y se midio:
+      de los 37 no-legibles de A1, 18 son de los 34 que no cierran nada, y
+      37 - 18 = 19, que es exactamente lo que queda en Ba. El material ilegible
+      que A1 arrastra es, en su mitad, material que ni siquiera cierra.
+  >>> C ES 100% IMPLEMENTABLE POR CONSTRUCCION Y ESO NO ES UN MERITO: exige los
+      tres ejes, asi que todo lo que entra tiene umbral y zona por definicion.
+      El precio esta en 2.2: deja fuera 168 de los 254, incluidos cierres que
+      dicen "PUERTO CERRADO" con todas las letras. Un criterio que solo admite
+      lo que sabe leer no mide cierres, mide legibilidad.
+  >>> LA ZONA NO ES EL CUELLO DE BOTELLA EN NINGUNA OPCION: entre 12 y 24
+      registros sin zona por ninguna via. El cuello es el umbral, y dentro del
+      umbral, el pedazo que hoy no se distingue de un dato ausente.
+
+
+================================================================================
+5. OBSERVACIONES DEL DATO — SIN REGLA PROPUESTA NI RECOMENDACION DE OPCION
+================================================================================
+
+O1. EL CIERRE TIENE UNA SOLA FORMA LEXICA. CERRAD[OA]S? es la unica: CIERRE,
+    CERRAR, CIERRA, CLAUSURA y "SUSPENSION TOTAL" dan 0 / 444 en los doce
+    campos de texto. "Por predicado" y "por el participio" son hoy el mismo
+    conjunto. La variedad del texto no esta en el verbo del cierre.
+
+O2. Y ESA FORMA VIVE EN UN SOLO CAMPO. 298 / 444 en `Observacion`, 0 en los
+    otros once. Registros con cierre escrito SOLO fuera de `Observacion`: cero.
+
+O3. LAS 334 OCURRENCIAS SON DECLARACIONES. Cero negaciones, cero condicionales,
+    cero subordinadas temporales, cero "cerrado hasta". El falso positivo que
+    el prompt le teme a la opcion B no existe en este material — con el n
+    declarado: 334 ocurrencias en 5 momentos de 4 dias y medio.
+
+O4. EL SUJETO DEL CIERRE ES EL QUE VARIA, NO EL VERBO. 185 veces es PUERTO,
+    85 esta elidido tras "PARA", 39 es geografia con nombre propio (canal,
+    estero, golfo, lago, rio, barra, bahia, rada, caleta, sector, jurisdiccion)
+    y 23 es una ACTIVIDAD ("CERRADO NAVEGACION"). Ahi esta la decision, no en
+    la forma verbal.
+
+O5. EL CRITERIO VIGENTE NO ESTA CONTENIDO EN EL PREDICADO. 52 de los 254
+    entran hoy sin traer la palabra "cerrado": 34 no cierran nada y 18 cierran
+    con otro verbo. Cambiar de A a B no es ampliar: 52 salen y 96 entran.
+
+O6. LOS 34 QUE NO CIERRAN NADA SON EXACTAMENTE LO QUE Ba DESCARTA. El conjunto
+    que el predicado amplio deja fuera de los 254 coincide registro a registro
+    con los 34. No es una coincidencia buscada: se midieron por separado.
+
+O7. EL TIPEO DE PUERTO MONTT LO CAZA EL PREDICADO SOLO. "PURTO CERRADO" trae
+    CERRADO intacto; lo que se rompio fue "PUERTO", que es la mitad que el
+    criterio vigente necesita y el predicado no. La red secundaria de la
+    opcion D no hace falta para ese caso, y lo que la red SI captura son otros
+    cuatro registros que nunca dicen cerrado.
+
+O8. LA RED DE D SE MIDE EN FILAS Y EN RESTRICCIONES, Y LOS DOS NUMEROS SON
+    DISTINTOS: 8 filas son 4 restricciones, porque una de ellas (ID 94987,
+    PANGUIPULLI) aparece en cinco capturas. Cualquier lectura de "cuantos
+    agrega la red" tiene que decir cual de los dos numeros esta usando.
+
+O9. VEINTISEIS REGISTROS NO TIENEN TEXTO EN `Observacion`. Es el techo comun
+    de las cuatro opciones y de la quinta: todas leen texto. 14 de esos 26
+    traen zona por campo, o sea que traen alcance sin traer hecho.
+
+O10. AMPLIAR EL CRITERIO NO EMPEORA LA LEGIBILIDAD, LA MEJORA. "No se pudo leer
+    el umbral" es 37 / 254 con A1 y 19 / 327 con Ba: baja en absoluto y en
+    proporcion. El material que A1 mete de mas —los 34— es justamente el peor
+    escrito.
+
+O11. SOBRE LA CAZA DE TIPEOS POR APROXIMACION, y va como observacion porque el
+    prompt la prohibe implementar y pide decirlo si parece necesaria: NO PARECE
+    NECESARIA, y esta medicion da la razon concreta. El unico tipeo conocido
+    (ID 95208) entra por el predicado sin ninguna aproximacion. Buscar
+    similitud para recuperarlo seria pagar el riesgo entero —"CERRAZON" esta a
+    una letra de la raiz del cierre y es una causa meteorologica, no un cierre—
+    para recuperar un caso que ya se recupera gratis.
+
+O12. `PARALIZ*` NO APARECE NUNCA EN EL TEXTO DE `Observacion`. Sus 18
+    ocurrencias estan en `tiporestriccion`, que el parser ignora. Junto con lo
+    que ya midio el sondaje —el campo `paralizar` y el rotulo "PARALIZACION"
+    son conjuntos disjuntos— queda que la palabra "paralizacion" no participa
+    del cierre en ninguna de sus tres apariciones en el registro.
+
+O13. LA NORMALIZACION ES CARGA PORTANTE DEL CRITERIO VIGENTE, y no estaba
+    medido. Corriendo A1 con `norm` y con solo `.toUpperCase()`: 56 registros
+    cambian de bolsa. Son los que escriben "CONDICIÓN" con tilde. En cambio la
+    familia del cierre no se mueve: 0 registros cambian, porque "CERRADO" no
+    lleva acento. El literal que hoy define los 254 depende de quitar acentos;
+    el predicado no depende de nada.
+
+O14. LA UNICA VARIANTE DE C QUE MUEVE ALGO ES "TODAS". Aceptar "FAENAS EN SU
+    TOTALIDAD SUSPENDIDAS" como enumeracion lleva C de 153 a 177 y D de 335 a
+    345. Las otras dos variantes probadas (zona laxa, cartas de continuidad
+    como actividad) mueven 0 registros, y se midio por que: los 6 de "fuera de
+    parametros" no tienen umbral+actividad, y ningun registro nombra las cartas
+    como su unica actividad.
+
+O15. LA ZONA NO ES EL PROBLEMA. Entre 12 y 24 registros sin zona por ninguna
+    via, en cualquier opcion. El cuello de botella del aviso es el umbral, y
+    dentro del umbral, la parte que no se distingue de un dato ausente.
+
+
+================================================================================
+6. FUERA DE ALCANCE CRUZADO — §6.1, REDACTADO Y NO APLICADO
+================================================================================
+
+F1. UNA DECLARACION VIGENTE SE MIDIO COMO IMPRECISA, Y ES DEL PROMPT DE ESTA
+    SESION, NO DE UN ARCHIVO DEL REPOSITORIO. Se declara igual, con su
+    medicion, porque §6.1 pide que lo medido quede escrito:
+      afirmacion: "89 de los 190 dicen 'CERRADO PARA...' con los tres ejes
+                   completos"
+      medicion:   89 dicen "CERRADO PARA"; 54 traen los tres ejes; 83 traen
+                   dos. Instrumento 01_medir_predicado.js §5.4, salida
+                   versionada al lado.
+      texto de reemplazo, listo para usar: "89 de los 190 dicen 'CERRADO
+        PARA...', y 54 de esos 89 traen ademas los tres ejes."
+      que autorizacion haria falta: ninguna, es texto de prompt. Se anota para
+        que la cifra no se herede mal a una cuarta sesion.
+
+F2. NINGUNA DECLARACION DE UN ARCHIVO VERSIONADO SE MIDIO COMO FALSA, y se dice
+    explicitamente para que el silencio no se lea como ausencia de busqueda.
+    Se comprobo contra lo que esta sesion tenia autorizado leer: CLAUDE.md
+    §0.2/§0.4/§1.2/§2/§6.1 no afirman nada sobre el vocabulario del cierre; las
+    tres bitacoras de 5c39ddd tampoco —sus cifras van con su denominador y
+    todas las que esta sesion volvio a medir reprodujeron: 254/190, 89, 34,
+    132, 122, 148, 11 patrones, 37 tests—.
+
+F3. LO QUE SI HACE FALTA ANOTAR PARA LA PROXIMA SESION: la bitacora de
+    `ejes_cierre` §6 publica "100 / 190 traen algun predicado de cierre". Esta
+    sesion mide 107 / 190 para Ba. NO ES UNA CONTRADICCION y se explica: los
+    100 son RE_PRED sola; los 107 son RE_PRED union la familia CERRAD*
+    completa, que agrega los 7 que traen la palabra en una forma que RE_PRED no
+    lista ("CERRADO EN", "CERRADO NAVEGACION"). Los dos numeros son correctos
+    con su definicion. Se anota porque las dos cifras van a convivir en el
+    directorio y sin esta nota parecen la misma medicion con dos resultados.
+
+F4. EL CUARTO EJE DE CARTAS DE CONTINUIDAD NO SE ABRIO, por instruccion del
+    prompt. Lo unico que esta sesion toco de eso es un control aritmetico —si
+    algun registro nombra las cartas como su UNICA actividad, para saber si
+    sacarlas del vocabulario movia el conteo: la respuesta es 0 de 47— y ese
+    control no dice nada sobre el hallazgo, que sigue entero y es del owner.
+
+F5. NO SE ABRIO NADA DEL FRENTE DEL D.S. 991 NI DE TM-025, ni de lectura. El
+    registro ID 95171 de Juan Fernandez no se miro. Tampoco se toco la
+    precedencia de `derivarCondicion` (P-d), ni la tension de INV-0.3, ni las
+    32, ni la Via 2, ni `fetchPortStatus:240`, ni `estado_drift.json`. Se
+    consigna para que el silencio no se lea como omision.
+
+F6. DEUDA DE MATERIAL, HEREDADA Y NO SALDADA: las seis capturas siguen sin
+    llevar adentro la marca de cuando ni con que consulta se tomaron (F4 de la
+    primera bitacora, F5 de la tercera). `capturar.ps1` esta fuera de zona.
+
+
+================================================================================
+7. ESTADO AL CIERRE
+================================================================================
+Sin commit. HEAD sigue en 5c39dddfc9623849e8ad20974ff772e24dd4391b = origin/main.
+`data/catalogo/estado_drift.json` no fue tocado. No se salio a la API. No se
+abrio la PWA. El motor BRE se leyo (require) y se corrio su suite —tests 37 ·
+suites 6 · pass 37 · fail 0 · skipped 0, exit 0—; no se modifico.
+Ningun insumo se abrio en escritura, asi que no hubo nada que restaurar: los
+sha256 de las seis capturas al terminar son
+  5a3bf064eeef7d63 · 8e5270eaabbd2800 · e9d4d084202d7935 · e9d4d084202d7935 ·
+  9ed8c7c15c52a05f · c306aea459dc5124
+identicos a los de §1 de sondaje_cierre_2026-08-16.
+Nuevo untracked en tmarea-backend: este directorio, con 1 instrumento, su salida
+y esta bitacora.
+Los cinco puntos del prompt estan medidos. Ninguno quedo cortado.
+================================================================================

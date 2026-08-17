@@ -5,6 +5,7 @@ const { buscarFondeadero } = require('../services/fondeadero-service');
 const { getCapitaniaByBahiaId } = require('../utils/capitanias');
 const { normalizarRestriccion } = require('../services/sitport-parser');
 const { evaluarRuta } = require('../services/route-restriction-evaluator');
+const { derivarCierre } = require('../services/cierre-derivador');
 const { validarHabilitacionDeportiva } = require('../services/deportivo-validator');
 const {
   medirCoberturaRuta, componerAvisos, capaJurisdiccionesVigente,
@@ -353,6 +354,12 @@ router.post('/restricciones', async (req, res) => {
       // esta pieza los toque. `contacto` es lo que un render debe consumir para
       // rotular; `contacto.nivel === null` significa que el campo NO SE MUESTRA.
       contacto: contactoPorEscalon(cap),
+      // ESTADO DE CIERRE (D-C1: el cierre es el estado, la condición es la causa).
+      // Va como ARRAY HERMANO alineado por `IDRestriccion`, y NO enriqueciendo los
+      // registros de `restricciones`: enriquecerlos los dejaría de ser los
+      // registros crudos de SITPORT, que es lo que este endpoint promete devolver.
+      // Decisión del owner, 2026-08-16.
+      cierre: filtradas.map(r => ({ IDRestriccion: r.IDRestriccion, ...derivarCierre(r) })),
     });
   } catch (error) {
     res.status(502).json({ success: false, restricciones: [], error: error.message });
@@ -833,7 +840,16 @@ router.post('/restricciones-ruta', async (req, res) => {
           restriccion: r.MotivoRestriccion || r.tiporestriccion || 'Restricción activa',
           observacion: r.Observacion || '',
           condicion: norm.condicion,
+          // LA CAUSA. `derivarCondicion` NO se tocó y `condicion_legible` no
+          // cambia ninguna de sus salidas: los 157 de 173 que "tapaba" el cierre
+          // dejan de ser un defecto en cuanto el cierre tiene su propia ranura
+          // (D-C1). No compiten: conviven, y el dato las trae juntas en 249 de
+          // 254 de la bolsa que declara cierre.
           condicion_legible: derivarCondicion(r),
+          // EL ESTADO. Estado de puerto, no veredicto por nave: no depende del AB
+          // de quien pregunta. Se emite acá y NO como `evaluacion.nivel`, que es
+          // del motor y significa otra cosa.
+          cierre: derivarCierre(r),
           motivo: r.MotivoRestriccion || null,
           tipo_restriccion: r.tiporestriccion || null,
           nave_recibe: r.NaveRecibe || null,
