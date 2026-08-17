@@ -539,14 +539,51 @@ CAMPOS: van a pantalla `alcance.tipo/umbral/unidad` y `texto_original`.
   73 con comilla doble. Se muestra TAL CUAL; el colapso de doble espacio lo hace
   HTML solo y no es paráfrasis.
 
-LO QUE NO SE TOCA EN P3: las líneas :263-287 —el rótulo por `rotularContacto`, el
-  escalón 3 sin etiqueta, y la frase de VHF Canal 16— quedan intactas (C1
+LO QUE NO SE TOCA EN P3: ~~las líneas :263-287~~ —el rótulo por `rotularContacto`,
+  el escalón 3 sin etiqueta, y la frase de VHF Canal 16— quedan intactas (C1
   aceptada). El teléfono NO va: es mensaje normativo (INV-10.1, primera frase).
+
+  ENMENDADO 2026-08-17 POR EL GATE DEL TRAMO B — EL RANGO ESTABA MAL TRAZADO.
+  Los tres ítems nombrados NO son contiguos, y lo que queda en el medio es
+  justamente el copy que el Tramo B viene a reemplazar:
+      :263-266  `rotularContacto`                      PROTEGIDO
+      :271      título «Puerto de recalada con restricciones»   REEMPLAZABLE
+      :272-275  cuerpo «Tu puerto de destino tiene restricciones activas…»
+                                                        REEMPLAZABLE
+      :276-280  comentario del escalón 3                PROTEGIDO
+      :281-287  bloque VHF Canal 16 (C1, literales :283/:285)   PROTEGIDO
+  Tomado a la letra, el rango dejaba al Tramo B sin nada que escribir. Y con un
+  agravante: el cuerpo protegido decía en :273-274 «declarar un puerto
+  alternativo o solicitar arribada forzosa», que es PALABRA POR PALABRA la
+  variante A1 que D-C8 descartó en §4 por afirmar un procedimiento que Art. 24
+  Regl. de Despacho y Art. 89 D.L. 2222 no respaldan. El rango de transcripción
+  estaba blindando el texto que una decisión vigente había rechazado.
+  LO DECIDIDO SON LOS ÍTEMS, NO LA ARITMÉTICA. Lo protegido es :263-266 y
+  :276-287. C1 sigue intacta: ni una letra del VHF.
+  ORIGEN: error de transcripción de esta bitácora, no del material ni de una
+  decisión. El literal «263-287» aparecía UNA sola vez en los dos repos —acá—;
+  CONTRATO_MOTOR.md NO lo transcribe, contra lo que se supuso al encargar la
+  corrección. Verificado por grep antes y después.
 
 CONTROLES DEL TRAMO B:
   C3   el piso está presente en 167/167 avisos.
   M-C  convertir el acumulador en ternario → C3 167→10. ES LA MORDIDA DEL PISO.
-  M-E  invertir el test de `aviso_modo` → C4 157→10 y C5 10→157.
+  ~~M-E  invertir el test de `aviso_modo` → C4 157→10 y C5 10→157.~~
+
+  ENMENDADO 2026-08-17 POR EL GATE DEL TRAMO B — M-E NO PODÍA MORDER A C4/C5.
+  C4 y C5 del Tramo A iteran `cierresDeclarados(puerto)` y leen `c.aviso_modo`
+  del PAYLOAD del derivador: el render NO ESTÁ EN SU CAMINO. Lo dice §8 de esta
+  misma bitácora —«C4/C5 en el Tramo A NO miden el render»— y sin embargo el
+  traspaso les asignó una mordida del render. Invertir el test dentro de P3 los
+  deja clavados en 157/10 y M-E habría informado VERDE con el defecto puesto.
+  Es el defecto que M-B ya había cazado una vez: un control que apunta al
+  mecanismo equivocado no muerde.
+  RESUELTO EN EL TRAMO B: C4/C5 quedan INTACTOS como regresión del payload, y el
+  render recibe controles propios (C9/C10) que son los que M-E muerde. Las
+  cifras «157→10 · 10→157» eran de C4/C5 y NO se heredaron: los deltas de M-E
+  se volvieron a medir sobre C9/C10 y se reportan medidos.
+  ORIGEN: se copió del traspaso al prompt del Tramo B sin verificar por dónde
+  pasan C4 y C5.
   El instrumento del Tramo A ya importa lo necesario; C3 exige alcanzar el
   render, así que hay que decidir si se extrae una función pura que arme el
   payload del aviso (medible sin React) o si se mide sobre el DOM del smoke.

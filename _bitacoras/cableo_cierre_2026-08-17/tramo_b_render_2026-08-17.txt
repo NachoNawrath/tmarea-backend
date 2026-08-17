@@ -1,0 +1,481 @@
+================================================================================
+CABLEO DE CIERRE — TRAMO B · EL RENDER DE P3
+Sesión CABLEO-CIERRE / TRAMO B · 2026-08-17
+================================================================================
+
+Backend  b9e81745892fe41736296b29c9063764853219c7 — CERO PIEZAS DE CÓDIGO.
+         `src/` byte por byte igual a a050ac7 (tree-sha 946bc5d7…, verificado).
+         Sólo documentación: esta bitácora y dos enmiendas a la del cableo.
+PWA      6443178493b8b3c35c11a37253c4b5bd1884ea55 — UN SOLO ARCHIVO:
+         `src/screens/P3_VoyageVerification.jsx`. Anterior: a4785189… (Tramo A).
+
+UNIVERSO DE MEDICIÓN: el mismo del Tramo A. sondaje-sitport/, SEIS ficheros,
+444 filas / 213 restricciones. Bolsa de cierre: 335 filas / 167 restricciones.
+Más UNA consulta a SITPORT EN VIVO para el smoke, declarada en §7.
+
+================================================================================
+§0 · EL GATE CAZÓ DOS PREMISAS Y LAS DOS VENÍAN DE §11
+================================================================================
+
+Ninguna de las dos la inventó el prompt del Tramo B: las dos estaban en el
+traspaso y el prompt las copió. Quedan enmendadas EN SU LUGAR DE ORIGEN
+—§11 de `cableo_cierre_2026-08-17.txt`— y no acá, para que quien lea el
+traspaso no vuelva a arrastrarlas.
+
+  (12) EL RANGO `P3:263-287`. Mal trazado: los tres ítems que nombra no son
+       contiguos y el copy que el Tramo B reemplaza queda ADENTRO. Tomado a la
+       letra, el tramo era inejecutable. Agravante: protegía en :273-274 la
+       frase «declarar un puerto alternativo o solicitar arribada forzosa», que
+       es la variante A1 que D-C8 YA HABÍA DESCARTADO por afirmar procedimiento
+       sin respaldo. Enmienda en §11.
+       El literal aparecía UNA vez en los dos repos. CONTRATO_MOTOR.md NO lo
+       transcribe, contra lo que se supuso: no se inventó un segundo destino.
+
+  (13) `M-E` MORDIENDO A `C4/C5`. C4 y C5 miden el PAYLOAD, no el render —lo
+       dice §8 de la misma bitácora que les asignó la mordida—. M-E habría
+       informado verde con el defecto puesto. Enmienda en §11.
+
+LO QUE ENSEÑAN JUNTAS, y es lo mismo que enseñó la undécima: un traspaso escrito
+para sostenerse solo no se sostiene solo. Las dos sobrevivieron a la redacción
+del traspaso, a la lectura del owner y a la redacción del prompt siguiente. Lo
+que las cazó fue releerlas CONTRA EL ARCHIVO, no contra el razonamiento.
+
+================================================================================
+§1 · LO QUE SE MIDIÓ ANTES DE ESCRIBIR — Y TUMBÓ UNA DECISIÓN
+================================================================================
+
+DECISIÓN H3, CORREGIDA POR MEDICIÓN — NO POR CAMBIO DE OPINIÓN.
+
+  H3(a), decidida al abrir la sesión: UN BLOQUE POR CIERRE. Su motivo escrito
+  era: «cada cierre trae su propio `texto_original` y su propio alcance;
+  colapsarlos obliga a elegir cuál se muestra, y D-C4 dice que el texto se
+  muestra tal cual».
+
+  ESA PREMISA ES FALSA Y ESTÁ MEDIDA. SITPORT publica un cierre de bahía UNA VEZ
+  POR INSTALACIÓN PORTUARIA. Lo que distingue a las copias es `NombreInstalacion`
+  y `FrenteAtraque` —el sitio de atraque—, que §11 ya había decidido que NO VAN
+  A PANTALLA. En todo campo que llega a pantalla son idénticas: no hay cuál
+  elegir.
+
+    sondaje versionado: de 10 respuestas con más de un cierre, LAS 10 traen
+                        UN solo hecho distinto. Cero excepciones.
+    SITPORT en vivo, 2026-08-17: BAHÍA CALDERA, 7 cierres → 1 hecho distinto.
+                        BAHÍA DE QUINTERO (check_ahora): 6 cierres → 1 hecho.
+
+  ORIGEN DEL ERROR: la medición que fundó H3(a) contó CIERRES sin preguntar si
+  eran DISTINTOS. La respondió esta sesión y la trajo mal.
+
+  H3(d), decidida por el owner con la medición a la vista: UN BLOQUE POR HECHO
+  DISTINTO dentro de la respuesta. Con (a) el patrón habría leído siete avisos
+  idénticos apilados en Caldera y seis en Quintero — eso entierra el hecho en vez
+  de sostenerlo. Nada de lo que el patrón lee se pierde: el bloque descartado es
+  idéntico al que queda.
+
+EL COSTO, MEDIDO Y ACEPTADO — y por qué C3 igual cierra en 167/167:
+
+                                        (a)      (d)
+    bloques pintados .................. 335      317
+    bloques copia exacta de otro ......  18        0
+    restricciones con bloque PROPIO ... 167      158
+    restricciones con su HECHO en pantalla  167      167   ← la propiedad que importa
+
+  C3 quedó definido como «TODA RESTRICCIÓN CERRADA TIENE SU HECHO EN PANTALLA»,
+  que cierra en 167/167 bajo las dos opciones. La formulación «cada restricción
+  tiene su propio bloque» habría caído a 158/167 y habría medido el maquetado,
+  no la promesa.
+
+EL GRANO, DECLARADO ANTES DE ESCRIBIR EL CONTROL (los tres no se mezclan):
+    respuestas (captura × bahía) ......... 391 · 317 pintan aviso
+    bloques pintados ..................... 335 con (a) · 317 con (d)
+    restricciones únicas ................. 167
+  Los 83 y los 98 del Tramo A son de un CUARTO grano —las seis capturas
+  fundidas— y no se comparan con éstos.
+
+================================================================================
+§2 · LAS DECISIONES DE COPY Y DE LEGIBILIDAD
+================================================================================
+
+D-C8 · SEGUNDA RAMA SIN SUJETO. D-C8 pide dos ramas; D-C7 dice que el aviso sale
+  si y sólo si `estado === 'cerrado'`. Verificado en código: `arribadaForzosa` es
+  `hayCierreDeclarado(rec)` y adentro `cierresDeclarados` vuelve a filtrar. La
+  rama `sin_cierre_declarado` ES INALCANZABLE EN ESTE COMPONENTE.
+  DECIDIDO (owner): NO SE ESCRIBE. Escribirla sería código muerto — el mismo
+  defecto que §9 ya tiene redactado para borrar en `PortStatusBlock.jsx:42-65`.
+  DÓNDE VIVE LA OTRA RAMA: en el badge «Con restricciones» de `PortStatusBlock`,
+  que es pieza P1 y está fuera de alcance.
+
+D-C8 · LA ACCIÓN YA ESTABA EN LA LÍNEA PROTEGIDA. La frase de VHF que C1 declara
+  intocable —«Contactá a {rótulo} por VHF Canal 16 antes de recalar»— ES la
+  acción. Agregar además «comunícate con la capitanía respectiva» la habría
+  dicho dos veces, en dos registros.
+  DECIDIDO (owner): la línea de VHF es la acción. D-C8 pedía UN SOLO STRING
+  justamente para que no hubiera dos copias parecidas; sin segunda rama y con el
+  VHF diciendo la acción, la exigencia se cumple sola.
+  PEDIDO DEL OWNER, INSTRUMENTADO: que la acción salga INCONDICIONAL dentro del
+  bloque. Es el control C11 y su mordida M-H.
+
+COPY ELEGIDO (owner) — «el hecho seco»:
+    piso ................ «Puerto de recalada cerrado.»
+    umbral .............. «Alcanza a las naves menores de {umbral} {unidad}.»
+    menores_sin_umbral .. «Alcanza a las naves menores. El texto no declara
+                           tonelaje.»
+    total ............... «Alcanza a todas las naves.»
+    no_legible .......... nada (piso solo)
+    cita ................ «Texto de la Capitanía:» + el texto TAL CUAL
+    acción .............. la línea de VHF, intacta
+
+  El rótulo de la cita SE QUEDA: el patrón tiene que saber que eso lo escribió la
+  Capitanía y no la app. Es atribución, no reescritura.
+  DESCARTADA la variante que NOMBRA EL PUERTO en el piso, y el motivo es una
+  medición de esta sesión: BAHÍA CHILOTA TIENE CIERRE VIVO HOY y es uno de los
+  ocho casos de mala atribución del filtro `sitport-routes.js:333-338` (§6.1).
+  Nombrar el puerto convierte un error cosmético en una afirmación confiada y
+  falsa.
+  DESCARTADA la variante que agrega «esto no impide el zarpe»: es cierto por
+  D-C9, pero mete marco normativo en la pantalla, y C2 —citar el artículo— ya
+  estaba descartada; sin la cita, la afirmación queda sin respaldo visible.
+
+LEGIBILIDAD — VALORES PROVISORIOS. EL PASE DE MARCA LOS REEMPLAZA.
+  ESTO NO ES EL PASE DE MARCA y no elige paleta: el manual de marca de Tmarea ya
+  está elegido y se aplica al final del desarrollo, en un pase propio. Quien lo
+  haga: ESTOS VALORES ESTÁN PARA SER REEMPLAZADOS Y NO SON DECISIÓN.
+
+  El bloque estaba ILEGIBLE y no era opinión. Los estilos venían escritos para
+  tarjeta OSCURA y quedaron sobre la página crema. Fondo efectivo del recuadro
+  —rgba(255,193,7,0.12) compuesto sobre C.crema #F1EFE8— = rgb(243,233,205):
+
+      antes   título #FFC107 = 1.35:1     cuerpo #ddd  = 1.12:1   invisible
+      ahora   título C.marino= 12.59:1    cuerpo #333  = 10.46:1
+      (umbrales WCAG: 4.5:1 texto normal · 3:1 texto grande)
+
+  Sólo cambió COLOR y TAMAÑO de texto. El fondo ámbar, el borde y el ícono no se
+  tocaron: el bloque sigue leyéndose como alerta. `#333` no es un valor
+  inventado — es el que ya usa `stylesRouteError.texto`, el otro aviso de esta
+  misma pantalla. Descartada la variante que calca `RouteErrorBlock` entero: su
+  título queda en 3.08:1, apenas sobre el mínimo, y le roba el coral a «ruta
+  fallida».
+
+================================================================================
+§3 · LA PIEZA — tmarea-pwa/src/screens/P3_VoyageVerification.jsx
+================================================================================
+UN SOLO ARCHIVO. Backend en b9e8174, cero piezas.
+
+  (1) `construirAvisosDeCierre` (exportada) — FUNCIÓN PURA, sin React. El
+      control mide la estructura del aviso sin montar el DOM: medir el DOM ata
+      el control al maquetado. El JSX es un RENDERIZADOR TONTO que recorre lo
+      que la función devolvió y pinta cada parte por su clase. Si el JSX pudiera
+      decidir, el control mediría una cosa y la pantalla mostraría otra.
+  (2) ACUMULADOR DE SÓLO-EMPUJE, no ternario. `piso` y `accion` se empujan
+      INCONDICIONALES; `aviso_modo` se lee en UNA posición donde el piso ya fue
+      empujado. Un `else` no puede aparecer sin borrar la línea del piso, que es
+      un cambio visible en el diff; invertir un ternario no lo es.
+  (3) `huellaDePantalla` — la deduplicación de H3(d). Sólo los campos que se
+      muestran. NO incluye `NombreInstalacion` ni `FrenteAtraque`: son lo único
+      que distingue a las copias, y meterlos las volvería "distintas" sin que se
+      vea ninguna diferencia.
+  (4) `PISO_CIERRE` y `ROTULO_CITA` exportados — el control los IMPORTA verbatim
+      en vez de transcribirlos. Una transcripción es una copia que se puede
+      desincronizar del archivo que dice medir.
+  (5) Estilos: sólo color y tamaño de texto (ver §2).
+
+--------------------------------------------------------------------------------
+LO PROTEGIDO POR C1 — QUÉ LE PASÓ EXACTAMENTE, Y POR QUÉ ESTA LISTA EXISTE
+--------------------------------------------------------------------------------
+LA PRIMERA VERSIÓN DE ESTE INFORME ESTABA INCOMPLETA. Decía «único cambio sobre
+el texto protegido: el delimitador del comentario del escalón 3». Eran TRES cosas
+y no una, y las otras dos las destapó una pregunta del owner —«traé el diff crudo
+y el sha256»— y NO una medición. Se deja escrito así, con la lista completa,
+porque el hueco no fue el cambio: fue haberlo descrito en vez de probarlo.
+
+  (1) EL DELIMITADOR del comentario del escalón 3 pasó de comentario-JSX a doble
+      barra. CAUSA: el comentario dejó de estar en posición de hijos JSX. Antes
+      el bloque tenía cuatro hijos fijos y el comentario era uno de ellos; ahora
+      los hijos salen de `aviso.partes.map(...)`, cuyo cuerpo es JavaScript, y
+      ahí el comentario está en posición de SENTENCIA. Descartado restaurar el
+      delimitador viejo: en posición de sentencia sería un bloque vacío que
+      parece JSX y no lo es.
+      EL TEXTO NO CAMBIÓ: sha256 A88C8CCF8C30BD58D973EB17177C42E6B869880FC819
+      072E7DD491681010FE30 antes y después.
+
+  (2) DOS LÍNEAS AGREGADAS Y DESPUÉS BORRADAS. La primera escritura le sumó al
+      comentario protegido dos renglones explicando el cambio de delimitador.
+      Eso es una edición dentro de un bloque que una decisión declara intocable,
+      y no correspondía: la explicación pertenece a esta bitácora, que es donde
+      está. BORRADAS por decisión del owner. El comentario quedó con su texto
+      original limpio.
+
+  (3) LA SANGRÍA de las dos líneas de VHF pasó de 18 a 22 espacios. CAUSA
+      MECÁNICA: el bloque quedó un nivel más adentro al meterse en el `.map`, y
+      el `.map` sale de H3(d). RATIFICADO POR EL OWNER Y CERRADO, no como
+      excepción abierta: C1 PROTEGE LAS LETRAS, NO LA COLUMNA. Las letras están
+      intactas y probadas por sha256 (F249169A…24 y A027CFFF…3E, iguales antes y
+      después). Evitarlo exigiría no hacer H3(d).
+
+  SIN CAMBIO ALGUNO, ni siquiera de sangría: `rotularContacto` y su comentario
+  —sha256 99B33D2343B4036699E15F9DDD375D83B5FA24596EF24A8FDA78E6F44C939908,
+  byte por byte—, y el `<div>` del ícono ⚠️ y el envoltorio.
+
+  DESDE AHORA ESTO TIENE INSTRUMENTO: es el control C15 (§4), que cotejaba nada
+  hasta esta sesión.
+
+================================================================================
+§4 · LOS CONTROLES — D7, LA PWA NO TIENE SUITE
+================================================================================
+Instrumento: scratchpad de sesión, FUERA de los dos repos. Importa `derivarCierre`
+del backend, `mapearRespuestaPuerto`/`cierresDeclarados` del hook, y las funciones
+puras de P3 — sobre la implementación, no sobre una copia. P3 es `.jsx` y node no
+lo parsea: se transpila con el esbuild que la PWA YA TIENE instalado (0.21.5).
+Arma la respuesta con la forma exacta de `sitport-routes.js:343-363`. No aplica el
+filtro por nombre a propósito (§6.1).
+
+CORRIDA FINAL — TODOS EN VERDE. 1603 comparaciones efectivas sobre material,
+más 4 cotejos de fuente.
+
+  C3   restricciones cerradas con su hecho en pantalla ... 167/167  (335/335 filas)
+  C3b  bloques que llevan el PISO ........................ 317/317
+  C9   bloques con ALCANCE bien formado .................. 307/307
+  C10  bloques no_legible SIN alcance (piso solo) ........  10/10
+  C11  bloques que llevan la ACCIÓN, una sola vez ........ 317/317
+  C12  respuestas sin un hecho repetido en pantalla ...... 317/317
+  C13  clases de parte fuera del vocabulario previsto ....   0
+  C14  citas con texto TAL CUAL y rótulo importado ....... 317/317
+  C15  literales intocables idénticos a a478518 ..........   4/4
+  C7   comparaciones efectivas .......................... 1603   > 0
+
+  EL 1286 — UNA CIFRA MAL, Y LA PRIMERA DEL FRENTE QUE SALE DE UNA SALIDA MÍA.
+  Una versión anterior de esta bitácora anotó 1286 con C14 ya en la lista. Era el
+  conteo PREVIO a agregar C14: 969 + 317 de C12 + 317 de C14 = 1603. Un conteo
+  copiado de una corrida y una lista copiada de otra.
+  ORIGEN: NO salió de un prompt ni del material. Salió de que redacté la bitácora
+  con una corrida vieja a la vista mientras la lista de controles ya era la
+  nueva. Todas las anteriores del frente venían de afuera; ésta es mía, y es la
+  misma clase de defecto: una cifra que se transcribe en vez de leerse de la
+  corrida que se está documentando.
+  LA CUENTA, CON UNA COLISIÓN QUE DECIDE EL OWNER: el owner la llamó LA
+  DUODÉCIMA. §0 de esta misma bitácora ya numeró (12) el rango `263-287` y (13)
+  el `M-E`/`C4-C5`, continuando la serie de ONCE que traía el frente; en esa
+  serie ésta sería LA CATORCE. El HECHO no está en discusión —cifra mal, origen
+  declarado, corregida—; lo que falta es una sola decisión de numeración, y se
+  deja marcada en vez de elegirla por cuenta propia: una cuenta que se
+  contradice a sí misma deja de servir para lo que existe.
+
+C15 · EL CONTROL QUE FALTABA, Y POR QUÉ SE ESCRIBIÓ TARDE.
+  Los ocho controles del render y sus seis mordidas medían lo que el Tramo B
+  ESCRIBE. NINGUNO MIRABA SI LO QUE PROMETIÓ NO TOCAR SEGUÍA IGUAL. Por eso el
+  informe de esta sesión sobre material protegido salió incompleto y lo cazó una
+  pregunta del owner. C15 cotejа contra `a478518` por sha256: los dos literales
+  de VHF por TEXTO sin sangría, `rotularContacto` por BYTES con sangría, y el
+  comentario del escalón 3 por TEXTO sin delimitador ni sangría.
+  NO SUMA A `comparaciones`: C7 cuenta comparaciones sobre MATERIAL y esto es
+  cotejo de fuente. Mezclarlos habría roto M-F, que exige abortar con `--vacio`.
+
+ALCANCES DECLARADOS:
+  C3 mide COBERTURA DEL HECHO, no bloques por restricción. Bajo H3(d) las dos no
+     son la misma cosa y la que importa es la primera (§1).
+  C11 guarda EL DESCRIPTOR: que la parte `accion` se empuje siempre. Que el JSX
+     la pinte sin anidarla bajo otra condición lo sostiene el hecho de que el JSX
+     es un `map` sin condiciones, y lo CORROBORA EL SMOKE (§7), donde la línea
+     apareció. No hay control automático del tramo descriptor→píxel, y se dice.
+  C14 guarda EL ÚLTIMO TRAMO, del derivador a la pantalla. Que el derivador no
+     deforme el texto lo cubre la suite del backend; que el pasamanos no lo toque
+     lo cubre C6 del Tramo A.
+
+LAS MORDIDAS — CORRIDAS, con P3 restaurado y sha256 comprobado en cada vuelta
+(base B2FFFF9F6721063736A9E8CA0427E4AD2406CD6DBB97630665C7AD2A65F3153E):
+
+  M-C  el acumulador se convierte en TERNARIO
+       → C3b 317→10. ES LA MORDIDA DEL PISO. Sólo C3b se mueve: la cobertura del
+         hecho (C3) no depende del piso, y por eso son dos controles y no uno.
+  M-E  se invierte el test de `aviso_modo`
+       → C9 y C10 en rojo (los 10 `no_legible` reciben alcance y quedan con
+         `texto: null`; los 307 con detalle lo pierden). LOS DELTAS SE MIDIERON,
+         no se heredaron del traspaso: las cifras «157→10 · 10→157» eran de
+         C4/C5, que no pasan por el render (§0, premisa 13).
+  M-H  la ACCIÓN deja de empujarse  → C11 317→0. Es el pedido del owner.
+  M-I  se quita la deduplicación    → C12 317→307. Guarda la decisión H3(d).
+  M-J  la cita se normaliza al pasar (`.trim().replace(/\s+/g,' ')`)
+       → C14 317→223. Se mueven 94: las otras 223 no tienen espacio doble y la
+         transformación es INVISIBLE en ellas — exactamente la paráfrasis
+         silenciosa que D-C4 prohíbe y que un control de texto existe para cazar.
+  M-K  se toca UNA LETRA de la frase de VHF («Canal 16» → «Canal 17»)
+       → C15 rojo. Es la mordida de C1.
+  M-L  se le agrega UNA LÍNEA al comentario del escalón 3
+       → C15 rojo. Y NO MORDIÓ LA PRIMERA VEZ, que es el hallazgo de más valor
+         de esta sesión: la primera versión de C15 leía una VENTANA FIJA de 5
+         líneas, así que una sexta línea agregada caía afuera y el cotejo pasaba
+         en verde. ERA EL MISMO PUNTO CIEGO QUE HABÍA TENIDO EL INFORME: no ver
+         una ADICIÓN porque se mira sólo donde ya se sabe que hay algo. Corregido
+         para consumir el comentario ENTERO —hasta el cierre del bloque, o hasta
+         la primera línea que ya no es comentario—. Un control que mira una
+         ventana fija no puede ver lo que se agrega al lado.
+  M-F  el instrumento sin material (`--vacio`) → C7 = 0, ABORTA con exit 2.
+
+  FALLA DEL BANCO EN LA PRIMERA CORRIDA, Y SE ANOTA PORQUE ES LA LECCIÓN:
+  M-C informó «literal no encontrado» y NO «no muerde». P3 está en CRLF y el
+  literal multilínea del banco estaba en LF, así que los parches de una línea
+  calzaban y el de cuatro no. Un banco que no distinguiera esos dos casos habría
+  reportado «M-C no muerde» y habría mandado a rediseñar un control que estaba
+  bien. Un literal que no se encuentra es FALLA, no "no aplicable".
+
+REGRESIÓN DEL TRAMO A — C1, C2, C4, C5, C6, C7, C8 vueltos a correr DESPUÉS de
+escribir el render. Los siete en verde, 1149 comparaciones, IDÉNTICOS a la línea
+base tomada al abrir esta sesión. Tocar el render no los movió, que es lo que
+tenía que pasar: miden el payload y el pasamanos, no la pantalla.
+
+`npm run build` de la PWA: OK, 83 módulos, 3.79s.
+
+================================================================================
+§4.1 · APRENDIZAJE DEL FRENTE — LA VENTANA FIJA
+================================================================================
+
+  UN CONTROL QUE MIRA UNA VENTANA FIJA TIENE EL MISMO PUNTO CIEGO QUE UN INFORME
+  QUE MIRA DONDE YA SABE QUE HAY ALGO: NINGUNO DE LOS DOS VE LAS ADICIONES.
+
+Esto no es una nota sobre una mordida. Es el defecto que atravesó las TRES capas
+de esta sesión, y en las tres por el mismo motivo:
+
+  · EN EL CÓDIGO. Se agregaron dos líneas dentro del comentario que C1 declara
+    intocable. Nadie las pidió y no correspondían.
+  · EN EL INFORME. Se declaró «único cambio: el delimitador». Era cierto de lo
+    que se fue a mirar —el delimitador— y falso del bloque, porque las dos líneas
+    agregadas estaban al lado y no se las buscó. Lo cazó una pregunta del owner.
+  · EN EL INSTRUMENTO. C15, escrito justamente para cerrar ese hueco, leía CINCO
+    LÍNEAS CONTADAS desde el inicio del comentario. La mordida M-L le agregó una
+    sexta y C15 INFORMÓ VERDE. El control nuevo había heredado el punto ciego que
+    venía a corregir.
+
+LO QUE LOS TRES COMPARTEN: se verifica la IDENTIDAD de lo que se sabe que está, y
+no la AUSENCIA de lo que no debería estar. Comparar los N elementos conocidos
+siempre cierra; lo que se agregó al lado nunca entra en la comparación.
+
+REGLA QUE QUEDA: un cotejo sobre texto delimita por la ESTRUCTURA del texto —el
+cierre del bloque, la primera línea que ya no es comentario—, NUNCA por un conteo
+de líneas. Y todo cotejo tiene que poder responder «¿apareció algo que antes no
+estaba?», no sólo «¿lo que estaba sigue igual?».
+
+DÓNDE MÁS APLICA, sin abrir nada: los verificadores de push del frente comparan
+blob-sha de una LISTA ESCRITA A MANO. Su control (2) —cobertura— existe justamente
+para esto y compara contra `git diff-tree`, así que ahí la pregunta por la adición
+SÍ está hecha. Es el precedente de cómo se hace bien, y es de este mismo frente.
+
+================================================================================
+§5 · EL PENDIENTE HEREDADO — LA MORDIDA DEL VERIFICADOR DE PUSH
+================================================================================
+El Tramo A declaró que `02_verificar_push.js` había quedado SIN MORDIDA. Se corrió
+sobre una COPIA en scratchpad; el archivo del repo no se tocó.
+
+  M-P0  línea base ................................ exit 0 · TODO VERDE
+  M-P1  `anterior` apunta a 0e38585 (otro src/) ... exit 3 · ROJO en (5)
+  M-P2  un intocable que sí se tocó ............... exit 3 · ROJO en (4)
+  M-P3  la lista de rutas queda vacía ............. exit 3 · ROJO en (2)
+  M-P4  el blob remoto se pide contra `anterior` .. exit 3 · ROJO en (1)
+  M-P5  se vigila un archivo no modificado ........ exit 3 · ROJO en (6)
+  M-P7  el commit no existe en el remoto .......... exit 4
+  LOS SEIS CONTROLES SUSTANTIVOS MUERDEN. El pendiente queda descargado.
+
+  M-P6  EL VERIFICADOR DESTRIPADO — NO MUERDE, y es hallazgo.
+        Sacadas las dos llamadas a `verificarRepo` —o sea, sin verificar ningún
+        repo— el instrumento IMPRIME «TODO VERDE» Y SALE 0, sobre 2
+        comparaciones. El guard de cero comparaciones existe pero es
+        INALCANZABLE: los controles (5) y (6) corren fuera del bucle y suman una
+        cada uno, así que el contador nunca llega a 0. Es el patrón de M-F.
+
+  ESTO NO PONE EN DUDA LAS VERIFICACIONES PASADAS, y conviene decirlo con
+  precisión: cada `.txt` registra su conteo y sus controles uno por uno. La
+  corrida real del Tramo A dice 18 comparaciones; una destripada diría 2. La
+  evidencia distingue los dos casos. Lo que falta es que el instrumento se
+  niegue solo, sin depender de que alguien lea el conteo.
+
+  ALCANCE DEL DEFECTO, medido: de los 16 verificadores de push del frente, SÓLO
+  3 tienen el guard, y en los tres es igual de inalcanzable.
+  OPCIONES: (a) mover el guard al final y exigir un PISO POR REPO —≥1 ruta
+  comparada en cada uno— en vez de un total distinto de cero; (b) dejarlo y leer
+  el conteo a mano; (c) retrofit a los 16.
+  RECOMENDACIÓN: (a) para el verificador de este tramo. (c) REDACTADO Y NO
+  APLICADO: 15 de esos ficheros son de frentes cerrados y untracked, y tocarlos
+  es un frente propio.
+
+================================================================================
+§6 · HALLAZGOS FUERA DE ALCANCE — REDACTADOS, NO APLICADOS
+================================================================================
+
+6.1 · `DeportiveAlerts.jsx:533` HACE `require()` A UN ARCHIVO QUE NO EXISTE.
+  La línea es `const { haversineKm } = require('./maritime-geo.js');` dentro de
+  `src/components/`. El módulo real vive en `src/utils/maritime-geo.js`: la ruta
+  relativa está mal. Además es `require()` dentro de un módulo ESM, que en el
+  navegador no existe como función.
+  POR QUÉ NO SALTA HOY: `vite build` pasa —83 módulos, verde— porque rollup deja
+  `require` como global sin resolver. Sólo lo caza un empaquetador que resuelva
+  de verdad; lo encontró esbuild al armar el instrumento de este tramo.
+  CONSECUENCIA: si esa rama se ejecuta, tira `require is not defined`. No se
+  midió si es alcanzable.
+  OPCIONES: (a) corregir la ruta a `../utils/maritime-geo.js` y convertirla en
+  `import`; (b) borrar la rama si está muerta, previa medición; (c) dejarlo
+  anotado.
+  RECOMENDACIÓN: (a) si la rama es alcanzable, (b) si no — y eso se mide antes,
+  no después. EN SESIÓN APARTE: no es P3 y no es de este frente.
+
+6.2 · LA CAPITANÍA DE ZARPE DE CHAÑARAL SALE «QUINTERO».
+  Observado durante el smoke: con zarpe en «Caleta Pesquera San Pedro de
+  Chañaral» (Atacama, lat −26,35) la pantalla rotula «Capitanía de Puerto de
+  Quintero» (Valparaíso, ~1.100 km al sur), y la tarjeta de puerto rotula
+  «Capitanía de Puerto de Coquimbo». DOS RÓTULOS DISTINTOS PARA EL MISMO PUERTO
+  EN LA MISMA PANTALLA.
+  NO SE DIAGNOSTICÓ: no es P3, no es de este frente, y se parece al frente de
+  atribución en pausa y a los dos resolvedores de contacto sin unificar.
+  REDACTADO PARA QUE NO SE PIERDA. El aviso de recalada, que es lo que este
+  tramo escribe, rotuló bien: «Capitanía de Puerto de Caldera».
+
+================================================================================
+§7 · SMOKE VISUAL — CORRIDO. NO ES UN CONTROL.
+================================================================================
+EL RIESGO DECLARADO NO SE MATERIALIZÓ. El prompt previó que SITPORT en vivo
+pudiera no traer ningún cierre. Trajo 13 filas cerradas en 7 bahías, y cubren
+LAS CUATRO PANTALLAS: `umbral` (Huasco 20 AB · Clarencia y Chilota 100 AB),
+`menores_sin_umbral` (Tal Tal · Isla de Pascua), `total` (Caldera),
+`no_legible` (Isla Robinson Crusoe).
+
+  Backend en 3000, PWA en 5173. Viaje: Caleta Pesquera San Pedro de Chañaral →
+  Caleta Pesquera Caldera. Perfil y nave FICTICIOS (patron.prueba@ejemplo.cl /
+  «Patrón de Prueba» / «Nave de Prueba»), provistos por el owner. NO SE FABRICÓ
+  NINGÚN CIERRE, NI FIXTURE, NI MOCK: el cierre es el que SITPORT publicaba.
+
+  LO QUE SE PINTÓ, textual:
+      ⚠️  Puerto de recalada cerrado.
+          Alcanza a todas las naves.
+          Texto de la Capitanía: SE ESTABLECE CONDICIÓN DE PUERTO CERRADO PARA
+          NAVES MAYORES Y MENORES FUERA DE LA BAHIA, INSTALACIONES PORTUARIAS
+          EN CONDICIÓN NORMAL.
+          Contactá a la Capitanía de Puerto de Caldera por VHF Canal 16 antes
+          de recalar.
+
+  UN SOLO BLOQUE, no siete: H3(d) funcionando sobre material vivo, que es la
+  prueba que el sondaje solo no podía dar.
+  El veredicto salió BANDERA U, no U+V — coherente con C8 del Tramo A: cero
+  veredictos movidos.
+  El doble espacio de «NAVES  MAYORES» se ve colapsado: lo hace HTML solo y no
+  es paráfrasis (§11).
+
+  LÍMITE: el smoke prueba QUE SE PINTA, no los conteos. Los conteos son del
+  instrumento. Y prueba una sola de las cuatro pantallas —`total`—: las otras
+  tres tenían cierre vivo pero no se armó un viaje por cada una.
+
+================================================================================
+§8 · FRENTE ANOTADO — DÓNDE DEBERÍA VIVIR EL INSTRUMENTO
+================================================================================
+Los instrumentos de este frente viven en el scratchpad de la sesión que los
+escribió. El del Tramo A sobrevivió y se pudo correr como regresión, pero por
+suerte, no por diseño: es un directorio temporal.
+
+OPCIONES: (a) versionarlos en `_bitacoras/<frente>/` junto a su `.txt`, como ya
+se hace con los verificadores de push; (b) un directorio propio de instrumentos
+en el backend; (c) dejarlos efímeros y aceptar que la regresión no se puede
+recorrer.
+RECOMENDACIÓN: (a). Es el precedente que el frente ya tiene, deja el instrumento
+al lado de la medición que produjo, y no inventa una estructura nueva. Cuesta que
+los `.mjs` pasen a estar versionados, que es justamente lo que hoy falta.
+NO SE MOVIÓ NADA EN ESTA SESIÓN: el owner lo pidió redactado, no aplicado.
+
+================================================================================
+FIN — Tramo B. Sin commit hasta autorización explícita del owner.
+================================================================================
