@@ -1,0 +1,82 @@
+================================================================================
+MEDICION P2 — el rotulo del aviso de arribada forzosa
+================================================================================
+
+(0) LINEA BASE
+    entradas de bahia-capitania-map.json : 164
+    src/screens/P3_VoyageVerification.jsx:250
+      "                <strong>Capitanía de Puerto de {nombre}</strong>{' '}"
+      ocurrencias del mismo literal en todo el archivo : 1
+    etiquetaDeNivel() leida de la PWA :
+      capitania   -> "Capitanía de Puerto de"
+      gobernacion -> "Gobernación Marítima de"
+
+(1) VARA DE INV-10.1 — reproducida con la implementacion versionada
+    escalon 1 (capitania)   : 99
+    escalon 2 (gobernacion) : 65
+    escalon 3 (nulo)        : 0
+    suma                    : 164
+    -> reproduce la vara publicada en CONTRATO_MOTOR.md §5.1. Sigue.
+
+(2) ROTULO DE HOY vs ROTULO CON EL ARREGLO — denominador 164 entradas del mapa
+    comparaciones efectivas          : 164
+    NO cambian (ya decian la verdad) : 99
+    CAMBIAN                          : 65
+      · solo la etiqueta             : 31   (la entrada no nombra Capitania; hoy se rotula "Capitanía de Puerto de" sobre una Gobernación)
+      · etiqueta Y nombre            : 34   (la entrada nombra Capitania pero el telefono no es el suyo: baja al escalon 2)
+    sin nombre en el mapa            : 0   (hoy caerian al nombre del puerto o a "destino")
+    suma                             : 164
+
+    MUESTRA — solo cambia la etiqueta:
+      id 72: HOY  "Capitanía de Puerto de Iquique"
+           NUEVO "Gobernación Marítima de Iquique"
+           motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      id 73: HOY  "Capitanía de Puerto de Iquique"
+           NUEVO "Gobernación Marítima de Iquique"
+           motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      id 90: HOY  "Capitanía de Puerto de Valparaíso"
+           NUEVO "Gobernación Marítima de Valparaíso"
+           motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      id 92: HOY  "Capitanía de Puerto de Valparaíso"
+           NUEVO "Gobernación Marítima de Valparaíso"
+           motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      id 93: HOY  "Capitanía de Puerto de San Antonio"
+           NUEVO "Gobernación Marítima de San Antonio"
+           motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      id 94: HOY  "Capitanía de Puerto de San Antonio"
+           NUEVO "Gobernación Marítima de San Antonio"
+           motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      … y 25 mas
+
+    MUESTRA — cambian etiqueta y nombre:
+      id 75: HOY  "Capitanía de Puerto de Mejillones"
+           NUEVO "Gobernación Marítima de Antofagasta"
+           motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      id 84: HOY  "Capitanía de Puerto de Huasco"
+           NUEVO "Gobernación Marítima de Caldera"
+           motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      id 88: HOY  "Capitanía de Puerto de Los Vilos"
+           NUEVO "Gobernación Marítima de Coquimbo"
+           motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      id 91: HOY  "Capitanía de Puerto de Quintero"
+           NUEVO "Gobernación Marítima de Valparaíso"
+           motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      id 107: HOY  "Capitanía de Puerto de Corral"
+            NUEVO "Gobernación Marítima de Valdivia"
+            motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      id 117: HOY  "Capitanía de Puerto de Quellón"
+            NUEVO "Gobernación Marítima de Castro"
+            motivo: escalon 2: el numero NO es el que la fuente publica para la Capitania nombrada
+      … y 28 mas
+
+(3) EL TELEFONO — hoy se renderiza dentro del aviso de arribada forzosa
+    entradas con telefono           : 164 / 164
+    de esas, atomicas (tel: valido) : 164
+    NO atomicas rendereadas hoy como enlace por la linea 255 : 0
+
+    INV-10.1, primera frase: el contacto se muestra "sólo en el punto de zarpe
+    y en el de recalada, nunca dentro de un mensaje normativo".
+
+================================================================================
+FIN — sin abortos. Comparaciones efectivas: 164
+================================================================================

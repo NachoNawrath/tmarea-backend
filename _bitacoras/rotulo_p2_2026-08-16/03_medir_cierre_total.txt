@@ -1,0 +1,45 @@
+================================================================================
+¿EL AVISO DE ARRIBADA FORZOSA LLEGA A PANTALLA? — medido contra el dato vivo
+================================================================================
+
+(A) EL CONSUMIDOR — citado literal, con su linea
+    useVoyageVerification.js:236
+      if (restricciones.some((r) => r.nivel === 'cierre_total')) estado = 'rojo';
+
+(B) EL PRODUCTOR
+    tmarea-backend : 0 archivo(s) nombran "cierre_total"
+    tmarea-pwa : 2 archivo(s) nombran "cierre_total"
+      dist/assets/index-CHBBE8Z5.js
+      src/hooks/useVoyageVerification.js
+
+    -> el unico que lo nombra es el que lo BUSCA. Nadie lo escribe.
+
+(C) LO QUE SITPORT PUBLICA AHORA — via el endpoint ya montado en :3000
+    registros de restriccion publicados : 9
+    que traen el campo `nivel`          : 0
+    con nivel === 'cierre_total'        : 0
+
+    campos que la fuente SI emite (20) :
+      AreaRestriccion, Detalle, FCTermino, FCinicio, FrenteAtraque, GLBahia, IDRestriccion, MotivoRestriccion, NaveRecibe, NombreInstalacion, Observacion, SitioAtraque, bahia, glnombre, idipbahia, nrecalada, nzarpe, paralizar, tipo, tiporestriccion
+
+    LOS CAMPOS DE CIERRE QUE LA FUENTE SI EMITE, y su valor hoy :
+      paralizar    : {"0":9}
+      nzarpe       : {"0":9}
+      nrecalada    : {"0":9}
+
+(D) LA CADENA, ESLABON POR ESLABON
+    1. alguna restriccion con nivel === 'cierre_total'  : NO
+    2. -> portStatus.recalada.estado === 'rojo'         : NO
+    3. -> recaladaRaw === 'UV'  (:155)                  : NO
+    4. -> arribadaForzosa = true  (:160-162)            : NO
+    5. -> se renderiza el aviso de P2                   : NO
+
+    >>> EL BLOQUE QUE P2 ARREGLA NO SE RENDERIZA CON EL DATO DE HOY, y no
+        por una casualidad del dia: el campo del que depende NO LO EMITE
+        NADIE. El arreglo del rotulo es correcto y necesario —el codigo
+        decia algo falso—, pero lo que el patron ve HOY no cambia. Las dos
+        cosas son ciertas a la vez y hay que decirlas juntas.
+
+================================================================================
+FIN — apariciones de "cierre_total" en los dos repos: 2 · registros medidos: 9
+================================================================================

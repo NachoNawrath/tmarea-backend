@@ -1,0 +1,72 @@
+================================================================================
+VERIFICACION DEL CIERRE DE P2 — el rotulo del aviso de arribada forzosa
+================================================================================
+
+(A) LINEA BASE
+    OK   bahia-capitania-map.json : 164 entradas
+    OK   vara de INV-10.1 reproducida : 99 / 65 / 0, suma 164
+
+(B) EL LITERAL DURO DE P2
+    OK   "Capitanía de Puerto de {nombre}" : 0 ocurrencias en todo el archivo
+    OK   "Capitanía de Puerto de" aparece solo en comentario (linea 241) — no rotula
+    OK   "Gobernación Marítima de" : 0 ocurrencias en P2
+    OK   "Gob. Marítima de" : 0 ocurrencias en P2
+
+(C) EL TELEFONO DENTRO DEL MENSAJE NORMATIVO — INV-10.1, primera frase
+    bloque del aviso : lineas 236-291 (56 lineas)
+    OK   tel: (enlace telefonico) : ausente del aviso
+    OK   rec?.telefono : ausente del aviso
+    OK   la palabra "Teléfono" : ausente del aviso
+    OK   styles.arribadaTel : dado de baja (0 ocurrencias)
+    OK   el telefono sigue en la tarjeta de RECALADA de PortStatusBlock — se movio, no se perdio
+
+(D) UN SOLO ENSAMBLADO DE FRASE ROTULADA EN TODA LA PWA — lo que compra B
+    archivos de src/ barridos : 43
+    definiciones de rotularContacto() : 1
+    definiciones de etiquetaDeNivel() : 1
+    consumidores que la llaman :
+      src/hooks/useVoyageVerification.js  (1)
+      src/screens/P3_VoyageVerification.jsx  (1)
+    OK   P2 y P4 consumen LA MISMA funcion, importada del mismo modulo
+
+(E) P2 Y P4 EMITEN LA MISMA FRASE PARA EL MISMO NIVEL
+    OK   etiquetaDeNivel() y rotularContacto() extraidas de src/hooks/useVoyageVerification.js y evaluadas
+    OK   plantillas leidas del arbol : P4 "Avisar por radio a ${…}" · P2 "Contactá a <strong>{…}</strong>"
+    los DOS callsites, extraidos del arbol :
+      src/screens/P3_VoyageVerification.jsx
+        const rotulo = rotularContacto( rec?.contacto, () => (rec?.ubicacion ? getCapitania(rec.ubicacion.lat, rec.ubicacion.lng)?.nombre : null) )
+      src/hooks/useVoyageVerification.js
+        const capZarpeRotulo = rotularContacto( contactoZarpe, () => (zarpe ? getCapitania(zarpe.lat, zarpe.lng)?.nombre : null) )
+    callsites comparados : 2 (los dos, y son los dos que existen segun (D))
+    OK   misma funcion, mismo primer argumento (el `contacto` del escalon) y mismo fallback
+    el segmento rotulado que los dos comparten, por nivel :
+      nivel capitania    ( 99 entradas)
+        P4 -> "Avisar por radio a la Capitanía de Puerto de Arica al iniciar la navegación"
+        P2 -> "Contactá a la Capitanía de Puerto de Arica por VHF Canal 16 antes de recalar."
+      nivel gobernacion  ( 65 entradas)
+        P4 -> "Avisar por radio a la Gobernación Marítima de Iquique al iniciar la navegación"
+        P2 -> "Contactá a la Gobernación Marítima de Iquique por VHF Canal 16 antes de recalar."
+
+(F) EFECTO SOBRE LAS 164 — denominador: entradas de bahia-capitania-map.json
+    comparaciones efectivas          : 164
+    NO cambian (ya decian la verdad) : 99
+    CAMBIAN                          : 65
+      · solo la etiqueta             : 31
+      · etiqueta Y nombre            : 34
+    suma                             : 164
+    OK   reproduce el efecto medido en 01_medir_rotulo_p2.txt
+
+    LOS QUE CAMBIAN DE NOMBRE — lo que el patron ve distinto (primeros 8):
+      id  75  HOY "Capitanía de Puerto de Mejillones"  ->  NUEVO "Gobernación Marítima de Antofagasta"
+      id  84  HOY "Capitanía de Puerto de Huasco"  ->  NUEVO "Gobernación Marítima de Caldera"
+      id  88  HOY "Capitanía de Puerto de Los Vilos"  ->  NUEVO "Gobernación Marítima de Coquimbo"
+      id  91  HOY "Capitanía de Puerto de Quintero"  ->  NUEVO "Gobernación Marítima de Valparaíso"
+      id 107  HOY "Capitanía de Puerto de Corral"  ->  NUEVO "Gobernación Marítima de Valdivia"
+      id 117  HOY "Capitanía de Puerto de Quellón"  ->  NUEVO "Gobernación Marítima de Castro"
+      id 118  HOY "Capitanía de Puerto de Ancud"  ->  NUEVO "Gobernación Marítima de Castro"
+      id 119  HOY "Capitanía de Puerto de Chonchi"  ->  NUEVO "Gobernación Marítima de Castro"
+      … y 26 mas
+
+================================================================================
+FIN — sin abortos. Comparaciones efectivas: (E) 2 · (F) 164
+================================================================================

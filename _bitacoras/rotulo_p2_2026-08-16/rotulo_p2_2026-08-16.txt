@@ -1,0 +1,264 @@
+================================================================================
+P2 — EL ROTULO DEL AVISO DE ARRIBADA FORZOSA. Sesion P2-ROTULO, 2026-08-16.
+================================================================================
+
+LINEA BASE DE ARRANQUE, verificada antes de la primera lectura:
+  tmarea-backend  HEAD dac72a68a98b60d7150f11183b4ed7ffdddc8924 = origin/main
+                  28 untracked · sin estagear solo data/catalogo/estado_drift.json
+  tmarea-pwa      HEAD d16ea32605fafd807db1e1cadd40baf36b80199e = origin/main
+                  1 untracked: diff_transit.txt (preexistente, no tocado)
+
+QUE SE CERRO. `tmarea-pwa/src/screens/P3_VoyageVerification.jsx:250` afirmaba el
+nivel de reparticion con un literal duro —"Capitanía de Puerto de {nombre}"—
+sobre `rec?.capitania || rec?.gobernacion || rec?.nombre`. Desde esta pieza el
+rotulo sale del campo `contacto`, que trae el escalon de INV-10.1 ya resuelto por
+`src/services/contacto-por-escalon.js`, igual que P3 y P4.
+
+    Instrumentos: 01_medir_rotulo_p2.js/.txt · 02_verificar_rotulo_p2.js/.txt ·
+                  03_medir_cierre_total.js/.txt
+
+
+================================================================================
+1. LO QUE EL RENDER DECIA, Y CUANTAS VECES ERA FALSO
+================================================================================
+Denominador declarado: las 164 entradas de `src/data/bahia-capitania-map.json`,
+que es de donde sale el `contacto` del puerto de recalada.
+
+    NO cambian (ya decian la verdad) :  99
+    CAMBIAN                          :  65
+      · solo la etiqueta             :  31   (30 con capitania === gobernacion,
+                                              + la 127, unica con capitania null)
+      · etiqueta Y nombre            :  34
+    suma                             : 164
+
+El instrumento reproduce primero la vara publicada de CONTRATO_MOTOR.md §5.1
+—99 escalon 1 / 65 escalon 2 / 0 escalon 3— y aborta si no la reproduce.
+Comparaciones efectivas: 164.
+
+>>> CORRECCION A LA BITACORA DEL 08-16, §2. Aquella dice que P2 miente "cuando
+>>> `capitania` es null". Medido: `capitania` es null en 1 de 164. El escalon 2
+>>> se alcanza por DOS causas y la que manda es la otra —la entrada nombra
+>>> Capitania y el telefono NO es el que la fuente publica para ella—. Contando
+>>> las dos, el rotulo mentia en 65 de 164, no en 1. El defecto estaba bien
+>>> descrito; su alcance estaba subestimado en un factor de 65.
+
+
+================================================================================
+2. LA DECISION: OPCION B — SE COMPARTE LA FRASE, NO LA ETIQUETA
+================================================================================
+Se evaluaron dos caminos:
+
+  A. Consumir `etiquetaDeNivel` —ya exportada— y ensamblar la frase en P2.
+     Toca UN archivo. Deja DOS lugares que ensamblan un rotulo.
+  B. Exportar `rotularContacto` y consumirla. Toca dos archivos (uno de ellos,
+     una palabra). Deja UNO.
+
+SE TOMO B. El motivo no es de estilo: el defecto de fondo de este frente es que
+cada camino a pantalla armo su propio rotulo —P2 decia "Capitanía de Puerto de",
+P5 dice "Gob. Marítima de": tres literales para dos niveles—. Compartir la
+etiqueta cierra el literal y deja libre el ENSAMBLADO, que es la junta por donde
+el frente ya se rompio. **El patron lee la frase, no la etiqueta.**
+
+DESCARTADO, con motivo: (i) copiar el `if (nivel === …)` dentro de P2 —es lo que
+`useVoyageVerification.js:535-537` existe para impedir—; (ii) dejar el telefono
+en el aviso "porque es un aviso de seguridad" —la primera frase de INV-10.1 no
+admite esa excepcion y P4 ya la resolvio al reves—; (iii) suprimir el bloque
+entero cuando no hay rotulo —el aviso de arribada forzosa es de seguridad, y no
+saber a quien llamar no es motivo para callarlo—.
+
+
+================================================================================
+3. LO QUE SE ESCRIBIO
+================================================================================
+  tmarea-pwa/src/hooks/useVoyageVerification.js
+      `rotularContacto` pasa a `export`. UNA PALABRA, y NADA MAS de ese archivo.
+
+      >>> EL MOTIVO DEL `export`, QUE VIVE ACA Y NO EN EL ARCHIVO. En la primera
+      >>> escritura acompañe el `export` con siete lineas de comentario que
+      >>> explicaban por que se comparte la frase. El owner las mando sacar: la
+      >>> autorizacion era para el `export` y nada mas, y el limite se respeta o
+      >>> no se respeta —el contenido del comentario no era el problema—. El
+      >>> texto queda aca, que es donde §6.1 lo pone:
+      >>>
+      >>>   Exportada desde el cierre de P2 (aviso de arribada forzosa de
+      >>>   `screens/P3_VoyageVerification.jsx`). Lo que se comparte NO es la
+      >>>   etiqueta sino LA FRASE ENTERA, articulo incluido: el defecto que este
+      >>>   frente persigue es que cada camino a pantalla armo su propio rotulo,
+      >>>   y dos consumidores que comparten `etiquetaDeNivel` pero ensamblan la
+      >>>   frase por su cuenta todavia pueden divergir. Con esto no pueden.
+      >>>
+      >>> Aplicarlo al archivo exige una pieza que lo autorice.
+
+  tmarea-pwa/src/screens/P3_VoyageVerification.jsx
+      · importa `rotularContacto` y `getCapitania`;
+      · el bloque del aviso consume `rec?.contacto` y ya no los campos crudos;
+      · el TELEFONO y su `<a href="tel:">` salen del aviso (INV-10.1, 1a frase);
+      · rama de ESCALON 3: el aviso sale igual, sin etiqueta de nivel
+        ("Contactá a la autoridad marítima…"). Lo que el escalon 3 prohibe
+        sustituir es el CONTACTO, y ahi no se sustituye: no se muestra numero;
+      · fallback sin `contacto` rotulado como Gobernacion, con el motivo escrito;
+      · `styles.arribadaTel` dado de baja — su unico consumidor era la linea 255.
+
+Ningun otro archivo de los dos repositorios fue tocado.
+
+
+================================================================================
+4. VERIFICACION
+================================================================================
+(a) SUITE DEL BACKEND: 86/86 antes y despues. `pass 86 · fail 0`.
+    La PWA no tiene runner — deuda D7, declarada fuera de alcance.
+
+(b) INSTRUMENTO `02_verificar_rotulo_p2.js`, exit 0:
+      · el literal duro: 0 ocurrencias; las tres formas de etiqueta de nivel
+        conocidas del frente: 0 en codigo (1 en comentario, declarada);
+      · el telefono: `tel:`, `rec?.telefono` y la palabra "Teléfono" ausentes del
+        bloque del aviso; `arribadaTel` 0 ocurrencias; y se comprueba en
+        PortStatusBlock que el telefono SIGUE en la tarjeta de RECALADA —se
+        movio, no se perdio—;
+      · LO QUE COMPRA B, contado sobre los 43 archivos de `src/` de la PWA:
+            definiciones de rotularContacto() : 1
+            definiciones de etiquetaDeNivel() : 1
+            consumidores                      : 2 (el hook y P2)
+      · P2 Y P4 EMITEN LA MISMA FRASE: se comparan los dos CALLSITES extraidos
+        del arbol, no f(x) contra f(x). Ambos invocan la misma funcion, con el
+        contacto del escalon como primer argumento y el fallback de
+        `getCapitania` como segundo. Callsites comparados: 2, que son los dos que
+        existen segun el conteo anterior.
+
+            nivel capitania    ( 99)  P4 "Avisar por radio a la Capitanía de Puerto de Arica…"
+                                      P2 "Contactá a la Capitanía de Puerto de Arica por VHF…"
+            nivel gobernacion  ( 65)  P4 "Avisar por radio a la Gobernación Marítima de Iquique…"
+                                      P2 "Contactá a la Gobernación Marítima de Iquique por VHF…"
+
+    >>> DEFECTO PROPIO, CORREGIDO EN LA CORRIDA: la primera version de (E)
+    >>> comparaba `rotularContacto(c)` contra `rotularContacto(c)` —la misma
+    >>> funcion consigo misma—, que da 164/164 siempre y no mide nada. Se
+    >>> reescribio sobre los callsites, que es donde la divergencia viviria. La
+    >>> segunda version abortó de verdad la primera vez que corrio: extraia la
+    >>> DEFINICION en vez de la llamada en el archivo donde la funcion vive y se
+    >>> usa.
+
+(c) APP MONTADA. Backend real en :3001, doble en :3000, Vite en :5174. Dos casos,
+    los dos con el aviso RENDERIZADO en pantalla:
+
+    CASO 1 — de los 34 que cambian de NOMBRE. Zarpe "Borde Costero de Ancud",
+    recalada "Caleta Pesquera Quellon" (bahia 117; crudo capitania "Quellón",
+    gobernacion "Castro"; escalon 2).
+        HOY decia : "Contactá a la Capitanía de Puerto de Quellón por VHF…"
+        RENDERIZO : "Contactá a la Gobernación Marítima de Castro por VHF Canal
+                     16 antes de recalar."
+        y el recordatorio r1, en la misma pantalla, con la MISMA frase:
+                     "Avisar por radio a la Gobernación Marítima de Castro al
+                      iniciar la navegación"
+
+    CASO 2 — escalon 1, y con restriccion REAL de SITPORT. Zarpe "Embarcadero
+    Muelle de Puyuhuapi", recalada "Puerto Cisnes" (bahia 123).
+        RENDERIZO : "Contactá a la Capitanía de Puerto de Puerto Cisnes por VHF
+                     Canal 16 antes de recalar."
+
+    EL TELEFONO, medido en el DOM de la pantalla del caso 2:
+        enlaces `tel:` dentro del aviso        : 0
+        enlaces `tel:` en toda la pantalla     : 3
+          (2 de PortStatusBlock —zarpe y recalada, donde INV-10.1 los pone—
+           y 1 de TransitRestrictionsBlock, que es P1 y esta fuera de alcance)
+
+    >>> EL DOBLE, DECLARADO COMO DOBLE. `scratchpad/doble-sitport.js`, que NO
+    >>> vive en el repo: es un proxy transparente al backend real y lo unico que
+    >>> cambia es agregar `nivel: 'cierre_total'` a las restricciones. En el caso
+    >>> 2 la restriccion es REAL de SITPORT y solo se le agrego el campo. En el
+    >>> caso 1 SITPORT no publica ninguna restriccion para esa bahia y el doble
+    >>> inyecto una SINTETICA, marcada `_sintetico: true` en el propio registro.
+    >>> Lo que estos dos casos verifican es el RENDER —el rotulo y la ausencia de
+    >>> telefono—, NO que hoy haya un puerto cerrado. El backend real no se toco.
+
+
+================================================================================
+5. HALLAZGOS — §6.1: REDACTADOS, NO APLICADOS
+================================================================================
+
+--------------------------------------------------------------------------------
+H1. EL AVISO QUE ESTA PIEZA ARREGLA NO LLEGA A PANTALLA. Consumidor sin productor.
+--------------------------------------------------------------------------------
+ESTE ES EL GRANDE, y cambia el sentido de la pieza. Salio al montar la app: no se
+podia producir el aviso con dato real.
+
+AFIRMACION VIGENTE, citada literal, `tmarea-pwa/src/hooks/useVoyageVerification.js:236`:
+
+    if (restricciones.some((r) => r.nivel === 'cierre_total')) estado = 'rojo';
+
+LA MEDICION QUE LA CONTRADICE — `03_medir_cierre_total.js/.txt`, contra el dato
+vivo de SITPORT y no contra un fixture:
+
+    apariciones de "cierre_total" en tmarea-backend : 0 archivos
+    apariciones en tmarea-pwa                       : 2 (la linea de arriba,
+                                                        y el bundle `dist/`)
+    registros de restriccion publicados hoy         : 9
+    que traen el campo `nivel`                      : 0
+    con nivel === 'cierre_total'                    : 0
+
+    campos de cierre que la fuente SI emite, y su valor hoy:
+        paralizar : {"0":9}   nzarpe : {"0":9}   nrecalada : {"0":9}
+
+LA CADENA, entera:
+    r.nivel === 'cierre_total'  ->  recalada.estado === 'rojo'  ->  recaladaRaw
+    === 'UV' (:155)  ->  arribadaForzosa = true (:160-162)  ->  se renderiza el
+    aviso (P3_VoyageVerification.jsx:236)
+
+El primer eslabon no existe, asi que el ultimo no ocurre nunca. **El campo del
+que depende no lo emite nadie: ni SITPORT ni el backend lo derivan.** Y los tres
+candidatos naturales —`paralizar`, `nzarpe`, `nrecalada`— la fuente SI los emite
+y ningun consumidor los lee.
+
+ES EL PATRON DEL TRAMO B INVERTIDO. Alla, un camino con productor y salida y sin
+consumidor. Aca, un consumidor sin productor. La consecuencia tambien se invierte:
+alla el hueco escondia un rotulo equivocado que llegaba a pantalla; aca esconde
+un bloque de pantalla que no llega nunca.
+
+LAS DOS COSAS SON CIERTAS A LA VEZ Y VAN JUNTAS: el arreglo del rotulo es
+correcto y necesario —el codigo afirmaba algo falso, y lo hacia en 65 de 164—,
+y lo que el patron ve HOY no cambia, porque ese bloque no se renderiza.
+
+QUE PIEZA HARIA FALTA: derivar `nivel` en el backend desde los campos que la
+fuente si emite, o cambiar el consumidor para que los lea. Cual de las dos y con
+que umbral es decision del owner: define QUE VE el patron (§0.4), y ademas toca
+el veredicto —un `cierre_total` de recalada escala a UV y lo baja a U con
+bandera—. NO SE ABRE ACA.
+
+--------------------------------------------------------------------------------
+H2. `fetchPortStatus:240` mete un nombre de PUERTO en el lugar de una REPARTICION
+--------------------------------------------------------------------------------
+`useVoyageVerification.js:240` arma `nombre: nombrePuerto` con lo que la PWA le
+paso al endpoint. La linea 237 de P2 lo usaba como TERCER escalon del `||` para
+rotular una reparticion, de modo que "Capitanía de Puerto de {nombre del puerto}"
+era un resultado alcanzable. Esta pieza lo elimina de P2. Queda anotado que el
+patron `rec?.nombre` como fallback de contacto conviene mirarlo en los demas
+consumidores antes de darlo por muerto.
+
+--------------------------------------------------------------------------------
+H3. DEFECTO DE MAPA HEREDADO — la ruta de P2
+--------------------------------------------------------------------------------
+Los mapas de cableado del Tramo A y del Tramo B nombran este punto como
+`src/components/P3_VoyageVerification.jsx`. Ese archivo NO existe ahi: vive en
+`src/screens/`. Ya estaba anotado en la bitacora del 08-16; se repite porque
+ahora hay instrumento que lo comprueba y aborta si el archivo no esta donde dice
+(`02_verificar_rotulo_p2.js`, bloque (0)/(B)). El mapa no se toca desde aca.
+
+--------------------------------------------------------------------------------
+H4. P1 y P5 siguen abiertos, y P1 quedo a la vista en el montaje
+--------------------------------------------------------------------------------
+En la pantalla del caso 2, `TransitRestrictionsBlock` imprimio
+"📞 Puerto Cisnes — +56 67 2346880": un telefono con `tel:` sin comprobar
+atomicidad, sin etiqueta de nivel, y en un punto que no es zarpe ni recalada.
+Es P1, declarado fuera de alcance por el prompt de esta sesion, y su causa de
+fondo es de backend (`sitport-routes.js:840-842` no emite `contacto`). No se
+toco. Se deja consignado que se vio funcionando, no solo leido.
+
+
+================================================================================
+6. ESTADO AL CIERRE
+================================================================================
+Sin commit. Los dos repositorios quedan con HEAD en su commit de arranque.
+Modificados sin estagear en tmarea-pwa: los dos archivos de §3.
+Nuevo untracked en tmarea-backend: este directorio de bitacora.
+`data/catalogo/estado_drift.json` y `diff_transit.txt` no fueron tocados.
+================================================================================
