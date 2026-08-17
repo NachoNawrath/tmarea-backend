@@ -1,0 +1,54 @@
+================================================================================
+MORDIDA DEL INSTRUMENTO (§4.6) — los controles de 01_medir_multiple.js
+Sesion ALCANCE-MULTIPLE-RECONOCIMIENTO, 2026-08-17.
+================================================================================
+
+  original      : 01_medir_multiple.js
+  sha256 antes  : fdc2705d35e9c690a0bc4eb39f28dea3baf7c661c694e85c623f556e8c15e430
+
+  El original NO se modifica. Cada mordida corre sobre una copia temporal
+  en este mismo directorio, que se borra al terminar.
+
+  M1 · un literal declarado que el dato NO contiene
+      por que: prueba "si un literal no se encuentra es FALLA, no no-aplicable"
+      exit esperado 4 · exit obtenido 4  ->  MUERDE
+
+  M2 · la tabla pierde un candidato que la red SI captura
+      por que: prueba que la tabla no puede quedar corta sin que nadie lo note
+      exit esperado 4 · exit obtenido 4  ->  MUERDE
+
+  M3 · la tabla declara un ID que la red NO captura
+      por que: prueba el sentido inverso: los sobrantes tampoco pasan
+      exit esperado 4 · exit obtenido 4  ->  MUERDE
+
+  M4 · un caso heredado (C2, 95219) deja de leerse como multiple
+      por que: prueba que lo que la sesion anterior midio no se puede perder en silencio
+      exit esperado 4 · exit obtenido 4  ->  MUERDE
+
+  M5 · la particion de arranque se corrompe (19 -> 20)
+      por que: prueba el control de arranque: si el derivador cambia, esto aborta
+      exit esperado 3 · exit obtenido 3  ->  MUERDE
+
+  M6 · LA RED SE ANGOSTA — se le saca la rama (c), sin numeros
+      por que: prueba que la red y la tabla NO se validan entre si: si la red deja de ver
+               94985/95099/95100, la tabla queda con sobrantes y el control grita
+      exit esperado 4 · exit obtenido 4  ->  MUERDE
+
+  M7 · una forma sale del vocabulario declarado (G1 -> G4)
+      por que: prueba que el conteo por forma tiene que CERRAR contra el total de multiples
+      exit esperado 3 · exit obtenido 3  ->  MUERDE
+
+  M8 · el denominador de restricciones cerradas se corrompe (167 -> 168)
+      por que: prueba que el denominador que se publica es el que se midio
+      exit esperado 3 · exit obtenido 3  ->  MUERDE
+
+  sha256 despues: fdc2705d35e9c690a0bc4eb39f28dea3baf7c661c694e85c623f556e8c15e430
+  el original es identico byte a byte — OK
+  no quedaron temporales — OK
+
+  mordidas corridas : 8
+  fallas            : 0
+
+================================================================================
+LAS 8 MORDIDAS MUERDEN. El exit 0 de 01_medir_multiple.js significa algo.
+================================================================================

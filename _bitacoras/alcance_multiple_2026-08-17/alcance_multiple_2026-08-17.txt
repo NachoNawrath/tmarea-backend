@@ -1,0 +1,634 @@
+================================================================================
+ALCANCE MULTIPLE — RECONOCIMIENTO
+Sesion del 2026-08-17. Sobre 8382a806c28b4b9b5101c332ee7fca2545960efa.
+================================================================================
+
+QUE SE PIDIO
+    Cuantos registros declaran MAS DE UN ALCANCE y el extractor se queda con uno
+    solo — y con el mas angosto. Con el costo medido de los dos caminos que el
+    owner tiene sobre la mesa.
+
+QUE NO HIZO ESTA SESION
+    No toco `cierre-derivador.js` ni el motor BRE. No propone la regla de
+    arreglo. NO RECOMIENDA CAMINO. No decide que ve el patron (§0.4). No abrio
+    O1, O2 ni F2. No salio a la API. No toco la PWA. Escribio solo en este
+    directorio.
+
+INSTRUMENTOS
+    01_medir_multiple.js  ->  01_medir_multiple.txt   (exit 0)
+    02_mordida.js         ->  02_mordida.txt          (exit 0, ocho mordidas)
+
+    El derivador se IMPORTA de src/, no se copia. El universo son los seis .json
+    de sondaje-sitport/, que el instrumento no escribe ni deriva de si mismo.
+    Los seis sha256 se comprueban al arranque y al cierre; identicos. 1768
+    comparaciones efectivas.
+
+--------------------------------------------------------------------------------
+LA RESPUESTA, EN UNA LINEA
+--------------------------------------------------------------------------------
+
+    No son 4 y no son 60. Son VEINTE los que declaran mas de un alcance, y de
+    esos NUEVE dejan naves sin aviso. Los otros once no son defecto.
+
+    20 restricciones · 36 filas  declaran mas de un alcance
+     9 restricciones · 22 filas  emiten el mas angosto — dejan gente afuera
+    11 restricciones · 14 filas  el emitido ya alcanza a todos los alcanzados
+
+    Denominador: los CERRADOS. 335 filas / 167 restricciones distintas.
+
+--------------------------------------------------------------------------------
+0. LAS PREMISAS DEL PROMPT, VERIFICADAS. TODAS REPRODUCEN.
+--------------------------------------------------------------------------------
+
+    444 registros              REPRODUCE. Seis capturas, rowsAffected coincide
+                               con recordsets[0] en las seis. 213 restricciones
+                               distintas en el material.
+    335 filas / 167 restr.     REPRODUCE, las dos.
+    217 / 5 / 94 / 19          REPRODUCE, exacto, importando el derivador de
+                               src/. Sin eso el instrumento aborta con exit 3.
+    C1 = 95099 · 95100         REPRODUCE. 3 filas cada uno.
+    C2 = 95219 · 95220         REPRODUCE. 1 fila cada uno.
+    C1+C2 = 4 restr. / 8 filas REPRODUCE (3+3+1+1 = 8).
+
+    SE AGREGA UNA CIFRA QUE NO ESTABA PUBLICADA: la particion 217/5/94/19 es en
+    FILAS. En RESTRICCIONES es 112 / 5 / 36 / 14 = 167. Las dos van juntas de
+    aca en adelante.
+
+--------------------------------------------------------------------------------
+1. QUE CUENTA COMO "UN ALCANCE" — EL CRITERIO, DECLARADO ANTES DE CONTAR
+--------------------------------------------------------------------------------
+
+    EXPRESION DE ALCANCE = sintagma del texto que dice A QUE NAVES alcanza un
+    cierre declarado EN ESE MISMO TEXTO. Denota un conjunto de naves.
+
+    EL EJE ES NAVES, NO TERRITORIO, y se declara por que. El alcance territorial
+    ya lo midio la sesion anterior (su punto 4: 149 restricciones lo declaran en
+    palabras y no hay ranura donde ponerlo). Contarlo aca como "segundo alcance"
+    haria multiple a casi todo el material —W2 sola son 114 restricciones— y
+    ahogaria la senal. El territorio entra igual, pero como INDICE: es lo que
+    separa dos alcances de naves entre si ("100 fuera / 25 dentro"), no como
+    alcance por derecho propio. Si el owner quiere la lectura de dos ejes, el
+    conteo es otro y esta sesion no lo publica como si fuera este.
+
+    CLASES DE EXPRESION, EMERGIDAS DEL DATO — dos barridos sobre las 167 antes de
+    fijar nada: (i) todo 4-grama que arranca en cuantificador universal o en
+    clase de nave, (ii) toda clausula gobernada por CERRADO/SUSPENDE/RESTRINGE.
+        num(N,u)  "MENORES DE N AB" · "MENOR A N AB" · "EE MM DE N TRG" ·
+                  "EMBARCACION N AB" · "N AB" tras predicado    ->  { ab < N }
+        menores   "EMBARCACIONES/NAVES MENORES" · "EE MM" sin numero
+        mayores   "NAVES MAYORES" · "SUPERIORES A N"
+        todas     "TODO TIPO DE NAVES" · "TODA TIPO EMBARCACIONES" ·
+                  "NAVES Y EMBARCACIONES"
+        equip     "NAVES QUE NO CUENTEN CON RADAR"
+
+    DOS EXPRESIONES SON LA MISMA si denotan el mismo conjunto. "EE MM DE 25 AB"
+    es UNA, no dos: la clase y el numero dicen lo mismo.
+
+    Y LA CONDICION QUE HACE TODO EL TRABAJO: la expresion tiene que estar
+    GOBERNADA POR UN PREDICADO DE CIERRE. Nombrar una clase de nave no alcanza.
+    Medido en este material, tres roles que NO son alcance de un cierre:
+        remision            "MANIOBRAS ... DE NAVES MAYORES ... OBRARAN EN
+                             CONSECUENCIA A LOS LIMITES DE OPERACION QUE
+                             DISPONEN SUS ..."          95156, 95157, 95158, 95159
+        condicion de faena  "TRASLADO PERSONAS ... CON NAVES SUPERIORES A 25 AB"
+                                                        95072
+        excepcion de faenas "EXCEPTO AQUELLOS QUE CUENTEN CON RESOLUCION QUE LOS
+                             AUTORIZA A TRABAJAR"       95027, 95028, 95029, 95193
+
+    Esos nueve mas 94977 son los DIEZ que la red trajo y la lectura descarto. No
+    se esconden: son la evidencia del punto 6.
+
+    COMO SE SEPARO LEER DE MEDIR, para que el guard no sea tautologico
+        (a) una RED MECANICA y ancha junta candidatos: dos numeros distintos con
+            unidad, o un numero + (mayores|universal|equipamiento), o sin numeros
+            dos clases de nave nombradas. La red no sabe de funcion sintactica y
+            sus falsos positivos entran a proposito.
+        (b) cada candidato se resuelve POR LECTURA en una tabla declarada, con el
+            literal exacto que la sostiene.
+        (c) el instrumento exige que la tabla cubra EXACTAMENTE los candidatos de
+            la red —sin huerfanos ni sobrantes— y que cada literal exista en el
+            N3 de su registro. Si un literal no aparece, exit 4: es falla, no
+            "no aplicable".
+        La mordida M6 angosta la RED y exige que el instrumento se ponga rojo.
+        Sin esa mordida, (c) seria la tabla validandose contra si misma.
+
+    RED: 30 restricciones · 57 filas de candidatos, sobre 167 · 335.
+
+--------------------------------------------------------------------------------
+2. PUNTO 1 — CUANTOS DECLARAN MAS DE UN ALCANCE. SON VEINTE.
+--------------------------------------------------------------------------------
+
+    20 restricciones · 36 filas   sobre 167 restricciones · 335 filas cerradas
+                                  = 12,0% de las restricciones · 10,7% de las filas
+    10 restricciones · 21 filas   candidatos de la red DESCARTADOS por lectura
+    ----------------------------
+    30 restricciones · 57 filas   CIERRA contra la red
+
+    TRES FORMAS. Y aca si es una particion: cada multiple cae en una sola.
+
+    G1 · DOS O MAS NUMEROS DISTINTOS, UNO POR ZONA O SECTOR
+         15 restricciones · 27 filas
+         95060 95061 95062 95071 95075 95116 95117 95155 95184 95185 95205
+         95213 95214 95347 95352
+
+         CASO CITADO — ID 95060, BAHIA CORRAL, literal sin normalizar:
+         "SE ESTABLECE CONDICIÓN DE MAL TIEMPO, PUERTO CERRADO PARA
+          EMBARCACIONES MENORES DE 100 ARQUEO BRUTO FUERA DE LA BAHIA DE CORRAL,
+          DENTRO DE LA BAHIA CERRADO PARA EMBARCACIONES MENORES DE 25 ARQUEO
+          BRUTO."
+         alcances leidos:  num 100 [fuera]  ·  num 25 [dentro]
+
+    G2 · UN NUMERO DE UN LADO Y UNA EXPRESION UNIVERSAL SIN TOPE DEL OTRO
+         2 restricciones · 2 filas          95219  95220
+
+         CASO CITADO — ID 95219, SECTOR CHAIHUIN, literal sin normalizar:
+         "SE ESTABLECE CONDICIÓN DE MAL TIEMPO, PUERTO CERRADO PARA TODA TIPO
+          EMBARCACIONES FUERA DE LA BAHIA DE CORRAL, DENTRO DE LA BAHIA DE
+          CORRAL CERRADO PARA EMBARCACIONES MENORES DE 50 ARQUEO BRUTO."
+         alcances leidos:  todas [fuera]  ·  num 50 [dentro]
+
+    G3 · DOS CLASES DE NAVE ENUMERADAS, SIN NUMERO
+         3 restricciones · 7 filas          94985  95099  95100
+
+         CASO CITADO — ID 94985, BAHIA CONCEPCION - LIRQUEN, sin normalizar:
+         "SE ESTABLECE CONDICION DE PUERTO CERRADO PARA  EMBARCACIONES MAYORES Y
+          MENORES DENTRO Y FUERA DE LA BAHIA, POR AVISO DE MAL TIEMPO Y TEMPORAL
+          VIGENTE.  "
+         alcances leidos:  mayores [dentro y fuera]  ·  menores [dentro y fuera]
+
+    LAS CUATRO FORMAS DEL PROMPT CONTRA LAS TRES MEDIDAS
+        El prompt anticipaba cuatro. El dato da tres, porque dos de las cuatro
+        son la misma forma: "un numero para dentro y otro para fuera" y "un
+        numero de un lado y una expresion sin tope del otro" son G1 y G2, pero
+        "un numero mas una expresion universal (todo tipo)" NO es una cuarta
+        forma en este material: sus dos unicos casos —95219 y 95220— son
+        exactamente los mismos de G2. No hay ningun registro con un numero y un
+        "todo tipo" que no sea uno de esos dos.
+        Y aparecio algo que la lista no anticipaba: en G1 la zona no siempre es
+        el par dentro/fuera. Seis de los quince separan por SECTOR NORTE / SECTOR
+        SUR, por canal nombrado o por un tramo entre dos puntas. Eso resulta ser
+        lo que decide si el extractor acierta — §6.
+
+--------------------------------------------------------------------------------
+3. PUNTO 2 — DE ESOS, CUANTOS SE QUEDAN CON EL MAS ANGOSTO. SON NUEVE.
+--------------------------------------------------------------------------------
+
+    EL VEREDICTO NO SE DECLARA: SE CALCULA. La tabla declara los conjuntos
+    denotados; el instrumento computa si el emitido los CUBRE a todos. Un caso
+    entra en (I) solo si existe al menos un conjunto declarado que el emitido no
+    cubre.
+
+    BORDE DEL MOTOR, medido y no supuesto: restriction-rules-engine.js:73-80
+    compara `nave_ab lessThan umbral_ab_fuera` — ESTRICTO. Una nave de AB
+    exactamente igual al umbral YA queda fuera del aviso.
+
+    (I)  EMITEN UN ALCANCE MAS ANGOSTO — DEJAN NAVES SIN AVISO
+         9 restricciones · 22 filas.  Los nueve salen con aviso_modo='detalle'.
+
+         95062  BORDE COSTERO-VALDIVIA   4 filas   emite umbral 25
+                no cubre num 100 [sector Niebla-Ronca]
+         95071  BAHIA QUELLON            2 filas   emite umbral 50
+                no cubre num 100 [fuera-sur]
+         95075  QUEILEN                  4 filas   emite umbral 25
+                no cubre num 50 [cruce golfo]
+         95099  BAHIA CONCHALI           3 filas   emite menores_sin_umbral
+                no cubre mayores                                        <- C1
+         95100  BAHIA PICHIDANGUI        3 filas   emite menores_sin_umbral
+                no cubre mayores                                        <- C1
+         95155  BAHIA QUELLON            3 filas   emite umbral 50
+                no cubre num 100 [fuera-sur]                            <- es O2
+         95219  SECTOR CHAIHUIN          1 fila    emite umbral 50
+                no cubre todas [fuera]                                  <- C2
+         95220  BAHIA CORRAL             1 fila    emite umbral 50
+                no cubre todas [fuera]                                  <- C2
+         95352  BAHIA QUELLON            1 fila    emite umbral 50
+                no cubre num 100 [fuera-sur]
+
+    (II) DECLARAN MAS DE UNO Y EL EMITIDO YA ES EL MAS AMPLIO — NO ES DEFECTO
+         11 restricciones · 14 filas.
+         94985 (emite generico) · 95060 · 95061 · 95116 · 95117 · 95184 · 95185
+         95205 · 95213 · 95214 · 95347
+
+         Diez emiten el numero mas ancho de los declarados. El once —94985— no
+         emite alcance: cae en no_legible y sale con el generico, que es el piso
+         y alcanza a todos. Por eso no deja a nadie afuera aunque no lea nada.
+
+    9 + 11 = 20   CIERRA en restricciones.
+    22 + 14 = 36  CIERRA en filas.
+
+    LO QUE (II) NO DICE, y hay que decirlo (§1.2, §2)
+        "No deja a nadie afuera" NO es "correcto en toda zona". Los diez que
+        emiten el mas ancho SOBRE-alcanzan en la zona angosta: 95060 emite 100 y
+        dentro de la bahia rige 25, asi que una nave de 60 dentro recibe un aviso
+        que el texto no le da. Son los diez, medidos. No es el defecto que esta
+        sesion mide —nadie queda sin aviso— pero es la otra cara de tener UNA
+        ranura de alcance para un texto que declara dos.
+
+    EL CASO QUE ROMPE MI PROPIO FUNDAMENTO, Y SE MIDIO IGUAL (§1.2)
+        Si "declarar mas de uno" fuera sinonimo de defecto, el numero seria 20.
+        No lo es: once de los veinte no dejan a nadie afuera. La cifra que
+        importa para "gente sin aviso" es NUEVE, y las dos van publicadas.
+
+--------------------------------------------------------------------------------
+4. PUNTO 3 — A CUANTAS NAVES DEJA AFUERA CADA UNO
+--------------------------------------------------------------------------------
+
+    Con el borde estricto del motor. Donde el alcance real no tiene tope, se dice
+    asi: no se inventa un techo.
+
+    95062   sector Punta Niebla - Punta Ronca (Mehuin)
+            sin aviso:  AB de 25 (inclusive) a 100 (exclusive) — 75 AB de ancho
+    95071   fuera de bahia, sector sur
+            sin aviso:  AB de 50 a 100 — 50 AB de ancho
+    95075   navegacion hacia norte/sur y cruce del Golfo Corcovado
+            sin aviso:  AB de 25 a 50 — 25 AB de ancho
+    95155   fuera de bahia, sector sur
+            sin aviso:  AB de 50 a 100 — 50 AB de ancho
+    95352   fuera de bahia, sector sur
+            sin aviso:  AB de 50 a 100 — 50 AB de ancho
+
+    95219   fuera de la bahia de Corral
+            sin aviso:  TODA nave de AB >= 50. SIN TECHO — el texto dice "TODA
+            TIPO EMBARCACIONES" y no pone tope. El patron de 80 AB del prompt cae
+            aca, y tambien el de 800.
+    95220   fuera de la barra del rio Chaihuin
+            sin aviso:  TODA nave de AB >= 50. SIN TECHO, idem.
+
+    95099   bahia de Conchali
+    95100   bahia de Pichidangui
+            sin aviso:  LAS NAVES MAYORES ENTERAS. La frontera menor/mayor es
+            NORMATIVA y esta sesion NO la fija: no la midio, no la tiene, y no la
+            inventa. Lo que si esta medido es que el conjunto {mayores} no esta
+            cubierto por lo que se emite.
+
+    NOTA SOBRE EL DAÑO, QUE NO ES UNIFORME
+        Los cinco de arriba dejan una VENTANA de tonelaje: entre 25 y 100 AB. Los
+        dos de G2 y los dos de C1 no dejan una ventana, dejan una COLA ABIERTA —
+        todo lo que esta por encima. Son cuatro registros y son los unicos donde
+        el numero de naves sin aviso no tiene tope.
+
+--------------------------------------------------------------------------------
+5. PUNTO 4 — EL COSTO DEL CAMINO "AL GENERICO"
+--------------------------------------------------------------------------------
+
+    REGLA HIPOTETICA MEDIDA, no propuesta y no recomendada: declara mas de un
+    alcance y no coinciden -> generico.
+
+    DENOMINADOR
+        hoy salen con detalle   153 restricciones · 316 filas
+        hoy salen con generico   14 restricciones ·  19 filas
+                                ---------------------------------
+                                167 restricciones · 335 filas   CIERRA
+
+    PASARIAN DE detalle A generico
+        19 restricciones · 35 filas
+        = 12,4% de las restricciones que hoy salen con detalle
+        = 11,1% de sus filas
+        (los 20 multiples menos 94985, que ya sale generica y no se mueve)
+
+    DE ESOS, HOY EMITEN UN DETALLE QUE NO DEJA A NADIE AFUERA — SE PERDERIA
+        10 restricciones · 13 filas
+        95060 · 95061 · 95116 · 95117 · 95184 · 95185 · 95205 · 95213 · 95214 · 95347
+
+        Es exactamente la bolsa (II) menos 94985. Con la salvedad de §3: ese
+        detalle alcanza a todos los alcanzados, pero sobre-alcanza en la zona
+        angosta en los diez casos. Lo que se pierde es un detalle ancho, no un
+        detalle exacto.
+
+    LO QUE ESTE CAMINO SI RESUELVE, medido: los 9 de la bolsa (I). Ninguno queda
+    sin aviso, porque el generico es el piso. Cuesta 10 detalles para arreglar 9
+    huecos, y toca 19 registros para eso.
+
+--------------------------------------------------------------------------------
+6. PUNTO 5 — EL COSTO DEL CAMINO "EL MAS AMPLIO"
+--------------------------------------------------------------------------------
+
+    CRITERIO: se resuelve si entre los alcances DECLARADOS hay UNO que contiene a
+    todos los demas. La union no cuenta: la union no es uno de los declarados.
+
+    SE RESUELVEN : 17 restricciones · 29 filas
+    NO SE RESUELVEN : 3 restricciones · 7 filas
+    17 + 3 = 20   CIERRA.  29 + 7 = 36   CIERRA.
+
+    DE LOS 17 QUE SE RESUELVEN, CUANTOS CAMBIAN DE VALOR EMITIDO
+        7 restricciones · 16 filas cambian:
+            95062  umbral 25  ->  100
+            95071  umbral 50  ->  100
+            95075  umbral 25  ->   50
+            95155  umbral 50  ->  100
+            95352  umbral 50  ->  100
+            95219  umbral 50  ->  todas       (cambia de TIPO, no solo de numero)
+            95220  umbral 50  ->  todas       (idem)
+        Los otros 10 ya emiten el mas amplio: el camino no los toca. Son los
+        mismos 10 del punto 4 — el detalle que el camino "al generico" perderia
+        es el detalle que este camino conserva intacto.
+
+    LOS TRES QUE NO SE RESUELVEN — SON EL LIMITE DE ESTE CAMINO
+        94985  BAHIA CONCEPCION - LIRQUEN  · 1 fila · hoy emite no_legible
+               "EMBARCACIONES MAYORES Y MENORES"
+        95099  BAHIA CONCHALI              · 3 filas · hoy emite menores_sin_umbral
+               "PARA NAVES MAYORES Y NAVES MENORES"
+        95100  BAHIA PICHIDANGUI           · 3 filas · hoy emite menores_sin_umbral
+               "PARA NAVES MAYORES Y NAVES MENORES"
+
+        LA RAZON, y no es la que el prompt anticipaba. {mayores} y {menores} son
+        DISJUNTOS: ninguno contiene al otro. No hay "el mas amplio" entre los
+        declarados. Lo que alcanzaria a todos es la UNION, y el texto no la
+        nombra como tal — dice dos conjuntos, no dice "todas".
+
+        DOS DE ESOS TRES SON C1. O sea: el camino del mas amplio NO arregla C1
+        por si solo. Arregla 7 de los 9 huecos —los cinco numericos y los dos sin
+        techo— y deja los dos de Conchali/Pichidangui exactamente donde estan.
+
+    EL CASO QUE EL PROMPT ANTICIPABA Y QUE EL DATO NO TIENE
+        "uno por tonelaje y otro por equipamiento" no ocurre en este material.
+        El unico alcance por equipamiento es 95346 ("NAVES QUE NO CUENTEN CON
+        RADAR", VALPARAISO) y ese registro declara UN solo alcance: no es
+        multiple y no entra en ningun conteo de esta bitacora. La
+        incomparabilidad que SI existe es mayores-contra-menores, que la lista
+        del prompt no anticipaba.
+
+--------------------------------------------------------------------------------
+7. PUNTO 6 — SE PUEDE DETECTAR DE FORMA GENERAL? LA SENAL EXISTE Y NO ES UNA.
+--------------------------------------------------------------------------------
+
+    Cada marca candidata se corrio sobre las 167 cerradas y se conto contra la
+    tabla leida. TP = dispara y es multiple · FP = dispara y no lo es · FN = es
+    multiple y no dispara.
+
+        marca                                            dispara   TP   FP   FN
+        M1 · dos o mas NUMEROS distintos con unidad            15   15    0    5
+        M2 · un numero + expresion UNIVERSAL                    2    2    0   18
+        M3 · dos CLASES de nave nombradas                       8    3    5   17
+        M4 · el par DENTRO / FUERA presente                   100   15   85    5
+        M5 · la conjuncion Y presente                         130   12  118    8
+
+    LA RESPUESTA, EN TRES PARTES
+
+    (a) HAY UNA SENAL EXACTA Y CUBRE TRES CUARTOS DEL PROBLEMA.
+        "Dos numeros distintos con unidad en el mismo texto" da 15 de 15, con
+        CERO falsos positivos sobre las 167. Es la unica marca del material que
+        no se equivoca ni una vez. Y no es casualidad: un numero con unidad es
+        tipografia, no sintaxis — no depende de como este redactada la frase.
+
+    (b) NO HAY MARCA COMUN PARA LAS OTRAS DOS FORMAS. NI CONJUNCION NI PAR
+        DENTRO/FUERA.
+        La conjuncion "Y" dispara en 130 de 167 y acierta 12: es ruido. El par
+        DENTRO/FUERA dispara en 100 y acierta 15: tampoco separa, porque la
+        inmensa mayoria de los registros usa "dentro y fuera" como COORDINACION
+        —un solo alcance en las dos zonas— y no como CONTRASTE. Las dos marcas
+        que el prompt sugeria buscar estan medidas y las dos son ruido.
+
+    (c) LA FORMA DONDE VIVE EL DAÑO PEOR ES LA QUE PEOR SE DETECTA.
+        M3 —dos clases de nave— dispara 8 veces y acierta 3. Cinco falsos
+        positivos, nombrados:
+            95072  CANAL CHACAO     "NAVES SUPERIORES A 25 AB" gobierna un
+                                    traslado de personas, no un cierre
+            95156  BAHIA CATALINA   \
+            95157  PUNTA ARENAS      |  "NAVES MAYORES ... OBRARAN EN CONSECUENCIA
+            95158  CABO NEGRO        |  A LOS LIMITES DE OPERACION QUE DISPONEN
+            95159  LAREDO           /   SUS ..." — es una remision, no un cierre
+        Los cinco NOMBRAN dos clases de nave. Ninguno cierra para las dos.
+        Separar 95099 ("cerrado para naves mayores y naves menores") de 95156
+        ("cerrado para EE MM de 100 AB ... maniobras de naves mayores obraran
+        segun sus limites") exige leer QUE GOBIERNA el sintagma, no que palabras
+        contiene. Eso no es una marca: es analisis sintactico.
+
+    (d) Y HAY UN HALLAZGO QUE EL CRUCE DEJA VER — EL INDICE DE ZONA DECIDE EL
+        ACIERTO. Sobre las 15 de G1:
+
+                                   emite el mas amplio   DEJA NAVES AFUERA
+            par plano dentro/fuera                   9                   0
+            otro indice de zona                      1                   5
+
+        Cuando las dos zonas son el par dentro/fuera, el extractor acierta el
+        ancho las NUEVE veces. Cuando las zonas son "sector norte"/"sector sur",
+        un canal nombrado o un tramo entre dos puntas, se equivoca CINCO de SEIS.
+        El mecanismo esta a la vista en sitport-parser.js:74-85: solo conoce
+        DENTRO y FUERA. Con el par plano, `fueraMatch` toma el numero del lado de
+        fuera y ese lado resulta ser el ancho. Con dos sectores que son los dos
+        FUERA, los dos numeros compiten por la misma ranura y gana el PRIMERO del
+        texto. La unica excepcion —95347, PUERTO CISNES— acierta porque el numero
+        ancho viene primero, no porque el extractor lo haya elegido.
+
+    LO QUE ESTO SIGNIFICA PARA LA PREGUNTA DEL OWNER, sin proponer nada
+        La deteccion NO es una sola regla ni son quince parches. Es una regla
+        exacta que cubre 15 de 20 (M1), una segunda que cubre 2 mas con cero
+        error pero sostenida por una sola grafia (M2, ver §8 OBS-3), y TRES casos
+        —los de G3— que hoy no tienen mas marca que su propia frase.
+
+--------------------------------------------------------------------------------
+8. PUNTO 7 — OBSERVACIONES DEL DATO. SIN REGLA NI PATRON PROPUESTO.
+--------------------------------------------------------------------------------
+
+OBS-1. EL DEFECTO SE CONCENTRA EN UNA CAPITANIA. De los 9 que dejan naves
+    afuera, CUATRO son Quellon/Queilen (95071, 95075, 95155, 95352) y son la
+    misma forma: un texto que numera sectores norte/sur. Dos mas son
+    Valdivia/Corral (95062, 95219, 95220 -> tres). No es una tasa y no se
+    proyecta (§O7b de la sesion anterior sigue rigiendo: la muestra es un pico).
+    Lo que si dice es que la forma que rompe es un ESTILO DE REDACCION de unas
+    pocas Capitanias, no una dispersion pareja.
+
+OBS-2. UN TEXTO EN VARIOS IDs, OTRA VEZ. 95156-95159 son el mismo texto en
+    cuatro bahias (Bahia Catalina, Punta Arenas, Cabo Negro, Laredo). Es la misma
+    forma que O3b anoto para los seis de Quintero. Cualquier conteo de "casos a
+    resolver" que use IDRestriccion va a contar cuatro donde hay uno. En esta
+    bitacora los cuatro estan en la bolsa de descartados, asi que no inflan
+    ningun numero de defecto — pero inflan el FP de M3 de dos a cinco.
+
+OBS-3. LA MARCA M2 ESTA SOSTENIDA POR UNA FALTA DE CONCORDANCIA. Sus dos casos
+    dicen "TODA TIPO EMBARCACIONES" —mal concordado— y por eso no colisionan con
+    94977, que dice "PUERTO CERRADO PARA TODO TIPO DE EMBARCACIONES MENORES" y NO
+    es multiple: ahi el universal esta MODIFICADO por MENORES y denota un solo
+    conjunto. Hoy no colisionan solo porque 94977 no trae ningun numero. Si una
+    Capitania escribe "cerrado para todo tipo de embarcaciones fuera y menores de
+    50 AB dentro", M2 y el caso sano son indistinguibles por marca. Se anota el
+    hecho; no se propone nada.
+
+OBS-4. LOS PARENTESIS ROMPEN LA EXTRACCION DE UMBRAL. ID 95072 (CANAL CHACAO)
+    dice "CERRADO PARA EMBARCACIONES MENORES DE 25 (AB)" y el parser NO extrae el
+    25: los once patrones piden el numero contiguo a la unidad y el "(" los
+    parte. El registro cae en `menores_sin_umbral` por la rama parser:92. NO deja
+    a nadie afuera —"todas las menores" es mas ancho que "menores de 25"— asi que
+    no entra en ningun conteo de esta sesion. Se anota porque NO es una de las
+    ocho grafias de F2: la grafia "AB" esta bien escrita, lo que rompe es el
+    delimitador. F2 no se abre (§ fuera de alcance).
+
+OBS-5. HAY REGISTROS CERRADOS QUE DECLARAN UNA ZONA NORMAL. Medido: 19
+    restricciones · 34 filas de las 167 contienen la palabra NORMAL (red ancha, a
+    proposito: NORMAL tambien aparece fuera de una clausula de zona). Casos
+    claros leidos: 95019 y 95169 ("FUERA DE LA BAHIA CERRADO ... DENTRO DE LA
+    BAHIA CONDICION DE PUERTO NORMAL"), 95352 ("3 DENTRO DE LA BAHIA NORMAL"),
+    95353 ("2 C INTERIORES Y B MELINKA NORMAL"). El registro entero sale cerrado
+    y el alcance emitido rige en todas partes. Es sobre-alcance territorial, el
+    otro eje, y su ranura ya la midio la sesion anterior (O2b). Se deja medido y
+    no se abre.
+
+OBS-6. LOS DOS EJES DE "SE QUEDA CON UNO SOLO" NO SON EL MISMO PROBLEMA. En G1 y
+    G2 lo que se pierde es un alcance de naves indexado por zona: el modelo tiene
+    una ranura y el texto trae dos. En G3 no hay zonas — 94985, 95099 y 95100
+    declaran los dos alcances para el MISMO territorio, y lo que se pierde es la
+    mitad de una coordinacion. Un arreglo que resuelva el indice de zona no toca
+    G3, y uno que resuelva la coordinacion no toca G1. Se anota porque los dos
+    caminos del prompt tratan a los veinte como un solo conjunto y el dato dice
+    que son dos.
+
+OBS-7. UNA LECTURA ALTERNATIVA DE G3 QUE CAMBIA LOS NUMEROS, Y SE DECLARA.
+    "NAVES MAYORES Y NAVES MENORES" se puede leer como DOS alcances coordinados
+    —es la lectura del prompt y la que esta bitacora usa— o como UNO solo: un
+    sintagma coordinado que denota "todas las naves". Bajo la segunda lectura:
+        · el punto 1 baja de 20 a 17 restricciones (36 a 29 filas);
+        · el punto 2 (I) baja de 9 a 7 (22 a 16 filas) y C1 deja de ser
+          "se queda con el mas angosto" para ser "leyo mal un alcance unico";
+        · el punto 5 se queda SIN casos no comparables: los tres del limite
+          desaparecen, porque el unico alcance declarado ES la union.
+    Las dos lecturas dan el mismo diagnostico de daño —a las mayores no les llega
+    nada— y distinto diagnostico de causa. Cual de las dos es la buena no es una
+    decision de medicion: es que denota el texto, y eso es del owner. Los numeros
+    publicados arriba son los de la lectura del prompt.
+
+--------------------------------------------------------------------------------
+9. §6.1 — DOS DECLARACIONES VIGENTES QUE ESTA MEDICION CONTRADICE
+--------------------------------------------------------------------------------
+
+    Redactadas, NO aplicadas. El archivo afectado es
+    _bitacoras/alcance_no_legible_2026-08-17/alcance_no_legible_2026-08-17.txt,
+    que ademas NO ESTA COMMITEADO todavia (git status lo da como untracked).
+
+    E1 · LA DESCRIPCION DE O2 PARA EL ID 95155 ES FALSA.
+
+        AFIRMACION VIGENTE, literal (§5, C2, lineas 267-269):
+            "O2 es el par 95155 (QUELLON, dentro 100 / fuera 50) y 95185 (RADA DE
+             CARELMAPU, dentro 25 / fuera 50): numero contra numero, y el que se
+             emite —el de fuera— es real."
+
+        LA MEDICION QUE LA CONTRADICE
+            Instrumento: 01_medir_multiple.js, seccion (6), tabla declarada para
+            95155, con sus tres literales controlados contra el N3 del registro
+            (si no estuvieran, exit 4). Salida: 01_medir_multiple.txt.
+            El texto de 95155 declara TRES alcances, no dos, y ninguno de los dos
+            que la nota dice:
+                "FUERA DE LA BAHIA SECTOR NORTE PARA EMBARCACIONES MENORES A 50 A B"
+                "FUERA DE LA BAHIA SECTOR SUR PARA EMBARCACIONES MENORES A 100 A B"
+                "DENTRO DE LA BAHIA PARA EMBARCACIONES MENORES A 25 A B"
+            O sea: dentro 25 (no 100), y FUERA son dos numeros distintos segun el
+            sector. La parte "el que se emite es real" tampoco se sostiene para
+            95155: se emite 50, que es real para el sector norte y deja sin aviso
+            a las de 50 a 100 AB en el sector sur. Para 95185 la descripcion SI
+            es exacta (dentro 25 / fuera 50) y el emitido si es el ancho.
+
+        TEXTO DE REEMPLAZO, listo para aplicar (§3.3, con tachado y fecha):
+            ~~O2 es el par 95155 (QUELLON, dentro 100 / fuera 50) y 95185 (RADA
+            DE CARELMAPU, dentro 25 / fuera 50): numero contra numero, y el que
+            se emite —el de fuera— es real.~~
+            [ENMENDADO 2026-08-17, sesion ALCANCE-MULTIPLE, instrumento
+             _bitacoras/alcance_multiple_2026-08-17/01_medir_multiple.js §(6)]
+            O2 es el par 95155 y 95185: numero contra numero. 95185 (RADA DE
+            CARELMAPU) es dentro 25 / fuera 50, y el que se emite —el de fuera—
+            es real. 95155 (QUELLON) NO es "dentro 100 / fuera 50": declara TRES
+            alcances —dentro 25, fuera sector norte 50, fuera sector sur 100— y
+            el que se emite, 50, es real solo para el sector norte. En el sector
+            sur deja sin aviso a las de 50 a 100 AB. O2 no se abre; lo que se
+            corrige es su descripcion.
+
+    E2 · EL "TOTAL: 4" DE CONTRADICCIONES ES EL TOTAL DE DOS SONDAS, NO DEL
+         FENOMENO.
+
+        AFIRMACION VIGENTE, literal (§5, encabezado y linea 274):
+            "5. PUNTO 5 — SI. HAY CUATRO. Y SON MAS GRAVES QUE LOS 19."
+            "TOTAL: 4 restricciones · 8 filas con clasificacion afirmativa
+             equivocada."
+
+        LA MEDICION QUE LA CONTRADICE
+            Instrumento: 01_medir_multiple.js, seccion (7). El criterio de aquella
+            sesion probo DOS formas —C1: menores_sin_umbral con MAYORES en el
+            texto; C2: umbral con "TODO/TODA TIPO EMBARCACIONES"— y sus cuatro
+            casos reproducen exactos. Lo que no probo es umbral-contra-umbral-mas-
+            ancho, que da CINCO casos mas (95062, 95071, 95075, 95155, 95352). La
+            bolsa medida con el criterio ancho es 9 restricciones · 22 filas.
+            No es un error de aquella medicion: es su alcance. Pero el rotulo "HAY
+            CUATRO" se lee como el total del fenomeno y ya no lo es.
+
+        TEXTO DE REEMPLAZO, listo para aplicar:
+            ~~5. PUNTO 5 — SI. HAY CUATRO.~~
+            5. PUNTO 5 — SI. HAY CUATRO CON ESTAS DOS SONDAS.
+            [ENMENDADO 2026-08-17, sesion ALCANCE-MULTIPLE, instrumento
+             _bitacoras/alcance_multiple_2026-08-17/01_medir_multiple.js §(7)]
+            y al pie de la linea del TOTAL:
+            TOTAL: 4 restricciones · 8 filas con las DOS sondas de esta seccion
+            (C1 y C2). No es el total del fenomeno: la sesion ALCANCE-MULTIPLE
+            del mismo dia midio con criterio ancho —cualquier alcance declarado
+            que el emitido no cubra— y la bolsa es 9 restricciones · 22 filas.
+            Los cuatro de aca estan entre esos nueve.
+
+        OPCIONES DE REDACCION (§0.2): la alternativa era dejar §5 como esta y
+        anotar la ampliacion solo en esta bitacora. Se descarta: el rotulo "HAY
+        CUATRO" esta en un encabezado, es lo que alguien lee primero, y §6.1
+        llama a eso el peor resultado posible. La redaccion de arriba conserva el
+        texto original tachado, que es lo que §3.3 exige.
+
+    QUE PIEZA Y QUE AUTORIZACION HARIAN FALTA
+        Editar ese .txt, que pertenece a la sesion anterior y hoy esta sin
+        commitear. Autorizacion explicita del owner. Esta sesion NO lo toco.
+
+--------------------------------------------------------------------------------
+10. LO QUE CONTRADICE AL PROMPT, Y HAY QUE DECIRLO
+--------------------------------------------------------------------------------
+
+    A. O2 QUEDA FUERA DE ALCANCE Y AL MISMO TIEMPO ES UNA DE LAS FORMAS A CONTAR.
+       El prompt manda contar "un numero para dentro y otro para fuera" (punto 1)
+       y a la vez declara O2 —95155 y 95185— fuera de alcance. Se resolvio asi:
+       CONTAR no es ABRIR. Los dos estan contados en el punto 1 y marcados; el
+       diagnostico de O2 no se toco. Pero el resultado obliga a decir algo: 95155
+       cae en la bolsa (I), deja sin aviso a las de 50 a 100 AB en el sector sur,
+       y es el MISMO defecto de C2 con numeros en vez de palabras. La frase del
+       prompt "C2 no es O2 ... palabra contra numero" es correcta como distincion
+       de forma, pero el daño es el mismo y O2 lo tiene. Si el owner decide un
+       camino sobre C2, 95155 va con el o queda como el unico hueco de su clase.
+
+    B. "LAS CUATRO FORMAS" SON TRES. Detallado en §2: dos de las cuatro que el
+       prompt enumera colapsan en G2 y no hay ningun caso que las separe.
+
+    C. NO SE ENCONTRO NINGUNA CONTRADICCION MAS ENTRE LO LEIDO Y EL PROMPT. La
+       correccion sobre los 36 tests de cierre-derivador.test.js y la inexistencia
+       de suite para el motor BRE se verifico como vigente y no se repitio.
+
+--------------------------------------------------------------------------------
+11. LO QUE ESTA SESION NO MIDIO Y ALGUIEN PODRIA CREER QUE SI
+--------------------------------------------------------------------------------
+
+    - Si estas veinte son todas las que existen o solo las de ESTE material. Con
+      un pico meteorologico detras (O7b), lo segundo es lo unico afirmable.
+    - La frontera normativa menor/mayor. No se midio, no se tiene, no se invento.
+      Por eso el daño de C1 se declara como "las mayores enteras" y no como un
+      rango de AB.
+    - Cuantas naves reales quedan sin aviso. Se midio el RANGO DE TONELAJE, no la
+      poblacion: esta sesion no tiene el padron de naves y no lo estimo.
+    - Nada del eje territorial. Ya lo midio la sesion anterior y aca solo se usa
+      como indice.
+    - Nada sobre los que no cierran (109 filas / 46 restricciones): sin cierre no
+      hay alcance emitido que contradecir.
+    - Si los caminos son implementables. Se midio su COSTO sobre el material, no
+      su factibilidad ni su forma. La regla de arreglo es del owner (§0.4).
+
+--------------------------------------------------------------------------------
+12. REPRODUCIR
+--------------------------------------------------------------------------------
+
+    PowerShell, desde C:\Users\katia\tmarea-backend (§7.3):
+
+        node .\_bitacoras\alcance_multiple_2026-08-17\01_medir_multiple.js
+        node .\_bitacoras\alcance_multiple_2026-08-17\02_mordida.js
+
+    Los dos salen exit 0. El primero aborta con exit 3 si la particion
+    217/5/94/19 o los denominadores 335/167 dejaran de reproducirse o si un
+    conteo no cerrara; exit 4 si un literal declarado no apareciera en el dato o
+    si la tabla y la red dejaran de cubrirse exactamente; exit 5 si midiera cero;
+    exit 6 si un insumo cambiara. El segundo prueba que esos codigos muerden:
+    inyecta ocho defectos, uno por vez, sobre una copia, y exige el codigo
+    declarado en cada uno. Los ocho muerden, y el sexto es el que impide que el
+    control tabla-contra-red sea tautologico.
+
+================================================================================
+FIN
+================================================================================

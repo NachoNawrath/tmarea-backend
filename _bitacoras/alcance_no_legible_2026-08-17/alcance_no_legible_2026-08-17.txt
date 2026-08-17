@@ -1,0 +1,376 @@
+================================================================================
+ALCANCE NO LEGIBLE — RECONOCIMIENTO
+Sesion del 2026-08-17. Sobre 8382a806c28b4b9b5101c332ee7fca2545960efa.
+================================================================================
+
+QUE SE PIDIO
+    Partir la bolsa `no_legible` de `alcance.tipo` (cierre-derivador.js:232) en
+    (a) el texto no dice el alcance — falta el dato en el origen — y (b) el texto
+    si lo dice, de una forma que el extractor no sabe leer. Y medir cuanto
+    alcance-en-palabras se pierde FUERA de esa bolsa.
+
+QUE NO HIZO ESTA SESION
+    No toco `cierre-derivador.js`. No propone patrones de extraccion. No propone
+    ninguna regex. No decide que ve el patron — eso es del owner (§0.4). No abrio
+    O2 ni F2. No salio a la API. Escribio solo en este directorio.
+
+INSTRUMENTOS
+    01_medir_alcance.js  ->  01_medir_alcance.txt   (exit 0)
+    02_mordida.js        ->  02_mordida.txt         (exit 0, cinco mordidas)
+
+    El derivador se IMPORTA de src/, no se copia. El universo son los seis .json
+    de sondaje-sitport/, que el instrumento no escribe ni deriva de si mismo: el
+    guard no es tautologico. Los seis sha256 se comprueban al arranque y al
+    cierre; identicos. 4560 comparaciones efectivas.
+
+--------------------------------------------------------------------------------
+0. LAS PREMISAS DEL PROMPT, VERIFICADAS. DOS NO REPRODUCEN.
+--------------------------------------------------------------------------------
+
+    444 registros                REPRODUCE. Seis capturas, rowsAffected coincide
+                                 con recordsets[0] en las seis. Son 444 filas y
+                                 213 restricciones distintas (IDRestriccion).
+    335 con cierre               REPRODUCE.
+    217 / 5 / 94 / 19            REPRODUCE, exacto, importando el derivador de
+                                 src/. Sin eso el instrumento aborta con exit 3.
+    once patrones de tonelaje    REPRODUCE. sitport-parser.js:47-57, once.
+
+    "seis capturas ... cinco momentos"
+        Seis archivos, si. Pero los seis timestamps son distintos: 30-07 19:42,
+        31-07 16:32, 31-07 20:32, 31-07 21:01, 01-08 13:14 y check_ahora.json
+        (03-08). Los del 31-07 20:32 y 21:01 pesan lo mismo (116.892 bytes), que
+        es de donde probablemente sale "cinco": son cinco CONTENIDOS distintos,
+        no cinco momentos. No afecta ningun conteo de esta sesion —el denominador
+        es la fila, no el momento— pero el rotulo esta corrido.
+
+    "correr su suite (37 tests)"
+        NO REPRODUCE, y falla por partida doble.
+        (i) El numero: `node --test src/services/__tests__/cierre-derivador.test.js`
+            da 36 tests, 36 pass. `sitport-service.test.js` da 7. La suite entera
+            (`npm test`) da 122 pass, 0 fail.
+        (ii) La atribucion: el prompt llama "su suite" a la del motor BRE
+            —sitport-parser.js, restriction-rules-engine.js,
+            route-restriction-evaluator.js—. NO EXISTE tal suite. Los archivos de
+            test en el repo son siete, y ninguno cubre restriction-rules-engine.js
+            ni route-restriction-evaluator.js. Los 36 son de `cierre-derivador`,
+            que es el archivo de esta linea de trabajo, no el motor.
+        Medido con:
+            node --test src/services/__tests__/cierre-derivador.test.js
+            npm test
+        No cambia nada de lo que sigue: esta sesion no necesitaba esa suite. Se
+        deja escrito porque una premisa que no reproduce se corrige donde se mide
+        (§2), y porque "el motor tiene 37 tests que lo cuidan" es falso y alguien
+        podria apoyarse en ello para tocarlo.
+
+--------------------------------------------------------------------------------
+1. PUNTO 1 — LOS no_legible. DOS CIFRAS, NO UNA.
+--------------------------------------------------------------------------------
+
+    19 FILAS son 14 RESTRICCIONES distintas.
+
+    La diferencia es un solo registro: ID 94978 (BAHIA CONSTITUCION) aparece en
+    las SEIS capturas. Los otros trece aparecen en una sola cada uno.
+    19 = 6 + 13. Las dos cifras van juntas en todo lo que sigue.
+
+    Los catorce, con su cita literal sin normalizar, estan en
+    01_medir_alcance.txt seccion (4), cada uno con la lista de capturas en que
+    aparece. No se transcriben aca para no duplicar la fuente (§3.1: el archivo
+    es el entregable).
+
+--------------------------------------------------------------------------------
+2. PUNTO 2 — LA PARTICION. CRITERIO DECLARADO.
+--------------------------------------------------------------------------------
+
+    CRITERIO
+        (b)  el texto contiene al menos una expresion que DELIMITA a quien o a
+             que territorio alcanza el cierre, y esa expresion NO es un numero de
+             tonelaje NI ninguna de las tres ramas del parser (:69, :92, :95).
+        (a)  no contiene ninguna. El cierre se declara y no se acota.
+
+        Aplicado POR LECTURA de los catorce textos. No hay regex de por medio, a
+        proposito: la sesion no propone patrones, y un criterio implementado como
+        expresion seria una propuesta de extraccion disfrazada de medicion.
+        Cada asignacion a (b) va con su expresion literal, y el instrumento
+        CONTROLA que ese literal exista en el texto normalizado del registro. Si
+        no esta, exit 4 — no "no aplicable".
+
+    RESULTADO
+        (a) el dato falta en el origen  :  7 restricciones · 12 filas
+        (b) el dato esta y lo perdemos  :  7 restricciones ·  7 filas
+                                          ----------------------------
+                                          14 restricciones · 19 filas   CIERRA
+
+        Bolsas disjuntas (solape medido = 0). Tercera bolsa: NO hizo falta.
+
+    (a) — SIETE RESTRICCIONES, DOCE FILAS
+        94978  BAHIA CONSTITUCION  (6 filas)
+               "SE ESTABLECE CONDICION DE PUERTO CERRADO POR AVISO DE MAL TIEMPO
+                VIGENTE"
+        95327 · 95328 · 95329 · 95330 · 95331 · 95332  BAHIA DE QUINTERO (1 c/u)
+               "SE ESTABLECE CONDICION DE PUERTO CERRADO POR "MAREJADA N°232""
+
+        Los seis de Quintero son el MISMO texto en seis IDRestriccion distintos.
+        Para el conteo son seis restricciones porque el ID es seis; para el
+        problema de lectura son un solo caso. Las dos lecturas van.
+
+    (b) — SIETE RESTRICCIONES, SIETE FILAS
+        94985  BAHIA CONCEPCION - LIRQUEN
+               "EMBARCACIONES MAYORES Y MENORES DENTRO Y FUERA DE LA BAHIA"
+        95169  PUERTO QUEMCHI
+               "CERRADO PARA EE.MM."
+        95171  ISLA ROBINSON CRUSOE
+               "TODA LA JURISDICCION DE JUAN FERNANDEZ"          <- el caso conocido
+        95186  BAHIA CONCEPCION - LIRQUEN
+               "EN LA JURISDICCION DE PUERTO DE LIRQUEN"
+        95201  BAHIA SAN VICENTE
+               "PARA NAVES Y EMBARCACIONES DENTRO Y FUERA DE LA BAHIA DE SAN VICENTE"
+        95202  SECTOR COSTERO PENINSULA DE HUALPEN
+               idem 95201 — texto identico, bahia distinta
+        95346  BAHIA DE VALPARAISO
+               "PARA NAVES QUE NO CUENTEN CON RADAR DENTRO Y FUERA DE LOS LIMITES
+                DEL PUERTO"
+
+--------------------------------------------------------------------------------
+3. PUNTO 3 — LAS FORMAS DE (b). SON SEIS.
+--------------------------------------------------------------------------------
+
+    No son dos ni son quince. Un mismo registro trae mas de una: los conteos por
+    forma NO son una particion y no suman 7.
+
+    F1  cuantificador universal + sustantivo territorial          1 restriccion
+        "TODA LA JURISDICCION DE JUAN FERNANDEZ"                  95171
+
+    F2  sustantivo territorial SIN cuantificador, gobernado       1 restriccion
+        por preposicion                                           95186
+        "EN LA JURISDICCION DE PUERTO DE LIRQUEN"
+
+    F3  par DENTRO Y FUERA + sustantivo territorial nombrado      4 restricciones
+        "DENTRO Y FUERA DE LA BAHIA"                              94985
+        "DENTRO Y FUERA DE LA BAHIA DE SAN VICENTE"               95201, 95202
+        "DENTRO Y FUERA DE LOS LIMITES DEL PUERTO"                95346
+
+    F4  universo de naves enumerado por CLASE, sin numero         3 restricciones
+        "EMBARCACIONES MAYORES Y MENORES"                         94985
+        "NAVES Y EMBARCACIONES"                                   95201, 95202
+
+    F5  universo de naves por ABREVIATURA, sin numero             1 restriccion
+        "EE.MM."  (normalizado: "EE MM")                          95169
+
+    F6  universo de naves por EQUIPAMIENTO, no por tamano         1 restriccion
+        "NAVES QUE NO CUENTEN CON RADAR"                          95346
+
+    LO QUE LAS SEIS FORMAS MUESTRAN, Y NO ES UNA PROPUESTA
+        Se parten en dos ejes que hoy comparten una sola ranura. F1, F2 y F3
+        dicen DONDE. F4, F5 y F6 dicen A QUIEN. `alcance.tipo` tiene un valor
+        para las dos cosas: `umbral` y `menores_sin_umbral` son eje NAVES, y no
+        hay ningun valor que sea eje TERRITORIO. Por eso "TODA LA JURISDICCION"
+        no tiene donde caer: no es que el extractor no la lea, es que no hay
+        ranura para el eje al que pertenece. Se anota como observacion del dato.
+        Que se hace con eso es del owner.
+
+--------------------------------------------------------------------------------
+4. PUNTO 4 — EL ALCANCE-EN-PALABRAS SOBRE LOS 444
+--------------------------------------------------------------------------------
+
+    COMO SE ARMO LA RED, DECLARADO
+        El vocabulario salio del dato, no de una lista previa. Dos barridos sobre
+        las 444 filas:
+          (i)  todo n-grama que arranca en cuantificador universal — 17 formas
+               distintas, encabezadas por "EN SU TOTALIDAD SUSPENDIDAS" (36),
+               "TODO TIPO DE ..." y "TODA LA JURISDICCION DE JUAN" (1).
+          (ii) todo sustantivo que sigue a preposicion+articulo — 21 distintos:
+               BAHIA 257, JURISDICCION 46, BARRA 14, CALETA(S) 11, LIMITES 10,
+               LAGO 4, BAHIAS 4, entre otros.
+        De ahi salieron las nueve familias W1..W9. La red es DELIBERADAMENTE
+        ancha; es una RED DE OBSERVACION, no una regla de extraccion, y su falso
+        positivo se cuenta en vez de esconderse (W2 y W4 sobre todo: "DENTRO DE
+        LA BAHIA" tambien aparece en registros que ya traen umbral numerico).
+
+    VOCABULARIO EMERGIDO — restricciones distintas de las 213, por familia
+        W1  TERRITORIO · jurisdiccion                        19
+        W2  TERRITORIO · bahia/bahias nombrada              114
+        W3  TERRITORIO · limites del puerto                   7
+        W4  TERRITORIO · caletas/lagos/barra/sector          51
+        W5  CUANTIFICADOR · toda/todo/todos/todas            23
+        W6  CUANTIFICADOR · totalidad                        16
+        W7  NAVES · clases enumeradas sin numero              8
+        W8  NAVES · abreviatura EE MM                        50
+        W9  NAVES · por equipamiento                          1
+        (no es una particion: un registro cae en varias)
+
+    DENOMINADOR DECLARADO
+        El cruce se hace sobre los CERRADOS, que es el unico lugar donde
+        `alcance.tipo` existe: 335 filas / 167 restricciones distintas.
+        (Las 213 restricciones del material menos las 46 que no cierran.)
+
+    CERRADOS QUE DECLARAN ALCANCE CON PALABRAS : 156 restricciones · 311 filas
+        umbral                108 restricciones · 205 filas
+        total                   5 restricciones ·   5 filas
+        menores_sin_umbral     36 restricciones ·  94 filas
+        no_legible              7 restricciones ·   7 filas
+                              ---------------------------------
+                              156 restricciones · 311 filas   CIERRA
+
+    >>> LA CIFRA QUE PIDE EL PUNTO 4
+        149 restricciones · 304 filas declaran su alcance CON PALABRAS y NO estan
+        en `no_legible`. Se clasifican bien por otro lado —tienen su numero, o su
+        rama de parser— y el alcance que el texto dice en palabras se pierde
+        igual, sin que nada lo registre.
+
+        Sobre 167 restricciones cerradas, son el 89%. Sobre 335 filas, el 91%.
+
+        LO QUE ESTA CIFRA NO DICE, y hay que decirlo (§1.2, §2): NO son 149 casos
+        rotos. En la mayoria el alcance-en-palabras es REDUNDANTE con el que ya
+        se emite —"EMBARCACIONES MENORES DE 25 A.B. DENTRO DE LA BAHIA" dice el
+        territorio ademas del umbral, y el umbral emitido no es falso—. La cifra
+        mide EXPOSICION, no defecto: es el tamano del conjunto donde el eje
+        TERRITORIO existe en el texto y no existe en la salida. Cuantos de esos
+        149 son perdida efectiva y cuantos son redundancia no se midio en esta
+        sesion, y no se afirma. Lo que si se midio es el subconjunto donde hay
+        contradiccion, y va en el punto 5.
+
+--------------------------------------------------------------------------------
+5. PUNTO 5 — SI. HAY CUATRO. Y SON MAS GRAVES QUE LOS 19.
+--------------------------------------------------------------------------------
+
+    CRITERIO DECLARADO
+        Contradiccion = el `alcance.tipo` asignado afirma un universo de naves
+        MAS ANGOSTO que el que el texto declara literalmente. El alcance
+        territorial solo NO cuenta: es el otro eje, y su perdida ya la mide el
+        punto 4. Lo que cuenta aca es AFIRMAR DE MENOS sobre que naves.
+
+    C1 — tipo=menores_sin_umbral y el texto nombra tambien a las MAYORES
+         2 restricciones · 6 filas
+
+         ID 95099  BAHIA CONCHALI     (3 filas)
+         ID 95100  BAHIA PICHIDANGUI  (3 filas)
+         "... ESTADO DEL PUERTO "CERRADO" EN LA BAHIA DE CONCHALI, PARA NAVES
+          MAYORES Y NAVES MENORES POR EVENTO METEREOLOGICO ..."
+
+         El texto cierra para MAYORES Y MENORES. La salida dice
+         `menores_sin_umbral`. Eso no es una ausencia: es una AFIRMACION
+         EQUIVOCADA que angosta el cierre, y el registro sale con
+         aviso_modo='detalle' — o sea, con la confianza de un alcance leido.
+
+    C2 — tipo=umbral N y otra zona del texto no tiene tope de tonelaje
+         2 restricciones · 2 filas
+
+         ID 95219  SECTOR CHAIHUIN  ·  ID 95220  BAHIA CORRAL
+         "PUERTO CERRADO PARA TODA TIPO EMBARCACIONES FUERA DE LA BAHIA DE
+          CORRAL, DENTRO DE LA BAHIA DE CORRAL CERRADO PARA EMBARCACIONES
+          MENORES DE 50 ARQUEO BRUTO."
+
+         Se emite umbral=50. Pero el 50 rige DENTRO. FUERA el cierre es para
+         TODA TIPO EMBARCACIONES, sin tope. Una nave de 200 AB fuera de la bahia
+         de Corral esta cerrada por el texto y abierta por la salida.
+
+         NO ES O2, Y SE VERIFICO. O2 es el par 95155 (QUELLON, dentro 100 / fuera
+         50) y 95185 (RADA DE CARELMAPU, dentro 25 / fuera 50): numero contra
+         numero, y el que se emite —el de fuera— es real. Aca el par es 95219 /
+         95220 y es PALABRA contra numero: el lado de fuera no tiene numero que
+         emitir, y lo que se emite es el del lado equivocado. Mismo eje
+         dentro/fuera, defecto distinto. O2 no se abre.
+
+    TOTAL: 4 restricciones · 8 filas con clasificacion afirmativa equivocada.
+
+    EL CONTRASTE QUE LO VUELVE MEDIDO, Y NO UNA ANECDOTA
+        94985 y 95099 dicen LO MISMO: el puerto cierra para mayores y menores.
+            94985 "EMBARCACIONES MAYORES Y MENORES"  ->  no_legible
+            95099 "NAVES MAYORES Y NAVES MENORES"    ->  menores_sin_umbral
+        Lo unico que los separa es si el sustantivo se repite. La rama
+        parser:92 es /EMBARCACIONES\s+MENORES|NAVES\s+MENORES/, literal y
+        contigua: "NAVES MAYORES Y NAVES MENORES" contiene "NAVES MENORES";
+        "EMBARCACIONES MAYORES Y MENORES" no contiene "EMBARCACIONES MENORES".
+        Una coordinacion con el sustantivo elidido cae en una bolsa y la misma
+        coordinacion con el sustantivo repetido cae en otra.
+
+        Y de las dos bolsas, la PEOR es la que parece sana: 94985 sale al
+        generico, que es honesto; 95099 sale con detalle, y el detalle es falso.
+
+--------------------------------------------------------------------------------
+6. OBSERVACIONES DEL DATO — SIN REGLA NI PATRON PROPUESTO
+--------------------------------------------------------------------------------
+
+O1. `no_legible` MEZCLA DOS COSAS Y LA PROPORCION ES 7/7 EN RESTRICCIONES Y
+    12/7 EN FILAS. La bolsa que SI se puede achicar es la de siete restricciones.
+    La otra siete no se achica nunca: el genérico es la respuesta correcta.
+    Confirmado lo que O1 del 16-08 anoto sobre 95171, y se le agregan seis casos
+    mas del mismo tipo.
+
+O2b. EL PROBLEMA NO ES DE LECTURA, ES DE RANURA. Tres de las seis formas (F1,
+    F2, F3) dicen DONDE, no A QUIEN. `alcance.tipo` no tiene ningun valor de eje
+    territorial: sus cuatro valores son `umbral`, `total`, `menores_sin_umbral` y
+    `no_legible`, los cuatro sobre el universo de naves. Aunque un extractor
+    leyera "TODA LA JURISDICCION" perfecto, no habria donde ponerlo. Esto es
+    observacion del dato, no propuesta: que se hace es del owner (§0.4).
+
+O3b. LOS SEIS DE QUINTERO SON UN TEXTO EN SEIS IDs. 95327..95332, identicos,
+    todos de check_ahora.json. Seis restricciones por IDRestriccion, un caso por
+    contenido. Cualquier conteo de "casos a resolver" que use el ID va a contar
+    seis donde hay uno.
+
+O4b. "EE.MM." ES UNICO EN SU CLASE, Y ESO ES LO INTERESANTE. Aparece en 50
+    restricciones del material. En 49 viene con numero y el parser lo lee
+    (umbral 25, 50 o 100). En UNA —ID 95169, PUERTO QUEMCHI— viene sin numero, y
+    esa cae en no_legible. La abreviatura no es el problema: el parser ya la
+    conoce (sitport-parser.js:51-54, cuatro de los once patrones son EE.MM.). Lo
+    que falta es la rama sin numero, que para "EMBARCACIONES MENORES" existe
+    (:92) y para "EE.MM." no. Se anota el hecho. La rama no se propone.
+
+O5b. 95201 Y 95202 SON EL MISMO TEXTO EN DOS BAHIAS DISTINTAS, Y UNA DE LAS DOS
+    NO ES LA QUE EL TEXTO NOMBRA. Los dos dicen "DENTRO Y FUERA DE LA BAHIA DE
+    SAN VICENTE". 95201 es BAHIA SAN VICENTE; 95202 es SECTOR COSTERO PENINSULA
+    DE HUALPEN. Si alguna vez se lee el territorio del texto, en 95202 el
+    territorio leido no va a coincidir con el campo `GLBahia`. Se anota antes de
+    que sea una sorpresa. Fuera del alcance de esta sesion.
+
+O6b. EL EJE DE F6 NO ES EL TAMANO. "NAVES QUE NO CUENTEN CON RADAR" (95346,
+    VALPARAISO, cerrazon de niebla) parte el universo por EQUIPAMIENTO. Es la
+    unica del material (W9 = 1). No es "todas" ni "las menores" ni un umbral: es
+    un corte ortogonal a los tres que el modelo contempla. Un caso, pero de una
+    clase que hoy no existe.
+
+O7b. LA MUESTRA ES UN PICO Y NO SE USA PARA DIMENSIONAR. Declarado por el owner:
+    el sondaje se capturo durante un temporal con muchas Capitanias redactando a
+    la vez. Ningun numero de esta bitacora se presenta como tasa ni se proyecta.
+    Lo que la muestra sostiene es QUE TIPOS DE CASO existen —seis formas, dos
+    ejes, cuatro contradicciones—, no cuantos habra un martes cualquiera.
+
+--------------------------------------------------------------------------------
+7. LO QUE ESTA SESION NO MIDIO Y ALGUIEN PODRIA CREER QUE SI
+--------------------------------------------------------------------------------
+
+    - Cuantas de las 149 restricciones del punto 4 son perdida efectiva y cuantas
+      son redundancia con el alcance ya emitido. Se declara la exposicion, no el
+      defecto.
+    - Si las seis formas son las unicas que existen, o solo las unicas que hay en
+      ESTE material. Con 14 casos y un pico meteorologico detras, lo segundo es
+      lo unico que se puede afirmar.
+    - Nada sobre los que NO cierran: 109 filas / 46 restricciones. Quedaron fuera
+      del cruce por construccion, no por descarte — el punto 4 pregunta por
+      registros clasificados, y sin cierre no hay clasificacion que perder.
+      Se deja medido, porque es contraintuitivo: `derivarAlcance` corre igual
+      sobre ellos y produce 79 `no_legible`, 24 `umbral` y 6
+      `menores_sin_umbral`. O sea que `alcance` NO es un campo vacio cuando
+      estado='sin_cierre_declarado': trae un valor calculado que nadie usa.
+      Hecho del dato, no defecto declarado. Fuera del alcance de esta sesion.
+
+--------------------------------------------------------------------------------
+8. REPRODUCIR
+--------------------------------------------------------------------------------
+
+    PowerShell, desde C:\Users\katia\tmarea-backend (§7.3):
+
+        node .\_bitacoras\alcance_no_legible_2026-08-17\01_medir_alcance.js
+        node .\_bitacoras\alcance_no_legible_2026-08-17\02_mordida.js
+
+    Los dos salen exit 0. El primero aborta con exit 3 si la particion
+    217/5/94/19 dejara de reproducirse, exit 4 si un literal declarado no
+    apareciera en el dato, exit 5 si midiera cero, exit 6 si un insumo cambiara.
+    El segundo prueba que esos exit codes muerden: inyecta cinco defectos, uno
+    por vez, sobre una copia, y exige el codigo declarado en cada uno. Los cinco
+    muerden.
+
+================================================================================
+FIN
+================================================================================

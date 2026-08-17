@@ -1,0 +1,381 @@
+================================================================================
+ALCANCE MULTIPLE — RECONOCIMIENTO. Sesion 2026-08-17, sobre 8382a806.
+Cuantos registros declaran mas de un alcance y el extractor se queda con uno.
+================================================================================
+
+--------------------------------------------------------------------------------
+(0) INSUMOS — SHA256 AL ARRANQUE
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json    5a3bf064eeef7d630e404db390679e80
+    restricciones_2026-07-31_16-32.json    8e5270eaabbd2800dfcf2da664c80cbb
+    restricciones_2026-07-31_20-32.json    e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-07-31_21-01.json    e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-08-01_13-14.json    9ed8c7c15c52a05f6740b99b3da6d7b4
+    check_ahora.json                       c306aea459dc5124af4099d703b854eb
+
+    Ningun insumo se abre en escritura. Se recomprueban al cierre.
+
+--------------------------------------------------------------------------------
+(1) DENOMINADOR — LAS DOS CIFRAS, FILAS Y RESTRICCIONES
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json     73 registros  (rowsAffected coincide)
+    restricciones_2026-07-31_16-32.json     83 registros  (rowsAffected coincide)
+    restricciones_2026-07-31_20-32.json     83 registros  (rowsAffected coincide)
+    restricciones_2026-07-31_21-01.json     83 registros  (rowsAffected coincide)
+    restricciones_2026-08-01_13-14.json     83 registros  (rowsAffected coincide)
+    check_ahora.json                        39 registros  (rowsAffected coincide)
+    TOTAL                                  444 filas
+    RESTRICCIONES DISTINTAS (IDRestriccion) 213
+
+--------------------------------------------------------------------------------
+(2) CONTROL DE ARRANQUE — REPRODUCIR 217 / 5 / 94 / 19 ANTES DE MEDIR NADA
+--------------------------------------------------------------------------------
+    umbral                    217 filas   esperado  217   OK
+    total                       5 filas   esperado    5   OK
+    menores_sin_umbral         94 filas   esperado   94   OK
+    no_legible                 19 filas   esperado   19   OK
+    suma 335 / 335 — CIERRA  (alcance / filas)
+
+    CERRADOS : 335 filas / 167 restricciones distintas.
+    la misma particion, en RESTRICCIONES:
+      umbral                  112 restricciones ·  217 filas
+      total                     5 restricciones ·    5 filas
+      menores_sin_umbral       36 restricciones ·   94 filas
+      no_legible               14 restricciones ·   19 filas
+    suma 167 / 167 — CIERRA  (alcance / restricciones)
+
+    Reproducida. Recien aca se mide lo nuevo.
+
+--------------------------------------------------------------------------------
+(3) QUE SE NORMALIZO PARA COMPARAR — DECLARADO
+--------------------------------------------------------------------------------
+    N3 = normalizarParaCriterio (cierre-derivador.js:55), IMPORTADA verbatim.
+         decodifica &LT; &GT; &AMP; &QUOT;  ->  el dato las trae sin decodificar
+         normalizarTexto (parser:8): doble-encoding CP1252, NFD sin acentos, MAYUS
+         + toda puntuacion a espacio + \s+ colapsado (TAB incluido)
+    Eso desarma, medido en ESTE material: los parentesis de "25 (AB)" (95072),
+    la barra de "50 A/B." (95208), los puntos de "EE.MM." -> "EE MM", las comillas
+    escapadas (95185), el doble espacio (94985), los \r\n (95346), el N°232.
+    LO QUE NO ARREGLA, y se declara: "PURTO" (95208), "BARAR"/"CHIAHUIN" (95220),
+    "TODA TIPO EMBARCACIONES" sin concordancia (95219/95220), "CONDICIONDE" (95171).
+    No se aplica caza por aproximacion en ninguna parte de este archivo.
+
+--------------------------------------------------------------------------------
+(4) QUE CUENTA COMO UN ALCANCE — CRITERIO DECLARADO
+--------------------------------------------------------------------------------
+    EXPRESION DE ALCANCE = sintagma del texto que dice A QUE NAVES alcanza un
+    cierre declarado EN ESE MISMO TEXTO. Denota un conjunto de naves.
+
+    EL EJE ES NAVES, NO TERRITORIO, y se declara por que: el alcance territorial
+    ya lo midio la sesion anterior (punto 4 de alcance_no_legible: 149 restricciones
+    lo declaran en palabras y no hay ranura donde ponerlo). Contarlo aca como
+    "segundo alcance" haria multiple a casi todo el material —W2 sola son 114
+    restricciones— y ahogaria la senal que esta sesion mide. El territorio entra
+    igual, pero como INDICE: es lo que separa dos alcances de naves entre si
+    ("100 fuera / 25 dentro"), no como alcance por derecho propio.
+
+    CLASES DE EXPRESION EMERGIDAS DEL DATO (no de la lista del prompt):
+      num(N,u)  "MENORES DE N AB" · "MENOR A N AB" · "EE MM DE N TRG" ·
+                "EMBARCACION N AB" · "N AB" tras predicado   ->  { ab < N }
+      menores   "EMBARCACIONES/NAVES MENORES" · "EE MM" sin numero  ->  { menores }
+      mayores   "NAVES MAYORES" · "SUPERIORES A N"            ->  { mayores }
+      todas     "TODO TIPO DE NAVES" · "TODA TIPO EMBARCACIONES" ·
+                "NAVES Y EMBARCACIONES"                        ->  { todas }
+      equip     "NAVES QUE NO CUENTEN CON RADAR"   ->  corte por equipamiento
+
+    DOS EXPRESIONES SON LA MISMA si denotan el mismo conjunto. "EE MM DE 25 AB"
+    es UNA expresion, no dos (la clase y el numero dicen lo mismo).
+
+    LA EXPRESION TIENE QUE ESTAR GOBERNADA POR UN PREDICADO DE CIERRE.
+    Nombrar una clase de nave no alcanza. Medido en este material, tres roles
+    que NO son alcance de un cierre y que un lector ingenuo se lleva puestos:
+      · remision  "MANIOBRAS ... DE NAVES MAYORES ... OBRARAN EN CONSECUENCIA A
+                   LOS LIMITES DE OPERACION QUE DISPONEN SUS ..."   (95156-95159)
+      · condicion de faena  "TRASLADO PERSONAS ... CON NAVES SUPERIORES A 25 AB"
+                            (95072)
+      · excepcion sobre faenas  "EXCEPTO AQUELLOS QUE CUENTEN CON RESOLUCION"
+                                (95027, 95028, 95029, 95193)
+    Esos cinco casos son la evidencia del punto 6 y se cuentan, no se esconden.
+
+--------------------------------------------------------------------------------
+(5) LA RED DE CANDIDATOS — MECANICA Y DELIBERADAMENTE ANCHA
+--------------------------------------------------------------------------------
+    CONDICION, tal como esta implementada arriba (no es la regla de arreglo: es
+    la red que junta a quien hay que LEER):
+      (a) dos o mas valores numericos DISTINTOS con unidad, o
+      (b) al menos un numero Y (mayores | universal | equipamiento), o
+      (c) sin numeros y dos o mas clases de nave nombradas.
+    Falsos positivos INCLUIDOS a proposito: la red no sabe de funcion sintactica.
+    Cada candidato se resuelve por lectura en la tabla de (6), con su literal.
+
+    CANDIDATOS : 30 restricciones · 57 filas
+    sobre el denominador de cerrados: 167 restricciones · 335 filas
+
+--------------------------------------------------------------------------------
+(6) PUNTO 1 — LA TABLA DECLARADA. CADA CANDIDATO, LEIDO, CON SU LITERAL
+--------------------------------------------------------------------------------
+    control: la tabla cubre los 30 candidatos de la red, sin sobrantes — OK
+    control: 48 literales declarados encontrados en el N3 de su registro — OK
+    control: los 4 casos heredados (C1 95099/95100 · C2 95219/95220) reproducen — OK
+    suma 30 / 30 — CIERRA  (tabla / restricciones)
+    suma 57 / 57 — CIERRA  (tabla / filas)
+
+  >>> DECLARAN MAS DE UN ALCANCE : 20 restricciones · 36 filas
+      sobre el denominador de cerrados: 167 restricciones · 335 filas
+      candidato de la red y DESCARTADO por lectura : 10 restricciones · 21 filas
+
+  CONTEO POR FORMA — no es una particion por construccion? SI lo es: cada
+  restriccion multiple cae en una sola forma en este material. Se controla.
+
+    G1 · dos o mas NUMEROS distintos, uno por zona o sector
+        15 restricciones · 27 filas   ->  95060, 95061, 95062, 95071, 95075, 95116, 95117, 95155, 95184, 95185, 95205, 95213, 95214, 95347, 95352
+        CASO CITADO — ID 95060 · BAHÍA CORRAL, literal sin normalizar:
+        "SE ESTABLECE CONDICIÓN DE MAL TIEMPO, PUERTO CERRADO PARA EMBARCACIONES MENORES DE 100 ARQUEO BRUTO FUERA DE LA BAHIA DE CORRAL, DENTRO DE LA BAHIA CERRADO PARA EMBARCACIONES MENORES DE 25 ARQUEO BRUTO."
+        alcances leidos: num 100 [fuera]  ·  num 25 [dentro]
+
+    G2 · un NUMERO de un lado y una expresion UNIVERSAL sin tope del otro
+        2 restricciones · 2 filas   ->  95219, 95220
+        CASO CITADO — ID 95219 · SECTOR CHAIHUÍN, literal sin normalizar:
+        "SE ESTABLECE CONDICIÓN DE MAL TIEMPO, PUERTO CERRADO PARA TODA TIPO EMBARCACIONES FUERA DE LA BAHIA DE CORRAL, DENTRO DE LA BAHIA DE CORRAL CERRADO PARA EMBARCACIONES MENORES DE 50 ARQUEO BRUTO."
+        alcances leidos: todas [fuera]  ·  num 50 [dentro]
+
+    G3 · dos CLASES de nave enumeradas, sin numero
+        3 restricciones · 7 filas   ->  94985, 95099, 95100
+        CASO CITADO — ID 94985 · BAHÍA CONCEPCIÓN - LIRQUÉN, literal sin normalizar:
+        "SE ESTABLECE CONDICION DE PUERTO CERRADO PARA  EMBARCACIONES MAYORES Y MENORES DENTRO Y FUERA DE LA BAHIA, POR AVISO DE MAL TIEMPO Y TEMPORAL VIGENTE.  "
+        alcances leidos: mayores [dentro y fuera]  ·  menores [dentro y fuera]
+
+    suma 20 / 20 — CIERRA  (formas / restricciones)
+    suma 36 / 36 — CIERRA  (formas / filas)
+
+--------------------------------------------------------------------------------
+(7) PUNTO 2 — DE LOS MULTIPLES, QUIEN EMITE UN ALCANCE QUE DEJA NAVES AFUERA
+--------------------------------------------------------------------------------
+    EL VEREDICTO NO SE DECLARA: SE CALCULA. La tabla declara los conjuntos
+    denotados; el instrumento computa si el emitido los CUBRE a todos.
+
+    BORDE DEL MOTOR, medido y no supuesto: restriction-rules-engine.js:73-80
+    compara `nave_ab lessThan umbral_ab_fuera` — ESTRICTO. Una nave de AB
+    exactamente igual al umbral YA queda fuera del aviso. Los rangos de abajo
+    usan esa convencion: emitido U alcanza { ab < U }.
+
+  (I)  EMITE UN ALCANCE MAS ANGOSTO QUE EL TEXTO — DEJA NAVES SIN AVISO
+       9 restricciones · 22 filas
+
+  (II) DECLARA MAS DE UNO PERO EL EMITIDO YA ES EL MAS AMPLIO — NO ES DEFECTO
+       11 restricciones · 14 filas
+
+    suma 20 / 20 — CIERRA  (bolsas del punto 2 / restricciones)
+    suma 36 / 36 — CIERRA  (bolsas del punto 2 / filas)
+
+  DETALLE DE (I) — los que dejan gente sin aviso:
+      ID 95062 · BORDE COSTERO-VALDIVIA · 4 fila(s) · emite umbral 25 · aviso_modo=detalle
+          NO cubre: num 100 [sector Niebla-Ronca]  <-  "CERRADO PARA EE MM DE 100 AB ENTRE PUNTA NIEBLA HASTA PUNTA RONCA MEHUIN"
+      ID 95071 · BAHÍA QUELLÓN · 2 fila(s) · emite umbral 50 · aviso_modo=detalle
+          NO cubre: num 100 [fuera-sur]  <-  "NAVEGACION FUERA DE BAHIA SECTOR SUR CERRADO PARA EMBARCACION 100 AB"
+      ID 95075 · QUEILEN · 4 fila(s) · emite umbral 25 · aviso_modo=detalle
+          NO cubre: num 50 [cruce golfo]  <-  "NAVEGACION HACIA NORTE SUR Y CRUCE GOLFO CORCOVADO CERRADO PARA NAVES MENORES DE 50 A B"
+      ID 95099 · BAHÍA CONCHALÍ · 3 fila(s) · emite menores_sin_umbral · aviso_modo=detalle
+          NO cubre: mayores [bahia de Conchali]  <-  "PARA NAVES MAYORES Y NAVES MENORES"
+      ID 95100 · BAHIA PICHIDANGUI · 3 fila(s) · emite menores_sin_umbral · aviso_modo=detalle
+          NO cubre: mayores [bahia de Pichidangui]  <-  "PARA NAVES MAYORES Y NAVES MENORES"
+      ID 95155 · BAHÍA QUELLÓN · 3 fila(s) · emite umbral 50 · aviso_modo=detalle
+          NO cubre: num 100 [fuera-sur]  <-  "FUERA DE LA BAHIA SECTOR SUR PARA EMBARCACIONES MENORES A 100 A B"
+      ID 95219 · SECTOR CHAIHUÍN · 1 fila(s) · emite umbral 50 · aviso_modo=detalle
+          NO cubre: todas [fuera]  <-  "CERRADO PARA TODA TIPO EMBARCACIONES FUERA DE LA BAHIA DE CORRAL"
+      ID 95220 · BAHÍA CORRAL · 1 fila(s) · emite umbral 50 · aviso_modo=detalle
+          NO cubre: todas [fuera]  <-  "CERRADO PARA TODA TIPO EMBARCACIONES FUERA DE LA BARAR DEL RIO CHIAHUIN"
+      ID 95352 · BAHÍA QUELLÓN · 1 fila(s) · emite umbral 50 · aviso_modo=detalle
+          NO cubre: num 100 [fuera-sur]  <-  "NAVEGACION FUERA DE LA BAHIA SECTOR SUR CERRADO PARA NAVES MENORES A 100 A B"
+
+  DETALLE DE (II) — declaran mas de uno y el emitido ya alcanza a todos:
+      ID 94985 · BAHÍA CONCEPCIÓN - LIRQUÉN     · 1 fila(s) · emite no_legible   · declara mayores · menores
+      ID 95060 · BAHÍA CORRAL                   · 1 fila(s) · emite umbral 100   · declara num 100 · num 25
+      ID 95061 · SECTOR CHAIHUÍN                · 1 fila(s) · emite umbral 100   · declara num 100 · num 25
+      ID 95116 · BAHÍA MAULLÍN                  · 4 fila(s) · emite umbral 50    · declara num 50 · num 25
+      ID 95117 · ENSENADA ESTAQUILLA            · 1 fila(s) · emite umbral 50    · declara num 50 · num 25
+      ID 95184 · ENSENADA ESTAQUILLA            · 1 fila(s) · emite umbral 50    · declara num 25 · num 50
+      ID 95185 · RADA DE	CARELMAPU              · 1 fila(s) · emite umbral 50    · declara num 25 · num 50
+      ID 95205 · BAHÍA DE CALBUCO               · 1 fila(s) · emite umbral 50    · declara num 25 · num 50
+      ID 95213 · BORDE COSTERO-VALDIVIA         · 1 fila(s) · emite umbral 100   · declara num 100 · num 50
+      ID 95214 · VALDIVIA CONECTIVIDAD          · 1 fila(s) · emite umbral 100   · declara num 100 · num 50
+      ID 95347 · PUERTO CISNES                  · 1 fila(s) · emite umbral 50    · declara num 50 · num 25
+
+--------------------------------------------------------------------------------
+(8) PUNTO 3 — QUE RANGO DE TONELAJE QUEDA SIN AVISO, UNO POR UNO
+--------------------------------------------------------------------------------
+    Con el borde estricto del motor (ab < umbral). Cuando el alcance real NO
+    tiene tope, se dice asi: no se inventa un techo.
+
+    ID 95062 · BORDE COSTERO-VALDIVIA · 4 fila(s)
+        zona "sector Niebla-Ronca" : queda sin aviso  AB de 25 (inclusive) a 100 (exclusive) — 75 AB de ancho
+    ID 95071 · BAHÍA QUELLÓN · 2 fila(s)
+        zona "fuera-sur" : queda sin aviso  AB de 50 (inclusive) a 100 (exclusive) — 50 AB de ancho
+    ID 95075 · QUEILEN · 4 fila(s)
+        zona "cruce golfo" : queda sin aviso  AB de 25 (inclusive) a 50 (exclusive) — 25 AB de ancho
+    ID 95099 · BAHÍA CONCHALÍ · 3 fila(s)
+        zona "bahia de Conchali" : queda sin aviso  las NAVES MAYORES enteras — la frontera menor/mayor es normativa y esta sesion NO la fija
+    ID 95100 · BAHIA PICHIDANGUI · 3 fila(s)
+        zona "bahia de Pichidangui" : queda sin aviso  las NAVES MAYORES enteras — la frontera menor/mayor es normativa y esta sesion NO la fija
+    ID 95155 · BAHÍA QUELLÓN · 3 fila(s)
+        zona "fuera-sur" : queda sin aviso  AB de 50 (inclusive) a 100 (exclusive) — 50 AB de ancho
+    ID 95219 · SECTOR CHAIHUÍN · 1 fila(s)
+        zona "fuera" : queda sin aviso  TODA nave de AB >= 50 — SIN TECHO: el texto no pone tope
+    ID 95220 · BAHÍA CORRAL · 1 fila(s)
+        zona "fuera" : queda sin aviso  TODA nave de AB >= 50 — SIN TECHO: el texto no pone tope
+    ID 95352 · BAHÍA QUELLÓN · 1 fila(s)
+        zona "fuera-sur" : queda sin aviso  AB de 50 (inclusive) a 100 (exclusive) — 50 AB de ancho
+
+--------------------------------------------------------------------------------
+(9) PUNTO 4 — COSTO DEL CAMINO "AL GENERICO"
+--------------------------------------------------------------------------------
+    REGLA HIPOTETICA MEDIDA (no propuesta, no recomendada): declara mas de un
+    alcance y no coinciden -> generico.
+
+    DENOMINADOR: hoy salen con detalle 153 restricciones · 316 filas
+                 hoy salen con generico 14 restricciones · 19 filas
+    suma 167 / 167 — CIERRA  (detalle+generico / restricciones)
+    suma 335 / 335 — CIERRA  (detalle+generico / filas)
+
+    PASARIAN DE detalle A generico : 19 restricciones · 35 filas
+      = 12.4% de las restricciones que hoy salen con detalle
+      = 11.1% de sus filas
+    YA salen genericas hoy (no se mueven) : 1 restricciones · 1 filas
+    suma 20 / 20 — CIERRA  (pasarian+ya generico / restricciones)
+
+    DE ESOS, HOY EMITEN UN DETALLE QUE NO DEJA A NADIE AFUERA — se perderia:
+      10 restricciones · 13 filas
+        ID 95060 · BAHÍA CORRAL                   · emite umbral 100
+        ID 95061 · SECTOR CHAIHUÍN                · emite umbral 100
+        ID 95116 · BAHÍA MAULLÍN                  · emite umbral 50
+        ID 95117 · ENSENADA ESTAQUILLA            · emite umbral 50
+        ID 95184 · ENSENADA ESTAQUILLA            · emite umbral 50
+        ID 95185 · RADA DE	CARELMAPU              · emite umbral 50
+        ID 95205 · BAHÍA DE CALBUCO               · emite umbral 50
+        ID 95213 · BORDE COSTERO-VALDIVIA         · emite umbral 100
+        ID 95214 · VALDIVIA CONECTIVIDAD          · emite umbral 100
+        ID 95347 · PUERTO CISNES                  · emite umbral 50
+
+    LO QUE ESTA CIFRA NO DICE, y hay que decirlo (§1.2, §2): "no deja a nadie
+    afuera" NO es "correcto en toda zona". Los que emiten el mas amplio SOBRE-
+    alcanzan en la zona angosta —95060 emite 100 y dentro de la bahia rige 25—,
+    porque el modelo tiene UNA ranura de alcance y no una por zona. Lo que se
+    perderia con el generico es un detalle que alcanza a todos los alcanzados,
+    no un detalle exacto por zona. Se mide cuantos son, no se juzga.
+    SOBRE-ALCANZAN EN LA ZONA ANGOSTA, medido: 10 restricciones · 13 filas
+      -> 95060, 95061, 95116, 95117, 95184, 95185, 95205, 95213, 95214, 95347
+
+--------------------------------------------------------------------------------
+(10) PUNTO 5 — COSTO DEL CAMINO "QUEDARSE CON EL MAS AMPLIO"
+--------------------------------------------------------------------------------
+    CRITERIO: se resuelve si entre los alcances DECLARADOS hay uno que CONTIENE
+    a todos los demas. Si no lo hay, el camino no tiene que elegir — y ahi esta
+    su limite. La union no cuenta: la union no es uno de los declarados.
+
+    SE RESUELVEN con el mas amplio : 17 restricciones · 29 filas
+    NO se resuelven                : 3 restricciones · 7 filas
+    suma 20 / 20 — CIERRA  (punto 5 / restricciones)
+    suma 36 / 36 — CIERRA  (punto 5 / filas)
+
+  LOS NO COMPARABLES, UNO POR UNO — son el limite de ese camino:
+      ID 94985 · BAHÍA CONCEPCIÓN - LIRQUÉN · 1 fila(s) · hoy emite no_legible
+          declara: mayores  y  menores
+          "EMBARCACIONES MAYORES Y MENORES"
+          ninguno CONTIENE al otro: {mayores} y {menores} son disjuntos. El mas
+          amplio no existe entre los declarados; lo que alcanzaria a todos es la
+          UNION, que el texto no nombra como tal.
+      ID 95099 · BAHÍA CONCHALÍ · 3 fila(s) · hoy emite menores_sin_umbral
+          declara: mayores  y  menores
+          "PARA NAVES MAYORES Y NAVES MENORES"
+          ninguno CONTIENE al otro: {mayores} y {menores} son disjuntos. El mas
+          amplio no existe entre los declarados; lo que alcanzaria a todos es la
+          UNION, que el texto no nombra como tal.
+      ID 95100 · BAHIA PICHIDANGUI · 3 fila(s) · hoy emite menores_sin_umbral
+          declara: mayores  y  menores
+          "PARA NAVES MAYORES Y NAVES MENORES"
+          ninguno CONTIENE al otro: {mayores} y {menores} son disjuntos. El mas
+          amplio no existe entre los declarados; lo que alcanzaria a todos es la
+          UNION, que el texto no nombra como tal.
+
+  CUANTOS CAMBIARIAN DE VALOR EMITIDO SI SE TOMA EL MAS AMPLIO:
+      ID 95062 · BORDE COSTERO-VALDIVIA         · umbral 25  ->  num 100
+      ID 95071 · BAHÍA QUELLÓN                  · umbral 50  ->  num 100
+      ID 95075 · QUEILEN                        · umbral 25  ->  num 50
+      ID 95155 · BAHÍA QUELLÓN                  · umbral 50  ->  num 100
+      ID 95219 · SECTOR CHAIHUÍN                · umbral 50  ->  todas
+      ID 95220 · BAHÍA CORRAL                   · umbral 50  ->  todas
+      ID 95352 · BAHÍA QUELLÓN                  · umbral 50  ->  num 100
+      TOTAL que cambia de valor : 7 restricciones · 16 filas
+      El resto (10) ya emite el mas amplio: el camino no los toca.
+
+--------------------------------------------------------------------------------
+(11) PUNTO 6 — QUE TAN ESTABLE ES LA SENAL. MEDIDO CONTRA LAS 167.
+--------------------------------------------------------------------------------
+    Cada marca candidata se corre sobre las 167 cerradas y se cuenta contra la
+    tabla leida. No se propone implementacion: se mide si la senal existe.
+
+    marca                                                dispara   TP   FP   FN
+    M1 · dos o mas NUMEROS distintos con unidad               15   15    0    5
+    M2 · un numero + expresion UNIVERSAL                       2    2    0   18
+    M3 · dos CLASES de nave nombradas (mayores y menores)       8    3    5   17
+    M4 · el par DENTRO / FUERA presente                      100   15   85    5
+    M5 · la conjuncion Y presente                            130   12  118    8
+
+    TP = dispara y la lectura dice multiple · FP = dispara y NO lo es ·
+    FN = es multiple y no dispara.  Universo: las 167 restricciones cerradas.
+
+    LOS FALSOS POSITIVOS DE M3, NOMBRADOS (son el punto):
+      ID 95072 · CANAL CHACAO                   · condicion de una faena (traslado de personas), no un cierre
+      ID 95156 · BAHÍA CATALINA                 · remision a los limites de operacion de las mayores, no un cierre para ellas
+      ID 95157 · PUNTA ARENAS                   · remision a los limites de operacion de las mayores, no un cierre para ellas
+      ID 95158 · CABO NEGRO                     · remision a los limites de operacion de las mayores, no un cierre para ellas
+      ID 95159 · LAREDO                         · remision a los limites de operacion de las mayores, no un cierre para ellas
+
+--------------------------------------------------------------------------------
+(11b) EL CRUCE QUE EL DATO PIDE — QUE SEPARA LAS ZONAS vs SI EL EXTRACTOR ACIERTA
+--------------------------------------------------------------------------------
+    Sobre la forma G1 (dos o mas numeros). Se parte por el INDICE que separa las
+    zonas del registro, tal como la tabla lo declara:
+      par plano  : las zonas son exactamente {dentro, fuera}
+      otro indice: hay al menos una zona que no es dentro ni fuera (sector norte /
+                   sector sur, un canal nombrado, un tramo entre dos puntas)
+
+                               emite el mas amplio   DEJA NAVES AFUERA
+    par plano dentro/fuera                       9                   0
+    otro indice de zona                          1                   5
+    suma 15 / 15 — CIERRA  (cruce G1 / restricciones)
+
+      par plano · acierta   : 95060, 95061, 95116, 95117, 95184, 95185, 95205, 95213, 95214
+      par plano · deja      : —
+      otro indice · acierta : 95347
+      otro indice · deja    : 95062, 95071, 95075, 95155, 95352
+
+    EL MECANISMO, que esto MIDE y no supone: sitport-parser.js:74-85 solo conoce
+    DENTRO y FUERA. Cuando las dos zonas son ese par, `fueraMatch` toma el numero
+    del lado de fuera y ese lado es el ancho. Cuando las zonas son "sector norte" y
+    "sector sur" —los dos FUERA— o canales nombrados, los dos numeros compiten por
+    la misma ranura y gana el PRIMERO del texto, que no tiene por que ser el ancho.
+    Se declara como lectura del cruce, no como propuesta de arreglo.
+
+--------------------------------------------------------------------------------
+(11c) OBSERVACION MEDIDA — ZONAS DECLARADAS NORMAL DENTRO DE UN REGISTRO CERRADO
+--------------------------------------------------------------------------------
+    No es alcance de naves y no entra en ningun conteo de arriba. Se mide porque
+    aparecio leyendo los multiples y porque nadie lo tiene anotado: hay registros
+    que declaran CERRADO una zona y NORMAL otra, y el registro entero sale cerrado.
+
+    cerradas cuyo texto contiene la palabra NORMAL : 19 restricciones · 34 filas
+      -> 95071, 95019, 95013, 94993, 95140, 95130, 95110, 95115, 95141, 95212, 95169, 95162, 95161, 95215, 95316, 95352, 95347, 95353, 95317
+    La red es ancha a proposito (NORMAL tambien aparece fuera de una clausula de
+    zona). No se afina: es una observacion, no una medicion de defecto.
+
+--------------------------------------------------------------------------------
+(12) CIERRE DEL INSTRUMENTO
+--------------------------------------------------------------------------------
+    los 6 sha256 de insumo son identicos al arranque — OK
+    comparaciones efectivas : 1768
+    controles fallidos      : 0
+
+================================================================================
+SIN FALLAS.
+================================================================================

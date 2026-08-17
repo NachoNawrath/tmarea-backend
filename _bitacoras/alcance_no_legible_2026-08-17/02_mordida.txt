@@ -1,0 +1,41 @@
+================================================================================
+MORDIDA DEL INSTRUMENTO (§4.6) — los controles de 01_medir_alcance.js
+Sesion ALCANCE-NO-LEGIBLE-RECONOCIMIENTO, 2026-08-17.
+================================================================================
+
+  original      : 01_medir_alcance.js
+  sha256 antes  : a476d592f8b422344656c4b7c18c3316ddb15d402f06540be2ecc19989b4c823
+
+  El original NO se modifica. Cada mordida corre sobre una copia temporal
+  en este mismo directorio, que se borra al terminar.
+
+  M1 · un literal declarado de (b) que el dato NO contiene
+      por que: prueba el control "si un literal no se encuentra es FALLA, no no-aplicable"
+      exit esperado 4 · exit obtenido 4  ->  MUERDE
+
+  M2 · la tabla (a)/(b) pierde uno de los 14 IDs medidos
+      por que: prueba que la tabla no puede quedar corta sin que nadie lo note
+      exit esperado 4 · exit obtenido 4  ->  MUERDE
+
+  M3 · la tabla declara un ID que NO es no_legible
+      por que: prueba el sentido inverso: sobrantes tampoco pasan
+      exit esperado 4 · exit obtenido 4  ->  MUERDE
+
+  M4 · una forma de (6) cita un ID que no esta en (b)
+      por que: prueba que las formas no pueden inventar cobertura
+      exit esperado 4 · exit obtenido 4  ->  MUERDE
+
+  M5 · la particion esperada se corrompe (19 -> 20)
+      por que: prueba el control de arranque: si el derivador cambia, esto aborta
+      exit esperado 3 · exit obtenido 3  ->  MUERDE
+
+  sha256 despues: a476d592f8b422344656c4b7c18c3316ddb15d402f06540be2ecc19989b4c823
+  el original es identico byte a byte — OK
+  no quedaron temporales — OK
+
+  mordidas corridas : 5
+  fallas            : 0
+
+================================================================================
+LOS CINCO CONTROLES MUERDEN. El exit 0 de 01_medir_alcance.js significa algo.
+================================================================================

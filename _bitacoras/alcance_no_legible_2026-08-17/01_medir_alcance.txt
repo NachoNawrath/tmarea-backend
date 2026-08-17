@@ -1,0 +1,311 @@
+================================================================================
+ALCANCE NO LEGIBLE — RECONOCIMIENTO. Sesion 2026-08-17, sobre 8382a80.
+Parte la bolsa no_legible en (a) el dato falta y (b) el dato esta y lo perdemos.
+================================================================================
+
+--------------------------------------------------------------------------------
+(0) INSUMOS — SHA256 AL ARRANQUE
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json    5a3bf064eeef7d630e404db390679e80
+    restricciones_2026-07-31_16-32.json    8e5270eaabbd2800dfcf2da664c80cbb
+    restricciones_2026-07-31_20-32.json    e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-07-31_21-01.json    e9d4d084202d7935192ae130cc9e51ff
+    restricciones_2026-08-01_13-14.json    9ed8c7c15c52a05f6740b99b3da6d7b4
+    check_ahora.json                       c306aea459dc5124af4099d703b854eb
+
+    Ningun insumo se abre en escritura. Se recomprueban al cierre.
+
+--------------------------------------------------------------------------------
+(1) DENOMINADOR — 444 FILAS / N RESTRICCIONES
+--------------------------------------------------------------------------------
+    restricciones_2026-07-30_19-42.json     73 registros  (rowsAffected coincide)
+    restricciones_2026-07-31_16-32.json     83 registros  (rowsAffected coincide)
+    restricciones_2026-07-31_20-32.json     83 registros  (rowsAffected coincide)
+    restricciones_2026-07-31_21-01.json     83 registros  (rowsAffected coincide)
+    restricciones_2026-08-01_13-14.json     83 registros  (rowsAffected coincide)
+    check_ahora.json                        39 registros  (rowsAffected coincide)
+    TOTAL                                  444 filas
+    RESTRICCIONES DISTINTAS (IDRestriccion) 213
+
+    "Fila" = captura x registro. Toda cifra de aca abajo dice cual de las dos es.
+
+--------------------------------------------------------------------------------
+(2) CONTROL DE ARRANQUE — REPRODUCIR 217 / 5 / 94 / 19
+--------------------------------------------------------------------------------
+    cerrados (Opcion D) : 335 / 444   (esperado 335)
+    umbral                    217   esperado  217   OK
+    total                       5   esperado    5   OK
+    menores_sin_umbral         94   esperado   94   OK
+    no_legible                 19   esperado   19   OK
+    suma 335 / 335 — CIERRA  (alcance)
+
+    Reproducida. Recien aca se mide lo nuevo.
+
+--------------------------------------------------------------------------------
+(3) QUE SE NORMALIZO PARA COMPARAR — DECLARADO
+--------------------------------------------------------------------------------
+    N3 = normalizarParaCriterio (cierre-derivador.js:55), importada verbatim.
+         entidades &LT; &GT; &AMP; &QUOT;  ->  el dato las trae sin decodificar
+         normalizarTexto (parser:8): doble-encoding CP1252, NFD sin acentos, MAYUS
+         + toda puntuacion a espacio + \s+ colapsado
+    Eso desarma, medido en este material: las comillas escapadas (ID 95185 y los
+    \" de 95201/95202/95327), el doble espacio de 94985, los \r\n de 95346, el
+    N°232 de Quintero, los puntos de "EE.MM." -> "EE MM", y la barra de "A/B.".
+    LO QUE NO ARREGLA, y se declara: "CONDICIONDE" pegado (ID 95171), "BARAR"
+    por BARRA (95220), "TODA TIPO EMBARCACIONES" sin concordancia (95219/95220).
+    No se aplica caza por aproximacion en ninguna parte de este archivo.
+
+--------------------------------------------------------------------------------
+(4) PUNTO 1 — LOS no_legible, LITERALES
+--------------------------------------------------------------------------------
+    FILAS no_legible          : 19
+    RESTRICCIONES distintas   : 14
+    Son DOS cifras distintas y las dos van: 19 filas son 14 restricciones.
+
+  ID 94985 · BAHÍA CONCEPCIÓN - LIRQUÉN · 1 fila(s)
+      captura: restricciones_2026-07-30_19-42.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICION DE PUERTO CERRADO PARA  EMBARCACIONES MAYORES Y MENORES DENTRO Y FUERA DE LA BAHIA, POR AVISO DE MAL TIEMPO Y TEMPORAL VIGENTE.  "
+
+  ID 94978 · BAHÍA CONSTITUCIÓN · 6 fila(s)
+      captura: restricciones_2026-07-30_19-42.json
+      captura: restricciones_2026-07-31_16-32.json
+      captura: restricciones_2026-07-31_20-32.json
+      captura: restricciones_2026-07-31_21-01.json
+      captura: restricciones_2026-08-01_13-14.json
+      captura: check_ahora.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICIÓN DE PUERTO CERRADO POR AVISO DE MAL TIEMPO VIGENTE"
+
+  ID 95171 · ISLA ROBINSON CRUSOE · 1 fila(s)
+      captura: restricciones_2026-08-01_13-14.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICIONDE PUERTO CERRADO PARA TODA LA JURISDICCION DE JUAN FERNANDEZ."
+
+  ID 95186 · BAHÍA CONCEPCIÓN - LIRQUÉN · 1 fila(s)
+      captura: restricciones_2026-08-01_13-14.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICIÓN DE MAL TIEMPO, PUERTO CERRADO EN LA JURISDICCIÓN DE PUERTO DE LIRQUÉN."
+
+  ID 95201 · BAHÍA SAN VICENTE · 1 fila(s)
+      captura: restricciones_2026-08-01_13-14.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICIÓN DE PUERTO \"MAL TIEMPO\", TRAFICO SUSPENDIDO PARA NAVES Y EMBARCACIONES DENTRO  Y FUERA DE LA BAHÍA DE SAN VICENTE."
+
+  ID 95169 · PUERTO QUEMCHI · 1 fila(s)
+      captura: restricciones_2026-08-01_13-14.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "1. CONDICIÓN MAL TIEMPO, FUERA DE LA BAHÍA: CERRADO PARA EE.MM., FAENAS DE BUCEO, REMOLQUES Y TRABAJOS EN CENTROS SUSPENDIDOS, NO SE ACEPTAN CARTAS DE CONTINUIDAD. 2. DENTRO DE LA BAHÍA: CONDICIÓN DE PUERTO NORMAL, PARA TODO TIPO DE FAENA Y TRABAJO."
+
+  ID 95202 · SECTOR COSTERO PENINSULA DE HUALPEN · 1 fila(s)
+      captura: restricciones_2026-08-01_13-14.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICIÓN DE PUERTO \"MAL TIEMPO\", TRAFICO SUSPENDIDO PARA NAVES Y EMBARCACIONES DENTRO  Y FUERA DE LA BAHÍA DE SAN VICENTE."
+
+  ID 95327 · BAHÍA DE QUINTERO · 1 fila(s)
+      captura: check_ahora.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+
+  ID 95328 · BAHÍA DE QUINTERO · 1 fila(s)
+      captura: check_ahora.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+
+  ID 95329 · BAHÍA DE QUINTERO · 1 fila(s)
+      captura: check_ahora.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+
+  ID 95330 · BAHÍA DE QUINTERO · 1 fila(s)
+      captura: check_ahora.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+
+  ID 95331 · BAHÍA DE QUINTERO · 1 fila(s)
+      captura: check_ahora.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+
+  ID 95332 · BAHÍA DE QUINTERO · 1 fila(s)
+      captura: check_ahora.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "SE ESTABLECE CONDICION DE PUERTO CERRADO POR \"MAREJADA N°232\""
+
+  ID 95346 · BAHÍA DE VALPARAÍSO · 1 fila(s)
+      captura: check_ahora.json
+      Observacion (sin normalizar, JSON-escapada para que se vea todo):
+      "CONSIDERANDO CONDICIONES METEOROLÓGICAS PRESENTES, ESTA AUTORIDAD MARÍTIMA ESTABLECE CONDICIÓN DE PUERTO CERRADO POR\r\n“CERRAZÓN DE NIEBLA”, PARA NAVES QUE NO CUENTEN CON RADAR DENTRO Y FUERA DE LOS LIMITES DEL PUERTO, LAS MANIOBRAS DE\r\nABARLOAMIENTO, ATRAQUE, AMARRE, DESATRAQUE Y DESAMARRE."
+
+--------------------------------------------------------------------------------
+(5) PUNTO 2 — PARTICION EN (a) Y (b)
+--------------------------------------------------------------------------------
+    CRITERIO DECLARADO, aplicado por LECTURA de los 14 textos (no hay regex de
+    por medio: la sesion no propone patrones):
+
+    (b)  el texto contiene al menos una expresion que DELIMITA a quien o a que
+         territorio alcanza el cierre, y esa expresion NO es un numero de
+         tonelaje NI ninguna de las tres ramas del parser (:69, :92, :95).
+    (a)  el texto no contiene ninguna. El cierre se declara y no se acota.
+
+    Cada asignacion a (b) va con la expresion literal que la sostiene. El
+    instrumento CONTROLA que ese literal exista en el N3 del registro: si no
+    esta, es exit 4. No hay asignacion sin evidencia en el dato.
+
+    control: la tabla declarada cubre los 14 IDs medidos, sin sobrantes — OK
+    control: 7 literales de (b) encontrados en el N3 de su registro — OK
+    control: solape entre bolsas = 0 — OK (disjuntas)
+
+    (a) el texto NO dice el alcance : 7 restricciones · 12 filas
+    (b) lo dice y no se lee        : 7 restricciones · 7 filas
+    suma 14 / 14 — CIERRA  (bolsas / restricciones)
+    suma 19 / 19 — CIERRA  (bolsas / filas)
+    tercera bolsa: NO hizo falta. Los 14 caen claros con el criterio de arriba.
+
+  (a) — EL DATO FALTA EN EL ORIGEN. El generico es la respuesta correcta.
+      ID 94978 · BAHÍA CONSTITUCIÓN · 6 fila(s)
+      ID 95327 · BAHÍA DE QUINTERO · 1 fila(s)
+      ID 95328 · BAHÍA DE QUINTERO · 1 fila(s)
+      ID 95329 · BAHÍA DE QUINTERO · 1 fila(s)
+      ID 95330 · BAHÍA DE QUINTERO · 1 fila(s)
+      ID 95331 · BAHÍA DE QUINTERO · 1 fila(s)
+      ID 95332 · BAHÍA DE QUINTERO · 1 fila(s)
+
+  (b) — EL DATO ESTA Y LO PERDEMOS NOSOTROS.
+      ID 94985 · BAHÍA CONCEPCIÓN - LIRQUÉN · 1 fila(s) · eje NAVES+TERRITORIO
+          "EMBARCACIONES MAYORES Y MENORES DENTRO Y FUERA DE LA BAHIA"
+      ID 95169 · PUERTO QUEMCHI · 1 fila(s) · eje NAVES
+          "CERRADO PARA EE MM"
+      ID 95171 · ISLA ROBINSON CRUSOE · 1 fila(s) · eje TERRITORIO
+          "TODA LA JURISDICCION DE JUAN FERNANDEZ"
+      ID 95186 · BAHÍA CONCEPCIÓN - LIRQUÉN · 1 fila(s) · eje TERRITORIO
+          "EN LA JURISDICCION DE PUERTO DE LIRQUEN"
+      ID 95201 · BAHÍA SAN VICENTE · 1 fila(s) · eje NAVES+TERRITORIO
+          "PARA NAVES Y EMBARCACIONES DENTRO Y FUERA DE LA BAHIA DE SAN VICENTE"
+      ID 95202 · SECTOR COSTERO PENINSULA DE HUALPEN · 1 fila(s) · eje NAVES+TERRITORIO
+          "PARA NAVES Y EMBARCACIONES DENTRO Y FUERA DE LA BAHIA DE SAN VICENTE"
+      ID 95346 · BAHÍA DE VALPARAÍSO · 1 fila(s) · eje NAVES+TERRITORIO
+          "PARA NAVES QUE NO CUENTEN CON RADAR DENTRO Y FUERA DE LOS LIMITES DEL PUERTO"
+
+--------------------------------------------------------------------------------
+(6) PUNTO 3 — LAS FORMAS DE (b), AGRUPADAS. Sin proponer como leerlas.
+--------------------------------------------------------------------------------
+    SON SEIS FORMAS, no dos ni quince. Un mismo registro puede traer mas de una:
+    los conteos por forma NO son una particion y no suman 7.
+
+    F1 · cuantificador universal + sustantivo territorial
+        "TODA LA JURISDICCION DE JUAN FERNANDEZ"
+        restricciones: 1  ->  95171
+
+    F2 · sustantivo territorial SIN cuantificador, gobernado por preposicion
+        "EN LA JURISDICCION DE PUERTO DE LIRQUEN"
+        restricciones: 1  ->  95186
+
+    F3 · par DENTRO Y FUERA + sustantivo territorial nombrado
+        "DENTRO Y FUERA DE LA BAHIA" / "DENTRO Y FUERA DE LA BAHIA DE SAN VICENTE" / "DENTRO Y FUERA DE LOS LIMITES DEL PUERTO"
+        restricciones: 4  ->  94985, 95201, 95202, 95346
+
+    F4 · universo de naves enumerado por CLASE, sin numero
+        "EMBARCACIONES MAYORES Y MENORES" / "NAVES Y EMBARCACIONES"
+        restricciones: 3  ->  94985, 95201, 95202
+
+    F5 · universo de naves por ABREVIATURA, sin numero
+        "EE MM"  (en el crudo: "EE.MM.")
+        restricciones: 1  ->  95169
+
+    F6 · universo de naves por EQUIPAMIENTO, no por tamano
+        "NAVES QUE NO CUENTEN CON RADAR"
+        restricciones: 1  ->  95346
+
+    control: los 6 grupos citan solo IDs de (b) — OK
+    control: las formas cubren los 7 IDs de (b), sin huerfanos — OK
+
+--------------------------------------------------------------------------------
+(7) PUNTO 4 — ALCANCE DECLARADO CON PALABRAS, SOBRE LOS 444
+--------------------------------------------------------------------------------
+    RED DE OBSERVACION, no regla de extraccion. Se declara como se armo:
+    el vocabulario salio del dato en dos barridos previos sobre las 444 filas —
+    (i) todo n-grama que arranca en cuantificador universal (17 formas distintas)
+    (ii) todo sustantivo que sigue a preposicion+articulo (21 distintos; los mas
+         frecuentes: BAHIA 257, JURISDICCION 46, LIMITES 10, CALETA(S) 11,
+         BARRA 14, LAGO 4, BAHIAS 4).
+    De ahi se fijaron las familias de abajo. La red es DELIBERADAMENTE ancha:
+    su falso positivo se cuenta, no se esconde.
+
+    VOCABULARIO EMERGIDO — familias, con su conteo en RESTRICCIONES distintas
+    (un registro puede caer en varias; no es una particion):
+
+      W1 TERRITORIO · jurisdiccion                     19 restricciones
+      W2 TERRITORIO · bahia/bahias nombrada           114 restricciones
+      W3 TERRITORIO · limites del puerto                7 restricciones
+      W4 TERRITORIO · caletas / lagos / barra / sector   51 restricciones
+      W5 CUANTIFICADOR · toda/todo/todos/todas         23 restricciones
+      W6 CUANTIFICADOR · totalidad                     16 restricciones
+      W7 NAVES · clases enumeradas sin numero           8 restricciones
+      W8 NAVES · abreviatura EE MM                     50 restricciones
+      W9 NAVES · por equipamiento                       1 restricciones
+
+    DENOMINADOR DECLARADO para el cruce: los cerrados. 335 filas /
+    167 restricciones. Solo ahi existe alcance.tipo.
+
+    CERRADOS QUE DECLARAN ALCANCE CON PALABRAS : 156 restricciones · 311 filas
+
+      por clasificacion actual:
+        umbral                  108 restricciones ·  205 filas
+        total                     5 restricciones ·    5 filas
+        menores_sin_umbral       36 restricciones ·   94 filas
+        no_legible                7 restricciones ·    7 filas
+    suma 156 / 156 — CIERRA  (cruce / restricciones)
+    suma 311 / 311 — CIERRA  (cruce / filas)
+
+    >>> LO QUE PIDE EL PUNTO 4: declaran alcance con palabras y NO son no_legible
+        149 restricciones · 304 filas.
+        Se clasifican bien por otro lado y su alcance en palabras se pierde igual.
+
+--------------------------------------------------------------------------------
+(8) PUNTO 5 — ALGUNA FORMA DE (b) CONTRADICE UNA CLASIFICACION VIGENTE?
+--------------------------------------------------------------------------------
+    CRITERIO DECLARADO. Contradiccion = el alcance.tipo asignado afirma un
+    universo de naves MAS ANGOSTO que el que el texto declara literalmente.
+    El alcance TERRITORIAL solo NO cuenta como contradiccion: es otro eje, y su
+    perdida ya la mide (7). Lo que cuenta es afirmar de menos sobre QUE NAVES.
+
+    Se prueban las dos formas de (b) que hablan del universo de naves:
+      C1  tipo=menores_sin_umbral y el texto nombra tambien a las MAYORES
+      C2  tipo=umbral N y el texto abre una zona sin tope de tonelaje
+
+  C1 — menores_sin_umbral con MAYORES en el texto : 2 restricciones
+      ID 95099 · BAHÍA CONCHALÍ · 3 fila(s) · rama parser:92
+      "SE ESTABLECE NUEVA CONDICION DE \"MAL TIEMPO\", ESTADO DEL PUERTO \"CERRADO\" EN LA BAHIA DE CONCHALI, PARA NAVES MAYORES Y NAVES MENORES POR EVENTO METEREOLOGICO QUE AFECTA A NUESTRA JURISDICCIÓN."
+
+      ID 95100 · BAHIA PICHIDANGUI · 3 fila(s) · rama parser:92
+      "SE ESTABLECE NUEVA CONDICION DE \"MAL TIEMPO\", ESTADO DEL PUERTO \"CERRADO\" EN LA BAHIA DE PICHIDANGUI, PARA NAVES MAYORES Y NAVES MENORES POR EVENTO METEREOLOGICO QUE AFECTA A NUESTRA JURISDICCIÓN."
+
+  C2 — umbral N con "TODO/TODA TIPO EMBARCACIONES" en otra zona : 2 restricciones
+      ID 95220 · BAHÍA CORRAL · 1 fila(s) · umbral asignado 50
+      "SE ESTABLECE CONDICIÓN DE MAL TIEMPO, PUERTO CERRADO PARA TODA TIPO EMBARCACIONES FUERA DE LA BARAR DEL RIO CHIAHUIN, DENTRO DE LA BARRA DEL RIO CHAIHUIN CERRADO PARA EMBARCACIONES MENORES DE 50 ARQUEO BRUTO."
+
+      ID 95219 · SECTOR CHAIHUÍN · 1 fila(s) · umbral asignado 50
+      "SE ESTABLECE CONDICIÓN DE MAL TIEMPO, PUERTO CERRADO PARA TODA TIPO EMBARCACIONES FUERA DE LA BAHIA DE CORRAL, DENTRO DE LA BAHIA DE CORRAL CERRADO PARA EMBARCACIONES MENORES DE 50 ARQUEO BRUTO."
+
+    TOTAL contradicciones afirmativas: 4 restricciones · 8 filas.
+
+    EL CONTRASTE QUE LA VUELVE MEDIDA — el mismo contenido en dos bolsas:
+      ID 94985 -> alcance.tipo = no_legible           rama = null
+      ID 95099 -> alcance.tipo = menores_sin_umbral   rama = parser:92
+      Los dos dicen "mayores y menores". Uno cae en no_legible y el otro en
+      menores_sin_umbral. Lo unico que los separa es si el sustantivo se repite:
+      "NAVES MAYORES Y NAVES MENORES" contiene "NAVES MENORES" contiguo y
+      "EMBARCACIONES MAYORES Y MENORES" no contiene "EMBARCACIONES MENORES".
+      La rama parser:92 (/EMBARCACIONES\s+MENORES|NAVES\s+MENORES/) es literal.
+
+--------------------------------------------------------------------------------
+(9) CIERRE DEL INSTRUMENTO
+--------------------------------------------------------------------------------
+    los 6 sha256 de insumo son identicos al arranque — OK
+    comparaciones efectivas : 4560
+    controles fallidos      : 0
+
+================================================================================
+SIN FALLAS.
+================================================================================
