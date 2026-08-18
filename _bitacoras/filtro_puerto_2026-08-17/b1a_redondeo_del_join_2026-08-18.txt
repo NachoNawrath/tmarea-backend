@@ -1,0 +1,960 @@
+================================================================================
+(b1-a) · EL REDONDEO DEL JOIN — quitar el `toFixed(2)` del CÁLCULO
+Frente del filtro · sesión (b1-a) · 2026-08-18
+================================================================================
+
+QUÉ ES ESTA SESIÓN: la decisión está tomada en §6.4(b) de
+`f2_verde_falso_2026-08-17.txt` — (b1-a) ES LA VÍA, con la CONDICIÓN de medir
+antes los bordes de radio y de margen. Esta bitácora es la de esa sesión.
+NO ES F2. F2 no se toca acá.
+
+ESTADO AL ABRIR, medido y no heredado:
+  backend  379f90c en main LOCAL · origin/main estaba en f1291ac
+  cadena   379f90c <- f1291ac <- 4e5f83e <- 36543c8 <- 9fdf6b8 (base)
+  src/     946bc5d7d80732f97df1cc2966c709423ed2acbe en los cinco
+  pwa      6443178493b8b3c35c11a37253c4b5bd1884ea55 — sin tocar
+  join     dfd07236… · hoja 0ca33c18… — los dos exactos
+  suite    157/157, corrida el 2026-08-18 (piso, no control)
+  :3000    CAÍDO. psql sin contraseña. NINGUNA pieza de esta sesión los necesita:
+           `f1_generar.js` lee sólo ficheros. Se declara medido, no supuesto.
+
+================================================================================
+PIEZA 1 · PUSH Y VERIFICACIÓN — CERRADA
+================================================================================
+PUSH: `f1291ac..379f90c  main -> main`. origin/main = 379f90c88406…
+
+VERIFICADOR: `11_verificar_push.js` (+ su .txt), untracked como los demás del
+frente. Anclado a los CUATRO commits fijos, no a HEAD. No entra en ninguno de
+los que verifica y el control (8) lo comprueba contra los cuatro árboles y
+contra el índice.
+  23/23 cotejos de blob · 36543c8=8 · 4e5f83e=2 · f1291ac=5 · 379f90c=8
+  piso por commit declarado y alcanzado; piso total 23.
+  cadena DERIVADA de la lista; la BASE derivada de git da 9fdf6b8, que es la
+  declarada. 9fdf6b8 no se verifica: no es commit de evidencia.
+  cadena cotejada TAMBIÉN en el remoto — que la local esté bien no dice que sea
+  la que se publicó.
+  mordida: el comparador caza 3/3 pares enfermos y acepta el sano;
+  la API rechaza una ruta inexistente (M-C), así que un verde de (1) es un blob
+  que de verdad está.
+  QUÉ NO PRUEBA: que el CONTENIDO de esos blobs sea correcto.
+  SIN ROJOS. exit 0. El .txt quedó escrito (5.711 bytes), comprobado.
+
+--------------------------------------------------------------------------------
+LO QUE SE PUBLICÓ CON UN DEFECTO ADENTRO — DECISIÓN DEL OWNER, (21-a)
+--------------------------------------------------------------------------------
+379f90c se pusheó TAL CUAL, con la cita falsa `f1_generar.js:102` adentro. Sin
+amend y sin reescribir historia: 379f90c es el ancla fija de los cuatro
+verificadores. La enmienda va con tachado, en pieza propia. Es la DEUDA (D-1).
+
+================================================================================
+PIEZA 2 · CLAUDE.md §7.1, ACOTADO — CERRADA, NO LOCAL
+================================================================================
+COMMIT a93053ebf9aef46b889fc0f1b3edd2d462befe4b · PUSHEADO ·
+`379f90c..a93053e  main -> main` · origin/main = a93053e.
+Un solo fichero, un solo hunk, `11 0 CLAUDE.md`. `src/` en 946bc5d7.
+
+QUÉ QUEDÓ, de las tres cosas que traía la adición sin estagear:
+  VA · el cuelgue de psql, CON EL NÚMERO MEDIDO (no hay número: no tiene límite
+       propio) y CON EL FLAG AISLADO (`-w`, no los dos). Ver D-5.
+  VA · el BOM, RE-FUNDADO sobre leer el `.env` en general, en viñeta propia.
+  SE FUE · la instrucción de tomar `PGPASSWORD` del `.env`. No reformulada, no
+       movida a otro fichero, no dejada como comentario.
+EL LÍMITE VIAJA DENTRO DE LA LÍNEA y no se quedó en el informe: dice que lo
+medido es desde el harness, sin consola, y que lo de la consola interactiva NO
+se midió. Correción del owner sobre mi redacción, del mismo tipo que el defecto
+que la pieza venía a arreglar.
+
+VERIFICADOR: `12_verificar_push_claudemd.js` (+ su .txt), untracked. SIN ROJOS,
+exit 0, evidencia escrita (4.075 bytes).
+  blob-sha 42ceba66102ccb2f55a1de8d373d1d3616315ab9, local = remoto.
+  CLASE (B) MEDIDA Y NO AFIRMADA: el blob tiene 0 bytes CR; el checkout lo
+  materializa con 414 y otro sha256 (21.902 vs 22.316 bytes), así que el sha256
+  NO es la huella y el blob-sha SÍ. Control positivo del contador de CR incluido:
+  sin él, «0 CR en el blob» no probaría que el contador mide algo.
+  EL sha256 EN DISCO HOY COINCIDE CON EL DEL BLOB — y eso es un ACCIDENTE de
+  esta copia de trabajo, que sigue en LF porque nadie la volvió a materializar.
+  Queda escrito para que nadie lo lea como invariante.
+  CONTENIDO PUBLICADO cotejado con la regla D-8: 3 negativos en cero
+  (`PGPASSWORD`, `120 s`, `CUELGA HASTA EL TIMEOUT`) y 6 positivos con su
+  cuenta. El único «password» del documento es el literal `no password
+  supplied`, la salida que uno ve en pantalla; se queda por decisión del owner
+  porque es el dato que hace la línea reconocible.
+  QUÉ NO PRUEBA: que el TEXTO sea correcto.
+
+================================================================================
+PIEZA 3 · LA MEDICIÓN DE BORDES — HECHA. NO SE RE-DERIVÓ NADA
+================================================================================
+INSTRUMENTO `13_medir_bordes.js` (+ su .txt), untracked. SIN FALLAS, exit 0.
+Los dos entregables de F1 siguen en dfd07236… y 0ca33c18…, comprobado al abrir
+y al cerrar. `insumos/f1_generar.js` idéntico byte por byte al que se leyó.
+
+EL ARNÉS (3a) · copia parcheada en el scratchpad, armada POR SCRIPT desde el
+fichero versionado. OCHO parches, cada ancla exigida ÚNICA y todas mordieron.
+El diff copia-vs-original va publicado en el .txt: SIETE hunks para ocho
+parches, porque los parches 1 y 2 caen en líneas contiguas (8 y 10) y git los
+une — medido, no explicado a mano. Stub de escritura que hace TIRAR cualquier
+escritura fuera del scratchpad.
+EL PARCHE DEL DEFECTO VA A LA LÍNEA 67, anclado al token sintáctico COMPLETO
+`{ id: c.id, km: +km(p, c).toFixed(2) }`, y hay control de que le pegó a UNA
+sola: las otras dos apariciones de `toFixed(2)` —la 107 y la 122— siguen
+intactas en la copia.
+
+LOS NODOS (3b) · `insumos/nodos.json`, blob-sha a57bc7a9… comprobado como clase
+(C). psql explícitamente afuera.
+
+EL CONTROL QUE HABILITA LA PIEZA — Y SALIÓ VERDE POR PARTIDA DOBLE:
+  · la corrida CON redondeo reproduce el artefacto 688/688 FILA POR FILA;
+  · y reproduce TAMBIÉN `F1_adjudicacion.tsv` BYTE POR BYTE, sha256 0ca33c18…
+    Los dos entregables, no uno. El arnés no se está midiendo a sí mismo.
+
+--------------------------------------------------------------------------------
+LOS NÚMEROS · denominador 688 nombres · material 23:02Z del 2026-08-17
+--------------------------------------------------------------------------------
+DIFF PRIMARIO (definición: difiere `estado`, `via`, `bahia_id`, la LISTA de
+candidatas o la del empate):
+  filas que cambian ..............   8 / 688
+    cambian `estado` .............   0
+    cambian `via` ................   8
+    cambian `bahia_id` ...........   1
+    cambia la lista de candidatas   0     (ni el conjunto ni el orden)
+    cambia la lista del empate ...   0
+  el reparto por estado NO SE MUEVE: 198 · 194 · 109 · 74 · 113, igual antes y
+  después. Ninguna fila cambia de casillero.
+  las `via` de las 109 `desempatado`:  C2 47→55 · C3 55→50 · C4 6→3 · C5 1→1
+
+DESCOMPOSICIÓN — buckets con su definición, desde lo OBSERVADO:
+  borde de RADIO (≤30) ..............................  0
+  borde de MARGEN, sitio `>=` de :119 ...............  0
+  borde de MARGEN, sitio `<` de :126 ................  0
+  REORDENAMIENTO del sort, sobre las 688 ............  0   (y 0 cambian el primero)
+  cambia el VALOR que lee un criterio ...............  8
+  atribución excluyente: 0 · 0 · 0 · 0 · 8 = 8 de 8, sin filas huérfanas.
+
+SENSIBILIDAD DE LOS CEROS — un cero sin sensibilidad no se reporta:
+  parejas nodo×bahía medidas ....................... 112.144
+  desplazamiento MÁXIMO que introduce el redondeo ... 5,00 m (el techo teórico)
+  distancia MÍNIMA de un km verdadero al borde 30 km  36,0 m   → 7,2× la banda
+  distancia MÍNIMA de una diferencia al borde 10 km . 16,8 m   → 1,68× la banda
+  parejas dentro de la banda del radio .............. 0
+  diferencias dentro de la banda del margen ......... 0  (sobre 397 filas con 2+)
+  Los ceros NO son suerte: para cruzar hacía falta caer en una banda de metros y
+  nada cayó ahí. CON OTRO CATÁLOGO O OTRO `nodos.json` PUEDE NO REPETIRSE.
+
+CONSECUENCIA — filas que cambian `estado` o `bahia_id`: UNA, con nombre.
+  nodo 59 `Caleta Pesquera Guayacán` · desempatado → desempatado ·
+  bahía 85 → 86 · material vivo 0 → 3 filas · 3 restricciones · 0 cierres.
+  servían bahía con material antes 0 · después 1 · con cierre antes 0 · después 0
+  filas vivas ganadas 3 · perdidas 0 · restricciones alcanzadas 0 → 3
+  ES EXACTAMENTE LA LIMITACIÓN DE §7.1 DE LA BITÁCORA DE F2, y se cierra sola.
+
+LÍNEA 108 · `la_geografia_coincide` — denominador 198 `confirmado_declarado`:
+  se dan vuelta ..... 0.  Y el control de al lado: `km_a_esa_bahia` (la 107,
+  presentación, sin parchear) cambia en 0 — prueba de que el parche tocó una sola.
+
+D-1 / D-2 / D-4 RE-AFIRMADAS SOBRE LA RE-DERIVACIÓN ENTERA, no heredadas:
+  las 8 con candidata a 0,00 km resuelven 8/8 por `C2_razon_distancia`;
+  de esas 8 cambia de bahía UNA, el nodo 59, y se va a la 86;
+  las 8 cambian de `via`.
+  NO SE MOVIERON. Lo medido con C2 sola sobre las 109 aguanta sobre las 688.
+
+================================================================================
+PIEZA 4 · LA RE-DERIVACIÓN — HECHA. VARIANTE B
+================================================================================
+INSTRUMENTO `14_rederivar.js` (+ su .txt), untracked. SIN FALLAS, exit 0.
+Corre en tres tiempos y NO llega al tercero si los dos primeros no salen verdes.
+
+  A · CONTROL DE REGRESIÓN — el `f1_generar.js` VIEJO, sacado de git en 36543c8
+      (blob 1e31de35…), reproduce dfd07236… **688/688** y 0ca33c18… byte por
+      byte. EL CONTROL DE LA PIEZA 3 NO SE PERDIÓ AL EDITAR EL INSUMO: se mudó
+      a la versión que git conserva, y ahí se queda para siempre.
+
+  B · MORDIDA — al fichero NUEVO se le devuelve el redondeo SÓLO en la línea 67,
+      anclado al token completo. Con esa única reversión el instrumento nuevo
+      **reproduce el artefacto VIEJO 688/688 y la hoja byte por byte**. Es la
+      prueba de que el cambio está localizado en esa línea y en ninguna otra:
+      si algo más se hubiera movido, esta corrida no volvería a dfd07236….
+
+  C · LA RE-DERIVACIÓN, sobre las rutas reales.
+
+--------------------------------------------------------------------------------
+LAS HUELLAS, CADA UNA CON LA VERSIÓN QUE LA PRODUJO
+--------------------------------------------------------------------------------
+  f1_generar.js @ 36543c8            blob 1e31de35603c7f2e6cce1c6cb77c77013eb6929f
+      join_puerto_bahia.json  sha256 dfd072361faa5607b7c487b73d5d45796d16ec10cbd99a613a5df7db351168f5
+      F1_adjudicacion.tsv     sha256 0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788
+  f1_generar.js @ (b1-a)             blob a7229ca139b19394e3e803aa09caa552b2d8838d
+      join_puerto_bahia.json  sha256 4f9fbdc33e290a4cc2ef4dda3e98918eb3bb22466a0fbe07f0170670becddaf6
+      F1_adjudicacion.tsv     sha256 0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788
+
+--------------------------------------------------------------------------------
+QUÉ SE MOVIÓ — medido fila por fila sobre las 688
+--------------------------------------------------------------------------------
+  34 filas · 36 ítems · 8 + 26 DISJUNTAS, exigido y verde
+    `via` ......... 8   [40, 54, 59, 61, 98, 212, 226, 332]
+    `bahia_id` .... 1   [59]          DENTRO de las 8
+    `elegida_km` .. 1   [59]          DENTRO de las 8 — el nodo 59 lleva TRES campos
+    `margen_km` ... 26                doble redondeo de la 122, CERO decisiones
+    `estado` ...... 0
+  el reparto 198 · 194 · 109 · 74 · 113 NO SE MUEVE.
+  la terna de las 109 `desempatado`: 47·55·6·1 → **55 · 50 · 3 · 1**.
+  el nodo 59 `Caleta Pesquera Guayacán` → bahía 86, a 0,0 km.
+
+SUITE: 157/157 antes y 157/157 después. Nada entró bajo `src/data/` —sigue en 1
+fichero .json, recursivo— así que el número dinámico no se movió y no había
+número nuevo que declarar.
+
+--------------------------------------------------------------------------------
+LO QUE SE ENMENDÓ, con tachado y en origen
+--------------------------------------------------------------------------------
+`insumos/README.txt`
+  · la cita falsa ~~`f1_generar.js:102`~~ → `:67`, con el motivo, y declarada YA
+    NO APLICABLE desde (b1-a);
+  · las dos líneas de escritura ~~:189~~ :200 y ~~:202~~ :213, con el sha nuevo;
+  · el bloque de `f1_generar.js`: sha256 viejo tachado + PROVENANCE POR VERSIÓN,
+    con qué artefacto produce cada versión y qué se movió entre las dos;
+  · bloque nuevo: LOS CUATRO GUARDS EN ROJO, con su costo y con el sucesor
+    declarado REQUISITO DEL TRAMO C;
+  · la terna, en sus dos sitios.
+`filtro_puerto_2026-08-17.txt` §REPARTO DE LOS 688 — la terna, TEXTO COMPLETO
+  (es el sitio de origen según la entrada 18).
+`f2_verde_falso_2026-08-17.txt`
+  · la terna en sus seis sitios (§5.2 con el texto completo);
+  · §7.1 · la LIMITACIÓN CONOCIDA Y FECHADA queda ~~NO ES UN PENDIENTE~~ RESUELTA;
+  · §7.2(A) · el «1 / 55» pasa a ~~1~~ 0 / 55, con las dos cifras atribuidas cada
+    una a SU artefacto.
+
+VERIFICACIÓN DE LA ENMIENDA, con grep multilínea sobre los cuatro ficheros:
+  negativo · `~~50~~ 55` (el token viejo) ....... 0    ← esperado 0
+  positivo · `~~50~~ 50` (el token nuevo) ....... 9    ← el grep encuentra cuando hay
+  tachados totales en los cuatro ficheros ...... 24
+NUEVE SITIOS ENMENDADOS, que son los nueve tachados de la familia de la terna.
+
+EL DÉCIMO SITIO NO SE TOCÓ, Y NO ES UN OLVIDO: `tramo_b_render:98` es el
+REGISTRO SIN TACHAR de lo que F1 publicó, dentro de la entrada (18). No lleva
+tachado y no debe llevarlo — es historia. Lo que necesita es un párrafo NUEVO
+dentro de la entrada, y ese párrafo va en la MISMA pieza que (21), (22) y la
+enmienda de `:138`, que es lo que D-7 decidió para no abrir ese fichero dos
+veces con enmiendas parciales.
+
+--------------------------------------------------------------------------------
+COMMIT, PUSH Y VERIFICACIÓN — LA PIEZA NO CERRÓ LOCAL
+--------------------------------------------------------------------------------
+COMMIT f2d0aea65710ef1f01ae382872c049f00f77c525 · PUSHEADO ·
+`a93053e..f2d0aea  main -> main` · origin/main = f2d0aea.
+CINCO ficheros. `estado_drift.json` NO entró: es del frente de drift.
+`F1_adjudicacion.tsv` TAMPOCO entró, y eso es el RESULTADO MEDIDO y no un olvido:
+no cambió un byte.
+
+ANTES DE COMMITEAR se agregó al README el MAPA DE LÍNEAS POR VERSIÓN, que pidió
+el owner y que este frente necesitaba: el comentario nuevo corrió la numeración,
+así que la misma línea es la 67 @36543c8 y la 72 @(b1-a); el filtro de radio
+pasó de 102 a 113. Un número de línea sin su versión al lado ya costó dos
+enmiendas, y esa nota está dirigida justamente a quien re-deriva.
+
+VERIFICADOR `15_verificar_push_b1a.js` (+ su .txt), untracked. SIN ROJOS, exit 0.
+  5/5 blob-sha local = remoto · piso 5.
+  cobertura exacta; la hoja NO está en el commit; `estado_drift` no entró;
+  `src/` en 946bc5d7.
+  EL CONTROL QUE NO TENÍAN LOS ANTERIORES: se saca el generador DEL COMMIT —no
+  del disco—, se le desvían las dos escrituras y se coteja 688/688 contra el
+  artefacto DEL COMMIT. Verde, más la hoja byte por byte, más la terna 55·50·3·1
+  y el nodo 59 → 86 leídos del artefacto publicado.
+  UN GENERADOR Y UN ARTEFACTO QUE VIAJAN JUNTOS SIN CORRESPONDERSE es lo que
+  costó la entrada (18); ahora hay un control que lo caza.
+  contenido publicado con grep negativo y control positivo: token del defecto 0 /
+  versión nueva 1 · `~~50~~ 55` 0 / `~~50~~ 50` 9 · la cita `:102` sólo tachada ·
+  mapa de líneas, guards congelados y provenance por versión, publicados.
+  QUÉ NO PRUEBA: que quitar el redondeo haya sido la decisión correcta.
+
+================================================================================
+§D · DEUDA ABIERTA — nace en la pieza 1 y se escribe ANTES de la parada
+================================================================================
+REGLA, desde esta sesión: toda deuda que nazca en una pieza se escribe acá antes
+de la parada, con UBICACIÓN EXACTA y QUÉ LA DISPARA. Una deuda dicha sólo en el
+chat no existe.
+
+--------------------------------------------------------------------------------
+ESTADO AL VERSIONARSE · 2026-08-18 — LO QUE SE PUBLICA DESCRIBE HOY
+--------------------------------------------------------------------------------
+Este fichero se escribió mientras las piezas corrían, y cada línea describía el
+estado de SU momento. Se versiona hoy, y lo versionado tiene que describir HOY.
+Las deudas cerradas van marcadas EN ORIGEN, con el commit que las cierra al lado.
+NINGUNA SE BORRA: una deuda cerrada sigue siendo el registro de por qué existió.
+
+  CERRADAS POR f2d0aea · pieza 4 de (b1-a)
+    D-10  el sha256 de la hoja — corregida en este documento el mismo día
+    D-11  las dos variantes — se ejecutó la B
+    D-13  el solapamiento de las 34 — medido fila por fila
+    D-12  (1ª mitad) la segunda cita — enmendada en `insumos/README.txt`
+    D-2   (1ª mitad) los nueve sitios de (P1)
+    D-4   la DECISIÓN sobre los cuatro guards — el sucesor sigue abierto
+
+  CERRADAS POR 73b806a · la pieza de enmienda
+    D-1   sus dos sitios tachados; la incompleta de `tramo_b:114` completada
+    D-2   (2ª mitad) el sitio (P1-bis) `tramo_b:98`, con párrafo y sin tachado
+    D-5   entró como (22), con su tabla inline
+    D-7   (21) y (22) escritas en la lista única
+    D-9   el aprendizaje del bucket → `tramo_b_render` §4.4
+    D-12  (2ª mitad) el aprendizaje del grep → `tramo_b_render` §4.3
+
+  NO ERAN DEUDA
+    D-3   no entra a la lista única; sin acción pendiente
+    D-8   es una REGLA adoptada, vigente, y se aplicó en la pieza de enmienda
+
+  SIGUEN ABIERTAS
+    D-6   el efecto de `-P pager=off` sobre salida larga. MEDIDO HOY: no hay
+          medición nueva, y `CLAUDE.md` sigue diciendo que ese efecto no se midió.
+    D-14  (parcial) las dos cifras no derivadas de F2 —«5 restricciones
+          distintas» y «22 de 55»—. Exigen correr 07/08/09/10 contra el artefacto
+          nuevo, y los cuatro siguen atados al viejo. Ver D-4.
+    D-4   (parcial) el instrumento sucesor de los cuatro guards — Tramo C.
+    D-1   (parcial) las dos citas incompletas de otros ficheros, con ubicación
+          re-medida en `tramo_b_render_2026-08-17.txt` §6.4.
+
+--------------------------------------------------------------------------------
+D-1 · LA CITA `f1_generar.js:102` ES FALSA. LA LÍNEA ES LA 67.
+--------------------------------------------------------------------------------
+  CERRADA 2026-08-18 · sus DOS sitios enmendados en origen y con tachado:
+  `insumos/README.txt` en f2d0aea (pieza 4) y `tramo_b_render_2026-08-17.txt` en
+  73b806a (pieza de enmienda), que además la escribió como entrada (21) de la
+  lista única. La incompleta de `tramo_b:114` se completó en el mismo commit.
+  QUEDA ABIERTA una parte: las OTRAS DOS incompletas viven en otros ficheros y su
+  ubicación re-medida @f2d0aea está en `tramo_b_render_2026-08-17.txt` §6.4.
+QUÉ LA DISPARA: el push de 379f90c. La cita ya estaba escrita; el push la
+publicó. No la creó esta pieza, la volvió pública.
+
+LO MEDIDO, contra el fichero versionado en `insumos/f1_generar.js`:
+   67:  : COORDS.map(c => ({ id: c.id, km: +km(p, c).toFixed(2) })).sort(...)
+  102:  const cand = v.filter(x => x.km <= RADIO).map(...)
+La 67 PRODUCE el km redondeado, dentro de `vecinas()`. La 102 lo CONSUME: es el
+filtro de radio. Quien saque el redondeo «de la :102» edita el filtro de radio,
+no toca el defecto, y el instrumento sigue redondeando.
+En un frente cuya regla es «parche anclado al token sintáctico completo», y que
+ya pagó dos veces por editar la línea de al lado.
+
+UBICACIÓN EXACTA — ~~UNA sola cita con número de línea~~ **DOS**, y dos incompletas:
+  ENMENDADO 2026-08-18, pieza 4 · ERAN DOS. Ver D-12: mi grep del gate no llegó
+  a `insumos/README.txt` porque el patrón `_bitacoras/*/[a-z]*.txt` no baja el
+  nivel de directorio que hace falta.
+  ~~FALSAS, hay que tacharlas:~~ ESTABAN FALSAS Y LAS DOS ESTÁN TACHADAS:
+    `_bitacoras/cableo_cierre_2026-08-17/tramo_b_render_2026-08-17.txt:138`
+      «`f1_generar.js:102`, `+km(p,c).toFixed(2)`. El guard `c[0].km > 0` de la»
+      → ~~enmienda propuesta~~ ENMENDADA en 73b806a: `~~:102~~ :67`, con
+        `@36543c8` al lado y con el puntero al mapa de líneas por versión. Hoy
+        es la `:158`.
+    `_bitacoras/filtro_puerto_2026-08-17/insumos/README.txt:170`
+      «AVISO PARA QUIEN RE-DERIVE EL JOIN: `f1_generar.js:102` redondea las
+       distancias ANTES de la cascada.»
+      → LA PEOR DE LAS DOS: está dirigida literalmente a quien re-derive el
+        join, que es la pieza 4, y lo manda a la línea equivocada.
+      → ~~se enmienda EN LA PIEZA 4~~ ENMENDADA EN LA PIEZA 4, commit f2d0aea.
+        Hoy es la `:204` del README.
+  INCOMPLETAS, no falsas — nombran el fichero sin línea. Decisión aparte de si
+  se les agrega:
+    `_bitacoras/filtro_puerto_2026-08-17/filtro_puerto_2026-08-17.txt:335`
+    `_bitacoras/filtro_puerto_2026-08-17/f2_verde_falso_2026-08-17.txt:435`
+    `_bitacoras/cableo_cierre_2026-08-17/tramo_b_render_2026-08-17.txt:114`
+
+QUÉ NO CAE: el MECANISMO. D-3 y D-4 de `10_diagnosticar_cascada_c2.js` siguen
+en pie —las 8 filas a 1,51–4,35 m, razones 736 a 2579 contra un umbral de 3—.
+Cae la ubicación publicada, no la causa. Es una cita, no un diagnóstico.
+
+  ACLARACIÓN 2026-08-18, pedida por el owner: `:98` y `:138` NO SON LA MISMA
+  COSA Y NINGUNA CORRIGE A LA OTRA. Las dos viven DENTRO de la entrada (18),
+  que ocupa las líneas **97 a 169** de `tramo_b_render_2026-08-17.txt`:
+      :98   «`desempatado`. Publicado: C2 razón 55 · C3 comuna 50 · C4 nombre 3 ·»
+            → es el REGISTRO SIN TACHAR de lo publicado. Es (P1-bis) de D-2.
+            No lleva tachado y no debe llevarlo: es historia.
+      :138  «`f1_generar.js:102`, `+km(p,c).toFixed(2)`. El guard `c[0].km > 0` de la»
+            → es LA CITA FALSA. ~~Es la que se tacha~~ TACHADA en 73b806a:
+              `~~:102~~ :67`, hoy en la `:158` de ese fichero.
+  Una es dónde se registró la terna; la otra es dónde se citó mal la línea.
+  LO QUE SÍ FUE IMPRECISO, y va con tachado porque es mío: el §5 del gate
+  escribió ~~«la entrada (18) en `tramo_b_render_2026-08-17.txt:98`»~~, que
+  invita a leer `:98` como el ancla de la entrada entera. La entrada entera es
+  el rango 97-169; `:98` es una línea suya y nada más.
+  POR QUÉ IMPORTA: sin esto, el que venga a enmendar la cita falsa la busca en
+  `:98` y no la encuentra, o tacha el registro histórico creyendo que es la cita.
+
+ENTRA A LA LISTA ÚNICA COMO (21). Texto que gobierna: la redacción de la
+enmienda la aprueba el owner.
+
+--------------------------------------------------------------------------------
+D-2 · EL CONTEO DEL TACHADO QUE SE DA VUELTA CON (b1) — RECONTADO
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: el §5 del gate de esta sesión dijo «8 sitios en 4 ficheros» y
+enumeró TRES. No cerraba. El owner lo mandó a recontar, y con razón: si el grep
+de la enmienda busca 8 y son 9, uno queda sin enmendar.
+
+UNIDAD DECLARADA: **OCURRENCIA DE TACHADO** `~~…~~`, no línea. Las dos no
+coinciden y por eso hay que decir cuál se usa:
+  · `f2_verde_falso:525` lleva DOS tachados en UNA línea;
+  · `insumos/README.txt:156-157` lleva UN tachado que abarca DOS líneas.
+
+DENOMINADOR, medido: en los cuatro ficheros hay **14 tachados** (28 marcadores
+`~~`) — f2 7 · filtro_puerto 3 · README 3 · tramo_b 1. Los 14 se reparten en
+tres grupos y sólo uno se da vuelta:
+
+  (P1) SE DAN VUELTA CON (b1) — su contenido es la terna o una de sus cifras.
+       **9 ocurrencias · 8 líneas · 3 ficheros:**
+         f2_verde_falso_2026-08-17.txt:275   ~~50~~
+         f2_verde_falso_2026-08-17.txt:420   ~~50~~
+         f2_verde_falso_2026-08-17.txt:422   ~~50~~
+         f2_verde_falso_2026-08-17.txt:525   ~~50~~   (1ª de la línea)
+         f2_verde_falso_2026-08-17.txt:525   ~~50~~   (2ª de la línea)
+         f2_verde_falso_2026-08-17.txt:528   ~~50~~
+         insumos/README.txt:95               ~~50~~
+         insumos/README.txt:156-157          ~~es la apertura de los 109
+                                             `desempatado`~~   ← MULTILÍNEA
+         filtro_puerto_2026-08-17.txt:320    ~~C2 razón 55 · C3 comuna 50 ·
+                                             C4 nombre 3 · C5 capitanía 1~~
+
+  (P1-bis) UN SITIO SIN TACHADO QUE LA ENMIENDA TIENE QUE TOCAR IGUAL:
+         tramo_b_render_2026-08-17.txt:98 — «Publicado: C2 razón 55 · C3 comuna
+         50 · C4 nombre 3 · C5 capitanía 1», el registro de lo publicado dentro
+         de la entrada (18). NO debe llevar tachado —es historia— pero la
+         entrada necesita un párrafo diciendo que tras (b1) esa terna vuelve a
+         ser la del artefacto.
+
+  (P2) NO SE DAN VUELTA — tachan la CAUSA (`c[0].d === 0`), refutada por D-3/D-4.
+       (b1) no las restituye. **4 ocurrencias, las CUATRO multilínea:**
+         filtro_puerto_2026-08-17.txt:329-330
+         f2_verde_falso_2026-08-17.txt:427-428
+         insumos/README.txt:163-164
+         tramo_b_render_2026-08-17.txt:104-106
+
+  (P3) AJENO: filtro_puerto_2026-08-17.txt:528 ~~ES UNA DECISIÓN DE F2.~~ (es
+       del §8(4), el denominador del Tramo C). 1 ocurrencia.
+
+  9 + 4 + 1 = 14. La cuenta cierra contra el denominador medido.
+
+**EL NÚMERO QUE LA ENMIENDA TIENE QUE BUSCAR: 10 sitios en 4 ficheros** — los 9
+de (P1) más el registro de (P1-bis). Si el grep de la enmienda toca 9 o menos,
+falta uno.
+  HECHOS LOS DIEZ · 2026-08-18. Los 9 de (P1) en f2d0aea; re-medidos hoy sobre el
+  universo declarado —los CUATRO ficheros de la familia—: `~~50~~ 50` 9 ·
+  `~~50~~ 55` 0. El de (P1-bis), `tramo_b:98`, en 73b806a: párrafo escrito y SIN
+  tachado, que es lo que correspondía porque es historia.
+
+TRAMPA MEDIDA, y es la que casi se come esta cuenta: **un `grep -o '~~[^~]*~~'`
+de una línea NO VE los tachados multilínea.** De los 14, CINCO son multilínea
+—README:156-157 de (P1) y las cuatro de (P2)— y ese grep devuelve 9 en vez de
+14. El grep de la enmienda tiene que ser multilínea o ir fichero por fichero
+contra este listado.
+
+LA TRAMPA DEL CONTENIDO, que no es de conteo: tras (b1) el artefacto vuelve a
+`55·50·3·1`, pero NO porque lo publicado originalmente estuviera bien — estaba
+mal atribuido, salía de `g7_desempate.js`. Escribir «50» a secas restauraría el
+número y borraría por qué se tachó. La enmienda tiene que llevar el artefacto al
+lado: «55 en dfd07236…; 50 en <sha nuevo> tras (b1)».
+TEXTO QUE GOBIERNA: la redacción la aprueba el owner.
+
+--------------------------------------------------------------------------------
+D-3 · «comuna sólo sale de psql» NO ES UNA PREMISA CAÍDA — se anota y no cuenta
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: el gate de esta sesión la clasificó mal como premisa falsa.
+CORRECCIÓN DEL OWNER, aceptada: la premisa es VERDADERA — `nodos.json` ES el
+volcado de psql, y `/api/puertos` no devuelve el campo. Lo falso era la
+CONCLUSIÓN que se le colgaba: que hiciera falta psql EN VIVO.
+NO ENTRA A LA LISTA ÚNICA. ~~El contador de veinte no se toca; con (21) queda en
+veintiuna.~~ ENMENDADO 2026-08-18: D-5 entró después como (22) y el contador
+quedó en VEINTIDÓS. Esta línea envejeció dentro de su propio documento, entre una
+pieza y la siguiente.
+Lo medido igual queda escrito, porque es lo que decide la pieza 3(b):
+`insumos/nodos.json` trae `comuna` en 664 de 693 filas, y `f1_generar.js:43` lo
+lee de ahí y de ningún otro lado.
+
+--------------------------------------------------------------------------------
+D-4 · LOS GUARDS DEL sha DEL ARTEFACTO SON CUATRO INSTRUMENTOS, NO TRES
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: la pieza 4 los enumera como «08, 09 y 10».
+MEDIDO: `07_medir_verde_falso.js:33-34` lleva los dos sha igual que los otros.
+Los cuatro commiteados con guard de `dfd07236…`/`0ca33c18…` son
+**07 · 08 · 09 · 10**. Cuando (b1) re-derive, se ponen en rojo los CUATRO.
+~~Sin decisión todavía: es de la pieza 4.~~ DECIDIDO EN LA PIEZA 4 —f2d0aea,
+decisión (2)—: los cuatro quedan atados al artefacto viejo y no se re-anclan ahí.
+MEDIDO HOY, 2026-08-18: los cuatro siguen con `dfd07236…`/`0ca33c18…` en su
+`ENTREGABLES` y el artefacto vivo es `4f9fbdc3…`, así que los cuatro dan ROJO si
+se corren. EL INSTRUMENTO SUCESOR SIGUE ABIERTO: requisito del Tramo C.
+
+--------------------------------------------------------------------------------
+D-5 · «psql CUELGA 120 s» ERA FALSO. NO TIENE LÍMITE PROPIO, Y EL 120 ERA DEL
+      INSTRUMENTO QUE LO CORRIÓ
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: la pieza 2 iba a escribir ese 120 en `CLAUDE.md`. El owner exigió
+medirlo antes: en el gate se había probado psql CON los flags —el camino
+arreglado—, no el que la frase describe.
+
+MEDIDO 2026-08-18, psql 16 contra `mapa_navegacion`, sin contraseña en el entorno,
+stdin NO es TTY (el harness no da consola):
+
+    corrida                        corte    exit   elapsed   salida
+    -w -P pager=off                200 s      2      0 s     fe_sendauth: no password supplied
+    -w  solo                        45 s      2      1 s     idem
+    -P pager=off  solo              45 s    124     45 s     0 bytes
+    sin flags                       30 s    124     30 s     0 bytes
+    sin flags, con `</dev/null`     60 s    124     60 s     0 bytes
+    sin flags                      200 s    124    200 s     0 bytes
+
+  exit 124 = lo cortó el `timeout` externo, no psql.
+
+LO QUE SE SIGUE, y son cuatro cosas distintas:
+  (1) NO CUELGA 120 s. El elapsed siguió SIEMPRE al corte externo —30, 45, 60 y
+      200— en las cuatro corridas colgadas. **No tiene límite propio: espera
+      hasta que algo de afuera lo mate.** El «120» era el timeout por defecto de
+      la herramienta que lo corrió aquella vez: un número DEL INSTRUMENTO
+      publicado como número DEL MUNDO. Es la (17)/(18) otra vez, en su forma más
+      barata de cazar y más fácil de creer.
+  (2) EL FLAG QUE IMPORTA ES `-w`, y está aislado: `-w` solo falla en 1 s;
+      `-P pager=off` solo colgó los 45 s enteros. La frase que iba a publicarse
+      le atribuía el efecto a los dos.
+  (3) `</dev/null` NO LO SALVA. Pide la contraseña por la CONSOLA, no por stdin.
+  (4) NO IMPRIME NADA MIENTRAS ESPERA — 0 bytes en las cuatro. Quien lo corra no
+      ve por qué está parado.
+
+LÍMITE DE ESTA MEDICIÓN, declarado: stdin no es TTY acá. En una consola
+interactiva psql mostraría el prompt; eso NO se midió. Lo medido es que SIN
+consola también se queda esperando, sin límite y sin decir nada.
+
+ENTRA A LA LISTA ÚNICA COMO (22). Decidido por el owner el 2026-08-18, con su
+criterio escrito: la lista cuenta PREMISAS CAÍDAS, no premisas que llegaron a
+producción. Mismo criterio que (15) y (16), cazadas por un gate antes de publicar.
+EL CONTADOR DEL FRENTE QUEDA EN VEINTIDÓS.
+~~FALTA ESCRIBIRLA EN LA LISTA: ver D-7.~~ ESCRITA en 73b806a como entrada (22),
+con la tabla de las seis corridas inline —porque esta bitácora estaba untracked y
+un puntero habría apuntado a evidencia no publicada— y con su límite declarado.
+
+--------------------------------------------------------------------------------
+D-6 · LA MITAD DE `-P pager=off` NO ESTÁ MEDIDA Y NO SE PUEDE MEDIR HOY
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: la adición sin estagear afirma «sin `-P pager=off` el pager
+bloquea igual cuando la salida es larga». Eso NO se midió y no es medible sin
+credencial: sin conexión no hay salida larga que paginar.
+QUEDA: `-P pager=off` se sigue recomendando en la invocación —es barato y es la
+costumbre del repo— pero la línea NO puede afirmar su efecto como medido. Se
+mide el día que haya una consulta que devuelva muchas filas.
+
+--------------------------------------------------------------------------------
+D-7 · (21) Y (22) ESTÁN DECIDIDAS Y NO ESTÁN ESCRITAS EN LA LISTA ÚNICA
+--------------------------------------------------------------------------------
+  CERRADA 2026-08-18 por 73b806a: (21) y (22) están escritas en §0 de
+  `tramo_b_render_2026-08-17.txt`, con el contador declarado en VEINTIDÓS y con
+  su denominador al lado —es el ORDINAL más alto, no un censo—. Lo de abajo queda
+  como quedó escrito: es el registro de por qué la pieza se armó así.
+QUÉ LA DISPARA: el owner decidió el 2026-08-18 que D-1 entra como (21) y D-5 como
+(22). La lista única vive en `_bitacoras/cableo_cierre_2026-08-17/`
+`tramo_b_render_2026-08-17.txt` §0, y hoy ~~TERMINA EN (20), en la línea 186~~
+TERMINA EN (22), desde 73b806a: la (20) sigue arrancando en la 186, pero ya no es
+la última.
+Las dos decisiones existen sólo en esta bitácora y en el chat.
+
+UBICACIÓN EXACTA DE LA ESCRITURA PENDIENTE:
+  `tramo_b_render_2026-08-17.txt` — la (20) ocupa 186-196 y el párrafo «LO QUE
+  ENSEÑAN JUNTAS» arranca en 198. (21) y (22) van entre medio.
+
+VA EN LA MISMA PIEZA QUE LA ENMIENDA DE D-1, no en la pieza 2: las tres tocan el
+MISMO fichero —`:138` la cita, §0 las dos entradas— y abrirlo dos veces es
+pedirle a alguien que revise dos diffs del mismo texto.
+LA PIEZA 2 ES `CLAUDE.md` Y NADA MÁS. Esto queda afuera A PROPÓSITO.
+
+--------------------------------------------------------------------------------
+D-8 · UN «DIFF CRUDO» NO PUEDE MOSTRAR LO QUE SE SACÓ DE UN BLOQUE SIN ESTAGEAR
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: la pieza 2 reescribió una adición que NUNCA estuvo commiteada.
+`git diff` compara contra HEAD, y en HEAD ese bloque no existe: el diff salió con
+ONCE líneas `+` y CERO líneas `-`. La instrucción de `PGPASSWORD` desapareció y
+EL DIFF NO LO MUESTRA — no porque el diff mienta, sino porque no tiene con qué
+comparar.
+
+POR QUÉ IMPORTA EN ESTE FRENTE: la parada del diff crudo existe porque dos veces
+se autorizó sobre la DESCRIPCIÓN y el diff traía otra cosa. Acá el diff crudo, la
+herramienta que se puso justamente para eso, NO ALCANZA para ver una SUPRESIÓN.
+Quien lea sólo el diff no puede saber que la credencial se fue.
+
+QUÉ SE HIZO EN SU LUGAR, y es lo que hay que repetir cada vez que se reescribe un
+bloque sin estagear: un grep NEGATIVO con su CONTROL POSITIVO al lado.
+  negativo: `PGPASSWORD` en CLAUDE.md ....... 0
+            «120 s» en CLAUDE.md ............ 0
+  positivo: `pager=off` en CLAUDE.md ........ 2 líneas
+  El único `password` que queda es el literal del mensaje de error de psql,
+  `no password supplied`, dentro de la propia línea que lo cita. No es un valor.
+
+REGLA DEL FRENTE — ADOPTADA POR EL OWNER EL 2026-08-18, "de acá en adelante y no
+sólo en esta pieza": cuando el cambio REESCRIBE
+material sin estagear, el diff se acompaña SIEMPRE de un grep negativo del token
+que se sacó, con control positivo. Sin eso, «lo saqué» es una descripción — y las
+descripciones son lo que este frente dejó de aceptar.
+
+--------------------------------------------------------------------------------
+D-9 · MI HIPÓTESIS DEL REORDENAMIENTO (H-3 DEL GATE) MIDIÓ CERO, Y LA CAUSA REAL
+      ES UN BUCKET QUE NO ESTABA EN LA LISTA
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: la medición de la pieza 3.
+
+EN EL GATE ESCRIBÍ que el `sort` de la 67 ordena sobre el valor redondeado y que
+al quitarlo dos bahías que empatan se reordenan y cambian `cand[0]` sin cruzar
+ningún borde. EL MECANISMO EXISTE. SOBRE ESTE MATERIAL NO DISPARA:
+  filas donde cambia el orden de las candidatas ......... 0 / 688
+  filas donde cambia la PRIMERA candidata .............. 0 / 688
+No lo retiro y no lo doy por falso: es un modo de falla real que con otro
+catálogo puede aparecer. Lo que se retira es la sugerencia de que fuera la causa
+de algo AQUÍ.
+
+Y LO QUE SÍ PASA NO ESTABA EN NINGUNA DE LAS CUATRO CATEGORÍAS —ni en las tres
+del owner ni en la mía—: las 8 filas no cruzan un borde ni se reordenan.
+**CAMBIA EL VALOR QUE UN CRITERIO LEE.** El guard `c[0].km > 0` de C2 mira el
+número, no el conjunto ni el orden. Es un quinto bucket y es el único que se
+llena.
+LA PRIMERA VERSIÓN DE ESTA MEDICIÓN LO ETIQUETÓ «reordenamiento» PORQUE ERA EL
+RESIDUO, y un bucket residual hereda el nombre del último de la lista aunque no
+mida eso. Corregido antes de reportar: el residuo ahora tiene nombre propio y el
+reordenamiento se mide aparte, sobre las 688 y no sólo sobre las que cambian.
+APRENDIZAJE: un bucket «lo que sobra» no es una categoría, es una etiqueta sin
+medición. Se le pone nombre o no se reporta.
+
+--------------------------------------------------------------------------------
+D-10 · EL sha256 DE LA HOJA SE MUEVE POR PRESENTACIÓN, SIN CAMBIAR UNA
+       ADJUDICACIÓN
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: el control extendido de la pieza 3.
+
+  ⚠ CORREGIDA EL MISMO DÍA POR LA PIEZA 4 · **NO PASÓ**. Lo de abajo se midió
+  sobre la VARIANTE A —sin redondeo en ningún lado—, y la que se ejecutó fue la
+  B. En la B la columna `candidatas` de la hoja imprime `empate_entre`, que sale
+  por `presenta()` —o sea REDONDEADO—, así que la hoja quedó **byte por byte
+  idéntica**: sha256 0ca33c18… y 21.494 bytes, los mismos.
+  MEDIDO, no supuesto, en `14_rederivar.js` §E.
+  LO QUE ENSEÑA: una consecuencia medida sobre una variante NO se hereda a la
+  otra. Yo la escribí como propiedad del cambio y era propiedad de la variante.
+  Es la misma familia que D-11, un escalón más abajo.
+
+LO QUE SE MIDIÓ, y vale para la variante A y sólo para ella:
+`F1_adjudicacion.tsv` sin redondeo tiene las MISMAS 74 filas, los mismos
+`nodo_id` y en el mismo orden — y 74 de sus 75 líneas cambian de texto, y el
+fichero pasa de 21.494 a 23.951 bytes. Cambia porque la columna `candidatas`
+imprime `@<km>km` y sin redondeo el km sale con todos sus decimales.
+PARA LA PIEZA 4: quien mire sólo el sha256 de la hoja va a leer «cambió» donde
+no cambió ninguna adjudicación. El guard tiene razón en ponerse rojo; el que lo
+lea tiene que saber por qué.
+
+--------------------------------------------------------------------------------
+D-11 · (b1-a) TIENE DOS VARIANTES Y NO PRODUCEN EL MISMO ARTEFACTO
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: la pieza 3 midió la VARIANTE A —sin redondeo en ningún lado—
+mientras que (b1-a), tal como está escrita en §6.4(b), es la VARIANTE B: «quitar
+el redondeo del CÁLCULO y dejarlo sólo en la presentación de `evidencia`».
+
+MEDIDO, contra el artefacto de hoy:
+  VARIANTE A · el fichero pasa de 596.631 a 621.363 bytes (+24.732) y los km de
+    `evidencia` salen con todos sus decimales en casi toda fila.
+  VARIANTE B · 654 de 688 filas quedan IDÉNTICAS. Difieren 34, NO 8:
+        26 × `evidencia.margen_km`
+         8 × `via`
+         1 × `bahia_id`
+         1 × `evidencia.elegida_km`
+    de las 34, OCHO cambian una decisión —las mismas del diff primario, exigido
+    y verde— y VEINTISÉIS no cambian ninguna.
+
+LA CAUSA DE LAS 26 ES UN SEGUNDO REDONDEO, EN LA LÍNEA 122:
+  `margen_km: +(cand[1].km - cand[0].km).toFixed(2)` resta HOY dos km YA
+  REDONDEADOS y vuelve a redondear. Sin redondear el cálculo, resta los
+  verdaderos y redondea una sola vez. `round(round(a)-round(b))` difiere de
+  `round(a-b)` en un centésimo.
+  NO CAMBIA NINGUNA DECISIÓN: el guard de la 119 usa los km, no este campo.
+
+ESTO REFINA —NO TUMBA— EL H-1 DE MI GATE. Dije que la 107 y la 122 «son
+presentación y no alimentan ninguna decisión». Sigue siendo cierto y está
+medido. Lo que faltaba decir es que la 122 es además un DOBLE REDONDEO, y que su
+valor publicado se mueve en 26 filas aunque nadie decida distinto.
+
+LO QUE LA PIEZA 4 NO PUEDE HACER: implementar una variante y citar los números
+de la otra, ni prometer «8 filas» sobre el fichero. Sobre las DECISIONES son 8;
+sobre el FICHERO son 34 en la variante B y casi todas en la A.
+~~DECISIÓN DEL OWNER, con opciones, cuando se abra la pieza 4.~~ TOMADA EN LA
+PIEZA 4: se ejecutó la VARIANTE B, commit f2d0aea, y los números publicados —34
+filas, 36 ítems, 8 decisiones y 26 sin decisión— son los de la B.
+
+--------------------------------------------------------------------------------
+D-12 · D-1 DECÍA «UNA SOLA CITA CON NÚMERO DE LÍNEA». SON DOS. EL GREP NO LLEGÓ.
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: al abrir el README para la decisión (3) de la pieza 4 apareció
+una SEGUNDA cita falsa de `f1_generar.js:102`, en `insumos/README.txt:170`.
+
+POR QUÉ NO LA VI: el grep del gate fue sobre `_bitacoras/*/[a-z]*.txt`. El README
+vive en `_bitacoras/filtro_puerto_2026-08-17/insumos/README.txt` — UN NIVEL MÁS
+ABAJO. El patrón no baja ahí, así que el fichero nunca entró al universo del
+grep y el cero salió por construcción.
+
+MEDIDO AHORA, con `grep -rn "f1_generar\.js:[0-9]"` sobre TODO el repo:
+  FALSAS (2):  tramo_b_render_2026-08-17.txt:138 · insumos/README.txt:170
+  CORRECTAS (3): README.txt:189 y :202 (las dos escrituras) y README.txt:43
+                 (`nodos.json`) — comprobadas contra el fichero, no supuestas.
+
+ES LA REGLA DEL FRENTE APLICADA A MÍ: «una afirmación falsa aparece más de una
+vez: grep completo al corregir». Hice el grep y lo hice CORTO. Un grep con un
+patrón de ruta que no cubre el árbol entero no es un grep completo: es un cero
+producido por el patrón. Va junto a D-8 y a la (17): un cero declara su alcance
+o no se reporta.
+
+APRENDIZAJE, y va con nombre en §A: UN GREP DECLARA EL ÁRBOL QUE RECORRIÓ.
+
+--------------------------------------------------------------------------------
+D-13 · EL SOLAPAMIENTO DE LAS 34, DECLARADO Y NO DEDUCIDO
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: el owner señaló que 26+8+1+1 = 36 ítems sobre 34 filas sólo
+cierra si `bahia_id` y `elegida_km` caen DENTRO de las 8 del `via`, y que el
+solapamiento se declara, no se deduce.
+
+MEDIDO, fila por fila contra el artefacto de hoy (variante B):
+  `via` ......... 8 filas  [40, 54, 59, 61, 98, 212, 226, 332]
+  `bahia_id` .... 1 fila   [59]              DENTRO de las 8 · comprobado
+  `elegida_km` .. 1 fila   [59]              DENTRO de las 8 · comprobado
+  `margen_km` ... 26 filas [25,31,38,50,92,93,97,100,110,193,293,299,327,328,
+                            329,331,356,497,504,522,526,549,601,602,616,775]
+                            solapamiento con las 8 · CERO, comprobado
+  FILAS distintas 34 · ÍTEMS 36. Las 34 = 8 + 26, DISJUNTAS.
+  Los 2 ítems de más son los dos campos extra del NODO 59, que lleva tres:
+  `via`, `bahia_id` y `elegida_km`.
+
+--------------------------------------------------------------------------------
+D-14 · QUÉ CIFRAS PUBLICADAS DE F2 SE MUEVEN — Y POR QUÉ NO SE PUEDEN
+       RE-MEDIR EN ESTA PIEZA
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: la decisión (4) de la pieza 4.
+
+LO QUE HACE DEMOSTRABLE LA LISTA: cambia UNA sola `bahia_id` en las 688, la del
+nodo 59. Toda cifra que no involucre al nodo 59 ni al reparto de `via` es
+ARITMÉTICAMENTE la misma. No es una estimación: es que el insumo no se movió.
+
+MEDIDO EN LA EVIDENCIA YA PUBLICADA (`07_medir_verde_falso.txt:282`):
+  `Caleta Pesquera Guayacán` ES UNO DE LOS 9 QUE SE APAGAN, y es el que
+  «pierde 3 filas · 3 restr · 0 cerradas · join=bahía 85», recibiendo hoy la 86.
+  Con el join nuevo recibe la 86 — la misma que ya recibía — ASÍ QUE DEJA DE
+  APAGARSE.
+
+SE MUEVEN, y la aritmética cierra sobre la apertura publicada:
+  f2 §1 · «ÁMBAR → ABIERTO» ........ 9 → 8
+  f2 §1 · «con F2 ámbar» ........... 82 → 83
+  f2 §1 · «no se mueven» ........... 611 → 612   (23−8=15 · 15+68=83 · 688−8−68=612)
+  f2 §1 · filas que los 9 dejan de recibir ... 11 → 8
+  f2 §1 · «bahia_resuelta_SIN_filas_vivas» ... 8 → 7
+  f2 §5.1/§7.2(A)/M4 · «1/55 eligió más lejos teniendo material» ... 1 → 0
+  la terna de las 109 `desempatado` ... 47·55·6·1 → 55·50·3·1
+NO DERIVADO Y NO SE ESTIMA:
+  f2 §1 · «5 restricciones distintas» de los 9 — hace falta saber si las 3 de
+  Guayacán se solapan con las de los otros ocho, y eso no está en la apertura.
+  f2 §7.2(A) · «22 de 55 eligen más lejos» — 5 de las 8 salían de C3; cuántas de
+  esas 5 estaban entre las 22 no está medido.
+SE RESUELVEN Y DEJAN DE SER LIMITACIÓN, no «se mueven»:
+  f2 §5.2 y §7.1 — la LIMITACIÓN CONOCIDA Y FECHADA del nodo 59. La causa que
+  ese texto describe queda corregida y el puerto deja de callar.
+
+EL COSTO DE LA DECISIÓN (2), ESCRITO: dejar los cuatro guards atados al artefacto
+viejo significa que 07_, 08_, 09_ y 10_ NO se pueden correr contra el artefacto
+nuevo en esta pieza. Las dos cifras «no derivadas» de arriba quedan pendientes
+hasta que exista un instrumento sucesor. ES UNA CONSECUENCIA ACEPTADA, no un
+olvido, y por eso va escrita.
+
+================================================================================
+§A · APRENDIZAJES DEL FRENTE — con nombre, para que puedan citarse
+================================================================================
+Van acá los que nacieron en esta sesión. ~~SU SITIO DEFINITIVO ES LA LISTA ÚNICA
+de `_bitacoras/cableo_cierre_2026-08-17/tramo_b_render_2026-08-17.txt` §0, donde
+ya viven los de la (17) y la (18); entran ahí en la MISMA pieza que (21) y (22).~~
+ENMENDADO 2026-08-18 · FUERON A OTRO SITIO, por decisión del owner: a §4.3 y §4.4
+de `tramo_b_render_2026-08-17.txt`, publicados en 73b806a. El motivo: ese fichero
+YA TIENE secciones tituladas «APRENDIZAJE DEL FRENTE» —§4.1 y §4.2— y §4.2, «el
+grep que devuelve cero sin fallar», es hermana directa del aprendizaje del grep.
+Los de la (17) y la (18) viven DENTRO de sus entradas, y ni D-9 ni D-12 tienen
+entrada propia. Este párrafo se escribió sin haber visto §4.1 y §4.2.
+Escribirlos acá no los publicó: los dejó listos y con su redacción.
+
+  **UN BUCKET RESIDUAL HEREDA EL NOMBRE DEL ÚLTIMO DE LA LISTA AUNQUE NO MIDA
+  ESO.** (de D-9)
+  La descomposición de la pieza 3 tenía cuatro categorías y un resto. Las cuatro
+  dieron cero y las 8 filas cayeron en el resto, que se llamó «reordenamiento»
+  porque era la última nombrada. No era: el reordenamiento midió 0 sobre las 688,
+  y lo que pasa es que CAMBIA EL VALOR QUE UN CRITERIO LEE — un quinto mecanismo
+  que no estaba en ninguna lista.
+  ES LA MISMA FAMILIA QUE LA (18): una explicación que encaja porque es la que
+  quedaba. Allá la explicación sobrevivía porque el material redondeado no la
+  distinguía de la verdadera; acá sobrevivía porque el bucket residual acepta
+  cualquier cosa que le caiga. Las dos se cazan igual: midiendo la categoría por
+  separado en vez de dejarla como resto.
+  CÓMO SE APLICA: un bucket «lo que sobra» no es una categoría, es una etiqueta
+  sin medición. Se le pone nombre propio y se le mide su denominador, o no se
+  reporta.
+
+  **UN GREP DECLARA EL ÁRBOL QUE RECORRIÓ.** (de D-12)
+  El gate buscó la cita falsa con `_bitacoras/*/[a-z]*.txt` y publicó «una sola
+  cita». Eran dos: la segunda vive un nivel más abajo, en `insumos/README.txt`, y
+  el patrón no bajaba ahí. El cero no salió del árbol: salió del patrón.
+  CÓMO SE APLICA: junto al resultado de un grep va el ÁRBOL que recorrió. Y para
+  afirmar «no hay más», el barrido va sobre el repo entero, no sobre la carpeta
+  donde uno espera encontrarlo.
+
+  **UN TOKEN CITADO COMO LITERAL NO ES UNA AFIRMACIÓN, Y LA REGLA QUE LOS SEPARA
+  SE ESCRIBE ANTES DE CONTAR.** (nace al versionar esta bitácora, 2026-08-18)
+  CASO REAL. Este fichero estuvo untracked hasta hoy y contiene SIETE apariciones
+  de la cita falsa `f1_generar.js:102` y DOS de `~~50~~ 55` —el token viejo de
+  la terna, cuyo negativo la pieza 4 dejó en cero—. Publicarlo mueve esas nueve
+  líneas a material publicado, y con la regla que usó la pieza de enmienda
+  —sin tachado y sin «cita falsa» en la misma línea— CUATRO de las siete y LAS
+  DOS del otro token caían en el bucket NEGATIVO. No cambió una letra del texto:
+  cambió el estado del fichero.
+  LA TERCERA CLASE, DECLARADA Y MECANIZABLE, que es lo que lo arregla:
+    (1) TACHADA · el token va entre `~~ ~~`. Es enmienda en origen.
+    (2) NOMBRADA FALSA · la línea dice «cita falsa» —o equivalente— sobre el
+        token, en la MISMA línea.
+    (3) LITERAL · el token va entre « » —transcripción verbatim de un sitio— o
+        entre backticks dentro de una línea de informe. No es una afirmación: es
+        el token MOSTRADO.
+    NEGATIVO = lo que no cae en ninguna de las tres. Ése es el que va a cero, y
+    es el único que dice algo.
+    POR QUÉ LA (3) ES « » SOLAMENTE PARA ESTE TOKEN, y no es arbitrario: MEDIDO
+    2026-08-18 sobre el repo entero —exclusiones `.git` y `node_modules`—, la
+    cita falsa `f1_generar.js:102` aparece 24 veces y LAS 24 VAN ENTRE BACKTICKS;
+    sin backticks, CERO. Un rasgo que tienen TODAS las apariciones no separa
+    NINGUNA: como discriminante vale lo mismo que no mirar.
+    CONTROL POSITIVO, porque un «no discrimina» también hay que probarlo:
+    `f1_generar.js:67` aparece 7 veces, 5 entre backticks y 2 SIN — el rasgo SÍ
+    discrimina cuando hay algo que discriminar, así que lo de acá es propiedad de
+    ESTE token en la prosa de ESTE frente y no una falla del test. Para
+    `~~50~~ 55` los backticks sí separan —ese token se entrecomilla sólo cuando
+    se lo muestra— y por eso ahí la (3) los acepta. LA REGLA NO ES «backticks sí
+    o no»: es QUÉ MARCA SEPARA EN ESTE MATERIAL, y eso se mide POR TOKEN antes de
+    escribirla.
+    Y UN TERCER SITIO DONDE EL ÁRBOL CRECE SOLO: el instrumento escribe un `.txt`
+    con las líneas que encontró, y ese `.txt` entra al árbol de la corrida
+    SIGUIENTE. Entre la primera corrida y el grep de control el total pasó de 23
+    a 24 sin que nadie editara un fichero de prosa. Un negativo se re-mide contra
+    el árbol que HAY, no contra el que había.
+  LO QUE COSTÓ APLICARLA, y es la prueba de que la regla es mecanizable y no un
+  criterio: UNA línea no tenía ninguna de las tres marcas —la de D-12, «una
+  SEGUNDA cita de `f1_generar.js:102`»—. Le faltaba una palabra, «falsa», y con
+  ella se clasifica sola. Una regla que se declara se corre: la línea que no
+  encaja se arregla, o la regla no sirve.
+  CÓMO SE APLICA: antes de versionar un borrador se corren los negativos del
+  frente SOBRE EL FICHERO QUE VA A CAMBIAR DE ESTADO, y se declara el reparto por
+  clase. Un negativo no es del token: es del token EN UN UNIVERSO, y versionar
+  cambia el universo sin tocar una letra. Es §4.3 de `tramo_b_render` por el otro
+  lado: allá el árbol era más chico que la afirmación; acá el árbol crece solo.
+  DEUDA QUE NACE: esta clase vive por ahora acá. Promoverla junto a §4.3 de
+  `tramo_b_render_2026-08-17.txt` es de otra pieza — abrir ese fichero no es de
+  ésta.
+
+  **UN SCRIPT QUE ESCRIBE EN ESPAÑOL SE ESCRIBE EN ASCII — Y LA REGLA A MEDIAS NO
+  PROTEGE NADA.** (nace en la pieza de §6.3, 2026-08-18 · entorno de esta máquina)
+  CASO REAL. El script que aplicó las enmiendas de esta bitácora ABORTÓ en su
+  primera corrida. Una aserción de ancla decía `'FIN — piezas 1 y 2 cerradas'` y
+  no coincidía con nada. NO ERA EL FICHERO: PowerShell 5.1 lee un `.ps1` SIN BOM
+  como ANSI de la codepage del sistema, así que el guion largo del script
+  —escrito en UTF-8— le llega mutilado al comparador. El ancla estaba rota antes
+  de correr; el fichero estaba intacto.
+  POR QUÉ NO PASÓ EN LAS DOS PIEZAS ANTERIORES: porque ahí la regla se cumplió
+  ENTERA —script ASCII puro, texto en español en un fichero aparte leído con
+  `ReadAllText(..., UTF8)`—. Acá se cumplió a medias: UNA línea de cuarenta
+  llevaba un guion largo, y alcanzó.
+  LO QUE SALVÓ LA CORRIDA, y por eso se escribe al lado: las aserciones de ancla
+  corren TODAS antes del primer `InsertRange`, así que el script tiró SIN
+  ESCRIBIR. Un script que valida a medida que escribe habría dejado el fichero a
+  medias, y el corte de servicio de esa misma tarde habría hecho imposible saber
+  si lo escrito era completo.
+  CÓMO SE APLICA, y es medible: antes de correr un `.ps1` se cuenta
+  `grep -cP '[^\x00-\x7F]'` SOBRE EL SCRIPT —esperado 0— CON control positivo
+  sobre el fichero de fragmentos, que tiene que dar distinto de 0. Acá dio 0 y
+  105. Sin el control positivo, un 0 sólo diría que el patrón no encontró nada.
+  DÓNDE MÁS VIVE: esto es ENTORNO DE ESTA MÁQUINA, no de esta bitácora. Si
+  corresponde va a `CLAUDE.md` §7.1, y eso es PIEZA APARTE: no se abre acá.
+
+  **UN CONTROL NUEVO SE COME LA TRAMPA QUE EL FRENTE YA TENÍA ESCRITA — Y ESO ES
+  LA PRUEBA DE QUE LOS APRENDIZAJES SIRVEN.** (nace en la pieza de §6.3,
+  2026-08-18)
+  CASO REAL. Después del corte de servicio hubo que medir el disco en vez de
+  recordarlo. El control que verificó que ninguna enmienda se hubiera aplicado
+  DOS veces contó trece marcas contra su valor esperado. Doce dieron bien y una
+  dio ROJO: `TOMADA EN LA PIEZA 4`, esperado 1, medido 0.
+  EL FICHERO ESTABA BIEN. El texto cae partido entre la `:673` —«… TOMADA EN
+  LA»— y la `:674` —«PIEZA 4: se ejecutó la VARIANTE B…»—, y el patrón era de UNA
+  sola línea. Con grep multilínea da 1.
+  LO QUE ENSEÑA no es que el control estuviera mal escrito. Es que §4.2 —el grep
+  que devuelve cero sin fallar— y §4.3 —un grep declara el árbol que recorrió—
+  MORDIERON sobre un control nuevo, escrito por quien acababa de publicarlos, en
+  la primera ocasión que tuvieron. Un aprendizaje que caza a su propio autor tres
+  piezas después está vivo; uno que nadie vuelve a encontrar es decoración.
+  Y CAZÓ POR EL LADO BARATO, que es de lo que hay que desconfiar: un rojo falso
+  cuesta una medición. EL MISMO DEFECTO CON EL SIGNO CAMBIADO —un patrón de una
+  línea sobre un negativo cuyo esperado es CERO— habría certificado limpio un
+  duplicado real. Es la asimetría que D-2 ya había medido: el grep de una línea
+  devolvía 9 de 14 tachados y el que faltaba no chistaba.
+  CÓMO SE APLICA: todo conteo de marcas sobre texto envuelto a 80 columnas va
+  MULTILÍNEA, o la marca se elige a propósito dentro de una sola línea. Y un
+  esperado que no se cumple se mide contra el fichero ANTES de tocarlo: acá el
+  rojo era del patrón, y arreglar el fichero habría roto lo que estaba bien.
+  LO QUE ESTE MISMO CONTROL NO VIO, y va escrito porque es su límite: miró
+  MARCAS DE CONTENIDO y no estructura. El empalme había dejado DOS líneas de
+  banner `====` seguidas, en la `:828` y la `:829`, y el control informó «nada
+  duplicado». Lo vio un ojo, no un instrumento. Un chequeo de duplicados sobre un
+  documento cuenta también sus separadores.
+
+  **ANTES DE VERSIONAR UN BORRADOR SE LE SACA COPIA — O EL TRABAJO DE LA PIEZA
+  QUE LO VERSIONA QUEDA SIN DIFF.** (nace en la pieza de §6.3, 2026-08-18)
+  CASO REAL, y el costo ya está pagado. Este fichero estuvo untracked desde que
+  se escribió. La pieza que lo versiona le aplicó DIECISIETE enmiendas —las diez
+  líneas vencidas con su commit, la palabra que le faltaba a D-12, la marca de la
+  línea que enunciaba la medición, tres aprendizajes nuevos, el bloque de estado
+  y un banner duplicado— y NINGUNA de las diecisiete tiene diff: para git esto es
+  un ALTA de 911 líneas, no una modificación, y no hay un «antes» contra el cual
+  comparar. La versión con la que se abrió la pieza —725 líneas, sha256
+  059faa0b…— no quedó guardada en ninguna parte.
+  LO QUE SE PIERDE NO ES EL TEXTO, ES LA REVISIÓN. La parada del diff crudo
+  existe en este frente porque dos veces se autorizó sobre una DESCRIPCIÓN y el
+  diff traía otra cosa. Acá lo único que git puede ofrecer es el fichero entero,
+  y cualquier selección más corta ES una descripción — salvo que venga con el
+  REPARTO que prueba que no dejó nada afuera: cuántas líneas quedan citadas,
+  cuántas no, y que las dos sumen el total. Eso se hizo, y lo cuenta un
+  instrumento, no yo.
+  NO SE RECUPERA. Se escribe para que el próximo no lo repita, no para arreglar
+  éste.
+  CÓMO SE APLICA: antes de tocar un fichero untracked que se va a versionar, se
+  copia al scratchpad y se anota su sha256. Con eso la pieza que lo versiona
+  muestra un diff de verdad —copia contra fichero— aunque git siga viendo un
+  alta. Cuesta un comando y compra la parada entera.
+
+  **UNA CIFRA DEL ASUNTO DE UN COMMIT SE CUENTA CONTRA EL FICHERO QUE EL COMMIT
+  PUBLICA.** (nace en la pieza de §6.3, 2026-08-18)
+  CASO REAL, sobre el commit que publica ESTE fichero. El asunto decía «las
+  TRECE deudas marcadas con el commit que las cierra» y el cuerpo, unos párrafos
+  más abajo, decía «las CATORCE deudas». MEDIDO contra el fichero: hay CATORCE
+  cabeceras `D-N ·`, de D-1 a D-14. El trece salió de la memoria y no de la
+  corrida: es la (14) del frente —una cifra transcrita sin la corrida que la
+  produjo— cometida en el asunto del commit que publica el documento donde esa
+  clase está catalogada.
+  POR QUÉ SE ENMENDÓ CON `--amend` Y NO SE DEJÓ PUESTA: el commit NO había salido
+  de la máquina —`origin/main` seguía en 73b806a— y no era ancla de ningún
+  verificador, así que corregirlo es ENMIENDA EN ORIGEN y no reescritura de
+  historia. El precedente contrario del frente —`379f90c`, pusheado TAL CUAL con
+  la cita falsa adentro— NO aplica: aquél ya estaba publicado y era el ancla fija
+  de cuatro verificadores. LA REGLA NO ES «nunca amend»: es «no se reescribe lo
+  publicado, ni lo que otro instrumento ancla».
+  POR QUÉ DUELE MÁS QUE EN OTRO SITIO: el asunto es lo ÚNICO de un commit que
+  alguien lee sin pedirlo. Un cuerpo correcto no salva un asunto falso, y el
+  cuerpo de éste ya decía CATORCE — la contradicción viajaba dentro del mismo
+  mensaje.
+  CÓMO SE APLICA: toda cifra del mensaje de commit se cuenta CONTRA EL FICHERO
+  QUE ESE COMMIT ESTAGEA, con el comando a la vista, ANTES de escribir el
+  mensaje. Acá el comando era `grep -o "^D-[0-9]* ·" … | sort -u | wc -l`, y da
+  14.
+
+================================================================================
+~~FIN — piezas 1 y 2 cerradas. Pieza 3 HECHA. Pieza 4 AUTORIZADA y en su parada
+previa: las cuatro decisiones resueltas, sin correr nada todavía.~~
+FIN — ENMENDADO 2026-08-18, AL VERSIONARSE ESTA BITÁCORA. Las CUATRO piezas
+corrieron y cerraron: la 4 se commiteó en f2d0aea y se verificó por blob-sha.
+Después vino la PIEZA DE ENMIENDA, 73b806a, que escribió (21) y (22) en la lista
+única, tachó la cita falsa en su último sitio, completó la incompleta de
+`tramo_b:114` y publicó los dos aprendizajes como §4.3 y §4.4.
+EL ESTADO DEUDA POR DEUDA ESTÁ ARRIBA, en §D · ESTADO AL VERSIONARSE. Era la
+línea que alguien lee primero al abrir el fichero por el final, y decía que la
+pieza 4 no había corrido nada.
+================================================================================
