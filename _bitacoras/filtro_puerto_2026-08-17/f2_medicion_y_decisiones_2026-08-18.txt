@@ -1,0 +1,1131 @@
+================================================================================
+F2 · MEDICIÓN Y DECISIONES — la sesión que decide qué se va a escribir
+Frente del filtro · sesión F2-plan · 2026-08-18
+================================================================================
+
+QUÉ ES ESTA SESIÓN: mide y decide. LA ESCRITURA DE F2 NO SE HACE ACÁ y va en
+sesión propia, con su prompt, armado sabiendo lo que ésta devuelva.
+QUÉ NO SE TOCA: `src/`. Ni el bloque `:333-338`, ni `:254-265`, ni el `??` de
+`:340`. Tampoco el artefacto: el join no se re-deriva en esta sesión.
+
+ESTADO AL ABRIR, medido y no heredado (`19_estado_del_frente.js`, exit 0):
+  backend   a6a61dc7470d84b0d81094bcd09d16bc7283d838 · local = origin/main
+  src/      946bc5d7d80732f97df1cc2966c709423ed2acbe — EL MISMO EN LOS NUEVE
+            commits de la cadena: 9fdf6b8 · 36543c8 · 4e5f83e · f1291ac ·
+            379f90c · a93053e · f2d0aea · 73b806a · a6a61dc. Un solo tree.
+  join      4f9fbdc3… (VIGENTE) · hoja 0ca33c18… · f1_generar.js blob a7229ca1…
+            en disco Y en HEAD
+  suite     157 / 157, corrida HOY. `tests 157 · suites 16 · pass 157 · fail 0`
+  guards    07_ · 08_ · 09_ · 10_ los CUATRO anclados a dfd07236… y en ROJO.
+            CORRIDOS HOY, no declarados: exit 3 · 3 · 2 · 2, los cuatro fallando
+            en `4f9fbdc3… ≠ dfd07236…`. Salida desviada por `argv[2]` al
+            scratchpad; los `.txt` versionados quedaron intactos.
+  árbol     1 modificado, `data/catalogo/estado_drift.json`, del frente de drift.
+            Untracked: 65 al cerrar la pieza 1 — y el número se mueve solo,
+            porque el `.txt` de cada corrida entra al árbol de la siguiente.
+  psql      SIN CONEXIÓN. Medido hoy: `-w -P pager=off` → `fe_sendauth: no
+            password supplied`, inmediato. `:3000` caído (netstat vacío).
+            NINGUNA pieza de la pieza 1 los necesitó.
+
+MAPA DE SECCIONES DE ESTE FICHERO — declarado para que las piezas que vengan
+sepan qué está libre sin tener que adivinarlo:
+  §0  lo que cazó el gate                              ESCRITA
+  §1  PIEZA 1 · estado del frente                      ESCRITA
+  §2  PIEZA 2 · M5, los que no se mueven               ESCRITA
+  §3  PIEZA 3 · las cuatro decisiones                 ESCRITA
+  §D  deuda abierta                                    ESCRITA, crece
+  §F  hallazgos fuera de alcance, redactados           ESCRITA, crece
+  §C  PIEZA DE CIERRE · la enmienda de §1 y §4         EJECUTADA
+  §T  TRASPASO al que siga                            ESCRITA
+
+================================================================================
+§0 · LO QUE CAZÓ EL GATE — dos punteros falsos y tres derivas de cita
+================================================================================
+Van acá, y no en el chat, porque los dos punteros venían del prompt y el prompt
+los copió del traspaso. Si no quedan escritos viajan otra vez.
+
+(A) «sus §7 y §8» — ESE FICHERO NO TIENE §8.
+    `f2_verde_falso_2026-08-17.txt` corre §1…§7 y termina en la línea 638. Su
+    propio FIN, en la `:636`, dice «el plan y LAS CUATRO de §8 van en sesión
+    nueva» — apuntando hacia afuera, y diciendo cuatro.
+    §8 VIVE EN UNA CUARTA BITÁCORA: `filtro_puerto_2026-08-17.txt:518`, «§8 ·
+    QUÉ NECESITA F2 PARA ARRANCAR EN SESIÓN NUEVA». La bitácora de (b1-a) ya la
+    citaba bien en su `:427` («del §8(4)»); el traspaso no.
+    CONSECUENCIA: la lista de lectura de un prompt de F2 tiene CUATRO bitácoras,
+    no tres.
+
+(B) «La decisión de F2 está en §6.4(b)» — ES LA DECISIÓN DEL JOIN, NO DE F2.
+    §6.4(b) es el desempate C3 contra una bahía a 0,0 km → la vía (b1-a). El
+    texto dice, literal, «NO APLICADO. Es del join, no del filtro» y «PIEZA
+    PROPIA, AUTORIZACIÓN PROPIA. No es F2». Y ya se ejecutó: commit f2d0aea.
+    EL MANDATO DE F2 ESTÁ EN §6.1 —C1 aceptada por el owner— Y EN §6.2 —la regla
+    (c), N = 100 km—. Los dos en `f2_verde_falso_2026-08-17.txt`.
+    CONSECUENCIA: el puntero manda a la escritura a buscar su mandato en una
+    pieza cerrada de otro frente.
+
+(H) TRES DERIVAS DE CITA, medidas, que no cambian ninguna acción:
+    · `:254-264` para `resolverBahiaIdPorNombre()`: la función es **254-265**
+      @a6a61dc. La `:264` es `return null;` y la llave cierra en la `:265`. El
+      rango `:333-338` del bloque del filtro SÍ es exacto.
+    · «`src/services/catalogo-bahias.js:131` … tira si falta el literal
+      `const BAHIA_COORDS = {`»: la `:131` es el sitio que PASA LA RUTA; el
+      `indexOf` y los cuatro `throw ErrorCatalogoBahias` están en la **`:73-89`**.
+      La entrada (19) de la lista única le atribuye el `indexOf` a la `:131`
+      igual. Como `src/` nunca se movió, la cita era imprecisa cuando se
+      escribió: no caducó.
+      LO QUE SÍ ES VERDAD Y SE VERIFICÓ: ningún fichero de la suite importa
+      `catalogo-bahias`. Las tres apariciones en `src/services/__tests__/` son
+      comentarios de `datos-sin-bom.test.js`. La suite NO lo cubre.
+    · «VEINTIDÓS entradas en la lista única»: medido, las entradas enumeradas
+      son **TRECE**, de la (10) a la (22). 22 es el ordinal más alto. Es lo que
+      §0 de `tramo_b_render` escribe expresamente para que no se repita.
+
+================================================================================
+§1 · PIEZA 1 · ESTADO DEL FRENTE — medido contra los ficheros
+Instrumento: `19_estado_del_frente.js` + su `.txt`. Untracked, por la
+convención declarada del frente. NO ES EL SUCESOR DE LOS CUATRO GUARDS.
+================================================================================
+
+--------------------------------------------------------------------------------
+1.1 · LAS PIEZAS, CON EL COMMIT QUE LAS CIERRA
+--------------------------------------------------------------------------------
+CERRADAS — cada una con el commit, leído de `git log`, no de la memoria:
+
+  F1 · el join derivado                      9fdf6b8  (bitácora, 521 líneas)
+       los insumos dejan de ser efímeros     36543c8  (8 ficheros)
+       nodos.json + README enmendado         4e5f83e
+  F2 §3 · la medición del verde falso        f1291ac  (§1-§5, 07_ y 08_)
+       M4 y el diagnóstico de (18)           379f90c  (09_, 10_ y enmiendas)
+  CLAUDE.md §7.1 · psql sin credencial       a93053e  (1 fichero, 1 hunk)
+  (b1-a) · el redondeo sale del cálculo      f2d0aea  (5 ficheros; el join pasa
+                                                      de dfd07236… a 4f9fbdc3…)
+  la pieza de enmienda · (21) y (22)         73b806a  (1 fichero)
+  versionar la bitácora de (b1-a)            a6a61dc  (960 líneas de alta)
+
+  Adyacente, otro frente pero es donde vive la lista única: el cableo de cierre,
+  Tramo A y Tramo B. Su backend es b9e81745 —existe, comprobado con
+  `git cat-file -t`— y está FUERA de la cadena de este frente.
+
+ABIERTAS:
+  F2 · el plan y las decisiones ......... ESTA SESIÓN. Sin commit.
+  D-1 / D-4 / D-6 / D-14 ................ ver 1.2
+
+NO EMPEZADAS — cero commits, comprobado:
+  LA ESCRITURA DE F2 ..... sesión propia. Depende de esta sesión y de nada más.
+  F3 · las 74 `a_adjudicar` ... sesión propia. F2 NO la necesita: §8 dice que
+                               las 74 entran como silencio hasta que alguien
+                               las conteste.
+  TRAMO C · el zarpe ..... necesita el denominador (§8(4)) y el instrumento
+                           sucesor de los cuatro guards.
+  EL INSTRUMENTO SUCESOR DE LOS CUATRO GUARDS ... requisito del Tramo C.
+
+--------------------------------------------------------------------------------
+1.2 · LAS DEUDAS ABIERTAS — ubicación exacta y qué las dispara
+--------------------------------------------------------------------------------
+Las ubicaciones están RE-MEDIDAS @a6a61dc. Las que D-1 anotó son @379f90c y las
+que §6.4 re-midió son @f2d0aea; entre f2d0aea y hoy se movieron `tramo_b`
+(73b806a) y la bitácora de (b1-a) (a6a61dc), así que sólo esas dos podían
+correrse — y se comprobó que las otras dos no.
+
+  D-1 (parcial) · LAS CITAS INCOMPLETAS. **SON TRES, NO DOS.**
+     UBICACIÓN, medida hoy con barrido multilínea sobre 12.507 ficheros desde la
+     raíz, exclusiones `.git` y `node_modules`:
+        `_bitacoras/filtro_puerto_2026-08-17/f2_verde_falso_2026-08-17.txt:442`
+        `_bitacoras/filtro_puerto_2026-08-17/filtro_puerto_2026-08-17.txt:344`
+        `_bitacoras/filtro_puerto_2026-08-17/insumos/README.txt:201`   ← LA NUEVA
+     REPARTO DEL BARRIDO, porque el crudo no da tres sino cuatro: prosa del
+     frente **3** · transcripción literal en ESTE fichero **1** · eco del `.txt`
+     de la corrida **0** · TOTAL CRUDO 4. Sólo las tres de prosa son
+     afirmaciones. Ver F2-D1.
+     QUÉ LA DISPARA: el barrido de la pieza 1. Ver F2-D1 en §D — la tercera no es
+     un descuido nuevo: es la MISMA cobertura de árbol que D-12 ya había cazado
+     para la clase «cita falsa», que nadie volvió a correr para la clase
+     «incompleta», en el MISMO fichero.
+
+  D-4 (parcial) · EL INSTRUMENTO SUCESOR DE LOS CUATRO GUARDS.
+     UBICACIÓN: `07_medir_verde_falso.js:33-34` · `08_…:22-23` ·
+     `09_…:47-48` · `10_…:30-31`, los cuatro con `dfd07236…`/`0ca33c18…`.
+     QUÉ LA DISPARA: cualquier medición de F2 que quiera correr contra el
+     artefacto vigente. Hoy dispara sobre M5 — ver 1.4.
+     NO SE RE-ANCLAN: decisión (2) de la pieza 4 de (b1-a), commit f2d0aea.
+
+  D-6 · EL EFECTO DE `-P pager=off` SOBRE SALIDA LARGA.
+     UBICACIÓN: `CLAUDE.md:361-362`, que lo dice con su límite escrito —«efecto
+     que en esta máquina no se pudo medir por no haber conexión»—.
+     QUÉ LA DISPARA: una consulta que devuelva muchas filas. MEDIDO HOY que
+     SIGUE SIN PODERSE: psql devuelve `fe_sendauth: no password supplied`. La
+     deuda no avanzó y la línea que la declara sigue siendo verdadera.
+
+  D-14 (parcial) · LAS DOS CIFRAS NO DERIVADAS. **QUEDA UNA.**
+     · «22 de 55» — **MEDIDA HOY, y ya no es 22 de 55.** Ver 1.3 y F2-D3.
+     · «5 restricciones distintas» de los 9 que se apagan (f2 §1) — SIGUE
+       ABIERTA. UBICACIÓN: `f2_verde_falso_2026-08-17.txt:52`.
+       QUÉ LA DISPARA: hace falta saber si las 3 restricciones de Guayacán se
+       solapan con las de los otros ocho, y eso no está en la apertura
+       publicada. Exige el instrumento de M5.
+
+  HEREDADAS DE `tramo_b_render`, abiertas y ajenas a esta sesión:
+     §5   el guard de cero comparaciones es INALCANZABLE en 3 de los 16
+          verificadores de push. Opción (c), retrofit a los 16: redactada, no
+          aplicada. Dispara al escribir el verificador de la escritura de F2.
+     §8   dónde viven los instrumentos. Recomendación (a) —versionarlos junto a
+          su `.txt`— redactada y no aplicada.
+     §6.1 `DeportiveAlerts.jsx:533` hace `require()` a una ruta inexistente. Es
+          de la PWA. No es de este frente.
+     §6.2 la capitanía de zarpe de Chañaral rotula «Quintero». Sin diagnosticar.
+
+  CERRADA DESDE LA ÚLTIMA SESIÓN, y se anota para que nadie la reabra:
+     §6.3 de `tramo_b_render` — la bitácora de (b1-a) estaba untracked. La
+     versionó a6a61dc. Su opción (a) se ejecutó.
+
+--------------------------------------------------------------------------------
+1.3 · LAS CIFRAS MEDIDAS CONTRA dfd07236… QUE SIGUEN CITADAS COMO VIGENTES
+--------------------------------------------------------------------------------
+EL HALLAZGO ES DE UBICACIÓN, NO DE ARITMÉTICA: D-14 hizo bien la cuenta, pero la
+escribió en la bitácora de (b1-a) y NO en el sitio donde las cifras se leen.
+
+§1 DE `f2_verde_falso_2026-08-17.txt`, LÍNEAS 42-55, MEDIDO HOY: **cero tachados
+y cero menciones de artefacto** en todo el bloque. Las siete cifras se leen como
+vigentes:
+
+    hoy ámbar ......................  23 / 688      NO se mueve
+    con F2 ámbar ...................  82 / 688      → 83
+    ÁMBAR → «ABIERTO» ..............   9 / 688      → 8
+    verde → ámbar ..................  68 / 688      NO se mueve
+    no se mueven ................... 611 / 688      → 612
+    LOS 9 DEJAN DE RECIBIR: 11 filas               → 8 filas
+    8 con bahía resuelta sin filas vivas           → 7
+
+CINCO DE SIETE SE MOVIERON. Las dos que no se mueven son las que no dependen del
+join: «hoy ámbar» es el filtro por nombre de hoy, y los 68 verde→ámbar no
+incluyen a Guayacán, que ya era ámbar. La aritmética de D-14 cierra:
+23−8 = 15 · 15+68 = 83 · 688−8−68 = 612.
+
+QUÉ LO VUELVE URGENTE Y NO SÓLO PROLIJO: hasta a6a61dc la bitácora de (b1-a)
+estaba untracked y D-14 era evidencia local. **Desde a6a61dc hay DOS FICHEROS
+PUBLICADOS QUE SE CONTRADICEN** — §1 dice 611 sin marca y D-14 dice 611 → 612.
+Ver F2-D2.
+
+LO QUE SÍ ESTÁ CORRECTAMENTE ATRIBUIDO, comprobado línea por línea y no por
+patrón: el «1/55» de §5.2 (`:287`) vive dentro de un bloque que en la `:284`
+dice «verificado contra `dfd07236…`», y §7.2(A) lo enmienda a `~~1~~ 0 / 55`
+con las dos cifras atribuidas cada una a su artefacto. Ése no es un pendiente.
+
+Y LA TERNA @4f9fbdc3, medida de primera mano contra el artefacto vigente:
+    desempatado 109 · C2 55 · C3 50 · C4 3 · C5 1
+que es lo que la entrada (18) enmendada ya dice. Coincide.
+
+--------------------------------------------------------------------------------
+1.4 · QUÉ DEPENDE DE QUÉ
+--------------------------------------------------------------------------------
+QUÉ BLOQUEA A LA ESCRITURA DE F2 — y es lo más corto de la lista:
+  · las CUATRO decisiones de la pieza 3. Nada más. No la bloquea F3 (§8 lo dice
+    expresamente), no la bloquea el Tramo C, no la bloquea el join.
+  · el denominador del Tramo C **no** la bloquea: es consecuencia, se calcula
+    después.
+
+QUÉ BLOQUEA A LA PIEZA 2 (M5) — y esto sí es un bloqueo real, resuelto hoy:
+  · un instrumento que lea el artefacto VIGENTE. Los cuatro que producen la
+    partición de §1 están anclados al viejo y no se re-anclan (D-4).
+  · AUTORIZADO POR EL OWNER como (F-i) el 2026-08-18: instrumento nuevo, anclado
+    a `4f9fbdc3…` y a los insumos versionados, untracked, **declarado por
+    escrito como NO sucesor de los cuatro guards** en su cabecera y acá.
+  · el material NO lo bloquea: las dos capturas de las 23:02Z del 2026-08-17
+    están versionadas en `insumos/` y son de clase (A).
+
+QUÉ BLOQUEA AL TRAMO C:
+  · el denominador (§8(4)), que depende de la regla (c) aplicada y del resultado
+    de M5. `501/187` es el reparto PREVIO a (c) y es del ZARPE — verificado hoy
+    contra el artefacto vigente: 198+194+109 = 501 y 74+113 = 187, y el reparto
+    por estado no se movió entre los dos artefactos, así que esa cifra vale
+    contra los dos.
+  · el instrumento sucesor de los cuatro guards (D-4).
+  · el guard inalcanzable de §5 de `tramo_b`, si el Tramo C escribe verificador.
+
+QUÉ BLOQUEA A F3:
+  · nada de esta sesión. F3 contesta las 74 `a_adjudicar` y F2 las trata como
+    silencio mientras tanto. La dependencia va al revés de como suele leerse.
+
+QUÉ NO BLOQUEA A NADIE Y CONVIENE DECIRLO: el join. Está en `4f9fbdc3…`, sus
+insumos y su generador están versionados y el generador reproduce el artefacto
+desde el commit — lo probó `15_verificar_push_b1a.js`.
+
+================================================================================
+§2 · PIEZA 2 · M5 — LOS QUE NO CAMBIAN DE COLOR
+Instrumento: `20_medir_m5.js` + su `.txt`. Untracked. Exit 0, SIN FALLAS.
+NO ES EL SUCESOR DE LOS CUATRO GUARDS — declarado en su cabecera y acá.
+================================================================================
+MATERIAL, con su hora, porque ninguna cifra viva vale sin ella:
+  CONGELADO_puertos.json · 2026-08-17T23:02:53.110Z · 693 filas · 688 nombres
+  CONGELADO_vivo.json    · 2026-08-17T23:02:53.110Z · 26 filas · 26 restricciones
+                           · 15 bahías · 16 filas cerradas
+  join `4f9fbdc3…` · 688 filas · comprobado al abrir y al cerrar
+Los dos congelados están versionados y son de clase (A).
+
+CONTROL DE COMPARABILIDAD, antes de medir nada: la normalización de este
+instrumento da 685 exactos · 3 sólo tras normalizar · 0 sin resolver, que es
+EXACTAMENTE lo que publicó 07_. Si no coincidiera, las dos corridas estarían
+midiendo universos distintos y ninguna comparación valdría.
+
+--------------------------------------------------------------------------------
+2.1 · EL RESULTADO — Y ES UN CERO
+--------------------------------------------------------------------------------
+DEFINICIÓN DE «CAMBIA DE CONTENIDO», y la elección importa más que de costumbre:
+el CONJUNTO de `IDRestriccion` servido hoy difiere del que sirve F2. **No es el
+número de filas.** Dos conjuntos del mismo tamaño y distintos cuentan como
+cambio. Por qué no se contó por tamaño está abajo, en 2.3: hay un caso real que
+una definición por conteo habría declarado «sin cambio».
+
+  ESCENARIO CON LA REGLA (c) — EL QUE F2 VA A ESCRIBIR
+    denominador medido en este escenario ......... 688 nombres
+    hoy ámbar ....................................  23 / 688
+    con F2 ámbar .................................  73 / 688
+    ÁMBAR → «ABIERTO» ............................  10 / 688
+    verde → ámbar ................................  60 / 688
+    NO CAMBIAN DE COLOR .......................... 618 / 688
+       de ésos, verde y verde .................... 605  (vacío de los dos lados:
+                                                        no pueden cambiar)
+       de ésos, ámbar y ámbar ....................  13  <- el único sitio donde
+                                                        M5 puede medir algo
+    **CAMBIAN DE CONTENIDO SIN CAMBIAR DE COLOR ...   0 / 13 · 0 / 688**
+
+  ESCENARIO SIN LA REGLA (c) — CONTROL, no es lo que se va a escribir
+    hoy ámbar 23 · con F2 ámbar 83 · se apagan 8 · verde→ámbar 68 ·
+    no cambian de color 612 (597 verde-verde · 15 ámbar-ámbar)
+    **CAMBIAN DE CONTENIDO ........................   2 / 15 · 2 / 688**
+
+EL BUCKET QUE §6.3 MANDÓ MEDIR EXISTE SÓLO EN EL ESCENARIO QUE F2 NO VA A
+ESCRIBIR. La regla (c) no es neutra sobre él: lo vacía. Los dos que cambiaban de
+contenido son los dos que (c) degrada, y con (c) puesta no cambian de contenido
+— se apagan.
+
+QUÉ NO PRUEBA ESE CERO, y hay que decirlo con la misma letra que el cero:
+  · NO prueba que F2 no cambie nada. Cambia mucho: 10 puertos se apagan y 60
+    empiezan a avisar. Lo que no hay es cambio ESCONDIDO detrás de un color que
+    se queda igual;
+  · NO es una propiedad de F2. Es la medición de un día. A las 23:02Z sólo 15
+    de 163 bahías tenían material, y el bucket ámbar-ámbar tiene 13 nombres. Con
+    otro material vivo el mismo mecanismo puede alumbrar otro número;
+  · NO cubre la recalada. Es el ZARPE, sobre los 688 nombres del catálogo.
+
+--------------------------------------------------------------------------------
+2.2 · D-14 ESTABA BIEN — Y ERA EL OTRO ESCENARIO
+--------------------------------------------------------------------------------
+El escenario SIN (c) reproduce la aritmética de D-14 **cifra por cifra**:
+    D-14 derivó ......  23 · 83 · 8 · 68 · 612
+    medido sin (c) ...  23 · 83 · 8 · 68 · 612
+D-14 no se estimó: se dedujo de que sólo cambiaba una `bahia_id`, y la deducción
+era correcta. Ahora está MEDIDA y deja de ser derivada.
+
+Y ACÁ ESTÁ LO QUE JUSTIFICA HABER DIFERIDO LA ENMIENDA DE §1 — no era prolijidad
+de agenda, era que los números eran otros:
+    §1 publicado, contra dfd07236… ....  23 · 82 ·  9 · 68 · 611
+    D-14, contra 4f9fbdc3… SIN (c) ....  23 · 83 ·  8 · 68 · 612
+    MEDIDO, contra 4f9fbdc3… CON (c) ..  23 · 73 · 10 · 60 · 618
+**LAS TRES TERNAS SON DISTINTAS Y CADA UNA ES VERDADERA EN SU ESCENARIO.**
+Enmendar §1 con las de D-14 habría publicado el escenario que F2 NO va a
+escribir, con el artefacto correcto y la regla ausente — una cifra bien medida
+contestando otra pregunta. Es la (18) en otra ropa: no un número falso, un
+número de otro mundo. LA PIEZA DE CIERRE ENMIENDA CON LA TERNA DE CON (c), y
+nombra las tres.
+
+--------------------------------------------------------------------------------
+2.3 · LOS DOS DEL ESCENARIO SIN (c) — Y POR QUÉ LA DEFINICIÓN NO ES UN DETALLE
+--------------------------------------------------------------------------------
+  «Huasco»
+      hoy   1 fila · 1 restricción · **1 cerrada** · bahía 84
+      F2    1 fila · 1 restricción · **1 cerrada** · bahía 90 «Isla Robinson
+            Crusoe», `confirmado_declarado`, ancla a 556,47 km
+      pierde 1 fila · 1 restr · 1 cerrada   ·   gana 1 fila · 1 restr · 1 cerrada
+
+    ES EL CASO QUE JUSTIFICA LA DEFINICIÓN. Mismo color, mismo número de filas,
+    mismo número de restricciones y mismo número de cierres — y el contenido
+    entero es otro, traído de una bahía a 556 km. **Contado por tamaño, Huasco
+    da «sin cambio» en las cuatro columnas.** Sólo la comparación por CONJUNTO
+    lo ve. Un patrón en Huasco leería un cierre antes y un cierre después, y no
+    tendría cómo notar que le cambiaron cuál.
+
+  «Puerto De Caldera Mejoras Fiscales»
+      hoy   7 filas · 7 restricciones · 7 cerradas · bahía 81
+      F2    1 fila  · 1 restricción  · 0 cerradas · bahía 158, ancla a 554,44 km
+      pierde 7 filas · 7 restr · **7 cerradas**   ·   gana 1 fila · 1 restr · 0
+    Es el ejemplo con el que §6.3 y §7.2(B) motivaron esta medición, y el gate
+    ya había avisado que podía no sobrevivir. No sobrevive: con (c) se apaga.
+    Lo que el gate no sabía es el tamaño de lo que perdía sin (c) — SIETE
+    cierres, medidos.
+
+--------------------------------------------------------------------------------
+2.4 · LAS 12 QUE DEGRADA (c) — ATRIBUCIÓN EXCLUYENTE, SUMA EXIGIDA
+--------------------------------------------------------------------------------
+Categorías nombradas antes de contar, para que ninguna sea el resto (§4.4):
+  (1) hoy sirven algo → con (c) SE APAGAN .................... 2
+      Huasco · Puerto De Caldera Mejoras Fiscales
+  (2) hoy no sirven nada, sin (c) sí → con (c) NO ENCIENDEN ... 8
+      Puerto Viejo (bahía 158) · Guanaqueros · Punta Choros B Los Corrales ·
+      El Membrillo · Portales · San Pedro Con Con · Ventanas · Matanzas
+      (los siete últimos, a la bahía 90 «Isla Robinson Crusoe»)
+  (3) su bahía no tiene material a esta hora → SIN EFECTO ..... 2
+      San Pedro ChaãAral De Las Animas (bahía 157) · Isla Guamblin (bahía 243)
+  2 + 8 + 2 = 12, excluyente y sin filas huérfanas. Exigido por el instrumento.
+
+LA CATEGORÍA (2) ES LA REGLA (c) HACIENDO EXACTAMENTE AQUELLO PARA LO QUE SE
+ESCRIBIÓ, medido de punta a punta por primera vez: los siete puertos de la costa
+entre Valparaíso y Atacama que habrían empezado a mostrar un cierre de Isla
+Robinson Crusoe **no lo muestran**. §5.1 lo predijo sobre 8 nodos con ancla 90;
+acá se ve el efecto sobre la pantalla y son 7 los que se callan, porque el
+octavo —Huasco— hoy ya servía algo y cae en la categoría (1).
+
+LAS TRES CATEGORÍAS DEPENDEN DE LA HORA. Lo que no depende de la hora es CUÁLES
+son las 12.
+
+--------------------------------------------------------------------------------
+2.5 · LA MORDIDA DEL DETECTOR
+--------------------------------------------------------------------------------
+Un cero no se reporta sin probar que el detector puede encontrar:
+  · NEGATIVO CONSTRUIDO · comparado cada servicio consigo mismo: **0 cambios**.
+    El detector no inventa.
+  · POSITIVO CONSTRUIDO · sirviéndole a todos la bahía 89 (1 fila): marca **22
+    de los 23 ámbar de hoy**. El que no marca es el que ya servía esa fila.
+  => distingue conjuntos distintos y no marca los iguales.
+QUÉ NO PRUEBA LA MORDIDA: que el filtro de hoy extraído del fuente sea el que
+corre en producción. Eso lo sostienen la extracción VERBATIM por estructura y la
+aserción de literales, con el ancla `w => p.includes(w)` exigida ÚNICA — el
+mismo mecanismo de 07_, y por eso las dos corridas son comparables.
+
+================================================================================
+§3 · PIEZA 3 · LAS CUATRO DECISIONES
+Instrumento: `21_medir_decisiones.js` + su `.txt`. Untracked. Exit 0, SIN FALLAS.
+NO ES EL SUCESOR DE LOS CUATRO GUARDS.
+================================================================================
+Las cuatro son las de §8 de `filtro_puerto_2026-08-17.txt:518`, con la (1)
+reincorporada por decisión del owner el 2026-08-18 y la (4) tratada como lo que
+es, una consecuencia. Cada una viene con lo que la hace decidible MEDIDO, no
+argumentado, y ninguna se ejecuta acá.
+
+CONTROL QUE HABILITA TODA LA PIEZA — los dos mecanismos de H1 existen y son
+distintos, comprobado sobre el fuente y no supuesto:
+  · el bloque `:333-338` · ancla `w => p.includes(w)` ......... 1 vez
+  · `resolverBahiaIdPorNombre()` · ancla `palabras.some(...)` . 1 vez
+  · el resolvedor NO contiene el ancla del filtro: son dos piezas de código
+    separadas, no dos lecturas de la misma.
+
+--------------------------------------------------------------------------------
+3.1 · DECISIÓN (1) · SI EL SILENCIO SE DISTINGUE EN LA RESPUESTA
+      ES DECISIÓN DE PRODUCTO. La pregunta es si un patrón tiene que ver
+      distinto «no hay bahía que consultar» de «hay bahía y no sabemos cuál».
+--------------------------------------------------------------------------------
+LO PRIMERO, PORQUE CAMBIA LA PREGUNTA: **CON LA REGLA (c) LOS SILENCIOS SON
+TRES, NO DOS.** §8(1) se escribió antes de que §6.2 aceptara la regla (c), y la
+regla crea una clase que ese texto no podía contemplar.
+
+  denominador 688 nombres · medido contra `4f9fbdc3…`
+  (S1) `sin_bahia_en_catalogo` «no hay bahía que consultar» ....... 113
+  (S2) `a_adjudicar` «hay bahías y no sabemos cuál» ...............  74
+  (S3) degradado por (c) «hay una declarada y no le creo» .........  12
+  SILENCIO TOTAL .................................................. 199 / 688
+  CON ATRIBUCIÓN .................................................. 489 / 688
+  Las cuatro clases son excluyentes y suman 688. Exigido, no deducido.
+
+Y LA DIFERENCIA QUE DECIDE, medida: **de los tres silencios, sólo S3 tapa
+material.** S1 y S2 no tienen `bahia_id`, así que no hay nada que mostrar por
+construcción. S3 sí: **10 de las 12** tienen material vivo detrás a esta hora.
+S1 y S2 son silencios de IGNORANCIA; S3 es un silencio DELIBERADO sobre
+material que existe. No son la misma cosa y hoy salen iguales.
+
+QUÉ VE UN PATRÓN HOY, EN LOS TRES CASOS — leído del código, no imaginado:
+el endpoint devuelve `restricciones: []`; `mapearRespuestaPuerto`
+(`useVoyageVerification.js:255`) pone `estado = 'verde'`; y
+`PortStatusBlock.jsx:18-21` y `:197-200` pintan:
+
+        🟢  Abierto
+            Sin restricciones activas
+
+  · «Caleta X» donde SITPORT no publica bahía (S1) ....... 🟢 Abierto
+  · «Caleta Y» con empate sin resolver (S2) .............. 🟢 Abierto
+  · «Huasco», con un cierre vivo en la bahía que su ancla
+    declara, que F2 decidió no creer (S3) ................ 🟢 Abierto
+
+**LOS TRES SE VEN IDÉNTICOS, Y EL TERCERO ES EL QUE MIENTE MÁS.** «Sin
+restricciones activas» es una afirmación sobre el mundo, y en S1 y S2 el
+sistema no está en condiciones de hacerla: lo que sabe es que no sabe.
+
+OPCIONES:
+  (1a) NO DISTINGUIR. Un solo silencio, como hoy. Cuesta cero.
+  (1b) DISTINGUIR S1 DE S2 en la respuesta, sin tocar la PWA.
+  (1c) DISTINGUIR LAS TRES en la respuesta, sin tocar la PWA.
+
+RECOMENDACIÓN: **(1c)**, y el motivo es S3, no la prolijidad taxonómica.
+  · S3 es una decisión del sistema, no una propiedad del mundo. Si no queda
+    nombrada en la respuesta, dentro de tres meses nadie puede distinguir «acá
+    no había nada» de «acá había un cierre y lo callamos a propósito». Es
+    exactamente el defecto que C1 quería evitar con `km_al_ancla`, un escalón
+    más arriba: allá el falso positivo era invisible, acá lo es el falso
+    negativo;
+  · el costo marginal de (1c) sobre (1b) es cero: la clase ya está calculada
+    —el instrumento la separa con el mismo `if`— y el campo ya se va a emitir;
+  · (1a) deja a F2 sin forma de medirse a sí misma después de encendida. Los
+    199 son el 29 % del catálogo y no hay cómo saber por qué callan.
+
+LO QUE (1c) NO ES, y conviene decirlo para que la escritura no se agrande:
+NO es un cuarto estado en pantalla —eso es C2, PIEZA SUCESORA NOMBRADA
+(F2-bis), con autorización propia— y NO toca la PWA. El campo nace como
+INSTRUMENTO: `mapearRespuestaPuerto` copia campo por campo y lo que no se
+nombre ahí no llega al componente, así que el patrón NO va a ver ningún cambio
+hasta que exista F2-bis. Está bien que así sea.
+LO QUE SÍ HABILITA: que el día que F2-bis se escriba, la distinción ya esté
+medida y con historia, en vez de tener que inventarla en la pantalla.
+
+--------------------------------------------------------------------------------
+3.2 · DECISIÓN (2) · QUÉ HACE F2 CON EL `??` DE `sitport-routes.js:340`
+      Sobre la base ya decidida: F2 PUEDE tocar el `??`.
+      `filtradas[0]?.bahia` sigue intocable.
+--------------------------------------------------------------------------------
+LA MEDICIÓN QUE DA VUELTA EL PLANTEO — **el `??` no es un caso de borde: es la
+vía principal, hoy.**
+
+  sobre los 688 nombres, material de las 23:02Z:
+    el `bahiaId` sale de `filtradas[0]?.bahia` .............  23 / 688
+    **el `??` cae y decide `resolverBahiaIdPorNombre` .....  665 / 688**
+       de ésos, devuelve null y no hay rótulo ............. 299
+       de ésos, devuelve una bahía y rotula ............... 366
+
+Y ese 23 es de HOY: el lado izquierdo sólo gana cuando SITPORT publica algo
+para ese puerto. **El rótulo de capitanía de casi todo el catálogo lo decide
+hoy el segundo mecanismo de H1, no el primero.** H1 decía que retirar sólo el
+bloque dejaría al resolvedor como única vía; la medición dice que ya lo es en
+el 97 % de los casos.
+
+QUÉ TAN BUENO ES EL RESOLVEDOR, contra la bahía del join · denominador 688:
+    coincide con el join .....................  141
+    devuelve OTRA bahía ......................  174   <- rótulo distinto
+    devuelve null y el join sí tiene bahía ...  186   <- rótulo perdido
+    el join tampoco tiene bahía (S1/S2) ......  187
+    partición exigida: 141 + 174 + 186 + 187 = 688.
+
+Y EL MECANISMO DEL ERROR ESTÁ DIAGNOSTICADO, no sólo contado. El resolvedor
+parte el nombre en palabras de más de 3 letras, descarta nueve genéricas
+—`caleta`, `bahia`, `puerto`…— y devuelve **la PRIMERA bahía de
+`BAHIA_COORDS` cuyo nombre contenga alguna**. `Object.entries` recorre las
+claves numéricas en orden ascendente, así que gana la de id más chico, no la
+más cercana. Las palabras que la lista de descarte NO tiene son las que mandan:
+
+    «sector» ....... 113 / 688 nombres del catálogo lo llevan
+    «costero» ......  97 / 688
+    «borde» ........  81 / 688
+    «conectividad» .  49 / 688
+
+  y por eso los 174 desacuerdos se concentran en TRES imanes:
+       94  bahía  83 «Sector Punta Totoralillo»   <- 54 % de los desacuerdos
+       29  bahía 143 «Carahue - Borde Costero»
+       12  bahía 207 «Valdivia Conectividad»
+    135 de 174 —el 78 %— caen en esas tres.
+
+  CASO CONCRETO, con las dos posiciones medidas: «Borde Costero Caleta
+  Quintay». La bahía correcta es la 174 «Bahía Rada Quintay» y el nombre la
+  contiene literalmente. El resolvedor devuelve la **143** «Carahue - Borde
+  Costero», que está en la posición 72 del recorrido y la 174 en la 97.
+  **Pierde por orden numérico, no por parecido.**
+
+OPCIONES, y las tres se evalúan contra LOS DOS MECANISMOS de H1:
+  (2a) ALIMENTAR EL `??` DEL JOIN Y DEJAR EL RESOLVEDOR EN PIE — cambia el
+       fallback y no borra la función.
+       CUBRE H1: **NO.** El resolvedor queda sin llamador pero vivo, y el
+       próximo que necesite una bahía por nombre lo va a encontrar ahí,
+       parecido a algo que funciona.
+  (2b) EL `??` SE ALIMENTA DEL JOIN Y `resolverBahiaIdPorNombre()` SE RETIRA
+       ENTERA.
+       CUBRE H1: **SÍ, los dos.** El bloque `:333-338` se va con el cambio
+       principal de F2 y el resolvedor se va con el `??`. No queda ninguna vía
+       léxica.
+  (2c) DEJARLO COMO ESTÁ.
+       CUBRE H1: **NO**, y además deja el rótulo de 665 puertos decidido por
+       orden de clave numérica.
+
+RECOMENDACIÓN: **(2b)**. Y SÍ CUBRE LOS DOS MECANISMOS — se dice explícito
+porque el prompt lo pidió explícito.
+  · el retiro es una operación CERRADA, medida: `resolverBahiaIdPorNombre`
+    tiene **una definición (`:254`) y UN solo uso (`:340`)** en todo `src/` y
+    `scripts/`. No hay segundo llamador que se rompa;
+  · `filtradas[0]?.bahia` NO SE TOCA, y bajo F2 deja de ser un riesgo por
+    construcción: F2 sirve las filas de la bahía del join, así que cuando la
+    lista no está vacía su primer elemento ES de esa bahía. Los dos lados del
+    `??` pasan a coincidir siempre que el izquierdo exista, y el derecho sólo
+    actúa cuando no hay filas vivas — que es justo cuando hoy actúa el
+    resolvedor y se equivoca;
+  · el resultado del rótulo, comparado: hoy 141 coinciden con el join, 174
+    rotulan otra bahía y 186 pierden el rótulo teniéndolo. Con (2b) son **489
+    con la bahía del join y 199 sin rótulo**, y los 199 son exactamente los
+    tres silencios de 3.1 — o sea que no rotular ahí es la respuesta correcta,
+    no una pérdida.
+  · LO QUE (2b) NO ARREGLA, y va escrito: el rótulo de capitanía sigue siendo
+    tan bueno como el join. Si la cascada de desempate está mal ordenada
+    (§6.4(b), abierto), 109 filas rotulan según un criterio que nadie
+    ratificó. (2b) cambia de QUÉ depende el rótulo, no lo vuelve verdadero.
+
+RECORDATORIO DE ALCANCE: esto es atribución de CONTACTO, escalada, y F2 la
+toca por decisión expresa del owner del 2026-08-18 — «un contacto equivocado es
+peor que ninguno, porque nombra confiadamente a la Capitanía que no es». Los
+174 rótulos distintos y los 94 del imán de Totoralillo son la medida de ese
+«peor».
+
+--------------------------------------------------------------------------------
+3.3 · DECISIÓN (3) · SI EL JOIN SE LEE DE `data/catalogo/` O SE MIGRA A
+      `nodos_maritimos`
+--------------------------------------------------------------------------------
+EL NÚMERO QUE SE DECLARA ANTES DEL CAMBIO, medido hoy y con control:
+  · la suite es **157 / 157** con el join donde está, en `data/catalogo/`;
+  · el único test dinámico es `datos-sin-bom.test.js`: recorre `src/data`
+    RECURSIVO, sólo `.json`, y aporta 1 padre + **2 subtests por fichero**.
+    Medido con una copia re-apuntada en el scratchpad: 1 fichero → 3 tests,
+    2 ficheros → 5. **+2 por `.json`**;
+  · hoy hay 1 `.json` bajo `src/data/` (el `.bak-2026-08-12` no termina en
+    `.json` y no entra);
+  · ⇒ **si el join entra bajo `src/data/`, la suite pasa de 157 a 159.** Si se
+    lee desde `data/catalogo/`, NO SE MUEVE.
+
+EL PRECEDENTE, que es lo que vuelve barata la opción (3a) y no estaba en §8:
+**`src/services/drift-arranque.js:28` YA LEE `data/catalogo/` desde producción**
+— `path.join(RAIZ, 'data/catalogo/estado_drift.json')`, con `RAIZ =
+path.join(__dirname, '../..')`. No hay que inventar una convención: hay que
+copiar la que el repo ya usa.
+
+LO QUE NO SE PUDO MEDIR, declarado: la opción de `nodos_maritimos`. psql no
+tiene credencial en esta sesión —medido hoy: `-w -P pager=off` devuelve
+`fe_sendauth: no password supplied`, inmediato— así que el estado real de la
+columna `bahia_sitport_id` no se pudo verificar. Lo que sí se sabe del join:
+198 de 688 nombres traen ancla, o sea el **29 %**, que es la cifra que §8 cita.
+
+OPCIONES:
+  (3a) LEER EL JSON DE `data/catalogo/`. Cero migraciones, cero escritura en
+       base, la suite no se mueve, y el precedente ya existe.
+  (3b) MIGRAR A `nodos_maritimos`. Escribir 688 filas en la base, con su
+       migración y su reversa; el join deja de ser un artefacto versionado con
+       sha256 y pasa a ser estado de base, que no se puede anclar en un guard.
+  (3c) COPIAR EL JSON BAJO `src/data/`. La suite pasa a 159.
+
+RECOMENDACIÓN: **(3a)**.
+  · es la única de las tres cuyo costo está medido de punta a punta;
+  · conserva la propiedad que este frente entero usó como andamio: el join es
+    un fichero con sha256, y trece instrumentos lo anclan. En base, `4f9fbdc3…`
+    deja de existir como concepto y los guards del Tramo C pierden su ancla;
+  · (3c) no compra nada que (3a) no dé, y mueve un número de la suite;
+  · (3b) NO se descarta para siempre: se descarta HOY, porque su costo no se
+    puede medir sin credencial y porque F2 no lo necesita. Cuando alguien
+    quiera que la columna sea la fuente, esa es una pieza con su propia
+    medición.
+SI SE ELIGE (3c) DE TODOS MODOS, el número nuevo queda declarado ACÁ y ANTES
+del cambio: **159**.
+
+--------------------------------------------------------------------------------
+3.4 · DECISIÓN (4) · EL DENOMINADOR DEL TRAMO C — NO ES DECISIÓN, ES CUENTA
+--------------------------------------------------------------------------------
+Ya estaba enmendado en §8(4) como consecuencia. Acá está la cuenta, con los dos
+insumos que le faltaban: la regla (c) aplicada y el resultado de M5.
+
+  ANTES de (c) — el reparto que §8(4) publicó:
+    con atribución 501 · sin atribución 187
+    verificado contra el artefacto VIGENTE, y vale contra los dos: el reparto
+    por estado no se movió entre `dfd07236…` y `4f9fbdc3…`.
+
+  DESPUÉS de (c) — el que el Tramo C tiene que mirar:
+    **CON ATRIBUCIÓN ... 489 / 688**
+    **SIN ATRIBUCIÓN ... 199 / 688**   (S1 113 · S2 74 · S3 12)
+    la diferencia con 501/187 son EXACTAMENTE las 12 de la regla. Exigido.
+
+  => **EL DENOMINADOR DEL TRAMO C ES 489 / 199, NO 501 / 187.**
+
+DOS LÍMITES, y el segundo es el que importa:
+  · este reparto NO depende de la hora: sale del join y de la regla, no del
+    material vivo. A diferencia de las cifras de §1, no hay que citarle una
+    captura;
+  · SÍ DEPENDE DE M4. Si la cascada de desempate está mal ordenada, las 109
+    `desempatado` dejan de ser atribución confiable y el 489 se mueve otra vez.
+    Hoy se sabe que **21 de las 50 de C3** eligieron una bahía más lejana que
+    otra candidata del mismo empate (§T.1). Eso NO dice que estén mal —C3 elige
+    por comuna a propósito— pero sí que el 489 tiene 109 filas apoyadas en un
+    criterio que nadie ratificó. La pregunta sigue abierta en §6.4(b) y no la
+    contesta un conteo.
+
+================================================================================
+§D · DEUDA ABIERTA — nace en la pieza 1 y se escribe ANTES de la parada
+================================================================================
+NUMERACIÓN: **F2-Dn**, y NO continúa la de (b1-a). Aquéllas son D-1 … D-14 y
+viven en `b1a_redondeo_del_join_2026-08-18.txt`; meter un «D-15» en otro fichero
+del mismo frente es fabricar una cita ambigua.
+
+--------------------------------------------------------------------------------
+F2-D1 · LA CLASE INCOMPLETA DE D-1 SON TRES, Y LA TERCERA ESTÁ EN EL FICHERO
+        DONDE D-12 YA HABÍA CAZADO A LA HERMANA
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: el barrido multilínea de la pieza 1.
+MEDIDO: 3 ocurrencias. La nueva es `insumos/README.txt:201`, «Lo que difiere es
+que `f1_generar.js` guarda / `+km().toFixed(2)` y g7 no» — misma forma exacta
+que las otras dos, y EXISTÍA ANTES de f2d0aea: está en la `:167` @a93053e.
+POR QUÉ NO SE VIO: D-12 midió la cobertura del árbol para la clase de la cita
+falsa —la falsa `f1_generar.js:102`— y corrigió el barrido. La «INCOMPLETA» se
+con el barrido VIEJO y nadie la volvió a correr sobre el árbol arreglado. La
+pieza 4 abrió ese README, arregló la falsa de la `:204` y dejó la incompleta
+cuatro líneas más arriba.
+EL DETECTOR TIENE MORDIDA MEDIDA: sobre `tramo_b @f2d0aea` caza la incompleta de
+la `:114` (la que 73b806a completó) y sobre el MISMO fichero hoy da 0. Encuentra
+cuando hay y no marca cuando no hay.
+RED MÁS ANCHA, para que el 3 no sea del patrón: 17 ventanas de 3 líneas donde
+conviven `f1_generar` y `toFixed(2)`; de ésas, 3 son de la clase y el resto
+llevan número de línea o son código de instrumento.
+APRENDIZAJE, y es de método: **UN BARRIDO ARREGLADO SE VUELVE A CORRER PARA
+TODAS LAS CLASES QUE EL BARRIDO VIEJO CONTÓ, NO SÓLO PARA LA QUE LO ROMPIÓ.**
+Arreglar el patrón no re-mide las afirmaciones que el patrón viejo ya publicó.
+
+Y EL ÁRBOL CRECIÓ SOLO MIENTRAS SE ESCRIBÍA ESTO — segunda vez en el frente, y
+la primera sobre un instrumento que cita el aprendizaje. La corrida que siguió a
+escribir este documento midió CUATRO y se puso roja: la cuarta era la línea del
+README transcrita unos párrafos más arriba, entre « ». El fichero no tenía un
+defecto nuevo; el universo del barrido había cambiado porque yo lo cambié.
+—SIN NÚMERO DE LÍNEA A PROPÓSITO: la primera redacción decía «`:260`» y para
+cuando se re-corrió el instrumento ya era la `:264`, movida por las ediciones de
+esta misma pieza. Un número de línea se cita con su versión, y la versión de un
+documento que todavía se está escribiendo cambia entre un párrafo y el
+siguiente. Adentro del propio fichero se cita la sección, no la línea.—
+CÓMO SE ARREGLÓ, y no fue achicando el barrido: el instrumento CLASIFICA y
+publica las tres clases —prosa 3 · transcripción 1 · eco 0— en vez de excluir la
+bitácora en silencio. Una exclusión no declarada es un cero producido por el
+patrón; un reparto publicado se puede auditar. El bucket «eco» mide 0 y va
+escrito igual: es la clase que §A avisó que aparece cuando el `.txt` de una
+corrida entra al árbol de la siguiente, y acá no apareció porque el `.txt` lista
+rutas y no el texto que casó.
+NO APLICADA. Enmendar tres ficheros no es de esta pieza; y la redacción de una
+enmienda la aprueba el owner.
+
+--------------------------------------------------------------------------------
+F2-D2 · DOS FICHEROS PUBLICADOS SE CONTRADICEN DESDE a6a61dc
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: que a6a61dc versionara la bitácora de (b1-a). No cambió una
+letra de §1 de `f2_verde_falso`; cambió el estado del OTRO fichero. Es
+exactamente la tercera clase de §A: un negativo no es del token, es del token EN
+UN UNIVERSO, y versionar cambia el universo sin tocar una letra.
+UBICACIÓN: `f2_verde_falso_2026-08-17.txt:42-55` contra
+`b1a_redondeo_del_join_2026-08-18.txt:735-742`.
+OPCIONES: (a) enmendar §1 en origen, con tachado y con el artefacto al lado de
+cada cifra, como se hizo con la terna; (b) poner en la cabecera de §1 un aviso
+con puntero a D-14 y no tocar los números; (c) esperar a que M5 los re-mida y
+enmendar una sola vez, con las cifras nuevas.
+RECOMENDACIÓN: **(c)**. M5 va a re-medir esa partición entera contra el
+artefacto vigente y con la regla (c) aplicada; enmendar ahora con las cifras
+derivadas de D-14 y volver a enmendar en dos piezas es abrir el mismo fichero
+dos veces con enmiendas parciales, que es lo que D-7 ya decidió no hacer.
+LO QUE (c) CUESTA, y va escrito: hasta entonces los dos ficheros se contradicen
+en el árbol publicado. Si M5 no corre, hay que caer a (a).
+NO APLICADA.
+
+--------------------------------------------------------------------------------
+F2-D3 · EL «22 de 55» YA NO ES 22 DE 55 — MEDIDO, FALTA ESCRIBIRLO
+--------------------------------------------------------------------------------
+QUÉ LA DISPARA: la pieza 1 lo midió contra el artefacto vigente para saber si
+seguía citado como vigente, y resultó que además cambió.
+MEDIDO @4f9fbdc3, denominador las 109 `desempatado` del artefacto:
+    C3 que eligieron una bahía más lejana que otra candidata ...  21 / 50
+    toda la cascada ...........................................  23 / 109
+    (@dfd07236… eran 22 / 55 y 24 / 109)
+DEFINICIÓN con la que se contó: entre las candidatas de `empate_entre`, existe
+alguna con km ESTRICTAMENTE menor que el de la elegida.
+LÍMITE DECLARADO: `empate_entre` sale de `presenta()`, o sea REDONDEADO a dos
+decimales; diferencias por debajo de 5 m no se ven en ese campo. Es el MISMO
+material con el que 09_ contó el 22 de 55, así que las dos cifras se comparan
+entre sí sin corrección.
+CONTROL: 109 de 109 filas entran en la cuenta — 0 sin `empate_entre`, 0 con la
+elegida ausente del empate, 0 con km empatado exacto. No hay bucket residual.
+LO QUE CIERRA: la mitad de D-14. Y **el denominador se movió solo**: C3 pasó de
+55 filas a 50, así que «22 de 55» estaba doblemente vencido — el numerador sin
+re-medir y el denominador ya inexistente.
+LO QUE NO CIERRA: «5 restricciones distintas», que sigue exigiendo M5.
+DÓNDE HABRÁ QUE ESCRIBIRLO: `f2_verde_falso_2026-08-17.txt:289`, `:526` y
+`:563`, y `insumos/README.txt:59`. CUATRO sitios, medidos, no estimados.
+NO APLICADA.
+
+--------------------------------------------------------------------------------
+F2-D4 · MI INSTRUMENTO DIO UN ROJO PROPIO EN SU PRIMERA CORRIDA
+--------------------------------------------------------------------------------
+  CERRADA EN LA MISMA PIEZA. Se escribe igual porque es el registro de por qué
+  el control quedó como quedó.
+QUÉ LA DISPARA: la primera corrida de `19_estado_del_frente.js`, exit 3.
+EL CONTROL «en el árbol hay 1 solo modificado» dio ROJO con «visto: (vacío)».
+EL ÁRBOL ESTABA BIEN. Medido con `git status --porcelain | cat -A` ANTES de
+tocar nada: la línea es « M data/catalogo/estado_drift.json», con su espacio
+inicial. Lo que fallaba era mi helper `g()`, que hace `.trim()` sobre la salida
+entera y se come el espacio de la PRIMERA línea, con lo cual `/^ M/` no
+encuentra nada.
+ES LA ASIMETRÍA QUE §A YA MIDIÓ, otra vez y por el lado barato: un rojo falso
+cuesta una medición. El mismo defecto con el signo cambiado —un `.trim()` sobre
+un negativo cuyo esperado es cero— habría certificado limpio un árbol sucio.
+ARREGLADO: el control lee `git status` sin `trim`, con el motivo escrito al
+lado. Exit 0.
+Y LA REGLA DEL FRENTE APLICADA A MÍ: un esperado que no se cumple se mide contra
+el fichero ANTES de tocarlo. Si hubiera «arreglado» el árbol, habría roto lo que
+estaba bien.
+
+--------------------------------------------------------------------------------
+F2-D5 · EL NEGATIVO DEL FRENTE MORDIÓ SOBRE ESTE MISMO FICHERO, ANTES DE QUE
+        CAMBIARA DE ESTADO
+--------------------------------------------------------------------------------
+  CERRADA EN LA MISMA PIEZA. Se escribe porque es la tercera clase de §A
+  corriendo sola sobre el primer fichero nuevo que el frente escribe después de
+  declararla.
+QUÉ LA DISPARA: la regla de §A —«antes de versionar un borrador se corren los
+negativos del frente SOBRE EL FICHERO QUE VA A CAMBIAR DE ESTADO, y se declara
+el reparto por clase»—, aplicada a este documento.
+LO QUE PASÓ: la primera versión traía la cita falsa `f1_generar.js:102` en una
+línea que NO tenía ninguna de las tres marcas. El token estaba entre backticks
+—que para ESTE token no discriminan, medido en §A— y la palabra «falsa» había
+quedado en la línea de ARRIBA, por el envuelto a 80 columnas. Caía en el bucket
+NEGATIVO, que es el único que dice algo.
+ARREGLADO COMO MANDA LA REGLA: se movió la palabra a la misma línea. No se tocó
+la regla, se arregló la línea.
+REPARTO POR CLASE, declarado, sobre este fichero:
+    tachada 0 · nombrada falsa 1 · literal 0 · **NEGATIVO 0**
+CONTROL POSITIVO DEL CLASIFICADOR, porque un cero necesita probar que separa:
+sobre `tramo_b_render_2026-08-17.txt` el mismo clasificador da 3 apariciones —1
+tachada y 2 nombradas—, así que el cero de acá no sale por construcción.
+OTROS DOS NEGATIVOS, Y CAYERON EN LA MISMA TRAMPA QUE EL PRIMERO: la frase que
+reportaba «`~~50~~ 55` → 0 · `PGPASSWORD` → 0» CONTIENE los dos tokens, así que
+el crudo dio 1 y 1. No es un defecto del fichero: es que una línea que reporta un
+negativo lo vuelve positivo. Se mide por clase, y la marca se eligió MIDIÉNDOLA
+por token sobre el repo entero, no suponiéndola:
+    `~~50~~ 55` .... 12 apariciones con backticks · 4 sin  → SÍ discriminan
+    `PGPASSWORD` ...  5 apariciones con backticks · 25 sin → SÍ discriminan
+Las dos de este fichero van con backticks, o sea clase (3) LITERAL. **NEGATIVO
+REAL: 0 y 0.** (Para la cita falsa `f1_generar.js:102` la marca NO puede ser el
+backtick —§A lo
+midió: las 24 apariciones lo llevan— y por eso ahí la marca es «falsa» en la
+misma línea.)
+Positivos que prueban que el grep encuentra: `4f9fbdc3…` 10 · `dfd07236…` 7,
+todas con su artefacto nombrado al lado.
+
+LA MARCA HUBO QUE AFINARLA UNA VEZ MÁS, y el paso queda escrito porque es la
+parte mecanizable: «lleva backticks pegados al token» no alcanza cuando el token
+viaja DENTRO de un literal más largo —`$env:PGPASSWORD = "<la del .env>"`—, y
+tres líneas de F.3 caían en negativo por eso. LA MARCA QUE SÍ CIERRA, y es la
+que queda declarada: **el token cae dentro de un span de backticks o de « », o
+la línea lleva tachado** — más, para la cita falsa `f1_generar.js:102`, la
+palabra «falsa» en la misma línea, porque para ESE token los backticks no
+separan.
+REPARTO FINAL sobre este fichero, con esa marca:
+    la cita falsa `f1_generar.js:102` .... NEGATIVO 0
+    `~~50~~ 55` .......................... NEGATIVO 0
+    `PGPASSWORD` ......................... NEGATIVO 0
+EL TOTAL CRUDO NO SE PUBLICA, Y NO ES PEREZA: en un documento que reporta sus
+propios negativos, cada línea que dice cuántas apariciones hay AGREGA una. Los
+totales fueron 3·2·7 y al escribirlos pasaron a 5·3·9, sin que cambiara una
+afirmación. La cifra invariante es el NEGATIVO, que es además la única que dice
+algo; el crudo de un token dentro del fichero que lo cuenta no es una cantidad
+estable y no se cita.
+CONTROL POSITIVO DE LA MARCA, porque tres ceros seguidos hay que probar que no
+son del clasificador: sobre
+`_bitacoras/reclasificacion_insular_2026-08-15/PROCEDENCIA.txt` la misma marca
+da 1 aparición y **1 negativo** — ahí el token está crudo. La marca separa.
+Y UN LÍMITE, para que no se lea más ancho: `19_estado_del_frente.js` tiene 54
+líneas con caracteres no-ASCII y ESO ESTÁ BIEN. La regla del ASCII puro es de
+los `.ps1` —PowerShell 5.1 los lee como ANSI sin BOM—; un `.js` lo lee node como
+UTF-8, y es la convención de los instrumentos 07_ … 18_ de este frente.
+
+--------------------------------------------------------------------------------
+F2-D6 · EL INSTRUMENTO DE M5 NACIO BINARIO, Y UN FICHERO BINARIO NO SE PUEDE
+        BARRER
+--------------------------------------------------------------------------------
+  CERRADA EN LA MISMA PIEZA. Se escribe porque el modo de falla es nuevo en el
+  frente y es barato de repetir.
+QUE LA DISPARA: la primera escritura de `20_medir_m5.js`. La linea de `clave()`
+copia la normalizacion de 07_, que es `/[\u0000-\u001f]/`; al escribirla, el
+escape se materializo como DOS BYTES DE CONTROL CRUDOS dentro del fichero.
+COMO SE VIO, y no fue leyendo: `grep` contesto **«Binary file … matches»** en vez
+de la linea. El fichero seguia siendo JS valido —`node --check` pasaba— y la
+expresion incluso tenia la MISMA semantica. Lo que se rompia era otra cosa.
+POR QUE IMPORTA EN ESTE FRENTE, y es el punto: **un fichero que grep clasifica
+como binario queda fuera de todos los barridos de texto del frente.** Los
+negativos, el conteo de tachados, el barrido de citas — todos usan grep, y sobre
+un binario devuelven una linea que no es un resultado. Un instrumento invisible
+para los controles del frente es exactamente lo que los controles existen para
+evitar.
+ARREGLADO: la linea se reescribio construyendo el escape a mano. CONTROL, y es
+el que queda como regla: **0 caracteres de control fuera de LF y CR** medidos
+sobre el fichero entero, mas `node --check`. Los dos, porque compilar no prueba
+que sea texto y ser texto no prueba que compile.
+NO ES LA REGLA DEL .ps1 EN ASCII, y conviene no confundirlas: aquella es de
+codificacion —PS 5.1 lee ANSI sin BOM— y esta es de bytes de control en el
+fuente. `20_medir_m5.js` tiene caracteres no-ASCII a proposito, como los
+instrumentos 07_ a 19_, y eso esta bien.
+Y VOLVIO A PASAR MIENTRAS SE ESCRIBIA ESTE PARRAFO: la linea de arriba que CITA
+el regex se materializo tambien con los dos bytes crudos, y dejo BINARIA a la
+bitacora entera. Lo canto el mismo sintoma —grep contestando «Binary file …
+matches» sobre el documento— y se arreglo igual, construyendo la barra invertida
+aparte. DOS VECES EN LA MISMA PIEZA, la segunda sobre el texto que describe la
+primera: no es un descuido, es que escribir ese literal por la via normal lo
+produce. **El control va sobre TODO fichero que la pieza escribe, no solo sobre
+los instrumentos.**
+TERCERA INSTANCIA, 2026-08-18, y esta vez EL CONTROL LA CAZO ANTES DE CORRER:
+`21_medir_decisiones.js` nacio con los mismos dos bytes en la misma linea. El
+control corrio sobre el fichero recien escrito, dio 2 y se arreglo sin haber
+ejecutado nada. Tres veces el mismo literal por la misma via: **no es un
+descuido que se pueda evitar teniendo cuidado, es una propiedad de como se
+escribe ese caracter**, y por eso el control se queda permanente en la sesion —
+decision del owner— y no como control de la pieza que lo descubrio.
+
+
+================================================================================
+§F · HALLAZGOS FUERA DE ALCANCE — REDACTADOS, NO APLICADOS
+================================================================================
+
+--------------------------------------------------------------------------------
+F.1 · `la_geografia_coincide` AVALA EXACTAMENTE LO QUE LA REGLA (c) SE NIEGA A
+      CREER
+--------------------------------------------------------------------------------
+MEDIDO contra `4f9fbdc3…`, denominador 198 filas `confirmado_declarado`:
+    la_geografia_coincide ....... true 193 · false 5 · null 0
+    filas que la regla (c) N=100 degrada ......... 12 / 198
+    de esas 12, con `la_geografia_coincide: true` ... **12 / 12**
+La peor: nodo 654 «Puerto De Caldera Mejoras Fiscales», ancla a 554,44 km, lng
+−76,829464 —uno de los once del desplazamiento de 6,00°— y el campo dice que la
+geografía coincide.
+
+DEFINICIÓN, leída de `f1_generar.js:119` @(b1-a) [blob a7229ca1…]:
+    `la_geografia_coincide: v.length ? v[0].id === p.idBahia : null`
+`v` son TODAS las bahías ordenadas por distancia, **sin filtrar por radio**. El
+campo pregunta una sola cosa —«¿es la declarada la más cercana?»— y no tiene
+condición de distancia. Un nodo corrido 6° al oeste sigue teniendo su bahía
+equivocada como la más cercana, así que el campo la avala.
+QUE dé `false` en 5 de 198 es lo que prueba que mide algo: no es un `true`
+constante.
+
+OPCIONES: (g1) renombrarlo a lo que mide, `es_la_mas_cercana`; (g2) agregarle la
+condición de distancia, `&& km <= RADIO`; (g3) anotarlo.
+RECOMENDACIÓN: **(g1)**. El campo es honesto sobre lo que computa; lo que no lo
+es, es el nombre. (g2) cambia el VALOR de un campo del artefacto, y hay cuatro
+instrumentos anclados a su sha.
+ES DEL JOIN, NO DE F2 — mismo dueño que (b1-a). ACEPTADA EN PRINCIPIO POR EL
+OWNER EL 2026-08-18 Y EXPRESAMENTE NO APLICADA ACÁ: esta sesión no toca el
+artefacto.
+
+--------------------------------------------------------------------------------
+F.2 · EL EJEMPLO QUE MOTIVA M5 NO SOBREVIVE A LA REGLA (c)
+--------------------------------------------------------------------------------
+No es fuera de alcance —es material de la pieza 2— pero se escribe acá porque
+tumba un ejemplo publicado y eso no puede vivir sólo en el chat.
+`Puerto De Caldera Mejoras Fiscales` es el caso concreto con el que §6.3 y
+§7.2(B) de `f2_verde_falso` motivan la medición de los que «no se mueven»:
+ámbar antes, ámbar después, contenido distinto.
+MEDIDO @4f9fbdc3: nodo 654, `estado: confirmado_declarado`, `via:
+bahia_sitport_id`, bahía 158, `km_a_esa_bahia: 554,44`.
+LA REGLA (c) CON N=100 LO DEGRADA A SILENCIO. Con (c) aplicada NO es ámbar con
+contenido distinto: es ámbar → «Abierto». Sale del bucket que M5 mide y entra en
+el de los que se apagan.
+CONSECUENCIA PARA LA PIEZA 2: el bucket hay que medirlo entero y con la regla
+(c) puesta, y el ejemplo que lo motivó no va a estar adentro. Un bucket que se
+mide por su ejemplo hereda el destino del ejemplo — es la familia de §4.4.
+
+--------------------------------------------------------------------------------
+F.3 · EL NEGATIVO DE `PGPASSWORD` DE (b1-a) TENÍA UN FICHERO DE ALCANCE, Y EL
+      ÁRBOL TIENE VEINTICINCO
+--------------------------------------------------------------------------------
+APARECIÓ MIDIENDO OTRA COSA: al clasificar por marca los negativos de este
+documento hubo que barrer el token en el repo entero, y el barrido devolvió más
+de lo que la pregunta pedía.
+MEDIDO sobre el repo entero, exclusiones `.git` y `node_modules`: `PGPASSWORD`
+aparece **30 veces · 5 con backticks · 25 sin**. Las 25 sin backticks son la
+instrucción, no la mención:
+  · NUEVE cabeceras `.sql` de bitácoras de otros frentes, con la línea
+    `$env:PGPASSWORD = "<la del .env>"` — alcance_costa_afuera, reclasificacion
+    insular, operador_preservetopology, rama_insular_simetrica,
+    simplify_precondicion, e02_recon, e3_medicion_160;
+  · CUATRO `.py` que hacen `env=dict(os.environ, PGPASSWORD=cfg["DB_PASSWORD"])`
+    —`scripts/fase5_construir_capa_ds991.py:1620` entre ellos—;
+  · el resto son binarios de `tools/raster-build/.venv` y un `.pyc`, ajenos.
+
+QUÉ **NO** ES, y va primero porque es lo que asusta de lejos: **NO HAY NINGUNA
+CLAVE EN EL ÁRBOL.** Las nueve `.sql` traen un marcador —`"<la del .env>"`,
+`"<DB_PASSWORD de .env>"`— y los `.py` la leen de config. Se comprobó línea por
+línea. No es una filtración y no hay que rotar nada.
+
+QUÉ SÍ ES: la pieza 2 de (b1-a) sacó la instrucción de `CLAUDE.md` y su negativo
+—`12_verificar_push_claudemd.js:37`— midió **sólo `CLAUDE.md`**, con su alcance
+declarado en el `.txt`: «NEGATIVO · «PGPASSWORD» · 0 apariciones en el documento
+publicado». El instrumento hizo exactamente lo que dijo. Lo que queda es que la
+decisión «la credencial sale del documento que gobierna» tiene alcance UNO, y el
+árbol sigue enseñando el mismo patrón en trece ficheros de otros frentes.
+
+OPCIONES: (p1) dejarlo — son marcadores, no secretos, y las bitácoras de otros
+frentes son historia que no se reescribe; (p2) barrer las nueve cabeceras `.sql`
+y reemplazar el marcador por un puntero a `CLAUDE.md §7.1`; (p3) anotarlo.
+RECOMENDACIÓN: **(p1) + (p3)**. No hay riesgo medido que justifique abrir siete
+frentes cerrados, y el patrón que quedó en `CLAUDE.md` —`-w`, que falla en 1 s—
+es el que gobierna de acá en adelante. Lo que sí vale la pena es que quien
+escriba el próximo `.sql` no copie la cabecera vieja.
+NO ES DE F2. NO APLICADO.
+
+================================================================================
+§C · PIEZA DE CIERRE — RESERVADA. La contradicción de §1, con lo que hay que
+escribir ya identificado
+================================================================================
+DECIDIDA POR EL OWNER EL 2026-08-18: la contradicción entre §1 de
+`f2_verde_falso_2026-08-17.txt:42-55` y D-14 **no se arregla en el momento en
+que se detecta**. Va como PIEZA DE CIERRE de esta sesión, después de M5 y de las
+decisiones.
+MOTIVO ESCRITO: `f2_verde_falso` es el fichero que esta sesión está usando como
+FUENTE, y recién al terminar M5 se sabía qué otras cifras de §1 se movían con la
+regla (c). Abrirlo dos veces con enmiendas parciales es lo que D-7 enseñó a no
+hacer.
+
+Y M5 LE DIO LA RAZÓN A LA ESPERA, con número: si §1 se hubiera enmendado cuando
+se detectó, se habría escrito la terna de D-14 —el escenario SIN la regla (c)—,
+que NO es la que F2 va a producir. Ver 2.2.
+
+LO QUE HAY QUE ESCRIBIR, identificado y medido — las CINCO cifras de §1 que se
+mueven, cada una con sus tres valores:
+
+                              publicado    D-14        MEDIDO
+                              dfd07236…    4f9fbdc3…   4f9fbdc3…
+                              (§1 hoy)     SIN (c)     CON (c)  <- lo que F2 hace
+    hoy ámbar ..............     23          23          23     NO se mueve
+    con F2 ámbar ...........     82          83          73
+    ÁMBAR → «ABIERTO» ......      9           8          10
+    verde → ámbar ..........     68          68          60
+    no se mueven ...........    611         612         618
+    LOS 9 DEJAN DE RECIBIR:  11 filas · 5 restricciones distintas · 1 cerrada
+    POR QUÉ: 8 con bahía resuelta sin filas vivas · 1 `a_adjudicar`
+
+  · las CINCO que se mueven son «con F2 ámbar», «ÁMBAR → ABIERTO», «verde →
+    ámbar», «no se mueven» y el bloque «LOS 9 DEJAN DE RECIBIR» entero —el «9»
+    del encabezado incluido, que con (c) son 10—;
+  · «hoy ámbar 23» NO se mueve en ningún escenario: es el filtro por nombre de
+    hoy y no depende del join ni de la regla;
+  · «5 restricciones distintas» sigue SIN DERIVAR y ahora se puede medir con el
+    instrumento de M5. Es la mitad que queda de D-14.
+
+CÓMO SE ESCRIBE, para que la enmienda no repita la (18): con TACHADO y con el
+ARTEFACTO Y LA REGLA al lado de cada cifra. Una cifra sin su escenario en esta
+tabla es indistinguible de otra bien medida en el escenario de al lado.
+EL ARGUMENTO DE LAS TRES TERNAS VA DENTRO DE LA ENMIENDA, no solo aca —
+decision del owner, 2026-08-18. Sin el, quien lea el fichero enmendado ve un
+tachado y una cifra nueva, y no entiende por que el documento estuvo un tiempo
+contradiciendose A PROPOSITO. La enmienda tiene que decir, en el sitio: que
+enmendar cuando se detecto habria publicado la terna del medio —artefacto
+correcto, regla ausente, escenario equivocado—, una cifra bien medida
+contestando otra pregunta; y que por eso se espero a M5.
+
+
+--------------------------------------------------------------------------------
+EJECUTADA · 2026-08-18. QUÉ SE ESCRIBIÓ Y DÓNDE
+--------------------------------------------------------------------------------
+Alcance aprobado por el owner: **(C-ii)** — el bloque de §1 y, además, el
+«EMPEORA · 0» de §4, EN ORIGEN los dos. Los otros cinco sitios quedan
+gobernados por el párrafo de la enmienda de §1, y los tres homónimos quedan
+nombrados para que nadie haga un reemplazo ciego.
+
+EN `f2_verde_falso_2026-08-17.txt`, dos bloques:
+  §1 · las cinco cifras tachadas y reemplazadas por las del escenario CON (c);
+       la tabla de LAS TRES TERNAS, cada una con su artefacto y su escenario;
+       el argumento de por qué el fichero estuvo contradiciéndose a propósito;
+       D-14 marcada MEDIDA, no derivada; el balance completo de la regla (c);
+       y el párrafo que gobierna al resto del fichero.
+  §4 · el encabezado de «EL EMPEORA · 0» tachado y enmendado ARRIBA del bloque,
+       no al pie, porque «F2 no le saca un cierre a nadie» es la frase más
+       citable del documento. El texto original se conserva entero debajo: no
+       era falso, medía el escenario sin la regla.
+
+EL BALANCE DE (c) VA PUBLICADO ENTERO, no sólo acá — decisión del owner. Vive
+en la enmienda de §1, que es donde alguien lo va a encontrar leyendo las
+cifras, y dice: evita **8 falsos positivos** y causa **2 falsos negativos** que
+cuestan **8 cierres reales**, en `Puerto De Caldera Mejoras Fiscales` (7) y
+`Huasco` (1), dos puertos a los que el filtro por nombre LES ACIERTA LA BAHÍA
+—coincide con el nombre, con la comuna y con la posición corregida—. Y con la
+razón por la que la decisión no cambia: creerle a un ancla a 554 km es peor, y
+la regla no puede distinguir «el ancla está mal» de «el ancla está mal y además
+el filtro acertaba».
+
+D-14 QUEDA CERRADA ENTERA. Su mitad pendiente —«5 restricciones distintas»— era
+5 porque incluía las 3 de `Caleta Pesquera Guayacán`, que no se solapan con las
+de los otros ocho: 5 − 3 = 2 sin la regla, 10 con ella. No queda nada derivado.
+
+DEFECTO PROPIO DE ESTA PIEZA, y es el tercero de la misma familia: el párrafo
+que enumera los sitios gobernados los citó POR NÚMERO DE LÍNEA, y la enmienda
+—cien líneas— los había corrido; al corregirlos, el propio párrafo corrigido
+los volvió a correr. Se reescribió citando **por sección y por texto**, que no
+se mueve, con la razón adentro. Es la misma lección que F2-D4 ya había dejado
+escrita en esta bitácora y que yo volví a pagar en el fichero de al lado: un
+número de línea adentro de un documento vivo envejece entre un párrafo y el
+siguiente.
+
+TEXTO QUE GOBIERNA: la redacción la aprueba el owner.
+
+================================================================================
+§T · TRASPASO — LO QUE ESTA SESIÓN LE DEJA AL QUE SIGA
+================================================================================
+Va acá y no adentro de una deuda: son las cosas que un prompt nuevo tiene que
+saber ANTES de arrancar, y una deuda enterrada en §D no se lee a tiempo.
+
+--------------------------------------------------------------------------------
+T.1 · EL «22 de 55» QUE EL TRAMO C TIENE QUE MIRAR YA NO EXISTE
+--------------------------------------------------------------------------------
+EL TRASPASO LO NOMBRA como el número que el Tramo C tiene que mirar antes de
+encenderse. **Está vencido por partida doble y hay que reemplazarlo.**
+
+    contra dfd07236…  ·  C3 que eligieron más lejos ....  22 / 55
+                         toda la cascada ................  24 / 109
+    contra 4f9fbdc3…  ·  C3 que eligieron más lejos ....  **21 / 50**
+                         toda la cascada ................  **23 / 109**
+
+POR QUÉ DOBLE: no sólo cambió el numerador. **EL DENOMINADOR SE MOVIÓ SOLO** —
+C3 pasó de 55 filas a 50 cuando (b1-a) sacó el redondeo del cálculo—, así que
+«22 de 55» cita un conjunto que el artefacto vigente ya no tiene. Las 109
+`desempatado` sí siguen siendo 109; lo que se repartió distinto es la terna.
+
+DEFINICIÓN con la que se contó: entre las candidatas de `empate_entre`, existe
+alguna con km ESTRICTAMENTE menor que el de la elegida.
+LÍMITE DECLARADO, y viaja con la cifra: `empate_entre` sale de `presenta()`, o
+sea REDONDEADO a dos decimales, así que diferencias por debajo de 5 m no se ven
+en ese campo. Es el MISMO material con el que 09_ contó el 22 de 55 contra
+dfd07236…, y por eso las dos cifras se comparan entre sí sin corrección.
+CONTROL: 109 de 109 filas entran en la cuenta — 0 sin `empate_entre`, 0 con la
+elegida ausente del empate, 0 con km empatado exacto. Sin bucket residual.
+
+QUÉ NO DICE, y es lo mismo que no decía el 22: no dice que las 21 estén mal. C3
+elige por comuna A PROPÓSITO. Si la comuna debe ganarle a la distancia es una
+pregunta de adjudicación, sigue abierta en §6.4(b) y NO la contesta un conteo.
+
+--------------------------------------------------------------------------------
+T.3 · CORREGIR LOS 11 `lng` EN LA BASE DEVUELVE OCHO CIERRES REALES · PRIORIDAD
+--------------------------------------------------------------------------------
+NO ES UN ARREGLO DE HIGIENE Y NO SE ESCRIBE COMO TAL. Es la pieza (a1) de §6.4
+de `f2_verde_falso`, ya decidida por el owner y sin fecha, y lo que hace es
+**devolverle informacion verdadera a dos puertos que HOY la muestran y que con
+F2 dejarian de mostrarla**:
+    `Puerto De Caldera Mejoras Fiscales` · 7 CIERRES · hoy recibe la bahia 81
+        «Bahia Caldera», su propia comuna, a 39,1 km con el `lng` corregido
+    `Huasco` · 1 CIERRE · hoy recibe la bahia 84 «Bahia Puerto Huasco», su
+        propia comuna, a 40,4 km con el `lng` corregido
+A los dos el filtro por nombre LES ACIERTA LA BAHIA. No son colisiones de token.
+MIENTRAS (a1) no corra, F2 los calla — y la regla (c) hace bien en callarlos,
+porque desde el dato desplazado no hay forma de saber que el filtro acertaba.
+EL ORDEN IMPORTA: (a1) antes de que alguien mida el acierto de F2 en produccion,
+o esos 8 cierres van a contarse como perdida de F2 cuando son perdida del dato.
+CUANDO se hace es decision del owner. QUE se vea, no.
+
+--------------------------------------------------------------------------------
+T.2 · LAS DOS ANOTADAS, con su alcance
+--------------------------------------------------------------------------------
+· LA TERCERA CITA INCOMPLETA DE D-1 — `insumos/README.txt:201`. ANOTADA, no
+  aplicada. Las otras dos siguen en `f2_verde_falso:442` y
+  `filtro_puerto:344`. Lo que hay que recordar no es el sitio sino el motivo:
+  el barrido que las enumeró era el VIEJO, el que no bajaba a `insumos/`.
+· `PGPASSWORD` — ANOTADA con su alcance declarado: **la decisión de a93053e
+  tuvo alcance UNO** (sacar la instrucción de `CLAUDE.md`, y su negativo midió
+  ese fichero y lo dijo). En el árbol quedan 25 apariciones sin backticks, en
+  nueve cabeceras `.sql` de otros frentes y cuatro `.py`. **NO HAY NINGUNA CLAVE
+  EN LOS 25 SITIOS** — son marcadores `"<la del .env>"` y lecturas de config,
+  comprobado línea por línea. No hay nada que rotar. Ver §F.3.
+
+================================================================================
+FIN — LA SESION CERRADA. Piezas 1, 2, 3 y la de cierre. `src/` en 946bc5d7… y
+el artefacto en 4f9fbdc3…, comprobados al abrir y al cerrar de cada instrumento.
+Las cuatro decisiones estan aprobadas y NINGUNA se ejecuto: la escritura de F2
+es sesion propia. Lo unico que esta sesion escribio en el repo es documentacion:
+esta bitacora y dos bloques enmendados en `f2_verde_falso_2026-08-17.txt`.
+================================================================================

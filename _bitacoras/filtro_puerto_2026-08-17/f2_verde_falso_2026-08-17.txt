@@ -44,14 +44,98 @@ leyeron de sus ficheros versionados y por sus servicios, no por la API.
 Denominador 688 nombres, material 23:02Z.
 
   hoy ámbar ......................  23 / 688
-  con F2 ámbar ...................  82 / 688
-  ÁMBAR → «ABIERTO» ..............   9 / 688
-  verde → ámbar ..................  68 / 688
-  no se mueven ................... 611 / 688
+  con F2 ámbar ................... ~~82~~ 73 / 688
+  ÁMBAR → «ABIERTO» .............. ~~9~~ 10 / 688
+  verde → ámbar .................. ~~68~~ 60 / 688
+  no se mueven ................... ~~611~~ 618 / 688
 
-LOS 9 DEJAN DE RECIBIR: 11 filas · 5 restricciones distintas · 1 fila cerrada ·
-1 restricción cerrada.
-POR QUÉ: 8 con bahía resuelta sin filas vivas · 1 `a_adjudicar`.
+LOS ~~9~~ 10 DEJAN DE RECIBIR: ~~11 filas · 5 restricciones distintas · 1 fila
+cerrada · 1 restricción cerrada~~ 16 filas · 10 restricciones distintas · 9
+filas cerradas · 9 restricciones cerradas.
+POR QUÉ: ~~8 con bahía resuelta sin filas vivas · 1 `a_adjudicar`~~ 7 con bahía
+resuelta sin filas vivas · 1 `a_adjudicar` · 2 degradados por la regla (c).
+
+--------------------------------------------------------------------------------
+ENMENDADO 2026-08-18 · sesión F2-plan, pieza de cierre. LAS CIFRAS DE ARRIBA SON
+LAS DEL ESCENARIO QUE F2 VA A ESCRIBIR, y las tachadas son verdaderas en el suyo
+--------------------------------------------------------------------------------
+Instrumentos: `20_medir_m5.js` y `22_medir_apagados.js`, contra el artefacto
+`4f9fbdc3…` y la MISMA captura de las 23:02Z del 2026-08-17.
+
+HAY TRES TERNAS Y LAS TRES SON VERDADERAS. Lo que las separa no es la exactitud:
+es el artefacto con que se midieron y si la regla (c) estaba puesta.
+
+                            artefacto     regla (c)    quién es
+    23 · 82 ·  9 · 68 · 611  dfd07236…    no existía   lo que este §1 publicó
+    23 · 83 ·  8 · 68 · 612  4f9fbdc3…    ausente      D-14, MEDIDA (ver abajo)
+    23 · 73 · 10 · 60 · 618  4f9fbdc3…    APLICADA     LO QUE F2 HACE  <-- vigente
+
+POR QUÉ ESTE FICHERO ESTUVO UN TIEMPO CONTRADICIÉNDOSE A PROPÓSITO, que es lo
+que no se entiende leyendo sólo el tachado: la contradicción entre este §1 y
+D-14 se detectó al abrir la sesión F2-plan y NO se enmendó ahí. Enmendar en ese
+momento habría publicado la terna del medio —artefacto correcto, regla ausente,
+ESCENARIO EQUIVOCADO—: una cifra bien medida contestando otra pregunta. Es la
+(18) con otra ropa; allá el número era falso, acá es de otro mundo. Se esperó a
+M5 porque hasta que M5 no corrió no se sabía cuáles de estas cifras movía la
+regla (c). La espera fue deliberada y el costo —dos ficheros publicados que se
+contradecían— quedó declarado mientras duró.
+
+D-14 QUEDA MARCADA COMO **MEDIDA, NO DERIVADA**: el escenario sin (c) reproduce
+su aritmética cifra por cifra (23 · 83 · 8 · 68 · 612), y su mitad pendiente
+también se cerró — «5 restricciones distintas» era 5 porque incluía las 3 de
+`Caleta Pesquera Guayacán`, que NO se solapan con las de los otros ocho: 5 − 3 =
+2 sin la regla, y 10 con ella. D-14 no queda con nada sin derivar.
+
+LOS NUEVE CIERRES QUE SE DEJAN DE SERVIR NO SON TODOS ACCIDENTES LÉXICOS, Y ES
+LO MÁS CARO DE ESTA ENMIENDA. Ocho de los nueve son legítimos:
+    `Puerto De Caldera Mejoras Fiscales` · comuna Caldera · hoy recibe la bahía
+        81 «Bahía Caldera», que con el `lng` corregido está a 39,1 km · 7 CIERRES
+    `Huasco` · comuna Huasco · hoy recibe la bahía 84 «Bahía Puerto Huasco», a
+        40,4 km con el `lng` corregido · 1 CIERRE
+    `Embarcadero Rampa El Pascua` · el único accidente: bahía 89 «Isla de
+        Pascua» por el token «pascua», a 3.944 km · 1 cierre
+A los dos primeros EL FILTRO POR NOMBRE LES ACIERTA LA BAHÍA —coincide con el
+nombre, con la comuna y con la posición corregida— y F2 con (c) los calla.
+
+EL BALANCE DE LA REGLA (c), ENTERO Y MEDIDO sobre las 12 filas que degrada:
+    evita   8 FALSOS POSITIVOS · los puertos de la costa entre Valparaíso y
+            Atacama que habrían empezado a mostrar un cierre de Isla Robinson
+            Crusoe. Hoy están en verde y con (c) siguen en verde.
+    causa   2 FALSOS NEGATIVOS · Caldera y Huasco, y cuestan 8 CIERRES REALES.
+    ni una  ni otra · 2 · sus bahías no tienen material a esta hora.
+    2 + 8 + 2 = 12, excluyente y sin filas huérfanas.
+
+Y LA DECISIÓN NO CAMBIA, con su razón escrita: creerle a un ancla a 554 km es
+peor que callar. La regla (c) no puede distinguir «el ancla está mal, no le
+creas» de «el ancla está mal Y ADEMÁS el filtro por nombre acertaba» — para eso
+haría falta saber dónde está el puerto, que es justo lo que el dato desplazado
+no dice. La ironía es del mecanismo y no de la regla: (c) existe para que el
+defecto de los 6,00° no produzca falsos positivos, y sobre estos dos el MISMO
+defecto con la MISMA regla produce falsos negativos.
+LO QUE RECUPERA ESOS 8 CIERRES es (a1) de §6.4 — corregir los 11 `lng` en
+`nodos_maritimos`—, ya decidida por el owner y sin fecha. Ver el traspaso de
+`f2_medicion_y_decisiones_2026-08-18.txt` §T.3.
+
+ESTE PÁRRAFO GOBIERNA AL RESTO DEL FICHERO. Las cifras de arriba se citan más
+abajo en CINCO sitios que NO llevan tachado y hay que leer contra esta tabla.
+SE CITAN POR SECCIÓN Y POR TEXTO, NO POR NÚMERO DE LÍNEA, y no es pereza: esta
+enmienda agregó cien líneas y corrió todo lo de abajo, y el propio párrafo que
+enumeraba las líneas las volvió a correr al escribirse. Adentro de un fichero
+vivo, un número de línea envejece entre un párrafo y el siguiente.
+    §1 · «0 de los 9 tienen un cierre vivo en la bahía que el join les asigna»
+    §1 · «no dice nada de los 611 que no se mueven»
+    §6.3 · el título, «LOS 611 QUE NO SE MUEVEN…»
+    §6.4(e) · «LOS 611 QUE NO SE MUEVEN, sin medir por contenido»
+    §7.2(B) · «LOS 611 QUE NO SE MUEVEN (§6.3)»
+    §4 NO está en esta lista: se enmendó APARTE Y EN ORIGEN, y el encabezado de
+    «EL EMPEORA · 0» gobierna las cuatro citas de su propio bloque.
+Y TRES SITIOS QUE PARECEN LA MISMA CIFRA Y NO LO SON — un reemplazo ciego los
+rompe, y por eso ninguna de las dos enmiendas se hizo con `sed`:
+    §4 y §7.4 · «11 filas» son las ANCLAS DESPLAZADAS 6,00°, no las filas que se
+        dejan de recibir;
+    §5.1 · «los 9 son `confirmado_declarado`» son los NODOS QUE DECLARAN ANCLA
+        90, no los que se apagan.
+--------------------------------------------------------------------------------
 
 EL ÚNICO CIERRE QUE SE PIERDE, con nombre:
   «Embarcadero Rampa El Pascua» recibe hoy la bahía 89 «ISLA DE PASCUA»,
@@ -189,8 +273,32 @@ LAS TRES DEFINICIONES ESCONDEN A LOS MISMOS DIEZ, cada una por su motivo:
 Tres definiciones, el mismo punto ciego. Sólo la pregunta por la DISTANCIA los ve.
 
 --------------------------------------------------------------------------------
-EL «EMPEORA · 0» — ALCANCE RECORTADO, Y DE QUÉ PREMISA DEPENDÍA
+EL «EMPEORA · 0» — ~~ALCANCE RECORTADO, Y DE QUÉ PREMISA DEPENDÍA~~
+CAÍDO CON LA REGLA (c). ENMENDADO 2026-08-18
 --------------------------------------------------------------------------------
+ENMIENDA 2026-08-18 · sesión F2-plan, pieza de cierre. VA ARRIBA Y NO AL PIE
+PORQUE ESTA ES LA FRASE MÁS CITABLE DEL DOCUMENTO:
+
+  **«F2 NO LE SACA UN CIERRE A NADIE» YA NO VALE.** Con la regla (c) puesta —la
+  de §6.2, N = 100 km, que se aceptó DESPUÉS de escribir este §4— son **8 los
+  cierres propios que se dejan de servir**, y no cero:
+      `Puerto De Caldera Mejoras Fiscales` · 7 cierres · hoy recibe la bahía 81
+          «Bahía Caldera», su comuna, a 39,1 km con el `lng` corregido;
+      `Huasco` · 1 cierre · hoy recibe la bahía 84 «Bahía Puerto Huasco», su
+          comuna, a 40,4 km con el `lng` corregido.
+  A los dos el filtro por nombre LES ACIERTA LA BAHÍA. No son colisiones de
+  token: son los dos puertos a los que (c) les cuesta información verdadera.
+  Medido por `22_medir_apagados.js` contra `4f9fbdc3…` y la captura de las
+  23:02Z. El balance completo de (c) —8 falsos positivos evitados contra 2
+  falsos negativos que cuestan esos 8 cierres— está en la enmienda de §1.
+
+  EL «0» DE ABAJO NO ERA FALSO Y NO SE RETIRA: midió el escenario SIN la regla,
+  contra `dfd07236…`, y ahí es correcto. Lo que caducó es su alcance, y caducó
+  por una decisión posterior de esta misma bitácora, no por un error de medición.
+  UNA CONCLUSIÓN SE VUELVE A MEDIR CUANDO CAMBIA LA REGLA QUE LA PRODUCÍA.
+
+Lo de abajo queda como se escribió, y describe el escenario sin (c):
+
 Dependía de esta premisa: «la bahía que el join asigna es la bahía que hay que
 mirar para saber si el puerto se quedó sin nada». Si el ancla está desplazada,
 se miró la bahía equivocada para concluir que no había nada.
@@ -205,8 +313,10 @@ M3 la puso a prueba y el resultado tiene DOS mitades:
 ALCANCE DEL «0», escrito para que no se cite más ancho de lo que es:
   vale para las 16 filas cerradas del material de las 23:02Z del 2026-08-17;
   vale para los 9 que se apagan, que son los únicos que pueden perder algo;
-  NO vale como propiedad de F2 — vale como medición de un día.
-  NO cubre a los 611 que «no se mueven»: ver §6.3.
+  NO vale como propiedad de F2 — vale como medición de un día;
+  NO cubre a los 611 que «no se mueven»: ver §6.3;
+  Y —AGREGADO 2026-08-18— NO VALE CON LA REGLA (c) PUESTA: ver la enmienda del
+  encabezado de este bloque.
 
 ================================================================================
 §5 · EL DEFECTO QUE APARECIÓ MIDIENDO EL §4
