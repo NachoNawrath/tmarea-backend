@@ -1,0 +1,68 @@
+================================================================================
+M4 · LOS 55 DESEMPATES DE C3 — ¿cuántos eligieron más lejos que material vivo?
+corrida 2026-08-18T02:42:09.963Z
+================================================================================
+
+0 · GUARDS DE INSUMO — antes de contar nada
+  ✓ join_puerto_bahia.json sha256 dfd07236… — el artefacto es el declarado
+  ✓ F1_adjudicacion.tsv sha256 0ca33c18… — intacta
+  ✓ CONGELADO_vivo.json congelado_en 2026-08-17T23:02:53.110Z
+  ✓ CONGELADO_vivo.json 26 filas
+  ✓ filas con estado=desempatado y via=C3_comuna_vs_bahia: 55
+  ✓ piso por unidad · las 55 filas tienen ≥ 2 candidatas
+  ✓ piso por unidad · las 55 filas traen `elegida_km` numérico
+
+1 · (19)-O2 · LECTURA BASE DEL LITERAL — `const BAHIA_COORDS = {`
+  ✓ el literal se extrae · 163 bahías con coordenada · bloque 13579 bytes
+  ✓ CP-1 · el extractor discrimina · un literal deliberadamente falso (const BAHIA_COORDENADAS = {) NO se encuentra — si se «encontrara», el hallazgo de arriba no diría nada
+  ✓ M-D · mordida del literal · renombrando el token completo, el extractor se pone en ROJO — es el defecto que catalogo-bahias.js tira y la suite no ve
+
+2 · MATERIAL VIVO POR BAHÍA — captura 2026-08-17T23:02:53.110Z
+  bahías con material .......  15
+  filas .....................  26
+  restricciones distintas ...  26
+  filas cerradas ............  16
+
+3 · M4 · LAS FILAS DE C3 QUE ELIGIERON MÁS LEJOS QUE UNA CANDIDATA CON MATERIAL
+    «más lejos» = km de la elegida > km de la rival, con los km del artefacto (2 decimales).
+
+  de las 55 filas de C3 …
+    eligieron una bahía MÁS LEJANA que otra candidata CON MATERIAL VIVO ...   1 / 55
+    de ésas, la candidata más cercana tiene además un CIERRE ...............   0 / 55
+    de ésas, la ELEGIDA no tiene ningún material (pérdida limpia) ..........   1 / 55
+
+  EN FILAS Y EN RESTRICCIONES, material que queda del otro lado (captura 2026-08-17T23:02:53.110Z):
+    filas vivas en las rivales más cercanas .........   3
+    restricciones distintas en esas rivales .........   3
+    restricciones CERRADAS distintas ................   0
+
+  CADA CASO, CON NOMBRE:
+    nodo  59 Caleta Pesquera Guayacán         comuna Coquimbo      
+             eligió  85 a   2.1 km · SIN material
+             había   86 «BAHÍA HERRADURA DE GUAYACÁN» a     0 km · 3 filas · 3 restr · 0 cerradas
+
+3-bis · SIN MIRAR EL MATERIAL — cuántas de C3 eligieron más lejos, a secas
+    de las 55 de C3, eligieron más lejos que alguna candidata ...  22 / 55
+    de las 109 desempatadas, lo mismo .........................  24 / 109
+    de las 22 de C3, con material en la más cercana ...........   1
+    ES LA CUENTA QUE NO DEPENDE DE LA HORA. La de arriba sí.
+  ✓ CP-2 · el caso conocido aparece · nodo 59 Caleta Pesquera Guayacán: eligió la 85 a 2.1 km y la 86 a 0 km tiene material — §5.2/§7.1
+
+4 · MORDIDAS — defecto inyectado, rojo exigido
+  ✓ M-A · la comparación de distancia · moviendo la elegida del nodo 59 a la bahía 86 (0 km), el caso desaparece: 1 → 0
+  ✓ M-B · el instrumento mira el material · con el material vivo vaciado, los casos caen a 0 (se exige 0)
+  ✓ M-C · cierre y material no son el mismo mecanismo · sin derivarCierre: «con cierre» 0 → 0 y «con material» 1 → 1 (se exige que NO se mueva)
+    (M-C no prueba la mitad «con cierre»: la base ya es 0. Lo prueba M-C2.)
+  ✓ M-C2 · el conteo de cierres se mueve cuando el cierre se mueve · con derivarCierre cerrando todo: «con cierre» 0 → 1 (se exige 1) y «con material» 1 → 1 (se exige que NO se mueva)
+
+5 · CIERRE — sha256 de los entregables de F1, otra vez
+  ✓ join_puerto_bahia.json dfd07236… — sin tocar
+  ✓ F1_adjudicacion.tsv 0ca33c18… — sin tocar
+
+================================================================================
+SIN FALLAS
+QUÉ NO PRUEBA ESTE INSTRUMENTO: no dice cuál es la bahía correcta; dice qué
+material queda del otro lado de la elección. No mira los 47 de C2, los 6 de
+C4 ni el 1 de C5. Y mide contra UNA captura de 26 filas: con otro material a
+otra hora, los mismos 55 desempates dan otro número.
+================================================================================

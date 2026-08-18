@@ -272,8 +272,16 @@ LO PIERDE.
 
 No cambia el «EMPEORA · 0»: las 3 filas no son cierres. Pero es la única pérdida
 de material VERDADERO medida en todo §3, y no viene del desplazamiento sino de
-la cascada de desempate. C3 (comuna) resuelve 50 de los 109 `desempatado`, así
-que el caso no es necesariamente único.
+la cascada de desempate. C3 (comuna) resuelve ~~50~~ 55 de los 109 `desempatado`,
+así que el caso no es necesariamente único.
+  ENMENDADO 2026-08-18 · entrada (18), verificado contra `dfd07236…`.
+  Y CONTESTADO POR M4 (`09_medir_c3_desempates.js`, corrida 2026-08-18): contra
+  la captura de las 23:02Z, Guayacán ES EL ÚNICO de los 55 con material vivo del
+  otro lado — 1/55, 0 con cierre, 3 filas y 3 restricciones.
+  PERO EL «ÚNICO» ES DEL MATERIAL, NO DE LA CASCADA. La cuenta que no depende de
+  la hora: 22 de los 55 de C3 eligieron una bahía MÁS LEJANA que otra candidata
+  del mismo empate; 24 de las 109 en total, o sea que C3 aporta 22 de esas 24.
+  Que hoy se vea una sola es porque 15 de 163 bahías tienen algo a esta hora.
 
 5.3 · M2 · LOS QUE NO TIENEN ANCLA — EL TEST NO DISCRIMINA, Y SE DICE
 --------------------------------------------------------------------------------
@@ -409,11 +417,53 @@ sesión del plan.
 (b) EL DESEMPATE C3 CONTRA UNA BAHÍA A 0,0 km (§5.2).
     OPCIONES: (b1) que la distancia gane cuando una candidata está a menos de
     X km y las otras no; (b2) que C4 (nombre) suba en la cascada por delante de
-    C3 (comuna); (b3) revisar los 50 desempates de C3 uno por uno; (b4) anotarlo.
-    RECOMENDACIÓN: (b3) primero — 50 filas es medible en una sesión y dice si el
-    caso es único o sistemático—, y (b1) o (b2) recién con ese dato. Cambiar la
-    cascada sin saber cuántos toca es mover 109 filas a ciegas.
+    C3 (comuna); (b3) revisar los ~~50~~ 55 desempates de C3 uno por uno;
+    (b4) anotarlo.
+    RECOMENDACIÓN: (b3) primero — ~~50~~ 55 filas es medible en una sesión y dice
+    si el caso es único o sistemático—, y (b1) o (b2) recién con ese dato. Cambiar
+    la cascada sin saber cuántos toca es mover 109 filas a ciegas.
     NO APLICADO. Es del join, no del filtro.
+    ENMENDADO 2026-08-18 · (b3) HECHA, es M4. Y el dato cambia el planteo:
+    (b1) NO ES UNA IDEA NUEVA. ~~Es la rama que `g7_desempate.js` TENÍA en su C2
+    —`c[0].d === 0` gana el empate— y que `f1_generar.js` NO tiene.~~ El join salió
+    del segundo. O sea que la opción (b1) es «devolver la rama que se perdió entre
+    los dos instrumentos», no «agregarle un criterio a la cascada». De las 8 filas
+    que esa rama toca, 7 eligen la misma bahía igual: la ÚNICA que cambia de bahía
+    es el nodo 59, Guayacán. Ver la entrada (18) de la lista única.
+    RE-ENMENDADO EL MISMO DÍA · `10_diagnosticar_cascada_c2.js` D-3/D-4 refutaron
+    esa causa. NO ES UNA RAMA QUE FALTE: ES UN REDONDEO QUE SOBRA. Las 8 filas
+    están a 1,5–4,4 m de su bahía; `f1_generar.js` guarda `+km().toFixed(2)`, eso
+    las lleva a 0,00, y el guard `c[0].km > 0` de su propia C2 las descarta antes
+    de mirar la razón. Sin redondear, la MISMA C2 las resuelve por razón (cocientes
+    736 a 2579) y elige la misma bahía que g7.
+    ASÍ QUE (b1) NO ES «que la distancia gane bajo X km»: ES DEJAR DE REDONDEAR
+    ANTES DE DECIDIR. Es más barato y más chico de lo que decía este párrafo, y no
+    toca el orden de la cascada. Sube a decisión con opciones fuera de §6.4.
+
+    DECIDIDO POR EL OWNER 2026-08-18 · (b1-a) ES LA VÍA: quitar el redondeo del
+    CÁLCULO y dejarlo sólo en la presentación de `evidencia`.
+    CON UNA CONDICIÓN, Y NO SE EJECUTA SIN ELLA: primero hay que medir cuántas de
+    las 688 cruzan los bordes de RADIO (≤ 30 km) y de MARGEN (< 10 km) al dejar de
+    redondear. HOY ESO ESTÁ MEDIDO PARA LAS 8 DEL EMPATE Y PARA NADA MÁS: de esas
+    8, las 8 cambian de `via` y UNA sola cambia de `bahia_id` (nodo 59 → 86). Qué
+    pasa en los bordes NO está medido y no se estima.
+    ESA MEDICIÓN ES LA PRIMERA PIEZA DE LA SESIÓN DE (b1), NO DE F2.
+
+    (b1) RE-DERIVA, y eso tiene consecuencias que van escritas acá para que nadie
+    las descubra corriendo:
+      · corre `f1_generar.js`, que PISA `data/catalogo/join_puerto_bahia.json` y
+        `_bitacoras/filtro_puerto_2026-08-17/F1_adjudicacion.tsv`;
+      · LES CAMBIA EL sha256. `dfd07236…` y `0ca33c18…` dejan de ser los del
+        artefacto vivo y pasan a ser los de una versión anterior;
+      · el commit de insumos (`36543c8` + `4e5f83e`) y su README describen el
+        estado de HOY. Después de (b1) DEJAN DE DESCRIBIRLO. Qué se hace con él
+        —enmendarlo con los sha nuevos, o declararlo foto de una fecha— se decide
+        EN esa sesión y antes de correr nada, no después;
+      · todo instrumento que hoy comprueba `dfd07236…`/`0ca33c18…` como guard
+        —`08`, `09`, `10`— se pone en ROJO al día siguiente de (b1). Es correcto
+        que se ponga: son guards, no decoración. Hay que actualizarlos en la misma
+        pieza o declarar que quedan atados a la captura vieja.
+    PIEZA PROPIA, AUTORIZACIÓN PROPIA. No es F2.
 
 (c) ISLA GUAMBLIN, ancla 243 a 118 km, que no es el defecto de 6,00°.
     OPCIONES: (c1) sesión de cotejo; (c2) anotarlo. RECOMENDACIÓN: (c2) hoy —la
@@ -448,6 +498,21 @@ EL FILTRO POR NOMBRE DE HOY ACIERTA EN ESTE CASO — sirve la 86 — Y F2 LO PIE
 Es la única pérdida de material VERDADERO medida en todo §3, y no viene del
 desplazamiento de los 6,00° sino de la cascada de desempate.
 
+LIMITACIÓN CONOCIDA Y FECHADA — NO ES UN PENDIENTE, 2026-08-18
+--------------------------------------------------------------------------------
+F2 NO QUEDA BLOQUEADA POR ESTO Y SE ENCIENDE IGUAL. Sigue consumiendo el join que
+hay, en el que `Caleta Pesquera Guayacán` (nodo 59) recibe la bahía 85 «BAHÍA
+COQUIMBO», que a las 23:02Z del 17-08 estaba VACÍA, mientras la 86 «BAHÍA
+HERRADURA DE GUAYACÁN», a 0,0 km, tenía 3 filas vivas y 0 cerradas.
+ESTÁ ESCRITO ASÍ A PROPÓSITO: si (b1) tarda, alguien tiene que poder leer POR QUÉ
+ese puerto calla sin volver a diagnosticarlo. La causa está en §6.4(b) y en la
+entrada (18) de la lista única: un redondeo en la derivación del join, no en el
+filtro. F2 no lo puede arreglar desde su lado — F2 consume el join, no lo produce.
+TAMAÑO DE LA LIMITACIÓN, con su hora: 1 nodo · 3 filas · 3 restricciones · 0
+cierres, contra la captura del 2026-08-17T23:02:53.110Z. Con otro material puede
+ser otro tamaño; lo que no cambia con la hora es que son 22 de los 55 de C3 los
+que eligen más lejos que alguna candidata (§7.2 A).
+
 EL «0 DEJAN DE RECIBIR UN CIERRE VERDADERO» AGUANTA, PERO SÓLO ASÍ:
 vale para las 16 filas cerradas del material de las 23:02Z del 2026-08-17.
 Las 3 filas de la 86 no son cierres HOY. Con otro material a otra hora podrían
@@ -457,15 +522,34 @@ que citar la hora con ella.
 --------------------------------------------------------------------------------
 7.2 · PRIMERAS MEDICIONES DEL PLAN — las dos bolsas que quedaron sin abrir
 --------------------------------------------------------------------------------
-(A) LOS 50 DESEMPATES DE C3. `C3_comuna_vs_bahia` resuelve 50 de los 109
-    `desempatado`, y en el caso Guayacán eligió una bahía MÁS LEJANA que otra
-    candidata que sí tenía material. HAY QUE MEDIR CUÁNTOS MÁS:
-      · de los 50, cuántos eligieron una bahía más lejana que otra candidata
-        del mismo empate QUE TENÍA MATERIAL VIVO;
+(A) LOS ~~50~~ 55 DESEMPATES DE C3. `C3_comuna_vs_bahia` resuelve ~~50~~ 55 de
+    los 109 `desempatado`, y en el caso Guayacán eligió una bahía MÁS LEJANA que
+    otra candidata que sí tenía material. HAY QUE MEDIR CUÁNTOS MÁS:
+      · de los ~~50~~ 55, cuántos eligieron una bahía más lejana que otra
+        candidata del mismo empate QUE TENÍA MATERIAL VIVO;
       · de ésos, cuántos con al menos un CIERRE;
       · en FILAS y en RESTRICCIONES, con la hora de la captura al lado.
     Si el caso es único, es una anécdota. Si son diez, la cascada está mal
     ordenada y eso se decide antes de escribir el consumo del join.
+
+    MEDIDO 2026-08-18 · `09_medir_c3_desempates.js` · captura 23:02Z del 17-08.
+      eligieron más lejos que una candidata CON MATERIAL VIVO ...  1 / 55
+      de ésas, con CIERRE .......................................  0 / 55
+      de ésas, la elegida sin ningún material (pérdida limpia) ...  1 / 55
+      filas vivas del otro lado 3 · restricciones distintas 3 · cerradas 0
+      el caso es el nodo 59, Guayacán: eligió la 85 a 2,1 km y la 86 a 0,0 km
+      tenía 3 filas. Es el mismo de §5.2/§7.1 y aparece como aserción del
+      instrumento, no como comentario.
+
+    NO ES «UNA ANÉCDOTA», Y LA DICOTOMÍA DEL PÁRRAFO DE ARRIBA ESTABA MAL PUESTA:
+    «único contra diez» mide el material, no la cascada. La cuenta que no depende
+    de la hora es 22 de 55 —C3 elige más lejos que alguna candidata en 22 casos—
+    y 24 de 109 en toda la cascada, o sea que C3 aporta 22 de esas 24. Que hoy se
+    vea UNA sola es porque sólo 15 de 163 bahías tienen material a esta hora. Con
+    otro material, el mismo defecto de orden alumbra otro número.
+    QUÉ NO DICE: no dice que las 22 estén mal. C3 elige por comuna A PROPÓSITO;
+    la pregunta de si la comuna debe ganarle a la distancia es de adjudicación, no
+    de conteo, y sigue abierta en §6.4(b).
 
 (B) LOS 611 QUE «NO SE MUEVEN» (§6.3). Se clasificaron por ESTADO —ámbar contra
     verde— y no por CONTENIDO. Un puerto que hoy recibe la bahía correcta y con

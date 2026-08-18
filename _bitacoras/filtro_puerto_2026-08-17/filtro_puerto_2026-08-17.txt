@@ -317,7 +317,25 @@ CERO CÓDIGO EN PRODUCCIÓN. `src/` en 946bc5d7. Nadie consume el artefacto.
 REPARTO DE LOS 688:
     confirmado_declarado ... 198   ya traía bahia_sitport_id; no se derivó nada
     derivado_limpio ........ 194   una sola candidata en radio, o margen >= 10 km
-    desempatado ............ 109   C2 razón 55 · C3 comuna 50 · C4 nombre 3 · C5 capitanía 1
+    desempatado ............ 109   ~~C2 razón 55 · C3 comuna 50 · C4 nombre 3 · C5 capitanía 1~~
+                                   C2 razón 47 · C3 comuna 55 · C4 nombre 6 · C5 capitanía 1
+       ENMENDADO 2026-08-18 · entrada (18) de la lista única. Los cuatro números
+       tachados NO son los del artefacto `dfd07236…`, verificados contra él fila
+       por fila. Las dos ternas suman 109, que es por qué el control pasó verde.
+       NO ES UN CORRIMIENTO DE COLUMNA. Son DOS INSTRUMENTOS con DOS cascadas: lo
+       tachado es lo que midió `g7_desempate.js` —este README de insumos ya lo
+       decía en su §«g7 PRODUJO», y nadie cotejó una cosa con la otra— y lo bueno
+       es lo que escribió `f1_generar.js`, que es el que generó el join. Difieren
+       en ~~UNA línea, C2: g7 resuelve además el caso `c[0].d === 0`; f1_generar
+       no~~ EL REDONDEO.
+       Ocho filas cuya candidata más cercana está a 0,00 km caen por eso más abajo
+       en la cascada: 5 a C3 (50→55) y 3 a C4 (3→6), y C2 pierde las 8 (55→47).
+       RE-ENMENDADO el mismo día por `10_diagnosticar_cascada_c2.js` (D-3, D-4):
+       las 8 NO están a 0,00 km sino a 1,5–4,4 METROS. `f1_generar.js` guarda
+       `+km().toFixed(2)`, que las lleva a 0,00, y ahí el guard `c[0].km > 0` de su
+       PROPIA C2 las descarta antes de mirar la razón. g7 no redondeaba y su C2
+       —la misma— las resolvía por razón. Es un redondeo de presentación aplicado
+       ANTES de decidir, no un criterio distinto.
     a_adjudicar ............  74   ningún criterio la resuelve. bahia_id NULL A PROPÓSITO
     sin_bahia_en_catalogo .. 113   no hay bahía en el radio: no hay nada que atribuir
 
@@ -507,6 +525,14 @@ LO QUE F2 TIENE QUE DECIDIR ANTES DE ESCRIBIR — ninguna es de implementación:
       base; leer el JSON no. Son costos distintos y consecuencias distintas.
   (4) EL DENOMINADOR DEL TRAMO C. Con F2, 501 de 688 puertos reciben atribución y
       187 no. De esos 187, 113 son «no hay nada que decir» y 74 son «no sabemos».
+      ~~ES UNA DECISIÓN DE F2.~~
+      ENMENDADO 2026-08-18 · NO ES DECISIÓN, ES CONSECUENCIA, y así queda escrito.
+      El 501/187 es el reparto ANTES de la regla (c) de §6.4 de la bitácora de F2:
+      N = 100 km degrada 12 filas ancladas a silencio, así que el reparto de
+      después NO es 501/187. Y depende además de M4: si la cascada de desempate
+      está mal ordenada, las 109 `desempatado` dejan de ser atribución confiable y
+      el denominador se mueve otra vez. QUEDA PENDIENTE hasta tener los dos
+      números; no se decide, se calcula. Las otras tres de este §8 sí son decisión.
 
 LO QUE F2 NO NECESITA: que F3 esté hecha. Las 74 pueden entrar como
 `a_adjudicar` y F2 las trata como silencio hasta que alguien las conteste.

@@ -1,0 +1,80 @@
+================================================================================
+ENTRADA (18) · LAS DOS CASCADAS — g7_desempate.js contra f1_generar.js
+corrida 2026-08-18T02:53:30.724Z
+================================================================================
+
+0 · GUARDS
+  ✓ join dfd07236…
+  ✓ tsv 0ca33c18…
+
+1 · IMPORTACIÓN VERBATIM DE LOS CRITERIOS
+  ✓ C2 de f1_generar (110 b) · C2 de g7 (164 b) · CRITERIOS (798 b) · km() (242 b) · BAHIA_COORDS (13579 b)
+  ✗ FALLA · no se encuentra el literal en (control): ['C2_razon_QUE_NO_EXISTE',
+  ✓ CP-1 · el tajo discrimina · un literal inexistente NO se encuentra — si «se encontrara», los tajos de arriba no dirían nada
+  ✓ CP-2 · las dos líneas de C2 son distintas · si fueran el mismo texto, no habría nada que diagnosticar
+  ✓ BAHIA_COORDS evaluado · 163 bahías
+
+2 · REPLAY SOBRE LAS 109 `desempatado` DEL ARTEFACTO
+  artefacto (JSON) ............... C2  47 · C3  55 · C4   6 · C5   1
+  replay con la C2 de f1_generar . C2  47 · C3  55 · C4   6 · C5   1 · sin resolver 0
+  bitácora F1 (publicado) ........ C2  55 · C3  50 · C4   3 · C5   1
+  replay con la C2 de g7 ......... C2  55 · C3  50 · C4   3 · C5   1 · sin resolver 0
+  ✓ R-A · el replay reproduce el artefacto · la C2 de f1_generar da 47·55·6·1
+  ✓ R-B · el replay reproduce lo publicado · la C2 de g7 da 55·50·3·1 — las cifras tachadas eran de este instrumento
+  ✓ R-C · control 109/109 fila por fila · replay A contra el artefacto: 109/109
+  ✓ R-D · control positivo del control · replay B discrepa en 8 filas — si fuera 0, R-C no distinguiría las dos cascadas
+
+3 · LAS FILAS CON CANDIDATA A 0,00 km — NOMBRADAS, Y SU DESTINO EN CADA CASCADA
+  filas de las 109 cuya candidata más cercana está a 0,00 km: 8
+    nodo  40 Caleta Pesquera Caldera        g7 C2→ 81 «BAHÍA CALDERA»     0 km
+                                            f1 C3→ 81 «BAHÍA CALDERA»     0 km
+    nodo  54 Borde Costero de Tongoy        g7 C2→ 87 «TONGOY»     0 km
+                                            f1 C4→ 87 «TONGOY»     0 km
+    nodo  59 Caleta Pesquera Guayacán       g7 C2→ 86 «BAHÍA HERRADURA DE GUAYA»     0 km
+                                            f1 C3→ 85 «BAHÍA COQUIMBO»   2.1 km   ← CAMBIA DE BAHÍA
+    nodo  61 Caleta Pesquera Guanaqueros    g7 C2→150 «GUANAQUEROS»     0 km
+                                            f1 C4→150 «GUANAQUEROS»     0 km
+    nodo  98 Caleta Pesquera El Quisco      g7 C2→215 «EL QUISCO»     0 km
+                                            f1 C3→215 «EL QUISCO»     0 km
+    nodo 212 Muro Costero Pueblo Hundido Lo g7 C2→102 «LOTA»     0 km
+                                            f1 C3→102 «LOTA»     0 km
+    nodo 226 Borde Costero Sector La Poza d g7 C2→ 98 «BAHÍA CONCEPCIÓN - TALCA»     0 km
+                                            f1 C3→ 98 «BAHÍA CONCEPCIÓN - TALCA»     0 km
+    nodo 332 Caleta Pesquera Carelmapu      g7 C2→149 «RADA DE CARELMAPU»     0 km
+                                            f1 C4→149 «RADA DE CARELMAPU»     0 km
+  ✓ D-1 · las ocho caen 5 a C3 y 3 a C4 · 8 filas · a C3 5 · a C4 3 · a otro 0
+  ✓ D-2 · 7 de 8 eligen la misma bahía igual, y la única que cambia es Guayacán · misma bahía 7/8 · cambian [59] (se exige sólo el nodo 59)
+  ES LA AFIRMACIÓN QUE SOSTIENE EL PRECIO DE (b1): si cambiaran más, (b1)
+  dejaría de costar una fila y habría que volver a decidirlo.
+
+4 · EL LÍMITE DECLARADO — el replay usa los km del artefacto, redondeados a
+    2 decimales, y g7 corría SIN redondear. ¿Puede eso mover alguna de las 8?
+    distancia SIN redondear a su candidata más cercana: 0/8 son 0 EXACTO
+    las que no: 40:3.87e-3 · 54:3.64e-3 · 59:2.85e-3 · 61:4.00e-3 · 98:2.68e-3 · 212:4.34e-3 · 226:1.51e-3 · 332:4.35e-3
+  ✓ D-3 · ninguna de las ocho está a cero exacto, así que el redondeo NO es inocente · las 8 están entre 1,5 y 4,4 METROS de su bahía, no a cero. `+km().toFixed(2)` de f1_generar las lleva a 0,00. REFUTA que la rama `d === 0` de g7 sea el mecanismo: g7 NO redondeaba, así que esa rama no podía dispararle a ninguna. Qué sí disparaba, en 4-bis
+
+4-bis · EL MECANISMO REAL — la misma C2 de f1_generar sobre distancias SIN redondear
+    40→C2:81 (d1=0.00387 d2=3.39 razón=876)
+    54→C2:87 (d1=0.00364 d2=9.39 razón=2579)
+    59→C2:86 (d1=0.00285 d2=2.10 razón=736)
+    61→C2:150 (d1=0.00400 d2=9.40 razón=2350)
+    98→C2:215 (d1=0.00268 d2=4.18 razón=1559)
+    212→C2:102 (d1=0.00434 d2=7.66 razón=1766)
+    226→C2:98 (d1=0.00151 d2=2.49 razón=1644)
+    332→C2:149 (d1=0.00435 d2=8.33 razón=1915)
+  ✓ D-4 · el mecanismo es EL REDONDEO, no la rama `d === 0` · sin redondear, la MISMA C2 de f1_generar resuelve las 8 por su rama de RAZÓN y elige la misma bahía que g7. Lo que las tira abajo en la cascada es `+km().toFixed(2)`: convierte 1,5–4,4 m en 0,00 y entonces el guard `c[0].km > 0` de la propia C2 las descarta
+
+5 · MORDIDA — parche anclado al token sintáctico completo
+  ✓ M-A · la rama de C2 es la que produce la diferencia · desactivando SÓLO `c[0].d === 0` en la línea de g7, su cascada colapsa a la de f1_generar: C2  47 · C3  55 · C4   6 · C5   1 · sin resolver 0
+  ✓ M-B · una mordida que NO toca el mecanismo no mueve nada · un parche cosmético en la misma línea deja 55·50·3·1 — es el control de que M-A le pegó al mecanismo y no a cualquier cosa
+
+6 · CIERRE
+  ✓ join dfd07236… sin tocar
+  ✓ tsv 0ca33c18… sin tocar
+
+================================================================================
+SIN FALLAS
+QUÉ NO PRUEBA: no re-corre g7 sobre su propio insumo — reproduce su cascada
+sobre los empates que dejó escritos el artefacto. Y no dice cuál de las dos
+cascadas es la correcta: dice que son dos y en qué difieren.
+================================================================================

@@ -94,6 +94,107 @@ TIPO de error se aclara adentro.
        una tarde. Un límite declarado tiene fecha de medición y se vuelve a medir
        antes de citarse. Enmienda en §6.1.
 
+  (18) CIFRAS PUBLICADAS QUE NO SON LAS DEL ARTEFACTO · LA APERTURA DE LOS 109
+       `desempatado`. Publicado: C2 razón 55 · C3 comuna 50 · C4 nombre 3 ·
+       C5 capitanía 1. En `join_puerto_bahia.json` (sha256 dfd07236…, el artefacto
+       vivo): C2 47 · C3 55 · C4 6 · C5 1. LOS CUATRO SON DISTINTOS, y las dos
+       ternas suman 109 — por eso ningún control chistó.
+       NO ES CORRIMIENTO DE COLUMNA. CAUSA DIAGNOSTICADA: son DOS INSTRUMENTOS con
+       DOS cascadas. Lo publicado lo midió `g7_desempate.js`; el join lo escribió
+       `f1_generar.js`. ~~Difieren en UNA línea, C2: g7 cierra con
+       `(c.length >= 2 && c[0].d === 0 ? c[0] : null)` y f1_generar cierra con
+       `null`.~~ Ocho filas cuya candidata más cercana está a 0,00 km caen por eso
+       más abajo en la cascada — 5 a C3 (50→55) y 3 a C4 (3→6), y C2 pierde las 8
+       (55→47).
+       ENMENDADO EL MISMO DÍA, y la enmienda la forzó el propio instrumento:
+       `10_diagnosticar_cascada_c2.js` D-3 salió ROJO y refutó ese mecanismo. LA
+       RAMA `c[0].d === 0` NO ES LA CAUSA: las 8 filas NO están a cero, están
+       entre 1,5 y 4,4 METROS de su bahía, y g7 NO redondeaba, así que esa rama
+       —defensiva— no podía dispararle a ninguna.
+       EL MECANISMO ES EL REDONDEO. `f1_generar.js` guarda `+km(p,c).toFixed(2)`:
+       convierte esos 1,5–4,4 m en 0,00 EXACTO, y entonces el guard de su PROPIA
+       C2, `c[0].km > 0`, descarta las 8 antes de mirar la razón. Sin redondear,
+       la MISMA C2 de f1_generar las resuelve a las 8 por su rama de razón —los
+       cocientes van de 736 a 2579, muy por encima del umbral 3— y elige la misma
+       bahía que g7 (D-4). g7 no tenía una cascada distinta: tenía la misma con
+       precisión completa.
+       O SEA QUE LA REGRESIÓN NO ESTÁ EN UN CRITERIO, ESTÁ EN UN `toFixed(2)` que
+       se escribió para que el artefacto se leyera lindo. Un redondeo de
+       presentación aplicado ANTES de decidir.
+       EL APRENDIZAJE, CON SU NOMBRE, PARA LA LISTA DEL FRENTE:
+         **UN LÍMITE DECLARADO SE MIDE, NO SE DECLARA Y SE DEJA.**
+       Sobre el material redondeado las dos causas eran INDISTINGUIBLES, y la
+       explicación equivocada encajaba con TODO lo disponible: con los cuatro
+       números, con las 8 filas, con la provenance escrita en el README y con el
+       caso Guayacán. No había en ese material ninguna observación que la separara
+       de la verdadera. Lo único que las separó fue interrogar el límite que el
+       propio replay declaraba de sí mismo. Un límite escrito al lado de una cifra
+       no la protege: la protege medirlo. Es la (17) otra vez, un escalón más
+       arriba — allá caducó un límite sin que nadie lo revisara; acá un límite
+       declarado y vigente escondía la causa hasta que se lo midió.
+
+       Y EL DEFECTO QUE LO PRODUJO, con su nombre:
+         **UN REDONDEO DE PRESENTACIÓN APLICADO ANTES DE DECIDIR.**
+       `f1_generar.js:102`, `+km(p,c).toFixed(2)`. El guard `c[0].km > 0` de la
+       propia C2 descarta antes de mirar la razón, y así se tiraron desempates de
+       cociente 736 a 2579 CONTRA UN UMBRAL DE 3 — por un decimal de display.
+       Dos decimales alcanzan para mostrar kilómetros y no alcanzan para decidir
+       con ellos. Lo que se muestra y lo que se computa no son el mismo número.
+
+       LO QUE ENSEÑA, y es lo caro: mi primera versión de esta entrada nombró
+       como causa la diferencia de texto que SALTABA A LA VISTA entre los dos
+       ficheros, y encajaba con los cuatro números. Encajaba porque el replay
+       corría sobre los km YA REDONDEADOS del artefacto: sobre ese material, las
+       dos explicaciones son indistinguibles. La cazó el control que preguntaba
+       por el límite declarado del propio replay. UN LÍMITE DECLARADO SE MIDE, NO
+       SE DECLARA Y SE DEJA.
+       CÓMO SE VERIFICÓ: replay de la cascada sobre las 109 del artefacto, con las
+       dos líneas de C2 importadas VERBATIM de los dos ficheros versionados. Con
+       la C2 de f1_generar el replay reproduce el artefacto 109/109 fila por fila
+       (control). Con la de g7 reproduce 55·50·3·1 EXACTO. Límite declarado: el
+       replay corre sobre los km del artefacto, redondeados a 2 decimales, y g7
+       corría sin redondear; que los cuatro contadores coincidan exacto no deja
+       lugar a otra explicación, pero la corrida original de g7 no se re-hizo.
+       LO QUE ENSEÑA: el README de insumos YA DECÍA que esas cifras las produjo
+       g7. La provenance estaba escrita y nadie cotejó un instrumento con el otro.
+       Dos instrumentos que miden «lo mismo» se cruzan ANTES de publicar sus
+       cifras al lado del artefacto del otro.
+       CONSECUENCIA QUE NO ES DE CONTEO: la opción (b1) de §6.4 de la bitácora de
+       F2 —«que la distancia gane cuando una candidata está a 0 km»— NO es una
+       idea nueva: es la rama que g7 tenía y f1_generar no. De las 8 filas que
+       toca, 7 eligen la misma bahía igual; la única que cambia es el nodo 59,
+       Guayacán, que es exactamente el caso de §5.2/§7.1.
+       Enmiendas: `filtro_puerto_2026-08-17.txt` §«REPARTO DE LOS 688» (origen),
+       `f2_verde_falso_2026-08-17.txt` §5.2 · §6.4(b) · §7.2(A), y el README de
+       insumos en sus dos apariciones. SIETE sitios, no cuatro.
+
+  (19) CIFRA CORTA Y CLASE EQUIVOCADA · «NUEVE SCRIPTS LEEN `sitport-routes.js`
+       COMO TEXTO». Son DOCE ficheros, y uno NO ES UN SCRIPT: es
+       `src/services/catalogo-bahias.js:131`, PRODUCCIÓN, que hace
+       `indexOf('const BAHIA_COORDS = {')` y TIRA `ErrorCatalogoBahias` si el
+       literal falta, si el bloque no cierra, si queda sin entradas o si repite
+       claves. Ningún test de servicios lo importa: la suite 157/157 NO LO VE.
+       (`scripts/seed-bahias-sitport.js` NO es uno de los doce: tiene su propia
+       copia del literal, no lo extrae.)
+       EL EFECTO NO CAMBIA —no se toca la declaración— pero el motivo sí: no es
+       «no le rompas los scripts», es «hay un lector de producción que la suite no
+       cubre». Control nuevo, autorizado como (19)-O2: la lectura base del literal
+       queda en `09_medir_c3_desempates.js` §1, con control positivo y mordida
+       anclada al token completo; el guard del DESPUÉS va en el instrumento que
+       verifique la escritura de F2.
+
+  (20) LÍMITE MEDIO CADUCADO · «HAY QUE TENER `:3000` ARRIBA PARA MEDIR, Y
+       `comuna` SALE DE psql». La primera mitad es condición de entorno y estaba
+       sin cumplir al abrir la sesión —`:3000` caído, que es el origen literal de
+       la (17)—; se levantó y contesta. LA SEGUNDA MITAD NO APLICA A ESTA
+       MEDICIÓN: `join_puerto_bahia.json` guarda la `comuna` de cada fila Y las
+       candidatas del empate con su km, así que M4 se mide entero contra el
+       artefacto. Medirlo contra psql en vivo sería peor: sería medir una comuna
+       que puede no ser la que decidió el join, con una deriva de un día sin
+       medir. El cotejo psql-vs-join se corre APARTE y se reporta aparte.
+       Y LO QUE ENSEÑA ES LO MISMO QUE LA (17) AL REVÉS: un límite se vuelve a
+       medir antes de citarse, y también se vuelve a medir si YA NO HACE FALTA.
+
 LO QUE ENSEÑAN JUNTAS, y es lo mismo que enseñó la undécima: un traspaso escrito
 para sostenerse solo no se sostiene solo. La (12) y la (13) sobrevivieron a la
 redacción del traspaso, a la lectura del owner y a la redacción del prompt

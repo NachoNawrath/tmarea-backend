@@ -92,9 +92,14 @@ nodos.json — EL VOLCADO DE psql, Y POR QUÉ NO ALCANZA CON CONGELADO_puertos
   bahia_sitport_id · lat · lng.
 
 ES EL ÚNICO INSUMO QUE TRAE `comuna`, y `comuna` es el criterio C3 que resuelve
-50 de los 109 desempates. `/api/puertos` NO devuelve ese campo: por eso
+~~50~~ 55 de los 109 desempates. `/api/puertos` NO devuelve ese campo: por eso
 CONGELADO_puertos.json no lo sustituye y por eso los instrumentos que desempatan
 leen este fichero y no aquél.
+  ENMENDADO 2026-08-18 · entrada (18). Y una precisión que hace falta para no
+  levantar la base sin motivo: `join_puerto_bahia.json` GUARDA la `comuna` de cada
+  fila, así que quien mida SOBRE EL JOIN no necesita ni este fichero ni psql — y
+  no debe usarlos, porque la comuna de hoy puede no ser la que decidió el join.
+  Este fichero hace falta para DERIVAR el join, no para medirlo.
 
 LO LEEN TRES DE LOS CUATRO:
     f1_generar.js:43 · f1_controles.js:17 · g7_desempate.js:48
@@ -148,9 +153,25 @@ g5_universo.js  — PASOS 2-4. Extrae el filtro y BAHIA_COORDS VERBATIM de
 
 g7_desempate.js — LA CASCADA Y LOS QUE CALLAN.
   PRODUJO:
-    §5.1 el rendimiento medido de cada criterio de desempate, que es la apertura
-         de los 109 `desempatado`: C2 razón 55 · C3 comuna 50 · C4 nombre 3 ·
+    §5.1 el rendimiento medido de cada criterio de desempate, que ~~es la apertura
+         de los 109 `desempatado`~~: C2 razón 55 · C3 comuna 50 · C4 nombre 3 ·
          C5 capitanía 1.
+         ENMENDADO 2026-08-18 · entrada (18). ESTOS CUATRO NÚMEROS SON CORRECTOS
+         PARA g7 Y NO SON LA APERTURA DEL JOIN. Este párrafo ya decía que los
+         produjo g7; lo que faltó fue cotejarlos con el artefacto, que los tiene
+         distintos: C2 47 · C3 55 · C4 6 · C5 1. Los dos instrumentos NO tienen la
+         misma ~~cascada — g7 resuelve además en C2 el caso `c[0].d === 0` y
+         `f1_generar.js` no~~ PRECISIÓN, y el join lo escribió `f1_generar.js`.
+         Ocho filas a 0,00 km caen por eso más abajo: 5 a C3 y 3 a C4.
+         RE-ENMENDADO el mismo día (`10_diagnosticar_cascada_c2.js` D-3/D-4): la
+         cascada es la MISMA. Lo que difiere es que `f1_generar.js` guarda
+         `+km().toFixed(2)` y g7 no. Las 8 filas están a 1,5–4,4 m; el redondeo
+         las lleva a 0,00 y el guard `c[0].km > 0` de la propia C2 las descarta.
+         AVISO PARA QUIEN RE-DERIVE EL JOIN: `f1_generar.js:102` redondea las
+         distancias ANTES de la cascada. Cualquier re-derivación arrastra esto.
+         LA LECCIÓN, que es de método: dos instrumentos que miden «lo mismo» se
+         cotejan ANTES de publicar sus cifras juntas. Las dos ternas suman 109 y
+         ningún control las cruzó.
     el fichero LOS_QUE_CALLAN.tsv (ver abajo).
     la apertura de DÓNDE calla la app, por franja de latitud y por tipo de nodo.
   ESCRIBE. Ver el aviso del principio.
