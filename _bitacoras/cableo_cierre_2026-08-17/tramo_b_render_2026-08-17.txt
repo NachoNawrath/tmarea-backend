@@ -99,6 +99,25 @@ TIPO de error se aclara adentro.
        C5 capitanía 1. En `join_puerto_bahia.json` (sha256 dfd07236…, el artefacto
        vivo): C2 47 · C3 55 · C4 6 · C5 1. LOS CUATRO SON DISTINTOS, y las dos
        ternas suman 109 — por eso ningún control chistó.
+       ENMENDADO 2026-08-18 · sesión (b1-a), redacción del owner. EL REGISTRO DE
+       ARRIBA NO LLEVA TACHADO Y NO DEBE LLEVARLO: es lo que F1 publicó el
+       2026-08-17 y eso no cambia — es historia. LO QUE FALTABA ES POR QUÉ ESOS
+       DÍGITOS VOLVIERON A SER CORRECTOS SIN QUE EL TACHADO SOBRARA.
+       Lo publicado salía de `g7_desempate.js`, que NO redondeaba: los dígitos
+       eran de la geometría, no del artefacto entregado. Contra dfd07236… eran
+       falsos —C3 valía 55— y por eso se tacharon en los otros nueve sitios.
+       Desde 4f9fbdc3…, tras (b1-a), el artefacto ya no redondea el CÁLCULO y la
+       terna vuelve a ser C2 55 · C3 50 · C4 3 · C5 1: el número coincide con el
+       de 2026-08-17 POR UNA RAZÓN DISTINTA DE LA QUE SE CREYÓ ENTONCES. UNA
+       CIFRA SE CITA CON LA VERSIÓN QUE LA PRODUJO.
+       LAS TRES TERNAS, cada una con el artefacto que la produjo:
+         publicado por g7 el 2026-08-17 ..... C2 55 · C3 50 · C4 3 · C5 1
+         dfd07236… · f1_generar @36543c8 .... C2 47 · C3 55 · C4 6 · C5 1
+         4f9fbdc3… · f1_generar @(b1-a) ..... C2 55 · C3 50 · C4 3 · C5 1
+       LAS TRES SUMAN 109, y por eso ningún control de suma las distingue.
+       LA TERNA DE ESTE REGISTRO ES MULTILÍNEA —abarca el `:98` y el `:99`—, así
+       que un grep de una sola línea NO la ve. Es la trampa que D-2 midió: de los
+       14 tachados de la familia, CINCO abarcan dos líneas.
        NO ES CORRIMIENTO DE COLUMNA. CAUSA DIAGNOSTICADA: son DOS INSTRUMENTOS con
        DOS cascadas. Lo publicado lo midió `g7_desempate.js`; el join lo escribió
        `f1_generar.js`. ~~Difieren en UNA línea, C2: g7 cierra con
@@ -111,7 +130,8 @@ TIPO de error se aclara adentro.
        RAMA `c[0].d === 0` NO ES LA CAUSA: las 8 filas NO están a cero, están
        entre 1,5 y 4,4 METROS de su bahía, y g7 NO redondeaba, así que esa rama
        —defensiva— no podía dispararle a ninguna.
-       EL MECANISMO ES EL REDONDEO. `f1_generar.js` guarda `+km(p,c).toFixed(2)`:
+       EL MECANISMO ES EL REDONDEO. `f1_generar.js:67` @36543c8 guarda
+       `+km(p,c).toFixed(2)`:
        convierte esos 1,5–4,4 m en 0,00 EXACTO, y entonces el guard de su PROPIA
        C2, `c[0].km > 0`, descarta las 8 antes de mirar la razón. Sin redondear,
        la MISMA C2 de f1_generar las resuelve a las 8 por su rama de razón —los
@@ -135,11 +155,24 @@ TIPO de error se aclara adentro.
 
        Y EL DEFECTO QUE LO PRODUJO, con su nombre:
          **UN REDONDEO DE PRESENTACIÓN APLICADO ANTES DE DECIDIR.**
-       `f1_generar.js:102`, `+km(p,c).toFixed(2)`. El guard `c[0].km > 0` de la
-       propia C2 descarta antes de mirar la razón, y así se tiraron desempates de
-       cociente 736 a 2579 CONTRA UN UMBRAL DE 3 — por un decimal de display.
+       ~~`f1_generar.js:102`~~ `f1_generar.js:67` @36543c8,
+       `+km(p,c).toFixed(2)`. El guard `c[0].km > 0` de la propia C2 descarta
+       antes de mirar la razón, y así se tiraron desempates de cociente 736 a
+       2579 CONTRA UN UMBRAL DE 3 — por un decimal de display.
        Dos decimales alcanzan para mostrar kilómetros y no alcanzan para decidir
        con ellos. Lo que se muestra y lo que se computa no son el mismo número.
+       ENMENDADO 2026-08-18 · sesión (b1-a), entrada (21) de esta misma lista.
+       LA CITA ERA FALSA: la 102 es el filtro de radio —`x.km <= RADIO`— y sólo
+       CONSUME el km ya redondeado; el redondeo se escribe en la 67, dentro de
+       `vecinas()`. LOS DOS NÚMEROS SON @36543c8. En @(b1-a) la MISMA línea es la
+       **72** y el filtro de radio la **113**, porque el comentario que (b1-a)
+       agregó arriba de `vecinas()` corrió la numeración: ver el MAPA DE LÍNEAS
+       POR VERSIÓN de `_bitacoras/filtro_puerto_2026-08-17/insumos/README.txt`.
+       UN NÚMERO DE LÍNEA SE CITA CON LA VERSIÓN QUE LO PRODUJO.
+       EN ESTA MISMA ENMIENDA se completó la otra cita de la entrada, la de
+       `:114`, que nombraba el fichero SIN línea (era una de las tres
+       «incompletas» de D-1). Las otras dos viven en otros ficheros y quedan
+       abiertas: ver §6.4.
 
        LO QUE ENSEÑA, y es lo caro: mi primera versión de esta entrada nombró
        como causa la diferencia de texto que SALTABA A LA VISTA entre los dos
@@ -194,6 +227,73 @@ TIPO de error se aclara adentro.
        medir. El cotejo psql-vs-join se corre APARTE y se reporta aparte.
        Y LO QUE ENSEÑA ES LO MISMO QUE LA (17) AL REVÉS: un límite se vuelve a
        medir antes de citarse, y también se vuelve a medir si YA NO HACE FALTA.
+
+  (21) CITA FALSA · `f1_generar.js:102`. EL REDONDEO ESTABA EN LA 67 —
+       `{ id: c.id, km: +km(p, c).toFixed(2) }`, dentro de `vecinas()`—. La 102 es
+       el FILTRO DE RADIO, `v.filter(x => x.km <= RADIO)`, y sólo CONSUME el valor
+       ya redondeado. Quien saque el redondeo «de la :102» edita el filtro, no
+       toca el defecto, y el instrumento sigue redondeando — en un frente cuya
+       regla es anclar el parche al token sintáctico completo. Los dos números son
+       @36543c8.
+       NACE EN LA PIEZA 1 de (b1-a), como D-1: la cita ya estaba escrita y el push
+       de 379f90c la publicó. No la creó esa pieza, la volvió pública.
+       LA SEGUNDA APARICIÓN SE CAZA EN LA PIEZA 4, como D-12:
+       `_bitacoras/filtro_puerto_2026-08-17/insumos/README.txt:170` decía lo
+       mismo, dirigida literalmente a quien re-derive el join. No se vio en el
+       gate porque el grep corrió sobre `_bitacoras/*/[a-z]*.txt` y el README vive
+       un nivel más abajo, en `insumos/`: el cero salió del patrón, no del árbol.
+       ES EL CASO CONCRETO DE §4.3.
+       ENMENDADA EN ORIGEN Y CON TACHADO EN SUS DOS SITIOS: el README en la pieza
+       4 de (b1-a) (commit f2d0aea), y el `:138` de este fichero en esta pieza.
+       QUÉ NO CAE: el MECANISMO. D-3 y D-4 siguen en pie —las 8 filas a 1,51-4,35
+       m, razones de 736 a 2579 contra un umbral de 3—. Cae la ubicación
+       publicada, no la causa. Es una cita, no un diagnóstico.
+
+  (22) CIFRA DEL INSTRUMENTO PUBLICADA COMO CIFRA DEL MUNDO · «psql CUELGA
+       120 s». MEDIDO el 2026-08-18: psql 16 contra `mapa_navegacion`, sin
+       contraseña en el entorno y con stdin que NO es TTY —el harness no da
+       consola—, cortando por fuera con `timeout`:
+
+         corrida                        corte    exit   elapsed   salida
+         -w -P pager=off                200 s      2      0 s     fe_sendauth: no password supplied
+         -w  solo                        45 s      2      1 s     idem
+         -P pager=off  solo              45 s    124     45 s     0 bytes
+         sin flags                       30 s    124     30 s     0 bytes
+         sin flags, con `</dev/null`     60 s    124     60 s     0 bytes
+         sin flags                      200 s    124    200 s     0 bytes
+
+       exit 124 = lo cortó el `timeout` externo, NO psql. LAS CUATRO CORRIDAS
+       COLGADAS DIERON elapsed IGUAL AL CORTE —30, 45, 60 y 200—: psql NO TIENE
+       LÍMITE PROPIO, espera hasta que algo de afuera lo mate, y no imprime nada
+       mientras espera (0 bytes en las cuatro). EL «120» ERA EL TIMEOUT POR
+       DEFECTO DE LA HERRAMIENTA QUE LO CORRIÓ aquella vez.
+       LÍMITE DE ESTA MEDICIÓN, declarado y no dejado ahí: stdin no es TTY acá.
+       En una consola interactiva psql mostraría el prompt; ESO NO SE MIDIÓ. Lo
+       medido es que SIN consola también se queda esperando, sin límite y sin
+       decir nada.
+       CAZADA ANTES DE PUBLICARSE: la pieza 2 de (b1-a) iba a escribir ese 120 en
+       `CLAUDE.md` y el owner exigió medirlo primero. Entra por el mismo criterio
+       que la (15) y la (16), cazadas por un gate antes de publicar: la lista
+       cuenta premisas CAÍDAS, no premisas que llegaron a producción.
+       ES LA (17)/(18) EN SU FORMA MÁS BARATA DE CAZAR Y MÁS FÁCIL DE CREER: un
+       número DEL INSTRUMENTO publicado como número DEL MUNDO.
+       EVIDENCIA: `_bitacoras/filtro_puerto_2026-08-17/`
+       `b1a_redondeo_del_join_2026-08-18.txt` §D-5 — UNTRACKED, evidencia local no
+       publicada (ver §6.3). Por eso la tabla va entera acá y la entrada se
+       sostiene sola.
+
+  EL CONTADOR DEL FRENTE QUEDA EN VEINTIDÓS — Y VIAJA CON SU DENOMINADOR, PORQUE
+  22 ES EL ORDINAL MÁS ALTO Y NO UN CENSO. La lista arranca en la (10) y de la
+  (1) a la (9) NUNCA SE ENUMERARON —está dicho arriba y no se re-abre—, así que
+  las entradas enumeradas son TRECE: de la (10) a la (22). Y no todas son
+  «premisa falsa»: CINCO lo son —(10), (11), (12), (15) y (16)—; las otras OCHO
+  son control apuntado al mecanismo equivocado (13), cifra mal copiada (14),
+  límite caducado (17), cifras que no son las del artefacto (18), cifra corta y
+  clase equivocada (19), límite medio caducado (20), cita falsa (21) y cifra del
+  instrumento publicada como cifra del mundo (22). 5 + 8 = 13, contra el
+  denominador medido.
+  DECIR «VEINTIDÓS PREMISAS FALSAS» SERÍA LA (14) OTRA VEZ: una cifra transcrita
+  sin la corrida que la produjo. El ordinal se cita con lo que cuenta al lado.
 
 LO QUE ENSEÑAN JUNTAS, y es lo mismo que enseñó la undécima: un traspaso escrito
 para sostenerse solo no se sostiene solo. La (12) y la (13) sobrevivieron a la
@@ -557,6 +657,67 @@ patrón que no podía coincidir. Los dos salen verdes, y los dos son peores que 
 tener chequeo, porque compran confianza sin dar información.
 
 ================================================================================
+§4.3 · APRENDIZAJE DEL FRENTE — UN GREP DECLARA EL ÁRBOL QUE RECORRIÓ
+================================================================================
+Nace en la sesión (b1-a) · 2026-08-18 · D-12. Entra acá y no en §0 porque es
+hermana directa de §4.2: el MISMO instrumento, otro modo de falla.
+
+  UN GREP DECLARA EL ÁRBOL QUE RECORRIÓ. UN CERO PRODUCIDO POR EL PATRÓN DE RUTA
+  ES INDISTINGUIBLE DE UN CERO PRODUCIDO POR EL ÁRBOL.
+
+CASO REAL, 2026-08-18. El gate de (b1-a) buscó la cita falsa `f1_generar.js:102`
+con el patrón `_bitacoras/*/[a-z]*.txt` y publicó en D-1 «UNA sola cita con
+número de línea». ERAN DOS. La segunda vive en
+`_bitacoras/filtro_puerto_2026-08-17/insumos/README.txt:170` —UN NIVEL MÁS
+ABAJO— y ese patrón no baja ahí: el fichero nunca entró al universo del grep. El
+cero no salió del árbol, salió del patrón.
+
+Y ERA LA PEOR DE LAS DOS: estaba dirigida literalmente a QUIEN RE-DERIVE EL
+JOIN, que es la pieza que venía después, y lo mandaba a la línea equivocada.
+Apareció sola, al abrir el README por otro motivo. No la cazó ningún control.
+
+REGLA QUE QUEDA, operativa: junto al resultado de un grep va EL ÁRBOL QUE
+RECORRIÓ. Y para afirmar «no hay más», el barrido va sobre el REPO ENTERO —desde
+la raíz, con las exclusiones declaradas— y no sobre la carpeta donde uno espera
+encontrarlo.
+
+ES EL MISMO DEFECTO QUE §4.2, EN OTRA CAPA, Y §4.2 NO LO HABRÍA CAZADO: allá el
+patrón no podía coincidir con lo que buscaba; acá ni siquiera llegó a mirarlo. El
+control positivo de §4.2 prueba que el PATRÓN muerde sobre el material que se le
+dio; no prueba que el material sea el árbol entero. Los dos controles van juntos
+y ninguno sustituye al otro.
+
+================================================================================
+§4.4 · APRENDIZAJE DEL FRENTE — EL BUCKET RESIDUAL
+================================================================================
+Nace en la sesión (b1-a) · 2026-08-18 · D-9.
+
+  UN BUCKET RESIDUAL HEREDA EL NOMBRE DEL ÚLTIMO DE LA LISTA AUNQUE NO MIDA ESO.
+
+CASO REAL, 2026-08-18. La descomposición de la pieza 3 de (b1-a) repartía las 8
+filas que cambian —denominador 688 nombres— en cuatro categorías: borde de radio
+(≤30), borde de margen en su sitio `>=`, borde de margen en su sitio `<`, y
+REORDENAMIENTO del sort. Las tres primeras dieron CERO y las 8 cayeron en la
+cuarta, que se llamó «reordenamiento» PORQUE ERA LA ÚLTIMA NOMBRADA.
+
+NO ERA. Medido aparte y sobre las 688 —no sólo sobre las que cambian—, el
+reordenamiento da 0 filas con el orden de candidatas cambiado y 0 con la primera
+candidata cambiada. Lo que pasa es un QUINTO mecanismo que no estaba en ninguna
+de las listas, ni en la del owner ni en la mía: CAMBIA EL VALOR QUE UN CRITERIO
+LEE. El guard `c[0].km > 0` de C2 mira el NÚMERO, no el conjunto ni el orden.
+Corregido ANTES de reportar, y con eso la atribución quedó excluyente:
+0 · 0 · 0 · 0 · 8 = 8 de 8, sin filas huérfanas.
+
+ES LA MISMA FAMILIA QUE LA (18): una explicación que encaja porque es la que
+quedaba. Allá sobrevivía porque el material redondeado no la distinguía de la
+verdadera; acá sobrevivía porque un bucket residual acepta cualquier cosa que le
+caiga, y cuanto más ceros dan las categorías nombradas, más convincente se ve.
+
+REGLA QUE QUEDA: un bucket «lo que sobra» no es una categoría, es una etiqueta
+sin medición. Se le pone nombre propio y se le mide su denominador POR SEPARADO
+—sobre el universo entero, no sobre el residuo—, o no se reporta.
+
+================================================================================
 §5 · EL PENDIENTE HEREDADO — LA MORDIDA DEL VERIFICADOR DE PUSH
 ================================================================================
 El Tramo A declaró que `02_verificar_push.js` había quedado SIN MORDIDA. Se corrió
@@ -623,6 +784,45 @@ sobre una COPIA en scratchpad; el archivo del repo no se tocó.
   atribución en pausa y a los dos resolvedores de contacto sin unificar.
   REDACTADO PARA QUE NO SE PIERDA. El aviso de recalada, que es lo que este
   tramo escribe, rotuló bien: «Capitanía de Puerto de Caldera».
+
+6.3 · LA BITÁCORA DE (b1-a) ESTÁ UNTRACKED MIENTRAS LAS DEMÁS DEL FRENTE ESTÁN
+      VERSIONADAS.
+  MEDIDO 2026-08-18 sobre `tmarea-backend` @f2d0aea, con `git status --porcelain`
+  y `git ls-files`: `_bitacoras/filtro_puerto_2026-08-17/`
+  `b1a_redondeo_del_join_2026-08-18.txt` aparece como `??`. Las otras bitácoras
+  del frente SÍ están versionadas —`filtro_puerto_2026-08-17.txt`,
+  `f2_verde_falso_2026-08-17.txt`, `cableo_cierre_2026-08-17.txt` y este mismo
+  fichero—. Los VERIFICADORES son untracked por convención declarada del frente;
+  una BITÁCORA no lo es.
+  CONSECUENCIA: cualquier puntero a esa bitácora apunta a evidencia que no está
+  publicada. Por eso la (22) lleva la tabla entera adentro en vez de remitir.
+  Y HAY UNA CONSECUENCIA VIVA, NO SÓLO DE PUNTEROS: esa bitácora sigue diciendo
+  que D-1 y D-7 están ABIERTAS, y ESTA PIEZA LAS CIERRA — D-1 con el tachado del
+  `:158` de este fichero (su otro sitio, `insumos/README.txt:204`, lo cerró la
+  pieza 4 de (b1-a)), y D-7 con las entradas (21) y (22) escritas acá. Ese
+  fichero NO se tocó en esta pieza, así que quien lo abra sin leer esto va a
+  resolver algo ya resuelto. Va junto con la opción (a): al versionarla, se
+  marcan cerradas las dos.
+  DENOMINADOR DE LO MEDIDO: 1 modificado y 57 untracked en el árbol; se miró la
+  clase de ESE fichero, no la de las bitácoras de los demás frentes.
+  OPCIONES: (a) versionarla en pieza propia; (b) declararla deliberadamente local
+  y escribirlo en cada sitio que la cite; (c) dejarlo anotado.
+  RECOMENDACIÓN: (a), EN PIEZA PROPIA — no en ésta, que es de un solo fichero.
+
+6.4 · DOS CITAS INCOMPLETAS DE D-1 QUEDAN ABIERTAS, EN OTROS FICHEROS.
+  D-1 de la bitácora de (b1-a) dejó como decisión aparte tres sitios que nombran
+  `f1_generar.js` SIN número de línea. El de ESTE fichero —`:114`— se completó en
+  esta pieza, por decisión del owner. Los otros dos NO se tocan y quedan acá con
+  ubicación exacta RE-MEDIDA @f2d0aea, porque los números que D-1 anotó son
+  @379f90c y f2d0aea corrió las líneas de los dos ficheros:
+    `_bitacoras/filtro_puerto_2026-08-17/filtro_puerto_2026-08-17.txt:344`
+        @f2d0aea. D-1 la anotó como `:335` @379f90c, que además apuntaba a la
+        línea de CONTINUACIÓN: la cita vive en la anterior, `:334` @379f90c.
+    `_bitacoras/filtro_puerto_2026-08-17/f2_verde_falso_2026-08-17.txt:442`
+        @f2d0aea. D-1 la anotó como `:435` @379f90c — ésa sí era la línea.
+  NO SON FALSAS: nombran bien el fichero y bien el mecanismo. Les falta el número
+  de línea CON SU VERSIÓN, que es lo que costó la (21).
+  REDACTADO, NO APLICADO. Abrir esos dos ficheros no es de esta pieza.
 
 ================================================================================
 §7 · SMOKE VISUAL — CORRIDO. NO ES UN CONTROL.
