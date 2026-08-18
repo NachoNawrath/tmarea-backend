@@ -1,0 +1,178 @@
+================================================================================
+M1-M3 + LA CURVA DEL UMBRAL N — anclas desplazadas
+corrida 2026-08-18T02:09:59.632Z
+material CONGELADO 23:02Z · 26 filas vivas · 693 filas de catálogo · join 688
+================================================================================
+
+M1 · EL DOCE — los 12 nodos con ancla a más de 100 km, nombrados
+================================================================================
+  filas del catálogo con ancla a más de 100 km: 12
+
+  nodo                                      ancla    km    +6,00° → más cercana        veredicto
+  San Pedro ChaãAral De Las Animas          157   563    38.6 km «Bahía Chañaral         » mejora con +6 pero no cruza 30 km
+  Huasco                                      90   556    37.9 km «Caleta Chañaral y Ense » mejora con +6 pero no cruza 30 km
+  Puerto Viejo                               158   556    47.9 km «Puerto Carrizal Bajo   » mejora con +6 pero no cruza 30 km
+  Puerto De Caldera Mejoras Fiscales         158   554    33.6 km «Sector Punta Totoralil » mejora con +6 pero no cruza 30 km
+  Punta Choros B Los Corrales                 90   465    25.1 km «Cruz Grande            » DESPLAZADO 6,00°
+  Guanaqueros                                 90   365    35.5 km «Tongoy                 » mejora con +6 pero no cruza 30 km
+  Ventanas                                    90   137    16.6 km «Bahía de Valparaíso    » DESPLAZADO 6,00°
+  San Pedro Con Con                           90   128    14.4 km «Bahía Algarrobo        » DESPLAZADO 6,00°
+  Matanzas                                    90   120    11.5 km «Pichilemu              » DESPLAZADO 6,00°
+  Isla Guamblin                              243   118   284.0 km «Puerto Cisnes          » NO es desplazamiento de 6,00°
+  Portales                                    90   118     9.5 km «El Quisco              » DESPLAZADO 6,00°
+  El Membrillo                                90   114     5.5 km «El Quisco              » DESPLAZADO 6,00°
+
+================================================================================
+LA CURVA DEL UMBRAL N — para la regla (c), medida y no elegida a ojo
+================================================================================
+  Distancia de cada fila anclada a la bahía que declara. Denominador:
+  199 filas con ancla resoluble en BAHIA_COORDS.
+
+  umbral   filas por encima   filas por encima CON material vivo   con CIERRE
+      5 km             122                                  26           10
+      9 km              94                                  22            9
+     10 km              89                                  22            9
+     15 km              61                                  14            8
+     20 km              41                                  12            8
+     25 km              34                                  11            8
+     30 km              26                                  11            8
+     40 km              20                                  10            8
+     50 km              17                                  10            8
+     75 km              12                                  10            8
+    100 km              12                                  10            8
+    150 km               6                                   5            3
+    200 km               6                                   5            3
+    300 km               6                                   5            3
+    500 km               4                                   3            1
+
+  LAS 20 DISTANCIAS MÁS GRANDES Y LAS 6 MÁS CHICAS POR ENCIMA DE 5 km:
+        563.3 km  San Pedro ChaãAral De Las Animas
+        556.5 km  Huasco
+        555.5 km  Puerto Viejo
+        554.4 km  Puerto De Caldera Mejoras Fiscales
+        465.0 km  Punta Choros B Los Corrales
+        365.4 km  Guanaqueros
+        136.9 km  Ventanas
+        127.6 km  San Pedro Con Con
+        120.0 km  Matanzas
+        117.9 km  Isla Guamblin
+        117.9 km  Portales
+        114.3 km  El Membrillo
+         66.2 km  San Marcos
+         62.7 km  Caleta Pesquera Sector Los Cazones - Isla Mo
+         59.4 km  Caleta Pesquera Chipana
+         57.5 km  Caleta Andrade
+         50.8 km  Caleta Pesquera Talca
+         40.7 km  Embarcadero Rampa Isla Chulín
+         40.7 km  Muelle Pesquero Raul Marin Balmaceda
+         40.1 km  Rampa Conectividad Raul Marin Balmaceda
+      ...
+          5.1 km  Embarcadero Rampa Rollizo
+          5.3 km  Embarcadero Rampa Isla Quinchao - Sector Coñ
+          5.3 km  Caleta Pesquera Los Molinos
+          5.4 km  Caleta Pesquera Totoralillo Norte
+          5.4 km  Borde Costero Los Molinos
+          5.6 km  Caleta Pesquera Alto del Rey
+
+================================================================================
+M2 · LOS QUE NO TIENEN ANCLA — el test propuesto, con sus placebos
+================================================================================
+  EL TEST: un nodo está DESPLAZADO si hoy está a >= 30 km de toda bahía y
+  con lng+6,00° queda a < 30 km de alguna. No usa el ancla, así que alcanza
+  a los que no la tienen. 30 km es el radio del join, declarado en el
+  artefacto: por debajo de él el join adjudica, por encima calla.
+
+  CONTROL POSITIVO — PLACEBOS. El mismo test con otros desplazamientos. Si
+  +6,00 marca lo mismo que un placebo, el test no discrimina y no se
+  reporta. El placebo -6,00 es el más exigente: mueve la misma distancia
+  hacia el continente, donde HAY bahías.
+
+  denominadores: 693 filas · 494 filas SIN ancla · 492 nombres sin ancla
+
+  offset      marcados en las 490 sin ancla     marcados en las 199 con ancla
+   +6.00°                            0                                 6   ← el candidato
+   +3.00°                            0                                 0   (placebo)
+   -6.00°                            0                                 0   (placebo)
+   +9.00°                            0                                 0   (placebo)
+   -3.00°                            0                                 0   (placebo)
+
+  EL TEST NO DISCRIMINA sobre los que no tienen ancla: +6,00 no marca más
+  que el mejor placebo. NO SE REPORTA NINGÚN DESPLAZADO ENTRE ELLOS.
+
+================================================================================
+M3 · EL CERO DEL «EMPEORA», sin la premisa caída
+================================================================================
+  De los 9 que se apagan, cuántos tienen el ancla desplazada. Si alguno la
+  tiene, se miró la bahía equivocada para concluir que no tenía nada.
+
+  Borde Costero de Chañaral                
+      join: derivado_limpio          bahía    80 a 0.3 km
+      posición: más cercana hoy «Bahía Chañaral» a 0.3 km · no desplazado
+      bahía real (posición actual): «Bahía Chañaral» a 0.3 km · 0 filas vivas, 0 cerradas
+  Caleta Pesquera Guayacán                 
+      join: desempatado              bahía    85 a 2.1 km
+      posición: más cercana hoy «Bahía Herradura de Guayacán» a 0.0 km · no desplazado
+      bahía real (posición actual): «Bahía Herradura de Guayacán» a 0.0 km · 3 filas vivas, 0 cerradas
+  Caleta Pesquera San Pedro de Chañaral    
+      join: derivado_limpio          bahía    80 a 0.2 km
+      posición: más cercana hoy «Bahía Chañaral» a 0.2 km · no desplazado
+      bahía real (posición actual): «Bahía Chañaral» a 0.2 km · 0 filas vivas, 0 cerradas
+  Defensa Costera de Chañaral              
+      join: derivado_limpio          bahía    80 a 0.7 km
+      posición: más cercana hoy «Bahía Chañaral» a 0.7 km · no desplazado
+      bahía real (posición actual): «Bahía Chañaral» a 0.7 km · 0 filas vivas, 0 cerradas
+  Embarcadero Puerto Gaviota               
+      join: a_adjudicar              bahía     —
+      posición: más cercana hoy «Sector Canal Ferronave y Canal Devia» a 13.3 km · no desplazado
+      bahía real (posición actual): «Sector Canal Ferronave y Canal Devia» a 13.3 km · 0 filas vivas, 0 cerradas
+  Embarcadero Rampa El Pascua              
+      join: derivado_limpio          bahía   203 a 27.6 km
+      posición: más cercana hoy «Lago O'Higgins» a 27.6 km · no desplazado
+      bahía real (posición actual): «Lago O'Higgins» a 27.6 km · 0 filas vivas, 0 cerradas
+  Puerto Gaviota                           
+      join: confirmado_declarado     bahía   254 a 27.8 km
+      posición: más cercana hoy «Canal Chaffers Sur» a 27.8 km · no desplazado
+      bahía real (posición actual): «Canal Chaffers Sur» a 27.8 km · 0 filas vivas, 0 cerradas
+  Rampa Balseo Coipue 1 (Ex Gaviota) Norte 
+      join: derivado_limpio          bahía   210 a 29.9 km
+      posición: más cercana hoy «Lago Villarrica Sector Villarrica» a 29.9 km · no desplazado
+      bahía real (posición actual): «Lago Villarrica Sector Villarrica» a 29.9 km · 0 filas vivas, 0 cerradas
+  Rampa Balseo Coipue 2 (Ex Gaviota) Sur   
+      join: derivado_limpio          bahía   210 a 29.9 km
+      posición: más cercana hoy «Lago Villarrica Sector Villarrica» a 29.9 km · no desplazado
+      bahía real (posición actual): «Lago Villarrica Sector Villarrica» a 29.9 km · 0 filas vivas, 0 cerradas
+
+  DE LOS 9 QUE SE APAGAN: 0 con ancla/posición desplazada.
+  CON MATERIAL VIVO EN SU BAHÍA REAL Y NO EN LA DEL JOIN: 1.
+  DESPLAZAMIENTO: 0 de 9. La premisa «se miró la bahía
+  equivocada por una posición corrida» NO se cumple para ninguno de los 9.
+
+  MATERIAL ESCONDIDO detrás de la bahía del join: 1 de 9.
+     Caleta Pesquera Guayacán → «Bahía Herradura de Guayacán» a 0.0 km · 3 filas · 0 CERRADAS
+
+  CIERRES escondidos: 0 de 9.
+  => EL «0 DEJAN DE RECIBIR UN CIERRE VERDADERO» SE SOSTIENE, y ahora con
+     la premisa probada y no supuesta. ALCANCE: vale para las 16 filas
+     cerradas del material de las 23:02Z del 2026-08-17 y para los 9 que
+     se apagan. NO es una propiedad de F2: es la medición de un día.
+  => PERO NO SE SOSTIENE la afirmación más ancha de que «no se pierde
+     material verdadero»: se pierde en 1 caso(s), sin cierres.
+
+================================================================================
+MORDIDAS
+================================================================================
+  ✓ MUERDE  N1 BAHIA_COORDS vaciado → {"marcados":0}
+  ✓ MUERDE  N2 offset 0,00° (el test contra sí mismo) → {"marcados":0}
+  ✓ MUERDE  N3 distancia falseada a 0 → {"marcados":0}
+  ✓ MUERDE  N4 control positivo · los 4 de Juan Fernández NO se marcan → {"enJF":4,"marcados":0}
+  ✓ MUERDE  N5 material vivo vacío → {"conFilas":0}
+
+  5 de 5 mordidas muerden
+
+================================================================================
+GUARDA DE ENTREGABLES
+  ✓ data/catalogo/join_puerto_bahia.json  dfd072361faa5607…
+  ✓ _bitacoras/filtro_puerto_2026-08-17/F1_adjudicacion.tsv  0ca33c18e48229eb…
+
+──────────────────────────────────────────────────────────────────────
+SIN FALLAS · las mordidas muerden y los entregables están intactos.

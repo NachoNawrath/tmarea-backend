@@ -1,0 +1,336 @@
+================================================================================
+§3 · MEDICIÓN DEL VERDE FALSO — F2
+corrida 2026-08-18T02:09:59.194Z
+================================================================================
+
+UNIVERSOS, cada cifra nombra el suyo
+  CATÁLOGO  CONGELADO_puertos.json 2026-08-17T23:02:53.110Z
+            693 filas · 688 nombres distintos · 199 filas con ancla
+  MATERIAL  CONGELADO_vivo.json 2026-08-17T23:02:53.110Z
+            26 filas · 26 restricciones · 15 bahías · 16 filas cerradas
+  JOIN      data/catalogo/join_puerto_bahia.json · 688 filas
+  el ancla de la mordida «w => p.includes(w)» aparece 1 vez; la subcadena «p.includes(w)» aparece 2
+
+CONTROL DEL `nivel` — el grep que devuelve cero se prueba a sí mismo
+  filas con la clave 'nivel' .......... 0 / 26   (esperado 0)
+  CONTROL POSITIVO, misma vía y mismo material:
+  filas con la clave 'IDRestriccion' .. 26 / 26   (esperado 26)
+  => estado NUNCA vale 'rojo' hoy. La pantalla sólo distingue ámbar de verde.
+
+H3(a) · el lookup por string exacto contra el join
+  resuelven por string EXACTO .............  685 / 688
+  resuelven SÓLO tras normalizar ..........    3 / 688
+  no resuelven de ninguna forma ...........    0 / 688
+      "Borde costero Caleta El Blanco "
+      "Defensa Costanera Norte Antofagasta "
+      "Defensa Costera Sector Boca Budi\r\n"
+
+================================================================================
+1 · ZARPE — quiénes pasan de ámbar a «Abierto»
+================================================================================
+  denominador: 688 nombres del catálogo real, material 2026-08-17T23:02:53.110Z
+
+  hoy ámbar ................................   23 / 688
+  con F2 ámbar .............................   82 / 688
+
+  ÁMBAR -> «ABIERTO» (el verde falso) ......    9 / 688
+  verde -> ámbar (empiezan a avisar) .......   68 / 688
+  no se mueven .............................  611 / 688
+
+  LO QUE LOS 9 DEJAN DE RECIBIR, en las dos unidades:
+      filas servidas hoy ...................   11
+      restricciones distintas hoy ..........    5
+      de ellas, filas CERRADAS .............    1
+      de ellas, restricciones CERRADAS .....    1
+
+  POR QUÉ SE APAGAN — apertura por estado del join:
+      bahia_resuelta_SIN_filas_vivas            8
+      a_adjudicar                               1
+
+  ¿CUÁNTOS DE LOS QUE SE APAGAN TIENEN UN CIERRE VIVO EN LA BAHÍA QUE EL
+  JOIN LES ASIGNA?
+         0 de 9
+
+      ESTA AFIRMACIÓN ES TAUTOLÓGICA Y ASÍ QUEDA ESCRITA. Un puerto se
+      apaga si y sólo si F2 no le sirve ninguna fila, y F2 sirve todas las
+      de la bahía que el join le pone. El cero se sigue de las
+      definiciones: no es una medición del mundo.
+      QUÉ NO PRUEBA — y es todo lo que importaba:
+        · no prueba que la bahía del join sea la correcta;
+        · no prueba que no haya un cierre vivo en OTRA bahía que sí le
+          corresponda. Eso lo contesta M3 en 08_medir_anclas_desplazadas,
+          mirando la bahía más cercana a la POSICIÓN y no la del join;
+        · no dice nada de los que NO se apagan.
+
+================================================================================
+4 · EL DELTA EN LAS DOS DIRECCIONES — la que empeora, primero
+================================================================================
+  «PROPIA» TIENE TRES DEFINICIONES Y NINGUNA ES NEUTRAL. Van las tres, con
+  la definición al lado de cada tabla, porque LA ELECCIÓN DE LA DEFINICIÓN
+  ES LA QUE PRODUCE LAS CIFRAS:
+    (i)   EL ANCLA DECLARADA — `bahia_sitport_id`. Se venía llamando
+          «verdad de terreno» y NO LO ES: tiene al menos 12 filas con el
+          ancla a más de 100 km del nodo, 11 de ellas por defecto de
+          catálogo (ver 08_medir_anclas_desplazadas). Con esta definición,
+          servir la bahía de un ancla equivocada cuenta como «propia».
+    (ii)  LA POSICIÓN — la bahía más cercana al nodo dentro de 30 km. No
+          depende del ancla ni del join. Es la que caza el falso positivo
+          que (i) no puede ver.
+    (iii) LA BAHÍA DEL JOIN — la que F2 va a servir. ES CIRCULAR para
+          juzgar a F2 y se declara: mide consistencia, no acierto.
+
+  (i) CONTRA EL ANCLA DECLARADA — «propia» = la del ancla — denominador 198
+    EMPEORA · dejan de recibir un CIERRE «PROPIO» ...    0 / 198
+              filas cerradas propias perdidas .......    0
+              restricciones cerradas propias ........    0
+    dejan de recibir bahía AJENA ...................    3 / 198
+    siguen recibiendo alguna ajena .................    0 / 198
+    EMPIEZAN a recibir una ajena ...................    0 / 198   ← NO LEER SOLA: ver «SIN LA PALABRA PROPIA»
+    empiezan a recibir un cierre «propio» ..........   12 / 198
+
+  (i-bis) IGUAL, PERO SIN LAS 12 FILAS CON ANCLA A MÁS DE 100 km — denominador 186
+    EMPEORA · dejan de recibir un CIERRE «PROPIO» ...    0 / 186
+              filas cerradas propias perdidas .......    0
+              restricciones cerradas propias ........    0
+    dejan de recibir bahía AJENA ...................    1 / 186
+    siguen recibiendo alguna ajena .................    0 / 186
+    EMPIEZAN a recibir una ajena ...................    0 / 186   ← NO LEER SOLA: ver «SIN LA PALABRA PROPIA»
+    empiezan a recibir un cierre «propio» ..........    4 / 186
+
+  (ii) CONTRA LA POSICIÓN — «propia» = bahía más cercana dentro de 30 km — denominador 549
+    EMPEORA · dejan de recibir un CIERRE «PROPIO» ...    0 / 549
+              filas cerradas propias perdidas .......    0
+              restricciones cerradas propias ........    0
+    dejan de recibir bahía AJENA ...................    8 / 549
+    siguen recibiendo alguna ajena .................    0 / 549
+    EMPIEZAN a recibir una ajena ...................    1 / 549   
+    empiezan a recibir un cierre «propio» ..........   22 / 549
+
+  (iii) CONTRA LA BAHÍA DEL JOIN [circular] — denominador 501
+    EMPEORA · dejan de recibir un CIERRE «PROPIO» ...    0 / 501
+              filas cerradas propias perdidas .......    0
+              restricciones cerradas propias ........    0
+    dejan de recibir bahía AJENA ...................   10 / 501
+    siguen recibiendo alguna ajena .................    0 / 501
+    EMPIEZAN a recibir una ajena ...................    0 / 501   ← NO LEER SOLA: ver «SIN LA PALABRA PROPIA»
+    empiezan a recibir un cierre «propio» ..........   31 / 501
+
+  ── SIN LA PALABRA «PROPIA» — a qué distancia está lo que F2 sirve ──
+    nodos a los que F2 les sirve al menos una fila ...   82 / 688
+    F2 les sirve una bahía a más de  30 km .....   11 · con cierre    8 · hoy estaban en verde    9
+    F2 les sirve una bahía a más de 100 km .....   10 · con cierre    8 · hoy estaban en verde    8
+    F2 les sirve una bahía a más de 200 km .....    5 · con cierre    3 · hoy estaban en verde    3
+
+    NOMINAL, a más de 100 km:
+      El Membrillo                        → bahía   90 «Isla Robinson Crusoe» a 114 km · 1 filas, 1 cerradas · hoy VERDE
+      Guanaqueros                         → bahía   90 «Isla Robinson Crusoe» a 365 km · 1 filas, 1 cerradas · hoy VERDE
+      Huasco                              → bahía   90 «Isla Robinson Crusoe» a 556 km · 1 filas, 1 cerradas · hoy 1 filas
+      Matanzas                            → bahía   90 «Isla Robinson Crusoe» a 120 km · 1 filas, 1 cerradas · hoy VERDE
+      Portales                            → bahía   90 «Isla Robinson Crusoe» a 118 km · 1 filas, 1 cerradas · hoy VERDE
+      Puerto De Caldera Mejoras Fiscales  → bahía  158 «Caleta Chañaral y Ense» a 554 km · 1 filas, 0 cerradas · hoy 7 filas
+      Puerto Viejo                        → bahía  158 «Caleta Chañaral y Ense» a 556 km · 1 filas, 0 cerradas · hoy VERDE
+      Punta Choros B Los Corrales         → bahía   90 «Isla Robinson Crusoe» a 465 km · 1 filas, 1 cerradas · hoy VERDE
+      San Pedro Con Con                   → bahía   90 «Isla Robinson Crusoe» a 128 km · 1 filas, 1 cerradas · hoy VERDE
+      Ventanas                            → bahía   90 «Isla Robinson Crusoe» a 137 km · 1 filas, 1 cerradas · hoy VERDE
+
+    ÉSTA ES LA CIFRA DEL «EMPIEZAN A RECIBIR UNA AJENA». Las tres tablas
+    de arriba la esconden, cada una por su motivo: (i) y (iii) cuentan la
+    bahía del ancla equivocada como «propia», y (ii) los EXCLUYE de su
+    denominador porque desde su posición equivocada no hay ninguna bahía
+    a menos de 30 km. Tres definiciones, el mismo punto ciego.
+
+  LECTURA DE LAS CUATRO TABLAS, para que no se lea la que conviene:
+    · el «EMPIEZAN a recibir una ajena = 0» de (i) ES UN ARTEFACTO DE SU
+      PROPIA DEFINICIÓN: servir la bahía de un ancla equivocada cuenta como
+      «propia». La cifra que vale es la de (ii), que mide contra dónde está
+      el nodo y no contra lo que el catálogo declara.
+    · el «EMPEORA» de (i) queda con su alcance recortado: vale para las
+      filas cuyo ancla es creíble, que es lo que mide (i-bis).
+================================================================================
+2 · RECALADA — el universo real de destinos
+================================================================================
+  QUÉ LLEGA A fetchPortStatus. useVoyageVerification.js:835 hace
+  `destinos[0].puerto || .marina || .centro`, y :903 manda
+  `.nombre || .nombre_marina || 'Destino'`. Medido por catálogo:
+
+    puerto   → /api/puertos ............  688 nombres · EN el join
+    marina   → destinos_deportivos .....    3 entradas type=MARINA
+    centro   → centros_salmones ........ 1323 entradas
+    centro   → concesiones MOLUSCOS .... 1791 entradas
+    fondeadero → destinos_deportivos ...    1 type=ANCHORAGE · puerto_recalada queda NULL, no hay llamada
+    caladero → local ................... puerto_recalada queda NULL, no hay llamada
+
+  LA PROPORCIÓN REAL DE USO NO SE PUEDE MEDIR Y NO SE ESTIMA.
+  No hay telemetría de destinos elegidos: ni tabla de viajes, ni log de
+  P2, ni analítica. Los tamaños de catálogo NO son la proporción — dicen
+  cuántos hay para elegir, no cuántas veces se eligen.
+  QUÉ HARÍA FALTA: registrar el `tipo` de destino en cada verificación de
+  P3 (un contador por tipo, sin dato personal), y leerlo después de N
+  viajes. Es una pieza de PWA + backend y NO es de F2.
+
+  QUÉ NOMBRE VIAJA DE VERDAD, medido sobre las claves de cada catálogo:
+    marinas con .nombre o .nombre_marina ..    0 / 3   → las 3 restantes mandan el literal 'Destino'
+    centros salmón con topónimo real ...... 1323 / 1323
+      de ellos, con el literal 'Sin nombre'    0 / 1323   ← centros-service.js:20 lo pone como relleno
+    concesiones MOLUSCOS con .nombre ......    0 / 1791   → las 1791 mandan el literal 'Destino'
+      (el servicio devuelve el feature crudo: titular · codigo_centro · ubicacion_nombre, sin `nombre`)
+
+  CONTROL POSITIVO de esa lectura de claves (misma vía, mismo material):
+    marinas con .name .....................    3 / 3
+
+================================================================================
+3 · CUÁNTOS DESTINOS QUEDAN FUERA DEL JOIN POR CONSTRUCCIÓN
+================================================================================
+  marinas .........    0 de 3 tienen fila en el join
+  centros salmón ..    0 de 1323 tienen fila en el join
+  concesiones .....    0 de 1791 tienen fila en el join
+
+  FUERA DEL JOIN POR CONSTRUCCIÓN ... 3117 de 3117 destinos que NO son puerto.
+  Con F2 esos caen a «Abierto» SIEMPRE, no a veces: no hay bahía que
+  resolver porque el nombre no pertenece al catálogo del join.
+
+  QUÉ HACE EL FILTRO DE HOY CON ESOS MISMOS NOMBRES (material 23:02Z):
+    marinas          reciben algo hoy:    0 / 3 · con cierre:    0
+    centros salmón   reciben algo hoy:    3 / 1323 · con cierre:    1
+        «SENO VENTISQUERO, AL SUROESTE DE RÍO PASCUA» ← bahía 89 «ISLA DE PASCUA» CERRADA
+        «ESTERO CÓRDOVA, AL SUR DE CALETA BAKER, ISLA DESOLACIÓN» ← bahía 127 «BAKER»
+        «SENO SKYRING, AL SURESTE DE ENSENADA MORENO» ← bahía 77 «BAHÍA MORENO (ANTOFAGASTA)»
+    concesiones      reciben algo hoy:    0 / 1791 · con cierre:    0
+    el literal 'Destino' .......... hoy recibe 0 filas · 0 restricciones · 0 cerradas
+
+================================================================================
+5 · DEFECTO DE CATÁLOGO QUE F2 HEREDARÍA — hallado midiendo el §4
+================================================================================
+  Haversine estándar, declarado acá y no extraído de producción: esto mide
+  posiciones, no reglas de negocio.
+  nodos del catálogo con lng entre -76 y -80 (franja de Juan Fernández): 15 / 693
+
+  nodo                                       ancla  km al ancla   +6.00° → bahía más cercana
+  El Membrillo                                 90    114 km      5.5 km de «El Quisco»  ← DESPLAZADO
+  Guanaqueros                                  90    365 km     35.5 km de «Tongoy»
+  Huasco                                       90    556 km     37.9 km de «Caleta Chañaral y Ensenada Gaviota»
+  Infraestructura de Conectividad Bahía Cu   null         —    108.4 km de «El Quisco»
+  Matanzas                                     90    120 km     11.5 km de «Pichilemu»  ← DESPLAZADO
+  Muelle Bahía El Padre                        90      9 km    116.2 km de «Pichilemu»
+  Paseo Costero de Juan Fernandez            null         —    108.5 km de «El Quisco»
+  Portales                                     90    118 km      9.5 km de «El Quisco»  ← DESPLAZADO
+  Puerto De Caldera Mejoras Fiscales          158    554 km     33.6 km de «Sector Punta Totoralillo»
+  Puerto Viejo                                158    556 km     47.9 km de «Puerto Carrizal Bajo»
+  Punta Choros B Los Corrales                  90    465 km     25.1 km de «Cruz Grande»  ← DESPLAZADO
+  Rampa Sur Bahía Cumberland                 null         —    108.5 km de «El Quisco»
+  San Pedro ChaãAral De Las Animas           157    563 km     38.6 km de «Bahía Chañaral»
+  San Pedro Con Con                            90    128 km     14.4 km de «Bahía Algarrobo»  ← DESPLAZADO
+  Ventanas                                     90    137 km     16.6 km de «Bahía de Valparaíso»  ← DESPLAZADO
+
+  NODOS CUYA POSICIÓN SE ARREGLA SUMANDO EXACTAMENTE 6,00° AL lng: 6 de 15
+  Criterio: hoy están a >= 30 km de toda bahía y con +6,00° quedan a < 30 km
+  de una. No es una hipótesis sobre el origen del defecto: es la medición
+  de que el desplazamiento es UNIFORME y de SEIS GRADOS EXACTOS.
+  Es el mismo defecto que F1 §6.3 vio como «6 anclas a más de 200 km, máx
+  563,3 km» y no diagnosticó: 6,00° a esa latitud son ~560 km.
+
+  CONSECUENCIA DIRECTA SOBRE F2 — los que declaran ancla 90 «ISLA ROBINSON CRUSOE»:
+      nodos con ancla 90 ...................    9
+      de ellos, realmente a < 30 km de ella     1
+      de ellos, desplazados ................    8
+      la bahía 90 tiene HOY 1 filas vivas · 1 cerradas (material 23:02Z)
+
+      EL JOIN LOS COPIÓ SIN COTEJAR: los 9 son `confirmado_declarado` con
+      `via: bahia_sitport_id`. F1 no derivó nada ahí — tomó el ancla tal
+      cual. HOY el filtro por nombre NO les sirve nada (ningún nombre de
+      esos contiene «robinson» ni «crusoe»), así que hoy están en verde.
+      CON F2 PASAN A ÁMBAR CON UN CIERRE DE ROBINSON CRUSOE.
+      NO ES UNA MEJORA: ES UN FALSO POSITIVO NUEVO QUE F2 INTRODUCE.
+
+  CORRECCIÓN DE LA CIFRA DEL §4: de los 12 anclados que «empiezan a recibir
+  su propio cierre», 8 son estos desplazados y NO son una mejora.
+  MEJORA REAL = 12 - 8 = 4 sobre 198.
+
+  CONTROL QUE PRUEBA QUE EL TEST DISCRIMINA: los cuatro nodos que SÍ están
+  en Juan Fernández (Bahía Cumberland, Paseo Costero, Infraestructura de
+  Conectividad y Muelle Bahía El Padre) EMPEORAN con +6,00° — pasan a 108-116
+  km. Si el test marcara a todos por igual, no mediría nada.
+
+  ── ALCANCE GENERAL DEL DEFECTO, más allá de la bahía 90 ──────────────
+      anclas a más de  25 km de su bahía ...   34 filas
+      anclas a más de 100 km de su bahía ...   12 filas
+      anclas a más de 200 km de su bahía ...    6 filas
+
+      LO QUE IMPORTA PARA F2 — anclas a más de 100 km cuya bahía TIENE
+      material vivo hoy (23:02Z), o sea que F2 les serviría algo:
+          con filas vivas ..........   10 filas del catálogo
+          con al menos un CIERRE ...    8 filas del catálogo
+            El Membrillo                              ancla   90 a 114 km
+            Guanaqueros                               ancla   90 a 365 km
+            Huasco                                    ancla   90 a 556 km
+            Matanzas                                  ancla   90 a 120 km
+            Portales                                  ancla   90 a 118 km
+            Punta Choros B Los Corrales               ancla   90 a 465 km
+            San Pedro Con Con                         ancla   90 a 128 km
+            Ventanas                                  ancla   90 a 137 km
+
+      Denominador: 198 nombres anclados. El defecto NO es del filtro
+      ni del join: es del catálogo, y los dos lo heredan. Hoy queda tapado
+      porque el filtro por nombre no acierta casi nunca; F2 lo destapa.
+
+================================================================================
+NOMINAL — los casos que deciden, con nombre y apellido
+================================================================================
+  LOS 9 QUE PASAN A «ABIERTO» (material 23:02Z):
+    Borde Costero de Chañaral                     pierde 1 filas · 1 restr · 0 cerradas · join=bahía 80
+        recibía hoy: bahía 158 «CALETA CHAÑARAL Y ENSENADA GAVIOTA»
+    Caleta Pesquera Guayacán                      pierde 3 filas · 3 restr · 0 cerradas · join=bahía 85
+        recibía hoy: bahía 86 «BAHÍA HERRADURA DE GUAYACÁN»
+        recibía hoy: bahía 86 «BAHÍA HERRADURA DE GUAYACÁN»
+        recibía hoy: bahía 86 «BAHÍA HERRADURA DE GUAYACÁN»
+    Caleta Pesquera San Pedro de Chañaral         pierde 1 filas · 1 restr · 0 cerradas · join=bahía 80
+        recibía hoy: bahía 158 «CALETA CHAÑARAL Y ENSENADA GAVIOTA»
+    Defensa Costera de Chañaral                   pierde 1 filas · 1 restr · 0 cerradas · join=bahía 80
+        recibía hoy: bahía 158 «CALETA CHAÑARAL Y ENSENADA GAVIOTA»
+    Embarcadero Puerto Gaviota                    pierde 1 filas · 1 restr · 0 cerradas · join=a_adjudicar
+        recibía hoy: bahía 158 «CALETA CHAÑARAL Y ENSENADA GAVIOTA»
+    Embarcadero Rampa El Pascua                   pierde 1 filas · 1 restr · 1 cerradas · join=bahía 203
+        recibía hoy: bahía 89 «ISLA DE PASCUA»  ← CERRADA
+    Puerto Gaviota                                pierde 1 filas · 1 restr · 0 cerradas · join=bahía 254
+        recibía hoy: bahía 158 «CALETA CHAÑARAL Y ENSENADA GAVIOTA»
+    Rampa Balseo Coipue 1 (Ex Gaviota) Norte      pierde 1 filas · 1 restr · 0 cerradas · join=bahía 210
+        recibía hoy: bahía 158 «CALETA CHAÑARAL Y ENSENADA GAVIOTA»
+    Rampa Balseo Coipue 2 (Ex Gaviota) Sur        pierde 1 filas · 1 restr · 0 cerradas · join=bahía 210
+        recibía hoy: bahía 158 «CALETA CHAÑARAL Y ENSENADA GAVIOTA»
+
+  LOS ANCLADOS QUE EMPIEZAN A RECIBIR SU PROPIO CIERRE (mejora, sobre 198):
+    Borde Costero Sector Península de Cavancha    ancla 72 · 3 filas cerradas que hoy NO ve
+    El Membrillo                                  ancla 90 · 1 filas cerradas que hoy NO ve
+    Guanaqueros                                   ancla 90 · 1 filas cerradas que hoy NO ve
+    Huasco                                        ancla 90 · 1 filas cerradas que hoy NO ve
+    Matanzas                                      ancla 90 · 1 filas cerradas que hoy NO ve
+    Muelle Bahía El Padre                         ancla 90 · 1 filas cerradas que hoy NO ve
+    Portales                                      ancla 90 · 1 filas cerradas que hoy NO ve
+    Puerto Guacolda / Las Losas                   ancla 84 · 1 filas cerradas que hoy NO ve
+    Punta Choros B Los Corrales                   ancla 90 · 1 filas cerradas que hoy NO ve
+    Rampa Transbordadores Punta Delgada - Primer  ancla 132 · 1 filas cerradas que hoy NO ve
+    San Pedro Con Con                             ancla 90 · 1 filas cerradas que hoy NO ve
+    Ventanas                                      ancla 90 · 1 filas cerradas que hoy NO ve
+    total 12
+
+================================================================================
+MORDIDAS
+================================================================================
+  ✓ MUERDE  M1 filtro anulado (ancla `w => p.includes(w)`) → {"conFilasConMordida":0,"conFilasSinMordida":23}
+  ✓ MUERDE  M1b parche por subcadena — da EL MISMO 0 por el mecanismo equivocado → {"conFilas":0,"mismoQueM1":true,"ancla":"w => p.includes(w) aparece 1 vez","subcadena":"p.includes(w) aparece 2"}
+  ✓ MUERDE  M2 control positivo (parche idéntico, delta contra sí mismo) → {"nombresQueDifieren":0}
+  ✓ MUERDE  M3 material vacío → {"hoy":0,"f2":0}
+  ✓ MUERDE  M4 join vaciado → {"resuelven":0}
+  ✓ MUERDE  M5 bahia_id inexistente en el join → {"sirvenConIdFalso":0,"sirvenReal":82}
+  ✓ MUERDE  M6 predicado de cierre falseado → {"reales":16,"conMordida":0}
+
+  7 de 7 mordidas muerden
+
+================================================================================
+GUARDA DE ENTREGABLES — comprobada al abrir y al cerrar
+  ✓ data/catalogo/join_puerto_bahia.json  dfd072361faa5607…
+  ✓ _bitacoras/filtro_puerto_2026-08-17/F1_adjudicacion.tsv  0ca33c18e48229eb…
+
+──────────────────────────────────────────────────────────────────────
+SIN FALLAS · piso por unidad alcanzado, las mordidas muerden, y los dos
+entregables de F1 están intactos.

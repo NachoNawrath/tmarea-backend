@@ -1,0 +1,537 @@
+================================================================================
+F2 · §3 — LA MEDICIÓN DEL VERDE FALSO, Y EL DEFECTO QUE APARECIÓ MIDIÉNDOLA
+Frente del filtro · sesión F2 · 2026-08-17/18
+================================================================================
+
+Backend  4e5f83e3236d6ad22cc8c4da7d0a2337acac1e97 — CERO PIEZAS DE CÓDIGO.
+         `src/` byte por byte en 946bc5d7d80732f97df1cc2966c709423ed2acbe,
+         el mismo árbol que a050ac7. F2 todavía no movió producción.
+PWA      6443178493b8b3c35c11a37253c4b5bd1884ea55 — NO SE TOCÓ Y NO SE VA A
+         TOCAR EN F2.
+
+LO ESCRITO EN LOS REPOS POR ESTA SESIÓN, hasta acá:
+  36543c8  los siete insumos de F1 y su README
+  4e5f83e  nodos.json y el README enmendado
+Los dos son EVIDENCIA. Ninguno es código y nadie los consume.
+
+INSTRUMENTOS DE ESTA SESIÓN, corridos, no commiteados todavía:
+  07_medir_verde_falso.js        + su .txt   · §1 §2 §3 §4 §5
+  08_medir_anclas_desplazadas.js + su .txt   · M1 M2 M3 y la curva del umbral
+  06_verificar_push.js           + su .txt   · los dos commits de insumos
+
+--------------------------------------------------------------------------------
+MATERIAL — y su hora, porque ninguna cifra viva vale sin ella
+--------------------------------------------------------------------------------
+  VIVO      CONGELADO_vivo.json     2026-08-17T23:02:53.110Z
+            26 filas · 26 restricciones · 15 bahías · 16 filas cerradas
+  CATÁLOGO  CONGELADO_puertos.json  la misma hora
+            693 filas · 688 nombres · 199 filas con ancla (= 198 nombres)
+  JOIN      data/catalogo/join_puerto_bahia.json · 688 filas · dfd07236…
+Las dos capturas están versionadas en `insumos/` y son de la clase (A): su
+sha256 sobrevive un checkout byte por byte. NO SE CONGELÓ NINGUNA CAPTURA NUEVA
+en §3, así que no hay huella nueva que clasificar.
+
+EL BACKEND SE CAYÓ A MITAD DE SESIÓN (`:3000` sin escuchar, HTTP 000). No
+bloqueó nada: §3 mide contra congelado por diseño. Los catálogos de destino se
+leyeron de sus ficheros versionados y por sus servicios, no por la API.
+
+`nivel` está ausente en 26/26, con control positivo (`IDRestriccion` 26/26).
+=> `estado` NUNCA vale 'rojo'. La pantalla sólo distingue ámbar de «Abierto».
+
+================================================================================
+§1 · ZARPE — QUIÉNES SE APAGAN
+================================================================================
+Denominador 688 nombres, material 23:02Z.
+
+  hoy ámbar ......................  23 / 688
+  con F2 ámbar ...................  82 / 688
+  ÁMBAR → «ABIERTO» ..............   9 / 688
+  verde → ámbar ..................  68 / 688
+  no se mueven ................... 611 / 688
+
+LOS 9 DEJAN DE RECIBIR: 11 filas · 5 restricciones distintas · 1 fila cerrada ·
+1 restricción cerrada.
+POR QUÉ: 8 con bahía resuelta sin filas vivas · 1 `a_adjudicar`.
+
+EL ÚNICO CIERRE QUE SE PIERDE, con nombre:
+  «Embarcadero Rampa El Pascua» recibe hoy la bahía 89 «ISLA DE PASCUA»,
+  CERRADA. El join le asigna la 203 «Lago O'Higgins». Isla de Pascua está a
+  ~3.900 km de esa rampa. El token compartido es «pascua».
+Los otros 8 son colisiones Chañaral / Gaviota / Guayacán, sin cierres.
+
+--------------------------------------------------------------------------------
+LA AFIRMACIÓN TAUTOLÓGICA — SE RECORTA, NO SE BORRA
+--------------------------------------------------------------------------------
+«0 de los 9 tienen un cierre vivo en la bahía que el join les asigna.»
+
+ES TAUTOLÓGICA Y ASÍ QUEDA ESCRITA. Un puerto se apaga si y sólo si F2 no le
+sirve ninguna fila, y F2 sirve todas las de la bahía que el join le pone. El
+cero se sigue de las definiciones: NO ES UNA MEDICIÓN DEL MUNDO.
+
+QUÉ NO PRUEBA:
+  · no prueba que la bahía del join sea la correcta;
+  · no prueba que no haya material vivo en OTRA bahía que sí les corresponda
+    — eso lo contesta M3, y la respuesta NO es cero;
+  · no dice nada de los 611 que no se mueven.
+
+================================================================================
+§2 · RECALADA — EL UNIVERSO REAL DE DESTINOS
+================================================================================
+`useVoyageVerification.js:835` arma
+`destinos[0].puerto || .marina || .centro`, y `:903` manda
+`.nombre || .nombre_marina || 'Destino'`.
+
+  puerto     /api/puertos ............ 688 nombres · EN el join
+  marina     destinos_deportivos ..... 3 entradas type=MARINA
+             0 de 3 tienen .nombre o .nombre_marina → mandan el literal 'Destino'
+  centro     centros_salmones ........ 1.323 entradas, todas con topónimo real
+             (0 con el relleno 'Sin nombre' de centros-service.js:20)
+  centro     concesiones MOLUSCOS .... 1.791 entradas
+             0 de 1.791 tienen .nombre → mandan el literal 'Destino'
+  fondeadero destinos_deportivos ..... 1 type=ANCHORAGE · puerto_recalada queda
+             NULL y NO HAY LLAMADA
+  caladero   local ................... puerto_recalada queda NULL, no hay llamada
+
+LA PROPORCIÓN REAL DE USO NO SE PUEDE MEDIR Y NO SE ESTIMA. No hay telemetría de
+destinos elegidos: ni tabla de viajes, ni log de P2, ni analítica. El tamaño de
+un catálogo dice cuántos hay para elegir, no cuántas veces se elige.
+QUÉ HARÍA FALTA: un contador por `tipo` de destino en cada verificación de P3,
+sin dato personal, leído después de N viajes. Queda REDACTADO en §6.4 como pieza
+propia y NO APLICADA. F2 no la necesita.
+
+================================================================================
+§3 · CUÁNTOS DESTINOS QUEDAN FUERA DEL JOIN POR CONSTRUCCIÓN
+================================================================================
+3.117 de 3.117 destinos que no son puerto: 3 marinas + 1.323 centros + 1.791
+concesiones. Ninguno tiene fila en el join — sus nombres no pertenecen a ese
+catálogo. CON F2 CAEN A «ABIERTO» SIEMPRE, no a veces.
+
+PERO EL DELTA REAL ES DIMINUTO, PORQUE HOY YA ESTÁN CASI TODOS CALLADOS:
+  marinas          reciben algo hoy   0 / 3       · con cierre 0
+  centros salmón   reciben algo hoy   3 / 1.323   · con cierre 1
+  concesiones      reciben algo hoy   0 / 1.791   · con cierre 0
+  el literal 'Destino'                0 filas
+
+LOS TRES, con nombre:
+  «SENO VENTISQUERO, AL SUROESTE DE RÍO PASCUA»  ← bahía 89 ISLA DE PASCUA CERRADA
+  «ESTERO CÓRDOVA, AL SUR DE CALETA BAKER…»      ← bahía 127 BAKER
+  «SENO SKYRING, AL SURESTE DE ENSENADA MORENO»  ← bahía 77 BAHÍA MORENO
+Skyring está en Magallanes y Bahía Moreno en Antofagasta: ~3.200 km. El único
+cierre que la recalada pierde es, otra vez, Isla de Pascua por el token «pascua».
+
+TODO EL DELTA MEDIDO DE RECALADA: 3 destinos de 3.117, y los 3 eran atribución
+léxica accidental.
+
+================================================================================
+§4 · EL DELTA — Y LA CORRECCIÓN DE UNA CIFRA QUE ESTA BITÁCORA PUBLICÓ MAL
+================================================================================
+CORRECCIÓN. La primera versión de §4 publicó «EMPIEZAN a recibir una ajena ·
+0 / 198». ES FALSA. El instrumento definía «propia» = la bahía del ancla, y el
+ancla está desplazada en 11 filas: servir la bahía de un ancla equivocada
+contaba como «propia». La cifra correcta está abajo y no es 0 ni 8.
+
+«PROPIA» TIENE TRES DEFINICIONES Y NINGUNA ES NEUTRAL. LA ELECCIÓN DE LA
+DEFINICIÓN ES LA QUE PRODUCE LAS CIFRAS, así que van las tres con su definición
+al lado, más una cuarta medición que no usa la palabra.
+
+  (i) CONTRA EL ANCLA DECLARADA — «propia» = la del ancla — denominador 198
+      EMPEORA · dejan de recibir un CIERRE «propio» ....  0 / 198
+      dejan de recibir bahía AJENA ....................  3 / 198
+      siguen recibiendo alguna ajena ..................  0 / 198
+      EMPIEZAN a recibir una ajena ....................  0 / 198   ← ARTEFACTO
+      empiezan a recibir un cierre «propio» ...........  12 / 198  ← ver §5
+
+  (i-bis) IGUAL, SIN LAS 12 FILAS CON ANCLA A MÁS DE 100 km — denominador 186
+      EMPEORA · dejan de recibir un CIERRE «propio» ....  0 / 186
+      dejan de recibir bahía AJENA ....................  1 / 186
+      EMPIEZAN a recibir una ajena ....................  0 / 186
+      empiezan a recibir un cierre «propio» ...........  4 / 186
+
+  (ii) CONTRA LA POSICIÓN — «propia» = bahía más cercana dentro de 30 km,
+       sin ancla y sin join — denominador 549
+      EMPEORA · dejan de recibir un CIERRE «propio» ....  0 / 549
+      dejan de recibir bahía AJENA ....................  8 / 549
+      EMPIEZAN a recibir una ajena ....................  1 / 549
+      empiezan a recibir un cierre «propio» ...........  22 / 549
+
+  (iii) CONTRA LA BAHÍA DEL JOIN [CIRCULAR, se declara] — denominador 501
+      EMPEORA · dejan de recibir un CIERRE «propio» ....  0 / 501
+      dejan de recibir bahía AJENA .................... 10 / 501
+      EMPIEZAN a recibir una ajena ....................  0 / 501
+      empiezan a recibir un cierre «propio» ........... 31 / 501
+
+--------------------------------------------------------------------------------
+LA CIFRA BUENA — SIN LA PALABRA «PROPIA»
+--------------------------------------------------------------------------------
+No pregunta cuál es la bahía correcta. Pregunta A QUÉ DISTANCIA DEL NODO está la
+bahía cuyas filas F2 le va a servir. No necesita ancla, ni join, ni una noción de
+«correcto». Denominador: los 82 nodos a los que F2 les sirve al menos una fila.
+
+  F2 les sirve una bahía a más de  30 km ...  11 · con cierre 8 · hoy verde 9
+  F2 les sirve una bahía a más de 100 km ...  10 · con cierre 8 · hoy verde 8
+  F2 les sirve una bahía a más de 200 km ...   5 · con cierre 3 · hoy verde 3
+
+  El Membrillo                 → bahía  90 «Isla Robinson Crusoe» a 114 km · 1 cerrada · hoy VERDE
+  Portales                     → bahía  90 «Isla Robinson Crusoe» a 118 km · 1 cerrada · hoy VERDE
+  Matanzas                     → bahía  90 «Isla Robinson Crusoe» a 120 km · 1 cerrada · hoy VERDE
+  San Pedro Con Con            → bahía  90 «Isla Robinson Crusoe» a 128 km · 1 cerrada · hoy VERDE
+  Ventanas                     → bahía  90 «Isla Robinson Crusoe» a 137 km · 1 cerrada · hoy VERDE
+  Punta Choros B Los Corrales  → bahía  90 «Isla Robinson Crusoe» a 465 km · 1 cerrada · hoy VERDE
+  Guanaqueros                  → bahía  90 «Isla Robinson Crusoe» a 365 km · 1 cerrada · hoy VERDE
+  Huasco                       → bahía  90 «Isla Robinson Crusoe» a 556 km · 1 cerrada · hoy 1 fila
+  Puerto Viejo                 → bahía 158 «Cta. Chañaral y Ens. Gaviota» a 556 km · 0 cerradas · hoy VERDE
+  Puerto De Caldera Mej. Fisc. → bahía 158 «Cta. Chañaral y Ens. Gaviota» a 554 km · 0 cerradas · hoy 7 filas
+
+LAS TRES DEFINICIONES ESCONDEN A LOS MISMOS DIEZ, cada una por su motivo:
+  (i) y (iii) cuentan la bahía del ancla equivocada como «propia»;
+  (ii) los EXCLUYE de su denominador, porque desde su posición equivocada no hay
+       ninguna bahía a menos de 30 km.
+Tres definiciones, el mismo punto ciego. Sólo la pregunta por la DISTANCIA los ve.
+
+--------------------------------------------------------------------------------
+EL «EMPEORA · 0» — ALCANCE RECORTADO, Y DE QUÉ PREMISA DEPENDÍA
+--------------------------------------------------------------------------------
+Dependía de esta premisa: «la bahía que el join asigna es la bahía que hay que
+mirar para saber si el puerto se quedó sin nada». Si el ancla está desplazada,
+se miró la bahía equivocada para concluir que no había nada.
+
+M3 la puso a prueba y el resultado tiene DOS mitades:
+  · NINGUNO de los 9 que se apagan está desplazado. La premisa no cae para ellos,
+    y el «0 dejan de recibir un CIERRE verdadero» SE SOSTIENE sobre este material
+    y esta hora.
+  · PERO UNO DE LOS 9 SÍ TENÍA MATERIAL ESCONDIDO detrás de la bahía equivocada,
+    y no por desplazamiento sino por DESEMPATE. Ver §5.2.
+
+ALCANCE DEL «0», escrito para que no se cite más ancho de lo que es:
+  vale para las 16 filas cerradas del material de las 23:02Z del 2026-08-17;
+  vale para los 9 que se apagan, que son los únicos que pueden perder algo;
+  NO vale como propiedad de F2 — vale como medición de un día.
+  NO cubre a los 611 que «no se mueven»: ver §6.3.
+
+================================================================================
+§5 · EL DEFECTO QUE APARECIÓ MIDIENDO EL §4
+================================================================================
+
+5.1 · DESPLAZAMIENTO UNIFORME DE 6,00° EN EL `lng` DE 11 NODOS
+--------------------------------------------------------------------------------
+Sumarle exactamente 6,00° a la longitud los devuelve a la costa. No es una
+hipótesis sobre la causa: es la medición de que el desplazamiento es UNIFORME y
+de SEIS GRADOS EXACTOS. A esas latitudes, 6,00° son ~558 km.
+
+ES EL MISMO DEFECTO QUE F1 §6.3 VIO Y NO DIAGNOSTICÓ: «6 anclas a más de 200 km,
+máx 563,3 km». La cifra era correcta; la lectura —«outliers de la verdad de
+terreno»— no.
+
+LOS 12 CON ANCLA A MÁS DE 100 km, TODOS NOMBRADOS (M1):
+  San Pedro ChaãAral De Las Animas   157  563 km   +6° → 38,6 km de Bahía Chañaral
+  Huasco                              90  556 km   +6° → 37,9 km
+  Puerto Viejo                       158  556 km   +6° → 47,9 km
+  Puerto De Caldera Mejoras Fiscales 158  554 km   +6° → 33,6 km
+  Punta Choros B Los Corrales         90  465 km   +6° → 25,1 km de Cruz Grande
+  Guanaqueros                         90  365 km   +6° → 35,5 km de Tongoy
+  Ventanas                            90  137 km   +6° → 16,6 km de Bahía de Valparaíso
+  San Pedro Con Con                   90  128 km   +6° → 14,4 km de Bahía Algarrobo
+  Matanzas                            90  120 km   +6° → 11,5 km de Pichilemu
+  Isla Guamblin                      243  118 km   +6° → 284,0 km  ← NO ES ESTE DEFECTO
+  Portales                            90  118 km   +6° →  9,5 km de El Quisco
+  El Membrillo                        90  114 km   +6° →  5,5 km de El Quisco
+
+M1 CONTESTADA: el doceavo es ISLA GUAMBLIN, ancla 243, a 117,9 km. NO es
+desplazamiento de 6,00° — con +6,00° EMPEORA a 284 km. Es una isla realmente
+mar afuera en el archipiélago de los Chonos, con un ancla lejana que puede ser
+legítima o ser otro defecto. NO SE DIAGNOSTICÓ: no es de este frente.
+
+EL TEST DISCRIMINA, y hay control que lo prueba: los CUATRO nodos que sí están
+en Juan Fernández —Rampa Sur Bahía Cumberland, Paseo Costero de Juan Fernández,
+Infraestructura de Conectividad Bahía Cumberland y Muelle Bahía El Padre—
+EMPEORAN con +6,00°, se van a 108-116 km. Si el test marcara a todos por igual
+no mediría nada.
+
+CONSECUENCIA SOBRE F2, y es la que decide:
+  la bahía 90 «ISLA ROBINSON CRUSOE» tiene HOY 1 fila viva, 1 cerrada;
+  9 nodos declaran ancla 90 y SÓLO UNO está realmente ahí (Muelle Bahía El
+  Padre, a 9 km);
+  hoy los otros 8 están en VERDE: ningún nombre contiene «robinson» ni «crusoe»;
+  CON F2 PASARÍAN A ÁMBAR CON UN CIERRE DE ROBINSON CRUSOE.
+  El join los copió sin cotejar: los 9 son `confirmado_declarado` con
+  `via: bahia_sitport_id`. F1 no derivó nada ahí — tomó el ancla tal cual.
+
+CORRECCIÓN DE LA CIFRA DEL §4(i): de los 12 anclados que «empiezan a recibir su
+propio cierre», 8 son estos desplazados y NO SON UNA MEJORA. MEJORA REAL = 4.
+
+5.2 · EL DESEMPATE POR COMUNA GANÓ CONTRA UNA BAHÍA A 0,0 km
+--------------------------------------------------------------------------------
+`Caleta Pesquera Guayacán` (nodo 59) está a 0,0 km de la bahía 86 «BAHÍA
+HERRADURA DE GUAYACÁN» y a 2,1 km de la 85 «BAHÍA COQUIMBO». El join eligió la
+85, `estado: desempatado`, `via: C3_comuna_vs_bahia`.
+
+La bahía 86 tiene HOY 3 filas vivas (0 cerradas) y la 85 no tiene ninguna. O sea
+que este puerto se apaga con F2 mientras la bahía cuyo nombre ES SU NOMBRE, a
+0,0 km, sí tiene material. EL FILTRO POR NOMBRE DE HOY ACIERTA EN ESTE CASO Y F2
+LO PIERDE.
+
+No cambia el «EMPEORA · 0»: las 3 filas no son cierres. Pero es la única pérdida
+de material VERDADERO medida en todo §3, y no viene del desplazamiento sino de
+la cascada de desempate. C3 (comuna) resuelve 50 de los 109 `desempatado`, así
+que el caso no es necesariamente único.
+
+5.3 · M2 · LOS QUE NO TIENEN ANCLA — EL TEST NO DISCRIMINA, Y SE DICE
+--------------------------------------------------------------------------------
+El diagnóstico del 6,00° sólo puede encontrar desplazados entre los 198
+declarados. Un nodo corrido SIN ancla no tiene cómo delatarse por el ancla.
+
+TEST PROPUESTO Y CORRIDO, sin usar el ancla: un nodo está desplazado si hoy está
+a >= 30 km de toda bahía de BAHIA_COORDS y con `lng + 6,00°` queda a < 30 km de
+alguna. 30 km es el radio del join, declarado en el artefacto.
+
+CONTROL POSITIVO — PLACEBOS. El mismo test con +3,00 · -6,00 · +9,00 · -3,00.
+
+  offset     marcados en las 494 filas SIN ancla    marcados en las 199 CON ancla
+   +6,00°                    0                                    6   ← candidato
+   +3,00°                    0                                    0
+   -6,00°                    0                                    0
+   +9,00°                    0                                    0
+   -3,00°                    0                                    0
+
+RESULTADO: sobre los que NO tienen ancla, +6,00 marca lo mismo que todos los
+placebos —cero—, así que POR LA REGLA QUE SE ESCRIBIÓ ANTES DE CORRER, NO SE
+REPORTA NINGÚN DESPLAZADO ENTRE ELLOS.
+
+Y NO SE CONCLUYE QUE NO LOS HAYA. El test tiene una SENSIBILIDAD MEDIDA sobre la
+población donde sí hay etiqueta: de los 12 anclados a más de 100 km, marca 6.
+SENSIBILIDAD 6/12. Con un detector que caza la mitad de los casos conocidos,
+encontrar cero en 494 filas dice que el defecto está CONCENTRADO en el conjunto
+anclado — no dice que esté ausente del otro.
+
+QUÉ HARÍA FALTA para cerrarlo: distancia de cada nodo a la costa contra `ne_land`
+en PostGIS. Existe `scripts/diagnostico-nodos-en-tierra.sql` (untracked, apareció
+en H0) y NO SIRVE para esto: busca nodos que INTERSECTAN tierra, y un nodo
+corrido 6° al oeste cae en mar abierto. Detecta el defecto complementario. Un
+test de «distancia al continente» habría que escribirlo, y necesita la base
+arriba. NO ES DE F2.
+
+DENOMINADORES, con su definición al lado porque no coinciden:
+  693 filas · 688 nombres · 199 filas con ancla · 198 nombres con ancla ·
+  494 filas sin ancla · 492 NOMBRES con al menos una fila sin ancla.
+  492 + 198 = 690, dos de más: `Caleta Pesquera El Manzano` y `Rampa de
+  Conectividad Isla Quinchao - Sector Coyumbue` tienen una fila CON ancla y otra
+  SIN. Son dos de los 5 nombres duplicados de F1 §1.3. «490 nombres sin ancla»
+  es correcto para «nombres sin ninguna fila anclada».
+
+================================================================================
+§6 · DECISIONES Y HALLAZGOS
+================================================================================
+
+6.1 · PANTALLA — C1 ACEPTADA POR EL OWNER
+--------------------------------------------------------------------------------
+F2 emite la distinción y LA PWA NO SE TOCA. El campo lleva `km_al_ancla` o
+equivalente, para que el falso positivo sea medible DESDE LA RESPUESTA y no haya
+que re-derivarlo.
+C2 —el cuarto estado en pantalla— queda como PIEZA SUCESORA NOMBRADA (F2-bis),
+con autorización propia. No ahora.
+C3 —no emitir la distinción— quedó descartada, y no por el verde falso: sin el
+campo no hay forma de VER los falsos positivos de §5.1. Un ámbar de Robinson
+Crusoe sobre Ventanas es indistinguible de un ámbar legítimo.
+
+RECORDATORIO DE POR QUÉ IMPORTA: `mapearRespuestaPuerto` copia campo por campo y
+un campo que no se nombre ahí NO LLEGA al componente. El campo nuevo va a morir
+en ese pasamanos hasta que exista F2-bis, y eso está bien: nace como INSTRUMENTO
+DE VIGILANCIA del defecto de anclas, no como texto de pantalla.
+
+6.2 · EL UMBRAL N DE LA REGLA (c) — ELEGIDO CON LA CURVA
+--------------------------------------------------------------------------------
+Regla (c), aceptada por el owner: F2 no confía en `confirmado_declarado` cuando
+el ancla está a más de N km del nodo, y lo degrada a silencio.
+
+LA CURVA. Distancia de cada fila anclada a la bahía que declara; denominador 199
+filas con ancla resoluble en BAHIA_COORDS.
+
+    umbral    filas por encima    con material vivo    con CIERRE
+      5 km          122                  26                10
+      9 km           94                  22                 9
+     15 km           61                  14                 8
+     20 km           41                  12                 8
+     25 km           34                  11                 8
+     30 km           26                  11                 8
+     40 km           20                  10                 8
+     50 km           17                  10                 8
+     75 km           12                  10                 8
+    100 km           12                  10                 8
+    150 km            6                   5                 3
+    200 km            6                   5                 3
+    500 km            4                   3                 1
+
+SE ELIGE N = 100 km. EL MOTIVO, y va escrito dentro del artefacto igual que el
+radio de 30 km:
+  · LA CURVA ES PLANA ENTRE 75 y 100 km — el mismo conjunto de 12 filas, las
+    mismas 10 con material y las mismas 8 con cierre. Dentro de esa banda la
+    elección no cambia nada medido, que es lo que uno le pide a un umbral;
+  · POR DEBAJO DE 75 empieza a barrer anclas legítimas: 17 a 50 km, 20 a 40,
+    26 a 30, 34 a 25, 61 a 15, 94 a 9. Ahí vive el ruido normal de un catálogo
+    de puertos contra un catálogo de bahías;
+  · POR ENCIMA DE 100 se cae a 6 y dejaría pasar la mitad del defecto: El
+    Membrillo (114), Portales (118), Matanzas (120), San Pedro Con Con (128),
+    Ventanas (137);
+  · 100 km es el BORDE SUPERIOR de la meseta, que es el que degrada menos
+    atribución legítima a igual captura del defecto;
+  · el ancla legítima más lejana comprobada, Muelle Bahía El Padre, está a
+    9 km — once veces por debajo.
+
+QUÉ DEGRADA N=100: 12 filas de 199. De ellas 10 tienen material vivo hoy y 8
+tienen un cierre. Entre ellas cae ISLA GUAMBLIN, que NO es el defecto de 6,00°.
+SE DEGRADA IGUAL Y SE DICE POR QUÉ: la regla no es «el ancla está desplazada
+6 grados» —eso no se puede saber sin el diagnóstico— sino «el ancla está
+demasiado lejos para creerle». Un ancla a 118 km no es confiable venga de donde
+venga.
+
+LA CURVA SÍ SE DOBLA, así que no hace falta otra regla.
+
+6.3 · GAP DECLARADO — LOS 611 QUE «NO SE MUEVEN» SE MIDIERON POR ESTADO, NO POR
+      CONTENIDO
+--------------------------------------------------------------------------------
+§1 clasifica por ámbar/verde. Un puerto que hoy recibe la bahía correcta y con
+F2 recibe otra, pero sigue en ámbar, cae en «no se mueven» y NO SE MIDIÓ.
+HAY AL MENOS UN CASO CONCRETO: `Puerto De Caldera Mejoras Fiscales` recibe hoy
+7 filas y con F2 recibiría 1 fila de la bahía 158, a 554 km. Ámbar antes y
+ámbar después; el contenido cambia entero.
+NO ESTÁ MEDIDO Y NO SE ESTIMA. Es la primera medición que debería hacer la
+sesión del plan.
+
+6.4 · FUERA DE ALCANCE — REDACTADOS, NO APLICADOS
+--------------------------------------------------------------------------------
+(a) EL `lng` DESPLAZADO 6,00° EN 11 NODOS DE `nodos_maritimos`.
+    OPCIONES: (a1) corregir el `lng` en la base; (a2) corregir el
+    `bahia_sitport_id` de esos 9 y dejar el `lng` — trata el síntoma; (a3) sólo
+    degradar el consumo, que es la regla (c); (a4) anotarlo.
+    DECIDIDO POR EL OWNER: (a3) para F2 + (a1) EN SESIÓN PROPIA. En F2 sólo se
+    mide y se degrada el consumo; NO se corrige la base.
+
+(b) EL DESEMPATE C3 CONTRA UNA BAHÍA A 0,0 km (§5.2).
+    OPCIONES: (b1) que la distancia gane cuando una candidata está a menos de
+    X km y las otras no; (b2) que C4 (nombre) suba en la cascada por delante de
+    C3 (comuna); (b3) revisar los 50 desempates de C3 uno por uno; (b4) anotarlo.
+    RECOMENDACIÓN: (b3) primero — 50 filas es medible en una sesión y dice si el
+    caso es único o sistemático—, y (b1) o (b2) recién con ese dato. Cambiar la
+    cascada sin saber cuántos toca es mover 109 filas a ciegas.
+    NO APLICADO. Es del join, no del filtro.
+
+(c) ISLA GUAMBLIN, ancla 243 a 118 km, que no es el defecto de 6,00°.
+    OPCIONES: (c1) sesión de cotejo; (c2) anotarlo. RECOMENDACIÓN: (c2) hoy —la
+    regla (c) ya la degrada—, (c1) antes de que el ancla por id decida un bloqueo.
+
+(d) TELEMETRÍA DE DESTINOS DE RECALADA — contador por `tipo` en cada
+    verificación de P3, sin dato personal.
+    OPCIONES: (d1) escribirla como pieza propia; (d2) anotarla.
+    RECOMENDACIÓN: (d2). F2 no la necesita: el delta medido de recalada es 3 de
+    3.117. Se escribe cuando alguien quiera decidir sobre recalada con datos de
+    uso y no de catálogo.
+
+(e) LOS 611 QUE NO SE MUEVEN, sin medir por contenido (§6.3).
+    OPCIONES: (e1) medirlo al abrir el plan; (e2) anotarlo.
+    RECOMENDACIÓN: (e1). Es barato y es la última bolsa sin abrir.
+
+================================================================================
+§7 · LO QUE ESTA BITÁCORA LE DEJA AL PLAN — Y TRES ADVERTENCIAS
+================================================================================
+
+--------------------------------------------------------------------------------
+7.1 · F2 PIERDE UN ACIERTO QUE EL FILTRO POR NOMBRE TENÍA
+--------------------------------------------------------------------------------
+NO ES UN DETALLE DE §6.4 Y POR ESO SUBE ACÁ.
+
+`Caleta Pesquera Guayacán` (nodo 59) está a 0,0 km de la bahía 86 «BAHÍA
+HERRADURA DE GUAYACÁN», que HOY tiene 3 filas vivas. El join eligió la 85
+«BAHÍA COQUIMBO», a 2,1 km, `estado: desempatado`, `via: C3_comuna_vs_bahia`.
+La 85 no tiene ninguna fila.
+
+EL FILTRO POR NOMBRE DE HOY ACIERTA EN ESTE CASO — sirve la 86 — Y F2 LO PIERDE.
+Es la única pérdida de material VERDADERO medida en todo §3, y no viene del
+desplazamiento de los 6,00° sino de la cascada de desempate.
+
+EL «0 DEJAN DE RECIBIR UN CIERRE VERDADERO» AGUANTA, PERO SÓLO ASÍ:
+vale para las 16 filas cerradas del material de las 23:02Z del 2026-08-17.
+Las 3 filas de la 86 no son cierres HOY. Con otro material a otra hora podrían
+serlo. ES LA MEDICIÓN DE UN DÍA, igual que el otro cero, y quien la cite tiene
+que citar la hora con ella.
+
+--------------------------------------------------------------------------------
+7.2 · PRIMERAS MEDICIONES DEL PLAN — las dos bolsas que quedaron sin abrir
+--------------------------------------------------------------------------------
+(A) LOS 50 DESEMPATES DE C3. `C3_comuna_vs_bahia` resuelve 50 de los 109
+    `desempatado`, y en el caso Guayacán eligió una bahía MÁS LEJANA que otra
+    candidata que sí tenía material. HAY QUE MEDIR CUÁNTOS MÁS:
+      · de los 50, cuántos eligieron una bahía más lejana que otra candidata
+        del mismo empate QUE TENÍA MATERIAL VIVO;
+      · de ésos, cuántos con al menos un CIERRE;
+      · en FILAS y en RESTRICCIONES, con la hora de la captura al lado.
+    Si el caso es único, es una anécdota. Si son diez, la cascada está mal
+    ordenada y eso se decide antes de escribir el consumo del join.
+
+(B) LOS 611 QUE «NO SE MUEVEN» (§6.3). Se clasificaron por ESTADO —ámbar contra
+    verde— y no por CONTENIDO. Un puerto que hoy recibe la bahía correcta y con
+    F2 recibe otra, pero sigue en ámbar, cayó ahí y no se midió.
+    CASO CONCRETO YA VISTO: `Puerto De Caldera Mejoras Fiscales` pasa de 7 filas
+    a 1 fila de la bahía 158, a 554 km. Ámbar antes y ámbar después.
+
+LAS DOS SON BARATAS Y LAS DOS SE MIDEN CONTRA EL MISMO MATERIAL CONGELADO. Van
+antes del plan, no después.
+
+--------------------------------------------------------------------------------
+7.3 · DE LOS 12 QUE N=100 DEGRADA, UNO ES UN SILENCIO QUE NADIE PIDIÓ
+--------------------------------------------------------------------------------
+ISLA GUAMBLIN, ancla 243, a 117,9 km del nodo.
+
+NO ES EL DEFECTO DE LOS 6,00°: con +6,00° EMPEORA a 284 km. Es una isla
+realmente mar afuera en el archipiélago de los Chonos, y su ancla lejana puede
+ser legítima o ser otro defecto distinto. NO ESTÁ DIAGNOSTICADA.
+
+LA REGLA (c) LA DEGRADA IGUAL, y está bien que lo haga: la regla es «el ancla
+está demasiado lejos para creerle», NO «el ancla está desplazada 6 grados». Un
+ancla a 118 km no es confiable venga de donde venga, y F2 no tiene cómo
+distinguir un defecto del otro sin el diagnóstico.
+
+PERO QUEDA ESCRITO PARA QUE EL QUE VENGA NO LO LEA COMO PARTE DEL DEFECTO
+CORREGIDO: de las 12 filas que N=100 degrada, ONCE son el desplazamiento de
+6,00° y UNA —ésta— es un silencio nuevo, con su nombre y su motivo. Si alguien
+revisa el resultado de la regla (c) y cuenta doce desplazados, contó mal.
+
+--------------------------------------------------------------------------------
+7.4 · LA ADVERTENCIA SOBRE LA VERDAD DE TERRENO
+--------------------------------------------------------------------------------
+
+LA «VERDAD DE TERRENO» DE 198 ANCLAS TIENE AL MENOS 11 ERRORES CONOCIDOS.
+No es una sospecha: son 11 filas con el `lng` desplazado 6,00° exactos, 8 de
+ellas anclando a Isla Robinson Crusoe puertos que están en la costa entre
+Valparaíso y Atacama. Un doceavo, Isla Guamblin, tiene el ancla a 118 km por
+otro motivo no diagnosticado.
+
+LAS CIFRAS DE F1 QUE SE MIDIERON CONTRA ESA VERDAD DE TERRENO NO SE RETIRAN. SE
+ANOTAN, con esta nota al lado:
+
+    acierta ................................  36 / 198
+    recibe únicamente bahías ajenas ........  63 / 198
+    recibe alguna ajena ....................  83 / 198
+    no recibe nada .........................  99 / 198
+    el rótulo sale correcto ................  26 / 198
+    el rótulo sale de una bahía ajena ......  73 / 198
+    y de F1 §5.1, «acierto 170/198» para el camino O4/O6
+
+    NOTA: el denominador de 198 incluye al menos 11 anclas erróneas. Ninguna de
+    estas cifras es falsa —miden lo que dicen medir, el filtro contra el ancla
+    declarada— pero «acierto» significa «coincide con el ancla», y en 11 casos
+    el ancla no es donde está el puerto. La dirección de las conclusiones de F1
+    no cambia: el filtro por nombre acierta 36 de 198 y ningún camino léxico lo
+    mejora. Lo que queda tocado es la PRECISIÓN de los denominadores, no el
+    veredicto.
+
+Y LA LECCIÓN DEL DÍA, que es de método y no de dato: LAS TRES DEFINICIONES DE
+«PROPIA» ESCONDÍAN EL MISMO PUNTO CIEGO. Dos contaban el ancla equivocada como
+propia y la tercera excluía del denominador a los que estaban en mar abierto.
+Cuatro tablas coherentes entre sí y las cuatro ciegas al mismo defecto. Lo que
+lo destapó no fue otra definición: fue dejar de usar la palabra y preguntar por
+la DISTANCIA.
+
+================================================================================
+FIN — F2 §3. El plan y las cuatro de §8 van en sesión nueva, con este documento
+como traspaso. `src/` sigue sin moverse.
+================================================================================
