@@ -355,6 +355,17 @@ texto exista no es una decisión suya.
 ### 7.1 — Hechos de la máquina (valen para cualquiera que ejecute)
 
 - PostgreSQL: `C:\Program Files\PostgreSQL\16\bin\psql.exe`, base `mapa_navegacion`.
+- `psql` **ESPERA SIN LÍMITE** si no encuentra la contraseña: la pide por la consola,
+  no por stdin, así que `</dev/null` no lo salva. Lo evita **`-w`**, que falla en 1 s
+  con `no password supplied`; `-P pager=off` solo NO lo evita. Se corre con
+  `-w -P pager=off`: el segundo por precaución con la salida larga, efecto que en esta
+  máquina no se pudo medir por no haber conexión. MEDIDO EL 2026-08-18 DESDE EL
+  HARNESS, SIN CONSOLA: cortes de 30, 45, 60 y 200 s lo cortaron los cuatro y el
+  tiempo siguió siempre al corte externo, así que no tiene límite propio; tampoco
+  imprimió nada mientras esperaba, pero en una consola interactiva probablemente sí
+  escriba el prompt y ESO NO SE MIDIÓ.
+- El `.env` de esta máquina **arranca con BOM**: cualquier lectura suya se hace con
+  `grep -a`, sin asumir la primera línea limpia.
 - Vite: puerto 5173, sube a 5174 si está ocupado. Backend en el 3000.
 - SQL largo o con comillas: a archivo, y `psql -f`. No inline. Se rompe distinto en
   cada shell y además deja el SQL sin versionar.
