@@ -318,6 +318,16 @@ REPARTO DE LOS 688:
     confirmado_declarado ... 198   ya traía bahia_sitport_id; no se derivó nada
     derivado_limpio ........ 194   una sola candidata en radio, o margen >= 10 km
     desempatado ............ 109   ~~C2 razón 55 · C3 comuna 50 · C4 nombre 3 · C5 capitanía 1~~
+  ENMENDADO 2026-08-18 · sesión (b1-a), redacción del owner:
+  ~~50~~ 50, y no porque el tachado sobrara. Lo publicado por F1 salía de
+  `g7_desempate.js`, que no redondeaba: los dígitos eran de la geometría, no del
+  artefacto entregado. Contra dfd07236… eran falsos —C3 valía 55— y por eso se
+  tacharon. Desde 4f9fbdc3… el artefacto ya no redondea el cálculo y C3 vale 50:
+  el número coincide con el de 2026-08-17 por una razón distinta de la que se
+  creyó entonces. UNA CIFRA SE CITA CON LA VERSIÓN QUE LA PRODUJO.
+  LA TERNA VIGENTE, contra 4f9fbdc3…: C2 55 · C3 50 · C4 3 · C5 1.
+  LA DE dfd07236… ERA: C2 47 · C3 55 · C4 6 · C5 1. Las tres ternas suman 109 y
+  por eso ningún control de suma las distingue.
                                    C2 razón 47 · C3 comuna 55 · C4 nombre 6 · C5 capitanía 1
        ENMENDADO 2026-08-18 · entrada (18) de la lista única. Los cuatro números
        tachados NO son los del artefacto `dfd07236…`, verificados contra él fila

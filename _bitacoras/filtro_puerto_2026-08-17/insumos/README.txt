@@ -22,10 +22,11 @@ Con `nodos.json` ya en esta carpeta, los instrumentos dejaron de ser inertes: su
 insumos resuelven contra `AQUI = __dirname`, que ahora ES esta carpeta. Correr
 uno «para ver qué pasa» PISA ENTREGABLES:
 
-  f1_generar.js:189  escribe  data/catalogo/join_puerto_bahia.json
-                              (el artefacto vivo, sha256 dfd07236…)
-  f1_generar.js:202  escribe  ../F1_adjudicacion.tsv
-                              (la hoja commiteada, sha256 0ca33c18…)
+  ~~f1_generar.js:189~~ :200  escribe  data/catalogo/join_puerto_bahia.json
+                              (el artefacto vivo, ~~sha256 dfd07236…~~ sha256
+                               4f9fbdc3… desde (b1-a))
+  ~~f1_generar.js:202~~ :213  escribe  ../F1_adjudicacion.tsv
+                              (la hoja commiteada, sha256 0ca33c18… — NO cambió)
   g7_desempate.js:170 escribe LOS_QUE_CALLAN.tsv EN ESTA MISMA CARPETA
                               (el fichero versionado dos líneas más abajo)
 
@@ -34,6 +35,36 @@ uno «para ver qué pasa» PISA ENTREGABLES:
 Quien los corra: salida a otra ruta, o copia fuera del repo, y sha256 comprobado
 antes y después. Es la regla de la casa —si tocás un insumo, restauralo y
 comprobá el sha256— y acá está la lista de qué se toca.
+
+--------------------------------------------------------------------------------
+CUATRO INSTRUMENTOS QUEDAN EN ROJO DESDE (b1-a), Y SE DEJAN ASÍ A PROPÓSITO
+2026-08-18
+--------------------------------------------------------------------------------
+Estos cuatro comprueban el sha256 del artefacto al abrir y ABORTAN si no coincide.
+Desde (b1-a) el artefacto es 4f9fbdc3… y los cuatro abortan:
+
+  ../07_medir_verde_falso.js:33-34        atado a dfd07236… y 0ca33c18…
+  ../08_medir_anclas_desplazadas.js:22-23 atado a dfd07236… y 0ca33c18…
+  ../09_medir_c3_desempates.js:47-48      atado a dfd07236… y 0ca33c18…
+  ../10_diagnosticar_cascada_c2.js:30-31  atado a dfd07236… y 0ca33c18…
+
+NO SE ACTUALIZAN, y el motivo es de evidencia y no de comodidad: sus cifras
+publicadas se midieron CONTRA dfd07236…. Re-apuntarlos al sha nuevo re-etiqueta
+evidencia vieja como si fuera del artefacto nuevo, en silencio y sin que ningún
+control chiste. Un guard que se afloja para que pase deja de ser un guard.
+SON CUATRO, NO TRES: 07_ lleva los mismos dos sha que los otros y se contaba mal.
+
+EL COSTO, ESCRITO PARA QUE NO SE DESCUBRA DESPUÉS: con los cuatro congelados no
+hay forma de re-medir sobre el artefacto nuevo, y quedan dos cifras pendientes —
+las «5 restricciones distintas» de los 9 que se apagan (f2 §1) y el «22 de 55
+eligen más lejos» de M4 (f2 §7.2 A).
+
+EL INSTRUMENTO SUCESOR ES REQUISITO DEL TRAMO C, NO «PIEZA PROPIA» A SECAS.
+El 22/55 de M4 —cuántos desempates de C3 eligieron una bahía más lejana que otra
+candidata del mismo empate— es el número que el Tramo C tiene que mirar ANTES de
+encenderse: si la cascada está mal ordenada, las 109 `desempatado` dejan de ser
+atribución confiable y el denominador del Tramo C se mueve. Mientras ese sucesor
+no exista, el Tramo C no tiene ese número contra el artefacto vigente.
 
 --------------------------------------------------------------------------------
 LOS DOS LÍMITES — se declaran acá para que nadie los descubra después
@@ -92,7 +123,7 @@ nodos.json — EL VOLCADO DE psql, Y POR QUÉ NO ALCANZA CON CONGELADO_puertos
   bahia_sitport_id · lat · lng.
 
 ES EL ÚNICO INSUMO QUE TRAE `comuna`, y `comuna` es el criterio C3 que resuelve
-~~50~~ 55 de los 109 desempates. `/api/puertos` NO devuelve ese campo: por eso
+~~50~~ 50 de los 109 desempates. (ver la enmienda de la terna, §REPARTO DE LOS 688 de `filtro_puerto_2026-08-17.txt`) `/api/puertos` NO devuelve ese campo: por eso
 CONGELADO_puertos.json no lo sustituye y por eso los instrumentos que desempatan
 leen este fichero y no aquél.
   ENMENDADO 2026-08-18 · entrada (18). Y una precisión que hace falta para no
@@ -155,6 +186,9 @@ g7_desempate.js — LA CASCADA Y LOS QUE CALLAN.
   PRODUJO:
     §5.1 el rendimiento medido de cada criterio de desempate, que ~~es la apertura
          de los 109 `desempatado`~~: C2 razón 55 · C3 comuna 50 · C4 nombre 3 ·
+         [ENMENDADO 2026-08-18 (b1-a): estos cuatro números vuelven a ser los
+          del artefacto desde 4f9fbdc3…, por una razón distinta de la de 2026-08-17.
+          (ver la enmienda de la terna, §REPARTO DE LOS 688 de `filtro_puerto_2026-08-17.txt`)]
          C5 capitanía 1.
          ENMENDADO 2026-08-18 · entrada (18). ESTOS CUATRO NÚMEROS SON CORRECTOS
          PARA g7 Y NO SON LA APERTURA DEL JOIN. Este párrafo ya decía que los
@@ -167,8 +201,30 @@ g7_desempate.js — LA CASCADA Y LOS QUE CALLAN.
          cascada es la MISMA. Lo que difiere es que `f1_generar.js` guarda
          `+km().toFixed(2)` y g7 no. Las 8 filas están a 1,5–4,4 m; el redondeo
          las lleva a 0,00 y el guard `c[0].km > 0` de la propia C2 las descarta.
-         AVISO PARA QUIEN RE-DERIVE EL JOIN: `f1_generar.js:102` redondea las
-         distancias ANTES de la cascada. Cualquier re-derivación arrastra esto.
+         AVISO PARA QUIEN RE-DERIVE EL JOIN: ~~`f1_generar.js:102`~~ `f1_generar.js:67`
+         redondea las distancias ANTES de la cascada. Cualquier re-derivación
+         arrastra esto.
+         ENMENDADO 2026-08-18 · LA LÍNEA ERA LA 67, NO LA 102. La 67 PRODUCE el
+         km redondeado dentro de `vecinas()`; la 102 sólo lo CONSUME en el
+         filtro de radio. Quien sacara el redondeo «de la 102» editaba el filtro
+         y no tocaba el defecto. Y desde (b1-a) este aviso YA NO APLICA: el
+         cálculo va con precisión completa.
+
+         MAPA DE LÍNEAS POR VERSIÓN — porque LOS NÚMEROS DE LÍNEA SE CORREN.
+         El comentario que (b1-a) agregó arriba de `vecinas()` desplazó todo lo
+         que venía abajo. Un número de línea sin su versión al lado ya costó dos
+         enmiendas en este frente, y ESTA misma nota estaba dirigida a quien
+         re-deriva, que es quien menos puede permitirse abrir el fichero
+         equivocado.
+
+           qué                                 @36543c8   @(b1-a)
+           el cálculo de las distancias .......   67         72   ← EL DEFECTO
+           el filtro de radio (`<= RADIO`) ....  102        113   ← NUNCA fue éste
+           `km_a_esa_bahia` (presentación) ....  107        118
+           `margen_km` (presentación) .........  122        133
+
+         EN @36543c8 LA LÍNEA CORREGIDA ES LA 67. EN @(b1-a) ES LA 72. Son la
+         misma línea; lo que cambió es el número. Se cita con la versión.
          LA LECCIÓN, que es de método: dos instrumentos que miden «lo mismo» se
          cotejan ANTES de publicar sus cifras juntas. Las dos ternas suman 109 y
          ningún control las cruzó.
@@ -178,9 +234,52 @@ g7_desempate.js — LA CASCADA Y LOS QUE CALLAN.
 
 f1_generar.js   — EL GENERADOR DEL JOIN. Escribe dos cosas, ninguna es código:
     data/catalogo/join_puerto_bahia.json ...... 688 filas
-        sha256 dfd072361faa5607b7c487b73d5d45796d16ec10cbd99a613a5df7db351168f5
+        ~~sha256 dfd072361faa5607b7c487b73d5d45796d16ec10cbd99a613a5df7db351168f5~~
+        sha256 4f9fbdc33e290a4cc2ef4dda3e98918eb3bb22466a0fbe07f0170670becddaf6
     ../F1_adjudicacion.tsv .................... 74 filas
         sha256 0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788
+        (NO CAMBIÓ con (b1-a) — ver más abajo, y no es casualidad)
+
+  PROVENANCE POR VERSIÓN — QUÉ ARTEFACTO PRODUCE CADA UNA
+  Enmendado 2026-08-18 por la sesión (b1-a). Este README describía UN estado y
+  ahora hay dos; se enmienda con tachado y no se reescribe limpio.
+
+    f1_generar.js @ 36543c8   blob 1e31de35603c7f2e6cce1c6cb77c77013eb6929f
+        join_puerto_bahia.json  sha256 dfd072361faa…351168f5
+        F1_adjudicacion.tsv     sha256 0ca33c18e482…d72a1788
+        REDONDEA en la línea 67, ANTES de decidir. Es la versión que produjo
+        TODA cifra publicada de F1 y de F2. Git la conserva entera:
+        `git show 36543c8:_bitacoras/filtro_puerto_2026-08-17/insumos/f1_generar.js`
+
+    f1_generar.js @ (b1-a)    blob a7229ca139b19394e3e803aa09caa552b2d8838d
+        join_puerto_bahia.json  sha256 4f9fbdc33e29…becddaf6
+        F1_adjudicacion.tsv     sha256 0ca33c18e482…d72a1788   ← el MISMO
+        NO redondea el cálculo. El redondeo vive en `p2`/`presenta` y se aplica
+        sólo al escribir `evidencia`.
+
+  UNA CIFRA SE CITA CON LA VERSIÓN QUE LA PRODUJO. dfd07236… es de la primera y
+  lo sigue siendo: ninguna cifra medida contra ella cambia de dueño porque el
+  fichero de hoy diga otra cosa.
+
+  QUÉ SE MOVIÓ ENTRE LAS DOS, medido fila por fila sobre las 688:
+    34 filas, y son 8 + 26 DISJUNTAS:
+      8 cambian `via` [40,54,59,61,98,212,226,332] · de ellas UNA, el nodo 59,
+        cambia además `bahia_id` (85 → 86) y `elegida_km`. Lleva tres campos.
+      26 cambian `evidencia.margen_km` Y NO CAMBIAN NINGUNA DECISIÓN.
+    NINGUNA fila cambia de `estado`. El reparto 198·194·109·74·113 no se mueve.
+    La terna de las 109 `desempatado` pasa de 47·55·6·1 a 55·50·3·1.
+
+  LAS 26 SON UN SEGUNDO REDONDEO, EN LA LÍNEA 122, Y SE QUEDA:
+    `margen_km: +(cand[1].km - cand[0].km).toFixed(2)` restaba dos km YA
+    REDONDEADOS y volvía a redondear; ahora resta los verdaderos y redondea una
+    vez. `round(round(a)-round(b))` difiere de `round(a-b)` en un centésimo.
+    Es PRESENTACIÓN: ningún criterio lo lee — el guard de la 119 usa los km.
+    La 107 (`km_a_esa_bahia`) es presentación también y tampoco se tocó.
+
+  POR QUÉ LA HOJA NO CAMBIÓ DE sha256, que es lo que sorprende:
+    la columna `candidatas` de la hoja imprime `empate_entre`, y `empate_entre`
+    sale por `presenta()` —redondeado—. Mismas 74 filas, mismo orden, mismos
+    bytes: 21.494. MEDIDO, no supuesto.
   PRODUJO el reparto de los 688 — confirmado_declarado 198 · derivado_limpio 194
   · desempatado 109 · a_adjudicar 74 · sin_bahia_en_catalogo 113 (501 resueltas,
   187 callan) —, los parámetros RADIO 30 km / MARGEN 10 km / RAZÓN 3 con su

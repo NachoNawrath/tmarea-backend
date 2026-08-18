@@ -272,7 +272,14 @@ LO PIERDE.
 
 No cambia el «EMPEORA · 0»: las 3 filas no son cierres. Pero es la única pérdida
 de material VERDADERO medida en todo §3, y no viene del desplazamiento sino de
-la cascada de desempate. C3 (comuna) resuelve ~~50~~ 55 de los 109 `desempatado`,
+la cascada de desempate. C3 (comuna) resuelve ~~50~~ 50 de los 109 `desempatado`,
+  ENMENDADO 2026-08-18 · sesión (b1-a), redacción del owner:
+  ~~50~~ 50, y no porque el tachado sobrara. Lo publicado por F1 salía de
+  `g7_desempate.js`, que no redondeaba: los dígitos eran de la geometría, no del
+  artefacto entregado. Contra dfd07236… eran falsos —C3 valía 55— y por eso se
+  tacharon. Desde 4f9fbdc3… el artefacto ya no redondea el cálculo y C3 vale 50:
+  el número coincide con el de 2026-08-17 por una razón distinta de la que se
+  creyó entonces. UNA CIFRA SE CITA CON LA VERSIÓN QUE LA PRODUJO.
 así que el caso no es necesariamente único.
   ENMENDADO 2026-08-18 · entrada (18), verificado contra `dfd07236…`.
   Y CONTESTADO POR M4 (`09_medir_c3_desempates.js`, corrida 2026-08-18): contra
@@ -417,9 +424,9 @@ sesión del plan.
 (b) EL DESEMPATE C3 CONTRA UNA BAHÍA A 0,0 km (§5.2).
     OPCIONES: (b1) que la distancia gane cuando una candidata está a menos de
     X km y las otras no; (b2) que C4 (nombre) suba en la cascada por delante de
-    C3 (comuna); (b3) revisar los ~~50~~ 55 desempates de C3 uno por uno;
+    C3 (comuna); (b3) revisar los ~~50~~ 50 desempates de C3 uno por uno; (ver la enmienda de la terna, §REPARTO DE LOS 688 de `filtro_puerto_2026-08-17.txt`)
     (b4) anotarlo.
-    RECOMENDACIÓN: (b3) primero — ~~50~~ 55 filas es medible en una sesión y dice
+    RECOMENDACIÓN: (b3) primero — ~~50~~ 50 filas es medible en una sesión y dice
     si el caso es único o sistemático—, y (b1) o (b2) recién con ese dato. Cambiar
     la cascada sin saber cuántos toca es mover 109 filas a ciegas.
     NO APLICADO. Es del join, no del filtro.
@@ -498,7 +505,13 @@ EL FILTRO POR NOMBRE DE HOY ACIERTA EN ESTE CASO — sirve la 86 — Y F2 LO PIE
 Es la única pérdida de material VERDADERO medida en todo §3, y no viene del
 desplazamiento de los 6,00° sino de la cascada de desempate.
 
-LIMITACIÓN CONOCIDA Y FECHADA — NO ES UN PENDIENTE, 2026-08-18
+LIMITACIÓN CONOCIDA Y FECHADA — ~~NO ES UN PENDIENTE~~ RESUELTA, 2026-08-18
+--------------------------------------------------------------------------------
+ENMENDADO EL MISMO DÍA · (b1-a) SE EJECUTÓ Y ESTA LIMITACIÓN YA NO EXISTE.
+Desde el artefacto 4f9fbdc3…, `Caleta Pesquera Guayacán` (nodo 59) recibe la
+bahía 86 «BAHÍA HERRADURA DE GUAYACÁN», a 0,0 km — la misma que el filtro por
+nombre le daba. Deja de callar. El párrafo de abajo describe el estado del
+artefacto dfd07236… y se conserva porque explica POR QUÉ callaba.
 --------------------------------------------------------------------------------
 F2 NO QUEDA BLOQUEADA POR ESTO Y SE ENCIENDE IGUAL. Sigue consumiendo el join que
 hay, en el que `Caleta Pesquera Guayacán` (nodo 59) recibe la bahía 85 «BAHÍA
@@ -522,10 +535,10 @@ que citar la hora con ella.
 --------------------------------------------------------------------------------
 7.2 · PRIMERAS MEDICIONES DEL PLAN — las dos bolsas que quedaron sin abrir
 --------------------------------------------------------------------------------
-(A) LOS ~~50~~ 55 DESEMPATES DE C3. `C3_comuna_vs_bahia` resuelve ~~50~~ 55 de
+(A) LOS ~~50~~ 50 DESEMPATES DE C3. `C3_comuna_vs_bahia` resuelve ~~50~~ 50 de
     los 109 `desempatado`, y en el caso Guayacán eligió una bahía MÁS LEJANA que
     otra candidata que sí tenía material. HAY QUE MEDIR CUÁNTOS MÁS:
-      · de los ~~50~~ 55, cuántos eligieron una bahía más lejana que otra
+      · de los ~~50~~ 50, cuántos eligieron una bahía más lejana que otra  (ver la enmienda de la terna, §REPARTO DE LOS 688 de `filtro_puerto_2026-08-17.txt`)
         candidata del mismo empate QUE TENÍA MATERIAL VIVO;
       · de ésos, cuántos con al menos un CIERRE;
       · en FILAS y en RESTRICCIONES, con la hora de la captura al lado.
@@ -533,9 +546,13 @@ que citar la hora con ella.
     ordenada y eso se decide antes de escribir el consumo del join.
 
     MEDIDO 2026-08-18 · `09_medir_c3_desempates.js` · captura 23:02Z del 17-08.
-      eligieron más lejos que una candidata CON MATERIAL VIVO ...  1 / 55
+      eligieron más lejos que una candidata CON MATERIAL VIVO ...  ~~1~~ 0 / 55
       de ésas, con CIERRE .......................................  0 / 55
-      de ésas, la elegida sin ningún material (pérdida limpia) ...  1 / 55
+      de ésas, la elegida sin ningún material (pérdida limpia) ...  ~~1~~ 0 / 55
+      ENMENDADO 2026-08-18 · (b1-a). El 1 era contra dfd07236… y era correcto
+      ahí: el único caso era el nodo 59. Contra 4f9fbdc3… el nodo 59 elige la 86
+      y el conteo baja a 0. LAS DOS CIFRAS SON VERDADERAS, cada una con SU
+      artefacto.
       filas vivas del otro lado 3 · restricciones distintas 3 · cerradas 0
       el caso es el nodo 59, Guayacán: eligió la 85 a 2,1 km y la 86 a 0,0 km
       tenía 3 filas. Es el mismo de §5.2/§7.1 y aparece como aserción del

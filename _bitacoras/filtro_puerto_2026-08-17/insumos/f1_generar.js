@@ -63,8 +63,19 @@ const km = (p, q) => { const dLa = (q.lat - p.lat) * rad, dLo = (q.lng - p.lng) 
   const x = Math.sin(dLa / 2) ** 2 + Math.cos(p.lat * rad) * Math.cos(q.lat * rad) * Math.sin(dLo / 2) ** 2;
   return 2 * R_T * Math.asin(Math.sqrt(x)); };
 const COORDS = Object.entries(BAHIA_COORDS).map(([id, c]) => ({ id: +id, lat: c.lat, lng: c.lng }));
+// (b1-a) 2026-08-18 · ACÁ ESTABA EL DEFECTO, en ESTA línea y no en la del filtro
+// de radio: `+km(p, c).toFixed(2)` redondeaba ANTES de decidir. El guard
+// `c[0].km > 0` de la propia C2 leía 0,00 donde había 1,5–4,4 m y descartaba
+// ocho filas antes de mirar la razón. El cálculo va con precisión completa; el
+// redondeo se aplica SÓLO al escribir `evidencia`, con `p2`/`presenta`.
 const vecinas = p => (p.lat == null || Number.isNaN(p.lat)) ? []
-  : COORDS.map(c => ({ id: c.id, km: +km(p, c).toFixed(2) })).sort((x, y) => x.km - y.km);
+  : COORDS.map(c => ({ id: c.id, km: km(p, c) })).sort((x, y) => x.km - y.km);
+
+// ── PRESENTACIÓN — el redondeo vive acá, DESPUÉS de decidir ──────────────────
+// `p2` y `presenta` NO devuelven los objetos originales: copian. Si mutaran,
+// el redondeo volvería a entrar al cálculo por la puerta de atrás.
+const p2 = n => (typeof n === 'number' ? +n.toFixed(2) : n);
+const presenta = arr => arr.map(x => ({ ...x, km: p2(x.km) }));
 
 // ── CRITERIOS DE DESEMPATE ───────────────────────────────────────────────────
 const unico = (c, f) => { const ok = c.filter(f); return ok.length === 1 ? ok[0] : null; };
@@ -105,13 +116,13 @@ for (const p of cat) {
     salida.push({ ...base, bahia_id: p.idBahia, estado: 'confirmado_declarado', via: 'bahia_sitport_id',
       evidencia: { fuente_del_ancla: 'nodos_maritimos.bahia_sitport_id',
         km_a_esa_bahia: BAHIA_COORDS[p.idBahia] ? +km(p, BAHIA_COORDS[p.idBahia]).toFixed(2) : null,
-        la_geografia_coincide: v.length ? v[0].id === p.idBahia : null, candidatas: cand },
+        la_geografia_coincide: v.length ? v[0].id === p.idBahia : null, candidatas: presenta(cand) },
       adjudicacion: null });
     continue;
   }
   if (cand.length === 0) {
     salida.push({ ...base, bahia_id: null, estado: 'sin_bahia_en_catalogo', via: null,
-      evidencia: { bahia_mas_cercana: v.length ? { bahia_id: v[0].id, nombre: nombreBahia.get(v[0].id) || '', km: v[0].km } : null,
+      evidencia: { bahia_mas_cercana: v.length ? { bahia_id: v[0].id, nombre: nombreBahia.get(v[0].id) || '', km: p2(v[0].km) } : null,
         radio_km: RADIO, candidatas: [] },
       adjudicacion: null });
     continue;
@@ -119,7 +130,7 @@ for (const p of cat) {
   if (cand.length === 1 || cand[1].km - cand[0].km >= MARGEN) {
     salida.push({ ...base, bahia_id: cand[0].bahia_id, estado: 'derivado_limpio',
       via: cand.length === 1 ? 'unica_candidata_en_radio' : `margen_>=${MARGEN}km`,
-      evidencia: { km: cand[0].km, margen_km: cand.length > 1 ? +(cand[1].km - cand[0].km).toFixed(2) : null, candidatas: cand },
+      evidencia: { km: p2(cand[0].km), margen_km: cand.length > 1 ? +(cand[1].km - cand[0].km).toFixed(2) : null, candidatas: presenta(cand) },
       adjudicacion: null });
     continue;
   }
@@ -129,11 +140,11 @@ for (const p of cat) {
   for (const [n, fn] of CRITERIOS) { const g = fn(p, empateV); if (g) { ganada = g; via = n; break; } }
   if (ganada) {
     salida.push({ ...base, bahia_id: ganada.id, estado: 'desempatado', via,
-      evidencia: { empate_entre: empate, elegida_km: ganada.km }, adjudicacion: null });
+      evidencia: { empate_entre: presenta(empate), elegida_km: p2(ganada.km) }, adjudicacion: null });
   } else {
     const q = quienAdjudica(empateV);
     salida.push({ ...base, bahia_id: null, estado: 'a_adjudicar', via: null,
-      evidencia: { empate_entre: empate,
+      evidencia: { empate_entre: presenta(empate),
         alguna_candidata_con_cierres: empate.some(x => bahiasConCierres.has(x.bahia_id)),
         alguna_candidata_con_restricciones: empate.some(x => bahiasConFilas.has(x.bahia_id)),
         quien_adjudica: q.nivel, por_que: q.motivo },
