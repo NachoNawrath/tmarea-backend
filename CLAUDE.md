@@ -383,8 +383,40 @@ PowerShell**:
 
 - No existe el operador `&&`: cada comando por separado.
 - `curl.exe`, no el alias `curl`.
-- Archivos con caracteres españoles: `[System.IO.File]::WriteAllText()` con
-  `UTF8Encoding($false)`. `Out-File -Encoding utf8` mete BOM y rompe la lectura.
+- **BOM — y `Out-File` NO es la única vía que lo mete.** Archivos con caracteres
+  españoles: `[System.IO.File]::WriteAllText()` con `UTF8Encoding($false)`.
+  `Out-File -Encoding utf8` mete BOM y rompe la lectura.
+  **MEDIDO EL 2026-08-19, Y LA OTRA VÍA PASA POR EL ASUNTO DE UN COMMIT:** la forma
+  `@'…'@ | git commit -F -` —here-string de PowerShell canalizado— produjo en esta
+  máquina un commit cuyo **asunto arranca con `EF BB BF`**. El objeto quedó escrito
+  con el BOM adentro del asunto; se cazó mirando el `log` y se enmendó antes de
+  pushear. **Qué se midió y qué no:** se midió que ESA VÍA lo mete; **no** se aisló si
+  lo pone el here-string, el pipe, o la codificación con que PowerShell le habla a un
+  ejecutable nativo. Los tres commits anteriores —`9d459e9`, `a3f183b`, `765770e`— NO
+  traen BOM en el asunto, así que la del here-string no es la única vía que se usó;
+  **no se midió cuál se usó en cada uno**.
+  **LA VÍA LIMPIA es la misma de arriba:** escribir el asunto con
+  `[System.IO.File]::WriteAllText()` + `UTF8Encoding($false)` y pasarlo por
+  `git commit -F <fichero>`. **No `-F -` alimentado por here-string.**
+
+  **DEUDA ABIERTA, NO APLICADA: nada en este repositorio caza esto.** Medido sobre el
+  árbol del 2026-08-19: los controles de BOM que existen miran **ficheros**, no
+  mensajes —`src/services/__tests__/datos-sin-bom.test.js`, en la suite, y los guards
+  de `scripts/frente-contacto-*.js`—, y `.git/hooks/` no tiene **ningún** hook activo
+  (0, sin contar los `.sample`). Hoy un BOM en un asunto **sólo se ve mirando el
+  `log`**, que es como se cazó éste: de casualidad.
+  OPCIONES: **(a)** un hook `commit-msg` que rechace un asunto que empiece por
+  `EF BB BF` — caza en el acto, antes de que el objeto exista; su costo es que los
+  hooks **no se versionan** —`.git/hooks/` está fuera del árbol—, hay que instalarlos
+  en cada clon, y un control que puede no estar instalado puede faltar en silencio.
+  **(b)** un control corrible que barra los asuntos de los últimos commits y falle si
+  alguno trae BOM — se versiona y corre en cualquier clon; su costo es que llega
+  **después del hecho**, y si el commit ya se pusheó, arreglarlo es reescribir
+  historia. **(c)** anotarlo.
+  RECOMENDACIÓN: **(b)**, porque es el único que viaja con el repositorio, y **(a)
+  además** donde esté instalado, porque es el único que llega antes de que el objeto
+  exista — pero no puede ser el único. **(c) no**: deja el defecto dependiendo de que
+  alguien mire el `log`.
 - Puerto 3000 ocupado: `netstat -ano | findstr :3000` y `taskkill /PID [n] /F`.
   **Nunca** `Stop-Process -Name node`.
 
