@@ -1,0 +1,400 @@
+================================================================================
+LOS SIETE ARTICULOS DEL RRDN QUE EL CONTRATO CITABA SIN TEXTO — 2026-08-19
+================================================================================
+Backend en 8397396 al empezar (= origin/main). Suite 157/157. src/ no se toca,
+CONTRATO_MOTOR.md, CLAUDE.md y PLAN_JURISDICCION.md no se tocan, D-C9 no se contesta.
+
+QUE HACE ESTA SESION, EN UNA LINEA: cierra el frente que abrio §6 de la bitacora de
+ayer — los siete articulos del RRDN que CONTRATO_MOTOR.md citaba por sigla y sin texto
+adjunto. No adjudica, no decide y no mueve ni una linea de codigo.
+
+================================================================================
+§0 · POR QUE ESTA SESION EXISTE, Y QUE ENCONTRO EL GATE
+================================================================================
+La bitacora de ayer (ds364_al_arbol_2026-08-19.txt, §6) dejo el frente abierto con tres
+opciones y una recomendada: "(a) extraer los siete restantes de una vez y cerrar el
+frente completo. El PDF ya esta, el extractor ya esta y el control ya esta: ES CORRER EL
+MISMO SCRIPT CON SIETE ANCLAS MAS."
+
+ESA FRASE ES FALSA. La escribi yo ayer y el owner la firmo en el cierre sin medirla.
+
+QUE HABRIA PASADO SI SE SEGUIA, MEDIDO:
+  · el Art. 13 habria entrado al arbol con el bloque marginal "DS 1.079, Subs. Marina,
+    1987 Art. Unico" METIDO ADENTRO DE SU TEXTO;
+  · el Art. 33 habria entrado con "DTO 220, DEFENSA Art. unico D.O. 07.07.2007" metido
+    adentro de su letra C;
+  · el Art. 17 habria entrado como UNA sola cadena, y el control lo habria rechazado —
+    ese es el unico de los tres que se habria notado.
+
+Y POR QUE EL CONTROL VIGENTE NO LO CAZABA: 02_control_rebusqueda.js busca CADA inciso en
+la re-extraccion -raw. Los dos textos contaminados VIENEN de -raw, asi que estan alli tal
+cual, letra por letra. C1 los encuentra. C2 (el negativo) rompe un caracter y sigue sin
+encontrarlos: tambien pasa. LOS DOS ARTICULOS CONTAMINADOS HABRIAN SALIDO EN VERDE, con
+16 controles en 0 fallos, y nadie habria mirado dos veces.
+
+EL CONTROL NO ESTABA MAL: estaba midiendo lo que se le pidio — fidelidad contra -raw.
+Lo que estaba mal era la PREMISA de que -raw es la fuente limpia. Un control no puede
+cazar un defecto de la premisa con la que fue escrito.
+
+NO SE ENMENDO ds364_al_arbol_2026-08-19.txt. Es historica y su correccion se escribe aca.
+
+================================================================================
+§1 · LA MEDICION QUE LO CAMBIA TODO — SON CUATRO COLUMNAS, NO UNA
+================================================================================
+AMBITO: los dos .txt versionados de data/decreto/fuente_ds364/, tal cual en disco, los
+40 encabezados de articulo. Instrumento: 00_gate_medicion.js y 01_gate_discrepancias.js.
+
+PRIMERO, EL DENOMINADOR: el decreto tiene CUARENTA encabezados de articulo, no 38.
+Son 38 numerados (Art. 1° a 38°) + "Articulo 2° bis" + "ARTICULO 8° BIS". Las DOS
+extracciones dan la misma lista y en el mismo orden. Control negativo del regex de
+encabezado ("ARTICULO 99°"): 0.
+El insumo publicaba articulos_del_decreto: 38 y hablaba de "los otros treinta y cuatro".
+38 es el conteo de los numerados solamente. Corregido a 40 con su desglose escrito.
+
+SEGUNDO, LAS COLUMNAS. El consolidado de BCN lleva CUATRO bloques de anotacion marginal,
+cada uno UNA vez en cada extraccion, y las dos extracciones los ponen en articulos
+distintos:
+
+  bloque                                        -layout            -raw
+  DS 1428, Subs. Marina, 1986.                  art_2_bis          art_2_bis
+  Decreto 701, DEFENSA / Art. SEGUNDO           art_6              art_8_bis
+  D.O. 17.03.2012                               art_7              art_8_bis
+  DS 1.079, Subs. Marina, / 1987 Art. Unico     art_11 y art_12    art_13
+  DTO 220, DEFENSA / Art. unico / D.O. 07.07.2007   art_30 inc.2   art_33 letra C
+
+  grep -c, los dos .txt: DS 1428 = 1/1 · DS 1.079 = 1/1 · DTO 220 = 1/1 ·
+                         D.O. 17.03.2012 = 1/1 · D.O. 07.07.2007 = 1/1
+  CONTROL NEGATIVO, bloque inventado "DTO 999" ................. 0/0
+  ("Decreto 701" da 2/2: una de las dos es la metadata del encabezado, no una marginal.)
+
+EL PATRON: -layout reparte cada bloque entre los articulos junto a cuyas lineas se
+dibuja; -raw lo emite ENTERO dentro de UN articulo. NINGUNA DE LAS DOS ESTA LIMPIA EN
+GENERAL, Y CADA UNA LO ESTA EXACTAMENTE DONDE LA OTRA NO.
+
+LO QUE DECIA PROCEDENCIA.md, Y POR QUE SE ENMENDO: "el consolidado de BCN lleva al
+margen, UNA SOLA VEZ EN TODO EL DOCUMENTO, el bloque DTO 220...". Es literalmente cierto
+DE ESE BLOQUE y se lee como si fuera el unico que hay. Es la clase de frase que no miente
+y desinforma igual. Enmendada, con copia del original en este mismo directorio
+(PROCEDENCIA.md.copia-antes-de-la-enmienda, sha256 0fffa48e...).
+
+LA ATRIBUCION DEL DTO 220 SIGUE SIN ATRIBUIR. Esta sesion no la toca y no la resuelve.
+
+================================================================================
+§2 · EL MECANISMO — LA FUENTE SE ELIGE POR MEDICION, ARTICULO POR ARTICULO
+================================================================================
+03_extraer_los_siete.js corta cada articulo en LAS DOS extracciones y decide asi:
+
+  · las dos dan el MISMO texto  -> queda DOBLEMENTE ATESTIGUADO. 31 de los 40.
+  · una es SUBSECUENCIA DE PALABRAS de la otra -> se toma LA CORTA, que es la que no
+    trae el bloque, y las palabras excluidas se publican en columna_marginal_aislada
+    SIN ATRIBUIRLAS A NINGUN ARTICULO. 8 de los 40.
+  · ninguna de las dos -> EL SCRIPT FALLA Y NO ADIVINA. 1 de los 40 (art_2_bis).
+
+COMO SE VERIFICA QUE LO AISLADO ES MARGINAL Y NO TEXTO DEL ARTICULO — tres medidas y
+una lectura, y la lectura va rotulada como tal:
+  (1) dos extractores independientes coinciden en TODA la secuencia de palabras salvo
+      ese tramo. Si fuera texto del articulo, lo traerian los dos, como en los 31;
+  (2) el mismo tramo aparece pegado a OTRO articulo en la otra extraccion. El texto
+      normativo no cambia de articulo segun el extractor;
+  (3) re-insertar las palabras excluidas en el texto publicado REPRODUCE PALABRA POR
+      PALABRA lo que la otra extraccion emite para ese articulo (control C4);
+  (4) LECTURA, NO MEDICION: los cuatro bloques son de una familia reconocible —norma +
+      "Art. ..." + "D.O. fecha"— que es el aparato marginal de BCN.
+
+NO HIZO FALTA LEER POSICIONES DE GLIFO. El encargo preguntaba si la unica salida limpia
+las exigia. Para los siete, NO. Para el art_2_bis, SI — y por eso el art_2_bis no se
+extrajo.
+
+EL TRAMO AISLADO NO ES UNA CITA CONTIGUA, y esto lo cazo el propio control (ver §4): en
+el PDF es una columna dibujada al margen, y la otra extraccion la intercala entre las
+lineas del articulo, un pedazo por linea. En -raw el Art. 13 sale asi:
+
+  una anticipacion minima de 24 horas. DS 1.079,
+  Asimismo, se exhorta a las naves que ingresen al area Subs.
+  maritima de responsabilidad nacional establecida en el D.S. Marina,
+  (M) N° 1.190 de 1976 sobre busqueda y rescate maritimo, a 1987
+  que comuniquen su posicion usando el sistema de Art. Unico
+
+Asi que "DS 1.079, Subs. Marina, 1987 Art. Unico" es LA SECUENCIA DE PALABRAS EXCLUIDAS
+en el orden en que la otra extraccion las emite, y NO una subcadena de ningun fichero.
+El campo lo dice con esas palabras, para que nadie lo cite como si fuera una linea.
+
+SEGUNDO CAMBIO DEL MECANISMO: EL CORTE EN FRAGMENTOS YA NO SE ESCRIBE A MANO. La v1
+llevaba un ancla literal ('Ademas para que la autoridad maritima otorgue el') para partir
+el Art. 30. Ahora el corte cae DONDE EL DOCUMENTO PUSO EL MOBILIARIO DE PAGINA. Lo pone
+el PDF, no la mano.
+
+TERCER CAMBIO, Y ES UNA CORRECCION: texto_decreto NO ES UN ARRAY DE INCISOS, y la v1 lo
+llamaba asi. Medido: el Art. 36 tiene DOS incisos normativos y UN solo fragmento, porque
+no cruza pagina; y al Art. 17 el salto de pagina le cae EN MITAD DE UNA ORACION, entre
+"distinto" y "del prefijado". En el Art. 30 las dos cosas coincidieron por casualidad.
+Es un array de FRAGMENTOS SEPARADOS POR SALTO DE PAGINA. Cruzan pagina 6 de los 40
+articulos —art_2_bis, 6, 11, 17, 23 y 30—, no solo el 30.
+
+================================================================================
+§3 · LO QUE QUEDO ESCRITO
+================================================================================
+data/decreto/rrdn_articulos.json — v2. ONCE articulos de CUARENTA, 13 fragmentos.
+Nueve salen de -raw y dos de -layout (art_13 y art_33). Tres llevan columna aislada
+(art_13, art_30, art_33). Dos van partidos por salto de pagina (art_17 y art_30).
+
+  id         fuente     frag  caracteres  tramo marginal aislado
+  art_13    -layout     1       1044  "DS 1.079, Subs. Marina, 1987 Art. Unico"
+  art_16    -raw        1        249  —
+  art_17    -raw        2        220  —
+  art_24    -raw        1        280  —
+  art_25    -raw        1        291  —
+  art_26    -raw        1        149  —
+  art_27    -raw        1        332  —
+  art_29    -raw        1        550  —
+  art_30    -raw        2        466  "DTO 220, DEFENSA Art. unico D.O. 07.07.2007"
+  art_33    -layout     1        640  "DTO 220, DEFENSA Art. unico D.O. 07.07.2007"
+  art_36    -raw        1        478  —
+
+CON ESTOS ONCE, EL FRENTE DE §6 DE AYER QUEDA CERRADO: CONTRATO_MOTOR.md cita el RRDN
+por sigla en NUEVE articulos —13, 16, 17, 24, 25, 26, 27, 33 y 36— y los nueve estan.
+Los otros dos son el 29 y el 30, que los cita D-C9.
+  "RRDN" en CONTRATO_MOTOR.md ................ 12 ocurrencias
+  CONTROL NEGATIVO, sigla inventada "RRXX" ...  0
+  AMBITO: CONTRATO_MOTOR.md en 8397396. (El conteo de ayer, "12 ocurrencias en 1
+  fichero", era sobre el arbol en 9ad1b26; hoy la sigla esta ademas en PROCEDENCIA.md
+  y en rrdn_articulos.json, que son de ayer. El 12 del contrato no se movio.)
+
+LOS 29 NO PEDIDOS NO SE EXTRAEN, por decision del owner en la PARADA 1: extraerlos
+convertiria el insumo de "los articulos que alguien necesito, con su motivo" en "el
+decreto", y eso no se puede hacer con el origen del PDF todavia RECORDADO.
+EL art_2_bis NO SE RESUELVE HOY, y queda escrito por que: es el unico del decreto que
+ninguna de las dos extracciones da limpio. Las dos traen "DS 1428, Subs. Marina, 1986."
+y en distinto orden, asi que no hay una corta de la que tirar. Resolverlo exige
+posiciones de glifo.
+
+================================================================================
+§4 · LA NO-REGRESION ES LO UNICO QUE GARANTIZA QUE NO SE REESCRIBIO LO FIRMADO
+================================================================================
+El mecanismo es nuevo y toca los cuatro articulos que el owner ya habia firmado en
+8397396. La prueba que lo autoriza no es una descripcion: es C6, que lee el fichero
+DESDE ESE COMMIT con git show y compara texto_decreto.
+
+  PASA  art_24 texto_decreto IDENTICO al de 8397396 — fragmentos 1 vs 1
+  PASA  art_25 texto_decreto IDENTICO al de 8397396 — fragmentos 1 vs 1
+  PASA  art_29 texto_decreto IDENTICO al de 8397396 — fragmentos 1 vs 1
+  PASA  art_30 texto_decreto IDENTICO al de 8397396 — fragmentos 2 vs 2
+  PASA  la v1 firmada tenia cuatro articulos — 4
+
+Incluido el corte en DOS del Art. 30, que ahora lo pone el mobiliario de pagina y antes
+lo ponia un ancla escrita a mano: dan lo mismo, byte a byte.
+
+================================================================================
+§5 · DOS DEFECTOS MIOS, LOS DOS EN EL CONTROL, LOS DOS CAZADOS AL CORRERLO
+================================================================================
+(A) EL CONTROL POSITIVO DE C4 BUSCABA EL TRAMO AISLADO COMO SUBCADENA. Dio 3 FALLOS.
+No era el dato: era el control. El tramo es una columna al margen, y la otra extraccion
+la intercala linea por linea, asi que sus palabras NO son contiguas en ningun fichero.
+Reescrito: ahora exige que RE-INSERTAR las palabras excluidas en el texto publicado
+reproduzca palabra por palabra lo que la otra extraccion emite. Eso es exactamente lo que
+el campo afirma, y es mas fuerte que lo que yo habia escrito.
+
+(B) DOS DE LAS TRES ASERCIONES DE C4 MEDIAN SOBRE EL TEXTO UNIDO. Dio 1 FALLO, en
+art_30. Tampoco era el dato: el art_30 va partido por salto de pagina, y su texto unido
+NO SE ENCUENTRA EN NINGUNA DE LAS DOS EXTRACCIONES — eso es C3, y es lo que C3 exige.
+O sea que una de las dos aserciones habria pasado SIEMPRE, por un motivo que no tiene
+nada que ver con la columna marginal: un control que pasa por la razon equivocada.
+Corregido a medir FRAGMENTO A FRAGMENTO. Ahora art_30 informa "1 de 2 fragmentos se
+encuentran alla", que es exactamente el fragmento que la columna no toca.
+
+LO QUE VALE DE LOS DOS: el instrumento fallo dos veces y el dato ninguna. Es la misma
+leccion de ayer —el control encontro un defecto real y el defecto era del control— con
+una vuelta mas: no alcanza con que un control falle cuando debe; hay que mirar POR QUE
+pasa cuando pasa.
+
+================================================================================
+§6 · EL APRENDIZAJE DEL GREP CON [ií] — INSTRUMENTO REUTILIZABLE, SUSTO REUTILIZABLE
+================================================================================
+Mi primer conteo de encabezados fue:
+  grep -nE "^[[:space:]]*(ARTICULO|ART[IÍ]CULO|Art[ií]culo)" ...
+y dio 39, no 40. Se comio "Articulo 2° bis" — el unico encabezado del decreto escrito en
+minusculas con acento.
+
+  UNA CLASE DE CARACTERES CON UN MULTIBYTE ADENTRO NO MUERDE BAJO ESTE LOCALE.
+  [ií] no es "i o i-acentuada": la i-acentuada son DOS bytes, y la clase los toma por
+  separado. El encabezado no matcheo y el conteo salio corto SIN ERROR NI AVISO.
+
+Re-medido con regex de node (/^(ARTICULO|Artículo)\s+(\d+)°.../): 40 y 40, las dos
+extracciones con la misma lista y el mismo orden, mas control negativo.
+
+Es primo hermano del awk /\r$/ de ayer, que dio 0 terminadores CR donde habia 866. Los
+dos son instrumentos que FALLAN EN SILENCIO Y HACIA ABAJO: devuelven menos, no error.
+Va escrito porque el proximo que los use se lleva el mismo susto.
+
+================================================================================
+§7 · LO QUE ESTE CONTROL NO CUBRE, DICHO OTRA VEZ Y EN GRANDE
+================================================================================
+ESTE CONTROL NO DETECTA UN TRUNCADO. Un fragmento correcto pero INCOMPLETO se
+re-encuentra igual de bien que el completo, porque un prefijo de una subcadena sigue
+siendo una subcadena. Si la extraccion se comio el ultimo inciso de un articulo, C1 pasa,
+C2 pasa y el resultado sale en verde.
+
+LO QUE CUBRE EL TRUNCADO ES LA LECTURA DEL OWNER. Por eso 05_lectura_parada2.js publica,
+para cada uno de los once, con que EMPIEZA, con que TERMINA y a que REMITE. Esta en
+05_lectura_parada2.txt y es lo que se lee en la PARADA 2 sin abrir el PDF.
+
+================================================================================
+§8 · UN COTEJO QUE ANTES NO SE PODIA HACER, Y QUE PASA
+================================================================================
+CONTRATO_MOTOR.md, INV-2.1, Capa 2, trae una cita entre comillas rotulada "Texto legal
+literal" del Art. 36 inciso 2. Es la unica cita literal del RRDN que el contrato tiene, y
+hasta hoy no habia contra que cotejarla. Ahora si.
+
+  PASA  la cita esta donde se dijo — CONTRATO_MOTOR.md, INV-2.1, Capa 2 — linea 318
+  PASA  la cita del contrato es subcadena exacta del Art. 36 extraido — 272 caracteres
+  PASA  CONTROL NEGATIVO: la cita con "mal tiempo"->"buen tiempo" NO es subcadena
+
+La cita empieza en "en caso de mal tiempo" y el literal dice "Asimismo en caso de mal
+tiempo": el contrato dejo fuera el "Asimismo" inicial, que es lo que hace cualquiera al
+citar desde la mitad de una oracion. DE AHI EN ADELANTE ES IDENTICA, palabra por palabra.
+NO SE ENMENDO NADA en CONTRATO_MOTOR.md y no hacia falta.
+
+================================================================================
+§9 · HALLAZGO FUERA DE ALCANCE — MEDIDO, NO APLICADO
+================================================================================
+CONTRATO_MOTOR.md, seccion "6.1 Comercial / Acuicola / Transporte", dice:
+  "la app NO evalua la autorizacion de zarpe (RRDN Art. 26, Art. 33 LISTAN CAUSALES que
+   decide la Autoridad)"
+
+EL ART. 26 NO LISTA CAUSALES. Su literal completo es:
+  "ARTICULO 26° El despacho de una nave solo podra negarse por causa legal o
+   reglamentaria, por orden judicial o a solicitud de la Autoridad competente."
+Eso no es una lista de causales: es la regla de que las causales tienen que ser LEGALES O
+REGLAMENTARIAS, o venir de un juez o de otra Autoridad. Es una norma de cierre, no un
+catalogo. El que lista es el Art. 33, en cuatro letras A a D — y ademas dice "entre
+otras", asi que ni siquiera esa lista es cerrada.
+
+NO CAMBIA NINGUNA CONDUCTA DE LA APP: el contrato usa las dos citas para decir que la app
+NO evalua la autorizacion, y eso los dos articulos lo sostienen igual. Lo que esta mal es
+el verbo.
+
+OPCIONES, para cuando el owner decida:
+  (a) cambiar "listan causales" por "acotan y listan las causales que decide la
+      Autoridad". Es una linea y deja de decir algo falso del 26.
+  (b) separar las dos citas: "(RRDN Art. 26: el despacho solo puede negarse por causa
+      legal o reglamentaria; Art. 33: lista, no taxativa, de causales)". Dice mas y
+      cuesta dos lineas. ES LO QUE RECOMIENDO.
+  (c) dejarlo. La conclusion del parrafo no depende del verbo.
+CONTRATO_MOTOR.md solo lo toca el owner y esta sesion no lo toco.
+
+Queda ademas anotado, sin opciones porque no es defecto de nadie: el Art. 17 remite al
+"Libro III, titulo V, parrafo 6, del Codigo de Comercio", y el contrato no recoge esa
+remision cuando lo cita. No es un error del contrato; es que el literal dice mas.
+
+================================================================================
+§10 · LO QUE ENTRA AL COMMIT, Y LO QUE NO
+================================================================================
+ENTRAN, con ruta exacta y nunca git add . :
+  data/decreto/rrdn_articulos.json                     (reescrito: v1 -> v2)
+  data/decreto/fuente_ds364/PROCEDENCIA.md             (enmendado)
+  _bitacoras/rrdn_siete_2026-08-19/                    (bitacora, 6 scripts, 6 salidas,
+                                                        copia del PROCEDENCIA.md previo,
+                                                        copia del insumo v1)
+
+PROCEDENCIA.md ES EL UNICO FICHERO DE fuente_ds364/ QUE SE TOCA, y no porque la solucion
+del Art. 33 obligara —no obligo: no cambio un byte de ningun .txt ni del .pdf— sino
+porque su nota de parseo quedaba FALSA POR OMISION en cuanto se publicaran articulos
+sacados de -layout. El owner lo autorizo en la PARADA 1.
+  sha256 antes .... 0fffa48e7024d52ef26346cb03b38678faef2f8ee73244e52e78828943ec953e
+  sha256 despues .. 65987a529a1487887d28708f009b877f4762cd142e53473cbd2c568c3bad570e
+  clase ........... LF puro (0 CR / 313 LF). No lleva hash declarado en ninguna tabla,
+                    asi que enmendarlo no invalida ninguna huella publicada.
+  copia previa .... PROCEDENCIA.md.copia-antes-de-la-enmienda, en este directorio,
+                    con sha256 0fffa48e... comprobado despues de copiar.
+
+LOS OTROS CUATRO FICHEROS DE fuente_ds364/ NO SE TOCARON, y sus sha256 lo prueban:
+  88b4ea68...  DTO-364_2012-03-17.pdf       BINARIA, clase unica
+  6996085c...  DTO-364_2012-03-17.txt       CRLF puro, 450 CR / 450 LF
+  328b97a1...  DTO-364_2012-03-17.raw.txt   CRLF puro, 367 CR / 367 LF
+  0f237aa9...  .gitattributes               LF puro
+
+UNA SALVEDAD SOBRE LOS sha256 DE ESTA SESION, DICHA ANTES DE QUE ALGUIEN LOS USE (FA-4):
+el repositorio corre con core.autocrlf=true y el .gitattributes de fuente_ds364/ cubre *.pdf
+y *.txt de ESE directorio, NO los .md ni nada de _bitacoras/. Medido: git check-attr sobre
+PROCEDENCIA.md no devuelve ningun atributo, y git avisa "LF will be replaced by CRLF" al
+stagearlo. Consecuencia exacta:
+  · EL BLOB ES LF Y ES BYTE A BYTE LO QUE HAY EN DISCO HOY. Comprobado:
+      git show :data/decreto/fuente_ds364/PROCEDENCIA.md              -> 65987a52...  IGUAL
+      git show :data/decreto/rrdn_articulos.json                      -> 8ba231ca...  IGUAL
+      git show :.../PROCEDENCIA.md.copia-antes-de-la-enmienda         -> 0fffa48e...  IGUAL
+  · PERO EN UN CLON EN WINDOWS ESOS TRES SALEN CRLF Y SU sha256 EN DISCO NO VA A SER ESE.
+    No rompe ninguna afirmacion publicada —ninguno de los tres lleva hash declarado en una
+    tabla— y es exactamente el estado en que la sesion de ayer dejo su propio PROCEDENCIA.md.
+    Se dice para que nadie cotoje uno de estos tres hashes en un clon y crea que hay un
+    defecto. Los que SI valen en cualquier clon son los cuatro de fuente_ds364/, que el
+    .gitattributes protege, y esos no se tocaron.
+  · CERRARLO exigiria un .gitattributes propio en _bitacoras/ o extender el de fuente_ds364/
+    a *.md. NO SE HIZO: no estaba en la lista de lo que entra al commit. Queda como frente.
+
+NO ENTRAN, y se verifico en el git status antes de la PARADA 2:
+  .claude/launch.json .................. sigue modificado y sin stagear
+  data/catalogo/estado_drift.json ...... sigue modificado y sin stagear
+
+================================================================================
+§11 · CONTROLES DE ESTA SESION
+================================================================================
+  suite ................................ 157/157, 0 fallos, salida cruda
+  04_control_rebusqueda.js ............. 53 controles, 0 fallos, exit 0
+    C0 la re-extraccion fresca reproduce byte a byte los .txt versionados ...  3
+    C1 cada fragmento se re-encuentra en LA EXTRACCION QUE EL INSUMO DECLARA . 13
+    C2 CONTROL NEGATIVO: el fragmento con un caracter cambiado NO se encuentra 13
+    C3 los fragmentos de un mismo articulo UNIDOS no se encuentran ...........  5
+    C4 la columna aislada: por que la fuente es la que es ................... 10
+    C5 el JSON no tiene caracteres de control fuera de LF/CR .................  1
+    C6 NO REGRESION contra 8397396 ..........................................  5
+    C7 la cita "Texto legal literal" del contrato es literal .................  3
+  caracteres de control fuera de LF/CR en todo fichero de texto escrito .... 0
+    (los 8 \f de los .txt son separadores de pagina de pdftotext, no son de esta
+     sesion, y no se toco ninguno de los dos .txt)
+
+================================================================================
+§12 · FRENTES ANOTADOS, NO ABIERTOS
+================================================================================
+1. EL "Articulo 2° bis" NO SE PUEDE EXTRAER con el mecanismo de esta sesion. Unico del
+   decreto. Exige posiciones de glifo (pdftotext -bbox-layout y recorte por coordenada),
+   que es instrumento nuevo, derivado nuevo, control nuevo y PROCEDENCIA.md nuevo.
+2. LOS 29 ARTICULOS NO PEDIDOS. El mecanismo esta probado sobre el documento entero
+   (02_gate_diseno.txt los simula los 40); lo unico que falta escribir es el motivo de
+   cada uno, y eso lo escribe el owner. Barato de retomar.
+3. EL VERBO "LISTAN" DEL ART. 26 EN CONTRATO_MOTOR.md. §9, con opciones.
+4. LA FRASE DE insumos_zarpe_2026-08-19.md que quedo incompleta. Sigue abierta; pieza
+   propia; esta sesion no la toco.
+5. NINGUN CONTROL DE LA SUITE VIGILA LOS HASHES DE fuente_ds364/. Sigue igual que ayer y
+   por el mismo motivo: nada del repositorio consume todavia este texto.
+6. EL ORIGEN DEL PDF SIGUE RECORDADO, NO VERIFICADO. Y es el motivo por el que el insumo
+   NO se convirtio en "el decreto completo".
+7. EL ART. 7° DEL RRDN, al que el Art. 30 remite, SIGUE SIN EXTRAER. Es uno de los 29.
+8. LA AFIRMACION NEGATIVA DE §5 sobre la recalada SIGUE SIN MEDIR. Necesita los 40, no
+   los once. Fuera de alcance por encargo.
+9. LOS .md Y LOS FICHEROS DE _bitacoras/ NO ESTAN PROTEGIDOS POR NINGUN .gitattributes,
+   asi que sus sha256 en disco cambian en un clon en Windows. §10. Nadie declara hoy uno de
+   esos hashes en una tabla, asi que no rompe nada; se cierra con un .gitattributes el dia
+   que alguien lo pida.
+
+================================================================================
+§13 · LO QUE ESTA SESION NO HIZO
+================================================================================
+No contesto D-C9. No caracterizo el alcance del Tramo C. No escribio en CONTRATO_MOTOR.md,
+CLAUDE.md ni PLAN_JURISDICCION.md. No enmendo insumos_zarpe_2026-08-19.md. No enmendo la
+bitacora de ayer. No atribuyo la anotacion DTO 220. No toco src/ en ninguno de los dos
+repositorios. No toco el motor BRE. No extrajo los 29 restantes.
+
+D-C9 SIGUE CERRADA. La app sigue sin bloquear el zarpe. Esta sesion no cambio una linea
+de codigo.
+
+--------------------------------------------------------------------------------
+EL APRENDIZAJE, CON ESTAS PALABRAS:
+--------------------------------------------------------------------------------
+  UN CONTROL NO PUEDE CAZAR UN DEFECTO DE LA PREMISA CON QUE FUE ESCRITO.
+  El de ayer media fidelidad contra -raw y la medi bien. La premisa —que -raw es la
+  fuente limpia— era mia, no del control, y por eso el control la habria confirmado
+  dos veces mas, en verde, con dos articulos contaminados adentro.
+
+Y el corolario, que es lo que hizo el gate: cuando una recomendacion dice "es correr el
+mismo script con N anclas mas", eso es una MEDICION QUE NADIE HIZO disfrazada de
+estimacion de costo. Se mide antes de firmarla.

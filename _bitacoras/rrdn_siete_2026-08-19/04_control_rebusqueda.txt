@@ -1,0 +1,83 @@
+AMBITO: data/decreto/rrdn_articulos.json (11 articulos) contra una re-extraccion fresca de data/decreto/fuente_ds364/DTO-364_2012-03-17.pdf
+herramienta: pdftotext version 4.06 [www.xpdfreader.com]
+
+*** ESTE CONTROL NO DETECTA UN TRUNCADO: un fragmento correcto pero incompleto se
+*** re-encuentra igual. Lo que cubre el truncado es la lectura del owner (PARADA 2).
+
+== C0 · la re-extraccion fresca reproduce byte a byte los .txt versionados ==
+  PASA  sha256 de -layout coincide — 6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e
+  PASA  sha256 de -raw coincide — 328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955
+  PASA  sha256 del PDF coincide con el declarado en el insumo — 88b4ea681a9f1ba5dad3296cfc819306605666c1f3d1909315fd98a3dc9c3ced
+
+== C1 · cada fragmento se re-encuentra en LA EXTRACCION QUE EL INSUMO DECLARA ==
+  PASA  art_13 frag[0] se encuentra en -layout — 1044 caracteres
+  PASA  art_16 frag[0] se encuentra en -raw — 249 caracteres
+  PASA  art_17 frag[0] se encuentra en -raw — 106 caracteres
+  PASA  art_17 frag[1] se encuentra en -raw — 114 caracteres
+  PASA  art_24 frag[0] se encuentra en -raw — 280 caracteres
+  PASA  art_25 frag[0] se encuentra en -raw — 291 caracteres
+  PASA  art_26 frag[0] se encuentra en -raw — 149 caracteres
+  PASA  art_27 frag[0] se encuentra en -raw — 332 caracteres
+  PASA  art_29 frag[0] se encuentra en -raw — 550 caracteres
+  PASA  art_30 frag[0] se encuentra en -raw — 213 caracteres
+  PASA  art_30 frag[1] se encuentra en -raw — 253 caracteres
+  PASA  art_33 frag[0] se encuentra en -layout — 640 caracteres
+  PASA  art_36 frag[0] se encuentra en -raw — 478 caracteres
+
+== C2 · CONTROL NEGATIVO: el mismo fragmento con UN caracter cambiado NO se encuentra ==
+   (sin esto, C1 pasaria aunque el instrumento no supiera fallar)
+  PASA  art_13 frag[0] roto NO se encuentra
+  PASA  art_16 frag[0] roto NO se encuentra
+  PASA  art_17 frag[0] roto NO se encuentra
+  PASA  art_17 frag[1] roto NO se encuentra
+  PASA  art_24 frag[0] roto NO se encuentra
+  PASA  art_25 frag[0] roto NO se encuentra
+  PASA  art_26 frag[0] roto NO se encuentra
+  PASA  art_27 frag[0] roto NO se encuentra
+  PASA  art_29 frag[0] roto NO se encuentra
+  PASA  art_30 frag[0] roto NO se encuentra
+  PASA  art_30 frag[1] roto NO se encuentra
+  PASA  art_33 frag[0] roto NO se encuentra
+  PASA  art_36 frag[0] roto NO se encuentra
+
+== C3 · los fragmentos de un mismo articulo UNIDOS no se encuentran ==
+   (es el motivo declarado de que texto_decreto sea un array; que nadie los junte)
+  PASA  art_17 unido NO se encuentra en -raw — entre medio cae un salto de pagina
+  PASA  art_17 unido NO se encuentra en -layout
+  PASA  art_30 unido NO se encuentra en -raw — entre medio cae un salto de pagina
+  PASA  art_30 unido NO se encuentra en -layout
+  PASA  articulos partidos por salto de pagina entre los once — 2 (art_17 y art_30)
+
+== C4 · la columna marginal aislada: por que la fuente es la que es ==
+   El tramo aislado NO es una cita contigua: en el PDF es una columna al margen y la
+   otra extraccion la intercala linea por linea. Asi que no se busca como subcadena.
+   Lo que se exige es EXACTO: re-insertar las palabras excluidas en el texto publicado
+   reproduce PALABRA POR PALABRA lo que la otra extraccion emite para ese articulo.
+  PASA  art_13 NO todos sus fragmentos estan en -raw — alli va la columna adentro — 0 de 1 fragmentos se encuentran alla
+  PASA  art_13 CONTROL POSITIVO: publicado + tramo reproduce palabra por palabra -raw — 7 palabras excluidas
+  PASA  art_13 TODOS sus fragmentos si estan en -layout — 1 de 1
+  PASA  art_30 NO todos sus fragmentos estan en -layout — alli va la columna adentro — 1 de 2 fragmentos se encuentran alla
+  PASA  art_30 CONTROL POSITIVO: publicado + tramo reproduce palabra por palabra -layout — 7 palabras excluidas
+  PASA  art_30 TODOS sus fragmentos si estan en -raw — 2 de 2
+  PASA  art_33 NO todos sus fragmentos estan en -raw — alli va la columna adentro — 0 de 1 fragmentos se encuentran alla
+  PASA  art_33 CONTROL POSITIVO: publicado + tramo reproduce palabra por palabra -raw — 7 palabras excluidas
+  PASA  art_33 TODOS sus fragmentos si estan en -layout — 1 de 1
+  PASA  articulos con columna marginal aislada entre los once — 3 (art_13, art_30, art_33)
+
+== C5 · caracteres de control fuera de LF/CR en el insumo escrito ==
+  PASA  el JSON no tiene caracteres de control fuera de LF/CR — 0 encontrados
+
+== C6 · NO REGRESION: los cuatro que el owner firmo en 8397396 ==
+   (es lo unico que garantiza que esta sesion no reescribio texto ya firmado)
+  PASA  art_24 texto_decreto IDENTICO al de 8397396 — fragmentos 1 vs 1
+  PASA  art_25 texto_decreto IDENTICO al de 8397396 — fragmentos 1 vs 1
+  PASA  art_29 texto_decreto IDENTICO al de 8397396 — fragmentos 1 vs 1
+  PASA  art_30 texto_decreto IDENTICO al de 8397396 — fragmentos 2 vs 2
+  PASA  la v1 firmada tenia cuatro articulos — 4
+
+== C7 · la cita que CONTRATO_MOTOR.md rotula "Texto legal literal" es literal ==
+  PASA  la cita esta donde se dijo — CONTRATO_MOTOR.md, INV-2.1, Capa 2 — linea 318
+  PASA  la cita del contrato es subcadena exacta del Art. 36 extraido — 272 caracteres
+  PASA  CONTROL NEGATIVO: la cita con "mal tiempo"->"buen tiempo" NO es subcadena
+
+RESULTADO: todo pasa. 0 fallos.

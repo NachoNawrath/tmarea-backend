@@ -32,8 +32,8 @@ es otro cuerpo legal, de otro objeto, y por eso vive aparte en vez de mezclarse 
 | **Url corta que el propio documento declara** | `http://bcn.cl/2gf4m` |
 | **Referido en este repositorio como** | **RRDN** (`CONTRATO_MOTOR.md`, sección FUENTES NORMATIVAS DE REFERENCIA) |
 | **Qué es el archivo** | El **texto consolidado de la Biblioteca del Congreso Nacional**. Lleva el pie *"Biblioteca del Congreso Nacional de Chile - www.leychile.cl - documento generado el 25-May-2022"* en cada página, y la cabecera corrida *"Decreto 364, DEFENSA (1980)"* |
-| **Extensión** | 8 páginas · 38 artículos numerados, más `Artículo 2° bis` y `ARTICULO 8° BIS` |
-| **Anotación marginal dentro del alcance extraído** | `DTO 220, DEFENSA · Art. único · D.O. 07.07.2007`. **A qué artículo pertenece NO está determinado** — ver la nota de parseo más abajo |
+| **Extensión** | 8 páginas · **40 encabezados de artículo**: 38 numerados (Art. 1° a 38°), más `Artículo 2° bis` y `ARTICULO 8° BIS`. Las dos extracciones dan la misma lista y en el mismo orden |
+| **Anotaciones marginales** | **CUATRO bloques, no uno**: `DS 1428, Subs. Marina, 1986.` · `Decreto 701, DEFENSA / Art. SEGUNDO / D.O. 17.03.2012` · `DS 1.079, Subs. Marina, / 1987 Art. Unico` · `DTO 220, DEFENSA / Art. único / D.O. 07.07.2007`. **A qué artículo pertenece cada uno NO está determinado** — ver la nota de parseo más abajo |
 
 **La fecha de la norma y la fecha del texto no son la misma, y conviene no confundirlas.** El
 decreto es de 1980; el texto de este archivo es el consolidado vigente al **17-MAR-2012**. Los
@@ -96,8 +96,11 @@ entrar siguiendo el patrón `<código>_<fecha de la versión>` de `TM-025-A_2025
 El precedente versiona un solo derivado, producido con `-layout`. Acá hacen falta los dos, y el
 motivo está medido:
 
-**`-layout` mezcla la columna de anotaciones marginales de BCN dentro de la línea.** El inciso 2
-del Art. 30 sale así:
+**Ninguna de las dos extracciones está limpia en general, y cada una lo está exactamente donde la
+otra no.** `-layout` mezcla la columna de anotaciones marginales de BCN dentro de la línea, y
+reparte cada bloque entre los artículos junto a cuyas líneas se dibuja; `-raw` sigue el orden del
+*content stream*, no reordena por posición, y emite cada bloque **entero dentro de un solo
+artículo** — que casi nunca es el mismo. El inciso 2 del Art. 30 sale así en `-layout`:
 
 ```
        Además para que la autoridad marítima otorgue el        DTO 220, DEFENSA
@@ -105,56 +108,100 @@ despacho de la nave al exterior, el capitán, armador o         Art. único
 agente deberá obtener de la Autoridad Aduanera que estampe     D.O. 07.07.2007
 ```
 
-Es exactamente la clase que documenta la **nota de parseo 3** de
-`data/decreto/fuente_dfl292/PROCEDENCIA.md` (*«recortar a partir de la columna 55»*). `-raw`
-sigue el orden del *content stream* y no reordena por posición, y **para este inciso no emite
-esa columna**, así que devuelve el texto limpio sin que nadie lo edite. **No la emite en ninguna
-parte del documento: la coloca en otro artículo** — ver la nota de parseo de abajo.
+…y el **mismo** bloque sale, en `-raw`, dentro de la letra C del **Art. 33**. Es exactamente la
+clase que documenta la **nota de parseo 3** de `data/decreto/fuente_dfl292/PROCEDENCIA.md`
+(*«recortar a partir de la columna 55»*), sólo que acá no hace falta recortar por columna:
+**basta con tomar, para cada artículo, la extracción que no trae el bloque.**
 
 Reparto de papeles, para que no quede ambiguo cuál manda:
 
 - **`DTO-364_2012-03-17.txt` (`-layout`) es el documento de referencia.** Es el que indexa
   `linea_en_el_documento` en `data/decreto/rrdn_articulos.json`, y es el que se lee a ojo.
-- **`DTO-364_2012-03-17.raw.txt` (`-raw`) es de dónde se extrae y contra qué corre el control.**
+- **De cuál de los dos se EXTRAE se elige por artículo y por medición, no de antemano.** La
+  primera versión de este archivo decía que se extrae de `-raw` y punto. Era cierto para los
+  cuatro artículos que había entonces y **es falso como regla general**: en `-raw` el Art. 13 y
+  el Art. 33 llevan su bloque marginal adentro. Hoy `extraido_de` **varía artículo por artículo**
+  dentro de `rrdn_articulos.json`, y cada artículo declara el suyo junto al cotejo que lo
+  justifica. De los once extraídos, nueve salen de `-raw` y dos de `-layout`.
 
-El control mide y deja escrito que el inciso 2 del Art. 30 **no** se re-encuentra en `-layout` y
-**sí** en `-raw`. Esa asimetría no es un defecto: es el motivo declarado de que haya dos.
+El control corre contra la extracción que cada artículo declara, y mide además en cuál de las dos
+**no** se re-encuentra. Esa asimetría no es un defecto: es el motivo declarado de que haya dos.
 
 ---
 
 ## Nota de parseo — la anotación marginal NO se atribuye
 
-El consolidado de BCN lleva al margen, **una sola vez en todo el documento**, el bloque
-`DTO 220, DEFENSA / Art. único / D.O. 07.07.2007`. **Las dos extracciones discrepan sobre a qué
-artículo pertenece:**
+> **Enmendado el 2026-08-19.** La primera versión de esta nota decía que el consolidado lleva al
+> margen «**una sola vez en todo el documento**» el bloque `DTO 220…`. Eso es cierto **de ese
+> bloque** y se lee como si fuera el único que hay. **Son cuatro.** La copia de esta nota tal como
+> estaba antes de la enmienda está en
+> `_bitacoras/rrdn_siete_2026-08-19/PROCEDENCIA.md.copia-antes-de-la-enmienda`.
 
-- **`-layout`** la emite dentro del **inciso 2 del Art. 30**;
-- **`-raw`** la emite dentro de la **letra C del Art. 33**.
+El consolidado de BCN lleva al margen **cuatro bloques de anotación**, cada uno **una sola vez**
+en cada extracción. **Ninguna de las dos extracciones está limpia en general, y las dos discrepan
+sobre a qué artículo pertenece cada bloque:**
 
-Medido: `grep -c "DTO 220"` da **1** en cada uno de los dos `.txt`. No es que una extracción la
-duplique y la otra no; **es la misma anotación colocada en dos artículos distintos.**
+| bloque | dónde lo pone `-layout` | dónde lo pone `-raw` |
+|---|---|---|
+| `DS 1428, Subs. Marina, 1986.` | `Artículo 2° bis` | `Artículo 2° bis` |
+| `Decreto 701, DEFENSA / Art. SEGUNDO` | Art. 6° | `ARTICULO 8° BIS` |
+| `D.O. 17.03.2012` | Art. 7° | `ARTICULO 8° BIS` |
+| `DS 1.079, Subs. Marina, / 1987 Art. Unico` | Arts. 11° y 12° | **Art. 13°** |
+| `DTO 220, DEFENSA / Art. único / D.O. 07.07.2007` | **Art. 30°**, inciso 2 | **Art. 33°**, letra C |
 
-**Cuál de las dos lecturas es la correcta no está determinado.** Establecerlo exigiría leer las
-posiciones de glifo del PDF, que es lo que ninguno de los dos extractores hace de forma fiable
-con una columna marginal. **Se declara la discrepancia y no se afirma ninguna de las dos**, igual
-que la nota de parseo 1 de `data/decreto/fuente_dfl292/PROCEDENCIA.md` declaró la hipótesis de la
-"o" del Art. 27 sin darla por probada.
+Medido sobre los dos `.txt` completos: `grep -c` da **1 y 1** para `DS 1428`, `DS 1.079`,
+`DTO 220`, `D.O. 17.03.2012` y `D.O. 07.07.2007`; control negativo `DTO 999` da **0 y 0**.
+(`Decreto 701` da 2 y 2 porque una de las dos es la metadata del encabezado del documento, no una
+anotación al margen.) No es que una extracción duplique y la otra no: **es la misma anotación
+colocada en artículos distintos.**
 
-**Consecuencia práctica para quien extraiga el Art. 33 más adelante** —y es uno de los siete
-pendientes—: **en `-raw` el Art. 33 es el artículo contaminado.** `-raw` no está limpio en
-general; para los cuatro artículos de este insumo lo está, y desplaza la contaminación al 33.
-Quien extraiga el 33 tiene que mirar los dos `.txt`, no sólo el `-raw`.
+**A qué artículo pertenece cada bloque no está determinado, y esta sesión no lo determina.**
+Establecerlo exigiría leer las posiciones de glifo del PDF, que es lo que ninguno de los dos
+extractores hace de forma fiable con una columna marginal. **Se declara la discrepancia y no se
+afirma ninguna de las dos lecturas**, igual que la nota de parseo 1 de
+`data/decreto/fuente_dfl292/PROCEDENCIA.md` declaró la hipótesis de la "o" del Art. 27 sin darla
+por probada.
+
+**Cómo se extrae entonces, sin editar una letra del literal.** Cada artículo se corta en las dos
+extracciones y se comparan palabra por palabra:
+
+- si las dos dan **el mismo texto**, el literal queda **doblemente atestiguado** — 31 de los 40;
+- si una es **subsecuencia de palabras** de la otra, se toma **la corta**, que es la que no trae
+  el bloque, y las palabras excluidas se publican en `columna_marginal_aislada` **sin
+  atribuirlas a ningún artículo** — 8 de los 40;
+- si no se da ninguna de las dos, **el extractor falla y no adivina** — 1 de los 40.
+
+Que lo excluido sea marginal y no texto del artículo **está medido, no supuesto**: dos
+extractores independientes coinciden en toda la secuencia de palabras salvo ese tramo; el mismo
+tramo aparece pegado a otro artículo en la otra extracción; y re-insertar las palabras excluidas
+en el texto publicado **reproduce palabra por palabra** lo que la otra extracción emite para ese
+artículo. Las tres cosas las comprueba `04_control_rebusqueda.js`, control C4.
+
+**El `Artículo 2° bis` es el único del decreto que no se resuelve así**, y por eso **no está
+extraído**: las dos extracciones traen el bloque `DS 1428, Subs. Marina, 1986.` en distinto
+orden, ninguna está limpia, y no hay una corta de la que tirar. Resolverlo exigiría el camino de
+las posiciones de glifo. Queda declarado y no está entre los once.
 
 ---
 
-## Nota de parseo — el Art. 30 cruza un salto de página
+## Nota de parseo — `texto_decreto` es un array de FRAGMENTOS, no de incisos
 
-Entre sus dos incisos caen el pie de la página 6 y la cabecera corrida de la 7. Por eso el
-insumo guarda `texto_decreto` como **array de incisos** y no como una sola cadena: unir los dos
-obligaría a editar el literal o a arrastrar el mobiliario de página dentro del texto normativo.
-Cada inciso por separado se re-encuentra exacto; **los dos unidos no se encuentran en ninguna de
-las dos extracciones**, y el control lo comprueba de forma explícita para que nadie los junte
-más adelante creyendo que da igual.
+**Seis de los 40 artículos cruzan un salto de página**, no sólo el 30: `Artículo 2° bis`, 6°,
+11°, 17°, 23° y 30°. Entre los dos pedazos caen el pie de una página y la cabecera corrida de la
+siguiente. Por eso el insumo guarda `texto_decreto` como **array** y no como una sola cadena:
+unir los pedazos obligaría a editar el literal o a arrastrar el mobiliario de página dentro del
+texto normativo. Cada fragmento por separado se re-encuentra exacto; **los fragmentos de un mismo
+artículo unidos no se encuentran en ninguna de las dos extracciones**, y el control lo comprueba
+de forma explícita para que nadie los junte más adelante creyendo que da igual.
+
+> **Enmendado el 2026-08-19.** La primera versión de esta nota llamaba a ese array **«array de
+> incisos»**. **No lo es**, y llamarlo así fue una casualidad del Art. 30: ahí el salto de página
+> cayó justo en el límite entre sus dos incisos. Medido en general, las dos cosas no coinciden:
+> el **Art. 36 tiene dos incisos normativos y un solo fragmento**, porque no cruza página; y al
+> **Art. 17 el salto le cae en mitad de una oración**, entre `distinto` y `del prefijado`, así que
+> sus dos fragmentos no son dos incisos ni nada parecido. **El corte lo pone el PDF, no una mano**
+> —cae donde está el mobiliario de página—, y por eso no hay ningún ancla de texto escrita a
+> mano en el extractor.
 
 ---
 
@@ -194,21 +241,34 @@ documento y hay que decirlo antes de reemplazar nada.
 
 ## Qué se extrajo de él
 
-**Cuatro artículos de treinta y ocho.** Están en `data/decreto/rrdn_articulos.json`, con
-`texto_decreto`, `procedencia` y `documento_sha256`, en el mismo tratamiento que el `art_2` del
-D.S. 991.
+**Once artículos de cuarenta.** Están en `data/decreto/rrdn_articulos.json`, con `texto_decreto`,
+`procedencia` y `documento_sha256`, en el mismo tratamiento que el `art_2` del D.S. 991. Son
+**exactamente los once que `CONTRATO_MOTOR.md` cita por la sigla RRDN**, y con estos once ese
+frente queda cerrado: no hay ninguna cita del contrato al RRDN sin texto adjunto.
 
-| artículo | por qué está |
-|---|---|
-| **Art. 24** | El despacho previo obligatorio. Es el texto de lo que `D-C9` declara como su único apoyo, y `CONTRATO_MOTOR.md` §2 ya lo citaba sin tenerlo |
-| **Art. 25** | Documentación en orden y condiciones de seguridad |
-| **Art. 29** | Clasificación de las naves; su categoría E son las naves menores nacionales |
-| **Art. 30** | Requisitos para obtener la autorización de zarpe (dos incisos) |
+| artículo | por qué está | de dónde se extrajo |
+|---|---|---|
+| **Art. 13** | Aviso de arribada con 24 h de anticipación. `CONTRATO_MOTOR.md` §6.1 | `-layout` — en `-raw` lleva `DS 1.079…` adentro |
+| **Art. 16** | Cambio del puerto prefijado de recalada: permiso previo. INV-2.2 | `-raw` — idéntico en las dos |
+| **Art. 17** | Definición de arribada forzosa. INV-2.2 e INV-2.3. **Dos fragmentos** | `-raw` — idéntico en las dos |
+| **Art. 24** | El despacho previo obligatorio. Es el texto de lo que `D-C9` declara como su único apoyo, y `CONTRATO_MOTOR.md` §2 ya lo citaba sin tenerlo | `-raw` — idéntico en las dos |
+| **Art. 25** | Documentación en orden y condiciones de seguridad | `-raw` — idéntico en las dos |
+| **Art. 26** | El despacho sólo puede negarse por causa legal o reglamentaria | `-raw` — idéntico en las dos |
+| **Art. 27** | Quién solicita el despacho y con cuánta anticipación | `-raw` — idéntico en las dos |
+| **Art. 29** | Clasificación de las naves; su categoría E son las naves menores nacionales | `-raw` — idéntico en las dos |
+| **Art. 30** | Requisitos para obtener la autorización de zarpe. **Dos fragmentos** | `-raw` — en `-layout` lleva `DTO 220…` adentro |
+| **Art. 33** | Causales por las que la Autoridad Marítima no otorga el zarpe (letras A a D, y dice «entre otras») | `-layout` — en `-raw` lleva `DTO 220…` adentro |
+| **Art. 36** | Puertos intermedios y zarpe a la gira con puerto cerrado. El más citado del contrato: cinco lugares | `-raw` — idéntico en las dos |
 
-Los otros treinta y cuatro **no están extraídos** y salen del PDF de este directorio. Que no
-estén no significa que no digan nada: significa que nadie los ha necesitado todavía.
+Los otros **veintinueve no están extraídos** y salen del PDF de este directorio. Que no estén no
+significa que no digan nada: significa que **nadie los ha necesitado todavía**. Este insumo es
+«los artículos que alguien necesitó, con su motivo escrito al lado», **no** «el decreto»; y no
+puede ser «el decreto» mientras el origen del PDF siga siendo RECORDADO y no VERIFICADO.
 
-**El careo entre estos cuatro textos y la paráfrasis de `D-C9` está en
+Y uno de los veintinueve tiene además su propio motivo: el **`Artículo 2° bis`** es el único que
+ninguna de las dos extracciones da limpio — ver la nota de parseo de arriba.
+
+**El careo entre los cuatro primeros —Arts. 24, 25, 29 y 30— y la paráfrasis de `D-C9` está en
 `_bitacoras/ds364_al_arbol_2026-08-19/careo_dc9_vs_literal_2026-08-19.md`.** No concilia y no
 decide: es material de lectura para el owner.
 
@@ -227,17 +287,27 @@ que este directorio existe para cerrar, así que no se deja al azar.
 ## Lo que este directorio NO tiene, y conviene saberlo
 
 **Ningún control de la suite vigila estos hashes.** Hay un control re-ejecutable en
-`_bitacoras/ds364_al_arbol_2026-08-19/02_control_rebusqueda.js`, que re-extrae el PDF y verifica
-que los `sha256` y los cinco incisos guardados sigan coincidiendo — pero **hay que correrlo a
-mano**: no está enganchado a `npm test` y nada lo llama.
+`_bitacoras/rrdn_siete_2026-08-19/04_control_rebusqueda.js`, que re-extrae el PDF y verifica que
+los `sha256` y los trece fragmentos guardados sigan coincidiendo — pero **hay que correrlo a
+mano**: no está enganchado a `npm test` y nada lo llama. (El de la sesión anterior,
+`_bitacoras/ds364_al_arbol_2026-08-19/02_control_rebusqueda.js`, sigue en el árbol y sigue
+pasando, pero cubre sólo los cuatro artículos de la v1 y busca todo en `-raw`: **quedó
+superado**.)
+
+**Y hay algo que ninguno de los dos controles cubre: el TRUNCADO.** Un fragmento correcto pero
+incompleto se re-encuentra igual de bien que el completo, porque un prefijo de una subcadena
+sigue siendo una subcadena. Lo que cubre eso es que alguien lea con qué empieza y con qué termina
+cada artículo; está publicado en
+`_bitacoras/rrdn_siete_2026-08-19/05_lectura_parada2.txt`.
 
 Es el mismo estado en que quedaron `fuente_dfl292/` y `fuente_resoluciones_locales/`, y es
 deliberado por el mismo motivo: **nada del repositorio consume todavía este texto**. El día que
 algo lo consuma, la pregunta de si merece un control vivo deja de ser hipotética. **Esa decisión
 es del owner y va junto con el código que lo consuma, no antes.**
 
-**Y falta la mayor parte del decreto en forma citable.** `CONTRATO_MOTOR.md` cita el RRDN por su
-sigla en **nueve artículos** — 13, 16, 17, 24, 25, 26, 27, 33 y 36 — y de esos, los extraídos
-acá son **dos**: el 24 y el 25. Los otros siete siguen citados sin texto adjunto, igual que
-estaban el 29 y el 30 hasta hoy. Está medido y anotado en la bitácora de esta sesión; no se
-cerró porque estaba fuera de su alcance.
+**Falta la mayor parte del decreto en forma citable, pero ya no falta ninguna cita.**
+`CONTRATO_MOTOR.md` cita el RRDN por su sigla en **nueve artículos** — 13, 16, 17, 24, 25, 26,
+27, 33 y 36 — y **los nueve están extraídos**, más el 29 y el 30 que cita `D-C9`: once. Ese
+frente, abierto en `_bitacoras/ds364_al_arbol_2026-08-19/ds364_al_arbol_2026-08-19.txt` §6, queda
+cerrado el mismo día. Los otros **veintinueve artículos** siguen sin extraer, y no porque falten:
+porque nadie los ha pedido.

@@ -1,8 +1,8 @@
 {
-  "version": "v1",
+  "version": "v2",
   "fuente": "data/decreto/fuente_ds364/ — la cadena de custodia esta en el PROCEDENCIA.md de ese directorio",
   "generado": "2026-08-19",
-  "generado_por": "_bitacoras/ds364_al_arbol_2026-08-19/01_extraer_articulos.js",
+  "generado_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
   "norma": {
     "identificacion": "D.S. (M.) 364 de 1980 — Aprueba el Reglamento de Recepcion y Despacho de Naves, modifica el Decreto 1.340 bis, de 14 de junio de 1941, de Marina",
     "organismo": "Ministerio de Defensa Nacional",
@@ -10,14 +10,91 @@
     "publicacion": "1980-06-27",
     "version_del_texto": "Ultima Version De: 17-MAR-2012 (Ultima Modificacion: 17-MAR-2012, Decreto 701)",
     "referido_como": "RRDN",
-    "articulos_del_decreto": 38,
+    "articulos_del_decreto": 40,
+    "articulos_del_decreto_desglose": "CUARENTA encabezados de articulo, contados sobre las DOS extracciones del PDF versionado, que dan la misma lista y en el mismo orden: 38 numerados (Art. 1° a Art. 38°) mas \"Articulo 2° bis\" mas \"ARTICULO 8° BIS\". La v1 de este insumo publicaba 38, que es el conteo de los numerados solamente; el denominador correcto para \"cuantos articulos tiene el decreto\" es 40.",
     "pdf": "data/decreto/fuente_ds364/DTO-364_2012-03-17.pdf",
     "pdf_sha256": "88b4ea681a9f1ba5dad3296cfc819306605666c1f3d1909315fd98a3dc9c3ced"
   },
-  "alcance_de_este_insumo": "CUATRO articulos de TREINTA Y OCHO. No es el decreto completo y no se lee como tal. Estan los Arts. 29 y 30 porque D-C9 los cita por numero, y los Arts. 24 y 25 porque son los que llevan el texto que D-C9 declara como su apoyo. Los otros treinta y cuatro no estan; salen del PDF del mismo directorio.",
-  "nota_estructura": "texto_decreto es un ARRAY de incisos, no una cadena. El Art. 30 tiene dos incisos y entre ellos cae un salto de pagina en el PDF: unirlos obligaria a editar el literal o a arrastrar el pie y la cabecera de pagina. Cada elemento del array se re-encuentra por si solo en una re-extraccion del PDF; la union de los dos, no. El control esta en _bitacoras/ds364_al_arbol_2026-08-19/02_control_rebusqueda.js.",
+  "alcance_de_este_insumo": "ONCE articulos de CUARENTA. No es el decreto completo y no se lee como tal. Estan los ONCE que CONTRATO_MOTOR.md cita por la sigla RRDN — 13, 16, 17, 24, 25, 26, 27, 29, 30, 33 y 36 — mas nada. Los otros VEINTINUEVE no estan; salen del PDF del mismo directorio. Que no esten no significa que no digan nada: significa que nadie los ha necesitado todavia, y este insumo es \"los articulos que alguien necesito, con su motivo escrito al lado\", no \"el decreto\".",
+  "nota_estructura": "texto_decreto es un ARRAY DE FRAGMENTOS SEPARADOS POR SALTO DE PAGINA, y NO un array de incisos normativos. La v1 lo llamaba \"array de incisos\" porque en el Art. 30 las dos cosas coincidieron; MEDIDO en esta sesion que no coinciden en general: el Art. 36 tiene DOS incisos normativos y UN solo fragmento, porque no cruza pagina; y al Art. 17 el salto de pagina le cae EN MITAD DE UNA ORACION, entre \"distinto\" y \"del prefijado\", asi que sus dos fragmentos no son dos incisos. El corte esta donde el PDF puso el mobiliario de pagina de BCN, no donde lo puso una mano. Cada fragmento se re-encuentra por si solo en una re-extraccion del PDF; la union de los fragmentos de un mismo articulo, no. El control esta en _bitacoras/rrdn_siete_2026-08-19/04_control_rebusqueda.js.",
+  "nota_de_la_columna_marginal": "El consolidado de BCN lleva CUATRO bloques de anotacion marginal, no uno, y NINGUNA de las dos extracciones esta limpia en general: -layout reparte cada bloque entre los articulos junto a cuyas lineas se dibuja, y -raw lo emite entero dentro de UN articulo. Por eso extraido_de VARIA POR ARTICULO y no es el mismo para todos: se elige por medicion. Cuando las dos extracciones dan el mismo texto, el literal queda doblemente atestiguado. Cuando una es subsecuencia de palabras de la otra, se toma la corta y el tramo sobrante se publica en columna_marginal_aislada SIN ATRIBUIRLO a ningun articulo. El unico articulo del decreto que no se resuelve asi es el \"Articulo 2° bis\", donde las dos extracciones traen el bloque \"DS 1428, Subs. Marina, 1986.\" en distinto orden y ninguna esta limpia; no esta entre los once y no se extrajo.",
   "nota_de_lo_que_NO_hace": "No adjudica, no decide y no contesta D-C9. Es texto fuente citable. Ningun fichero del repositorio lo lee todavia.",
   "articulos": [
+    {
+      "id": "art_13",
+      "titulo": "Art. 13 — aviso de arribada con 24 horas de anticipacion",
+      "texto_decreto": [
+        "ARTICULO 13° Toda nave que se dirija a un puerto nacional avisará su arribada a la Autoridad Marítima con una anticipación mínima de 24 horas. Asimismo, se exhorta a las naves que ingresen al área marítima de responsabilidad nacional establecida en el D.S. (M) N° 1.190 de 1976 sobre búsqueda y rescate marítimo, a que comuniquen su posición usando el sistema de Notificación de la Situación de Naves. Sin perjuicio de lo dispuesto en el inciso precedente, será obligatorio, en reciprocidad, para aquellas naves matriculadas en países que exijan a las naves chilenas cumplir con disposiciones análogas o equivalentes a las establecidas en el presente inciso, dar de inmediato su posición y su plan de navegación cuando naveguen en aguas sometidas a la jurisdicción chilena, debiendo indicar, además, su nombre, distintivos de llamada o identidad de la estación de la nave, próximo puerto de escala o el de destino, derrota proyectada y velocidad. Asimismo será su obligación comunicar diariamente su posición a las 08.00 hrs. y a las 20.00 hrs."
+      ],
+      "por_que_esta": "CONTRATO_MOTOR.md lo cita en la seccion \"6.1 Comercial / Acuicola / Transporte\": \"Aviso de arribada 24h (RRDN Art. 13): recordatorio normativo.\" Es el unico lugar del contrato que lo nombra. MEDIDO EN ESTA SESION: en -raw este articulo se lleva el bloque marginal \"DS 1.079, Subs. Marina, 1987 Art. Unico\"; sale limpio de -layout, y de ahi se extrae.",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          188
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "extraido_de_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "cotejo_entre_extracciones": "COLUMNA MARGINAL AISLADA. -raw trae, dentro de este articulo, un tramo que -layout no trae, y el resto de la secuencia de palabras es IDENTICA en las dos. Se toma -layout, que es el que no lo trae. El tramo excluido queda escrito en columna_marginal_aislada y NO SE ATRIBUYE a ningun articulo.",
+        "corte_por_salto_de_pagina": false,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
+        "fecha_cotejo": "2026-08-19",
+        "columna_marginal_aislada": {
+          "tramo": "DS 1.079, Subs. Marina, 1987 Art. Unico",
+          "palabras": 7,
+          "que_es": "LAS PALABRAS EXCLUIDAS, en el orden en que las emite la otra extraccion. NO ES UNA CITA LITERAL CONTIGUA y no se encuentra como subcadena en ningun fichero: en el PDF esto es una columna dibujada AL MARGEN, y la otra extraccion la intercala entre las lineas del articulo, un pedazo por linea. Lo que si es exacto, y lo comprueba el control C4, es que re-insertar estas palabras en el texto publicado reproduce palabra por palabra lo que la otra extraccion emite para este articulo.",
+          "sale_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+          "no_se_atribuye": "Este tramo es aparato marginal del consolidado de BCN y NO se guarda como texto del articulo. A QUE ARTICULO PERTENECE NO ESTA DETERMINADO: las dos extracciones lo colocan en articulos distintos y establecerlo exigiria leer las posiciones de glifo del PDF. Se declara y no se afirma ninguna de las dos colocaciones."
+        }
+      }
+    },
+    {
+      "id": "art_16",
+      "titulo": "Art. 16 — cambio del puerto prefijado de recalada: permiso previo",
+      "texto_decreto": [
+        "ARTICULO 16° Si por cualquier causa una nave debe modificar su itinerario y cambiar el puerto prefijado de recalada, sus armadores, agentes o capitán deberán solicitar, con la debida anticipación, el permiso de la Autoridad Marítima correspondiente."
+      ],
+      "por_que_esta": "CONTRATO_MOTOR.md lo cita en INV-2.2 (puerto de recalada cerrado) como Capa 2 normativa junto al Art. 17: \"RRDN Art. 16: si cambia el puerto de recalada, solicitar permiso a la Autoridad Maritima con anticipacion\". El literal dice eso mismo.",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          228
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+        "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
+        "cotejo_entre_extracciones": "IDENTICO EN LAS DOS EXTRACCIONES. El texto de -layout y el de -raw coinciden palabra por palabra: ninguna columna marginal cayo en este articulo en ninguna de las dos, y el literal queda doblemente atestiguado. Se nombra -raw como fuente por continuidad con la v1 del insumo.",
+        "corte_por_salto_de_pagina": false,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
+        "fecha_cotejo": "2026-08-19"
+      }
+    },
+    {
+      "id": "art_17",
+      "titulo": "Art. 17 — definicion de arribada forzosa",
+      "texto_decreto": [
+        "ARTICULO 17° Se entiende por arribada forzosa la entrada necesaria de la nave a un puerto o lugar distinto",
+        "del prefijado. En este caso, son aplicables las normas del Libro III, título V, párrafo 6, del Código de Comercio."
+      ],
+      "por_que_esta": "CONTRATO_MOTOR.md lo cita en INV-2.2 y en INV-2.3: \"RRDN Art. 17 (define arribada forzosa como entrada a puerto distinto del prefijado)\". El literal dice eso y ADEMAS remite al Libro III, titulo V, parrafo 6 del Codigo de Comercio, remision que el contrato no recoge. ESTE ARTICULO CRUZA UN SALTO DE PAGINA y el corte le cae EN MITAD DE UNA ORACION, entre \"distinto\" y \"del prefijado\": por eso son dos fragmentos, y NO son dos incisos.",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          234,
+          240
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+        "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
+        "cotejo_entre_extracciones": "IDENTICO EN LAS DOS EXTRACCIONES. El texto de -layout y el de -raw coinciden palabra por palabra: ninguna columna marginal cayo en este articulo en ninguna de las dos, y el literal queda doblemente atestiguado. Se nombra -raw como fuente por continuidad con la v1 del insumo.",
+        "corte_por_salto_de_pagina": true,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
+        "fecha_cotejo": "2026-08-19"
+      }
+    },
     {
       "id": "art_24",
       "titulo": "Art. 24 — el despacho previo es obligatorio para hacerse a la mar",
@@ -34,7 +111,9 @@
         ],
         "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
         "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
-        "extraido_por": "_bitacoras/ds364_al_arbol_2026-08-19/01_extraer_articulos.js",
+        "cotejo_entre_extracciones": "IDENTICO EN LAS DOS EXTRACCIONES. El texto de -layout y el de -raw coinciden palabra por palabra: ninguna columna marginal cayo en este articulo en ninguna de las dos, y el literal queda doblemente atestiguado. Se nombra -raw como fuente por continuidad con la v1 del insumo.",
+        "corte_por_salto_de_pagina": false,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
         "fecha_cotejo": "2026-08-19"
       }
     },
@@ -54,7 +133,53 @@
         ],
         "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
         "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
-        "extraido_por": "_bitacoras/ds364_al_arbol_2026-08-19/01_extraer_articulos.js",
+        "cotejo_entre_extracciones": "IDENTICO EN LAS DOS EXTRACCIONES. El texto de -layout y el de -raw coinciden palabra por palabra: ninguna columna marginal cayo en este articulo en ninguna de las dos, y el literal queda doblemente atestiguado. Se nombra -raw como fuente por continuidad con la v1 del insumo.",
+        "corte_por_salto_de_pagina": false,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
+        "fecha_cotejo": "2026-08-19"
+      }
+    },
+    {
+      "id": "art_26",
+      "titulo": "Art. 26 — el despacho solo puede negarse por causa legal o reglamentaria",
+      "texto_decreto": [
+        "ARTICULO 26° El despacho de una nave sólo podrá negarse por causa legal o reglamentaria, por orden judicial o a solicitud de la Autoridad competente."
+      ],
+      "por_que_esta": "CONTRATO_MOTOR.md lo cita en la seccion \"2. LOGICA ZARPE != RECALADA — INVARIANTE\" (\"Base legal: RRDN Art. 24-27, Art. 33, Art. 36\") y en la seccion \"6.1\": \"la app NO evalua la autorizacion de zarpe (RRDN Art. 26, Art. 33 listan causales que decide la Autoridad)\". HALLAZGO MEDIDO Y NO ENMENDADO: el Art. 26 NO LISTA causales; dice en que casos el despacho PUEDE negarse (causa legal o reglamentaria, orden judicial, o solicitud de la Autoridad competente). El que lista causales es el Art. 33. Queda anotado en la bitacora de esta sesion con opciones; CONTRATO_MOTOR.md no se toca.",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          317
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+        "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
+        "cotejo_entre_extracciones": "IDENTICO EN LAS DOS EXTRACCIONES. El texto de -layout y el de -raw coinciden palabra por palabra: ninguna columna marginal cayo en este articulo en ninguna de las dos, y el literal queda doblemente atestiguado. Se nombra -raw como fuente por continuidad con la v1 del insumo.",
+        "corte_por_salto_de_pagina": false,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
+        "fecha_cotejo": "2026-08-19"
+      }
+    },
+    {
+      "id": "art_27",
+      "titulo": "Art. 27 — quien solicita el despacho y con cuanta anticipacion",
+      "texto_decreto": [
+        "ARTICULO 27° El despacho de la nave será solicitado por el capitán o el agente de la nave, en horas hábiles y por lo menos con cuatro horas de anticipación al zarpe previsto, sobre todo cuando se soliciten zarpes nocturnos o en días domingos o festivos, de modo que la solicitud se presente con la debida anticipación y oportunidad."
+      ],
+      "por_que_esta": "CONTRATO_MOTOR.md lo cita dentro del rango \"Base legal: RRDN Art. 24-27\" de la seccion \"2. LOGICA ZARPE != RECALADA — INVARIANTE\". Es el unico lugar del contrato que lo alcanza, y lo alcanza por rango y no por numero propio.",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          321
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+        "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
+        "cotejo_entre_extracciones": "IDENTICO EN LAS DOS EXTRACCIONES. El texto de -layout y el de -raw coinciden palabra por palabra: ninguna columna marginal cayo en este articulo en ninguna de las dos, y el literal queda doblemente atestiguado. Se nombra -raw como fuente por continuidad con la v1 del insumo.",
+        "corte_por_salto_de_pagina": false,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
         "fecha_cotejo": "2026-08-19"
       }
     },
@@ -74,7 +199,9 @@
         ],
         "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
         "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
-        "extraido_por": "_bitacoras/ds364_al_arbol_2026-08-19/01_extraer_articulos.js",
+        "cotejo_entre_extracciones": "IDENTICO EN LAS DOS EXTRACCIONES. El texto de -layout y el de -raw coinciden palabra por palabra: ninguna columna marginal cayo en este articulo en ninguna de las dos, y el literal queda doblemente atestiguado. Se nombra -raw como fuente por continuidad con la v1 del insumo.",
+        "corte_por_salto_de_pagina": false,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
         "fecha_cotejo": "2026-08-19"
       }
     },
@@ -96,7 +223,67 @@
         ],
         "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
         "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
-        "extraido_por": "_bitacoras/ds364_al_arbol_2026-08-19/01_extraer_articulos.js",
+        "cotejo_entre_extracciones": "COLUMNA MARGINAL AISLADA. -layout trae, dentro de este articulo, un tramo que -raw no trae, y el resto de la secuencia de palabras es IDENTICA en las dos. Se toma -raw, que es el que no lo trae. El tramo excluido queda escrito en columna_marginal_aislada y NO SE ATRIBUYE a ningun articulo.",
+        "corte_por_salto_de_pagina": true,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
+        "fecha_cotejo": "2026-08-19",
+        "columna_marginal_aislada": {
+          "tramo": "DTO 220, DEFENSA Art. único D.O. 07.07.2007",
+          "palabras": 7,
+          "que_es": "LAS PALABRAS EXCLUIDAS, en el orden en que las emite la otra extraccion. NO ES UNA CITA LITERAL CONTIGUA y no se encuentra como subcadena en ningun fichero: en el PDF esto es una columna dibujada AL MARGEN, y la otra extraccion la intercala entre las lineas del articulo, un pedazo por linea. Lo que si es exacto, y lo comprueba el control C4, es que re-insertar estas palabras en el texto publicado reproduce palabra por palabra lo que la otra extraccion emite para este articulo.",
+          "sale_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+          "no_se_atribuye": "Este tramo es aparato marginal del consolidado de BCN y NO se guarda como texto del articulo. A QUE ARTICULO PERTENECE NO ESTA DETERMINADO: las dos extracciones lo colocan en articulos distintos y establecerlo exigiria leer las posiciones de glifo del PDF. Se declara y no se afirma ninguna de las dos colocaciones."
+        }
+      }
+    },
+    {
+      "id": "art_33",
+      "titulo": "Art. 33 — causales por las que la Autoridad Maritima no otorga el zarpe",
+      "texto_decreto": [
+        "ARTICULO 33° La Autoridad Marítima no otorgará el zarpe a la nave que contraviniere, entre otras, alguna de las siguientes disposiciones: A. Cuando le falte el capitán. B. Cuando su dotación esté incompleta y, a criterio de la Autoridad Marítima, la existente no dé satisfacción a las exigencias de seguridad, por insuficiente o incompetente. C. Cuando el capitán no pueda exhibir los certificados vigentes de la nave, establecidos en los convenios suscritos por Chile, vigentes de conformidad al derecho interno. D. Cuando la nave no se encuentre en condiciones aceptables de adrizamiento o estiba, o sobrepasare su límite máximo de carga."
+      ],
+      "por_que_esta": "CONTRATO_MOTOR.md lo cita en la seccion \"2. LOGICA ZARPE != RECALADA — INVARIANTE\" y en la seccion \"6.1\" (\"RRDN Art. 26, Art. 33 listan causales que decide la Autoridad\"): es el articulo que efectivamente las lista, en cuatro letras A a D, y el literal dice \"entre otras\", o sea que la lista no es cerrada. MEDIDO EN ESTA SESION: en -raw este articulo se lleva el bloque marginal \"DTO 220, DEFENSA Art. unico D.O. 07.07.2007\" dentro de su letra C; sale limpio de -layout, y de ahi se extrae. A QUE ARTICULO PERTENECE ESA ANOTACION SIGUE SIN DETERMINAR.",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          384
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "extraido_de_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "cotejo_entre_extracciones": "COLUMNA MARGINAL AISLADA. -raw trae, dentro de este articulo, un tramo que -layout no trae, y el resto de la secuencia de palabras es IDENTICA en las dos. Se toma -layout, que es el que no lo trae. El tramo excluido queda escrito en columna_marginal_aislada y NO SE ATRIBUYE a ningun articulo.",
+        "corte_por_salto_de_pagina": false,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
+        "fecha_cotejo": "2026-08-19",
+        "columna_marginal_aislada": {
+          "tramo": "DTO 220, DEFENSA Art. único D.O. 07.07.2007",
+          "palabras": 7,
+          "que_es": "LAS PALABRAS EXCLUIDAS, en el orden en que las emite la otra extraccion. NO ES UNA CITA LITERAL CONTIGUA y no se encuentra como subcadena en ningun fichero: en el PDF esto es una columna dibujada AL MARGEN, y la otra extraccion la intercala entre las lineas del articulo, un pedazo por linea. Lo que si es exacto, y lo comprueba el control C4, es que re-insertar estas palabras en el texto publicado reproduce palabra por palabra lo que la otra extraccion emite para este articulo.",
+          "sale_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+          "no_se_atribuye": "Este tramo es aparato marginal del consolidado de BCN y NO se guarda como texto del articulo. A QUE ARTICULO PERTENECE NO ESTA DETERMINADO: las dos extracciones lo colocan en articulos distintos y establecerlo exigiria leer las posiciones de glifo del PDF. Se declara y no se afirma ninguna de las dos colocaciones."
+        }
+      }
+    },
+    {
+      "id": "art_36",
+      "titulo": "Art. 36 — puertos intermedios y zarpe a la gira con puerto cerrado",
+      "texto_decreto": [
+        "ARTICULO 36° En los puertos intermedios del litoral, la Autoridad Marítima podrá conceder el zarpe de la nave con la presentación y solicitud formulada por el capitán, armador o agente de la nave. Asimismo en caso de mal tiempo y con puerto cerrado, la Autoridad Marítima podrá conceder el zarpe de la nave que se encuentra a la gira hasta un próximo puerto del litoral, siempre y cuando el capitán asegure que la nave está en condiciones de hacerlo y se responsabilice de ello."
+      ],
+      "por_que_esta": "Es el articulo del RRDN mas citado por CONTRATO_MOTOR.md: cinco lugares — INV-0.1, la base legal de la seccion 2, la Capa 2 de INV-2.1, el bloque \"quien autoriza\" de INV-2.1 y la fila «Zarpe cerrado» del catalogo de mensajes. Y es el UNICO del que el contrato ya traia una cita entre comillas rotulada \"Texto legal literal\": el control de esta sesion la coteja contra este texto. Tiene DOS incisos normativos y UN solo fragmento, porque no cruza salto de pagina.",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          425
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+        "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
+        "cotejo_entre_extracciones": "IDENTICO EN LAS DOS EXTRACCIONES. El texto de -layout y el de -raw coinciden palabra por palabra: ninguna columna marginal cayo en este articulo en ninguna de las dos, y el literal queda doblemente atestiguado. Se nombra -raw como fuente por continuidad con la v1 del insumo.",
+        "corte_por_salto_de_pagina": false,
+        "extraido_por": "_bitacoras/rrdn_siete_2026-08-19/03_extraer_los_siete.js",
         "fecha_cotejo": "2026-08-19"
       }
     }
