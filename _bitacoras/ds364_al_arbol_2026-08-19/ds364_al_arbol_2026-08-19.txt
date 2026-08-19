@@ -1,0 +1,339 @@
+================================================================================
+EL D.S. 364 ENTRA AL ARBOL — 2026-08-19
+================================================================================
+Backend en 9ad1b26 al empezar. Suite 157/157. src/ no se toca, PLAN_JURISDICCION.md,
+CLAUDE.md y CONTRATO_MOTOR.md no se tocan, D-C9 no se contesta.
+
+QUE HACE ESTA SESION, EN UNA LINEA: adjunta al repositorio la fuente de una
+decision cerrada. Nada mas. No adjudica, no decide y no mueve ni una linea de
+codigo.
+
+================================================================================
+§0 · POR QUE EXISTIA EL HUECO
+================================================================================
+La sesion del 2026-08-19 anterior (insumos_zarpe_2026-08-19.md, insumo 3) midio que
+el texto del D.S. 364 Arts. 29 y 30 NO EXISTIA en ninguno de los dos repositorios.
+Lo unico escrito era la PARAFRASIS del owner dentro de D-C9, §5 de
+cableo_cierre_2026-08-17.txt, bajo el rotulo "MARCO NORMATIVO DEL OWNER — CERRADO.
+NO SE PIDE FUENTE, NO SE RE-ABRE".
+
+El owner entrego el PDF el 2026-08-19 y lo dejo suelto en data/decreto/.
+
+================================================================================
+§1 · EL PDF ES LO QUE DICE SER — VERIFICADO ANTES DE ENTRAR
+================================================================================
+sha256 ... 88b4ea681a9f1ba5dad3296cfc819306605666c1f3d1909315fd98a3dc9c3ced
+tamano ... 74.048 bytes  (el prompt decia "73 KB"; es el redondeo de Explorer)
+clase .... BINARIA, CLASE UNICA. Un .pdf no tiene variante LF/CRLF: ese sha256 es
+           el unico que existe y vale igual en cualquier clon, con core.autocrlf
+           en cualquier valor. La ambiguedad de FA-4 solo alcanza a los .txt.
+
+IDENTIDAD, DEL TEXTO DEL DOCUMENTO Y NO DEL NOMBRE DEL FICHERO:
+  "Decreto 364 / APRUEBA EL REGLAMENTO DE RECEPCION Y DESPACHO DE NAVES / MINISTERIO
+  DE DEFENSA NACIONAL / Fecha Publicacion: 27-JUN-1980 / Fecha Promulgacion:
+  29-ABR-1980 / Tipo Version: Ultima Version De : 17-MAR-2012"
+
+Y cierra DENTRO del repo: CONTRATO_MOTOR.md, seccion FUENTES NORMATIVAS DE
+REFERENCIA, ya declaraba "D.S. 364/1980 — Reglamento de Recepcion y Despacho de
+Naves (ultima version 17-MAR-2012). Referido como RRDN". EL ARCHIVO LLEGA A UN
+ARBOL QUE YA HABIA DECLARADO QUE VERSION ESPERABA, Y COINCIDE.
+
+COMPLETITUD — no esta recortado:
+  38 articulos numerados, mas Articulo 2° bis y ARTICULO 8° BIS = 40 encabezados.
+  El ultimo es ARTICULO 38° (derogatoria), seguido del cierre "Tomese razon,
+  registrese, comuniquese y publiquese.- AUGUSTO PINOCHET UGARTE.- Raul Benavides."
+  Los tres titulos declaran sus propios rangos y los tres se cumplen:
+  I.- Disposiciones generales (Art. 1-10) · II.- Recepcion de Naves (Art. 11-23) ·
+  III.- Despacho de la Nave (Art. 24-38).
+  Pie de la ultima pagina: "pagina 8 de 8". La pagina 9 no existe.
+
+NO ES IMAGEN ESCANEADA — y se midio con control negativo en vez de afirmarlo:
+  bytes extraidos POR PAGINA: p1 2498 · p2 2717 · p3 2823 · p4 2879 · p5 2666 ·
+  p6 2729 · p7 2793 · p8 1409. NINGUNA da ~0.
+  /Subtype en el PDF: 3 /Type1 (fuentes embebidas), 8 /Link, 4 /Image.
+  ESE "4 /Image" DESMIENTE MI PROPIA EXPECTATIVA DE CERO y por eso se publica: son
+  4 imagenes en 8 paginas (logo/cabecera de BCN), no paginas escaneadas, cosa que
+  prueban los 8 conteos de arriba y no una suposicion.
+
+HERRAMIENTA: pdftotext version 4.06 [www.xpdfreader.com], Glyph & Cog — EL MISMO
+BINARIO con que se produjeron los .txt de fuente/, fuente_dfl292/ y
+fuente_resoluciones_locales/. La deuda declarada alla (poppler != xpdf) no se agrava.
+
+================================================================================
+§2 · DONDE VIVE — EL PRECEDENTE ERA UNANIME Y PEDIA OTRA RUTA
+================================================================================
+COMO ESTA GUARDADO EL INSUMO DEL D.S. 991, medido: el D.S. 991 NO TIENE PDF PROPIO
+en el repo. Lo versionado es el compendio de DIRECTEMAR que lo reproduce, TM-025 A,
+en data/decreto/fuente/. Y el documento_sha256 del art_2 (e14cb905...) ES EL HASH
+DEL .txt, NO EL DEL PDF (verificado: el .pdf es 7b7b4c60...). El hash del PDF vive
+en PROCEDENCIA.md.
+
+LA FORMA ES UNANIME, 3 DE 3. Cada fuente normativa vive en un directorio propio con
+.gitattributes + PROCEDENCIA.md + .pdf + .txt: fuente/ (TM-025 A), fuente_dfl292/,
+fuente_resoluciones_locales/.
+
+CONTROL NEGATIVO DE ESA UNANIMIDAD, que es lo que le da valor:
+  git ls-files '*.pdf' .................................... 3
+  .pdf versionados FUERA de data/decreto/fuente*/ ......... 0   <- el control
+  .pdf versionados DENTRO de data/decreto/fuente*/ ........ 3   <- positivo
+El PDF del D.S. 364 estaba suelto en data/decreto/ — EL UNICO LUGAR DE ESTE REPO
+DONDE NUNCA VIVIO UN PDF.
+
+Y los insumos con bloque "articulos" (jurisdicciones_capitanias.json,
+jurisdicciones_v2.json) SI van sueltos en data/decreto/. O sea: el PDF adentro de un
+fuente_*, el JSON afuera. Se replico eso.
+
+MOVER NO ROMPIO NADA — medido antes de mover:
+  referencias al nombre original en el arbol completo (sin node_modules, sin .git): 0
+  CONTROL POSITIVO del mismo grep, "TM-025-A_2025-06-04" ........................ 34
+  El grep muerde.
+
+RUTA FINAL: data/decreto/fuente_ds364/DTO-364_2012-03-17.pdf
+Renombrado siguiendo el patron <codigo>_<fecha de la version> de TM-025-A_2025-06-04
+y DFL-292_2002-05-31. Nombre original en PROCEDENCIA.md, como los tres.
+sha256 comprobado ANTES y DESPUES del movimiento: IDENTICO.
+
+================================================================================
+§3 · DOS COSAS QUE EL PRECEDENTE NO PREVIO, Y COMO SE RESOLVIERON
+================================================================================
+(A) EL CONTROL "RE-BUSCAR EN EL PDF" NO SE PUEDE HACER LITERALMENTE.
+El PDF es binario con streams comprimidos: no se puede buscar dentro. Y el
+precedente del art_2 guarda texto_decreto con LOS CORTES DE LINEA DUROS DESHECHOS,
+asi que una busqueda de subcadena cruda falla siempre y no dice nada sobre la
+fidelidad. Se definio asi: RE-BUSQUEDA NORMALIZADA POR ESPACIOS CONTRA UNA
+RE-EXTRACCION FRESCA DEL PDF, con control negativo obligatorio al lado.
+
+(B) EL ART. 30 NO SALE LIMPIO DEL EXTRACTOR DEL PRECEDENTE.
+-layout mete la columna de anotaciones marginales de BCN DENTRO de la linea:
+    Ademas para que la autoridad maritima otorgue el        DTO 220, DEFENSA
+    despacho de la nave al exterior, el capitan, armador o   Art. unico
+    agente debera obtener de la Autoridad Aduanera que...    D.O. 07.07.2007
+Es la misma clase que la NOTA DE PARSEO 3 de fuente_dfl292/PROCEDENCIA.md
+("recortar a partir de la columna 55"). -raw no la emite AHI — pero la emite
+en OTRO articulo, y eso es (C) mas abajo: -raw NO ESTA LIMPIO EN GENERAL.
+
+Y ADEMAS el Art. 30 CRUZA UN SALTO DE PAGINA entre sus dos incisos: entre ellos caen
+el pie de la pagina 6 y la cabecera corrida de la 7.
+
+Las dos cosas juntas se resolvieron sin editar el literal:
+  · se versionan LOS DOS .txt, -layout y -raw, con sus dos hashes;
+  · -layout es el documento de referencia (lo que indexa linea_en_el_documento);
+  · -raw es de donde se extrae y contra que corre el control;
+  · texto_decreto es un ARRAY DE INCISOS. El Art. 30 va en DOS y NO SE UNEN.
+
+MEDIDO, y por eso se hizo asi (02_control_rebusqueda.js):
+  art_30 inciso[1] en -raw ......... SE ENCUENTRA
+  art_30 inciso[1] en -layout ...... NO SE ENCUENTRA
+  los dos incisos UNIDOS ........... NO SE ENCUENTRAN EN NINGUNA DE LAS DOS
+El control comprueba lo de "unidos" de forma explicita PARA QUE NADIE LOS JUNTE MAS
+ADELANTE CREYENDO QUE DA IGUAL.
+
+(C) LA ANOTACION MARGINAL NO SE PUDO ATRIBUIR — Y ESTO SALIO EN EL DIFF CRUDO.
+El bloque "DTO 220, DEFENSA / Art. unico / D.O. 07.07.2007" aparece UNA sola vez en
+cada extraccion, Y EN ARTICULOS DISTINTOS:
+  -layout .... dentro del inciso 2 del ART. 30
+  -raw ....... dentro de la letra C del ART. 33
+  grep -c "DTO 220" ... 1 en cada .txt (no es duplicacion, es colocacion distinta)
+
+CUAL ES LA CORRECTA NO ESTA DETERMINADO. Exigiria leer posiciones de glifo. Yo habia
+AFIRMADO la lectura de -layout en cuatro ficheros antes de mirar el diff crudo; se
+corrigio en los cuatro y ahora se declara la discrepancia sin afirmar ninguna, igual
+que la nota de parseo 1 de fuente_dfl292/PROCEDENCIA.md hizo con la "o" del Art. 27.
+
+CONSECUENCIA PARA EL FRENTE DE §6: -raw NO ESTA LIMPIO EN GENERAL. Para los cuatro
+articulos de este insumo lo esta, y desplaza la contaminacion al Art. 33 — que es UNO
+DE LOS SIETE PENDIENTES. Quien extraiga el 33 tiene que mirar LOS DOS .txt.
+
+LO QUE VALE DE ESTO: el diff crudo no es una formalidad. Sobre una descripcion mia
+—"el inciso 2 viene de DTO 220"— esto pasaba sin que nadie lo viera.
+
+================================================================================
+§4 · POR QUE SE EXTRAJERON CUATRO ARTICULOS Y NO LOS DOS PEDIDOS
+================================================================================
+El encargo decia Arts. 29 y 30. La medicion del gate mostro que ESOS DOS NO LLEVAN
+EL TEXTO SOBRE EL QUE D-C9 SE APOYA:
+
+  D-C9 declara su unico apoyo asi: "lo que sostiene a D-C9 es que EL DESPACHO ES
+  OBLIGATORIO".
+
+  ART. 24 (no citado por §5): "Para hacerse a la mar desde cualquier puerto de la
+  Republica, toda nave requiere la previa autorizacion de zarpe de la Autoridad
+  Maritima, autorizacion que se denominara 'despacho'..."
+  ART. 25 (no citado por §5): "...que la nave tenga su documentacion en orden y que
+  sus condiciones de seguridad para la navegacion se conformen a la legislacion y
+  reglamentacion maritima."
+  ART. 30 (SI citado por §5): remite al REGLAMENTO DE OPERACIONES ADUANERAS y al
+  articulo 7°. NO dice "seguridad" y NO dice "Autoridad Maritima".
+
+Un careo restringido a 29+30 habria puesto al lado de la parafrasis un texto que NO
+CONTIENE aquello sobre lo que la parafrasis se apoya, y se habria leido como "esto
+no esta respaldado". SI ESTA RESPALDADO, en los Arts. 24 y 25, antes de los dos
+que §5 cita y dentro del mismo Titulo III. Era un FALSO
+NEGATIVO PRODUCIDO POR EL RECORTE, no por la norma.
+
+Se llevo a la PARADA 1 con opciones. El owner eligio (A): Arts. 24, 25, 29 y 30.
+
+QUE QUEDO ESCRITO: data/decreto/rrdn_articulos.json — cuatro articulos de treinta y
+ocho, con texto_decreto / procedencia / documento_sha256, mismo tratamiento que el
+art_2 del D.S. 991. Ningun fichero del repositorio lo lee todavia.
+
+CAREO: careo_dc9_vs_literal_2026-08-19.md, en este mismo directorio. NO concilia, NO
+dice cual gana, NO contesta D-C9 y NO recomienda alcance. El hecho de encabezado que
+lleva escrito es que LA PARAFRASIS ES CORRECTA EN CONTENIDO Y LO QUE NO CALZA SON
+LOS NUMEROS DE ARTICULO.
+
+================================================================================
+§5 · UN DEFECTO MIO, CAZADO POR MI PROPIO CONTROL
+================================================================================
+La primera corrida de 02_control_rebusqueda.js dio 2 FALLOS en C0 (los sha256 de la
+re-extraccion fresca no coincidian con los versionados). NO ERA EL DATO: era el
+INSTRUMENTO. sha256sum de coreutils ANTEPONE UNA "\" A LA LINEA cuando la ruta
+contiene backslashes, y la re-extraccion iba a un temporal de Windows. El split(' ')
+se quedaba con "\6996085c..." en vez de "6996085c...".
+
+Se cambio el helper a crypto de node en los dos scripts, lo que ademas quita una
+dependencia externa. Segunda corrida: 16 controles, 0 fallos, exit 0.
+
+LO QUE VALE DE ESTO: el control encontro un defecto REAL antes de que nadie firmara
+nada, y el defecto era del control. Es la misma leccion que 5a85a01 el 2026-08-16 —
+UN INSTRUMENTO NO SE DA POR BUENO PORQUE COMPILA, SE CORRE — con una vuelta mas: un
+control que solo sabe pasar no sirve. Por eso C2 rompe cada inciso a proposito y
+exige que NO se encuentre.
+
+Segundo defecto mio, menor y corregido en el gate: medi los terminadores de linea de
+los .txt del precedente con awk /\r$/ y me dio 0, lo que me hizo creer por un momento
+que fuente_dfl292/PROCEDENCIA.md declaraba mal su clase CRLF. El awk era el
+equivocado. Medido con tr -dc '\r': 866 y 639, CRLF puro, y los sha256 en disco
+coinciden con los declarados. NO HABIA HALLAZGO. Queda escrito porque el instrumento
+malo es reutilizable y el proximo que lo use se va a llevar el mismo susto.
+
+================================================================================
+§6 · HALLAZGO FUERA DE ALCANCE — EL RRDN. MEDIDO, NO APLICADO.
+================================================================================
+NO SE ENMENDO NINGUNO DE LOS DOS FICHEROS. CONTRATO_MOTOR.md solo lo toca el owner,
+y la enmienda de insumos_zarpe_2026-08-19.md es pieza propia.
+
+QUE DICE HOY insumos_zarpe_2026-08-19.md, insumo 3, Patron 1:
+  "CONTRATO_MOTOR.md lo cita en su lista de fuentes normativas y en el catalogo de
+   mensajes, siempre en parafrasis de una linea y SOLO DE LOS Arts. 13, 16, 17 y 36"
+
+ESA FRASE QUEDO INCOMPLETA. Sus patrones estan bien declarados y sus conteos son
+CORRECTOS PARA ESOS PATRONES — el defecto no es de la medicion, es de la frase que
+se derivo de ella. Ninguno de los patrones incluia la sigla RRDN, que es como el
+propio contrato nombra a este decreto.
+
+MEDIDO. Ambito: tmarea-backend@9ad1b26, arbol completo, excluyendo node_modules y
+.git.
+  "RRDN" ....................................... 12 ocurrencias
+  ficheros que lo contienen .................... 1  (CONTRATO_MOTOR.md, las 12)
+  CONTROL NEGATIVO, sigla inventada "RRXX" ..... 0
+
+DONDE SE DEFINE LA SIGLA: CONTRATO_MOTOR.md, seccion FUENTES NORMATIVAS DE
+REFERENCIA — "D.S. 364/1980 — Reglamento de Recepcion y Despacho de Naves (ultima
+version 17-MAR-2012). Referido como 'RRDN'." Y vuelve a definirse en la fila «Zarpe
+cerrado» del catalogo de mensajes: "Segun D.S. 364 (RRDN) Art. 36...", que es
+justamente la fila que insumos_zarpe_2026-08-19.md senala como la contraparte de
+D-C9.
+
+LOS NUEVE ARTICULOS QUE EL CONTRATO CITA POR ESA SIGLA:
+  13 · 16 · 17 · 24 · 25 · 26 · 27 · 33 · 36
+Citados por seccion y texto, no por linea:
+  · seccion "2. LOGICA ZARPE != RECALADA — INVARIANTE": "Base legal: RRDN Art.
+    24-27, Art. 33, Art. 36; LN Art. 22-27, Art. 89."   <- de aqui salen 24, 25, 26, 27
+  · "Zarpe = despacho (LN Art. 22, RRDN Art. 24)"
+  · "la app NO evalua la autorizacion de zarpe (RRDN Art. 26, Art. 33 listan
+    causales que decide la Autoridad)"
+  · "Aviso de arribada 24h (RRDN Art. 13)"
+  · Art. 16 + Art. 17 en la capa normativa de recalada; Art. 36 en cinco lugares.
+
+CONSECUENCIA MEDIBLE, sin recomendar que hacer con ella: EL CONTRATO YA SE APOYABA
+EN LOS ARTS. 24 A 27, cuyo texto estaba TAN AUSENTE como el del 29 y el 30. Traer el
+24 y el 25 cerro DOS de esos nueve. LOS OTROS SIETE SIGUEN CITADOS SIN TEXTO
+ADJUNTO: 13, 16, 17, 26, 27, 33 y 36. El PDF completo esta versionado, asi que
+extraerlos ya no requiere salir del arbol.
+
+OPCIONES, para cuando se decida:
+  (a) extraer los siete restantes de una vez y cerrar el frente completo. El PDF ya
+      esta, el extractor ya esta y el control ya esta: es correr el mismo script con
+      siete anclas mas. Es lo que RECOMIENDO, y no lo hice porque estaba fuera del
+      alcance de esta sesion.
+  (b) extraer solo el Art. 36, que es el mas citado (cinco lugares) y el que sostiene
+      la fila «Zarpe cerrado» del catalogo.
+  (c) dejarlos como estan y anotarlo en INV-3.7 como deuda conocida.
+La enmienda de la frase de insumos_zarpe_2026-08-19.md va aparte y es pieza propia.
+
+--------------------------------------------------------------------------------
+EL APRENDIZAJE, CON ESTAS PALABRAS:
+--------------------------------------------------------------------------------
+  UN GREP DECLARA SU ARBOL Y TAMBIEN SU VOCABULARIO. Buscar un decreto por su
+  nombre no lo encuentra donde el documento lo llama por su sigla.
+
+Vale para adelante: antes de escribir un cero, hay que preguntarse con cuantos
+nombres se llama la cosa que se busca. La regla vieja —un grep declara el arbol que
+recorrio— cubria la mitad. Esta cubre la otra.
+
+================================================================================
+§7 · LO QUE ENTRA AL COMMIT, Y LO QUE NO
+================================================================================
+ENTRAN, con ruta exacta y nunca git add . :
+  data/decreto/fuente_ds364/.gitattributes
+  data/decreto/fuente_ds364/PROCEDENCIA.md
+  data/decreto/fuente_ds364/DTO-364_2012-03-17.pdf
+  data/decreto/fuente_ds364/DTO-364_2012-03-17.txt
+  data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt
+  data/decreto/rrdn_articulos.json
+  _bitacoras/ds364_al_arbol_2026-08-19/  (bitacora, careo, dos scripts, dos salidas)
+
+Son SEIS ficheros de dato mas la bitacora, no tres. El motivo: replicar el
+tratamiento del art_2 implica que documento_sha256 apunta al .txt, y sin el .txt no
+hay a que apuntar. Y sin .gitattributes, core.autocrlf=true reescribe los .txt CRLF
+en un clon y los sha256 declarados dejan de coincidir — FA-4, el defecto exacto que
+estos directorios existen para cerrar. Se llevo a la PARADA 1 y el owner confirmo
+los seis.
+
+NO ENTRAN, y se verifico en el git status antes de la PARADA 2:
+  .claude/launch.json .................. sigue modificado y sin stagear
+  data/catalogo/estado_drift.json ...... sigue modificado y sin stagear
+
+================================================================================
+§8 · CONTROLES DE ESTA SESION
+================================================================================
+  suite ................................ 157/157, 0 fallos (antes de escribir)
+  02_control_rebusqueda.js ............. 16 controles, 0 fallos, exit 0
+    C0 la re-extraccion fresca reproduce byte a byte los .txt versionados ... 3/3
+    C1 cada inciso guardado se re-encuentra en -raw ......................... 5/5
+    C2 CONTROL NEGATIVO: el inciso con un caracter cambiado NO se encuentra . 5/5
+    C3 los dos incisos del Art. 30 unidos NO se encuentran .................. 2/2
+    C4 art_30 inciso[1] NO se encuentra en -layout .......................... 1/1
+    C5 el JSON no tiene caracteres de control fuera de LF/CR ................ 1/1
+  caracteres de control fuera de LF/CR en todo fichero de texto escrito .... 0
+    (los 8 \f de los .txt son separadores de pagina de pdftotext, no son de esta
+     sesion, y los .txt del precedente los tienen igual: 21, 9 y 2)
+
+================================================================================
+§9 · FRENTES ANOTADOS, NO ABIERTOS
+================================================================================
+1. LOS SIETE ARTICULOS DEL RRDN QUE EL CONTRATO CITA SIN TEXTO: 13, 16, 17, 26, 27,
+   33 y 36. §6 de esta bitacora, con opciones.
+2. LA FRASE DE insumos_zarpe_2026-08-19.md que quedo incompleta. §6. Pieza propia.
+3. NINGUN CONTROL DE LA SUITE VIGILA LOS HASHES DE fuente_ds364/. Hay un control
+   re-ejecutable pero hay que correrlo a mano. Es el mismo estado de fuente_dfl292/
+   y fuente_resoluciones_locales/, y es deliberado: nada consume todavia este texto.
+4. EL ORIGEN DEL PDF SIGUE RECORDADO, NO VERIFICADO. No hay URL y no se salio a la
+   red. Mientras siga asi, la unica copia reproducible es la de este repositorio.
+5. EL ART. 7° DEL RRDN, al que el Art. 30 remite, NO ESTA EXTRAIDO. Quien quiera
+   saber que documentacion exige el Art. 30 tiene que ir al PDF.
+6. LA AFIRMACION NEGATIVA DE §5 sobre el reglamento entero ("avisar la condicion del
+   puerto de recalada no esta en el reglamento") NO SE MIDIO. Exige leer 38
+   articulos, no 4. Declarado en el careo en vez de dejarlo pasar como comprobado.
+
+================================================================================
+§10 · LO QUE ESTA SESION NO HIZO
+================================================================================
+No contesto D-C9. No caracterizo el alcance del Tramo C. No escribio en
+PLAN_JURISDICCION.md, CLAUDE.md ni CONTRATO_MOTOR.md. No toco src/ en ninguno de los
+dos repositorios. No extrajo el resto del decreto. No busco otros decretos. No toco
+el motor BRE. No concilio la parafrasis con el literal y no dijo cual gana.
+
+D-C9 SIGUE CERRADA. La app sigue sin bloquear el zarpe, por el motivo que ya estaba
+medido: estado nunca vale 'rojo'. Esta sesion no cambio una linea de codigo.

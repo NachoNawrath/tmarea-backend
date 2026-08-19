@@ -1,0 +1,104 @@
+{
+  "version": "v1",
+  "fuente": "data/decreto/fuente_ds364/ — la cadena de custodia esta en el PROCEDENCIA.md de ese directorio",
+  "generado": "2026-08-19",
+  "generado_por": "_bitacoras/ds364_al_arbol_2026-08-19/01_extraer_articulos.js",
+  "norma": {
+    "identificacion": "D.S. (M.) 364 de 1980 — Aprueba el Reglamento de Recepcion y Despacho de Naves, modifica el Decreto 1.340 bis, de 14 de junio de 1941, de Marina",
+    "organismo": "Ministerio de Defensa Nacional",
+    "promulgacion": "1980-04-29",
+    "publicacion": "1980-06-27",
+    "version_del_texto": "Ultima Version De: 17-MAR-2012 (Ultima Modificacion: 17-MAR-2012, Decreto 701)",
+    "referido_como": "RRDN",
+    "articulos_del_decreto": 38,
+    "pdf": "data/decreto/fuente_ds364/DTO-364_2012-03-17.pdf",
+    "pdf_sha256": "88b4ea681a9f1ba5dad3296cfc819306605666c1f3d1909315fd98a3dc9c3ced"
+  },
+  "alcance_de_este_insumo": "CUATRO articulos de TREINTA Y OCHO. No es el decreto completo y no se lee como tal. Estan los Arts. 29 y 30 porque D-C9 los cita por numero, y los Arts. 24 y 25 porque son los que llevan el texto que D-C9 declara como su apoyo. Los otros treinta y cuatro no estan; salen del PDF del mismo directorio.",
+  "nota_estructura": "texto_decreto es un ARRAY de incisos, no una cadena. El Art. 30 tiene dos incisos y entre ellos cae un salto de pagina en el PDF: unirlos obligaria a editar el literal o a arrastrar el pie y la cabecera de pagina. Cada elemento del array se re-encuentra por si solo en una re-extraccion del PDF; la union de los dos, no. El control esta en _bitacoras/ds364_al_arbol_2026-08-19/02_control_rebusqueda.js.",
+  "nota_de_lo_que_NO_hace": "No adjudica, no decide y no contesta D-C9. Es texto fuente citable. Ningun fichero del repositorio lo lee todavia.",
+  "articulos": [
+    {
+      "id": "art_24",
+      "titulo": "Art. 24 — el despacho previo es obligatorio para hacerse a la mar",
+      "texto_decreto": [
+        "ARTICULO 24° Para hacerse a la mar desde cualquier puerto de la República, toda nave requiere la previa autorización de zarpe de la Autoridad Marítima, autorización que se denominará \"despacho\" y se otorgará si se cumplen las formalidades y exigencias de los artículos siguientes."
+      ],
+      "por_que_esta": "Es el texto literal de lo que D-C9 declara como su unico apoyo (\"EL DESPACHO ES OBLIGATORIO\") y de la frase \"Ninguna nave inicia navegacion sin despacho\" de la parafrasis de §5. La parafrasis atribuye esa carga a los Arts. 29 y 30; el texto esta aqui. CONTRATO_MOTOR.md §2 ya lo cita como base legal (RRDN Art. 24-27) y su texto no estaba en el arbol.",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          303
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+        "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
+        "extraido_por": "_bitacoras/ds364_al_arbol_2026-08-19/01_extraer_articulos.js",
+        "fecha_cotejo": "2026-08-19"
+      }
+    },
+    {
+      "id": "art_25",
+      "titulo": "Art. 25 — documentacion en orden y condiciones de seguridad",
+      "texto_decreto": [
+        "ARTICULO 25° Para el despacho será necesario que el capitán o agente de la nave presente a la Autoridad Marítima la Declaración General, que la nave tenga su documentación en orden y que sus condiciones de seguridad para la navegación se conformen a la legislación y reglamentación marítima."
+      ],
+      "por_que_esta": "Es el texto literal de \"presenta documentacion y cumple las disposiciones de seguridad de la Autoridad Maritima\" de la parafrasis de §5, que la parafrasis atribuye al Art. 30. El Art. 30 literal no dice ni \"seguridad\" ni \"Autoridad Maritima\".",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          310
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+        "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
+        "extraido_por": "_bitacoras/ds364_al_arbol_2026-08-19/01_extraer_articulos.js",
+        "fecha_cotejo": "2026-08-19"
+      }
+    },
+    {
+      "id": "art_29",
+      "titulo": "Art. 29 — clasificacion de las naves para determinar autoridades y documentos",
+      "texto_decreto": [
+        "ARTICULO 29° Para determinar las autoridades que deben intervenir en su despacho y los documentos que deberán presentarse, las naves se clasifican en las siguientes categorías: A. Naves de cualquier nacionalidad que zarpen con destino directo a un puerto extranjero. B. Naves de cualquier nacionalidad que zarpen desde un puerto nacional con tratamiento aduanero especial a otro puerto nacional. C. Naves de cualquier nacionalidad que zarpen desde un puerto nacional a otro puerto nacional. D. Naves de cabotaje regional. E. Naves menores nacionales."
+      ],
+      "por_que_esta": "Lo cita D-C9 por numero. Su categoria E (\"Naves menores nacionales\") es lo que la parafrasis invoca para decir que el reglamento cubre al usuario de Tmarea.",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          337
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+        "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
+        "extraido_por": "_bitacoras/ds364_al_arbol_2026-08-19/01_extraer_articulos.js",
+        "fecha_cotejo": "2026-08-19"
+      }
+    },
+    {
+      "id": "art_30",
+      "titulo": "Art. 30 — requisitos para obtener la autorizacion de zarpe",
+      "texto_decreto": [
+        "ARTICULO 30° Para obtener la autorización de zarpe toda nave deberá cumplir con las disposiciones del Reglamento de Operaciones Aduaneras y presentar la documentación indicada en el artículo 7° de este Reglamento.",
+        "Además para que la autoridad marítima otorgue el despacho de la nave al exterior, el capitán, armador o agente deberá obtener de la Autoridad Aduanera que estampe en la Declaración General la frase \"sin cargo\", con la firma de un funcionario competente."
+      ],
+      "por_que_esta": "Lo cita D-C9 por numero. NOTA DE PARSEO — LA ANOTACION MARGINAL NO SE ATRIBUYE: el consolidado de BCN lleva al margen \"DTO 220, DEFENSA / Art. unico / D.O. 07.07.2007\" UNA sola vez, y LAS DOS EXTRACCIONES DISCREPAN sobre a que articulo pertenece. -layout la emite dentro del inciso 2 de ESTE articulo; -raw la emite dentro de la letra C del Art. 33. Cual de las dos lecturas es la correcta NO ESTA DETERMINADO: exigiria leer las posiciones de glifo del PDF. Se declara la discrepancia y NO se afirma ninguna de las dos.",
+      "procedencia": {
+        "documento": "D.S. (M.) 364 de 1980, Reglamento de Recepcion y Despacho de Naves (RRDN). Texto consolidado de la Biblioteca del Congreso Nacional, Ultima Version De: 17-MAR-2012",
+        "documento_txt": "data/decreto/fuente_ds364/DTO-364_2012-03-17.txt",
+        "documento_sha256": "6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e",
+        "linea_en_el_documento": [
+          355,
+          364
+        ],
+        "extraido_de": "data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt",
+        "extraido_de_sha256": "328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955",
+        "extraido_por": "_bitacoras/ds364_al_arbol_2026-08-19/01_extraer_articulos.js",
+        "fecha_cotejo": "2026-08-19"
+      }
+    }
+  ]
+}

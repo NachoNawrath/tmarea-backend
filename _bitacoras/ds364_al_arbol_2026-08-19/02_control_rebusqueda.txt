@@ -1,0 +1,40 @@
+AMBITO: data/decreto/rrdn_articulos.json contra una re-extraccion fresca de data/decreto/fuente_ds364/DTO-364_2012-03-17.pdf
+herramienta: pdftotext version 4.06 [www.xpdfreader.com]
+
+== C0 · la re-extraccion fresca reproduce byte a byte los .txt versionados ==
+  PASA  sha256 de -layout coincide — 6996085c6545a381262eec964f0d0a1f28e307829893053800347cd296b47e8e
+  PASA  sha256 de -raw coincide — 328b97a1286f76e1d439b2e0717c971b237dad204cf1a33989bcb4f0f8868955
+  PASA  sha256 del PDF coincide con el declarado en el insumo — 88b4ea681a9f1ba5dad3296cfc819306605666c1f3d1909315fd98a3dc9c3ced
+
+== C1 · cada inciso guardado se re-encuentra en la re-extraccion (-raw) ==
+  PASA  art_24 inciso[0] se encuentra en -raw — 280 caracteres
+  PASA  art_25 inciso[0] se encuentra en -raw — 291 caracteres
+  PASA  art_29 inciso[0] se encuentra en -raw — 550 caracteres
+  PASA  art_30 inciso[0] se encuentra en -raw — 213 caracteres
+  PASA  art_30 inciso[1] se encuentra en -raw — 253 caracteres
+
+== C2 · CONTROL NEGATIVO: el mismo inciso con UN caracter cambiado NO se encuentra ==
+   (sin esto, C1 pasaria aunque el instrumento no supiera fallar)
+  PASA  art_24 inciso[0] roto NO se encuentra en -raw
+  PASA  art_25 inciso[0] roto NO se encuentra en -raw
+  PASA  art_29 inciso[0] roto NO se encuentra en -raw
+  PASA  art_30 inciso[0] roto NO se encuentra en -raw
+  PASA  art_30 inciso[1] roto NO se encuentra en -raw
+
+== C3 · por que el Art. 30 va en DOS incisos y no en uno ==
+  PASA  los dos incisos UNIDOS no se encuentran en -raw — entre ellos cae un salto de pagina
+  PASA  los dos incisos UNIDOS no se encuentran en -layout
+
+== C4 · por que el extractor lee -raw y no -layout ==
+   (informativo: -layout mezcla la columna de anotaciones marginales de BCN)
+  se encuentra    art_24 inciso[0] en -layout
+  se encuentra    art_25 inciso[0] en -layout
+  se encuentra    art_29 inciso[0] en -layout
+  se encuentra    art_30 inciso[0] en -layout
+  NO se encuentra art_30 inciso[1] en -layout
+  PASA  art_30 inciso[1] NO se encuentra en -layout — es el motivo declarado de usar -raw
+
+== C5 · caracteres de control fuera de LF/CR en el insumo escrito ==
+  PASA  el JSON no tiene caracteres de control fuera de LF/CR — 0 encontrados
+
+RESULTADO: todo pasa. 0 fallos.

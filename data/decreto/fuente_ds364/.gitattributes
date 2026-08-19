@@ -1,0 +1,13 @@
+# El repositorio corre con core.autocrlf=true y no tiene .gitattributes en la raiz.
+# Sin esta regla git normalizaria los .txt al guardarlos y los reescribiria al sacarlos,
+# y los sha256 que PROCEDENCIA.md registra dejarian de coincidir en un clon — que es
+# exactamente el defecto que este directorio existe para cerrar (FA-4).
+#
+# Los dos .txt de este directorio son CRLF puro: 450 terminadores el de -layout y 367
+# el de -raw. Sus hashes se calcularon sobre esos bytes.
+#
+# El .pdf se marca binario de forma explicita en vez de confiar en la autodeteccion.
+#
+# Todos los archivos se guardan tal cual estan, byte a byte.
+*.pdf binary
+*.txt -text
