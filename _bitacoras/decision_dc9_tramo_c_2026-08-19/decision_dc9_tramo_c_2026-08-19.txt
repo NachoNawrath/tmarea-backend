@@ -1,0 +1,672 @@
+================================================================================
+DECISIÓN DE D-C9 Y ALCANCE DEL TRAMO C — 2026-08-19
+================================================================================
+QUÉ ES ESTO: la sesión que ESCRIBE cuatro decisiones del owner tomadas el
+2026-08-19. No implementa el Tramo C, no toca src/ en ningún repositorio y no
+mide cobertura de teselado. Los insumos con que se decidió son de otras dos
+sesiones del mismo día y no se repiten acá:
+  · _bitacoras/frentes_laterales_2026-08-19/insumos_zarpe_2026-08-19.md
+  · _bitacoras/ds364_al_arbol_2026-08-19/careo_dc9_vs_literal_2026-08-19.md
+
+HEADs · tmarea-backend  main = origin/main = ccd2d8e  (suite 157/157, corrida hoy)
+       · tmarea-pwa      HEAD = origin/main = 6443178  (no se tocó)
+SHELL  · Bash (Git Bash / MINGW64) sobre Windows 10 · node v24.18.0
+         Ningún .ps1 en esta sesión. Todo lo que escribe fichero pasa por
+         fs.writeFileSync con encoding utf8 explícito; ningún `>` de shell.
+
+ESCRITURA DE ESTA SESIÓN — TRES FICHEROS Y NADA MÁS:
+  1. _bitacoras/cableo_cierre_2026-08-17/cableo_cierre_2026-08-17.txt  (§5, al pie)
+  2. PLAN_JURISDICCION.md                                              (§7.1)
+  3. _bitacoras/decision_dc9_tramo_c_2026-08-19/                       (este dir)
+NO SE TOCÓ: CONTRATO_MOTOR.md, src/ del backend, todo tmarea-pwa,
+             .claude/launch.json y data/catalogo/estado_drift.json (que estaban
+             modificados y sin stagear antes de esta sesión y siguen igual).
+
+
+================================================================================
+§0 · LAS CUATRO DECISIONES, EN UNA LÍNEA CADA UNA
+================================================================================
+D-1 · D-C9 SE SOSTIENE, CON LA CITA CORREGIDA. El fundamento está en los
+      Arts. 24 y 25, no en el 29 ni en el 30, que son los que §5 cita por número.
+      El contenido de la paráfrasis es correcto; los números están mal.
+D-2 · EL «NO BLOQUEA» ERA DEL DEFECTO DE ATRIBUCIÓN, Y ESE DEFECTO YA NO EXISTE.
+      F2 lo retiró el 2026-08-18. El motivo declarado cayó; el fundamento no.
+D-C10 · EL PUERTO DE ZARPE CERRADO APAGA EL BOTÓN, Y SÓLO ESO. Todo lo demás
+      sigue en pantalla. CON UNA EXCEPCIÓN ESCRITA (§4).
+D-C11 · EL AVISO INFORMA LA VÍA DEL ART. 36 Y CITA EL TEXTO. Se aparta de C2.
+      Copy decidido por el owner, transcrito literal en §5.
+
+NUMERACIÓN. §7.1 declara que las decisiones de este frente se numeran D-C<n> en
+serie propia. Medido sobre los dos repos, vocabulario `D-C` seguido de dígitos:
+la serie llegaba a D-C9 sin huecos (D-C1..D-C9). D-1 y D-2 NO son decisiones
+nuevas: son la enmienda de D-C9. Las dos nuevas son D-C10 y D-C11.
+
+
+================================================================================
+§1 · EL GATE — CUATRO PREMISAS CIERTAS Y DOS FALSAS
+================================================================================
+CIERTAS, verificadas antes de escribir una línea:
+  · backend main = origin/main = ccd2d8ea2e0ea2e8517f62eacb951333c891ea7f
+  · suite 157/157 — salida cruda:
+        ℹ tests 157 · ℹ suites 16 · ℹ pass 157 · ℹ fail 0
+        ℹ cancelled 0 · ℹ skipped 0 · ℹ todo 0 · ℹ duration_ms 459.1271
+  · .claude/launch.json y data/catalogo/estado_drift.json modificados y sin
+    stagear. No se tocaron.
+  · rrdn_articulos.json v2 tiene 11 artículos — contados contra el fichero:
+    art_13, 16, 17, 24, 25, 26, 27, 29, 30, 33, 36.
+
+FALSAS, y las dos venían en el prompt de esta sesión. Se declaran acá porque las
+dos cambian una respuesta, no sólo una frase:
+
+  (F1) «Las bitácoras no se enmiendan: la corrección se escribe en la nueva.»
+       CLAUDE.md §3.3 dice lo contrario, textual: «Las bitácoras se agregan, no
+       se reescriben. Una bitácora publicada es constancia. Si su contenido queda
+       superado, SE AGREGA LA CORRECCIÓN AL PIE Y SE MARCA; no se sobrescribe.»
+       Medido — árbol _bitacoras/, ficheros .txt y .md, vocabulario: la palabra
+       ENMENDADO en mayúsculas → 39 apariciones en 12 bitácoras. Control positivo
+       MEDIDO → 192. Control negativo ZZQXENM → 0. Y el caso decisivo: §5 YA
+       tenía una enmienda adentro, con tachado y bloque fechado, puesta el
+       2026-08-17. El owner reconoció la premisa como falsa y eligió (b).
+
+  (F2) «Las 199 sin bahía resuelta son DESTINOS.»
+       Falsa. Salen del mismo catálogo que alimenta el selector de ZARPE.
+       Medición completa en §6.
+
+UNA TERCERA, del prompt de M2, también falsa y medida en §7: «ninguno de los 7
+puntos de render con tel: comprueba que el número sea atómico». Hoy son 6 anclas
+`tel:` y una de ellas SÍ comprueba — y es justamente la del punto de zarpe.
+
+
+================================================================================
+§2 · EL COTEJO DE LA CITA — CARÁCTER POR CARÁCTER, ANTES DE ESCRIBIRLA
+================================================================================
+Lo primero que esta sesión hizo, porque si la cita del owner no calzaba con el
+literal del decreto había que parar. CALZA. Salida cruda de
+01_cotejo_cita_art36.js:
+
+  === HUELLAS (clase: fichero en disco, sha256 sobre los bytes del fichero) ===
+  rrdn_articulos.json      : 8ba231ca57990d3a1212b485dc6ff3e764e6c6a837b77ddd6428bdc9eab6c2b9
+  cita_owner_art36.txt     : 61e0375bc9c51ec82c60f54b78b6b0012b664db7a20f4801506f09b4eb7f8fd9
+
+  === LONGITUDES (unidades: codepoints UTF-16 de JS) ===
+  literal art_36 : 478
+  cita del owner : 271
+
+  === SUBCADENA EXACTA ===
+  indexOf(cita) en el literal = 206
+  VEREDICTO: LA CITA ES SUBCADENA EXACTA DEL LITERAL. 0 caracteres divergentes.
+  lo que el literal trae ANTES de la cita  (206 chars): "ARTICULO 36° En los
+    puertos intermedios del litoral, la Autoridad Marítima podrá conceder el
+    zarpe de la nave con la presentación y solicitud formulada por el capitán,
+    armador o agente de la nave. Asimismo "
+  lo que el literal trae DESPUES de la cita (1 chars): "."
+
+  === CONTROL POSITIVO === indexOf("a la gira") = 324   (esperado >= 0)
+  === CONTROL NEGATIVO === la misma cita con «Marítima»→«Maritima»: -1 (esperado -1)
+  === CARACTERES DE CONTROL fuera de LF/CR ===  literal: 0 · cita: 0
+
+LO ÚNICO QUE LA CITA RECORTA DEL LITERAL es el «Asimismo » de arranque —que
+enlaza con el primer inciso del Art. 36— y el punto final. No cambia el sentido.
+
+HALLAZGO QUE EL PROMPT NO ANTICIPABA, y cambia cómo se lee D-C11: ESA CITA YA
+ESTABA EN EL ÁRBOL, IDÉNTICA. CONTRATO_MOTOR.md, INV-2.1, Capa 2, bajo el rótulo
+«Texto legal literal». Cotejada en 02_cotejo_contrato_art36.js:
+
+  === LA CITA DEL CONTRATO, desenvuelta a una linea === (272 chars)
+  === (a) CONTRATO vs LITERAL art_36 ===
+    indexOf(cita del contrato, con punto final) = 206
+    indexOf(cita del contrato, sin punto final) = 206
+  === (b) CONTRATO vs CITA DEL OWNER decidida hoy ===
+    identicas sin el punto final? true
+  === CONTROL POSITIVO === indexOf("a la gira") en CONTRATO_MOTOR.md = 23876
+  === CONTROL NEGATIVO === indexOf("QZXNOEXISTE") = -1
+
+O SEA: D-C11 no introduce una cita nueva. Manda a pantalla la que el contrato ya
+declaraba y que hasta hoy no salía de él.
+
+
+================================================================================
+§3 · D-1 y D-2 · D-C9 QUEDA ENMENDADA AL PIE DE §5
+================================================================================
+CÓMO SE ESCRIBIÓ, y por qué así. CLAUDE.md §3.3 manda agregar la corrección al
+pie y marcarla; §5 ya tenía ese formato adentro desde el 2026-08-17 (tachado con
+`~~` más un bloque ENMENDADO fechado). Se siguió el mismo. TRES EDICIONES
+QUIRÚRGICAS, ninguna reescribe una palabra del texto original:
+
+  (1) tachado sobre `Art. 30` — UNA ocurrencia, verificada única antes de tocar.
+      Art. 29 NO se tachó: su número calza. El literal del Art. 29 dice que la
+      clasificación sirve para determinar las autoridades Y LOS DOCUMENTOS —la
+      paráfrasis recoge sólo lo primero—, y su categoría E, «Naves menores
+      nacionales», es literal.
+  (2) tachado sobre «Por eso el aviso tolera el defecto de atribución y el
+      bloqueo no.» — la frase cuyo apoyo cayó con F2.
+  (3) bloque ENMENDADO 2026-08-19 al pie de §5, antes del separador de §6.
+
+POR QUÉ D-1 Y D-2 NO SE CONTRADICEN. §5 tiene DOS patas y sólo una se cayó:
+  · pata normativa — «hay un funcionario de la Autoridad Marítima entre la app y
+    el zarpe, por norma, siempre». EN PIE, y ahora con su texto literal adjunto
+    en el árbol (Arts. 24 y 25).
+  · pata operativa — «por eso el aviso tolera el defecto de atribución y el
+    bloqueo no». CAÍDA: el defecto que la sostenía se retiró.
+D-C9 se sostiene por la primera. Es la distinción que el bloque ENMENDADO deja
+escrita para que nadie lea «cayó el motivo» como «cayó la decisión».
+
+D-2, VERIFICADO HOY Y NO HEREDADO. Árbol src/ del backend en ccd2d8e, sin
+node_modules, vocabulario: la subcadena literal `includes(w`
+  · en ccd2d8e ......................... 0 ocurrencias
+  · control positivo, `includes(` ...... 56 ocurrencias  (el grep muerde)
+  · en 2bd0ff6 ......................... 0
+  · en 2bd0ff6^ ........................ 2   (src/routes/sitport-routes.js)
+  · 2bd0ff6 es ancestro de ccd2d8e ..... SÍ (git merge-base --is-ancestor)
+  · `resolverBahiaIdPorNombre` .......... 2 apariciones, LAS DOS COMENTARIOS que
+    describen su retiro (sitport-routes.js). No queda código.
+
+LO QUE SIGUE SIN MEDIR Y SE DECLARA. El LÍMITE DECLARADO de §5 afirma que
+«avisar la condición del puerto de recalada no está en el reglamento». Es una
+afirmación NEGATIVA SOBRE EL REGLAMENTO ENTERO. Los artículos extraídos son 11 de
+40. En esos 11 no hay nada sobre avisar la condición del puerto de recalada;
+sobre los otros 29 esta sesión no dice nada, ni a favor ni en contra.
+
+
+================================================================================
+§4 · D-C10 · EL ALCANCE DEL TRAMO C
+================================================================================
+DECIDIDO POR EL OWNER: el puerto de zarpe cerrado apaga el botón de iniciar
+viaje, Y SÓLO ESO. Viento, olas, mareas, ruta y restricciones del trayecto siguen
+en pantalla.
+
+RAZÓN DEL OWNER, y va escrita: el patrón que consulta no se castiga, y la
+información le explica el bloqueo — ve viento fuerte en la ruta y entiende por
+qué la Capitanía no da zarpe. El bloqueo enseña en vez de frustrar.
+
+MEDIDO: D-C10 NO AGREGA CÓDIGO DE APAGADO, RATIFICA LO CONSTRUIDO. Árbol
+tmarea-pwa@6443178, fichero src/screens/P3_VoyageVerification.jsx, vocabulario:
+la subcadena 'UV' entre comillas simples → 5 apariciones, LAS CINCO EN EL CTA
+(backgroundColor, cursor, onClick, disabled y el rótulo del botón). Ningún bloque
+de la pantalla se oculta. Control negativo 'UVZZQ' → 0.
+Lo que sigue faltando es la línea de entrada a `estado`, que es lo que los
+insumos ya declaraban.
+
+LA EXCEPCIÓN — DECIDIDA (opción (a) del gate) Y ESCRITA. En UV,
+VoyageVerdict.jsx no oculta: AGREGA. La rama `ultimoTramo && veredicto === 'UV'`
+pinta «Puedes navegar hasta {bahía}. A partir de ahí, la zona está restringida.»,
+que con el zarpe cerrado saldría junto a «No zarpar» en la misma tarjeta. §5 ya
+la tenía anotada como EFECTO SECUNDARIO. QUEDA CUBIERTA POR D-C10.
+Dos cosas que quien implemente necesita:
+
+  · LAS DOS COPIAS DEL STRING. Árbol tmarea-pwa@6443178 src/, sin node_modules,
+    vocabulario: la subcadena literal «Puedes navegar hasta» → 2 apariciones:
+        src/components/verification/TransitRestrictionsBlock.jsx
+        src/components/verification/VoyageVerdict.jsx
+    Control negativo «Puedes navegar hastaZZQ» → 0.
+    Arreglar una y dejar la otra deja la pantalla diciendo lo contrario del
+    veredicto. §5 ya avisaba que eran dos; hoy se reverifica y siguen siendo dos.
+
+  · LA CONDICIÓN EXACTA EN QUE MUERDE, medida en
+    src/services/route-restriction-evaluator.js: `ultimo_tramo_seguro` se puebla
+    SÓLO cuando una restricción DE TRÁNSITO llega a UV y NO es la primera de la
+    ruta (la guarda es `if (peorNivel === 'UV' && primerBloqueo < 0)` y adentro
+    `if (i > 0)`). O sea: zarpe cerrado MÁS restricción de tránsito UV más
+    adelante. No es siempre. No se resuelve acá —es implementación— pero queda
+    con su condición escrita para que no se descubra tarde.
+
+
+================================================================================
+§5 · D-C11 · EL AVISO CITA EL ART. 36 — Y LAS TRES DECISIONES QUE LO ACOMPAÑAN
+================================================================================
+SE APARTA DE C2. §4 de cableo_cierre_2026-08-17.txt descartó C2 —«citar el
+artículo en el aviso»— A SECAS: «DESCARTADA C2 (citar el artículo en el aviso).»
+SIN MOTIVO ESCRITO, a diferencia de B2 y de A1, que en el mismo párrafo llevan el
+suyo. D-C11 no tiene que derribar ningún argumento porque nunca hubo uno.
+MOTIVO DEL APARTAMIENTO, del owner: acá la cita no es adorno, es con lo que el
+patrón se presenta cuando llama a la Capitanía.
+
+EL COPY FINAL, DECIDIDO POR EL OWNER — TRANSCRITO LITERAL:
+
+    Puerto de zarpe cerrado.
+    No puede iniciar su navegación.
+
+    Alternativa excepcional: el Decreto 364, sobre Recepción y Despacho de
+    Naves, dispone en su artículo 36 que «en caso de mal tiempo y con puerto
+    cerrado, la Autoridad Marítima podrá conceder el zarpe de la nave que se
+    encuentra a la gira hasta un próximo puerto del litoral, siempre y cuando
+    el capitán asegure que la nave está en condiciones de hacerlo y se
+    responsabilice de ello».
+
+    Solo la Capitanía puede autorizarlo, y rara vez lo hace. Consulte a la
+    [rótulo] [nombre] si cree que aplica en su caso.
+
+RAZÓN DEL OWNER, y va escrita: la condición gobernante es NO ZARPAR. La vía del
+Art. 36 se informa porque el reglamento la da, pero no puede leerse como una
+opción normal — de ahí «excepcional», «solo la Capitanía» y «rara vez lo hace».
+NINGUNA CIFRA DE FRECUENCIA VA EN PANTALLA: no está medida.
+
+--------------------------------------------------------------------------------
+(a) EL TELÉFONO NO VA EN EL AVISO — decisión del owner
+--------------------------------------------------------------------------------
+INV-10.1, primera frase, textual: «El teléfono y la dirección de la autoridad se
+muestran SÓLO en el punto de zarpe y en el de recalada, NUNCA DENTRO DE UN
+MENSAJE NORMATIVO.» El aviso de D-C11 es un mensaje normativo.
+
+Y NO ES UNA LECTURA NUEVA: el Tramo B ya se topó con la misma frase y decidió lo
+mismo, con la decisión escrita en el código. P3_VoyageVerification.jsx,
+comentario del aviso de cierre, textual: «EL TELÉFONO NO VA, y no es una omisión:
+la PRIMERA FRASE de INV-10.1 lo pone "sólo en el punto de zarpe y en el de
+recalada, nunca dentro de un mensaje normativo", y esto es un mensaje normativo.»
+
+El número sigue visible en la tarjeta de zarpe (PortStatusBlock), en la MISMA
+pantalla, con su nivel resuelto por el motor y con `tel:` sólo si el motor lo
+declaró atómico. INV-10.1 NO SE ABRE.
+
+TENSIÓN INTERNA DE CONTRATO_MOTOR.md, medida y declarada, que D-C11 hereda y no
+crea. Vocabulario: los literales [tel] y [teléfono]; control negativo [telZZQ]→0.
+  · catálogo §10, fila «Zarpe cerrado», Capa 2 ....... SIN teléfono
+    («…Coordina con la Capitanía [nombre].»)
+  · INV-2.1, mensaje al patrón ....................... CON «[nombre]: [teléfono]»
+  · INV-1.3, ejemplo de Capa 2 ....................... CON «[nombre]: [teléfono]»
+  · INV-10.1, verificación ........................... «ningún mensaje del
+    catálogo contiene [tel]» — y el catálogo, en efecto, tiene 0 [tel]
+  · [teléfono] en todo el fichero .................... 3 (INV-1.3, INV-2.1 y el
+    aviso de jurisdicción sin geometría)
+  · [tel] en todo el fichero ......................... 2, ninguna en el catálogo
+LA FILA DEL CATÁLOGO CUMPLE INV-10.1; LOS DOS INVARIANTES QUE LA EXPLICAN, NO.
+D-C11 se para del lado de INV-10.1. Redactado para el owner en §9; NO aplicado.
+
+--------------------------------------------------------------------------------
+(b) [rótulo] ES VARIABLE, NO EL LITERAL «Capitanía» — decisión del owner
+--------------------------------------------------------------------------------
+INV-10.1, escalón 2, textual: «el de su Gobernación, ROTULADO COMO GOBERNACIÓN —
+nunca como Capitanía. Rotular como Capitanía un número que es de la Gobernación
+es el defecto que este invariante existe para cerrar.»
+
+MEDIDO sobre los 489 puertos de zarpe con bahía resuelta, con la pieza viva
+(contactoPorEscalon), no con una re-derivación:
+      capitania    (escalón 1) ..... 265 / 489
+      gobernacion  (escalón 2) ..... 224 / 489     <-- 45,8 %
+      null         (escalón 3) .....   0 / 489
+Un literal «Capitanía de Puerto de» rotularía Capitanía sobre una Gobernación en
+224 de 489 casos. NO ENTRA.
+
+LO RESUELVE rotularContacto (tmarea-pwa/src/hooks/useVoyageVerification.js), la
+misma función que la PWA ya comparte entre el aviso de cierre y el recordatorio
+R1 — y se comparte LA FRASE ENTERA, no sólo la etiqueta, por la razón que el
+Tramo B dejó escrita: «el defecto de fondo de este frente es que cada camino a
+pantalla armó su propio rótulo, y compartir la etiqueta sola deja el ensamblado
+libre para volver a divergir». Devuelve ya con artículo:
+      'la Capitanía de Puerto de X'   /   'la Gobernación Marítima de X'
+así que la línea del copy se ensambla como  «Consulte a » + rotularContacto(…).
+
+ESCALÓN 3: rotularContacto devuelve null y LA FRASE SE OMITE ENTERA, sin texto de
+reemplazo — que es lo que INV-10.1 escalón 3 manda. Hoy es INALCANZABLE por esta
+vía: 0 de 489. Se escribe igual, porque el dato puede cambiar y el invariante no.
+
+--------------------------------------------------------------------------------
+(c) LA CITA VA TAL CUAL — cotejada en §2, 0 caracteres divergentes
+--------------------------------------------------------------------------------
+
+
+================================================================================
+§6 · M1 · EL TECHO DEL TRAMO C — 489 DE 688, Y LOS 199 NO SON UN CASO DE COPY
+================================================================================
+DEFINICIÓN DE «PUERTO DE ZARPE», DECLARADA Y NO SUPUESTA. Es lo primero, porque
+sin ella la cifra no significa nada.
+  · P2_VoyageSetup.jsx renderiza el selector de zarpe con tipo="puerto" FIJO
+    (<Buscador tipo="puerto" value={puertoZarpe} …/>). No es una de varias
+    opciones: el bloque «Puerto de Zarpe *» lo trae escrito duro.
+  · CONFIG_BUSQUEDA.puerto apunta a /api/puertos?search=…&limit=8
+  · puertos-service.js sirve ese endpoint desde nodos_maritimos con
+    AND fuente != 'SITPORT'
+  · NO HAY NINGUNA OTRA VÍA a `puerto_zarpe` en el árbol.
+  · Su espejo versionado —el MISMO artefacto que el motor lee en vivo por
+    fichaDePuerto— es data/catalogo/join_puerto_bahia.json, sha256 4f9fbdc3…:
+    693 filas de base, 688 nombres distintos.
+DENOMINADOR = 688 NOMBRES.
+
+Salida cruda de 03_medir_m1.js — medido con las piezas VIVAS del motor
+(fichaDePuerto → getCapitaniaByBahiaId → contactoPorEscalon):
+
+  === HUELLA (clase: fichero en disco) ===
+  data/catalogo/join_puerto_bahia.json : 4f9fbdc33e290a4cc2ef4dda3e98918eb3bb22466a0fbe07f0170670becddaf6
+  filas del artefacto: 688
+  nombres distintos  : 688   <-- DENOMINADOR de M1
+
+  === (a) ZARPE -> BAHIA, sobre los 688 nombres ===
+    CON BAHIA                              489 / 688
+    SILENCIO/a_adjudicar                    74 / 688
+    SILENCIO/bahia_declarada_lejos          12 / 688
+    SILENCIO/sin_bahia_en_catalogo         113 / 688
+
+  === (b) DE LOS QUE TIENEN BAHIA: CAPITANIA CONOCIDA ===
+    capitania conocida                     489 / 489
+
+  === (c) EL ESCALON DE INV-10.1, sobre los 489 con bahia ===
+    capitania                              265 / 489
+    gobernacion                            224 / 489
+    telefono ATOMICO                       489
+
+  === (d) LO QUE EL AVISO NO PODRIA NOMBRAR ===
+    sin bahia (cualquier silencio) .......... 199 / 688
+    con bahia pero Capitania Desconocida ....   0 / 688
+    SIN CAPITANIA QUE NOMBRAR, total ........ 199 / 688   = 28.9 %
+    con Capitania nombrable ................. 489 / 688   = 71.1 %
+
+  === CONTROL POSITIVO ===
+    "Caleta Pesquera Pisagua" -> bahia_id 204   (esperado: numero)
+  === CONTROL NEGATIVO ===
+    "Puerto Inexistente QZX 99" -> null / destino_sin_ficha_de_puerto
+
+LO QUE ESTO CONTESTA, Y LO QUE CORRIGE:
+
+(1) LA PREMISA ERA FALSA: LOS 199 NO SON DESTINOS. Salen del MISMO catálogo que
+    alimenta el selector de zarpe. El solapamiento entre «puerto de zarpe» y
+    «puerto de destino de tipo puerto» es TOTAL, no parcial. Un patrón que zarpa
+    desde uno de esos 199 está en la misma situación que uno que recala en él.
+
+(2) NO ES RARO: ES 28,9 %, CASI 3 DE CADA 10. La pregunta del owner —«si el caso
+    resulta raro, la decisión es casi teórica»— se contesta al revés de como se
+    planteó. Pero el caso NO es el que la pregunta suponía, y ahí está lo
+    importante:
+
+(3) NO ES «UN AVISO SIN A QUIÉN NOMBRAR»: ES QUE EL AVISO NO LLEGA A EXISTIR.
+    Sin bahía no hay estado de puerto, y sin estado nunca hay 'rojo'. LOS 199 NO
+    PUEDEN DISPARAR EL BLOQUEO, POR CONSTRUCCIÓN. Es un FALSO NEGATIVO
+    SILENCIOSO, la clase de defecto que CONTRATO_MOTOR.md llama «el modo de falla
+    más peligroso del motor, porque no hay error ni aviso». No es un caso de
+    copy y no se arregla escribiendo una rama en el texto.
+
+(4) DE LOS 489 QUE SÍ LO DISPARAN, CERO TIENEN CAPITANÍA DESCONOCIDA. El copy no
+    necesita una rama «no conozco la Capitanía»: por construcción no se alcanza.
+    Lo que sí necesita es el rótulo variable (§5(b)).
+
+EL REPARTO, CON SU FRENTE — el hecho y su reparto, SIN RECOMENDACIÓN:
+  · a_adjudicar (74) ............ F3, el backlog. Sesión propia, ya anotada en
+    §7.1 del plan.
+  · bahia_declarada_lejos (12) .. (a1), corregir los `lng` desplazados 6,00° en
+    11 nodos de nodos_maritimos.
+  · sin_bahia_en_catalogo (113) . depende de una medición de cobertura del
+    teselado que NO se hace acá y exige psql. Es el bloque más grande del techo
+    y NO TIENE FRENTE ASIGNADO.
+
+CORRECCIÓN DE UNA CIFRA QUE EL OWNER DICTÓ Y NO CALZA CON LO ESCRITO. La
+instrucción decía «(a1) recupera 8 de las 12». Medido contra el árbol, (a1) NO
+recupera 8 de las 12 FILAS: recupera 8 CIERRES REALES —restricciones—,
+concentrados en DOS de esos 12 puertos, `Puerto De Caldera Mejoras Fiscales` (7)
+y `Huasco` (1), que son los 2 falsos negativos que la regla (c) causa. Fuentes:
+join-puerto-bahia.js, cabecera de la regla (c); f2_verde_falso_2026-08-17.txt
+§6.2 y §1; y el recuadro «UN SOLO 8, CONTADO DE DOS LADOS» de PLAN_JURISDICCION.md
+§7.1, que existe precisamente para que estos ochos no se sumen mal.
+CUÁNTAS DE LAS 12 FILAS VUELVEN A TENER BAHÍA CON (a1): NO MEDIDO. Se escribe
+«no medido» y no se estima.
+
+
+================================================================================
+§7 · M2 · ¿EL TELÉFONO ES SEGURO DE MOSTRAR?
+================================================================================
+La pregunta junta TRES cosas distintas. Se separan, porque tienen respuestas
+distintas y una de las tres no es lo que el prompt suponía.
+
+--------------------------------------------------------------------------------
+(a) EL DATO — salida cruda de 04_medir_m2.js
+--------------------------------------------------------------------------------
+  === HUELLA (clase: fichero en disco) ===
+  src/data/bahia-capitania-map.json : e2b34432d9128153f10ae75abae4ee3b8bb77d02d52f657029a352a813b6c92b
+  entradas del mapa: 164   <-- DENOMINADOR de (a)
+
+  === (a) EL DATO ===
+    sin_telefono       0 / 164
+    atomico          164 / 164
+    no_atomico         0 / 164
+
+  === (b) EL VEREDICTO QUE EL MOTOR YA EMITE ===
+    capitania                           99 / 164
+    gobernacion                         65 / 164
+    telefono_atomico true              164
+
+  === CONTROL NEGATIVO del criterio de atomicidad — tiene que morder ===
+    "+56 65 256 1100"                        esAtomico=true
+    "+56 65 256 1100 ó +56 65 256 1101"      esAtomico=false
+    "65-2561100"                             esAtomico=false
+    ""                                       esAtomico=false
+    null                                     esAtomico=false
+  === CONTROL POSITIVO de contactoPorEscalon ===
+    entrada real (71): nivel="capitania"
+    entrada nula     : nivel=null (esperado null)
+
+El 99/164 reproduce el número que contacto-por-escalon.js ya declara en su
+cabecera («sólo 99 traen el de LA Capitanía que la entrada nombra»). El
+instrumento coincide con lo escrito y muerde en el control negativo.
+
+--------------------------------------------------------------------------------
+(b) EL RENDER DE HOY — LA PREMISA DEL PROMPT ESTÁ VENCIDA
+--------------------------------------------------------------------------------
+El prompt afirmaba: «ninguno de los 7 puntos de render con `tel:` comprueba que
+el número sea atómico». Medido hoy — árbol tmarea-pwa@6443178 src/, sin
+node_modules, vocabulario: la subcadena literal  href={`tel:  (o sea, un ancla
+tel: efectivamente renderizada, no cualquier aparición de la palabra):
+
+  SON 6, NO 7. Control negativo href={`telZZQ: → 0.
+    src/components/DeportiveAlerts.jsx                   x3   NO comprueba
+    src/components/verification/TransitRestrictionsBlock.jsx  NO comprueba
+    src/components/verification/WeatherBlock.jsx              NO comprueba
+    src/components/verification/PortStatusBlock.jsx           SÍ COMPRUEBA
+
+PortStatusBlock.jsx trae el guard escrito y su comentario, textual: «Teléfono
+clickeable (tel:) SÓLO si el motor lo declaró atómico; si no, va como texto», y
+el JSX bifurca `capitania.atomico ? <a href={…}> : <span>`. El veredicto lo pone
+el motor en `contacto.telefono_atomico`.
+
+Y PORTSTATUSBLOCK ES EXACTAMENTE LA TARJETA DEL PUERTO DE ZARPE — el punto donde
+INV-10.1 pone el número y donde la decisión (a) de §5 lo deja. La premisa está
+vencida en el único punto que le importa a este aviso. Los 5 que no comprueban
+son otro frente (alertas deportivas, tránsito, clima) y ninguno está en el camino
+de este aviso.
+
+--------------------------------------------------------------------------------
+(c) EL GUARD DE zonas-aviso.js NO ESTÁ EN EL CAMINO DE ESTE AVISO
+--------------------------------------------------------------------------------
+El prompt preguntaba si este aviso hereda el defecto del guard de zonas-aviso.js.
+NO LO HEREDA POR ESTA VÍA, y está medido:
+  · zonas-aviso.js lo consume UN solo archivo de src/: cobertura-jurisdiccional.js
+    (`const { cargarZonasAviso } = require('./zonas-aviso')`).
+  · sitport-routes.js usa cobertura (medirCoberturaRuta / componerAvisos) SÓLO en
+    POST /api/sitport/restricciones-ruta, el endpoint de TRÁNSITO.
+  · El contacto del zarpe sale de POST /api/sitport/restricciones, por
+    contactoPorEscalon(getCapitaniaByBahiaId(bahiaId)). Ninguna rama de ese
+    camino toca zonas-aviso.js.
+
+VEREDICTO M2: si el teléfono se mostrara, HOY sería seguro —164/164 atómicos, y
+el punto de render que le corresponde ya gatea—. EL RIESGO DE M2 NO ERA LA
+ATOMICIDAD: era el RÓTULO (§5(b), 224/489) y el SITIO (§5(a), INV-10.1). Los dos
+quedaron decididos, y por la decisión (a) el teléfono ni siquiera entra al aviso.
+
+
+================================================================================
+§8 · EL ART. 33 NO LISTA «PUERTO CERRADO» — el mejor argumento a favor de D-C11
+================================================================================
+Va escrito por decisión del owner. ALCANCE DECLARADO: medido sobre los ONCE
+artículos extraídos en rrdn_articulos.json v2, NO sobre los 40 del decreto.
+
+El Art. 33 lista las causales por las que la Autoridad Marítima NO otorga el
+zarpe, y son cuatro: falta de capitán (A), dotación incompleta (B), certificados
+no exhibibles (C), adrizamiento/estiba/carga (D). El literal dice «entre otras»,
+o sea que la lista NO es cerrada. Salida cruda de 05_medir_art33_vs_bloqueo.js:
+
+  === EN EL ART. 33 ===          === EN EL ART. 36 ===
+    "puerto cerrado"    NO         "puerto cerrado"   SI
+    "mal tiempo"        NO         "mal tiempo"       SI
+    "cerrado"           NO         "a la gira"        SI
+    "tiempo"            NO
+    "capitan"           SI
+    "dotacion"          SI
+    "certificados"      SI
+    "carga"             SI
+  === EN LOS ONCE ARTICULOS EXTRAIDOS ===
+    "puerto cerrado"    SI    (sólo en el Art. 36)
+    "mal tiempo"        SI    (sólo en el Art. 36)
+    "cierre de puerto"  NO
+  === CONTROL POSITIVO === "despacho" en los once   SI
+  === CONTROL NEGATIVO === "teselado" en los once   NO
+
+LO QUE ESTO DICE, sin estirarlo: la app va a apagar su propio botón por una causa
+que el reglamento NO lista como causal de denegación y que SÍ contempla como caso
+de excepción para CONCEDER el zarpe. Eso no invalida D-C10 —la app no es la
+Autoridad Marítima y apagar su propio botón es potestad suya—, pero es el
+argumento más fuerte que existe A FAVOR de D-C11: sin la vía del Art. 36 al lado,
+el bloqueo afirmaría de hecho algo que el decreto no dice.
+
+
+================================================================================
+§9 · TEXTO PROPUESTO PARA CONTRATO_MOTOR.md — REDACTADO, NO APLICADO
+================================================================================
+CONTRATO_MOTOR.md SÓLO LO MODIFICA EL OWNER. Esta sesión no lo tocó: se verificó
+que su sha256 es el mismo antes y después. Lo que sigue es texto propuesto, para
+que él lo pegue si quiere, y NADA de esto está en el fichero.
+
+--------------------------------------------------------------------------------
+(P1) LA FILA «Zarpe cerrado» DEL CATÁLOGO §10 — Capa 2
+--------------------------------------------------------------------------------
+HOY dice, textual:
+  "Según D.S. 364 (RRDN) Art. 36, en caso de mal tiempo con puerto cerrado la
+   Autoridad Marítima puede autorizar el zarpe a la gira hacia un puerto próximo
+   del litoral, si aseguras que la nave está en condiciones y te responsabilizas.
+   Coordina con la Capitanía [nombre]."
+
+PROPUESTO (D-C11):
+  "Alternativa excepcional: el Decreto 364, sobre Recepción y Despacho de Naves,
+   dispone en su artículo 36 que «en caso de mal tiempo y con puerto cerrado, la
+   Autoridad Marítima podrá conceder el zarpe de la nave que se encuentra a la
+   gira hasta un próximo puerto del litoral, siempre y cuando el capitán asegure
+   que la nave está en condiciones de hacerlo y se responsabilice de ello». Solo
+   la Capitanía puede autorizarlo, y rara vez lo hace. Consulte a la [rótulo]
+   [nombre] si cree que aplica en su caso."
+
+TRES CAMBIOS, cada uno con su motivo:
+  · de paráfrasis a CITA LITERAL — cotejada, 0 divergencias (§2).
+  · «la Capitanía [nombre]» → «la [rótulo] [nombre]» — el literal duro rotula
+    Capitanía sobre una Gobernación en 224 de 489 casos (§5(b)). ES UN DEFECTO
+    QUE LA FILA YA TIENE HOY, independientemente de D-C11.
+  · se agregan «excepcional», «Solo la Capitanía» y «rara vez lo hace» — la vía
+    no puede leerse como opción normal (razón del owner).
+NO se agrega teléfono: la fila hoy no lo tiene y así cumple INV-10.1.
+
+--------------------------------------------------------------------------------
+(P2) LA CAPA 1 DE INV-2.1 — DIVERGENCIA QUE HAY QUE RESOLVER, NO SE PROPONE TEXTO
+--------------------------------------------------------------------------------
+El copy del owner abre con «Puerto de zarpe cerrado. No puede iniciar su
+navegación.» El contrato dice, en DOS lugares —INV-2.1 Capa 1 y la fila del
+catálogo—, «Puerto de zarpe cerrado. Navegación no recomendada.», y el CTA de la
+PWA ya rotula «Navegación no recomendada» en UV.
+NO SE PROPONE TEXTO PORQUE ES DECISIÓN DE PRODUCTO. Lo que se declara es la
+divergencia: hoy la pantalla diría una cosa en el aviso y otra en el botón.
+
+--------------------------------------------------------------------------------
+(P3) INV-2.1 e INV-1.3 — LA TENSIÓN DEL [teléfono]
+--------------------------------------------------------------------------------
+Los dos ponen «[nombre]: [teléfono]» dentro de un mensaje normativo, que es lo
+que INV-10.1 prohíbe en su primera frase (§5(a)). D-C11 se paró del lado de
+INV-10.1 y no lleva teléfono. QUEDA UNA CONTRADICCIÓN VIVA EN EL CONTRATO entre
+INV-10.1 y los ejemplos de INV-1.3 / INV-2.1. Resolverla es del owner: o los
+ejemplos pierden el «: [teléfono]», o INV-10.1 declara la excepción. Esta sesión
+no elige.
+
+--------------------------------------------------------------------------------
+(P4) §5 DEL CONTRATO — el ascenso de rotularContacto, si D-C11 se implementa
+--------------------------------------------------------------------------------
+Si el aviso del Tramo C consume rotularContacto, pasa a ser el TERCER consumidor
+(hoy son dos: el aviso de cierre y el recordatorio R1). No hay texto propuesto;
+se anota porque el contrato lleva registro de esos ascensos.
+
+
+================================================================================
+§10 · HALLAZGOS FUERA DE ALCANCE — REDACTADOS, NO APLICADOS
+================================================================================
+(H1) DOS COMENTARIOS VENCIDOS EN tmarea-pwa. Siguen nombrando el filtro que F2
+     retiró. Árbol tmarea-pwa@6443178 src/, vocabulario «filtro de puerto» y
+     «sitport-routes.js:333-338»; control negativo → 0. Son:
+       · useVoyageVerification.js, compuerta D-C7: «…con el sobre-alcance del
+         filtro de puerto vivo (backend `sitport-routes.js:333-338`, subcadena y
+         no palabra)»
+       · useVoyageVerification.js, comentario de la línea del cierre_total:
+         «…y no arranca hasta que el filtro de puerto del backend esté resuelto»
+     Ese filtro no existe desde el 2026-08-18. ESCRITURA DE PWA: FUERA DEL
+     ALCANCE DE ESTA SESIÓN. Opciones para quien los corrija: (a) tacharlos y
+     fechar la caída, igual que se hizo con §5; (b) reescribirlos apuntando al
+     bloqueo que sí rige (el instrumento sucesor de los cuatro guards).
+     RECOMENDADA: (a), por simetría con lo que esta sesión hizo del lado backend.
+     Ya estaba redactado en insumos_zarpe_2026-08-19.md §2.4(5); se repite acá
+     porque ahora hay una decisión que lo vuelve accionable.
+
+(H2) LA FILA DEL CATÁLOGO ROTULA «Capitanía» POR LITERAL DURO. Ver §9(P1). Es un
+     defecto de hoy, no de D-C11.
+
+(H3) LA CONTRADICCIÓN INTERNA DE CONTRATO_MOTOR.md SOBRE [teléfono]. Ver §9(P3).
+
+(H4) REGISTRO — TUTEO vs USTED. ANOTADO COMO PENDIENTE DE UNIFICACIÓN POR
+     DECISIÓN DEL OWNER; NO SE RESUELVE ACÁ. El aviso de recalada tutea por
+     decisión escrita: D-C8 fija el literal único «comunícate con la capitanía
+     respectiva», y la fila del catálogo también tutea («si aseguras… te
+     responsabilizas… Coordina»). El copy de D-C11 trata de usted («No puede
+     iniciar su navegación», «Consulte»). Serían dos avisos con distinto registro
+     en la misma pantalla.
+
+(H5) LOS 113 `sin_bahia_en_catalogo` NO TIENEN FRENTE. Es el bloque más grande
+     del techo del Tramo C (16,4 % de 688) y depende de una medición de cobertura
+     del teselado que exige psql. Se anota como lo que es: sin dueño.
+
+
+================================================================================
+§11 · LO QUE ESTA SESIÓN NO MIDIÓ, dicho para que nadie lo dé por medido
+================================================================================
+· Los 29 artículos del RRDN que no están extraídos. El insumo trae 11 de 40.
+· La cobertura del teselado, los 113 sin bahía en catálogo y los 3.114 de O5.
+  Exigen psql y son otra sesión.
+· Cuántas de las 12 filas `bahia_declarada_lejos` recupera (a1). Ver §6.
+· El verbo «listan» del Art. 26. Sigue abierto y es del owner.
+· La frase incompleta de insumos_zarpe_2026-08-19.md.
+· El motor BRE.
+· La PWA en pantalla: todo lo de la PWA se midió leyendo su árbol en 6443178, no
+  ejecutándola. Ninguna afirmación de esta bitácora sobre la PWA viene de haberla
+  visto correr.
+
+
+================================================================================
+§12 · LA EVIDENCIA — QUÉ HAY EN ESTE DIRECTORIO
+================================================================================
+Instrumentos (se corren con `node <fichero>` desde este directorio; todos leen
+del repositorio y ninguno depende del disco de nadie):
+
+  01_cotejo_cita_art36.js / .txt ....... la cita del owner contra art_36,
+                                         carácter por carácter. §2
+  02_cotejo_contrato_art36.js / .txt ... la cita que CONTRATO_MOTOR.md ya traía,
+                                         contra art_36 y contra la del owner. §2
+  03_medir_m1.js / .txt ................ M1, el techo del Tramo C. §6
+  04_medir_m2.js / .txt ................ M2, el teléfono. §7
+  05_medir_art33_vs_bloqueo.js / .txt .. el Art. 33 y lo que no lista. §8
+
+Insumos y pre-imágenes:
+
+  cita_owner_art36.txt ................. la cita del owner, en fichero aparte y
+                                         en UTF-8, para que el cotejo no dependa
+                                         de cómo viaja el texto por una cadena
+  00_previo_seccion5.txt ............... §5 ANTES de la enmienda (líneas 219-288)
+  00_previo_plan_71_tramo_c.md ......... el bloque del Tramo C de §7.1 ANTES
+  enmienda_s5_bloque.txt ............... el bloque ENMENDADO, como se insertó
+  plan_71_nuevo.md ..................... el texto nuevo de §7.1, como se insertó
+                                         (p71a/p71b/p71c son sus partes: el
+                                         heredoc se corta sobre ~6 KB y se une
+                                         con fs)
+  99_huellas.txt ....................... sha256 de TODO lo que esta sesión
+                                         escribió o tocó, con su clase declarada,
+                                         y el control de caracteres de control
+
+POR QUÉ LAS PRE-IMÁGENES ESTÁN VERSIONADAS AUNQUE EL DIFF DE GIT YA LAS TENGA:
+porque los dos ficheros que gobiernan son grandes y el bloque tocado es chico;
+tener el ANTES recortado al bloque hace que la enmienda se pueda leer sin
+reconstruir un diff. Es la lectura literal de §3.5 —«el archivo es el entregable,
+no el resumen»— aplicada a un cambio quirúrgico.
+
+================================================================================
+FIN. Nada de src/ se tocó, en ninguno de los dos repositorios. CONTRATO_MOTOR.md
+no se tocó. La línea de entrada a `estado` NO se escribió: el Tramo C sigue sin
+arrancar, ahora con su alcance decidido.
+================================================================================

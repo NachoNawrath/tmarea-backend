@@ -1,0 +1,24 @@
+=== HUELLAS (clase: fichero en disco, sha256 sobre los bytes del fichero) ===
+rrdn_articulos.json      : 8ba231ca57990d3a1212b485dc6ff3e764e6c6a837b77ddd6428bdc9eab6c2b9
+cita_owner_art36.txt     : 61e0375bc9c51ec82c60f54b78b6b0012b664db7a20f4801506f09b4eb7f8fd9
+
+=== LONGITUDES (unidades: codepoints UTF-16 de JS) ===
+literal art_36 : 478
+cita del owner : 271
+
+=== SUBCADENA EXACTA ===
+indexOf(cita) en el literal = 206
+VEREDICTO: LA CITA ES SUBCADENA EXACTA DEL LITERAL. 0 caracteres divergentes.
+lo que el literal trae ANTES de la cita  (206 chars): "ARTICULO 36° En los puertos intermedios del litoral, la Autoridad Marítima podrá conceder el zarpe de la nave con la presentación y solicitud formulada por el capitán, armador o agente de la nave. Asimismo "
+lo que el literal trae DESPUES de la cita (1 chars): "."
+
+=== CONTROL POSITIVO del instrumento (una cadena que SI tiene que estar) ===
+indexOf("a la gira") = 324 (esperado >= 0)
+
+=== CONTROL NEGATIVO del instrumento (la misma cita con UN acento quitado) ===
+la variante difiere de la cita en: 1 caracter (i con tilde -> i sin tilde)
+indexOf(variante) = -1 (esperado -1)
+
+=== CARACTERES DE CONTROL fuera de LF/CR en los dos textos ===
+literal art_36: 0 — limpio
+cita_owner_art36.txt: 0 — limpio

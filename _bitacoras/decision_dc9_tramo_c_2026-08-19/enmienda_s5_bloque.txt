@@ -1,0 +1,63 @@
+--------------------------------------------------------------------------------
+ENMENDADO 2026-08-19 — LOS NÚMEROS DE ARTÍCULO ESTÁN MAL Y EL MOTIVO OPERATIVO
+        CAYÓ. EL FUNDAMENTO NO SE MUEVE: D-C9 SE SOSTIENE.
+        Decisión del owner, 2026-08-19. Se agrega al pie por CLAUDE.md §3.3
+        —una bitácora publicada es constancia—; no se reescribió ni una palabra
+        del texto de arriba. Registro completo, con el cotejo carácter por
+        carácter: _bitacoras/decision_dc9_tramo_c_2026-08-19/
+--------------------------------------------------------------------------------
+(1) LA CITA. El contenido de la paráfrasis es CORRECTO; los números no.
+
+    · Art. 29 — CALZA, y por eso NO se tachó. Clasifica para determinar las
+      autoridades que intervienen en el despacho —y también los documentos, que
+      la paráfrasis no recoge— y su categoría E, «Naves menores nacionales», es
+      literal.
+
+    · ~~Art. 30~~ — NO CALZA. Lo que la paráfrasis describe —«presenta
+      documentación y cumple las disposiciones de seguridad de la Autoridad
+      Marítima»— es el ART. 25, casi palabra por palabra: «que la nave tenga su
+      documentación en orden y que sus condiciones de seguridad para la
+      navegación se conformen a la legislación y reglamentación marítima».
+      El Art. 30 literal NO dice «seguridad» NI «Autoridad Marítima»: remite al
+      Reglamento de Operaciones Aduaneras y al artículo 7° de este mismo
+      Reglamento, y su inciso 2 nombra a la Autoridad ADUANERA.
+
+    · «Ninguna nave inicia navegación sin despacho», y con ella «lo que sostiene
+      a D-C9 es que EL DESPACHO ES OBLIGATORIO» — es el ART. 24, el primero del
+      Título III, que además DEFINE el término: la previa autorización de zarpe
+      «se denominará "despacho"».
+
+    => EL APOYO DE D-C9 ESTÁ EN LOS ARTS. 24 Y 25, NO EN EL 29 NI EN EL 30.
+       Texto literal versionado desde el 2026-08-19 en
+       data/decreto/rrdn_articulos.json (v2, 11 artículos de los 40 del
+       decreto), extraído del PDF de data/decreto/fuente_ds364/. Careo
+       artículo por artículo:
+       _bitacoras/ds364_al_arbol_2026-08-19/careo_dc9_vs_literal_2026-08-19.md
+
+(2) EL MOTIVO OPERATIVO CAYÓ — por eso la frase queda tachada arriba. «Por eso
+    el aviso tolera el defecto de atribución y el bloqueo no» se apoyaba en el
+    sobre-alcance del filtro de puerto de sitport-routes.js. F2 lo retiró el
+    2026-08-18: `includes(w` pasa de 2 a 0 ocurrencias en src/ entre 2bd0ff6^ y
+    2bd0ff6, y sigue en 0 en ccd2d8e. Control positivo del mismo grep sobre el
+    mismo árbol: `includes(` da 56. 2bd0ff6 es ancestro de ccd2d8e, verificado.
+
+(3) LO QUE NO SE MUEVE. La pata normativa de D-C9 —hay un funcionario de la
+    Autoridad Marítima entre la app y el zarpe, por norma, siempre— queda EN PIE
+    y ahora con su texto literal adjunto en el árbol. D-C9 SE SOSTIENE, con la
+    cita corregida. Lo que caducó es el motivo operativo, no el fundamento; son
+    dos patas distintas y sólo una se cayó.
+
+(4) LO QUE ESTA ENMIENDA HABILITA. Con el motivo operativo caído, el alcance del
+    Tramo C se decidió el mismo día: D-C10 (alcance) y D-C11 (el aviso y su
+    cita). Los dos en PLAN_JURISDICCION.md §7.1 y en la bitácora de esta
+    enmienda. D-C11 se aparta de C2 —«citar el artículo en el aviso»—, que §4 de
+    esta misma bitácora descartó SIN motivo escrito, a diferencia de B2 y A1,
+    que sí lo llevan.
+
+(5) SIGUE SIN MEDIR, y se declara en vez de dejarlo pasar como comprobado: la
+    afirmación negativa del LÍMITE DECLARADO —«avisar la condición del puerto de
+    recalada no está en el reglamento»— es sobre el reglamento ENTERO. Los
+    artículos extraídos son 11 de 40. En esos 11 no hay nada sobre avisar la
+    condición del puerto de recalada; sobre los otros 29 este cotejo no dice
+    nada.
+--------------------------------------------------------------------------------

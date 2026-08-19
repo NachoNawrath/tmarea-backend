@@ -1,0 +1,74 @@
+HUELLAS DE LA SESIÓN — 2026-08-19
+CLASE DECLARADA (FA-4): sha256 sobre los BYTES DEL FICHERO EN DISCO.
+NO es el blob-sha de git. LOS DOS SE PUBLICAN, y no son intercambiables:
+este repositorio tiene core.autocrlf = true, así que git ALMACENA LF y ENTREGA
+CRLF al hacer checkout. Los ficheros de esta sesión son LF puro (0 CR) en la
+copia de trabajo de hoy, de modo que hoy fichero-en-disco y blob coinciden en
+contenido — PERO EN UN CLON FRESCO NO VAN A COINCIDIR: el checkout los deja con
+CRLF y su sha256-en-disco será OTRO. Quien reverifique tiene que decir con cuál
+de las dos clases está comparando. Es exactamente la trampa que CLAUDE.md §3.5
+nombra: "el archivo en disco o el blob de git no son el mismo byte cuando hay
+CRLF de por medio".
+
+--- FICHEROS QUE ESTA SESIÓN ESCRIBIÓ O MODIFICÓ ---
+0c3f6e9f52d508bbca871d3c0586808fbfd439770b066fb846774c36d97734af   285709 B  CR:0  ctl:0  PLAN_JURISDICCION.md   [modificado — §7.1]
+299f3a714cc526b7fe2d99dfd5992da6b5aa604c6f921183dba0e035fbec1c95    48728 B  CR:0  ctl:0  _bitacoras/cableo_cierre_2026-08-17/cableo_cierre_2026-08-17.txt   [modificado — §5, enmienda al pie]
+e5f29bef4f3009a6e4a618d2537ec4f7084788fdda1ad1ae21537d66024304ad     4146 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/00_previo_plan_71_tramo_c.md   [nuevo]
+f5b669879640d01c9aab744908dc1653672c3037bfce7bc4546a1980eeba535b     4260 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/00_previo_seccion5.txt   [nuevo]
+103f8bce5e1ac3f4c19ba89cd6121b3c5c90adaa0d80e8dc6fe35e34a9f7631e     4016 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/01_cotejo_cita_art36.js   [nuevo]
+0f6b0e9ca161d159b21697095949f3119a3d965d48151ead33139ddf3b1a1bbd     1264 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/01_cotejo_cita_art36.txt   [nuevo]
+74320f2c3960c834462f4049dea3b652cb16ef71c4cfa83e44e2de2cb6788cbd     2363 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/02_cotejo_contrato_art36.js   [nuevo]
+b375da24121f1b48f9199321191cdc23cfc2c2d735aeeb27ae1456c53207ccc6      854 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/02_cotejo_contrato_art36.txt   [nuevo]
+bf7be4d162beffc40be276979492c2b3b652751fe693c7fb150cdda63edf5aff     5454 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/03_medir_m1.js   [nuevo]
+323e4fcf1d050daa3a6296dee4859a9aeab581a0be243dbb2f03eed99dd46b1a     1491 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/03_medir_m1.txt   [nuevo]
+bd9e5473f8754ca7ddd669403dcf984252d4c483191d88fe253924965880e75b     3231 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/04_medir_m2.js   [nuevo]
+3f588f9109ed0a1942b7b06a938ff591f4ed84a9a85f292ffc08f622686a991c     1112 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/04_medir_m2.txt   [nuevo]
+d422ff62b661c1a242cdde1f8a14f9974c319e356361396d52838252b558c30a     1965 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/05_medir_art33_vs_bloqueo.js   [nuevo]
+4a80a272ae752986707984ab06906d959c5a0f1e066401dbd9ed9ad9757950b8     1247 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/05_medir_art33_vs_bloqueo.txt   [nuevo]
+61e0375bc9c51ec82c60f54b78b6b0012b664db7a20f4801506f09b4eb7f8fd9      277 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/cita_owner_art36.txt   [nuevo]
+7710ae2ef13434bd68672c1f74a72fca46a1661b1e84f279c77847a81789558d    39269 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/decision_dc9_tramo_c_2026-08-19.txt   [nuevo]
+6907217aa66c9f63edb1ba7aa0f231b05f05fc4835a1aaafff48ab7830ccd0cb     4020 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/enmienda_s5_bloque.txt   [nuevo]
+f3c58ef25ba63b75e3f704c49fabbf57025fbf71ca269c67c5e0a402d3d95acb     2856 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/p71a.md   [nuevo]
+de8dff8d0ca3ffe9d1ca3134bddc7285d4057d4a0db2fd640e7674a3dc713bb5     3326 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/p71b.md   [nuevo]
+5a2cba8eb6f35acd62f4b2f66ac79999a9a3530b98b3d7d5982f9b1356516359     2836 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/p71c.md   [nuevo]
+3844d239ce0cb314f684884eea6b1968985e3e7694071224767743e2165b8267     9018 B  CR:0  ctl:0  _bitacoras/decision_dc9_tramo_c_2026-08-19/plan_71_nuevo.md   [nuevo]
+
+--- FICHEROS LEÍDOS Y NO TOCADOS, cuyo sha anclan las mediciones ---
+8ba231ca57990d3a1212b485dc6ff3e764e6c6a837b77ddd6428bdc9eab6c2b9    30205 B  data/decreto/rrdn_articulos.json
+4f9fbdc33e290a4cc2ef4dda3e98918eb3bb22466a0fbe07f0170670becddaf6   596628 B  data/catalogo/join_puerto_bahia.json
+e2b34432d9128153f10ae75abae4ee3b8bb77d02d52f657029a352a813b6c92b    18296 B  src/data/bahia-capitania-map.json
+a49676e21ccb6e566ed6b375705e362e472d61d161c58492282636662edd2942    84755 B  CONTRATO_MOTOR.md
+
+CONTROL DE CARACTERES DE CONTROL fuera de LF/CR sobre TODO lo que la sesión escribió:
+  0 — limpio
+
+CONTROL NEGATIVO DEL PROPIO INSTRUMENTO — tiene que cazar uno plantado:
+  cadena con un U+0007 plantado -> CAZADO en 2:U+7
+
+--- CLASE 2: BLOB-SHA DE GIT (sha1, lo que git almacena; LF) ---
+Tomados del índice con git rev-parse ":<ruta>" sobre lo STAGEADO.
+El blob-sha de ESTE MISMO fichero no puede ir adentro de él —cambiaría al
+escribirlo—: va publicado en la PARADA 2 y se comprueba con
+  git rev-parse ":_bitacoras/decision_dc9_tramo_c_2026-08-19/99_huellas.txt"
+94b2970d46e154a1d16e2e8b7c04b3f965016adf  PLAN_JURISDICCION.md
+547603c1612f5ea932df69d5c5c819b41a432da2  _bitacoras/cableo_cierre_2026-08-17/cableo_cierre_2026-08-17.txt
+2306aaf62169d0978cd786bb13f846f618c6827c  _bitacoras/decision_dc9_tramo_c_2026-08-19/00_previo_plan_71_tramo_c.md
+72d1d32a373dc889d7f524384255675ace19f299  _bitacoras/decision_dc9_tramo_c_2026-08-19/00_previo_seccion5.txt
+db2b73f606f3e475f3188fdd2cb22c9b170983c4  _bitacoras/decision_dc9_tramo_c_2026-08-19/01_cotejo_cita_art36.js
+a242560f7c57c79f9258a668cb8350008844442e  _bitacoras/decision_dc9_tramo_c_2026-08-19/01_cotejo_cita_art36.txt
+d21d609a9b243132b0829213e37fc30943d0d599  _bitacoras/decision_dc9_tramo_c_2026-08-19/02_cotejo_contrato_art36.js
+91a5de2f6bac00a1b02bad5655eb9ddc0d43fe38  _bitacoras/decision_dc9_tramo_c_2026-08-19/02_cotejo_contrato_art36.txt
+23630390c4fb4853715500a168e4384e07f7b8dc  _bitacoras/decision_dc9_tramo_c_2026-08-19/03_medir_m1.js
+1ffbf13312103c9e4bb3d9fd35c071df8ad854d9  _bitacoras/decision_dc9_tramo_c_2026-08-19/03_medir_m1.txt
+010af17ffdcb337564feab4f86d02d1f7a470b58  _bitacoras/decision_dc9_tramo_c_2026-08-19/04_medir_m2.js
+eb859b8b49ad8fcac3cdc56bf90e935560815ecc  _bitacoras/decision_dc9_tramo_c_2026-08-19/04_medir_m2.txt
+4fd344c21058990e22c650ceeedc0ee7f8d65478  _bitacoras/decision_dc9_tramo_c_2026-08-19/05_medir_art33_vs_bloqueo.js
+670bda09010a4a88b2c3bc27a2fe61a1b007e7b3  _bitacoras/decision_dc9_tramo_c_2026-08-19/05_medir_art33_vs_bloqueo.txt
+(se omite el propio 99_huellas.txt — ver arriba)
+873019f7c5c26f0d62eb643c2a8e402ffe0a77e9  _bitacoras/decision_dc9_tramo_c_2026-08-19/cita_owner_art36.txt
+29588066d637cf8f424cb4c83995f88b21272c02  _bitacoras/decision_dc9_tramo_c_2026-08-19/decision_dc9_tramo_c_2026-08-19.txt
+59e03db656379c99e046b49917d1ea401ec8f0cc  _bitacoras/decision_dc9_tramo_c_2026-08-19/enmienda_s5_bloque.txt
+c7b3cae30a1b7ee0c0c78c3e416552715aa52ca2  _bitacoras/decision_dc9_tramo_c_2026-08-19/p71a.md
+9cbfc13361215efb06f19bdd1ae22deacd1c6efa  _bitacoras/decision_dc9_tramo_c_2026-08-19/p71b.md
+e2d5048e3c8c3f6951bf0ce7d5161ec16bf74392  _bitacoras/decision_dc9_tramo_c_2026-08-19/p71c.md
+3420e6c15bf7550d526d2acb5ae5e26630a63e29  _bitacoras/decision_dc9_tramo_c_2026-08-19/plan_71_nuevo.md

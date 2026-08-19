@@ -1,0 +1,30 @@
+=== HUELLA (clase: fichero en disco) ===
+data/catalogo/join_puerto_bahia.json : 4f9fbdc33e290a4cc2ef4dda3e98918eb3bb22466a0fbe07f0170670becddaf6
+filas del artefacto: 688
+nombres distintos  : 688   <-- DENOMINADOR de M1
+
+=== (a) ZARPE -> BAHIA, sobre los 688 nombres ===
+  CON BAHIA                              489 / 688
+  SILENCIO/a_adjudicar                    74 / 688
+  SILENCIO/bahia_declarada_lejos          12 / 688
+  SILENCIO/sin_bahia_en_catalogo         113 / 688
+
+=== (b) DE LOS QUE TIENEN BAHIA: CAPITANIA CONOCIDA ===
+  capitania conocida                     489 / 489
+
+=== (c) EL ESCALON DE INV-10.1 QUE LE TOCA AL AVISO, sobre los 489 con bahia ===
+  capitania                              265 / 489
+  gobernacion                            224 / 489
+  (de los que SI muestran contacto:)
+  telefono ATOMICO                       489
+
+=== (d) LO QUE EL AVISO NO PODRIA NOMBRAR — el denominador de la pregunta del owner ===
+  sin bahia (cualquier silencio) .......... 199 / 688
+  con bahia pero Capitania Desconocida .... 0 / 688
+  SIN CAPITANIA QUE NOMBRAR, total ........ 199 / 688   = 28.9 %
+  con Capitania nombrable ................. 489 / 688   = 71.1 %
+
+=== CONTROL POSITIVO — un nombre del propio artefacto tiene que resolver ===
+  "Caleta Pesquera Pisagua" -> bahia_id 204 (esperado: numero)
+=== CONTROL NEGATIVO — un nombre inventado NO tiene que resolver ===
+  bahia_id null silencio "destino_sin_ficha_de_puerto" (esperado: null / destino_sin_ficha_de_puerto)

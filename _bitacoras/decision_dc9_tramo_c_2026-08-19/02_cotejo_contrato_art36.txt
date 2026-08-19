@@ -1,0 +1,17 @@
+ancla INV-2.1 Capa 2 encontrada en offset 23679 (esperado >= 0)
+
+=== LA CITA DEL CONTRATO, desenvuelta a una linea ===
+"en caso de mal tiempo y con puerto cerrado, la Autoridad Marítima podrá conceder el zarpe de la nave que se encuentra a la gira hasta un próximo puerto del litoral, siempre y cuando el capitán asegure que la nave está en condiciones de hacerlo y se responsabilice de ello."
+largo: 272
+
+=== (a) CONTRATO vs LITERAL art_36 ===
+indexOf(cita del contrato, con punto final) = 206
+indexOf(cita del contrato, sin punto final) = 206
+
+=== (b) CONTRATO vs CITA DEL OWNER decidida hoy ===
+identicas sin el punto final? true
+
+=== CONTROL POSITIVO: una cadena que si esta en el contrato ===
+indexOf("a la gira") en CONTRATO_MOTOR.md = 23876 (esperado >= 0)
+=== CONTROL NEGATIVO: cadena inventada ===
+indexOf("QZXNOEXISTE") = -1 (esperado -1)

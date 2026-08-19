@@ -1,0 +1,70 @@
+================================================================================
+§5 · D-C9 · EL ZARPE NO SE BLOQUEA EN ESTE FRENTE
+================================================================================
+MARCO NORMATIVO DEL OWNER — CERRADO. NO SE PIDE FUENTE, NO SE RE-ABRE.
+
+· D.S. 364/1980, Reglamento de Recepción y Despacho de Naves. Alcance nacional.
+  Art. 29 clasifica las embarcaciones para determinar qué autoridades intervienen
+  en el despacho, e incluye expresamente las naves menores nacionales
+  (categoría E) — o sea, cubre al usuario de Tmarea. Art. 30 y correlativos: para
+  obtener autorización de zarpe la nave presenta documentación y cumple las
+  disposiciones de seguridad de la Autoridad Marítima. Ninguna nave inicia
+  navegación sin despacho.
+· El acto operativo —llamar por VHF Canal 16 o por teléfono al soltar amarras— lo
+  fija la resolución local de cada Capitanía. Misma estructura que el cierre:
+  marco nacional que obliga, forma local.
+
+CONSECUENCIA: hay un funcionario de la Autoridad Marítima entre la app y el
+zarpe, por norma, siempre. Un aviso equivocado se corrige ahí; un botón apagado
+no lo destraba nadie. Por eso el aviso tolera el defecto de atribución y el
+bloqueo no.
+
+LÍMITE DECLARADO, para que no se apoye en lo que no dice: lo que sostiene a D-C9
+es que EL DESPACHO ES OBLIGATORIO. NO que el funcionario avise sobre el puerto de
+destino — el despacho verifica documentación y seguridad, y avisar la condición
+del puerto de recalada no está en el reglamento. El argumento no se apoya en eso.
+
+ESTE MARCO VA AL CONTRATO DEL FRENTE, NO A LA PANTALLA: el copy sigue siendo
+B1 + C1, y C2 (citar el artículo en el aviso) ya fue descartada.
+
+Sin esta redacción, dentro de tres meses el zarpe sin bloqueo parece un olvido y
+alguien lo "arregla".
+
+--------------------------------------------------------------------------------
+LO QUE PRODUCE `estado === 'rojo'` EN EL CAMINO DE ZARPE — MEDIDO
+--------------------------------------------------------------------------------
+  hook :148-150 → 'UV' (SIN tope; recalada sí tiene tope, :158-163, Art. 24)
+  maxVeredicto  → veredicto global 'UV'
+  VoyageVerdict.jsx:63-64  razón «Puerto de zarpe "X" cerrado»
+  VoyageVerdict.jsx:33-41  🟥 Bandera U+V · «Navegación no recomendada» · «No zarpar.»
+  ~~P3:330-341~~  CTA `disabled`, gris, onClick undefined → onStartVoyage nunca se
+                llama → P4 INALCANZABLE. Es bloqueo efectivo del viaje.
+  EFECTO SECUNDARIO: ~~VoyageVerdict.jsx:141~~ mostraría «Puedes navegar hasta X»
+  junto a «No zarpar» en la misma tarjeta.
+
+  ENMENDADO 2026-08-17 POR EL GATE DEL FRENTE DEL FILTRO — LOS DOS RANGOS SE
+  MOVIERON CON EL TRAMO B. EL MECANISMO NO: los dos siguen siendo exactos.
+  El commit `6443178` reescribió `P3_VoyageVerification.jsx`, y hoy :330-341 son
+  el aviso de cierre que ese mismo tramo escribió — no el CTA.
+      CTA .................. `P3:450-451`
+                             onClick={veredicto !== 'UV' ? onStartVoyage : undefined}
+                             disabled={veredicto === 'UV'}
+      «Puedes navegar hasta» `src/components/verification/VoyageVerdict.jsx:144`
+                             (:141 es la guarda del bloque)
+  Y HAY UNA SEGUNDA COPIA que el traspaso no nombra: el mismo string está en
+  `TransitRestrictionsBlock.jsx:147`. Quien encienda el Tramo C tiene que mirar
+  las dos, o arreglará una y dejará la otra diciendo lo contrario del veredicto.
+  Sin esta nota el Tramo C persigue una línea movida — es el mismo cuidado que
+  §7 de esta bitácora ya tomó para el frente de drift.
+
+DE LOS 167, CUÁNTOS EN ZARPE Y CUÁNTOS EN RECALADA: LA PREGUNTA NO TIENE
+RESPUESTA DEL LADO DEL DATO, y eso es el hallazgo. Zarpe y recalada se resuelven
+con LA MISMA llamada (hook :820 y :826), el mismo endpoint y el mismo filtro. Una
+restricción no "es" de zarpe ni de recalada: es de una bahía, y el rol lo fija el
+viaje. No hay partición; hay la misma bolsa expuesta dos veces. Cualquier cifra
+"X en zarpe / Y en recalada" sería inventada.
+
+EXPOSICIÓN (lo que sí se mide):
+  bahías distintas (bahia+GLBahia) en las 444 ........ 98
+  bahías con >=1 restricción CERRADA ................. 83 / 98
+

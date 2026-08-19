@@ -1,0 +1,23 @@
+=== HUELLA (clase: fichero en disco) ===
+src/data/bahia-capitania-map.json : e2b34432d9128153f10ae75abae4ee3b8bb77d02d52f657029a352a813b6c92b
+entradas del mapa: 164   <-- DENOMINADOR de (a)
+
+=== (a) EL DATO — que trae bahia-capitania-map.json ===
+  sin_telefono       0 / 164
+  atomico          164 / 164
+  no_atomico         0 / 164
+
+=== (b) EL VEREDICTO QUE EL MOTOR YA EMITE — contactoPorEscalon sobre las 164 entradas ===
+  capitania                           99 / 164
+  gobernacion                         65 / 164
+  telefono_atomico true              164
+
+=== CONTROL NEGATIVO del criterio de atomicidad — tiene que morder ===
+  "+56 65 256 1100"                        esAtomico=true
+  "+56 65 256 1100 ó +56 65 256 1101"      esAtomico=false
+  "65-2561100"                             esAtomico=false
+  ""                                       esAtomico=false
+  null                                     esAtomico=false
+=== CONTROL POSITIVO de contactoPorEscalon — una entrada real y una vacia ===
+  entrada real (71): nivel="capitania"
+  entrada nula                : nivel=null (esperado null)
