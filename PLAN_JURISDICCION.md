@@ -2004,8 +2004,24 @@ sesión no las re-contó y no publica ninguna cifra como propia**:
   `#658→158`) en el mismo `UPDATE`, y hubo que separar la corrección en dos sentencias para
   que el `NULL` quedara. Lo cazó la verificación *dentro* de la transacción, que hizo ROLLBACK.
   **QUÉ HARÍA FALTA PARA CERRARLO, en orden de costo:**
-  (i) **un control que exija `bahia_sitport_id IS NULL` en los once**, corrible junto a
-      `npm run drift`. Es barato, es el que caza el caso y no decide nada;
+  (i) ~~**un control que exija `bahia_sitport_id IS NULL` en los once**, corrible junto a
+      `npm run drift`. Es barato, es el que caza el caso y no decide nada;~~
+      **HECHO el 2026-08-19. `npm run ancla` · su mordida, `npm run ancla:mordida`.**
+      **NO quedó «junto a `npm run drift`», y el motivo va escrito porque cambia el
+      alcance:** `e01_control_drift_catalogo.js` consulta SITPORT antes que nada y sale
+      `NO_SE_PUDO_MEDIR` si no responde, así que alojado ahí el control **no correría el
+      día que orion.directemar.cl esté caído**; y su vía documentada —`npm run drift`—
+      siempre pasa `--estado` y **reescribe `data/catalogo/estado_drift.json`**. Tampoco
+      entró a la suite: hoy ningún test de `src/services/__tests__/` toca la base, y un
+      test que se saltea solo cuando no hay base es un control que pasa en verde por no
+      haber mirado.
+      **Qué vigila, y es más que el enunciado viejo:** los once **no van en el código**
+      —§4.3— sino en `data/catalogo/anclas_declaradas.json`, y se exige el ancla
+      **y la coordenada**. Vigilar sólo el ancla habría cubierto **2 de 11** del evento:
+      mover el `geom` dispara el trigger, pero el trigger sólo escribe ancla si el punto
+      cae en un polígono, y en la corrida de (a1) cayó en 2. **Cierra el punto (i) y sólo
+      el (i): detecta, no impide, y no dice por qué vía se escribió el ancla.**
+      Registro: `_bitacoras/control_ancla_2026-08-19/`;
   (ii) **versionar el trigger y la matview** —hoy no están en este repositorio, así que el
       campo que decide jurisdicción no tiene productor auditable (H-2), y el trigger de HOY
       **no explica los valores de hoy**: la posición desplazada de los once no caía dentro de

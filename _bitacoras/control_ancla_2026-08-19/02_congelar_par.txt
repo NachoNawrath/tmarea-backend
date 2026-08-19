@@ -1,0 +1,32 @@
+==============================================================================
+(a1)-T - CONGELAR EL PAR (lectura + declaracion) - SOLA LECTURA
+corrida 2026-08-19T22:16:55.554Z
+==============================================================================
+
+1 - LA LECTURA
+  ok 781 filas - 781 filas
+    huella del universo (sha256 de id|lat|lng|ancla, orden de id): 02228be7d7867358e77a9bd07a916100e965d102db30263fef2742e8cb37d10d
+  ok la huella coincide con la que dejo la pieza (a1) el 2026-08-19 - 02228be7d786...
+
+2 - LA DECLARACION PAREJA
+    copiada de data/catalogo/anclas_declaradas.json
+
+3 - LOS DOS FICHEROS
+    02_par_lectura_781_2026-08-19.json - 131458 bytes
+      sha256 de los BYTES EN DISCO (clase FA-4): 4f251a8d3874d03a97d7f1309867ee3805685473797caa093b01c0efe60de2c2
+  ok cero caracteres de control fuera de LF/CR en 02_par_lectura_781_2026-08-19.json - 0 encontrados
+    02_par_declaracion_2026-08-19.json - 9922 bytes
+      sha256 de los BYTES EN DISCO (clase FA-4): 88802142085f1f7b3c416fc2bd0270b76c47d16f4aafb634834e8b9598011f32
+  ok cero caracteres de control fuera de LF/CR en 02_par_declaracion_2026-08-19.json - 0 encontrados
+  ok la copia de la declaracion es byte a byte identica al original - si
+
+4 - EL PAR RE-PARSEA Y SIRVE
+  ok la lectura re-parsea 781 filas - 781
+  ok la declaracion re-parsea 11 filas - 11
+  ok los 11 declarados estan en la lectura - el par es COHERENTE - 11 / 11
+    filas de la lectura con ancla puesta: 221 de 781
+  ok la lectura trae ancla puesta en alguna fila - sin eso el control negativo de la mordida no valdria - 221
+
+==============================================================================
+VERDE - par congelado
+==============================================================================

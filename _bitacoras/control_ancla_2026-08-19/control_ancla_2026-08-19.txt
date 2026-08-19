@@ -1,0 +1,564 @@
+================================================================================
+(a1)-T · EL CONTROL QUE PROTEGE EL ANCLA EN NULL
+Sesión del 2026-08-19 · tmarea-backend
+Punto (i) de la deuda `(a1)-T` de PLAN_JURISDICCION.md, y SÓLO el punto (i).
+================================================================================
+
+SHELL DECLARADO (CLAUDE.md §7.3): PowerShell 5.1 en Windows 10, salvo los
+`grep` de reconocimiento, que corrieron en Git Bash. `psql` no está en el PATH;
+la base se consultó con el pool de `pg` + `dotenv`, como hizo la pieza (a1).
+
+QUÉ SE ESCRIBIÓ, Y QUÉ NO:
+  · se escribió un control, su declarativo, su prueba de mordida y su cableado
+    en `package.json`;
+  · NO se versionó el trigger ni la matview (punto (ii), H-2);
+  · NO se decidió si el trigger debe existir (punto (iii));
+  · NO SE TOCÓ LA BASE: ni UPDATE, ni DROP TRIGGER, ni nada que escriba. Las
+    cuatro corridas contra la base fueron de sola lectura;
+  · NO se tocó `data/catalogo/estado_drift.json` ni `.claude/launch.json`;
+  · NO se levantó el backend — arrancarlo re-corre el control de drift y
+    reescribiría `estado_drift.json`.
+
+================================================================================
+§1 · EL GATE, Y LO QUE MIDIÓ CONTRA LA BASE DE HOY
+================================================================================
+Instrumento: `00_gate_premisas.js` / `.txt`. Sola lectura.
+
+Las cinco premisas del prompt se verificaron y las cinco se cumplen:
+
+  · `main` = `origin/main` = `9d459e9`. Sin `gh` instalado, verificado con
+    `git rev-parse` sobre los tres nombres.
+  · suite 157 pass / 157 tests / 16 suites / 0 fail. Salida cruda en `06_suite.txt`.
+  · `.claude/launch.json` y `data/catalogo/estado_drift.json` siguen ` M` sin
+    stagear, y siguen así después de todas las corridas de esta sesión.
+  · `join_puerto_bahia.json` sha256 `61bf7dc779f5…` — el artefacto vigente.
+  · huella del universo `02228be7…`, 781 filas.
+
+Y LA QUE ERA EL POSIBLE HALLAZGO DE LA SESIÓN: **los once nodos 653..663 siguen
+con `bahia_sitport_id` en NULL en la base, y con la coordenada corregida.**
+11 / 11 en las dos cosas. Ninguno volvió a tener ancla. No hay hallazgo por ahí.
+
+CONTROL NEGATIVO DE ESA LECTURA, y no es adorno: un control que exige NULL sale
+verde también si la consulta devuelve NULL para todo. De las 770 filas ajenas,
+**221 traen ancla puesta y 549 la traen en NULL** (unidad: filas de
+`nodos_maritimos`; denominador 770 = 781 − 11). La lectura discrimina.
+
+================================================================================
+§2 · LAS DOS COSAS QUE ENCONTRÓ EL GATE Y QUE CAMBIARON EL DISEÑO
+================================================================================
+
+(A) EL CRUCE CON `estado_drift.json` NO ERA EL PROBLEMA MÁS GRANDE. El prompt
+    avisaba que alojar el control dentro de `e01_control_drift_catalogo.js`
+    reescribiría ese fichero. Es cierto, y hay algo peor: `e01` llama a
+    `obtenerCapturas()` **antes que nada** y sale `NO_SE_PUDO_MEDIR` (exit 2) si
+    SITPORT no responde, sin llegar a ninguna otra medición. Un control del
+    ancla alojado ahí **no correría el día que orion.directemar.cl esté caído**,
+    que es justo un día en que nadie está mirando la base.
+    Sí existe una vía sin escritura —la guarda
+    `ESCRIBE_ESTADO = ESTADO !== null && INSUMO === null` significa que `e01`
+    sin `--estado` no escribe—, pero **`npm run drift` siempre pasa `--estado`,
+    y `drift-arranque.js` también**. O sea: la vía limpia es la que nadie usa.
+    El propio comentario de esa guarda dice por qué eso no vale: *«Redirigir a
+    un temporal obliga a acordarse de redirigir, y acordarse ya falló una vez»*.
+
+(B) `estado_drift.json` EN EL ÁRBOL NO ES RUIDO DE ENTORNO: ES UN HALLAZGO SIN
+    TRIAR. Ver H-T1 en §7. Pisarlo no ensucia el árbol: borra la única evidencia
+    de que SITPORT sumó una bahía que nadie declaró.
+
+Con las dos, la opción «dentro de e01» se descartó y quedó escrito por qué.
+
+================================================================================
+§3 · EL DISEÑO, TAL COMO EL OWNER LO APROBÓ EN LA PARADA 1
+================================================================================
+
+(1) DÓNDE VIVE · script propio, con el precedente de la casa.
+    `scripts/control_ancla_declarada.js` y `scripts/prueba_mordida_ancla.js`,
+    cableados como `npm run ancla` y `npm run ancla:mordida` **al lado del par
+    `drift` / `drift:mordida` que ya existía**.
+    Las otras dos, descartadas con su costo: dentro de `e01`, por §2(A) y (B);
+    dentro de la suite, porque hoy **ningún** fichero de
+    `src/services/__tests__/` menciona `require('pg')`, `new Pool` ni `DB_HOST`
+    —grep con control positivo: el mismo vocabulario dispara en 5 ficheros de
+    `scripts/`— y un test que se saltea solo cuando no hay base es un control
+    que pasa en verde por no haber mirado.
+    Y NO lleva prefijo `e01_`: ese prefijo nombra la etapa E0.1, que es el drift
+    del catálogo de bahías contra SITPORT. Este control sale de (a1), que es el
+    frente del join. El prefijo mentiría la etapa. Precedente sin prefijo en el
+    mismo directorio: `prueba_mordida_cotejo_contrato.js`, `frente-contacto-*.js`.
+
+(2) QUÉ VIGILA · los once NO van en el código.
+    CLAUDE.md §4.3: *«Nada de rutas, nombres ni valores fijos de una entidad
+    concreta… eso es una propiedad declarada en el dato, no una rama en el
+    código.»* Un control con `653..663` adentro es una regla que nombra a
+    alguien. Va `data/catalogo/anclas_declaradas.json`, con el precedente de
+    `divergencias_declaradas.json`. **Agregar un nodo mañana no toca código.**
+    Se exigen tres cosas por fila declarada:
+      · que la fila exista;
+      · que el id siga apuntando al MISMO nodo —`nombre`, `fuente`, `fuente_id`
+        tienen que calzar—. Ahí es donde la fragilidad del id por renumeración
+        deja de ser un verde silencioso y pasa a ser un rojo con motivo;
+      · que el ancla valga lo declarado **Y** que la coordenada siga en su sitio,
+        con tolerancia declarada en el dato (1e-9 grados, no una constante del
+        código).
+    POR QUÉ TAMBIÉN LA COORDENADA, con su número: el ancla es el síntoma
+    INCOMPLETO. Mover el `geom` dispara el trigger, pero el trigger sólo escribe
+    ancla **si el punto cae dentro de un polígono**, y en la corrida de (a1) cayó
+    en **2 de 11**. En los otros **9 de 11** el `geom` se movió, el ancla quedó
+    en NULL, y un control que sólo mirara el ancla habría salido verde con la
+    coordenada equivocada. Vigilar sólo el ancla cubre el 18 % del evento
+    (2/11); con la coordenada cubre 11/11.
+    LO QUE NO SE VIGILA, y por qué: la condición general —«ninguna fila tiene un
+    ancla que nadie le dio»— no es medible. 221 de las 770 ajenas tienen ancla y
+    **nadie declaró de dónde salió** (H-2: el productor del campo no está
+    versionado). Una regla general daría falsos positivos por construcción. Las
+    ajenas se MIDEN como control negativo y no se exigen.
+
+(3) QUÉ HACE CUANDO MUERDE · falla ruidoso, **NO CORRIGE**, y no escribe estado.
+    Un UPDATE automático sobre la base sin autorización está fuera de alcance, y
+    además borraría la evidencia de CUÁNDO pasó, que es el único rastro que
+    llevaría a H-2. El informe lo dice con esas palabras cuando muerde.
+    Sin fichero de estado versionado: recrearía el mismo fichero reescrito en
+    cada corrida que esta sesión no puede tocar. Descartado por el owner.
+
+(4) LA MORDIDA · en §5.
+
+--------------------------------------------------------------------------------
+§3.1 · EL VOCABULARIO DE SALIDA, Y LA CORRECCIÓN ① DEL OWNER
+--------------------------------------------------------------------------------
+La PARADA 1 propuso un código `3 DECLARACION_NO_CALZA` que significaba «se rompió
+la premisa del propio control» **y que se llevaba también la coordenada movida**.
+El owner lo devolvió: la coordenada movida es, por la medición de arriba, el
+**82 % del evento** que la pieza caza (9 de 11), y estaba saliendo por el código
+que significa que el instrumento está mal. Era un defecto de diseño y se corrigió.
+
+  0  SIN_NOVEDAD             todas las filas declaradas están como se declaró
+  1  ESTADO_DECLARADO_ROTO   una fila declarada dejó de estarlo: ancla repuesta,
+                             coordenada movida, o las dos
+  2  NO_SE_PUDO_MEDIR        la base no respondió, o la lectura no discrimina
+  3  DECLARACION_NO_CALZA    la fila no está, el id apunta a otro nodo, o la
+                             declaración es ilegible — SÓLO premisa rota
+
+Vocabulario PROPIO y no el de `e01` (0/1/2/3 de drift): aquél habla de
+divergencia del catálogo de bahías contra SITPORT, y un ancla repuesta no es eso.
+
+POR QUÉ ANCLA Y COORDENADA COMPARTEN EL CÓDIGO 1, en vez de tener uno cada uno:
+**una misma fila puede traer los dos síntomas a la vez** —`#655` en la corrida de
+(a1) los traía— y con dos códigos habría que elegir uno, que es arbitrario. La
+acción de quien lee es la misma en los tres casos: alguien intervino el `geom`,
+hay que averiguar quién y restituir. Lo que sí tiene contenido distinto va al
+informe, con resolución que un código de salida no puede llevar:
+
+  ancla_repuesta_con_coordenada_intacta
+      el ancla volvió SIN que la posición se moviera. El trigger no lo explica
+      solo: ES LA HUELLA DE LA VÍA DESCONOCIDA DE H-2.
+  coordenada_movida_con_ancla_intacta
+      el geom se movió y el trigger no encontró polígono. 9 de 11 en (a1).
+  ancla_repuesta_y_coordenada_movida
+      el geom se movió y el trigger sí encontró. 2 de 11 en (a1).
+
+PRECEDENCIA, declarada porque no es obvia: **3 > 2 > 1 > 0**. Si el declarativo
+no calza con la tabla, la lectura de todo lo demás es dudosa. El informe lista
+todas las clases igual: el código de salida es un canal grueso.
+
+================================================================================
+§4 · DE DÓNDE SALE EL DECLARATIVO — Y POR QUÉ NO SALE DE LA BASE
+================================================================================
+Instrumento: `01_construir_declarativo.js` / `.txt`.
+
+`data/catalogo/anclas_declaradas.json` se construye desde
+`_bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv` —el derivado
+versionado de la pieza (a1), sha256 `f0763b0f…`—, **no leyendo la base**. Si el
+declarativo saliera de la base, el control sería tautológico: la base diría lo
+que la base debe decir. El declarativo sale de la DECISIÓN, y el control prueba
+que la base la cumple.
+
+TRES MENORES QUE EL OWNER PIDIÓ RESOLVER AL ESCRIBIR, y quedaron en el fichero:
+
+  · `_advertencia_fuente_id` — H-5 dice que los `fuente_id` de SERNAPESCA están
+    rotos COMO PUNTERO: de los 20 `CAL-xxxx` de la base, 13 ya no existen en
+    `caletas_chile.json` y 7 apuntan a otra caleta (`CAL-0054` es «Puerto De
+    Caldera Mejoras Fiscales» en la base y una caleta a 688 km en el fichero).
+    Acá sirven de **huella de identidad congelada** y nada más: el control los
+    COMPARA contra la base y **nunca resuelve nada con ellos**. Queda escrito en
+    el propio declarativo para que nadie los use mañana para resolver.
+  · `_nota_caracteres` — el nombre del nodo 656 trae `U+0091`, un control C1
+    (H-8). En el JSON va **escapado, como seis bytes ASCII, a propósito**. EL
+    ESCAPE ES INTENCIONAL Y NO ES UN HALLAZGO. El control de caracteres de
+    control corre sobre los **BYTES** del fichero, no sobre el string parseado.
+  · el prefijo `e01_`: resuelto en §3(1).
+
+================================================================================
+§5 · LA MORDIDA, Y LA CORRECCIÓN ② DEL OWNER
+================================================================================
+Instrumentos: `02_congelar_par.js` / `.txt` y `scripts/prueba_mordida_ancla.js`.
+Salida cruda de la mordida en `05_prueba_mordida.txt`.
+
+EL REPARTO QUE LA HACE POSIBLE. El control se partió en dos, igual que el de
+drift: la **función de veredicto pura** en `src/services/anclas-declaradas.js`
+—recibe filas y declaración, devuelve informe; no abre la base, no lee ficheros
+y no imprime— y el CLI que sólo consigue las filas del pool. **Esa partición ES
+la razón de que la mordida pueda correr sin base y sin red.**
+
+LA CORRECCIÓN ②. La PARADA 1 proponía congelar la foto de las 781 filas y
+cotejarla contra el declarativo **vivo**. El owner lo devolvió: el día que otra
+pieza declare un nodo que hoy tiene ancla puesta, el control negativo daría rojo
+sin que nada esté mal — y ése es justo el caso de uso que el declarativo promete
+soportar sin tocar código.
+**Lo que se hizo: se congela EL PAR.** La lectura real de las 781 del 2026-08-19
+Y la declaración vigente en esa misma fecha, juntas y con la misma fecha. La
+mordida corre entera sobre el par.
+El razonamiento que lo ordena es que había dos afirmaciones mezcladas:
+  · la mordida prueba que **la FUNCIÓN muerde**, y eso no depende de qué
+    declaración coma;
+  · que **el mundo de hoy está bien** lo prueba `npm run ancla` contra la base
+    viva — que es una de las corridas de esta sesión, `04_control_ancla.txt`.
+COSTO, DICHO: el par puede envejecer y nadie se entera. Se paga con dos cosas y
+ninguna es un «acordarse»: la mordida **imprime los dos sha256** —el de la
+declaración congelada y el de la viva— y **lo dice sin fallar** si difieren
+(fallar ahí sería el mismo falso rojo que la corrección evita); y el
+`_procedimiento` de refresco queda escrito **dentro del declarativo**, donde lo
+lee quien agregue una fila.
+
+TAMAÑO DEL PAR, Y EL UMBRAL DE §3.5. `02_par_lectura_781_2026-08-19.json` pesa
+**131.458 bytes**, por encima del corte de ~100 KB que §3.5 fija para el crudo
+liviano. **Se versiona igual, y el criterio con que se mueve el umbral va dicho,
+como §3.5 exige:** el corte existe para decidir entre versionar el fichero o
+dejar un `PROCEDENCIA.txt` que permita recapturarlo, y **acá recapturar es
+imposible** — la re-captura sería una consulta a una base que puede haberse
+movido, y el fixture vale precisamente porque no se mueve. Sin este fichero la
+mordida no corre desde un clon limpio, y un control que no se puede probar no
+vale. Se redujo lo que se podía sin perder dato: cabecera indentada y las 781
+filas a **una por línea** (con indent 2 daba 179.099 bytes).
+
+LAS FAMILIAS. Nueve, y las nueve muerden. Siete son las que el owner aprobó;
+**dos van declaradas como agregadas por esta sesión** y se sacan si sobran.
+
+  CN  el par intacto ............................ SIN_NOVEDAD, 0 hallazgos
+  M1  ancla repuesta, coordenada intacta ........ ESTADO_DECLARADO_ROTO
+  M2  las once con ancla a la vez ............... ESTADO_DECLARADO_ROTO, 11
+  M3  la tabla llega VACÍA ...................... DECLARACION_NO_CALZA, 11
+  M4  un nodo_id declarado ya no existe ......... DECLARACION_NO_CALZA
+  M5  el id existe pero es OTRO nodo ............ DECLARACION_NO_CALZA
+  M6  la coordenada vuelve al +6,00° con NULL ... ESTADO_DECLARADO_ROTO
+  M7  la declaración llega VACÍA ................ el control SE DETIENE
+  M8  ninguna ajena tiene ancla · AGREGADA ...... NO_SE_PUDO_MEDIR
+  M9  los dos síntomas en la misma fila · AGREGADA  ESTADO_DECLARADO_ROTO
+
+  M3 y M7 son las dos que el encargo exigía por nombre: un control que exige
+  NULL y no encuentra filas —o no tiene a quién exigírselo— no puede salir verde.
+  M8 se agregó porque el control negativo del informe era el único trozo del
+  instrumento sin mordida propia. M9 se agregó porque la tercera clase del
+  vocabulario, si no, sería una rama que ninguna prueba produce; y además es la
+  reproducción literal de lo que le pasó al nodo 655 al aplicar (a1).
+
+  LO QUE SE INYECTA NO ES INVENTADO: el ancla `83` es la que el trigger le
+  escribió al `#655` de verdad, y las coordenadas del `+6,00°` salen del
+  `estado_previo` que el propio declarativo guarda.
+
+  Y una exigencia sobre el vocabulario, para que no envejezca: la mordida
+  comprueba que **toda clase declarada en el control tiene al menos una familia
+  que la produce**. Las cinco, cubiertas.
+
+QUÉ NO PRUEBA LA MORDIDA: nada sobre el estado de la base de hoy. Lo dice ella
+misma al cerrar.
+
+================================================================================
+§6 · LAS DOS CORRIDAS, CON SU RESULTADO
+================================================================================
+Salida cruda completa en `04_control_ancla.txt` y `05_prueba_mordida.txt`.
+
+  `npm run ancla`          VEREDICTO: SIN_NOVEDAD (salida 0)
+      781 filas leídas · 11 declaradas · 0 hallazgos
+      control negativo: 221 de 770 ajenas con ancla puesta
+  `npm run ancla:mordida`  SIN FALLAS (salida 0)
+      el control negativo no mordió y las 9 familias mordieron
+  `npm test`               157 pass / 157 · 0 fail (`06_suite.txt`)
+
+EL INSTRUMENTO SE CORRE, NO SE DA POR BUENO PORQUE COMPILA, y esta sesión lo
+volvió a pagar: `01_construir_declarativo.js` compilaba y su primera corrida
+escribió un JSON **inválido** — el escapador de caracteres de control barría el
+rango `U+0000-U+009F` y se llevaba puestos los LF que separan las líneas del JSON
+indentado, dejando el fichero en una sola línea con la secuencia escapada donde
+iban los saltos. Lo cazó el propio instrumento al re-parsear lo que había
+escrito. El rango correcto es `U+007F-U+009F`: los C0 de adentro de los strings
+ya los escapa `JSON.stringify`, y los únicos que quedan crudos son los C1 y el
+DEL. Va escrito en el comentario del escapador para que nadie lo «arregle» de
+vuelta.
+
+================================================================================
+§6-bis · LO QUE LA PARADA 2 DEVOLVIÓ, Y CÓMO QUEDÓ
+================================================================================
+
+① EL PAR CONGELADO INVERTÍA UN PRINCIPIO QUE ESTA MISMA BITÁCORA CITA.
+   El diseño de la PARADA 1 decía que la mordida lee el declarativo REAL y no
+   una copia, con el motivo de `e01`: *una copia del dato real es una segunda
+   fuente de verdad y se vence sola*. Congelar el par —la salida correcta a la
+   corrección ②— reabrió justo eso: el día que se declare un nodo doce, la
+   mordida seguiría VERDE contra un declarativo de once.
+   RESPUESTA MEDIDA A LA PREGUNTA: **`03_cierre_controles.js` NO comparaba** el
+   declarativo congelado contra el real. Lo único que había era un aviso en la
+   mordida que **no fallaba**, y la justificación que di —«fallar sería el mismo
+   falso rojo»— **era incorrecta y se retira**: el falso rojo de la corrección ②
+   era un rojo SIN INSTRUCCIÓN —CN mordiendo porque un nodo recién declarado
+   traía ancla en la foto—; un par vencido es un defecto real y su rojo trae la
+   orden. Un fixture vencido ES un defecto.
+   LO QUE SE PUSO, en `scripts/prueba_mordida_ancla.js`:
+     · **G1 · EL PAR NO PUEDE VENCERSE EN SILENCIO.** Compara el sha256 de la
+       declaración congelada con el de la viva. Si difieren, **FALLA**, nombra
+       los `nodo_id` que el fixture dejó de cubrir y escribe el comando de
+       refresco. Hace que el `_procedimiento` del declarativo se CUMPLA en vez
+       de recordarse — «acordarse ya falló una vez».
+     · **G2 · LA DECLARACIÓN VIVA SE VALIDA IGUAL.** `validarDeclaracion` sobre
+       `data/catalogo/anclas_declaradas.json`. Es lo único de esa prueba que
+       dice algo del artefacto que el control usa de verdad, y no cuesta ni base
+       ni red.
+   Y LAS DOS GUARDAS TIENEN SU PROPIA MORDIDA, porque una guarda sin mordida es
+   la decoración que ellas mismas vinieron a corregir:
+   `07_mordida_de_las_guardas.js` **altera temporalmente el declarativo vivo y
+   corre el script DE VERDAD como proceso hijo** —no una copia de su lógica—,
+   restituye siempre y prueba la restitución por sha256. MG1 eligió el nodo
+   **#7, que tiene ancla 197 en la foto**: es literalmente el caso que la
+   PARADA 2 nombró. G1 mordió (exit 2, «EL PAR VENCIO», nombró el 7, dio el
+   comando); G2 mordió con una tolerancia negativa; el declarativo volvió byte a
+   byte (`88802142…` → `88802142…`) y la mordida real volvió a salir 0.
+
+② `ancla_esperada` ACEPTABA ENTERO Y NINGUNA FAMILIA LO EJERCITABA.
+   Es el mismo argumento con que se agregó M9, y no quedaban las dos.
+   DECISIÓN: **se restringe a `null`.** Hoy ninguna declaración de este
+   repositorio nombra un ancla con valor, así que era una rama que ningún dato
+   ejercita y ninguna familia produce. Y restringir es **más seguro**: convierte
+   un `"ancla_esperada": 83` tipeado por error —que debilitaría el control en
+   silencio, exigiendo justo lo que el trigger escribe— en un rojo.
+   Ensancharlo queda como decisión deliberada de la pieza que lo necesite, **y
+   viene con su familia**. La comparación de la función pura ya es genérica y no
+   hubo que tocarla. Familia nueva: **M10**, que prueba que la restricción
+   muerde. El nombre del fichero se justifica por el dato: declara el estado
+   DECIDIDO del ancla, que hoy es siempre NULL.
+
+③ EL CONTROL DE CARACTERES SALÍA VERDE SIN PROBAR QUE MUERDE — Y TENÍA UN HUECO.
+   Instrumento: `08_mordida_control_caracteres.js` / `.txt`, midiendo la MISMA
+   función que corre el control (`lib_control_caracteres.js`), no una
+   transcripción.
+   **EL MORDEDOR PROPUESTO NO ERA SU MORDEDOR, y va medido:** el defecto del
+   escapador de hoy —rango `U+0000`— **saca** LF del fichero en vez de agregar
+   controles (200 LF → 0), así que el control de caracteres se queda VERDE. El
+   que caza ese defecto es OTRO: el re-parseo del JSON. Medido en I3.
+   **Y AHÍ APARECIÓ EL HALLAZGO, que es el que la PARADA 2 anticipó:** el
+   criterio que corrió a las 22:22 sobre los 21 ficheros miraba sólo
+   `b < 0x20`. **El `U+0091` del nodo 656 —el único control que este
+   repositorio tiene de verdad en un dato— se codifica en UTF-8 como `0xC2 0x91`
+   y NINGUNO de los dos bytes es menor que `0x20`.** O sea que el control salía
+   verde sobre un fichero que llevara ese carácter crudo adentro: exactamente
+   lo que decía impedir. Lo mismo con el `DEL` (`0x7F`).
+     I2 · U+0091 crudo ...... criterio viejo **0 hallazgos** · vigente 1 (clase C1)
+     I4 · DEL 0x7F .......... criterio viejo **0 hallazgos** · vigente 1 (clase DEL)
+     I1 · C0 0x07 ........... los dos muerden
+     I5 · control negativo del criterio (c): «Âáñ» **no** dispara — si marcara
+          cualquier `0xC2`/`0xC3`, el propio nombre del 656 («ã» = `0xC3 0xA3`)
+          habría puesto rojo el fichero real.
+   CRITERIO VIGENTE, en un solo lugar y con su mordida:
+     (a) byte < 0x20 que no sea LF ni CR → C0
+     (b) byte 0x7F → DEL
+     (c) byte 0xC2 seguido de 0x80..0x9F → C1 codificado en UTF-8
+   **El veredicto de la corrida de las 22:22 sigue siendo correcto** —los
+   ficheros están limpios, y el criterio vigente lo confirma sobre todos—, pero
+   **estaba probando menos de lo que decía**. Ésa es la diferencia, y es la
+   razón por la que un control de «no hay» no se publica sin mordida.
+
+CUATRO MENORES DE LA MISMA VUELTA:
+  · **«21 ficheros» no tenía denominador.** El diffstat traía 22 y la lista 21:
+    el que faltaba era **el propio `.txt` que ese script escribe**, que no puede
+    hashearse en su bucle porque todavía no existe. Corregido: el script lo
+    revisa aparte al final y publica el denominador entero.
+  · **El prefijo `e01_`** está justificado en §3(1) de esta bitácora: `e01_`
+    nombra la etapa E0.1 —drift del catálogo de bahías contra SITPORT—, y este
+    control sale de (a1), el frente del join; el prefijo mentiría la etapa.
+    Precedente sin prefijo en el mismo directorio: `prueba_mordida_cotejo_contrato.js`.
+  · **H-5** está en el propio fichero, campo `_advertencia_fuente_id`, textual:
+    *«fuente_id es HUELLA DE IDENTIDAD CONGELADA, NO ES UN PUNTERO… El control
+    lo COMPARA contra la base y NUNCA RESUELVE nada con él.»*
+  · **El escape del U+0091** está en el propio fichero, campo
+    `_nota_caracteres`, textual: *«EL ESCAPE ES INTENCIONAL Y NO ES UN
+    HALLAZGO.»* Y el control de caracteres corre sobre los BYTES, donde esa
+    secuencia son seis bytes ASCII.
+
+TRES COSAS MÁS QUE LA TERCERA VUELTA PIDIÓ ESCRITAS:
+
+  · **POR QUÉ EL FICHERO SE LLAMA `anclas_declaradas.json` Y NO
+    `anclas_soltadas.json`, ahora que M10 retiró el argumento viejo.** El
+    argumento de la PARADA 2 era que `ancla_esperada` generalizaba a entero;
+    la restricción a `null` lo retiró, y un argumento retirado no puede
+    sostener un nombre. **Se mantiene el nombre, por otra vía, y es una que
+    este repositorio ya pagó:** `anclas_soltadas` **nombraría medio fichero**.
+    Lo que se declara acá no es sólo el ancla — es **el estado decidido del
+    nodo, ancla Y coordenada**, y la coordenada es 9 de 11 del evento. Es
+    exactamente el defecto de nombre que la propia (a1) tuvo que enmendar:
+    *«El nombre viejo describía medio defecto»* —«los `lng` desplazados» se
+    renombró porque el desplazamiento era de los dos ejes—. Repetirlo un día
+    después, en la pieza que existe por ese defecto, sería no haber aprendido.
+    Segundo motivo, menor: «soltada» es el VALOR de hoy de un campo;
+    «declarada» es para qué sirve el fichero. Un nombre que codifica la regla
+    de validación de hoy obliga a renombrar el día que la regla se ensanche
+    deliberadamente. **No se toca el fichero: la justificación va acá, que es
+    donde se pidió.**
+
+  · **LA MORDIDA DE LAS GUARDAS ESCRIBE SOBRE DATO DE PRODUCCIÓN, y la
+    restitución SÍ está en un `finally`** — `07_mordida_de_las_guardas.js`,
+    líneas del bloque `} finally { fs.writeFileSync(DECL, ORIGINAL); }`—, no al
+    final del camino feliz. **Pero un `finally` no sobrevive a un kill**, así
+    que va además el procedimiento de recuperación, escrito en la cabecera del
+    propio script: **no hace falta ningún `.bak`, porque el declarativo es
+    REPRODUCIBLE** — `01_construir_declarativo.js` lo reconstruye desde
+    `03_antes_despues.tsv`, su única fuente, y tiene que dar
+    `88802142085f1f7b…` sobre los bytes en disco. Con el fichero ya commiteado,
+    `git checkout --` hace lo mismo más rápido. Las dos vías se comprueban con
+    `npm run ancla:mordida`, que sale 0 sólo si G1 vuelve a encontrar el par
+    idéntico.
+
+  · **EL NÚMERO DE CONTEXTO QUE PUBLIQUÉ SUBIÓ, Y NO PUEDO ATRIBUIRLO A UNA
+    COMPACTACIÓN.** Entre la PARADA 1 y la PARADA 2 publiqué 14.887.098 y
+    después 14.956.311. **No es un contador que yo decremente**: es la cifra
+    que el arnés declara, y el arnés la volvió a declarar en 15.000.000 al
+    empezar cada turno del owner. O sea que **no es comparable entre turnos
+    como medida monótona**, y presentarla como si lo fuera fue un error mío de
+    denominador. No afirmo que hubo compactación: no tengo con qué verificarlo.
+    De acá en adelante la cifra va con su clase: «lo que el arnés declara en
+    este turno».
+
+DEUDA QUE LA PARADA 2 ABRIÓ, ANOTADA Y NO APLICADA:
+  **D-T1 · LA SUITE ERA OPCIÓN PARA LA MORDIDA Y EL DISEÑO NO LA EVALUÓ.**
+  El único argumento con que se descartó la suite fue que **necesita la base**.
+  Eso vale para el control, que la consulta; **NO vale para la mordida**, que
+  corre sobre la función pura, sin base y sin red — igual que los 157 tests de
+  hoy. O sea que `prueba_mordida_ancla.js` podría haber sido un `.test.js` y el
+  diseño ni lo miró: descartó la suite de una vez para las dos piezas, y son
+  dos preguntas distintas.
+  COSTO DE MOVERLO, y por eso no se mueve ahora: entrar a la suite **cambia el
+  157**, y hay instrumentos anclados a esa cifra. Es una pieza propia y barata.
+  OPCIONES: (DT1a) mover la mordida a `src/services/__tests__/` y re-anclar los
+  instrumentos que citan 157; (DT1b) dejarla como script y anotarlo.
+  RECOMENDACIÓN: (DT1b) hoy — cambiar el 157 en la misma pieza que estrena un
+  control mezcla dos cosas y ensucia la evidencia de las dos—; (DT1a) cuando
+  toque re-anclar esa cifra por otro motivo, para pagarlo una sola vez.
+
+================================================================================
+§7 · HALLAZGO FUERA DE ALCANCE — REDACTADO, NO APLICADO
+================================================================================
+
+H-T1 · EL ÁRBOL TRAE UN DRIFT NO DECLARADO SIN TRIAR.
+      `data/catalogo/estado_drift.json`, modificado y sin stagear, dice
+      `DRIFT_NO_DECLARADO` donde el fichero commiteado en `9d459e9` dice
+      `DRIFT_DECLARADO_ABIERTO`; `universo_sitport` pasa de 165 a **166**; y trae
+      una divergencia nueva `sitport_sin_catalogo` **id_bahia 258, «RÍO BUENO,
+      SECTOR LLANCACURA»** — la única de las 4 divergencias del fichero que está
+      sin declarar; las otras 3 ya tienen declaración. Es exit 1
+      del control de drift —la clase que exige que alguien mire— y estaba
+      viviendo en el árbol como si fuera ruido de entorno.
+      OPCIONES: (T1a) triarlo y declararlo en `divergencias_declaradas.json`;
+                (T1b) anotarlo.
+      RECOMENDACIÓN Y DECISIÓN DEL OWNER: **(T1b)** — no es de esta pieza y
+      tocarlo mezclaría dos preguntas. Pieza propia, y pronto.
+      Y ADEMÁS, aprobado en la PARADA 1: **la evidencia se congeló**, porque
+      vivía sólo en el working tree y un `git checkout`, un `npm run drift` o
+      simplemente arrancar el backend la habrían sobrescrito. Anotar un hallazgo
+      cuya única evidencia puede evaporarse es no anotar nada.
+      `HT1_estado_drift_working_tree_2026-08-19.json` + `HT1_PROCEDENCIA.txt`.
+      **El fichero en su ruta NO SE TOCÓ** — se comprobó comparando su `mtime`
+      antes y después de la copia—, y **ningún fichero del repositorio lee la
+      copia**: no puede actuar, sólo testimonia. Eso es lo que impide que se
+      mezclen las dos preguntas.
+
+H-T2 · EL CONTROL DE CARACTERES DE CONTROL MIDIÓ MENOS DE LO QUE DIJO, Y NO
+      SÓLO EN ESTA SESIÓN. Es lo que la mordida ③ destapó, y **el alcance
+      excede a esta pieza**. «Control de caracteres de control fuera de LF/CR
+      sobre todo fichero que la sesión escriba» es **regla de la casa** y corre
+      en cada pieza. Si el criterio que se transcribió fue `b < 0x20` —que es el
+      que esta sesión escribió por su cuenta y el que aparece, por ejemplo, en
+      `_bitacoras/coordenada_corrida_2026-08-19/02_corregir_nodos.txt` §8, *«la
+      hoja no trae caracteres de control fuera de LF/CR/TAB · 0 encontrados»*—
+      entonces **todo veredicto verde anterior probó menos de lo que afirmó**, y
+      **justo sobre el único carácter de control que este repositorio tiene de
+      verdad en un dato**: el `U+0091` del nodo 656, que en UTF-8 son `0xC2 0x91`
+      y no dispara ningún `b < 0x20`.
+      **NO SE MIDIÓ CUÁNTAS PIEZAS LO TRANSCRIBEN. No hay denominador acá**, y
+      por eso esto es un hallazgo y no una cifra: se vio UNA instancia, la
+      citada, mientras se leía la bitácora de (a1) para el gate.
+      LA CAUSA ES ESTRUCTURAL, y es la que importa: **el criterio no vive en un
+      solo lugar del repositorio**. Cada pieza lleva su propia transcripción, y
+      una transcripción no se corrige cuando se corrige la idea. El
+      `lib_control_caracteres.js` de esta sesión arregla eso **para los dos
+      scripts de esta sesión y para nadie más**, y encima vive en
+      `_bitacoras/`, que es el lugar equivocado para una regla de la casa —
+      §3.5: lo que el sistema ejecuta va en la raíz.
+      OPCIONES, con su costo:
+        (H-T2a) **el criterio en un solo lugar de la raíz** —`scripts/` o
+                `src/utils/`— con su mordida única, y toda pieza futura lo
+                requiere. Barato en código. El costo es que mover el fichero
+                cambia la ruta que los dos scripts de ESTA sesión requieren y
+                re-abre sus huellas, ya publicadas.
+        (H-T2b) **re-correr el criterio corregido sobre lo ya commiteado**, como
+                barrido del árbol, y declarar el resultado. Barato de correr;
+                el costo real es que puede destapar ficheros de OTROS frentes
+                con un C1 crudo adentro, y eso abre piezas que no son ésta.
+        (H-T2c) **sólo de acá en adelante**. Cuesta cero y deja la deuda viva.
+      RECOMENDACIÓN: **(H-T2a) y (H-T2b) juntas, en pieza propia y pronto** —
+      (b) sin (a) hay que repetirlo en cada pieza, y (a) sin (b) deja verde lo
+      que ya se declaró verde con el criterio corto—. **(H-T2c) NO**: es
+      elegir que la afirmación vieja siga en pie sin haberla comprobado.
+      **NO SE APLICA EN ESTA SESIÓN**, y el motivo es de alcance: mover el
+      criterio a la raíz y barrer el árbol son dos cosas que no caben en la
+      pieza que estrena el control del ancla, y mezclarlas ensuciaría la
+      evidencia de las dos.
+
+================================================================================
+§8 · LO QUE ESTA PIEZA NO PRUEBA, Y LA PUERTA QUE SIGUE ABIERTA
+================================================================================
+
+Esto cierra el punto (i) de `(a1)-T` y **sólo el (i)**.
+
+1. **NO dice por qué vía se escribió el ancla.** Este control **no mira al
+   trigger: mira al CAMPO.** Ésa es la propiedad que importa, y es deliberada:
+   caza el ancla repuesta **venga por donde venga** —el trigger, un `UPDATE` a
+   mano, un refresco de la matview, un re-seed, o la vía desconocida que puso
+   90, 157 y 158 cuando la posición desplazada de los once no caía en ningún
+   polígono—. Un control atado al trigger dejaría abierta justo esa puerta.
+   Lo que no puede es nombrar al autor. Eso es H-2 y no es esta pieza.
+   **Lo más cerca que llega**: la clase `ancla_repuesta_con_coordenada_intacta`
+   es, por construcción, la huella de una escritura que el trigger no explica
+   solo —el trigger corre `BEFORE UPDATE OF geom`—. Si algún día muerde por esa
+   clase, eso es evidencia nueva para H-2.
+
+2. **DETECTA, NO IMPIDE.** Es una lectura periódica, no una barrera. Entre dos
+   corridas el defecto existe sin que nadie lo sepa. Lo único que previene en vez
+   de detectar es el punto (iii) —decidir si el trigger debe existir—, fuera de
+   alcance.
+
+3. **ES CIEGO FUERA DE LOS DECLARADOS, POR CONSTRUCCIÓN.** Si esa vía
+   desconocida le escribe un ancla a un nodo que no es de los once, este control
+   no la ve. No es un defecto del diseño: es que no hay declarativo contra el
+   cual juzgar a las otras 770. Otra vez H-2.
+
+4. **NO CORRE SOLO.** Es el costo que se eligió a ojos abiertos al no meterlo en
+   `e01` ni en la suite: hay que acordarse de correrlo. Se paga con que está
+   listado en `npm run` y con que el comando quedó escrito junto a la deuda en
+   `PLAN_JURISDICCION.md`. Una sonda periódica es decisión aparte — y el control
+   de drift ya tiene esa misma deuda abierta (C2, «la sonda periódica»).
+
+================================================================================
+§9 · HUELLAS
+================================================================================
+CLASE (FA-4): sha256 sobre los BYTES DEL FICHERO EN DISCO. Con
+`core.autocrlf=true` y sin `.gitattributes` el blob de git puede no ser el mismo
+byte — ver H-10 de `_bitacoras/coordenada_corrida_2026-08-19/`.
+
+La tabla completa, fichero por fichero, con su tamaño y su chequeo de caracteres
+de control sobre los bytes, está en `03_cierre_controles.txt`. Las que este
+documento cita en el cuerpo:
+
+  03_antes_despues.tsv (insumo, de (a1)) . f0763b0f06c5ba1759479d8620e8e3640fe68e4fdd3041a38bc330dd60203dce
+  join_puerto_bahia.json (artefacto) ..... 61bf7dc779f58d38e545f13f1d42c6c12c675f6fa3539c2bc4726d9b37479be1
+  huella del universo nodos_maritimos .... 02228be7d7867358e77a9bd07a916100e965d102db30263fef2742e8cb37d10d
+      CLASE DISTINTA, y hay que decirlo: no es el sha256 de un fichero. Es el
+      sha256 de la cadena `id|lat|lng|ancla` de las 781 filas unidas por LF, en
+      orden de id — la misma clase que publicó la pieza (a1).
+================================================================================

@@ -1,0 +1,27 @@
+================================================================================
+CONTROL DEL ANCLA DECLARADA - (a1)-T punto (i)
+corrida     : 2026-08-19T22:34:19.981Z
+origen      : consulta en vivo a postgres mapa_navegacion :: nodos_maritimos (SOLA LECTURA)
+declaracion : data/catalogo/anclas_declaradas.json
+================================================================================
+
+UNIVERSO Y ALCANCE
+  filas leidas de nodos_maritimos ........ 781   (unidad: filas)
+  filas que la declaracion nombra ........ 11   (unidad: filas; son las UNICAS que se exigen)
+  tolerancia de la coordenada ............ 1e-9   (unidad: grados, dato declarado)
+
+CONTROL NEGATIVO - que la lectura discrimine
+  filas fuera de la declaracion .......... 770
+    de esas, CON ancla puesta ............ 221
+    de esas, con ancla NULL .............. 549
+  ok hay ancla puesta fuera de las declaradas: un NULL leido es un NULL real
+
+HALLAZGOS
+  ninguno. Las 11 filas declaradas estan como se declaro.
+
+--------------------------------------------------------------------------------
+declaradas 11 · estado roto 0 · declaracion no calza 0
+VEREDICTO: SIN_NOVEDAD  (salida 0)
+--------------------------------------------------------------------------------
+
+EXIT=0

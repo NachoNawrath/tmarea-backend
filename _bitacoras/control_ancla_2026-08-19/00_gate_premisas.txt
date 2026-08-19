@@ -1,0 +1,37 @@
+==============================================================================
+(a1)-T - GATE - PREMISAS CONTRA LA BASE DE HOY - SOLA LECTURA
+corrida 2026-08-19T21:48:24.252Z
+==============================================================================
+
+1 - EL UNIVERSO nodos_maritimos
+  ok 781 filas - 781 filas
+    huella de hoy (sha256 de id|lat|lng|ancla, orden de id): 02228be7d7867358e77a9bd07a916100e965d102db30263fef2742e8cb37d10d
+  ok la huella coincide con la declarada 02228be7... - 02228be7d786...
+
+2 - LOS ONCE - ancla y coordenada
+    #653 ancla=NULL  lat=-28.460872 lng=-71.224055  coord=ok
+    #654 ancla=NULL  lat=-27.06394 lng=-70.823869  coord=ok
+    #655 ancla=NULL  lat=-27.334874 lng=-70.941229  coord=ok
+    #656 ancla=NULL  lat=-26.351827 lng=-70.633371  coord=ok
+    #657 ancla=NULL  lat=-30.194365 lng=-71.431134  coord=ok
+    #658 ancla=NULL  lat=-29.246534 lng=-71.468394  coord=ok
+    #659 ancla=NULL  lat=-33.02215 lng=-71.632543  coord=ok
+    #660 ancla=NULL  lat=-33.031146 lng=-71.590059  coord=ok
+    #661 ancla=NULL  lat=-32.918841 lng=-71.518234  coord=ok
+    #662 ancla=NULL  lat=-32.740921 lng=-71.490708  coord=ok
+    #663 ancla=NULL  lat=-33.962747 lng=-71.877457  coord=ok
+  ok los once existen - 11 / 11
+  ok los once tienen ancla NULL - 0 con ancla de 11
+  ok los once conservan la coordenada corregida - 0 distintas de 11
+
+3 - CONTROL NEGATIVO - el resto del universo NO es todo NULL
+    filas ajenas: 770 - con ancla puesta: 221 - con ancla NULL: 549
+  ok hay filas con ancla puesta fuera de los once (la lectura discrimina) - 221 / 770
+
+4 - EL ARTEFACTO join_puerto_bahia.json
+    sha256 del fichero en disco: 61bf7dc779f58d38e545f13f1d42c6c12c675f6fa3539c2bc4726d9b37479be1
+  ok empieza por 61bf7dc7 - 61bf7dc779f5...
+
+==============================================================================
+VERDE - todas las premisas se cumplen
+==============================================================================

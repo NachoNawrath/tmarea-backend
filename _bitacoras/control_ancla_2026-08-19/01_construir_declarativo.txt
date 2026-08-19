@@ -1,0 +1,39 @@
+==============================================================================
+(a1)-T - CONSTRUIR EL DECLARATIVO DESDE 03_antes_despues.tsv
+corrida 2026-08-19T22:13:14.061Z
+==============================================================================
+
+1 - EL INSUMO
+    _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv
+    sha256 de los BYTES EN DISCO (clase FA-4): f0763b0f06c5ba1759479d8620e8e3640fe68e4fdd3041a38bc330dd60203dce
+  ok el TSV trae 1 cabecera + 11 filas - 12 lineas
+  ok la fila 653 declara ancla_despues = NULL en el TSV - NULL
+  ok la fila 654 declara ancla_despues = NULL en el TSV - NULL
+  ok la fila 655 declara ancla_despues = NULL en el TSV - NULL
+  ok la fila 656 declara ancla_despues = NULL en el TSV - NULL
+  ok la fila 657 declara ancla_despues = NULL en el TSV - NULL
+  ok la fila 658 declara ancla_despues = NULL en el TSV - NULL
+  ok la fila 659 declara ancla_despues = NULL en el TSV - NULL
+  ok la fila 660 declara ancla_despues = NULL en el TSV - NULL
+  ok la fila 661 declara ancla_despues = NULL en el TSV - NULL
+  ok la fila 662 declara ancla_despues = NULL en el TSV - NULL
+  ok la fila 663 declara ancla_despues = NULL en el TSV - NULL
+  ok once filas construidas - 11
+  ok sin nodo_id repetido - 11 ids distintos
+
+2 - EL DESTINO
+    data/catalogo/anclas_declaradas.json - 9922 bytes
+    sha256 de los BYTES EN DISCO (clase FA-4): 88802142085f1f7b3c416fc2bd0270b76c47d16f4aafb634834e8b9598011f32
+  ok cero caracteres de control fuera de LF/CR en los BYTES del fichero - 0 encontrados
+  ok el U+0091 del 656 quedo como los 6 bytes ASCII de la secuencia escapada - si
+  ok re-parsea y devuelve el U+0091 como caracter, o sea que el escape no pierde el dato - si
+  ok re-parsea las once - 11
+  ok las once declaran ancla_esperada null - 11 / 11
+
+3 - CONTROL NEGATIVO DEL ESCAPADOR
+    Si el escapador no hiciera falta, este chequeo seria decoracion. Se mide.
+  ok JSON.stringify DEJA el C1 crudo, y el escapador lo saca - confirmado en los dos sentidos
+
+==============================================================================
+VERDE - declarativo construido desde el TSV de (a1), no desde la base
+==============================================================================

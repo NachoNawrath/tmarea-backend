@@ -1,0 +1,56 @@
+==============================================================================
+(a1)-T - MORDIDA DEL CONTROL DE CARACTERES DE CONTROL
+corrida 2026-08-19T22:34:21.465Z
+==============================================================================
+
+  fichero de partida: data/catalogo/anclas_declaradas.json - 9922 bytes
+
+CN - CONTROL NEGATIVO: el fichero real, limpio, no puede morder
+  ok criterio vigente: 0 hallazgos - 0
+
+I1 - SE INYECTA UN C0 (0x07, BEL) en el contenido
+    criterio vigente ...... 1 hallazgo(s) · C0 0x07
+    version vieja ......... 1 hallazgo(s)
+  ok el criterio vigente MUERDE - 1
+  ok la version vieja tambien mordia este caso - 1
+
+I2 - SE INYECTA EL U+0091 CRUDO, que es el caracter real del nodo 656 (H-8)
+     En UTF-8 son DOS bytes: 0xC2 0x91. Ninguno de los dos es menor que 0x20.
+    bytes inyectados ...... 0xc2 0x91
+    criterio vigente ...... 1 hallazgo(s) · C1 U+0091 codificado 0xc2 0x91
+    version vieja ......... 0 hallazgo(s)   <<< EL HUECO
+  ok el criterio VIGENTE muerde el C1 - 1
+  ok y lo clasifica como C1 - C1
+  ok QUEDA MEDIDO que la version vieja NO lo mordia - 0 hallazgos
+
+I3 - EL DEFECTO DEL ESCAPADOR DE HOY, que era el mordedor propuesto
+     El escapador con rango U+0000 se llevaba los LF del JSON indentado y los
+     dejaba como la secuencia ASCII escapada. MEDICION: eso NO agrega ningun
+     byte de control -- al reves, SACA los LF -- asi que este control se queda
+     VERDE. No es su mordedor. El que caza ese defecto es OTRO: el re-parseo
+     del JSON que 01_construir_declarativo.js hace despues de escribir.
+    LF en el fichero limpio ..... 200
+    LF tras el mal escapado ..... 0
+    criterio vigente ............ 0 hallazgo(s)
+  ok MEDIDO: el control de caracteres NO caza el defecto del escapador - 0
+  ok y el que SI lo caza es el re-parseo del JSON - JSON.parse falla
+
+I4 - SE INYECTA UN DEL (0x7F)
+    criterio vigente ...... 1 hallazgo(s) · DEL
+    version vieja ......... 0 hallazgo(s)   <<< segundo hueco
+  ok el criterio vigente muerde el DEL - 1
+  ok QUEDA MEDIDO que la version vieja tampoco lo mordia - 0
+
+I5 - CONTROL NEGATIVO DEL CRITERIO (c): un 0xC2 que NO precede a un C1
+     "Ã" es U+00C3 = 0xC3 0x83, y el nombre del 656 trae "ã" = 0xC3 0xA3.
+     Si el criterio marcara cualquier 0xC2/0xC3, el fichero real ya seria rojo.
+  ok acentos y enies NO disparan el criterio - 0
+
+==============================================================================
+VERDE - el control muerde C0, C1 y DEL, y no muerde texto acentuado.
+HALLAZGO DE ESTA CORRIDA, y va a la bitacora: la version que corrio a las
+22:22 sobre los 21 ficheros NO habria cazado un U+0091 crudo ni un DEL. El
+veredicto de aquella corrida sigue siendo correcto -- los ficheros estan
+limpios y el criterio vigente lo confirma -- pero lo estaba probando menos
+de lo que decia.
+==============================================================================

@@ -1,0 +1,71 @@
+==============================================================================
+(a1)-T - CIERRE DE CONTROLES DE LA SESION
+corrida 2026-08-19T22:39:38.753Z
+==============================================================================
+
+1 - H-T1: CONGELAR LA EVIDENCIA SIN TOCAR EL FICHERO EN SU RUTA
+  ok el fichero de origen NO se modifico (misma mtime antes y despues) - 1787173620217.652
+  ok la copia es byte a byte identica al origen - 3a350d5ab329...
+    veredicto que trae la copia .......... DRIFT_NO_DECLARADO
+    universo_sitport ..................... 166   (unidad: ids de bahia)
+    divergencias en total ................ 4
+    de esas, NO DECLARADAS ............... 1
+      id_bahia 258  sitport_sin_catalogo  RÍO BUENO, SECTOR LLANCACURA
+    _bitacoras/control_ancla_2026-08-19/HT1_estado_drift_working_tree_2026-08-19.json
+    _bitacoras/control_ancla_2026-08-19/HT1_PROCEDENCIA.txt
+
+2 - CARACTERES DE CONTROL SOBRE LOS BYTES DE CADA FICHERO QUE LA SESION ESCRIBE
+    Criterio (lib_control_caracteres.js, con su mordida en 08_):
+      (a) byte < 0x20 que no sea LF ni CR   -> C0
+      (b) byte 0x7F                          -> DEL
+      (c) byte 0xC2 seguido de 0x80..0x9F    -> C1 codificado en UTF-8
+    La (c) faltaba en la primera version de este script y es la que importa aca:
+    el U+0091 del nodo 656 son los bytes 0xC2 0x91 y ninguno es < 0x20.
+    Corre sobre los BYTES, no sobre el string parseado. En los ficheros de esta
+    sesion ese caracter va ESCAPADO -- seis bytes ASCII -- a proposito (H-8), y
+    por eso NO cuenta como control: es dato declarado, no un hallazgo.
+
+3 - HUELLAS. CLASE (FA-4): sha256 sobre los BYTES DEL FICHERO EN DISCO.
+
+    DENOMINADOR: 27 ficheros, que es TODO lo que esta sesion escribe.
+    En el bucle de abajo van 26. El que falta es el .txt que este mismo
+    script produce: no puede hashearse en el bucle porque todavia no existe, y
+    por eso va aparte al final. En la PARADA 2 esa diferencia de uno quedo sin
+    denominador declarado, y esto la cierra.
+
+  ok    9922 bytes  88802142085f1f7b  data/catalogo/anclas_declaradas.json
+  ok   11490 bytes  043ef337cf92a664  src/services/anclas-declaradas.js
+  ok    8544 bytes  dcef0169df88f57e  scripts/control_ancla_declarada.js
+  ok   14697 bytes  dd85986fa58a2912  scripts/prueba_mordida_ancla.js
+  ok     988 bytes  c4704f76e3d680a0  package.json
+  ok  298544 bytes  9b0bc74d4f660bc3  PLAN_JURISDICCION.md
+  ok    4875 bytes  23bb695d096c51a2  _bitacoras/control_ancla_2026-08-19/00_gate_premisas.js
+  ok    1962 bytes  07b82f49c25d468e  _bitacoras/control_ancla_2026-08-19/00_gate_premisas.txt
+  ok   10061 bytes  0f1360560b3aa787  _bitacoras/control_ancla_2026-08-19/01_construir_declarativo.js
+  ok    2232 bytes  7acb0fc348366c3e  _bitacoras/control_ancla_2026-08-19/01_construir_declarativo.txt
+  ok    7593 bytes  00f7c2fafff117c2  _bitacoras/control_ancla_2026-08-19/02_congelar_par.js
+  ok    1761 bytes  81c66379392a8297  _bitacoras/control_ancla_2026-08-19/02_congelar_par.txt
+  ok  131458 bytes  4f251a8d3874d03a  _bitacoras/control_ancla_2026-08-19/02_par_lectura_781_2026-08-19.json
+  ok    9922 bytes  88802142085f1f7b  _bitacoras/control_ancla_2026-08-19/02_par_declaracion_2026-08-19.json
+  ok   11392 bytes  3d15171a32a38e31  _bitacoras/control_ancla_2026-08-19/03_cierre_controles.js
+  ok    1274 bytes  acf7f0d6cff4fab3  _bitacoras/control_ancla_2026-08-19/04_control_ancla.txt
+  ok    3939 bytes  8743c6bc031c86fa  _bitacoras/control_ancla_2026-08-19/05_prueba_mordida.txt
+  ok   14337 bytes  517d28423ad3efb4  _bitacoras/control_ancla_2026-08-19/06_suite.txt
+  ok    6890 bytes  60620261ea1fe5eb  _bitacoras/control_ancla_2026-08-19/07_mordida_de_las_guardas.js
+  ok    1740 bytes  d75ed533fc1081ab  _bitacoras/control_ancla_2026-08-19/07_mordida_de_las_guardas.txt
+  ok    6482 bytes  064dba78ea3be952  _bitacoras/control_ancla_2026-08-19/08_mordida_control_caracteres.js
+  ok    2905 bytes  8a3453aea487a968  _bitacoras/control_ancla_2026-08-19/08_mordida_control_caracteres.txt
+  ok    2647 bytes  f97c057d6ebfdf3a  _bitacoras/control_ancla_2026-08-19/lib_control_caracteres.js
+  ok    1380 bytes  3a350d5ab3293ab2  _bitacoras/control_ancla_2026-08-19/HT1_estado_drift_working_tree_2026-08-19.json
+  ok    2134 bytes  2534a43df93d73ca  _bitacoras/control_ancla_2026-08-19/HT1_PROCEDENCIA.txt
+  ok   36453 bytes  cd5461e5f94ae11d  _bitacoras/control_ancla_2026-08-19/control_ancla_2026-08-19.txt
+
+==============================================================================
+VERDE - sin caracteres de control fuera de LF/CR en 26 de 27; falta este .txt, abajo
+==============================================================================
+
+CIERRE - el fichero numero 27, que es la salida de este mismo script
+  ok    4677 bytes  881a0a1c116b16dd  _bitacoras/control_ancla_2026-08-19/03_cierre_controles.txt
+  (su sha256 es el del fichero SIN estas lineas de cierre; el fichero final las lleva)
+VERDE - los 27 ficheros, sin excepcion, sin caracteres de control fuera de LF/CR.
+==============================================================================

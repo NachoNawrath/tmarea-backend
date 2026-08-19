@@ -1,0 +1,38 @@
+==============================================================================
+(a1)-T - MORDIDA DE LAS GUARDAS G1 y G2 DE LA PRUEBA DE MORDIDA
+corrida 2026-08-19T22:39:38.320Z
+==============================================================================
+
+  declarativo vivo, sha256 de partida: 88802142085f1f7b3c416fc2bd0270b76c47d16f4aafb634834e8b9598011f32
+
+CN - SIN TOCAR NADA la mordida real tiene que salir 0
+  ok exit 0 - exit 0
+  ok G1 verde
+  ok G2 verde
+
+MG1 - SE DECLARA UN NODO DOCE Y EL PAR NO SE REFRESCA
+    nodo elegido: #7 con ancla 197 en la foto
+  ok la mordida real FALLA - exit 2
+  ok y dice EL PAR VENCIO
+  ok y nombra al nodo que el fixture no cubre
+  ok y da la orden de refresco
+      | x  EL PAR VENCIO - la declaracion viva ya no es la congelada
+      | declarados que el fixture NO cubre: 7
+      | node _bitacoras/control_ancla_2026-08-19/02_congelar_par.js
+
+MG2 - LA DECLARACION VIVA QUEDA INVALIDA (tolerancia negativa)
+  ok la mordida real FALLA - exit 2
+  ok y G2 dice que la declaracion VIVA no valida
+      | x  la declaracion VIVA no valida: la declaracion no trae una tolerancia_grados positiva y finita: -1
+
+RESTITUCION - el declarativo vivo tiene que volver byte a byte
+    sha256 de partida : 88802142085f1f7b3c416fc2bd0270b76c47d16f4aafb634834e8b9598011f32
+    sha256 de llegada : 88802142085f1f7b3c416fc2bd0270b76c47d16f4aafb634834e8b9598011f32
+  ok el fichero volvio identico - si
+
+CIERRE - y la mordida real vuelve a salir 0 con el fichero restituido
+  ok exit 0 - exit 0
+
+==============================================================================
+VERDE - G1 y G2 muerden, y el declarativo vivo quedo como estaba
+==============================================================================

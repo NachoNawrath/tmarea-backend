@@ -1,0 +1,61 @@
+================================================================================
+PRUEBA DE MORDIDA DEL CONTROL DEL ANCLA - (a1)-T
+corrida 2026-08-19T22:34:20.055Z
+================================================================================
+
+EL PAR CONGELADO (fixture, no mide el mundo)
+  lectura     : 02_par_lectura_781_2026-08-19.json
+                781 filas esperadas, 781 leidas
+                sha256 de los BYTES EN DISCO (clase FA-4): 4f251a8d3874d03a97d7f1309867ee3805685473797caa093b01c0efe60de2c2
+  declaracion : 02_par_declaracion_2026-08-19.json
+                11 filas declaradas
+                sha256 de los BYTES EN DISCO (clase FA-4): 88802142085f1f7b3c416fc2bd0270b76c47d16f4aafb634834e8b9598011f32
+
+G1 - EL PAR CONTRA LA DECLARACION VIVA
+  ok la declaracion viva y la congelada son el MISMO fichero byte a byte
+     88802142085f1f7b · 11 filas declaradas
+
+G2 - LA DECLARACION VIVA SE VALIDA, no solo la congelada
+  ok data/catalogo/anclas_declaradas.json pasa la validacion estructural · 11 filas · tolerancia 1e-9 grados
+
+--------------------------------------------------------------------------------
+CONTROL NEGATIVO - el par intacto tiene que salir SIN_NOVEDAD
+  ok veredicto SIN_NOVEDAD · hallazgos 0 · ajenas con ancla 221 de 770
+
+--------------------------------------------------------------------------------
+FAMILIAS - cada una tiene que MORDER
+  ok M1  el ancla vuelve en una fila declarada, con la coordenada intacta
+        ESTADO_DECLARADO_ROTO · 1 hallazgo(s) · clase ancla_repuesta_con_coordenada_intacta
+  ok M2  las once recuperan ancla a la vez
+        ESTADO_DECLARADO_ROTO · 11 hallazgo(s) · clase ancla_repuesta_con_coordenada_intacta
+  ok M3  la tabla llega VACIA - el caso que dejaria pasar un control mal escrito
+        DECLARACION_NO_CALZA · 11 hallazgo(s) · clase fila_ausente
+  ok M4  un nodo_id declarado ya no existe en la tabla (renumeracion)
+        DECLARACION_NO_CALZA · 1 hallazgo(s) · clase fila_ausente
+  ok M5  el nodo_id existe pero es OTRO nodo - el ancla por id no basta
+        DECLARACION_NO_CALZA · 1 hallazgo(s) · clase identidad_distinta
+  ok M6  la coordenada vuelve al +6,00 grados CON EL ANCLA EN NULL
+        ESTADO_DECLARADO_ROTO · 1 hallazgo(s) · clase coordenada_movida_con_ancla_intacta
+  ok M7  la declaracion llega VACIA - no hay a quien exigirle nada
+        el control se DETIENE: la declaracion no nombra ningun nodo. Un control que exige NULL y no tiene a quien exigirselo sale verde sin haber mirado nada, y eso es peor que no correrlo.
+  ok M8  NINGUNA fila ajena tiene ancla - la lectura no discrimina
+        NO_SE_PUDO_MEDIR · 0 hallazgo(s)
+  ok M9  los DOS sintomas en la misma fila - el caso literal del 655 en (a1)
+        ESTADO_DECLARADO_ROTO · 1 hallazgo(s) · clase ancla_repuesta_y_coordenada_movida
+  ok M10 una fila declara ancla_esperada con un entero - restriccion deliberada
+        el control se DETIENE: la fila declarada 655 declara ancla_esperada = 83. Hoy este declarativo solo admite null: declarar un ancla CON VALOR es una decision que ninguna pieza tomo todavia, y una rama que ningun dato ejercita no puede entrar por un tipeo. Ensancharlo es deliberado y va con su familia en la prueba de mordida.
+
+--------------------------------------------------------------------------------
+VOCABULARIO EJERCITADO - toda clase del control tiene al menos una familia
+  ok ancla_repuesta_con_coordenada_intacta
+  ok coordenada_movida_con_ancla_intacta
+  ok ancla_repuesta_y_coordenada_movida
+  ok fila_ausente
+  ok identidad_distinta
+
+================================================================================
+SIN FALLAS - el control negativo no mordio y las 10 familias mordieron.
+QUE NO PRUEBA: no dice nada del estado de la base de hoy. Eso es npm run ancla.
+================================================================================
+
+EXIT=0

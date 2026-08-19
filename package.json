@@ -7,7 +7,9 @@
     "build": "echo 'Backend ready'",
     "test": "node --test src/services/__tests__/*.test.js",
     "drift": "node scripts/e01_control_drift_catalogo.js --estado data/catalogo/estado_drift.json",
-    "drift:mordida": "node scripts/e01_prueba_mordida_drift.js"
+    "drift:mordida": "node scripts/e01_prueba_mordida_drift.js",
+    "ancla": "node scripts/control_ancla_declarada.js",
+    "ancla:mordida": "node scripts/prueba_mordida_ancla.js"
   },
   "dependencies": {
     "@turf/turf": "^7.3.5",

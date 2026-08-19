@@ -1,0 +1,40 @@
+PROCEDENCIA - H-T1 - EVIDENCIA CONGELADA, NO ES UNA DECLARACION
+==============================================================================
+
+QUE ES: una copia byte a byte de data/catalogo/estado_drift.json tal como
+estaba en el working tree del 2026-08-19, MODIFICADO Y SIN STAGEAR.
+
+NINGUN FICHERO DEL REPOSITORIO LA LEE. No decide nada, no la consulta ningun
+control y no reemplaza al fichero de su ruta. Solo testimonia. Esa es la
+condicion con la que el owner aprobo congelarla, y es lo que impide que se
+mezclen dos preguntas: la copia no puede actuar.
+
+POR QUE SE CONGELA: la evidencia vivia SOLO en el working tree. Un git
+checkout, un npm run drift, o simplemente arrancar el backend -- que re-corre
+el control de drift -- la habrian sobrescrito, y con ella el unico registro de
+que SITPORT sumo una bahia que nadie declaro. Anotar un hallazgo cuya unica
+evidencia puede evaporarse es no anotar nada.
+
+RUTA DE ORIGEN : data/catalogo/estado_drift.json
+FECHA DE COPIA : 2026-08-19
+EL FICHERO EN SU RUTA NO SE TOCO. Se comprobo comparando su mtime antes y
+despues de la copia, y esta en la salida cruda de 03_cierre_controles.txt.
+
+sha256 : 3a350d5ab3293ab2304e8029200ea6e42927e8e4b8b9d891ae36c533f8300b00
+CLASE (FA-4): sha256 sobre los BYTES DEL FICHERO EN DISCO, tal como lo dejo
+la ultima corrida del control de drift en esta maquina. Con core.autocrlf=true
+y sin .gitattributes el blob de git puede no ser el mismo byte -- ver H-10 de
+_bitacoras/coordenada_corrida_2026-08-19/.
+tamano : 1380 bytes
+
+QUE SE EXTRAJO DE EL, y es lo que el hash no dice:
+  · veredicto DRIFT_NO_DECLARADO (el fichero commiteado en 9d459e9 dice DRIFT_DECLARADO_ABIERTO)
+  · universo_sitport 166 (el commiteado dice 165)
+  · 1 divergencia(s) NO DECLARADA(S): id 258 sitport_sin_catalogo
+  · ultima_corrida 2026-08-19T21:07:00.218Z
+
+COMO SE VOLVERIA A CAPTURAR: no se puede. Correr el control de drift de nuevo
+produce OTRA medicion, no esta. Por eso se congela en vez de anotarse la orden.
+
+QUE SIGUE: H-T1 quedo aprobado como (T1b) -- anotado, no aplicado. Triarlo y
+declararlo en data/catalogo/divergencias_declaradas.json es pieza propia.

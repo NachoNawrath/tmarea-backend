@@ -1,0 +1,200 @@
+{
+  "_que_es": "Nodos de nodos_maritimos cuyo bahia_sitport_id y cuya posicion fueron DECIDIDOS por una pieza y no pueden cambiar solos. Lo lee scripts/control_ancla_declarada.js (npm run ancla). Agregar una fila aca NO exige tocar codigo.",
+  "_por_que_existe": "nodos_maritimos tiene un BEFORE INSERT OR UPDATE OF geom -- trg_jurisdiccion_auto -- que corre asignar_jurisdiccion_sitport() y pisa bahia_sitport_id con un point-in-polygon contra la matview bahia_jurisdicciones. El NULL de estas filas no es una propiedad de la fila: es el estado en que las dejo una pieza, y mover el geom lo deshace sin que nadie mire. Deuda (a1)-T de PLAN_JURISDICCION.md, punto (i).",
+  "_por_que_tambien_la_coordenada": "El ancla es el sintoma INCOMPLETO. Mover el geom dispara el trigger, pero el trigger solo escribe ancla si el punto cae dentro de un poligono: en la corrida de (a1) cayo en 2 de 11. En los otros 9 el geom se movio, el ancla quedo en NULL, y un control que solo mirara el ancla habria salido verde con la coordenada equivocada. Por eso se vigilan las dos cosas.",
+  "_que_NO_vigila": "Solo juzga las filas declaradas aca. Las demas filas de nodos_maritimos tienen ancla sin que nadie haya declarado de donde salio -- H-2: el productor del campo no esta versionado en este repositorio -- asi que no hay contra que juzgarlas; el informe las MIDE como control negativo y no las exige. Y este control no mira al trigger: mira al CAMPO, asi que caza el ancla repuesta venga por donde venga -- trigger, UPDATE a mano, refresco de la matview, re-seed, o la via desconocida de H-2. Lo que NO hace es decir por donde vino, ni impedirlo: es una lectura periodica, no una barrera.",
+  "_advertencia_fuente_id": "fuente_id es HUELLA DE IDENTIDAD CONGELADA, NO ES UN PUNTERO. H-5 de _bitacoras/coordenada_corrida_2026-08-19/: caletas_chile.json se regenero con otra numeracion; de los 20 CAL-xxxx de la base, 13 ya no existen en el fichero y 7 apuntan a otra caleta -- CAL-0054 es Puerto De Caldera Mejoras Fiscales en la base y una caleta a 688 km en el fichero. El control lo COMPARA contra la base y NUNCA RESUELVE nada con el. Nadie debe usarlo manana para buscar en caletas_chile.json.",
+  "_nota_caracteres": "El nombre del nodo 656 trae U+0091, un control C1 (H-8 de la misma bitacora). En este fichero va ESCAPADO como los seis bytes ASCII de una secuencia backslash-u-0091, a proposito: un fichero versionado no lleva un caracter de control adentro. EL ESCAPE ES INTENCIONAL Y NO ES UN HALLAZGO. El control de caracteres de control corre sobre los BYTES del fichero, no sobre el string parseado. JSON.stringify no escapa los C1 por su cuenta. El lugar se llama Chanaral.",
+  "_procedimiento": "Para agregar una fila: se agrega aca, con su pieza y su fecha, y se corre npm run ancla. La foto congelada de _bitacoras/control_ancla_2026-08-19/ NO se actualiza sola y no hace falta que se actualice: esa foto es el fixture de npm run ancla:mordida, que mide si la funcion MUERDE, no que mide el mundo. Que el mundo de hoy este bien lo prueba npm run ancla contra la base viva. Si se quiere que el fixture describa el mundo de hoy, se congela un PAR nuevo -- lectura de la tabla Y copia de este fichero, juntas y con la misma fecha -- y se apunta la mordida a el. NUNCA una sola de las dos: una foto con una declaracion de otra fecha da rojos que no significan nada.",
+  "tolerancia_grados": 1e-9,
+  "_tolerancia_por_que": "La lectura del 2026-08-19 dio 0 diferencias sobre 11 a 1e-9 grados contra el valor declarado: el float8 de PostGIS y el Number de JS hacen el viaje de ida y vuelta sin perdida. Es dato declarado, no una constante del codigo.",
+  "filas": [
+    {
+      "nodo_id": 653,
+      "nombre": "Huasco",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0009",
+      "lat": -28.460872,
+      "lng": -71.224055,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -28.823795,
+        "lng": -77.231492,
+        "ancla": 90
+      }
+    },
+    {
+      "nodo_id": 654,
+      "nombre": "Puerto De Caldera Mejoras Fiscales",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0054",
+      "lat": -27.06394,
+      "lng": -70.823869,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -27.415729,
+        "lng": -76.829464,
+        "ancla": 158
+      }
+    },
+    {
+      "nodo_id": 655,
+      "nombre": "Puerto Viejo",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0020",
+      "lat": -27.334874,
+      "lng": -70.941229,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -27.687595,
+        "lng": -76.947172,
+        "ancla": 158
+      }
+    },
+    {
+      "nodo_id": 656,
+      "nombre": "San Pedro Chaã\u0091Aral De Las Animas",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0011",
+      "lat": -26.351827,
+      "lng": -70.633371,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -26.696806,
+        "lng": -76.638227,
+        "ancla": 157
+      }
+    },
+    {
+      "nodo_id": 657,
+      "nombre": "Guanaqueros",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0034",
+      "lat": -30.194365,
+      "lng": -71.431134,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -30.571551,
+        "lng": -77.439966,
+        "ancla": 90
+      }
+    },
+    {
+      "nodo_id": 658,
+      "nombre": "Punta Choros B Los Corrales",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0021",
+      "lat": -29.246534,
+      "lng": -71.468394,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -29.619181,
+        "lng": -77.472042,
+        "ancla": 90
+      }
+    },
+    {
+      "nodo_id": 659,
+      "nombre": "El Membrillo",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0033",
+      "lat": -33.02215,
+      "lng": -71.632543,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -33.417206,
+        "lng": -77.644258,
+        "ancla": 90
+      }
+    },
+    {
+      "nodo_id": 660,
+      "nombre": "Portales",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0049",
+      "lat": -33.031146,
+      "lng": -71.590059,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -33.427059,
+        "lng": -77.602478,
+        "ancla": 90
+      }
+    },
+    {
+      "nodo_id": 661,
+      "nombre": "San Pedro Con Con",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0001",
+      "lat": -32.918841,
+      "lng": -71.518234,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -33.313404,
+        "lng": -77.529192,
+        "ancla": 90
+      }
+    },
+    {
+      "nodo_id": 662,
+      "nombre": "Ventanas",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0023",
+      "lat": -32.740921,
+      "lng": -71.490708,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -33.134386,
+        "lng": -77.501974,
+        "ancla": 90
+      }
+    },
+    {
+      "nodo_id": 663,
+      "nombre": "Matanzas",
+      "fuente": "SERNAPESCA",
+      "fuente_id": "CAL-0025",
+      "lat": -33.962747,
+      "lng": -71.877457,
+      "ancla_esperada": null,
+      "pieza": "(a1) - LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIO DE ELLA",
+      "fecha": "2026-08-19",
+      "origen_del_valor": "caletas_chile.json, via _bitacoras/coordenada_corrida_2026-08-19/03_antes_despues.tsv",
+      "estado_previo": {
+        "lat": -34.363123,
+        "lng": -77.891296,
+        "ancla": 90
+      }
+    }
+  ]
+}
