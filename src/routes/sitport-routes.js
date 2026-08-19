@@ -13,6 +13,7 @@ const {
 } = require('../services/cobertura-jurisdiccional');
 const { capitaniaDeBahia } = require('../services/capitania-de-bahia');
 const { contactoPorEscalon } = require('../services/contacto-por-escalon');
+const { fichaDePuerto } = require('../services/join-puerto-bahia');
 const {
   construirResolutorCapitania, evaluarDriftEnRuta, noEvaluado, componerConDrift,
 } = require('../services/drift-ambito-a');
@@ -249,20 +250,26 @@ const BAHIA_COORDS = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Lookup de bahia_id por nombre de puerto (para enriquecer estado de zarpe/recalada)
+// EL RESOLVEDOR LEXICO DE BAHIA POR NOMBRE SE RETIRO ACA — F2, decisión (2b).
+//
+// `resolverBahiaIdPorNombre()` partía el nombre del puerto en palabras de más
+// de 3 letras, descartaba nueve genéricas y devolvía la PRIMERA bahía de
+// `BAHIA_COORDS` cuyo nombre contuviera alguna. `Object.entries` recorre las
+// claves numéricas en orden ascendente, así que ganaba la de id más chico, no
+// la más cercana: «Borde Costero Caleta Quintay» caía en la 143 «Carahue -
+// Borde Costero» —posición 72 del recorrido— y no en la 174 «Bahía Rada
+// Quintay», que su nombre contiene literalmente. Perdía por orden numérico.
+//
+// MEDIDO ANTES DE RETIRARLO, denominador 688 nombres: decidía el rótulo de
+// capitanía de 665 puertos —el 97 %—, coincidía con el join en 141, señalaba
+// OTRA bahía en 174 y perdía el rótulo en 186. Los 174 desacuerdos se
+// concentraban en tres imanes léxicos: «sector» (113 nombres del catálogo),
+// «costero» (97) y «borde» (81), palabras que la lista de descarte no tenía.
+//
+// SE RETIRA ENTERO Y NO SE DEJA SIN LLAMADOR: un resolvedor vivo y sin uso es
+// lo que el próximo que necesite una bahía por nombre va a encontrar ahí,
+// parecido a algo que funciona. La atribución sale del join y de nada más.
 // ─────────────────────────────────────────────────────────────────────────────
-function resolverBahiaIdPorNombre(nombre) {
-  if (!nombre) return null;
-  const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-  const skip = new Set(['caleta','bahia','puerto','ensenada','canal','punta','seno','rada','isla','lago','golfo']);
-  const palabras = norm(nombre).split(/\s+/).filter(w => w.length > 3 && !skip.has(w));
-  if (palabras.length === 0) return null;
-  for (const [id, coords] of Object.entries(BAHIA_COORDS)) {
-    const nombreNorm = norm(coords.nombre);
-    if (palabras.some(p => nombreNorm.includes(p))) return Number(id);
-  }
-  return null;
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Haversine (km)
@@ -316,7 +323,31 @@ router.get('/pronostico', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST /api/sitport/restricciones  (filtro por nombre de puerto)
+// ¿ESTA FILA DEL FEED ES DE ESTA BAHÍA? — F2.
+//
+// Existe para no comparar con `===` a secas ni con `Number()` a secas, y las dos
+// razones están medidas. `r.bahia` es un NÚMERO en 444/444 filas del sondaje
+// versionado y en 26/26 de la captura del 2026-08-17T23:02:53.110Z, así que hoy
+// un `===` numérico alcanzaría. Pero si la fuente empezara a publicarlo como
+// texto, un `===` devolvería la lista vacía Y ESO SE VERÍA COMO UN PUERTO SIN
+// RESTRICCIONES: un falso negativo silencioso, que es exactamente lo que F2
+// viene a cerrar.
+//
+// Y NO SE USA `Number(valor) === id` A SECAS PORQUE COERCIONA DE MÁS: `Number(null)`,
+// `Number('')` y `Number('   ')` valen 0. Hoy ningún `bahia_id` del artefacto es 0
+// —el mínimo emitido es 71 y el máximo 254, medido— así que no habría colisión,
+// pero un catálogo que algún día emita 0 haría que toda fila sin bahía se
+// atribuyera a ella. Las cinco ausencias se descartan a mano y a propósito.
+// ─────────────────────────────────────────────────────────────────────────────
+function esDeLaBahia(valorDelFeed, bahiaId) {
+  if (typeof valorDelFeed === 'number') return Number.isFinite(valorDelFeed) && valorDelFeed === bahiaId;
+  // Una cadena con dígitos se acepta; null, undefined, '' y sólo-espacios no.
+  if (typeof valorDelFeed === 'string' && valorDelFeed.trim() !== '') return Number(valorDelFeed) === bahiaId;
+  return false;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/sitport/restricciones  (atribución por el join puerto→bahía)
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/restricciones', async (req, res) => {
   try {
@@ -324,20 +355,29 @@ router.post('/restricciones', async (req, res) => {
     const data = await sitportService.consultaRestricciones();
     if (!puerto) return res.json({ success: true, data, error: null });
 
-    const norm = s =>
-      s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    const skip = ['caleta','bahia','puerto','ensenada','canal','punta',
-                  'seno','rada','isla','lago','golfo'];
-    const p = norm(puerto);
+    // ── F2 · LA ATRIBUCIÓN SALE DEL JOIN Y DE NADA MÁS ─────────────────────
+    // Antes de esto había DOS mecanismos léxicos: este bloque, que quedaba con
+    // las filas cuya `GLBahia` compartiera una palabra con el nombre del puerto,
+    // y `resolverBahiaIdPorNombre()`, que alimentaba el `??` de abajo. Los dos se
+    // retiraron. Medido sobre 688 nombres y el sondaje versionado: el bloque
+    // acertaba la bahía declarada en 36 de 198 y servía SÓLO bahías ajenas en 63.
+    //
+    // SIN BAHÍA RESUELTA NO SE ADIVINA: la lista queda vacía y `atribucion` dice
+    // POR QUÉ. `[]` acá no significa «no hay restricciones»; significa «no hay
+    // nada que consultar», y las dos cosas se distinguen en la respuesta.
+    const ficha = fichaDePuerto(puerto);
 
-    const filtradas = data.filter(r => {
-      const words = norm(r.GLBahia || '')
-        .split(/\s+/)
-        .filter(w => w.length > 3 && !skip.includes(w));
-      return words.length > 0 && words.some(w => p.includes(w));
-    });
+    const filtradas = ficha.bahia_id === null
+      ? []
+      : data.filter(r => esDeLaBahia(r.bahia, ficha.bahia_id));
 
-    const bahiaId = filtradas[0]?.bahia ?? resolverBahiaIdPorNombre(puerto);
+    // `filtradas[0]?.bahia` NO SE TOCA — es atribución de CONTACTO y está
+    // escalada al frente de contacto. Bajo F2 deja de ser un riesgo por
+    // construcción: las filas que llegan acá son todas de la bahía del join, así
+    // que cuando la lista no está vacía su primer elemento ES de esa bahía y los
+    // dos lados del `??` coinciden. El derecho sólo actúa cuando no hay filas
+    // vivas, que es justo donde antes actuaba el resolvedor y se equivocaba.
+    const bahiaId = filtradas[0]?.bahia ?? ficha.bahia_id;
     const cap = bahiaId ? getCapitaniaByBahiaId(bahiaId) : null;
 
     res.json({
@@ -354,6 +394,38 @@ router.post('/restricciones', async (req, res) => {
       // esta pieza los toque. `contacto` es lo que un render debe consumir para
       // rotular; `contacto.nivel === null` significa que el campo NO SE MUESTRA.
       contacto: contactoPorEscalon(cap),
+      // ── F2 · POR QUÉ SE ATRIBUYÓ ESTA BAHÍA, O POR QUÉ NINGUNA ────────────
+      // NACE COMO INSTRUMENTO, NO COMO TEXTO DE PANTALLA. `mapearRespuestaPuerto`
+      // (useVoyageVerification.js:255-305) copia campo por campo, así que este
+      // campo llega al navegador y muere ahí hasta que exista la pieza que lo
+      // muestre. Está bien que así sea: existe para que el falso positivo —y
+      // sobre todo el falso NEGATIVO— sean medibles DESDE LA RESPUESTA y no haya
+      // que re-derivarlos.
+      //
+      // `silencio` en null significa que hay bahía. Con bahía, `silencio` es una
+      // de cuatro clases EXCLUYENTES y ninguna es «el resto»:
+      //   sin_bahia_en_catalogo ....... SITPORT no publica bahía en ese radio
+      //   a_adjudicar ................. hubo empate y nadie lo resolvió
+      //   bahia_declarada_lejos ....... el nodo declara una y está demasiado
+      //                                 lejos para creerle. ES EL ÚNICO SILENCIO
+      //                                 QUE TAPA MATERIAL, y es deliberado
+      //   destino_sin_ficha_de_puerto . el nombre no está en el catálogo de
+      //                                 puertos. NO significa irresoluble: este
+      //                                 endpoint atribuye por NOMBRE y este
+      //                                 destino no está en ese catálogo. Es el
+      //                                 caso de los centros de cultivo y las
+      //                                 concesiones acuícolas
+      //
+      // `km_a_la_bahia` NO se llama `km_al_ancla`: de las 489 filas con
+      // atribución sólo 186 tienen ancla declarada, y las otras 303 traen la
+      // distancia a una bahía DERIVADA, que no es el ancla de nadie.
+      // `fuente_del_km` dice cuál de las tres es.
+      atribucion: {
+        bahia_id: ficha.bahia_id,
+        silencio: ficha.silencio,
+        km_a_la_bahia: ficha.km_a_la_bahia,
+        fuente_del_km: ficha.fuente_del_km,
+      },
       // ESTADO DE CIERRE (D-C1: el cierre es el estado, la condición es la causa).
       // Va como ARRAY HERMANO alineado por `IDRestriccion`, y NO enriqueciendo los
       // registros de `restricciones`: enriquecerlos los dejaría de ser los
