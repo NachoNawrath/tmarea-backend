@@ -1,0 +1,446 @@
+================================================================================
+FRENTES LATERALES — ANOTAR EL FRENTE DEL FILTRO Y EL DEL CIERRE EN §7.1
+Sesión FRENTES-LATERALES · 2026-08-19 · tmarea-backend
+================================================================================
+
+Backend   2bd0ff6be1ff63e01b78c81313d671ccfc4f5b4f — main = origin/main al abrir.
+          `src/` NO SE TOCA en esta sesión. Cero piezas de producción.
+PWA       6443178493b8b3c35c11a37253c4b5bd1884ea55 — SÓLO SE LEE.
+Shell     Git Bash (MSYS) sobre Windows 10. Node v24.18.0.
+Alcance   escritura de documento: PLAN_JURISDICCION.md §7.1 y §7.2, más las
+          bitácoras de esta sesión. Sin smoke visual: no hay píxel tocado.
+
+================================================================================
+§0 · EL GATE — PREMISAS DEL ENUNCIADO, UNA POR UNA
+================================================================================
+Las seis se verificaron antes de escribir nada. Las seis pasan.
+
+  main y origin/main .... 2bd0ff6be1ff63e01b78c81313d671ccfc4f5b4f, los dos
+  src/ .................. git rev-parse HEAD:src
+                          = 24fef749e5145acd50d05aeb7f7e222378211d0d
+  join_puerto_bahia.json  sha256 4f9fbdc33e290a4cc2ef4dda3e98918eb3bb22466a0f
+                          be07f0170670becddaf6, en data/catalogo/
+  suite ................. 157/157, corrida HOY, salida cruda abajo
+  arbol de trabajo ...... " M .claude/launch.json" y
+                          " M data/catalogo/estado_drift.json", los dos sin
+                          stagear. PRECISION: la ruta exacta del segundo es
+                          data/catalogo/, no la raiz del repo
+  bitacora de apertura .. "?? _bitacoras/estado_plan_jurisdiccion_2026-08-19.md"
+                          untracked · 211 lineas · sha256 d4ef087f9d22f3c2f7bf5
+                          c500524843770180c12718ab8b928779f0d8fd7cbad
+
+SALIDA CRUDA DE LA SUITE (npm test, cola de terminal):
+  ℹ tests 157
+  ℹ suites 16
+  ℹ pass 157
+  ℹ fail 0
+  ℹ cancelled 0
+  ℹ skipped 0
+  ℹ todo 0
+  ℹ duration_ms 455.2494
+
+================================================================================
+§1 · EL GREP RE-VERIFICADO — el hallazgo que abre la sesión se sostiene
+================================================================================
+ARBOL RECORRIDO — UN SOLO FICHERO, DECLARADO:
+  fichero  PLAN_JURISDICCION.md
+  ruta     C:\Users\katia\tmarea-backend\PLAN_JURISDICCION.md
+  commit   2bd0ff6 · LIMPIO en el arbol de trabajo (0 entradas en git status
+           para esa ruta, comprobado antes de tocarlo)
+  blob     753a26c8c47000ed19532b1afce4837e20a545e7
+  sha256   4b9de5e11c59522c1e639398941897c57b6a2df0b37280a7c1bcc40e06577f78
+  lineas   2.582, CONTADAS HOY contra el fichero: wc -l = 2.582 y
+           grep -c '' = 2.582. La cifra heredada reproduce.
+
+LOS SEIS PATRONES, CON SU CLASE — todos 0 antes de esta sesión:
+  filtro_puerto ....... identificador ..... 0
+  join_puerto_bahia ... identificador ..... 0
+  b1-a ................ identificador ..... 0
+  F2 .................. identificador ..... 0
+  fichaDePuerto ....... identificador ..... 0
+  verde falso ......... frase en español .. 0
+
+  La frase se buscó CUATRO veces y las cuatro dan 0: literal; insensible a
+  mayúsculas; con separador flexible que cruza el fin de línea
+  (/verde\s+falso/gi sobre el fichero entero, no línea a línea); y por sus dos
+  tokens sueltos. "verde" sale en 6 líneas y "falso" en 17, o sea que las
+  palabras están y la frase no. El cero es del par, no del parser.
+
+CONTROLES POSITIVOS, UNO POR CLASE, SOBRE ESE MISMO FICHERO:
+  identificador ....... INV-3.6 31 · E4 20 · D16 13 · estado_geometria 8 ·
+                        zonas-aviso.js 7
+  frase en español .... "el decreto" 56 · "área" 13 · "más corto" 2 ·
+                        "mar territorial" 2 · "aguas interiores" 1
+  Las dos clases muerden. Ningún cero de arriba es un cero del patrón.
+
+F2 — EL CERO MENOS PROBABLE, CON SU CONTROL AL LADO:
+  F2 literal 0 · F2 insensible a mayúsculas 0 · \bF2\b 0 · F1 0 · F3 0.
+  Y EL CONTROL QUE DECIDE: el patrón F[0-9] da EXACTAMENTE 1 coincidencia en
+  las 2.582 líneas, y es F5 — "suma F5 (bahia_jurisdicciones)", fila 1.4 de §8.
+  El patrón "F + dígito" encuentra cuando hay. F2 no estaba.
+
+CORROBORACIÓN NO PEDIDA, medida de paso: D-C9 0 · D-P3.1 0 · O5 0. Ninguna
+deuda de los dos frentes nuevos figuraba en el plan.
+
+
+================================================================================
+§2 · DEFECTO PROPIO — DECLARÉ LA CLASE DE FIN DE LÍNEA Y ERA FALSA
+================================================================================
+EN LA PARADA 1 ESCRIBÍ: "clase de fin de línea: CRLF — 2.582 líneas con CR sobre
+2.582 líneas". ES FALSO. El fichero es LF PURO: CR = 0 bytes.
+
+QUIÉN LO CAZÓ, Y NO FUI YO MIRANDO: la aserción del parche. El script de
+inserción exige que cada ancla aparezca EXACTAMENTE una vez, y el ancla con
+"\r\n" dio 0 ocurrencias. Abortó ANTES de escribir un byte —fs.writeFileSync
+está al final de las cuatro—, así que el fichero no se tocó con la clase mal.
+Es §4.1 y §4.4 haciendo lo suyo: un parche que exige una ocurrencia no puede
+dejar un no-op silencioso.
+
+EL INSTRUMENTO QUE MINTIÓ, y por qué hay que anotarlo:
+  grep -c $'\r' <fichero>   ← en este harness NO cuenta CR
+  CONTROL, medido:
+    fichero LF PURO  (printf 'a\nb\n')     → grep -c $'\r' devuelve 2  (¡todas!)
+    fichero CRLF     (printf 'a\r\nb\r\n') → grep -c $'\r' devuelve 2
+    fichero LF PURO, forma grep -c '\r'    → devuelve 0   ← ésta sí discrimina
+  O sea que la forma $'\r' devuelve TODAS las líneas cualquiera sea el fichero:
+  no distingue, y un "2.582 de 2.582" se lee como confirmación cuando es ruido.
+
+MEDICIÓN AUTORITATIVA, por byte, con node — la que vale:
+  PLAN_JURISDICCION.md ............. CR 0 · LF 2582 · CRLF 0  => LF PURO
+  estado_plan_jurisdiccion_2026-08-19.md  CR 0 · LF  211 · CRLF 0  => LF PURO
+  CLAUDE.md ........................ CR 0 · LF  414 · CRLF 0  => LF PURO
+  CONTRATO_MOTOR.md ................ CR 0 · LF 1174 · CRLF 0  => LF PURO
+
+ALCANCE DEL DEFECTO, medido antes de dramatizarlo: la forma $'\r' aparece
+0 veces en _bitacoras/ y 0 veces en scripts/. NINGÚN instrumento versionado la
+usa. El error vivió sólo en el mensaje de la PARADA 1 de esta sesión, y no
+contaminó ninguna huella publicada.
+
+CONSECUENCIA PRÁCTICA, y es a favor: no hay .gitattributes en el repo y
+core.autocrlf=true, pero el fichero está en LF en el árbol de trabajo. Con LF a
+los dos lados, el sha256 del fichero en disco y el contenido del blob COINCIDEN,
+y la verificación por blob-sha del push no necesita conversión.
+
+LO QUE ENSEÑA, para que se pueda citar: UNA MEDICIÓN QUE DEVUELVE "TODO" ES TAN
+SOSPECHOSA COMO UNA QUE DEVUELVE CERO, Y NECESITA EL MISMO CONTROL NEGATIVO. Al
+cero le exigí control positivo en los seis patrones —y por eso los seis ceros
+resistieron—; al 2.582 no le exigí nada, porque "todas las líneas tienen CR"
+sonaba a lo que esperaba oír. El control que faltaba costaba dos printf.
+
+================================================================================
+§3 · LOS COMMITS — BUSCADOS EN EL git log Y EN LAS BITÁCORAS, NO ASUMIDOS
+================================================================================
+FRENTE DEL FILTRO
+  F1 ......... bbb8696 (2026-08-17 19:57) · deriva data/catalogo/
+               join_puerto_bahia.json y NO lo aplica. 2 ficheros, 0 de src/.
+               Evidencia: 9fdf6b8 · 36543c8 · 4e5f83e
+  (b1-a) ..... f2d0aea (2026-08-18 01:12) · 5 ficheros, 0 de src/.
+               Bitácora versionada a6a61dc; enmiendas 73b806a
+  F2 ......... b09dd90 (2026-08-18 19:23) · mide y decide, 2 bitácoras, 0 de src/
+               2bd0ff6 (2026-08-18 21:59) · PRODUCCIÓN: src/routes/
+               sitport-routes.js + src/services/join-puerto-bahia.js (nuevo)
+
+  SOBRE LA ADVERTENCIA DEL ENUNCIADO —"que 2bd0ff6 sea la cabeza no lo hace el
+  commit de F2"—: el método era correcto y el resultado es que SÍ lo es.
+  Determinado por tres vías independientes: (i) el asunto lo nombra; (ii) el
+  diff es exactamente lo que F2 escribe y nada más; (iii) la propia bitácora de
+  F2 cierra con "P4.3 · ESTADO AL CERRAR EL FRENTE F2 → main local =
+  origin/main = 2bd0ff6". No se asumió por ser la cabeza.
+
+FRENTE DE CIERRE — LA ESCRITURA ES DE OTRO REPOSITORIO
+  Tramo A .... tmarea-pwa@a478518
+  Tramo B .... tmarea-pwa@6443178
+  Tramo C .... NO EXISTE. Sin commit, sin escritura.
+  Corroborado por las cabeceras de las dos bitácoras, que declaran su par de
+  HEADs, y por git rev-parse en tmarea-pwa (HEAD = origin/main = 6443178).
+  Las dos declaran además CERO PIEZAS DE CÓDIGO del backend; la del Tramo B lo
+  verifica por tree-sha (946bc5d7…, igual a a050ac7).
+  POR ESO LOS SHA VAN CON PREFIJO DE REPO en §7.1: un sha pelado en un
+  documento de tmarea-backend no resuelve, y una cita que no resuelve es falsa.
+
+
+================================================================================
+§4 · LAS DOS COSAS QUE EL OWNER MANDÓ VERIFICAR ANTES DE ESCRIBIR
+================================================================================
+
+--------------------------------------------------------------------------------
+(1) 501 Y 489 NO SON INTERCAMBIABLES — VERIFICADO, Y LAS DOS ENTRAN CON SU
+    DEFINICIÓN
+--------------------------------------------------------------------------------
+Mismo universo: 688 nombres de puerto. Distinto momento del cálculo.
+
+  F1 · 501 / 187 — ANTES de la regla (c)
+     asunto de bbb8696, textual: "688 filas, 501 resueltas, 74 a adjudicar en
+     26 preguntas"
+     501 = confirmado_declarado 198 + derivado_limpio 194 + desempatado 109
+     187 = a_adjudicar 74 + sin_bahia_en_catalogo 113
+     501 + 187 = 688   (verificado acá)
+
+  F2 · 489 / 199 — DESPUÉS de la regla (c), y ÉSTE es el que rige
+     199 = sin_bahia_en_catalogo 113 + a_adjudicar 74 + bahia_declarada_lejos 12
+     489 + 199 = 688   (verificado acá, y es lo que prueba que las clases
+                        cierran: cuatro clases excluyentes, sin huérfanos)
+     501 − 489 = 12    = exactamente las que la regla (c) degrada, N = 100 km
+
+  ORIGEN de las dos: 21_medir_decisiones.txt §(4) —"=> EL REPARTO DEL TRAMO C
+  ES 489 / 199, NO 501 / 187" y "ok la diferencia con 501/187 son exactamente
+  las 12 de la regla (c)"— y f2_medicion_y_decisiones_2026-08-18.txt §8(4).
+  Los dos medidos contra el artefacto vigente, sha256 4f9fbdc3…
+
+  LÍMITE QUE LA PROPIA BITÁCORA DECLARA Y QUE NO SE TAPA: el reparto no depende
+  de la hora, pero SÍ de M4 — si la cascada de desempate está mal ordenada, las
+  109 "desempatado" dejan de ser atribución confiable y el 489 se mueve otra
+  vez. Sigue abierto en §6.4(b). §7.1 publica el 489 como lo que es: el reparto
+  que rige hoy, no un número cerrado.
+
+--------------------------------------------------------------------------------
+(2) LOS DOS "8" SON EL MISMO 8 — VERIFICADO. Y HAY UN TERCERO QUE NO LO ES
+--------------------------------------------------------------------------------
+LA RESPUESTA A LO PREGUNTADO: SÍ, son el mismo, y lo declara su propia bitácora
+en la línea siguiente, con un demostrativo que no admite otra lectura.
+
+  f2_verde_falso_2026-08-17.txt, párrafo "EL BALANCE DE LA REGLA (c), ENTERO Y
+  MEDIDO sobre las 12 filas que degrada", textual:
+
+      causa   2 FALSOS NEGATIVOS · Caldera y Huasco, y cuestan 8 CIERRES REALES.
+      [...]
+      LO QUE RECUPERA ESOS 8 CIERRES es (a1) de §6.4 — corregir los 11 `lng` en
+      `nodos_maritimos`—, ya decidida por el owner y sin fecha.
+
+  Y lo repite el título de §T.3 de f2_medicion_y_decisiones_2026-08-18.txt:
+  "CORREGIR LOS 11 `lng` EN LA BASE DEVUELVE OCHO CIERRES REALES · PRIORIDAD".
+
+  CORROBORACIÓN ARITMÉTICA, del mismo material: en la lista nominal de
+  07_medir_verde_falso.txt, Caldera trae "hoy 7 filas" y Huasco "hoy 1 filas".
+  7 + 1 = 8. Es una sola pérdida, mirada de los dos lados. NO SON 16.
+
+EL TERCER 8, QUE ES OTRO CONJUNTO Y ESTÁ EN EL MISMO PÁRRAFO:
+  El balance reparte las 12 filas que la regla degrada como 8 + 2 + 2:
+      evita  8 FALSOS POSITIVOS  → son FILAS DEL CATÁLOGO
+      causa  2 falsos negativos  → Caldera y Huasco, que cuestan 8 CIERRES
+      ni una ni otra  2          → sus bahías no tienen material a esta hora
+  Los dos "8" tienen UNIDADES DISTINTAS —filas contra cierres— y son conjuntos
+  distintos. Hay incluso un cuarto conteo de 8 en 07_medir_verde_falso.txt
+  ("F2 les sirve una bahía a más de 100 km ... con cierre 8"), que es otra vez
+  filas y otra vez otro conjunto: incluye a Huasco y no a Caldera.
+
+  DECISIÓN DE ESCRITURA, tomada por eso: §7.1 publica UN SOLO 8 —el de los
+  cierres perdidos—, declarado como una pérdida contada de dos lados, y DICE
+  que hay un tercero que no es ése y que no se trae. Los conteos de filas no
+  entran al plan: son del interior de la regla (c) y su sitio es su bitácora.
+
+
+================================================================================
+§5 · LA CONTRADICCIÓN SOBRE §7.1, RESUELTA CONTRA EL FICHERO
+================================================================================
+El enunciado la describía a la vez como "nunca se usó" y como "el frente de
+contacto está anotado ahí". Las dos mitades son ciertas de cosas distintas, y
+hay una tercera fuente de confusión que se midió:
+
+  (i)  PLAN_JURISDICCION.md §7.1 SÍ está en uso, y con DOS formatos: una tabla
+       "| frente | estado | qué dejó |" con tres frentes CERRADOS, y una
+       subsección #### para el frente de CONTACTO, que está ABIERTO. Ese #### es
+       el modelo que esta sesión replicó, incluidas sus dos piezas de cierre —
+       "Por qué no va dentro de E0–E6…" y "Dónde vive, entonces:…".
+  (ii) "nunca se usó" es exacto de UNA cosa: el frente del filtro nunca se anotó
+       ahí. Es lo que dice la bitácora de apertura, y es el hallazgo.
+  (iii)LA TERCERA, MEDIDA: el commit a93053e tiene por asunto "§7.1 — el 120 s
+       era del timeout del instrumento y no de psql…" y TOCA UN SOLO FICHERO:
+       CLAUDE.md, 11 líneas, ninguna del plan. CLAUDE.md §7.1 es "Hechos de la
+       máquina". Son dos §7.1 en dos documentos, y el asunto no lo dice.
+
+================================================================================
+§6 · DECISIÓN PROPIA — LA CABECERA DEL DOCUMENTO (§0.4: es técnica, no de
+     producto; el owner la delegó explícitamente)
+================================================================================
+LO QUE SE MIDIÓ: la cabecera decía "Versión del documento: 2.5 · Última
+actualización: 2026-08-15". Es falso desde 01bf543 (2026-08-16), que editó §7.1
+—la corrección del "100 → 90"— y NO bumpeó la versión ni agregó fila a §8.
+
+LO QUE SE HIZO Y POR QUÉ: se movió la fecha a 2026-08-19. NO se bumpeó la
+versión y NO se agregó fila a §8.
+  · precedente medido: 01bf543 editó §7.1 sin bump. No se estrena una regla
+    distinta para la misma clase de edición.
+  · las filas de §8 registran qué ETAPA o qué DECISIÓN se movió, y esta sesión
+    no movió ninguna: no re-planificó, no tocó E4, no decidió orden.
+  · dejar 2026-08-15 con el documento editado hoy habría dejado escrita en un
+    documento que gobierna una fecha medida como falsa, que es lo que §6.1
+    llama el peor resultado posible.
+DESCARTADA la opción de bumpear a 2.6: es gobierno del documento y su criterio
+—qué cambio merece versión— no está declarado en ninguna parte. Si el owner
+quiere que "el plan pasa a describir dos frentes" sea un cambio de versión, es
+una línea y se agrega.
+
+================================================================================
+§7 · LO QUE SE ESCRIBIÓ
+================================================================================
+PLAN_JURISDICCION.md — CUATRO INSERCIONES, cada una con ancla exigida en
+EXACTAMENTE 1 ocurrencia (el script aborta si no; abortó una vez, ver §2):
+  1. cabecera: "Última actualización" 2026-08-15 → 2026-08-19
+  2. §7.1, tras el párrafo de apertura: el bloque que declara que los frentes
+     con subsección propia son TRES, con el hallazgo del grep y su evidencia
+  3. §7.1, al pie: "#### El frente del FILTRO — cerrado en producción, y no cabe
+     en E0–E6" y "#### El frente de CIERRE — Tramos A y B cerrados, Tramo C
+     abierto, y no cabe en E0–E6"
+  4. §7.2, al pie: "ANOTADO, NO RESUELTO — 2026-08-19" con E7 pieza 2, E8, §1 y §2
+
+  2.582 → 2.774 líneas · 262.936 → 277.021 bytes · CR 0 · caracteres de control
+  fuera de LF/CR 0 · sin BOM.
+  Los seis patrones que daban 0 ahora dan: filtro_puerto 5 · join_puerto_bahia 4
+  · b1-a 3 · F2 11 · fichaDePuerto 1 · "verde falso" 1.
+  F5 pasa de 1 a 2: el de §8 más la línea que lo desambigua en §7.1.
+
+FICHEROS NUEVOS
+  _bitacoras/frentes_laterales_2026-08-19/frentes_laterales_2026-08-19.txt
+  _bitacoras/frentes_laterales_2026-08-19/insumos_zarpe_2026-08-19.md
+
+COPIAS ANTES DE TOCAR, verificadas byte a byte por sha256 contra el original:
+  PLAN_JURISDICCION.md ................... 4b9de5e11c59522c…
+  estado_plan_jurisdiccion_2026-08-19.md . d4ef087f9d22f3c2f…
+  El fichero untracked NO se modificó en esta sesión: entra al commit tal como
+  estaba. La copia se tomó igual, porque el enunciado la pedía antes de
+  modificarlo y la decisión de no modificarlo se tomó después de tenerla.
+
+LO QUE NO SE TOCÓ, a propósito: src/ (cero ficheros), .claude/launch.json y
+data/catalogo/estado_drift.json (siguen modificados y sin stagear), el motor de
+reglas, CONTRATO_MOTOR.md, y las etapas E0–E8 salvo el bloque de §7.2 que sólo
+las ANOTA.
+
+
+================================================================================
+§8 · LOS DOS HALLAZGOS QUE EL OWNER MANDÓ ANOTAR
+================================================================================
+
+--------------------------------------------------------------------------------
+H1 · F2 MATÓ UNA DECISIÓN DE OWNER QUE ESTABA PENDIENTE
+--------------------------------------------------------------------------------
+Estaba abierto si el filtro por subcadena de sitport-routes.js:333-338 era un
+frente propio o se fusionaba con otro. YA NO HAY NADA QUE DECIDIR: el mecanismo
+no existe.
+
+MEDIDO, sobre src/ recursivo del backend:
+  includes(w ................. 2 ocurrencias en 2bd0ff6^  →  0 en 2bd0ff6
+  resolverBahiaIdPorNombre ... 2 en 2bd0ff6^  →  2 en 2bd0ff6, PERO las dos de
+                               hoy son COMENTARIOS que describen su retiro
+                               (sitport-routes.js :255 y :361). La función no
+                               existe.
+  CONTROL POSITIVO de que el grep muerde: "includes(" en src/ da 56.
+  Lo que lo reemplaza: fichaDePuerto, en 5 sitios de 2 ficheros.
+
+NO ES UNA DECISIÓN QUE SE TOMÓ: ES UNA QUE SE QUEDÓ SIN OBJETO. Se anota porque
+una decisión pendiente que nadie retira sigue apareciendo en las listas y hace
+perder una sesión a quien la abra. Y porque su caída MOVIÓ OTRA COSA: era el
+bloqueo declarado en origen del Tramo C, y hoy el Tramo C está abierto por otro
+motivo. Los dos quedan escritos en §7.1, cada uno con su fecha y su cita.
+
+--------------------------------------------------------------------------------
+H2 · EL TEXTO DE D.S. 364 ARTS. 29 Y 30 NO EXISTE EN NINGUNO DE LOS DOS REPOS
+--------------------------------------------------------------------------------
+LA FUENTE DE UNA DECISIÓN CERRADA NO ESTÁ ADJUNTA. Eso es lo que es, y así se
+anota: no se reconstruyó de memoria y no se salió del árbol a buscarla.
+
+D-C9 se apoya en los Arts. 29 y 30 del D.S. 364/1980 y lleva el rótulo "MARCO
+NORMATIVO DEL OWNER — CERRADO. NO SE PIDE FUENTE, NO SE RE-ABRE". Lo único
+escrito en los dos repositorios sobre esos dos artículos es la PARÁFRASIS de
+ese mismo bloque. El texto no está.
+
+Árbol declarado y trampas medidas: ver insumos_zarpe_2026-08-19.md §(3), que
+lleva los dos patrones, sus conteos por repositorio, el reparto de las 11
+apariciones del decreto por nombre, las 6 de "Art. 29/30" —NINGUNA del D.S. 364
+salvo las dos de D-C9: las otras cuatro son TM-002 Art. 29 y D.S. 397/1985
+Arts. 29 y 45, que son otras normas— y su control positivo.
+
+PARA CONTRASTE, sin sacar conclusión de la comparación: el Art. 2 del D.S. 991
+SÍ está en el árbol con texto literal, procedencia y documento_sha256, porque
+D6 lo exigió. Para el D.S. 364 no hay nada equivalente.
+
+================================================================================
+§9 · HALLAZGOS FUERA DE ALCANCE — REDACTADOS, NO APLICADOS (§6.1)
+================================================================================
+
+FA-1 · LOS COMENTARIOS DE LA PWA QUE NOMBRAN EL FILTRO QUEDARON VENCIDOS
+  Dos comentarios de tmarea-pwa/src/hooks/useVoyageVerification.js —el de la
+  compuerta D-C7 y el de mapearRespuestaPuerto— justifican no encender el
+  veredicto de zarpe por "el sobre-alcance del filtro de puerto vivo (backend
+  `sitport-routes.js:333-338`, subcadena y no palabra)". Ese filtro no existe
+  desde 2bd0ff6 (ver H1). La afirmación quedó falsa el 2026-08-18.
+  QUÉ HARÍA FALTA: es escritura de tmarea-pwa, fuera del alcance de esta sesión
+  y del alcance del Tramo C, que tampoco arrancó. La corrección correcta NO es
+  borrar el motivo: es agregarle la fecha en que cayó y dejar el motivo que
+  rige, igual que se hizo en §7.1. Se redacta acá y no se aplica.
+  OPCIONES: (a) enmendar los dos comentarios en la pieza que abra el Tramo C —
+  RECOMENDADA, porque es quien va a leerlos; (b) una pieza propia de higiene
+  ahora; (c) anotarlo y nada más.
+
+FA-2 · UN PÁRRAFO DE §7.1 QUEDÓ TRAGADO POR UN BLOCKQUOTE EN 01bf543
+  En §7.1, dentro del ADDENDUM 2026-08-15 del frente de contacto, la línea que
+  empieza "> Evidencia: `_bitacoras/lote_cisnes_2026-08-16/08_pantalla_antes.txt`
+  y `01_medir_lote.txt`." continúa en la MISMA línea con "Corregir el dato **no
+  alcanza** para que la pantalla deje de mentir: cierra…", que era un párrafo
+  del cuerpo y no de la corrección. El diff de 01bf543 lo muestra: la inserción
+  pegó las dos frases. Efecto: un párrafo del cuerpo se renderiza dentro del
+  blockquote de una corrección, y se lee como parte de ella.
+  NO SE TOCÓ: está dentro del bloque del frente de CONTACTO, que esta sesión
+  tiene fuera de alcance ("el frente de contacto: se cita, no se ejecuta").
+  QUÉ HARÍA FALTA: separar la frase en su propio párrafo, sin cambiar una letra
+  del texto. Es una línea y no cambia ningún contenido.
+
+
+FA-3 · EL INSTRUMENTO grep -c $'\r' NO MIDE LO QUE PARECE
+  Ver §2. Alcance medido: 0 usos en _bitacoras/ y 0 en scripts/, así que ningún
+  instrumento versionado lo hereda y no hay huella publicada que revisar.
+  QUÉ HARÍA FALTA para que no vuelva: una línea en CLAUDE.md §7 (entorno), que
+  ya lista hechos de la máquina de esta clase. Es CLAUDE.md y va por el ciclo
+  de §6 — se propone, el owner revisa, el owner autoriza. TEXTO PROPUESTO:
+      "Para contar CR no se usa `grep -c $'\r'`: en este harness devuelve TODAS
+       las líneas cualquiera sea el fichero. La forma que discrimina es
+       `grep -c '\r'`, y la que decide es contar el byte 13 con node."
+  NO APLICADO.
+
+FA-4 · DEUDA ABIERTA POR ESTA PIEZA — core.autocrlf=true SIN .gitattributes
+  ANOTADA, NO RESUELTA. La abre esta pieza y se declara acá para que no se
+  descubra el dia que una huella no reproduzca.
+  EL HECHO, medido: no hay .gitattributes en el repositorio y core.autocrlf
+  esta en true. El fichero esta HOY en LF en el arbol de trabajo, y git avisa
+  al stagear: "LF will be replaced by CRLF the next time Git touches it".
+  QUE IMPLICA: el sha256 en disco que esta sesion publica vale SOLO EN CLASE
+  LF. Un re-checkout deja el fichero en CRLF y esa huella deja de reproducir
+  SIN QUE EL CONTENIDO CAMBIE. La huella no miente sobre el contenido: miente
+  sobre la clase, y quien la compare sin saberlo va a buscar un cambio que no
+  existe.
+  LA REGLA QUE QUEDA, y vale desde hoy para cualquier sesion: TODA HUELLA DE
+  ESTE FICHERO SE PUBLICA DECLARANDO SU CLASE. Un sha256 sin clase al lado no
+  es verificable en este repositorio.
+  NO SE RESUELVE ACA. Escribir un .gitattributes cambia como git trata TODOS
+  los ficheros del repositorio y toca el arbol entero: es una pieza propia, con
+  su medicion de que se normalizaria y que no, y no entra de costado en una
+  sesion de escritura de documento (§0.3).
+
+================================================================================
+§10 · LO QUE ESTA SESIÓN NO HIZO, DICHO PARA QUE NO SE LEA COMO HECHO
+================================================================================
+· NO se re-planificó nada: no se movió el orden de las etapas, no se tocó E4,
+  no se decidió qué va primero.
+· NO se midió ninguna deuda de los dos frentes. Todas las cifras que entraron a
+  §7.1 salen de una bitácora citada; ninguna se re-contó acá salvo las dos
+  aritméticas que el owner mandó verificar (§4), que comprueban lo publicado y
+  no publican nada nuevo.
+· NO se caracterizó el alcance del Tramo C, y la palabra "bloqueo" NO se usó
+  aplicada al zarpe. MEDIDO sobre el diff stageado del plan: las lineas nuevas
+  la usan DOS veces y las dos aplicadas al TRAMO ("son DOS bloqueos, cada uno
+  con su fecha" y "el bloqueo de origen"). Las otras apariciones de
+  "bloqueo/bloquea" en el fichero son preexistentes y no se tocaron. En el
+  documento que gobierna, "zarpe" aparece 3 veces en lo nuevo: dentro de la
+  transcripcion literal de cableo_cierre §6, en la frase que identifica a D-C9
+  por su asunto, y en la ruta del fichero de insumos.
+· NO se eligió entre las alternativas de D-C9 y no se recomendó alcance.
+· NO se tocó src/ de ninguno de los dos repos. No hubo smoke visual porque no
+  hay píxel tocado.
+· NO se corrió ninguna consulta a la base ni a SITPORT.
+· NO se re-verificó que los commits que la tabla de §7 cita sigan en main —lo
+  que la bitácora de apertura ya declaraba no saber—; sólo se verificaron los
+  seis que esta sesión escribe.
+
+================================================================================
+FIN — sin commit hasta autorización explícita del owner.
+================================================================================

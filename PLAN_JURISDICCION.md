@@ -7,7 +7,7 @@
 > Rige `CONTRATO_MOTOR.md` v1.7. Este documento **no crea reglas**: donde una regla es
 > del contrato, se cita; donde es de producto, se dice que lo es.
 
-**Versión del documento:** 2.5 · **Escrito:** 2026-08-10 · **Última actualización:** 2026-08-15
+**Versión del documento:** 2.5 · **Escrito:** 2026-08-10 · **Última actualización:** 2026-08-19
 **Estado:** plan aprobado. Especificación aprobada (S5 abierta como D4). **E0, E1, E2 y E3 CERRADAS** — el ámbito lacustre está publicado y consultado, con una restricción real llegando al patrón (§7). El cambio de unidad tiene su número: **+11 restricciones, piso +7**. Quedan **E4, E5 y E6**. **E4 en curso**: el límite Norte de `arica` quedó **declarado y no construido** (D16, 2026-08-15) — se cerró el registro, **no** la jurisdicción, y el conteo del ámbito **marítimo sigue en 44 cerrable / 8 no_cerrable** (sobre las 64: **54 / 10**).
 
 **Objetivo:** que la app resuelva jurisdicción por **Capitanía de Puerto**, con la capa
@@ -1458,6 +1458,19 @@ Se actualiza al cerrar cada etapa. "Cerrada" exige evidencia citada.
 Trabajo que nació fuera de E0–E8, se cerró, y toca el plan sin pertenecerle. Se registra acá
 para que no quede huérfano ni se le fuerce un número de etapa que no le corresponde.
 
+> **ANOTADOS EL 2026-08-19, y hasta ese día este apartado tenía un solo frente con subsección
+> propia.** Son **tres**: el de **CONTACTO**, el del **FILTRO** y el del **CIERRE**. Los dos
+> últimos crecieron entre el 2026-08-16 y el 2026-08-18 y **este documento no los nombraba**:
+> medido sobre sus propias 2.582 líneas, `filtro_puerto`, `join_puerto_bahia`, `verde falso`,
+> `b1-a`, `F2` y `fichaDePuerto` daban **0 apariciones cada uno**, con control positivo por
+> clase de patrón. Evidencia: `_bitacoras/estado_plan_jurisdiccion_2026-08-19.md` y
+> `_bitacoras/frentes_laterales_2026-08-19/`.
+>
+> **Lo que se corrige acá es el REGISTRO, no el trabajo.** Los dos frentes existen, están
+> medidos, y uno de ellos está en producción desde el 2026-08-18. Lo que faltaba era que este
+> plan dejara de describirse como si el trabajo en curso fuera sólo el suyo. **La pieza que
+> existía para cazar esto es §7.2, y nunca se implementó.**
+
 | frente | estado | qué dejó |
 |---|---|---|
 | **Sondeo de catálogo y contacto** (2026-08-12) | **cerrado sin aplicar** | Contra-prueba medida de que **SITPORT no sirve como fuente de jurisdicción**: es el intento más completo hecho —164 bahías, 64 Capitanías, 16 Gobernaciones, cinco endpoints— y **no resolvió ninguna** de las seis que el decreto deja abiertas. `diff_capitanias.csv` **no se aplica**. Evidencia podada a 169 KB con `PROCEDENCIA.txt` de los 18 HTML borrados. Cinco aseveraciones de esa sesión que no resistieron la medición, escritas para que quien lea `capitanias_64_final.csv` re-verifique contra los raw. Bitácora: `sondeo_catalogo_cierre_2026-08-12.txt` |
@@ -1916,6 +1929,162 @@ se tocó en esta sesión.**
 entero el defecto de P2 —la etiqueta dura *"Capitanía de Puerto de {Gobernación}"*, que era 17 de 17
 y pasa a 0— y **deja P3 igual**, porque `PortStatusBlock.jsx:76-77` nunca lee `capitania`.
 
+#### El frente del FILTRO — cerrado en producción, y no cabe en E0–E6
+
+> **Anotado acá el 2026-08-19, un día después de cerrarse.** El frente corrió del 2026-08-17 al
+> 2026-08-18 y este documento no lo mencionaba. Bitácoras de origen, todas en
+> `_bitacoras/filtro_puerto_2026-08-17/`: `filtro_puerto_2026-08-17.txt` (reconocimiento) ·
+> `f2_verde_falso_2026-08-17.txt` · `b1a_redondeo_del_join_2026-08-18.txt` ·
+> `f2_medicion_y_decisiones_2026-08-18.txt` · `f2_escritura_2026-08-18.txt`.
+
+**AVISO DE LECTURA — `F1`, `F2` y `F3` acá NO son las `F<n>` de §8.** En la fila 1.4 de §8,
+`F5` nombra una **fuente** del control de drift de E0.1 (`bahia_jurisdicciones`); es el único
+`F` seguido de dígito que este documento tenía antes de hoy. En este apartado `F1`, `(b1-a)`,
+`F2` y `F3` son las **piezas de este frente**, y así se llaman en sus bitácoras y en sus
+instrumentos. **No se renombran acá**: renombrarlas dejaría el plan diciendo una cosa y las
+bitácoras otra. Después de esta línea van en forma corta.
+
+**Qué resolvió.** La ruta de puertos **dejó de atribuir bahías comparando nombres** y pasa a
+consumir el join derivado. Y **sin bahía resuelta calla y lo dice**: la lista vuelve vacía con
+un campo que declara cuál de cuatro silencios excluyentes la produjo, en vez de servir las
+filas de una bahía ajena. `[]` deja de significar «no hay restricciones» y pasa a poder
+significar «no hay nada que consultar», que son dos cosas distintas y ahora se distinguen en
+la respuesta.
+
+**Las tres piezas, con su commit — buscados en el `git log` y en las bitácoras, no asumidos:**
+
+| pieza | commit | qué hizo |
+|---|---|---|
+| **F1** | `bbb8696` (2026-08-17) | derivó `data/catalogo/join_puerto_bahia.json` y **no lo aplicó**. Insumos y bitácora versionados en `9fdf6b8`, `36543c8` y `4e5f83e` |
+| **(b1-a)** | `f2d0aea` (2026-08-18) | el redondeo sale del cálculo y queda sólo en la presentación. Bitácora versionada en `a6a61dc`; enmiendas en `73b806a` |
+| **F2** | `b09dd90` (mide y decide, **sin tocar `src/`**) y **`2bd0ff6`** (producción) | `src/routes/sitport-routes.js` deja de filtrar por nombre y `src/services/join-puerto-bahia.js` entra nuevo |
+
+**LOS DOS REPARTOS NO SON INTERCAMBIABLES, y cada uno va con su denominador y con la
+definición con la que se contó.** Los dos salen del mismo universo de **688 nombres de puerto**:
+
+- **F1 publicó 501 / 187** (asunto de `bbb8696`, textual: *«688 filas, 501 resueltas, 74 a
+  adjudicar en 26 preguntas»*). Es el reparto del join derivado **ANTES de la regla (c)**:
+  501 = 198 `confirmado_declarado` + 194 `derivado_limpio` + 109 `desempatado`.
+- **F2 mide 489 / 199, y ÉSE es el que rige.** Es el reparto **DESPUÉS de la regla (c)**, que
+  degrada las **12** filas cuya ancla declarada queda a más de 100 km de la bahía que declaran.
+  El silencio se parte en tres clases excluyentes: 113 `sin_bahia_en_catalogo` + 74
+  `a_adjudicar` + 12 `bahia_declarada_lejos` = **199**. Y **489 + 199 = 688**, sin filas
+  huérfanas — que es lo que prueba que las clases cierran.
+- **La diferencia entre los dos repartos son exactamente esas 12.** Origen de las dos cifras:
+  `21_medir_decisiones.txt` §(4) y `f2_medicion_y_decisiones_2026-08-18.txt` §8(4), los dos
+  medidos contra el artefacto vigente (`join_puerto_bahia.json`, sha256 `4f9fbdc3…`).
+
+**Deuda viva que queda colgando del frente.** Cada una con la bitácora de la que sale; **esta
+sesión no las re-contó y no publica ninguna cifra como propia**:
+
+- **D-P3.1 · el silencio se pinta verde.** Un puerto que F2 calla por no saber y un puerto que
+  F2 miró y encontró limpio **son el mismo píxel** en pantalla. **Es de la PWA, no del
+  backend**: el endpoint emite el silencio con nombre propio, no inventa bahía y no rotula
+  Capitanía; lo que no existe es el consumidor —la PWA no tiene un estado para «no sabemos»—.
+  Y **no es regresión de F2**: antes ese mismo puerto no daba verde por saber, daba ámbar por
+  una fila ajena. Medido y no aplicado: `f2_escritura_2026-08-18.txt` §D-P3.1.
+- **O5 · la atribución por coordenada**, para los destinos que no son puertos —centros de
+  cultivo y concesiones acuícolas—, que hoy caen en el silencio `destino_sin_ficha_de_puerto`.
+  Recomendada y nunca ejecutada: `filtro_puerto_2026-08-17.txt` §S4 pieza 1, retomada en
+  `f2_escritura_2026-08-18.txt`.
+- **(a1) · los `lng` desplazados 6,00° en 11 nodos de `nodos_maritimos`.** El owner decidió
+  **(a3) para F2** —degradar el consumo, que es la regla (c)— **y (a1) en sesión propia**:
+  `f2_verde_falso_2026-08-17.txt` §6.4(a).
+- **F3 · el backlog: las 74 `a_adjudicar`.** Sesión propia. F2 no la necesita, porque las 74
+  entran como silencio declarado hasta que alguien las conteste:
+  `f2_medicion_y_decisiones_2026-08-18.txt`.
+- **El instrumento sucesor de los cuatro guards.** `07_`, `08_`, `09_` y `10_` quedaron atados
+  por la decisión (2) de `f2d0aea` al artefacto viejo y **no se re-anclan**: contra el vigente
+  dan rojo, así que **no se corren**. Es consecuencia aceptada y escrita, no olvido —
+  `b1a_redondeo_del_join_2026-08-18.txt`, deuda `D-4 (parcial)`. **Es también lo que hoy tiene
+  abierto al Tramo C del frente de cierre**, más abajo.
+
+> **UN SOLO 8, CONTADO DE DOS LADOS — declarado acá para que no se lea como dos pérdidas.**
+> El balance de la regla (c) dice que causa **2 falsos negativos —Caldera y Huasco— y que
+> cuestan 8 cierres reales**; **(a1)** dice que corregir los 11 `lng` **devuelve esos mismos
+> 8**. Es **la misma pérdida vista de los dos lados**, y lo declara su propia bitácora en la
+> línea siguiente al balance: `f2_verde_falso_2026-08-17.txt`, párrafo *«EL BALANCE DE LA
+> REGLA (c), ENTERO Y MEDIDO»* → *«LO QUE RECUPERA **ESOS** 8 CIERRES es (a1)»*; y lo repite
+> `f2_medicion_y_decisiones_2026-08-18.txt` en el título de §T.3. **No son 16.**
+>
+> **Y hay un TERCER 8 en ese mismo párrafo que NO es éste**, por eso queda dicho y no traído:
+> el balance cuenta además **8 falsos positivos evitados**, que son **filas del catálogo** y no
+> cierres, y son **un conjunto distinto** —el reparto de las 12 que la regla degrada es
+> `8 + 2 + 2`—. Quien traiga cifras de ese párrafo tiene que traer las tres con su unidad, o
+> ninguna.
+
+**Por qué no va dentro de E0–E6, y no es una omisión que haya que corregir metiéndolo:** este
+plan resuelve **qué jurisdicción cruza una RUTA**, y su entregable es una capa de geometría.
+El frente del filtro resuelve **qué bahía es el PUERTO que el patrón escribió en una casilla**,
+y su entregable es una atribución de un punto nombrado. No comparten insumo —el join de este
+frente es `data/catalogo/join_puerto_bahia.json`, 688 nombres de puerto; el de E0.3 es
+`data/decreto/join_bahia_jurisdiccion.json`, 164 bahías del catálogo—, no comparten unidad y no
+comparten criterio de aceptación. Meterlo en una etapa de jurisdicción volvería a mezclar dos
+preguntas que este proyecto ya separó una vez: es la misma separación que este apartado hace
+con el contacto, con otro sujeto.
+
+**Dónde vive, entonces:** frente propio, con sus bitácoras en
+`_bitacoras/filtro_puerto_2026-08-17/`. No necesita etapa acá; necesita que este plan **no lo
+reclame**.
+
+#### El frente de CIERRE — Tramos A y B cerrados, Tramo C abierto, y no cabe en E0–E6
+
+> **Anotado acá el 2026-08-19.** Bitácoras de origen, en
+> `_bitacoras/cableo_cierre_2026-08-17/`: `cableo_cierre_2026-08-17.txt` (Tramo A, y el marco
+> del frente) y `tramo_b_render_2026-08-17.txt` (Tramo B). El lado backend —el derivador de
+> cierre— es anterior y tiene las suyas en `_bitacoras/derivacion_cierre_2026-08-16/` y
+> `_bitacoras/cierre_observacion_2026-08-16/`.
+
+**La escritura de los dos tramos cerrados es de `tmarea-pwa`, no de este repositorio, y por eso
+los sha van con su repo delante:** un sha pelado acá no resuelve, y una cita que no resuelve es
+una cita falsa. Las dos bitácoras declaran además que **el backend no puso ninguna pieza de
+código** en ninguno de los dos tramos — la del Tramo B lo verifica por tree-sha.
+
+| tramo | estado | commit |
+|---|---|---|
+| **Tramo A** | **cerrado** — el aviso de cierre se engancha al estado y deja de morir en el pasamanos | `tmarea-pwa@a478518` |
+| **Tramo B** | **cerrado** — el aviso nombra el hecho: un bloque por hecho y no por copia | `tmarea-pwa@6443178` |
+| **Tramo C** | **ABIERTO — sin commit, sin escritura, no arrancó** | — |
+
+**Qué tiene abierto al Tramo C — son DOS bloqueos, cada uno con su fecha, y el primero ya no
+rige:**
+
+1. **El declarado en origen, y CAYÓ.** `cableo_cierre_2026-08-17.txt` §6, textual: *«TRAMO C
+   (después, no ahora): el camino de zarpe, con Z-C1..Z-C5 y sus mordidas. **NO ARRANCA hasta
+   que esté resuelto el filtro de `sitport-routes.js:333-338`**»*. Ese filtro **dejó de existir
+   el 2026-08-18 con F2**: medido sobre `src/` recursivo, `includes(w` pasa de **2 a 0**
+   ocurrencias entre `2bd0ff6^` y `2bd0ff6`, y las dos apariciones que quedan de
+   `resolverBahiaIdPorNombre` son comentarios que describen su retiro. El bloqueo de origen
+   queda registrado porque es el que su bitácora escribió; **ya no es el que rige**.
+2. **El que rige hoy: falta el instrumento sucesor de los cuatro guards.** Declarado en
+   `b1a_redondeo_del_join_2026-08-18.txt` —*«EL INSTRUMENTO SUCESOR SIGUE ABIERTO: requisito
+   del Tramo C»*, y en su lista de deudas como `D-4 (parcial)`— y repetido en
+   `f2_medicion_y_decisiones_2026-08-18.txt` entre las piezas no empezadas. Es **la misma
+   deuda** que cuelga del frente del filtro, arriba: los dos frentes son distintos y no son
+   independientes.
+
+**El Tramo C se describe acá por su ESTADO, y no por lo que hará.** Este apartado **no
+caracteriza su alcance**, y la omisión es deliberada: hay una **pregunta normativa abierta**
+entre `D-C9` —la decisión del frente de cierre sobre el zarpe, escrita en
+`cableo_cierre_2026-08-17.txt` §5— y el alcance del Tramo C. **La contesta el owner**, y no
+entra a un documento que gobierna sin su firma. Los insumos crudos para que se pueda contestar
+—sin interpretación y sin recomendación de alcance— están levantados en
+`_bitacoras/frentes_laterales_2026-08-19/insumos_zarpe_2026-08-19.md`.
+
+**Por qué no va dentro de E0–E6, y no es una omisión que haya que corregir metiéndolo:** este
+plan construye **quién tiene jurisdicción**, y su entregable es una capa. El frente de cierre
+**no construye ninguna capa y no toca ninguna geometría**: toma un estado ya derivado de un
+texto de SITPORT y decide **qué dice la pantalla** de ese estado. Su archivo autorizado es un
+componente de la PWA, su autoridad es `CONTRATO_MOTOR.md`, y sus decisiones se numeran `D-C<n>`
+en una serie propia que este plan no gobierna. Ninguna etapa de E0–E8 tiene ese entregable, y
+forzarle un número de etapa haría que este plan pasara a reclamar el render — que es
+exactamente el modo de falla que este apartado existe para evitar.
+
+**Dónde vive, entonces:** frente propio, con escritura en `tmarea-pwa` y bitácoras en este repo
+por precedente —*«todas las bitácoras del proyecto están en `tmarea-backend/_bitacoras/`»*,
+`cableo_cierre_2026-08-17.txt`—. No necesita etapa acá; necesita que este plan **no lo
+reclame**.
+
 ### 7.2 Control del estado del plan — DECIDIDO (camino A), pendiente de implementar
 
 > **Decisión del owner, 2026-08-12: se hace, por el camino A — dentro de `npm test`.** No se
@@ -1991,6 +2160,29 @@ El control comprueba afirmaciones; no escribe el plan.
 haya estado ciego 3 h 36 min sin quedar escrito no lo habría detectado ningún control de este
 tipo — eso lo caza el guard del dato, que ya existe. Son dos huecos distintos y hace falta
 tener los dos.
+
+> **ANOTADO, NO RESUELTO — 2026-08-19.** Cuatro cosas que este documento declara y que ninguna
+> bitácora retomó. Van juntas porque comparten causa, y la causa es esta misma sección: **§7.2
+> es el control que las habría hecho visibles, y es una de las piezas que no se hicieron.**
+> Ninguna se resuelve acá, y ninguna es un frente lateral: **las cuatro son de este plan**, y
+> por eso no entran a §7.1. Evidencia: `_bitacoras/estado_plan_jurisdiccion_2026-08-19.md`.
+>
+> - **E7, pieza 2, «en observación» — sin criterio de cierre.** La fila de §7 la marca así y ni
+>   §3 ni ninguna bitácora dicen **qué se observa** ni **qué la cerraría**. Un estado sin
+>   condición de salida no se cierra: se olvida.
+> - **E8, «deudas declaradas», abierta y sin desglose.** §3 la enumera como bolsa y **no hay
+>   ninguna bitácora de E8**. No está escrito cuántas de sus deudas siguen vivas.
+> - **§1, el inventario de insumos: foto del 2026-08-09/10, sin re-comprobar.** El propio §1
+>   trae el comando que lo refresca (`node scripts/fase5_inventario_insumos.js`) y **nadie lo
+>   volvió a correr**, con diez días de cambios encima.
+> - **§2, la especificación, nunca releída contra la pantalla.** Los nueve puntos S1–S9 están
+>   escritos en términos de lo que ve el patrón y **nadie los volvió a leer contra lo que la app
+>   muestra hoy**. El recorrido de navegador del 2026-08-18 —el de `D-P3.1`, en §7.1— fue el
+>   primero en semanas en mirar la pantalla, y **no se hizo contra §2**.
+>
+> **Y el filo, sin suavizar:** si §7.2 existiera, habría cazado que **dos frentes enteros
+> crecieron fuera de este documento**. No lo cazó nadie hasta que se preguntó por el estado del
+> plan, seis días después de que el primero empezara.
 
 ---
 
