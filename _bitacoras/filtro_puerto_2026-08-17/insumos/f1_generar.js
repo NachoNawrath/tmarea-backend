@@ -103,7 +103,7 @@ function quienAdjudica(cands) {
 }
 
 // ── CLASIFICACIÓN ────────────────────────────────────────────────────────────
-const VOCABULARIO = ['confirmado_declarado', 'derivado_limpio', 'desempatado', 'a_adjudicar', 'sin_bahia_en_catalogo'];
+const VOCABULARIO = ['anclado_por_el_nodo', 'derivado_limpio', 'desempatado', 'a_adjudicar', 'sin_bahia_en_catalogo'];
 const salida = [];
 for (const p of cat) {
   const v = vecinas(p);
@@ -113,7 +113,7 @@ for (const p of cat) {
   const cand = v.filter(x => x.km <= RADIO).map(x => ({ bahia_id: x.id, nombre: nombreBahia.get(x.id) || '', km: x.km }));
 
   if (p.idBahia != null) {
-    salida.push({ ...base, bahia_id: p.idBahia, estado: 'confirmado_declarado', via: 'bahia_sitport_id',
+    salida.push({ ...base, bahia_id: p.idBahia, estado: 'anclado_por_el_nodo', via: 'bahia_sitport_id',
       evidencia: { fuente_del_ancla: 'nodos_maritimos.bahia_sitport_id',
         km_a_esa_bahia: BAHIA_COORDS[p.idBahia] ? +km(p, BAHIA_COORDS[p.idBahia]).toFixed(2) : null,
         la_geografia_coincide: v.length ? v[0].id === p.idBahia : null, candidatas: presenta(cand) },
@@ -186,7 +186,7 @@ const artefacto = {
     sondaje: { ficheros: ficherosSondaje.length, filas: SONDAJE.length, bahias_con_filas: bahiasConFilas.size, bahias_con_cierres: bahiasConCierres.size },
   },
   vocabulario_estado: {
-    confirmado_declarado: 'el nodo ya trae bahia_sitport_id. No se derivó nada.',
+    anclado_por_el_nodo: 'el nodo trae `bahia_sitport_id` y se copia tal cual. NO SE COTEJA NADA: el nombre viejo era `confirmado_declarado` y prometía una confirmación que no existe. Medido el 2026-08-19: 193 de 198 tienen `la_geografia_coincide: true`, o sea que el ancla ES la bahía más cercana al punto — y en los once nodos de (a1) era la más cercana al punto EQUIVOCADO. El ancla no es un dato declarado por SITPORT: la escribe el trigger `trg_jurisdiccion_auto` de la base, que no está versionado en este repositorio.',
     derivado_limpio: 'una sola bahía dentro del radio, o la más cercana domina por margen.',
     desempatado: 'había empate y lo resolvió un criterio automático. `via` dice cuál.',
     a_adjudicar: 'había empate y NINGÚN criterio lo resuelve. bahia_id queda en null A PROPÓSITO: no se elige por defecto.',

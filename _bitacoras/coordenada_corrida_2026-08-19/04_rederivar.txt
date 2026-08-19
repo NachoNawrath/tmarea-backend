@@ -1,0 +1,188 @@
+================================================================================
+(a1) · PIEZA 4 · RE-DERIVACION
+corrida 2026-08-19T20:58:07.586Z
+================================================================================
+
+0 · ESTADO DE PARTIDA
+  ok HEAD sigue en a3f183b · a3f183b1bae719141b4524734cd576077f09ab3c
+  ok el artefacto de partida es 4f9fbdc3... · 4f9fbdc33e290a4cc2ef4dda3e98918eb3bb22466a0fbe07f0170670becddaf6
+  ok la hoja de partida es 0ca33c18... · 0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788
+  ok el insumo de partida es el del 2026-08-17 · 316107f39d86...
+
+A · CONTROL DE REGRESION — f1_generar.js de a3f183b reproduce 4f9fbdc3...
+    blob del generador en a3f183b: a7229ca139b19394e3e803aa09caa552b2d8838d
+  ok el generador de git NO tiene el renombre de H-3 · dice confirmado_declarado
+  ok A-1 · reproduce el artefacto vigente fila por fila y campo por campo · 688/688 filas · el resto del artefacto, identico
+  ok A-2 · reproduce la hoja byte por byte · 0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788
+
+B · MORDIDA — al generador nuevo se le revierten los DOS tokens de H-3
+  ok el generador del arbol SI tiene el renombre · los dos tokens estan, una vez cada uno
+  ok B-1a · con H-3 revertido reproduce las 688 filas una por una · 688/688
+  ok B-1b · y lo UNICO que queda distinto es vocabulario_estado · claves distintas: vocabulario_estado
+        LO QUE PRUEBA: H-3 vive en TRES sitios del generador —los dos tokens del
+        estado y el texto del vocabulario— y en ninguno mas. Revertidos los dos
+        primeros, las 688 filas vuelven exactas y la unica clave que queda movida
+        es la tercera. Si el renombre hubiera tocado cualquier otra cosa,
+        apareceria en esa lista de claves con nombre propio.
+  ok B-2 · y reproduce la hoja byte por byte · 0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788
+
+C · EFECTO AISLADO DE H-3 — generador nuevo con el insumo VIEJO
+  ok C-1 · 198 filas cambian SOLO el nombre del estado · 198 filas
+  ok C-2 · las otras 490 no cambian nada · 490 filas
+  ok C-3 · ninguna fila cambia otra cosa · 0 filas
+  ok C-4 · ningun bahia_id se mueve por H-3 · los 688 iguales
+    resumen viejo : {"confirmado_declarado":198,"derivado_limpio":194,"desempatado":109,"a_adjudicar":74,"sin_bahia_en_catalogo":113}
+    resumen con H-3: {"anclado_por_el_nodo":198,"derivado_limpio":194,"desempatado":109,"a_adjudicar":74,"sin_bahia_en_catalogo":113}
+    H-3 NO MUEVE NI UNA ATRIBUCION. Cambia un nombre, y eso es todo lo que tiene
+    que cambiar. Lo que cambia de verdad es la correccion de la base, abajo.
+
+D · EL VOLCADO NUEVO — insumos/nodos.json se rehace desde la base corregida
+  ok el volcado trae 693 filas · 693
+  ok CONTROL NEGATIVO · en el insumo cambian EXACTAMENTE las 11 filas de (a1) · 11 filas: 653,654,655,656,657,658,659,660,661,662,663
+    las otras 682 filas del insumo quedan identicas campo por campo
+    insumos/nodos.json reescrito · sha256 b65d10973736d9044108dfadd67e42917e5c578d3e51942ba814bc9e1182de99
+      era 316107f39d86274aa2f07bbfa54de12b0a260bb8857430ad7c33e6fa1ae06d5d
+
+  LA RE-DERIVACION — sobre las rutas reales
+    F1 · ARTEFACTO GENERADO — nadie lo consume
+      C:\Users\katia\tmarea-backend\data\catalogo\join_puerto_bahia.json
+         688 filas · sha256 61bf7dc779f58d38e545f13f1d42c6c12c675f6fa3539c2bc4726d9b37479be1
+      C:\Users\katia\tmarea-backend\_bitacoras\filtro_puerto_2026-08-17\F1_adjudicacion.tsv
+         76 filas + cabecera · sha256 d4222646e8d912be6cf666656f980f926d5d66cf2e844d0ce5bb3a5615115bcb
+      reparto por estado:
+         anclado_por_el_nodo       187
+         derivado_limpio           199
+         desempatado               112
+         a_adjudicar                76
+         sin_bahia_en_catalogo     114
+      quién adjudica, de las a_adjudicar:
+         costa          64
+         capitania      12
+         de las 76, tocan bahía CON CIERRES: 64
+      primeras 8 de la hoja priorizada:
+          1. [capitania] Puerto Ventanas () — 219 SECTOR NORTE QUINTERO vs 91 BAHÍA DE QUINTERO
+          2. [capitania] Terminal de Conectividad Puelche (Hualaihué) — 233 SENO RELONCAVI vs 115 CANAL HORNOPIRÉN
+          3. [capitania] Caleta Pesquera Zapallar (Zapallar) — 219 SECTOR NORTE QUINTERO vs 91 BAHÍA DE QUINTERO
+          4. [capitania] Caleta Pesquera Horcón (Puchuncaví) — 219 SECTOR NORTE QUINTERO vs 91 BAHÍA DE QUINTERO
+          5. [capitania] Caleta Pesquera Maitencillo (Puchuncaví) — 219 SECTOR NORTE QUINTERO vs 91 BAHÍA DE QUINTERO
+          6. [capitania] Caleta Pesquera Loncura (Quintero) — 91 BAHÍA DE QUINTERO vs 219 SECTOR NORTE QUINTERO
+          7. [capitania] Caleta Pesquera Ventanas (Puchuncaví) — 219 SECTOR NORTE QUINTERO vs 91 BAHÍA DE QUINTERO
+          8. [capitania] Ventanas (Puchuncavi) — 219 SECTOR NORTE QUINTERO vs 91 BAHÍA DE QUINTERO
+    generación sin fallas — los controles corren aparte
+
+E · QUE SE MOVIO — contra el artefacto viejo, fila por fila
+  ok siguen siendo 688 nombres · 688
+    filas que no cambian nada .......................... 423
+    filas que cambian SOLO el nombre del estado (H-3) .. 187
+    filas que cambian SOLO el ordinal `prioridad` ...... 67
+    filas que cambian ATRIBUCION ....................... 11   653,654,655,656,657,658,659,660,661,662,663
+  ok E-1 · las filas que cambian de ATRIBUCION son las 11 de (a1), y ninguna mas · 11 filas
+  ok E-2 · los cuatro cajones suman 688 y no se solapan · 423 + 187 + 67 + 11
+  ok E-3 · las que cambian de `prioridad` son todas `a_adjudicar` · 67 filas, todas a_adjudicar
+    QUE SIGNIFICA EL TERCER CAJON: `prioridad` es el orden en que
+    F1_adjudicacion.tsv presenta las 76 filas a adjudicar. Al entrar dos
+    nuevas, el resto corre de puesto. Ninguna de esas 67 cambio de bahia, de
+    estado ni de via — se puede comprobar en el cajon en el que caen.
+
+    los once, uno por uno:
+      #653 Huasco                              
+            antes: confirmado_declarado  b90   via bahia_sitport_id
+            ahora: derivado_limpio       b84   via unica_candidata_en_radio
+      #654 Puerto De Caldera Mejoras Fiscales  
+            antes: confirmado_declarado  b158   via bahia_sitport_id
+            ahora: desempatado           b81   via C2_razon_distancia
+      #655 Puerto Viejo                        
+            antes: confirmado_declarado  b158   via bahia_sitport_id
+            ahora: a_adjudicar           bnull   via null
+      #656 San Pedro Chaã\u0091Aral De Las Anim
+            antes: confirmado_declarado  b157   via bahia_sitport_id
+            ahora: derivado_limpio       b80   via margen_>=10km
+      #657 Guanaqueros                         
+            antes: confirmado_declarado  b90   via bahia_sitport_id
+            ahora: desempatado           b150   via C2_razon_distancia
+      #658 Punta Choros B Los Corrales         
+            antes: confirmado_declarado  b90   via bahia_sitport_id
+            ahora: desempatado           b206   via C3_comuna_vs_bahia
+      #659 El Membrillo                        
+            antes: confirmado_declarado  b90   via bahia_sitport_id
+            ahora: derivado_limpio       b92   via margen_>=10km
+      #660 Portales                            
+            antes: confirmado_declarado  b90   via bahia_sitport_id
+            ahora: derivado_limpio       b92   via margen_>=10km
+      #661 San Pedro Con Con                   
+            antes: confirmado_declarado  b90   via bahia_sitport_id
+            ahora: derivado_limpio       b173   via margen_>=10km
+      #662 Ventanas                            
+            antes: confirmado_declarado  b90   via bahia_sitport_id
+            ahora: a_adjudicar           bnull   via null
+      #663 Matanzas                            
+            antes: confirmado_declarado  b90   via bahia_sitport_id
+            ahora: sin_bahia_en_catalogo bnull   via null
+
+F · LAS DOS CIFRAS, CON SU UNIDAD Y SU DENOMINADOR
+    material: insumos/CONGELADO_vivo.json · 2026-08-17T23:02:53.110Z — el mismo con que se publico el 8
+
+    UNIDAD: FILAS del join. Denominador: 688 nombres de puerto.
+      resuelta                 489  ->   497   (72.2 %)
+      sin_bahia_en_catalogo    113  ->   114   (16.6 %)
+      a_adjudicar               74  ->    76   (11.0 %)
+      bahia_declarada_lejos     12  ->     1   (0.1 %)
+  ok las cuatro clases siguen sumando 688 · {"resuelta":497,"a_adjudicar":76,"sin_bahia_en_catalogo":114,"bahia_declarada_lejos":1}
+
+    de las 12 filas que estaban en bahia_declarada_lejos [653,654,655,656,657,658,659,660,661,662,663,671]:
+      -> resuelta                8
+      -> a_adjudicar             2
+      -> sin_bahia_en_catalogo   1
+      -> bahia_declarada_lejos   1
+    quedan en bahia_declarada_lejos: [671]
+
+    UNIDAD: CIERRES. Denominador: los cierres vivos a las 23:02Z del 2026-08-17.
+      cierres que las 12 filas reciben ANTES ... 0
+      cierres que las 12 filas reciben AHORA ... 8
+        #653 Huasco: +1 (bahia 84)
+        #654 Puerto De Caldera Mejoras Fiscales: +7 (bahia 81)
+  ok vuelven los 8 CIERRES declarados en §7.1 · +8
+    OJO: "8 cierres" y "N filas" son DOS CIFRAS DISTINTAS con DOS UNIDADES. Los 8
+    cierres salen de DOS filas. No se suman y no se citan una por la otra.
+
+G · HUELLAS NUEVAS — cada cifra con la version que la produjo
+    insumos/nodos.json          316107f39d86274aa2f07bbfa54de12b0a260bb8857430ad7c33e6fa1ae06d5d  ->  b65d10973736d9044108dfadd67e42917e5c578d3e51942ba814bc9e1182de99
+    join_puerto_bahia.json      4f9fbdc33e290a4cc2ef4dda3e98918eb3bb22466a0fbe07f0170670becddaf6  ->  61bf7dc779f58d38e545f13f1d42c6c12c675f6fa3539c2bc4726d9b37479be1
+    F1_adjudicacion.tsv         0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788  ->  d4222646e8d912be6cf666656f980f926d5d66cf2e844d0ce5bb3a5615115bcb
+
+    CLASE DE LAS TRES HUELLAS (FA-4), y hay que decirla entera: este repositorio
+    tiene core.autocrlf = true y NO tiene .gitattributes. Las huellas de arriba son
+    el sha256 del contenido CON LF, que es lo que git guarda en el blob. En esta
+    maquina coincide con el fichero en disco PORQUE lo escribio node, que pone LF.
+    Despues de un git checkout, o en un clon fresco, el MISMO contenido queda con
+    CRLF y da OTRO sha. Medido hoy, sobre estos mismos ficheros:
+      data/catalogo/join_puerto_bahia.json
+        con LF   61bf7dc779f58d38e545f13f1d42c6c12c675f6fa3539c2bc4726d9b37479be1  599699 B   <- el que se publica
+        con CRLF d6712832856f8063e66ba6e9a13e7a18280ac42b9a0c4398fbf2509df63f4282  622862 B   <- el que deja un checkout
+      _bitacoras/filtro_puerto_2026-08-17/F1_adjudicacion.tsv
+        con LF   d4222646e8d912be6cf666656f980f926d5d66cf2e844d0ce5bb3a5615115bcb  21982 B   <- el que se publica
+        con CRLF 2b06785be8d7faf15398102c011ad4c765fcf68af0bb20beb857763aa03d0b21  22058 B   <- el que deja un checkout
+    NINGUNO DE LOS TRECE INSTRUMENTOS DEL FRENTE DICE CUAL DE LOS DOS ANCLA, y
+    todos comparan contra el de LF. En una maquina recien clonada darian rojo por
+    finales de linea y no por contenido. Ver H-10 en la bitacora.
+  ok el artefacto CAMBIO · 4f9fbdc33e29... -> 61bf7dc779f5...
+
+H · LOS OCHO INSTRUMENTOS QUE PASAN A ROJO — se declaran, no se re-anclan
+      15_verificar_push_b1a.js       menciona 4f9fbdc3: 2 veces
+      19_estado_del_frente.js        menciona 4f9fbdc3: 9 veces
+      20_medir_m5.js                 menciona 4f9fbdc3: 3 veces
+      21_medir_decisiones.js         menciona 4f9fbdc3: 3 veces
+      22_medir_apagados.js           menciona 4f9fbdc3: 3 veces
+      23_verificar_push_f2.js        menciona 4f9fbdc3: 1 veces
+      24_medir_lector_join.js        menciona 4f9fbdc3: 7 veces
+      25_medir_ruta_f2.js            menciona 4f9fbdc3: 3 veces
+    NO SE TOCAN Y NO SE CORREN. Y NO SON LOS CUATRO de la decision (2) de f2d0aea:
+    esos son 07_ a 10_, siguen anclados a dfd07236..., siguen rojos y su rojo no
+    cambia de causa ni de grado. El frente pasa de 4 instrumentos rojos a 12, de dos
+    generaciones. El sucesor deja de ser deuda: es requisito para volver a tener verde.
+
+================================================================================
+SIN FALLAS — re-derivado. Los tres controles salieron verdes ANTES de escribir.
+QUE NO PRUEBA: que las cifras publicadas contra 4f9fbdc3... sigan valiendo. Las que
+cambian se enmiendan en PLAN_JURISDICCION.md, una por una, en este mismo commit.
+================================================================================

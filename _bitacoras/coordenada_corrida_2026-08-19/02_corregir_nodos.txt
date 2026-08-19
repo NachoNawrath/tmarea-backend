@@ -1,0 +1,104 @@
+================================================================================
+(a1) · PIEZA 2 · CORREGIR LOS ONCE EN nodos_maritimos
+modo: APLICAR — escribe
+corrida 2026-08-19T20:49:36.102Z
+================================================================================
+
+1 · LA FUENTE — caletas_chile.json no se movio entre corridas
+  ok los 11 destinos coinciden con caletas_chile.json valor por valor · 11 / 11
+
+2 · ESTADO DE PARTIDA — la base tiene que estar exactamente como 01_ la dejo
+  ok nodos_maritimos trae 781 filas · 781 filas
+    huella del universo ANTES (sha256 de id|lat|lng|ancla de las 781): d7d8d365141370029d41c07a21b5c34c5ac137d26bc737515b251cf9e830d462
+    de los 11 · en el estado PREVIO: 11 · ya CORREGIDOS: 0
+  ok los once estan en el estado PREVIO declarado, valor por valor · 11 / 11
+
+3 · LOS ONCE UPDATE, uno por uno
+    cada uno: geom = ST_SetSRID(ST_MakePoint(lng, lat), 4326)  ·  bahia_sitport_id = NULL
+    #653 Huasco                               (-28.823795, -77.231492) ancla  90  ->  (-28.460872, -71.224055) ancla NULL   [CAL-0078]
+    #654 Puerto De Caldera Mejoras Fiscales   (-27.415729, -76.829464) ancla 158  ->  (-27.06394, -70.823869) ancla NULL   [CAL-0076]
+    #655 Puerto Viejo                         (-27.687595, -76.947172) ancla 158  ->  (-27.334874, -70.941229) ancla NULL   [CAL-0082]
+    #656 San Pedro ChaãAral De Las Animas    (-26.696806, -76.638227) ancla 157  ->  (-26.351827, -70.633371) ancla NULL   [CAL-0074]
+    #657 Guanaqueros                          (-30.571551, -77.439966) ancla  90  ->  (-30.194365, -71.431134) ancla NULL   [CAL-0134]
+    #658 Punta Choros B Los Corrales          (-29.619181, -77.472042) ancla  90  ->  (-29.246534, -71.468394) ancla NULL   [CAL-0109]
+    #659 El Membrillo                         (-33.417206, -77.644258) ancla  90  ->  (-33.02215, -71.632543) ancla NULL   [CAL-0210]
+    #660 Portales                             (-33.427059, -77.602478) ancla  90  ->  (-33.031146, -71.590059) ancla NULL   [CAL-0214]
+    #661 San Pedro Con Con                    (-33.313404, -77.529192) ancla  90  ->  (-32.918841, -71.518234) ancla NULL   [CAL-0206]
+    #662 Ventanas                             (-33.134386, -77.501974) ancla  90  ->  (-32.740921, -71.490708) ancla NULL   [CAL-0192]
+    #663 Matanzas                             (-34.363123, -77.891296) ancla  90  ->  (-33.962747, -71.877457) ancla NULL   [CAL-0250]
+
+4 · LA TRANSACCION
+  (i) UPDATE de geom — el trigger trg_jurisdiccion_auto va a correr
+  ok #653 · geom · 1 fila
+  ok #654 · geom · 1 fila
+  ok #655 · geom · 1 fila
+  ok #656 · geom · 1 fila
+  ok #657 · geom · 1 fila
+  ok #658 · geom · 1 fila
+  ok #659 · geom · 1 fila
+  ok #660 · geom · 1 fila
+  ok #661 · geom · 1 fila
+  ok #662 · geom · 1 fila
+  ok #663 · geom · 1 fila
+
+  QUE ESCRIBIO EL TRIGGER sobre bahia_sitport_id al mover el punto:
+    #653 Huasco                               -> ancla NULL (el punto no cae en ningun poligono)
+    #654 Puerto De Caldera Mejoras Fiscales   -> ancla NULL (el punto no cae en ningun poligono)
+    #655 Puerto Viejo                         -> ancla 83
+    #656 San Pedro Chaã\u0091Aral De Las Anim -> ancla NULL (el punto no cae en ningun poligono)
+    #657 Guanaqueros                          -> ancla NULL (el punto no cae en ningun poligono)
+    #658 Punta Choros B Los Corrales          -> ancla 158
+    #659 El Membrillo                         -> ancla NULL (el punto no cae en ningun poligono)
+    #660 Portales                             -> ancla NULL (el punto no cae en ningun poligono)
+    #661 San Pedro Con Con                    -> ancla NULL (el punto no cae en ningun poligono)
+    #662 Ventanas                             -> ancla NULL (el punto no cae en ningun poligono)
+    #663 Matanzas                             -> ancla NULL (el punto no cae en ningun poligono)
+    el trigger puso ancla en 2 de 11: #655->83 #658->158
+
+  (ii) UPDATE de bahia_sitport_id a NULL — sin tocar geom, el trigger no corre
+  ok #653 · ancla · 1 fila
+  ok #654 · ancla · 1 fila
+  ok #655 · ancla · 1 fila
+  ok #656 · ancla · 1 fila
+  ok #657 · ancla · 1 fila
+  ok #658 · ancla · 1 fila
+  ok #659 · ancla · 1 fila
+  ok #660 · ancla · 1 fila
+  ok #661 · ancla · 1 fila
+  ok #662 · ancla · 1 fila
+  ok #663 · ancla · 1 fila
+
+5 · VERIFICACION DENTRO DE LA TRANSACCION — antes del COMMIT
+  ok los once quedaron en el destino declarado · 11 / 11
+  ok siguen siendo 781 filas — no se borro ni se inserto nada · 781
+
+6 · CONTROL NEGATIVO — los 770 que no se mueven
+  ok 770 / 770 filas ajenas quedaron identicas en id, nombre, lat, lng y ancla · 770 / 770
+
+  COMMIT
+
+7 · VERIFICACION DESPUES DEL COMMIT — lectura nueva, no la de la transaccion
+  ok los once quedaron escritos · 11 / 11
+    huella del universo DESPUES: 02228be7d7867358e77a9bd07a916100e965d102db30263fef2742e8cb37d10d
+  ok la huella del universo CAMBIO · d7d8d3651413... -> 02228be7d786...
+  ok y las 770 ajenas siguen identicas despues del COMMIT · 770 / 770
+
+8 · 03_antes_despues.tsv
+  ok la hoja no trae caracteres de control fuera de LF/CR/TAB · 0 encontrados
+    C:\Users\katia\tmarea-backend\_bitacoras\coordenada_corrida_2026-08-19\03_antes_despues.tsv
+    12 lineas (1 cabecera + 11) · sha256 f0763b0f06c5ba1759479d8620e8e3640fe68e4fdd3041a38bc330dd60203dce
+    NOTA · las columnas de nombre van ESCAPADAS. El nombre del nodo 656 trae
+    U+00E3 (mojibake de la enye) y U+0091, que es un CONTROL C1. Es el dato, no
+    una transcripcion: va escapado para que la hoja no lleve un control adentro.
+    El lugar se llama Chanaral. Ver H-8.
+
+================================================================================
+SIN FALLAS — los once corregidos y las 770 ajenas intactas.
+QUE NO PRUEBA: no dice nada del artefacto. El join sigue derivado del insumo
+viejo hasta que corra 04_.
+
+LO QUE QUEDA FRAGIL Y VA ESCRITO: el trigger trg_jurisdiccion_auto SIGUE PUESTO.
+El dia que alguien vuelva a mover el geom de cualquiera de estos once, el ancla
+se le vuelve a poner sola. El NULL de hoy no es una propiedad de la fila: es el
+estado en que la dejo esta pieza, y el trigger puede deshacerlo sin que nadie mire.
+================================================================================

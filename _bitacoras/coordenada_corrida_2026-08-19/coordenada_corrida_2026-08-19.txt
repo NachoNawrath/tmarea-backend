@@ -1,0 +1,521 @@
+================================================================================
+(a1) — LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE SALIÓ
+       DE ELLA
+       2026-08-19 · frente del filtro de puerto · backend
+================================================================================
+
+LA PIEZA ENTRÓ CON OTRO NOMBRE Y CON UNA PREMISA FALSA. Se llamaba «los 11 `lng`
+desplazados 6,00° en `nodos_maritimos`» y decía que corregir esos `lng` devolvía
+8 cierres. El gate midió que no: corregir sólo el `lng` mueve CERO filas y
+devuelve CERO cierres. El owner autorizó las cuatro correcciones que hacían falta
+y la pieza se ejecutó con el alcance corregido.
+
+QUÉ QUEDÓ HECHO, en una línea cada cosa:
+  · los 11 nodos corregidos en la base, en los DOS ejes, con vuelta atrás probada;
+  · el ancla de esos 11 soltada —(a2), reabierta con su motivo escrito—;
+  · el join re-derivado: `4f9fbdc3…` → `61bf7dc7…`;
+  · `bahia_declarada_lejos` de 12 filas a 1; los 8 cierres, verificados;
+  · H-3 aplicado: el estado se llama `anclado_por_el_nodo` y la fuente del km,
+    `ancla_del_nodo`;
+  · la enmienda al pie de §5.1 de `f2_verde_falso_2026-08-17.txt`;
+  · `PLAN_JURISDICCION.md` enmendado en doce sitios, incluido el recuadro de los
+    ochos, que ahora declara CUATRO.
+
+INSTRUMENTOS Y SALIDA CRUDA, todos en esta carpeta:
+  01_medir_los_once.js / .txt        · midió antes de tocar. Sola lectura.
+  02_corregir_nodos.js / .txt        · la corrida que ESCRIBIÓ la base.
+  02_corregir_nodos_revertir.txt     · la corrida que probó la vuelta atrás.
+  03_antes_despues.tsv               · el registro que sobrevive a esta máquina.
+  04_rederivar.js / .txt             · los tres controles y la re-derivación.
+  05_cotejo_simulacion.js / .txt     · la simulación del gate contra lo que corrió.
+
+================================================================================
+§1 · LO QUE EL GATE MIDIÓ, Y POR QUÉ CAMBIÓ EL ALCANCE
+================================================================================
+
+1.1 · EL DESPLAZAMIENTO ES DE LOS DOS EJES, Y EL `lng` NO ES 6,00 EXACTO
+--------------------------------------------------------------------------------
+Verdad de terreno: `caletas_chile.json` (481 caletas, `fuente` declarada
+`SUBPESCA_geoportal_2025`), cotejada POR NOMBRE Y COMUNA, una por una, con el
+cotejo escrito adentro del instrumento para que se pueda discutir fila por fila.
+NO por `fuente_id`: ver H-5.
+
+    dlng   de 6,003648 a 6,013839  — entre 0,35 y 1,27 km de sobra
+    dlat   de 0,344979 a 0,400376  — entre 38,4 y 44,5 km AL SUR
+
+La latitud corrida es del MISMO ORDEN que el radio de 30 km del join. Es lo que
+dejaba a `Caldera` a 33,6 km y a `Huasco` a 37,9 km de la bahía más cercana:
+AFUERA del radio. Con los dos ejes quedan a 0,03 km y a 0,01 km de la suya.
+
+1.2 · CORREGIR LA COORDENADA NO MUEVE EL JOIN. LO QUE LO MUEVE ES SOLTAR EL ANCLA
+--------------------------------------------------------------------------------
+`insumos/f1_generar.js`, rama del ancla, textual:
+    if (p.idBahia != null) {
+      salida.push({ ...base, bahia_id: p.idBahia, estado: …, via: 'bahia_sitport_id',
+`bahia_id = p.idBahia`, INCONDICIONAL. Mover el nodo recalcula `km_a_esa_bahia` y
+nada más — y `km_a_esa_bahia` es justo lo que la regla (c) mide.
+
+    E1 · sólo `lng` +6,00, ancla intacta ... 0 / 11 filas · 0 cierres
+    E2 · los dos ejes, ancla intacta ....... 0 / 11 filas · 0 cierres
+    E3 · los dos ejes + ancla soltada ...... 8 / 11 filas · 8 cierres
+
+Los nueve que declaraban la bahía 90 «Isla Robinson Crusoe» SE ALEJAN al
+corregirse: `Huasco` pasa de 556,5 km a 899,9 km de su ancla.
+
+1.3 · Y POR ESO (a2) SE REABRIÓ — CAMBIÓ LA EVIDENCIA, NO LA OPINIÓN
+--------------------------------------------------------------------------------
+§6.4 de `f2_verde_falso_2026-08-17.txt` descartó (a2) —corregir el
+`bahia_sitport_id`— como «tratar el síntoma». La medición del 2026-08-19 da
+vuelta esa premisa: `la_geografia_coincide` es `true` en las DOCE filas de
+`bahia_declarada_lejos` y en 193 de las 198 con ancla, o sea que el ancla ES la
+bahía más cercana al punto — un cálculo, no un dato.
+
+EL SÍNTOMA ERA LA COORDENADA; EL ANCLA ES LO QUE LA PROPAGA. Con el ancla puesta,
+(a1) no compra nada. Es la razón entera de la reapertura y va escrita acá, en el
+instrumento `02_` y en la enmienda de §5.1, con estas mismas palabras.
+
+1.4 · LOS 8 CIERRES YA SE SERVÍAN. LO QUE ESTABA ROTO ERAN DOS NOMBRES
+--------------------------------------------------------------------------------
+Diez de los once tienen, en su posición corregida, un nodo MOP a menos de 500 m
+con casi el mismo nombre; hoy, desplazados, ninguno tiene vecino a 2 km. Y los
+gemelos ya resolvían bahía:
+    #43  «Caleta Pesquera Huasco»  → b84 [1 fila / 1 cerrada]
+    #40  «Caleta Pesquera Caldera» → b81 [7 filas / 7 cerradas]
+O sea que los 8 cierres NO ESTABAN PERDIDOS DEL SISTEMA: estaban inalcanzables
+desde DOS de los 688 nombres. Un patrón que escribía «Caleta Pesquera Huasco» los
+recibía; uno que escribía «Huasco», no.
+
+ESO CAMBIA CÓMO SE CUENTA LA GANANCIA, y por eso va acá arriba: el techo del
+Tramo C sube 8 filas, y no es información nueva llegando al sistema — es la misma
+información llegando por el nombre correcto.
+
+Y explica por qué estos once existen como fila: `tools/seed-nodos-maritimos.js`,
+`seedSERNAPESCA`, dedupe `DIST_DEG = 0.005` (~500 m). En su sitio real el seed los
+habría descartado como duplicados. EXISTEN PORQUE ESTABAN DESPLAZADOS.
+
+================================================================================
+§2 · LAS CUATRO DECISIONES DEL OWNER · 2026-08-19
+================================================================================
+
+D-A1.1 · LA `lat` SE CORRIGE. No es ampliar alcance: sin los dos ejes la pieza
+         mide cero, y eso está medido, no supuesto.
+
+D-A1.2 · SE SUELTA EL ANCLA — (a2) AUTORIZADA. Decisión cerrada que se reabre.
+         El motivo, en las palabras del owner: «(a2) se descartó en §6.4 como
+         "tratar el síntoma", y la medición del 2026-08-19 da vuelta esa premisa
+         — `la_geografia_coincide` es true en las 12, o sea que el ancla es
+         CONSECUENCIA de la coordenada mala, no un dato independiente. El síntoma
+         era la coordenada; el ancla es lo que la propaga. Se reabre porque
+         cambió la evidencia, no porque cambió de opinión el owner, y esa
+         distinción queda escrita.»
+
+D-A1.3 · LOS OCHO INSTRUMENTOS PASAN A ROJO, aceptado. Ver §5.
+
+D-A1.4 · LA PIEZA SE RENOMBRA. El nombre viejo describía medio defecto y
+         prometía un arreglo que no arreglaba.
+
+================================================================================
+§3 · LAS CIFRAS, CADA UNA CON SU UNIDAD Y SU DENOMINADOR
+================================================================================
+
+UNIDAD: FILAS DEL JOIN. Denominador: 688 nombres de puerto.
+
+                             @4f9fbdc3…   @61bf7dc7…
+    con bahía resuelta            489          497     72,2 %
+    sin_bahia_en_catalogo         113          114     16,6 %
+    a_adjudicar                    74           76     11,0 %
+    bahia_declarada_lejos          12            1      0,1 %
+    ────────────────────────────────────────────────
+    sin bahía, total              199          191     27,8 %
+    497 + 191 = 688, sin filas huérfanas.
+
+REPARTO DE LAS 12 QUE ESTABAN EN `bahia_declarada_lejos`:
+    8 → resuelta ............ 653, 654, 656, 657, 658, 659, 660, 661
+    2 → a_adjudicar ......... 655 «Puerto Viejo», 662 «Ventanas»
+    1 → sin_bahia_en_catalogo  663 «Matanzas»
+    1 → se queda ............ 671 «Isla Guamblin», que NUNCA fue este defecto:
+                              con `+6,00°` empeora de 117,9 a 284,0 km.
+
+UNIDAD: CIERRES. Denominador: los cierres vivos de `insumos/CONGELADO_vivo.json`,
+`congelado_en` = 2026-08-17T23:02:53.110Z — EL MISMO INSUMO CON QUE SE PUBLICÓ
+EL 8. No se cambió de captura a mitad de la cuenta.
+    vuelven 8: `Puerto De Caldera Mejoras Fiscales` +7 por la bahía 81 y
+               `Huasco` +1 por la bahía 84.
+
+⚠ HAY UN CUARTO 8 Y NO ES NINGUNO DE LOS TRES QUE §7.1 YA DECLARABA. El recuadro
+del plan pasó de «UN SOLO 8, CONTADO DE DOS LADOS» a «CUATRO OCHOS»:
+    ① 8 CIERRES que (c) cuesta       — unidad cierres, salen de 2 filas
+    ② 8 CIERRES que (a1) devuelve    — ES EL MISMO ①, visto del otro lado
+    ③ 8 FALSOS POSITIVOS evitados    — unidad filas: 655,657,658,659,660,661,662,663
+    ④ 8 FILAS que recuperan bahía    — unidad filas: 653,654,656,657,658,659,660,661
+③ y ④ tienen el mismo número y NO son el mismo conjunto: se solapan en seis y
+difieren en dos de cada lado. ④ es la cifra que §7.1 declaraba NO MEDIDA.
+
+LO QUE ESTAS CIFRAS NO DICEN: no dicen que hoy haya 8 cierres vivos. El endpoint
+consultado en vivo el 2026-08-19 a las 21:07Z devuelve `restricciones: 0` para
+las bahías 81 y 84 — SITPORT no publica nada ahí a esta hora. El 8 es una
+medición de UNA captura, y se cita con ella al lado.
+
+================================================================================
+§4 · LO QUE LOS INSTRUMENTOS CAZARON AL CORRERSE — TRES VECES
+================================================================================
+
+Ninguno de los tres se ve compilando. Los tres aparecieron al correr, y los tres
+cambiaron la pieza. Van escritos porque son el argumento de por qué se corre.
+
+(1) EL TRIGGER · `02_corregir_nodos.js --aplicar` hizo ROLLBACK en su primera
+    corrida. La verificación DENTRO de la transacción encontró que dos nodos
+    volvían con ancla puesta después de haberla puesto en NULL. Causa:
+        trg_jurisdiccion_auto · BEFORE INSERT OR UPDATE OF geom
+        → asignar_jurisdiccion_sitport():
+            SELECT bahia_id INTO NEW.bahia_sitport_id
+            FROM bahia_jurisdicciones WHERE ST_Intersects(NEW.geom, geom) LIMIT 1;
+    Un `UPDATE` que toque `geom` y `bahia_sitport_id` en la MISMA sentencia no
+    puede dejar el ancla en NULL. La corrección pasó a dos sentencias: primero
+    `geom` —el trigger corre y se registra lo que escribió: puso ancla en 2 de
+    11, #655→83 y #658→158—, y después `bahia_sitport_id` SOLO, que no menciona
+    `geom` y por eso no dispara el trigger.
+    SIN LA VERIFICACIÓN ADENTRO DE LA TRANSACCIÓN, esto se commiteaba y dos de
+    los once quedaban con un ancla nueva que nadie pidió.
+
+(2) LA EVIDENCIA PISADA · la segunda corrida de `02_ --aplicar` —la idempotente,
+    que no escribe— sobrescribió `02_corregir_nodos.txt` con su propio registro y
+    borró el de la aplicación. Defecto mío. Corregido en el instrumento: el
+    fichero canónico lo escribe SÓLO la corrida que cambia la base; las demás van
+    a `_sin_efecto` o a `_revertir`. Y para no fabricar el registro perdido, se
+    revirtió la base con `--revertir` —la huella del universo volvió exacta a
+    `d7d8d365…`— y se volvió a aplicar. UN REGISTRO NO SE RECONSTRUYE DE MEMORIA.
+
+(3) LAS 78 FILAS · `04_` exigía que cambiaran once filas del artefacto y
+    cambiaron 78. Las otras 67 son `prioridad`, el ordinal de la hoja de trabajo,
+    que se renumera porque `a_adjudicar` pasa de 74 a 76. No es una atribución
+    movida. El control se partió en cuatro cajones excluyentes —423 sin cambio,
+    187 sólo el nombre del estado, 67 sólo el ordinal, 11 de atribución— en vez
+    de esconder la diferencia en un «cambiaron 78».
+
+================================================================================
+§4-bis · LA SIMULACIÓN DEL GATE NO ES LO QUE CORRIÓ — DECLARADO, NO ESCONDIDO
+================================================================================
+Instrumento: `05_cotejo_simulacion.js` / `.txt`. Corrido después de ejecutar,
+sobre el artefacto vigente. Sola lectura.
+
+QUÉ USÓ CADA UNO:
+  (A) LA SIMULACIÓN, publicada en la PARADA 1 como «E3 HIPOTÉTICO» — una COPIA
+      de la cascada de `f1_generar.js`, escrita al lado para poder contestar
+      antes de tocar la base. NO es `f1_generar.js`.
+  (B) LA EJECUCIÓN — `f1_generar.js` del árbol, sobre el volcado de la base ya
+      corregida. Es lo que está en el artefacto.
+
+EN QUÉ DIFIEREN, con su conteo:
+    filas donde difiere el `estado` ............... 4   656, 659, 660, 661
+    filas donde difiere la `via` .................. 7   653, 655, 656, 659, 660, 661, 662
+        de esas, sólo por el RÓTULO de la copia ... 3   653, 655, 662
+        de esas, por el CAMINO de verdad .......... 4   656, 659, 660, 661
+    filas donde difiere el `bahia_id` ............. 0
+
+    reparto publicado en la PARADA 1 : {derivado_limpio:1, desempatado:7, a_adjudicar:2, sin_bahia_en_catalogo:1}
+    reparto de lo que corrió         : {derivado_limpio:5, desempatado:3, a_adjudicar:2, sin_bahia_en_catalogo:1}
+
+LA CAUSA, AISLADA Y PROBADA. `f1_generar.js` resuelve a `derivado_limpio` ANTES
+de llegar al desempate cuando la segunda candidata está a MARGEN o más de la
+primera:
+    if (cand.length === 1 || cand[1].km - cand[0].km >= MARGEN)   // MARGEN = 10
+La copia de la PARADA 1 no tenía esa rama: mandaba al desempate todo lo que no
+fuera candidata única. Sobre esas cuatro filas, C2 —razón de distancia ≥ 3—
+elegía la MISMA primera candidata, y por eso el `bahia_id` coincide.
+    La prueba de que la causa es ésa y no otra: la cascada COMPLETA, copiada con
+    la rama del MARGEN puesta, reproduce la ejecución **11/11**. No hay un
+    segundo defecto escondido.
+Los cuatro, con su margen: #656 23,37 km · #659 14,46 km · #660 10,15 km ·
+#661 15,11 km. Los cuatro por encima de 10.
+
+Y LAS OTRAS TRES, que el conteo de «cuatro» no veía: en 653, 655 y 662 el camino
+es el mismo y lo que cambia es cómo lo nombré en la copia — `unica_en_radio`
+donde `f1` escribe `unica_candidata_en_radio`, y `ningun_criterio` donde `f1`
+deja `null`. No cambian nada, y por eso son fáciles de no ver: ése es el motivo
+para contarlas. **Son SIETE lugares donde la copia no dice lo que dice el
+mecanismo, no cuatro.**
+
+QUÉ SE CORRIGE Y QUÉ NO. Se corrige el reparto por `estado` de esa tabla. **NO
+se mueven las dos cifras que la tabla publicó como resultado** —8 filas con bahía
+resuelta y 8 cierres devueltos—: las dos dependen del `bahia_id`, que es idéntico
+en los once. La pieza no cambia de resultado y no paró por esto.
+
+EL APRENDIZAJE, y va con estas palabras porque es la regla que faltaba:
+    UNA SIMULACIÓN QUE COPIA UN MECANISMO NO ES ESE MECANISMO; SI SE PUBLICA SU
+    RESULTADO, SE DECLARA CUÁL DE LOS DOS CORRIÓ.
+Acá la copia existía por un motivo bueno —contestar «¿cuántas de las 12 vuelven?»
+ANTES de tocar la base, que era exactamente lo que el gate tenía que hacer—. Lo
+que faltó fue el rótulo: la tabla se publicó como si fuera la cascada, y era una
+copia de la cascada. El defecto no está en simular: está en no decirlo.
+
+================================================================================
+§5 · LOS INSTRUMENTOS QUE PASAN A ROJO — SE DECLARAN, NO SE RE-ANCLAN
+================================================================================
+
+OCHO instrumentos que hoy estaban VERDES quedan en rojo al re-derivarse el
+artefacto: `15_`, `19_`, `20_`, `21_`, `22_`, `23_`, `24_` y `25_`, todos
+anclados a `4f9fbdc3…`. El más caro es `24_medir_lector_join.js`, que además
+exige `S1 = 113`, `S2 = 74` y `S3 = 12`, y las tres cambiaron.
+
+LA DECISIÓN (2) DE `f2d0aea` NO SE TOCA NI SE EXTIENDE: cubre `07_`–`10_` y sigue
+cubriendo cuatro. Ésos siguen anclados a `dfd07236…`, siguen rojos, y su rojo no
+cambia de causa ni de grado. Los ocho nuevos son OTRA COSA, de otra generación y
+con otra causa, y se declaran como tal.
+
+EL FRENTE PASA DE 4 INSTRUMENTOS ROJOS A 12, de dos generaciones. El instrumento
+sucesor deja de ser deuda: ya era requisito del Tramo C y ahora además es
+requisito para volver a tener un solo instrumento verde en este frente. Anotado
+donde viven los frentes, en `PLAN_JURISDICCION.md` §7.1, no al pie.
+
+================================================================================
+§6 · VERIFICACIÓN DE PUNTA A PUNTA — EL LECTOR VIVO, NO SÓLO EL ARTEFACTO
+================================================================================
+
+Backend montado en el puerto 3000, `POST /api/sitport/restricciones`, 21:07Z:
+
+  «Puerto De Caldera Mejoras Fiscales»
+      {"bahia_id":81,"silencio":null,"km_a_la_bahia":0.03,"fuente_del_km":"elegida_por_desempate"}
+  «Caleta Pesquera Caldera»  ← el gemelo MOP, control
+      {"bahia_id":81,"silencio":null,"km_a_la_bahia":0,"fuente_del_km":"elegida_por_desempate"}
+  «Huasco»
+      {"bahia_id":84,"silencio":null,"km_a_la_bahia":0.01,"fuente_del_km":"unica_bahia_en_el_radio"}
+  «Matanzas»
+      {"bahia_id":null,"silencio":"sin_bahia_en_catalogo",…}
+  «Isla Guamblin»
+      {"bahia_id":null,"silencio":"bahia_declarada_lejos","km_a_la_bahia":117.89,"fuente_del_km":"ancla_del_nodo"}
+  «Puerto Que No Existe»  ← control negativo
+      {"bahia_id":null,"silencio":"destino_sin_ficha_de_puerto",…}
+
+LOS DOS NOMBRES DEL MISMO LUGAR LLEGAN A LA MISMA BAHÍA. Ése es el hecho que la
+pieza compra, y se ve en la respuesta viva y no sólo en el artefacto. El
+`fuente_del_km: "ancla_del_nodo"` de Guamblin es H-3, visible desde afuera.
+
+ESTA PIEZA NO TOCA CÓDIGO DE RENDER. Medido con control positivo del grep sobre
+`tmarea-pwa/src`: cero ocurrencias de `estado_en_el_catalogo`, `fuente_del_km`,
+`confirmado_declarado` y `bahia_declarada_lejos`. El panel es de Nacho y no se
+tocó. Lo que cambia para el patrón es QUÉ bahía se le atribuye a once nombres.
+
+Suite: 157/157, corrida después de todos los cambios de `src/`.
+
+EFECTO COLATERAL QUE CAUSÉ Y DECLARO: arrancar el backend re-corrió el control de
+drift, que reescribió `data/catalogo/estado_drift.json` — `ultima_corrida` pasó
+de `2026-08-19T01:54:16.851Z` a `2026-08-19T21:07:00.218Z`. El veredicto
+(`DRIFT_NO_DECLARADO`) y las 4 divergencias no se movieron. El fichero sigue
+modificado y SIN STAGEAR, que es donde estaba.
+
+================================================================================
+§7 · HALLAZGOS FUERA DE ALCANCE — REDACTADOS, NO APLICADOS
+================================================================================
+
+H-1 · CINCO NODOS A MÁS DE 100 km DE TODA BAHÍA QUE NO SON ESTE DEFECTO.
+      `121`–`124` (Rampas Balseo Rahue y Caracoles, MOP) y `671` Isla Guamblin
+      (MANUAL). Con `+6,00°` los cinco EMPEORAN. Salieron del denominador del
+      criterio y no tienen causa.
+      OPCIONES: (H1a) sesión de cotejo de los cinco contra su fuente;
+                (H1b) anotarlo.
+      RECOMENDACIÓN: (H1b) hoy, (H1a) antes de que un ancla por id decida un
+      bloqueo. Las 121–124 son rampas de balseo en el río Rahue: puede ser
+      legítimo que no haya bahía de SITPORT cerca.
+
+H-2 · EL PRODUCTOR DEL ANCLA — CONTESTADA A MEDIAS, Y LA MITAD QUE FALTA IMPORTA.
+      Ningún `.js`, `.sql` ni `.py` del repositorio escribe `bahia_sitport_id`.
+      Lo escribe el trigger `trg_jurisdiccion_auto`, que NO está versionado acá.
+      PERO EL TRIGGER DE HOY NO EXPLICA LOS VALORES DE HOY: medido el 2026-08-19,
+      la posición desplazada de los once NO cae dentro de ningún polígono de
+      `bahia_jurisdicciones`, así que el trigger actual les habría dejado `NULL`
+      y sin embargo tenían 90, 157 y 158. O la matview se refrescó después de la
+      inserción, o el ancla vino por otra vía. NO SE DIAGNOSTICÓ.
+      OPCIONES: (H2a) versionar el trigger y la matview y datar su última
+      refresco; (H2b) anotarlo.
+      RECOMENDACIÓN: (H2a). Un campo que decide jurisdicción y cuyo productor no
+      está en el repositorio es exactamente lo que este frente viene a cerrar.
+
+H-3 · APLICADO EN ESTA PIEZA. `confirmado_declarado` → `anclado_por_el_nodo` y
+      `bahia_declarada_por_el_nodo` → `ancla_del_nodo`. Nada confirma ese ancla y
+      el nodo no la declara. Medido antes de renombrar: cero consumidores en la
+      PWA y ningún test de la suite toca el lector. `04_` §C prueba que el
+      renombre no mueve NI UNA atribución: 198 filas cambian sólo el nombre del
+      estado, 490 no cambian nada, 0 cambian otra cosa.
+
+H-4 · DIEZ DE LOS ONCE SON DUPLICADOS DE UN NODO MOP que ya está en su sitio, con
+      su nombre y con su bahía. Corregidos, quedan diez pares a menos de 500 m en
+      `/api/puertos`: dos alfileres casi encima. No rompe el join —el índice es
+      por nombre y los nombres difieren— pero es una decisión de producto.
+      OPCIONES: (H4a) borrar los duplicados; (H4b) dejarlos y aceptar el par;
+                (H4c) fusionarlos conservando ambos nombres como alias.
+      RECOMENDACIÓN: (H4b) para esta pieza —borrar nombres del selector de zarpe
+      es irreversible y no urge—; (H4c) como frente propio.
+
+H-5 · EL `fuente_id` DE SERNAPESCA ESTÁ ROTO COMO PUNTERO. `caletas_chile.json`
+      se regeneró (`fuente: SUBPESCA_geoportal_2025`) con otra numeración: de los
+      20 `CAL-xxxx` de la base, 13 ya no existen en el fichero y 7 apuntan a una
+      caleta DISTINTA —`CAL-0054` es «Puerto De Caldera Mejoras Fiscales» en la
+      base y otra caleta a 688 km en el fichero—. Por eso el cotejo de esta pieza
+      va por nombre y comuna, declarado uno por uno.
+      CONSECUENCIA MAYOR: RE-CORRER `tools/seed-nodos-maritimos.js` HOY NO
+      REPRODUCE ESTA BASE.
+      OPCIONES: (H5a) re-mapear los `fuente_id` contra el fichero vigente;
+                (H5b) anotarlo.
+      RECOMENDACIÓN: (H5b) hoy. Es frente propio y tocarlo acá mezclaría dos
+      preguntas.
+
+H-6 · APLICADO EN ESTA PIEZA. La enmienda al pie de §5.1 de
+      `f2_verde_falso_2026-08-17.txt`: la columna «+6° → X km de Y» mide la
+      distancia a la bahía MÁS CERCANA y no a la DECLARADA, y en nueve de los
+      once la bahía que nombra no es la que da la corrección completa.
+
+H-7 · EL TRIGGER SIGUE PUESTO Y PUEDE DESHACER ESTA PIEZA SIN QUE NADIE MIRE.
+      El `NULL` de los once no es una propiedad de la fila: es el estado en que
+      la dejó esta pieza. El día que alguien vuelva a mover el `geom` de
+      cualquiera de ellos, `trg_jurisdiccion_auto` le vuelve a poner ancla.
+      OPCIONES: (H7a) un control periódico que exija `bahia_sitport_id IS NULL`
+      en esos once; (H7b) revisar si el trigger debe existir; (H7c) anotarlo.
+      RECOMENDACIÓN: (H7a) — es barato y es el que caza el caso—, y (H7b) junto
+      con H-2, no antes.
+
+H-8 · EL NOMBRE DEL NODO 656 TRAE UN CARÁCTER DE CONTROL C1. Es
+      `San Pedro Cha` + U+00E3 + U+0091 + `Aral De Las Animas` — mojibake de la
+      eñe MÁS un control. `limpiarNombre()` del lector sólo barre `\r`, `\n` y
+      `\t`, así que el U+0091 sobrevive al índice, y el artefacto NO lo marca
+      con `nombre_venia_sucio`. Sobre los 693 nombres hay exactamente dos con
+      control: el 542 (ya conocido y marcado) y éste.
+      OPCIONES: (H8a) arreglar el nombre en la base; (H8b) ampliar
+      `limpiarNombre` y el marcado de `nombre_venia_sucio`; (H8c) anotarlo.
+      RECOMENDACIÓN: (H8a) y (H8b) juntas, en la pieza que toque nombres. NO acá:
+      cambiar el nombre cambia la clave del índice del join y eso es otra pieza.
+      El lugar se llama Chañaral.
+
+H-9 · EL TESELADO QUE LAS 114 `sin_bahia_en_catalogo` NECESITAN YA EXISTE EN LA
+      BASE. `PLAN_JURISDICCION.md` §7.1 dice que medir si esas filas están fuera
+      de toda bahía o si el radio se queda corto «es una medición de cobertura
+      del teselado contra la base, o sea `psql`». El teselado está construido:
+      `bahia_jurisdicciones` es una MATVIEW de 163 filas — polígonos de Voronoi
+      alrededor de los puntos de `bahias_sitport`, recortados a una caja
+      -82/-64 × -60/-17, MENOS `ne_land`, e intersecados con un buffer de 80 km
+      alrededor de cada punto. Y NO HACE FALTA `psql`: el pool de `pg` la
+      consulta igual, como hizo esta pieza.
+      OJO CON LA LECTURA FÁCIL: al restarle `ne_land`, el teselado cubre AGUA, y
+      las caletas están en la costa. De los once corregidos, nueve caen fuera de
+      todo polígono estando a 0,01 km de su bahía. O sea que este teselado NO
+      contesta directamente «¿tiene bahía cerca?» — contesta otra pregunta.
+      OPCIONES: (H9a) abrir la medición de las 114 con este insumo, declarando
+      qué mide; (H9b) anotarlo.
+      RECOMENDACIÓN: (H9a). El bloqueo declarado —«exige psql»— es falso, y ése
+      es el hallazgo. Lo que la medición mida es la primera pregunta de esa
+      sesión, no de ésta.
+
+H-10 · `core.autocrlf = true` SIN `.gitattributes` ENVENENA LAS HUELLAS DE TODO
+      EL FRENTE. Medido el 2026-08-19: el sha256 que trece instrumentos anclan es
+      el del contenido CON LF —el blob de git—, y coincide con el fichero en
+      disco SÓLO porque lo escribió node. Después de un `git checkout`, o en un
+      clon fresco, el MISMO contenido queda con CRLF y da otro sha:
+          join_puerto_bahia.json   LF 61bf7dc7…  599.699 B
+                                 CRLF d6712832…  622.862 B
+          F1_adjudicacion.tsv      LF d4222646…   21.982 B
+                                 CRLF 2b06785b…   22.058 B
+      NINGÚN INSTRUMENTO DICE CUÁL DE LOS DOS ANCLA. En una máquina recién
+      clonada darían rojo por finales de línea y no por contenido.
+      OPCIONES: (H10a) un `.gitattributes` que fije `* text eol=lf` para los
+      artefactos versionados; (H10b) que cada instrumento declare la clase de su
+      huella y normalice antes de comparar; (H10c) anotarlo.
+      RECOMENDACIÓN: (H10a) primero —es una línea y cierra la causa—, y (H10b)
+      en el instrumento sucesor de los guards, que hay que escribir igual.
+      SE ANOTA Y NO SE APLICA: un `.gitattributes` re-normaliza el árbol entero
+      y eso no entra en el diff de esta pieza.
+
+H-11 · EL ARTEFACTO NO ES REPRODUCIBLE BYTE A BYTE, POR CONSTRUCCIÓN.
+      `join_puerto_bahia.json` lleva `generado_en: new Date().toISOString()`, así
+      que dos corridas del MISMO generador sobre el MISMO insumo dan ficheros
+      distintos y sha distintos. Por eso los controles A-1 y B-1a de `04_`
+      comparan las 688 filas una por una y el resto del artefacto sin ese campo,
+      y NO por sha. La hoja TSV no lleva timestamp y sí se compara byte a byte,
+      y queda como control cruzado.
+      OPCIONES: (H11a) sacar `generado_en` del artefacto y ponerlo en un fichero
+      hermano; (H11b) anotarlo.
+      RECOMENDACIÓN: (H11a) junto con (H10a), en la misma pieza: las dos son la
+      misma deuda —un artefacto cuyo sha no es función de su contenido—.
+
+================================================================================
+§8 · LO QUE ESTA PIEZA NO PRUEBA
+================================================================================
+
+· NO dice si los once quedaron en tierra o en agua. Eso exige `ne_land` en
+  PostGIS y ese instrumento no existe — es el que M2 (§5.3) pidió. Lo que sí
+  trae, y es más fuerte, es el gemelo MOP a menos de 500 m: un nodo portuario ya
+  existente y con su bahía puesta.
+· NO diagnostica la CAUSA del desplazamiento. Las dos derivas crecen con la
+  latitud de forma sistemática —es una transformación, no ruido— y no se
+  investigó de dónde salió.
+· NO dice que las 8 filas que recuperan bahía la recuperen BIEN. Seis de las
+  ocho no traen ningún cierre a esta hora, y una —`Punta Choros B Los Corrales`,
+  nodo 658— resuelve la bahía 206 «La Higuera» a 28,4 km por C3 (comuna), que es
+  el criterio más flojo de la cascada y el más lejano de los ocho. Se dice acá
+  para que nadie lo cite como ocho aciertos.
+· NO re-mide las cifras de otras piezas cuyo denominador se movió. El párrafo de
+  escalones de rótulo de §7.1 —«265 en escalón 1, 224 de 489 (45,8 %)»— quedó
+  anotado con su denominador viejo y su fecha, sin re-calcular: es del
+  instrumento que lo produjo.
+· NO toca `CONTRATO_MOTOR.md`: se verificó por grep que NO declara el sha del
+  join ni ninguna de estas clases. Cero ocurrencias. El owner no tiene nada que
+  pegar.
+
+================================================================================
+§8-bis · EL CONTROL DE CARACTERES DE CONTROL, Y LOS QUE QUEDAN
+================================================================================
+Corrido sobre los diecisiete ficheros que esta sesión escribió o tocó. Fuera de
+LF/CR/TAB quedan DIEZ ocurrencias, todas del MISMO carácter —U+0091— y todas el
+mismo dato: el nombre del nodo 656 (H-8). Ninguna es texto que yo haya redactado.
+
+  ya estaban antes de la sesión, verificado contra el blob de HEAD:
+      data/catalogo/join_puerto_bahia.json ...................... 3   (3 en HEAD)
+      _bitacoras/filtro_puerto_2026-08-17/insumos/nodos.json .... 3   (3 en HEAD)
+
+  los introdujo esta sesión, y son salida de terminal que cita el nombre crudo:
+      01_medir_los_once.txt .................................... 3
+      02_corregir_nodos.txt .................................... 1
+
+NO SE LAVAN, Y EL MOTIVO: los dos .txt son la evidencia de una corrida concreta
+del .js que está al lado. Editarlos a mano los desemparejaría del instrumento que
+los produjo, y un log retocado deja de ser un log. Tampoco se re-corren: 01_ es un
+instrumento de ESTADO PREVIO y hoy fallaría sus propios guards —el artefacto ya no
+es `4f9fbdc3…`—, que es exactamente lo que tiene que pasar; y el .txt de 02_ es el
+registro de la corrida que escribió la base, y no se rehace por cosmética.
+
+Dónde SÍ se escapó, porque ahí el fichero es un ENTREGABLE y no un log:
+  · `03_antes_despues.tsv` — las tres columnas de nombre salen con escapes y lo
+    declaran en la cabecera, con el sufijo `_ESCAPADO`;
+  · `04_rederivar.txt` — el listado de los once escapa el nombre al imprimirlo.
+
+`limpiarNombre()` del lector sigue sin barrer el U+0091 y el artefacto sigue sin
+marcarlo con `nombre_venia_sucio`. Eso es H-8 y no se arregla acá.
+
+================================================================================
+§9 · HUELLAS
+================================================================================
+
+CLASE (FA-4): sha256 del contenido CON LF, que es el blob de git. Ver H-10 — la
+clase hay que decirla entera o la huella no resuelve.
+
+    insumos/nodos.json        316107f39d86274aa2f07bbfa54de12b0a260bb8857430ad7c33e6fa1ae06d5d
+                          →   b65d10973736d9044108dfadd67e42917e5c578d3e51942ba814bc9e1182de99
+    join_puerto_bahia.json    4f9fbdc33e290a4cc2ef4dda3e98918eb3bb22466a0fbe07f0170670becddaf6
+                          →   61bf7dc779f58d38e545f13f1d42c6c12c675f6fa3539c2bc4726d9b37479be1
+    F1_adjudicacion.tsv       0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788
+                          →   d4222646e8d912be6cf666656f980f926d5d66cf2e844d0ce5bb3a5615115bcb
+
+HUELLA DEL UNIVERSO DE `nodos_maritimos` (sha256 de `id|lat|lng|ancla` de las 781
+filas, en orden de id) — la base no está versionada y ésta es la única forma de
+citarla:
+    antes    d7d8d365141370029d41c07a21b5c34c5ac137d26bc737515b251cf9e830d462
+    después  02228be7d7867358e77a9bd07a916100e965d102db30263fef2742e8cb37d10d
+La corrida de `--revertir` devolvió la huella a `d7d8d365…` exacta, y ésa es la
+prueba de que la vuelta atrás existe y no es una promesa.
+
+POR QUÉ SE REESCRIBIÓ `insumos/nodos.json`, que vive en una bitácora cerrada:
+`01_` probó BYTE A BYTE que ese fichero era el espejo de la base y no evidencia
+independiente. La base se movió, así que el espejo se mueve con ella. Dejarlo
+viejo al lado de un generador vivo es la trampa de `fase3ter`: el primero que
+vuelva a correr `f1_generar.js` regeneraría el artefacto de antes y desharía la
+corrección sin que nadie mire. `04_` §D verifica que en el insumo cambian
+EXACTAMENTE las once filas y que las otras 682 quedan idénticas campo por campo.

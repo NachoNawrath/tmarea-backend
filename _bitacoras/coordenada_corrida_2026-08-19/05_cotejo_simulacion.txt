@@ -1,0 +1,83 @@
+================================================================================
+(a1) · PIEZA 5 · LA SIMULACION DEL GATE CONTRA LA EJECUCION
+corrida 2026-08-19T21:24:52.054Z
+================================================================================
+
+0 · ESTADO
+  ok el artefacto es el vigente 61bf7dc7... · 61bf7dc779f5...
+
+1 · QUE CORRIO CADA UNO
+    (A) SIMULACION · publicada en la PARADA 1 como «E3 HIPOTETICO». Copia de la
+        cascada, escrita al lado de f1_generar.js para contestar ANTES de tocar
+        la base. Su reparto publicado fue:
+        {"derivado_limpio":1,"desempatado":7,"a_adjudicar":2,"sin_bahia_en_catalogo":1}
+    (B) EJECUCION  · f1_generar.js del arbol, blob del commit, sobre el volcado
+        de la base corregida. Es lo que esta en el artefacto vigente.
+
+2 · FILA POR FILA — los once
+nodo nombre                              | SIMULACION (A)                          | EJECUCION (B)                           | bahia
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ 653 Huasco                               | derivado_limpio / unica_en_radio        | derivado_limpio / unica_candidata_en_ra |    84
+ 654 Puerto De Caldera Mejoras Fiscales   | desempatado / C2_razon_distancia        | desempatado / C2_razon_distancia        |    81
+ 655 Puerto Viejo                         | a_adjudicar / ningun_criterio           | a_adjudicar / null                      |  null
+ 656 San Pedro Chaã\u0091Aral De Las Anim | desempatado / C2_razon_distancia        | derivado_limpio / margen_>=10km         |    80  <== DIFIERE
+ 657 Guanaqueros                          | desempatado / C2_razon_distancia        | desempatado / C2_razon_distancia        |   150
+ 658 Punta Choros B Los Corrales          | desempatado / C3_comuna_vs_bahia        | desempatado / C3_comuna_vs_bahia        |   206
+ 659 El Membrillo                         | desempatado / C2_razon_distancia        | derivado_limpio / margen_>=10km         |    92  <== DIFIERE
+ 660 Portales                             | desempatado / C2_razon_distancia        | derivado_limpio / margen_>=10km         |    92  <== DIFIERE
+ 661 San Pedro Con Con                    | desempatado / C2_razon_distancia        | derivado_limpio / margen_>=10km         |   173  <== DIFIERE
+ 662 Ventanas                             | a_adjudicar / ningun_criterio           | a_adjudicar / null                      |  null
+ 663 Matanzas                             | sin_bahia_en_catalogo / null            | sin_bahia_en_catalogo / null            |  null
+
+3 · EL SALDO
+    reparto de la SIMULACION : {"derivado_limpio":1,"desempatado":7,"a_adjudicar":2,"sin_bahia_en_catalogo":1}
+    reparto de la EJECUCION  : {"derivado_limpio":5,"desempatado":3,"a_adjudicar":2,"sin_bahia_en_catalogo":1}
+  ok la simulacion reproduce el reparto que la PARADA 1 publico · {"derivado_limpio":1,"desempatado":7,"a_adjudicar":2,"sin_bahia_en_catalogo":1}
+
+    filas donde difiere el `estado` ............... 4   656,659,660,661
+    filas donde difiere la `via` .................. 7   653,655,656,659,660,661,662
+        de esas, SOLO POR EL ROTULO de la copia ... 3   653,655,662
+        de esas, por el CAMINO de verdad .......... 4   656,659,660,661
+    filas donde difiere el `bahia_id` ............. 0
+  ok EL bahia_id ES IDENTICO EN LOS ONCE — la atribucion no se movio · 0 de 11
+  ok difieren CUATRO filas en el camino: mismo conjunto en estado y en via · estado 656,659,660,661 · via real 656,659,660,661
+  ok las otras TRES de `via` son solo el rotulo, con el mismo estado y la misma bahia · 653,655,662
+    LO QUE ESTO AGREGA A LA CUENTA: la simulacion no difiere en cuatro lugares sino
+    en SIETE — cuatro de camino y tres de nombre—. Los tres de nombre no cambian
+    nada y por eso son faciles de no ver, que es justo el motivo para contarlos.
+
+4 · LA CAUSA, AISLADA
+    `f1_generar.js` resuelve a `derivado_limpio` ANTES de llegar al desempate
+    cuando la segunda candidata esta a MARGEN o mas de la primera:
+        if (cand.length === 1 || cand[1].km - cand[0].km >= MARGEN)   // MARGEN = 10
+    La copia de la PARADA 1 NO tenia esa rama: mandaba al desempate todo lo que no
+    fuera candidata unica. Sobre esas cuatro filas, C2 —razon de distancia >= 3—
+    elegia la MISMA primera candidata, y por eso el `bahia_id` coincide.
+
+    la prueba de que la causa es esa y no otra: la cascada COMPLETA, copiada acá
+    con la rama del MARGEN puesta, tiene que reproducir la ejecucion en los once.
+  ok 4-A · con la rama del MARGEN puesta, la copia reproduce la ejecucion 11/11 · 11/11
+    LA DIFERENCIA ESTA ENTERA EN ESA RAMA. No hay un segundo defecto escondido.
+
+5 · LOS CUATRO, CON NOMBRE Y CON SU MARGEN
+    #656 San Pedro Chaã\u0091Aral De Las An primera 80@0.20 km · segunda 172@23.57 km · margen 23.37 km >= 10
+          simulacion decia `desempatado / C2_razon_distancia`; salio `derivado_limpio / margen_>=10km`. Bahia 80 en los dos.
+    #659 El Membrillo                       primera 92@1.24 km · segunda 173@15.70 km · margen 14.46 km >= 10
+          simulacion decia `desempatado / C2_razon_distancia`; salio `derivado_limpio / margen_>=10km`. Bahia 92 en los dos.
+    #660 Portales                           primera 92@4.04 km · segunda 173@14.19 km · margen 10.15 km >= 10
+          simulacion decia `desempatado / C2_razon_distancia`; salio `derivado_limpio / margen_>=10km`. Bahia 92 en los dos.
+    #661 San Pedro Con Con                  primera 173@0.03 km · segunda 91@15.14 km · margen 15.11 km >= 10
+          simulacion decia `desempatado / C2_razon_distancia`; salio `derivado_limpio / margen_>=10km`. Bahia 173 en los dos.
+
+================================================================================
+SIN FALLAS — la diferencia esta medida, nombrada y acotada.
+
+QUE SE CORRIGE DE LA PARADA 1: el reparto por `estado` de la tabla «E3 HIPOTETICO»
+era {derivado_limpio:1, desempatado:7, ...} y el real es {derivado_limpio:5,
+desempatado:3, ...}. Las dos cifras que esa tabla publicó como resultado —8 filas
+con bahia resuelta y 8 cierres devueltos— NO se mueven: dependen del `bahia_id`,
+que es identico en los once.
+
+UNA SIMULACION QUE COPIA UN MECANISMO NO ES ESE MECANISMO; SI SE PUBLICA SU
+RESULTADO, SE DECLARA CUAL DE LOS DOS CORRIO.
+================================================================================

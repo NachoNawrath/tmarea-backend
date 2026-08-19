@@ -369,6 +369,82 @@ CONSECUENCIA SOBRE F2, y es la que decide:
 CORRECCIÓN DE LA CIFRA DEL §4(i): de los 12 anclados que «empiezan a recibir su
 propio cierre», 8 son estos desplazados y NO SON UNA MEJORA. MEJORA REAL = 4.
 
+--------------------------------------------------------------------------------
+ENMENDADO 2026-08-19 — LA COLUMNA «+6° → X km de Y» NO MIDE LO QUE (a1) SUPUSO,
+        Y EL RÓTULO «lng DESPLAZADO 6,00°» ES FALSO EN DOS LUGARES.
+        EL DIAGNÓSTICO NO SE MUEVE: el desplazamiento existe, son once, y este
+        apartado los encontró. Lo que cae es la inferencia que se le colgó
+        después. Decisión del owner, 2026-08-19. Se agrega al pie por
+        CLAUDE.md §3.3 —una bitácora publicada es constancia—; no se reescribió
+        ni una palabra del texto de arriba. Registro completo, instrumento por
+        instrumento: _bitacoras/coordenada_corrida_2026-08-19/
+--------------------------------------------------------------------------------
+(1) QUÉ MIDE LA COLUMNA. Los doce números de «+6,00° → X km de Y» son la
+    distancia a la bahía MÁS CERCANA desde la posición con el `lng` corregido.
+    NO son la distancia a la bahía DECLARADA, que es la que la regla (c) mide.
+    Los doce se reprodujeron exactos el 2026-08-19 (`01_medir_los_once.txt` §8),
+    así que la medición está bien; lo que está mal es lo que se leyó en ella.
+
+(2) LO QUE DE AHÍ NO SE SIGUE, y se dio por seguido. Al ancla declarada, sumarle
+    6,00° al `lng` deja a los ONCE por encima de los 100 km — y a NUEVE los
+    ALEJA, porque declaran la bahía 90 «Isla Robinson Crusoe» y la corrección
+    los saca del mar afuera. `Huasco` pasa de 556,5 km a 899,9 km de su ancla.
+    Medido: corregir sólo el `lng` saca CERO filas de `bahia_declarada_lejos` y
+    devuelve CERO cierres.
+      El motivo está en el generador y no en la regla: `f1_generar.js` asigna
+      `bahia_id = p.idBahia` INCONDICIONAL en la rama del ancla. Mover el nodo
+      recalcula `km_a_esa_bahia` y nada más.
+
+(3) EL DESPLAZAMIENTO ES DE LOS DOS EJES, y el del `lng` no es 6,00 exacto en
+    ninguno de los once. Contra `caletas_chile.json`, cotejado por nombre y
+    comuna uno por uno:
+        dlng  de 6,003648 a 6,013839 — o sea entre 0,35 y 1,27 km de sobra
+        dlat  de 0,344979 a 0,400376 — o sea entre 38,4 y 44,5 km AL SUR
+    La latitud corrida es del mismo orden que el radio de 30 km del join, y es
+    exactamente lo que dejaba a `Caldera` a 33,6 km y a `Huasco` a 37,9 km de la
+    bahía más cercana: AFUERA del radio. Con los dos ejes quedan a 0,03 km y a
+    0,01 km de la suya.
+
+(4) UN CASO DONDE LA COLUMNA ENGAÑA CON UN NÚMERO CREÍBLE. `Matanzas`, que acá
+    figura como «+6° → 11,5 km de Pichilemu», con la coordenada verdadera NO
+    TIENE NINGUNA bahía de SITPORT a 30 km: la más cercana es la 96 «Lago Rapel»
+    a 35,3 km. Los 11,5 km de Pichilemu son un artefacto de la latitud sin
+    corregir. En NUEVE de los once, la bahía que esta columna nombra no es la
+    que da la corrección completa. Ése es el modo de falla peligroso: no que la
+    corrección parcial no arregle, sino que produzca una respuesta plausible.
+
+(5) LO QUE SÍ RECUPERA LOS 8 CIERRES, medido contra el MISMO material
+    —`insumos/CONGELADO_vivo.json`, 23:02Z del 2026-08-17—: corregir los dos
+    ejes Y soltar el ancla, que es (a2) de §6.4. Con eso, de las 12 filas de
+    `bahia_declarada_lejos` vuelven 8 a tener bahía resuelta, 2 caen a
+    `a_adjudicar`, 1 a `sin_bahia_en_catalogo` y queda 1 —Isla Guamblin, que no
+    es este defecto—. Y los cierres vuelven: `Caldera` +7 por la bahía 81 y
+    `Huasco` +1 por la 84.
+
+(6) Y POR ESO (a2) SE REABRIÓ. §6.4 la descartó como «tratar el síntoma». La
+    medición del 2026-08-19 da vuelta esa premisa: `la_geografia_coincide` es
+    `true` en las DOCE filas de `bahia_declarada_lejos` y en 193 de las 198
+    `confirmado_declarado`, o sea que el ancla ES la bahía más cercana al punto
+    — un cálculo, no un dato. El síntoma era la coordenada; el ancla es lo que
+    la propaga. Se reabrió porque cambió la evidencia, no porque cambiara de
+    opinión el owner.
+      Ese cálculo tiene autor, y se encontró el mismo día: el trigger
+      `trg_jurisdiccion_auto` de la base, un point-in-polygon contra la matview
+      `bahia_jurisdicciones`. No está versionado en este repositorio.
+
+(7) LA PIEZA SE RENOMBRÓ. «(a1) — los 11 `lng` desplazados 6,00°» pasa a ser
+    «(a1) — LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL ANCLA QUE
+    SALIÓ DE ELLA». El nombre viejo describía medio defecto y prometía un
+    arreglo que no arreglaba.
+
+(8) LO QUE ESTA ENMIENDA NO TOCA. El §5.3 (M2) sigue en pie tal cual: su test
+    marcaba 6 de 12 y declaraba su sensibilidad. El criterio del 2026-08-19 usa
+    un umbral más ancho —50 km en vez de 30— y por eso marca los 11, pero sobre
+    los 494 sin ancla sigue dando CERO, igual que todos los placebos. La
+    conclusión de §5.3 —«el defecto está CONCENTRADO en el conjunto anclado, y
+    esto no prueba que esté ausente del otro»— no se mueve.
+--------------------------------------------------------------------------------
+
 5.2 · EL DESEMPATE POR COMUNA GANÓ CONTRA UNA BAHÍA A 0,0 km
 --------------------------------------------------------------------------------
 `Caleta Pesquera Guayacán` (nodo 59) está a 0,0 km de la bahía 86 «BAHÍA

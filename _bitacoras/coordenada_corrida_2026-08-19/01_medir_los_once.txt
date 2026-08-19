@@ -1,0 +1,217 @@
+================================================================================
+(a1) · PIEZA 1 · MEDIR LOS ONCE — instrumento de sola lectura
+corrida 2026-08-19T20:33:35.078Z
+================================================================================
+
+0 · ESTADO DE PARTIDA
+  ok HEAD es a3f183b · a3f183b1bae719141b4524734cd576077f09ab3c
+  ok el artefacto de partida es 4f9fbdc3... · 4f9fbdc33e290a4cc2ef4dda3e98918eb3bb22466a0fbe07f0170670becddaf6
+  ok la hoja de partida es 0ca33c18... · 0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788
+    clase de las tres huellas: sha256 del contenido del fichero en disco (FA-4)
+
+1 · LA BASE — el pool de pg, sin psql
+    PostgreSQL 16.14, compiled by Visual C++ build 1944, 64-bit
+    PostGIS 3.5 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+  ok el usuario puede UPDATE sobre nodos_maritimos · postgres
+  ok geom es POINT en SRID 4326, y uno solo de cada · SRID 4326 · POINT
+  ok nodos_maritimos trae 781 filas · 781 filas
+    por fuente: {"MOP":644,"SERNAPESCA":20,"MANUAL":18,"SITPORT":88,"BEM":11}
+
+2 · CONTROL DE FIDELIDAD — el volcado de la base reproduce insumos/nodos.json
+  ok el volcado trae 693 filas, como el insumo · 693 / 693
+  ok el volcado de HOY reproduce insumos/nodos.json BYTE A BYTE · sha256 volcado 316107f39d86... · insumo 316107f39d86...
+    LO QUE ESTO PRUEBA: `insumos/nodos.json` NO es evidencia independiente de la
+    base — es su espejo. La base no derivo desde el 2026-08-17. Por eso, despues
+    de 02_, el UNICO delta del insumo va a ser la correccion.
+
+3 · CONTROL DE REGRESION — f1_generar.js del arbol reproduce 4f9fbdc3...
+  ok el generador reproduce el artefacto vigente 688/688 · 688/688
+  ok y reproduce la hoja byte por byte · 0ca33c18e48229eba257573ff662cfb2f770e62b24d53354aae220c8d72a1788
+
+4 · INSUMOS DE LA MEDICION
+    BAHIA_COORDS · 163 bahias · sha256 del bloque 248ec9e52ce6...
+    MATERIAL · insumos/CONGELADO_vivo.json · congelado_en 2026-08-17T23:02:53.110Z · 26 filas
+      bahias con material 15 de 163 · con cierre 8
+      ES EL MISMO INSUMO CON QUE SE PUBLICO EL 8. No se cambia de captura a mitad de la cuenta.
+    VERDAD DE TERRENO · caletas_chile.json · 481 caletas · fuente declarada SUBPESCA_geoportal_2025
+
+5 · EL CRITERIO — declarado antes de correr
+    ARBOL       : las 781 filas de nodos_maritimos en vivo. NO las 693 del universo
+                  del join, NO las 199 con ancla. El defecto es de la tabla.
+    VOCABULARIO : distancia haversine R=6371 km contra las 163 entradas de
+                  BAHIA_COORDS extraidas verbatim de src/routes/sitport-routes.js.
+    CRITERIO    : la bahia mas cercana HOY esta a mas de 100 km  Y  con `lng + off`
+                  queda a menos de 50 km de alguna. NO USA EL ANCLA.
+    POR QUE NO USA EL ANCLA: el ancla salio de la coordenada desplazada (§7 abajo),
+                  asi que un criterio que la use se estaria mirando el ombligo.
+
+    DENOMINADOR — control negativo, la medicion no devuelve "todo":
+      filas con coordenada ................. 781 / 781
+      a mas de 100 km de TODA bahia hoy .... 16   ids 121,122,123,124,653,654,655,656,657,658,659,660,661,662,663,671
+
+    PLACEBOS — control positivo, el cero de los otros offsets no es un grep vacio:
+      off   6 grados ->  11 marcados   ids 653,654,655,656,657,658,659,660,661,662,663
+      off   3 grados ->   0 marcados
+      off  -3 grados ->   0 marcados
+      off  -6 grados ->   0 marcados
+      off   9 grados ->   0 marcados
+      off  12 grados ->   0 marcados
+      off  -9 grados ->   0 marcados
+  ok el criterio marca ONCE con +6 grados · 11 marcados
+  ok los once son ids consecutivos 653..663 · 653,654,655,656,657,658,659,660,661,662,663
+  ok los once son los once de VERDAD, sin sobrantes ni faltantes · 11 declarados
+    CORROBORACION ESTRUCTURAL, independiente del criterio: los once son un BLOQUE DE
+    IDS CONSECUTIVO y comparten fuente ["SERNAPESCA"]. Es un lote de insercion.
+    LOS QUE EL CRITERIO DEJA FUERA — y por que (control negativo con nombre):
+      #121 Rampa Balseo 1 Rahue Este      [MOP] hoy 115.5 km · con +6 586.5 km (EMPEORA)
+      #122 Rampa Balseo 2 Rahue Oeste     [MOP] hoy 115.6 km · con +6 586.5 km (EMPEORA)
+      #123 Rampa Balseo Caracoles 1 Nores [MOP] hoy 119.8 km · con +6 584.9 km (EMPEORA)
+      #124 Rampa Balseo Caracoles 2 Suroe [MOP] hoy 119.9 km · con +6 585.0 km (EMPEORA)
+      #671 Isla Guamblin                  [MANUAL] hoy 117.9 km · con +6 284.0 km (EMPEORA)
+
+6 · CONTROL NEGATIVO — los cuatro nodos que SI estan en Juan Fernandez
+    Si el test marcara a todos por igual no mediria nada. Con +6 grados EMPEORAN:
+      #528 Infraestructura de Conectividad Bahía Cumberland   al ancla 90: hoy 1.8 km · con +6 557.2 km
+      #529 Rampa Sur Bahía Cumberland                         al ancla 90: hoy 1.8 km · con +6 557.2 km
+      #530 Muelle Bahía El Padre                              al ancla 90: hoy 8.9 km · con +6 547.3 km
+      #625 Paseo Costero de Juan Fernandez                    al ancla 90: hoy 1.8 km · con +6 557.1 km
+
+7 · EL ANCLA ES CONSECUENCIA DE LA COORDENADA, NO UN DATO INDEPENDIENTE
+  ok las 12 filas bahia_declarada_lejos tienen la_geografia_coincide = true · 12 filas, todas true
+    sobre TODO confirmado_declarado: 193 / 198 con la_geografia_coincide = true
+    O SEA: `bahia_sitport_id` ES la bahia mas cercana al punto equivocado. El ancla no
+    confirma nada — repite el error. Esto es lo que da vuelta la premisa con que §6.4
+    descarto (a2) como "tratar el sintoma": el sintoma era la coordenada, el ancla es
+    lo que la propaga.
+
+8 · LOS ONCE — coordenada de hoy contra la fuente
+nodo nombre                                  lat base    lng base  lat fuente  lng fuente      dlat      dlng   dlat km  dlng-6 km
+--------------------------------------------------------------------------------------------------------------------------------------------
+ 653 Huasco                                -28.823795  -77.231492  -28.460872  -71.224055  0.362923  6.007437     40.35       0.72
+ 654 Puerto De Caldera Mejoras Fiscales    -27.415729  -76.829464  -27.063940  -70.823869  0.351789  6.005595     39.12       0.55
+ 655 Puerto Viejo                          -27.687595  -76.947172  -27.334874  -70.941229  0.352721  6.005943     39.22       0.59
+ 656 San Pedro ChaãAral De Las Animas     -26.696806  -76.638227  -26.351827  -70.633371  0.344979  6.004856     38.36       0.48
+ 657 Guanaqueros                           -30.571551  -77.439966  -30.194365  -71.431134  0.377186  6.008832     41.94       0.85
+ 658 Punta Choros B Los Corrales           -29.619181  -77.472042  -29.246534  -71.468394  0.372647  6.003648     41.43       0.35
+ 659 El Membrillo                          -33.417206  -77.644258  -33.022150  -71.632543  0.395056  6.011715     43.93       1.09
+ 660 Portales                              -33.427059  -77.602478  -33.031146  -71.590059  0.395913  6.012419     44.02       1.15
+ 661 San Pedro Con Con                     -33.313404  -77.529192  -32.918841  -71.518234  0.394563  6.010958     43.87       1.02
+ 662 Ventanas                              -33.134386  -77.501974  -32.740921  -71.490708  0.393465  6.011266     43.75       1.05
+ 663 Matanzas                              -34.363123  -77.891296  -33.962747  -71.877457  0.400376  6.013839     44.52       1.27
+
+    #653 <- CAL-0078 "HUASCO" [HUASCO] · cotejo: HUASCO / HUASCO — nombre y comuna exactos
+    #654 <- CAL-0076 "CALDERA" [CALDERA] · cotejo: CALDERA / CALDERA — el nodo es la mejora fiscal del puerto de Caldera
+    #655 <- CAL-0082 "PUERTO VIEJO" [CALDERA] · cotejo: PUERTO VIEJO / CALDERA — nombre y comuna exactos
+    #656 <- CAL-0074 "CHAÑARAL" [CHAÑARAL] · cotejo: CHANARAL / CHANARAL — el nodo es San Pedro de Chanaral de las Animas
+    #657 <- CAL-0134 "GUANAQUEROS" [COQUIMBO] · cotejo: GUANAQUEROS / COQUIMBO — nombre y comuna exactos
+    #658 <- CAL-0109 "PUNTA CHOROS" [LA HIGUERA] · cotejo: PUNTA CHOROS / LA HIGUERA — nombre y comuna exactos
+    #659 <- CAL-0210 "EL MEMBRILLO" [VALPARAÍSO] · cotejo: EL MEMBRILLO / VALPARAISO — nombre y comuna exactos
+    #660 <- CAL-0214 "PORTALES" [VALPARAÍSO] · cotejo: PORTALES / VALPARAISO — nombre y comuna exactos
+    #661 <- CAL-0206 "SAN PEDRO CONCON" [CONCÓN] · cotejo: SAN PEDRO CONCON / CONCON — el nodo dice "San Pedro Con Con"
+    #662 <- CAL-0192 "VENTANA" [PUCHUNCAVÍ] · cotejo: VENTANA / PUCHUNCAVI — singular en la fuente, plural en el nodo
+    #663 <- CAL-0250 "MATANZAS" [NAVIDAD] · cotejo: MATANZAS / NAVIDAD — nombre y comuna exactos
+
+    dlat : 0.344979 a 0.400376  ->  38.4 a 44.5 km AL SUR
+    dlng : 6.003648 a 6.013839
+  ok NINGUNO de los once tiene dlng = 6,000000 exacto · el rango es 0.010191 grados
+  ok los once tienen la LATITUD corrida mas de 30 km · minimo 38.4 km
+    EL ROTULO "lng DESPLAZADO 6,00" ES FALSO EN DOS LUGARES: el desplazamiento es de
+    los DOS EJES, y el del lng no es 6,00 exacto en ninguno de los once.
+
+9 · QUE PASA CON CADA ESCENARIO — la regla (c) mide km AL ANCLA DECLARADA
+    E0 = hoy · E1 = solo lng +6,00 · E2 = los dos ejes a la fuente, ancla intacta
+
+    #653 Huasco                               ancla  90 "ISLA ROBINSON CRUSOE" [1f/1cerr]
+          E0   556.5 km   E1   899.9 km (sigue lejos)   E2   926.1 km (sigue lejos)   | vecina en E2:  84 "BAHÍA PUERTO HUASCO" a 0.01 km [1f/1cerr]
+    #654 Puerto De Caldera Mejoras Fiscales   ancla 158 "CALETA CHAÑARAL Y ENSENADA GAVIOTA" [1f/0cerr]
+          E0   554.4 km   E1   195.8 km (sigue lejos)   E2   233.3 km (sigue lejos)   | vecina en E2:  81 "BAHÍA CALDERA" a 0.03 km [7f/7cerr]
+    #655 Puerto Viejo                         ancla 158 "CALETA CHAÑARAL Y ENSENADA GAVIOTA" [1f/0cerr]
+          E0   555.5 km   E1   163.5 km (sigue lejos)   E2   201.1 km (sigue lejos)   | vecina en E2:  83 "SECTOR PUNTA TOTORALILLO" a 25.13 km [0f/0cerr]
+    #656 San Pedro ChaãAral De Las Animas    ancla 157 "PUERTO CARRIZAL BAJO" [0f/0cerr]
+          E0   563.3 km   E1   161.8 km (sigue lejos)   E2   198.8 km (sigue lejos)   | vecina en E2:  80 "BAHÍA CHAÑARAL" a 0.20 km [0f/0cerr]
+    #657 Guanaqueros                          ancla  90 "ISLA ROBINSON CRUSOE" [1f/1cerr]
+          E0   365.4 km   E1   776.3 km (sigue lejos)   E2   797.5 km (sigue lejos)   | vecina en E2: 150 "GUANAQUEROS" a 0.09 km [0f/0cerr]
+    #658 Punta Choros B Los Corrales          ancla  90 "ISLA ROBINSON CRUSOE" [1f/1cerr]
+          E0   465.0 km   E1   828.6 km (sigue lejos)   E2   853.0 km (sigue lejos)   | vecina en E2: 158 "CALETA CHAÑARAL Y ENSENADA GAVIOTA" a 18.96 km [1f/0cerr]
+    #659 El Membrillo                         ancla  90 "ISLA ROBINSON CRUSOE" [1f/1cerr]
+          E0   114.3 km   E1   668.2 km (sigue lejos)   E2   673.9 km (sigue lejos)   | vecina en E2:  92 "BAHÍA DE VALPARAÍSO" a 1.24 km [0f/0cerr]
+    #660 Portales                             ancla  90 "ISLA ROBINSON CRUSOE" [1f/1cerr]
+          E0   117.9 km   E1   672.0 km (sigue lejos)   E2   677.6 km (sigue lejos)   | vecina en E2:  92 "BAHÍA DE VALPARAÍSO" a 4.04 km [0f/0cerr]
+    #661 San Pedro Con Con                    ancla  90 "ISLA ROBINSON CRUSOE" [1f/1cerr]
+          E0   127.6 km   E1   679.8 km (sigue lejos)   E2   686.0 km (sigue lejos)   | vecina en E2: 173 "BAHÍA CONCÓN" a 0.03 km [0f/0cerr]
+    #662 Ventanas                             ancla  90 "ISLA ROBINSON CRUSOE" [1f/1cerr]
+          E0   136.9 km   E1   684.4 km (sigue lejos)   E2   691.8 km (sigue lejos)   | vecina en E2: 219 "SECTOR NORTE QUINTERO" a 4.11 km [0f/0cerr]
+    #663 Matanzas                             ancla  90 "ISLA ROBINSON CRUSOE" [1f/1cerr]
+          E0   120.0 km   E1   646.5 km (sigue lejos)   E2   645.2 km (sigue lejos)   | vecina en E2:  96 "LAGO RAPEL" a 35.33 km [0f/0cerr]
+
+    E1 (solo lng, ancla intacta) : 0 / 11 salen de bahia_declarada_lejos · cierres devueltos 0
+    E2 (dos ejes, ancla intacta) : 0 / 11 salen de bahia_declarada_lejos · cierres devueltos 0
+  ok E1 no mueve NINGUNA fila — la pieza tal como estaba escrita mide cero · 0 filas · 0 cierres
+  ok E2 tampoco, con el ancla puesta · 0 filas · 0 cierres
+    POR QUE: f1_generar.js asigna `bahia_id = p.idBahia` INCONDICIONAL en la rama del
+    ancla. Mover el nodo cambia `km_a_esa_bahia` y nada mas. Y los nueve que declaran
+    la bahia 90 "Isla Robinson Crusoe" SE ALEJAN al corregirse.
+    POR ESO (a2) VA JUNTO CON (a1): sin soltar el ancla, la correccion no compra nada.
+
+10 · LOS GEMELOS — por que estos once existen como fila
+    tools/seed-nodos-maritimos.js, seedSERNAPESCA, dedupe DIST_DEG = 0.005 (~500 m).
+    En su sitio real el seed los habria descartado como duplicados.
+
+    #653 Huasco                              
+            0.000 km  # 43 [MOP] Caleta Pesquera Huasco                   -> join: derivado_limpio       b84 [1f/1cerr]
+            0.656 km  #595 [MOP] Paseo Costero de Huasco                  -> join: derivado_limpio       b84 [1f/1cerr]
+            0.663 km  # 51 [MOP] Defensa Costera Huasco                   -> no esta en el join
+    #654 Puerto De Caldera Mejoras Fiscales  
+            0.028 km  # 40 [MOP] Caleta Pesquera Caldera                  -> join: desempatado           b81 [7f/7cerr]
+            0.072 km  # 48 [MOP] Borde Costero Sector Playa El Jefe       -> join: desempatado           b81 [7f/7cerr]
+            0.224 km  # 41 [MOP] Borde Costero Wheelwright de Caldera     -> join: desempatado           b81 [7f/7cerr]
+    #655 Puerto Viejo                          -> sin vecino a 2 km
+    #656 San Pedro ChaãAral De Las Animas   
+            0.024 km  # 39 [MOP] Caleta Pesquera San Pedro de Chañaral    -> join: derivado_limpio       b80 [0f/0cerr]
+            0.278 km  #594 [MOP] Borde Costero de Chañaral                -> join: derivado_limpio       b80 [0f/0cerr]
+            0.849 km  # 45 [MOP] Defensa Costera de Chañaral              -> join: derivado_limpio       b80 [0f/0cerr]
+    #657 Guanaqueros                         
+            0.069 km  # 62 [MOP] Borde Costero de Guanaqueros             -> join: desempatado           b150 [0f/0cerr]
+            0.091 km  # 61 [MOP] Caleta Pesquera Guanaqueros              -> join: desempatado           b150 [0f/0cerr]
+    #658 Punta Choros B Los Corrales         
+            0.071 km  # 52 [MOP] Caleta Pesquera San Agustin              -> join: confirmado_declarado  b158 [1f/0cerr]
+            0.707 km  # 53 [MOP] Caleta Pesquera Los Corrales             -> join: confirmado_declarado  b158 [1f/0cerr]
+    #659 El Membrillo                        
+            0.034 km  # 90 [MOP] Caleta Pesquera El Membrillo             -> join: derivado_limpio       b92 [0f/0cerr]
+            0.448 km  # 93 [MOP] Defensa Costera Sector Altamirano        -> join: derivado_limpio       b92 [0f/0cerr]
+            0.558 km  #112 [MOP] Muro costero Sector Playa San Mateo      -> join: derivado_limpio       b92 [0f/0cerr]
+    #660 Portales                            
+            0.077 km  # 91 [MOP] Caleta Pesquera Portales                 -> join: derivado_limpio       b92 [0f/0cerr]
+            0.102 km  # 99 [MOP] Muelle Turístico Caleta Portales         -> join: derivado_limpio       b92 [0f/0cerr]
+            0.203 km  # 89 [MOP] Defensa Costera Sector Juan de Saavedra  -> join: desempatado           b92 [0f/0cerr]
+    #661 San Pedro Con Con                   
+            0.028 km  # 87 [MOP] Caleta Pesquera San Pedro de Concón      -> join: derivado_limpio       b173 [0f/0cerr]
+    #662 Ventanas                            
+            0.354 km  #539 [MOP] Caleta Pesquera Ventanas                 -> join: a_adjudicar           bnull [-]
+            0.883 km  #778 [BEM] Puerto Ventanas                          -> join: a_adjudicar           bnull [-]
+    #663 Matanzas                            
+            0.054 km  #114 [MOP] Caleta Pesquera Matanzas                 -> join: sin_bahia_en_catalogo bnull [-]
+            0.162 km  #116 [MOP] Infraestructura deportiva Sector Matanza -> join: sin_bahia_en_catalogo bnull [-]
+            0.254 km  #115 [MOP] Borde Costero Matanzas                   -> join: sin_bahia_en_catalogo bnull [-]
+
+    con gemelo a menos de 500 m en la posicion corregida: 10 / 11
+  ok CONTROL: hoy, desplazados, NINGUNO tiene vecino a 2 km · 0 vecinos
+    LOS 8 CIERRES YA SE SIRVEN HOY — al gemelo. #43 "Caleta Pesquera Huasco" recibe la
+    bahia 84 [1f/1cerr] y #40 "Caleta Pesquera Caldera" la 81 [7f/7cerr]. Lo que
+    esta roto no es el cierre: son DOS de los 688 nombres por los que no se llega.
+
+11 · EL BALANCE DE LA REGLA (c) — 8 + 2 + 2 = 12, reconciliado contra el mismo material
+    falsos positivos evitados (unidad: FILAS del join) ... 8   655,657,658,659,660,661,662,663
+    falsos negativos          (unidad: FILAS del join) ... 2   653,654
+    sin material a esta hora  (unidad: FILAS del join) ... 2   656,671
+  ok el reparto de las 12 es 8 + 2 + 2 · 8 + 2 + 2
+  ok los CIERRES en juego son 8 (unidad: CIERRES, no filas) · bahia 81 -> 7 · bahia 84 -> 1
+    OJO CON LA UNIDAD: los 8 falsos positivos son FILAS del join; los 8 cierres son
+    CIERRES y salen de DOS filas. Son conjuntos distintos con el mismo numero.
+
+================================================================================
+SIN FALLAS — estado de partida verificado y los once medidos.
+QUE NO PRUEBA: no dice si el punto corregido cae en tierra o en agua. Para eso hace
+falta ne_land en PostGIS y ese instrumento no existe. El gemelo a menos de 500 m es
+una prueba de costa mas fuerte, pero es OTRA cosa y se dice.
+================================================================================

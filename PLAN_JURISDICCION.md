@@ -1965,14 +1965,22 @@ definición con la que se contó.** Los dos salen del mismo universo de **688 no
 - **F1 publicó 501 / 187** (asunto de `bbb8696`, textual: *«688 filas, 501 resueltas, 74 a
   adjudicar en 26 preguntas»*). Es el reparto del join derivado **ANTES de la regla (c)**:
   501 = 198 `confirmado_declarado` + 194 `derivado_limpio` + 109 `desempatado`.
-- **F2 mide 489 / 199, y ÉSE es el que rige.** Es el reparto **DESPUÉS de la regla (c)**, que
-  degrada las **12** filas cuya ancla declarada queda a más de 100 km de la bahía que declaran.
-  El silencio se parte en tres clases excluyentes: 113 `sin_bahia_en_catalogo` + 74
-  `a_adjudicar` + 12 `bahia_declarada_lejos` = **199**. Y **489 + 199 = 688**, sin filas
+- **F2 midió ~~489 / 199~~ y hoy rige 497 / 191.** Es el reparto **DESPUÉS de la regla (c)**,
+  que degrada las filas cuya ancla declarada queda a más de 100 km de la bahía que declaran.
+  El silencio se parte en tres clases excluyentes: ~~113~~ 114 `sin_bahia_en_catalogo` + ~~74~~ 76
+  `a_adjudicar` + ~~12~~ 1 `bahia_declarada_lejos` = ~~199~~ **191**. Y **497 + 191 = 688**, sin filas
   huérfanas — que es lo que prueba que las clases cierran.
-- **La diferencia entre los dos repartos son exactamente esas 12.** Origen de las dos cifras:
-  `21_medir_decisiones.txt` §(4) y `f2_medicion_y_decisiones_2026-08-18.txt` §8(4), los dos
-  medidos contra el artefacto vigente (`join_puerto_bahia.json`, sha256 `4f9fbdc3…`).
+  **ENMENDADO 2026-08-19 por la pieza (a1).** El reparto ~~489 / 199~~ era correcto contra
+  `4f9fbdc3…` y ahí queda: es la foto del artefacto de esa fecha. Lo que se movió es el dato,
+  no la cuenta. `bahia_declarada_lejos` cae de 12 a **1** —queda sólo Isla Guamblin, que nunca
+  fue este defecto—, y las otras 11 se reparten en 8 resueltas + 2 `a_adjudicar` + 1
+  `sin_bahia_en_catalogo`. Medición completa, con sus cuatro controles:
+  `_bitacoras/coordenada_corrida_2026-08-19/04_rederivar.txt` §E y §F.
+- **La diferencia entre los dos repartos ~~son exactamente esas 12~~ eran esas 12.** Origen de
+  las cifras viejas: `21_medir_decisiones.txt` §(4) y
+  `f2_medicion_y_decisiones_2026-08-18.txt` §8(4), los dos medidos contra el artefacto que era
+  vigente entonces (`join_puerto_bahia.json`, sha256 `4f9fbdc3…`). **El vigente es `61bf7dc7…`**
+  y las cifras de hoy salen de él.
 
 **Deuda viva que queda colgando del frente.** Cada una con la bitácora de la que sale; **esta
 sesión no las re-contó y no publica ninguna cifra como propia**:
@@ -1983,25 +1991,70 @@ sesión no las re-contó y no publica ninguna cifra como propia**:
   Capitanía; lo que no existe es el consumidor —la PWA no tiene un estado para «no sabemos»—.
   Y **no es regresión de F2**: antes ese mismo puerto no daba verde por saber, daba ámbar por
   una fila ajena. Medido y no aplicado: `f2_escritura_2026-08-18.txt` §D-P3.1.
+- **`(a1)-T` · EL TRIGGER QUE PUEDE DESHACER (a1) SIN QUE NADIE MIRE. Deuda nueva del
+  2026-08-19, y nace del propio cierre de (a1).** `nodos_maritimos` tiene un
+  `BEFORE INSERT OR UPDATE OF geom` —`trg_jurisdiccion_auto`— que corre
+  `asignar_jurisdiccion_sitport()` y **pisa `bahia_sitport_id`** con un point-in-polygon contra
+  la matview `bahia_jurisdicciones`. La pieza (a1) dejó el ancla de once nodos en `NULL`
+  a propósito; **el día que alguien vuelva a mover el `geom` de cualquiera de ellos, el ancla
+  se les pone sola** — y si cae dentro de un polígono, el join vuelve a `anclado_por_el_nodo` y
+  la regla (c) vuelve a mirar una bahía que nadie eligió. **ESTA PIEZA ES REVERSIBLE POR
+  ACCIDENTE.**
+  No es hipotético: al aplicar (a1), el trigger le puso ancla a **2 de los 11** (`#655→83`,
+  `#658→158`) en el mismo `UPDATE`, y hubo que separar la corrección en dos sentencias para
+  que el `NULL` quedara. Lo cazó la verificación *dentro* de la transacción, que hizo ROLLBACK.
+  **QUÉ HARÍA FALTA PARA CERRARLO, en orden de costo:**
+  (i) **un control que exija `bahia_sitport_id IS NULL` en los once**, corrible junto a
+      `npm run drift`. Es barato, es el que caza el caso y no decide nada;
+  (ii) **versionar el trigger y la matview** —hoy no están en este repositorio, así que el
+      campo que decide jurisdicción no tiene productor auditable (H-2), y el trigger de HOY
+      **no explica los valores de hoy**: la posición desplazada de los once no caía dentro de
+      ningún polígono y sin embargo tenían ancla 90, 157 y 158;
+  (iii) **decidir si el trigger debe existir**, que es una pregunta de diseño de la base y no
+      de este frente. No antes de (ii).
+  Registro: `_bitacoras/coordenada_corrida_2026-08-19/` §4 (1) y `H-7`.
 - **O5 · la atribución por coordenada**, para los destinos que no son puertos —centros de
   cultivo y concesiones acuícolas—, que hoy caen en el silencio `destino_sin_ficha_de_puerto`.
   Recomendada y nunca ejecutada: `filtro_puerto_2026-08-17.txt` §S4 pieza 1, retomada en
   `f2_escritura_2026-08-18.txt`.
-- **(a1) · los `lng` desplazados 6,00° en 11 nodos de `nodos_maritimos`.** El owner decidió
-  **(a3) para F2** —degradar el consumo, que es la regla (c)— **y (a1) en sesión propia**:
-  `f2_verde_falso_2026-08-17.txt` §6.4(a).
-- **F3 · el backlog: las 74 `a_adjudicar`.** Sesión propia. F2 no la necesita, porque las 74
+- **~~(a1) · los `lng` desplazados 6,00° en 11 nodos de `nodos_maritimos`.~~ CERRADA el
+  2026-08-19, y renombrada: «(a1) — LOS 11 NODOS SERNAPESCA CON LA COORDENADA CORRIDA, Y EL
+  ANCLA QUE SALIÓ DE ELLA».** El nombre viejo describía medio defecto: el desplazamiento es de
+  **los dos ejes** —`dlng` de 6,0036 a 6,0138 y **`dlat` de 0,345 a 0,400°, o sea 38,4 a
+  44,5 km al sur**— y corregir sólo el `lng` mueve **cero** filas y devuelve **cero** cierres.
+  El owner autorizó ese día corregir también la latitud y **reabrir (a2)** —soltar el ancla—,
+  porque la evidencia dio vuelta la premisa con que (a2) se había descartado:
+  `la_geografia_coincide` es `true` en las 12 filas, o sea que **el ancla es consecuencia de la
+  coordenada mala, no un dato independiente**. Bitácora:
+  `_bitacoras/coordenada_corrida_2026-08-19/`; enmienda al pie de §5.1 en
+  `f2_verde_falso_2026-08-17.txt`.
+- **F3 · el backlog: las ~~74~~ 76 `a_adjudicar`.** Sesión propia. F2 no la necesita, porque
   entran como silencio declarado hasta que alguien las conteste:
   `f2_medicion_y_decisiones_2026-08-18.txt`.
-- **Las 113 `sin_bahia_en_catalogo` · SIN FRENTE ASIGNADO, y es el bloque más grande.**
+  **ENMENDADO 2026-08-19 · son 76 desde la pieza (a1): entraron `Puerto Viejo` (nodo 655) y
+  `Ventanas` (nodo 662), que antes estaban en `bahia_declarada_lejos`.** `Ventanas` cae en el
+  puesto 8 de la hoja priorizada y empata la misma pregunta que ya tenían las otras siete de
+  arriba —219 «Sector Norte Quintero» contra 91 «Bahía de Quintero»—, así que **no agranda el
+  backlog en preguntas distintas: agranda una que ya estaba**. El backlog crece en 2 filas y
+  el número de preguntas no se re-contó acá.
+- **Las ~~113~~ 114 `sin_bahia_en_catalogo` · SIN FRENTE ASIGNADO, y es el bloque más grande.**
   Anotado el **2026-08-19** al fijarse el alcance del Tramo C. De las tres clases del silencio,
-  las otras dos ya tienen dueño —las 74 son `F3`, las 12 son `(a1)`—; **estas 113 no tienen
-  ninguno**, y son **16,4 % de los 688**, más que las otras dos juntas (86). Con el Tramo C
+  las otras dos ya tienen dueño —las ~~74~~ 76 son `F3`, y las ~~12~~ 1 que quedan de
+  `bahia_declarada_lejos` son la cola de `(a1)`, ya cerrada—; **estas 114 no tienen ninguno**,
+  y son **16,6 % de los 688**, más que las otras dos juntas (77).
+  **ENMENDADO 2026-08-19 · la 114 es `Matanzas` (nodo 663), que llegó desde
+  `bahia_declarada_lejos`.** Y llega con un dato que este bloque no tenía: en su posición
+  VERDADERA no hay ninguna bahía de SITPORT a 30 km —la más cercana es la 96 «Lago Rapel» a
+  35,3 km—, así que es un caso donde el catálogo de bahías, y no el radio, es el que se queda
+  corto. Es una muestra de tamaño uno y no se generaliza al resto del bloque. Con el Tramo C
   decidido dejan de ser una clase del join y pasan a ser **el techo de un frente de producto**:
   un puerto sin bahía no puede tener estado, y sin estado nunca hay `'rojo'`, así que **el
   bloqueo de zarpe no se dispara ahí por construcción** — falso negativo silencioso. Ver «EL
   TECHO DEL TRAMO C» más abajo.
-  **Qué exige para medirse, y por qué hoy no se mide:** saber si esas 113 están fuera de toda
+  **Qué exige para medirse, y por qué hoy no se mide:** ~~saber si esas 113 están fuera de toda~~
+  **⚠ ENMENDADO 2026-08-19: el teselado existe y `psql` no hace falta — ver el recuadro de la
+  lista de tres clases, más abajo, y `H-9`. El párrafo de abajo queda como se escribió.**
+  saber si esas 113 están fuera de toda
   bahía de SITPORT o si el radio del join se queda corto es **una medición de cobertura del
   teselado contra la base**, o sea `psql`. **Medido el 2026-08-19 en esta máquina, y el
   obstáculo NO es la credencial**: el motor conecta —`dotenv` levanta `DB_PASSWORD` de `.env` y
@@ -2009,25 +2062,52 @@ sesión no las re-contó y no publica ninguna cifra como propia**:
   **`psql` no está en el `PATH`**, y `PGPASSWORD` no está en el entorno, que es la vía por la
   que `psql` fallaría con `fe_sendauth: no password supplied` si estuviera instalado. Lo que
   bloquea la medición es **el cliente de línea de comandos, no el acceso**.
-- **El instrumento sucesor de los cuatro guards.** `07_`, `08_`, `09_` y `10_` quedaron atados
-  por la decisión (2) de `f2d0aea` al artefacto viejo y **no se re-anclan**: contra el vigente
-  dan rojo, así que **no se corren**. Es consecuencia aceptada y escrita, no olvido —
-  `b1a_redondeo_del_join_2026-08-18.txt`, deuda `D-4 (parcial)`. **Es también lo que hoy tiene
-  abierto al Tramo C del frente de cierre**, más abajo.
+- **El instrumento sucesor de los guards — y desde el 2026-08-19 son DOCE, no cuatro.**
+  `07_`, `08_`, `09_` y `10_` quedaron atados por la decisión (2) de `f2d0aea` al artefacto
+  viejo y **no se re-anclan**: contra el vigente dan rojo, así que **no se corren**. Es
+  consecuencia aceptada y escrita, no olvido — `b1a_redondeo_del_join_2026-08-18.txt`, deuda
+  `D-4 (parcial)`.
+  **AGREGADO 2026-08-19 · la pieza (a1) re-derivó el artefacto y puso en rojo OTROS OCHO**, que
+  hasta ese día estaban verdes: `15_`, `19_`, `20_`, `21_`, `22_`, `23_`, `24_` y `25_`, todos
+  anclados a `4f9fbdc3…`. El más caro es `24_medir_lector_join.js`, que además exige
+  `S1 = 113`, `S2 = 74` y `S3 = 12`, y **las tres cambiaron**. Tampoco se re-anclan y tampoco
+  se corren.
+  **LA DECISIÓN (2) DE `f2d0aea` NO SE TOCA NI SE EXTIENDE: cubre cuatro y sigue cubriendo
+  cuatro.** Los ocho nuevos son otra cosa, de otra generación y con otra causa, y se declaran
+  como tal. El frente pasa de **4 instrumentos rojos a 12**.
+  **Es también lo que hoy tiene abierto al Tramo C del frente de cierre**, más abajo — y ahora
+  además es **requisito para volver a tener un instrumento verde en este frente**, no sólo para
+  arrancar el Tramo C.
 
-> **UN SOLO 8, CONTADO DE DOS LADOS — declarado acá para que no se lea como dos pérdidas.**
-> El balance de la regla (c) dice que causa **2 falsos negativos —Caldera y Huasco— y que
-> cuestan 8 cierres reales**; **(a1)** dice que corregir los 11 `lng` **devuelve esos mismos
-> 8**. Es **la misma pérdida vista de los dos lados**, y lo declara su propia bitácora en la
-> línea siguiente al balance: `f2_verde_falso_2026-08-17.txt`, párrafo *«EL BALANCE DE LA
-> REGLA (c), ENTERO Y MEDIDO»* → *«LO QUE RECUPERA **ESOS** 8 CIERRES es (a1)»*; y lo repite
-> `f2_medicion_y_decisiones_2026-08-18.txt` en el título de §T.3. **No son 16.**
+> **CUATRO OCHOS, Y SÓLO DOS DE ELLOS SON EL MISMO — declarado acá para que nadie los sume.**
+> **AMPLIADO EL 2026-08-19: eran tres y ahora son cuatro.** Van los cuatro con su UNIDAD, su
+> CONJUNTO y su denominador. Quien traiga uno tiene que traer cuál.
 >
-> **Y hay un TERCER 8 en ese mismo párrafo que NO es éste**, por eso queda dicho y no traído:
-> el balance cuenta además **8 falsos positivos evitados**, que son **filas del catálogo** y no
-> cierres, y son **un conjunto distinto** —el reparto de las 12 que la regla degrada es
-> `8 + 2 + 2`—. Quien traiga cifras de ese párrafo tiene que traer las tres con su unidad, o
-> ninguna.
+> **① 8 CIERRES que la regla (c) cuesta.** Unidad: **cierres**. Conjunto: los cierres vivos de
+> las bahías 81 y 84 a las 23:02Z del 2026-08-17. Salen de **2** filas —`Puerto De Caldera
+> Mejoras Fiscales` (7) y `Huasco` (1)—, que son los 2 falsos negativos del balance.
+>
+> **② 8 CIERRES que (a1) devuelve.** **ES EL MISMO ① visto del otro lado, no una segunda
+> pérdida.** Lo declara su propia bitácora en la línea siguiente al balance:
+> `f2_verde_falso_2026-08-17.txt`, párrafo *«EL BALANCE DE LA REGLA (c), ENTERO Y MEDIDO»* →
+> *«LO QUE RECUPERA **ESOS** 8 CIERRES es (a1)»*; y lo repite
+> `f2_medicion_y_decisiones_2026-08-18.txt` en el título de §T.3. **No son 16.**
+> **VERIFICADO el 2026-08-19** contra el mismo material que lo publicó: vuelven, y vuelven por
+> las bahías 81 (+7) y 84 (+1). `04_rederivar.txt` §F.
+>
+> **③ 8 FALSOS POSITIVOS que la regla (c) evita.** Unidad: **filas del join**. Conjunto: los
+> nodos 655, 657, 658, 659, 660, 661, 662 y 663 — **distinto** de los 2 de ①/②. El reparto de
+> las 12 que la regla degradaba es `8 + 2 + 2`, y el 2026-08-19 se reconcilió entero contra el
+> mismo material (`01_medir_los_once.txt` §11).
+>
+> **④ 8 FILAS que recuperan bahía con (a1). NUEVO el 2026-08-19, y es el que faltaba.** Unidad:
+> **filas del join**. Denominador: las 12 de `bahia_declarada_lejos`. Conjunto: los nodos 653,
+> 654, 656, 657, 658, 659, 660 y 661. **No es ①, no es ② y no es ③**: los 8 cierres salen de
+> DOS de estas filas, y las otras seis recuperan bahía sin traer ningún cierre a esta hora.
+> Es la cifra que este apartado declaraba **NO MEDIDA** hasta el 2026-08-19.
+>
+> El número coincide cuatro veces por casualidad. **Un 8 sin su unidad y sin su conjunto no es
+> una cifra: es una coincidencia tipográfica.**
 
 **Por qué no va dentro de E0–E6, y no es una omisión que haya que corregir metiéndolo:** este
 plan resuelve **qué jurisdicción cruza una RUTA**, y su entregable es una capa de geometría.
@@ -2153,47 +2233,94 @@ pantalla: no está medida.**
    rotularía Capitanía sobre una Gobernación en **224 de 489 (45,8 %)**, que es exactamente el
    defecto que INV-10.1 existe para cerrar. En escalón 3 la frase se omite entera, sin texto de
    reemplazo; hoy es **inalcanzable por esta vía (0 de 489)**.
+   > **⚠ EL DENOMINADOR DE ESTE PÁRRAFO SE MOVIÓ Y LAS CIFRAS NO SE RE-MIDIERON.** Anotado el
+   > 2026-08-19 por la pieza (a1): los puertos con bahía resuelta pasaron de **489 a 497**, así
+   > que `265 + 224 = 489` ya no cubre el universo y el `45,8 %` está calculado sobre el
+   > denominador viejo. **La conclusión no depende de la cifra exacta** —un literal rotularía mal
+   > a cientos de puertos igual—, pero **los tres números de arriba se citan contra `4f9fbdc3…` y
+   > no contra el artefacto vigente**. Re-medirlos es del instrumento que los produjo, no de
+   > esta pieza: se anota y no se toca.
 
-#### EL TECHO DEL TRAMO C — 489 de 688, y los otros 199 NO son un caso de copy
+#### EL TECHO DEL TRAMO C — ~~489~~ 497 de 688, y los otros ~~199~~ 191 NO son un caso de copy
 
 **Definición de «puerto de zarpe», declarada y no supuesta.** `P2_VoyageSetup.jsx` renderiza el
 selector de zarpe con `tipo="puerto"` **fijo**, y `CONFIG_BUSQUEDA.puerto` apunta a
 `/api/puertos?search=`; **no hay ninguna otra vía a `puerto_zarpe`**. Ese endpoint sirve
 `nodos_maritimos` con `fuente != 'SITPORT'`, cuyo espejo versionado —el mismo artefacto que el
-motor lee en vivo por `fichaDePuerto`— es `data/catalogo/join_puerto_bahia.json`, sha256
-`4f9fbdc3…`: 693 filas de base, **688 nombres distintos**. **DENOMINADOR = 688 nombres.**
+motor lee en vivo por `fichaDePuerto`— es `data/catalogo/join_puerto_bahia.json`, sha256 ~~`4f9fbdc3…`~~ **`61bf7dc7…`** (re-derivado el
+2026-08-19 por la pieza (a1)): 693 filas de base, **688 nombres distintos**.
+**DENOMINADOR = 688 nombres.**
 
-| clase | filas | sobre 688 |
-|---|---:|---:|
-| **con bahía resuelta — el Tramo C los cubre** | **489** | **71,1 %** |
-| sin bahía · `sin_bahia_en_catalogo` | 113 | 16,4 % |
-| sin bahía · `a_adjudicar` | 74 | 10,8 % |
-| sin bahía · `bahia_declarada_lejos` | 12 | 1,7 % |
-| **sin bahía, total — el Tramo C NO los alcanza** | **199** | **28,9 %** |
+**ENMENDADA 2026-08-19 por la pieza (a1).** La columna vieja queda al lado porque es la que
+citan las bitácoras cerradas; la que rige es la nueva.
 
-**Los 199 NO PUEDEN DISPARAR EL BLOQUEO, por construcción: sin bahía no hay estado de puerto, y
+| clase | filas @`4f9fbdc3…` | filas @`61bf7dc7…` | sobre 688 |
+|---|---:|---:|---:|
+| **con bahía resuelta — el Tramo C los cubre** | ~~489~~ | **497** | **72,2 %** |
+| sin bahía · `sin_bahia_en_catalogo` | ~~113~~ | 114 | 16,6 % |
+| sin bahía · `a_adjudicar` | ~~74~~ | 76 | 11,0 % |
+| sin bahía · `bahia_declarada_lejos` | ~~12~~ | 1 | 0,1 % |
+| **sin bahía, total — el Tramo C NO los alcanza** | ~~199~~ | **191** | **27,8 %** |
+
+**Los 191 NO PUEDEN DISPARAR EL BLOQUEO, por construcción: sin bahía no hay estado de puerto, y
 sin estado nunca hay `'rojo'`.** Es un **falso negativo silencioso**, no un caso de copy — el
-aviso no se queda sin a quién nombrar: **no llega a existir**. De los 489 que sí lo disparan,
-**cero** tienen Capitanía desconocida (489/489 con entrada en el mapa).
+aviso no se queda sin a quién nombrar: **no llega a existir**. De los 497 que sí lo disparan,
+**cero** tienen Capitanía desconocida (**497/497** con entrada en el mapa; re-medido el
+2026-08-19, no heredado).
 
-**Corrige una premisa que circulaba y era falsa: los 199 NO son destinos.** Salen del **mismo**
+**El techo subió 8 filas y no es una mejora de producto: es la misma información llegando por
+el nombre correcto.** Los 8 cierres de ①/② ya se servían — al nodo MOP gemelo, que está a menos
+de 500 m y tiene su bahía puesta. Lo que estaba roto era que **dos de los 688 nombres** no
+llegaban a ellos. Medición: `01_medir_los_once.txt` §10.
+
+**Corrige una premisa que circulaba y era falsa: los ~~199~~ 191 NO son destinos.** Salen del **mismo**
 catálogo que alimenta el selector de zarpe y sirven de origen exactamente igual que de destino.
 El solapamiento entre «puerto de zarpe» y «puerto de destino de tipo puerto» es **total**, no
 parcial.
 
 **Dos de las tres clases ya tienen frente; la tercera no se mide acá.**
 
-- **`a_adjudicar` (74) → `F3`**, el backlog, sesión propia (arriba en este mismo apartado).
-- **`bahia_declarada_lejos` (12) → `(a1)`**, corregir los `lng` desplazados 6,00° en 11 nodos de
-  `nodos_maritimos`. **Cuidado con el número, y por eso va con su unidad:** `(a1)` **no**
-  recupera «8 de las 12 filas». Recupera **8 CIERRES REALES**, concentrados en **2** de esos 12
-  puertos —`Puerto De Caldera Mejoras Fiscales` (7) y `Huasco` (1)—, que son los 2 falsos
-  negativos que la regla (c) causa. Es el mismo 8 contado de los dos lados, ya declarado en el
-  recuadro «UN SOLO 8, CONTADO DE DOS LADOS» de este apartado. **Cuántas de las 12 filas vuelven
-  a tener bahía: NO MEDIDO.**
-- **`sin_bahia_en_catalogo` (113)** depende de una **medición de cobertura del teselado que no
-  se hace en este apartado y exige `psql`**. Es el bloque más grande del techo y **no tiene
-  frente asignado**.
+- **`a_adjudicar` ~~(74)~~ (76) → `F3`**, el backlog, sesión propia (arriba en este mismo apartado).
+- **`bahia_declarada_lejos` ~~(12)~~ (1) → `(a1)`, CERRADA el 2026-08-19.** **Cuidado con los
+  números, y por eso van con su unidad — el párrafo viejo tenía razón en advertirlo y ahora hay
+  un caso más:** `(a1)` recupera **8 CIERRES REALES** (unidad: cierres), concentrados en **2**
+  de esos 12 puertos —`Puerto De Caldera Mejoras Fiscales` (7) y `Huasco` (1)—, que son los 2
+  falsos negativos que la regla (c) causaba. Es el mismo 8 contado de los dos lados: ① y ② del
+  recuadro «CUATRO OCHOS» de este apartado.
+  **Y ~~NO MEDIDO~~ MEDIDO el 2026-08-19: de las 12 filas vuelven a tener bahía OCHO.** Es el
+  ④ del recuadro, y **es un conjunto distinto de los 2 puertos que traen los cierres**. Las
+  otras cuatro: 2 caen a `a_adjudicar` (655 `Puerto Viejo`, 662 `Ventanas`), 1 a
+  `sin_bahia_en_catalogo` (663 `Matanzas`, que en su posición verdadera no tiene ninguna bahía
+  de SITPORT a 30 km) y 1 sigue en `bahia_declarada_lejos` (671 `Isla Guamblin`, que **nunca
+  fue este defecto**: con `+6,00°` empeora de 117,9 a 284,0 km).
+  Instrumento y salida cruda: `_bitacoras/coordenada_corrida_2026-08-19/04_rederivar.txt` §F.
+- **`sin_bahia_en_catalogo` ~~(113)~~ (114)** depende de una **medición de cobertura del
+  teselado que no se hace en este apartado ~~y exige `psql`~~**. Es el bloque más grande del
+  techo y **no tiene frente asignado**.
+  > **⚠ ESTE FRENTE LLEVA DOS DIAGNÓSTICOS ERRADOS SEGUIDOS SOBRE SU PROPIO BLOQUEO, y eso es
+  > lo que hay que leer antes que cualquier otra cosa.** Primero se dijo que lo que faltaba era
+  > **la credencial**; el 2026-08-19 se midió que no —el motor conecta, `dotenv` levanta
+  > `DB_PASSWORD` y un `select 1` por el pool devuelve bien— y se reemplazó por **`psql` no está
+  > en el `PATH`**. Ese segundo diagnóstico **también se midió falso el mismo día**, unas horas
+  > después, por la pieza (a1). **Dos veces seguidas el bloqueo declarado no era el bloqueo
+  > real**, y las dos veces se declaró con confianza. Un tercero se escribe midiéndolo, no
+  > razonándolo.
+  >
+  > **LO QUE SÍ ESTÁ MEDIDO, y es todo lo que está medido:** el
+  > teselado **ya existe en la base**: `bahia_jurisdicciones` es una MATVIEW de 163 filas —
+  > polígonos de Voronoi alrededor de los puntos de `bahias_sitport`, recortados a una caja,
+  > **menos `ne_land`**, e intersecados con un buffer de 80 km—. Y **no hace falta `psql`**: el
+  > pool de `pg` la consulta igual, como hizo la pieza (a1). **Pero cuidado con la lectura
+  > fácil**: al restarle `ne_land` ese teselado cubre AGUA, y las caletas están en la costa —
+  > de los once nodos corregidos, **nueve caen fuera de todo polígono estando a 0,01 km de su
+  > bahía**. O sea que **la matview cubre AGUA y contesta OTRA pregunta** que la que este bloque
+  > necesita — y eso es un hecho medido, no una sospecha.
+  >
+  > **QUÉ QUEDA SIN RESOLVER, dicho como tal:** cuál es la pregunta que esa matview sí contesta,
+  > y si sirve o no para las 114. **No se resuelve acá y no se estima.** Es la primera medición
+  > de la sesión que tome este frente, y esa sesión arranca sabiendo que **el frente ya se
+  > equivocó dos veces sobre qué lo bloquea**. Ver `H-9` en
+  > `_bitacoras/coordenada_corrida_2026-08-19/`.
 
 Se publica **el hecho y su reparto, sin recomendación de qué hacer con él**.
 

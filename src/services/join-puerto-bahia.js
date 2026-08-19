@@ -31,7 +31,7 @@ const RUTA_JOIN = path.join(RAIZ, 'data', 'catalogo', 'join_puerto_bahia.json');
 // LA REGLA (c) — el umbral, con su motivo adentro, igual que el radio de 30 km
 // vive dentro del artefacto.
 //
-// F2 NO le cree a `confirmado_declarado` cuando la bahía que el nodo declara
+// F2 NO le cree a `anclado_por_el_nodo` cuando la bahía que el nodo declara
 // está a más de N km de él, y lo degrada a silencio. N = 100 se eligió con la
 // curva medida (§6.2 de f2_verde_falso_2026-08-17.txt): la curva es PLANA entre
 // 75 y 100 km —el mismo conjunto de 12 filas, las mismas 10 con material, las
@@ -89,9 +89,28 @@ const SILENCIO = {
 // `km_a_la_bahia` y no `km_al_ancla`, y viaja con `fuente_del_km` al lado: un
 // campo honesto en lo que computa y deshonesto en el nombre es exactamente el
 // defecto que este frente ya tiene catalogado.
+//
+// EL ESTADO SE LLAMABA `confirmado_declarado` Y LA FUENTE
+// `bahia_declarada_por_el_nodo`. Renombrados el 2026-08-19 en la pieza (a1),
+// por el mismo motivo que el párrafo de arriba: nada CONFIRMA ese ancla y el
+// nodo no la DECLARA. Medido ese día: 193 de las 198 filas tienen
+// `la_geografia_coincide: true`, o sea que el ancla es la bahía más cercana al
+// punto — un cálculo, no un dato de SITPORT. La escribe el trigger
+// `trg_jurisdiccion_auto` de la base, que hace un point-in-polygon contra la
+// matview `bahia_jurisdicciones` y no está versionado en este repositorio. En
+// los once nodos de (a1) ese cálculo corrió sobre una coordenada corrida ~6° al
+// oeste y ~40 km al sur, y por eso nueve de ellos "declaraban" Isla Robinson
+// Crusoe. Un nombre que promete confirmación esconde exactamente ese defecto.
+//
+// QUIEN LO CONSUME: nadie fuera de este módulo y del artefacto. Medido antes de
+// renombrar, con control positivo del grep sobre `tmarea-pwa/src`: cero
+// ocurrencias de `estado_en_el_catalogo`, `fuente_del_km` y del vocabulario en
+// la PWA, y ningún test de la suite toca el lector. El campo `fuente_del_km` SÍ
+// viaja en la respuesta de `/api/sitport/…`, así que el valor nuevo
+// `ancla_del_nodo` es visible desde afuera — se dice, no se descubre.
 // ─────────────────────────────────────────────────────────────────────────────
 const KM_POR_ESTADO = {
-  confirmado_declarado: { campo: 'km_a_esa_bahia', fuente: 'bahia_declarada_por_el_nodo' },
+  anclado_por_el_nodo:  { campo: 'km_a_esa_bahia', fuente: 'ancla_del_nodo' },
   derivado_limpio:      { campo: 'km',             fuente: 'unica_bahia_en_el_radio' },
   desempatado:          { campo: 'elegida_km',     fuente: 'elegida_por_desempate' },
 };
@@ -99,7 +118,7 @@ const KM_POR_ESTADO = {
 // Los cinco estados que el artefacto declara en su propio `vocabulario_estado`.
 // Un estado fuera de esta lista es FALLA del artefacto, no un caso por defecto.
 const ESTADOS_CONOCIDOS = new Set([
-  'confirmado_declarado',
+  'anclado_por_el_nodo',
   'derivado_limpio',
   'desempatado',
   'a_adjudicar',
@@ -277,10 +296,10 @@ function fichaDePuerto(nombrePuerto, opciones) {
   // (S3) LA REGLA (c). Sólo alcanza a la bahía DECLARADA por el nodo: las
   // derivadas ya salieron de un radio de 30 km, así que el umbral de 100 no las
   // puede tocar y aplicárselo sería una regla que no muerde donde dice morder.
-  if (fila.estado === 'confirmado_declarado') {
+  if (fila.estado === 'anclado_por_el_nodo') {
     if (km === null) {
       throw new ErrorCatalogoPuertoBahia(
-        `${JSON.stringify(nombre)}: confirmado_declarado sin evidencia.${donde.campo} numérico — ` +
+        `${JSON.stringify(nombre)}: anclado_por_el_nodo sin evidencia.${donde.campo} numérico — ` +
         `sin esa distancia la regla del umbral no se puede evaluar y no se supone que pasa`);
     }
     if (km > kmMax) {

@@ -1,7 +1,7 @@
 {
   "QUE_ES_ESTO": "PROPUESTA de join puerto→bahía. NINGÚN CÓDIGO LA CONSUME. F2 decide si se consume y cómo.",
   "NO_ES": "No es un catálogo de bahías, no modifica nodos_maritimos, y no es una decisión tomada.",
-  "generado_en": "2026-08-18T05:02:14.675Z",
+  "generado_en": "2026-08-19T20:58:08.281Z",
   "generado_por": "sesión FILTRO-PUERTO · F1 · instrumento en scratchpad (no versionado)",
   "parametros": {
     "radio_km": 30,
@@ -14,7 +14,7 @@
       "origen": "psql mapa_navegacion · fuente <> 'SITPORT'",
       "filas": 693,
       "nombres": 688,
-      "con_ancla": 198
+      "con_ancla": 187
     },
     "BAHIA_COORDS": {
       "origen": "src/routes/sitport-routes.js (extraído verbatim)",
@@ -34,7 +34,7 @@
     }
   },
   "vocabulario_estado": {
-    "confirmado_declarado": "el nodo ya trae bahia_sitport_id. No se derivó nada.",
+    "anclado_por_el_nodo": "el nodo trae `bahia_sitport_id` y se copia tal cual. NO SE COTEJA NADA: el nombre viejo era `confirmado_declarado` y prometía una confirmación que no existe. Medido el 2026-08-19: 193 de 198 tienen `la_geografia_coincide: true`, o sea que el ancla ES la bahía más cercana al punto — y en los once nodos de (a1) era la más cercana al punto EQUIVOCADO. El ancla no es un dato declarado por SITPORT: la escribe el trigger `trg_jurisdiccion_auto` de la base, que no está versionado en este repositorio.",
     "derivado_limpio": "una sola bahía dentro del radio, o la más cercana domina por margen.",
     "desempatado": "había empate y lo resolvió un criterio automático. `via` dice cuál.",
     "a_adjudicar": "había empate y NINGÚN criterio lo resuelve. bahia_id queda en null A PROPÓSITO: no se elige por defecto.",
@@ -42,11 +42,11 @@
   },
   "ojo_null": "bahia_id null NO significa lo mismo en `a_adjudicar` (no sabemos cuál) que en `sin_bahia_en_catalogo` (no hay ninguna). El `estado` los distingue. No los colapsen.",
   "resumen": {
-    "confirmado_declarado": 198,
-    "derivado_limpio": 194,
-    "desempatado": 109,
-    "a_adjudicar": 74,
-    "sin_bahia_en_catalogo": 113
+    "anclado_por_el_nodo": 187,
+    "derivado_limpio": 199,
+    "desempatado": 112,
+    "a_adjudicar": 76,
+    "sin_bahia_en_catalogo": 114
   },
   "filas": [
     {
@@ -227,7 +227,7 @@
         "por_que": "las 4 candidatas comparten capitanía (Iquique): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 66
+      "prioridad": 68
     },
     {
       "nodo_id": 7,
@@ -241,7 +241,7 @@
       "lng": -70.13923262799995,
       "nombre_venia_sucio": false,
       "bahia_id": 197,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -315,7 +315,7 @@
         "por_que": "las 4 candidatas comparten capitanía (Iquique): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 67
+      "prioridad": 69
     },
     {
       "nodo_id": 9,
@@ -354,7 +354,7 @@
       "lng": -70.09437354499994,
       "nombre_venia_sucio": false,
       "bahia_id": 197,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -407,7 +407,7 @@
         "por_que": "las 4 candidatas comparten capitanía (Iquique): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 68
+      "prioridad": 70
     },
     {
       "nodo_id": 12,
@@ -616,7 +616,7 @@
       "lng": -70.59333968599998,
       "nombre_venia_sucio": false,
       "bahia_id": 77,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -638,7 +638,7 @@
       "lng": -70.39424702199994,
       "nombre_venia_sucio": false,
       "bahia_id": 77,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -997,7 +997,7 @@
       "lng": -70.39365499799999,
       "nombre_venia_sucio": false,
       "bahia_id": 77,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -1145,7 +1145,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Antofagasta): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 69
+      "prioridad": 71
     },
     {
       "nodo_id": 37,
@@ -1598,7 +1598,7 @@
       "lng": -71.46861699599998,
       "nombre_venia_sucio": false,
       "bahia_id": 158,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -1636,7 +1636,7 @@
       "lng": -71.46261310599994,
       "nombre_venia_sucio": false,
       "bahia_id": 158,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -2015,7 +2015,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Coquimbo): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 65
+      "prioridad": 66
     },
     {
       "nodo_id": 65,
@@ -2214,7 +2214,7 @@
       "lng": -71.33022078999994,
       "nombre_venia_sucio": false,
       "bahia_id": 202,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -2337,7 +2337,7 @@
       "lng": -71.46028508099994,
       "nombre_venia_sucio": false,
       "bahia_id": 180,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -2386,7 +2386,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Valparaíso): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 52
+      "prioridad": 53
     },
     {
       "nodo_id": 78,
@@ -2553,7 +2553,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Valparaíso): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 53
+      "prioridad": 54
     },
     {
       "nodo_id": 83,
@@ -2602,7 +2602,7 @@
       "lng": -72.63442499699994,
       "nombre_venia_sucio": false,
       "bahia_id": 184,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -3367,7 +3367,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Valparaíso): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 24
+      "prioridad": 25
     },
     {
       "nodo_id": 104,
@@ -3402,7 +3402,7 @@
         "por_que": "las candidatas están en capitanías distintas (Valparaíso / Quintero): la elección cambia la jurisdicción"
       },
       "adjudicacion": null,
-      "prioridad": 8
+      "prioridad": 9
     },
     {
       "nodo_id": 105,
@@ -3437,7 +3437,7 @@
         "por_que": "las candidatas están en capitanías distintas (Valparaíso / Quintero): la elección cambia la jurisdicción"
       },
       "adjudicacion": null,
-      "prioridad": 9
+      "prioridad": 10
     },
     {
       "nodo_id": 106,
@@ -3503,7 +3503,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Valparaíso): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 54
+      "prioridad": 55
     },
     {
       "nodo_id": 108,
@@ -3538,7 +3538,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Valparaíso): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 55
+      "prioridad": 56
     },
     {
       "nodo_id": 109,
@@ -3573,7 +3573,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Valparaíso): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 56
+      "prioridad": 57
     },
     {
       "nodo_id": 110,
@@ -4339,7 +4339,7 @@
       "lng": -70.86708051599999,
       "nombre_venia_sucio": false,
       "bahia_id": 134,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -4372,7 +4372,7 @@
       "lng": -70.87509892899993,
       "nombre_venia_sucio": false,
       "bahia_id": 134,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -4405,7 +4405,7 @@
       "lng": -70.86246799999998,
       "nombre_venia_sucio": false,
       "bahia_id": 134,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -4438,7 +4438,7 @@
       "lng": -70.87316535599996,
       "nombre_venia_sucio": false,
       "bahia_id": 134,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -4471,7 +4471,7 @@
       "lng": -70.93844192599994,
       "nombre_venia_sucio": false,
       "bahia_id": 134,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -4554,7 +4554,7 @@
       "lng": -69.54639879599995,
       "nombre_venia_sucio": false,
       "bahia_id": 132,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -4790,7 +4790,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Villarrica): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 70
+      "prioridad": 72
     },
     {
       "nodo_id": 154,
@@ -4858,7 +4858,7 @@
       "lng": -70.32709133699996,
       "nombre_venia_sucio": false,
       "bahia_id": 71,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -4886,7 +4886,7 @@
       "lng": -70.32594187699993,
       "nombre_venia_sucio": false,
       "bahia_id": 71,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -4939,7 +4939,7 @@
       "lng": -70.32918262899994,
       "nombre_venia_sucio": false,
       "bahia_id": 71,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -4967,7 +4967,7 @@
       "lng": -70.33025051399994,
       "nombre_venia_sucio": false,
       "bahia_id": 71,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -5076,7 +5076,7 @@
       "lng": -70.32577000999999,
       "nombre_venia_sucio": false,
       "bahia_id": 71,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -5104,7 +5104,7 @@
       "lng": -70.32553644199999,
       "nombre_venia_sucio": false,
       "bahia_id": 71,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -5159,7 +5159,7 @@
       "lng": -72.01652879499994,
       "nombre_venia_sucio": false,
       "bahia_id": 95,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -5241,7 +5241,7 @@
       "lng": -72.01565425299998,
       "nombre_venia_sucio": false,
       "bahia_id": 95,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -5836,7 +5836,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Talcahuano): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 60
+      "prioridad": 61
     },
     {
       "nodo_id": 193,
@@ -5959,7 +5959,7 @@
       "lng": -72.97806013499996,
       "nombre_venia_sucio": false,
       "bahia_id": 97,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -6002,7 +6002,7 @@
       "lng": -72.97705435599994,
       "nombre_venia_sucio": false,
       "bahia_id": 97,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -6071,7 +6071,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Talcahuano): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 19
+      "prioridad": 20
     },
     {
       "nodo_id": 199,
@@ -6111,7 +6111,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Talcahuano): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 20
+      "prioridad": 21
     },
     {
       "nodo_id": 200,
@@ -6125,7 +6125,7 @@
       "lng": -72.96903736099995,
       "nombre_venia_sucio": false,
       "bahia_id": 97,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -6194,7 +6194,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Talcahuano): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 21
+      "prioridad": 22
     },
     {
       "nodo_id": 202,
@@ -6234,7 +6234,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Talcahuano): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 61
+      "prioridad": 62
     },
     {
       "nodo_id": 203,
@@ -6289,7 +6289,7 @@
       "lng": -73.13260402199995,
       "nombre_venia_sucio": false,
       "bahia_id": 99,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -6332,7 +6332,7 @@
       "lng": -73.09179839999996,
       "nombre_venia_sucio": false,
       "bahia_id": 98,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -6411,7 +6411,7 @@
       "lng": -73.18638509099998,
       "nombre_venia_sucio": false,
       "bahia_id": 100,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -6553,7 +6553,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Coronel): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 14
+      "prioridad": 15
     },
     {
       "nodo_id": 212,
@@ -6710,7 +6710,7 @@
       "lng": -73.58181880599994,
       "nombre_venia_sucio": false,
       "bahia_id": 100,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -6784,7 +6784,7 @@
       "lng": -73.91747980099996,
       "nombre_venia_sucio": false,
       "bahia_id": 143,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -6938,7 +6938,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Talcahuano): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 62
+      "prioridad": 63
     },
     {
       "nodo_id": 226,
@@ -7183,7 +7183,7 @@
       "lng": -72.95841264799998,
       "nombre_venia_sucio": false,
       "bahia_id": 97,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -7252,7 +7252,7 @@
       "lng": -73.44750502599999,
       "nombre_venia_sucio": false,
       "bahia_id": 102,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -7340,7 +7340,7 @@
       "lng": -73.14827227899997,
       "nombre_venia_sucio": false,
       "bahia_id": 198,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -7445,7 +7445,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Coronel): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 27
+      "prioridad": 28
     },
     {
       "nodo_id": 242,
@@ -7516,7 +7516,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Talcahuano): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 63
+      "prioridad": 64
     },
     {
       "nodo_id": 244,
@@ -7644,7 +7644,7 @@
       "lng": -73.18333307999995,
       "nombre_venia_sucio": false,
       "bahia_id": 100,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -7972,7 +7972,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Coronel): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 15
+      "prioridad": 16
     },
     {
       "nodo_id": 258,
@@ -8441,7 +8441,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 43
+      "prioridad": 44
     },
     {
       "nodo_id": 276,
@@ -8476,7 +8476,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 38
+      "prioridad": 39
     },
     {
       "nodo_id": 277,
@@ -8516,7 +8516,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 44
+      "prioridad": 45
     },
     {
       "nodo_id": 278,
@@ -8556,7 +8556,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 45
+      "prioridad": 46
     },
     {
       "nodo_id": 279,
@@ -8591,7 +8591,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 39
+      "prioridad": 40
     },
     {
       "nodo_id": 280,
@@ -8631,7 +8631,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 46
+      "prioridad": 47
     },
     {
       "nodo_id": 281,
@@ -8671,7 +8671,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 47
+      "prioridad": 48
     },
     {
       "nodo_id": 282,
@@ -8711,7 +8711,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 48
+      "prioridad": 49
     },
     {
       "nodo_id": 283,
@@ -8746,7 +8746,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 40
+      "prioridad": 41
     },
     {
       "nodo_id": 284,
@@ -8781,7 +8781,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 41
+      "prioridad": 42
     },
     {
       "nodo_id": 285,
@@ -8821,7 +8821,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 49
+      "prioridad": 50
     },
     {
       "nodo_id": 286,
@@ -8861,7 +8861,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 50
+      "prioridad": 51
     },
     {
       "nodo_id": 287,
@@ -8901,7 +8901,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 22
+      "prioridad": 23
     },
     {
       "nodo_id": 288,
@@ -8941,7 +8941,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Carahue): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 35
+      "prioridad": 36
     },
     {
       "nodo_id": 289,
@@ -8955,7 +8955,7 @@
       "lng": -73.40130555599995,
       "nombre_venia_sucio": false,
       "bahia_id": 143,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -9129,7 +9129,7 @@
       "lng": -73.43078037699996,
       "nombre_venia_sucio": false,
       "bahia_id": 143,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -9167,7 +9167,7 @@
       "lng": -73.43405827099997,
       "nombre_venia_sucio": false,
       "bahia_id": 143,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -9242,7 +9242,7 @@
       "lng": -73.40002740699998,
       "nombre_venia_sucio": false,
       "bahia_id": 143,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -9385,7 +9385,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Villarrica): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 72
+      "prioridad": 74
     },
     {
       "nodo_id": 301,
@@ -9608,7 +9608,7 @@
       "lng": -73.00202664399995,
       "nombre_venia_sucio": false,
       "bahia_id": 216,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -9651,7 +9651,7 @@
       "lng": -73.00798250499997,
       "nombre_venia_sucio": false,
       "bahia_id": 216,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -9699,7 +9699,7 @@
       "lng": -72.64204412899994,
       "nombre_venia_sucio": false,
       "bahia_id": 233,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -10007,7 +10007,7 @@
       "lng": -72.32309758899999,
       "nombre_venia_sucio": false,
       "bahia_id": 152,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -10050,7 +10050,7 @@
       "lng": -73.13039365699996,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -10088,7 +10088,7 @@
       "lng": -72.99020776899994,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -10167,7 +10167,7 @@
       "lng": -73.14307132199997,
       "nombre_venia_sucio": false,
       "bahia_id": 232,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -10205,7 +10205,7 @@
       "lng": -73.05764911699998,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -10253,7 +10253,7 @@
       "lng": -73.10585418699998,
       "nombre_venia_sucio": false,
       "bahia_id": 232,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -10286,7 +10286,7 @@
       "lng": -73.13075187499999,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -10495,7 +10495,7 @@
       "lng": -72.90352044999997,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -10601,7 +10601,7 @@
       "lng": -73.59903286299993,
       "nombre_venia_sucio": false,
       "bahia_id": 112,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -10958,7 +10958,7 @@
       "lng": -72.47180122999998,
       "nombre_venia_sucio": false,
       "bahia_id": 115,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -11052,7 +11052,7 @@
         "por_que": "las 4 candidatas comparten capitanía (Hornopirén): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 51
+      "prioridad": 52
     },
     {
       "nodo_id": 347,
@@ -11138,7 +11138,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Ancud): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 16
+      "prioridad": 17
     },
     {
       "nodo_id": 349,
@@ -11152,7 +11152,7 @@
       "lng": -73.51565759799996,
       "nombre_venia_sucio": false,
       "bahia_id": 114,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -11215,7 +11215,7 @@
       "lng": -73.51155204699995,
       "nombre_venia_sucio": false,
       "bahia_id": 114,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -11314,7 +11314,7 @@
       "lng": -73.53771249199997,
       "nombre_venia_sucio": false,
       "bahia_id": 114,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -11408,7 +11408,7 @@
         "por_que": "las candidatas están en capitanías distintas (Calbuco / Quemchi / Ancud / Maullín): la elección cambia la jurisdicción"
       },
       "adjudicacion": null,
-      "prioridad": 11
+      "prioridad": 12
     },
     {
       "nodo_id": 354,
@@ -11443,7 +11443,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Ancud): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 25
+      "prioridad": 26
     },
     {
       "nodo_id": 355,
@@ -11478,7 +11478,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Ancud): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 57
+      "prioridad": 58
     },
     {
       "nodo_id": 356,
@@ -11700,7 +11700,7 @@
       "lng": -73.51691776699994,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -11753,7 +11753,7 @@
       "lng": -73.50210355899998,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -11811,7 +11811,7 @@
       "lng": -73.50076702199993,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -11869,7 +11869,7 @@
       "lng": -73.73511181899994,
       "nombre_venia_sucio": false,
       "bahia_id": 205,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -11912,7 +11912,7 @@
       "lng": -73.65556741499995,
       "nombre_venia_sucio": false,
       "bahia_id": 163,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -11965,7 +11965,7 @@
       "lng": -73.65123113999994,
       "nombre_venia_sucio": false,
       "bahia_id": 163,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12018,7 +12018,7 @@
       "lng": -73.65558454299997,
       "nombre_venia_sucio": false,
       "bahia_id": 163,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12071,7 +12071,7 @@
       "lng": -73.65516784099998,
       "nombre_venia_sucio": false,
       "bahia_id": 163,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12124,7 +12124,7 @@
       "lng": -73.37068396599994,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12167,7 +12167,7 @@
       "lng": -73.72160344299994,
       "nombre_venia_sucio": false,
       "bahia_id": 205,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12215,7 +12215,7 @@
       "lng": -73.43464413799995,
       "nombre_venia_sucio": false,
       "bahia_id": 155,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12248,7 +12248,7 @@
       "lng": -73.52141112299995,
       "nombre_venia_sucio": false,
       "bahia_id": 155,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12281,7 +12281,7 @@
       "lng": -73.47916454099999,
       "nombre_venia_sucio": false,
       "bahia_id": 155,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12314,7 +12314,7 @@
       "lng": -73.53459236399993,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12383,7 +12383,7 @@
       "lng": -73.55140470999999,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12416,7 +12416,7 @@
       "lng": -73.46213986699996,
       "nombre_venia_sucio": false,
       "bahia_id": 155,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12454,7 +12454,7 @@
       "lng": -73.60918952099996,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12487,7 +12487,7 @@
       "lng": -73.62317869399999,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12525,7 +12525,7 @@
       "lng": -73.62148937199998,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12595,7 +12595,7 @@
       "lng": -73.25023006799995,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12633,7 +12633,7 @@
       "lng": -73.15473803299994,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12666,7 +12666,7 @@
       "lng": -73.43598240699998,
       "nombre_venia_sucio": false,
       "bahia_id": 120,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12753,7 +12753,7 @@
       "lng": -73.21912581199996,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12791,7 +12791,7 @@
       "lng": -73.26849359299996,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12856,7 +12856,7 @@
       "lng": -73.13814809799999,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12884,7 +12884,7 @@
       "lng": -73.47251559999995,
       "nombre_venia_sucio": false,
       "bahia_id": 120,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12917,7 +12917,7 @@
       "lng": -73.35181222099999,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -12960,7 +12960,7 @@
       "lng": -73.35195499499997,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13055,7 +13055,7 @@
       "lng": -73.22638067199995,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13088,7 +13088,7 @@
       "lng": -73.26742956499999,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13121,7 +13121,7 @@
       "lng": -73.29842598799996,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13181,7 +13181,7 @@
       "lng": -73.45031441799995,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13229,7 +13229,7 @@
       "lng": -73.42595382499997,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13277,7 +13277,7 @@
       "lng": -73.45265834099996,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13320,7 +13320,7 @@
       "lng": -73.34064580399996,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13358,7 +13358,7 @@
       "lng": -73.30794611299996,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13396,7 +13396,7 @@
       "lng": -73.33039777599998,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13434,7 +13434,7 @@
       "lng": -73.40312163099998,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13502,7 +13502,7 @@
       "lng": -73.07722209299999,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13535,7 +13535,7 @@
       "lng": -73.07562905799995,
       "nombre_venia_sucio": false,
       "bahia_id": 121,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13583,7 +13583,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Hornopirén): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 36
+      "prioridad": 37
     },
     {
       "nodo_id": 409,
@@ -13719,7 +13719,7 @@
       "lng": -73.51673618099994,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13767,7 +13767,7 @@
       "lng": -73.49122580399995,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13841,7 +13841,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Ancud): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 31
+      "prioridad": 32
     },
     {
       "nodo_id": 416,
@@ -13882,7 +13882,7 @@
       "lng": -73.52427817099993,
       "nombre_venia_sucio": false,
       "bahia_id": 114,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13945,7 +13945,7 @@
       "lng": -73.26832510499997,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -13973,7 +13973,7 @@
       "lng": -73.21740169699996,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14011,7 +14011,7 @@
       "lng": -73.13055401099996,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14049,7 +14049,7 @@
       "lng": -73.03917503699995,
       "nombre_venia_sucio": false,
       "bahia_id": 121,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14071,7 +14071,7 @@
       "lng": -73.08875273599995,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14156,7 +14156,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Ancud): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 32
+      "prioridad": 33
     },
     {
       "nodo_id": 425,
@@ -14191,7 +14191,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Ancud): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 33
+      "prioridad": 34
     },
     {
       "nodo_id": 426,
@@ -14205,7 +14205,7 @@
       "lng": -73.63393827899995,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14238,7 +14238,7 @@
       "lng": -73.74374940899997,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14271,7 +14271,7 @@
       "lng": -73.64030120899997,
       "nombre_venia_sucio": false,
       "bahia_id": 147,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14355,7 +14355,7 @@
       "lng": -73.62238674899999,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14388,7 +14388,7 @@
       "lng": -73.72140805499998,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14452,7 +14452,7 @@
         "por_que": "las candidatas están en capitanías distintas (Castro / Achao / Quemchi): la elección cambia la jurisdicción"
       },
       "adjudicacion": null,
-      "prioridad": 10
+      "prioridad": 11
     },
     {
       "nodo_id": 433,
@@ -14487,7 +14487,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Ancud): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 58
+      "prioridad": 59
     },
     {
       "nodo_id": 434,
@@ -14501,7 +14501,7 @@
       "lng": -72.71914265599997,
       "nombre_venia_sucio": false,
       "bahia_id": 186,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14523,7 +14523,7 @@
       "lng": -73.21224364399995,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14592,7 +14592,7 @@
       "lng": -72.64191636499999,
       "nombre_venia_sucio": false,
       "bahia_id": 233,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14625,7 +14625,7 @@
       "lng": -73.12980204199994,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14731,7 +14731,7 @@
       "lng": -72.47139927399996,
       "nombre_venia_sucio": false,
       "bahia_id": 115,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14794,7 +14794,7 @@
       "lng": -73.50851283699996,
       "nombre_venia_sucio": false,
       "bahia_id": 125,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14934,7 +14934,7 @@
       "lng": -73.52398282899998,
       "nombre_venia_sucio": false,
       "bahia_id": 125,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -14987,7 +14987,7 @@
       "lng": -73.52101870499996,
       "nombre_venia_sucio": false,
       "bahia_id": 125,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -15040,7 +15040,7 @@
       "lng": -73.52174065599996,
       "nombre_venia_sucio": false,
       "bahia_id": 125,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -15093,7 +15093,7 @@
       "lng": -73.52717023299994,
       "nombre_venia_sucio": false,
       "bahia_id": 125,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -15194,7 +15194,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Puerto Aguirre): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 34
+      "prioridad": 35
     },
     {
       "nodo_id": 452,
@@ -15320,7 +15320,7 @@
       "lng": -72.95069628199997,
       "nombre_venia_sucio": false,
       "bahia_id": 252,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -15342,7 +15342,7 @@
       "lng": -72.95298597199996,
       "nombre_venia_sucio": false,
       "bahia_id": 252,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -15364,7 +15364,7 @@
       "lng": -73.74618202399995,
       "nombre_venia_sucio": false,
       "bahia_id": 124,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -15422,7 +15422,7 @@
       "lng": -73.74786402599995,
       "nombre_venia_sucio": false,
       "bahia_id": 124,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -15690,7 +15690,7 @@
       "lng": -73.20704795099994,
       "nombre_venia_sucio": false,
       "bahia_id": 238,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -15718,7 +15718,7 @@
       "lng": -73.20181539599997,
       "nombre_venia_sucio": false,
       "bahia_id": 238,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -16131,7 +16131,7 @@
       "lng": -72.51360469099995,
       "nombre_venia_sucio": false,
       "bahia_id": 130,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -16186,7 +16186,7 @@
       "lng": -74.41414209099997,
       "nombre_venia_sucio": false,
       "bahia_id": 129,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -16241,7 +16241,7 @@
       "lng": -72.52641120899995,
       "nombre_venia_sucio": false,
       "bahia_id": 130,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -16479,7 +16479,7 @@
       "lng": -73.39413229999997,
       "nombre_venia_sucio": false,
       "bahia_id": 107,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -16574,7 +16574,7 @@
       "lng": -73.38407565499995,
       "nombre_venia_sucio": false,
       "bahia_id": 107,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -16709,7 +16709,7 @@
       "lng": -73.39687745799995,
       "nombre_venia_sucio": false,
       "bahia_id": 107,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -16851,7 +16851,7 @@
       "lng": -73.38935597299997,
       "nombre_venia_sucio": false,
       "bahia_id": 107,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -16925,7 +16925,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Valdivia): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 37
+      "prioridad": 38
     },
     {
       "nodo_id": 507,
@@ -16986,7 +16986,7 @@
       "lng": -73.39560719399998,
       "nombre_venia_sucio": false,
       "bahia_id": 107,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -17075,7 +17075,7 @@
       "lng": -73.38345218699999,
       "nombre_venia_sucio": false,
       "bahia_id": 107,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -17123,7 +17123,7 @@
       "lng": -73.38777715699996,
       "nombre_venia_sucio": false,
       "bahia_id": 107,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -17306,7 +17306,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Valdivia): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 26
+      "prioridad": 27
     },
     {
       "nodo_id": 516,
@@ -17392,7 +17392,7 @@
       "lng": -73.38621105599998,
       "nombre_venia_sucio": false,
       "bahia_id": 107,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -17440,7 +17440,7 @@
       "lng": -73.38895116599997,
       "nombre_venia_sucio": false,
       "bahia_id": 107,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -17608,7 +17608,7 @@
       "lng": -73.39069902099999,
       "nombre_venia_sucio": false,
       "bahia_id": 107,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -17829,7 +17829,7 @@
       "lng": -78.93601389099996,
       "nombre_venia_sucio": false,
       "bahia_id": 90,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18019,7 +18019,7 @@
       "lng": -71.49438099299994,
       "nombre_venia_sucio": false,
       "bahia_id": 158,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18134,7 +18134,7 @@
       "lng": -73.61257911899997,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18172,7 +18172,7 @@
       "lng": -73.39818052599998,
       "nombre_venia_sucio": true,
       "bahia_id": 143,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18258,7 +18258,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Valdivia): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 17
+      "prioridad": 18
     },
     {
       "nodo_id": 545,
@@ -18293,7 +18293,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Antofagasta): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 71
+      "prioridad": 73
     },
     {
       "nodo_id": 546,
@@ -18334,7 +18334,7 @@
       "lng": -71.69693871699997,
       "nombre_venia_sucio": false,
       "bahia_id": 87,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18356,7 +18356,7 @@
       "lng": -71.67492526699994,
       "nombre_venia_sucio": false,
       "bahia_id": 88,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18420,7 +18420,7 @@
       "lng": -72.95331058799997,
       "nombre_venia_sucio": false,
       "bahia_id": 216,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18458,7 +18458,7 @@
       "lng": -72.95888817499997,
       "nombre_venia_sucio": false,
       "bahia_id": 216,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18532,7 +18532,7 @@
       "lng": -73.59819724799996,
       "nombre_venia_sucio": false,
       "bahia_id": 112,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18606,7 +18606,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Ancud): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 28
+      "prioridad": 29
     },
     {
       "nodo_id": 555,
@@ -18620,7 +18620,7 @@
       "lng": -73.15431831599994,
       "nombre_venia_sucio": false,
       "bahia_id": 232,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18658,7 +18658,7 @@
       "lng": -72.98935859799997,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18706,7 +18706,7 @@
       "lng": -72.99070697299999,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18785,7 +18785,7 @@
       "lng": -73.13025676199999,
       "nombre_venia_sucio": false,
       "bahia_id": 113,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -18956,7 +18956,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Calbuco): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 18
+      "prioridad": 19
     },
     {
       "nodo_id": 565,
@@ -19006,7 +19006,7 @@
       "lng": -72.68499674899994,
       "nombre_venia_sucio": false,
       "bahia_id": 184,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19069,7 +19069,7 @@
       "lng": -73.39845179899999,
       "nombre_venia_sucio": false,
       "bahia_id": 120,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19102,7 +19102,7 @@
       "lng": -73.25402895099995,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19140,7 +19140,7 @@
       "lng": -73.55006466299994,
       "nombre_venia_sucio": false,
       "bahia_id": 163,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19188,7 +19188,7 @@
       "lng": -73.57869672899994,
       "nombre_venia_sucio": false,
       "bahia_id": 163,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19236,7 +19236,7 @@
       "lng": -73.65036923899999,
       "nombre_venia_sucio": false,
       "bahia_id": 163,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19289,7 +19289,7 @@
       "lng": -73.37864031699996,
       "nombre_venia_sucio": false,
       "bahia_id": 235,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19394,7 +19394,7 @@
       "lng": -73.63605288699995,
       "nombre_venia_sucio": false,
       "bahia_id": 116,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19447,7 +19447,7 @@
       "lng": -73.68219953699997,
       "nombre_venia_sucio": false,
       "bahia_id": 205,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19567,7 +19567,7 @@
       "lng": -73.76883021899994,
       "nombre_venia_sucio": false,
       "bahia_id": 119,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19615,7 +19615,7 @@
       "lng": -73.56826579999995,
       "nombre_venia_sucio": false,
       "bahia_id": 205,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19668,7 +19668,7 @@
       "lng": -73.30058037899994,
       "nombre_venia_sucio": false,
       "bahia_id": 122,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19791,7 +19791,7 @@
       "lng": -73.69525125999996,
       "nombre_venia_sucio": false,
       "bahia_id": 117,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -19928,7 +19928,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Coquimbo): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 29
+      "prioridad": 30
     },
     {
       "nodo_id": 593,
@@ -20086,7 +20086,7 @@
       "lng": -71.55752747899999,
       "nombre_venia_sucio": false,
       "bahia_id": 88,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -20339,7 +20339,7 @@
         "por_que": "las 4 candidatas comparten capitanía (Iquique): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 73
+      "prioridad": 75
     },
     {
       "nodo_id": 606,
@@ -20353,7 +20353,7 @@
       "lng": -70.40468902499998,
       "nombre_venia_sucio": false,
       "bahia_id": 77,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -20386,7 +20386,7 @@
       "lng": -70.40614138199999,
       "nombre_venia_sucio": false,
       "bahia_id": 77,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -20419,7 +20419,7 @@
       "lng": -70.40535991999997,
       "nombre_venia_sucio": false,
       "bahia_id": 77,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -20567,7 +20567,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Lago Ranco): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 59
+      "prioridad": 60
     },
     {
       "nodo_id": 613,
@@ -20721,7 +20721,7 @@
       "lng": -70.39742299899996,
       "nombre_venia_sucio": false,
       "bahia_id": 77,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -20785,7 +20785,7 @@
       "lng": -73.47771831499995,
       "nombre_venia_sucio": false,
       "bahia_id": 155,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -20870,7 +20870,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Lago Ranco): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 42
+      "prioridad": 43
     },
     {
       "nodo_id": 622,
@@ -21041,7 +21041,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Talcahuano): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 30
+      "prioridad": 31
     },
     {
       "nodo_id": 628,
@@ -21055,7 +21055,7 @@
       "lng": -73.76681489499998,
       "nombre_venia_sucio": false,
       "bahia_id": 119,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -21175,7 +21175,7 @@
       "lng": -73.47104810199994,
       "nombre_venia_sucio": false,
       "bahia_id": 120,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -21272,7 +21272,7 @@
       "lng": -73.40135291299998,
       "nombre_venia_sucio": false,
       "bahia_id": 143,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -21310,7 +21310,7 @@
       "lng": -70.15149310299995,
       "nombre_venia_sucio": false,
       "bahia_id": 72,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -21513,7 +21513,7 @@
       "lng": -73.14869245499995,
       "nombre_venia_sucio": false,
       "bahia_id": 198,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -21566,7 +21566,7 @@
       "lng": -73.18022453699996,
       "nombre_venia_sucio": false,
       "bahia_id": 100,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -21635,7 +21635,7 @@
       "lng": -70.186942,
       "nombre_venia_sucio": false,
       "bahia_id": 197,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -21678,7 +21678,7 @@
       "lng": -70.191069,
       "nombre_venia_sucio": false,
       "bahia_id": 197,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -21721,7 +21721,7 @@
       "lng": -70.125657,
       "nombre_venia_sucio": false,
       "bahia_id": 197,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -21870,17 +21870,22 @@
       "region": "III REGION",
       "provincia": "Huasco",
       "comuna": "Huasco",
-      "lat": -28.823795,
-      "lng": -77.231492,
+      "lat": -28.460872,
+      "lng": -71.224055,
       "nombre_venia_sucio": false,
-      "bahia_id": 90,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": 84,
+      "estado": "derivado_limpio",
+      "via": "unica_candidata_en_radio",
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 556.47,
-        "la_geografia_coincide": true,
-        "candidatas": []
+        "km": 0.01,
+        "margen_km": null,
+        "candidatas": [
+          {
+            "bahia_id": 84,
+            "nombre": "BAHÍA PUERTO HUASCO",
+            "km": 0.01
+          }
+        ]
       },
       "adjudicacion": null
     },
@@ -21892,17 +21897,31 @@
       "region": "III REGION",
       "provincia": "Copiapo",
       "comuna": "Caldera",
-      "lat": -27.415729,
-      "lng": -76.829464,
+      "lat": -27.06394,
+      "lng": -70.823869,
       "nombre_venia_sucio": false,
-      "bahia_id": 158,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": 81,
+      "estado": "desempatado",
+      "via": "C2_razon_distancia",
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 554.44,
-        "la_geografia_coincide": true,
-        "candidatas": []
+        "empate_entre": [
+          {
+            "bahia_id": 81,
+            "nombre": "BAHÍA CALDERA",
+            "km": 0.03
+          },
+          {
+            "bahia_id": 82,
+            "nombre": "BAHÍA CALDERILLA",
+            "km": 3.37
+          },
+          {
+            "bahia_id": 83,
+            "nombre": "SECTOR PUNTA TOTORALILLO",
+            "km": 7.75
+          }
+        ],
+        "elegida_km": 0.03
       },
       "adjudicacion": null
     },
@@ -21914,19 +21933,32 @@
       "region": "III REGION",
       "provincia": "Copiapo",
       "comuna": "Caldera",
-      "lat": -27.687595,
-      "lng": -76.947172,
+      "lat": -27.334874,
+      "lng": -70.941229,
       "nombre_venia_sucio": false,
-      "bahia_id": 158,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": null,
+      "estado": "a_adjudicar",
+      "via": null,
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 555.53,
-        "la_geografia_coincide": true,
-        "candidatas": []
+        "empate_entre": [
+          {
+            "bahia_id": 83,
+            "nombre": "SECTOR PUNTA TOTORALILLO",
+            "km": 25.13
+          },
+          {
+            "bahia_id": 82,
+            "nombre": "BAHÍA CALDERILLA",
+            "km": 29.39
+          }
+        ],
+        "alguna_candidata_con_cierres": false,
+        "alguna_candidata_con_restricciones": false,
+        "quien_adjudica": "costa",
+        "por_que": "las 2 candidatas comparten capitanía (Caldera): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
-      "adjudicacion": null
+      "adjudicacion": null,
+      "prioridad": 67
     },
     {
       "nodo_id": 656,
@@ -21936,17 +21968,27 @@
       "region": "III REGION",
       "provincia": "ChaãAral",
       "comuna": "ChaãAral",
-      "lat": -26.696806,
-      "lng": -76.638227,
+      "lat": -26.351827,
+      "lng": -70.633371,
       "nombre_venia_sucio": false,
-      "bahia_id": 157,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": 80,
+      "estado": "derivado_limpio",
+      "via": "margen_>=10km",
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 563.32,
-        "la_geografia_coincide": true,
-        "candidatas": []
+        "km": 0.2,
+        "margen_km": 23.37,
+        "candidatas": [
+          {
+            "bahia_id": 80,
+            "nombre": "BAHÍA CHAÑARAL",
+            "km": 0.2
+          },
+          {
+            "bahia_id": 172,
+            "nombre": "BAHÍA PAN DE AZÚCAR",
+            "km": 23.57
+          }
+        ]
       },
       "adjudicacion": null
     },
@@ -21958,17 +22000,26 @@
       "region": "IV REGION",
       "provincia": "Elqui",
       "comuna": "Coquimbo",
-      "lat": -30.571551,
-      "lng": -77.439966,
+      "lat": -30.194365,
+      "lng": -71.431134,
       "nombre_venia_sucio": false,
-      "bahia_id": 90,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": 150,
+      "estado": "desempatado",
+      "via": "C2_razon_distancia",
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 365.43,
-        "la_geografia_coincide": true,
-        "candidatas": []
+        "empate_entre": [
+          {
+            "bahia_id": 150,
+            "nombre": "GUANAQUEROS",
+            "km": 0.09
+          },
+          {
+            "bahia_id": 87,
+            "nombre": "TONGOY",
+            "km": 9.31
+          }
+        ],
+        "elegida_km": 0.09
       },
       "adjudicacion": null
     },
@@ -21980,17 +22031,31 @@
       "region": "IV REGION",
       "provincia": "Elqui",
       "comuna": "La Higuera",
-      "lat": -29.619181,
-      "lng": -77.472042,
+      "lat": -29.246534,
+      "lng": -71.468394,
       "nombre_venia_sucio": false,
-      "bahia_id": 90,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": 206,
+      "estado": "desempatado",
+      "via": "C3_comuna_vs_bahia",
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 465.01,
-        "la_geografia_coincide": true,
-        "candidatas": []
+        "empate_entre": [
+          {
+            "bahia_id": 158,
+            "nombre": "CALETA CHAÑARAL Y ENSENADA GAVIOTA",
+            "km": 18.96
+          },
+          {
+            "bahia_id": 202,
+            "nombre": "CRUZ GRANDE",
+            "km": 27.9
+          },
+          {
+            "bahia_id": 206,
+            "nombre": "LA HIGUERA",
+            "km": 28.39
+          }
+        ],
+        "elegida_km": 28.39
       },
       "adjudicacion": null
     },
@@ -22002,17 +22067,37 @@
       "region": "V REGION",
       "provincia": "Valparaiso",
       "comuna": "Valparaiso",
-      "lat": -33.417206,
-      "lng": -77.644258,
+      "lat": -33.02215,
+      "lng": -71.632543,
       "nombre_venia_sucio": false,
-      "bahia_id": 90,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": 92,
+      "estado": "derivado_limpio",
+      "via": "margen_>=10km",
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 114.32,
-        "la_geografia_coincide": true,
-        "candidatas": []
+        "km": 1.24,
+        "margen_km": 14.46,
+        "candidatas": [
+          {
+            "bahia_id": 92,
+            "nombre": "BAHÍA DE VALPARAÍSO",
+            "km": 1.24
+          },
+          {
+            "bahia_id": 173,
+            "nombre": "BAHÍA CONCÓN",
+            "km": 15.7
+          },
+          {
+            "bahia_id": 174,
+            "nombre": "BAHÍA RADA QUINTAY",
+            "km": 20.04
+          },
+          {
+            "bahia_id": 91,
+            "nombre": "BAHÍA DE QUINTERO",
+            "km": 28.13
+          }
+        ]
       },
       "adjudicacion": null
     },
@@ -22024,17 +22109,37 @@
       "region": "V REGION",
       "provincia": "Valparaiso",
       "comuna": "Valparaiso",
-      "lat": -33.427059,
-      "lng": -77.602478,
+      "lat": -33.031146,
+      "lng": -71.590059,
       "nombre_venia_sucio": false,
-      "bahia_id": 90,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": 92,
+      "estado": "derivado_limpio",
+      "via": "margen_>=10km",
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 117.89,
-        "la_geografia_coincide": true,
-        "candidatas": []
+        "km": 4.04,
+        "margen_km": 10.15,
+        "candidatas": [
+          {
+            "bahia_id": 92,
+            "nombre": "BAHÍA DE VALPARAÍSO",
+            "km": 4.04
+          },
+          {
+            "bahia_id": 173,
+            "nombre": "BAHÍA CONCÓN",
+            "km": 14.19
+          },
+          {
+            "bahia_id": 174,
+            "nombre": "BAHÍA RADA QUINTAY",
+            "km": 20.75
+          },
+          {
+            "bahia_id": 91,
+            "nombre": "BAHÍA DE QUINTERO",
+            "km": 28.06
+          }
+        ]
       },
       "adjudicacion": null
     },
@@ -22046,17 +22151,37 @@
       "region": "V REGION",
       "provincia": "Valparaiso",
       "comuna": "Con Con",
-      "lat": -33.313404,
-      "lng": -77.529192,
+      "lat": -32.918841,
+      "lng": -71.518234,
       "nombre_venia_sucio": false,
-      "bahia_id": 90,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": 173,
+      "estado": "derivado_limpio",
+      "via": "margen_>=10km",
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 127.57,
-        "la_geografia_coincide": true,
-        "candidatas": []
+        "km": 0.03,
+        "margen_km": 15.11,
+        "candidatas": [
+          {
+            "bahia_id": 173,
+            "nombre": "BAHÍA CONCÓN",
+            "km": 0.03
+          },
+          {
+            "bahia_id": 91,
+            "nombre": "BAHÍA DE QUINTERO",
+            "km": 15.14
+          },
+          {
+            "bahia_id": 92,
+            "nombre": "BAHÍA DE VALPARAÍSO",
+            "km": 16.65
+          },
+          {
+            "bahia_id": 219,
+            "nombre": "SECTOR NORTE QUINTERO",
+            "km": 18.83
+          }
+        ]
       },
       "adjudicacion": null
     },
@@ -22068,19 +22193,32 @@
       "region": "V REGION",
       "provincia": "Valparaiso",
       "comuna": "Puchuncavi",
-      "lat": -33.134386,
-      "lng": -77.501974,
+      "lat": -32.740921,
+      "lng": -71.490708,
       "nombre_venia_sucio": false,
-      "bahia_id": 90,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": null,
+      "estado": "a_adjudicar",
+      "via": null,
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 136.9,
-        "la_geografia_coincide": true,
-        "candidatas": []
+        "empate_entre": [
+          {
+            "bahia_id": 219,
+            "nombre": "SECTOR NORTE QUINTERO",
+            "km": 4.11
+          },
+          {
+            "bahia_id": 91,
+            "nombre": "BAHÍA DE QUINTERO",
+            "km": 6.17
+          }
+        ],
+        "alguna_candidata_con_cierres": true,
+        "alguna_candidata_con_restricciones": true,
+        "quien_adjudica": "capitania",
+        "por_que": "las candidatas están en capitanías distintas (Valparaíso / Quintero): la elección cambia la jurisdicción"
       },
-      "adjudicacion": null
+      "adjudicacion": null,
+      "prioridad": 8
     },
     {
       "nodo_id": 663,
@@ -22090,16 +22228,19 @@
       "region": "VI REGION",
       "provincia": "Cardenal Caro",
       "comuna": "Navidad",
-      "lat": -34.363123,
-      "lng": -77.891296,
+      "lat": -33.962747,
+      "lng": -71.877457,
       "nombre_venia_sucio": false,
-      "bahia_id": 90,
-      "estado": "confirmado_declarado",
-      "via": "bahia_sitport_id",
+      "bahia_id": null,
+      "estado": "sin_bahia_en_catalogo",
+      "via": null,
       "evidencia": {
-        "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
-        "km_a_esa_bahia": 119.99,
-        "la_geografia_coincide": true,
+        "bahia_mas_cercana": {
+          "bahia_id": 96,
+          "nombre": "LAGO RAPEL",
+          "km": 35.33
+        },
+        "radio_km": 30,
         "candidatas": []
       },
       "adjudicacion": null
@@ -22116,7 +22257,7 @@
       "lng": -70.272651,
       "nombre_venia_sucio": false,
       "bahia_id": 204,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -22202,7 +22343,7 @@
         "por_que": "las 4 candidatas comparten capitanía (Iquique): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 74
+      "prioridad": 76
     },
     {
       "nodo_id": 667,
@@ -22324,7 +22465,7 @@
       "lng": -75.1,
       "nombre_venia_sucio": false,
       "bahia_id": 243,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -22377,7 +22518,7 @@
         "por_que": "las 4 candidatas comparten capitanía (Melinka): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 23
+      "prioridad": 24
     },
     {
       "nodo_id": 673,
@@ -22391,7 +22532,7 @@
       "lng": -73.509,
       "nombre_venia_sucio": false,
       "bahia_id": 125,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -22444,7 +22585,7 @@
       "lng": -74.2,
       "nombre_venia_sucio": false,
       "bahia_id": 124,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -22466,7 +22607,7 @@
       "lng": -73.33,
       "nombre_venia_sucio": false,
       "bahia_id": 254,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -22519,7 +22660,7 @@
       "lng": -75.1,
       "nombre_venia_sucio": false,
       "bahia_id": 154,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -22686,7 +22827,7 @@
       "lng": -70.323,
       "nombre_venia_sucio": false,
       "bahia_id": 71,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -22762,7 +22903,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Antofagasta): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 64
+      "prioridad": 65
     },
     {
       "nodo_id": 774,
@@ -22835,7 +22976,7 @@
       "lng": -71.25,
       "nombre_venia_sucio": false,
       "bahia_id": 84,
-      "estado": "confirmado_declarado",
+      "estado": "anclado_por_el_nodo",
       "via": "bahia_sitport_id",
       "evidencia": {
         "fuente_del_ancla": "nodos_maritimos.bahia_sitport_id",
@@ -22977,7 +23118,7 @@
         "por_que": "las 2 candidatas comparten capitanía (Valdivia): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 12
+      "prioridad": 13
     },
     {
       "nodo_id": 781,
@@ -23017,7 +23158,7 @@
         "por_que": "las 3 candidatas comparten capitanía (Puerto Montt): elegir mal no cambia a quién se contacta, sólo qué restricciones llegan"
       },
       "adjudicacion": null,
-      "prioridad": 13
+      "prioridad": 14
     }
   ]
 }

@@ -416,10 +416,14 @@ router.post('/restricciones', async (req, res) => {
       //                                 caso de los centros de cultivo y las
       //                                 concesiones acuícolas
       //
-      // `km_a_la_bahia` NO se llama `km_al_ancla`: de las 489 filas con
-      // atribución sólo 186 tienen ancla declarada, y las otras 303 traen la
+      // `km_a_la_bahia` NO se llama `km_al_ancla`: de las 497 filas con
+      // atribución sólo 186 tienen ancla declarada, y las otras 311 traen la
       // distancia a una bahía DERIVADA, que no es el ancla de nadie.
-      // `fuente_del_km` dice cuál de las tres es.
+      // `fuente_del_km` dice cuál de las tres es — y desde el 2026-08-19 el valor
+      // de la rama con ancla es `ancla_del_nodo` y no `bahia_declarada_por_el_nodo`:
+      // el nodo no la DECLARA, la escribe el trigger `trg_jurisdiccion_auto` de la
+      // base. Ver H-3 en `_bitacoras/coordenada_corrida_2026-08-19/`.
+      // Las cifras eran 489 / 303 contra `4f9fbdc3…`; son 497 / 311 contra `61bf7dc7…`.
       atribucion: {
         bahia_id: ficha.bahia_id,
         silencio: ficha.silencio,
