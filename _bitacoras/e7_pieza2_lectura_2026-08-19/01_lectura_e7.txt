@@ -1,0 +1,241 @@
+==============================================================================
+E7 PIEZA 2 -- LECTURA. Texto literal, sin interpretar.
+SESION  : 2026-08-19. Pedido del owner: es lectura, no pieza.
+REPO    : tmarea-backend en 111c60fd651326853f4eae25da6896230c4244a7 (= origin/main)
+ALCANCE : no se propone criterio de cierre, no se recomienda camino, no se aplica nada.
+==============================================================================
+
+------------------------------------------------------------------------------
+1 . E7 en 3. ETAPAS, literal
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : sed -n '/^### E7 /,/^### E8 /p' PLAN_JURISDICCION.md | sed '/^### E8 /d'
+------------------------------------------------------------------------------
+### E7 · R1 sobre la capa nueva
+**Depende de: E6. Tercer entregable visible.**
+
+Pieza 1 ya está. Pieza 2: volver a correr el auditor de `fase5Y`. **Expectativa: el criterio
+de silenciamiento sobra** — con costa fina y unidad Capitanía puede que no queden astillas. Si
+sobra, se borra. Después piezas 3 y 4.
+**Aceptación:** S3, S6, S8.
+
+------------------------------------------------------------------------------
+2 . la fila de E7 en la tabla de 7, literal
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -n '^| E7' PLAN_JURISDICCION.md
+------------------------------------------------------------------------------
+1453:| E7 R1 sobre la capa nueva | pieza 1 cerrada; pieza 2 en observación | — | `fase5V`, `fase5W`, `fase5Y` |
+
+------------------------------------------------------------------------------
+3a . QUE ES R1 -- su definicion en el encabezado del plan
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : sed -n '13,16p' PLAN_JURISDICCION.md
+------------------------------------------------------------------------------
+**Objetivo:** que la app resuelva jurisdicción por **Capitanía de Puerto**, con la capa
+derivada del **D.S. 991**, y con **R1** (el aviso de jurisdicción sin límite cargado)
+funcionando sobre ella.
+
+------------------------------------------------------------------------------
+3b . las dos piezas por nombre de codigo -- 1.6, la tabla
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : sed -n '219,228p' PLAN_JURISDICCION.md
+------------------------------------------------------------------------------
+| pieza | qué hace | estado |
+|---|---|---|
+| `bahiasEnRutaPostGIS` | `ST_Intersects` ruta × celdas → set de `bahia_id` | unidad equivocada (INV-3.3) |
+| filtro de restricciones | descarta si su `bahia` no está en el set | contradice INV-3.4 |
+| `BAHIA_COORDS` | 163 coords escritas en `sitport-routes.js` | duplica `bahias_sitport`; da `orden_en_ruta` y `fondeadero_previo` |
+| `getCapitaniaByBahiaId` | id → nombre + teléfono | **caso por defecto silencioso** (`'Desconocida'`) |
+| exclusión `zarpe_id`/`recalada_id` | excluye del listado de tránsito | **código muerto: la PWA nunca los envía** |
+| `cobertura-jurisdiccional` | R1 pieza 2 | aplicada, **criterio en observación** |
+| `zonas-aviso` | R1 pieza 1 | aplicada y limpia |
+
+------------------------------------------------------------------------------
+3c . el invariante que R1 implementa -- cabecera del modulo
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : sed -n '1,10p' src/services/cobertura-jurisdiccional.js
+------------------------------------------------------------------------------
+'use strict';
+// ─────────────────────────────────────────────────────────────────────────────
+// cobertura-jurisdiccional.js — R1, pieza 2.
+//
+// CONTRATO_MOTOR.md INV-3.6: si una ruta entra en una zona sin geometria
+// cargada, se informa; nunca se resuelve en silencio. Hoy el motor pregunta
+// "que jurisdicciones toca la ruta" y no pregunta "que parte de la ruta no toca
+// ninguna". Este modulo hace la segunda pregunta.
+//
+// LO QUE ESTE MODULO NO HACE, y no puede llegar a hacer:
+
+------------------------------------------------------------------------------
+4a . R1 CON OTROS VOCABULARIOS -- backend, R1 como palabra
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -rnw R1 src/ scripts/ | grep -v Binary | cut -c1-170
+------------------------------------------------------------------------------
+src/services/cobertura-jurisdiccional.js:3:// cobertura-jurisdiccional.js — R1, pieza 2.
+src/services/data/concesiones_acuicolas_nacional.json:1:{"metadata":{"fuente":"SUBPESCA - Concesiones Acuícolas Nacional","fecha_actualizacion":"2026-06-23","total":4738
+src/services/data/tmarea_rutas_australes.json:319:      "id": "R1",
+src/services/__tests__/cierre-derivador.test.js:115:  // R1 (2026-08-17) · `rama_parser` YA NO EXISTE. Bajo D-C6 el alcance se lee del
+src/services/__tests__/cierre-derivador.test.js:559:    // vocabularios. Es R1.
+src/services/__tests__/cierre-derivador.test.js:616:    // la retícula y devolvía no_legible. Es el mismo defecto que R1 cierra, y me
+src/services/__tests__/cobertura-jurisdiccional.test.js:2:// Pruebas de la pieza 2 de R1 y de la costura de E0.2. No tocan la base: la
+scripts/e03join_construir_join.js:128:      criterio: `declaracion previa de R1 pieza 1 en zonas_aviso.json · ${CERRADAS_POR_DECLARACION.get(b.id)}`,
+scripts/e03join_construir_join.js:147:        nota: 'Escrita en R1 pieza 1 y versionada, nombra a esta bahia como propia de esa jurisdiccion. Queda REGISTRADA, no aplicad
+scripts/e03join_construir_join.js:158:      respaldo: 'declaracion_versionada', criterio: 'declaracion previa de R1 pieza 1 en zonas_aviso.json',
+scripts/e03join_reconocimiento.js:268:console.log('Son las que R1 pieza 1 dejo sin contacto porque el mapa las atribuye a una');
+scripts/fase5_medir_e02_causas.js:42:// para que esta medicion sea comparable con la de R1.
+scripts/frente-contacto-aplicar-lote.js:26://   · la ATRIBUCION `IDBahia -> CdReparticion` : SITPORT (D-R1, owner 2026-08-15)
+scripts/frente-contacto-derivar-reparticiones.js:10://   · la ATRIBUCION `IDBahia -> CdReparticion` la da SITPORT (D-R1);
+scripts/frente-contacto-pieza-a.js:18://   · la ATRIBUCION `IDBahia -> CdReparticion` : SITPORT (D-R1, owner 2026-08-15)
+
+------------------------------------------------------------------------------
+4b . R1 en CONTRATO_MOTOR.md y CLAUDE.md -- esperado 0, con control positivo
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -cw R1 CONTRATO_MOTOR.md CLAUDE.md; echo CONTROL-POSITIVO-INV-3.6:; grep -cw INV-3.6 CONTRATO_MOTOR.md CLAUDE.md
+------------------------------------------------------------------------------
+CONTRATO_MOTOR.md:0
+CLAUDE.md:0
+CONTROL-POSITIVO-INV-3.6:
+CONTRATO_MOTOR.md:6
+CLAUDE.md:0
+
+------------------------------------------------------------------------------
+5 . R1 y r1 en tmarea-pwa
+ARBOL   : C:/Users/katia/tmarea-pwa
+COMANDO : grep -rInw R1 --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . | cut -c1-170; echo MINUSCULA:; grep -rIn 'recordatorio r1' --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . | cut -c1-170
+------------------------------------------------------------------------------
+./src/hooks/useVoyageVerification.js:644:  // ── R1 — SIEMPRE: aviso por radio a la Capitanía de zarpe ──────────────────
+MINUSCULA:
+./src/hooks/useVoyageVerification.js:613:// el recordatorio r1— no puedan divergir en el literal.
+./src/screens/P3_VoyageVerification.jsx:344:        // Se comparte `rotularContacto` con el recordatorio r1 —LA FRASE ENTERA, no
+
+------------------------------------------------------------------------------
+6 . ESTA ESCRITO QUE SE OBSERVA -- barrido declarado con control positivo. VOCABULARIO: en observacion / EN OBSERVACION / con tilde en las dos formas
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -rIn 'en observacion\|EN OBSERVACION\|en observación\|EN OBSERVACIÓN' --exclude-dir=node_modules --exclude-dir=.git . | cut -c1-165; echo; echo -n 'ficheros: '; grep -rIl 'en observacion\|EN OBSERVACION\|en observación\|EN OBSERVACIÓN' --exclude-dir=node_modules --exclude-dir=.git . | wc -l; echo -n 'CONTROL POSITIVO, ALTO como palabra: '; grep -rIlw ALTO --exclude-dir=node_modules --exclude-dir=.git . | wc -l
+------------------------------------------------------------------------------
+./data/decreto/fuente_ds364/DTO-364_2012-03-17.raw.txt:115:merecieren observaciones.
+./data/decreto/fuente_ds364/DTO-364_2012-03-17.txt:138:merecieren observaciones.
+./data/deudas/deudas_declaradas.json:590:      "texto_literal": "E7, pieza 2, «en observación» — sin criterio de cierre. La fila de §7 la marca así y ni §3 n
+./data/deudas/deudas_declaradas.json:604:      "pregunta": "Hay una pieza de trabajo aplicada y marcada \"en observacion\" desde hace nueve dias. SI esta escrito que
+./data/deudas/deudas_declaradas.json:608:        "instrumento": "Lectura literal de E7 en 3. ETAPAS y de su fila en la tabla de 7; lectura entera de las tres bitacor
+./data/deudas/deudas_declaradas.json:609:        "resultado": "LA VIÑETA DE 7.2 ES INCORRECTA EN SU SEGUNDA MITAD Y CIERTA EN LA PRIMERA. Dice que \"ni 3 ni ninguna
+./data/deudas/deudas_declaradas.json:1483:      "texto_literal": "| E7 R1 sobre la capa nueva | pieza 1 cerrada; pieza 2 en observación | — | `fase5V`, `fase5W`, 
+./data/deudas/deudas_declaradas.json:1502:        "instrumento": "grep declarado sobre el arbol completo menos node_modules y .git, vocabulario \"en observacion / EN
+./PLAN_JURISDICCION.md:226:| `cobertura-jurisdiccional` | R1 pieza 2 | aplicada, **criterio en observación** |
+./PLAN_JURISDICCION.md:1453:| E7 R1 sobre la capa nueva | pieza 1 cerrada; pieza 2 en observación | — | `fase5V`, `fase5W`, `fase5Y` |
+./PLAN_JURISDICCION.md:2461:> - **E7, pieza 2, «en observación» — sin criterio de cierre.** La fila de §7 la marca así y ni
+./_bitacoras/declarativo_deudas_2026-08-19/03_medir_7-2.txt:15:1453:| E7 R1 sobre la capa nueva | pieza 1 cerrada; pieza 2 en observación | — | `fase5V`, `fase5W`
+./_bitacoras/e01_drift_catalogo_2026-08-11/propuesta_e01.md:177:(`cobertura-jurisdiccional.js`, aplicada y en observación). Meterle una segunda causa
+./_bitacoras/estado_plan_jurisdiccion_2026-08-19.md:125:### E7 · R1 sobre la capa nueva — **PIEZA 1 CERRADA, PIEZA 2 EN OBSERVACIÓN**
+./_bitacoras/estado_plan_jurisdiccion_2026-08-19.md:192:- **E7, pieza 2 «en observación».** No hay bitácora que diga qué se observa ni
+./_bitacoras/fase5Y_auditoria_del_fundamento_2026-08-10.txt:184:  PIEZA 2  aplicada. Su criterio queda EN OBSERVACION hasta que se elija camino:
+./_bitacoras/fase5Z_cierre_2026-08-10.txt:41:  PIEZA 2 — backend.  APLICADA PERO CON SU CRITERIO EN OBSERVACION. NO ESTA
+
+ficheros: 9
+CONTROL POSITIVO, ALTO como palabra: 69
+
+------------------------------------------------------------------------------
+7a . fase5Y seccion 4, literal
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : sed -n '178,194p' _bitacoras/fase5Y_auditoria_del_fundamento_2026-08-10.txt
+------------------------------------------------------------------------------
+
+================================================================================
+4. ESTADO
+================================================================================
+
+  PIEZA 1  aplicada y auditada.
+  PIEZA 2  aplicada. Su criterio queda EN OBSERVACION hasta que se elija camino:
+           tal como esta hoy silencia dos tramos que no deberia.
+  PIEZA 3  no tocada.
+  PIEZA 4  no tocada.
+  CONTRATO adicion 3 NO redactada. El texto de fase5X quedo invalidado por esta
+           medicion: su fundamento esta escrito como si el caso no existiera, y
+           existe. Se reescribe cuando haya camino elegido.
+
+  MOTOR DE REGLAS INTOCADO.  FRONTEND INTOCADO.  COMMITS: ninguno.
+
+  ALTO.
+
+------------------------------------------------------------------------------
+7b . fase5Z, literal -- LA FILA DE 7 NO CITA ESTA BITACORA
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : sed -n '41,60p' _bitacoras/fase5Z_cierre_2026-08-10.txt
+------------------------------------------------------------------------------
+  PIEZA 2 — backend.  APLICADA PERO CON SU CRITERIO EN OBSERVACION. NO ESTA
+  TERMINADA. Silencia dos tramos que no deberia (§2). Esta en el arbol y en el
+  commit con esa condicion escrita en el mensaje, a proposito, para que nadie la
+  lea como cerrada.
+
+    src/services/cobertura-jurisdiccional.js   medicion + clasificacion + aviso
+    data/decreto/capa_consultada.json          capa consultada, capa de recorte y
+                                               tolerancia, declaradas
+    src/routes/sitport-routes.js               campo cobertura_jurisdiccional
+    scripts/fase5_medir_cobertura_ruta.js      medicion con el mismo modulo
+    scripts/fase5_auditar_tramos_silenciados.js  el auditor que encontro la falla
+    10 pruebas nuevas; suite completa 71/71
+
+  PIEZA 3 (frontend) y PIEZA 4 (veredicto): NO EMPEZADAS. El motor de reglas y el
+  frontend quedaron intocados en toda la sesion.
+
+  LO QUE SI SIRVE DE LA PIEZA 2 CUANDO SE RETOME: la medicion de cobertura, la
+  atribucion del hueco, el campo de respuesta con estado explicito, el tope duro en
+  U y las pruebas de que el aviso no puede pasar por restriccion. Lo unico que queda
+  en duda es la regla de silenciamiento.
+
+------------------------------------------------------------------------------
+8a . los cinco caminos de fase5Y, literal
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -n '^  O[1-5] ' _bitacoras/fase5Y_auditoria_del_fundamento_2026-08-10.txt; grep -n 'LO QUE RECOMIENDO' _bitacoras/fase5Y_auditoria_del_fundamento_2026-08-10.txt
+------------------------------------------------------------------------------
+116:  O1 — VOLVER A B: aviso solo para la causa (a) declarada; ningun hueco de capa
+125:  O2 — C MAS UNA TERCERA CONDICION: se silencia solo si TODAS las unidades dueñas de
+144:  O3 — C MAS LA TERCERA CONDICION, PERO A NIVEL DE CAPITANIA en vez de bahia.
+154:  O4 — ARREGLAR LA RAIZ: que el matching de restricciones sea por Capitania y no por
+165:  O5 — CAMINO A, no silenciar nada.
+169:  LO QUE RECOMIENDO: O2, y O4 anotada como la deuda que la haria innecesaria.
+
+------------------------------------------------------------------------------
+8b . NINGUN CAMINO SE ELIGIO -- los O1..O5 de fase5Y viven solo en fase5Y
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : echo -n 'ficheros con O1..O5 como palabra en _bitacoras/, PLAN y CONTRATO: '; grep -rlnw 'O1\|O2\|O3\|O4\|O5' _bitacoras/ PLAN_JURISDICCION.md CONTRATO_MOTOR.md | wc -l; echo -n 'CONTROL POSITIVO, D16 en el mismo barrido: '; grep -rlnw D16 _bitacoras/ PLAN_JURISDICCION.md | wc -l
+------------------------------------------------------------------------------
+ficheros con O1..O5 como palabra en _bitacoras/, PLAN y CONTRATO: 24
+CONTROL POSITIVO, D16 en el mismo barrido: 11
+
+------------------------------------------------------------------------------
+9 . LA TERCERA CONDICION DE O2 NO ESTA EN EL CODIGO
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : echo -n 'pre_recorte/prerecorte/pre-recorte en src/ scripts/ data/: '; grep -rIl 'pre_recorte\|prerecorte\|pre-recorte' src/ scripts/ data/ | wc -l; echo -n 'CONTROL POSITIVO, capa_recorte_tierra en el mismo arbol: '; grep -rIl capa_recorte_tierra src/ scripts/ data/ | wc -l
+------------------------------------------------------------------------------
+pre_recorte/prerecorte/pre-recorte en src/ scripts/ data/: 1
+CONTROL POSITIVO, capa_recorte_tierra en el mismo arbol: 6
+
+------------------------------------------------------------------------------
+10 . T6 NO EXISTE EN EL ARBOL -- y ya estaba medido el 2026-08-15
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : echo -n 'T6 como palabra, arbol propio sin node_modules/.git/tools: '; grep -rIlw T6 --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=tools . | wc -l; echo -n 'CONTROL POSITIVO, T3 en el mismo barrido: '; grep -rIlw T3 --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=tools . | wc -l; echo; echo 'OTRAS FORMAS: T.6 / Tramo 6 / tramo 6'; grep -rIn 'T\.6\b\|Tramo 6\b\|tramo 6\b' --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=tools . | cut -c1-150; echo -n 'CONTROL POSITIVO, Tramo C: '; grep -rIl 'Tramo C' --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=tools . | wc -l
+------------------------------------------------------------------------------
+T6 como palabra, arbol propio sin node_modules/.git/tools: 3
+CONTROL POSITIVO, T3 en el mismo barrido: 2
+
+OTRAS FORMAS: T.6 / Tramo 6 / tramo 6
+./_bitacoras/fase5V_r1_2026-08-10/05_auditoria_tramos_silenciados.txt:62:   · tramo 6.3855 km  -43.95037,-73.11862 -> -44.00565,-73.13857
+./_bitacoras/fase5V_r1_2026-08-10/05_auditoria_tramos_silenciados.txt:70:   · tramo 6.1500 km  -45.42817,-72.83798 -> -45.45868,-72.81059
+./_bitacoras/fase5V_r1_2026-08-10/05_auditoria_tramos_silenciados.txt:207:    Anahuac -> Chacabuco | tramo 6.385 km | bahia 254 Canal Chaffers Sur | C
+./_bitacoras/fase5V_r1_2026-08-10/05_auditoria_tramos_silenciados.txt:208:    Anahuac -> Chacabuco | tramo 6.150 km | bahia 126 Bahía Chacabuco | Cap
+./_bitacoras/fase5Y_auditoria_del_fundamento_2026-08-10.txt:19:    tramo 6,3855 km  -43,95037,-73,11862 -> -44,00565,-73,13857
+./_bitacoras/fase5Y_auditoria_del_fundamento_2026-08-10.txt:24:    tramo 6,1500 km  -45,42817,-72,83798 -> -45,45868,-72,81059
+./_bitacoras/fase5Z_cierre_2026-08-10.txt:77:    Anahuac -> Chacabuco, tramo 6,3855 km  -43,95037,-73,11862 -> -44,00565,-73,13857
+./_bitacoras/fase5Z_cierre_2026-08-10.txt:82:    Anahuac -> Chacabuco, tramo 6,1500 km  -45,42817,-72,83798 -> -45,45868,-72,81059
+CONTROL POSITIVO, Tramo C: 29
+
+------------------------------------------------------------------------------
+11 . lo que la auditoria de rotulos ya habia medido sobre T6, literal
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : sed -n '82,86p' _bitacoras/auditoria_rotulos_2026-08-15/auditoria_rotulos_2026-08-15.txt
+------------------------------------------------------------------------------
+(3) "frente T6"  -> **no existe**. Cero ocurrencias de `T6` en `CLAUDE.md`,
+    `CONTRATO_MOTOR.md`, `PLAN_JURISDICCION.md` y las bitacoras. El frente que
+    el prompt describe es el que el plan llama **"El frente de CONTACTO"**,
+    §7.1, y su nombre real importa porque ahi esta escrito lo ya decidido.
+

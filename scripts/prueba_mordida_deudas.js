@@ -156,6 +156,31 @@ const MORDIDAS = [
     delete d.deudas[0].donde.cita_de_anclaje;
     return JSON.stringify(d, null, 2);
   }],
+  ['V8 · estado fuera del vocabulario', 'V8', () => {
+    const d = clon();
+    d.deudas[0].estado = 'mas o menos';
+    return JSON.stringify(d, null, 2);
+  }],
+  ['V8 · estado=cerrada sin cerrada_por', 'V8', () => {
+    const d = clon();
+    delete d.deudas.find(x => x.estado === 'cerrada').cerrada_por;
+    return JSON.stringify(d, null, 2);
+  }],
+  ['V8 · estado=cerrada sin cerrada_el', 'V8', () => {
+    const d = clon();
+    delete d.deudas.find(x => x.estado === 'cerrada').cerrada_el;
+    return JSON.stringify(d, null, 2);
+  }],
+  ['V8 · cerrada_por puesto en una fila que NO esta cerrada', 'V8', () => {
+    const d = clon();
+    d.deudas.find(x => x.estado === 'viva').cerrada_por = 'la cerre yo, palabra';
+    return JSON.stringify(d, null, 2);
+  }],
+  ['V8 · estado=caduca con un grupo que no es 4', 'V8', () => {
+    const d = clon();
+    d.deudas.find(x => x.estado === 'viva' && x.grupo === '1_cierra_con_lo_que_hay').estado = 'caduca';
+    return JSON.stringify(d, null, 2);
+  }],
   ['ESTRUCTURA · falta una clave de nivel 1', 'ESTRUCTURA', () => {
     const d = clon();
     delete d.politica_de_firma;

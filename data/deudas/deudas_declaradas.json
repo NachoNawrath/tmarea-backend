@@ -35,6 +35,16 @@
 
   "politica_de_firma": "Los grupos 5 y 6 nacen con firma_owner.firmada = false. Mientras sea false la fila SIGUE CONTANDO como deuda viva. Bajar la lista por decreto en vez de por trabajo es el modo de falla que este campo existe para impedir.",
 
+  "vocabulario_de_estado": {
+    "viva": "La deuda existe y no se hizo nada todavia.",
+    "cerrada": "Se hizo el trabajo. Exige cerrada_el y cerrada_por, con la evidencia de que se hizo. LA FILA NO SE BORRA: se cierra y sigue en el fichero, porque borrarla haria bajar el numero sin dejar rastro de por que.",
+    "caduca": "Distinto de cerrada. Nadie hizo el trabajo: la afirmacion ya era falsa cuando se caracterizo. Va con su medicion.",
+    "propuesta_obsoleta": "Grupo 5 sin firmar. Sigue contando.",
+    "propuesta_descartada": "Grupo 6 sin firmar. Sigue contando."
+  },
+
+  "politica_de_conteo": "El total de FILAS nunca baja: una deuda cerrada se queda en el fichero con estado 'cerrada'. Lo que baja es el conteo de VIVAS, y los dos numeros se publican juntos siempre. Una lista de deudas cuyo total baja sin dejar rastro es indistinguible de una lista a la que le borraron filas.",
+
   "politica_de_duplicados": "Una misma deuda puede estar escrita en dos sitios. La fila canonica es la que trae la pregunta o el dato con mas precision; la otra lleva duplicada_de con el id de la canonica y NO se cuenta en el total unico. Se publican los dos numeros: filas y deudas unicas.",
 
   "cobertura": {
@@ -102,8 +112,8 @@
         "orden": 1,
         "barrido": true,
         "barrido_el": "2026-08-19",
-        "filas_en_este_declarativo": 8,
-        "bitacora": "_bitacoras/declarativo_deudas_2026-08-19/"
+        "filas_en_este_declarativo": 10,
+        "bitacora": "_bitacoras/declarativo_deudas_2026-08-19/ y _bitacoras/antartica_al_contrato_2026-08-19/"
       },
       {
         "id": "DIRECTEMAR-REGISTRO",
@@ -313,7 +323,10 @@
       "abierta_el_lo_dice_el_documento": true,
       "nota_fecha": "P1 es la decision D9, aprobada el 2026-08-11 segun su fila de 5. DECISIONES.",
       "grupo": "2_decision_del_owner",
-      "estado": "viva",
+      "estado": "cerrada",
+      "cerrada_el": "2026-08-19",
+      "cerrada_por": "Decision del owner el 2026-08-19: la antartica se incorpora. Aplicado en CONTRATO_MOTOR.md v2.5 -- INV-3.5 pasa de 'Ambito maritimo y ambito lacustre' a 'Ambitos de jurisdiccion' y nombra los CUATRO. Se aplico el texto redactado el 2026-08-11 SIN CAMBIOS. Regresion: suite 157/157, mordida del registro de ambitos 14/14 + control negativo.",
+      "el_grupo_no_se_reescribe": "Sigue siendo grupo 2 y conserva su pregunta. El grupo dice QUE HIZO FALTA para cerrarla, no en que estado esta; reescribirlo borraria que esta deuda espero ocho dias una firma. El estado es el que se movio.",
       "firma_owner": { "firmada": false, "fecha": null },
       "pregunta": "El contrato del motor enumera hoy TRES ambitos de jurisdiccion: maritimo, lacustre e insular remoto. El insumo del decreto tiene CUATRO, porque incluye el antartico. Ya esta aprobado sumarlo al contrato y el texto de reemplazo esta redactado y esperando desde el 2026-08-11. ¿Lo escribe ahora, o el ambito antartico sigue existiendo en el dato sin existir en la norma que lo gobierna?",
       "por_que_es_del_owner": "El contenido normativo del contrato lo aprueba y lo escribe el owner. La redaccion ya esta hecha y no es el obstaculo.",
@@ -1185,6 +1198,75 @@
         "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/01_medir_e8.txt"
       },
       "redactada_no_aplicada": true,
+      "duplicada_de": null
+    },
+
+    {
+      "id": "SESION-caracterizacion-deudas-2026-08-19::transcripcion-vs-decision",
+      "token_local": null,
+      "espacio_de_nombres": "sesion de caracterizacion de deudas 2026-08-19",
+      "sitio": "SESION-caracterizacion-deudas-2026-08-19",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "El reparto de autoridad no distingue TRANSCRIPCION de DECISION, y por eso una omision espero ocho dias una firma que quiza no hacia falta",
+      "evidencia_en_el_arbol": {
+        "el_caso": "El ambito antartico. El D.S. 991 lo nombra y le fija coordenadas a sus cuatro jurisdicciones; el insumo v2 lo tiene con geometria construida (4 de 4, medido en jurisdicciones_ds991_publicacion); y el contrato simplemente no lo habia copiado: INV-3.5 nombraba tres. No habia nada que decidir -- habia algo que transcribir.",
+        "cuanto_espero": "Ocho dias. Camino P1 aprobado el 2026-08-11, texto redactado el mismo dia, aplicado el 2026-08-19.",
+        "la_regla_que_lo_produjo": "CLAUDE.md seccion 6: 'El contenido normativo lo aprueba el owner. Que obliga el contrato, que invariante existe, que fuente queda autorizada, que se le muestra al patron: eso no se decide de este lado ni se escribe sin aprobacion, por impecable que sea la medicion de la que salga'. La regla es correcta y no se discute. Lo que no tiene es una linea que separe el caso en que la norma o el dato YA lo dicen y el contrato quedo incompleto.",
+        "por_que_no_es_una_excepcion_comoda": "La misma regla existe porque presentar una regla de producto como si la norma la respaldara es fabricar autoridad -- eso esta escrito en la seccion 1.1 y hay un precedente, D15. Cualquier distincion que se escriba tiene que hacer MAS dificil, no menos, colar una decision disfrazada de transcripcion."
+      },
+      "donde": {
+        "fichero": "CLAUDE.md",
+        "seccion_por_titulo": "6. LIMITES DUROS -> el bloque corregido el 2026-08-16 sobre CONTRATO_MOTOR.md",
+        "cita_de_anclaje": "el parrafo que arranca 'El contenido normativo lo aprueba el owner'"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Bajo en escritura: un parrafo en CLAUDE.md seccion 6. El costo real es de redaccion, no de trabajo: la distincion tiene que quedar apretada para que no se vuelva una puerta.",
+      "depende_de": "Escribir en CLAUDE.md, fuera del alcance de esta sesion. Va junto a las otras tres reglas pendientes.",
+      "opciones": {
+        "a_prueba_de_las_tres_llaves_RECOMENDADA": "Una correccion al contrato es TRANSCRIPCION -- y se aplica por el ciclo normal, sin esperar firma aparte -- solo si se cumplen las TRES a la vez, cada una con su cita: (1) LA FUENTE YA LO DICE: existe un texto normativo o un dato versionado que afirma exactamente lo que el contrato omite, citado por seccion y texto; (2) NO HAY GRADOS DE LIBERTAD: el texto de reemplazo esta determinado por esa fuente, y no hay dos redacciones razonables que digan cosas distintas; (3) NO CAMBIA LO QUE VE EL PATRON: medido, no argumentado -- cero banderas movidas, cero mensajes nuevos, cero fuentes autorizadas. Si falla UNA sola, es DECISION y va al owner. La aplicacion sigue pasando por el ciclo propone -> el owner revisa -> el owner autoriza el commit; lo que cambia es que no queda esperando una firma NORMATIVA que no tiene nada que firmar.",
+        "b_lista_cerrada_de_casos": "Enumerar los casos concretos que cuentan como transcripcion: completar una enumeracion que la fuente ya cierra, corregir una cifra medible, actualizar una referencia. Mas seguro y mas rigido: el caso que no este en la lista espera igual, y la lista envejece.",
+        "c_no_escribir_nada": "Dejarlo como esta y aceptar que toda correccion al contrato espera. Su costo esta medido: ocho dias por copiar una palabra que el decreto ya decia."
+      },
+      "recomendacion": "La (a). La (b) es mas segura pero convierte el problema en mantener una lista, y este proyecto ya tiene medido lo que pasa con las listas que nadie reabre. La (c) no: su costo esta medido en dias sobre un caso real. La (a) tiene la propiedad que hace falta -- las tres llaves son mas dificiles de cumplir que de invocar, y la tercera EXIGE MEDICION, asi que no se puede argumentar para entrar.",
+      "lo_que_la_distincion_NO_puede_tocar": "Sigue afuera y no se toca ni con autorizacion: dar por aprobada una verificacion sin correrla, y aflojar un control para que la auditoria pase. Y sigue siendo del owner todo lo que la fuente NO resuelve -- que es exactamente lo que separa a este caso de D16, donde el decreto remitia a un limite que no daba y hubo que convenir.",
+      "redactada_no_aplicada": true,
+      "duplicada_de": null
+    },
+
+    {
+      "id": "SESION-caracterizacion-deudas-2026-08-19::ambitos-publicados-categoria-vencida",
+      "token_local": null,
+      "espacio_de_nombres": "sesion de caracterizacion de deudas 2026-08-19",
+      "sitio": "SESION-caracterizacion-deudas-2026-08-19",
+      "repo": "tmarea-backend",
+      "texto_literal": "INV-3.5 nombra hoy tres ambitos —maritimo, lacustre e insular remoto— y no menciona el antartico en ninguna parte del contrato.",
+      "donde": {
+        "fichero": "data/decreto/ambitos_publicados.json",
+        "seccion_por_titulo": "ambitos -> entrada 'antartica' -> campo nota_categoria_contractual",
+        "cita_de_anclaje": "la primera frase de nota_categoria_contractual, y el campo categoria_contractual con valor 'pendiente'"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "nota_fecha": "Nacio falsa el mismo dia en que se aplico CONTRATO_MOTOR.md v2.5.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Minimo: un valor y una nota. categoria_contractual pasa de 'pendiente' a 'declarada' y la nota se enmienda.",
+      "depende_de": "Nada abierto. NO se aplico acá porque la autorizacion del owner nombraba CONTRATO_MOTOR.md, no este archivo, y un cambio de dato que no se pidio no entra de costado.",
+      "por_que_es_deuda": "El propio dato declara la condicion: 'Este campo pasa a declarada cuando el contrato lo recoja'. El contrato lo recogio el 2026-08-19, asi que desde ese momento el campo y su nota afirman algo falso.",
+      "lo_que_NO_cambia_y_conviene_decirlo": "El ambito antartico SIGUE no publicado y habilitado_para_publicar SIGUE en false. Su motivo_habilitacion daba DOS motivos independientes y declaraba que cada uno alcanza solo: (1) de autoridad -- el contrato no lo nombraba -- y (2) de producto -- de sus cuatro jurisdicciones, bahia_paraiso esta diferida con sus cuatro tramos sin adjudicar y rada_covadonga tiene ficha vacia. El (1) muere con v2.5; el (2) sigue entero. Nadie publica nada.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "grep sobre scripts/ y src/",
+        "resultado": "NINGUN control ata ese campo al contrato: 'categoria_contractual' tiene 0 apariciones en scripts/ y 0 en src/. Control positivo sobre el mismo arbol: 'participa_matching' aparece en 22 ficheros. O sea que nada habria cazado que este campo quedara vencido, y la unica razon por la que se sabe es que la pieza que movio el contrato fue a mirarlo.",
+        "salida_cruda_en": "_bitacoras/antartica_al_contrato_2026-08-19/01_medir_consecuencias.txt"
+      },
       "duplicada_de": null
     },
 

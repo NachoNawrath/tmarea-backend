@@ -11,8 +11,31 @@
 > fabricar datos, números ni coordenadas para pasar una verificación. Si una verificación
 > no se puede correr, decirlo explícitamente en vez de asumir que pasa.
 
-Versión: 2.4
-Última actualización: 2026-08-16
+Versión: 2.5
+Última actualización: 2026-08-19
+Cambios v2.5: **INV-3.5 pasa a nombrar los CUATRO ámbitos: se suma el antártico.** Decidido por
+el owner el 2026-08-19; el camino P1 estaba aprobado desde el **2026-08-11** y el texto redactado
+desde ese mismo día en `_bitacoras/e02_texto_propuesto_inv35_2026-08-11.md`, aplicado acá **sin
+cambios**. **Qué corrige, dicho sin suavizar: el contrato nombraba tres ámbitos y el insumo del
+decreto tiene cuatro**, así que cuatro jurisdicciones reales —`bahia_fildes`, `puerto_soberania`,
+`rada_covadonga` y `bahia_paraiso`, las cuatro con coordenadas explícitas en el D.S. 991 bajo la
+Gobernación Marítima Antártica Chilena— vivían en una categoría que su propia autoridad no
+reconocía. El cambio es **aditivo y mínimo**: el título, la primera línea, una línea de base y una
+de verificación; **no se altera nada de lo lacustre**. Se suma además que **el ámbito es una
+partición y no una etiqueta** —el conjunto es cerrado, y un ámbito nuevo en la fuente que no esté
+en la lista es un fallo, no un dato que el motor deba acomodar—. **Lo que este cambio NO hace,
+medido el 2026-08-11 y no re-medido acá:** no mueve ninguna bandera (0 cambios sobre 10 rutas), no
+promete cobertura antártica —el ámbito sigue **no publicado**, con su causa escrita en
+`data/decreto/ambitos_publicados.json`— y no permite nombrar una Capitanía antártica. **Nota sobre
+la fundamentación, no sobre el texto:** el archivo del 2026-08-11 afirma que *"la palabra
+`antártic*` no aparece en ninguna parte de `CONTRATO_MOTOR.md`"*, y medido el 2026-08-19 aparece
+**2 veces** —las dos en el bloque de contacto, sobre Bahía Paraíso y la GM Antártica Chilena, y
+las dos agregadas después—. La afirmación envejeció; **la conclusión no**, porque INV-3.5 seguía
+nombrando tres. **Lo que este cambio deja falso en otro archivo y NO se corrigió acá:**
+`ambitos_publicados.json` lleva `categoria_contractual: "pendiente"` con una nota que dice *"INV-3.5
+nombra hoy tres ámbitos"*; desde esta versión eso es falso. Medido: **ningún control ata ese campo
+a este contrato** —0 apariciones de `categoria_contractual` en `scripts/` y en `src/`—, así que
+nada lo habría cazado. Va con su propuesta al owner y como fila del declarativo de deudas.
 Cambios v2.4: **§5 declara el papel de `bahia-capitania-map.json`, y corrige dos afirmaciones
 más que envejecieron sin fecha.** Motivo: de leer ese archivo como si fuera jurisdiccional salió
 una conclusión equivocada —tratar una divergencia de atribución de contacto como pregunta
@@ -461,17 +484,28 @@ la Capitanía que la dictó y el territorio de esa Capitanía.
 - **Verificación:** el motor no puede descartar una restricción por comparación de nombre de
   bahía contra la posición de la ruta.
 
-### INV-3.5 — Ámbito marítimo y ámbito lacustre
-Las jurisdicciones tienen ámbito **marítimo**, **lacustre** o **insular remoto**. Las
-lacustres son jurisdicciones plenas, con Capitanía, condición de puerto y usuarios reales
-(deportivos y transporte). NO se excluyen del motor.
+### INV-3.5 — Ámbitos de jurisdicción
+Las jurisdicciones tienen ámbito **marítimo**, **lacustre**, **insular remoto** o
+**antártico**. Las lacustres son jurisdicciones plenas, con Capitanía, condición de
+puerto y usuarios reales (deportivos y transporte). NO se excluyen del motor.
 
 - **Base:** D.S. 991 Art. 2 (las jurisdicciones comprenden lagos y ríos navegables).
+- **Base del ámbito antártico:** el D.S. 991 fija con coordenadas las jurisdicciones de
+  Bahía Fildes, Puerto Soberanía, Rada Covadonga y Bahía Paraíso, bajo la Gobernación
+  Marítima Antártica Chilena. Se nombran acá porque el ámbito existe en el decreto y su
+  ausencia de esta lista obligaba al motor a tratar cuatro jurisdicciones reales como una
+  categoría sin respaldo contractual.
+- **El ámbito es una partición, no una etiqueta:** toda jurisdicción tiene exactamente un
+  ámbito, y el conjunto de ámbitos de este invariante es cerrado. Un ámbito nuevo en el
+  archivo fuente que no esté acá es un fallo, no un dato que el motor deba acomodar.
 - **Consecuencia técnica:** la geometría de las jurisdicciones lacustres NO puede construirse
   restando tierra, porque un cuerpo de agua interior está rodeado de tierra por definición y
   el recorte lo elimina. Se construye desde la capa de cuerpos de agua continentales.
 - **Verificación:** ninguna jurisdicción de ámbito lacustre puede quedar con geometría vacía
   tras la construcción.
+- **Verificación:** todo ámbito del archivo fuente tiene entrada en el registro de ámbitos
+  publicados, y todo ámbito publicado está completo dentro de su propio ámbito. Un ámbito
+  sin construir es una carencia declarada (INV-3.6 causa a), nunca un silencio.
 
 ### INV-3.6 — Una jurisdicción sin geometría se declara, nunca se resuelve en silencio
 Si una jurisdicción no tiene geometría cargada, el motor NO puede tratarla como inexistente.

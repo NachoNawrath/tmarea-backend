@@ -1,0 +1,84 @@
+==============================================================================
+EL AMBITO ANTARTICO ENTRA AL CONTRATO -- medicion previa y consecuencias
+SESION  : 2026-08-19. Decision del owner del 2026-08-19; camino P1 aprobado el
+          2026-08-11 y texto redactado ese mismo dia.
+REPO    : tmarea-backend en 111c60fd651326853f4eae25da6896230c4244a7 (= origin/main)
+ALCANCE : se aplica el texto redactado SIN CAMBIOS. Se mide antes y despues.
+==============================================================================
+
+------------------------------------------------------------------------------
+1 . EL TEXTO REDACTADO EL 2026-08-11 CALZA CON EL CONTRATO DE HOY
+------------------------------------------------------------------------------
+  el bloque ANTES del texto propuesto calza EXACTO con el contrato : true
+  la linea de Verificacion a la que se le suma otra, calza exacto  : true
+  Medido por comparacion de cadena literal antes de tocar nada. Si alguno
+  hubiera dado false, la pieza paraba: se aplica el texto o no se aplica, pero
+  no se adapta de costado.
+
+------------------------------------------------------------------------------
+2 . UNA AFIRMACION DEL PROPIO TEXTO PROPUESTO ENVEJECIO -- y no cambia nada
+------------------------------------------------------------------------------
+  El archivo del 2026-08-11 afirma, en su fundamentacion:
+    "la palabra antártic* no aparece en ninguna parte de CONTRATO_MOTOR.md"
+  Medido el 2026-08-19: aparece 2 veces, las dos en el bloque de contacto y las
+  dos agregadas despues. LA CONCLUSION NO SE MUEVE: INV-3.5 seguia nombrando
+  tres ambitos, que es lo unico que P1 discutia. Va declarado porque el metodo
+  vale tanto como el numero.
+
+------------------------------------------------------------------------------
+3 . donde aparecia antartic* en el contrato ANTES de tocarlo
+COMANDO : git show HEAD:CONTRATO_MOTOR.md | grep -ni 'antartic|antártic' | cut -c1-140
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+4 . LA VERIFICACION NUEVA, medida contra el arbol de HOY antes de escribirla
+COMANDO : node -e "const ins=require('./data/decreto/jurisdicciones_v2.json');const reg=require('./data/decreto/ambitos_publicados.json');const a=[...new Set(ins.jurisdicciones.map(j=>j.ambito))].sort();const b=reg.ambitos.map(x=>x.ambito).sort();console.log('  ambitos en el archivo fuente : '+JSON.stringify(a));console.log('  ambitos en el registro       : '+JSON.stringify(b));console.log('  del fuente SIN entrada       : '+(a.filter(x=>!b.includes(x)).join(', ')||'ninguno'));console.log('  => se cumple HOY             : '+(a.filter(x=>!b.includes(x)).length===0));"
+------------------------------------------------------------------------------
+  ambitos en el archivo fuente : ["antartica","insular_remota","lacustre","maritima"]
+  ambitos en el registro       : ["antartica","insular_remota","lacustre","maritima"]
+  del fuente SIN entrada       : ninguno
+  => se cumple HOY             : true
+
+------------------------------------------------------------------------------
+5 . QUIEN CITA INV-3.5 POR SU TITULO VIEJO (que este cambio mueve)
+COMANDO : grep -rIn 'Ámbito marítimo y ámbito lacustre' --exclude-dir=node_modules --exclude-dir=.git . | cut -c1-150; echo '--- CONTROL POSITIVO: quien lo cita por su id INV-3.5, que NO cambia ---'; grep -rIl 'INV-3.5' --exclude-dir=node_modules --exclude-dir=.git . | wc -l
+------------------------------------------------------------------------------
+./_bitacoras/declarativo_deudas_2026-08-19/01_medir_e8.txt:37:### INV-3.5 — Ámbito marítimo y ámbito lacustre
+./_bitacoras/e02_texto_propuesto_inv35_2026-08-11.md:47:### INV-3.5 — Ámbito marítimo y ámbito lacustre
+--- CONTROL POSITIVO: quien lo cita por su id INV-3.5, que NO cambia ---
+20
+
+  Los dos que lo citan por el titulo viejo son BITACORAS. Por seccion 3.3 las
+  bitacoras se agregan y no se reescriben: quedan como estaban, a proposito.
+
+------------------------------------------------------------------------------
+6 . LA CONSECUENCIA QUE ESTE CAMBIO DEJA FALSA EN OTRO ARCHIVO
+COMANDO : node -e "const j=require('./data/decreto/ambitos_publicados.json');const a=j.ambitos.find(x=>x.ambito==='antartica');console.log('  categoria_contractual : '+a.categoria_contractual);console.log('  nota (primera frase)  : '+a.nota_categoria_contractual.split('.')[0]+'.');"; echo '--- hay algun control que ate ese campo al contrato? ---'; echo -n '  categoria_contractual en scripts/ : '; grep -rIn 'categoria_contractual' scripts/ | wc -l; echo -n '  categoria_contractual en src/     : '; grep -rIn 'categoria_contractual' src/ | wc -l; echo -n '  CONTROL POSITIVO participa_matching en scripts/ y src/ (ficheros): '; grep -rIl 'participa_matching' scripts/ src/ | wc -l
+------------------------------------------------------------------------------
+  categoria_contractual : pendiente
+  nota (primera frase)  : INV-3.
+--- hay algun control que ate ese campo al contrato? ---
+  categoria_contractual en scripts/ : 0
+  categoria_contractual en src/     : 0
+  CONTROL POSITIVO participa_matching en scripts/ y src/ (ficheros): 22
+
+  NO SE APLICO. La autorizacion del owner nombraba CONTRATO_MOTOR.md y no este
+  archivo, y un cambio de dato que no se pidio no entra de costado. Queda como
+  fila del declarativo:
+  SESION-caracterizacion-deudas-2026-08-19::ambitos-publicados-categoria-vencida
+
+  LO QUE NO CAMBIA, y conviene decirlo para que nadie lea de mas: el ambito
+  antartico SIGUE no publicado y habilitado_para_publicar SIGUE en false. Su
+  motivo_habilitacion daba DOS motivos independientes y declaraba que cada uno
+  alcanza solo. El (1), de autoridad, muere con la v2.5. El (2), de producto
+  --bahia_paraiso diferida con sus cuatro tramos sin adjudicar, rada_covadonga
+  con ficha vacia--, sigue entero. Nadie publica nada.
+
+------------------------------------------------------------------------------
+7 . REGRESION DESPUES DE APLICAR
+------------------------------------------------------------------------------
+  suite                                    157/157
+  mordida del registro de ambitos (E0.2)   14/14 + control negativo, exit 0
+  validador del declarativo de deudas      VERDE, exit 0
+  prueba de mordida del declarativo        32/32 (27 anteriores + 5 de V8)

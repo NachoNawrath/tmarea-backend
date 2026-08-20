@@ -67,6 +67,14 @@ const GRUPOS = {
 
 const GRUPOS_PROPUESTA = ['5_obsoleta', '6_se_descarta'];
 
+// El estado es ORTOGONAL al grupo. El grupo dice QUE HACE FALTA para cerrarla; el
+// estado dice si ya se hizo. Una fila cerrada NO SE BORRA: se queda con estado
+// 'cerrada', porque borrarla haria bajar el total sin dejar rastro de por que, y
+// una lista de deudas cuyo total baja sin rastro es indistinguible de una lista a
+// la que le sacaron filas.
+const ESTADOS = ['viva', 'cerrada', 'caduca', 'propuesta_obsoleta', 'propuesta_descartada'];
+const ESTADOS_NO_VIVOS = ['cerrada', 'caduca'];
+
 // Una pregunta del grupo 2 tiene que poder contestarse SIN abrir el repositorio.
 const OLOR_A_REPOSITORIO = /(^|[\s(`'"/])(src|data|scripts|geodata|_bitacoras)\/|\.(json|js|jsx|py|sql|md)\b/;
 
@@ -275,6 +283,20 @@ for (const d of D.deudas) {
       F('V7', yo + ': la pregunta del grupo 2 no tiene signo de interrogacion.');
   }
 
+  // V8 · el estado, y lo que exige cerrar una deuda
+  if (!ESTADOS.includes(d.estado))
+    F('V8', yo + ': estado "' + d.estado + '" fuera del vocabulario (' + ESTADOS.join(', ') + ')');
+  if (d.estado === 'cerrada') {
+    if (!d.cerrada_el) F('V8', yo + ': estado=cerrada sin cerrada_el');
+    if (!d.cerrada_por)
+      F('V8', yo + ': estado=cerrada sin cerrada_por. Cerrar una deuda exige decir QUE la cerro, ' +
+        'con su evidencia. Sin eso la fila desaparece del conteo de vivas sin que nadie pueda comprobarlo.');
+  } else if (d.cerrada_el || d.cerrada_por) {
+    F('V8', yo + ': trae cerrada_el o cerrada_por y su estado no es "cerrada"');
+  }
+  if (d.estado === 'caduca' && d.grupo !== '4_caduca')
+    F('V8', yo + ': estado=caduca pero el grupo no es 4_caduca');
+
   // firma: los grupos 5 y 6 son PROPUESTAS
   const f = d.firma_owner;
   if (!f || typeof f.firmada !== 'boolean')
@@ -293,13 +315,19 @@ for (const d of D.deudas) {
 
 // --- el conteo ----------------------------------------------------------------
 const porGrupo = {};
-Object.keys(GRUPOS).forEach(g => { porGrupo[g] = { filas: 0, unicas: 0 }; });
-let unicas = 0, sinFirmar = 0;
+Object.keys(GRUPOS).forEach(g => { porGrupo[g] = { filas: 0, unicas: 0, vivas: 0 }; });
+let unicas = 0, sinFirmar = 0, cerradas = 0, vivasUnicas = 0;
 for (const d of D.deudas) {
   if (!porGrupo[d.grupo]) continue;
   porGrupo[d.grupo].filas++;
   const esDup = d.duplicada_de !== null && d.duplicada_de !== undefined;
-  if (!esDup) { porGrupo[d.grupo].unicas++; unicas++; }
+  const viva = !ESTADOS_NO_VIVOS.includes(d.estado);
+  if (!esDup) {
+    porGrupo[d.grupo].unicas++;
+    unicas++;
+    if (viva) { porGrupo[d.grupo].vivas++; vivasUnicas++; }
+  }
+  if (d.estado === 'cerrada') cerradas++;
   if (GRUPOS_PROPUESTA.includes(d.grupo) && !(d.firma_owner || {}).firmada) sinFirmar++;
 }
 
@@ -315,10 +343,17 @@ console.log('  filas                             : ' + D.deudas.length);
 console.log('  deudas unicas (sin duplicadas)    : ' + unicas);
 console.log('  duplicadas de otra fila           : ' + (D.deudas.length - unicas));
 console.log('');
-console.log('  por grupo                           filas   unicas');
+console.log('  de las unicas:');
+console.log('    VIVAS                           : ' + vivasUnicas);
+console.log('    no vivas (cerradas + caducas)   : ' + (unicas - vivasUnicas) +
+            '   de las cuales CERRADAS por trabajo: ' + cerradas);
+console.log('  El total de filas NUNCA baja: una deuda cerrada se queda con estado "cerrada".');
+console.log('  Lo que baja es VIVAS, y los dos numeros van siempre juntos.');
+console.log('');
+console.log('  por grupo                           filas   unicas    vivas');
 for (const g of Object.keys(GRUPOS)) {
   console.log('    ' + g.padEnd(32) + String(porGrupo[g].filas).padStart(5) +
-              String(porGrupo[g].unicas).padStart(9));
+              String(porGrupo[g].unicas).padStart(9) + String(porGrupo[g].vivas).padStart(9));
 }
 console.log('');
 console.log('  grupos 5 y 6 SIN FIRMAR del owner : ' + sinFirmar +
