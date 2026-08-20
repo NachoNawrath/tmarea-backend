@@ -1,0 +1,372 @@
+==============================================================================
+EL DECLARATIVO UNICO DE DEUDAS -- tramos 1 y 2
+sesion: caracterizacion de deudas, 2026-08-19
+==============================================================================
+
+REPOS
+  tmarea-backend  main = origin/main = 67aa8bb9101e49b47394d40cee5df29604ea6455
+                  suite 157/157 al arrancar
+  tmarea-pwa      main = origin/main = 6443178493b8b3c35c11a37253c4b5bd1884ea55
+                  arbol limpio: 0 modificados, 1 sin seguimiento, 0 stageados
+
+ALCANCE FIJADO POR EL OWNER
+  Esta sesion NO cierra ninguna deuda. Caracteriza. Cerrar es otra sesion, con
+  otra autorizacion. Tampoco aplica ninguna correccion, ni toca la base mas alla
+  de SELECT, ni corre el control de drift, ni levanta el backend, ni escribe en
+  CLAUDE.md.
+
+QUE SE ENTREGA
+  data/deudas/deudas_declaradas.json     el dato
+  scripts/validar_deudas_declaradas.js   npm run deudas
+  scripts/prueba_mordida_deudas.js       npm run deudas:mordida
+  package.json                           los dos scripts nuevos
+  este directorio                        las salidas crudas
+
+
+------------------------------------------------------------------------------
+1 . POR QUE UN DATO Y NO UN INFORME
+------------------------------------------------------------------------------
+
+Se hicieron cuatro o cinco inventarios de deudas y ninguno cerro nada. La causa
+medida por el owner: las deudas se anotan en la bitacora de la sesion que las
+creo, esa bitacora no se vuelve a abrir, y la sesion siguiente arranca en frio
+sin verlas. Un informe en el chat reproduce ese mismo defecto.
+
+El precedente de forma es 7.2 del propio PLAN_JURISDICCION.md, que ya razono lo
+mismo para las afirmaciones verificables: parsear la prosa seria adivinar,
+declararlas es el camino. Y el precedente de mecanica son los tres declarativos
+hermanos que ya viven en data/: anclas_declaradas.json,
+divergencias_declaradas.json y ambitos_publicados.json.
+
+Vive en tmarea-backend y cubre los DOS repositorios. El motivo no es comodidad y
+esta medido: tmarea-pwa no tiene _bitacoras/, ni CLAUDE.md, ni documento de plan,
+ni un solo sitio donde se anoten deudas. Y la direccion de la referencia ya la
+fijo el codigo: tmarea-pwa/src/screens/P3_VoyageVerification.jsx cita
+tmarea-backend/_bitacoras/, y ningun fichero del backend cita a la PWA.
+
+
+------------------------------------------------------------------------------
+2 . LA PARTICION, Y POR QUE NO SE COMPROMETIO UN NUMERO DE TANDAS
+------------------------------------------------------------------------------
+
+Las candidatas medidas son ~125 filas en DIECISEIS sitios. Eso no entra en una
+sesion, y una lista al 12 % se lee como completa, que es peor que no tenerla.
+
+La particion es POR SITIO. Y como la cobertura es por sitio y el validador muerde
+sobre ella, una tanda que se queda corta NO es una tanda rota: es una tanda que
+cubrio menos sitios y lo dice. Por eso no se comprometio un numero de tandas: se
+fijo el ORDEN, y el numero sale como resultado.
+
+ORDEN FIJADO (con la permuta que pidio el owner: las preguntas hacia afuera van
+antes, porque su tiempo de ida y vuelta no lo controlamos):
+
+  1o  PLAN-3-E8 + PLAN-7.2 + PWA-DOCS + SESION            <- hecho en esta sesion
+  2o  DIRECTEMAR-REGISTRO + JOIN-SIN-RESOLVER
+      + DIVERGENCIAS-DECLARADAS                           <- hecho en esta sesion
+  3o  PLAN-7-TABLA + PLAN-7.1-FILTRO + PLAN-7.1-CONTACTO-CIERRE
+      + PWA-COMENTARIOS + PWA-SIN-ANOTAR
+  4o  PLAN-9 + PLAN-5-DECISIONES + CLAUDE-MD
+  5o  BITACORAS-HD
+
+El 2o entro en la misma sesion que el 1o, como el owner autorizo. Reservar
+trabajo barato para despues es lo que produjo cinco inventarios.
+
+6. RIESGOS del plan quedo FUERA de los dieciseis por decision del owner: un
+riesgo mitigado no es una deuda y confunde el denominador.
+
+
+------------------------------------------------------------------------------
+3 . LO QUE LA MEDICION CORRIGIO DEL ENCARGO. Cuatro cosas.
+------------------------------------------------------------------------------
+
+(a) LOS H-n Y D-n NO SON IDENTIFICADORES ESTABLES.
+    El encargo pedia "identificador estable" y en el mismo parrafo mandaba barrer
+    los H-n y D-n de las bitacoras. Son incompatibles: la numeracion es local a
+    cada bitacora. Medido, 'D-1' significa tres cosas distintas en
+    causa_pd_tdf_2026-08-15, filtro_puerto_2026-08-17 y cableo_cierre_2026-08-17,
+    y una de las tres es la pregunta de D16 que el propio encargo usaba de
+    ejemplo. El id de este declarativo lleva el espacio de nombres adentro.
+
+(b) NO ERAN CINCO SITIOS: SON DIECISEIS.
+    Los seis del encargo mas seis que no estaban (9, 5, consulta_directemar,
+    el join, divergencias_declaradas, y 6 RIESGOS que despues se excluyo), mas
+    la particion de 7.1 en dos, mas los tres de tmarea-pwa, mas el de la propia
+    sesion. 9 es el mas grande de los que el encargo omitia: 556 lineas.
+
+(c) fase5_inventario_insumos.js NO ESCRIBE.
+    El encargo advertia "puede escribir". Medido: 0 escrituras de fichero
+    (control positivo 1 en e01_control_drift_catalogo.js) y 0 DML/DDL (control
+    positivo 2 en create-bahia-jurisdicciones.sql). Lo que hace, y es lo que
+    caia en el fuera-de-alcance por otra via, es leer la base y llamar a SITPORT
+    en vivo. Los dos permisos se pidieron por separado y el owner los dio por
+    separado.
+
+(d) EL GRUPO (4) EXIGIA UNA MEDICION QUE EL FUERA-DE-ALCANCE PROHIBIA.
+    Resuelto por el owner: SELECT y nada mas.
+
+Y una quinta que el owner corrigio de su propio encargo: la caracterizacion
+"liviana" -- sin medicion salvo en los grupos 4 y 5 -- no baja el costo, baja la
+confiabilidad, y es circular: para saber que una fila es (4) hay que medirla.
+Medido sobre la muestra de E8: 7 de 7 items exigen medicion, porque E8 es una
+lista de "cosas todavia no hechas" y "todavia no hecha" es siempre una afirmacion
+verificable contra el arbol.
+
+
+------------------------------------------------------------------------------
+4 . LO QUE SE MIDIO, Y LAS TRES DEUDAS QUE RESULTARON CADUCAS
+------------------------------------------------------------------------------
+
+Ninguna fila se clasifico sin medir lo que afirma. Tres murieron:
+
+CADUCA 1 . "Art. 2 del decreto (D6)", de E8.
+  art_2 esta en los DOS insumos, v1 y v2, con texto_decreto de 573 caracteres y
+  procedencia. Los tres terminos que D6 exigia estan: 'mar territorial' 5,
+  'zona contigua' 5, 'plataforma continental' 3, mas 'aguas interiores' 6.
+  Control negativo: 'zona abisal fantasma' 0. Control positivo: 'capitania' 128.
+  Y 5. DECISIONES ya registra D6 CERRADA el 2026-08-12.
+  La deuda murio hace siete dias y E8 no se entero. Es exactamente el caso que
+  7.2 existe para cazar, y lo cazo -- seis dias tarde y solo porque alguien
+  pregunto por el estado del plan.
+
+CADUCA 2 . la mitad "AreaRestriccion" de "sectores y AreaRestriccion", de E8.
+  Esta consumido en PRODUCCION en dos sitios y con dos propositos:
+  src/services/sitport-parser.js lo normaliza a un campo 'area' via detectarArea(),
+  y src/services/cierre-derivador.js lo usa como discriminante con /DENTRO|FUERA/.
+  El mismo fichero declara ademas que el cierre NO se infiere de AreaRestriccion
+  (INV-0.2), o sea que el campo esta leido Y su alcance esta acotado a proposito.
+
+  ESTE ES EL HALLAZGO DE METODO DE LA SESION. El item de E8 junta DOS sujetos y
+  la medicion les dio estados OPUESTOS: AreaRestriccion hace tiempo que esta
+  hecho, y 'sectores' no existe ni como dato. Un solo grupo no podia describir
+  las dos mitades, asi que el item se partio en dos filas y el criterio de la
+  particion quedo declarado en la cobertura, no aplicado en silencio. Mientras
+  estuvieran juntos, cualquiera que leyera E8 heredaba la impresion de que las
+  dos mitades estaban igual de pendientes, y esa impresion es falsa en la mitad.
+
+CADUCA 3 . "BACKEND_URL en localhost en seis archivos".
+  Son SIETE declaraciones del literal 'http://localhost:3000', bajo DOS nombres:
+  BACKEND_URL en cinco ficheros y API_BASE en dos, todas en tmarea-pwa. En el
+  codigo del backend: cero. Buscar por BACKEND_URL da 5 y buscar por localhost
+  da 7; ningun criterio da 6. La deuda de fondo -- siete copias de una constante
+  de entorno -- es real y NO caduca: vive en PWA-SIN-ANOTAR, todavia sin barrer.
+
+
+------------------------------------------------------------------------------
+5 . 1, EL INVENTARIO: RE-COMPROBADO, Y LO QUE APARECIO
+------------------------------------------------------------------------------
+
+Corrido el 2026-08-20T00:29:34Z UTC, exit 0. SITPORT respondio en vivo:
+consultaRestricciones 37, totalPronostico 48, consultaBahias 165.
+
+1.1 resulto EXACTA EN DIEZ DE SUS ONCE FILAS. Identicas al valor escrito hace
+diez dias: bahia_jurisdicciones 163/0/33/319.342, su backup 163/0/28/4.725.948,
+bahias_sitport 163, jurisdicciones_decreto 64/10/0/3.474.929, costa_osm 78.653,
+costa_osm_sub 130.537, ne_land 11, nodos_maritimos 781, batimetria 1.179.451,
+mapa_base_multipoligonos 76.196.
+
+Y FALSA EN LA UNDECIMA, que es la que mas importa:
+
+    | `jurisdicciones_ds991` | — | **NO EXISTE** | | | |
+
+  EXISTE. Es tabla, tiene 6 filas y geometria punto_representativo en 4326, con
+  indice GIST. Ademas 1.1 no lista NUEVE tablas hermanas que si estan:
+  _areas (64 filas), _convenciones (17), _descartes (1), _ensanche (3),
+  _procedencia (9), _publicacion (4), _sectores (0), _traslape_ensanche (12),
+  _verificacion (31). Y 1.2 titula el insumo en 324 KB cuando mide 382 KB.
+
+LO QUE ESO LE CORRIGE A LA PROPIA DEUDA: la viñeta de 7.2 decia "diez dias de
+cambios encima", y eso resulto en su mayor parte falso -- la base no se movio en
+diez de once filas. Lo que estaba mal no era la antiguedad de la foto: era UNA
+fila, la que declara inexistente la capa del D.S. 991, que es la que E4 existe
+para construir. Un documento que se lee como autoridad declarando inexistente lo
+que si existe es peor que un documento viejo.
+
+La correccion esta REDACTADA Y NO APLICADA, en 08_textos_propuestos.md. Escribir
+en PLAN_JURISDICCION.md quedo fuera del alcance de esta sesion. Redactar no es
+aplicar, y una declaracion medida como falsa que se queda escrita porque
+corregirla estaba fuera de zona es el peor resultado posible de una sesion.
+
+
+------------------------------------------------------------------------------
+6 . TRES DEFECTOS DE INSTRUMENTO PROPIOS, DECLARADOS
+------------------------------------------------------------------------------
+
+Los tres del mismo tipo: un instrumento que compila y corre perfecto mientras
+mide algo distinto de lo que dice medir. Los tres cazados SOLO por el control
+positivo, ninguno por revision de codigo.
+
+(1) EL '--' QUE ANULO LOS --exclude-dir.
+    'grep -rIw -- "$t" . --exclude-dir=node_modules' : despues de '--' todo es
+    operando, asi que los --exclude-dir se leyeron como nombres de fichero y el
+    barrido entro a node_modules. Dio TODO=812 en tmarea-pwa cuando la respuesta
+    es 0. El numero malo llego a publicarse antes de cazarse.
+
+(2) EL HEREDOC QUE SE COME UN NIVEL DE BACKSLASH, AUN CON <<'EOF'.
+    Escribi '^[ \\t]*' y '\\b'; en disco quedo '^[ \t]*' y '\b', o sea un TAB
+    literal y un BACKSPACE 0x08. El contador de tokens devolvio 0 declaraciones
+    de 116 pares y no fallo: compilaba, corria y daba un numero plausible. Lo
+    cazo el control positivo. Reescrito sin ningun escape construido por
+    concatenacion.
+
+(3) EL ORDEN DEL CHEQUEO DE CARACTERES EN MI PROPIO VALIDADOR.
+    La primera mordida salio 24/26. Las dos que fallaban eran las de caracteres:
+    el chequeo corria DESPUES del JSON.parse, asi que un caracter de control que
+    ademas rompe el parseo se diagnosticaba como "no es JSON valido" -- el
+    sintoma tapando la causa. Movido antes de parsear. Y la mordida se rehizo:
+    ahora son DOS, porque U+0091 DENTRO de una cadena es JSON perfectamente
+    valido -- la norma solo prohibe los de control por debajo de 0x20 -- y ese es
+    el caso real de H-T2, el que solo el criterio corregido puede cazar.
+
+Los tres, mas el '-F -' que ya esta en CLAUDE.md 7.2, son un MODO DE FALLA DEL
+ENTORNO y no tres anecdotas. Va como fila del declarativo, redactada y no
+aplicada: escribir la regla en CLAUDE.md es la sesion siguiente.
+
+
+------------------------------------------------------------------------------
+7 . EL CONTROL DE CARACTERES QUE SE USO, Y CUAL ES
+------------------------------------------------------------------------------
+
+CRITERIO CORREGIDO por el hueco H-T2. El viejo miraba BYTES < 0x20, y U+0091 en
+UTF-8 son dos bytes -- C2 91 -- y ninguno es < 0x20.
+
+El usado decodifica como UTF-8 e inspecciona PUNTOS DE CODIGO:
+    cp < 0x20 salvo 0x0A y 0x0D  |  cp == 0x7F  |  0x80 <= cp <= 0x9F  (los C1)
+
+Vive dentro del propio validador y corre ANTES de parsear. Su mordida esta en
+07_validador_y_mordida.txt, con las dos variantes de U+0091 y la del BOM.
+
+
+------------------------------------------------------------------------------
+8 . SITIOS BARRIDOS Y SITIOS QUE NO. La cobertura no es un adorno.
+------------------------------------------------------------------------------
+
+BARRIDOS 7 de 16:
+  PLAN-3-E8 (8 filas de 7 items) . PLAN-7.2 (4) . PWA-DOCS (0, vacio verificado)
+  SESION (8) . DIRECTEMAR-REGISTRO (6) . JOIN-SIN-RESOLVER (3) .
+  DIVERGENCIAS-DECLARADAS (3)
+
+SIN BARRER 9 de 16, con su tramo asignado y su motivo escrito:
+  PLAN-9 (~11) . PLAN-5-DECISIONES (2) . CLAUDE-MD (1) . PLAN-7-TABLA (~5) .
+  PLAN-7.1-FILTRO (~6) . PLAN-7.1-CONTACTO-CIERRE (~8) . PWA-COMENTARIOS (~4) .
+  PWA-SIN-ANOTAR (~4) . BITACORAS-HD (51)
+
+EL VALIDADOR MUERDE SOBRE ESO, en los dos sentidos:
+  V1  sitio barrido con 0 filas -> rojo, SALVO vacio_verificado con vocabulario,
+      conteos y control positivo. Sin esa salvedad no se podria declarar un cero
+      honesto, y PWA-DOCS es uno.
+  V2  fila de un sitio que la cobertura no conoce -> rojo.
+  V3  sitio barrido=false con filas -> rojo. La direccion que el owner no pidio.
+  V4  conteo declarado distinto del real -> rojo. Caza el tramo cortado a mitad.
+  V5  falta cualquiera de los DIECISEIS -> rojo. Es el que impide leerlo como
+      completo. La canon vive en el validador y NO en el dato, a proposito: si
+      viviera en el dato, borrar un sitio borraria tambien la expectativa.
+  V6  barrido=true sin fecha o sin bitacora -> rojo.
+  V7  por fila: id duplicado, grupo fuera del vocabulario, campos que el grupo
+      exige, (4) sin medicion con salida cruda, (2) con pregunta que nombra un
+      fichero del repositorio, firma sin fecha, duplicada_de fantasma.
+
+PRUEBA DE MORDIDA: 27/27, con control negativo (la copia intacta sale verde).
+
+
+------------------------------------------------------------------------------
+9 . EL NUMERO. Con su denominador, su definicion y su unidad.
+------------------------------------------------------------------------------
+
+UNIDAD        : filas del declarativo.
+DEFINICION    : una fila = una deuda. Una misma deuda escrita en dos sitios lleva
+                duplicada_de y no cuenta dos veces.
+DENOMINADOR   : las filas de los SIETE sitios barridos, de dieciseis. NO es el
+                total del proyecto, y por eso el fichero declara su cobertura.
+
+    filas                          32
+    deudas unicas                  30
+    duplicadas de otra fila         2
+
+    por grupo                    filas   unicas
+      1 cierra con lo que hay       14       14
+      2 decision del owner           2        2
+      3 dato externo                13       11
+      4 caduca                       3        3
+      5 obsoleta                     0        0
+      6 se descarta                  0        0
+
+    grupos 5 y 6 sin firmar del owner: 0
+
+NINGUNA FILA QUEDO SIN GRUPO, y ninguna cayo fuera de los seis. No hizo falta un
+septimo grupo en estos siete sitios. Eso no se generaliza a los nueve que faltan.
+
+LOS GRUPOS 5 Y 6 SALIERON EN CERO, y conviene decir por que en vez de dejarlo
+como un hueco: los siete sitios barridos son deudas jovenes -- E8 y 7.2 son del
+plan vigente, y los tres de dato estan esperando respuestas que nadie contesto.
+El caso conocido de (5) -- los doce instrumentos rojos anclados a artefactos que
+ya no existen -- vive en PLAN-7.1-FILTRO, que es del 3o. Que 5 y 6 esten en cero
+hoy es una consecuencia del orden, no un juicio sobre el proyecto.
+
+LO QUE NO SE PUEDE CONTAR SIN INVENTAR CRITERIO, y por eso no se conto:
+  - El total del proyecto. Las ~125 candidatas de los dieciseis sitios son una
+    ESTIMACION de sizing, no un conteo: nueve sitios no se leyeron.
+  - Cuantas deudas hay en PLAN-7.1-CONTACTO-CIERRE. Esos dos frentes no tienen
+    lista; sus deudas van en prosa. Contarlas exige leerlos, y leerlos es el 3o.
+
+
+------------------------------------------------------------------------------
+10 . LO QUE ESTA SESION DEJA ABIERTO, Y ESTA COMO FILA
+------------------------------------------------------------------------------
+
+Las ocho filas del sitio SESION-caracterizacion-deudas-2026-08-19. Las cuatro
+primeras las nombro el owner; las otras cuatro salieron del trabajo:
+
+  declarativo-que-nadie-abre .................. nada lo lee al arrancar. La regla
+                                                en CLAUDE.md es la sesion siguiente.
+  invisible-desde-la-pwa ...................... y desde el otro repositorio ni
+                                                siquiera hay donde enterarse.
+  seis-ficheros-backend-url ................... CADUCA, con su enunciado correcto.
+  citas-cruzadas-por-linea .................... dos citas entre repos por numero
+                                                de linea, la forma que se rompe sola.
+  modo-de-falla-del-entorno ................... los tres defectos de instrumento.
+  casilla-ambas-del-criterio-d3a .............. 1 caso hoy, puede importar con 51.
+  e8-item-3-es-una-bolsa ...................... dos sujetos, estados opuestos.
+  seccion-1-declara-inexistente-una-tabla-que-existe
+
+Ninguna aplicada. Todas redactadas.
+
+
+------------------------------------------------------------------------------
+11 . LO QUE NO SE TOCO
+------------------------------------------------------------------------------
+
+  .claude/launch.json                    modificado y sin stagear. No se toco.
+  data/catalogo/estado_drift.json        modificado y sin stagear. No se toco.
+                                         Correr el control de drift lo reescribe:
+                                         no se corrio.
+  las 92 rutas sin seguimiento del backend y la 1 de la PWA: no se tocaron y no
+  son de esta sesion.
+  CONTRATO_MOTOR.md, el motor BRE, el backend levantado, cualquier DML o DDL.
+
+EL INSTRUMENTO DEL CONTEO DE BITACORAS-HD (contar los 116 pares y separar los 51
+admitidos de los 15 descartados) SE QUEDA FUERA DEL ARBOL, en el scratchpad de la
+sesion, y se declara por que: su resultado no se usa en ninguna fila de este
+declarativo -- BITACORAS-HD esta en barrido=false -- y lo unico que sostiene hoy
+es el campo por_que_todavia_no de ese sitio, donde el numero va escrito con su
+criterio al lado. Cuando se barra el 5o, ese instrumento se escribe entonces, en
+la bitacora de esa sesion, y ahi si se versiona. Versionar hoy un script cuyo
+resultado no sostiene ninguna fila es guardar codigo por si acaso.
+
+Lo mismo para el script de un solo uso de los SELECT: las consultas van
+publicadas crudas en 02_select_e8.txt, que es lo que hace falta para rehacerlo.
+
+
+------------------------------------------------------------------------------
+12 . FICHEROS DE ESTE DIRECTORIO
+------------------------------------------------------------------------------
+
+  declarativo_deudas_2026-08-19.txt   este
+  01_medir_e8.txt                     los siete items de E8, medidos
+  02_select_e8.txt                    los SELECT, con las consultas crudas
+  03_medir_7-2.txt                    las cuatro viñetas de 7.2
+  04_inventario_insumos.txt           1 re-comprobado, con su hora y sus permisos
+  05_medir_tramo2.txt                 DIRECTEMAR, el join y las divergencias
+  06_medir_pwa.txt                    el segundo repositorio
+  07_validador_y_mordida.txt          el instrumento corrido: 32 filas, 27/27
+  08_textos_propuestos.md             las correcciones REDACTADAS y NO APLICADAS
+  09_select_ds991.txt                 que son las 6 filas de jurisdicciones_ds991

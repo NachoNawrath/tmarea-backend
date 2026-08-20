@@ -1,0 +1,147 @@
+==============================================================================
+INVENTARIO DE INSUMOS -- 1 RE-COMPROBADO
+SESION  : caracterizacion de deudas, 2026-08-19. Tramo 1.
+REPO    : tmarea-backend en 67aa8bb9101e49b47394d40cee5df29604ea6455 (= origin/main)
+COMANDO : node scripts/fase5_inventario_insumos.js
+HORA    : 2026-08-20T00:29:34.764Z  (UTC)
+
+DOS PERMISOS, DECLARADOS POR SEPARADO PORQUE SON DOS COSAS DISTINTAS:
+  (1) SELECT sobre la base -- permiso D.1 del owner.
+  (2) LLAMADA EN VIVO a orion.directemar.cl -- permiso aparte, tambien del owner.
+      Si SITPORT no responde eso NO es un fallo de la sesion: se declara y 1 queda
+      con lo que se pudo medir. En esta corrida SI respondio.
+
+MEDIDO ANTES DE CORRERLO, porque el prompt de la sesion advertia que podia escribir:
+  escrituras de fichero (writeFileSync|writeFile|appendFile|createWriteStream|mkdirSync|rmSync|unlink) : 0
+    control positivo, scripts/e01_control_drift_catalogo.js, mismo patron                              : 1
+  DML/DDL (insert|update|delete|create|drop|alter|refresh materialized)                                : 0
+    control positivo, scripts/create-bahia-jurisdicciones.sql, mismo patron                            : 2
+  NO escribe ningun fichero. Lo que hace es leer la base y llamar a SITPORT.
+==============================================================================
+
+==============================================================================
+INVENTARIO DE INSUMOS — MEDIDO
+fecha: 2026-08-20T00:29:34.867Z
+==============================================================================
+
+## 1. BASE DE DATOS
+   postgres: PostgreSQL 16.14
+   postgis : 3.5 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+
+   relacion                        tipo     filas  geom  srid   nulas vacias area0   km2_total
+   -------------------------------------------------------------------------------------------------
+   bahia_jurisdicciones            matview     163 geom   4326      0     33     0      319342
+   bahia_jurisdicciones_v1_backup  matview     163 geom   4326      0     28     0     4725948
+   bahias_sitport                  tabla       163 geom   4326      0      0   163           0
+   batimetria                      tabla    1179451 geom   4326      0      0 1179451           0
+   costa_osm                       tabla     78653 geom   4326      0      0     0     2850867
+   costa_osm_procedencia           tabla        18 -         -      -      -     -           -
+   costa_osm_sub                   tabla    130537 geom   4326      0      0     0     2850893
+   costa_osm_verificacion          tabla         5 -         -      -      -     -           -
+   jurisdicciones_decreto          tabla        64 geom   4326     10      0     0     3474929
+   jurisdicciones_ds991            tabla         6 punto_representativo  4326      0      0     6           0
+   jurisdicciones_ds991_areas      tabla        64 -         -      -      -     -           -
+   jurisdicciones_ds991_convenciones tabla        17 -         -      -      -     -           -
+   jurisdicciones_ds991_descartes  tabla         1 -         -      -      -     -           -
+   jurisdicciones_ds991_ensanche   tabla         3 -         -      -      -     -           -
+   jurisdicciones_ds991_procedencia tabla         9 -         -      -      -     -           -
+   jurisdicciones_ds991_publicacion tabla         4 -         -      -      -     -           -
+   jurisdicciones_ds991_sectores   tabla         0 geom      0      0      0     0           0
+   jurisdicciones_ds991_traslape_ensanche tabla        12 -         -      -      -     -           -
+   jurisdicciones_ds991_verificacion tabla        31 -         -      -      -     -           -
+   mapa_base_multipoligonos        tabla     76196 geom   4326      0      0     0        5102
+   ne_land                         tabla        11 geom   4326      0      0     0   146841798
+   nodos_maritimos                 tabla       781 geom   4326      0      0   781           0
+   qgis_projects                   tabla         1 -         -      -      -     -           -
+   reportes_incidencias            tabla         0 -         -      -      -     -           -
+   seamarks_puntos                 tabla       827 geom   4326      0      0   827           0
+   spatial_ref_sys                 tabla      8500 -         -      -      -     -           -
+   geography_columns               vista         0 -         -      -      -     -           -
+   geometry_columns                vista        14 -         -      -      -     -           -
+
+   indices GIST: bahia_jurisdicciones, bahia_jurisdicciones_v1_backup, bahias_sitport, batimetria, costa_osm, costa_osm_sub, jurisdicciones_decreto, jurisdicciones_ds991, jurisdicciones_ds991_sectores, mapa_base_multipoligonos, nodos_maritimos, seamarks_puntos
+
+## 2. INSUMO DEL DECRETO
+   archivo            : data/decreto/jurisdicciones_v2.json (382 KB)
+   version / generado : 2 / 2026-08-09
+   jurisdicciones     : 64
+   por ambito         : maritima=52  insular_remota=2  lacustre=6  antartica=4
+   participa_matching : si=54  no=10
+   estado_geometria   : no_cerrable=10  cerrable=54
+   con punto_representativo : 48   sin, con causa: 6   sin y sin causa: 10
+   con contorno       : 25   con tramos: 25
+   con sectores       : 0
+   con cuerpos_lacustres: 6
+   fronteras declaradas : 61
+   puntos_notables      : 76
+   convenciones         : 8
+   recetas              : -=5  banda_paralelos=26  union_islas=2  union_cuerpos=6  corte_y_ancla=17  anillo=8
+
+   adjudicacion_tramos.json                16 KB  generado,fase,insumo,autorizacion,por_que_hace_falta,criterios_adjudicacion
+   cotejo_lacustre_adjudicado.json         33 KB  generado,fase,insumo_shapefile,insumo_decreto,criterios_adjudicacion,traslape_deliberado
+   jurisdicciones_capitanias.json         175 KB  fuente,generado,nota_construccion,alcance_costa_afuera,puntos_notables,pendientes
+   zonas_aviso.json                        18 KB  version,generado,rige,que_es,que_no_es,reversibilidad
+   capa_consultada.json                    10 KB  version,generado,que_es,por_que_existe,capa_jurisdicciones,capa_recorte_tierra
+
+## 3. MAPA OPERATIVO bahia-capitania-map.json
+   bahias                 : 164
+   sin capitania atribuida: 1
+   sin telefono           : 0
+   nombres de Capitania   : 48
+   nombres que NO calzan con el insumo: 5  -> Villarrica, Panguipulli, Hornopirén, Chacabuco, Soberanía
+      'Villarrica': 9 bahia(s) [105,209,210,245,246,247,248,249,250] -> candidato en insumo: Lago Villarrica
+      'Panguipulli': 1 bahia(s) [106] -> candidato en insumo: Lago Panguipulli
+      'Hornopirén': 8 bahia(s) [115,181,182,183,184,185,186,187] -> candidato en insumo: Rio Negro Hornopiren
+      'Chacabuco': 10 bahia(s) [126,220,221,222,223,224,225,226,227,228] -> candidato en insumo: Puerto Chacabuco
+      'Soberanía': 1 bahia(s) [231] -> candidato en insumo: Puerto Soberania
+   jurisdicciones del decreto SIN ninguna bahia atribuida: 21
+      patache, tocopilla, taltal, chanaral, tongoy, papudo, juan_fernandez, algarrobo, pichilemu, lirquen, san_vicente, lota, lago_villarrica, lago_panguipulli, hornopiren, puerto_chacabuco, baker, punta_delgada, tierra_del_fuego, puerto_soberania, rada_covadonga
+
+## 4. COBERTURA CRUZADA DE IDENTIFICADORES DE BAHIA
+   bahias_sitport (tabla)            : 163
+   bahia-capitania-map.json          : 164
+   BAHIA_COORDS (en sitport-routes.js): 163
+   en la tabla y NO en el mapa       : ninguna
+   en el mapa y NO en la tabla       : 257
+   en la tabla y NO en BAHIA_COORDS  : ninguna
+   en BAHIA_COORDS y NO en la tabla  : ninguna
+
+## 5. SITPORT (consultado en vivo)
+[SITPORT] consultaRestricciones: 34 registros obtenidos
+   consultaRestricciones : 34 registros
+   por tipo              : TODOS=30  FRENTE ATRAQUE=4
+   bahias distintas      : 33
+   con id que NO esta en bahias_sitport : ninguna
+   campos del registro   : bahia, FCinicio, FCTermino, tipo, NombreInstalacion, FrenteAtraque, SitioAtraque, Detalle, Observacion, paralizar, nzarpe, nrecalada, tiporestriccion, MotivoRestriccion, AreaRestriccion, NaveRecibe, IDRestriccion, GLBahia, idipbahia, glnombre
+[SITPORT] totalPronostico: 48 registros obtenidos
+   totalPronostico       : 48 registros
+[SITPORT] consultaBahias: 165 registros obtenidos
+   consultaBahias        : 165 registros
+
+## 6. CAPAS EN DISCO (geodata/)
+   geodata/costa/capas_costa.json                        10 KB
+   geodata/costa/DPA_2023.zip                        303703 KB
+   geodata/costa/land-polygons-split-4326.zip        903366 KB
+   geodata/costa/PROCEDENCIA.txt                          7 KB
+   geodata/lagos/Inventario_Lagos.CPG                     0 KB
+   geodata/lagos/Inventario_Lagos.dbf                  1387 KB
+   geodata/lagos/Inventario_Lagos.prj                     0 KB
+   geodata/lagos/Inventario_Lagos.sbn                    21 KB
+   geodata/lagos/Inventario_Lagos.sbx                     1 KB
+   geodata/lagos/Inventario_Lagos.shp                  2986 KB
+   geodata/lagos/Inventario_Lagos.shx                    16 KB
+   geodata/lagos/PROCEDENCIA.txt                          2 KB
+   geodata/ne_10m_land.cpg                                0 KB
+   geodata/ne_10m_land.dbf                                0 KB
+   geodata/ne_10m_land.prj                                0 KB
+   geodata/ne_10m_land.README.html                       36 KB
+   geodata/ne_10m_land.shp                             6999 KB
+   geodata/ne_10m_land.shx                                0 KB
+   geodata/ne_10m_land.VERSION.txt                        0 KB
+   geodata/ne_10m_land.zip                             3192 KB
+   capas_costa.json declara roles: undefined->costa_osm  undefined->ne_land  undefined->dpa_2023  undefined->mma_linea_litoral
+
+==============================================================================
+FIN DEL INVENTARIO
+
+EXIT: 0

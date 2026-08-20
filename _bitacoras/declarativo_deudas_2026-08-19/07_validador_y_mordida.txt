@@ -1,0 +1,157 @@
+==============================================================================
+EL INSTRUMENTO CORRIDO -- validador, prueba de mordida y control de caracteres
+SESION  : caracterizacion de deudas, 2026-08-19.
+REGLA   : el instrumento se corre, no se da por bueno porque compila.
+==============================================================================
+
+------------------------------------------------------------------------------
+npm run deudas
+------------------------------------------------------------------------------
+VALIDADOR DEL DECLARATIVO DE DEUDAS
+fichero : data/deudas/deudas_declaradas.json
+version : 1   generado: 2026-08-19
+
+COBERTURA
+  sitios en la canon                : 16
+  barridos                          : 7
+  sin barrer                        : 9
+
+CONTEO -- unidad: FILAS del declarativo. Denominador: las filas de los sitios BARRIDOS.
+  filas                             : 32
+  deudas unicas (sin duplicadas)    : 30
+  duplicadas de otra fila           : 2
+
+  por grupo                           filas   unicas
+    1_cierra_con_lo_que_hay            14       14
+    2_decision_del_owner                2        2
+    3_dato_externo                     13       11
+    4_caduca                            3        3
+    5_obsoleta                          0        0
+    6_se_descarta                       0        0
+
+  grupos 5 y 6 SIN FIRMAR del owner : 0  -- siguen contando como deuda viva
+
+VERDE -- el declarativo es valido. Y NO es completo: 9 sitio(s) sin barrer, por diseno.
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+npm run deudas:mordida
+------------------------------------------------------------------------------
+PRUEBA DE MORDIDA DEL VALIDADOR DE DEUDAS
+origen   : data/deudas/deudas_declaradas.json
+temporal : C:\Users\katia\AppData\Local\Temp\mordida-deudas-2AgQVZ
+
+  ok    V5 · falta un sitio de la canon  -> rojo por [V5]
+  ok    V5 · sitio que la canon no conoce  -> rojo por [V5]
+  ok    V1 · sitio barrido con 0 filas y sin vacio_verificado  -> rojo por [V1]
+  ok    V1 · vacio_verificado sin control positivo  -> rojo por [V1]
+  ok    V1 · vacio_verificado con un conteo distinto de 0  -> rojo por [V1]
+  ok    V3 · sitio barrido=false que sin embargo tiene filas  -> rojo por [V3]
+  ok    V4 · conteo declarado distinto del real  -> rojo por [V4]
+  ok    V6 · barrido=true sin barrido_el  -> rojo por [V6]
+  ok    V2 · fila cuyo sitio no esta en la cobertura  -> rojo por [V2]
+  ok    V7 · fila sin grupo  -> rojo por [V7]
+  ok    V7 · grupo fuera del vocabulario  -> rojo por [V7]
+  ok    V7 · grupo 3 sin a_quien  -> rojo por [V7]
+  ok    V7 · grupo 4 sin medicion  -> rojo por [V7]
+  ok    V7 · grupo 4 con medicion sin salida cruda  -> rojo por [V7]
+  ok    V7 · pregunta del grupo 2 que nombra un fichero del repositorio  -> rojo por [V7]
+  ok    V7 · id duplicado  -> rojo por [V7]
+  ok    V7 · texto_literal y sin_texto a la vez  -> rojo por [V7]
+  ok    V7 · sin_texto sin evidencia_en_el_arbol  -> rojo por [V7]
+  ok    V7 · el documento no la fecha pero abierta_el trae valor  -> rojo por [V7]
+  ok    V7 · firma_owner.firmada=true sin fecha  -> rojo por [V7]
+  ok    V7 · duplicada_de apunta a una fila que no existe  -> rojo por [V7]
+  ok    V7 · donde sin cita_de_anclaje  -> rojo por [V7]
+  ok    ESTRUCTURA · falta una clave de nivel 1  -> rojo por [ESTRUCTURA]
+  ok    CARACTERES · U+0091 dentro de una cadena, JSON valido -- el caso real de H-T2  -> rojo por [CARACTERES]
+  ok    CARACTERES · U+0091 fuera de cadena, que ademas rompe el parseo  -> rojo por [CARACTERES]
+  ok    CARACTERES · BOM UTF-8 al principio  -> rojo por [CARACTERES]
+
+CONTROL NEGATIVO -- la copia SIN mutar tiene que salir en verde:
+  ok    copia intacta -> exit 0
+
+MORDIDA: 27/27
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+CONTROL DE CARACTERES + HUELLAS FA-4 sobre todo fichero que la sesion escribio
+Instrumento de un solo uso, corrido desde el scratchpad. NO se versiona: el
+criterio va publicado aca arriba y las huellas quedan al lado de cada fichero.
+------------------------------------------------------------------------------
+CONTROL DE CARACTERES DE CONTROL + HUELLAS
+
+CRITERIO USADO (el corregido por H-T2): se decodifica UTF-8 y se miran
+PUNTOS DE CODIGO, no bytes. Se marca cp<0x20 salvo LF y CR, cp==0x7F,
+0x80<=cp<=0x9F (rango C1, donde vive U+0091), y U+FEFF en cualquier sitio.
+El criterio viejo -- byte < 0x20 -- NO caza U+0091, que en UTF-8 es C2 91.
+
+HUELLAS: sha256 sobre los BYTES DEL FICHERO EN DISCO. CLASE FA-4.
+  (no es el blob-sha de git: con CRLF de por medio no son el mismo byte)
+
+LIMPIO     data/deudas/deudas_declaradas.json
+            sha256 FA-4: 5e56ac1fb8c1899db2e2d2c0bdd7b9587a080aaef7c17fa4cd63da4a5cce4338
+            bytes: 86359   caracteres marcados: ninguno
+
+LIMPIO     scripts/validar_deudas_declaradas.js
+            sha256 FA-4: 41797137e8a011b7b7ee4c0e0ad1a2806f67ffefaea1e6c4bd1b46eb198d4c25
+            bytes: 15437   caracteres marcados: ninguno
+
+LIMPIO     scripts/prueba_mordida_deudas.js
+            sha256 FA-4: b4c5e5d58b63cd36cc1bff45b77e72060579435ca07d6fcb706366c70f91ea33
+            bytes: 9562   caracteres marcados: ninguno
+
+LIMPIO     package.json
+            sha256 FA-4: c381c0a86141e3a4533d2d0f493dbd623a0578d22b84810e33d2c0598ebbd348
+            bytes: 1110   caracteres marcados: ninguno
+
+LIMPIO     _bitacoras/declarativo_deudas_2026-08-19/declarativo_deudas_2026-08-19.txt
+            sha256 FA-4: 73998c85df26c987c3e0d24b3c44a52f56d81f0bc0f67bbed6e40ee76d45bc26
+            bytes: 20288   caracteres marcados: ninguno
+
+LIMPIO     _bitacoras/declarativo_deudas_2026-08-19/01_medir_e8.txt
+            sha256 FA-4: 762e768ea6966359ce03440f6bd0f0f1df3530bdacec91e7dbd65d27a25c1176
+            bytes: 16544   caracteres marcados: ninguno
+
+LIMPIO     _bitacoras/declarativo_deudas_2026-08-19/02_select_e8.txt
+            sha256 FA-4: 3edc1d669306f89169c5b1164b2e815640a4f3eb086e7fe0629e80a6e1e0084c
+            bytes: 3819   caracteres marcados: ninguno
+
+LIMPIO     _bitacoras/declarativo_deudas_2026-08-19/03_medir_7-2.txt
+            sha256 FA-4: 0b6e4fb6ab5b6a946bcab3b4a693ffabb88c63c3eec4e822dcb0b49e031e86e3
+            bytes: 4216   caracteres marcados: ninguno
+
+LIMPIO     _bitacoras/declarativo_deudas_2026-08-19/04_inventario_insumos.txt
+            sha256 FA-4: 607d659871de68cfa6f8c989957520e5025e3b63532a97e4dc1efcc31c53068a
+            bytes: 9887   caracteres marcados: ninguno
+
+LIMPIO     _bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt
+            sha256 FA-4: cb198f52c26f9da8e5f3b37bd4e16f172d3f1e5cfacd7f1fec4a60cc23a9be2b
+            bytes: 3789   caracteres marcados: ninguno
+
+LIMPIO     _bitacoras/declarativo_deudas_2026-08-19/06_medir_pwa.txt
+            sha256 FA-4: 9e6cffb974b77ed952bd455e1d7d3c4d303461b001abe0f59c6db638055fdb30
+            bytes: 6644   caracteres marcados: ninguno
+
+LIMPIO     _bitacoras/declarativo_deudas_2026-08-19/07_validador_y_mordida.txt
+            sha256 FA-4: a7d95513a4b43eb171f56a392effa3c5502c279ce6d1af26d230d30b09b514e7
+            bytes: 7854   caracteres marcados: ninguno
+
+LIMPIO     _bitacoras/declarativo_deudas_2026-08-19/08_textos_propuestos.md
+            sha256 FA-4: 48bf6358c7489d9488bae79095fd7ad237e8016232ba2725442c9852cbf98b43
+            bytes: 15885   caracteres marcados: ninguno
+
+LIMPIO     _bitacoras/declarativo_deudas_2026-08-19/09_select_ds991.txt
+            sha256 FA-4: 7a82adc5c7d46d78e57bfddec3f867080c50878f95d5302a2d9bef3907b148d4
+            bytes: 8544   caracteres marcados: ninguno
+
+--- CONTROL NEGATIVO del propio criterio ---
+  cadena sana (LF, CR, acentos)      -> ninguno  ok
+  cadena con U+0091                  -> U+0091 x1  ok (el criterio viejo daria ninguno)
+  cadena con TAB                     -> U+0009 x1  ok -- el criterio es ESTRICTO: TAB esta fuera de LF/CR y se marca
+
+VERDE: ningun caracter de control inesperado
+
+EXIT: 0

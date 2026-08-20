@@ -1,0 +1,88 @@
+==============================================================================
+SELECT sobre la base -- PERMISO D.1, SOLO SELECT
+SESION  : caracterizacion de deudas, 2026-08-19. Tramos 1 y 2.
+REPO    : tmarea-backend en 67aa8bb9101e49b47394d40cee5df29604ea6455 (= origin/main)
+PERMISO : D.1 del owner. Cero DML, cero DDL, cero refresh, cero script que escriba.
+INSTRUM.: script de un solo uso, corrido desde el scratchpad de la sesion. NO se versiona:
+          las consultas van publicadas crudas aca abajo, que es lo que hace falta para rehacerlo.
+==============================================================================
+
+CORRIDA (UTC): 2026-08-20T00:29:20.246Z
+PERMISO      : D.1 — solo SELECT
+
+--- CONSULTA 1 (control positivo: que la conexion sirve) ---
+SELECT version() AS v
+  PostgreSQL 16.14
+
+--- CONSULTA 2: inventario de relaciones no-catalogo ---
+SELECT n.nspname AS esquema, c.relname AS nombre,
+                      CASE c.relkind WHEN 'r' THEN 'tabla' WHEN 'm' THEN 'matview'
+                                     WHEN 'v' THEN 'vista' ELSE c.relkind::text END AS clase
+               FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+               WHERE n.nspname NOT IN ('pg_catalog','information_schema')
+                 AND c.relkind IN ('r','m','v')
+               ORDER BY 1,2
+  relaciones totales: 28
+
+### E8-4 · DPA_2023 cargada ###
+  patron /dpa/i sobre los 28 nombres -> 0 coincidencias
+    (ninguna)
+
+### E8-6 · bahia_jurisdicciones y su backup ###
+  patron /bahia_jurisdicciones|jurisdicc/i -> 13 coincidencias
+    public.bahia_jurisdicciones [matview]
+    public.bahia_jurisdicciones_v1_backup [matview]
+    public.jurisdicciones_decreto [tabla]
+    public.jurisdicciones_ds991 [tabla]
+    public.jurisdicciones_ds991_areas [tabla]
+    public.jurisdicciones_ds991_convenciones [tabla]
+    public.jurisdicciones_ds991_descartes [tabla]
+    public.jurisdicciones_ds991_ensanche [tabla]
+    public.jurisdicciones_ds991_procedencia [tabla]
+    public.jurisdicciones_ds991_publicacion [tabla]
+    public.jurisdicciones_ds991_sectores [tabla]
+    public.jurisdicciones_ds991_traslape_ensanche [tabla]
+    public.jurisdicciones_ds991_verificacion [tabla]
+
+  patron /backup|bak|_old|_viejo|_copia/i -> 1 coincidencias
+    public.bahia_jurisdicciones_v1_backup [matview]
+
+### CONTROL NEGATIVO: un patron que no debe encontrar nada ###
+  patron /tabla_que_no_existe_xyz/i -> 0 (esperado 0)
+
+### CONTROL POSITIVO del mismo listado: relaciones ya conocidas ###
+  bahias_sitport -> public.bahias_sitport [tabla]
+  nodos_maritimos -> public.nodos_maritimos [tabla]
+  ne_land -> public.ne_land [tabla]
+
+### LISTADO COMPLETO, para que el conteo sea auditable ###
+  public.bahia_jurisdicciones [matview]
+  public.bahia_jurisdicciones_v1_backup [matview]
+  public.bahias_sitport [tabla]
+  public.batimetria [tabla]
+  public.costa_osm [tabla]
+  public.costa_osm_procedencia [tabla]
+  public.costa_osm_sub [tabla]
+  public.costa_osm_verificacion [tabla]
+  public.geography_columns [vista]
+  public.geometry_columns [vista]
+  public.jurisdicciones_decreto [tabla]
+  public.jurisdicciones_ds991 [tabla]
+  public.jurisdicciones_ds991_areas [tabla]
+  public.jurisdicciones_ds991_convenciones [tabla]
+  public.jurisdicciones_ds991_descartes [tabla]
+  public.jurisdicciones_ds991_ensanche [tabla]
+  public.jurisdicciones_ds991_procedencia [tabla]
+  public.jurisdicciones_ds991_publicacion [tabla]
+  public.jurisdicciones_ds991_sectores [tabla]
+  public.jurisdicciones_ds991_traslape_ensanche [tabla]
+  public.jurisdicciones_ds991_verificacion [tabla]
+  public.mapa_base_multipoligonos [tabla]
+  public.ne_land [tabla]
+  public.nodos_maritimos [tabla]
+  public.qgis_projects [tabla]
+  public.reportes_incidencias [tabla]
+  public.seamarks_puntos [tabla]
+  public.spatial_ref_sys [tabla]
+
+EXIT: 0

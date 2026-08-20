@@ -1,0 +1,44 @@
+==============================================================================
+TRAMO 2 -- DIRECTEMAR, el join y las divergencias
+SESION  : caracterizacion de deudas, 2026-08-19. Tramos 1 y 2.
+REPO    : tmarea-backend en 67aa8bb9101e49b47394d40cee5df29604ea6455 (= origin/main)
+          tmarea-pwa      en 6443178493b8b3c35c11a37253c4b5bd1884ea55 (= origin/main)
+ALCANCE : esta sesion NO cierra ninguna deuda. Caracteriza.
+==============================================================================
+
+------------------------------------------------------------------------------
+SITIO 10 . consulta_directemar_registro.md: los seis apartados, y ninguna respuesta
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -n '^## [0-9]' _bitacoras/consulta_directemar_registro.md; echo '--- marcas de respuesta recibida (esperado 0) ---'; grep -ic 'respondio\|respondió\|respuesta recibida\|contesto\|contestó' _bitacoras/consulta_directemar_registro.md; echo '--- CONTROL POSITIVO: la palabra pregunta ---'; grep -ic 'pregunta' _bitacoras/consulta_directemar_registro.md
+------------------------------------------------------------------------------
+41:## 1 · Bahía 146 — RÍO BUENO: la repartición 189 no existe en el propio SITPORT
+86:## 2 · Bahía 137 — BAHÍA CHILOTA: las dos fuentes operativas discrepan entre sí
+137:## 3 · Rada Covadonga (CdRep 291) — las dos fuentes la clasifican distinto
+173:## 4 · Bahía 258 — RÍO BUENO, SECTOR LLANCACURA: apareció sin posición
+219:## 5 · Las seis bahías sin resolver de E0.3
+272:## 6 · Bahía 160 — LAGO PUYEHUE: el decreto lo parte y la práctica no
+--- marcas de respuesta recibida (esperado 0) ---
+0
+--- CONTROL POSITIVO: la palabra pregunta ---
+32
+
+------------------------------------------------------------------------------
+SITIO 11 . join_bahia_jurisdiccion.json: las seis sin resolver, agrupadas por fuente
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : node -e "const j=require('./data/decreto/join_bahia_jurisdiccion.json');console.log('conteo declarado: '+JSON.stringify(j.conteo));const e=j.entradas.filter(x=>x.estado==='sin_resolver');const g={};e.forEach(x=>{const k=x.fuente_a_consultar.id;(g[k]=g[k]||[]).push(x.bahia_id);});Object.entries(g).forEach(([k,v])=>console.log('  '+k+'  bahias '+v.join(', ')+'   a_quien: '+e.find(x=>x.fuente_a_consultar.id===k).fuente_a_consultar.a_quien));"
+------------------------------------------------------------------------------
+conteo declarado: {"total":164,"operativo":88,"decreto":69,"declaracion_versionada":1,"sin_resolver":6}
+  limite_sur_aysen  bahias 127, 129, 154   a_quien: DIRECTEMAR, y la parte regional a DPA_2023 (geodata/DPA_2023.zip, en disco sin cargar)
+  solape_delgada_tdf  bahias 137   a_quien: DIRECTEMAR
+  costura_cisnes_aguirre  bahias 239, 241   a_quien: Informante con experiencia operativa en la zona austral
+
+------------------------------------------------------------------------------
+SITIO 12 . divergencias_declaradas.json: las tres, con su estado
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : node -e "const j=require('./data/catalogo/divergencias_declaradas.json');const c={};j.divergencias.forEach(d=>c[d.estado]=(c[d.estado]||0)+1);console.log('estados: '+JSON.stringify(c)+'   total '+j.divergencias.length);j.divergencias.forEach(d=>console.log('  id_bahia '+d.id_bahia+'  clase '+d.clase+'  visto_desde '+d.visto_desde+'  estado '+d.estado));"
+------------------------------------------------------------------------------
+estados: {"abierta":3}   total 3
+  id_bahia 257  clase incoherencia_interna  visto_desde 2026-08-11  estado abierta
+  id_bahia 108  clase sitport_sin_catalogo  visto_desde 2026-08-11  estado abierta
+  id_bahia 108  clase endpoint_fuera_de_catalogo  visto_desde 2026-08-11  estado abierta
+

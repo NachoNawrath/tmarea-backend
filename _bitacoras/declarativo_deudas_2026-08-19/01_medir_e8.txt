@@ -1,0 +1,201 @@
+==============================================================================
+E8 -- los siete items, medidos uno por uno
+SESION  : caracterizacion de deudas, 2026-08-19. Tramos 1 y 2.
+REPO    : tmarea-backend en 67aa8bb9101e49b47394d40cee5df29604ea6455 (= origin/main)
+          tmarea-pwa      en 6443178493b8b3c35c11a37253c4b5bd1884ea55 (= origin/main)
+ALCANCE : esta sesion NO cierra ninguna deuda. Caracteriza.
+==============================================================================
+
+------------------------------------------------------------------------------
+E8-1 . Art. 2 del decreto (D6) -- el bloque articulos en los DOS insumos
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : node -e "const v2=require('./data/decreto/jurisdicciones_v2.json');const v1=require('./data/decreto/jurisdicciones_capitanias.json');for (const [n,j] of [['v2',v2],['v1',v1]]) {const a=j.articulos;console.log('--- '+n+' --- tipo articulos: '+(Array.isArray(a)?'array '+a.length:typeof a));if(Array.isArray(a)) a.forEach(x=>console.log('   id='+x.id+' titulo='+String(x.titulo).slice(0,60)+' texto_decreto chars='+String(x.texto_decreto||'').length+' procedencia='+(x.procedencia?'si':'NO')));}"
+------------------------------------------------------------------------------
+--- v2 --- tipo articulos: array 1
+   id=art_2 titulo=Art. 2 — ambito material de las jurisdicciones texto_decreto chars=573 procedencia=si
+--- v1 --- tipo articulos: array 1
+   id=art_2 titulo=Art. 2 — ambito material de las jurisdicciones texto_decreto chars=573 procedencia=si
+
+------------------------------------------------------------------------------
+E8-1 . los tres terminos que D6 exigia, contados en el v2, mas control negativo y positivo
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : for t in 'mar territorial' 'zona contigua' 'plataforma continental' 'aguas interiores' 'zona abisal fantasma' 'capitania'; do printf '  %-24s %s\n' "$t" "$(grep -oic "$t" data/decreto/jurisdicciones_v2.json)"; done
+------------------------------------------------------------------------------
+  mar territorial          5
+  zona contigua            5
+  plataforma continental   3
+  aguas interiores         6
+  zona abisal fantasma     0
+  capitania                128
+
+------------------------------------------------------------------------------
+E8-2 . INV-3.5: cuantos ambitos nombra el contrato
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : echo '--- INV-3.5, texto ---'; sed -n '464,470p' CONTRATO_MOTOR.md; echo '--- antartic* en CONTRATO_MOTOR.md (conteo y crudo) ---'; grep -ic 'antartic\|antártic' CONTRATO_MOTOR.md; grep -ni 'antartic\|antártic' CONTRATO_MOTOR.md | cut -c1-160; echo '--- CONTROL POSITIVO: lacustre ---'; grep -ic 'lacustre' CONTRATO_MOTOR.md
+------------------------------------------------------------------------------
+--- INV-3.5, texto ---
+### INV-3.5 — Ámbito marítimo y ámbito lacustre
+Las jurisdicciones tienen ámbito **marítimo**, **lacustre** o **insular remoto**. Las
+lacustres son jurisdicciones plenas, con Capitanía, condición de puerto y usuarios reales
+(deportivos y transporte). NO se excluyen del motor.
+
+- **Base:** D.S. 991 Art. 2 (las jurisdicciones comprenden lagos y ríos navegables).
+- **Consecuencia técnica:** la geometría de las jurisdicciones lacustres NO puede construirse
+--- antartic* en CONTRATO_MOTOR.md (conteo y crudo) ---
+2
+809:  > —Antofagasta, Caldera, Coquimbo, Valdivia, Hanga Roa, y la Antártica con Bahía Paraíso—.
+814:  > número de la GM Antártica Chilena recuperado en `_bitacoras/frente_contacto_2026-08-13/`.
+--- CONTROL POSITIVO: lacustre ---
+6
+
+------------------------------------------------------------------------------
+E8-3a . AreaRestriccion: donde se consume HOY, en produccion
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -rIl 'AreaRestriccion' --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=_bitacoras . ; echo '--- las lineas de src/ ---'; grep -n 'AreaRestriccion' src/services/sitport-parser.js src/services/cierre-derivador.js; echo '--- CONTROL POSITIVO: restricciones en src/ (ficheros) ---'; grep -rIl 'restricciones' src/ | wc -l
+------------------------------------------------------------------------------
+./CONTRATO_MOTOR.md
+./data/deudas/deudas_declaradas.json
+./PLAN_JURISDICCION.md
+./sondaje-sitport/check_ahora.json
+./sondaje-sitport/restricciones_2026-07-30_19-42.json
+./sondaje-sitport/restricciones_2026-07-31_16-32.json
+./sondaje-sitport/restricciones_2026-07-31_20-32.json
+./sondaje-sitport/restricciones_2026-07-31_21-01.json
+./sondaje-sitport/restricciones_2026-08-01_13-14.json
+./src/services/cierre-derivador.js
+./src/services/sitport-parser.js
+./src/services/__tests__/cierre-derivador.test.js
+--- las lineas de src/ ---
+src/services/sitport-parser.js:147:    area: detectarArea(registro.AreaRestriccion),
+src/services/cierre-derivador.js:140:  const porCampo = /DENTRO|FUERA/.test(normalizarTexto(registro.AreaRestriccion));
+src/services/cierre-derivador.js:467:// lo dice (INV-0.2), no lo infiere de MotivoRestriccion ni de AreaRestriccion.
+--- CONTROL POSITIVO: restricciones en src/ (ficheros) ---
+14
+
+------------------------------------------------------------------------------
+E8-3b . sectores: la maquinaria existe y el dato no
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : echo '--- jurisdicciones con sectores no vacio en el insumo v2 ---'; node -e "const j=require('./data/decreto/jurisdicciones_v2.json');const J=j.jurisdicciones;console.log(J.filter(x=>(x.sectores||[]).length>0).length+' de '+J.length);"; echo '--- sectores en src/ (ficheros con al menos una aparicion) ---'; grep -rIl 'sectores' src/ | wc -l; echo '--- lo que el constructor declara ---'; sed -n '44,49p' scripts/fase5_construir_capa_ds991.py; echo '--- lo que el contrato reconoce ---'; sed -n '456,459p' CONTRATO_MOTOR.md
+------------------------------------------------------------------------------
+--- jurisdicciones con sectores no vacio en el insumo v2 ---
+0 de 64
+--- sectores en src/ (ficheros con al menos una aparicion) ---
+0
+--- lo que el constructor declara ---
+  ABIERTO A QUE     Los sectores dentro de cada Capitania se construyen por el
+  LA FUENTE CAMBIE  mismo camino que las jurisdicciones en cuanto el insumo los
+                    traiga; hoy vienen vacios y la tabla queda vacia, no ausente.
+                    La capa de tierra es un insumo declarado y se cambia en un
+                    solo lugar. La version y el sha del insumo quedan registrados.
+
+--- lo que el contrato reconoce ---
+- **Nota de alcance (no borrar):** las resoluciones locales pueden subdividir la jurisdicción
+  en **sectores** con condición de puerto independiente, y SITPORT puede publicar entradas a
+  nivel de sector o de canal, no solo de bahía. El motor NO implementa el nivel de sector hoy.
+  Mientras no lo haga, evalúa a nivel de Capitanía, que es el envolvente: muestra de más,
+
+------------------------------------------------------------------------------
+E8-5 . retirar BAHIA_COORDS: sigue entero
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -rIn 'BAHIA_COORDS' --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=_bitacoras . | cut -c1-130; echo '--- ficheros ---'; grep -rIl 'BAHIA_COORDS' --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=_bitacoras . | wc -l; echo '--- CONTROL POSITIVO del patron: un simbolo inventado (esperado 0) ---'; grep -rIl 'BAHIA_COORDS_INEXISTENTE' --exclude-dir=node_modules --exclude-dir=.git . | wc -l
+------------------------------------------------------------------------------
+./data/catalogo/join_puerto_bahia.json:19:    "BAHIA_COORDS": {
+./data/deudas/deudas_declaradas.json:427:      "texto_literal": "retirar `BAHIA_COORDS`",
+./data/deudas/deudas_declaradas.json:440:      "depende_de": "E2, que toca los dos campos que BAHIA_COORDS aporta y que nadie mas 
+./data/deudas/deudas_declaradas.json:444:        "resultado": "Sigue entero. Aparece en 12 ficheros. La declaracion viva esta en s
+./data/deudas/deudas_declaradas.json:486:      "texto_literal": "declarar UNA fuente autoritativa del catálogo de bahías y deriv
+./data/deudas/deudas_declaradas.json:498:      "costo_estimado": "El propio item declara que se resuelve al retirar BAHIA_COORDS, 
+./data/deudas/deudas_declaradas.json:503:        "resultado": "Siguen siendo cinco y siguen sin jerarquia. divergencias_declaradas
+./data/deudas/deudas_declaradas.json:913:        "resultado": "Vigente y con estado 'abierta' en el dato. El inventario de hoy la 
+./PLAN_JURISDICCION.md:188:descarta en silencio: no tiene celda, no tiene entrada en `BAHIA_COORDS`, y el `continue` la
+./PLAN_JURISDICCION.md:223:| `BAHIA_COORDS` | 163 coords escritas en `sitport-routes.js` | duplica `bahias_sitport`; da `orden_en_
+./PLAN_JURISDICCION.md:541:**Agujero chico y concreto:** `BAHIA_COORDS` tiene 163 bahías y **la 257 no está**, aunque el
+./PLAN_JURISDICCION.md:775:restricciones de tránsito, cero caen bajo una bahía que `BAHIA_COORDS` no tenga, así
+./PLAN_JURISDICCION.md:1059:> en `BAHIA_COORDS` son **20** (falta la 257). **El paso 4 dimensiona sobre 21/20.**
+./PLAN_JURISDICCION.md:1090:`evaluarDriftCatalogo` arma sus candidatas con `!BAHIA_COORDS[r.id_bahia]`, o sea que la 257
+./PLAN_JURISDICCION.md:1240:cargada · retirar `BAHIA_COORDS` · retirar `bahia_jurisdicciones` y su backup ·
+./PLAN_JURISDICCION.md:1244:`BAHIA_COORDS`, que ya está en esta lista y que E2 toca al reemplazar `orden_en_ruta` y
+./PLAN_JURISDICCION.md:1449:| E3 Ámbito lacustre | **CERRADA — el ámbito lacustre dejó de ser invisible: una restricción rea
+./PLAN_JURISDICCION.md:1565:   > 213, 214—. La 257 queda fuera de las dos: sin coordenada en `BAHIA_COORDS`, la función no
+./PLAN_JURISDICCION.md:1608:>   claves de `BAHIA_COORDS` —las 163, todas en el mapa—. Con destinos no portuarios devuelve
+./scripts/e01_prueba_mordida_drift.js:105:    fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace('const BAHIA_COORDS = {', 'co
+./scripts/e01_prueba_mordida_drift.js:107:  }, { error: /no declara BAHIA_COORDS/ }],
+./scripts/e03join_cierre_34.js:41:  const bloque = txt.slice(txt.indexOf('const BAHIA_COORDS = {'));
+./scripts/e03join_cierre_34.js:44:  if (coords.size < 160) throw new Error('BAHIA_COORDS: el parser no esta leyendo la fuente.');
+./scripts/e03join_reconocimiento.js:350:// Las coordenadas se leen de la FUENTE (BAHIA_COORDS en sitport-routes.js), no
+./scripts/e03join_reconocimiento.js:357:  const bloque = txt.slice(txt.indexOf('const BAHIA_COORDS = {'));
+./scripts/e03join_reconocimiento.js:361:  if (coords.size < 160) throw new Error(`BAHIA_COORDS: lei ${coords.size} coordenadas de 
+./scripts/e03join_reconocimiento.js:402:  if (!c) { sinCoord++; filasCotejo.push({ d, jMapa: jMapa.id, jSit: jSit.id, veredicto: '
+./scripts/e1_medir_andamio.js:48:    const bloque = txt.slice(txt.indexOf('const BAHIA_COORDS = {'));
+./scripts/e1_medir_andamio.js:51:    if (coords.size < 160) throw new Error('BAHIA_COORDS: el parser no lee la fuente.');
+./scripts/e3_verificacion_paso6.js:342:  // BAHIA_COORDS: entra al matching y `sitport-routes.js:737` no la lista,
+./scripts/e3_verificacion_paso6.js:498:  L(`  257 en BAHIA_COORDS               : ${q.en_bahia_coords} (por eso no se lista en tra
+./scripts/fase4_migrar_insumo_v2.py:212:    m = re.search(r"const BAHIA_COORDS = \{([\s\S]*?)\n\};", src)
+./scripts/fase4_migrar_insumo_v2.py:214:        raise Alto(f"no se encontro BAHIA_COORDS en {SEED_BAHIAS}")
+./scripts/fase4_migrar_insumo_v2.py:219:        raise Alto("BAHIA_COORDS quedo vacio al parsear: cambio el formato del seed")
+./scripts/fase5_inventario_insumos.js:145:  // ── 4. COBERTURA CRUZADA bahias_sitport <-> mapa <-> BAHIA_COORDS ────�
+./scripts/fase5_inventario_insumos.js:156:  console.log(`   BAHIA_COORDS (en sitport-routes.js): ${idsCoords.size}`);
+./scripts/fase5_inventario_insumos.js:159:  console.log(`   en la tabla y NO en BAHIA_COORDS  : ${dif(idsDB, idsCoords).join(',') 
+./scripts/fase5_inventario_insumos.js:160:  console.log(`   en BAHIA_COORDS y NO en la tabla  : ${dif(idsCoords, idsDB).join(',') 
+./scripts/seed-bahias-sitport.js:2:// Seed bahias_sitport desde BAHIA_COORDS de sitport-routes.js
+./scripts/seed-bahias-sitport.js:16:// ── BAHIA_COORDS extraído de sitport-routes.js ─────────────�
+./scripts/seed-bahias-sitport.js:17:const BAHIA_COORDS = {
+./scripts/seed-bahias-sitport.js:200:    const entries = Object.entries(BAHIA_COORDS);
+./src/routes/sitport-routes.js:35:const BAHIA_COORDS = {
+./src/routes/sitport-routes.js:257:// `BAHIA_COORDS` cuyo nombre contuviera alguna. `Object.entries` recorre las
+./src/routes/sitport-routes.js:480:        const coords = BAHIA_COORDS[p.idBahia];
+./src/routes/sitport-routes.js:681:// Un registro de SITPORT cuya bahía no está en BAHIA_COORDS hoy se descarta en
+./src/routes/sitport-routes.js:692:    const desconocidas = registrosSitport.filter(r => !BAHIA_COORDS[r.id_bahia]);
+./src/routes/sitport-routes.js:848:      const coordsBahia = BAHIA_COORDS[bahiaId];
+./src/routes/sitport-routes.js:858:          `en BAHIA_COORDS: no se lista en tránsito. Su registro queda en el control de drift 
+./src/services/catalogo-bahias.js:62:// BAHIA_COORDS es un literal de objeto dentro de un módulo que arrastra express
+./src/services/catalogo-bahias.js:73:  const ini = src.indexOf('const BAHIA_COORDS = {');
+./src/services/catalogo-bahias.js:75:    throw new ErrorCatalogoBahias(`${rutaArchivo} no declara BAHIA_COORDS — la fuente inter
+./src/services/catalogo-bahias.js:79:    throw new ErrorCatalogoBahias(`${rutaArchivo}: BAHIA_COORDS no cierra — no se puede aco
+./src/services/catalogo-bahias.js:85:    throw new ErrorCatalogoBahias(`${rutaArchivo}: BAHIA_COORDS quedó sin entradas legibles`
+./src/services/catalogo-bahias.js:89:    throw new ErrorCatalogoBahias(`${rutaArchivo}: BAHIA_COORDS repite la(s) clave(s) ${[...n
+./src/services/catalogo-bahias.js:103:    throw new ErrorCatalogoBahias(`${rutaArchivo}: ${ilegibles.length} entrada(s) de BAHIA_C
+./src/services/catalogo-bahias.js:137:      ruta: 'src/routes/sitport-routes.js :: BAHIA_COORDS',
+./src/services/catalogo-bahias.js:145:      ruta: 'scripts/seed-bahias-sitport.js :: BAHIA_COORDS',
+--- ficheros ---
+13
+--- CONTROL POSITIVO del patron: un simbolo inventado (esperado 0) ---
+1
+
+------------------------------------------------------------------------------
+E8-6 . retirar bahia_jurisdicciones: donde aparece en el arbol
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -rIl 'bahia_jurisdicciones' --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=_bitacoras . ; echo '--- ficheros ---'; grep -rIl 'bahia_jurisdicciones' --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=_bitacoras . | wc -l; echo '--- consumo en produccion ---'; grep -rIn 'bahia_jurisdicciones' src/ | cut -c1-140
+------------------------------------------------------------------------------
+./CONTRATO_MOTOR.md
+./data/catalogo/anclas_declaradas.json
+./data/decreto/ambitos_publicados.json
+./data/decreto/capa_consultada.json
+./data/deudas/deudas_declaradas.json
+./PLAN_JURISDICCION.md
+./scripts/create-bahia-jurisdicciones.sql
+./scripts/e01_control_drift_catalogo.js
+./scripts/e02_prueba_mordida_ambitos.js
+./scripts/e1_reconocimiento_andamio.js
+./scripts/e3_prueba_mordida_cableado.js
+./scripts/fase3bis_evidencia.sql
+./scripts/fase3_evidencia.sql
+./scripts/fase5_declarar_capas_vigentes.sql
+./scripts/fase5_marcar_build_provisional.sql
+./scripts/fase5_medir_e02_causas.js
+./src/services/join-puerto-bahia.js
+./src/services/__tests__/cobertura-jurisdiccional.test.js
+--- ficheros ---
+18
+--- consumo en produccion ---
+src/services/join-puerto-bahia.js:100:// matview `bahia_jurisdicciones` y no está versionado en este repositorio. En
+src/services/__tests__/cobertura-jurisdiccional.test.js:52:  bahia_jurisdicciones: ['bahia_id', 'nombre', 'geom'],
+src/services/__tests__/cobertura-jurisdiccional.test.js:179:  assert.strictEqual(decl.capa_jurisdicciones, 'bahia_jurisdicciones',
+
+------------------------------------------------------------------------------
+E8-7 . cinco copias sin jerarquia
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : node -e "const j=require('./data/catalogo/divergencias_declaradas.json');console.log('fuentes_internas: '+JSON.stringify(j.fuentes_internas)+' -> '+j.fuentes_internas.length+' copias');"
+------------------------------------------------------------------------------
+fuentes_internas: ["F1","F2","F3","F4","F5"] -> 5 copias
+

@@ -1,0 +1,121 @@
+==============================================================================
+tmarea-pwa -- el segundo repositorio
+SESION  : caracterizacion de deudas, 2026-08-19. Tramos 1 y 2.
+REPO    : tmarea-backend en 67aa8bb9101e49b47394d40cee5df29604ea6455 (= origin/main)
+          tmarea-pwa      en 6443178493b8b3c35c11a37253c4b5bd1884ea55 (= origin/main)
+ALCANCE : esta sesion NO cierra ninguna deuda. Caracteriza.
+==============================================================================
+
+------------------------------------------------------------------------------
+Estado del arbol de la PWA
+ARBOL   : C:/Users/katia/tmarea-pwa
+COMANDO : git rev-parse HEAD; git rev-parse origin/main; git branch --show-current; echo '--- porcelain ---'; git status --porcelain
+------------------------------------------------------------------------------
+6443178493b8b3c35c11a37253c4b5bd1884ea55
+6443178493b8b3c35c11a37253c4b5bd1884ea55
+main
+--- porcelain ---
+?? diff_transit.txt
+
+------------------------------------------------------------------------------
+PWA-DOCS . el sitio vacio, verificado. Marcadores de codigo, palabra completa, sensible a mayusculas
+ARBOL   : C:/Users/katia/tmarea-pwa
+COMANDO : for t in TODO FIXME HACK XXX DEUDA PENDIENTE; do printf '  %-10s %s\n' "$t" "$(grep -rIw "$t" --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . | wc -l)"; done; echo '--- CONTROL POSITIVO 1: const en el MISMO arbol ---'; grep -rIw 'const' --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . | wc -l
+------------------------------------------------------------------------------
+  TODO       0
+  FIXME      0
+  HACK       0
+  XXX        0
+  DEUDA      0
+  PENDIENTE  0
+--- CONTROL POSITIVO 1: const en el MISMO arbol ---
+875
+
+------------------------------------------------------------------------------
+PWA-DOCS . CONTROL POSITIVO 2: el mismo patron TODO sobre el backend, donde SI hay
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -rIw 'TODO' --exclude-dir=node_modules src scripts | wc -l
+------------------------------------------------------------------------------
+31
+
+------------------------------------------------------------------------------
+PWA-DOCS . documentos de la PWA y su tamaño; no hay _bitacoras ni CLAUDE.md
+ARBOL   : C:/Users/katia/tmarea-pwa
+COMANDO : ls -a | head -20; echo '--- .md del arbol propio ---'; find . -name node_modules -prune -o -name dist -prune -o -name '*.md' -print; echo '--- tamaños ---'; wc -l README.md Tmarea_Biblioteca_Nautica_Spec_v2.0.md diff_transit.txt; echo '--- .claude/ ---'; find .claude -type f
+------------------------------------------------------------------------------
+.
+..
+.claude
+.git
+.gitignore
+diff_transit.txt
+dist
+index.html
+node_modules
+package.json
+package-lock.json
+README.md
+src
+Tmarea_Biblioteca_Nautica_Spec_v2.0.md
+vite.config.js
+--- .md del arbol propio ---
+./README.md
+./Tmarea_Biblioteca_Nautica_Spec_v2.0.md
+--- tamaños ---
+    1 README.md
+  144 Tmarea_Biblioteca_Nautica_Spec_v2.0.md
+   73 diff_transit.txt
+  218 total
+--- .claude/ ---
+.claude/launch.json
+
+------------------------------------------------------------------------------
+SESION . las siete declaraciones de localhost:3000 bajo DOS nombres
+ARBOL   : C:/Users/katia/tmarea-pwa
+COMANDO : grep -rIn "= *['\"]http://localhost:3000['\"]" --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . ; echo '--- conteo de declaraciones ---'; grep -rIn "= *['\"]http://localhost:3000['\"]" --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . | wc -l; echo '--- ficheros con BACKEND_URL ---'; grep -rIl 'BACKEND_URL' --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . | wc -l
+------------------------------------------------------------------------------
+./src/components/map/ConcesionesLayer.jsx:3:const API_BASE = 'http://localhost:3000';
+./src/components/voyage/TideCurvePanel.jsx:18:const BACKEND_URL = 'http://localhost:3000';
+./src/components/VoyageReportButton.jsx:5:const BACKEND_URL = 'http://localhost:3000';
+./src/hooks/useVoyageVerification.js:6:const BACKEND_URL = 'http://localhost:3000';
+./src/screens/P2_VoyageSetup.jsx:9:const API_BASE = 'http://localhost:3000';
+./src/screens/P4_ActiveVoyage.jsx:13:const BACKEND_URL = 'http://localhost:3000';
+./src/utils/tideStations.js:6:const BACKEND_URL = 'http://localhost:3000';
+--- conteo de declaraciones ---
+7
+--- ficheros con BACKEND_URL ---
+5
+
+------------------------------------------------------------------------------
+SESION . BACKEND_URL en el BACKEND: solo en prosa de _bitacoras, cero en el codigo
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -rIl 'BACKEND_URL' --exclude-dir=node_modules --exclude-dir=.git . ; echo '--- en src/ ---'; grep -rIl 'BACKEND_URL' src/ | wc -l
+------------------------------------------------------------------------------
+./data/deudas/deudas_declaradas.json
+./_bitacoras/cableo_cierre_2026-08-17/cableo_cierre_2026-08-17.txt
+./_bitacoras/reconocimiento_jurisdiccion_maritima_2026-08-09.txt
+--- en src/ ---
+0
+
+------------------------------------------------------------------------------
+SESION . las dos citas cruzadas entre repos POR NUMERO DE LINEA
+ARBOL   : C:/Users/katia/tmarea-pwa
+COMANDO : grep -rIn 'sitport-routes.js:333-338' --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . | cut -c1-180; grep -rIn 'tmarea-backend/_bitacoras' --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . | cut -c1-180
+------------------------------------------------------------------------------
+./src/hooks/useVoyageVerification.js:163:// puerto vivo (backend `sitport-routes.js:333-338`, subcadena y no palabra).
+./src/screens/P3_VoyageVerification.jsx:342:        // `tmarea-backend/_bitacoras/rotulo_p2_2026-08-16/01_medir_rotulo_p2.txt`.
+
+------------------------------------------------------------------------------
+SESION . D-P3.1 no existe escrita en la PWA. Control positivo en el backend
+ARBOL   : C:/Users/katia/tmarea-pwa
+COMANDO : echo -n 'D-P3.1 en tmarea-pwa : '; grep -rIn 'D-P3.1' --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . | wc -l
+------------------------------------------------------------------------------
+D-P3.1 en tmarea-pwa : 0
+
+------------------------------------------------------------------------------
+SESION . D-P3.1 en el backend (CONTROL POSITIVO del cero de arriba)
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : echo -n 'D-P3.1 en tmarea-backend : '; grep -rIn 'D-P3.1' --exclude-dir=node_modules --exclude-dir=.git . | wc -l
+------------------------------------------------------------------------------
+D-P3.1 en tmarea-backend : 9
+

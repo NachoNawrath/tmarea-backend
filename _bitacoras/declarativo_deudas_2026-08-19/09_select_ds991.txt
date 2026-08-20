@@ -1,0 +1,80 @@
+==============================================================================
+QUE SON LAS 6 FILAS DE jurisdicciones_ds991 -- PERMISO D.1, SOLO SELECT
+SESION  : caracterizacion de deudas, 2026-08-19. Vuelta de la PARADA 2.
+REPO    : tmarea-backend en 67aa8bb9101e49b47394d40cee5df29604ea6455 (= origin/main)
+
+POR QUE SE MIDIO: al revisar la PARADA 2 el owner objeto que "seis filas tampoco
+son <<existe>> sin mas", y planteo dos hipotesis: o alguien la construyo sin
+escribirlo, o es un artefacto parcial de origen desconocido. Las dos son falsas y
+la medicion de abajo lo muestra. Instrumento de un solo uso, corrido desde el
+scratchpad; las consultas van publicadas crudas, que es lo que hace falta para
+rehacerlo.
+==============================================================================
+
+CORRIDA (UTC): 2026-08-20T00:42:20.320Z
+PERMISO      : D.1 -- solo SELECT
+PREGUNTA     : que son las 6 filas de jurisdicciones_ds991, y quien las escribio
+
+--- cols ---
+SELECT column_name, data_type FROM information_schema.columns
+         WHERE table_schema='public' AND table_name='jurisdicciones_ds991' ORDER BY ordinal_position
+   id  text
+   nombre  text
+   gobernacion  text
+   ambito  text
+   participa_matching  boolean
+   receta  text
+   estado_geometria  text
+   causa_sin_geometria  text
+   sigue_litoral  boolean
+   tramos_litoral  integer
+   fronteras_aplicadas  text
+   km2_ensanche  numeric
+   punto_representativo  USER-DEFINED
+   causa_sin_punto_representativo  text
+   texto_decreto  text
+   geom  USER-DEFINED
+
+--- filas ---
+SELECT * FROM jurisdicciones_ds991 ORDER BY 1
+   filas: 6
+   {"id":"lago_general_carrera","nombre":"Lago General Carrera","gobernacion":"Aysen","ambito":"lacustre","participa_matching":true,"receta":"union_cuerpos","estado_geometria":"construida","causa_sin_geometria":null,"sigue_litoral":false,"tramos_litoral":0,"fronteras_aplicadas":null,"km2_ensanche":null,"punto_representativo":"0101000020E610000076E2CE17F94452C0E6B2B74E485848C0","causa_sin_punto_representativo":null,"texto_decreto":"Lagos General Carrera, Cochrane y O'Higgins.","geom":"0106000020E610000003000000010300000004000000490F00004E1060FD263552C06BF3DE74433A48C024568F5E403552C05E5A58CA343A48C0701611C44B3552C0A944E211153A48C084C7F41E503552C0B7E16E84FE3948C071FB7E4A573552C0956643B3E03948C08C844B71..."}
+   {"id":"lago_panguipulli","nombre":"Lago Panguipulli","gobernacion":"Valdivia","ambito":"lacustre","participa_matching":true,"receta":"union_cuerpos","estado_geometria":"construida","causa_sin_geometria":null,"sigue_litoral":false,"tramos_litoral":0,"fronteras_aplicadas":null,"km2_ensanche":null,"punto_representativo":"0101000020E6100000DCC8EAE7880E52C075E194D61EC443C0","causa_sin_punto_representativo":null,"texto_decreto":"Lagos Calafquen, Panguipulli, Pellaifa, Pullinque, Rinihue, Neltume, Pirihueico, y los rios Fuy y San Pedro.","geom":"0106000020E610000007000000010300000002000000350300008E7285FF08F351C00E31078578F743C0E56B451F10F351C0BF711F996AF743C0DDAB0DC014F351C00720CB495AF743C02B67787F1DF351C0E08031E43FF743C0BAB39ADF22F351C0D9BAB7152AF743C0243FB27F..."}
+   {"id":"lago_ranco","nombre":"Lago Ranco","gobernacion":"Valdivia","ambito":"lacustre","participa_matching":true,"receta":"union_cuerpos","estado_geometria":"construida","causa_sin_geometria":null,"sigue_litoral":false,"tramos_litoral":0,"fronteras_aplicadas":null,"km2_ensanche":null,"punto_representativo":"0101000020E610000016511AFCF72052C0A1E1A2C6415644C0","causa_sin_punto_representativo":null,"texto_decreto":"Lagos Ranco, Maihue, Puyehue (hasta el limite con la Region de Los Lagos), Huishue y Gris. Incluye el rio Bueno en los sectores Los Patos, La Goleta y El Manzanito. Los sectores del rio Bueno con sus coordenadas: Los Pat...","geom":"0106000020E6100000050000000103000000050000005F02000022B7395F222152C09C4A52962F5A44C07983473F2E2152C08DDF4A80235A44C0AB52BFFF402152C05C24AA28135A44C0B6143520632152C0658F4B4DEB5944C085910F7F6D2152C0BE61960FDC5944C0FA07FB5F..."}
+   {"id":"lago_rapel","nombre":"Lago Rapel","gobernacion":"San Antonio","ambito":"lacustre","participa_matching":true,"receta":"union_cuerpos","estado_geometria":"construida","causa_sin_geometria":null,"sigue_litoral":false,"tramos_litoral":0,"fronteras_aplicadas":null,"km2_ensanche":null,"punto_representativo":"0101000020E6100000305DD6FD8DDE51C020A058D6171741C0","causa_sin_punto_representativo":null,"texto_decreto":"Su jurisdiccion comprende el lago Rapel.","geom":"0106000020E6100000010000000103000000010000003E0900004200DB6B80E351C05F306110A40D41C0B8D11F5885E351C09D5F1F9D860D41C0D509DE5783E351C0DC9420B9710D41C0BD65DFDA7CE351C051458F505D0D41C0A39F823A7AE351C0490E9827480D41C0B1180A63..."}
+   {"id":"lago_villarrica","nombre":"Lago Villarrica","gobernacion":"Valdivia","ambito":"lacustre","participa_matching":true,"receta":"union_cuerpos","estado_geometria":"construida","causa_sin_geometria":null,"sigue_litoral":false,"tramos_litoral":0,"fronteras_aplicadas":null,"km2_ensanche":null,"punto_representativo":"0101000020E61000002034935F750552C0CA4B30EB8AA043C0","causa_sin_punto_representativo":null,"texto_decreto":"Lagos Colico, Caburgua, Huilipilun y Villarrica, lagunas Conguillio, Galletue e Icalma, y el Rio Tolten. El Rio Tolten, desde su origen hasta la jurisdiccion de la comuna de Pitrufquen.","geom":"0106000020E610000008000000010300000005000000E302000053618F3F8A0952C010C03AE4A7A543C0FE4AC05F920952C0B00E4A38A0A543C0D60BCB5F9A0952C0B337BB1C98A543C0491EF07EA90952C0F8BF602C86A543C0AC0563FFC50952C0DC6D05705FA543C0C9CB2CDF..."}
+   {"id":"puerto_varas","nombre":"Puerto Varas","gobernacion":"Puerto Montt","ambito":"lacustre","participa_matching":true,"receta":"union_cuerpos","estado_geometria":"construida","causa_sin_geometria":null,"sigue_litoral":false,"tramos_litoral":0,"fronteras_aplicadas":null,"km2_ensanche":null,"punto_representativo":"0101000020E61000002C2D9D8E923352C0325D877E289244C0","causa_sin_punto_representativo":null,"texto_decreto":"Lagos Llanquihue, Rupanco, Todos los Santos, Puyehue (hasta el limite con la Region de Los Rios) y Constancia.","geom":"0106000020E610000005000000010300000001000000CB090000AEDAE53F943852C04C3E190EE78044C0FDF4347F913852C0031A6320D68044C0091B8CFF903852C0F90032C0C48044C086EDC05E8E3852C047F353D0B38044C0B1F01ADF8D3852C01A642270A28044C0F809ED1E..."}
+
+--- publicacion ---
+SELECT * FROM jurisdicciones_ds991_publicacion ORDER BY 1
+   filas: 4
+   {"ambito":"antartica","habilitado":false,"controles_ok":true,"jurisdicciones":4,"con_geometria":4,"publicado":false,"causa":"no habilitado para publicar en data/decreto/ambitos_publicados.json","construido_en":"[object]"}
+   {"ambito":"insular_remota","habilitado":false,"controles_ok":true,"jurisdicciones":2,"con_geometria":0,"publicado":false,"causa":"no habilitado para publicar en data/decreto/ambitos_publicados.json","construido_en":"[object]"}
+   {"ambito":"lacustre","habilitado":true,"controles_ok":true,"jurisdicciones":6,"con_geometria":6,"publicado":true,"causa":null,"construido_en":"[object]"}
+   {"ambito":"maritima","habilitado":true,"controles_ok":false,"jurisdicciones":52,"con_geometria":44,"publicado":false,"causa":"controles en falla: C3 cero traslapes fuera de los declarados deliberados [Calbuco x Maullin = 40.833; Maullin x Puerto Montt = 755.491; Cochamo x Maullin = 2947.340; Cochamo x Rio Negro Hornopiren = 531.757; Chaiten x C...","construido_en":"[object]"}
+
+--- procedencia ---
+SELECT * FROM jurisdicciones_ds991_procedencia ORDER BY 1
+   filas: 9
+   {"clave":"alcance_propio","valor":"ninguna: las maritimas construidas toman el default"}
+   {"clave":"capas_tierra","valor":"costa_osm_sub"}
+   {"clave":"ensanche_litoral","valor":"60 km"}
+   {"clave":"fuente","valor":"D.S. (M.) N 991, de 26 de octubre de 1987, Ministerio de Defensa Nacional, Subsecretaria de Marina. Texto consolidado, ultima version 12-NOV-2020 (mod. D.S. 391, D.O. 12.11.2020). Fuente: BCN Ley Chile, idNorma=142425."}
+   {"clave":"insumo","valor":"data/decreto/jurisdicciones_v2.json"}
+   {"clave":"insumo_generado","valor":"2026-08-09"}
+   {"clave":"insumo_sha256","valor":"10ef5af265b9a448dfe493855c25442c2d6905801a747c66cbb4e33554bee413"}
+   {"clave":"insumo_version","valor":"2"}
+   {"clave":"limite_exterior_m","valor":"370400 (200 millas nauticas), declarado en el insumo en 'alcance_costa_afuera.por_defecto'; capa del rol 'limite_exterior'"}
+
+--- verificacion_n ---
+SELECT COUNT(*) n FROM jurisdicciones_ds991_verificacion
+   filas: 1
+   {"n":"31"}
+
+--- areas_n ---
+SELECT COUNT(*) n FROM jurisdicciones_ds991_areas
+   filas: 1
+   {"n":"64"}
+
+
+EXIT: 0

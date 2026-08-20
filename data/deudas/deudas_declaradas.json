@@ -1,0 +1,1233 @@
+{
+  "_que_es": "El declarativo unico de deudas de este proyecto. Una fila por deuda, con su texto literal, donde vive, cuando se abrio, su grupo y la medicion que sostiene el grupo cuando el grupo la exige. Cubre DOS repositorios: tmarea-backend y tmarea-pwa.",
+  "_que_no_es": "NO es un informe y NO es una lista completa. La cobertura de abajo dice que sitios estan barridos y cuales no. Un sitio en barrido=false no tiene filas aca, y su ausencia NO significa que no tenga deudas: significa que nadie miro.",
+  "_por_que_existe": "Se hicieron cuatro o cinco inventarios de deudas y ninguno cerro nada. La causa medida: las deudas se anotan en la bitacora de la sesion que las creo, esa bitacora no se vuelve a abrir, y la sesion siguiente arranca en frio sin verlas. El precedente de forma es 7.2 del PLAN_JURISDICCION.md, que ya razono lo mismo para las afirmaciones verificables: parsear la prosa seria adivinar, declararlas es el camino.",
+  "_como_se_lee": "Ninguna fila queda sin grupo. Los grupos 5 y 6 son PROPUESTAS: no cuentan como baja hasta que firma_owner.firmada sea true. El conteo se publica siempre dos veces, con firma y sin firma.",
+  "_por_que_vive_en_el_backend": "Medido el 2026-08-19: tmarea-pwa no tiene _bitacoras/, ni CLAUDE.md, ni documento de plan, ni un solo sitio donde se anoten deudas (TODO/FIXME/HACK/XXX/DEUDA/PENDIENTE = 0, con dos controles positivos). Todo el aparato de deuda vive en tmarea-backend. Y la direccion de la referencia ya la fijo el codigo, no la comodidad: tmarea-pwa/src/screens/P3_VoyageVerification.jsx cita tmarea-backend/_bitacoras/, y ningun fichero del backend cita a la PWA.",
+
+  "version": 1,
+  "generado": "2026-08-19",
+  "generado_por": "sesion de caracterizacion de deudas, tramo 1 y tramo 2",
+  "procedencia": "_bitacoras/declarativo_deudas_2026-08-19/",
+  "lo_lee": "scripts/validar_deudas_declaradas.js (npm run deudas). Agregar una fila aca NO exige tocar codigo.",
+
+  "repos": {
+    "tmarea-backend": {
+      "ruta_en_esta_maquina": "C:/Users/katia/tmarea-backend",
+      "main_al_generar": "67aa8bb9101e49b47394d40cee5df29604ea6455",
+      "nota": "main = origin/main al generar. Suite 157/157."
+    },
+    "tmarea-pwa": {
+      "ruta_en_esta_maquina": "C:/Users/katia/tmarea-pwa",
+      "main_al_generar": "6443178493b8b3c35c11a37253c4b5bd1884ea55",
+      "nota": "main = origin/main al generar. El validador NO abre este arbol: valida el declarativo, no re-verifica cada fila contra su repositorio de origen. Re-verificar es otro instrumento."
+    }
+  },
+
+  "vocabulario_de_grupos": {
+    "1_cierra_con_lo_que_hay": "Se resuelve con lo que ya esta en el arbol, sin dato de afuera y sin decision del owner. Exige costo_estimado y depende_de.",
+    "2_decision_del_owner": "Normativa o de producto. Exige pregunta, redactada para que se pueda contestar sin abrir el repositorio.",
+    "3_dato_externo": "Exige que_dato y a_quien.",
+    "4_caduca": "La deuda afirmaba algo y esa afirmacion YA ES FALSA. No se cierra: murio. Exige medicion hecha en esta sesion y afirmacion_que_ya_es_falsa.",
+    "5_obsoleta": "La deuda SIGUE SIENDO CIERTA y se podria medir, pero el resultado ya no le sirve a nadie porque el contexto que la hacia util se fue. Exige que_cambio y que_se_perderia_si_no_se_hace. Es PROPUESTA: la firma el owner una por una.",
+    "6_se_descarta": "No se hace, con motivo escrito. Es PROPUESTA: la firma el owner una por una."
+  },
+
+  "politica_de_firma": "Los grupos 5 y 6 nacen con firma_owner.firmada = false. Mientras sea false la fila SIGUE CONTANDO como deuda viva. Bajar la lista por decreto en vez de por trabajo es el modo de falla que este campo existe para impedir.",
+
+  "politica_de_duplicados": "Una misma deuda puede estar escrita en dos sitios. La fila canonica es la que trae la pregunta o el dato con mas precision; la otra lleva duplicada_de con el id de la canonica y NO se cuenta en el total unico. Se publican los dos numeros: filas y deudas unicas.",
+
+  "cobertura": {
+    "_que_es": "Que sitios de deuda de los dos repositorios estan barridos y cuales no. Es dato, no prosa.",
+    "_como_se_lee": "Un sitio con barrido=false NO tiene filas aca. Su ausencia NO significa que no tenga deudas: significa que NADIE MIRO. Este fichero NUNCA se lee como completo mientras quede un sitio en false.",
+    "_de_donde_sale_la_lista": "Medida el 2026-08-19. Dieciseis sitios. 6. RIESGOS del PLAN_JURISDICCION.md quedo FUERA por decision del owner: un riesgo mitigado no es una deuda y confunde el denominador.",
+    "_orden": "El numero de tandas no esta comprometido. Lo que esta fijado es el ORDEN. Cada sesion avanza hasta donde llega y cierra en frontera de sitio, con el validador en verde.",
+
+    "sitios": [
+      {
+        "id": "PLAN-3-E8",
+        "repo": "tmarea-backend",
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "3. ETAPAS -> E8 . Deudas declaradas",
+        "vocabulario_del_barrido": ["separador ·"],
+        "orden": 1,
+        "barrido": true,
+        "barrido_el": "2026-08-19",
+        "filas_en_este_declarativo": 8,
+        "nota": "Son 7 items separados por · y 8 filas. El item 'sectores y AreaRestriccion' se partio en dos porque la medicion dio estados OPUESTOS a sus dos mitades: AreaRestriccion ya esta consumido en produccion y sectores no existe. Un solo grupo no podia describir las dos. El criterio de la particion se declara aca y no se aplica en silencio.",
+        "bitacora": "_bitacoras/declarativo_deudas_2026-08-19/"
+      },
+      {
+        "id": "PLAN-7.2",
+        "repo": "tmarea-backend",
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "7.2 Control del estado del plan -> recuadro 'ANOTADO, NO RESUELTO — 2026-08-19'",
+        "vocabulario_del_barrido": ["ANOTADO, NO RESUELTO", "viñetas del recuadro"],
+        "orden": 1,
+        "barrido": true,
+        "barrido_el": "2026-08-19",
+        "filas_en_este_declarativo": 4,
+        "bitacora": "_bitacoras/declarativo_deudas_2026-08-19/"
+      },
+      {
+        "id": "PWA-DOCS",
+        "repo": "tmarea-pwa",
+        "fichero": "README.md, Tmarea_Biblioteca_Nautica_Spec_v2.0.md, diff_transit.txt, .claude/launch.json",
+        "seccion_por_titulo": "documentos de la raiz de tmarea-pwa",
+        "vocabulario_del_barrido": ["TODO", "FIXME", "HACK", "XXX", "DEUDA", "PENDIENTE", "deuda", "pendiente", "no resuelt", "abierta", "sin resolver", "hardcode"],
+        "orden": 1,
+        "barrido": true,
+        "barrido_el": "2026-08-19",
+        "filas_en_este_declarativo": 0,
+        "vacio_verificado": {
+          "conteos": {
+            "TODO": 0, "FIXME": 0, "HACK": 0, "XXX": 0, "DEUDA": 0, "PENDIENTE": 0,
+            "deuda": 0, "no resuelt": 0, "abierta": 0, "sin resolver": 0, "hardcode": 0
+          },
+          "controles_positivos": [
+            "'const' en el MISMO arbol de tmarea-pwa (sin node_modules/dist/.git): 875 -> el grep alcanza los ficheros",
+            "'TODO' en tmarea-backend src/ y scripts/: 30 -> el patron encuentra cuando existe"
+          ],
+          "nota": "README.md tiene UNA linea. El Spec v2.0 es una especificacion de la Biblioteca Nautica, no una lista de deudas. El cero es un resultado medido, no una omision.",
+          "defecto_de_instrumento_declarado": "La primera pasada dio TODO=812, FIXME=16, XXX=24. Era falso: los --exclude-dir iban DESPUES de '--', que los convierte en nombres de fichero, y el barrido entro a node_modules. Repetido sin '--' da 0. Va escrito porque el numero malo llego a publicarse."
+        },
+        "bitacora": "_bitacoras/declarativo_deudas_2026-08-19/"
+      },
+      {
+        "id": "SESION-caracterizacion-deudas-2026-08-19",
+        "repo": "tmarea-backend",
+        "fichero": "_bitacoras/declarativo_deudas_2026-08-19/",
+        "seccion_por_titulo": "deudas que genera la propia sesion de caracterizacion",
+        "vocabulario_del_barrido": ["hallazgos de la sesion, enumerados por el owner y por el agente"],
+        "orden": 1,
+        "barrido": true,
+        "barrido_el": "2026-08-19",
+        "filas_en_este_declarativo": 8,
+        "bitacora": "_bitacoras/declarativo_deudas_2026-08-19/"
+      },
+      {
+        "id": "DIRECTEMAR-REGISTRO",
+        "repo": "tmarea-backend",
+        "fichero": "_bitacoras/consulta_directemar_registro.md",
+        "seccion_por_titulo": "los seis apartados numerados '## N ·'",
+        "vocabulario_del_barrido": ["^## [0-9]"],
+        "orden": 2,
+        "barrido": true,
+        "barrido_el": "2026-08-19",
+        "filas_en_este_declarativo": 6,
+        "bitacora": "_bitacoras/declarativo_deudas_2026-08-19/"
+      },
+      {
+        "id": "JOIN-SIN-RESOLVER",
+        "repo": "tmarea-backend",
+        "fichero": "data/decreto/join_bahia_jurisdiccion.json",
+        "seccion_por_titulo": "entradas con estado = 'sin_resolver'",
+        "vocabulario_del_barrido": ["estado == 'sin_resolver'"],
+        "orden": 2,
+        "barrido": true,
+        "barrido_el": "2026-08-19",
+        "filas_en_este_declarativo": 3,
+        "nota": "Son 6 bahias y 3 filas. El dato agrupa las 6 bajo TRES fuente_a_consultar distintas y su politica_de_resolucion dice que se resuelven todas juntas POR FUENTE. La deuda es la pregunta, no la bahia. Cada fila nombra sus bahias.",
+        "bitacora": "_bitacoras/declarativo_deudas_2026-08-19/"
+      },
+      {
+        "id": "DIVERGENCIAS-DECLARADAS",
+        "repo": "tmarea-backend",
+        "fichero": "data/catalogo/divergencias_declaradas.json",
+        "seccion_por_titulo": "divergencias con estado = 'abierta'",
+        "vocabulario_del_barrido": ["estado == 'abierta'"],
+        "orden": 2,
+        "barrido": true,
+        "barrido_el": "2026-08-19",
+        "filas_en_este_declarativo": 3,
+        "bitacora": "_bitacoras/declarativo_deudas_2026-08-19/"
+      },
+
+      {
+        "id": "PLAN-9",
+        "repo": "tmarea-backend",
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "9. LO QUE ESTE DOCUMENTO NO RESPONDE",
+        "vocabulario_del_barrido": ["viñetas de primer nivel, descartando las tachadas"],
+        "orden": 3,
+        "barrido": false,
+        "barrido_el": null,
+        "filas_en_este_declarativo": 0,
+        "candidatas_estimadas": 11,
+        "por_que_todavia_no": "556 lineas, 13 viñetas, 2 tachadas. Varias traen su medicion previa citada, lo que abarata la fila."
+      },
+      {
+        "id": "PLAN-5-DECISIONES",
+        "repo": "tmarea-backend",
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "5. DECISIONES -> tabla",
+        "vocabulario_del_barrido": ["filas con estado 'abierta'"],
+        "orden": 3,
+        "barrido": false,
+        "barrido_el": null,
+        "filas_en_este_declarativo": 0,
+        "candidatas_estimadas": 2,
+        "por_que_todavia_no": "D4 y D5, las dos marcadas 'abierta' en su propia celda. Barato."
+      },
+      {
+        "id": "CLAUDE-MD",
+        "repo": "tmarea-backend",
+        "fichero": "CLAUDE.md",
+        "seccion_por_titulo": "7. ENTORNO — WINDOWS -> 7.2 Convenciones de PowerShell",
+        "vocabulario_del_barrido": ["DEUDA ABIERTA"],
+        "orden": 3,
+        "barrido": false,
+        "barrido_el": null,
+        "filas_en_este_declarativo": 0,
+        "candidatas_estimadas": 1,
+        "por_que_todavia_no": "Un bloque, el del BOM en el asunto del commit, que ya trae opciones (a)/(b)/(c) y recomendacion escritas."
+      },
+      {
+        "id": "PLAN-7-TABLA",
+        "repo": "tmarea-backend",
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "7. ESTADO POR ETAPA -> tabla",
+        "vocabulario_del_barrido": ["filas cuyo estado no es CERRADA", "deudas embebidas en la prosa de filas cerradas"],
+        "orden": 4,
+        "barrido": false,
+        "barrido_el": null,
+        "filas_en_este_declarativo": 0,
+        "candidatas_estimadas": 5,
+        "por_que_todavia_no": "22 filas de datos con prosa larguisima por celda. Un proxy por regex se equivoco dos veces sobre este mismo sitio: leer, no grepear."
+      },
+      {
+        "id": "PLAN-7.1-FILTRO",
+        "repo": "tmarea-backend",
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "7.1 -> El frente del FILTRO -> 'Deuda viva que queda colgando del frente'",
+        "vocabulario_del_barrido": ["viñetas de primer nivel del bloque, descartando las tachadas"],
+        "orden": 4,
+        "barrido": false,
+        "barrido_el": null,
+        "filas_en_este_declarativo": 0,
+        "candidatas_estimadas": 6,
+        "por_que_todavia_no": "7 viñetas, 1 tachada. Dos de las 6 piden base."
+      },
+      {
+        "id": "PLAN-7.1-CONTACTO-CIERRE",
+        "repo": "tmarea-backend",
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "7.1 -> El frente de CONTACTO y El frente de CIERRE",
+        "vocabulario_del_barrido": ["prosa: estos dos frentes NO tienen bloque de deuda viva"],
+        "orden": 4,
+        "barrido": false,
+        "barrido_el": null,
+        "filas_en_este_declarativo": 0,
+        "candidatas_estimadas": 8,
+        "por_que_todavia_no": "Hallazgo del sizing: 7.1 tiene TRES frentes y solo el del FILTRO tiene lista. CONTACTO (452 lineas) y CIERRE (237) llevan sus deudas en prosa, con 3 y 5 viñetas sueltas. Es un sitio distinto y mas caro que el que el barrido nombraba."
+      },
+      {
+        "id": "PWA-COMENTARIOS",
+        "repo": "tmarea-pwa",
+        "fichero": "src/**/*.jsx, src/**/*.js",
+        "seccion_por_titulo": "deudas anotadas en comentarios del codigo",
+        "vocabulario_del_barrido": ["por ahora", "PROVISORIOS", "hasta que ... este resuelto", "D-C9"],
+        "orden": 4,
+        "barrido": false,
+        "barrido_el": null,
+        "filas_en_este_declarativo": 0,
+        "candidatas_estimadas": 4,
+        "por_que_todavia_no": "Cuelga del frente de CIERRE (D-C9) y de D-P3.1, que son PLAN-7.1-*. Se barre donde esta su nudo, no donde esta su repositorio."
+      },
+      {
+        "id": "PWA-SIN-ANOTAR",
+        "repo": "tmarea-pwa",
+        "fichero": "src/**",
+        "seccion_por_titulo": "deudas que son un hecho del codigo y que nadie escribio",
+        "vocabulario_del_barrido": ["no hay vocabulario: la deuda no tiene texto. Se barre por evidencia en el arbol"],
+        "orden": 4,
+        "barrido": false,
+        "barrido_el": null,
+        "filas_en_este_declarativo": 0,
+        "candidatas_estimadas": 4,
+        "por_que_todavia_no": "Ver PWA-COMENTARIOS. Estas filas usan sin_texto=true."
+      },
+      {
+        "id": "BITACORAS-HD",
+        "repo": "tmarea-backend",
+        "fichero": "_bitacoras/**/*.txt, _bitacoras/**/*.md",
+        "seccion_por_titulo": "tokens H-n y D-n en forma de declaracion",
+        "vocabulario_del_barrido": ["/\\b([HD]-[A-Z]?[0-9]+(\\.[0-9]+)?[a-z]?)\\b/ en linea de declaracion"],
+        "orden": 5,
+        "barrido": false,
+        "barrido_el": null,
+        "filas_en_este_declarativo": 0,
+        "candidatas_estimadas": 51,
+        "por_que_todavia_no": "El sitio mas grande: 41% del total. Medido el 2026-08-19 sobre 638 ficheros: 116 pares (espacio_de_nombres, token); 66 con declaracion propia y 50 que son SOLO referencias cruzadas y no generan fila; de los 66, 15 descartados por pronunciamiento de cierre y 51 admitidos por el criterio D.3a. Va ultimo para que el criterio de admision salga del vocabulario que fijan los otros quince sitios.",
+        "el_51_SE_REMIDE_NO_SE_CITA": "OBLIGATORIO al barrer este sitio: el 51 y el 15 se vuelven a medir con un instrumento VERSIONADO, y no se heredan de aca. El instrumento que produjo estos numeros el 2026-08-19 quedo FUERA DEL ARBOL, en el scratchpad de aquella sesion, porque su resultado no sostenia ninguna fila -- este sitio esta en barrido=false. Un numero sin instrumento versionado es una ESTIMACION HEREDADA, no una medicion, y este campo existe para que nadie lo cite como si fuera lo segundo. Dos motivos concretos por los que el numero puede moverse: (1) las bitacoras se agregan, asi que 638 ficheros de entonces no son los de manana; (2) la casilla AMBAS del criterio tuvo 1 caso que hubo que leer a mano -- ver la fila SESION-caracterizacion-deudas-2026-08-19::casilla-ambas-del-criterio-d3a -- y con 51 filas por delante ese arreglo puede pagarse.",
+        "aviso_de_identificador": "Los tokens H-n y D-n NO son identificadores estables: la numeracion es local a cada bitacora y colisiona. Medido: 'D-1' significa tres cosas distintas en causa_pd_tdf_2026-08-15, filtro_puerto_2026-08-17 y cableo_cierre_2026-08-17. Por eso el id de este declarativo lleva el espacio de nombres adentro."
+      }
+    ]
+  },
+
+  "deudas": [
+
+    {
+      "id": "PLAN-3-E8::art-2-d6",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 3. ETAPAS -> E8",
+      "sitio": "PLAN-3-E8",
+      "repo": "tmarea-backend",
+      "texto_literal": "Art. 2 del decreto (D6)",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "3. ETAPAS -> E8 · Deudas declaradas",
+        "cita_de_anclaje": "primera entrada de la enumeracion separada por ·, inmediatamente despues del titulo 'E8 · Deudas declaradas'"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no dice cuando se abrio este item. E8 aparece desde la version 1.0 del plan (2026-08-10) pero la enumeracion no fecha sus items uno por uno.",
+      "grupo": "4_caduca",
+      "estado": "caduca",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "afirmacion_que_ya_es_falsa": "Que el Art. 2 del D.S. 991 sigue siendo trabajo pendiente de E8.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura de data/decreto/jurisdicciones_v2.json y data/decreto/jurisdicciones_capitanias.json por node, mas conteo de terminos con grep -oic",
+        "resultado": "El bloque 'articulos' existe en los DOS insumos, v1 y v2, con una entrada id='art_2', titulo='Art. 2 — ambito material de las jurisdicciones', texto_decreto de 573 caracteres y procedencia presente. Los tres terminos que D6 exigia estan en el v2: 'mar territorial' 5, 'zona contigua' 5, 'plataforma continental' 3, y 'aguas interiores' 6. Control negativo: 'zona abisal fantasma' 0. Control positivo: 'capitania' 128.",
+        "corrobora": "5. DECISIONES registra D6 como CERRADA 2026-08-12: 'se incorporo. El Art. 2 entro al insumo en 5d62466 y esta en v1 y en v2'.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/01_medir_e8.txt"
+      },
+      "que_queda_del_item": "Nada. La deuda murio el 2026-08-12 y E8 no se entero. Es el caso exacto que 7.2 existe para cazar.",
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-3-E8::p1-en-e4",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 3. ETAPAS -> E8",
+      "sitio": "PLAN-3-E8",
+      "repo": "tmarea-backend",
+      "texto_literal": "P1 si no entró en E4",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "3. ETAPAS -> E8 · Deudas declaradas",
+        "cita_de_anclaje": "segunda entrada de la enumeracion separada por ·"
+      },
+      "abierta_el": "2026-08-11",
+      "abierta_el_lo_dice_el_documento": true,
+      "nota_fecha": "P1 es la decision D9, aprobada el 2026-08-11 segun su fila de 5. DECISIONES.",
+      "grupo": "2_decision_del_owner",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "pregunta": "El contrato del motor enumera hoy TRES ambitos de jurisdiccion: maritimo, lacustre e insular remoto. El insumo del decreto tiene CUATRO, porque incluye el antartico. Ya esta aprobado sumarlo al contrato y el texto de reemplazo esta redactado y esperando desde el 2026-08-11. ¿Lo escribe ahora, o el ambito antartico sigue existiendo en el dato sin existir en la norma que lo gobierna?",
+      "por_que_es_del_owner": "El contenido normativo del contrato lo aprueba y lo escribe el owner. La redaccion ya esta hecha y no es el obstaculo.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "grep sobre CONTRATO_MOTOR.md",
+        "resultado": "INV-3.5 se titula 'Ambito maritimo y ambito lacustre' y su primera linea dice: 'Las jurisdicciones tienen ambito maritimo, lacustre o insular remoto'. Son TRES. 'antartic*' aparece 2 veces en todo el contrato, las dos fuera de INV-3.5 y en contexto de contacto (lineas del bloque de Bahia Paraiso y de la GM Antartica Chilena). Control positivo: 'lacustre' 6 apariciones. P1 NO entro.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/01_medir_e8.txt"
+      },
+      "texto_ya_redactado_en": "_bitacoras/e02_texto_propuesto_inv35_2026-08-11.md",
+      "consecuencia_hoy": "data/decreto/ambitos_publicados.json lleva al ambito antartico categoria_contractual='pendiente' y no lo habilita, con el motivo escrito. El registro es honesto; lo que falta es la norma.",
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-3-E8::area-restriccion",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 3. ETAPAS -> E8",
+      "sitio": "PLAN-3-E8",
+      "repo": "tmarea-backend",
+      "texto_literal": "sectores y `AreaRestriccion`",
+      "fragmento_de_este_item": "la mitad `AreaRestriccion`",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "3. ETAPAS -> E8 · Deudas declaradas",
+        "cita_de_anclaje": "tercera entrada de la enumeracion separada por ·"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no lo dice.",
+      "grupo": "4_caduca",
+      "estado": "caduca",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "afirmacion_que_ya_es_falsa": "Que `AreaRestriccion` es un campo de SITPORT que el motor todavia no lee.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "grep sobre src/, mas la corrida de scripts/fase5_inventario_insumos.js contra SITPORT en vivo",
+        "resultado": "`AreaRestriccion` esta consumido en PRODUCCION en dos sitios y con dos propositos distintos: src/services/sitport-parser.js linea 147 lo normaliza a un campo `area` via detectarArea(), y src/services/cierre-derivador.js linea 140 lo usa como discriminante con /DENTRO|FUERA/. Ademas src/services/cierre-derivador.js linea 467 declara explicitamente que el cierre NO se infiere de AreaRestriccion (INV-0.2), o sea que el campo esta leido Y su alcance esta acotado a proposito. El inventario corrido hoy lo lista entre los campos que SITPORT devuelve en vivo. Control positivo: 'restricciones' aparece en 14 ficheros de src/.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/01_medir_e8.txt"
+      },
+      "que_queda_del_item": "Nada de esta mitad. El nivel de SECTOR sigue abierto y es la fila hermana, PLAN-3-E8::sectores.",
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-3-E8::sectores",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 3. ETAPAS -> E8",
+      "sitio": "PLAN-3-E8",
+      "repo": "tmarea-backend",
+      "texto_literal": "sectores y `AreaRestriccion`",
+      "fragmento_de_este_item": "la mitad `sectores`",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "3. ETAPAS -> E8 · Deudas declaradas",
+        "cita_de_anclaje": "tercera entrada de la enumeracion separada por ·"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no lo dice.",
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Las resoluciones locales que subdividan una jurisdiccion de Capitania en SECTORES con condicion de puerto independiente, con el alcance geografico de cada sector. Sin ese dato la tabla no se puede poblar: no falta el mecanismo, falta la fuente.",
+      "a_quien": "DIRECTEMAR.",
+      "aviso_sobre_la_via": "El frente de resoluciones locales se sondeo el 2026-08-12 y quedo declarado 'via cerrada' — pero para JURISDICCION, no para sectores. Que esa misma via sirva o no para sectores NO esta medido. Quien retome esta fila mide eso primero.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "SELECT sobre la base (permiso D.1), lectura del insumo v2 por node, y grep sobre scripts/ y CONTRATO_MOTOR.md",
+        "resultado": "La maquinaria existe entera y el dato no. La tabla public.jurisdicciones_ds991_sectores EXISTE con 0 filas y con su indice GIST puesto; scripts/fase5_construir_capa_ds991.py la crea, la puebla, la indexa y la retira por ambito. En el insumo v2, 0 de 64 jurisdicciones tienen `sectores` no vacio. En src/ el termino 'sectores' aparece en 0 ficheros. El propio constructor lo declara: 'ABIERTO A QUE LA FUENTE CAMBIE — los sectores dentro de cada Capitania se construyen por el mismo camino que las jurisdicciones en cuanto el insumo los traiga; hoy vienen vacios y la tabla queda vacia, no ausente'. Y CONTRATO_MOTOR.md lo reconoce: 'las resoluciones locales pueden subdividir la jurisdiccion en sectores (...) El motor NO implementa el nivel de sector hoy'.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/02_select_e8.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-3-E8::dpa-2023",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 3. ETAPAS -> E8",
+      "sitio": "PLAN-3-E8",
+      "repo": "tmarea-backend",
+      "texto_literal": "`DPA_2023` cargada",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "3. ETAPAS -> E8 · Deudas declaradas",
+        "cita_de_anclaje": "cuarta entrada de la enumeracion separada por ·"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no lo dice.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Bajo en decisiones y alto en bytes: el insumo son 303.703 KB comprimidos y hay que cargarlo a PostGIS con su PROCEDENCIA. No exige ninguna decision del owner ni ningun dato de afuera: el fichero ya esta en el arbol.",
+      "depende_de": "Nada abierto. Es la unica fila de E8 que se puede cerrar hoy sin esperar a nadie.",
+      "para_que_sirve_cerrarla": "JOIN-SIN-RESOLVER::limite-sur-aysen nombra a DPA_2023 como la fuente de la parte REGIONAL de su pregunta ('el limite Sur de la Region de Aysen'). Con DPA_2023 cargada, esa pregunta se parte en dos y solo la mitad sigue dependiendo de DIRECTEMAR.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "SELECT sobre pg_class (permiso D.1) + find sobre el arbol",
+        "resultado": "NO esta cargada y el insumo SI esta en disco. En la base hay 28 relaciones no-catalogo y el patron /dpa/i encuentra 0. En disco existe geodata/costa/DPA_2023.zip, 303.703 KB, y geodata/costa/capas_costa.json ya declara un rol 'dpa_2023'. Control negativo del mismo listado: /tabla_que_no_existe_xyz/i -> 0. Control positivo: bahias_sitport, nodos_maritimos y ne_land aparecen los tres.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/02_select_e8.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-3-E8::retirar-bahia-coords",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 3. ETAPAS -> E8",
+      "sitio": "PLAN-3-E8",
+      "repo": "tmarea-backend",
+      "texto_literal": "retirar `BAHIA_COORDS`",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "3. ETAPAS -> E8 · Deudas declaradas",
+        "cita_de_anclaje": "quinta entrada de la enumeracion separada por ·"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no lo dice. La entrada de bitacora 1.4 del 2026-08-11 registra que 'E8 suma la fuente autoritativa del catalogo', que es la fila hermana.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Alto. Es un literal de objeto en produccion con 163 entradas del que cuelgan cuatro consumidores de src/ y cinco instrumentos de scripts/ que lo parsean por texto. Retirarlo es reemplazar la fuente, no borrar una constante.",
+      "depende_de": "E2, que toca los dos campos que BAHIA_COORDS aporta y que nadie mas tiene: `orden_en_ruta` y `fondeadero_previo`. Antes de E2 no se puede retirar sin perder dato.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "grep -rIn sobre el arbol versionado, excluyendo node_modules, .git y _bitacoras",
+        "resultado": "Sigue entero. Aparece en 12 ficheros. La declaracion viva esta en src/routes/sitport-routes.js linea 35 y se consume en las lineas 480, 692 y 848 del mismo fichero. Ademas lo parsean por texto src/services/catalogo-bahias.js (con cinco mensajes de error propios), scripts/e03join_cierre_34.js, scripts/e03join_reconocimiento.js, scripts/e1_medir_andamio.js, scripts/fase4_migrar_insumo_v2.py y scripts/seed-bahias-sitport.js, que ademas tiene su PROPIA copia del literal. Control positivo del patron: 'BAHIA_COORDS_INEXISTENTE' -> 0 ficheros.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/01_medir_e8.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-3-E8::retirar-bahia-jurisdicciones",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 3. ETAPAS -> E8",
+      "sitio": "PLAN-3-E8",
+      "repo": "tmarea-backend",
+      "texto_literal": "retirar `bahia_jurisdicciones` y su backup",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "3. ETAPAS -> E8 · Deudas declaradas",
+        "cita_de_anclaje": "sexta entrada de la enumeracion separada por ·"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no lo dice.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "No se puede estimar todavia sin decidir E4/E6: retirar la capa que el motor consulta HOY exige que exista la que la reemplaza.",
+      "depende_de": "E4 (cerrar C3) y E6 (cambio de unidad en el motor). Es la ultima de la cadena, no la primera.",
+      "aviso": "Esta fila NO es un borrado de tabla suelta. data/decreto/capa_consultada.json declara capa_jurisdicciones = 'bahia_jurisdicciones', y src/services/__tests__/cobertura-jurisdiccional.test.js lo ASERTA. Retirar la matview sin mover esa declaracion rompe la suite, que es lo correcto: el control esta haciendo su trabajo.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "SELECT sobre pg_class (permiso D.1) + grep sobre el arbol versionado",
+        "resultado": "Las DOS siguen existiendo. En la base: public.bahia_jurisdicciones [matview] con 163 filas, 0 geom nulas, 33 vacias, 319.342 km2; y public.bahia_jurisdicciones_v1_backup [matview] con 163 filas, 28 vacias, 4.725.948 km2. Las dos con indice GIST. El patron /backup|bak|_old|_viejo|_copia/i sobre las 28 relaciones encuentra exactamente una, la del backup. En el arbol el nombre aparece en 17 ficheros; en produccion, en src/services/join-puerto-bahia.js linea 100 y en el test de cobertura jurisdiccional, lineas 52 y 179.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/02_select_e8.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-3-E8::fuente-autoritativa-catalogo",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 3. ETAPAS -> E8",
+      "sitio": "PLAN-3-E8",
+      "repo": "tmarea-backend",
+      "texto_literal": "declarar UNA fuente autoritativa del catálogo de bahías y derivar las demás — hoy son cinco copias sin jerarquía; E0.1 dejó el detector de divergencia entre ellas (incluido el contenido, no solo los ids), pero el detector no es la cura. Se resuelve al retirar `BAHIA_COORDS`, que ya está en esta lista y que E2 toca al reemplazar `orden_en_ruta` y `fondeadero_previo`.",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "3. ETAPAS -> E8 · Deudas declaradas",
+        "cita_de_anclaje": "septima y ultima entrada de la enumeracion, la unica en negrita"
+      },
+      "abierta_el": "2026-08-11",
+      "abierta_el_lo_dice_el_documento": true,
+      "nota_fecha": "La entrada 1.4 de la bitacora del documento, fechada 2026-08-11, dice literalmente 'E8 suma la fuente autoritativa del catalogo'.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "El propio item declara que se resuelve al retirar BAHIA_COORDS, asi que su costo esta contenido en el de esa fila. Lo que agrega es la decision de CUAL de las cinco queda como autoritativa, y eso es estructura del dato.",
+      "depende_de": "PLAN-3-E8::retirar-bahia-coords, y a traves de ella de E2.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura de data/catalogo/divergencias_declaradas.json por node, mas la corrida del inventario",
+        "resultado": "Siguen siendo cinco y siguen sin jerarquia. divergencias_declaradas.json declara fuentes_internas = ['F1','F2','F3','F4','F5'], cinco. El inventario corrido hoy mide tres de ellas y no coinciden entre si: bahias_sitport (tabla) 163, bahia-capitania-map.json 164, BAHIA_COORDS 163; en el mapa y NO en la tabla: la 257. El detector existe y no cura: la divergencia de la 257 sigue declarada abierta desde el 2026-08-11.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/01_medir_e8.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-7.2::e7-pieza-2-sin-criterio",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 7.2",
+      "sitio": "PLAN-7.2",
+      "repo": "tmarea-backend",
+      "texto_literal": "E7, pieza 2, «en observación» — sin criterio de cierre. La fila de §7 la marca así y ni §3 ni ninguna bitácora dicen qué se observa ni qué la cerraría. Un estado sin condición de salida no se cierra: se olvida.",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "7.2 -> recuadro 'ANOTADO, NO RESUELTO — 2026-08-19'",
+        "cita_de_anclaje": "primera viñeta del recuadro"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "2_decision_del_owner",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "pregunta": "Hay una pieza de trabajo marcada 'en observacion' desde hace dias, y nadie escribio que es lo que se esta observando ni que resultado la daria por terminada. ¿Que condicion concreta tiene que cumplirse para que esa pieza se considere cerrada — y si no la hay, se declara cerrada ahora o se declara abierta con una condicion nueva?",
+      "por_que_es_del_owner": "Fijar la condicion de salida de una pieza es decidir cuando el trabajo esta hecho. No se deduce del arbol: no existe escrita en ninguna parte, y eso es exactamente lo que la deuda denuncia.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura de la fila E7 de la tabla de 7. ESTADO POR ETAPA y de la seccion E7 de 3. ETAPAS",
+        "resultado": "Confirmado. La celda de estado de E7 dice entera: 'pieza 1 cerrada; pieza 2 en observacion'. La seccion E7 de 3. ETAPAS declara 'Depende de: E6. Tercer entregable visible' y una aceptacion de 'S3, S6, S8', y no menciona ninguna pieza 2 ni ninguna observacion. Nota de instrumento: un proxy por regex sobre esta tabla clasifico la fila E7 como CERRADA por la palabra 'cerrada' de 'pieza 1 cerrada'. Por eso este sitio se lee y no se grepea.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/03_medir_7-2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-7.2::e8-sin-desglose",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 7.2",
+      "sitio": "PLAN-7.2",
+      "repo": "tmarea-backend",
+      "texto_literal": "E8, «deudas declaradas», abierta y sin desglose. §3 la enumera como bolsa y no hay ninguna bitácora de E8. No está escrito cuántas de sus deudas siguen vivas.",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "7.2 -> recuadro 'ANOTADO, NO RESUELTO — 2026-08-19'",
+        "cita_de_anclaje": "segunda viñeta del recuadro"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Ya pagado en su mayor parte por este tramo. Lo que queda es aplicar la enmienda al texto de 7.2 y al de E8, que es escritura en PLAN_JURISDICCION.md y no se hizo acá.",
+      "depende_de": "Nada abierto.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "este mismo declarativo",
+        "resultado": "Las tres afirmaciones de la viñeta se contestan hoy. (1) 'sin desglose': E8 queda desglosada en 8 filas de este declarativo, de 7 items separados por ·. (2) 'no hay ninguna bitacora de E8': ahora la hay, _bitacoras/declarativo_deudas_2026-08-19/. (3) 'no esta escrito cuantas de sus deudas siguen vivas': de las 8, 6 estan VIVAS y 2 son CADUCAS — el Art. 2 (D6) y la mitad AreaRestriccion. La viñeta sigue siendo cierta como texto del plan hasta que ese texto se enmiende.",
+        "salida_cruda_en": "este fichero"
+      },
+      "enmienda_redactada_no_aplicada": "El texto de reemplazo de esta viñeta se entrega en _bitacoras/declarativo_deudas_2026-08-19/. Redactar no es aplicar: escribir en PLAN_JURISDICCION.md queda fuera del alcance de esta sesion.",
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-7.2::inventario-1-sin-recomprobar",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 7.2",
+      "sitio": "PLAN-7.2",
+      "repo": "tmarea-backend",
+      "texto_literal": "§1, el inventario de insumos: foto del 2026-08-09/10, sin re-comprobar. El propio §1 trae el comando que lo refresca (`node scripts/fase5_inventario_insumos.js`) y nadie lo volvió a correr, con diez días de cambios encima.",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "7.2 -> recuadro 'ANOTADO, NO RESUELTO — 2026-08-19'",
+        "cita_de_anclaje": "tercera viñeta del recuadro"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "La re-comprobacion ya esta hecha y costo una corrida. Lo que queda es aplicar la correccion al texto de 1.1 y de 1.2, que es escritura en PLAN_JURISDICCION.md y no se hizo acá.",
+      "depende_de": "Nada abierto.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "node scripts/fase5_inventario_insumos.js, corrido a las 2026-08-20T00:08:30Z UTC, exit 0. PERMISO D.1 para los SELECT. PERMISO SEPARADO Y DECLARADO para la llamada en vivo a orion.directemar.cl: SITPORT respondio — consultaRestricciones 37 registros, totalPronostico 48, consultaBahias 165.",
+        "resultado": "1.1 es exacta en DIEZ de sus ONCE filas y FALSA en la undecima. Idénticas al valor escrito: bahia_jurisdicciones 163/0/33/319.342, bahia_jurisdicciones_v1_backup 163/0/28/4.725.948, bahias_sitport 163, jurisdicciones_decreto 64/10/0/3.474.929, costa_osm 78.653, costa_osm_sub 130.537, ne_land 11, nodos_maritimos 781, batimetria 1.179.451, mapa_base_multipoligonos 76.196. FALSA: la fila que dice 'jurisdicciones_ds991 | — | NO EXISTE'. EXISTE, es tabla, tiene 6 filas y geometria punto_representativo en 4326. Ademas 1.1 no lista NUEVE tablas hermanas que si estan: jurisdicciones_ds991_areas (64), _convenciones (17), _descartes (1), _ensanche (3), _procedencia (9), _publicacion (4), _sectores (0), _traslape_ensanche (12), _verificacion (31). Y 1.2 titula el insumo '324 KB' cuando el inventario lo mide en 382 KB, misma version 2 y mismo generado 2026-08-09.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/04_inventario_insumos.txt"
+      },
+      "lo_que_la_medicion_corrige_de_la_propia_viñeta": "'diez dias de cambios encima' resulto ser en su mayor parte falso: la base no se movio en diez de once filas. Lo que estaba mal no era la antiguedad de la foto sino UNA fila, y es la que mas importa — la que declara inexistente la capa del D.S. 991.",
+      "duplicada_de": null
+    },
+
+    {
+      "id": "PLAN-7.2::spec-2-nunca-releida",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 7.2",
+      "sitio": "PLAN-7.2",
+      "repo": "tmarea-backend",
+      "texto_literal": "§2, la especificación, nunca releída contra la pantalla. Los nueve puntos S1–S9 están escritos en términos de lo que ve el patrón y nadie los volvió a leer contra lo que la app muestra hoy. El recorrido de navegador del 2026-08-18 —el de `D-P3.1`, en §7.1— fue el primero en semanas en mirar la pantalla, y no se hizo contra §2.",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "7.2 -> recuadro 'ANOTADO, NO RESUELTO — 2026-08-19'",
+        "cita_de_anclaje": "cuarta y ultima viñeta del recuadro"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "El mas caro de las cuatro de 7.2. Exige levantar la PWA y el backend y recorrer las pantallas P1 a P4 contra los nueve puntos, uno por uno. Levantar el backend estuvo fuera del alcance de esta sesion, asi que no se toco.",
+      "depende_de": "Nada abierto, pero cruza los dos repositorios: el texto de S1-S9 vive en tmarea-backend y lo unico que puede refutarlo esta en tmarea-pwa.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura de 2. ESPECIFICACION",
+        "resultado": "Los nueve puntos S1 a S9 estan escritos y aprobados por el owner el 2026-08-10, con S5 abierta como D4. Ninguno tiene marca de verificacion contra pantalla. Confirmado: la deuda es cierta y sigue entera. NO se midio contra la pantalla porque levantar el backend estaba fuera del alcance de esta sesion, y se declara asi en vez de darla por medida.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/03_medir_7-2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "DIRECTEMAR-REGISTRO::1-bahia-146",
+      "token_local": "1",
+      "espacio_de_nombres": "_bitacoras/consulta_directemar_registro.md",
+      "sitio": "DIRECTEMAR-REGISTRO",
+      "repo": "tmarea-backend",
+      "texto_literal": "Bahía 146 — RÍO BUENO: la repartición 189 no existe en el propio SITPORT",
+      "donde": {
+        "fichero": "_bitacoras/consulta_directemar_registro.md",
+        "seccion_por_titulo": "1 · Bahía 146 — RÍO BUENO: la repartición 189 no existe en el propio SITPORT",
+        "cita_de_anclaje": "encabezado '## 1 ·' y el cuerpo que lo sigue, incluida la 'Evidencia nueva y fuerte, del 2026-08-13'"
+      },
+      "abierta_el": "2026-08-13",
+      "abierta_el_lo_dice_el_documento": true,
+      "nota_fecha": "El registro de cambios del propio fichero fecha su creacion el 2026-08-13 con este caso adentro.",
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Bajo que reparticion de SITPORT queda la bahia 146, RIO BUENO. Hoy la fuente le asigna la reparticion 189, que no existe en el catalogo del propio SITPORT.",
+      "a_quien": "DIRECTEMAR.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "grep sobre _bitacoras/consulta_directemar_registro.md",
+        "resultado": "Sin responder. El fichero tiene 0 apariciones de 'respondio', 'respuesta recibida' o 'contesto'. Control positivo: 'pregunta' aparece 32 veces, o sea que el grep alcanza el fichero. Las seis preguntas del registro siguen las seis abiertas.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "DIRECTEMAR-REGISTRO::2-bahia-137",
+      "token_local": "2",
+      "espacio_de_nombres": "_bitacoras/consulta_directemar_registro.md",
+      "sitio": "DIRECTEMAR-REGISTRO",
+      "repo": "tmarea-backend",
+      "texto_literal": "Bahía 137 — BAHÍA CHILOTA: las dos fuentes operativas discrepan entre sí",
+      "donde": {
+        "fichero": "_bitacoras/consulta_directemar_registro.md",
+        "seccion_por_titulo": "2 · Bahía 137 — BAHÍA CHILOTA: las dos fuentes operativas discrepan entre sí",
+        "cita_de_anclaje": "encabezado '## 2 ·' y su cuerpo, con la 'Evidencia del frente de resoluciones locales, agregada el 2026-08-13'"
+      },
+      "abierta_el": "2026-08-13",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Bajo cual de las dos jurisdicciones queda Bahia Chilota, en Porvenir. El mapa operativo dice Punta Arenas y SITPORT dice Tierra del Fuego.",
+      "a_quien": "DIRECTEMAR.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura de data/decreto/join_bahia_jurisdiccion.json y grep sobre el registro",
+        "resultado": "Sin responder. Y es la MISMA deuda que JOIN-SIN-RESOLVER::solape-delgada-tdf: el join declara la bahia 137 en estado sin_resolver con fuente_a_consultar id 'solape_delgada_tdf', a_quien 'DIRECTEMAR', y con la pregunta ya redactada. El dato es mas preciso que la prosa, asi que la fila canonica es la del join.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": "JOIN-SIN-RESOLVER::solape-delgada-tdf"
+    },
+
+    {
+      "id": "DIRECTEMAR-REGISTRO::3-rada-covadonga",
+      "token_local": "3",
+      "espacio_de_nombres": "_bitacoras/consulta_directemar_registro.md",
+      "sitio": "DIRECTEMAR-REGISTRO",
+      "repo": "tmarea-backend",
+      "texto_literal": "Rada Covadonga (CdRep 291) — las dos fuentes la clasifican distinto",
+      "donde": {
+        "fichero": "_bitacoras/consulta_directemar_registro.md",
+        "seccion_por_titulo": "3 · Rada Covadonga (CdRep 291) — las dos fuentes la clasifican distinto",
+        "cita_de_anclaje": "encabezado '## 3 ·' y su cuerpo, con las '0 bahías atribuidas en SITPORT y 0 restricciones'"
+      },
+      "abierta_el": "2026-08-13",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Que es Rada Covadonga — Capitania o alcaldia de mar — y quien la atiende. DIRECTEMAR la lista con ficha vacia, y es una de las dos unicas jurisdicciones a las que SITPORT no atribuye ninguna bahia.",
+      "a_quien": "DIRECTEMAR.",
+      "por_que_importa_mas_de_lo_que_parece": "Es la unica de las 64 donde la politica de contacto D15 no se puede aplicar con los datos que hay: su Gobernacion —Antartica Chilena— no existe en ningun archivo vivo del repositorio.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "grep sobre _bitacoras/consulta_directemar_registro.md",
+        "resultado": "Sin responder. Mismo control positivo que la fila 1.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "DIRECTEMAR-REGISTRO::4-bahia-258",
+      "token_local": "4",
+      "espacio_de_nombres": "_bitacoras/consulta_directemar_registro.md",
+      "sitio": "DIRECTEMAR-REGISTRO",
+      "repo": "tmarea-backend",
+      "texto_literal": "Bahía 258 — RÍO BUENO, SECTOR LLANCACURA: apareció sin posición",
+      "donde": {
+        "fichero": "_bitacoras/consulta_directemar_registro.md",
+        "seccion_por_titulo": "4 · Bahía 258 — RÍO BUENO, SECTOR LLANCACURA: apareció sin posición",
+        "cita_de_anclaje": "encabezado '## 4 ·' y su cuerpo, con 'consultaBahias no trae posición'"
+      },
+      "abierta_el": "2026-08-13",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Donde esta la bahia 258. Aparecio en el catalogo de SITPORT entre el 2026-08-12 y el 2026-08-13 y su endpoint de catalogo no trae coordenadas.",
+      "a_quien": "DIRECTEMAR.",
+      "aviso": "D14 decidio el 2026-08-13 que NO se le rellena coordenada desde ninguna otra fuente: rige el precedente de la 257. La pregunta a DIRECTEMAR es la unica via abierta a proposito.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "grep sobre el registro, mas la corrida del inventario contra SITPORT en vivo",
+        "resultado": "Sin responder. Y el catalogo de SITPORT sigue creciendo: consultaBahias devolvio 165 registros en la corrida de hoy, contra los 163 de bahias_sitport y los 164 del mapa operativo.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "DIRECTEMAR-REGISTRO::5-las-seis-de-e03",
+      "token_local": "5",
+      "espacio_de_nombres": "_bitacoras/consulta_directemar_registro.md",
+      "sitio": "DIRECTEMAR-REGISTRO",
+      "repo": "tmarea-backend",
+      "texto_literal": "Las seis bahías sin resolver de E0.3",
+      "donde": {
+        "fichero": "_bitacoras/consulta_directemar_registro.md",
+        "seccion_por_titulo": "5 · Las seis bahías sin resolver de E0.3",
+        "cita_de_anclaje": "encabezado '## 5 ·' y sus tres sub-apartados 5.a, 5.b y 5.c"
+      },
+      "abierta_el": "2026-08-13",
+      "abierta_el_lo_dice_el_documento": true,
+      "nota_fecha": "El registro de cambios del fichero lo llama 'el espejo de las seis de E0.3'.",
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Las tres preguntas de las seis bahias sin resolver del join. Estan desglosadas en las tres filas canonicas de JOIN-SIN-RESOLVER.",
+      "a_quien": "DIRECTEMAR para dos de las tres. La tercera NO es de DIRECTEMAR y el paraguas lo oculta: 'costura_cisnes_aguirre' va a un informante con experiencia operativa en la zona austral.",
+      "hallazgo": "Este apartado es un paraguas que agrupa seis bahias bajo un fichero titulado 'lo que hay que preguntarle a DIRECTEMAR', y una de las tres preguntas que contiene no es para DIRECTEMAR. Quien mande el envio siguiendo solo este fichero manda dos tercios de la pregunta.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura de data/decreto/join_bahia_jurisdiccion.json por node",
+        "resultado": "Las 6 entradas sin_resolver del join se agrupan bajo TRES fuente_a_consultar: limite_sur_aysen (bahias 127, 129, 154), solape_delgada_tdf (bahia 137) y costura_cisnes_aguirre (bahias 239, 241). Las dos primeras tienen a_quien 'DIRECTEMAR'; la tercera tiene a_quien 'Informante con experiencia operativa en la zona austral'.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": "JOIN-SIN-RESOLVER::limite-sur-aysen"
+    },
+
+    {
+      "id": "DIRECTEMAR-REGISTRO::6-bahia-160",
+      "token_local": "6",
+      "espacio_de_nombres": "_bitacoras/consulta_directemar_registro.md",
+      "sitio": "DIRECTEMAR-REGISTRO",
+      "repo": "tmarea-backend",
+      "texto_literal": "Bahía 160 — LAGO PUYEHUE: el decreto lo parte y la práctica no",
+      "donde": {
+        "fichero": "_bitacoras/consulta_directemar_registro.md",
+        "seccion_por_titulo": "6 · Bahía 160 — LAGO PUYEHUE: el decreto lo parte y la práctica no",
+        "cita_de_anclaje": "encabezado '## 6 ·' y su cuerpo, con 'SITPORT le da la repartición 201'"
+      },
+      "abierta_el": "2026-08-13",
+      "abierta_el_lo_dice_el_documento": true,
+      "nota_fecha": "El registro de cambios del fichero fecha esta entrada el 2026-08-13.",
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Quien atiende y quien publica el Lago Puyehue. El decreto lo parte entre dos Capitanias y SITPORT lo publica entero bajo una.",
+      "a_quien": "DIRECTEMAR. La georreferencia del limite regional queda fuera de esta pregunta a proposito: esa es de DPA_2023, no de DIRECTEMAR.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "grep sobre el registro",
+        "resultado": "Sin responder. Mismo control positivo que la fila 1.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "JOIN-SIN-RESOLVER::limite-sur-aysen",
+      "token_local": "limite_sur_aysen",
+      "espacio_de_nombres": "data/decreto/join_bahia_jurisdiccion.json",
+      "sitio": "JOIN-SIN-RESOLVER",
+      "repo": "tmarea-backend",
+      "texto_literal": "El decreto define baker por \"el limite Sur de la Region de Aysen\" y puerto_eden por \"el limite Sur de la Gobernacion Maritima de Aisen\". Ninguno de los dos esta en coordenadas, y no esta dicho que coincidan.",
+      "donde": {
+        "fichero": "data/decreto/join_bahia_jurisdiccion.json",
+        "seccion_por_titulo": "entradas -> las tres con estado 'sin_resolver' y fuente_a_consultar.id = 'limite_sur_aysen'",
+        "cita_de_anclaje": "campo fuente_a_consultar.que_falta de las bahias 127 (BAKER), 129 (PUERTO EDÉN) y 154 (ISLA GUARELLO)"
+      },
+      "bahias": [127, 129, 154],
+      "abierta_el": "2026-08-11",
+      "abierta_el_lo_dice_el_documento": true,
+      "nota_fecha": "El join declara generado 2026-08-11 y E0.3 cerro ese dia dejando las 6 sin resolver.",
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Las coordenadas del limite Sur de la jurisdiccion de la Gobernacion Maritima de Aysen, y si coincide con el limite Sur de la Region de Aysen.",
+      "a_quien": "DIRECTEMAR, y la parte regional a DPA_2023 (geodata/costa/DPA_2023.zip, en disco sin cargar).",
+      "pregunta": "¿Cuales son las coordenadas del limite Sur de la jurisdiccion de la Gobernacion Maritima de Aysen, que el D.S. 991/1987 usa como limite Norte de la Capitania de Puerto Puerto Eden sin expresarlo en coordenadas? ¿Coincide ese limite con el limite Sur de la Region de Aysen, que el mismo decreto usa como limite Sur de la Capitania de Puerto Baker?",
+      "se_parte_en_dos": "La mitad REGIONAL no necesita a DIRECTEMAR: sale de DPA_2023, que ya esta en el arbol y solo falta cargar (PLAN-3-E8::dpa-2023, grupo 1). Cerrar esa fila reduce esta pregunta a su mitad maritima.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura de data/decreto/join_bahia_jurisdiccion.json por node",
+        "resultado": "Vigente. conteo.sin_resolver = 6 de 164 entradas, y de esas 6, tres llevan fuente_a_consultar.id = 'limite_sur_aysen'. Ninguna tiene jurisdiccion_id resuelto. politica_de_resolucion: se resuelven TODAS JUNTAS por fuente, no de a una.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "JOIN-SIN-RESOLVER::solape-delgada-tdf",
+      "token_local": "solape_delgada_tdf",
+      "espacio_de_nombres": "data/decreto/join_bahia_jurisdiccion.json",
+      "sitio": "JOIN-SIN-RESOLVER",
+      "repo": "tmarea-backend",
+      "texto_literal": "Los parrafos de punta_delgada (\"el Estrecho de Magallanes\" al Oriente de la linea Punta Harry - Cabo San Vicente) y de tierra_del_fuego (\"el area oriental\" de la linea Cabo San Vicente - Punta Anxius) cubren los dos la zona al Oriente de Cabo San Vicente, y el decreto no dice como se reparten.",
+      "donde": {
+        "fichero": "data/decreto/join_bahia_jurisdiccion.json",
+        "seccion_por_titulo": "entradas -> la entrada con estado 'sin_resolver' y fuente_a_consultar.id = 'solape_delgada_tdf'",
+        "cita_de_anclaje": "campo fuente_a_consultar.que_falta de la bahia 137 (BAHÍA CHILOTA)"
+      },
+      "bahias": [137],
+      "abierta_el": "2026-08-11",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Como se reparten punta_delgada y tierra_del_fuego la zona al Oriente de Cabo San Vicente, y bajo cual queda Bahia Chilota.",
+      "a_quien": "DIRECTEMAR.",
+      "pregunta": "En el D.S. 991/1987 las descripciones de Punta Delgada y de Tierra del Fuego cubren ambas la zona al Oriente de Cabo San Vicente. ¿Bajo cual de las dos queda Bahia Chilota, en Porvenir? ¿Como se reparten esas dos jurisdicciones esa zona?",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura de data/decreto/join_bahia_jurisdiccion.json por node",
+        "resultado": "Vigente. La entrada 137 sigue en sin_resolver, con candidatos mapa_operativo 'Punta Arenas' y sitport 'TIERRA DEL FUEGO' — o sea que las dos fuentes operativas siguen discrepando y ninguna es el decreto.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "JOIN-SIN-RESOLVER::costura-cisnes-aguirre",
+      "token_local": "costura_cisnes_aguirre",
+      "espacio_de_nombres": "data/decreto/join_bahia_jurisdiccion.json",
+      "sitio": "JOIN-SIN-RESOLVER",
+      "repo": "tmarea-backend",
+      "texto_literal": "Las dos bahias caen ENTRE los extremos de la linea Cayo Blanco - Punta San Andres - Puerto Perez - Islote Rodriguez - Isla Traiguen, que es la frontera declarada entre Puerto Cisnes y Puerto Aguirre. El veredicto dependeria de como se prolongue el trazo hacia el Weste, y eso el decreto no lo escribe. Las bandas de paralelos de las dos las contienen.",
+      "donde": {
+        "fichero": "data/decreto/join_bahia_jurisdiccion.json",
+        "seccion_por_titulo": "entradas -> las dos con estado 'sin_resolver' y fuente_a_consultar.id = 'costura_cisnes_aguirre'",
+        "cita_de_anclaje": "campo fuente_a_consultar.que_falta de las bahias 239 y 241"
+      },
+      "bahias": [239, 241],
+      "abierta_el": "2026-08-11",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Quien atiende en la practica los canales Ferronave, Devia, Goñi y Ninualac, y donde entiende la gente que navega ahi que esta el limite entre Puerto Cisnes y Puerto Aguirre al Weste de la linea declarada.",
+      "a_quien": "Informante con experiencia operativa en la zona austral. NO es DIRECTEMAR, aunque esta deuda tambien aparezca dentro del registro titulado 'lo que hay que preguntarle a DIRECTEMAR'.",
+      "pregunta": "En la practica, ¿quien atiende los canales Ferronave, Devia, Goñi y Ninualac — la Capitania de Puerto Cisnes o la de Puerto Aguirre? ¿Donde entiende la gente que navega ahi que esta el limite entre las dos, al Weste de la linea Islote Cayo Blanco - Punta San Andres? ¿Hay algun caso en que una de las dos haya dictado una restriccion para esos canales?",
+      "sirve_ademas_para": "La misma costura decide como se cierra la figura de Puerto Aguirre por el Weste, que es una de las causas del C3 abierto de E4.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura de data/decreto/join_bahia_jurisdiccion.json por node",
+        "resultado": "Vigente. Las entradas 239 y 241 siguen en sin_resolver, las dos con candidatos mapa_operativo 'Cisnes' y sitport 'AGUIRRE'.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "DIVERGENCIAS-DECLARADAS::bahia-257-sin-posicion",
+      "token_local": "257",
+      "espacio_de_nombres": "data/catalogo/divergencias_declaradas.json",
+      "sitio": "DIVERGENCIAS-DECLARADAS",
+      "repo": "tmarea-backend",
+      "texto_literal": "ADJUDICADA la Capitanía, NO la posición. El owner adjudicó el 2026-08-11 la bahía 257 a la Capitanía de Puerto Lago General Carrera (fundamento en el registro de decisiones del plan, D1), y por eso la entrada existe en F3. Sigue faltando en F1, F2, F4 y F5 porque esas cuatro exigen lat/lng y SITPORT no la publica.",
+      "donde": {
+        "fichero": "data/catalogo/divergencias_declaradas.json",
+        "seccion_por_titulo": "divergencias -> entrada id_bahia 257, clase 'incoherencia_interna'",
+        "cita_de_anclaje": "campo causa de esa entrada"
+      },
+      "abierta_el": "2026-08-11",
+      "abierta_el_lo_dice_el_documento": true,
+      "nota_fecha": "El propio dato lleva visto_desde = '2026-08-11'.",
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "La posicion (lat/lng) de la bahia 257, RIO COCHRANE. La Capitania ya esta adjudicada; lo que falta es donde esta.",
+      "a_quien": "DIRECTEMAR / SITPORT. Rige el precedente D14: no se le rellena coordenada desde ninguna otra fuente.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura de data/catalogo/divergencias_declaradas.json por node, mas la corrida del inventario",
+        "resultado": "Vigente y con estado 'abierta' en el dato. El inventario de hoy la vuelve a exhibir: 'en el mapa y NO en la tabla: 257'. bahias_sitport 163, mapa 164, BAHIA_COORDS 163.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "DIVERGENCIAS-DECLARADAS::bahia-108-sin-catalogo",
+      "token_local": "108/sitport_sin_catalogo",
+      "espacio_de_nombres": "data/catalogo/divergencias_declaradas.json",
+      "sitio": "DIVERGENCIAS-DECLARADAS",
+      "repo": "tmarea-backend",
+      "texto_literal": "Totalpronostico publica dato meteorológico del id 108 y ninguna fuente interna lo tiene, así que /weather-ruta lo descarta en cada llamada. Qué bahía es no está determinado: el registro de pronóstico no trae nombre y consultaBahias tampoco lo lista. No se le inventa uno.",
+      "donde": {
+        "fichero": "data/catalogo/divergencias_declaradas.json",
+        "seccion_por_titulo": "divergencias -> entrada id_bahia 108, clase 'sitport_sin_catalogo'",
+        "cita_de_anclaje": "campo causa de esa entrada"
+      },
+      "abierta_el": "2026-08-11",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Que bahia es el id 108. Ninguna fuente interna lo tiene y SITPORT publica su pronostico sin nombre y sin coordenadas.",
+      "a_quien": "DIRECTEMAR / SITPORT.",
+      "efecto_hoy": "/weather-ruta descarta ese registro en cada llamada. Es descarte de dato real, declarado y no silencioso.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura del dato por node, mas la corrida del inventario contra SITPORT en vivo",
+        "resultado": "Vigente, estado 'abierta'. En la corrida de hoy totalPronostico devolvio 48 registros y consultaRestricciones 37, ninguna con id fuera de bahias_sitport ('con id que NO esta en bahias_sitport: ninguna'). Nota de alcance honesta: el inventario contrasta las RESTRICCIONES contra el catalogo, no el PRONOSTICO, asi que esa corrida no re-mide el 108 y no se presenta como si lo hiciera. Quien cierre esta fila corre el control de drift, que es la via — y correrlo estuvo fuera del alcance de esta sesion porque reescribe data/catalogo/estado_drift.json.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "DIVERGENCIAS-DECLARADAS::bahia-108-endpoint-fuera-de-catalogo",
+      "token_local": "108/endpoint_fuera_de_catalogo",
+      "espacio_de_nombres": "data/catalogo/divergencias_declaradas.json",
+      "sitio": "DIVERGENCIAS-DECLARADAS",
+      "repo": "tmarea-backend",
+      "texto_literal": "Divergencia interna de la propia fuente: consultaBahias, que es su endpoint de catálogo, no lista el id 108 que Totalpronostico sí usa. Es la evidencia de que SITPORT no garantiza que su catálogo cubra los ids de sus endpoints de dato, y el motivo por el que este control compara contra la UNIÓN de los tres endpoints.",
+      "donde": {
+        "fichero": "data/catalogo/divergencias_declaradas.json",
+        "seccion_por_titulo": "divergencias -> entrada id_bahia 108, clase 'endpoint_fuera_de_catalogo'",
+        "cita_de_anclaje": "campo causa de esa entrada"
+      },
+      "abierta_el": "2026-08-11",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "que_dato": "Si SITPORT se compromete a que su endpoint de catalogo cubra los ids que usan sus endpoints de dato. Es una pregunta sobre la fuente, no sobre una bahia.",
+      "a_quien": "DIRECTEMAR / SITPORT.",
+      "relacion_con_la_fila_hermana": "Comparte el hecho con DIVERGENCIAS-DECLARADAS::bahia-108-sin-catalogo y NO es la misma deuda: aquella pregunta QUE bahia es la 108; esta pregunta si la fuente garantiza la cobertura de su catalogo. La primera se cierra con un nombre; la segunda, con una politica. El dato las declara como dos entradas distintas y se respeta.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "lectura del dato por node",
+        "resultado": "Vigente, estado 'abierta'. Las tres divergencias del fichero estan las tres en 'abierta'; ninguna cerrada desde el 2026-08-11.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/05_medir_tramo2.txt"
+      },
+      "duplicada_de": null
+    },
+
+    {
+      "id": "SESION-caracterizacion-deudas-2026-08-19::declarativo-que-nadie-abre",
+      "token_local": null,
+      "espacio_de_nombres": "sesion de caracterizacion de deudas 2026-08-19",
+      "sitio": "SESION-caracterizacion-deudas-2026-08-19",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "Un declarativo que nadie abre al arrancar tiene el mismo defecto que la bitacora que nadie reabre",
+      "evidencia_en_el_arbol": {
+        "que_lo_muestra": "Nada en este repositorio lee data/deudas/deudas_declaradas.json al empezar una sesion. El unico lector es scripts/validar_deudas_declaradas.js, que hay que invocar a mano con npm run deudas.",
+        "por_que_es_la_misma_enfermedad": "La causa medida de los cuatro o cinco inventarios fallidos es que la evidencia existe y nadie la abre. Un fichero nuevo con la misma propiedad hereda la falla, por bien construido que este.",
+        "control": "CLAUDE.md, que es lo que si se carga al arrancar una sesion, no menciona este fichero: 0 apariciones de 'deudas_declaradas'."
+      },
+      "donde": {
+        "fichero": "data/deudas/deudas_declaradas.json",
+        "seccion_por_titulo": "el fichero entero",
+        "cita_de_anclaje": "campo _por_que_existe de este mismo declarativo"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Bajo: una regla en CLAUDE.md que mande abrir este fichero al arrancar. No hay nada que medir ni que decidir tecnicamente.",
+      "depende_de": "Escribir en CLAUDE.md, que quedo explicitamente fuera del alcance de esta sesion y es la sesion siguiente.",
+      "redactada_no_aplicada": true,
+      "duplicada_de": null
+    },
+
+    {
+      "id": "SESION-caracterizacion-deudas-2026-08-19::invisible-desde-la-pwa",
+      "token_local": null,
+      "espacio_de_nombres": "sesion de caracterizacion de deudas 2026-08-19",
+      "sitio": "SESION-caracterizacion-deudas-2026-08-19",
+      "repo": "tmarea-pwa",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "Desde tmarea-pwa el declarativo no existe",
+      "evidencia_en_el_arbol": {
+        "que_lo_muestra": "El declarativo vive en tmarea-backend. tmarea-pwa no tiene CLAUDE.md, no tiene _bitacoras/ y su .claude/ contiene un solo fichero, launch.json. Una sesion que abra solo la PWA no tiene ningun camino para enterarse de que este fichero existe, y ocho de sus filas candidatas son de la PWA.",
+        "control_positivo": "En tmarea-pwa: 'const' 875 apariciones, o sea que el arbol se lee bien; 'CLAUDE.md' como fichero: no existe."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa (todo el repositorio)",
+        "seccion_por_titulo": "ausencia de aparato de deuda",
+        "cita_de_anclaje": "medicion de la sesion, apartado A.2 de la segunda parada"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Bajo. Es la cara PWA de la fila hermana declarativo-que-nadie-abre, y se paga en el mismo movimiento.",
+      "depende_de": "La misma escritura en CLAUDE.md, y ademas decidir si tmarea-pwa recibe un CLAUDE.md propio o un puntero.",
+      "por_que_es_fila_aparte": "Su hermana se arregla escribiendo en un fichero que ya existe. Esta exige decidir si el otro repositorio recibe aparato propio. Son dos costos distintos.",
+      "redactada_no_aplicada": true,
+      "duplicada_de": null
+    },
+
+    {
+      "id": "SESION-caracterizacion-deudas-2026-08-19::seis-ficheros-backend-url",
+      "token_local": null,
+      "espacio_de_nombres": "sesion de caracterizacion de deudas 2026-08-19",
+      "sitio": "SESION-caracterizacion-deudas-2026-08-19",
+      "repo": "tmarea-pwa",
+      "texto_literal": "BACKEND_URL en localhost en seis archivos",
+      "donde": {
+        "fichero": "contexto de trabajo del owner, no un fichero del arbol",
+        "seccion_por_titulo": "enunciado que el owner traia y pidio verificar",
+        "cita_de_anclaje": "pregunta (III) de la parada de medicion de los dos arboles"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "4_caduca",
+      "estado": "caduca",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "afirmacion_que_ya_es_falsa": "Que son seis ficheros, y que el simbolo es uno solo.",
+      "enunciado_correcto": "Siete declaraciones del literal 'http://localhost:3000' bajo DOS nombres, todas en tmarea-pwa: BACKEND_URL en cinco ficheros y API_BASE en dos.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "grep -rIn sobre los dos arboles, excluyendo node_modules, dist y .git",
+        "resultado": "En tmarea-pwa: BACKEND_URL declarado en src/components/voyage/TideCurvePanel.jsx:18, src/components/VoyageReportButton.jsx:5, src/hooks/useVoyageVerification.js:6, src/screens/P4_ActiveVoyage.jsx:13 y src/utils/tideStations.js:6 — cinco. API_BASE declarado en src/components/map/ConcesionesLayer.jsx:3 y src/screens/P2_VoyageSetup.jsx:9 — dos. Total siete declaraciones del mismo literal. En tmarea-backend, 'BACKEND_URL' aparece en 2 ficheros y los dos son de _bitacoras/, o sea prosa: en el codigo del backend, cero. Buscar por BACKEND_URL da 5 y buscar por localhost da 7; ningun criterio da 6.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/06_medir_pwa.txt"
+      },
+      "que_queda_vivo_debajo": "La deuda de fondo — siete copias de una constante de entorno que deberia estar en un solo lugar y venir de configuracion — es real y NO caduca. Vive en el sitio PWA-SIN-ANOTAR, todavia sin barrer.",
+      "duplicada_de": null
+    },
+
+    {
+      "id": "SESION-caracterizacion-deudas-2026-08-19::citas-cruzadas-por-linea",
+      "token_local": null,
+      "espacio_de_nombres": "sesion de caracterizacion de deudas 2026-08-19",
+      "sitio": "SESION-caracterizacion-deudas-2026-08-19",
+      "repo": "tmarea-pwa",
+      "texto_literal": "// zarpe de contrabando, sin instrumento y con el sobre-alcance del filtro de\n// puerto vivo (backend `sitport-routes.js:333-338`, subcadena y no palabra).",
+      "donde": {
+        "fichero": "tmarea-pwa/src/hooks/useVoyageVerification.js y tmarea-pwa/src/screens/P3_VoyageVerification.jsx",
+        "seccion_por_titulo": "comentarios que citan al otro repositorio",
+        "cita_de_anclaje": "el bloque de comentario que nombra 'sitport-routes.js:333-338', y el comentario de P3_VoyageVerification.jsx que cita 'tmarea-backend/_bitacoras/rotulo_p2_2026-08-16/01_medir_rotulo_p2.txt'"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "Los comentarios no llevan fecha propia.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Bajo: reescribir dos citas para que apunten por seccion y texto en vez de por numero de linea.",
+      "depende_de": "Nada abierto. Pero es escritura en tmarea-pwa y esta sesion no escribio en ese repositorio.",
+      "por_que_es_deuda": "El propio proyecto exige citar por seccion y texto, nunca por numero de linea. Estas dos citan por linea Y cruzan de repositorio, que es la combinacion que se rompe mas rapido: un commit en el backend las deja apuntando a otra cosa sin que nada avise.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "grep sobre tmarea-pwa",
+        "resultado": "Dos citas cruzadas por numero de linea. useVoyageVerification.js cita 'backend sitport-routes.js:333-338'; P3_VoyageVerification.jsx cita 'tmarea-backend/_bitacoras/rotulo_p2_2026-08-16/01_medir_rotulo_p2.txt'. NO se verifico si las lineas 333-338 del backend siguen conteniendo lo que la cita dice: eso es del sitio PWA-COMENTARIOS y se mide cuando se barra, no acá.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/06_medir_pwa.txt"
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null
+    },
+
+    {
+      "id": "SESION-caracterizacion-deudas-2026-08-19::modo-de-falla-del-entorno",
+      "token_local": null,
+      "espacio_de_nombres": "sesion de caracterizacion de deudas 2026-08-19",
+      "sitio": "SESION-caracterizacion-deudas-2026-08-19",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "Tres defectos de instrumento del mismo tipo en dos sesiones: un instrumento que compila y corre perfecto mientras mide algo distinto de lo que dice medir",
+      "evidencia_en_el_arbol": {
+        "caso_1": "El `-F -` alimentado por here-string de PowerShell mete EF BB BF en el asunto del commit. Ya esta escrito en CLAUDE.md, seccion 7.2, como caso suelto, con opciones y recomendacion.",
+        "caso_2": "En `grep -rIw -- \"$t\" . --exclude-dir=node_modules`, el `--` convierte los --exclude-dir en nombres de fichero y el barrido entra a node_modules. Dio TODO=812 en tmarea-pwa cuando la respuesta es 0.",
+        "caso_3": "El heredoc de este entorno se come un nivel de backslash aun con <<'EOF'. `'^[ \\\\t]*'` y `'\\\\b'` quedaron en disco como `'^[ \\t]*'` y `'\\b'`, o sea un TAB literal y un BACKSPACE 0x08. El contador de tokens devolvio 0 declaraciones y compilaba y corria perfecto.",
+        "lo_que_los_tres_comparten": "Los tres son de PowerShell hablandole a un ejecutable o a un heredoc. Los tres pasan la compilacion. Los tres devuelven un numero plausible. Y los tres se cazaron SOLO por el control positivo — ninguno por revision de codigo.",
+        "control": "CLAUDE.md tiene el caso 1 y no tiene los otros dos: 0 apariciones de 'exclude-dir' y 0 de 'heredoc'."
+      },
+      "donde": {
+        "fichero": "CLAUDE.md",
+        "seccion_por_titulo": "7. ENTORNO — WINDOWS -> 7.2 Convenciones de PowerShell",
+        "cita_de_anclaje": "el bloque que arranca 'DEUDA ABIERTA, NO APLICADA: nada en este repositorio caza esto'"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Bajo en escritura: una regla en CLAUDE.md que generalice los tres. Alto en valor: los tres tipos de defecto producen numeros publicables y falsos.",
+      "depende_de": "Escribir en CLAUDE.md, fuera del alcance de esta sesion.",
+      "propuesta_de_regla": "Lo que los tres piden no es evitar la sintaxis: es que TODO instrumento nuevo salga con un control positivo antes de que su primer numero se publique. Un instrumento que compila y corre no esta verificado; uno que encuentra lo que se sabe que esta, si.",
+      "redactada_no_aplicada": true,
+      "duplicada_de": null
+    },
+
+    {
+      "id": "SESION-caracterizacion-deudas-2026-08-19::casilla-ambas-del-criterio-d3a",
+      "token_local": null,
+      "espacio_de_nombres": "sesion de caracterizacion de deudas 2026-08-19",
+      "sitio": "SESION-caracterizacion-deudas-2026-08-19",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "El criterio de admision de BITACORAS-HD mira el token, no la linea, y por eso tiene una casilla ambigua",
+      "evidencia_en_el_arbol": {
+        "que_lo_muestra": "El criterio busca marcas de cierre y de apertura en cualquier linea que mencione el token, dentro de su espacio de nombres. Cuando UNA MISMA LINEA trae las dos palabras, el token cae en la casilla 'AMBAS' y hay que leerlo a mano.",
+        "el_caso": "_bitacoras/causa_pd_tdf_2026-08-15/causa_pd_tdf_2026-08-15.txt: 'D-3  **CERRADA** por esta pieza. Era la unica de las tres que dejo abierta'. Cierre y apertura en la misma linea.",
+        "cuantos_son_hoy": "1 de 66 tokens declarados.",
+        "por_que_no_esta_arreglado": "La regla elegida es 'ante la duda, admitir': admitir de mas se paga leyendo una fila, descartar de mas borra una deuda en silencio. Con 1 caso el arreglo no se paga; con 51 filas por barrer, puede."
+      },
+      "donde": {
+        "fichero": "data/deudas/deudas_declaradas.json",
+        "seccion_por_titulo": "cobertura -> sitios -> BITACORAS-HD",
+        "cita_de_anclaje": "campo por_que_todavia_no de ese sitio"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Bajo, y solo se paga si se barre BITACORAS-HD: hacer que el criterio mire la posicion relativa de las dos palabras dentro de la linea en vez de su mera presencia.",
+      "depende_de": "Que se barra el sitio BITACORAS-HD, que es el ultimo del orden.",
+      "duplicada_de": null
+    },
+
+    {
+      "id": "SESION-caracterizacion-deudas-2026-08-19::e8-item-3-es-una-bolsa",
+      "token_local": null,
+      "espacio_de_nombres": "sesion de caracterizacion de deudas 2026-08-19",
+      "sitio": "SESION-caracterizacion-deudas-2026-08-19",
+      "repo": "tmarea-backend",
+      "texto_literal": "sectores y `AreaRestriccion`",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "3. ETAPAS -> E8 · Deudas declaradas",
+        "cita_de_anclaje": "tercera entrada de la enumeracion separada por ·"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Minimo: separar un item en dos en el texto de E8.",
+      "depende_de": "Escribir en PLAN_JURISDICCION.md, fuera del alcance de esta sesion.",
+      "por_que_es_deuda": "Un item de deuda que junta dos sujetos con estados OPUESTOS no se puede clasificar: AreaRestriccion esta consumido en produccion desde hace tiempo y sectores no existe ni como dato. Mientras esten juntos, cualquiera que lea E8 hereda la impresion de que las dos mitades estan igual de pendientes — y esa impresion es falsa en la mitad.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "las mediciones de PLAN-3-E8::area-restriccion y PLAN-3-E8::sectores",
+        "resultado": "AreaRestriccion: consumido en src/services/sitport-parser.js y src/services/cierre-derivador.js. sectores: tabla con 0 filas, 0 de 64 en el insumo, 0 ficheros en src/. Estados opuestos, un solo item.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/01_medir_e8.txt"
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null
+    },
+
+    {
+      "id": "SESION-caracterizacion-deudas-2026-08-19::seccion-1-declara-inexistente-una-tabla-que-existe",
+      "token_local": null,
+      "espacio_de_nombres": "sesion de caracterizacion de deudas 2026-08-19",
+      "sitio": "SESION-caracterizacion-deudas-2026-08-19",
+      "repo": "tmarea-backend",
+      "texto_literal": "| `jurisdicciones_ds991` | — | **NO EXISTE** | | | |",
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "1. INVENTARIO DE INSUMOS -> 1.1 Base de datos — PostgreSQL 16.14 / PostGIS 3.5",
+        "cita_de_anclaje": "ultima fila de la tabla de 1.1"
+      },
+      "abierta_el": "2026-08-19",
+      "abierta_el_lo_dice_el_documento": true,
+      "nota_fecha": "La afirmacion se escribio el 2026-08-10 y se midio falsa el 2026-08-19. Cuando dejo de ser cierta no esta medido.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": { "firmada": false, "fecha": null },
+      "costo_estimado": "Minimo: corregir una fila de tabla y agregar nueve. La correccion ya esta medida y redactada.",
+      "depende_de": "Escribir en PLAN_JURISDICCION.md, fuera del alcance de esta sesion.",
+      "por_que_es_deuda_y_no_solo_un_error": "1.1 es el inventario que el resto del documento usa como base de hecho, y declara INEXISTENTE la capa del D.S. 991 — la que E4 existe para construir. Una declaracion medida como falsa que se queda escrita porque corregirla estaba fuera de zona es el peor resultado posible de una sesion; por eso se redacta igual.",
+      "medicion": {
+        "hecha_el": "2026-08-19",
+        "instrumento": "node scripts/fase5_inventario_insumos.js (permiso D.1) y SELECT sobre pg_class",
+        "resultado": "public.jurisdicciones_ds991 EXISTE: tabla, 6 filas, columna de geometria punto_representativo en SRID 4326, con indice GIST. Ademas existen nueve tablas hermanas que 1.1 no lista: _areas (64 filas), _convenciones (17), _descartes (1), _ensanche (3), _procedencia (9), _publicacion (4), _sectores (0), _traslape_ensanche (12), _verificacion (31). Y 1.2 titula el insumo en 324 KB cuando mide 382 KB.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/04_inventario_insumos.txt"
+      },
+      "medicion_2_que_son_esas_seis_filas": {
+        "hecha_el": "2026-08-19",
+        "por_que_se_hizo": "Seis filas no son 'existe' sin mas. Antes de dejar esta fila como una correccion de documentacion habia que descartar las dos hipotesis feas: que alguien construyera la capa sin escribirlo, o que sea un artefacto parcial de origen desconocido. LAS DOS SON FALSAS.",
+        "instrumento": "SELECT sobre jurisdicciones_ds991, jurisdicciones_ds991_publicacion y jurisdicciones_ds991_procedencia (permiso D.1, solo SELECT)",
+        "resultado": "Las 6 filas son EXACTAMENTE las seis jurisdicciones lacustres que E3 publico: lago_general_carrera, lago_panguipulli, lago_ranco, lago_rapel, lago_villarrica y puerto_varas. Las seis con ambito='lacustre', estado_geometria='construida', participa_matching=true y receta='union_cuerpos'. No es un artefacto parcial: es el gate por ambito de D3 funcionando. La tabla jurisdicciones_ds991_publicacion lo declara para los CUATRO ambitos, uno por uno: lacustre habilitado y publicado (6 de 6 con geometria); maritima habilitada pero controles_ok=false por los traslapes de C3 (52 jurisdicciones, 44 con geometria, NO publicada); antartica no habilitada (4 de 4 con geometria); insular_remota no habilitada (2 de 2 sin geometria). Y jurisdicciones_ds991_procedencia trae las nueve claves de origen, incluido insumo_sha256 10ef5af265b9a448dfe493855c25442c2d6905801a747c66cbb4e33554bee413.",
+        "conclusion": "El origen esta escrito y esta en este mismo documento: 7 registra E3 CERRADA el 2026-08-13, y la capa es su producto. Nadie construyo nada en silencio. Lo que envejecio es 1.1, que es una foto ANTERIOR a E3 -- por eso esta fila es grupo 1 y no abre una pregunta nueva.",
+        "salida_cruda_en": "_bitacoras/declarativo_deudas_2026-08-19/09_select_ds991.txt"
+      },
+      "por_que_NO_abre_una_segunda_fila": "Porque la medicion de arriba cierra la pregunta que la habria justificado. Una fila para 'que es esa tabla y quien la escribio' seria una deuda ya contestada, y meterla inflaria el numero con trabajo hecho -- que es lo mismo que el criterio D.3a descarta cuando saca del conteo los tokens con pronunciamiento de cierre.",
+      "lo_que_la_correccion_de_1.1_tiene_que_decir_ademas": "Que jurisdicciones_ds991_publicacion existe y es donde vive la respuesta a 'que ambito esta publicado'. 1 no sabe que esa tabla existe, y es la que contesta la pregunta que 1.1 contestaba mal.",
+      "redactada_no_aplicada": true,
+      "duplicada_de": null
+    }
+
+  ]
+}

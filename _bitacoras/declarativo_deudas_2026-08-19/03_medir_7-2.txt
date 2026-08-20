@@ -1,0 +1,60 @@
+==============================================================================
+7.2 ANOTADO, NO RESUELTO -- las cuatro viñetas
+SESION  : caracterizacion de deudas, 2026-08-19. Tramos 1 y 2.
+REPO    : tmarea-backend en 67aa8bb9101e49b47394d40cee5df29604ea6455 (= origin/main)
+          tmarea-pwa      en 6443178493b8b3c35c11a37253c4b5bd1884ea55 (= origin/main)
+ALCANCE : esta sesion NO cierra ninguna deuda. Caracteriza.
+==============================================================================
+
+------------------------------------------------------------------------------
+7.2-1 . E7 pieza 2: la celda de estado y la seccion E7, enteras
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : echo '--- la fila E7 de la tabla de 7 ---'; grep -n '^| E7' PLAN_JURISDICCION.md; echo '--- la seccion E7 de 3. ETAPAS ---'; sed -n '1230,1238p' PLAN_JURISDICCION.md; echo '--- que se observa / que la cerraria: se busca y no esta ---'; grep -ic 'criterio de cierre' PLAN_JURISDICCION.md; echo '--- CONTROL POSITIVO: condicion de cierre (que si existe para D13) ---'; grep -ic 'condicion de cierre\|Condición de cierre' PLAN_JURISDICCION.md
+------------------------------------------------------------------------------
+--- la fila E7 de la tabla de 7 ---
+1453:| E7 R1 sobre la capa nueva | pieza 1 cerrada; pieza 2 en observación | — | `fase5V`, `fase5W`, `fase5Y` |
+--- la seccion E7 de 3. ETAPAS ---
+### E7 · R1 sobre la capa nueva
+**Depende de: E6. Tercer entregable visible.**
+
+Pieza 1 ya está. Pieza 2: volver a correr el auditor de `fase5Y`. **Expectativa: el criterio
+de silenciamiento sobra** — con costa fina y unidad Capitanía puede que no queden astillas. Si
+sobra, se borra. Después piezas 3 y 4.
+**Aceptación:** S3, S6, S8.
+
+### E8 · Deudas declaradas
+--- que se observa / que la cerraria: se busca y no esta ---
+1
+--- CONTROL POSITIVO: condicion de cierre (que si existe para D13) ---
+4
+
+------------------------------------------------------------------------------
+7.2-2 . E8: su celda de estado en la tabla de 7
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -n '^| E8' PLAN_JURISDICCION.md; echo '--- bitacoras de E8 que existan (esperado 0 antes de esta sesion) ---'; ls _bitacoras | grep -ic '^e8' ; echo '--- CONTROL POSITIVO: bitacoras de E3 ---'; ls _bitacoras | grep -ic '^e3'
+------------------------------------------------------------------------------
+1454:| E8 Deudas declaradas | abierta | — | `fase5Z` |
+--- bitacoras de E8 que existan (esperado 0 antes de esta sesion) ---
+0
+--- CONTROL POSITIVO: bitacoras de E3 ---
+14
+
+------------------------------------------------------------------------------
+7.2-4 . 2. ESPECIFICACION: los nueve puntos existen y ninguno trae marca de verificacion contra pantalla
+ARBOL   : C:/Users/katia/tmarea-backend
+COMANDO : grep -n '^\*\*S[0-9]' PLAN_JURISDICCION.md; echo '--- marcas de verificacion contra pantalla (esperado 0) ---'; grep -ic 'verificado contra la pantalla\|releido contra la pantalla' PLAN_JURISDICCION.md; echo '--- CONTROL POSITIVO: la palabra pantalla aparece en el documento ---'; grep -ic 'pantalla' PLAN_JURISDICCION.md
+------------------------------------------------------------------------------
+241:**S1 · Ve todas las Capitanías que su ruta atraviesa.** No las bahías cercanas: las
+244:**S2 · Ve toda restricción vigente de esas Capitanías, aplique o no a su nave.** Las que no le
+249:**S3 · Si su ruta cruza una Capitanía sin límite cargado, se le dice.** En su propio bloque,
+254:**S4 · Si navega en un lago, ve la condición de su lago.** Hoy no ve nada. Las jurisdicciones
+257:**S5 · Ve el estado de su puerto de zarpe y de recalada una sola vez.** No duplicado entre el
+261:**S6 · El veredicto es el máximo de todas las fuentes y nunca se contradice con lo que hay
+264:**S7 · Cada mensaje trae su cita, o dice explícitamente que no hay cita porque no hay norma
+267:**S8 · Cuando el motor no puede evaluar algo, lo dice.** Nunca un fallo se presenta como
+270:**S9 · Ninguna restricción publicada por SITPORT desaparece sin registro.** Si llega una
+--- marcas de verificacion contra pantalla (esperado 0) ---
+0
+--- CONTROL POSITIVO: la palabra pantalla aparece en el documento ---
+22
+
