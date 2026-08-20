@@ -32,6 +32,9 @@ const FICHEROS = [
   '_bitacoras/plan_de_cierre_2026-08-20/03_control_caracteres.js',
   '_bitacoras/plan_de_cierre_2026-08-20/04_control_contra_el_indice.js',
   '_bitacoras/plan_de_cierre_2026-08-20/05_mensaje_commit.txt',
+  '_bitacoras/plan_de_cierre_2026-08-20/07_enmendar_defectos.js',
+  '_bitacoras/plan_de_cierre_2026-08-20/07_enmendar_defectos.txt',
+  '_bitacoras/plan_de_cierre_2026-08-20/08_mensaje_commit.txt',
   'data/deudas/deudas_declaradas.json',
   'scripts/validar_deudas_declaradas.js',
 ];

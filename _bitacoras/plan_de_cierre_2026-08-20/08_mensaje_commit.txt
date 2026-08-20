@@ -1,0 +1,103 @@
+TRES DEFECTOS DE INSTRUMENTO AL ARBOL, y el tercero rompe el guardia de la cifra ANTES de que se escriba
+
+Enmienda de 5b9cb2e. Solo bitacora: ni una fila del declarativo, ni el
+validador, ni PLAN_JURISDICCION.md, ni src/ de ninguno de los dos repos.
+El conteo no se movio -- 72 filas, 70 unicas, 64 VIVAS, 20 sitios, 11 barridos,
+9 SIN BARRER -- y la cifra de la seccion 2 tampoco.
+
+POR QUE ESTE COMMIT EXISTE
+  Dos de los tres defectos estaban declarados UNICAMENTE en los comentarios de
+  06_verificar_push.js, que no se trackea. Declarar un hallazgo en un fichero
+  sin trackear es exactamente el defecto que 5b9cb2e acaba de escribir como
+  fila: un-entregable-que-solo-vive-en-el-chat-no-existe.
+  Y el parrafo de 5b9cb2e que decia "DEFECTO DE INSTRUMENTO: NINGUNO EN ESTA
+  ESCRITURA" quedo FALSO. Se tacha a la vista y se conserva citado: era cierto
+  cuando se escribio -- cubria la escritura de las filas -- y dejo de serlo en
+  cuanto corrio la verificacion de push, que es de la misma sesion.
+
+LOS TRES FALLARON RUIDOSO Y NINGUNO LLEGO AL DATO
+  El declarativo, el commit y el objeto remoto son correctos y quedaron
+  verificados: 45 comprobaciones en verde despues de los arreglos. Lo que estos
+  tres tocan es la confianza en los CONTROLES.
+
+D1 - BACKTICK DENTRO DE UN String.raw, la familia ya fichada
+  02_enmendar_bitacora.js cerraba el template con dos backticks internos y no
+  parseaba. Fallo antes de abrir el fichero de destino. Ya iba declarado en
+  5b9cb2e; se agrega que VOLVIO A MORDER en la misma sesion, esta vez en el
+  SHELL: un node -e entre comillas dobles perdio tres tokens entre backticks
+  por sustitucion de comando. La correccion es de raiz y no por caso: para
+  texto con backticks no se usa node -e, se usa un fichero o edicion por
+  cadena exacta.
+
+D2 - UNA REGEX SIN ANCLAR LEYO EL BLOQUE EQUIVOCADO, y dio ROJO sobre un dato
+     CORRECTO
+  Las regex que extraen filas/unicas/vivas del MENSAJE no estaban ancladas al
+  bloque AHORA: con /m y primera coincidencia agarraron el bloque ANTES,
+  leyeron 68/66/61 y los compararon contra 72/70/64. Tres comprobaciones en MAL
+  sobre un mensaje que decia bien las dos cosas.
+  Y el motivo por el que el mensaje tenia los dos bloques es una convencion del
+  propio dato que el control estaba verificando: la politica de conteo del
+  declarativo exige que las dos cifras vayan siempre juntas.
+  Arreglado acotando al bloque AHORA, con CONTROL POSITIVO DEL ANCLAJE: el
+  bloque ANTES tiene que existir y dar un numero distinto. Da 61 vs 64.
+  Un rojo falso cuesta lo mismo que un verde falso el dia que alguien le crea.
+
+D3 - UNA COMPARACION LITERAL CONTRA UN TEXTO PARTIDO EN DOS LINEAS. ESTE ES EL
+     QUE VALE, Y NO ES SOLO MIO
+  El control de la politica de publicacion de la cifra comparaba con includes()
+  literal. En el mensaje de 5b9cb2e la frase legal cae en el corte de linea:
+  "...sigue en 4 de 15, con 2 anuladas por" / "decision del owner...". La
+  salvedad estaba ENTERA; el control no la vio y salio rojo POR LAS DOS PUNTAS:
+  no encontro la forma legal, y por eso mismo tampoco pudo retirarla del texto,
+  asi que declaro que el mensaje publicaba la forma PROHIBIDA. Un control que
+  acusa de violar una politica a un texto que la cumple.
+
+  LO QUE LE DICE A UNA FILA QUE YA EXISTE, y es el motivo de este commit:
+    D4D5::la-cifra-tiene-emisor-pero-no-tiene-guardia pide exactamente un
+    guardia de esta forma, y su costo_estimado lo describe textual: "un control
+    que barra los .md y las bitacoras buscando el patron N de 15 sin su
+    salvedad".
+    ESE GUARDIA, ESCRITO ASI, NACE ROTO. Un barrido literal convierte en FALSO
+    POSITIVO toda cita que caiga en un corte de linea, y en prosa a 78 columnas
+    -- la convencion de este repositorio -- eso pasa seguido. El guardia tiene
+    que NORMALIZAR EL ESPACIO EN BLANCO antes de comparar.
+    Queda MEDIDO ANTES de que el guardia se escriba, que es la unica vez que
+    una medicion asi sale barata.
+
+  NO ES LA PRIMERA APARICION DEL PATRON, medido:
+    _bitacoras/tres_de_d4_2026-08-20/20_verificar_push_dos_repos.js hace la
+    misma comparacion literal en TRES sitios. No mordio porque en aquel commit
+    la frase no cayo en el corte. Ese fichero NO esta trackeado, asi que su
+    version del defecto se habria ido con su sesion.
+  Y EL CONTROL PARA NO ACUSAR DE MAS, tambien medido:
+    el verificador reusable que SI esta trackeado --
+    _bitacoras/spec2_pantalla_2026-08-20/12_verificar_push.js -- NO tiene
+    control de la cifra, asi que no arrastra el defecto. Y el emisor trackeado,
+    scripts/publicar_cifra_spec2.js, tampoco barre nada: lo dice de si mismo,
+    "no hay gancho que impida a una persona escribir la forma pelada a mano en
+    otro documento".
+
+  Arreglado normalizando el espacio en blanco, con CONTROL NEGATIVO DEL PROPIO
+  CRITERIO: un texto fabricado con la forma pelada tiene que ser cazado. Un
+  control de esta clase pasa igual de bien por estar bien escrito que por no
+  mirar.
+
+LO QUE LOS TRES TIENEN EN COMUN, y no es la causa tecnica
+  Ninguno lo habria cazado un validador de forma, y los tres se cazaron
+  corriendo el instrumento y MIRANDO LA SALIDA. La regla que este repositorio ya
+  tiene escrita los cubre sin cambiarle una palabra -- un instrumento no se da
+  por bueno porque compila, se corre -- y esta sesion le agrega una linea:
+  cuando sale ROJO, antes de tocar el dato hay que preguntarse si el que se
+  equivoco fue el control.
+
+CONTROLES DE ESTA ENMIENDA
+  control de caracteres por PUNTOS DE CODIGO (criterio H-T2): 0 sospechosos,
+    0 con BOM, con el centinela U+0091 FABRICADO cazado 1 de 1 y el mismo
+    centinela por BYTES en 0, que es el falso negativo que H-T2 corrigio.
+  control contra el INDICE, con los INTOCABLES verificados FUERA:
+    .claude/launch.json y data/catalogo/estado_drift.json siguen ' M' y sin
+    stagear. El declarativo NO entra al indice de este commit.
+  validador del declarativo: VERDE y SIN CAMBIOS respecto de 5b9cb2e -- se corre
+    para probar que esta enmienda no lo movio, que es lo que dice el titulo.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
