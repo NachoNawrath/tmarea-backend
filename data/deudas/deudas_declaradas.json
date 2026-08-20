@@ -377,12 +377,13 @@
           "los ocho hallazgos del gate, G1 a G8: cuales sobreviven como deuda y cuales son correccion de rotulo",
           "las decisiones que el plan descubrio que NO existen como fila: el color de la carencia y el camino de la jurisdiccion",
           "la medicion (m1) del 2026-08-20: check_control_points sobre los ocho puntos lacustres contra los cinco tiles, con control positivo maritimo y control negativo. El owner la pidio con alcance CERRADO a correr y publicar.",
-          "el hallazgo LATERAL que (m1) destapo y que el owner mando a fila propia: que un punto de control de un instrumento trackeado falla, y que se supo solo porque hubo que instalar una dependencia para poder correrlo"
+          "el hallazgo LATERAL que (m1) destapo y que el owner mando a fila propia: que un punto de control de un instrumento trackeado falla, y que se supo solo porque hubo que instalar una dependencia para poder correrlo",
+          "la medicion (m2) del 2026-08-20: los ocho puntos lacustres contra las seis jurisdicciones publicadas, en TRES lecturas de \"cae en la jurisdiccion\", con control positivo derivado de los traslapes reales de la capa. El owner la pidio con alcance CERRADO a medir y parar."
         ],
         "orden": 3,
         "barrido": true,
         "barrido_el": "2026-08-20",
-        "filas_en_este_declarativo": 6,
+        "filas_en_este_declarativo": 7,
         "nota": "Mismo precedente que SESION-caracterizacion-deudas-2026-08-19, SESION-tres-de-d4-2026-08-20 y SESION-limite-puerto-12100-47-2026-08-20: una sesion es un sitio de deuda propio. Esta sesion NO midio el producto: leyo los dos arboles, el declarativo contra el indice, las bitacoras, y el plan anterior — que no estaba en ningun arbol, y esa es una de las cuatro filas. Este sitio NO marca barrido ningun otro: PLAN-5-DECISIONES y CLAUDE-MD siguen en false aunque dos de estas cuatro filas caigan cerca de ellos, y se dice en el `depende_de` de cada una. De los cuatro hallazgos del gate que producian escritura, DOS quedaron fuera por decision del owner: los cuatro sitios donde el plan todavia dice que D4 sigue abierta los pega el owner como texto —opcion (c) de las tres que el gate ofrecio—, y S7(a) no se firma hoy porque el owner quiere mirarla en pantalla antes. AMPLIADO el 2026-08-20 con la fila de (m1): el owner ordeno correr check_control_points sobre los ocho puntos lacustres. Es una QUINTA fila y no una de las cuatro del gate, y va declarada aparte para que el sitio no afirme de si mismo algo que no hizo.",
         "bitacora": "_bitacoras/plan_de_cierre_2026-08-20/"
       }
@@ -3359,6 +3360,51 @@
       "costo_estimado": "DOS COSAS DE PRECIO MUY DISTINTO, y la fila no las funde. Mirar Corral: barato, es un punto y el instrumento ya corre. Que un instrumento trackeado no se pueda correr: eso NO es barato ni es de este fichero — toca como se declara y se comprueba el entorno de las herramientas del repositorio, y hoy nada lo comprueba.",
       "depende_de": "Nada abierto. Cae cerca de CLAUDE-MD, que es uno de los NUEVE sitios sin barrer y sigue en false: esta fila esta escrita aca porque la produjo esta sesion, no porque ese sitio se haya barrido.",
       "medicion": "_bitacoras/plan_de_cierre_2026-08-20/, corrida del instrumento trackeado del 2026-08-20."
+    },
+    {
+      "id": "SESION-plan-de-cierre-2026-08-20::los-ocho-puntos-caen-en-su-jurisdiccion-y-eso-desacopla-S4-a-medias",
+      "token_local": null,
+      "espacio_de_nombres": "sesion del plan de cierre 2026-08-20 — medicion (m2)",
+      "sitio": "SESION-plan-de-cierre-2026-08-20",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: nace de la medicion (m2) del 2026-08-20, corrida por orden del owner con alcance cerrado a medir y parar. Salida cruda en _bitacoras/plan_de_cierre_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "titulo": "Los OCHO puntos lacustres caen DENTRO de su jurisdiccion publicada y los cuatro pares en la MISMA: S4 se puede contestar por extremos, con dos consultas de punto y cero motor de rutas — pero solo la mitad de S4",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "la_capa_no_se_eligio_aca": "Sale de data/decreto/ambitos_publicados.json, campo capa_publicada: jurisdicciones_ds991. Ese mismo fichero declara por que NO puede ser la capa consultada, que hoy es un teselado de Voronoi que el contrato marca como contradictorio con INV-3.3. El registro declara el ambito lacustre publicado el 2026-08-13 con 6 jurisdicciones esperadas, y la base tiene 6.",
+        "los_ocho_puntos": "Los mismos literales de _bitacoras/spec2_pantalla_2026-08-20/08_lago_contra_las_tres_clases.js, igual que en (m1). No se copiaron de ninguna prosa.",
+        "TRES_LECTURAS_PORQUE_LA_PREGUNTA_ADMITE_TRES": "El owner lo pidio explicitamente y (m1) explico por que. L1 DENTRO estricto con ST_Contains. L3 MAS CERCA con ST_Distance en metros contra las seis. L2 DENTRO CON TOLERANCIA no lleva umbral inventado: se publica la tabla entera de distancias y cualquiera fija el suyo; se informan dos cortes de referencia con su procedencia declarada —50 m, la resolucion de celda del raster; 2000 m, el snap que el descriptor de AUSTRAL_N declara— y se dice que NO son criterios de aceptacion.",
+        "EL_RESULTADO": "LAS TRES LECTURAS COINCIDEN Y DAN LO MISMO PARA LOS CUATRO LAGOS. Los ocho puntos caen DENTRO de una jurisdiccion, a 0 m, sin necesidad de tolerancia, y los dos extremos de cada lago caen en la MISMA: Gral Carrera -> lago_general_carrera · Llanquihue -> puerto_varas · Villarrica -> lago_villarrica · Panguipulli -> lago_panguipulli. Ninguno de los ocho cae en mas de una. La segunda jurisdiccion mas cercana esta, en el caso mas ajustado, a 22,7 km: no hay ambiguedad de adjudicacion en ningun punto.",
+        "LA_PREGUNTA_QUE_M1_DEJO_SERVIDA_CONTESTADA": "SI. Villarrica —que (m1) midio como EXTENT, los dos extremos fuera de todos los tiles— y Panguipulli —MIXTA— TIENEN jurisdiccion publicada, y la MISMA para sus dos extremos. O sea que para contestar S4 por extremos el problema del tile DEJA DE IMPORTAR: la jurisdiccion no vive en el raster, vive en la capa del D.S. 991, y ahi los cuatro lagos estan.",
+        "EL_CONTROL_POSITIVO_Y_EL_DEFECTO_QUE_DESTAPO": "El control son los seis ST_PointOnSurface de las propias jurisdicciones, que por definicion caen dentro incluso en poligonos concavos. NO es un punto maritimo, y el motivo importa: la capa publicada tiene SOLO las seis lacustres —la maritima no esta publicada, C3 falla— asi que cualquier punto de mar cae en ninguna POR CONSTRUCCION y no probaria nada. Por eso el control negativo se declara DEBIL en su propia salida: vale para comprobar que ST_Contains no devuelve true de mas, y nada mas.",
+        "MI_DEFECTO_DE_INSTRUMENTO_Y_QUE_EL_REPOSITORIO_YA_LO_TENIA_CONTESTADO": "La primera version del control positivo exigia que cada punto cayera en SU jurisdiccion Y EN NINGUNA OTRA, y dio 5 de 6: el de lago_ranco cae tambien en puerto_varas. NO ES UN DEFECTO DE LA CAPA. Es un TRASLAPE DECLARADO, y el repositorio ya lo tenia escrito: la salida del build del 2026-08-13 lo imprime textual —\"Lago Ranco (lacustre) x Puerto Varas (lacustre) = 155.426 km2\"— y el control C3 del ambito lacustre, \"cero traslapes fuera de los declarados deliberados\", dio obtenido 0. Mi medicion da 155,426 km2 y CORROBORA la suya. El esperado de mi control habia salido de MI SUPOSICION y no de la corrida, que es la familia de la cifra clavada en vez de derivada. Corregido: ahora el esperado SE DERIVA de los traslapes reales de la capa, y el control da 6 de 6. Va escrito porque si se hubiera publicado el 5 de 6 como hallazgo, habria acusado a la capa de un defecto que no tiene.",
+        "LO_QUE_ESTA_MEDICION_NO_SOSTIENE_Y_LO_PRUEBA_M1": "CAER EN LA JURISDICCION NO ES ESTAR EN AGUA NAVEGABLE. La jurisdiccion de una Capitania lacustre no es el espejo de agua: incluye tierra. Y hay un punto donde las dos mediciones se cruzan y las dos son ciertas a la vez: Llanquihue / Muelle, -41,2553 -73,0026. (m2) dice que cae DENTRO de puerto_varas, a 0 m, estricto. (m1) dice que el raster ahi vale TIERRA y que hay 0 de 6561 celdas navegables en 2 km. Asi que (m2) sostiene QUE JURISDICCION GOBIERNA ESTE VIAJE y NO sostiene QUE ESTE VIAJE SEA NAVEGABLE. Son dos preguntas distintas y esta medicion contesta una.",
+        "una_cota_de_lectura_derivada_y_no_citada": "La suma de las areas de las seis da 4.479,4 km2 y su UNION da 4.324,0 km2. La diferencia son los 155,4 km2 del traslape declarado, que cualquier suma cuenta dos veces. No es un defecto: es como se lee esa cifra, y el registro de ambitos publica la suma.",
+        "salida_cruda": "_bitacoras/plan_de_cierre_2026-08-20/17_m2_ocho_puntos_contra_seis.js y .txt, con las areas y los traslapes en 18_solapes_y_areas.txt.",
+        "LA_REGLA_QUE_HAY_QUE_PRESERVAR_DE_ESTA_SESION": "UN CONTROL POSITIVO QUE FALLA SE SOSPECHA A SI MISMO ANTES DE ACUSAR AL DATO, Y LA PRIMERA MEDICION ES BUSCAR SI ALGUIEN YA LO CONTESTO. Asi paso, entero: el control positivo salio 5 DE 6 —el punto interior de lago_ranco caia tambien en puerto_varas—; en vez de publicarlo como hallazgo se fue a buscar si el repositorio ya lo tenia contestado; Y LO TENIA, DESDE EL 2026-08-13: la salida del build imprime textual \"Lago Ranco (lacustre) x Puerto Varas (lacustre) = 155.426 km2\" y el control C3 del ambito lacustre, \"cero traslapes fuera de los declarados deliberados\", dio obtenido 0. EL QUE ESTABA MAL ERA EL CONTROL: su esperado —\"cae en la suya y en ninguna otra\"— salia de una SUPOSICION y no de la corrida. PUBLICARLO HABRIA ACUSADO A LA CAPA DE UN DEFECTO QUE NO TIENE. Corregido para que el esperado SE DERIVE de los traslapes reales de la capa, el control da 6 de 6. La regla vale para cualquier control de este repositorio y por eso queda escrita como regla y no como anecdota.",
+        "EL_CRUCE_DE_M1_CON_M2_Y_ES_LO_QUE_IMPIDE_LEER_MAL_ESTA_FILA": "EL MUELLE DE LLANQUIHUE CAE DENTRO DE LA JURISDICCION A 0 m Y EL RASTER DICE TIERRA CON 0 DE 6561 NAVEGABLES. LAS DOS CIERTAS. Punto -41,2553 -73,0026, el mismo en las dos mediciones. LA JURISDICCION DE UNA CAPITANIA LACUSTRE NO ES EL ESPEJO DE AGUA: INCLUYE TIERRA, Y puerto_varas SON 1.437,4 km2. Esto es lo que impide que alguien lea (m2) como \"entonces el lago esta resuelto\". No lo esta: (m2) contesta que jurisdiccion gobierna el viaje, y (m1) sigue diciendo que ese viaje no se puede trazar."
+      },
+      "donde": {
+        "fichero": "tmarea-backend/PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "2. ESPECIFICACION — QUE VE EL PATRON CUANDO ESTO ESTE TERMINADO, punto S4",
+        "cita_de_anclaje": "la frase «Si navega en un lago, ve la condicion de su lago», que sigue sin decir por que camino se responde; y el bloque de la unidad U7 de la bitacora del plan de cierre, que lo trata como una pregunta de ruteo"
+      },
+      "costo_estimado": "ESTA FILA NO PIDE CONSTRUIR NADA: pide que la pregunta que la fila hermana del grupo 2 tiene que decidir se decida con este numero al lado. Lo que la medicion acota: si el owner elige EXTREMOS, la mitad jurisdiccional de S4 se contesta con DOS CONSULTAS DE PUNTO contra una capa que ya esta publicada, y cero motor de rutas, para los CUATRO lagos —incluidos los dos que el raster no puede rutear—. Si elige TRAYECTO, no se ahorra nada de lo que (m1) midio.",
+      "depende_de": "La decision es la fila hermana SESION-plan-de-cierre-2026-08-20::jurisdiccion-por-trayecto-o-por-extremos, del grupo 2 y SIN FIRMAR. Esta medicion no la contesta: le pone el numero. Y no cierra PLAN-2::ninguna-ruta-lacustre-es-calculable, que sigue viva: ninguna ruta lacustre se rutea igual, y esta fila no lo arregla — lo rodea, y solo para la pregunta jurisdiccional.",
+      "medicion": "_bitacoras/plan_de_cierre_2026-08-20/, medicion (m2) del 2026-08-20.",
+      "enmienda_2026_08_20": "ENRIQUECIDA EL MISMO DIA, por decision del owner, con dos cosas que la primera version tenia dispersas y que el owner quiso con esas palabras: la REGLA del control positivo que se sospecha a si mismo, y el cruce de (m1) con (m2) sobre el mismo punto. Ningun numero de la medicion cambio."
     }
   ]
 }

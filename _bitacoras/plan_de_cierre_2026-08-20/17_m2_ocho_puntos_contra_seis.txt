@@ -1,0 +1,111 @@
+(m2) — LOS OCHO PUNTOS CONTRA LAS SEIS JURISDICCIONES LACUSTRES PUBLICADAS
+
+  capa, leida de ambitos_publicados.json: jurisdicciones_ds991
+  el ambito lacustre se declara publicado el 2026-08-13, con 6 jurisdicciones esperadas
+  en la base hay 6: lago_general_carrera, lago_panguipulli, lago_ranco, lago_rapel, lago_villarrica, puerto_varas
+  ALCANCE DE LA CAPA, y hay que decirlo: la tabla entera tiene 6 filas y son
+  las SEIS lacustres. La maritima NO esta publicada, asi que un punto de mar cae en
+  ninguna POR CONSTRUCCION. Por eso el control que discrimina es el positivo.
+
+LOS OCHO PUNTOS
+  punto                                 L1 dentro de            L3 mas cerca (id · metros)
+  ----------------------------------------------------------------------------------------------
+  Gral Carrera  zarpe    Pto Ibanez     lago_general_carrera    lago_general_carrera · 0 m
+  Gral Carrera  recalada Rio Tranquilo  lago_general_carrera    lago_general_carrera · 0 m
+  Llanquihue    zarpe    Muelle         puerto_varas            puerto_varas · 0 m
+  Llanquihue    recalada Frutillar      puerto_varas            puerto_varas · 0 m
+  Villarrica    zarpe    Pucon          lago_villarrica         lago_villarrica · 0 m
+  Villarrica    recalada Villarrica     lago_villarrica         lago_villarrica · 0 m
+  Panguipulli   zarpe    Costanera      lago_panguipulli        lago_panguipulli · 0 m
+  Panguipulli   recalada Pto Fuy        lago_panguipulli        lago_panguipulli · 0 m
+
+  LA TABLA ENTERA DE DISTANCIAS, para que L2 se pueda leer con cualquier umbral:
+  punto                                  lago_genera lago_pangui  lago_ranco  lago_rapel lago_villar puerto_vara
+  Gral Carrera  zarpe    Pto Ibanez                0    696484.9    620250.4   1330457.3    776572.6    558196.7
+  Gral Carrera  recalada Rio Tranquilo             0    736345.8    655086.4   1369916.4    814137.1    588544.3
+  Llanquihue    zarpe    Muelle             566412.7    163740.7     72188.4    782244.2    228207.2           0
+  Llanquihue    recalada Frutillar          585719.7    142924.0     51793.2    761260.5    207155.7           0
+  Villarrica    zarpe    Pucon              779550.7     26636.6     98732.0    552355.6           0    148379.6
+  Villarrica    recalada Villarrica         778587.4     22659.4     93111.5    555968.2           0    149377.2
+  Panguipulli   zarpe    Costanera          739436.8           0     52947.0    596277.8     40301.8    109158.7
+  Panguipulli   recalada Pto Fuy            713431.8           0     43529.1    617627.7     64601.9     81922.7
+
+CONTROL POSITIVO — un punto GARANTIZADO dentro de cada jurisdiccion
+  (ST_PointOnSurface, que por definicion cae dentro incluso en poligonos concavos)
+
+  DEFECTO DE INSTRUMENTO PROPIO, CORREGIDO Y DECLARADO. La primera version
+  exigia que el punto cayera en SU jurisdiccion Y EN NINGUNA OTRA, y dio 5 de 6:
+  el de lago_ranco cae tambien en puerto_varas. NO ES UN DEFECTO DE LA CAPA NI DEL
+  INSTRUMENTO: es un TRASLAPE DECLARADO. El build del 2026-08-13 lo imprime en su
+  propia salida —"Lago Ranco (lacustre) x Puerto Varas (lacustre) = 155.426 km2"— y
+  el control C3 del ambito lacustre, "cero traslapes fuera de los declarados
+  deliberados", dio obtenido 0. El repositorio ya lo tenia contestado y el esperado
+  de mi control salio de mi suposicion, no de la corrida. Es la familia de la cifra
+  clavada en vez de derivada. Ahora el esperado SE DERIVA de los traslapes reales.
+
+  traslapes reales entre las seis, DERIVADOS de la capa: lago_ranco x puerto_varas = 155.426 km2
+
+  ok  lago_general_carrera  cae en: lago_general_carrera
+  ok  lago_panguipulli      cae en: lago_panguipulli
+  ok  lago_ranco            cae en: lago_ranco+puerto_varas   [el extra es traslape declarado: true]
+  ok  lago_rapel            cae en: lago_rapel
+  ok  lago_villarrica       cae en: lago_villarrica
+  ok  puerto_varas          cae en: puerto_varas
+  CONTROL POSITIVO: 6 de 6 — el instrumento SI distingue dentro de fuera
+
+CONTROL NEGATIVO — un punto que no puede caer en ninguna
+  ok  Cordoba, Argentina      cae en: (ninguna) · mas cerca 737043.3 m
+  ok  Quellon (mar)           cae en: (ninguna) · mas cerca 206588.4 m
+  NOTA DE ALCANCE: este control es DEBIL y se dice. Con la capa teniendo solo
+  lacustres, "no cae en ninguna" es cierto para casi todo el pais. Vale como
+  comprobacion de que ST_Contains no devuelve true de mas, y nada mas.
+
+------------------------------------------------------------------------------------------------
+LA PREGUNTA: ¿zarpe y recalada del MISMO lago caen en la MISMA jurisdiccion?
+------------------------------------------------------------------------------------------------
+  Gral Carrera    
+      L1 dentro estricto ... MISMA (lago_general_carrera)
+      L3 mas cerca ......... MISMA (lago_general_carrera)  ·  0 m / 0 m
+      L2 con   50 m ....... MISMA
+      L2 con 2000 m ....... MISMA
+  Llanquihue      
+      L1 dentro estricto ... MISMA (puerto_varas)
+      L3 mas cerca ......... MISMA (puerto_varas)  ·  0 m / 0 m
+      L2 con   50 m ....... MISMA
+      L2 con 2000 m ....... MISMA
+  Villarrica      
+      L1 dentro estricto ... MISMA (lago_villarrica)
+      L3 mas cerca ......... MISMA (lago_villarrica)  ·  0 m / 0 m
+      L2 con   50 m ....... MISMA
+      L2 con 2000 m ....... MISMA
+  Panguipulli     
+      L1 dentro estricto ... MISMA (lago_panguipulli)
+      L3 mas cerca ......... MISMA (lago_panguipulli)  ·  0 m / 0 m
+      L2 con   50 m ....... MISMA
+      L2 con 2000 m ....... MISMA
+
+  procedencia de los cortes de L2, que NO son criterios de aceptacion:
+       50 m — la resolucion de celda del raster de ruteo, 50 m, que declara cada descriptor de tile
+     2000 m — el snap que el descriptor de AUSTRAL_N declara en sus observaciones: "0 puertos aislados (snap 2000m)"
+
+LA PREGUNTA QUE (m1) DEJO SERVIDA: los lagos que fallan por EXTENT o MIXTA,
+¿tienen jurisdiccion publicada igual?
+  Villarrica    (m1): EXTENT  · jurisdiccion publicada: SI, y la MISMA para los dos extremos
+  Panguipulli   (m1): MIXTA   · jurisdiccion publicada: SI, y la MISMA para los dos extremos
+
+------------------------------------------------------------------------------------------------
+LO QUE ESTA MEDICION NO SOSTIENE — y (m1) es quien lo prueba
+------------------------------------------------------------------------------------------------
+  CAER EN LA JURISDICCION NO ES ESTAR EN AGUA NAVEGABLE. La jurisdiccion de una
+  Capitania lacustre NO es el espejo de agua: incluye tierra. Y hay un caso donde
+  las dos mediciones se cruzan sobre EL MISMO PUNTO:
+     Llanquihue / Muelle  -41.2553 -73.0026
+       (m2) cae DENTRO de puerto_varas, a 0 m. Estricto, sin tolerancia.
+       (m1) el raster dice TIERRA y 0 de 6561 celdas navegables en 2 km.
+  Las dos son ciertas a la vez. Asi que (m2) sostiene "que jurisdiccion gobierna
+  este viaje" y NO sostiene "este viaje es navegable". Son dos preguntas y esta
+  medicion contesta una.
+
+  Y UNA COTA DE LECTURA PARA EL AREA, derivada y no citada: la suma de las seis da 4479.4 km2
+  y su UNION da 4324.0 km2. La diferencia son los 155.4 km2 del traslape
+  declarado, contados dos veces por cualquier suma. No es un defecto: es como se lee.

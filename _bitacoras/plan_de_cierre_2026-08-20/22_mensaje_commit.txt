@@ -1,0 +1,131 @@
+(m2) MEDIDA: los ocho puntos caen en su jurisdiccion y los cuatro pares en la misma. Desacopla S4 del raster A MEDIAS
+
+El owner ordeno medir si zarpe y recalada caen en la misma jurisdiccion lacustre
+publicada, con alcance CERRADO a medir y parar. No se diseno la solucion, no se
+toco el raster ni la mascara, y no se abrio la fuente de agua: esa inferencia
+sigue abierta y pide su propia sesion.
+
+LA CAPA NO SE ELIGIO ACA
+  Sale de data/decreto/ambitos_publicados.json, campo capa_publicada:
+  jurisdicciones_ds991. Ese mismo fichero declara por que NO puede ser la capa
+  consultada. El registro declara el ambito lacustre publicado el 2026-08-13 con
+  6 jurisdicciones esperadas; la base tiene 6. Los ocho puntos son los mismos
+  literales que en (m1).
+
+TRES LECTURAS, PORQUE LA PREGUNTA ADMITE TRES, Y SE PUBLICAN LAS TRES
+  L1 DENTRO estricto, ST_Contains.
+  L2 DENTRO con tolerancia: NO lleva umbral inventado. Se publica la tabla entera
+     de distancias contra las seis y cada cual fija el suyo. Dos cortes de
+     referencia van CON SU PROCEDENCIA -- 50 m, la resolucion de celda del
+     raster; 2000 m, el snap que declara el descriptor -- y se dice que NO son
+     criterios de aceptacion.
+  L3 MAS CERCA de esa que de otra, ST_Distance en metros contra las seis.
+
+EL RESULTADO: LAS TRES COINCIDEN
+  Gral Carrera  -> lago_general_carrera   0 m / 0 m
+  Llanquihue    -> puerto_varas           0 m / 0 m
+  Villarrica    -> lago_villarrica        0 m / 0 m
+  Panguipulli   -> lago_panguipulli       0 m / 0 m
+  Los OCHO caen DENTRO, a 0 m, sin necesitar tolerancia, y los CUATRO pares en la
+  MISMA. Ninguno cae en mas de una. La segunda mas cercana esta, en el caso mas
+  ajustado, a 22,7 km: no hay ambiguedad de adjudicacion en ningun punto, y por
+  eso las tres lecturas no se separan.
+
+LA PREGUNTA QUE (m1) DEJO SERVIDA, CONTESTADA: SI
+  Villarrica -- que (m1) midio EXTENT -- y Panguipulli -- MIXTA -- TIENEN
+  jurisdiccion publicada, y la MISMA para sus dos extremos. Para contestar S4 por
+  extremos el problema del tile DEJA DE IMPORTAR: la jurisdiccion no vive en el
+  raster, vive en la capa del D.S. 991, y ahi los cuatro lagos estan.
+
+EL CONTROL POSITIVO SALIO 5 DE 6, Y ESO ES LO QUE HAY QUE PRESERVAR
+  El punto interior de lago_ranco caia tambien en puerto_varas.
+  En vez de publicarlo como hallazgo se fue a buscar si el repositorio ya lo tenia
+  contestado. LO TENIA, DESDE EL 2026-08-13: la salida del build imprime textual
+  "Lago Ranco (lacustre) x Puerto Varas (lacustre) = 155.426 km2", y el control C3
+  del ambito lacustre -- "cero traslapes fuera de los declarados deliberados" --
+  dio obtenido 0. Es un TRASLAPE DECLARADO. La medicion de hoy da 155,426 y
+  CORROBORA la suya.
+  EL QUE ESTABA MAL ERA EL CONTROL: su esperado -- "cae en la suya y en ninguna
+  otra" -- salia de una SUPOSICION y no de la corrida. Es la familia de la cifra
+  clavada en vez de derivada. PUBLICARLO HABRIA ACUSADO A LA CAPA DE UN DEFECTO
+  QUE NO TIENE. Corregido para que el esperado SE DERIVE de los traslapes reales,
+  da 6 de 6.
+
+  LA REGLA, y va como regla y no como anecdota:
+  UN CONTROL POSITIVO QUE FALLA SE SOSPECHA A SI MISMO ANTES DE ACUSAR AL DATO,
+  Y LA PRIMERA MEDICION ES BUSCAR SI ALGUIEN YA LO CONTESTO.
+
+EL CONTROL NEGATIVO VA DECLARADO DEBIL EN SU PROPIA SALIDA
+  Cordoba y Quellon caen en ninguna, 2 de 2. Pero la capa tiene SOLO las seis
+  lacustres -- la maritima no esta publicada, C3 falla -- asi que "no cae en
+  ninguna" es cierto para casi todo el pais. UN CONTROL QUE ES CIERTO PARA CASI
+  TODO EL PAIS NO DISCRIMINA, y decirlo vale mas que tenerlo. El que discrimina
+  es el positivo.
+
+EL CRUCE DE (m1) CON (m2), Y ES LO QUE IMPIDE LEER MAL ESTA MEDICION
+  EL MUELLE DE LLANQUIHUE CAE DENTRO DE LA JURISDICCION A 0 m Y EL RASTER DICE
+  TIERRA CON 0 DE 6561 NAVEGABLES. LAS DOS CIERTAS. Punto -41,2553 -73,0026, el
+  mismo en las dos mediciones.
+  LA JURISDICCION DE UNA CAPITANIA LACUSTRE NO ES EL ESPEJO DE AGUA: INCLUYE
+  TIERRA, Y puerto_varas SON 1.437,4 km2.
+  Eso es lo que impide que alguien lea (m2) como "entonces el lago esta resuelto".
+
+EL VEREDICTO
+  SI DESACOPLA S4 DEL RASTER, PARA LOS CUATRO -- incluidos los dos que el raster
+  no puede rutear -- PERO SOLO LA MITAD JURISDICCIONAL. Lo que queda sin
+  desacoplar es "este viaje es navegable", que sigue siendo del raster y que (m1)
+  midio en cero sobre el mismo punto.
+
+LO QUE NO CIERRA, Y SE DICE
+  NO cierra PLAN-2::ninguna-ruta-lacustre-es-calculable, que sigue VIVA: esta
+  medicion no la arregla, LA RODEA, y solo para la pregunta jurisdiccional.
+  Y NO contesta la fila del grupo 2: la decision de TRAYECTO o EXTREMOS sigue SIN
+  FIRMAR. La medicion le puso el numero, no la contesto.
+
+UNA NOTA DE PROCEDENCIA
+  18_solapes_y_areas.txt es salida cruda de una consulta INLINE, sin fichero de
+  instrumento. Sus dos numeros estan RE-DERIVADOS dentro de 17, que si es fichero
+  versionado, y coinciden. Se conserva como primera pasada con su procedencia
+  declarada, en vez de dejar una salida cruda que alguien pueda citar como medida.
+
+DOS DEFECTOS DE INSTRUMENTO MAS -- y el segundo refina D3 por TERCERA vez
+  D7 UN sed CAMBIO EL ROTULO Y DEJO LA CONDICION. El control de (m2) se derivo
+     del de (m1) con un sed; acerto los rotulos y no toco las condiciones,
+     porque ahi la cadena es "filas === 74" y no "filas 74". EL CONTROL DECIA 75
+     Y COMPARABA CONTRA 74, y salio rojo sobre un objeto correcto. El rotulo
+     mentia sobre lo que el control comparaba. LA REGLA: un control no se DERIVA
+     de otro con una sustitucion de texto.
+  D8 EL PREFIJO DE CITA SOBREVIVE A LA NORMALIZACION. Con la correccion de D3 ya
+     aplicada, el control seguia sin encontrar la regla del control positivo: la
+     regla esta en un BLOQUE DE CITA y cada linea arranca con "> ", que normalizar
+     el espacio no retira. NORMALIZAR ES NECESARIO Y NO SUFICIENTE.
+     Es la TERCERA cosa que el guardia de la cifra va a necesitar, medida antes de
+     que se escriba: normalizar el espacio (D3), distinguir PUBLICAR de CITAR (D5),
+     y retirar los PREFIJOS DE LINEA (este).
+  LOS DOS SALIERON ROJOS SOBRE DATOS CORRECTOS. Van cuatro de los ocho defectos de
+  la sesion que acusan al dato siendo el control el equivocado: es el modo de falla
+  dominante, y queda dicho.
+EL CONTEO, leido del INDICE con git show :ruta
+    ANTES   filas 74 - unicas 72 - VIVAS 66
+    AHORA   filas 75 - unicas 73 - VIVAS 67
+    sitios 20 - barridos 11 - SIN BARRER 9, sin cambio. El sitio declara 7 filas.
+  CERRADAS por trabajo sigue en 2: nadie cerro nada. La cifra de la seccion 2 no
+  se movio.
+
+CONTROLES
+  validador VERDE sobre el objeto DEL INDICE - 75/73/67 - mordida 32/32 con su
+    control negativo
+  control de caracteres por PUNTOS DE CODIGO (H-T2): 0 sospechosos, 0 con BOM,
+    con el centinela U+0091 FABRICADO cazado 1 de 1 y el mismo por BYTES en 0.
+    El conteo exacto vive en 03_control_caracteres.txt y no se copia aca.
+  control contra el INDICE con los INTOCABLES verificados FUERA, y con las dos
+    aserciones que dejaron D4 y D6: ninguna fila sin id, ningun fichero con BOM.
+
+QUE NO SE TOCO
+  tools/ intacto. El raster, la mascara y los tiles, intactos. La base NO se
+  modifico: (m2) solo consulta. PLAN_JURISDICCION.md sigue sin tocarse. src/ de
+  los dos repos, intacto. Los nueve sitios sin barrer siguen siendo nueve.
+  Del entorno no se toco nada en esta tanda: pyproj 3.7.2 sigue siendo lo unico
+  de toda la sesion.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
