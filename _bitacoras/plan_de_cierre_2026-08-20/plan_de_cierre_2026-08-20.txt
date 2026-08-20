@@ -1,0 +1,1368 @@
+==============================================================================
+EL PLAN DE CIERRE, REHECHO ENTERO  —  2026-08-20
+==============================================================================
+Esta sesion PROPONE, ORDENA Y PARA. No escribe codigo, no toca src/ de ninguno
+de los dos repos y no levanta el backend ni la PWA.
+
+ENMENDADO EN LA MISMA SESION, DESPUES DEL GATE. El parrafo decia: «no stagea
+nada, no commitea nada, y no escribe ni una fila en el declarativo. Lo unico que
+esta sesion escribe es este fichero.» Dejo de ser cierto cuando el owner acepto
+el plan y ordeno escribir las dos filas del gate mas dos preguntas del grupo 2.
+Se enmienda en vez de reescribirse porque el texto viejo es el registro de que
+el plan se propuso ANTES de que nada se escribiera. Lo que vale hoy esta en el
+apartado 10.
+
+PUNTO DE PARTIDA, VERIFICADO ANTES DE LEER NADA
+  tmarea-backend  HEAD = main = origin/main = 6e7ce5e9d31798c0805b9567e61f937923913cae
+  tmarea-pwa      HEAD = main = origin/main = df26887946973cfb3c85d243dec78e8e7aa5e011
+  ` M` sin stagear, NO TOCADOS: .claude/launch.json · data/catalogo/estado_drift.json
+  Los servidores NO se levantaron. Ningun numero de esta bitacora sale de una
+  pantalla nueva: todos salen del arbol, del indice, de los validadores del
+  propio repo, o de una bitacora citada por seccion.
+
+  declarativo, salida de `npm run deudas` (disco == indice: `git diff` sobre
+  data/deudas/deudas_declaradas.json = vacio):
+      sitios 19 · barridos 10 · SIN BARRER 9
+      filas 68 · unicas 66 · duplicadas 2
+      VIVAS 61 · no vivas 5 (2 CERRADAS por trabajo)
+      grupo 1: 37 filas / 37 unicas / 36 vivas
+      grupo 2: 13 filas / 13 unicas / 12 vivas
+      grupo 3: 15 filas / 13 unicas / 13 vivas
+      grupo 4: 3 filas / 3 unicas / 0 vivas
+      VERDE.
+  grupo 2, contado fila por fila sobre firma_owner.firmada:
+      13 filas · 12 VIVAS · 10 FIRMADAS · 2 vivas SIN FIRMAR
+      las dos sin firmar: PLAN-7.2::e7-pieza-2-sin-criterio (AGENDADA) y
+      LIMITE-PUERTO::12100-47-cruzada-contra-el-catalogo
+      la 13a es PLAN-3-E8::p1-en-e4, CERRADA con firmada=false — la asimetria
+      que politica_de_firma declara y no corrige.
+
+  cifra, salida de `npm run cifra`:
+      4 de 15, con 2 anuladas por decision del owner
+      CUMPLE 4 (S2a, S2b, S5a, S9) · NO CUMPLE 11 · ANULADAS 2 (S2c por D5,
+      S5b por D4) · denominador original 17 · unidad: afirmacion de §2
+      AMBITO P3. La forma pelada «4 de 15» esta PROHIBIDA por decision del owner.
+
+  LAS SEIS PREMISAS DEL PROMPT: LAS SEIS DAN. Ninguna se corrigio.
+
+
+------------------------------------------------------------------------------
+0 . EL GATE — OCHO HALLAZGOS, Y TRES CAMBIAN EL PLAN
+------------------------------------------------------------------------------
+Ninguno hace el plan inejecutable. TRES cambian su forma y uno cambia su
+contenido; por eso el gate va primero y con opciones.
+
+
+G1 · «El plan viejo tenia nueve situaciones de pantalla» — FALSO. Tenia SEIS.
+
+    El plan anterior se organiza bajo el rotulo «LAS SEIS SITUACIONES» y
+    enumera SITUACION 1 a SITUACION 6, mas «P4 — APARTE, Y CON MAS PESO».
+    Su fuente tambien dice seis: la bitacora spec2_pantalla_2026-08-20, §5,
+    dice textual «SEIS situaciones, 11 afirmaciones. Los dos numeros van
+    juntos», y las enumera 1 a 6.
+    NUEVE es el numero de PUNTOS de §2 (S1..S9), no de situaciones. Son dos
+    denominadores distintos y el prompt los cruzo.
+    Consecuencia: ninguna. Se corrige el rotulo y se sigue.
+
+
+G2 · DOS de esas seis YA NO EXISTEN — y una de ellas ya esta APLICADA.
+     Esto no es una correccion de rotulo: le saca un tercio al plan viejo.
+
+    · SITUACION 2 (bahia 114, Capitania en ruta ausente) sostenia S2(c).
+      S2(c) esta ANULADA por D5 el 2026-08-20. §2 lleva el tachado a la vista:
+      «Ve toda restriccion vigente ~~de esas Capitanias~~ que su trazado
+      navega». Y la fila que la sostenia fue ENMENDADA: el bloque
+      `el_mismo_mecanismo_produce_otro_fallo` de
+      PLAN-2::la-lista-de-capitanias-atravesadas-no-existe-en-pantalla dice
+      textual que «con D5 cerrada el 2026-08-20, NO MOSTRARLA ES LO CORRECTO
+      y deja de ser un fallo».
+      O sea: el item 7 del orden viejo —«el ensanche del filtro»— es hoy un
+      cambio PROHIBIDO por decision firmada.
+
+    · SITUACION 6 (el puerto de zarpe llamado «zona intermedia») sostenia
+      S5(b). S5(b) esta ANULADA por D4. La regla firmada, textual del mensaje
+      de 5fc17cc: «EL DATO DUPLICADO SE MANTIENE. La bahia del zarpe y la de
+      la recalada se quedan en la lista de transito [...] y NO se deduplica.
+      Lo que se corrige es la palabra.»
+      Y LA PALABRA YA SE CORRIGIO: df26887 en tmarea-pwa. Medido hoy: «zona
+      intermedia» da 2 apariciones en tmarea-pwa/src, y las DOS son prosa —
+      el comentario de VoyageVerdict.jsx que explica el cambio—. Cero en
+      texto al patron.
+      O sea: el item 4 del orden viejo —«SITUACION 6, la mas barata»— esta
+      CERRADO, y no por el camino que el plan viejo proponia.
+
+    De las seis situaciones del plan viejo quedan CUATRO, y una de las cuatro
+    cambio de forma (ver G5).
+
+
+G3 · «Once decisiones del owner [...] hoy estan tomadas» — son DIEZ.
+     Y de las diez, CINCO no se cierran con trabajo mio.
+
+    El propio prompt lo dice tres parrafos mas abajo y ahi esta bien:
+    «grupo 2: 10 firmadas de 12; la de E7 pieza 2 sigue agendada». Verificado
+    fila por fila: 10 firmadas, 2 vivas sin firmar. La undecima —
+    PLAN-7.2::e7-pieza-2-sin-criterio — NO esta tomada: esta AGENDADA, y su
+    traba es una puerta que el propio owner le puso (la etapa de la capa por
+    Capitania, E4/C3).
+
+    Y el dato que gobierna el plan mas que el conteo: leido el campo
+    `lo_que_queda` de las diez firmadas, CINCO se cierran con TEXTO QUE
+    ESCRIBE EL OWNER, no con codigo —
+      PLAN-2::spec-no-cubre-p4 ............... «Escribir el punto en la
+                                                especificacion. Es texto de
+                                                producto y lo escribe el owner.»
+      D4D5::spec2-sin-punto-de-veracidad ..... «Escribir el punto nuevo en la
+                                                especificacion [...] lo escribe
+                                                el owner.»
+      D4D5::inv34-derogado-por-d5 ............ «Redactar el texto de reemplazo
+                                                del invariante, cuando la celda
+                                                este resuelta.»
+      D4D5::e2-y-e6-sin-premisa .............. «Reescribir E2 y E6 en el plan
+                                                [...] lo escribe el owner.»
+      D4D5::contrato-10-dice-transitar ....... «Pegar la palabra en los DOS
+                                                sitios [...] lo pega el owner.»
+    Las OTRAS CINCO producen trabajo de codigo. Ese es el material del plan.
+    Lo digo aca y no lo escondo en una nota: el plan no puede ordenar la mitad
+    de lo que el prompt llama «decisiones tomadas», porque la mitad no es
+    trabajo mio. Ver §6.
+
+
+G4 · «Dos CADENAS cuyo orden interno esta firmado» — VERDADERO para UNA.
+
+    LA DEL USO: firmado y explicito. El campo `lo_que_queda` de
+    PLAN-2::desacople-licencia-uso dice textual «En este orden: (1) reemplazar
+    el bloqueo del TM-002 Art. 22 por uno que se apoye en la licencia;
+    (2) abrir la rama deportiva por licencia; (3) mostrar el selector de
+    licencia siempre y con las cinco del registro; (4) leer la actividad del
+    destino del viaje; (5) recuperar el recordatorio de Sernapesca por destino;
+    (6) y recien ahi, borrar el campo del formulario.» Y el mensaje de af5d099
+    lo eleva a decision: «EL ORDEN DEL TRABAJO ES PARTE DE LA DECISION».
+    El motivo esta medido y es duro: sin el campo, el ambito es comercial para
+    todos, asi que el bloqueo «ambito comercial Y licencia deportiva» pasaria a
+    dispararse SIEMPRE. Borrar antes de reemplazar = bloqueo universal.
+
+    LA DEL BLOQUE DE PUERTOS: NO hay orden firmado. Medido sobre las dos filas
+    —D4D5::puerto-escala-lo-que-declara-no-aplicable y
+    D4D5::abierto-y-con-restriccion-colapsados-en-pantalla—: ninguna de las dos
+    tiene campo `depende_de`, ninguna menciona la palabra «orden», y ninguna
+    nombra a la otra. El mensaje de af5d099 las lista en una linea cada una,
+    sin prelacion. Tratarlas como cadena de orden firmado seria inventar una
+    firma.
+    Lo que SI son es una cadena de CONTENIDO, y eso lo puedo sostener: las dos
+    reescriben el mismo hecho —el estado del puerto— en dos lugares de la misma
+    pantalla, y si se hacen en orden inverso el rotulo nuevo y el motivo viejo
+    se contradicen durante el intervalo. Recomiendo un orden en §3 y lo
+    declaro COMO RECOMENDACION MIA, no como firma.
+
+
+G5 · «El ruteo lacustre falla en los 4 lagos y la causa esta medida» —
+     LA FALLA esta medida. LA CAUSA es INFERENCIA, y el plan viejo la declaro
+     como tal.
+
+    Medido, y no se re-mide: 08_lago_contra_las_tres_clases de la bitacora
+    spec2_pantalla_2026-08-20 — 4 lagos x 3 clases = 12 fallas, con control
+    positivo de que las maritimas del mismo motor si calculan. Llanquihue y
+    General Carrera SNAP_FAILED; Villarrica «fuera de la cobertura de tiles de
+    Chile»; Panguipulli «fuera del tile AUSTRAL_N».
+
+    La CAUSA no. El plan anterior la puso, con todas las letras, en su lista de
+    tres cosas «ESTIMADAS y no medidas»: «Que la mascara de agua excluya los
+    lagos por construccion es inferencia fuerte de la fuente declarada
+    (water-polygons-split-4326, derivada de natural=coastline) mas los dos
+    SNAP_FAILED dentro del extent. No abri el raster a verificar que esas
+    celdas esten en 0.»
+
+    Lo que SI esta en el arbol y verifique hoy: la cabecera de
+    tools/raster-build/build_tile.py dice «Fase 1 (esta corrida): SOLO OSM
+    water polygons + seamarks de peligro», y la constante WATER_POLYGONS_ZIP
+    apunta a water-polygons-split-4326.zip. Eso prueba la FUENTE, no prueba
+    que la celda del lago valga 0.
+
+    Barrido declarado, arbol tmarea-backend entero sin node_modules ni .git,
+    patron literal «water-polygons» / «natural=coastline»: los unicos ficheros
+    que lo nombran son tools/raster-build/build_tile.py y tres bitacoras de
+    2026-08-10 de la construccion del raster. NINGUNA bitacora de medicion
+    posterior abrio el raster sobre los lagos.
+
+    El instrumento existe y no se corrio: tools/raster-build/check_control_points.py.
+    Y los tiles existen en disco: C:/tmarea-data/tiles tiene AUSTRAL_N.bin y su
+    .meta.json. O sea que la medicion que falta es CORRIBLE HOY y es barata.
+
+    Consecuencia para el plan: la unidad del lago arranca por esa medicion, no
+    por el arreglo, y lo digo aunque el prompt la de por hecha. La regla del
+    proyecto es del owner y esta escrita: «una medicion prueba lo que mide».
+
+
+G6 · D4 esta FIRMADA en tres lugares y ABIERTA en cuatro, dentro del MISMO
+     documento. Esto no es una nota al pie: la tabla de §5 es la fuente
+     canonica de decisiones.
+
+    Dice FIRMADA:
+      · §2, bloque de S5: «REESCRITA el 2026-08-20 por D4. §2 declaraba S5
+        como el unico [P] puro y decia que lo que se decida ahi se convierte en
+        la regla: esto ES esa regla». Y: «Consecuencia sobre la medicion:
+        S5(b) queda ANULADA».
+      · §5, en la correccion de la cifra: «4 de 15, con 2 anuladas [...] S2(c)
+        por D5 y S5(b) por D4».
+      · el declarativo y `npm run cifra`, los dos.
+    Dice ABIERTA:
+      · §5, TABLA DE DECISIONES, fila D4, columna estado: **abierta**, y la
+        columna de condicion dice «Lo que falta es la firma, que no es del
+        agente».
+      · §5, encabezado de seccion: «Las tres de D4 — medidas el 2026-08-20.
+        D4 sigue ABIERTA: falta la firma.»
+      · §2, recuadro de aprobacion, parrafo «Al dia el 2026-08-20»: «S5 sigue
+        siendo el unico [P] puro y D4 sigue ABIERTA; lo que esta sesion le
+        entrega son las tres mediciones que el owner pidio, no la firma.»
+      · encabezado del documento, linea de Estado: «Especificacion aprobada
+        (S5 abierta como D4)».
+
+    La causa esta a la vista en el diff: 5fc17cc reescribio S5 y la cifra y NO
+    toco la tabla. Es exactamente la clase de defecto que el declarativo tiene
+    fichada —dos textos del mismo arbol afirmando cosas contrarias— y es la
+    misma forma que D5 dejo declarada para INV-3.4.
+
+    OPCIONES
+      (a) Enmendar los cuatro sitios en esta sesion. Es una linea por sitio.
+          Contra: esta sesion declaro que no escribe en el arbol salvo la
+          bitacora, y §5 es texto de plan, que por precedente D9 lo escribe el
+          owner.
+      (b) Levantar una fila del declarativo, grupo 1, sitio PLAN-5-DECISIONES.
+          Contra: PLAN-5-DECISIONES es uno de los NUEVE SITIOS SIN BARRER.
+          Escribirle una fila suelta a un sitio sin barrer es lo que el
+          declarativo llama, con su precedente, medir D4 y creer que se barrio §5.
+      (c) Dejarlo dicho aca, con los cuatro sitios nombrados, y que el owner
+          lo pegue cuando pegue las otras cinco cosas de texto que ya tiene
+          firmadas (G3).
+    RECOMIENDO (c), y va en la lista de §6 como item de texto del owner. Es la
+    unica que no rompe una regla del proyecto para arreglar una inconsistencia
+    de texto. Si el owner prefiere (a), lo hago en un commit propio que no
+    lleve nada mas.
+
+    MIENTRAS TANTO, SUPUESTO DECLARADO DE ESTE PLAN: D4 ESTA FIRMADA. Tres
+    fuentes independientes lo aplican —§2 reescrita, la cifra con 2 anuladas,
+    y la firma en el declarativo— contra una tabla que quedo atras en un
+    commit que se puede leer. Si el supuesto es falso, se cae G2 y vuelve la
+    situacion 6; nada mas del plan se mueve.
+
+
+G7 · UNA FILA VIVA DEL GRUPO 1 PIDE HACER LO QUE D4 RECHAZO. Es el hallazgo
+     que mas barato sale de arreglar y el que mas caro sale de no ver.
+
+    PLAN-2::zarpe-y-recalada-entran-como-transito, estado VIVA, grupo
+    1_cierra_con_lo_que_hay, `depende_de: "Nada abierto."`,
+    `sostiene: "S5(b)."`, `costo_estimado: "Bajo: los dos ids ya existen en
+    voyageData"`.
+    Lo que pide es mandar zarpe_id y recalada_id en el body para que el backend
+    excluya los extremos de la lista de transito. O sea: DEDUPLICAR.
+    D4 firmo lo contrario: el dato duplicado SE MANTIENE.
+    Y su afirmacion de respaldo —S5(b)— ya no existe: esta ANULADA.
+
+    La asimetria es lo que lo delata: su fila hermana, la de las Capitanias
+    atravesadas, SI fue enmendada el mismo dia y lleva un campo
+    `enmienda_2026_08_20` que retira S2(c) de su linea `sostiene`. Esta no.
+
+    Por el vocabulario del propio declarativo esto es grupo 4_caduca: «La deuda
+    afirmaba algo y esa afirmacion YA ES FALSA. No se cierra: murio.»
+
+    OPCIONES
+      (a) Moverla a 4_caduca con su `afirmacion_que_ya_es_falsa` y su medicion.
+          El conteo de VIVAS bajaria de 61 a 60 y el de filas no se moveria.
+      (b) Enmendarla como a su hermana: dejarla viva recortada a la mitad que
+          sobrevive. PERO la mitad que sobrevive —la palabra— YA ESTA APLICADA
+          en df26887, asi que no queda nada vivo.
+      (c) Dejarla como esta.
+    RECOMIENDO (a). Es escritura de una fila, la pide el gate, y sin ella el
+    plan tiene que llevar una nota permanente diciendo «no hagas la fila 3 del
+    grupo 1». Un plan que tiene que advertir contra su propio insumo esta mal
+    apoyado. NO LA ESCRIBI: el prompt dice que las filas nuevas van solo si el
+    gate lo justifica y el owner las pide. El gate lo justifica; falta el pedido.
+
+    Y lo que este hallazgo dice del metodo, que vale mas que la fila: una
+    decision del owner que ANULA una afirmacion de §2 no propaga sola al
+    declarativo. Propago a una fila de dos. No hay control que lo cace: el
+    validador comprueba forma. Es la misma familia de los doce defectos de
+    instrumento ya fichados.
+
+
+G8 · EL PLAN ANTERIOR NO ESTA EN NINGUN ARBOL. Vive solo en el transcript.
+
+    Barrido declarado: patron literal «brecha» (ASCII, alcanza «brechas»),
+    los dos arboles enteros, todas las extensiones, excluyendo node_modules y
+    .git — CERO ficheros en tmarea-backend y CERO en tmarea-pwa.
+    Control positivo del mismo barrido y del mismo arbol: «declarativo» da 81
+    ficheros en el backend; «restriccion» da 11 ficheros en la PWA. El grep
+    alcanza; el texto no esta.
+    Donde SI esta: el transcript de la sesion,
+    .claude/projects/C--Users-katia--claude/008da52b-62ae-4875-b394-fd9bd4aceab3.jsonl,
+    linea 266, 37.808 caracteres, ts 2026-08-20T05:06:28.736Z. El prompt que lo
+    pidio esta en la linea 3 del mismo fichero.
+
+    Esto es exactamente el modo de falla que el declarativo existe para
+    impedir, y que el declarativo enuncia sobre si mismo: «cuatro o cinco
+    inventarios de deudas no cerraron nada porque vivian en la bitacora de la
+    sesion que los creo». El plan viejo esta un escalon peor: ni bitacora tuvo.
+    Este fichero lo corrige para el plan nuevo. La leccion no es del plan
+    viejo, es del metodo: un entregable que solo existe en el chat no existe.
+
+
+------------------------------------------------------------------------------
+1 . LA UNIDAD DE TRABAJO — Y POR QUE NO ES LA SITUACION DE PANTALLA
+------------------------------------------------------------------------------
+LA UNIDAD ES EL CIERRE VERIFICABLE: la cosa mas chica que cumple las dos
+condiciones a la vez —
+
+  (i)  tiene UN criterio de aceptacion que se puede correr con un instrumento
+       que YA EXISTE, o con uno cuyo control positivo se puede escribir antes
+       de empezar; y
+  (ii) cruza el borde PWA<->backend a lo sumo UNA vez y en UNA direccion.
+
+POR QUE ESA Y NO LA SITUACION DE PANTALLA
+  La situacion de pantalla fue la unidad correcta para MEDIR: se para frente a
+  la app y se mira. Como unidad de TRABAJO se rompio sola, y se rompio de tres
+  maneras distintas en veinte dias:
+    · dos de las seis se ANULARON por decision del owner (G2). Una unidad que
+      puede desaparecer entera por una firma no es una unidad de trabajo.
+    · una de las seis —la situacion 3— resulto ser TRES capas con tres costos y
+      tres riesgos de regresion distintos, y el propio plan viejo tuvo que
+      partirla en dos items del orden (1 y 2) para poder ordenarla.
+    · el trabajo nuevo —la cadena del uso, el bloque de puertos— NO ES una
+      situacion de pantalla. Son decisiones firmadas que atraviesan varias
+      pantallas. No caben en la unidad vieja.
+
+POR QUE NO LA FILA DEL DECLARATIVO
+  Es tentador porque el declarativo es el dato unico. Pero la fila es unidad de
+  CONTABILIDAD, no de trabajo, y se ve en tres sitios:
+    · las 36 vivas del grupo 1 mezclan producto con administracion del propio
+      declarativo: 14 de las 36 son del sitio
+      SESION-caracterizacion-deudas-2026-08-19 y hablan de bitacoras, punteros
+      y criterios de admision, no de lo que el patron ve.
+    · una fila puede pedir dos trabajos de peso incomparable: la de las
+      Capitanias atravesadas pedia display Y filtro hasta que D5 le saco la
+      mitad.
+    · y una fila puede estar VIVA pidiendo lo que ya se decidio no hacer (G7).
+  El declarativo sigue siendo la fuente. No es la unidad.
+
+POR QUE (ii) — LA REGLA DEL BORDE ES PARTE DE LA DEFINICION, NO UN ADORNO
+  Medido hoy sobre 6e7ce5e / df26887: /api/sitport/restricciones-ruta emite
+  QUINCE claves —success, veredicto, bandera_final, cobertura_jurisdiccional,
+  drift_catalogo, veredicto_deportivo, motivo_principal, ultimo_tramo_seguro,
+  fondeadero_sugerido, restricciones_intermedias, total, fuente, timestamp,
+  timestamp_sitport, error— y el objeto `result` de fetchTransitRestrictions
+  nombra NUEVE. Las cuatro perdidas medidas son bien formadas: JSON valido,
+  render sin excepcion, sin warning. Ninguna la caza un validador.
+  Una unidad que cruza el borde dos veces no se puede aceptar con un solo
+  control positivo, y sin control positivo este borde no se ve.
+
+
+------------------------------------------------------------------------------
+2 . LAS UNIDADES
+------------------------------------------------------------------------------
+Diez. Ocho son trabajo de codigo, una es de infraestructura y una NO ES MIA.
+Cada una lleva: QUE ES · QUE COSTARIA · DE QUE DEPENDE · QUE LE PASA AL PATRON
+· LA CIFRA (si al cerrarla se mueve «4 de 15, con 2 anuladas», y en cuanto).
+
+NINGUN COSTO VA EN TIEMPO. No puedo defender una estimacion de horas sobre un
+arbol que no escribi, y prefiero decirlo a inventarla. Los costos van en
+ficheros, mecanismos, y que se rompe alrededor.
+
+
+=== U1 · EL BORDE PWA<->BACKEND ===============================================
+
+QUE ES DE VERDAD — ni cableado ni logica: AUSENCIA DE CONTROL, con cuatro
+instancias medidas y una quinta clase esperando.
+  Medido hoy, arbol tmarea-pwa/src, patron literal, con control positivo y
+  negativo declarados:
+    `cobertura_jurisdiccional` .. 0 apariciones
+    `advertencias` .............. 0 apariciones   (backend src/: 28)
+    `motivo_principal` .......... 2 apariciones: UNA es la linea que lo copia
+                                  en useVoyageVerification.js y la otra es un
+                                  COMENTARIO en VoyageVerdict.jsx. Cero lectores.
+    control positivo: `ETA` da 42 en el mismo arbol.
+    control negativo: `ZZQXNOEXISTE` da 0.
+  Y esto importa como metodo: un grep ingenuo de `motivo_principal` hoy da 2 y
+  se leeria como «ya se consume». No se consume. El vocabulario del arbol
+  incluye prosa que habla del campo.
+  Las cuatro instancias, con su historia: `cierre` (corregida en 6443178),
+  `cobertura_jurisdiccional` (viva), `motivo_principal` y `advertencias`.
+  LA CUARTA ES LA QUE MANDA, y va con las palabras del owner que la fila
+  transcribe: «una advertencia de SONDA contra el Derrotero SHOA que el backend
+  genera y la PWA no lee CERO VECES no es un campo perdido — es UNA ADVERTENCIA
+  DE SEGURIDAD QUE NUNCA LLEGO AL PATRON». La compone advertenciasCotejoVertical()
+  en src/services/raster/cotejo-vertical.js y le dice al patron, en segunda
+  persona, que su calado no alcanza y con que pagina del Derrotero se lo dice.
+  Segunda medicion, del mismo borde y en la otra direccion: /weather-ruta emite
+  9 claves y P4 lee UNA (`bahias_en_ruta`).
+  Y el repo donde vive el defecto no tiene con que verse: tmarea-pwa tiene CERO
+  ficheros *.test.js / *.spec.js en src/, sus scripts de package.json son
+  { dev, build, preview } y sus devDependencies son { @vitejs/plugin-react, vite }.
+  No hay runner. Control positivo: tmarea-backend tiene 7 ficheros *.test.js.
+
+ES PIEZA O ES CIMIENTO — y la respuesta no es ninguna de las dos:
+  ES EL CRITERIO DE ACEPTACION DE LA PRIMERA UNIDAD QUE CRUCE EL BORDE, y desde
+  ahi queda de pie como control permanente.
+  Ponerlo primero como cimiento retrasa lo que hoy mas dana —el verde sobre
+  24,6646 km— para escribir un arnes. Ponerlo como pieza al final garantiza que
+  la quinta instancia nazca mientras se cierran las otras. La salida es que no
+  sea un item del orden: que sea la asercion con la que se acepta U2, y que U2
+  no se de por cerrada sin ella.
+  LA ASERCION, en una linea: todo campo que un endpoint emite esta CONSUMIDO o
+  esta DECLARADO como no consumido. Hoy nada en ningun repo lo afirma.
+
+QUE COSTARIA
+  · La asercion: un control que compare las claves del `res.json` de cada
+    handler contra las claves nombradas en el pasamanos, con una lista
+    declarada de exenciones (`success`, `error`, `fuente`, `timestamp`,
+    `timestamp_sitport` son protocolo y procedencia). Puede vivir en el backend,
+    donde ya hay runner y 7 tests, y leer el fichero de la PWA como texto.
+  · El runner de la PWA es una decision aparte y mas cara: hoy no hay ninguno,
+    y meterlo toca package.json, devDependencies y la forma de correr CI que no
+    existe (ver U9).
+  QUE SE ROMPE ALREDEDOR: nada de producto. La asercion nace ROJA — hay al
+  menos dos campos vivos sin consumir— y eso es lo que existe para producir.
+
+DEPENDE DE: nada abierto.
+SI NO SE CIERRA: el patron sigue sin recibir la advertencia de sonda, y cada
+  campo nuevo del backend nace invisible. La fila lo dice y no lo suaviza.
+LA CIFRA: NO SE MUEVE. Ninguna de las 15 afirmaciones de §2 habla del borde.
+  Y ese es justamente el argumento para no medirlo por la cifra.
+
+
+=== U2 · LA COBERTURA JURISDICCIONAL ==========================================
+
+QUE ES DE VERDAD — TRES capas, y solo una es cableado.
+  A · CABLEADO. `cobertura_jurisdiccional` es una de las 15 claves emitidas y
+      no es una de las 9 nombradas. Medido hoy: 0 apariciones en tmarea-pwa/src.
+  B · BLOQUE QUE NO EXISTE. S3(b) pide «su propio bloque» y no hay ninguno.
+  C · LOGICA FALTANTE EN EL BACKEND, declarada por el propio backend en
+      sitport-routes.js, bloque de cobertura: «Todavia NO compone el veredicto
+      — esa es la pieza 4». Dos lineas mas arriba el mismo handler SI compone
+      el drift.
+  El dato esta terminado, no crudo: el aviso trae causa, origen, bandera con
+  tope duro, largo_km, coordenadas, jurisdicciones_probables, capitanias con
+  nombre y telefono, contacto_generico, y el texto en dos capas.
+  EL DETALLE QUE ROMPE UN GUARD SI NO SE SABE: el telefono NO va dentro del
+  texto. INV-10.1 lo saca de los mensajes del catalogo y el guard de
+  zonas-aviso.js se detiene si el texto lo trae. S3(c) se cierra leyendo el
+  array `capitanias`, nunca el texto.
+
+QUE COSTARIA
+  A: una clave en `result`. Es el mismo pasamanos ya corregido para `cierre`.
+  C: `componerConCobertura` calcado de `componerConDrift`, mas `escalarPorCobertura`
+     calcado de `escalarPorDrift` del lado de la PWA. El patron de doble
+     composicion con tope re-aplicado en el cliente ya esta escrito y pagado, y
+     su propio comentario dice por que: «el backend ya topa su bandera; aca se
+     vuelve a topar para que el tope no dependa de que la respuesta venga bien
+     formada».
+  B: un componente. Referencia de tamano MEDIDA por el plan anterior:
+     DriftCatalogoBlock.jsx, el bloque hermano, 124 lineas.
+  QUE SE ROMPE ALREDEDOR: la capa C CAMBIA BANDERAS. Todo lo que afirme «Q» en
+  rutas con hueco de cobertura se pone rojo, y eso es el objetivo. La capa A
+  sola no rompe nada.
+  CONTROL POSITIVO OBLIGATORIO, y ya existe congelado: el payload
+  05_payload_antofagasta_taltal.json de la bitacora spec2, con bandera U y 1
+  aviso de 24,6646 km. La pantalla tiene que pasar de Q a U sobre ese caso.
+
+DEPENDE DE: A y C, de nada abierto. B depende de UNA decision de producto chica
+  y sin firmar: DONDE va el bloque en P3. Que se muestra ya esta fijado por §10.
+SI NO SE CIERRA: el patron lee «Zarpe autorizado» sobre 24,6646 km de los que
+  no sabemos nada, con el telefono de la Capitania de Antofagasta calculado y no
+  mostrado. El verde es el vehiculo del silencio.
+LA CIFRA: SE MUEVE, Y ES LA QUE MAS LA MUEVE.
+  A + B + C cierran S3(a), S3(b), S3(c), S3(d) y S6(a) = CINCO de las once
+  NO CUMPLE. Pasa de 4 de 15 a 9 de 15, con 2 anuladas.
+  Reparto por capa, para que nadie compre de mas: A+C solas cierran S3(d) y
+  S6(a) (2). B sola no cierra ninguna: S3(a) y S3(b) piden el bloque Y que el
+  campo llegue. A+B cierran S3(a), S3(b), S3(c) (3).
+
+
+=== U3 · EL FALLO QUE SE PRESENTA COMO «NO HAY NADA» ==========================
+
+QUE ES DE VERDAD — logica de ESTADO faltante en la PWA, mas UNA decision de
+producto acotada. No es cableado: el estado «no se pudo preguntar» YA EXISTE —
+fetchTransitRestrictions devuelve `null` cuando el fetch falla. Lo que falta es
+que alguien lo distinga de «no hay nada».
+  Dos mitades de costo muy distinto, y el plan las separa:
+  · S8 — el bloque de transito DESAPARECE ENTERO con el backend caido. `null` y
+    `[]` colapsan en el mismo render. NO HAY DECISION QUE TOMAR.
+    Medido en spec2 §3, S8: sobre la misma ruta que minutos antes mostraba 5
+    zonas con restriccion, el bloque no esta. Y la pantalla de carga marca con
+    tilde verde «Conectando con SITPORT» mientras fallaba.
+  · S6(b) — verde sobre fallo. WeatherBlock pinta [VERDE] «Condicion Normal»
+    inmediatamente encima de «no se pudo obtener datos de clima». AQUI SI HAY
+    DECISION: que color lleva un dato que no se pudo traer. No esta escrita en
+    ninguna fila ni en §2.
+
+QUE COSTARIA: TransitRestrictionsBlock.jsx y el estado que devuelve el hook,
+  mas WeatherBlock.jsx, mas la pantalla de carga. Todo en tmarea-pwa. Nada en
+  el backend.
+  QUE SE ROMPE ALREDEDOR: nada de veredicto si se hace solo S8.
+  Y LO QUE LA FILA NO DICE Y HAY QUE METERLE: el mismo defecto esta en P4, sin
+  declarar — P4_ActiveVoyage.jsx cierra su fetch de viento con
+  `.catch(() => { /* sin flechas, sin error visible */ })`. Silencio por diseno,
+  en la pantalla donde el patron esta en el agua. O la fila crece de alcance, o
+  nace su hermana; como esta, cerrarla deja el defecto vivo donde mas duele.
+
+DEPENDE DE: S8, de nada. S6(b), de una decision de producto chica que hoy NO
+  ESTA ESCRITA COMO PREGUNTA EN NINGUNA FILA. Ver §6.
+SI NO SE CIERRA: el patron que hace un minuto vio 5 zonas con restriccion
+  recarga, no ve ninguna, y la app le presenta el fallo como buena noticia.
+LA CIFRA: SE MUEVE +2. S8 y S6(b). De 4 de 15 a 6 de 15.
+  Partido: S8 sola es +1 y no gasta ninguna firma.
+
+
+=== U4 · LA CADENA DEL USO DE LA NAVE =========================================
+
+QUE ES DE VERDAD — DECISION YA TOMADA QUE FALTA APLICAR, con su orden firmado.
+Es la unidad mas grande del tablero en cantidad de pantalla movida, y la unica
+cuyo orden interno no lo elijo yo.
+  Medido y citado en af5d099: en el backend `uso` da 4 apariciones y las cuatro
+  son PROSA — CERO comportamientos, el motor nunca ve el campo. En la PWA son
+  19 lineas: 9 falsos positivos declarados, 4 del campo, y 6 RAMAS de las que
+  cuelgan 13 cosas que el patron deportivo ve en pantalla.
+  LOS SEIS PASOS, textual de la fila y sin reordenar:
+    (1) reemplazar el bloqueo del TM-002 Art. 22 por uno apoyado en la licencia
+    (2) abrir la rama deportiva por licencia
+    (3) mostrar el selector de licencia siempre, con las cinco del registro
+    (4) leer la actividad del destino del viaje
+    (5) recuperar el recordatorio de Sernapesca por destino
+    (6) y recien ahi, borrar el campo del formulario
+  POR QUE EL ORDEN NO SE PUEDE ROMPER, medido: hoy el bloqueo es «ambito
+  comercial Y licencia deportiva»; sin el campo el ambito es comercial para
+  TODOS, asi que el bloqueo pasaria a dispararse SIEMPRE. Sacar el campo sin
+  reemplazo convierte un bloqueo normativo correcto en un BLOQUEO UNIVERSAL:
+  ningun patron con licencia deportiva podria guardar un viaje.
+  CUELGAN DE ESTA CADENA, y por eso viajan con ella:
+   · PLAN-2::licencia-de-bahia-en-ruta-costera-sin-aviso — FIRMADA: la app AVISA
+     cuando la travesia excede el alcance de la licencia, escalando a U y nunca
+     a U+V. Su propia fila declara que depende del paso (1): «el veredicto
+     deportivo, la alerta de licencia y el propio selector con la frase del
+     RGDN Art. 12 solo existen dentro de la rama que exige uso recreativo».
+     Trae un test que cambia, y esta bien: la suite prueba hoy lo contrario a
+     proposito y con el nombre puesto.
+   · PLAN-2::campo-que-desaparece-conservando-su-valor — su `depende_de` nombra
+     a la anterior.
+   · PLAN-2::usos-inertes-en-el-formulario — FIRMADA, y se cierra SOLA con el
+     paso (6). No es trabajo aparte.
+   · PLAN-2::formatlicense-desalineada-con-el-registro — el rotulo conoce una
+     licencia que no se puede elegir y no conoce una que si. Cae natural en el
+     paso (3), que es donde el selector se rehace.
+
+QUE COSTARIA: entero en tmarea-pwa. Seis pasos mas cuatro colgadas, cada paso
+  con su propia pantalla que mirar. La perdida esta medida y aceptada con
+  recuperacion: el Patron de Nave Menor que pesca pierde el recordatorio de
+  Sernapesca por licencia y se recupera por destino (Caladero).
+  QUE SE ROMPE ALREDEDOR: la suite del deportivo, a proposito. Y el paso (1) es
+  el unico que puede romper la app entera si sale mal.
+  QUE MEDIR ANTES, y no esta medido: cuantos de los 6 ramales y de las 13 cosas
+  de pantalla del deportivo quedan sin dueno despues del paso (2). El conteo de
+  19 lineas existe; el mapa de que cuelga de cual, no.
+
+DEPENDE DE: nada abierto. Es la unica unidad grande del tablero con todas sus
+  decisiones firmadas y ninguna puerta.
+SI NO SE CIERRA: el regimen del patron lo gobierna un campo que se marca una
+  vez en la vida y que el motor nunca ve, y la app le da visto bueno a una
+  navegacion que su licencia no cubre sin decir una palabra — con la frase del
+  RGDN Art. 12 impresa dos pantallas antes.
+LA CIFRA: NO SE MUEVE. Ninguna de las 15 afirmaciones habla de licencia ni de
+  uso. Es la unidad mas grande del plan y no mueve el numero ni un decimo.
+  ESO NO ES UN ARGUMENTO EN SU CONTRA: es un argumento contra usar la cifra
+  como orden. El caso que cierra esta medido y es el mas claro que hay — un
+  Patron Deportivo de Bahia con nave de bahia recibe veredicto Q sin motivos en
+  una ruta costera de 84,3 millas nauticas.
+
+
+=== U5 · LA CADENA DEL BLOQUE DE PUERTOS ======================================
+
+QUE ES DE VERDAD — DOS decisiones firmadas que reescriben el MISMO hecho en dos
+lugares de la misma pantalla. Las dos son texto y render; ninguna toca la
+composicion del maximo ni la API.
+  P1 · el motivo del veredicto dice las DOS cosas. Firmado: el estado del
+       puerto SIGUE escalando siempre —es estado del LUGAR, no veredicto por
+       nave— y lo que cambia es el TEXTO. Medido: con AB 50 el motivo decia
+       «Puerto de zarpe con restricciones» mientras la misma tarjeta decia «Tu
+       embarcacion (AB 50) no esta afectada por esta restriccion».
+  P2 · dos rotulos separados: la CONDICION del puerto (abierto/cerrado) y las
+       RESTRICCIONES VIGENTES (cuantas). Medido en el dato: de 20 filas
+       vigentes del 2026-08-20, 14 declaran cierre y 6 no; tres de esas 6 son
+       tipo TODOS —Bahia Gregorio, Puerto Williams, Primera Angostura, las tres
+       por viento—. Un puerto puede tener restriccion vigente y no estar
+       cerrado. En pantalla no puede: basta UNA restriccion para pasar a ambar,
+       por una linea de mapearRespuestaPuerto que no mira `cierre`.
+
+QUE COSTARIA: P1 es «una cadena, un sitio» segun su propia fila. P2 es «un
+  componente». Las dos en tmarea-pwa.
+  ORDEN INTERNO: NO ESTA FIRMADO (G4). RECOMIENDO P2 ANTES QUE P1, y es
+  recomendacion mia con su motivo: P1 escribe un motivo que nombra dos hechos;
+  si los dos hechos todavia estan fundidos en un rotulo de color, el motivo
+  nombra algo que la tarjeta de al lado no muestra. Al reves no pasa: P2 sola
+  deja la pantalla mas honesta y el motivo viejo sigue siendo cierto, solo que
+  incompleto.
+  QUE SE ROMPE ALREDEDOR: nada de veredicto. Las dos filas lo dicen: «no se
+  toca la composicion del maximo», «no se toca la API».
+
+DEPENDE DE: nada abierto.
+SI NO SE CIERRA: el patron ve el mismo amarillo para un puerto CERRADO y para
+  un puerto abierto con aviso de viento fuera del limite portuario, y lee un
+  motivo que sube la bandera sin decirle por que.
+LA CIFRA: NO SE MUEVE. S6 en §2 dice «el veredicto es el maximo de todas las
+  fuentes y nunca se contradice con lo que hay debajo», y su afirmacion S6(b)
+  esta medida sobre el caso del CLIMA, no sobre el del puerto. Cerrar U5 arregla
+  una contradiccion real que la medicion del 2026-08-20 cazo POR FUERA de §2 —
+  y esa es exactamente la carencia que el punto de veracidad firmado existe para
+  cubrir. Cuando el owner escriba S10, esta unidad pasa a mover la cifra. Hoy no.
+
+
+=== U6 · LAS CAPITANIAS QUE LA RUTA ATRAVIESA =================================
+
+QUE ES DE VERDAD — LOGICA FALTANTE sobre un dato QUE YA SE CALCULA. No es
+cableado, y ya no arrastra el cambio de filtro.
+  `bahiasEnRutaPostGIS(puntosValidos)` devuelve el conjunto de bahias cuya celda
+  intersecta la ruta, se usa solo para filtrar, y no es ninguna de las 15 claves
+  del res.json. La expansion bahia->Capitania existe y ya se ejerce
+  —`capitaniaDeBahia(idBahia, ambitosPublicados)`— pero se la llama una vez por
+  RESTRICCION, no una vez por bahia cruzada.
+  Medido: Quellon -> San Rafael, 38 waypoints, cruza 7 bahias que son 5
+  Capitanias; la pantalla nombro 4. Falta CHONCHI, que entra por la bahia 155
+  Queilen y no tiene restriccion vigente. Y en dos rutas sin restricciones la
+  pantalla nombro 0 Capitanias atravesadas.
+  ESTA UNIDAD YA NO INCLUYE S2(c). La enmienda del 2026-08-20 de su propia fila
+  se lo saco: «Con D5 cerrada el 2026-08-20, NO MOSTRARLA ES LO CORRECTO y deja
+  de ser un fallo.» El plan viejo pedia partirla; D5 la partio.
+
+QUE COSTARIA: backend, emitir el conjunto expandido y deduplicado por Capitania
+  como clave 16 del res.json; PWA, una clave mas en el pasamanos y un bloque
+  nuevo en P3_VoyageVerification.jsx —hoy 8 imports de components/verification/,
+  serian 9—.
+  QUE SE ROMPE ALREDEDOR: nada de veredicto. Es display puro, no toca evaluarRuta.
+  QUE MEDIR ANTES, Y NO ESTA MEDIDO — condicion de arranque: de las bahias que
+  una ruta cruza, CUANTAS resuelven a una Capitania nombrable. `capitaniaDeBahia`
+  puede devolver `capitania: null` fuera de los ambitos publicados. Un bloque
+  «Capitanias que cruza» con huecos es PEOR que no tenerlo, porque el patron lo
+  lee como lista completa.
+
+DEPENDE DE: nada abierto. Cruza el borde una vez, en la direccion backend->PWA:
+  entra bajo la asercion de U1 y es su segundo cliente.
+SI NO SE CIERRA: el patron cruza una Capitania y no sabe que la cruzo; si esa
+  Capitania publica algo entre su consulta y su zarpe, no sabe ni a quien llamar.
+LA CIFRA: SE MUEVE +1. S1. De 4 de 15 a 5 de 15.
+
+
+=== U7 · EL LAGO =============================================================
+
+QUE ES DE VERDAD — hoy: UNA MEDICION QUE FALTA. Y despues de esa medicion, o
+falta un DATO FUENTE o falta una decision de arquitectura. No lo se todavia, y
+el prompt lo da por sabido (G5).
+  Lo MEDIDO: 4 lagos x 3 clases = 12 fallas, con control positivo maritimo.
+  Lo INFERIDO, y declarado como inferencia por el plan anterior: que la mascara
+  de agua navegable sale de water polygons del OCEANO —derivadas de
+  natural=coastline— y por eso los lagos interiores no estan en ella por
+  construccion. La fuente esta verificada en build_tile.py; que la celda del
+  lago valga 0 NO se verifico.
+  Y la particion de causas del plan viejo tambien es derivada, no medida:
+  Llanquihue y Gral Carrera dentro del extent de AUSTRAL_N (causa: contenido),
+  Villarrica fuera del extent, Panguipulli marginal por ~0,7 km. Esos numeros
+  son aritmetica sobre TILE_REGISTRY y los .meta.json.
+
+QUE COSTARIA — y aca hay DOS caminos con un orden de magnitud de diferencia:
+  · POR LA VIA DE LA RUTA: cambiar la fuente de agua del pipeline, regenerar
+    tiles —AUSTRAL_N son 213 MB de .bin— extender extents y re-correr los
+    controles de conectividad, con regresion obligatoria sobre lo maritimo que
+    hoy funciona. ES LO MAS CARO DEL TABLERO ENTERO.
+  · POR LA OTRA VIA: S4 dice «Si navega en un lago, ve la condicion de su
+    lago». La cadena P3 -> /rutas/calcular -> restricciones-ruta es NUESTRA
+    ARQUITECTURA, no el requisito. Las 6 jurisdicciones lacustres estan
+    publicadas con sus geometrias desde E3, y zarpe y recalada son puntos que
+    P2 ya tiene.
+  LAS DOS MEDICIONES QUE VAN PRIMERO, las dos baratas, las dos corribles hoy:
+    (m1) check_control_points.py sobre los 8 endpoints lacustres. El instrumento
+         existe en tools/raster-build/ y los tiles estan en C:/tmarea-data/tiles.
+         Contesta si la causa es la mascara o el extent, POR LAGO.
+    (m2) para los 4 lagos, ¿zarpe y recalada caen en la MISMA jurisdiccion
+         lacustre publicada? Si caen, la condicion del lago se contesta con dos
+         puntos y CERO motor de rutas, y S4 se desacopla del raster por completo.
+  LA NOTA DE ALCANCE QUE VIAJA PEGADA Y NO RESCATA: hoy SITPORT no publica ni
+  una restriccion ni un pronostico para ninguna de las 6 lacustres (0 de 6).
+  Cerrar el camino hace que se PUEDA preguntar; no garantiza que haya respuesta.
+
+DEPENDE DE: de ninguna etapa abierta. Despues de (m1) y (m2) puede depender de
+  una decision de ARQUITECTURA que hoy no esta escrita en ningun lado, ni
+  siquiera como fila: si la condicion jurisdiccional se responde por TRAYECTO o
+  por EXTREMOS. Ver §6.
+SI NO SE CIERRA: un ambito publicado con sus seis geometrias construidas no
+  puede llegar a la pantalla por NINGUNA ruta del arbol, y el patron lacustre ve
+  dos puertos en verde «Abierto» sobre un viaje que ni siquiera se pudo trazar.
+LA CIFRA: SE MUEVE +1. S4. Y es la unica del tablero cuyo movimiento puede
+  costar regenerar 213 MB de raster o costar dos consultas de punto, y hoy no se
+  cual de las dos.
+
+
+=== U8 · EL VIAJE ACTIVO (P4) ================================================
+
+QUE ES DE VERDAD — DECISION TOMADA, TEXTO SIN ESCRIBIR, Y UN ANDAMIO QUE YA
+CORRE. Cambio de naturaleza desde el plan viejo y hay que decirlo: entonces era
+«§2 nunca lo especifico»; hoy el owner FIRMO que si lo cubre, y con criterio
+propio y acotado — «mientras navega, al patron se le dice LO QUE CAMBIO
+respecto de lo que verifico antes de zarpar. No los nueve puntos.»
+  PERO EL PUNTO NO ESTA ESCRITO. Barrido declarado sobre PLAN_JURISDICCION.md,
+  patron literal «S10»: CERO apariciones. Control positivo del mismo barrido y
+  del mismo fichero: «S9» da 5. §2 sigue teniendo NUEVE puntos.
+  Y §2 sigue diciendo, en «Lo que esta especificacion NO promete», lo que decia.
+  Re-medido hoy sobre src/screens/P4_ActiveVoyage.jsx (45.326 bytes, sin
+  cambios desde la medicion del 2026-08-20):
+    restriccion 0 · capitania 0 · jurisdicc 0 · veredicto 0 · bandera 0
+    useVoyageVerification 0
+    control positivo: ETA 12 · control negativo: ZZQXNOEXISTE 0
+  Lo que SI hay, y es la mitad util: P4 ya llama /api/sitport/weather-ruta en
+  bucle —setInterval a 30 minutos, con AbortController—, ese endpoint emite 9
+  claves y P4 lee UNA (`bahias_en_ruta`), descartando `peor_tramo`,
+  `condicion_puerto`, `alerta_nivel` y `drift_catalogo`, que trae bandera topada.
+  EL MATIZ QUE IMPIDE LEER ESTO DE MAS: `alerta_nivel` y `condicion_puerto` se
+  derivan del VIENTO del peor tramo, no del estado SITPORT del puerto de
+  recalada. La alerta por cambio de condicion de recalada necesita
+  /api/sitport/restricciones por puerto, que P3 llama y P4 no.
+  Y el silencio esta escrito: linea 254, `.catch(() => { /* sin flechas, sin
+  error visible */ })`.
+
+QUE COSTARIA: no lo puedo acotar hasta que el punto exista, y no lo voy a
+  fingir. Lo que SI se puede hacer sin el punto son cuatro mediciones, y una de
+  ellas es la mas valiosa que puedo nombrar de todo el tablero:
+    (p1) VOLATILIDAD REAL DEL ESTADO DE PUERTO. Correr /api/sitport/restricciones
+         sobre los puertos de recalada de las rutas ya medidas, cada N minutos,
+         durante un dia real, y contar cuantas veces cambia de estado. Si cambia
+         casi nunca, la alerta es barata, sin ruido y sin umbral. Si cambia
+         seguido, hay que decidir umbral y el owner necesita ESE numero para
+         decidirlo. HOY ESE NUMERO NO EXISTE EN NINGUNA BITACORA.
+    (p2) inventario de cuales de las 15 afirmaciones tienen SUJETO en marcha.
+         Gratis, sin correr nada.
+    (p3) que de lo que P4 ya recibe alcanzaria: los 4 campos que descarta, con
+         la salvedad de `alerta_nivel`.
+    (p4) latencia y tamano de /restricciones-ruta desde P4, que ya tiene
+         `ruta_puntos` y `recaladaCoords`. Se mide sin escribir producto.
+  NOTA: (p1) usa la red contra SITPORT durante un dia. Eso es una decision del
+  owner sobre uso de un servicio de terceros, no una decision mia.
+
+DEPENDE DE: PLAN-2::spec-no-cubre-p4 — el punto escrito. Su propia fila
+  hermana lo dice: «Sin criterio escrito para P4 no hay contra que construir.»
+  Lo escribe el owner (§6).
+SI NO SE CIERRA: el patron que esta en el agua no puede distinguir «no hay
+  novedades» de «no hay senal», y la verificacion que hizo en tierra caduca sin
+  que nadie se lo diga — con las restricciones de SITPORT cambiando por hora,
+  que es el fundamento con el que el owner firmo.
+LA CIFRA: NO SE MUEVE HOY, y cuando el punto se escriba EL DENOMINADOR SUBE.
+  Esto hay que decirlo antes de que pase, porque va a parecer un retroceso: hoy
+  es 4 de 15; con el punto de P4 y con S10 escritos, el denominador crece y el
+  numerador no, asi que la cifra BAJA en ratio sin que nada haya empeorado. Es
+  el efecto inverso del que la politica del owner ya prohibio publicar pelado.
+  RECOMIENDO que la politica de publicacion se extienda ahora, antes de que el
+  denominador se mueva: la cifra se publica con su denominador FECHADO.
+
+
+=== U9 · LA RUTA A PRODUCCION ================================================
+
+QUE ES DE VERDAD — infraestructura ausente, medida, y HOY NO DECLARADA EN
+NINGUNA FILA VIVA.
+  Medido hoy sobre tmarea-pwa/src:
+    SIETE declaraciones del literal 'http://localhost:3000', bajo DOS nombres:
+      BACKEND_URL en 5 ficheros — hooks/useVoyageVerification.js,
+        screens/P4_ActiveVoyage.jsx, utils/tideStations.js,
+        components/voyage/TideCurvePanel.jsx, components/VoyageReportButton.jsx
+      API_BASE en 2 — components/map/ConcesionesLayer.jsx, screens/P2_VoyageSetup.jsx
+    Y un TERCER mecanismo que convive: `import.meta.env.VITE_API_URL` en
+      components/screens/ReportarProblema.jsx y hooks/useRutasAustrales.js.
+      O sea que la app ya sabe leer la URL de configuracion en 2 sitios y la
+      tiene clavada en 7.
+  Ni .github/ en tmarea-backend ni en tmarea-pwa. Ni vercel.json, netlify.toml,
+  Dockerfile, Procfile ni fly.toml en ninguno de los dos. Los scripts de la PWA
+  son { dev, build, preview }. Sin CI y sin despliegue: COMMITEAR NO PUBLICA.
+
+DONDE CAE — y la respuesta es incomoda, asi que va entera:
+  NO ENTRA EN EL ORDEN DE §3, y no porque no importe. Entra en un renglon
+  propio, ARRIBA del orden, como PREGUNTA AL OWNER. Motivo: el orden de §3
+  ordena trabajo cuyo criterio de aceptacion se puede correr. «Publicar» no
+  tiene criterio hasta que alguien diga DONDE y PARA QUIEN, y eso es producto.
+  Lo que si puedo afirmar, y es el argumento de por que va arriba y no al final:
+  las nueve unidades de abajo mejoran un producto que hoy no se puede abrir
+  desde ningun dispositivo que no sea esta maquina. Si la respuesta del owner es
+  «todavia no se publica», el plan se sigue tal cual y esta bien. Si es «se
+  publica pronto», U9 sube al primer lugar y arrastra a U1, porque un runner y
+  un CI son la misma pieza.
+  Y HAY UNA TRAMPA DE COBERTURA QUE HAY QUE NOMBRAR: la deuda de fondo de U9
+  esta declarada como NO declarada. La fila que la nombraba,
+  SESION-caracterizacion-deudas-2026-08-19::seis-ficheros-backend-url, esta en
+  4_caduca —decia «seis ficheros» y son siete bajo dos nombres— y su campo
+  `que_queda_vivo_debajo` dice textual: «La deuda de fondo [...] es real y NO
+  caduca. Vive en el sitio PWA-SIN-ANOTAR, todavia sin barrer.»
+  O sea: la ruta a produccion vive dentro de uno de los NUEVE SITIOS SIN
+  BARRER, que esta sesion declara fuera de alcance. Las dos cosas no pueden ser
+  ciertas a la vez sin decirse. Se dicen. Ver §5.
+
+QUE COSTARIA: no lo puedo estimar sin saber el destino. Lo que si es medible y
+  acotado es la primera mitad: colapsar 7 declaraciones en 1 origen de
+  configuracion, con el precedente ya escrito en los 2 ficheros que usan
+  VITE_API_URL. Eso es refactor de la PWA, sin CI y sin despliegue de por medio.
+SI NO SE CIERRA: nadie que no sea el owner en esta maquina puede abrir la app.
+LA CIFRA: NO SE MUEVE. §2 no habla de despliegue. Y una app que nadie puede
+  abrir puede tener 15 de 15.
+
+
+=== U10 · EL TEXTO DEL OWNER — NO ES UNA UNIDAD MIA ==========================
+
+Seis items. Cinco vienen de firmas del 2026-08-20 (G3) y el sexto sale del
+gate (G6). Ninguno lo escribo yo; el precedente es D9 e INV-3.5, y las propias
+filas lo dicen.
+  T1 · el punto de P4 en la especificacion. DESBLOQUEA U8 ENTERA.
+  T2 · S10, el punto de veracidad, mas la regla de estilo del registro escrita
+       donde no se lea como criterio de aceptacion. Hace que U5 empiece a mover
+       la cifra.
+  T3 · el texto de reemplazo de INV-3.4. TIENE PUERTA: el propio owner fijo que
+       no se redacta antes de que la celda este resuelta.
+  T4 · E2 punto 1 y el alcance y criterio de aceptacion de E6, reescritos.
+  T5 · «transitar» -> «navegar» en los DOS sitios de CONTRATO_MOTOR.md. Es «lo
+       mas barato de las once» segun la propia fila.
+  T6 · los cuatro sitios donde el PLAN todavia dice que D4 esta ABIERTA (G6).
+
+
+=== DE ARRASTRE · lo que no merece unidad y no deberia quedarse ==============
+  · PLAN-2::procedencia-copia-congelada-mal-ubicada — una linea de puntero. Y
+    la enmienda del 2026-08-20 la AGRAVO: el sha ya no coincide, asi que la
+    copia congelada testimonia el estado del 2026-08-19, no el de hoy.
+  · D4D5::la-cifra-tiene-emisor-pero-no-tiene-guardia — `npm run cifra` es el
+    unico emisor correcto y nada impide escribir la forma prohibida a mano.
+    Un control que barra los .md buscando «N de 15» sin su salvedad cuelga del
+    validador que ya existe.
+  · D4D5::detectararea-colapsa-un-vocabulario-de-tres — detectarArea() son ocho
+    lineas y lee como binario un vocabulario de TRES; el tercer termino, «OTRA
+    AREA FIJADA POR LA AML», llega y se descarta. Medir ya esta pagado (98,4 %
+    de cobertura sobre 379 filas de tipo TODOS, diez capturas, veintidos dias).
+    Lo que NO es chico es decidir que devuelve para el tercer termino y para el
+    campo vacio: eso es contrato.
+
+
+------------------------------------------------------------------------------
+3 . EL ORDEN — CON EL CRITERIO DECLARADO
+------------------------------------------------------------------------------
+EL CRITERIO, y se discute antes que el orden:
+
+  > SE ORDENA POR CUANTO DE LO QUE LA PANTALLA AFIRMA HOY ES INSOSTENIBLE CON
+  > EL DATO QUE EL PROPIO ARBOL YA TIENE.
+
+Es decir: primero aquello donde el arbol contiene, hoy, el dato que desmiente lo
+que el patron esta leyendo. Despues lo que la app PROMETE y no hace. Al final lo
+que la app no dice porque nadie lo calculo todavia.
+
+POR QUE ESE CRITERIO Y NO OTRO — los tres que descarto, con motivo:
+  · «lo que mas mueve la cifra» — porque el denominador esta por moverse. En
+    cuanto el owner escriba S10 y el punto de P4, 15 deja de ser 15 (U8). Un
+    orden atado a un denominador que sube ordena mal a partir de manana. Y
+    porque la unidad mas grande del tablero, U4, mueve la cifra CERO.
+  · «lo mas barato primero» — el plan viejo ya lo descarto y tenia razon: lleva
+    directo a lo que no tiene criterio de aceptacion escrito.
+  · «riesgo retirado por firma del owner gastada» — era el criterio del plan
+    viejo y ERA BUENO, pero ya no discrimina: el 2026-08-20 se firmaron diez.
+    De las unidades de codigo del tablero, ninguna espera una firma que no
+    exista. El recurso escaso dejo de ser la firma.
+POR QUE ESE SI: es la unica magnitud que puedo medir HOY para todas las
+unidades —tengo el payload congelado, el conteo de campos, y el texto crudo de
+cada pantalla—, no depende de una estimacion de tiempo que no puedo defender, y
+apunta al dano: el patron decide con lo que lee.
+
+DESEMPATE 1: si al cerrarla queda un INSTRUMENTO de pie o no.
+DESEMPATE 2: riesgo de regresion, de menor a mayor.
+
+REGLA DE PRECEDENCIA DURA, que no es de importancia sino de fisica del proyecto:
+  NINGUN CIERRE QUE CRUCE EL BORDE PWA<->BACKEND SE DA POR BUENO SIN UN CONTROL
+  POSITIVO DEL CAMPO EN PANTALLA. Cuatro instancias medidas dicen que sin eso el
+  campo nace invisible y nada lo caza.
+
+
+EL ORDEN
+--------
+0 · NO ES TRABAJO MIO Y VA PRIMERO PORQUE DESBLOQUEA. Cero codigo.
+    · La pregunta de U9: ¿se publica, y donde? Si la respuesta es «pronto»,
+      U9 sube al puesto 1 y arrastra a U1, porque runner y CI son la misma pieza.
+    · Los seis textos T1..T6. T1 desbloquea U8 ENTERA. T5 es el mas barato de
+      todos. T6 cierra la contradiccion de D4 que este gate encontro.
+
+1 · U2, CAPAS A + C — el pasamanos y la composicion del veredicto.
+    Es el maximo del criterio y no esta cerca: el payload que el navegador
+    recibio dice bandera U con 1 aviso de 24,6646 km y la pantalla dice
+    «BANDERA Q — Zarpe autorizado». El dato que la desmiente ESTA EN EL
+    NAVEGADOR. Cero decisiones abiertas. El patron de doble composicion ya
+    esta escrito y pagado en `drift`.
+    SE ACEPTA CON LA ASERCION DE U1, y ahi es donde U1 entra al plan: no como
+    item, como criterio de aceptacion. Control positivo, congelado y citable:
+    05_payload_antofagasta_taltal.json — la bandera de pantalla tiene que pasar
+    de Q a U sobre ese caso.
+
+2 · U2, CAPA B — el bloque de cobertura.
+    Se separa del 1 a proposito: el 1 hace que EL VEREDICTO DEJE DE MENTIR; el 2
+    hace que el patron PUEDA LEER POR QUE. El 1 sin el 2 ya retira riesgo. El 2
+    pide la unica decision de producto chica del tablero: donde va en P3.
+    Y quien lo escriba tiene que saber que el telefono sale del array
+    `capitanias`, nunca del texto, o rompe el guard de zonas-aviso.js.
+
+3 · U3, MITAD S8 — distinguir «no se pudo preguntar» de «no hay nada».
+    Segundo del criterio: el hook YA SABE que no pudo —devuelve null— y la
+    pantalla borra el bloque entero. Solo PWA, sin decision, sin veredicto.
+    Va con la hermana de P4 nombrada: el `.catch(() => {})` de la linea 254.
+
+4 · U5 — el bloque de puertos, en el orden P2 -> P1 (recomendacion mia, no firma).
+    La contradiccion mas nitida que hay: la misma tarjeta, el mismo instante,
+    dice «Tu embarcacion (AB 50) no esta afectada» y el motivo del veredicto
+    dice «Puerto de zarpe con restricciones». Las dos decisiones firmadas, cero
+    riesgo de veredicto —«no se toca la composicion del maximo», «no se toca la
+    API»—, y una es un rotulo y la otra una cadena.
+
+5 · U4 — la cadena del uso, sus seis pasos en el orden firmado, con sus cuatro
+    colgadas. Sale aca y no antes por el criterio, no por el costo: la app
+    imprime «Tu licencia determina el ambito de navegacion habilitado (RGDN
+    Art. 12)» y despues le da Q sin motivos a una ruta costera de 84,3 millas
+    nauticas con licencia de bahia. Lo que la desmiente —la licencia— la app ya
+    lo tiene.
+    El paso (1) es el cambio mas riesgoso de todo el tablero: si sale mal, es un
+    bloqueo universal. Por eso llega despues de que el borde tenga control y de
+    que las unidades chicas hayan pasado.
+
+6 · U6 — las Capitanias atravesadas, PRECEDIDA de su medicion (cuantas bahias
+    de una ruta resuelven a Capitania nombrable). No mueve banderas: es el
+    riesgo de regresion mas bajo del tablero. Y es el segundo cliente de la
+    asercion de U1.
+
+7 · U3, MITAD S6(b) — el color de lo que no se pudo traer. Detras de su decision
+    de producto, que hoy no es fila (§6).
+
+8 · U7 — el lago, EMPEZANDO POR (m1) y (m2), no por regenerar tiles.
+
+9 · U8 — el viaje activo, detras de T1. Y (p1), la volatilidad del estado de
+    puerto, se puede correr ANTES que T1 y rinde mas que cualquier otra
+    medicion pendiente — con permiso del owner, porque usa SITPORT un dia.
+
+EFECTO LATERAL QUE ACEPTO Y DECLARO: este orden NO es el orden de la cifra. La
+unidad mas grande del tablero (U4) sale quinta y no mueve el numero; la que mas
+lo mueve (U2) sale primera por otra razon. Si el owner quiere el orden de la
+cifra, es U2 (+5), U3 (+2), U6 (+1), U7 (+1) y nada mas — cuatro unidades de
+nueve, y las cinco restantes no aparecerian nunca.
+
+
+------------------------------------------------------------------------------
+4 . QUE NO HARIA, Y POR QUE
+------------------------------------------------------------------------------
+a · NO CERRARIA PLAN-2::zarpe-y-recalada-entran-como-transito. Esta VIVA, en
+    grupo 1, con `depende_de: "Nada abierto"`, y pide DEDUPLICAR — que es lo que
+    D4 rechazo. Su mitad viva —la palabra— ya se aplico en df26887. Ver G7:
+    recomiendo moverla a 4_caduca, y no la escribi.
+
+b · NO ENSANCHARIA EL FILTRO a Capitania-en-ruta. Era el item 7 del orden viejo
+    y hoy es un cambio PROHIBIDO por D5. La enmienda de su fila lo dice: «NO
+    MOSTRARLA ES LO CORRECTO y deja de ser un fallo». Cerrar S2(c) hoy seria
+    des-firmar una decision del owner.
+
+c · NO CERRARIA S7(a) NI S7(b) — y antes de tocarlas, PREGUNTARIA. Son las 2 de
+    13 que la propia medicion declara que NO pueden desviar al patron. Y S7(a)
+    es «el veredicto mas sensible al criterio»: las 7 tarjetas sin cita traen el
+    TEXTO LITERAL de la Capitania entrecomillado. Si el owner considera que
+    reproducir el texto de la Capitania ES su cita, S7(a) pasa a CUMPLE SIN
+    ESCRIBIR UNA LINEA y la cifra sube a 5 de 15, con 2 anuladas. Escribir codigo
+    antes de esa pregunta es pagar por un veredicto que puede darse vuelta gratis.
+
+d · NO REGENERARIA TILES para el lago todavia. S4 no pide una RUTA, pide una
+    CONDICION. Dos mediciones baratas pueden desacoplarla del raster entero. Si
+    dicen que no alcanza, entonces si se discute el raster — con el numero en la
+    mano y no con una inferencia (G5).
+
+e · NO METERIA EL BLOQUE OCEANOGRAFICO en el orden. No sostiene ninguna de las
+    15, no es una de las situaciones, no entra en las once. Y su fila fue
+    ENMENDADA el 2026-08-20: decia que lo necesita «el perfil de pesca, uno de
+    los usos declarables del formulario» y con el desacople eso es FALSO; su
+    fuente pasa a ser el DESTINO del viaje mas la ESPECIE. O sea que el
+    oceanografico ahora CUELGA de U4 paso (4). Meterlo antes seria construirlo
+    contra un campo que se esta borrando.
+
+f · NO CERRARIA LAS UNIDADES DE PWA antes de barrer PWA-SIN-ANOTAR y
+    PWA-COMENTARIOS. No es bloqueante y no lo pongo en el orden: es advertencia
+    de secuencia. Pero ahora tiene un motivo MEDIDO que el plan viejo no tenia:
+    la deuda de la ruta a produccion esta declarada como viviendo ahi (U9), asi
+    que barrer esos dos sitios es lo que hace que U9 exista como fila.
+
+g · NO USARIA LA CIFRA COMO CRITERIO DE ORDEN, y no la publicaria sin su
+    denominador FECHADO. El denominador esta por subir por escritura de texto,
+    no por trabajo, y la cifra va a BAJAR en ratio sin que nada empeore. Es el
+    mismo modo de falla que la politica del owner ya prohibio en la otra
+    direccion.
+
+h · NO TRATARIA EL BLOQUE DE PUERTOS COMO CADENA DE ORDEN FIRMADO. No lo es
+    (G4). Es cadena de contenido, y su orden lo recomiendo yo.
+
+
+------------------------------------------------------------------------------
+5 . QUE QUEDA FUERA DEL PLAN, Y POR QUE — EL PLAN DECLARA SU COBERTURA
+------------------------------------------------------------------------------
+Igual que el declarativo, que dice VERDE y ademas dice «y NO es completo».
+
+COBERTURA, EN NUMERO. Denominador: las 61 deudas VIVAS unicas del declarativo
+al 2026-08-20 (salida de `npm run deudas`). Unidad: fila viva unica.
+
+    filas que el plan ORDENA como trabajo ......... 21 de 61   (34,4 %)
+    filas que el plan NOMBRA y NO ordena .......... 40 de 61
+    de las 21: en U4 ... 5 · U10 ... 4 · de arrastre ... 3 · U8 ... 2 ·
+               U5 ... 2 · U1, U2, U3, U6, U7 ... 1 cada una
+    y UNA MAS que el plan nombra para decir que NO se hace:
+               PLAN-2::zarpe-y-recalada-entran-como-transito (G7)
+
+LO QUE QUEDA FUERA, NOMBRADO:
+
+· LOS NUEVE SITIOS SIN BARRER — FUERA, por instruccion.
+  PLAN-9 · PLAN-5-DECISIONES · CLAUDE-MD · PLAN-7-TABLA · PLAN-7.1-FILTRO ·
+  PLAN-7.1-CONTACTO-CIERRE · PWA-COMENTARIOS · PWA-SIN-ANOTAR · BITACORAS-HD
+  CON DOS EXCEPCIONES QUE HAY QUE DECIR, o la declaracion de cobertura es falsa:
+    (1) PWA-SIN-ANOTAR contiene, declarado por el propio declarativo, el material
+        de U9 — «la deuda de fondo [...] vive en el sitio PWA-SIN-ANOTAR,
+        todavia sin barrer». El plan trae U9 igual, como pregunta, y dice de
+        donde la saco. No la puedo dejar afuera por una regla de cobertura
+        cuando el prompt me pide expresamente que diga donde cae.
+    (2) PLAN-5-DECISIONES es el sitio donde caeria la fila de G6 (D4 abierta en
+        §5). Por eso G6 sale como texto del owner (T6) y no como fila.
+  Nota de metodo, que el declarativo ya tiene escrita y aca aplica: una sesion
+  de medicion es un SITIO propio. Ordenar U9 no barre PWA-SIN-ANOTAR.
+
+· LAS TRECE DEL GRUPO 3, dato externo — FUERA.
+  13 vivas unicas (15 filas, 2 duplicadas). Su reloj no es nuestro: DIRECTEMAR,
+  SITPORT, la respuesta que no llega. Un plan que las ordena ordena una espera.
+  Entre ellas, dos que tocan de cerca lo de arriba y por eso van nombradas:
+  D4D5::la-segunda-direccion-no-es-decidible —que es la puerta de T3— y
+  PLAN-2::consultabahias-no-alimenta-el-detector-de-drift.
+
+· LAS CATORCE DEL SITIO SESION-caracterizacion-deudas-2026-08-19 — FUERA.
+  Hablan de bitacoras, punteros, criterios de admision y del propio declarativo.
+  Son administracion del instrumento, no producto. Tres de ellas las subo a «de
+  arrastre» solo porque son de una linea.
+
+· LAS CUATRO DE PLAN-3-E8 Y LAS TRES DE PLAN-7.2 — FUERA. E8 es su propia etapa
+  y PLAN-7.2 es el control del estado del plan, decidido y pendiente de
+  implementar. Ninguna es de pantalla.
+
+· P4 — DENTRO, como U8, y BLOQUEADA en T1. No la dejo afuera: el owner firmo
+  que §2 lo cubre, asi que dejarla afuera seria contradecir una firma. Pero no
+  la ordeno como trabajo: ordeno sus cuatro mediciones.
+
+· LA RUTA A PRODUCCION — DENTRO, como U9, ARRIBA del orden y como PREGUNTA.
+  Dicho sin ablandar: las nueve unidades de abajo mejoran un producto que hoy
+  no se puede abrir desde ningun dispositivo que no sea esta maquina.
+
+· CONTRATO_MOTOR.md y el motor BRE — FUERA por instruccion. Se nombran dos
+  veces y las dos son citas de lo que ya dicen, no propuestas de cambio: el
+  «esa es la pieza 4» de la cobertura, y los dos sitios de «transitar» de T5.
+
+· E4/C3 · E5 · E6 · el frente de CONTACTO · el Tramo C del frente de CIERRE ·
+  los 41 numeros muertos · la ZEE del limite exterior · la celda — FUERA.
+  Son el plan de JURISDICCIONES, no el de pantalla. Se cruzan en dos puntos y
+  los dos van dichos: la celda es la puerta de T3, y E4+E6 son lo unico que
+  cierra D4D5::la-celda-no-son-las-aguas-y-esta-medido-cuanto.
+
+· EL LIMITE DEL PUERTO (Res. 12100/47) — FUERA como trabajo, y con su respuesta
+  ya dada: rinde 9 de 164 bahias (5,5 %), o 9 de las 44 que calzan (20,5 %), sin
+  abrir cartas del SHOA que el proyecto no tiene licenciadas. La respuesta es
+  «no rinde», y eso es un resultado. Su fila del grupo 2 sigue VIVA y SIN FIRMAR.
+
+
+------------------------------------------------------------------------------
+6 . LO QUE EL PLAN NO PUEDE ORDENAR — CADA UNO CON SU NOMBRE
+------------------------------------------------------------------------------
+Nueve. Cinco son decisiones o textos del owner; dos no existen ni como pregunta
+escrita, y eso es lo mas grave de la lista.
+
+  1 · T1 — el punto de P4 en la especificacion. BLOQUEA U8 ENTERA. Firmado el
+      2026-08-20; el texto no esta escrito. Barrido: «S10» da 0 en
+      PLAN_JURISDICCION.md, control positivo «S9» da 5.
+  2 · T2 — S10, el punto de veracidad. Mientras no exista, U5 cierra una
+      contradiccion real que NINGUNA de las 15 afirmaciones cubre, y por eso
+      U5 no mueve la cifra. Cuando exista, la mueve.
+  3 · T3 — el texto de reemplazo de INV-3.4. TIENE PUERTA PROPIA, puesta por el
+      owner: no se redacta antes de que la celda este resuelta. Y resolver la
+      celda es E4 + E6, que estan fuera de este plan. O sea: T3 no lo ordena
+      este plan NI el owner solo.
+      LA CELDA, MEDIDA el 2026-08-20 y verificada hoy contra §5 del PLAN y contra
+      _bitacoras/tres_de_d4_2026-08-20/: se aparta hasta 73,7 km del punto de la
+      bahia que dice representar, y DOS rutas del arnes australes navegan el
+      69 % de su recorrido FUERA DE TODA CELDA. Por eso la unidad de aplicacion
+      firmada es la Capitania y no la bahia: la geometria de «las aguas de una
+      bahia» no existe en el arbol. La fila es
+      D4D5::la-celda-no-son-las-aguas-y-esta-medido-cuanto y NO se cierra con un
+      parche: se cierra reemplazando la capa, que es E4 + E6.
+  4 · T6 — los cuatro sitios donde el PLAN dice que D4 esta ABIERTA (G6).
+  5 · DONDE VA EL BLOQUE DE COBERTURA EN P3 (U2 capa B). Producto. Es la
+      decision mas chica del tablero: no discute QUE se muestra —§10 lo fija en
+      dos capas— sino DONDE.
+  6 · QUE COLOR LLEVA UN DATO QUE NO SE PUDO TRAER (U3 mitad S6b). Producto.
+      NO ESTA ESCRITA COMO PREGUNTA EN NINGUNA FILA NI EN NINGUN DOCUMENTO. El
+      plan viejo ya lo dijo y sigue igual veinte dias despues.
+  7 · SI LA CONDICION JURISDICCIONAL SE RESPONDE POR TRAYECTO O POR EXTREMOS
+      (U7). Arquitectura. TAMPOCO ESTA ESCRITA EN NINGUN LADO, ni como fila. Es
+      la que mas plata mueve de las nueve: de un lado son dos consultas de
+      punto, del otro son 213 MB de raster regenerado.
+  8 · ¿SE PUBLICA, Y DONDE? (U9). Producto. Si la respuesta cambia, cambia el
+      orden entero.
+  9 · PLAN-7.2::e7-pieza-2-sin-criterio — AGENDADA. No esta trabada por falta
+      de decision sino por la puerta que el propio owner le puso: la etapa de la
+      capa por Capitania (E4/C3). La medicion ya anticipa la respuesta —0 de 34
+      tramos rompen a nivel de Capitania contra 2 de 34 a nivel de bahia—, y
+      aun asi no se contesta hoy.
+
+  Y DOS PREGUNTAS QUE NO SON DE ORDEN PERO CAMBIAN LO QUE HAY QUE HACER:
+  10 · ¿El texto literal de la Capitania entrecomillado ES la cita de S7(a)?
+       Si el owner dice que si, la cifra sube a 5 de 15 sin escribir una linea.
+       Es la unica del tablero que se mueve gratis.
+  11 · ¿Se puede correr (p1) —volatilidad del estado de puerto— contra SITPORT
+       durante un dia real? Es uso sostenido de un servicio de terceros, y esa
+       decision no es mia.
+
+
+------------------------------------------------------------------------------
+7 . LA CIFRA, POR UNIDAD — LO QUE SE MUEVE Y LO QUE NO
+------------------------------------------------------------------------------
+Denominador 15. Unidad: afirmacion de §2. Ambito P3. Punto de partida:
+4 de 15, con 2 anuladas por decision del owner.
+Las 11 NO CUMPLE son: S1 · S3(a) · S3(b) · S3(c) · S3(d) · S4 · S6(a) · S6(b) ·
+S7(a) · S7(b) · S8. Cada unidad se mapea contra esa lista y no contra otra cosa.
+
+  UNIDAD                          MUEVE   CUALES                    QUEDA EN
+  ------------------------------- ------  ------------------------  ---------
+  U1 · el borde                     0     ninguna                   4 de 15
+  U2 · cobertura (A+B+C)           +5     S3a S3b S3c S3d S6a       9 de 15
+       ... solo A+C                (+2)   S3d S6a
+       ... solo A+B                (+3)   S3a S3b S3c
+  U3 · el fallo (S8 + S6b)         +2     S8 S6b                    6 de 15
+       ... solo la mitad S8        (+1)   S8
+  U4 · la cadena del uso            0     ninguna                   4 de 15
+  U5 · el bloque de puertos         0     ninguna (hoy)             4 de 15
+  U6 · Capitanias atravesadas      +1     S1                        5 de 15
+  U7 · el lago                     +1     S4                        6 de 15
+  U8 · el viaje activo              0     y SUBE EL DENOMINADOR
+  U9 · la ruta a produccion         0     ninguna
+  U10 · el texto del owner          0     y T2 SUBE EL DENOMINADOR
+  de arrastre                       0     ninguna
+
+  TODAS LAS UNIDADES DE CODIGO CERRADAS: 4 + 5 + 2 + 1 + 1 = 13 de 15, con 2
+  anuladas. Quedarian S7(a) y S7(b), que son exactamente las dos que la propia
+  medicion declara que NO pueden desviar al patron — y S7(a) puede darse vuelta
+  gratis con una respuesta del owner (§6.10).
+
+  LO QUE ESTA TABLA DICE Y HAY QUE LEER DERECHO: CUATRO de las nueve unidades de
+  trabajo NO MUEVEN EL NUMERO — U1, U4, U5 y U9 —, y entre ellas estan la mas
+  grande del tablero (U4), la unica advertencia de seguridad que no llega al
+  patron (U1) y la que decide si alguien puede abrir la app (U9). Esconderlo
+  seria peor que el numero: seria usar el numero para elegir, que es justamente
+  lo que el criterio de §3 descarta.
+
+  Y LA ADVERTENCIA QUE VA PEGADA: el denominador va a subir por ESCRITURA —T1 y
+  T2—, no por trabajo. Cuando suba, la cifra baja en ratio sin que nada haya
+  empeorado. Recomiendo extender ahora la politica del owner: la cifra se publica
+  con su denominador FECHADO, «4 de 15 al 2026-08-20, con 2 anuladas por
+  decision del owner».
+
+
+------------------------------------------------------------------------------
+8 . EL BORDE PWA<->BACKEND — LA RESPUESTA A LA PREGUNTA DEL PROMPT
+------------------------------------------------------------------------------
+La pregunta era: ¿es una pieza del plan o su cimiento? Ninguna de las dos.
+
+ES EL CRITERIO DE ACEPTACION DE LA PRIMERA UNIDAD QUE CRUCE EL BORDE, y desde
+ahi queda de pie.
+
+  Como CIMIENTO puesto primero: retrasa el verde sobre 24,6646 km para escribir
+  un arnes. El dano medido espera; el arnes no protege nada todavia.
+  Como PIEZA al final: garantiza que la quinta instancia nazca mientras se
+  cierran las otras. Cuatro instancias en cuatro campos distintos, y la ultima
+  es una advertencia de seguridad.
+  Como CRITERIO DE ACEPTACION: no cuesta un puesto en el orden, nace con su
+  primer cliente —U2, que es el que mas gana— y su segundo cliente ya esta
+  agendado en U6.
+
+Y la asercion, en una linea, para que no se diluya: TODO CAMPO QUE UN ENDPOINT
+EMITE ESTA CONSUMIDO, O ESTA DECLARADO COMO NO CONSUMIDO. Hoy nada en ningun
+repo lo afirma, y por eso 15 emitidos dan 9 nombrados sin que nadie se entere.
+
+Lo que NO resuelve, y va dicho: un campo puede estar nombrado en el pasamanos y
+no tener lector. `motivo_principal` es el caso: esta en el `result` y no lo lee
+nadie. La asercion tiene que mirar el CONSUMO, no la copia — o caza tres de las
+cuatro instancias y deja pasar la cuarta clase.
+
+
+------------------------------------------------------------------------------
+9 . FICHEROS Y CONTROLES DE ESTA SESION
+------------------------------------------------------------------------------
+  plan_de_cierre_2026-08-20.txt   este. Unico fichero escrito.
+  No hay instrumentos: esta sesion no midio nada nuevo del producto. Todos los
+  numeros salen de (a) `npm run deudas` y `npm run cifra`, que son del repo;
+  (b) greps declarados con su arbol, su vocabulario y su control positivo;
+  (c) bitacoras citadas por seccion y texto.
+
+  GREPS DECLARADOS, con arbol y control:
+    «brecha» · los dos arboles enteros, todas las extensiones, sin node_modules
+      ni .git · 0 ficheros en cada uno.
+      control positivo: «declarativo» 81 ficheros en backend · «restriccion»
+      11 ficheros en pwa.
+    «S10» · PLAN_JURISDICCION.md · 0.  control positivo: «S9» · 5.
+    campos del borde · tmarea-pwa/src · cobertura_jurisdiccional 0 ·
+      advertencias 0 · motivo_principal 2 (1 codigo + 1 PROSA).
+      control positivo: ETA 42.  control negativo: ZZQXNOEXISTE 0.
+      contra tmarea-backend/src: advertencias 28.
+    P4 · src/screens/P4_ActiveVoyage.jsx, 45.326 bytes · restriccion 0 ·
+      capitania 0 · jurisdicc 0 · veredicto 0 · bandera 0 ·
+      useVoyageVerification 0.  control positivo: ETA 12.  negativo: 0.
+    localhost:3000 · tmarea-pwa/src · 7 declaraciones, 2 nombres (5 + 2), mas
+      2 ficheros con VITE_API_URL.
+    tests · tmarea-pwa/src: 0 ficheros *.test.js / *.spec.js.
+      control positivo: tmarea-backend/src: 7.
+
+  UN CONTROL QUE CAMBIO SU RESULTADO Y SE DICE: `motivo_principal` daba 1
+  aparicion en la PWA cuando se midio el 2026-08-20 y hoy da 2. La segunda es un
+  COMENTARIO agregado por df26887. El hecho no cambio —sigue sin lector— pero un
+  conteo pelado lo habria dado por consumido. Es la regla del control negativo
+  sobre PROSA, ya fichada en este proyecto, mordiendo de nuevo.
+
+  LO QUE ESTA SESION NO TOCO
+    .claude/launch.json y data/catalogo/estado_drift.json siguen ` M` sin
+    stagear, con el mismo contenido con el que arranco: los servidores NO se
+    levantaron, asi que estado_drift.json no fue reescrito esta vez.
+    src/ de los dos repos · CONTRATO_MOTOR.md · el motor BRE · PLAN_JURISDICCION.md
+    · cualquier DML o DDL. Los nueve sitios sin barrer, que SIGUEN SIENDO NUEVE.
+    ENMENDADO: la lista decia tambien data/deudas/deudas_declaradas.json, y desde
+    el apartado 10 eso es falso. El declarativo SI se toco, por orden del owner y
+    despues del gate. PLAN_JURISDICCION.md sigue sin tocarse, y eso importa: es la
+    opcion (c) de G6, y el texto lo pega el owner.
+
+
+------------------------------------------------------------------------------
+10 . LO QUE EL OWNER RESOLVIO SOBRE EL GATE, Y LO QUE SE ESCRIBIO
+------------------------------------------------------------------------------
+PLAN ACEPTADO el 2026-08-20. Las resoluciones, una por hallazgo, y despues lo
+que se escribio. El apartado 9 de arriba describe la sesion ANTES de esto; lo
+que vale es esto.
+
+G7 · OPCION (a). PLAN-2::zarpe-y-recalada-entran-como-transito pasa a 4_caduca
+     con su afirmacion_que_ya_es_falsa. Motivo del owner, textual: «un plan que
+     tiene que advertir contra su propio insumo esta mal apoyado». No se cierra:
+     MURIO, que es lo que el grupo 4 significa. Se retiran los dos campos que el
+     grupo 1 exigia —costo_estimado y depende_de— y la enmienda dice que decian,
+     porque el «Nada abierto.» era justamente lo falso.
+
+G6 · OPCION (c). Los CUATRO sitios donde el PLAN todavia dice que D4 sigue
+     ABIERTA van como T6, texto que pega el owner. NO SE TOCARON, por
+     instruccion explicita. Y el supuesto de este plan queda DECLARADO CORRECTO
+     por el owner: D4 ESTA FIRMADA. Los cuatro sitios, para que el que los pegue
+     no tenga que volver a buscarlos:
+       · §5, tabla de decisiones, fila D4, columna estado: dice «abierta».
+       · §5, encabezado «Las tres de D4 — medidas el 2026-08-20. D4 sigue
+         ABIERTA: falta la firma.»
+       · §2, recuadro de aprobacion, parrafo «Al dia el 2026-08-20»: «S5 sigue
+         siendo el unico [P] puro y D4 sigue ABIERTA».
+       · encabezado del documento, linea de Estado: «(S5 abierta como D4)».
+
+G8 · Es el hallazgo del gate, y va como fila. Palabras del owner: «Ni bitacora
+     tuvo». La fila lo dice y ademas separa lo que este commit cierra —la
+     INSTANCIA, porque el plan nuevo aterriza en el arbol— de lo que no cierra
+     —la CLASE, porque sigue sin haber regla ni control que exija que un
+     entregable de sesion deje fichero—. Por eso queda VIVA y no cerrada.
+
+S7(a) · NO SE FIRMA HOY. El owner quiere mirarla en pantalla antes. Queda como
+     esta: NO CUMPLE, y la cifra no se mueve. Sigue siendo la unica del tablero
+     que puede darse vuelta sin escribir una linea, y sigue sin darse vuelta.
+     Esto NO es una deuda nueva y no se le escribe fila: es una pregunta
+     pendiente del apartado 6, y ahi vive.
+
+EL PLAN VA A CONTROL DE VERSIONES. El propio G8 nombra el defecto de que un
+entregable viva sin trackear; dejarlo asi habria sido escribir el hallazgo y
+reproducirlo en el mismo acto.
+
+LO QUE SE ESCRIBIO — cuatro filas nuevas, una enmienda, un sitio nuevo
+------------------------------------------------------------------------------
+  ENMIENDA
+    PLAN-2::zarpe-y-recalada-entran-como-transito
+      1_cierra_con_lo_que_hay / viva  ->  4_caduca / caduca
+
+  DOS FILAS DEL GATE, las dos de metodo y las dos del grupo 1
+    SESION-plan-de-cierre-2026-08-20::una-anulacion-de-spec-no-propaga-sola
+      Una decision que ANULA una afirmacion de §2 no propaga sola al
+      declarativo. Propago a UNA fila de DOS: la de las Capitanias atravesadas
+      lleva su enmienda del 2026-08-20 retirando S2(c); la de zarpe y recalada
+      quedo viva sosteniendo S5(b). Y ningun control lo caza, porque el
+      validador comprueba FORMA y una fila que sostiene un enunciado derogado
+      es formalmente perfecta. Lo que falta existe a medias: el emisor de la
+      cifra YA publica cuales estan anuladas, con su decision y su fecha; lo
+      que no existe es quien cruce ese dato contra el campo «sostiene».
+    SESION-plan-de-cierre-2026-08-20::un-entregable-que-solo-vive-en-el-chat-no-existe
+      El plan anterior no estuvo en ningun arbol. Barrido literal «brecha»
+      sobre los dos arboles enteros: 0 y 0, con control positivo «declarativo»
+      81 ficheros en el backend y «restriccion» 11 en la PWA. Estaba en el
+      transcript, linea 266, 37.808 caracteres. Su gemela de entrada ya existe
+      —el declarativo que nadie abre al arrancar—; esta es la de salida.
+
+  DOS PREGUNTAS DEL GRUPO 2, las dos descubiertas por el plan y las dos
+  inexistentes como fila hasta hoy
+    SESION-plan-de-cierre-2026-08-20::color-del-dato-que-no-se-pudo-traer
+      Que color lleva un dato que la app no pudo traer. Hoy lleva VERDE con el
+      rotulo «Condicion Normal» y debajo dice que no se pudo obtener: el color
+      afirma una cosa y el texto la contraria, en la misma tarjeta. La pregunta
+      ofrece tres opciones —color propio, ambar, o sin estado— y dice el costo
+      de cada una. Toca S6(b), y se declara que la mitad de S8 se puede cerrar
+      SIN esta decision.
+    SESION-plan-de-cierre-2026-08-20::jurisdiccion-por-trayecto-o-por-extremos
+      Si la condicion jurisdiccional se responde por el TRAYECTO o por los
+      EXTREMOS. LA MEDICION VA DENTRO DE LA PREGUNTA, por pedido del owner,
+      porque es lo que la hace cara: por trayecto hay que regenerar tiles —el
+      mayor pesa 213.639.480 bytes y son 16.785 por 6.364 celdas a 50 m,
+      MEDIDO HOY sobre el fichero y su descriptor—, extender extents, re-correr
+      conectividad y correr regresion sobre lo maritimo que hoy funciona; por
+      extremos son dos consultas de punto contra seis geometrias ya publicadas
+      y cero motor de rutas. La misma promesa, dos ordenes de magnitud.
+      Y la fila marca la linea que este plan no cruza: la FUENTE del agua esta
+      verificada por partida doble —la cabecera del script de build y el bloque
+      de fuentes del propio descriptor del tile, los dos declaran
+      water-polygons-split-4326— pero QUE las celdas del lago valgan 0 sigue
+      siendo INFERENCIA. El instrumento existe en el arbol, se llama
+      check_control_points, y no se corrio.
+
+  SITIO NUEVO, agregado a los DOS lados
+    SESION-plan-de-cierre-2026-08-20 · barrido=true · 4 filas
+    En cobertura.sitios del dato, y en SITIOS_CANON del validador. Quitarlo de
+    uno solo pone el validador en rojo por [V5], y esta bien que lo haga.
+    NO marca barrido ningun otro sitio: PLAN-5-DECISIONES y CLAUDE-MD siguen en
+    false aunque dos de las cuatro filas caigan cerca de ellos, y cada fila lo
+    dice en su propio depende_de. LOS NUEVE SIN BARRER SIGUEN SIENDO NUEVE.
+
+EL CONTEO, y los dos numeros van juntos
+------------------------------------------------------------------------------
+    ANTES   sitios 19 · barridos 10 · sin barrer 9
+            filas 68 · unicas 66 · VIVAS 61
+            grupo 1: 37/37/36 · grupo 2: 13/13/12 · grupo 3: 15/13/13 · grupo 4: 3/3/0
+    AHORA   sitios 20 · barridos 11 · SIN BARRER 9
+            filas 72 · unicas 70 · VIVAS 64
+            grupo 1: 38/38/37 · grupo 2: 15/15/14 · grupo 3: 15/13/13 · grupo 4: 4/4/0
+    version del declarativo 6 -> 7
+
+  LAS VIVAS SUBEN DE 61 A 64 Y ESO ES LO CORRECTO. Cuatro filas nuevas suman
+  cuatro vivas; la caducada resta una. 61 + 4 - 1 = 64. Nadie cerro nada por
+  trabajo: CERRADAS por trabajo sigue en 2, el mismo numero de ayer.
+  Y LA CIFRA DE §2 NO SE MOVIO: sigue 4 de 15, con 2 anuladas por decision del
+  owner. Ninguna de estas cuatro filas es una afirmacion de la especificacion.
+
+CONTROLES DE ESTA ESCRITURA
+------------------------------------------------------------------------------
+  validador del declarativo ....... VERDE · 72 filas · 70 unicas · 64 vivas
+  mordida ......................... 32/32, con su control negativo (la copia
+                                    sin mutar sale exit 0)
+  De las 32, tres muerden justo lo que esta escritura toco y por eso se nombran:
+  «grupo 4 sin medicion», «grupo 4 con medicion sin salida cruda» y «pregunta
+  del grupo 2 que nombra un fichero del repositorio». Las tres en rojo cuando
+  deben, sobre una copia mutada.
+  control de caracteres por PUNTOS DE CODIGO (criterio H-T2), sobre los tres
+  ficheros tocados del arbol mas el instrumento .......... ver el apartado 11
+  control contra el INDICE, no contra el disco ........... ver el apartado 11
+
+  DEFECTO DE INSTRUMENTO: NINGUNO EN ESTA ESCRITURA. Se dice porque el
+  declarativo lleva doce fichados y la ausencia tambien es dato. El instrumento
+  se escribio como FICHERO y no como node -e inline, que es la regla que este
+  repositorio ya pago; se corrio una vez; y se comprobo que los ficheros
+  existen despues de correrlo, que es la otra regla que costo un commit malo.

@@ -1,0 +1,127 @@
+EL PLAN DE CIERRE AL ARBOL, y su gate deja dos filas: 61 vivas -> 64, y los nueve sin barrer siguen siendo nueve
+
+El plan de cierre se rehizo entero y el owner lo acepto. Va al arbol con las dos
+filas que su gate justifico, mas dos preguntas del grupo 2 que el plan descubrio
+que NO existian como fila.
+
+EL PLAN ANTERIOR NO ESTABA EN NINGUN ARBOL, Y ESE ES EL HALLAZGO DEL GATE
+  Barrido literal "brecha" sobre los DOS arboles enteros, todas las extensiones,
+  sin node_modules ni .git: CERO ficheros en tmarea-backend y CERO en tmarea-pwa.
+  Control positivo del mismo barrido y del mismo arbol, para probar que alcanza:
+  "declarativo" da 81 ficheros en el backend y "restriccion" da 11 en la PWA.
+  Vivia solo en el transcript de la sesion que lo produjo. Ni bitacora tuvo.
+  Es el modo de falla que este declarativo enuncia sobre si mismo -- "no cerraron
+  nada porque vivian en la bitacora de la sesion que los creo" -- un escalon peor.
+  Dejarlo sin trackear habria sido escribir el hallazgo y reproducirlo en el mismo
+  acto. Por eso este commit existe.
+
+LAS DOS FILAS DEL GATE, las dos de METODO
+  una-anulacion-de-spec-no-propaga-sola
+    El 2026-08-20 se anularon DOS afirmaciones de la seccion 2 -- S2(c) por D5 y
+    S5(b) por D4 -- y cada una tenia una fila que la declaraba en su campo
+    "sostiene". UNA se enmendo el mismo dia; la otra no. Ningun control lo caza:
+    el validador comprueba FORMA, y una fila que sostiene un enunciado derogado
+    es formalmente perfecta. El dato para cazarlo YA existe -- el emisor de la
+    cifra publica cuales estan anuladas, con su decision y su fecha -- y lo que
+    falta es quien lo cruce.
+  un-entregable-que-solo-vive-en-el-chat-no-existe
+    El hallazgo de arriba, como deuda. Este commit cierra la INSTANCIA y NO la
+    CLASE: sigue sin haber regla ni control que exija que un entregable de sesion
+    deje fichero. Por eso queda VIVA. Su gemela de entrada ya existe en el
+    declarativo -- el que nadie abre al arrancar --; esta es la de salida.
+
+LA ENMIENDA: UNA FILA VIVA PEDIA HACER LO QUE D4 RECHAZO
+  PLAN-2::zarpe-y-recalada-entran-como-transito pasa de 1_cierra_con_lo_que_hay
+  a 4_caduca. Estaba VIVA, en el grupo de lo que cierra con lo que hay, con
+  depende_de "Nada abierto." y sostiene "S5(b).", pidiendo DEDUPLICAR zarpe y
+  recalada. D4, firmada el 2026-08-20, decidio lo contrario con esas palabras:
+  EL DATO DUPLICADO SE MANTIENE. Y la mitad que D4 si mantuvo viva -- corregir la
+  palabra -- YA ESTA APLICADA en tmarea-pwa por df26887: el barrido literal de
+  "zona intermedia" sobre tmarea-pwa/src da 2 apariciones y las DOS son PROSA.
+  No queda nada vivo debajo, y va escrito en vez de dejarlo suponer.
+  Se retiran costo_estimado y depende_de, que el grupo 1 exigia y que describian
+  un trabajo que ya no existe. La enmienda dice que decian: ese "Nada abierto."
+  era justamente lo falso.
+  NO se cierra: MURIO, que es lo que el grupo 4 significa.
+
+LAS DOS PREGUNTAS QUE NO EXISTIAN COMO FILA
+  color-del-dato-que-no-se-pudo-traer
+    Que color lleva un dato que la app no pudo traer. Hoy el bloque de clima se
+    pinta VERDE con el rotulo "Condicion Normal" y justo debajo dice que no se
+    pudo obtener: el color afirma una cosa y el texto la contraria, en la misma
+    tarjeta. Tres opciones con su costo, y una declaracion de alcance: la mitad
+    de S8 se puede cerrar SIN esta decision; la mitad de S6(b), no.
+  jurisdiccion-por-trayecto-o-por-extremos
+    Si la condicion jurisdiccional se responde por el TRAYECTO o por los
+    EXTREMOS. LA MEDICION VA DENTRO DE LA PREGUNTA, por pedido del owner, porque
+    es lo que la hace cara: por trayecto hay que regenerar tiles -- el mayor pesa
+    213.639.480 bytes y son 16.785 por 6.364 celdas a 50 m, MEDIDO HOY sobre el
+    fichero y su descriptor --, extender extents, re-correr conectividad y correr
+    regresion sobre las rutas maritimas que HOY FUNCIONAN; por extremos son dos
+    consultas de punto contra seis geometrias ya publicadas y cero motor de rutas.
+    La misma promesa, dos ordenes de magnitud.
+    Y la fila marca la linea que no se cruza: la FUENTE del agua esta verificada
+    por partida doble -- la cabecera del script de build y el bloque de fuentes
+    del propio descriptor del tile -- pero QUE las celdas del lago valgan 0 sigue
+    siendo INFERENCIA. El instrumento existe en el arbol, se llama
+    check_control_points, y no se corrio. Va marcado como inferencia.
+
+EL SITIO NUEVO VA A LOS DOS LADOS
+  SESION-plan-de-cierre-2026-08-20, barrido=true, 4 filas: en cobertura.sitios
+  del dato y en SITIOS_CANON del validador. Quitarlo de uno solo pone el
+  validador en rojo por [V5], y esta bien que lo haga.
+  NO marca barrido ningun otro: PLAN-5-DECISIONES y CLAUDE-MD siguen en false
+  aunque dos de las cuatro filas caigan cerca de ellos, y cada fila lo dice en su
+  propio depende_de.
+
+EL CONTEO, leido del INDICE con git show :ruta, nunca del disco
+    ANTES   sitios 19 - barridos 10 - sin barrer 9
+            filas 68 - unicas 66 - VIVAS 61
+    AHORA   sitios 20 - barridos 11 - SIN BARRER 9
+            filas 72 - unicas 70 - VIVAS 64
+    grupo 1: 37/37/36 -> 38/38/37   grupo 2: 13/13/12 -> 15/15/14
+    grupo 3: 15/13/13 sin cambio    grupo 4: 3/3/0 -> 4/4/0
+    version del declarativo 6 -> 7
+  LAS VIVAS SUBEN Y ESO ES LO CORRECTO: 61 + 4 - 1 = 64. Cuatro filas nuevas
+  suman cuatro; la caducada resta una. CERRADAS por trabajo sigue en 2, el mismo
+  numero de ayer: nadie cerro nada.
+  LA CIFRA DE LA SECCION 2 NO SE MOVIO: sigue en 4 de 15, con 2 anuladas por
+  decision del owner. Ninguna de estas cuatro filas es una afirmacion de la
+  especificacion.
+
+LO QUE EL OWNER RESOLVIO Y NO SE HIZO, escrito para que no se lea como olvido
+  G6 opcion (c): los CUATRO sitios donde PLAN_JURISDICCION.md todavia dice que D4
+  sigue ABIERTA los pega el owner como texto. El fichero NO se toco, y el control
+  contra el indice lo comprueba explicitamente. El supuesto del plan -- D4 ESTA
+  FIRMADA -- queda declarado correcto por el owner.
+  S7(a) NO SE FIRMA HOY: el owner quiere mirarla en pantalla antes. Sigue en
+  NO CUMPLE y sigue siendo la unica del tablero que puede darse vuelta sin
+  escribir una linea.
+
+CONTROLES
+  validador del declarativo VERDE sobre el objeto DEL INDICE - 72/70/64
+  mordida 32/32 con su control negativo. Tres de las 32 muerden justo lo que esta
+    escritura toco: grupo 4 sin medicion, grupo 4 con medicion sin salida cruda,
+    y pregunta del grupo 2 que nombra un fichero del repositorio.
+  control de caracteres por PUNTOS DE CODIGO (criterio H-T2): 0 sospechosos y
+    0 con BOM sobre los ficheros de esta bitacora mas los dos tocados del arbol.
+    Control positivo con el centinela U+0091 FABRICADO por punto de codigo,
+    cazado 1 de 1; el mismo centinela contado POR BYTES da 0, que es el falso
+    negativo que H-T2 corrigio. El conteo exacto de ficheros y de puntos vive en
+    03_control_caracteres.txt y NO se copia aca a proposito: este mensaje es uno
+    de los ficheros que ese control mide, asi que citarle el total lo volveria
+    una cifra que se referencia a si misma.
+  control contra el INDICE: 45 comprobaciones en verde -- numero DERIVADO de la
+    salida, no contado a mano --, con los INTOCABLES
+    verificados FUERA -- .claude/launch.json y data/catalogo/estado_drift.json
+    siguen ' M' y sin stagear -- y con indice == disco en los 11 ficheros stageados.
+
+DEFECTO DE INSTRUMENTO PROPIO, DECLARADO PORQUE LLEGO A CORRER
+  02_enmendar_bitacora.js traia dos backticks DENTRO de un String.raw, alrededor
+  de los nombres de campo sostiene y depende_de. El backtick cerraba el template
+  y el fichero no parseaba. Es la familia ya fichada -- el backtick dentro de
+  node -e -- y esta vez fallo RUIDOSO y ANTES de escribir nada, que es como tiene
+  que fallar. Se reemplazaron por comillas angulares y se conto que dentro del
+  bloque quedaran exactamente dos backticks: apertura y cierre.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

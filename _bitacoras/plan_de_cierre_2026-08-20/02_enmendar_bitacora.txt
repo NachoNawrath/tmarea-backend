@@ -1,0 +1,22 @@
+Salida capturada de la corrida de 02_enmendar_bitacora.js, 2026-08-20.
+
+DEFECTO DE INSTRUMENTO PROPIO, DECLARADO PORQUE LLEGO A CORRER.
+La primera version traia dos backticks DENTRO del String.raw`...`, alrededor de
+los nombres de campo «sostiene» y «depende_de». El backtick cerraba el template
+y el fichero no parseaba: SyntaxError: Unexpected identifier 'sostiene'.
+Es la familia ya fichada en este declarativo — el backtick dentro de node -e —
+y esta vez fallo RUIDOSO y ANTES de escribir, que es como tiene que fallar.
+Se reemplazaron por comillas angulares y se comprobo que dentro del bloque
+quedan exactamente 2 backticks: la apertura y el cierre.
+
+ENMENDADA. bytes 72137 -> 80803
+existe: true
+  ok     10 . LO QUE EL OWNER RESOLVIO
+  ok     G7 · OPCION (a)
+  ok     G6 · OPCION (c)
+  ok     S7(a) · NO SE FIRMA HOY
+  ok     61 + 4 - 1 = 64
+  ok     SIN BARRER 9
+  ok     LOS NUEVE SIN BARRER SIGUEN SIENDO NUEVE
+  ok     213.639.480
+  ok     el texto viejo se conserva citado
