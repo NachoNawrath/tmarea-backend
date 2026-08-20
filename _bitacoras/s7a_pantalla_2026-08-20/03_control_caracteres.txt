@@ -1,0 +1,22 @@
+CRITERIO (H-T2): puntos de codigo. Se marca < 0x20 salvo LF/CR/TAB, 0x7F, y C1 0x80-0x9F.
+Y BOM (U+FEFF) al inicio, que es el otro defecto fichado.
+
+ok _bitacoras\s7a_pantalla_2026-08-20\01_sitport_hoy.txt  puntos_de_codigo=3794  sospechosos=0  BOM=no
+ok _bitacoras\s7a_pantalla_2026-08-20\02_pantallas_texto_crudo.txt  puntos_de_codigo=7227  sospechosos=0  BOM=no
+ok _bitacoras\s7a_pantalla_2026-08-20\03_control_caracteres.js  puntos_de_codigo=2619  sospechosos=0  BOM=no
+ok _bitacoras\s7a_pantalla_2026-08-20\03_control_caracteres.txt  puntos_de_codigo=474  sospechosos=0  BOM=no
+ok _bitacoras\s7a_pantalla_2026-08-20\s7a_pantalla_2026-08-20.txt  puntos_de_codigo=17603  sospechosos=0  BOM=no
+ok data/deudas/deudas_declaradas.json  puntos_de_codigo=343643  sospechosos=0  BOM=no
+ok _bitacoras/plan_de_cierre_2026-08-20/plan_de_cierre_2026-08-20.txt  puntos_de_codigo=113376  sospechosos=0  BOM=no
+ok _bitacoras/spec2_pantalla_2026-08-20/spec2_pantalla_2026-08-20.txt  puntos_de_codigo=34792  sospechosos=0  BOM=no
+
+TOTAL puntos de codigo recorridos: 523528   sospechosos: 0   con BOM: 0
+
+CONTROL POSITIVO — cadena fabricada con un U+0091 adentro:
+   detectados por este control: 1  (esperado 1)
+   un control que mirara BYTES habria devuelto: 0  (por eso H-T2 mira puntos de codigo)
+
+CONTROL POSITIVO 2 — BOM fabricado:
+   detectado: SI  (esperado SI)
+
+VERDE

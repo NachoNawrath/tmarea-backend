@@ -4,9 +4,9 @@
   "_por_que_existe": "Se hicieron cuatro o cinco inventarios de deudas y ninguno cerro nada. La causa medida: las deudas se anotan en la bitacora de la sesion que las creo, esa bitacora no se vuelve a abrir, y la sesion siguiente arranca en frio sin verlas. El precedente de forma es 7.2 del PLAN_JURISDICCION.md, que ya razono lo mismo para las afirmaciones verificables: parsear la prosa seria adivinar, declararlas es el camino.",
   "_como_se_lee": "Ninguna fila queda sin grupo. Los grupos 5 y 6 son PROPUESTAS: no cuentan como baja hasta que firma_owner.firmada sea true. El conteo se publica siempre dos veces, con firma y sin firma.",
   "_por_que_vive_en_el_backend": "Medido el 2026-08-19: tmarea-pwa no tiene _bitacoras/, ni CLAUDE.md, ni documento de plan, ni un solo sitio donde se anoten deudas (TODO/FIXME/HACK/XXX/DEUDA/PENDIENTE = 0, con dos controles positivos). Todo el aparato de deuda vive en tmarea-backend. Y la direccion de la referencia ya la fijo el codigo, no la comodidad: tmarea-pwa/src/screens/P3_VoyageVerification.jsx cita tmarea-backend/_bitacoras/, y ningun fichero del backend cita a la PWA.",
-  "version": 7,
+  "version": 8,
   "generado": "2026-08-20",
-  "generado_por": "sesion de caracterizacion de deudas (tramo 1 y 2, 2026-08-19) + medicion de §2 contra la pantalla (2026-08-20)",
+  "generado_por": "sesion de caracterizacion de deudas (tramo 1 y 2, 2026-08-19) + medicion de §2 contra la pantalla (2026-08-20) + S7(a) mirada en pantalla (2026-08-20)",
   "procedencia": "_bitacoras/declarativo_deudas_2026-08-19/",
   "lo_lee": "scripts/validar_deudas_declaradas.js (npm run deudas). Agregar una fila aca NO exige tocar codigo.",
   "repos": {
@@ -332,8 +332,8 @@
         "orden": 2,
         "barrido": true,
         "barrido_el": "2026-08-20",
-        "filas_en_este_declarativo": 15,
-        "nota": "Sitio DECIMOSEPTIMO. No estaba entre los dieciseis medidos el 2026-08-19, y por eso la canon del validador tambien sube a 17: un sitio nuevo se agrega a los DOS lados, a proposito. Se barrio contrastando §2 contra la app montada en el navegador, no por lectura de codigo. Los nueve puntos contienen 17 afirmaciones separables; el barrido produjo 4 CUMPLE, 13 NO CUMPLE y 0 NO MEDIBLE, y su ambito es P3 — ver la fila PLAN-2::spec-no-cubre-p4. Las filas subieron de 13 a 15 el mismo dia: dos mas salieron de las pasadas de licencia, y una de ellas se EXTRAJO de PLAN-2::desacople-licencia-uso por decision del owner, porque estaba metida ahi como un \"y ademas\".",
+        "filas_en_este_declarativo": 16,
+        "nota": "Sitio DECIMOSEPTIMO. No estaba entre los dieciseis medidos el 2026-08-19, y por eso la canon del validador tambien sube a 17: un sitio nuevo se agrega a los DOS lados, a proposito. Se barrio contrastando §2 contra la app montada en el navegador, no por lectura de codigo. Los nueve puntos contienen 17 afirmaciones separables; el barrido produjo 4 CUMPLE, 13 NO CUMPLE y 0 NO MEDIBLE, y su ambito es P3 — ver la fila PLAN-2::spec-no-cubre-p4. Las filas subieron de 13 a 15 el mismo dia: dos mas salieron de las pasadas de licencia, y una de ellas se EXTRAJO de PLAN-2::desacople-licencia-uso por decision del owner, porque estaba metida ahi como un \"y ademas\". AMPLIADO el 2026-08-20: sube de 15 a 16 con PLAN-2::la-capa-2-del-catalogo-no-llega-a-la-pantalla, que sale de mirar S7(a) en pantalla con el 10 del contrato sobre la mesa. Va en PLAN-2 y no en un sitio nuevo porque es exactamente lo que este sitio existe para producir: contrastar 2 contra la app. La fila esta REDACTADA Y NO MEDIDA por instruccion del owner, y lleva escrita la primera medicion de quien la retome.",
         "bitacora": "_bitacoras/spec2_pantalla_2026-08-20/"
       },
       {
@@ -2402,6 +2402,53 @@
       "duplicada_de": null,
       "costo_estimado": "Bajo. Dos caminos posibles y los dos son escritura: mostrar el valor derivado en modo lectura con su motivo, o no derivarlo y declarar que la nave eximida no tiene clasificacion. El segundo cambia el comportamiento del motor y por eso no es gratis.",
       "depende_de": "PLAN-2::licencia-de-bahia-en-ruta-costera-sin-aviso. Si el owner decide que la app debe avisar cuando la ruta excede el alcance, este campo deja de poder ser invisible."
+    },
+    {
+      "id": "PLAN-2::la-capa-2-del-catalogo-no-llega-a-la-pantalla",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 punto S7 — mirado contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-pwa",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "La Capa 2 del catalogo de CONTRATO_MOTOR.md 10 no se esta renderizando en P3: la cita de la tarjeta EXISTE, esta escrita, y no llega a la pantalla",
+      "evidencia_en_el_arbol": {
+        "mirado_el": "2026-08-20",
+        "no_es_una_medicion": "ESTA FILA ESTA REDACTADA Y NO MEDIDA, por instruccion del owner. Nace de mirar UNA tarjeta en pantalla, no de recorrer el catalogo. Lo que sigue es el caso que la PRUEBA, no su alcance.",
+        "el_caso_que_la_prueba": "La tarjeta de cierre de recalada de P3 ES la fila «Recalada cerrada (en puerto)» del catalogo de 10. Su Capa 1 esta en pantalla palabra por palabra —«Puerto de recalada cerrado.»— y su Capa 2 —«Segun D.S. 364 Art. 16, si debes cambiar el puerto de recalada, solicita permiso a la Autoridad Maritima con anticipacion. Podria exigirse declarar puerto alternativo.»— NO ESTA. Visto el 2026-08-20 en la ruta Rampa Hualaihue Puerto -> Embarcadero Rampa de Ayacara con AB 50, con las dos bahias (184 y 186) publicando cierre para naves menores de 25 AB.",
+        "por_que_cambia_la_clase_del_defecto": "S7(a) se leia como «falta citar», que suena a criterio: si el owner aceptaba que reproducir el texto de la Capitania es citarlo, se daba vuelta gratis. NO ES ESO. La cita de esa tarjeta existe, esta escrita en el catalogo que 10 declara fuente unica, y el render no la pone. El defecto no es de criterio: es que la Capa 2 no se esta renderizando.",
+        "lo_que_la_pantalla_pone_en_su_lugar": "El texto crudo de la Capitania bajo el rotulo «Texto de la Capitania:», mas una linea de accion con VHF Canal 16. El propio codigo llama ROTULO_CITA a ese rotulo y su comentario D-C4 dice «El rotulo es atribucion, no reescritura» — o sea que el arbol ya sabe que eso es ATRIBUCION, que es otra cosa que la via normativa que 10 pide.",
+        "el_vhf_va_aca_y_no_en_fila_propia": "Por decision del owner, 2026-08-20: es del mismo mecanismo. La Regla de uso de 10 dice que «los mensajes de este catalogo no llevan telefono ni canal de radio propio» y que las menciones a VHF Canal 16 que aparecen son «las que la norma citada manda, no instruccion de contacto nuestra». En la tarjeta el VHF aparece SIN norma citada, asi que hoy se lee como instruccion nuestra. ANOTADO, NO MEDIDO.",
+        "lo_que_esta_fila_NO_afirma": "No afirma que le pase a todas las filas del catalogo, ni a ninguna otra. Se vio una. Puede que sea una y puede que sean todas.",
+        "sostiene": "S7(a), que quedo NO CUMPLE y FIRMADA por el owner el 2026-08-20. Cerrar esta fila NO mueve la cifra por si sola: S7(a) tambien exige S7(b), y la cifra la emite unicamente npm run cifra."
+      },
+      "primera_medicion_de_quien_la_retome": {
+        "la_pregunta": "De las filas del catalogo de CONTRATO_MOTOR.md 10, cuantas tienen Capa 2 escrita y no llegan a P3?",
+        "unidad": "fila del catalogo de 10.",
+        "denominador": "las filas del catalogo que P3 puede disparar. Se declara cual es antes de contar, porque no toda fila del catalogo tiene camino a P3 —la de moto de agua nocturna, por ejemplo— y meterlas en el denominador lo infla.",
+        "control_positivo_obligatorio": "al menos una fila cuya Capa 2 SI llegue a pantalla. Si no aparece ninguna, el instrumento se sospecha a si mismo antes de acusar al render: puede estar buscando la cadena equivocada.",
+        "el_caso_ya_resuelto": "«Recalada cerrada (en puerto)» ya esta: Capa 2 escrita, no llega. Cuenta como el primer positivo y no hay que volver a mirarlo.",
+        "lo_que_no_es": "NO es contar mensajes en pantalla. Eso ya se hizo y dio 5 de 12 el 2026-08-20 sobre R1. Esta medicion va del lado del catalogo, no del lado de la pantalla, y por eso su denominador es otro."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/screens/P3_VoyageVerification.jsx",
+        "seccion_por_titulo": "export function construirAvisosDeCierre(puerto)",
+        "cita_de_anclaje": "la lista de `partes` que arma cada aviso — piso, alcance, cita, accion — donde NO hay ninguna parte para la Capa 2 del catalogo, y el comentario D-C4 que dice «El rotulo es atribucion, no reescritura»"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de mirar S7(a) en pantalla el 2026-08-20 con 10 sobre la mesa, cuya salida cruda vive en _bitacoras/s7a_pantalla_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "La MEDICION es barata: el catalogo de 10 es una tabla de nueve filas y P3 es un componente. Lo caro y lo que no se decide aca es el ARREGLO, porque depende del alcance que devuelva la medicion: cablear una Capa 2 es una linea, cablear nueve es un mecanismo. Por eso la fila pide medir antes de presupuestar.",
+      "depende_de": "Nada abierto para medir. Para ARREGLAR toca la fila hermana D4D5::contrato-10-dice-transitar, que ya es una decision del owner sobre el mismo catalogo — si se toca el texto de una Capa 2 conviene mirarlas juntas.",
+      "medicion": "_bitacoras/s7a_pantalla_2026-08-20/, apartados 3 y 5."
     },
     {
       "token_local": null,

@@ -1,0 +1,48 @@
+SONDA A SITPORT EN VIVO — 2026-08-20, ANTES DE CONDUCIR EL NAVEGADOR
+==============================================================================
+Instrumento: GET http://localhost:3000/api/sitport/restricciones y
+             GET http://localhost:3000/api/sitport/bahias, contra el backend 04be02d.
+Para que:    saber si el caso de S7(a) se reproduce HOY en R1 ANTES de mirarlo en
+             la pantalla. Es la precondicion de la captura, no una medicion lateral.
+
+TOTAL filas vigentes: 21   en 20 bahias distintas.
+Unidad: fila de restriccion del endpoint. Denominador por bahia.
+
+BAHIAS CON RESTRICCION VIGENTE HOY
+    81  BAHÍA CALDERA                              cap=Caldera        filas=1  tipos=TODOS
+    82  BAHÍA CALDERILLA                           cap=Caldera        filas=1  tipos=TODOS
+    83  SECTOR PUNTA TOTORALILLO                   cap=Caldera        filas=1  tipos=TODOS
+    86  BAHÍA HERRADURA DE GUAYACÁN                cap=Coquimbo       filas=1  tipos=FRENTE ATRAQUE
+    91  BAHÍA DE QUINTERO                          cap=Quintero       filas=1  tipos=TODOS
+    97  BAHÍA CONCEPCIÓN - LIRQUÉN                 cap=Talcahuano     filas=2  tipos=FRENTE ATRAQUE,FRENTE ATRAQUE
+   112  BAHÍA MAULLÍN                              cap=Maullín        filas=1  tipos=TODOS
+   131  BAHÍA GREGORIO                             cap=Punta Arenas   filas=1  tipos=TODOS
+   132  BAHÍA CLARENCIA                            cap=Punta Arenas   filas=1  tipos=TODOS
+   137  BAHÍA CHILOTA                              cap=Punta Arenas   filas=1  tipos=TODOS
+   148  ENSENADA ESTAQUILLA                        cap=Maullín        filas=1  tipos=TODOS
+   156  PRIMERA ANGOSTURA                          cap=Punta Arenas   filas=1  tipos=TODOS
+   157  PUERTO CARRIZAL BAJO                       cap=Caldera        filas=1  tipos=TODOS
+   158  CALETA CHAÑARAL Y ENSENADA GAVIOTA         cap=Coquimbo       filas=1  tipos=TODOS
+   165  SKYRING                                    cap=Punta Arenas   filas=1  tipos=TODOS
+   182  ESTERO COMAU                               cap=Hornopirén     filas=1  tipos=TODOS
+   184  ENSENADA HUALAIHUÉ                         cap=Hornopirén     filas=1  tipos=TODOS
+   185  ENSENADA ROLECHA                           cap=Hornopirén     filas=1  tipos=TODOS
+   186  SECTOR AYACARA                             cap=Hornopirén     filas=1  tipos=TODOS
+   187  SECTOR BUILL                               cap=Hornopirén     filas=1  tipos=TODOS
+
+LAS CINCO BAHIAS DE R1 EN LA CORRIDA DEL 2026-08-20 — TODAS EN CERO
+   117  BAHÍA QUELLÓN                              cap=Quellón        VIGENTES HOY=0
+   122  ACHAO                                      cap=Achao          VIGENTES HOY=0
+   235  CHEQUIAN                                   cap=Quemchi        VIGENTES HOY=0
+   120  PUERTO QUEMCHI                             cap=Quemchi        VIGENTES HOY=0
+   113  BAHÍA DE CALBUCO                           cap=Calbuco        VIGENTES HOY=0
+
+CONCLUSION: R1 no reproduce el caso hoy. No se fabrico.
+
+DONDE SI VIVE HOY LA MISMA CLASE DE TARJETA — texto crudo de SITPORT
+  bahia 184  ENSENADA HUALAIHUÉ  tipo TODOS  inicio 20 Aug 2026 03:26:00:000  termino null
+    Detalle    : VIENTO DE 20 NDS.
+    Observacion: SE ESTABLECE CONDICIÓN DE PUERTO VARIABLE, CERRADO PARA EE.MM DE 25 A.B. DENTRO Y FUERA DE LA BAHÍA, TRABAJOS EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUE SUSPENDIDOS, SE ACEPTAN CARTAS DE CONTINUIDAD.
+  bahia 186  SECTOR AYACARA  tipo TODOS  inicio 19 Aug 2026 22:07:00:000  termino null
+    Detalle    : VIENTO DE 20 NDS.
+    Observacion: SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO PARA EE.MM DE 25 A.B. DENTRO Y FUERA DE LA BAHIA, TRABAJOS EN CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUES SUSPENDIDOS, SE ACEPTAN CARTAS DE CONTINUIDAD.

@@ -1,0 +1,318 @@
+S7(a) MIRADA EN PANTALLA — EL VEREDICTO SE FIRMA CONTRA LA PANTALLA Y CONTRA §10
+==============================================================================
+Fila                 : plan_de_cierre_2026-08-20, apartado 6, pregunta 10
+Fecha                : 2026-08-20
+Alcance              : MIRA Y DECIDE. No se toco codigo de la PWA ni del backend.
+                       No se midio ninguna otra afirmacion de §2.
+Arboles              : C:/Users/katia/tmarea-backend  (main = origin/main = 04be02d)
+                       C:/Users/katia/tmarea-pwa      (main = df26887)
+Decision del owner   : S7(a) NO CUMPLE. FIRMADO el 2026-08-20.
+La cifra             : NO SE MUEVE. Sigue en 4 de 15, con 2 anuladas por decision
+                       del owner. Ningun fichero de cifra se toco.
+
+
+------------------------------------------------------------------------------
+0 . EL GATE, Y LO QUE CORRIGIO DEL PROPIO PROMPT
+------------------------------------------------------------------------------
+El prompt declaraba CONTRATO_MOTOR.md fuera de alcance. S7, en §2, dice:
+
+    «S7 · Cada mensaje trae su cita, o dice explicitamente que no hay cita porque
+     no hay norma sino un dato que nos falta.» [C §10]
+
+Su respaldo [C] §10 NO puede ser de PLAN_JURISDICCION.md, que llega hasta §9: es
+§10 de CONTRATO_MOTOR.md. O sea que el fuera de alcance, tal como estaba escrito,
+sacaba de la mesa el unico documento donde la palabra «cita» esta definida — y el
+propio prompt exigia decidir contra lo que el criterio dice y no contra el
+recuerdo. El owner corrigio su alcance: se LEE §10 y se cita literal; no se toca
+el fichero y no se mide el motor.
+
+CUATRO PREMISAS VERIFICADAS, ninguna falsa:
+  backend HEAD = origin/main = 04be02d7b47becece403ee5cff9ed35c8ec1b518
+  pwa HEAD = df26887946973cfb3c85d243dec78e8e7aa5e011
+  .claude/launch.json y data/catalogo/estado_drift.json en " M" sin stagear
+  la cifra, contra su autoridad data/spec2/cifra_spec2.json: original 17,
+    vigente 15, cumple 4, no_cumple 11, anuladas 2
+
+UNA DIFERENCIA DE NOMBRE QUE NO ES UNA PREMISA FALSA, y se dice porque lo
+parecia. El prompt llama a la pantalla medida «Quellon -> San Rafael» y la
+bitacora del 2026-08-20 la llama «Quellon -> Calbuco». Es la MISMA ruta:
+"Caleta Pesquera San Rafael" es el nodo 559, comuna Calbuco, bahia 113 BAHIA DE
+CALBUCO, lat -41.76392473799996 / lng -73.13025676199999 — exactamente el destino
+de R1 en 02_sonda_rutas_v2.js. Un lado la nombra por su puerto, el otro por su
+bahia de recalada.
+
+
+------------------------------------------------------------------------------
+1 . R1 NO REPRODUCE EL CASO HOY, Y NO SE FABRICO
+------------------------------------------------------------------------------
+Sonda a SITPORT en vivo ANTES de conducir el navegador, para no descubrirlo en
+la pantalla: 21 filas vigentes en 20 bahias.
+
+  81 82 83 86 91 97 112 131 132 137 148 156 157 158 165 182 184 185 186 187
+
+Las CINCO bahias de R1 en la corrida del 2026-08-20 — 117 Bahia Quellon, 122
+Achao, 235 Chequian, 120 Puerto Quemchi, 113 Bahia de Calbuco — tienen CERO
+filas vigentes cada una. Denominador: filas vigentes por bahia en el endpoint
+/api/sitport/restricciones. Unidad: fila de restriccion.
+
+R1 se corrio igual, con el perfil y el AB 50 declarados, y la pantalla lo
+confirma: BANDERA Q, los dos puertos verdes «Abierto - Sin restricciones
+activas», NINGUN bloque de restricciones, y CUATRO recordatorios normativos, los
+cuatro con cita. Cero tarjetas sin cita. El caso no esta.
+
+INSTRUCCION DEL OWNER, cumplida: no se fabrico el caso. Lo que se hizo fue
+buscar donde vive HOY la misma clase de tarjeta, y esta viva: el grupo de
+Hornopiren — bahias 182 Estero Comau, 184 Ensenada Hualaihue, 185 Ensenada
+Rolecha, 186 Sector Ayacara, 187 Sector Buill — publica hoy el mismo texto de
+condicion de puerto variable con cierre para naves menores de 25 AB.
+
+SEGUNDA CORRIDA, con el MISMO perfil, la MISMA licencia y el MISMO AB 50:
+Rampa Hualaihue Puerto -> Embarcadero Rampa de Ayacara. Ahi el caso aparece
+entero y las dos capturas salen de esa misma pantalla y esa misma corrida.
+
+ESTO ES UNA CAPTURA, NO UNA MEDICION, y por eso NO emite ratio. La cifra de
+S7(a) sigue siendo la del 2026-08-20 sobre R1: 5 de 12 mensajes con cita,
+unidad «mensaje en pantalla». La corrida de Hualaihue no la recalcula ni la
+reemplaza: sirve para MIRAR la clase de tarjeta, que es lo que el owner pidio.
+
+
+------------------------------------------------------------------------------
+2 . LO QUE SE VIO — LAS DOS TARJETAS, TEXTO CRUDO
+------------------------------------------------------------------------------
+Crudo completo en 02_pantallas_texto_crudo.txt. Las dos que deciden:
+
+LA TARJETA SIN CITA, desplegada, tal cual:
+
+  [!] Puerto de recalada cerrado.
+      Alcanza a las naves menores de 25 AB.
+      Texto de la Capitania: SE ESTABLECE CONDICION DE PUERTO VARIABLE, CERRADO
+      PARA EE.MM DE 25 A.B. DENTRO Y FUERA DE LA BAHIA, TRABAJOS EN CENTROS DE
+      CULTIVOS, FAENAS DE BUCEO Y REMOLQUES SUSPENDIDOS, SE ACEPTAN CARTAS DE
+      CONTINUIDAD.
+      Contacta a la Capitania de Puerto de Hornopiren por VHF Canal 16 antes de
+      recalar.
+
+LAS TARJETAS CON CITA, los cinco recordatorios normativos, cada uno con su
+norma en un chip propio:
+
+  TM-006 Art. 3 · TM-011 · DS 129/2013 · DGTM O-41/001 · TM-008 Art. 45
+
+Y un tercer hecho de la misma pantalla, que se anota: las dos tarjetas del
+bloque CONDICION DE PUERTOS, al desplegarse, muestran el texto de la Capitania
+SIN ROTULO NINGUNO — ni «Texto de la Capitania», ni comillas. Texto pelado.
+
+
+------------------------------------------------------------------------------
+3 . §10 DEL CONTRATO, LEIDO DE VUELTA CONTRA EL FICHERO
+------------------------------------------------------------------------------
+CONTRATO_MOTOR.md, «10. CATALOGO DE MENSAJES NORMATIVOS (doble capa — INV-1.3)».
+Literal, sin resumir, lo que define la palabra:
+
+  «Fuente unica de mensajes que Claude Code debe usar. Cada uno: Capa 1 (estado)
+   + Capa 2 (via normativa con cita). NO inventar citas fuera de este catalogo.»
+
+  «Excepcion declarada: la ultima fila es la unica del catalogo que no nace de un
+   reglamento sino de una carencia nuestra, y por eso es la unica que no lleva
+   cita. No hay articulo que citar porque no hay norma en juego: hay un dato que
+   nos falta. Que no haya cita es, precisamente, lo que esa fila comunica.»
+
+LA FILA QUE LA PANTALLA ESTA MOSTRANDO, con sus dos columnas:
+
+  | Recalada cerrada (en puerto) | U "Puerto de recalada cerrado." | "Segun D.S.
+    364 Art. 16, si debes cambiar el puerto de recalada, solicita permiso a la
+    Autoridad Maritima con anticipacion. Podria exigirse declarar puerto
+    alternativo." |
+
+LA FORMA, en las demas filas: «Segun D.S. 364 (RRDN) Art. 36, ...» · «Segun
+D.L. 2222 Art. 27 y D.S. 364 Art. 17, ...» · «Segun D.L. 2222 Art. 32, ...» ·
+«Segun D.S. 364 Art. 13, ...» · «Segun RGDN (TM-002) Art. 34, ...» · «Segun
+RGDN Art. 26, ...». Norma nombrada y articulo. Sin excepcion.
+
+LA UNICA EXCEPCION DECLARADA, entera:
+
+  | Jurisdiccion sin limite cargado | U "No tenemos cargado el limite de esta
+    jurisdiccion." | "Confirma con la Capitania [nombre] antes de zarpar. Sin
+    cita: esta situacion no la produce una norma sino la ausencia de un dato
+    nuestro (INV-3.6). No implica que exista una restriccion, ni que no exista:
+    implica que el motor no puede responder por esa zona." |
+
+Y LA REGLA DE USO:
+
+  «Capa 2 nunca cambia la bandera de Capa 1. Los mensajes de este catalogo no
+   llevan telefono ni canal de radio propio: nombran la Capitania y ahi terminan.
+   Las menciones a VHF Canal 16 que aparecen en el catalogo son las que la norma
+   citada manda, no instruccion de contacto nuestra, y por eso se conservan.»
+
+
+------------------------------------------------------------------------------
+4 . LAS DOS LECTURAS, UNA AL LADO DE LA OTRA
+------------------------------------------------------------------------------
+                              TARJETA CON CITA        TARJETA SIN CITA
+  ---------------------------  ----------------------  --------------------------
+  Que ve el patron             la norma en un chip     el texto crudo de la
+                               y la instruccion        Capitania
+  ¿Puede ir a buscar la norma? SI, nombra documento    NO, no hay documento que
+                               y articulo              buscar
+  ¿Sabe que Capitania la dicto? no aplica, es norma    por otra via: el bloque de
+                               nacional                puerto la nombra. El texto
+                                                       en si no se firma
+  ¿Sabe cuando?                no aplica               NO. «Actualizado 7:30 pm»
+                                                       es cuando lo leimos
+                                                       nosotros
+  ¿Sabe con que numero?        SI, es el numero        NO. Ni resolucion, ni
+                                                       numero, ni fecha, ni folio
+  Que puede hacer con eso      verificar, y saber que  obedecer un estado
+                               le exige y que le
+                               PERMITE la norma
+
+RESPUESTA DIRECTA A LAS TRES PREGUNTAS DEL OWNER: con la tarjeta sin cita en la
+mano el patron NO puede ir a buscar esa resolucion, NO puede saber cual
+Capitania la dicto a partir de la tarjeta, NO puede saber cuando, y NO puede
+saber con que numero. Lo unico identificable es el texto mismo.
+
+
+------------------------------------------------------------------------------
+5 . EL HECHO QUE CAMBIA LA CLASE DEL DEFECTO
+------------------------------------------------------------------------------
+La tarjeta sin cita ES la fila «Recalada cerrada (en puerto)» de §10.
+
+  Su CAPA 1 esta en pantalla palabra por palabra: «Puerto de recalada cerrado.»
+  Su CAPA 2 — «Segun D.S. 364 Art. 16, si debes cambiar el puerto de recalada,
+    solicita permiso a la Autoridad Maritima con anticipacion. Podria exigirse
+    declarar puerto alternativo.» — NO ESTA.
+
+Entonces S7(a) NO ES UNA CUESTION DE CRITERIO. Esa tarjeta no carece de cita:
+SU CITA EXISTE, ESTA ESCRITA EN §10, Y NO LLEGA A LA PANTALLA. Lo que la app
+hace es poner la Capa 1, meter el texto de la Capitania en el hueco de la Capa 2,
+y dejar la Capa 2 afuera.
+
+Y la unica excepcion de §10 lo confirma en vez de abrirle la puerta: la fila sin
+cita esta OBLIGADA a decir que no la tiene, porque eso es lo que comunica.
+Ninguna de las tarjetas sin cita de esta pantalla dice nada parecido — eso es
+S7(b), que sigue NO CUMPLE y no se toco.
+
+VA EN LA MISMA FILA Y NO EN UNA PROPIA, por decision del owner, porque es del
+mismo mecanismo: en la tarjeta aparece «Contacta a la Capitania de Puerto de
+Hornopiren por VHF Canal 16 antes de recalar» SIN norma citada, y la Regla de
+uso de §10 dice que el VHF que aparece es el que LA NORMA CITADA manda, no
+instruccion de contacto nuestra. Anotado, NO medido.
+
+
+------------------------------------------------------------------------------
+6 . EL VEREDICTO, FIRMADO
+------------------------------------------------------------------------------
+S7(a) · NO CUMPLE. FIRMADO POR EL OWNER EL 2026-08-20, mirando la pantalla.
+
+EL FUNDAMENTO QUE EL OWNER FIRMA, y el punto 2 es el que decide:
+
+  1 · PARA VERIFICAR. Una cita es una direccion: documento y articulo. El patron
+      que desconfia puede ir. El texto de la Capitania no tiene direccion: se
+      cree o no se cree.
+
+  2 · LA CAPA 2 LE DICE AL PATRON QUE PUEDE HACER, Y EL TEXTO DE LA CAPITANIA
+      SOLO QUE NO. El D.S. 364 Art. 36 le dice que con puerto cerrado la
+      Autoridad PUEDE autorizarle el zarpe a la gira; el Art. 16, que PUEDE
+      pedir cambio de puerto de recalada; el D.L. 2222 Art. 27, que PUEDE hacer
+      arribada forzosa. Son DERECHOS Y VIAS, NO ADORNO DE LA RESTRICCION. El
+      texto de la Capitania nunca los contiene, porque la Capitania publica su
+      condicion de puerto, no los recursos del patron frente a ella. Un patron
+      con la tarjeta sin cita sabe que no puede recalar. Un patron con la Capa 2
+      sabe QUE LE QUEDA POR HACER.
+
+  3 · PARA SEPARAR QUIEN DICE QUE. La cita distingue lo que manda la norma
+      —permanente, nacional— de lo que decidio esta Capitania hoy —local,
+      transitorio—. El entrecomillado funde las dos voces en una.
+
+EL ARGUMENTO DEL OTRO LADO, dicho porque existe y porque el owner lo miro antes
+de descartarlo: el entrecomillado es una reproduccion fiel de la palabra de la
+autoridad, va rotulado «Texto de la Capitania:», y el propio codigo de la PWA
+llama a ese rotulo ROTULO_CITA (src/screens/P3_VoyageVerification.jsx). Si la
+nocion de cita fuera «atribuir las palabras a quien las dijo», la pantalla
+atribuye. Lo que lo vuelve insostenible es §10, que NO define la cita como
+atribucion del estado sino como LA VIA NORMATIVA — y que para esta tarjeta en
+particular ya tiene la cita escrita y sin usar.
+
+LA CIFRA NO SE MUEVE: 4 de 15, con 2 anuladas por decision del owner. Ningun
+fichero de cifra se toco y npm run cifra no se corrio para cambiar nada.
+
+
+------------------------------------------------------------------------------
+7 . LO QUE SE ESCRIBIO
+------------------------------------------------------------------------------
+UNA FILA NUEVA, grupo 1, en el declarativo:
+
+  PLAN-2::la-capa-2-del-catalogo-no-llega-a-la-pantalla
+
+  Redactada Y NO MEDIDA, por instruccion del owner. El caso que la PRUEBA es
+  «Recalada cerrada (en puerto)». LA PRIMERA MEDICION DE QUIEN LA RETOME esta
+  escrita en la fila: contar cuantas filas del catalogo de §10 tienen Capa 2
+  escrita y no llegan a P3. Puede que sea una y puede que sean todas.
+
+  El sitio es PLAN-2 y no uno nuevo, con motivo: PLAN-2 se agrego al declarativo
+  precisamente porque contrastar §2 contra la app produce filas, y esta es una
+  mas de ese contraste. Sube de 15 a 16 filas y la nota del sitio lo dice.
+
+CUATRO SITIOS ENMENDADOS en plan_de_cierre_2026-08-20.txt, que es donde vive la
+fila de S7(a) — el propio plan declara que «esto NO es una deuda nueva y no se
+le escribe fila: es una pregunta pendiente del apartado 6, y ahi vive»:
+  · apartado 6, pregunta 10 — la fila. Se firma.
+  · apartado 7, nota de la tabla de la cifra — decia que S7(a) podia darse vuelta
+    gratis con una respuesta del owner. Ya se respondio, y no se dio vuelta.
+  · apartado 5, opcion c del tramo que no cerraba S7(a) ni S7(b).
+  · el bloque de cierre «S7(a) · NO SE FIRMA HOY».
+
+UN SITIO ENMENDADO en spec2_pantalla_2026-08-20.txt: el veredicto de S7(a) de
+ese dia dejaba el criterio explicitamente abierto. Se le agrega la nota al dia
+que dice donde se cerro. El texto original NO se borra.
+
+POR QUE SE ENMIENDAN LOS CUATRO Y NO SOLO LA PREGUNTA 10: porque el arbol ya
+tiene fichada esta forma exacta de falla en la fila
+SESION-plan-de-cierre-2026-08-20::una-anulacion-de-spec-no-propaga-sola — una
+decision del owner sobre §2 no propaga sola, y ningun control la caza. Dejar
+tres sitios diciendo que S7(a) «se mueve gratis» habria reproducido el hallazgo
+en el mismo acto de escribirlo.
+
+
+------------------------------------------------------------------------------
+8 . DECLARACIONES DE INSTRUMENTO Y DE CORRIDA
+------------------------------------------------------------------------------
+EL PERFIL. El navegador traia el perfil «Medicion D4» / medicion.d4@tmarea.test
+en vez de «Patron de Prueba» / patron.prueba@ejemplo.cl. Licencia
+patron_nave_menor y la nave entera son IDENTICAS a las de la corrida del
+2026-08-20: lancha, eslora 18,5 m, manga 5,2 m, TRG 45, AB 50, calado 1,2 m, uso
+pesca, propulsion motor, 8 kn, 25 L/h, 800 L. Nombre y correo no entran al motor.
+Se declara igual: una diferencia que no importa se dice, no se omite.
+
+EL RATON. Los autocompletados de puerto NO responden a element.click(): escuchan
+mousedown. Se despacharon pointerdown/mousedown/pointerup/mouseup/click con las
+coordenadas del elemento, mas el setter nativo de value con eventos
+input/change. SE SUSTITUYE EL RATON, NO EL MECANISMO BAJO MEDICION: los renders
+son los de la app. Las capturas de imagen si salieron del pipeline real, una vez
+que el panel del navegador quedo a la vista.
+
+CONTROL DE QUE EL CODIGO SERVIDO ES EL VIGENTE. En pantalla se lee
+«RESTRICCIONES DURANTE LA NAVEGACION» y «no esta afectada»: los dos textos que
+introdujo df26887. El proceso de vite corria desde antes de ese commit, asi que
+el control no sobra.
+
+EL BACKEND NO SE REINICIO. Su proceso es de las 18:28 y el HEAD 04be02d es de
+las 18:49, pero 04be02d NO toco src/: solo bitacoras y data/deudas. Aun asi
+data/catalogo/estado_drift.json CAMBIO, porque el backend lo reescribe en cada
+consulta a SITPORT. Procedimiento cumplido — sha antes, copia al scratchpad, sha
+y diff despues:
+
+  ANTES   bd6af5fbc4affc5a1d1d8dea1d837a2901049f613f42bda7224e8a93d524b0ac
+  DESPUES 88d7c7859f4c7e5ad5224f929d51a7358625ead2f6c54adb230aedec30ddfcf8
+  DIFF    una linea:
+            "ultima_corrida": "2026-08-20T22:28:31.656Z"
+          ->"ultima_corrida": "2026-08-20T23:28:58.984Z"
+          Sin cambio de contenido de drift. El fichero sigue en " M" sin stagear,
+          igual que .claude/launch.json.
+
+LO QUE ESTA SESION NO HIZO, y se dice para que nadie lo lea de mas:
+  · No midio ninguna otra afirmacion de §2. Las otras 14 no se tocaron.
+  · No midio cuantas filas de §10 estan en la situacion de la fila nueva. Esa es
+    la primera medicion de quien la retome, y esta escrita en la fila.
+  · No corrio la mordida de la cifra ni la del declarativo por un cambio de
+    numero: la cifra no cambio.
+  · No toco CONTRATO_MOTOR.md. §10 se leyo y se cito; el fichero no se modifico.
