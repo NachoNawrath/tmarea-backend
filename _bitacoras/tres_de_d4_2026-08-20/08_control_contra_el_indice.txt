@@ -1,0 +1,54 @@
+CONTROL CONTRA EL INDICE — las cifras del mensaje de commit salen de aca.
+Corrida: 2026-08-20T17:14:07.603Z
+
+DECLARATIVO, DESDE EL INDICE (git show :data/deudas/deudas_declaradas.json)
+  filas 61 · unicas 59 · vivas 54
+  sitios 18 · barridos 9 · sin barrer 9
+  filas nuevas de esta sesion (prefijo D4D5::): 6
+  suma de filas_en_este_declarativo por sitio: 61  (tiene que ser 61)  -> OK
+  ids nuevos:
+    D4D5::inv34-derogado-por-d5  [2_decision_del_owner]
+    D4D5::e2-y-e6-sin-premisa  [2_decision_del_owner]
+    D4D5::puerto-escala-lo-que-declara-no-aplicable  [2_decision_del_owner]
+    D4D5::abierto-y-con-restriccion-colapsados-en-pantalla  [2_decision_del_owner]
+    D4D5::la-celda-no-son-las-aguas-y-esta-medido-cuanto  [1_cierra_con_lo_que_hay]
+    D4D5::la-segunda-direccion-no-es-decidible  [3_dato_externo]
+
+  enmiendas a filas de PLAN-2 presentes en el INDICE:
+    SI  PLAN-2::procedencia-copia-congelada-mal-ubicada
+    SI  PLAN-2::la-lista-de-capitanias-atravesadas-no-existe-en-pantalla
+
+  INDICE vs DISCO (los dos tienen que ser el mismo objeto):
+    indice sha256 06a7785c53487ee5de9236a4749ed9aedb818014b4ab886992ad597eed48fc25
+    disco  sha256 06a7785c53487ee5de9236a4749ed9aedb818014b4ab886992ad597eed48fc25
+    -> IDENTICOS
+
+PLAN_JURISDICCION.md, DESDE EL INDICE
+  OK  D5 CERRADA en la tabla  -> 1 aparicion(es)
+  OK  seccion D5  -> 1 aparicion(es)
+  OK  seccion tres de D4  -> 1 aparicion(es)
+  OK  seccion la celda  -> 1 aparicion(es)
+  OK  cifra 4 de 16  -> 1 aparicion(es)
+  OK  S2 con tachado  -> 1 aparicion(es)
+  OK  S2 respaldo INV-3.4 tachado  -> 1 aparicion(es)
+  OK  D4 sigue abierta en la tabla  -> 1 aparicion(es)
+  OK  condicion de D5 retirada  -> 1 aparicion(es)
+  CONTROL NEGATIVO  cadena que no puede estar: "ZZQX" -> 0 (esperado 0)
+  CONTROL POSITIVO  "INV-3.6" -> 35 (esperado > 0)
+  D4 sigue ABIERTA: la tabla dice "**abierta**" en su fila -> SI
+  indice sha256 381602dcafd3ba4bfb4b2679c72cd6bd87e11006a20842625abe39d4a3d806f4
+  disco  sha256 381602dcafd3ba4bfb4b2679c72cd6bd87e11006a20842625abe39d4a3d806f4
+  -> IDENTICOS
+
+scripts/validar_deudas_declaradas.js, DESDE EL INDICE
+  el sitio nuevo esta en SITIOS_CANON -> SI
+  indice sha256 cd007b6941bb6b6e2a86665a3457100be3d45d16b3ec7c9f9472071ffe5de708
+  disco  sha256 cd007b6941bb6b6e2a86665a3457100be3d45d16b3ec7c9f9472071ffe5de708
+
+LO QUE NO ENTRA AL INDICE — control explicito:
+  .claude/launch.json -> en el indice esta la version de HEAD, NO la modificada: CORRECTO
+  data/catalogo/estado_drift.json -> en el indice esta la version de HEAD, NO la modificada: CORRECTO
+  ficheros stageados: 17
+  ¿alguno de los dos intocables entre ellos? -> NO
+  ¿alguno de src/ del backend? -> NO
+  ¿CONTRATO_MOTOR.md? -> NO

@@ -1,0 +1,66 @@
+M1a — PUERTO ABIERTO CON RESTRICCION VIGENTE, EN EL DATO
+Corrida: 2026-08-20T16:52:48.902Z
+Fuente: consultaRestricciones() en vivo, via GET /api/sitport/restricciones.
+
+DENOMINADOR: 20 filas vigentes en consultaRestricciones AHORA.
+Unidad: fila de restriccion (IDRestriccion).
+
+Por tipo: TODOS=17 · FRENTE ATRAQUE=3
+
+==============================================================================
+A · LA RESPUESTA EN EL DATO
+==============================================================================
+  estado 'cerrado' .............. 14 de 20
+  estado 'sin_cierre_declarado' . 6 de 20
+
+CONTROL POSITIVO  al menos una fila con estado cerrado: SI (14) — el derivador distingue
+
+RESPUESTA: SI. Hay 6 filas vigentes que NO declaran cierre. Un puerto con cualquiera de ellas tiene restriccion vigente y NO esta cerrado. Son dos cosas distintas del mismo lugar: la restriccion es el hecho, el cierre es una DERIVACION de su texto.
+
+DETALLE — las que NO declaran cierre (puerto abierto con restriccion viva):
+  bahia  tipo            condicion        razon_sin_cierre   nombre
+     86  FRENTE ATRAQUE  OTRO             texto_sin_cierre   BAHÍA HERRADURA DE GUAYACÁN
+         motivo=ASOCIADOS A ELEMENTO Y/O IP  area=DENTRO DEL LÍMITE DEL PUERTO
+         obs="INHABILITACIÓN DEL MUELLE DE LA PLAYA CHICA LA HERRADURA CP. COQ. ORD. N°12000/906, POR DAÑOS ESTRUCTURALES OCASIONADOS AL MUELLE DE PLAYA CHICA LA HE"
+     97  FRENTE ATRAQUE  OTRO             sin_texto          BAHÍA CONCEPCIÓN - LIRQUÉN
+         motivo=ASOCIADOS A ELEMENTO Y/O IP  area=—
+         obs=""
+     97  FRENTE ATRAQUE  OTRO             sin_texto          BAHÍA CONCEPCIÓN - LIRQUÉN
+         motivo=ASOCIADOS A ELEMENTO Y/O IP  area=—
+         obs=""
+    131  TODOS           OTRO             sin_texto          BAHÍA GREGORIO
+         motivo=VIENTO  area=FUERA DEL LÍMITE DEL PUERTO
+         obs=""
+    138  TODOS           OTRO             sin_texto          PUERTO WILLIAMS
+         motivo=VIENTO  area=DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO
+         obs=""
+    156  TODOS           OTRO             sin_texto          PRIMERA ANGOSTURA
+         motivo=VIENTO  area=FUERA DEL LÍMITE DEL PUERTO
+         obs=""
+
+DETALLE — las que SI declaran cierre:
+  bahia  tipo            via        condicion        nombre
+     81  TODOS           predicado  VARIABLE         BAHÍA CALDERA
+     82  TODOS           predicado  VARIABLE         BAHÍA CALDERILLA
+     83  TODOS           predicado  VARIABLE         SECTOR PUNTA TOTORALILLO
+    112  TODOS           predicado  VARIABLE         BAHÍA MAULLÍN
+    117  TODOS           predicado  MAL_TIEMPO       BAHÍA QUELLÓN
+    148  TODOS           predicado  VARIABLE         ENSENADA ESTAQUILLA
+    165  TODOS           predicado  VARIABLE         SKYRING
+    182  TODOS           predicado  VARIABLE         ESTERO COMAU
+    184  TODOS           predicado  VARIABLE         ENSENADA HUALAIHUÉ
+    185  TODOS           predicado  VARIABLE         ENSENADA ROLECHA
+    186  TODOS           predicado  VARIABLE         SECTOR AYACARA
+    187  TODOS           predicado  VARIABLE         SECTOR BUILL
+    251  TODOS           predicado  MAL_TIEMPO       CANAL GOLFO CORCOVADO (NORTE)
+    252  TODOS           predicado  MAL_TIEMPO       CANAL MORALEDA (ESTE)
+
+==============================================================================
+LA BAHIA 114 — estado VIVO, para la anulacion de S2(c)
+==============================================================================
+  filas de la bahia 114 vigentes AHORA: 0
+  CONTROL POSITIVO  bahia 117 (Quellon, la que SI sale en R1): 1 filas
+  CONTROL NEGATIVO  bahia 999 (inexistente): 0 filas
+
+BAHIAS DISTINTAS CON RESTRICCION TODOS VIVA AHORA:
+  81 82 83 112 117 131 138 148 156 165 182 184 185 186 187 251 252   (17 bahias)

@@ -237,14 +237,39 @@ Cada punto lleva de dónde sale: **[C]** contrato, **[P]** decisión de producto
 > salvedad: **S5 queda abierta como D4**. Es el único [P] puro — no hay regla escrita en
 > ninguna parte y el código que la implementaba esta muerto —, asi que lo que se decida ahi
 > se convierte en la regla. El resto de los ocho puntos son criterio de aceptacion firme.
+>
+> **Al día el 2026-08-20.** Un punto de esos ocho **cambió**: el alcance de **S2** — no su trato
+> a la nave — quedó enmendado por **D5**, con el tachado a la vista abajo. Que un [C] «firme» se
+> mueva no es una excepción escondida: es que D5 tocó el contrato, y por eso se lee acá y en §5.
+> **S5 sigue siendo el único [P] puro y D4 sigue ABIERTA**; lo que esta sesión le entrega son las
+> tres mediciones que el owner pidió, no la firma.
 
 **S1 · Ve todas las Capitanías que su ruta atraviesa.** No las bahías cercanas: las
 Capitanías cuyo territorio cruza. Si la ruta pasa por tres, ve tres. **[C** INV-3.1, INV-3.3**]**
 
-**S2 · Ve toda restricción vigente de esas Capitanías, aplique o no a su nave.** Las que no le
-aplican, en sección informativa, nunca ocultas. Una restricción publicada bajo el nombre de
-una bahía le llega si su Capitanía está en la ruta, aunque su ruta no pase por esa bahía.
-**[C** INV-1.2, INV-3.4**]**
+**S2 · Ve toda restricción vigente ~~de esas Capitanías~~ que su trazado navega, aplique o no a
+su nave.** Las que no le aplican, en sección informativa, nunca ocultas. ~~Una restricción
+publicada bajo el nombre de una bahía le llega si su Capitanía está en la ruta, aunque su ruta
+no pase por esa bahía.~~ **[C** INV-1.2, ~~INV-3.4~~**]**
+
+> **ENMENDADA el 2026-08-20 por D5.** El tachado se deja a la vista y no se borra: la frase
+> tachada es el criterio contra el que se midió §2 esa misma mañana, y hacerla desaparecer
+> volvería incomprensible el veredicto de esa medición. Decía lo contrario de la regla que el
+> owner fijó — *«Las restricciones que se le informan al usuario son las que su trazado
+> efectivamente navega, independientemente de si le aplican o no a su embarcación»* —, así que
+> las dos no podían quedar vivas a la vez.
+>
+> **Lo que sobrevive intacto, y es la mayor parte:** la cláusula de la nave —«aplique o no a su
+> nave», «en sección informativa, nunca ocultas»—, que el owner **reafirma** textualmente. S2(a)
+> y S2(b) no se tocan y siguen CUMPLE. Lo que cae es el **alcance**, no el trato a la nave.
+>
+> **Los respaldos, uno por uno.** `INV-1.2` **no se toca**: dice que una bahía de
+> `consultaRestricciones` que *esté en la ruta* DEBE mostrarse, que es condición suficiente y no
+> excluyente, y es compatible con la regla nueva. `INV-3.4` queda **tachado como respaldo de este
+> punto**: D5 deroga su *Consecuencia* y su *Verificación*. La decisión de modificarlo ya está
+> tomada; **el texto lo escribe el owner** (precedente D9, INV-3.5), y **no se redacta antes de
+> que la celda esté resuelta** — ver la fila `D4D5::inv34-derogado-por-d5` del declarativo y el
+> bloque de consecuencias de D5 en §5.
 
 **S3 · Si su ruta cruza una Capitanía sin límite cargado, se le dice.** En su propio bloque,
 nunca entre las restricciones, con la Capitanía nombrada y su teléfono cuando se pueda
@@ -1270,8 +1295,8 @@ eso D3 (partir el gate) es lo que las vuelve verdaderamente paralelas.
 | D1 | Join bahía→Capitanía: 5 clase C, `Guayacán`, 3 variantes, 24 sin atribuir | **RESUELTA 2026-08-11 en E0.3**, salvo 6 bahías declaradas sin resolver con su fuente. 158 de 164 atribuidas; las "3 variantes" resultaron **dos** y una sobre-atribución; `Guayacán` cerró en Coquimbo; las 5 clase C cerraron salvo la 137 | — |
 | D2 | P2 — frontera declarada Chaitén × Chonchi | **DECIDIDA 2026-08-10: autorizada** | — |
 | D3 | Partir el gate de construcción por ámbito | **DECIDIDA 2026-08-10: sí** — ver abajo | — |
-| D4 | Zarpe y recalada bajo unidad Capitanía — **resuelve S5**, el único punto de la especificación que quedó abierto | **abierta** | la medición de volumen de E2 |
-| D5 | Cuánto "de más" es aceptable en la lista de restricciones | **abierta** | la medición de volumen de E2 |
+| D4 | Zarpe y recalada bajo unidad Capitanía — **resuelve S5**, el único punto de la especificación que quedó abierto | **abierta** | ~~la medición de volumen de E2~~ — **la condición cambió el 2026-08-20**: el owner pidió otras tres, y son las que sostienen la firma. **Las tres están MEDIDAS y las tres respuestas están abajo**, en *"Las tres de D4"*. Lo que falta es la firma, que no es del agente |
+| D5 | Cuánto "de más" es aceptable en la lista de restricciones | **CERRADA 2026-08-20 por el owner: CERO de más. El criterio es el TRAZADO.** Regla, textual: *«Las restricciones que se le informan al usuario son las que su trazado efectivamente navega, independientemente de si le aplican o no a su embarcación.»* Fundamento del owner, textual: *«La app es informativa: entrega una opción de ruta según el trazado normado en el TM-008. Es el patrón quien, con el instrumento de navegación de su barco, aplica ese trayecto. Si no lo aplica, es problema de él, no responsabilidad de la app.»* O sea: **el trazado que la app propone es la referencia**, y lo que la Capitanía tenga publicado en bahías que ese trazado NO atraviesa **no entra, aunque sea la misma Capitanía**. Consecuencias enteras abajo, en *"D5 — el trazado es el criterio"*. | ~~la medición de volumen de E2~~ — **condición RETIRADA por el owner el 2026-08-20**, y se dice en vez de tacharla en silencio: D5 se cerró **sin** esa medición. Lo que la reemplazó fueron las cuatro mediciones de `_bitacoras/tres_de_d4_2026-08-20/` |
 | D6 | Art. 2 del D.S. 991: incorporarlo al insumo o declararlo no reproducible | **CERRADA 2026-08-12: se incorporó.** La pregunta original tenía dos ramas y ya no las tiene. El Art. 2 entró al insumo en `5d62466` (P3 de la pasada de alineación) y está en **v1 y en v2**, o sea en la fuente y en el derivado: bloque `articulos`, entrada `art_2`, con `texto_decreto` literal, `titulo` y `procedencia` completa —TM-025 A al 4-jun-2025, `documento_sha256 e14cb905…`, línea 815, extraído por `scripts/tm025a_p3_gobernaciones.py`, cotejado el 2026-08-11—. **Los tres términos que faltaban cuando se abrió la decisión están:** medido sobre el archivo, `mar territorial`, `zona contigua` y `plataforma continental` aparecen, junto a `aguas interiores` que ya estaba. Con eso la cita de INV-3.3 **se reproduce desde el repositorio**, que es lo que INV-3.7 exige y lo único que D6 discutía. | — (cerrada) |
 | D7 | **Ámbito A — seguridad** (`consultaRestricciones` y `Totalpronostico`) | **DECIDIDA 2026-08-11: A3** — aviso + escalamiento a **U**, tope duro, nunca U+V. **Implementada.** | El 0 de 5 la sostiene. Rige mientras no esté la consulta formal a DIRECTEMAR, que el owner gestiona por fuera: A3 es lo provisorio hecho bien, no la solución de fondo. `e01e_a3_2026-08-11.txt` |
 | D8 | **Ámbito B — alineación** (`consultaBahias`): ¿el patrón se entera? | **DECIDIDA 2026-08-11: B1** — no se le avisa | condición cumplida: la divergencia deja rastro del lado del equipo sin correr nada a mano — aviso en el arranque + `data/catalogo/estado_drift.json` versionado. `e01d §4` |
@@ -1283,6 +1308,243 @@ eso D3 (partir el gate) es lo que las vuelve verdaderamente paralelas.
 | D14 | **La bahía 258** (`RÍO BUENO, SECTOR LLANCACURA`, repartición 188 = Lago Ranco), aparecida en el catálogo de SITPORT entre el 2026-08-12 y el 2026-08-13 | **DECIDIDA 2026-08-13 por el owner: NO se declara. Queda como divergencia ABIERTA**, que es lo honesto — SITPORT creció y nosotros no, y no sabemos dónde está. **No se le rellena coordenada** desde `puertos_chile_nacional.json` ni de ninguna otra fuente: rige el precedente de la 257. | Consecuencia anotada y **correcta**: con el cableado de E3 activo pasa de **defecto registrado** a **defecto + aviso**, porque la repartición 188 entra en la ruta por las bahías 144 y 145. El patrón se entera. Medición completa en `_bitacoras/e01_drift_258_2026-08-13.txt` |
 | D16 | **El límite Norte de `arica`**: el decreto lo remite al límite político internacional con el Perú y no lo da. ¿Se declara una convención, y se construye? | **DECIDIDA 2026-08-15 por el owner: OPCIÓN D — se DECLARA y NO se construye.** Paralelo 18 21 00 S, ancla retrocalculada 070 22 49,7 W, alcance 24 mn; más allá no se cubre. **`limite_norte_dec` queda en `null` y `arica` sigue `no_cerrable`: lo que se cerró es el REGISTRO, no la jurisdicción.** Marítima sigue **44/8**; sobre las 64, **54/10**. Detalle y fundamento abajo, en *"D16 — el límite Norte de `arica`"*. | — (decidida). Lo que queda es de construcción y va a su propia sesión: el **mecanismo genérico de alcance costa-afuera**, con `baker` y `puerto_eden` como clientes siguientes |
 | D15 | **Política de contacto: qué se le muestra al patrón, y dónde.** ¿Con qué prelación sale el contacto en el punto de zarpe/recalada, y qué dice el mensaje de una restricción cuando no hay teléfono? | **DECIDIDA 2026-08-13 por el owner. Es decisión de PRODUCTO, sin cita normativa, y NO la necesita** — se escribe así explícitamente para que nadie la lea como respaldada por una norma ni salga a buscarle una (§1.1: presentar una regla de producto como si la norma la respaldara es fabricar autoridad). **Son dos contextos distintos, y tratarlos como uno era el error de fondo.** **(1) En ZARPE y RECALADA** se muestra la Capitanía con su **teléfono y su dirección**, en esta prelación: *teléfono de la Capitanía* si lo hay; si no, *el de su Gobernación, **rotulado como Gobernación**, nunca como Capitanía* —que es exactamente el defecto que este frente existe para corregir—; y si no hay ninguno de los dos, **el campo no se muestra**: sin texto de reemplazo y sin mensaje sustituto. **(2) En las RESTRICCIONES** el mensaje es **"confirma con la Capitanía respectiva"**, y ahí termina: **sin teléfono y sin canal de radio**. Fundamento del owner: *el patrón no necesita que se le explique cómo hacer algo que hace siempre*. **(3) El Canal 16 NO es contenido de la app, y la decisión que se venía armando queda RETIRADA.** El 2026-08-13, más temprano, se había decidido un texto de fallback —*"Sin información de contacto disponible. Comunicar por radiotelefonía, VHF Canal 16."*— y se estaba por registrar dónde debía vivir. **No se borra el intento: se registra que se consideró y por qué se retiró**, que es la misma regla con la que quedó escrita la reversión de la gobernación de la bahía 160. La retira (1): si no hay teléfono, no hay campo, así que no hay nada que reemplazar. **(4) Rada Covadonga es Capitanía ESTACIONAL y su contacto es la Gobernación Marítima Antártica Chilena** — queda como el **primer caso de la regla general de (1)**, no como excepción, y por eso no abre rama en el código (§4.3). | **Nada del lado del owner.** Lo que falta es de construcción y está medido el 2026-08-13: aplicada la prelación sobre las 64, quedarían **52 con teléfono de Capitanía · 11 con teléfono de Gobernación rotulado · 1 sin campo**. Ese 1 es `rada_covadonga`, y **es el punto donde la política no se puede aplicar con los datos que hay**: su Gobernación —Antártica Chilena— **no existe en ningún archivo vivo del repositorio**, ni en la tabla de `src/utils/capitanias.js` ni entre las 15 gobernaciones de `src/data/bahia-capitania-map.json`; DIRECTEMAR publica su teléfono (`+56 32 2208557`) y hoy sólo sobrevive en los HTML crudos, recuperables de `297b220^`. Los otros dos insumos que la política exige y que la fuente autorizada **no tiene**: la **dirección** —no es campo de `bahia-capitania-map.json`, y el CSV la trae 63/64— y los **teléfonos de Capitanía** —el CSV los trae 63/64, verificados **63/63** contra los raw—. Las dos cosas dependen de que se decida §5 del contrato, que declara la clave del archivo. Medición en `_bitacoras/e3_paso6_2026-08-13/11_contacto_lacustre.txt` y en el reconocimiento del frente. |
+
+### D5 — el trazado es el criterio. Cerrada el 2026-08-20.
+
+**La regla, textual del owner:**
+
+> «Las restricciones que se le informan al usuario son las que su trazado efectivamente navega,
+> independientemente de si le aplican o no a su embarcación.»
+
+**El fundamento, textual, y va pegado a la regla porque sin él la regla se lee como un recorte:**
+
+> «La app es informativa: entrega una opción de ruta según el trazado normado en el TM-008. Es el
+> patrón quien, con el instrumento de navegación de su barco, aplica ese trayecto. Si no lo
+> aplica, es problema de él, no responsabilidad de la app.»
+
+O sea: **el trazado que la app propone es la referencia.** Lo que la Capitanía tenga publicado en
+bahías que ese trazado NO atraviesa **no entra**, aunque sea la misma Capitanía. La pregunta
+original de D5 —*cuánto "de más" es aceptable*— queda contestada: **cero de más**.
+
+#### Lo que esta decisión arrastra, entero y sin ablandar
+
+**(1) Deroga la Consecuencia y la Verificación de INV-3.4**, en `CONTRATO_MOTOR.md`. Las dos
+líneas dicen lo contrario de la regla: la *Consecuencia* extiende la restricción a toda la
+jurisdicción de la Capitanía, y la *Verificación* dice, textual, que *el motor no puede descartar
+una restricción por comparación de nombre de bahía contra la posición de la ruta* — que es
+exactamente lo que D5 manda hacer. **La decisión de modificarlo está tomada; lo que falta es el
+texto, y el texto del contrato lo escribe el owner** (precedente D9). **Y falta una pregunta que
+no es la misma:** el **TÍTULO** de INV-3.4 —«la bahía es etiqueta de la restricción, no criterio
+de aplicación»— afirma que la bahía es *origen* y no *extensión*, y la regla de D5 sólo es
+aplicable si la bahía **sí** delimita un área. Si el título sobrevive, la regla nueva no tiene
+sobre qué apoyarse. Va como pregunta abierta, no resuelta acá. Todo en la fila
+`D4D5::inv34-derogado-por-d5`.
+
+**El argumento que INV-3.4 tiene a favor de lo que se deroga, para que la firma se dé viéndolo:**
+su nota de alcance dice que las resoluciones locales pueden subdividir en **sectores** con
+condición de puerto independiente, que SITPORT puede publicar a ese nivel, y que mientras el motor
+no lo implemente evalúa a nivel de Capitanía *«que es el envolvente: muestra de más, nunca de
+menos»*. D5 invierte ese default. **Un dato medido que juega del otro lado:** `AreaRestriccion`
+**no está vacío** — de las 20 filas vigentes del 2026-08-20 hay filas que declaran «DENTRO DEL
+LÍMITE DEL PUERTO», «FUERA DEL LÍMITE DEL PUERTO» y las dos a la vez. La propia fuente acota.
+
+**(2) Vuelve falsa la última frase de S2**, en §2, que era **[C] firme**. Enmendada ahí con el
+tachado a la vista y su motivo. S2(a) y S2(b) —el trato a la nave— **no se tocan**.
+
+**(3) Le saca la premisa a E2 y replantea E6.** `E2` punto 1 dice *«La dirección esperada es hacia
+arriba por INV-3.4»*; el código dice *«El cambio de unidad —dejar de filtrar por bahía y filtrar
+por Capitanía— sigue entero en E6»*. Con D5 la dirección ya no es hacia arriba. **E6 no muere**:
+sigue haciendo falta por INV-3.3, que prohíbe resolver jurisdicción por celda de un teselado, y
+por S1 y S3. Lo que cambia es su alcance — la unidad Capitanía pasa a gobernar *a quién se nombra
+y a quién se llama*, y deja de gobernar *qué restricciones se listan*. Fila
+`D4D5::e2-y-e6-sin-premisa`.
+
+**Cuánto es "hacia abajo", medido.** Sobre las 8 rutas calculables del arnés, con las
+restricciones vivas del 2026-08-20 y contra el andamio por Capitanía: **R1 Quellón→San Rafael
+mostraría 4 restricciones MÁS** bajo la regla vieja (bahías 112, 148, 251, 252), **C1 Punta
+Arenas→Williams 1 más** (bahía 165), **C4 Quellón→Melinka 1 más** (bahía 252). **Caveat que viaja
+con el número:** el andamio `jurisdicciones_decreto` está declarado **no promovible** —60 pares
+traslapados, 44.875,6 km², 10 de 64 sin geometría, insumo v1 con 11 jurisdicciones que difieren
+del v2 y **todas en el corredor de Chiloé**, que es donde corren estas rutas—. Es **cota**, no
+medida exacta.
+
+#### La corrección de S2(c): ANULADA, no CUMPLE. Y la cifra es 4 de 16.
+
+La medición de §2 del 2026-08-20 dio **S2(c) NO CUMPLE** porque la bahía 114 —Canal Chacao,
+Capitanía Calbuco, en la ruta— tenía restricción vigente y no aparecía, y la ruta no la cruza.
+**Con la regla del owner, no mostrarla es lo CORRECTO.**
+
+**Pero S2(c) no pasa a CUMPLE: pasa a ANULADA.** Contar como cumplida una afirmación que ya nadie
+sostiene subiría la cifra **sin que la pantalla cambiara un píxel**, que es el mismo modo de falla
+que la `politica_de_conteo` del declarativo existe para impedir. Lo que baja es el **denominador**:
+
+> **CUMPLE 4 de 16** (S2a, S2b, S5a, S9) · **NO CUMPLE 12 de 16** · **ANULADA por D5: S2(c)**.
+> Antes era 4 de 17. **El numerador no se movió.**
+
+**Y en su lugar queda una afirmación NUEVA que NO está medida.** La regla del owner genera su
+propio enunciado — llamémoslo **S2(c′)**: *una restricción le llega si y sólo si su trazado navega
+esa bahía* — y tiene **dos mitades**: que no aparezca nada que el trazado no navegue, y que
+aparezca todo lo que sí navega. Las dos dependen de si «cruzar la celda» equivale a «navegar las
+aguas». **S2(c′) queda NO MEDIBLE**, y por eso las dos partes de esta sesión no son
+independientes: la celda es lo que decide si la regla se está cumpliendo.
+
+**Lo que NO se explica por D5, y no se da vuelta:**
+
+- **S1 sigue NO CUMPLE.** Es sobre *nombrar las Capitanías atravesadas* —la ruta atraviesa Chonchi
+  y la pantalla no lo dice— y D5 no lo toca.
+- **La fila `PLAN-2::la-lista-de-capitanias-atravesadas-no-existe-en-pantalla` sigue viva por S1**;
+  sólo se enmienda su sub-bloque del caso 114, que deja de ser un fallo, y su `sostiene` queda en
+  S1 solo.
+- **Honestidad sobre la re-verificación:** el hecho del 2026-08-20 **no se puede re-observar hoy**.
+  La bahía 114 tiene **0 filas vigentes** en `consultaRestricciones` a las 13:00 de ese día
+  (control positivo: la 117 con 1 fila; control negativo: la 999 con 0). SITPORT cambió. La
+  anulación **no depende** de re-observarlo: el enunciado se **derogó**, no se falsificó.
+
+---
+
+### Las tres de D4 — medidas el 2026-08-20. **D4 sigue ABIERTA: falta la firma.**
+
+Las tres preguntas que el owner puso como condición para firmar. Se responden con evidencia;
+**ninguna se decide acá.** Crudo en `_bitacoras/tres_de_d4_2026-08-20/`.
+
+**(1) ¿Puede un puerto estar ABIERTO y tener restricción vigente al mismo tiempo?**
+**En el dato, SÍ. En la pantalla, NO. Y esa diferencia es la respuesta.**
+
+Lo primero que la medición destapa: **los dos bloques no leen fuentes distintas.** Los dos salen
+de `consultaRestricciones()`. El de puerto filtra por la bahía del puerto; el de tránsito, por
+celda cruzada. Y el estado de puerto es una **derivación** de esas mismas filas: `derivarCierre(r)`
+devuelve `cerrado` o `sin_cierre_declarado`.
+
+- **En el dato:** de **20 filas vigentes**, **14 `cerrado` · 6 `sin_cierre_declarado`**. Tres de
+  esas 6 son **tipo TODOS**: bahía **131** Bahía Gregorio, **138 Puerto Williams** y **156**
+  Primera Angostura, las tres motivo VIENTO. Un puerto con cualquiera de ellas **tiene restricción
+  vigente y no está cerrado**. Control positivo: 14 de 20 sí declaran cierre, o sea el derivador
+  separa de verdad.
+- **En la pantalla:** 🟢 «Abierto» sólo sale junto a «Sin restricciones activas», y basta **una**
+  restricción para pasar a 🟡 «Con restricciones». La causa es una línea de
+  `mapearRespuestaPuerto`: `else if (restricciones.length > 0) estado = 'ambar'` — no mira `cierre`
+  y no mira la nave.
+
+**Consecuencia para D4:** si el bloque de puertos cuenta el **estado del lugar** y el de tránsito
+cuenta las **restricciones que la ruta encuentra**, no cuentan lo mismo, y **«duplicado» en S5
+significa otra cosa**: no es la misma información dos veces, son dos informaciones distintas del
+mismo sitio, hoy fundidas en un solo rótulo de color. Fila
+`D4D5::abierto-y-con-restriccion-colapsados-en-pantalla`.
+
+**(2) ¿El veredicto distingue «restricción que aplica» de «restricción que no aplica»?**
+**Depende de la fuente, y las dos fuentes de la misma pantalla se contradicen sobre la misma fila
+de SITPORT.**
+
+Dos pasadas sobre la misma ruta, el mismo instante y **una sola restricción** —la bahía 117 Bahía
+Quellón, que además **es el puerto de zarpe**—. Lo único que cambia es el AB:
+
+| | AB 50 (no le aplica) | AB 10 (sí le aplica) |
+|---|---|---|
+| bandera final | 🟨 **U** | 🟥 **U+V** |
+| motivos | 1 | 2 |
+| fuente TRÁNSITO | no aporta | aporta **UV** |
+| fuente PUERTO | aporta **U** | aporta **U** |
+| tarjeta de ZARPE | 🟡 Con restricciones | 🟡 Con restricciones — **idéntica** |
+
+- **Tránsito SÍ distingue.** Concuerda con el código: `restriction-rules-engine.js` devuelve
+  `nivel: null` en la rama `no_afecta`, y `route-restriction-evaluator.js` lo filtra con
+  `if (ev.nivel && …)` — `null` es falso y nunca entra al máximo.
+- **Puerto NO distingue**, y **no es que no sepa**: la misma tarjeta, desplegada, escribe
+  *«ℹ Tu embarcación (AB 50) no está afectada por esta restricción»* en una pasada y *«⚠ Esta
+  restricción aplica a tu embarcación (AB 10 < 25 AB)»* en la otra. **Calcula la aplicabilidad, la
+  escribe, y escala igual.**
+
+**Esto puede ser deliberado y por eso no lo decido**: el backend dice donde emite `cierre` que es
+*«Estado de puerto, no veredicto por nave: no depende del AB de quien pregunta»*. La medición sólo
+dice que hoy las dos fuentes se contradicen en la misma pantalla, y que **S6 lleva un «nunca se
+contradice con lo que hay debajo»**. Fila `D4D5::puerto-escala-lo-que-declara-no-aplicable`.
+
+**(3) ¿Qué color sale hoy cuando el puerto de zarpe tiene una restricción vigente que NO afecta a
+la nave?** **Ámbar, y además la bandera se va a U.**
+
+Con AB 50: tarjeta de ZARPE 🟡 **«Con restricciones»** —no «Abierto»—, y veredicto global
+🟨 **BANDERA U · «Navegar con precaución»**, con **un único motivo**, que es ese puerto: *«Puerto
+de zarpe "Caleta Pesquera Quellon" con restricciones»*. **La restricción que la propia pantalla
+declara inofensiva, dos veces, es la única causa del amarillo.** No hizo falta buscar una
+combinación de AB: la 117 con umbral 25 y una nave de AB 50 lo produce sola.
+
+**Nota de alcance del día, declarada:** con el dato del 2026-08-20 **ninguna ruta del arnés
+produce mezcla** (una que aplica junto a una que no) en la misma pantalla, así que la separación
+visual que S2(b) verificó con AB 30 no se pudo re-observar. Se midió la distinción de la otra
+manera —misma restricción, dos naves— que además aísla mejor la variable.
+
+**Evidencia de pantalla, y su limitación:** las dos pasadas están en
+`04_pantalla_dos_pasadas_ab50_ab10.txt` como **texto crudo de pantalla**, que es el mismo
+instrumento con que se midió §2. **La captura de imagen no estuvo disponible**: el panel del
+navegador no estaba desplegado y toda llamada devolvió *«the Browser pane is not displayed»*. Va
+declarado; con el panel a la vista las dos pasadas se repiten en dos minutos.
+
+---
+
+### La celda — medida el 2026-08-20. **Es fila, no arreglo.**
+
+La app filtra por la **celda Voronoi** de cada bahía. La regla de D5 dice «lo que el trazado
+efectivamente navega». Las dos coinciden **sólo si la celda representa esas aguas**.
+
+**Referente: Opción 1** (owner, 2026-08-20) — no se inventa una geometría de «las aguas de la
+bahía», que **no existe en el repositorio**; se **acota** el desacuerdo. **Denominador: 8 rutas
+calculables de 9** —R3 lacustre no se rutea, `SNAP_FAILED`, ya declarado— y **37 pares (ruta,
+bahía cuya celda la ruta cruza)**. Controles positivos: R1 da **38 waypoints** y **exactamente**
+las 7 bahías 113 117 120 122 155 232 235, que es lo que el motor mismo devuelve.
+
+**Esto no es un descubrimiento y se dice**: §1.1 ya declara que la capa **no sirve** y que
+contradice INV-3.3 (§7 bug 4). Lo que faltaba era **cuánto**, y sobre rutas reales.
+
+- **Cuánto se aparta.** Distancia del punto de la bahía al trozo de ruta dentro de **su propia
+  celda**: min 0,0 · p25 1,3 · p50 2,6 · p75 5,0 · p90 13,9 · **máx 73,7 km**. Histograma por
+  decena: [0,10) **31** · [10,20) 3 · [20,30) 1 · [40,50) 1 · [70,80) 1 — **hay hueco entre 30 y
+  40 y entre 50 y 70**: cuerpo y cola se separan solos, sin que nadie ponga un corte (§4.3; mismo
+  criterio con que se justificó la tolerancia de 1 mm de `capa_consultada.json`). **El caso:** la
+  ruta Punta Arenas → Puerto Williams cruza la celda de la bahía **137 Bahía Chilota** en un punto
+  a **73,7 km** de Bahía Chilota, con 7,1 km de ruta dentro y una celda de 4.375,3 km².
+- **El hueco.** Km de ruta fuera de **toda** celda: R1 1,6 % · R2 31,4 % · **C1 Punta
+  Arenas→Williams 69,0 %** (358,7 de 519,9 km) · **C2 Natales→Edén 68,7 %** (412,2 de 600,4 km) ·
+  C3 1,8 % · C4 0,6 % · C5 20,8 % · C6 20,4 %. **Causas medidas, no supuestas:** en R1, R2, C3, C4
+  y C5 el **100 %** del hueco cae **dentro de `ne_land`** —la costa gruesa dice que ahí hay tierra
+  y el `ST_Difference` borró la celda—; en las dos australes domina el **tope de 80 km** del
+  buffer. Son **dos arreglos distintos**.
+- **Corroboración que no estaba buscada.** En C6 Antofagasta→Taltal el hueco por el tope de 80 km
+  da **24,665 km**; el aviso de `cobertura_jurisdiccional` que el backend mandó al navegador el
+  2026-08-20 declaraba **24,6646 km**. Dos instrumentos independientes, **tres decimales iguales**.
+- **Celdas vacías.** **Re-medidas, no citadas: 33 de 163, y coincide con §1.1.** El ensanche del
+  ámbito lacustre rescata **19**; **14 no**. Hoy **ninguna** de las 33 publica restricción, sobre
+  20 filas vigentes: el caso existe por construcción y hoy no se ejerce.
+
+**La asimetría, que es lo que gobierna cuándo se puede redactar INV-3.4.** De las dos direcciones
+que S2(c′) exige verificar, **una es decidible con el dato de hoy y la otra no**:
+
+- **Cruzar la celda sin navegar sus aguas: DECIDIBLE.** Una distancia grande **falsifica** — nadie
+  va a sostener que las aguas de Bahía Chilota llegan a 73,7 km. **Medido y cerrado: el caso
+  existe.**
+- **Navegar las aguas de una bahía sin cruzar su celda: NO DECIDIBLE.** Una distancia chica **no
+  confirma**, y una inversión de rango tampoco: un teselado de Voronoi **no es monótono** en la
+  distancia a un punto, así que una inversión es comportamiento esperado de la construcción y no
+  evidencia de defecto. Las **3 inversiones** medidas (bahías 200, 254 y 243) se publican como
+  **candidatos**, no como casos.
+
+**De ahí se sigue, y es la razón del orden que el owner fijó:** mientras esa segunda dirección no
+sea decidible, el texto de reemplazo de INV-3.4 **no puede** decir *«aplica donde el trazado
+navega esa bahía»* — sería una regla cuya segunda mitad el motor no puede comprobar con ningún
+dato que tenga. **Primero se mide, después se redacta.** Fila
+`D4D5::la-segunda-direccion-no-es-decidible`.
+
+**La Opción 2 queda declarada como lo que se renuncia a saber:** traer polígonos `natural=bay` de
+OpenStreetMap daría el km² literal, y se **descartó** con su motivo — OSM no es fuente autorizada
+de jurisdicción, su cobertura de bahías es desigual, y un km² que suena mejor y vale menos es peor
+que no tenerlo. Se escribe porque se consideró, misma regla con la que quedó registrada la
+reversión del Canal 16 en D15.
+
+**Y el veredicto que el owner pidió por adelantado:** el defecto **existe**, así que **la regla de
+D5 no se está cumpliendo hoy aunque el código parezca correcto**. Fila
+`D4D5::la-celda-no-son-las-aguas-y-esta-medido-cuanto`. Se cierra reemplazando la capa —E4 y E6—,
+y E8 ya lista *«retirar `bahia_jurisdicciones` y su backup»*.
+
+---
 
 ### D16 — el límite Norte de `arica`. Decidida el 2026-08-15.
 

@@ -1,0 +1,184 @@
+==============================================================================
+LAS TRES DE D4, LA CELDA, Y EL CIERRE DE D5  —  2026-08-20
+==============================================================================
+Esta sesion MIDE y ESCRIBE. No arregla nada, no cambia comportamiento y no toca
+el motor. Nada de src/ del backend ni de src/ de la PWA fue modificado.
+
+PUNTO DE PARTIDA, VERIFICADO ANTES DE TOCAR NADA
+  tmarea-backend  HEAD = origin/main = 82c925b0ec6175b78aa75f3174e73a7e7f027e75
+  tmarea-pwa      HEAD = 6443178493b8b3c35c11a37253c4b5bd1884ea55
+  declarativo     55 filas · 53 unicas · 48 vivas · 8 sitios barridos de 17
+  D4 y D5         ABIERTAS en la tabla de §5
+  Las cuatro premisas del prompt: LAS CUATRO DAN.
+
+LOS DOS FICHEROS QUE QUEDAN ` M` Y NO ENTRAN AL INDICE
+  Procedimiento de la sesion anterior, cumplido entero:
+    ANTES   data/catalogo/estado_drift.json  1380 bytes
+            sha256 1a3b52211d8adb0b1a79f8128b09f9dc587fb5cd596e4e054a2872824e662fc0
+            .claude/launch.json  341 bytes
+            sha256 9ce168ce846311e7eb29241d1193c0fe45c90e9dd12377e7ad5872a46fa1dc38
+            (copias congeladas en el scratchpad de la sesion)
+    DESPUES del arranque del backend:
+            estado_drift.json  1380 bytes
+            sha256 4ff4724b63cbceb613abce864a7eebf970f132a861659343163a7c2d2b104900
+            .claude/launch.json  SIN CAMBIO (mismo sha)
+    DIFF CRUDO contra la copia congelada — una sola linea:
+            -  "ultima_corrida": "2026-08-20T04:13:46.774Z",
+            +  "ultima_corrida": "2026-08-20T16:45:53.448Z",
+  NINGUNO DE LOS DOS ENTRA AL INDICE.
+
+  HALLAZGO LATERAL, y enmienda una fila: la fila
+  PLAN-2::procedencia-copia-congelada-mal-ubicada declaraba que la copia
+  congelada de H-T1 y el fichero vivo compartian sha 3a350d5a…. Ya no: son los
+  mismos 1380 bytes con otro sha. Es esperable —cada arranque lo pisa— y no
+  invalida la fila: la AGRAVA, porque la copia ya no testimonia el estado
+  actual sino el del 2026-08-19. Enmendada.
+
+------------------------------------------------------------------------------
+EL GATE — LO QUE SE CAZO ANTES DE MEDIR
+------------------------------------------------------------------------------
+LA REGLA DE D5 DEROGA INV-3.4. No es un matiz de redaccion:
+
+  INV-3.4, Consecuencia:  "una restriccion publicada bajo el nombre de una
+    bahia aplica a toda la jurisdiccion de su Capitania…"
+  INV-3.4, Verificacion:  "el motor no puede descartar una restriccion por
+    comparacion de nombre de bahia contra la posicion de la ruta"
+  Regla del owner:  "Lo que la Capitania tenga publicado en bahias que ese
+    trazado NO atraviesa no entra, aunque sea la misma Capitania."
+
+Se busco una lectura conciliadora —evaluar "lo que el trazado navega" sobre el
+territorio de la Capitania, con lo cual la 114 entraria y nada cambiaria—. La
+glosa del owner la cierra explicitamente. Es derogacion.
+
+Y arrastra tres cosas mas, todas escritas en §5 con la decision:
+  · la ultima frase de S2 en §2, que era [C] firme, queda FALSA
+  · E2 punto 1 ("la direccion esperada es hacia arriba por INV-3.4") y el
+    alcance de E6 pierden su premisa
+  · la condicion declarada de D5 —"la medicion de volumen de E2"— NO se
+    cumplio, y se dice en vez de tacharla en silencio
+
+DECISION DEL OWNER SOBRE INV-3.4 (2026-08-20): el parrafo que limita la accion
+SE MODIFICA. No queda pendiente de decidir; queda pendiente el TEXTO, que solo
+el owner escribe. Y las dos afirmaciones van SEPARADAS en la fila:
+  · CONSECUENCIA y VERIFICACION -> caen.
+  · TITULO ("la bahia es etiqueta, no criterio de aplicacion") -> es otra
+    afirmacion, y va como PREGUNTA, no resuelta por el agente.
+ORDEN FIJADO POR EL OWNER: el texto de reemplazo NO se redacta antes de la
+medicion de la celda. Y la medicion dice por que tenia razon: ver la asimetria.
+
+------------------------------------------------------------------------------
+LAS CUATRO MEDICIONES — RESULTADO EN UNA LINEA CADA UNA
+------------------------------------------------------------------------------
+D4(1) puerto abierto + restriccion vigente:
+      EN EL DATO SI (6 de 20 filas vigentes sin cierre declarado, 3 de tipo
+      TODOS) · EN LA PANTALLA NO (los dos hechos colapsados en un rotulo).
+      Y los dos bloques leen LA MISMA fuente: consultaRestricciones().
+
+D4(2) el veredicto y la distincion aplica/no aplica:
+      TRANSITO SI distingue · PUERTO NO. Y el bloque de puerto CALCULA la
+      aplicabilidad, la ESCRIBE en la misma tarjeta, y escala igual.
+
+D4(3) el color con restriccion que no afecta:
+      AMBAR en la tarjeta, y BANDERA U en el veredicto, con esa restriccion
+      como UNICO motivo.
+
+CELDA  el defecto EXISTE: 73,7 km de apartamiento maximo, dos rutas con el
+      69 % del recorrido fuera de toda celda, y una asimetria que gobierna el
+      orden de INV-3.4 — una direccion es decidible y la otra no.
+
+Todo el detalle, con sus denominadores y sus controles, esta escrito en
+PLAN_JURISDICCION.md §5, en "D5 — el trazado es el criterio", "Las tres de D4"
+y "La celda". Aca no se repite para que no haya dos textos que sincronizar.
+
+------------------------------------------------------------------------------
+LA CIFRA DE §2, CORREGIDA
+------------------------------------------------------------------------------
+S2(c) queda ANULADA por D5. NO pasa a CUMPLE: contar como cumplida una
+afirmacion que ya nadie sostiene subiria la cifra sin que la pantalla cambiara
+un pixel.
+
+    ANTES   CUMPLE 4 de 17 · NO CUMPLE 13 de 17
+    AHORA   CUMPLE 4 de 16 · NO CUMPLE 12 de 16 · ANULADA por D5: S2(c)
+    El numerador NO se movio. Bajo el denominador.
+
+S2(c') —el enunciado nuevo que la regla genera— queda NO MEDIBLE hasta que la
+celda este resuelta. Por eso las dos partes de esta sesion no son
+independientes, y queda escrito asi.
+
+Escrito donde el lector lo va a buscar: en la propia fila de D5, en §5.
+
+------------------------------------------------------------------------------
+INSTRUMENTOS Y CONTROLES
+------------------------------------------------------------------------------
+01_medir_celda            C1/C2/C3 sobre 8 rutas. POSITIVO: R1 = 38 waypoints
+                          y las 7 bahias exactas que el motor devuelve.
+                          NEGATIVO: bahia 999 -> 0 filas.
+02_celda_causas_y_cota    causas del hueco, celdas vacias, cota del andamio.
+                          POSITIVO: el mismo de R1, repetido porque es otro
+                          instrumento y no hereda el control del anterior.
+                          NEGATIVO: jurisdiccion 'no_existe' -> 0 filas.
+                          Y una CORROBORACION no buscada: 24,665 km contra los
+                          24,6646 km del aviso de cobertura del backend.
+03_puerto_abierto…        POSITIVO: 14 de 20 SI declaran cierre, o sea el
+                          derivador separa. NEGATIVO: bahia 999 -> 0 filas.
+04_pantalla…              dos pasadas, AB verificado en localStorage ANTES de
+                          medir cada una.
+07_control_caracteres     criterio H-T2, por PUNTOS DE CODIGO. 636.623
+                          recorridos, 0 sospechosos, sobre los 13 ficheros de
+                          la bitacora mas los 3 ficheros tocados del arbol.
+                          Control positivo: U+0091 fabricado, detectado 1 de 1;
+                          el control por bytes da 0, que es el falso negativo
+                          que H-T2 corrigio.
+
+DOS DEFECTOS DE INSTRUMENTO PROPIOS, DECLARADOS PORQUE LLEGARON A CORRER
+  (1) Al cambiar el AB en la PWA se escribio 10 en el CALADO. Causa: los campos
+      se habian enumerado con querySelectorAll('input,select') —3 <select>
+      adentro— y el cambio se aplico sobre querySelectorAll('input'), con los
+      indices corridos en tres. La pasada quedo invalidada y se rehizo
+      direccionando por `placeholder` y verificando en localStorage antes de
+      medir. La pasada mala NO se publica; se publica que existio.
+  (2) El 05 escribio las 6 filas nuevas con `abierta_el` fechado —cuando el
+      documento no las fecha— y con la evidencia colgada como campos sueltos en
+      vez de dentro de `evidencia_en_el_arbol`. LO CAZO EL VALIDADOR, 13 fallos
+      [V5]/[V7], y lo reparo el 06. Es el septimo y el octavo de la serie que el
+      declarativo ya tiene fichada: corren perfecto y hacen otra cosa.
+
+LIMITACION DE EVIDENCIA, DECLARADA
+  La CAPTURA DE IMAGEN no estuvo disponible en toda la sesion: el panel del
+  navegador no estaba desplegado y screenshot devolvia "the Browser pane is not
+  displayed, so the page is not compositing frames". La evidencia de pantalla es
+  TEXTO CRUDO de pantalla, que es el mismo instrumento con el que se midio §2 el
+  2026-08-20. Con el panel a la vista las dos pasadas se repiten en dos minutos.
+
+------------------------------------------------------------------------------
+LO QUE SE ESCRIBIO
+------------------------------------------------------------------------------
+PLAN_JURISDICCION.md
+  §2  S2 enmendada con TACHADO a la vista y su motivo. Cae el alcance; el trato
+      a la nave sobrevive intacto y se dice. INV-3.4 tachado como respaldo de
+      ese punto; INV-1.2 NO se toca, con el motivo escrito.
+      Y una linea en el recuadro de aprobacion de los nueve puntos: uno de los
+      ocho [C] "firmes" se movio, y no se esconde.
+  §5  D4: columna de condicion enmendada (la condicion cambio). SIGUE ABIERTA.
+      D5: CERRADA, con la regla textual, el fundamento textual, y el bloque de
+      consecuencias entero.
+      Tres secciones nuevas: "D5 — el trazado es el criterio" (con la correccion
+      de S2(c) y la cifra 4 de 16), "Las tres de D4", y "La celda".
+
+data/deudas/deudas_declaradas.json
+  6 filas nuevas, 2 enmiendas, 1 sitio nuevo.
+    55 -> 61 filas · 53 -> 59 unicas · 48 -> 54 vivas
+    17 -> 18 sitios · 8 -> 9 barridos · SIGUEN 9 SIN BARRER
+  El sitio nuevo es SESION-tres-de-d4-2026-08-20, con el precedente de
+  SESION-caracterizacion-deudas-2026-08-19. NO se marco barrido
+  PLAN-5-DECISIONES: esta sesion midio D4 y D5, no barrio §5.
+
+scripts/validar_deudas_declaradas.js
+  Una linea: el sitio nuevo entra a SITIOS_CANON. Lo exige el propio validador
+  ("Un sitio nuevo se agrega a los DOS lados, a proposito"). No toca el motor.
+
+VALIDADOR: VERDE. MORDIDA: 32/32 con su control negativo.
+
+LO QUE NO SE TOCO
+  CONTRATO_MOTOR.md · el motor BRE · src/ de los dos repos · los nueve sitios
+  de deuda que faltan · P4 · .claude/launch.json · data/catalogo/estado_drift.json

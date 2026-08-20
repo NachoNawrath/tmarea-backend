@@ -1,0 +1,190 @@
+PANTALLA — DOS PASADAS SOBRE LA MISMA RUTA, EL MISMO INSTANTE Y LA MISMA
+RESTRICCION. LO UNICO QUE CAMBIA ES EL ARQUEO BRUTO DE LA NAVE.
+
+Instrumento: mcp Browser sobre http://localhost:5173. Texto de
+document.body.innerText, tal como la PWA lo renderiza.
+
+LIMITACION DECLARADA, Y NO SE DISIMULA: en esta corrida la CAPTURA DE IMAGEN no
+estuvo disponible. Toda llamada a screenshot devolvio "the Browser pane is not
+displayed, so the page is not compositing frames" — el panel del navegador no
+estaba desplegado del lado del cliente. Se usa TEXTO DE PANTALLA, que es el
+mismo instrumento con el que se midio §2 el 2026-08-20
+(06_pantallas_texto_crudo.txt). Si el owner quiere imagen, basta desplegar el
+panel y las dos pasadas se repiten en dos minutos.
+
+DEFECTO DE INSTRUMENTO PROPIO, DECLARADO (§4.2): en el primer intento de cambiar
+el AB se escribio 10 en el CALADO y no en el AB. La causa: la lista de campos se
+habia enumerado con querySelectorAll('input,select') —que incluye 3 <select>— y
+el cambio se aplico sobre querySelectorAll('input'), con los indices corridos en
+tres. La pasada quedo invalidada y se rehizo direccionando por `placeholder` y
+no por indice, verificando el valor en localStorage ANTES de medir. La pasada
+mala NO se publica; se publica que existio. Es el mismo genero de defecto que el
+declarativo ya tiene fichado seis veces: corre perfecto y toca otra cosa.
+
+PERFIL DE LAS DOS PASADAS (identico salvo el AB)
+  licencia .... patron_nave_menor (comercial: NO abre el camino deportivo)
+  nave ........ Lancha · eslora 18,5 m · manga 5,2 m · TRG 45 · calado 1,2 m
+  uso ......... pesca      propulsion ... motor
+  ruta ........ Caleta Pesquera Quellon -> Caleta Pesquera San Rafael · 84,3 mn
+  fechas ...... zarpe 2026-08-21 · recalada 2026-08-22 · combustible 800 L
+  AB .......... pasada 1 = 50   ·   pasada 2 = 10
+  (AB verificado en localStorage.vessel_profile antes de cada pasada)
+
+DATO DE ENTRADA, MEDIDO EN EL MISMO MOMENTO (03_puerto_abierto_con_restriccion.txt)
+  De las 7 bahias cuya celda esta ruta cruza —113 117 120 122 155 232 235— la
+  UNICA con restriccion TODOS viva es la 117 BAHIA QUELLON: condicion
+  MAL_TIEMPO, umbral_ab_fuera 25, derivarCierre 'cerrado'.
+  LA BAHIA 117 ES EL PUERTO DE ZARPE. Una sola restriccion en toda la pantalla,
+  que es la condicion ideal para aislar la variable.
+
+==============================================================================
+PASADA 1 — AB 50   (la restriccion NO afecta a la nave)
+==============================================================================
+CONDICIONES DE LA NAVEGACIÓN
+Caleta Pesquera Quellon → Caleta Pesquera San Rafael
+🟨
+BANDERA U
+Navegar con precaución
+
+Hay restricciones o condiciones que requieren atención antes de zarpar.
+
+▸ Puerto de zarpe "Caleta Pesquera Quellon" con restricciones
+
+⚓ CONDICIÓN DE PUERTOS
+ZARPE
+Caleta Pesquera Quellon
+🟡
+Con restricciones
+📞 Gobernación Marítima de Castro — +56 65 262 9405
+▲ Ocultar restricciones
+
+SE ESTABLECE CONDICION PUERTO VARIABLE 1-CERRADO PARA EE.MM. DE 25 AB. HACIA EL SUR Y HACIA EL NORTE 2- NAVEGACION DENTRO DE LA BAHIA CONDICION NORMAL. 3- FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS EN AREAS CON RESTRICCION.
+
+ℹ Tu embarcación (AB 50) no está afectada por esta restricción
+
+RECALADA
+Caleta Pesquera San Rafael
+🟢
+Abierto
+📞 Capitanía de Puerto de Calbuco — +56 65 2462434
+Sin restricciones activas
+
+⚠️ RESTRICCIONES EN TRÁNSITO
+
+La ruta pasa por 1 zona(s) con restricciones activas. Ninguna afecta tu embarcación, pero se recomienda precaución.
+
+Bahía Quellón
+📞 Quellón — +56 65 262 9405
+⚠ Restricción activa en zona de tránsito
+CONDICIÓN: PUERTO CERRADO
+
+Tu embarcación (AB 50) no está afectada por esta restricción
+
+" SE ESTABLECE CONDICION PUERTO VARIABLE 1-CERRADO PARA EE.MM. DE 25 AB. ... "
+
+[resto de la pantalla — clima, mareas, ETA, recordatorios — sin variacion entre
+ las dos pasadas. Datos obtenidos: 1:01:23 p. m.]
+
+==============================================================================
+PASADA 2 — AB 10   (la MISMA restriccion SI afecta a la nave)
+==============================================================================
+CONDICIONES DE LA NAVEGACIÓN
+Caleta Pesquera Quellon → Caleta Pesquera San Rafael
+🟥
+BANDERA U + V
+Navegación no recomendada
+
+Puerto cerrado, mal tiempo o riesgo de autonomía. No zarpar.
+
+▸ Restricción de tránsito en zona intermedia (Bahía Quellón)
+▸ Puerto de zarpe "Caleta Pesquera Quellon" con restricciones
+
+⚓ CONDICIÓN DE PUERTOS
+ZARPE
+Caleta Pesquera Quellon
+🟡
+Con restricciones
+📞 Gobernación Marítima de Castro — +56 65 262 9405
+▲ Ocultar restricciones
+
+SE ESTABLECE CONDICION PUERTO VARIABLE 1-CERRADO PARA EE.MM. DE 25 AB. HACIA EL SUR Y HACIA EL NORTE 2- NAVEGACION DENTRO DE LA BAHIA CONDICION NORMAL. 3- FAENAS DE BUCEO Y REMOLQUE SUSPENDIDAS EN AREAS CON RESTRICCION.
+
+⚠ Esta restricción aplica a tu embarcación (AB 10 < 25 AB)
+
+RECALADA
+Caleta Pesquera San Rafael
+🟢
+Abierto
+📞 Capitanía de Puerto de Calbuco — +56 65 2462434
+Sin restricciones activas
+
+⚠️ RESTRICCIONES EN TRÁNSITO
+
+La ruta cruza 1 jurisdicción(es) con Condición de Puerto activa que afecta tu embarcación.
+
+Bahía Quellón
+📞 Quellón — +56 65 262 9405
+⛔ Tu embarcación NO puede transitar
+CONDICIÓN: PUERTO CERRADO
+
+Condición MAL TIEMPO — tu embarcación (AB 10) no puede navegar (restricción para menores de 25 AB)
+
+" SE ESTABLECE CONDICION PUERTO VARIABLE 1-CERRADO PARA EE.MM. DE 25 AB. ... "
+
+==============================================================================
+LO QUE LAS DOS PASADAS MIDEN
+==============================================================================
+
+M2 · ¿EL VEREDICTO DISTINGUE «restriccion que aplica» de «restriccion que no
+     aplica» AL ESCALAR LA BANDERA?
+
+     RESPUESTA: DEPENDE DE LA FUENTE. Las dos fuentes de la misma pantalla dan
+     respuestas OPUESTAS sobre LA MISMA fila de SITPORT.
+
+                                   AB 50            AB 10
+       bandera final ............  🟨 U             🟥 U+V
+       motivos ..................  1                2
+       fuente TRANSITO ..........  no aporta        aporta UV
+       fuente PUERTO ............  aporta U         aporta U
+       tarjeta de ZARPE .........  🟡               🟡   (IDENTICA)
+
+     · La fuente de TRANSITO SI DISTINGUE. Su contribucion cambia de nada a UV
+       cuando cambia el AB, y solo por eso. Concuerda con el codigo:
+       restriction-rules-engine.js devuelve `nivel: null` en la rama
+       'no_afecta', y route-restriction-evaluator.js lo filtra con
+       `if (ev.nivel && ...)` — null es falso y nunca entra al maximo.
+     · La fuente de PUERTO NO DISTINGUE. El motivo «Puerto de zarpe "Caleta
+       Pesquera Quellon" con restricciones» y el color 🟡 de la tarjeta son
+       IDENTICOS en las dos pasadas.
+     · Y NO ES QUE NO SEPA: la MISMA tarjeta, desplegada, escribe
+       «ℹ Tu embarcación (AB 50) no está afectada por esta restricción» en una
+       pasada y «⚠ Esta restricción aplica a tu embarcación (AB 10 < 25 AB)» en
+       la otra. El bloque de puerto CALCULA la aplicabilidad, la ESCRIBE, y
+       despues escala el veredicto sin usarla.
+
+M3 · ¿QUE COLOR SALE cuando el puerto de zarpe tiene una restriccion vigente
+     que NO afecta a la nave?
+
+     RESPUESTA, pasada 1: la tarjeta de ZARPE sale 🟡 «Con restricciones» —no
+     «Abierto»— y el VEREDICTO GLOBAL sale 🟨 BANDERA U «Navegar con
+     precaución», con un unico motivo, que es ese puerto. La restriccion que la
+     propia pantalla declara no aplicable es la unica causa del amarillo.
+
+M1b · ¿PUEDE UN PUERTO ESTAR «ABIERTO» Y TENER RESTRICCION VIGENTE, EN PANTALLA?
+
+     RESPUESTA: NO. 🟢 «Abierto» aparece solo junto a «Sin restricciones
+     activas» (tarjeta de RECALADA, las dos pasadas), y basta UNA restriccion
+     para que el rotulo pase a 🟡 «Con restricciones». En pantalla los dos
+     hechos estan COLAPSADOS, y la causa esta en una linea:
+     `else if (restricciones.length > 0) estado = 'ambar'` en
+     mapearRespuestaPuerto de useVoyageVerification.js — no mira `cierre` y no
+     mira la nave.
+     EN EL DATO NO ESTAN COLAPSADOS: 6 de 20 filas vigentes hoy dan
+     derivarCierre = 'sin_cierre_declarado'
+     (03_puerto_abierto_con_restriccion.txt).
+
+S5(b) · SE REPRODUCE, con otra restriccion y otro dia. La bahia 117 sale DOS
+     VECES en la misma pantalla —tarjeta de ZARPE y «Bahía Quellón» dentro de
+     RESTRICCIONES EN TRÁNSITO— y con AB 10 el veredicto llama «zona intermedia»
+     al muelle del que el patron zarpa. La fila
+     PLAN-2::zarpe-y-recalada-entran-como-transito sigue viva y sin tocar.

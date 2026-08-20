@@ -1,0 +1,100 @@
+M4 (continuacion) — CAUSAS DEL HUECO, CELDAS VACIAS, Y LA COTA DEL ANDAMIO
+Corrida: 2026-08-20T16:51:27.636Z
+
+CONTROL NEGATIVO  jurisdiccion 'no_existe' -> 0 filas
+
+==============================================================================
+D2 · CELDAS VACIAS — RE-MEDIDAS, NO CITADAS
+==============================================================================
+Denominador: 163 bahias del catalogo (bahias_sitport). Unidad: bahia.
+CELDAS VACIAS (area 0 o sin fila): 33
+  §1.1 del PLAN dice 33. Medido hoy: 33. COINCIDE.
+
+Ambitos declarados publicados: lacustre
+De las 33 vacias: RESCATADAS por el ensanche 19 · NO rescatadas 14
+
+Restricciones vivas en consultaRestricciones AHORA: 20 filas · tipo TODOS: 17 bahias distintas
+Celdas vacias que publican restriccion HOY: 0
+
+  Las NO rescatadas por el ensanche (id · jurisdiccion del join · nombre):
+    89  hanga_roa               Isla de Pascua
+   104  valdivia                Valdivia Fluvial
+   133  punta_arenas            Bahía Catalina
+   139  bahia_fildes            Bahía Fildes
+   140  bahia_paraiso           Bahía Paraíso
+   142  carahue                 Carahue - Sector Lago
+   153  cochamo                 Lago Tagua Tagua
+   162  puerto_montt            Lago Chapo
+   183  hornopiren              Estero Pichicolo
+   207  valdivia                Valdivia Conectividad
+   225  puerto_chacabuco        Canal Utarupa
+   229  constitucion            Lago Vichuquén
+   231  puerto_soberania        Bahía Chile
+   234  chaiten                 Río Palena
+
+==============================================================================
+D1 · POR QUE LA RUTA CAE FUERA DE TODA CELDA   +   D3 · COTA DEL ANDAMIO
+==============================================================================
+D1 unidad: km de linea de ruta. Las dos causas se miden por separado y
+  pueden solaparse (un trozo dentro de ne_land Y a mas de 80 km): se
+  publican las dos y NO se restan.
+D3 unidad: jurisdiccion del decreto (andamio). CAVEAT en la cabecera.
+
+CONTROL POSITIVO  R1: waypoints 38 (esperado 38) · celdas 113 117 120 122 155 232 235
+  -> OK
+
+R1  Quellon -> San Rafael   (waypoints 38)
+   D1  km_total 183.588 · fuera de toda celda 2.856 (1.6 %)
+       de esos:  dentro de ne_land 2.856 km · a mas de 80 km de todo punto de bahia 0.000 km
+   D3  jurisdicciones del andamio que la ruta cruza: 8  [achao ancud calbuco castro chonchi maullin quellon quemchi]
+       bahias por celda 7 · bahias por andamio 22 · solo andamio 15 · solo celda 0
+       solo andamio con restriccion TODOS viva HOY: 4 -> 112 148 251 252
+
+R2  Valparaiso -> San Antonio   (waypoints 26)
+   D1  km_total 71.851 · fuera de toda celda 22.589 (31.4 %)
+       de esos:  dentro de ne_land 22.589 km · a mas de 80 km de todo punto de bahia 0.000 km
+   D3  jurisdicciones del andamio que la ruta cruza: 3  [algarrobo san_antonio valparaiso]
+       bahias por celda 5 · bahias por andamio 6 · solo andamio 1 · solo celda 0
+       solo andamio con restriccion TODOS viva HOY: 0
+
+R3  Lago Gral Carrera  ->  NO CALCULABLE: SNAP_FAILED
+
+C1  Punta Arenas -> Pto Williams   (waypoints 109)
+   D1  km_total 519.864 · fuera de toda celda 358.707 (69.0 %)
+       de esos:  dentro de ne_land 52.118 km · a mas de 80 km de todo punto de bahia 349.610 km
+   D3  jurisdicciones del andamio que la ruta cruza: 1  [punta_arenas]
+       bahias por celda 3 · bahias por andamio 7 · solo andamio 6 · solo celda 2
+       solo andamio con restriccion TODOS viva HOY: 1 -> 165
+
+C2  Pto Natales -> Pto Eden   (waypoints 162)
+   D1  km_total 600.406 · fuera de toda celda 412.241 (68.7 %)
+       de esos:  dentro de ne_land 108.543 km · a mas de 80 km de todo punto de bahia 328.149 km
+   D3  jurisdicciones del andamio que la ruta cruza: 1  [puerto_natales]
+       bahias por celda 3 · bahias por andamio 1 · solo andamio 0 · solo celda 2
+
+C3  Arica -> Iquique   (waypoints 25)
+   D1  km_total 197.291 · fuera de toda celda 3.479 (1.8 %)
+       de esos:  dentro de ne_land 3.479 km · a mas de 80 km de todo punto de bahia 0.000 km
+   D3  jurisdicciones del andamio que la ruta cruza: 1  [iquique]
+       bahias por celda 3 · bahias por andamio 2 · solo andamio 0 · solo celda 1
+
+C4  Quellon -> Melinka   (waypoints 18)
+   D1  km_total 88.637 · fuera de toda celda 0.555 (0.6 %)
+       de esos:  dentro de ne_land 0.555 km · a mas de 80 km de todo punto de bahia 0.000 km
+   D3  jurisdicciones del andamio que la ruta cruza: 2  [melinka quellon]
+       bahias por celda 8 · bahias por andamio 10 · solo andamio 2 · solo celda 0
+       solo andamio con restriccion TODOS viva HOY: 1 -> 252
+
+C5  Pto Aguirre -> Pto Cisnes   (waypoints 19)
+   D1  km_total 86.285 · fuera de toda celda 17.968 (20.8 %)
+       de esos:  dentro de ne_land 17.968 km · a mas de 80 km de todo punto de bahia 0.000 km
+   D3  jurisdicciones del andamio que la ruta cruza: 3  [puerto_aguirre puerto_chacabuco puerto_cisnes]
+       bahias por celda 5 · bahias por andamio 17 · solo andamio 14 · solo celda 2
+       solo andamio con restriccion TODOS viva HOY: 0
+
+C6  Antofagasta -> Taltal   (waypoints 24)
+   D1  km_total 199.896 · fuera de toda celda 40.822 (20.4 %)
+       de esos:  dentro de ne_land 19.130 km · a mas de 80 km de todo punto de bahia 24.665 km
+   D3  jurisdicciones del andamio que la ruta cruza: 2  [antofagasta taltal]
+       bahias por celda 3 · bahias por andamio 3 · solo andamio 0 · solo celda 0
+

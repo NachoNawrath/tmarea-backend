@@ -1,0 +1,27 @@
+CRITERIO (H-T2): puntos de codigo. Se marca < 0x20 salvo LF/CR/TAB, 0x7F, y C1 0x80-0x9F.
+
+ok _bitacoras\tres_de_d4_2026-08-20\01_medir_celda.js  puntos_de_codigo=12596  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\01_medir_celda.txt  puntos_de_codigo=26349  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\02_celda_causas_y_cota.js  puntos_de_codigo=12117  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\02_celda_causas_y_cota.txt  puntos_de_codigo=5379  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\03_puerto_abierto_con_restriccion.js  puntos_de_codigo=6397  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\03_puerto_abierto_con_restriccion.txt  puntos_de_codigo=3795  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\04_pantalla_dos_pasadas_ab50_ab10.txt  puntos_de_codigo=8529  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\05_escribir_filas.js  puntos_de_codigo=28385  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\05_escribir_filas.txt  puntos_de_codigo=127  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\06_reparar_filas.js  puntos_de_codigo=2350  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\06_reparar_filas.txt  puntos_de_codigo=575  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\07_control_caracteres.js  puntos_de_codigo=2308  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\07_control_caracteres.txt  puntos_de_codigo=379  sospechosos=0
+ok PLAN_JURISDICCION.md  puntos_de_codigo=309932  sospechosos=0
+ok data/deudas/deudas_declaradas.json  puntos_de_codigo=199466  sospechosos=0
+ok scripts/validar_deudas_declaradas.js  puntos_de_codigo=17939  sospechosos=0
+
+TOTAL puntos de codigo recorridos: 636623   sospechosos: 0
+
+CONTROL POSITIVO — cadena fabricada con un U+0091 adentro:
+   puntos de codigo: 5   bytes UTF-8: 6
+   detectados por este control: 1  (esperado 1)
+   los bytes de U+0091 en UTF-8 son 0xC2 0x91 y ninguno es < 0x20:
+   por eso un control que mirara BYTES devolveria 0 aca, que es el defecto que H-T2 corrigio.
+   control por bytes sobre la misma cadena: 0  (falso negativo, como se esperaba)

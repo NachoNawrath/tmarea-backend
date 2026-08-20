@@ -63,6 +63,7 @@ const SITIOS_CANON = [
   'PWA-SIN-ANOTAR',
   'PWA-DOCS',
   'SESION-caracterizacion-deudas-2026-08-19',
+  'SESION-tres-de-d4-2026-08-20',
 ];
 
 const GRUPOS = {
