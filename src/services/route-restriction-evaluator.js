@@ -53,7 +53,20 @@ async function evaluarRuta(restriccionesIntermedias, nave_ab) {
 
     if (ev.nivel && rank[ev.nivel] > rank[peorNivel]) {
       peorNivel = ev.nivel;
-      resultado.motivo_principal = `Restricción de tránsito en zona intermedia (${r.nombre_bahia || norm.bahia_nombre})`;
+      // «zona intermedia» AFIRMABA UNA POSICIÓN, y era falsa en los extremos.
+      // Medido el 2026-08-20: con la bahía del zarpe en la lista —que es lo
+      // correcto bajo D5, porque el trazado la navega—, esta frase le llamaba
+      // «zona intermedia» al muelle del que el patrón zarpa, y puede mandarlo a
+      // buscar fondeadero para un problema que tiene bajo los pies.
+      // D4 (owner, 2026-08-20) decidió: el dato duplicado SE MANTIENE y se
+      // corrige la palabra. «en tu ruta» es verdadero en los tres casos —zarpe,
+      // recalada e intermedia— y dice en pantalla lo que D5 fijó: lo que el
+      // trazado navega. La frase gemela vive en la PWA
+      // (VoyageVerdict.jsx) y es la que el patrón lee; ésta es la del campo
+      // `motivo_principal`, que hoy muere en el pasamanos del hook y por eso se
+      // cambia igual: un campo de API no puede quedar emitiendo la frase vieja
+      // para el próximo consumidor.
+      resultado.motivo_principal = `Restricción de tránsito en tu ruta (${r.nombre_bahia || norm.bahia_nombre})`;
     }
 
     // Fail-fast: UV → no seguir evaluando

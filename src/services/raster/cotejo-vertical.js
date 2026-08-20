@@ -61,7 +61,15 @@ function advertenciasCotejoVertical(waypointsLonLat, calado_m) {
       advertencias.push(
         `Su ruta cruza ${paso.canal}, donde el Derrotero SHOA documenta ${paso.sonda_canal_min_m} m de sonda en ${paso.nombre} ` +
         `(p.${paso.pagina}) — menos que su calado (${calado_m} m) más margen de resguardo (${margen.toFixed(1)} m). ` +
-        `Posición aproximada del dato: verifique con ecosonda antes de transitar.`
+        // UN BARCO NAVEGA, NO TRANSITA (owner, 2026-08-20). Esta cadena es TEXTO
+        // AL PATRÓN —está escrita en segunda persona— y viaja en `advertencias`
+        // de /api/rutas/calcular. Hoy la PWA no la dibuja: "advertencias" da 0 en
+        // todo su árbol, que es la CUARTA instancia del mismo pasamanos
+        // (D4D5::motivo-principal-muere-en-el-pasamanos). Se corrige igual, por
+        // el mismo motivo que motivo_principal: un campo de texto que la API
+        // emite para mostrarse no puede quedar con la palabra equivocada
+        // esperando al próximo consumidor.
+        `Posición aproximada del dato: verifique con ecosonda antes de navegar.`
       );
     }
   }

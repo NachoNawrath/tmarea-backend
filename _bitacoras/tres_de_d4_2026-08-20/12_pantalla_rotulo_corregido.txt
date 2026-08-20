@@ -1,0 +1,234 @@
+LA APP MONTADA ANTES DEL STAGING — regla de la casa: ninguna pieza que toca
+render llega al indice sin verse en pantalla.
+
+Instrumento: mcp Browser sobre http://localhost:5173 (PWA con HMR) contra el
+backend en 3000 (reiniciado solo por `node --watch` al editar el servicio).
+Evidencia: texto de document.body.innerText MAS el cuerpo de la respuesta que
+ESTE navegador recibio, leido de la red y no re-pedido a mano.
+
+LIMITACION, la misma de las pasadas anteriores y se repite para que no se
+pierda: la captura de imagen sigue sin estar disponible —el panel del navegador
+no esta desplegado y screenshot devuelve "the Browser pane is not displayed"—.
+Se usa texto de pantalla, que es el instrumento con el que se midio §2.
+
+PERFIL: patron_nave_menor · Lancha 18,5 m · TRG 45 · calado 1,2 m · AB 10 ·
+uso pesca · motor. AB y calado verificados en localStorage.vessel_profile ANTES
+de medir, que es la correccion del defecto de instrumento de la pasada anterior.
+RUTA: Caleta Pesquera Quellon -> Caleta Pesquera San Rafael, 84,3 mn.
+DATO: bahia 117 BAHIA QUELLON, MAL_TIEMPO, umbral 25 AB. Con AB 10 BLOQUEA, que
+es la condicion que hace aparecer la frase corregida en la lista de razones.
+Vigente al momento de la medicion: 15 restricciones TODOS, la 117 entre ellas.
+
+------------------------------------------------------------------------------
+1 . EN LA PANTALLA  (lo que el patron lee)
+------------------------------------------------------------------------------
+CONDICIONES DE LA NAVEGACIÓN
+Caleta Pesquera Quellon → Caleta Pesquera San Rafael
+🟥
+BANDERA U + V
+Navegación no recomendada
+
+Puerto cerrado, mal tiempo o riesgo de autonomía. No zarpar.
+
+▸ Restricción de tránsito en tu ruta (Bahía Quellón)
+▸ Puerto de zarpe "Caleta Pesquera Quellon" con restricciones
+
+⚓ CONDICIÓN DE PUERTOS
+ZARPE      Caleta Pesquera Quellon   🟡 Con restricciones
+           📞 Gobernación Marítima de Castro — +56 65 262 9405
+RECALADA   Caleta Pesquera San Rafael 🟢 Abierto — Sin restricciones activas
+
+⚠️ RESTRICCIONES EN TRÁNSITO
+La ruta cruza 1 jurisdicción(es) con Condición de Puerto activa que afecta tu embarcación.
+Bahía Quellón
+⛔ Tu embarcación NO puede transitar
+CONDICIÓN: PUERTO CERRADO
+Condición MAL TIEMPO — tu embarcación (AB 10) no puede navegar (restricción para menores de 25 AB)
+
+------------------------------------------------------------------------------
+2 . EN LA RESPUESTA QUE ESTE NAVEGADOR RECIBIO  (el otro sitio)
+------------------------------------------------------------------------------
+POST http://localhost:3000/api/sitport/restricciones-ruta -> 200 OK
+
+  "motivo_principal": "Restricción de tránsito en tu ruta (Bahía Quellón)"
+
+Los DOS sitios emiten la cadena nueva. Y hacia falta tocar los dos: el
+`motivo_principal` del backend muere en el pasamanos del hook y no se dibuja
+—queda como fila, D4D5::motivo-principal-muere-en-el-pasamanos—, asi que
+corregir solo alla no habria cambiado la pantalla; y corregir solo la PWA habria
+dejado un campo de API emitiendo la frase vieja para el proximo consumidor.
+
+------------------------------------------------------------------------------
+3 . CONTROLES SOBRE EL TEXTO DE LA PANTALLA
+------------------------------------------------------------------------------
+  CONTROL NEGATIVO  "zona intermedia" ............. 0 apariciones
+  la cadena nueva   "Restricción de tránsito en tu ruta" .. 1
+  CONTROL POSITIVO  "Bahía Quellón" ............... 4  (el texto existe y se lee)
+  CONTROL POSITIVO  "BANDERA" ..................... 1
+  CONTROL NEGATIVO  "ZZQX" ........................ 0
+  largo de la pagina .............................. 3.572 caracteres
+
+------------------------------------------------------------------------------
+4 . LO QUE NO CAMBIO, Y ES LO QUE D4 DECIDIO
+------------------------------------------------------------------------------
+EL DATO DUPLICADO SE MANTIENE. La bahia 117 sigue apareciendo DOS VECES en la
+misma pantalla: como tarjeta de ZARPE y como "Bahía Quellón" dentro de
+RESTRICCIONES EN TRÁNSITO. No se deduplico por IDRestriccion. El trazado navega
+esa bahia y bajo D5 corresponde mostrarla; lo que se corrigio es la palabra que
+afirmaba una posicion falsa.
+
+Y sigue en pie lo medido antes: la fuente de PUERTO aporta su motivo sin mirar
+la nave, en las dos pasadas. Eso NO se toco — es materia de D4 ya firmada en su
+principio y de las filas que la sostienen.
+
+------------------------------------------------------------------------------
+5 . CONSOLA
+------------------------------------------------------------------------------
+Cuatro errores de red: dos ERR_CONNECTION_REFUSED y dos ERR_CONNECTION_RESET.
+Son de la VENTANA DE REINICIO del backend —`node --watch` lo reinicio al
+guardarse el servicio editado— y no del cambio. Lo que lo prueba es la corrida
+final: POST -> 200 OK con el cuerpo entero, veredicto UV y la pantalla completa
+de 3.572 caracteres. Se anotan igual, porque un error de consola que se explica
+sin evidencia es un error que alguien va a volver a encontrar.
+
+------------------------------------------------------------------------------
+6 . SUITE
+------------------------------------------------------------------------------
+npm test -> tests 157 · pass 157 · fail 0 · suites 16. Ningun test asertaba la
+frase ni `motivo_principal`: medido antes de tocar, y por eso el verde de la
+suite NO es evidencia de que la cadena este bien. La evidencia es la pantalla.
+
+==============================================================================
+7 . SEGUNDA CORRECCION DE LENGUAJE, LA MISMA SESION — «transitar» -> «navegar»
+==============================================================================
+Decision del owner del 2026-08-20, tomada MIRANDO LA PANTALLA: un barco NAVEGA,
+no transita. «Transitar» es vocabulario de transito terrestre.
+
+LA REGLA QUE SE APLICO: se corrige el VERBO, no el SUSTANTIVO.
+  · «transitar» como lo que hace un barco -> DEFECTO, se corrige.
+  · «transito» como nombre de la categoria -> SE QUEDA. Es la palabra de la
+    norma: el D.L. 2222 Art. 32 —que el propio §10 del contrato cita— habla de
+    prohibir el TRANSITO por aguas jurisdiccionales. Cambiarlo alejaria la app
+    del vocabulario de la norma.
+
+LO QUE SE CORRIGIO — 3 cadenas, las 3 PATRON_VERBO del inventario:
+  tmarea-pwa/src/components/verification/TransitRestrictionsBlock.jsx:37
+     «Tu embarcacion NO puede transitar» -> «Tu embarcacion NO puede navegar en esta zona»
+  tmarea-pwa/src/components/verification/TransitRestrictionsBlock.jsx:50
+     «...precaucion al transitar.» -> «...precaucion al navegar.»
+  tmarea-backend/src/services/raster/cotejo-vertical.js:64
+     «...verifique con ecosonda antes de transitar.» -> «...antes de navegar.»
+
+LO QUE NO SE TOCO — 5 cadenas PATRON_SUSTANTIVO + 2 toponimos + 18 CSS + 73 internas.
+  Entre las que se quedan, y a proposito:
+     el TITULO DEL BLOQUE «RESTRICCIONES EN TRANSITO»
+     «Restriccion activa en zona de transito»
+     «Restriccion activa en transito»
+     «Confirma con la Capitania si esta restriccion afecta tu transito»
+     «Transito constante de naves mayores acuicolas» (tip: aca significa TRAFICO)
+
+LA EVIDENCIA MAS FUERTE, y no la puso un instrumento: LA APP YA SE CONTRADECIA
+SOLA. En la MISMA tarjeta, dos lineas seguidas:
+     ⛔ Tu embarcacion NO puede transitar          <- la tarjeta
+     Condicion MAL TIEMPO — tu embarcacion (AB 10) no puede navegar   <- el BRE
+El verbo correcto ya estaba en el motor. Lo contradecia el render.
+
+------------------------------------------------------------------------------
+PANTALLA DESPUES  (AB 10, misma ruta, 2026-08-20 ~14:00)
+------------------------------------------------------------------------------
+RESTRICCIONES EN TRÁNSITO
+
+La ruta cruza 1 jurisdicción(es) con Condición de Puerto activa que afecta tu embarcación.
+
+Bahía Quellón
+📞 Quellón — +56 65 262 9405
+⛔ Tu embarcación NO puede navegar en esta zona
+CONDICIÓN: PUERTO CERRADO
+
+Condición MAL TIEMPO — tu embarcación (AB 10) no puede navegar (restricción para menores de 25 AB)
+
+------------------------------------------------------------------------------
+CONTROLES SOBRE EL TEXTO DE LA PANTALLA
+------------------------------------------------------------------------------
+  CONTROL NEGATIVO  el verbo "transitar" ................... 0 apariciones
+  la cadena nueva   "NO puede navegar en esta zona" ........ 1
+  el sustantivo     "TRÁNSITO" (titulo del bloque, SE QUEDA)  1
+  "zona intermedia" (correccion anterior, sigue en 0) ...... 0
+  "Restricción de tránsito en tu ruta" ..................... 1
+  CONTROL POSITIVO  "navegar" .............................. 2
+  CONTROL NEGATIVO  "ZZQX" ................................. 0
+  largo de la pagina ....................................... 3.574 caracteres
+
+SUITE despues de la segunda correccion: tests 157 · pass 157 · fail 0.
+Y vale la misma advertencia: ningun test asertaba estas cadenas. El verde de la
+suite NO es evidencia de que el texto este bien; la evidencia es la pantalla.
+
+==============================================================================
+8 . EL ROTULO DE LA SECCION — «EN TRANSITO» -> «DURANTE LA NAVEGACION»
+==============================================================================
+Decision del owner del 2026-08-20, DESPUES de leer la recomendacion contraria
+del agente. Los dos argumentos del agente quedan escritos junto al descarte:
+  (a) «transito» es la palabra de la norma — D.L. 2222 Art. 32, que el §10 del
+      contrato cita, habla de prohibir el TRANSITO por aguas jurisdiccionales;
+  (b) en espanol maritimo «transito de naves» significa TRAFICO.
+EL OWNER LOS DESCARTA con motivo de producto: esto es el TITULO DE UNA SECCION
+DE LA APP, no una cita normativa. El patron que lo lee no esta leyendo el
+decreto, y el rotulo tiene que decirle CUANDO aplican esas restricciones — que
+es lo que las separa del bloque de arriba.
+Y se descarto tambien «Restricciones de puerto durante la navegacion», POR
+PANTALLA: justo encima esta «CONDICION DE PUERTOS», y repetir «puerto» acerca
+dos bloques que responden preguntas distintas.
+
+DONDE VIVIA — medido, no supuesto: UN SOLO SITIO.
+  tmarea-pwa/src/components/verification/TransitRestrictionsBlock.jsx:151
+  el <span style={styles.blockTitle}>, que el CSS renderiza en mayusculas.
+  CONTROL POSITIVO del barrido: «blockTitle» da 14 apariciones en el arbol de la
+  PWA y encuentra los cuatro titulos hermanos — «Condicion de puertos», «ETA y
+  combustible», «Mareas en zarpe y recalada», «Recordatorios normativos».
+  CONTROL NEGATIVO: «ZZQX» da 0.
+  En el backend: 0 apariciones. El rotulo no vive alli.
+
+LO QUE NO SE TOCO, y es deliberado: el nombre del componente
+TransitRestrictionsBlock, las claves de la API y `restricciones_intermedias`.
+Renombrarlos es refactor, no correccion de rotulo.
+
+LA BORDERLINE, resuelta por el owner:
+  «⚠️ Confirma con la Capitania si esta restriccion afecta tu transito»
+  -> «... afecta tu navegacion».  El posesivo la pone del lado del VERBO.
+
+------------------------------------------------------------------------------
+PANTALLA DESPUES — DOS PASADAS, la adyacencia a la vista
+------------------------------------------------------------------------------
+[AB 10 · la restriccion BLOQUEA]
+CONDICIÓN DE PUERTOS
+ZARPE     Caleta Pesquera Quellon    🟡 Con restricciones
+RECALADA  Caleta Pesquera San Rafael 🟢 Abierto — Sin restricciones activas
+...
+⚠️ RESTRICCIONES DURANTE LA NAVEGACIÓN
+La ruta cruza 1 jurisdicción(es) con Condición de Puerto activa que afecta tu embarcación.
+Bahía Quellón
+⛔ Tu embarcación NO puede navegar en esta zona
+CONDICIÓN: PUERTO CERRADO
+Condición MAL TIEMPO — tu embarcación (AB 10) no puede navegar (restricción para menores de 25 AB)
+
+  ^ Los dos bloques, uno debajo del otro. Se ve por que el owner descarto
+    «Restricciones de puerto durante la navegacion»: «CONDICION DE PUERTOS» esta
+    justo encima.
+
+[AB 50 · la misma restriccion NO afecta]
+RESTRICCIONES DURANTE LA NAVEGACIÓN
+La ruta pasa por 1 zona(s) con restricciones activas. Ninguna afecta tu embarcación, pero se recomienda precaución.
+Bahía Quellón
+⚠ Restricción activa en zona de tránsito          <- EL SUSTANTIVO SE QUEDA
+CONDICIÓN: PUERTO CERRADO
+Tu embarcación (AB 50) no está afectada por esta restricción
+
+------------------------------------------------------------------------------
+CONTROLES SOBRE EL TEXTO DE LA PANTALLA  (pasada AB 50)
+------------------------------------------------------------------------------
+  CONTROL NEGATIVO  el verbo "transitar" ................... 0
+  CONTROL NEGATIVO  "tu tránsito" .......................... 0
+  CONTROL NEGATIVO  rotulo viejo "RESTRICCIONES EN TRÁNSITO"  0
+  rotulo nuevo "RESTRICCIONES DURANTE LA NAVEGACIÓN" ....... 1
+  el sustantivo que SE QUEDA "zona de tránsito" ............ 1
+  CONTROL NEGATIVO  "ZZQX" ................................. 0

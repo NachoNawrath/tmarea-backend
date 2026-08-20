@@ -1,0 +1,115 @@
+INVENTARIO DE «transitar / tránsito» — LOS DOS REPOS
+Corrida: 2026-08-20T18:11:32.254Z
+
+CONTROL POSITIVO DEL PATRON — la razon por la que el primer barrido fallo:
+  cadena de prueba con acento: ENCONTRADA
+  cadena de prueba sin acento: ENCONTRADA
+  CONTROL NEGATIVO — linea sin el vocabulario: no casa, correcto
+
+  tmarea-backend: 137 ficheros barridos (src, scripts), extensiones /\.(js|jsx|json|css)$/
+  tmarea-pwa: 58 ficheros barridos (src), extensiones /\.(js|jsx|json|css)$/
+
+DENOMINADOR: 106 lineas con el vocabulario. Unidad: linea de fichero.
+
+==============================================================================
+PATRON_VERBO  —  0 de 106
+==============================================================================
+
+==============================================================================
+PATRON_SUSTANTIVO  —  3 de 106
+==============================================================================
+   tmarea-pwa/src/components/verification/TransitRestrictionsBlock.jsx:48
+      mensajeTexto = '⚠ Restricción activa en zona de tránsito';
+   tmarea-pwa/src/components/verification/TransitRestrictionsBlock.jsx:51
+      mensajeTexto = '⚠️ Restricción activa en tránsito';
+   tmarea-pwa/src/data/maritime_data.json.json:56
+      "tips": "Tránsito constante de naves mayores acuícolas. Mantenga escucha activa."
+
+==============================================================================
+TOPONIMO  —  2 de 106
+==============================================================================
+   tmarea-backend/src/config/zonas-dragadas.json:1191
+      "nombre": "Embarcadero Rampa Isla Meulin - Sector El Transito",
+   tmarea-backend/src/services/data/puertos_chile_nacional.json:1
+      {"displayFieldName":"REGION","fieldAliases":{"OBJECTID":"OBJECTID","LOCATION":"Identificador MOP","NOMBRE":"Nombre Obra","OPERATIV
+
+==============================================================================
+CSS  —  18 de 106
+==============================================================================
+     1  tmarea-pwa/src/components/AppSidebar.jsx
+     3  tmarea-pwa/src/components/DeportiveAlerts.jsx
+     1  tmarea-pwa/src/components/VoyageReportButton.jsx
+     1  tmarea-pwa/src/components/biblioteca/ChecklistItem.jsx
+     1  tmarea-pwa/src/components/screens/BibliotecaHome.jsx
+     1  tmarea-pwa/src/components/verification/NavigationBlock.jsx
+     1  tmarea-pwa/src/screens/P2_VoyageSetup.jsx
+     2  tmarea-pwa/src/screens/P3_VoyageVerification.jsx
+     2  tmarea-pwa/src/screens/P4_ActiveVoyage.jsx
+     3  tmarea-pwa/src/styles/S0Onboarding.module.css
+     2  tmarea-pwa/src/styles/S0_5Registro.module.css
+   NO SE TOCA.
+
+==============================================================================
+INTERNO  —  83 de 106
+==============================================================================
+     7  tmarea-backend/scripts/e3_verificacion_paso6.js
+     1  tmarea-backend/scripts/seed-bahias-sitport.js
+     1  tmarea-backend/src/config/exclusiones.json
+     9  tmarea-backend/src/routes/sitport-routes.js
+     1  tmarea-backend/src/services/capitania-de-bahia.js
+     2  tmarea-backend/src/services/concesiones_mitilidos_loslagos.json
+     1  tmarea-backend/src/services/data/centros_salmones_chile.json
+     1  tmarea-backend/src/services/data/concesiones_acuicolas_nacional.json
+     2  tmarea-backend/src/services/data/concesiones_mitilidos_loslagos.json
+     1  tmarea-backend/src/services/data/tmarea_rutas_australes.json
+     1  tmarea-backend/src/services/fondeadero-service.js
+     2  tmarea-backend/src/services/raster/cotejo-vertical.js
+     1  tmarea-backend/src/services/raster/snap.js
+     1  tmarea-backend/src/services/route-restriction-evaluator.js
+    13  tmarea-pwa/src/components/verification/TransitRestrictionsBlock.jsx
+    11  tmarea-pwa/src/components/verification/VoyageVerdict.jsx
+    22  tmarea-pwa/src/hooks/useVoyageVerification.js
+     5  tmarea-pwa/src/screens/P3_VoyageVerification.jsx
+     1  tmarea-pwa/src/utils/restricciones.js
+   NO SE TOCA.
+
+==============================================================================
+VOLCADO DE SEGURIDAD — INTERNO en la capa de render de la PWA
+==============================================================================
+   src/components/verification/TransitRestrictionsBlock.jsx:1  // src/components/verification/TransitRestrictionsBlock.jsx
+   src/components/verification/TransitRestrictionsBlock.jsx:37  // UN BARCO NAVEGA, NO TRANSITA. Decisión del owner, 2026-08-20, vista en
+   src/components/verification/TransitRestrictionsBlock.jsx:38  // pantalla: «transitar» es vocabulario de tránsito terrestre y suena a auto.
+   src/components/verification/TransitRestrictionsBlock.jsx:39  // SE CORRIGE EL VERBO, NO EL SUSTANTIVO. «tránsito» como nombre de la
+   src/components/verification/TransitRestrictionsBlock.jsx:41  // prohibir el TRÁNSITO por aguas jurisdiccionales— y por eso las tres
+   src/components/verification/TransitRestrictionsBlock.jsx:69  // LA BORDERLINE, resuelta por el owner el 2026-08-20: «tu tránsito» lleva
+   src/components/verification/TransitRestrictionsBlock.jsx:129  export default function TransitRestrictionsBlock({ transitRestrictions }) {
+   src/components/verification/TransitRestrictionsBlock.jsx:130  const lista = transitRestrictions?.restricciones_intermedias || [];
+   src/components/verification/TransitRestrictionsBlock.jsx:133  const ultimoTramo = transitRestrictions?.ultimo_tramo_seguro;
+   src/components/verification/TransitRestrictionsBlock.jsx:157  «RESTRICCIONES EN TRÁNSITO» -> «RESTRICCIONES DURANTE LA NAVEGACIÓN».
+   src/components/verification/TransitRestrictionsBlock.jsx:161  (a) «tránsito» es la palabra de la norma — el D.L. 2222 Art. 32, que
+   src/components/verification/TransitRestrictionsBlock.jsx:162  §10 del contrato cita, habla de prohibir el TRÁNSITO por aguas
+   src/components/verification/TransitRestrictionsBlock.jsx:164  (b) en español marítimo «tránsito de naves» significa TRÁFICO, y ése
+   src/components/verification/VoyageVerdict.jsx:44  export default function VoyageVerdict({ veredicto, portStatus, weather, navigation, transitRestrictions }) {
+   src/components/verification/VoyageVerdict.jsx:49  // Restricciones de tránsito que BLOQUEAN — usa la evaluación del backend (BRE)
+   src/components/verification/VoyageVerdict.jsx:50  const transitBloqueantes = (transitRestrictions?.restricciones_intermedias || [])
+   src/components/verification/VoyageVerdict.jsx:52  for (const r of transitBloqueantes) {
+   src/components/verification/VoyageVerdict.jsx:63  // (PLAN-2::zarpe-y-recalada-entran-como-transito), y eso es comportamiento.
+   src/components/verification/VoyageVerdict.jsx:64  razones.push(`Restricción de tránsito en tu ruta (${r.nombre_bahia})`);
+   src/components/verification/VoyageVerdict.jsx:67  // Restricciones de tránsito con precaución (sin AB cargado o VARIABLE)
+   src/components/verification/VoyageVerdict.jsx:68  const transitPrecaucion = (transitRestrictions?.restricciones_intermedias || [])
+   src/components/verification/VoyageVerdict.jsx:70  for (const r of transitPrecaucion) {
+   src/components/verification/VoyageVerdict.jsx:104  const depVeredicto = transitRestrictions?.veredicto_deportivo;
+   src/components/verification/VoyageVerdict.jsx:117  const ultimoTramo = transitRestrictions?.ultimo_tramo_seguro;
+   src/screens/P3_VoyageVerification.jsx:6  import TransitRestrictionsBlock from '../components/verification/TransitRestrictionsBlock';
+   src/screens/P3_VoyageVerification.jsx:272  transitRestrictions,
+   src/screens/P3_VoyageVerification.jsx:327  transitRestrictions={transitRestrictions}
+   src/screens/P3_VoyageVerification.jsx:414  <TransitRestrictionsBlock transitRestrictions={transitRestrictions} />
+   src/screens/P3_VoyageVerification.jsx:418  drifts={[transitRestrictions?.drift_catalogo, weather?.drift_catalogo]}
+
+RESUMEN
+  PATRON_VERBO           0
+  PATRON_SUSTANTIVO      3
+  TOPONIMO               2
+  CSS                   18
+  INTERNO               83
+  TOTAL                106

@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "generado": "2026-08-20",
+  "_que_es": "La cifra de cumplimiento de la ESPECIFICACION (PLAN_JURISDICCION.md 2) medida contra la pantalla, y la POLITICA con la que se publica. Es dato, no prosa: el numero vive aca y en ningun otro lado.",
+  "_que_no_es": "NO es un indicador de progreso y no se puede leer como tal. Dos de sus afirmaciones fueron ANULADAS por decision del owner, no cumplidas. El denominador bajo sin que la pantalla cambiara.",
+  "_por_que_existe": "Porque el ratio SUBE cuando se derogan criterios. 4 de 17 y 4 de 15 tienen el mismo numerador y la misma pantalla detras, y el segundo se lee mejor. Un numero que mejora sin trabajo es una trampa, y la unica defensa es que no se pueda citar sin su salvedad.",
+  "procedencia": "Medicion de 2 contra la pantalla del 2026-08-20 (_bitacoras/spec2_pantalla_2026-08-20/), corregida el mismo dia por D5 y D4 (_bitacoras/tres_de_d4_2026-08-20/).",
+  "lo_lee": "scripts/publicar_cifra_spec2.js, que es el UNICO emisor. PLAN_JURISDICCION.md 5 cita el resultado y apunta aca como autoridad.",
+
+  "politica_de_publicacion": {
+    "regla": "Decision del owner, 2026-08-20. LA CIFRA NO SE PUBLICA PELADA, en ningun documento, bitacora ni mensaje de commit.",
+    "forma_legal": "4 de 15, con 2 anuladas por decision del owner",
+    "forma_prohibida": "4 de 15",
+    "por_que": "Un ratio que sube cuando se derogan criterios se lee como progreso, y aca no hubo ninguno: el numerador nunca se movio.",
+    "vale_tambien_para_la_vista_por_punto": "La vista de 9 puntos lleva SIEMPRE la nota de que S2 y S5 llegaron a CUMPLE por DEROGACION y no por trabajo. Sola, esa vista miente peor que la fina: pasa de 1 punto cumplido a 3 sin que la pantalla cambie."
+  },
+
+  "denominador_fino": {
+    "unidad": "afirmacion de 2",
+    "definicion": "enunciado separable de la especificacion, contrastable contra lo que la pantalla muestra",
+    "ambito": "P3. 2 no es contrastable contra P4 — ver la fila PLAN-2::spec-no-cubre-p4.",
+    "original": 17,
+    "vigente": 15,
+    "cumple": 4,
+    "no_cumple": 11,
+    "anuladas": 2,
+    "cumple_cuales": ["S2(a)", "S2(b)", "S5(a)", "S9"],
+    "medido_el": "2026-08-20"
+  },
+
+  "anuladas": [
+    {
+      "afirmacion": "S2(c)",
+      "texto_derogado": "Una restriccion publicada bajo el nombre de una bahia le llega si su Capitania esta en la ruta, aunque su ruta no pase por esa bahia.",
+      "veredicto_que_tenia": "NO CUMPLE",
+      "anulada_por": "D5",
+      "anulada_el": "2026-08-20",
+      "por_que_no_pasa_a_CUMPLE": "Contar como cumplida una afirmacion que ya nadie sostiene subiria la cifra sin que la pantalla cambiara un pixel. Se deroga, no se cumple.",
+      "que_queda_en_su_lugar": "S2(c-prima) — una restriccion le llega si y solo si su trazado navega esa bahia — que queda NO MEDIBLE hasta que la celda cierre."
+    },
+    {
+      "afirmacion": "S5(b)",
+      "texto_derogado": "Una sola vez. No duplicado entre el bloque de puerto y el de transito.",
+      "veredicto_que_tenia": "NO CUMPLE",
+      "anulada_por": "D4",
+      "anulada_el": "2026-08-20",
+      "por_que_no_pasa_a_CUMPLE": "Mismo motivo que S2(c).",
+      "por_que_el_rotulo_no_la_sostiene": "El texto de S5(b) era exclusivamente sobre duplicacion. El rotulo falso —«zona intermedia» sobre el puerto de zarpe— era CONSECUENCIA de la duplicacion, no la violacion, y se corrigio el mismo dia."
+    }
+  ],
+
+  "denominador_por_punto": {
+    "unidad": "punto de 2",
+    "total": 9,
+    "unanimes": 9,
+    "divididos": 0,
+    "cumple": 3,
+    "cumple_cuales": ["S2", "S5", "S9"],
+    "no_cumple": 6,
+    "no_cumple_cuales": ["S1", "S3", "S4", "S6", "S7", "S8"],
+    "antes": { "unanimes": 7, "divididos": 2, "cumple": 1, "no_cumple": 6 },
+    "nota_obligatoria": "S2 y S5 llegaron a CUMPLE por DEROGACION, no por trabajo. Dejaron de estar divididos porque su mitad en falta fue anulada. La pantalla no cambio."
+  },
+
+  "advertencia_sobre_el_hueco": "El defecto que destapo esta correccion —un mensaje que afirma algo falso al patron— NO tiene punto en 2 que lo cubra. Se cazo solo porque S5(b) estaba siendo medido. Ver la fila D4D5::spec2-sin-punto-de-veracidad."
+}

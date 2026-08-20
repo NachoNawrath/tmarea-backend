@@ -1,0 +1,51 @@
+D5 CERRADA: el trazado es el criterio. Y deroga INV-3.4, que es el punto de fondo
+
+La regla del owner —se informan las restricciones que el trazado efectivamente
+navega, aplique o no a la nave— contradice de frente la Consecuencia y la
+Verificacion de INV-3.4, que extienden la restriccion a toda la jurisdiccion de
+la Capitania y prohiben descartarla por la posicion de la ruta. La decision de
+modificar el contrato esta tomada; el TEXTO lo escribe el owner y NO se redacta
+todavia, por lo que la celda midio.
+
+S2(c) queda ANULADA, no CUMPLE: contar como cumplida una afirmacion que ya nadie
+sostiene subiria la cifra sin que la pantalla cambiara un pixel. CUMPLE 4 de 16,
+antes 4 de 17. El numerador no se movio; bajo el denominador. S2(c-prima) —el
+enunciado que la regla nueva genera— queda NO MEDIBLE hasta que la celda cierre.
+
+LA CELDA, sobre 8 rutas calculables de 9 y 37 pares (ruta, bahia cuya celda
+cruza), con R1 dando 38 waypoints y las 7 bahias exactas del motor como control:
+  · apartamiento max 73,7 km — Punta Arenas->Williams cruza la celda de Bahia
+    Chilota a 73,7 km de Bahia Chilota. Eso FALSIFICA el filtro por celda.
+  · 69,0 % y 68,7 % de dos rutas australes caen fuera de TODA celda. Causas
+    medidas: ne_land en cinco rutas, el tope de 80 km en las dos australes.
+  · corroboracion no buscada: 24,665 km medidos contra los 24,6646 km que el
+    aviso de cobertura del backend declaro. Dos instrumentos, tres decimales.
+  · 33 celdas vacias re-medidas, coincide con 1.1. El ensanche rescata 19, no 14.
+ASIMETRIA: cruzar sin navegar es DECIDIBLE; navegar sin cruzar NO lo es con el
+dato de hoy —un Voronoi no es monotono en la distancia, asi que una inversion no
+es evidencia—. Las 3 inversiones van como candidatos. Eso gobierna el orden.
+
+LAS TRES DE D4, medidas. D4 SIGUE ABIERTA: la firma es del owner.
+  (1) puerto abierto + restriccion vigente: EN EL DATO SI (6 de 20 filas sin
+      cierre declarado, 3 de tipo TODOS), EN LA PANTALLA NO. Los dos bloques
+      leen la MISMA fuente. Control positivo: 14 de 20 si declaran cierre.
+  (2) el veredicto distingue en TRANSITO y no en PUERTO, sobre la misma fila.
+      Y el bloque de puerto CALCULA la aplicabilidad, la ESCRIBE, y escala igual.
+  (3) el color: ambar en la tarjeta y BANDERA U en el veredicto, con esa
+      restriccion como unico motivo.
+
+Declarativo, medido contra el INDICE: 55 -> 61 filas · 53 -> 59 unicas ·
+48 -> 54 vivas · 17 -> 18 sitios · 8 -> 9 barridos · SIGUEN 9 SIN BARRER.
+6 filas nuevas, 2 enmiendas a filas de PLAN-2. Validador VERDE, mordida 32/32,
+caracteres 636.623 puntos de codigo y 0 sospechosos con el criterio de H-T2.
+
+Dos defectos de instrumento propios, declarados porque llegaron a correr: se
+escribio 10 en el CALADO creyendo que era el AB (indices corridos por enumerar
+con input,select y escribir sobre input) y las 6 filas nacieron con el esquema
+mal (lo cazo el validador, 13 fallos). La pasada mala no se publica; que existio,
+si.
+
+No se toco: CONTRATO_MOTOR.md, el motor BRE, src/ de los dos repos,
+.claude/launch.json ni data/catalogo/estado_drift.json.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

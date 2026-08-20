@@ -1,0 +1,87 @@
+D4 FIRMADA: el dato duplicado se mantiene y se corrige la palabra. Y dos defectos de lenguaje
+
+DOS BLOQUES, y van separados porque son dos decisiones distintas del owner.
+
+== BLOQUE 1 · D4 FIRMADA, S5 REESCRITA, Y LA CIFRA ==
+
+El principio que el owner firmo: un hecho puede aparecer en mas de un bloque si
+sirve a mas de una decision; lo que no puede es que dos apariciones del mismo
+hecho digan cosas distintas sin decir cual manda.
+
+La regla que D4 produce: EL DATO DUPLICADO SE MANTIENE. Zarpe y recalada se
+quedan en la lista de transito —el trazado los navega, y bajo D5 corresponde— y
+NO se deduplica. Lo que se corrige es la palabra: "zona intermedia" afirmaba una
+POSICION y era falsa sobre el muelle del que el patron zarpa.
+
+S5 queda REESCRITA en la seccion 2, con tachado y motivo: la exigencia de "una
+sola vez" no se sostiene. Y hay un motivo de contenido, medido: los dos bloques
+NO cuentan lo mismo —el de puerto deriva si el puerto esta CERRADO, el de
+transito si hay RESTRICCION VIGENTE—, asi que "duplicado" nunca describio bien lo
+que pasaba.
+
+S5(b) queda ANULADA, no cumplida, por el mismo criterio que S2(c): contar como
+cumplida una afirmacion que ya nadie sostiene sube la cifra sin que la pantalla
+cambie un pixel. La cifra pasa a 4 de 15, con 2 anuladas por decision del owner.
+El numerador nunca se movio. Y en la vista por punto, S2 y S5 llegan a CUMPLE por
+DEROGACION y no por trabajo: 3 puntos cumplidos donde habia 1, con la misma app.
+
+LA CIFRA NO SE PUBLICA PELADA. Regla del owner, aplicada donde vive la cifra:
+data/spec2/cifra_spec2.json es la autoridad, "npm run cifra" es el unico emisor,
+compone la forma legal DESDE el dato y se detiene si el dato y la politica no
+concuerdan. "npm run cifra:mordida" 8/8 con control negativo. Lo que NO se logro
+—que nadie pueda publicarla de otro modo— queda como fila.
+
+== BLOQUE 2 · DOS DEFECTOS DE LENGUAJE, LOS DOS VISTOS EN PANTALLA ==
+
+(1) "zona intermedia" -> "en tu ruta". Vive en DOS sitios y van los dos: el
+    motivo_principal del backend y la frase de VoyageVerdict, que es la que el
+    patron lee. Corregir solo el backend no habria cambiado la pantalla, porque
+    motivo_principal muere en el pasamanos del hook.
+
+(2) "transitar" -> "navegar". Un barco NAVEGA. Inventario de los dos repos: 106
+    lineas con el vocabulario, clasificadas en PATRON_VERBO, PATRON_SUSTANTIVO,
+    TOPONIMO, CSS e INTERNO. Se corrige el VERBO, no el sustantivo: "transito"
+    como nombre de la categoria es la palabra de la norma y se queda. Despues de
+    la correccion, PATRON_VERBO da 0.
+    LA EVIDENCIA MAS FUERTE NO LA PUSO UN INSTRUMENTO: la app se contradecia sola
+    en la MISMA tarjeta —el BRE decia "no puede navegar" y el render "NO puede
+    transitar"—.
+    Y el ROTULO de la seccion pasa a "RESTRICCIONES DURANTE LA NAVEGACION" por
+    decision del owner, que descarta los dos argumentos del agente con su motivo:
+    es el titulo de una seccion de la app, no una cita normativa.
+
+El texto de la seccion 10 del CONTRATO no se toca: va redactado y sin aplicar,
+para que lo pegue el owner. Y la Capa 2 de esa fila NO cambia, porque parafrasea
+el D.L. 2222, que dice transito.
+
+== FILAS ==
+55 -> 65 filas · 53 -> 63 unicas · 48 -> 58 vivas · 17 -> 18 sitios ·
+8 -> 9 barridos · SIGUEN 9 SIN BARRER.
+Entre ellas, la CUARTA instancia del pasamanos, y va con las palabras del owner:
+una advertencia de SONDA contra el Derrotero SHOA que el backend genera y la PWA
+no lee cero veces NO ES UN CAMPO PERDIDO, ES UNA ADVERTENCIA DE SEGURIDAD QUE
+NUNCA LLEGO AL PATRON. No se arregla en esta sesion: se escribe.
+
+== CONTROLES ==
+suite 157/157 · declarativo VERDE · cifra:mordida 8/8 · caracteres 796.134 puntos
+de codigo y 0 sospechosos (criterio H-T2) · control de indice sobre LOS DOS REPOS
+60/60 · la app montada y las dos correcciones vistas en pantalla antes del
+staging, con control negativo en 0 para las tres cadenas retiradas.
+
+== TRES DEFECTOS DE INSTRUMENTO PROPIOS, DECLARADOS ==
+(9) el control de indice comparaba sha256 del blob contra sha256 del disco y dio
+    ROJO sobre un arbol correcto: core.autocrlf es true y el blob guarda LF. El
+    control bueno es "git diff --quiet". Y arrastra un aviso: el control de
+    ec25dae dio IDENTICOS POR CASUALIDAD, porque esos tres ficheros estaban en LF
+    en disco. Queda escrito en el instrumento nuevo para que nadie lo reuse.
+(10) el barrido del vocabulario uso una expresion de corchetes sobre la a
+    acentuada y perdio cadenas: en UTF-8 esa letra son dos bytes y grep la trata
+    como dos alternativas de un byte.
+(11) la clasificacion metio el TITULO DEL BLOQUE en INTERNO, que es justo la
+    cadena que el owner pregunto. Lo cazo un volcado de seguridad de la capa de
+    render, que existe porque una lista de anclas se equivoca por omision.
+
+No se toco: CONTRATO_MOTOR.md, el motor BRE, .claude/launch.json,
+data/catalogo/estado_drift.json, ni los nombres de componente y claves de API.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

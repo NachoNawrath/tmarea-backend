@@ -1,0 +1,47 @@
+VERIFICACION DE PUSH — control del indice ADENTRO
+Corrida: 2026-08-20T17:20:35.955Z
+
+commit local  ec25dae292e186839bb79dd5bceb2266d390d7ef
+asunto        D5 CERRADA: el trazado es el criterio. Y deroga INV-3.4, que es el punto de fondo
+
+A · LO COMMITEADO ES LO MEDIDO  (se re-mide sobre el OBJETO del commit)
+  medido sobre el objeto: filas 61 · unicas 59 · vivas 54 · sitios 18 · barridos 9 · filas D4D5 6
+  OK  el mensaje dice "55 -> 61 filas" y el objeto tiene 61
+  OK  el mensaje dice "53 -> 59 unicas" y el objeto tiene 59
+  OK  el mensaje dice "48 -> 54 vivas" y el objeto tiene 54
+  OK  el mensaje dice "17 -> 18 sitios" y el objeto tiene 18
+  OK  el mensaje dice "8 -> 9 barridos" y el objeto tiene 9
+  OK  el mensaje dice "6 filas nuevas" y el objeto tiene 6
+  OK  suma de filas_en_este_declarativo por sitio == filas  ->  61 vs 61
+  OK  el mensaje dice "SIGUEN 9 SIN BARRER" y el objeto deja 9
+  OK  D5 CERRADA en la tabla de §5
+  OK  D4 SIGUE ABIERTA en la tabla de §5
+  OK  el mensaje dice "D4 SIGUE ABIERTA" y el documento tambien
+  OK  la cifra 4 de 16 esta escrita en §5
+  OK  el mensaje dice "CUMPLE 4 de 16" igual que el documento
+  OK  S2 lleva el tachado del alcance
+  OK  INV-3.4 tachado como respaldo de S2
+  OK  las tres secciones nuevas existen
+  OK  el sitio nuevo esta en SITIOS_CANON del validador
+  OK  73,7 km esta en la salida cruda del instrumento
+  OK  el control positivo de R1 (38 wp) quedo en verde en la salida cruda
+  OK  el control positivo de las 7 bahias quedo en verde
+  OK  los 24,665 km de la corroboracion estan en la salida cruda
+  OK  las 33 celdas vacias estan re-medidas y coinciden
+  ficheros en el commit: 19
+  OK  CONTRATO_MOTOR.md NO esta en el commit
+  OK  ningun src/ del backend en el commit
+  OK  .claude/launch.json NO esta en el commit
+  OK  data/catalogo/estado_drift.json NO esta en el commit
+
+B · LO SUBIDO ES LO COMMITEADO  (blob por blob contra origin/main)
+From https://github.com/NachoNawrath/tmarea-backend
+ * branch            main       -> FETCH_HEAD
+  origin/main  ec25dae292e186839bb79dd5bceb2266d390d7ef
+  OK  main == origin/main
+  OK  los 19 blobs del commit son identicos en el remoto
+  blob-sha cotejados: 19/19
+fatal: path '_bitacoras/tres_de_d4_2026-08-20/NO_EXISTE.txt' does not exist in 'ec25dae292e186839bb79dd5bceb2266d390d7ef'
+  OK  CONTROL NEGATIVO: una ruta inventada hace fallar el cotejo
+
+VERDE — lo commiteado es lo medido, Y lo subido es lo commiteado. 19/19 blobs.

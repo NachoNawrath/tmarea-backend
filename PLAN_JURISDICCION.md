@@ -279,9 +279,28 @@ nunca a U+V. **[C** INV-3.6**]**
 **S4 · Si navega en un lago, ve la condición de su lago.** Hoy no ve nada. Las jurisdicciones
 lacustres son plenas. **[C** INV-3.5**]**
 
-**S5 · Ve el estado de su puerto de zarpe y de recalada una sola vez.** No duplicado entre el
-bloque de puerto y el de tránsito. **[P]** — hoy no hay regla escrita y el código que la
-implementaba está muerto.
+**S5 · Ve el estado de su puerto de zarpe y de recalada ~~una sola vez~~.** ~~No duplicado entre
+el bloque de puerto y el de tránsito.~~ **[P]** — ~~hoy no hay regla escrita y el código que la
+implementaba está muerto.~~ **Ahora sí hay regla, y es ésta: un hecho puede aparecer en más de
+un bloque si sirve a más de una decisión; lo que no puede es que dos apariciones del mismo hecho
+digan cosas distintas sin decir cuál manda.**
+
+> **REESCRITA el 2026-08-20 por D4.** §2 declaraba S5 como el único **[P]** puro y decía que *lo
+> que se decida ahí se convierte en la regla*: esto **es** esa regla, y por eso reemplaza el
+> texto en vez de enmendarlo.
+>
+> **Fundamento del owner:** la duplicación no daña al patrón. El daño medido fue **una palabra**
+> —el veredicto llamaba «zona intermedia» al muelle del que zarpa— y la palabra se corrige sola.
+> Deduplicar resolvía un problema que el owner no tiene, y tocaba dos bloques para hacerlo.
+>
+> **Y hay un motivo de contenido, medido el 2026-08-20:** los dos bloques **no cuentan lo mismo**.
+> El de puerto deriva si el puerto está **cerrado** (`derivarCierre` → `cerrado` /
+> `sin_cierre_declarado`); el de tránsito, si hay **restricción vigente** en lo que la ruta
+> navega. Son dos hechos distintos del mismo sitio — hoy hay filas vigentes que son restricción y
+> no son cierre— así que **«duplicado» nunca describió bien lo que pasaba**. Detalle en *"Las tres
+> de D4"*, §5.
+>
+> **Consecuencia sobre la medición:** **S5(b) queda ANULADA**, no cumplida. Ver la cifra en §5.
 
 **S6 · El veredicto es el máximo de todas las fuentes y nunca se contradice con lo que hay
 debajo.** No hay verde con algo ámbar en la misma pantalla. **[C** INV-1.1, INV-1.3**]**
@@ -1368,7 +1387,7 @@ traslapados, 44.875,6 km², 10 de 64 sin geometría, insumo v1 con 11 jurisdicci
 del v2 y **todas en el corredor de Chiloé**, que es donde corren estas rutas—. Es **cota**, no
 medida exacta.
 
-#### La corrección de S2(c): ANULADA, no CUMPLE. Y la cifra es 4 de 16.
+#### La corrección de S2(c): ANULADA, no CUMPLE. Y la cifra es 4 de 15, con 2 anuladas.
 
 La medición de §2 del 2026-08-20 dio **S2(c) NO CUMPLE** porque la bahía 114 —Canal Chacao,
 Capitanía Calbuco, en la ruta— tenía restricción vigente y no aparecía, y la ruta no la cruza.
@@ -1378,8 +1397,23 @@ Capitanía Calbuco, en la ruta— tenía restricción vigente y no aparecía, y 
 sostiene subiría la cifra **sin que la pantalla cambiara un píxel**, que es el mismo modo de falla
 que la `politica_de_conteo` del declarativo existe para impedir. Lo que baja es el **denominador**:
 
-> **CUMPLE 4 de 16** (S2a, S2b, S5a, S9) · **NO CUMPLE 12 de 16** · **ANULADA por D5: S2(c)**.
-> Antes era 4 de 17. **El numerador no se movió.**
+> **4 de 15, con 2 anuladas por decisión del owner.**
+> CUMPLE **4 de 15** (S2a, S2b, S5a, S9) · NO CUMPLE **11 de 15** · ANULADAS **2**: S2(c) por D5
+> y S5(b) por D4. Antes era 4 de 17. **El numerador no se movió ni una vez.**
+
+**LA CIFRA NO SE PUBLICA PELADA. Es regla del owner, del 2026-08-20, y vale para toda cita de
+este número en cualquier documento, bitácora o mensaje de commit.** La forma legal es
+**«4 de 15, con 2 anuladas por decisión del owner»**; «4 de 15» a secas está prohibido, porque un
+ratio que sube cuando se derogan criterios se lee como progreso y acá **no hubo ninguno**. El dato
+y su política viven en `data/spec2/cifra_spec2.json`, que es su autoridad, y `npm run cifra` es lo
+único que la emite. Un instrumento que la imprima de otra forma es un defecto de instrumento.
+
+**Y la vista por punto lleva su nota, porque sola miente peor.** Con S2(c) y S5(b) anuladas, S2 y
+S5 dejan de estar divididos y pasan a CUMPLE:
+
+> **UNÁNIMES 9 de 9** (antes 7) · CUMPLE **3** — S2, S5, S9 — (antes **1**) · NO CUMPLE **6** —
+> S1, S3, S4, S6, S7, S8 — (sin cambio) · DIVIDIDOS **0** (antes 2).
+> **S2 y S5 llegaron a CUMPLE por DEROGACIÓN, no por trabajo. La pantalla no cambió un píxel.**
 
 **Y en su lugar queda una afirmación NUEVA que NO está medida.** La regla del owner genera su
 propio enunciado — llamémoslo **S2(c′)**: *una restricción le llega si y sólo si su trazado navega

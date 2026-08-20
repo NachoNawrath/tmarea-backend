@@ -1,0 +1,43 @@
+CRITERIO (H-T2): puntos de codigo. Se marca < 0x20 salvo LF/CR/TAB, 0x7F, y C1 0x80-0x9F.
+
+ok _bitacoras\tres_de_d4_2026-08-20\01_medir_celda.js  puntos_de_codigo=12596  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\01_medir_celda.txt  puntos_de_codigo=26349  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\02_celda_causas_y_cota.js  puntos_de_codigo=12117  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\02_celda_causas_y_cota.txt  puntos_de_codigo=5379  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\03_puerto_abierto_con_restriccion.js  puntos_de_codigo=6397  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\03_puerto_abierto_con_restriccion.txt  puntos_de_codigo=3795  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\04_pantalla_dos_pasadas_ab50_ab10.txt  puntos_de_codigo=8529  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\05_escribir_filas.js  puntos_de_codigo=28385  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\05_escribir_filas.txt  puntos_de_codigo=127  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\06_reparar_filas.js  puntos_de_codigo=2350  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\06_reparar_filas.txt  puntos_de_codigo=575  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\07_control_caracteres.js  puntos_de_codigo=2308  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\07_control_caracteres.txt  puntos_de_codigo=2064  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\08_control_contra_el_indice.js  puntos_de_codigo=6323  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\08_control_contra_el_indice.txt  puntos_de_codigo=2707  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\09_mensaje_commit.txt  puntos_de_codigo=3142  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\10_verificar_push.js  puntos_de_codigo=7151  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\10_verificar_push.txt  puntos_de_codigo=2452  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\11_filas_de_d4_firmada.js  puntos_de_codigo=9447  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\11_filas_de_d4_firmada.txt  puntos_de_codigo=120  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\12_pantalla_rotulo_corregido.txt  puntos_de_codigo=5395  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\13_control_caracteres.js  puntos_de_codigo=2502  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\13_control_caracteres.txt  puntos_de_codigo=1891  sospechosos=0
+ok _bitacoras\tres_de_d4_2026-08-20\tres_de_d4_2026-08-20.txt  puntos_de_codigo=10473  sospechosos=0
+ok PLAN_JURISDICCION.md  puntos_de_codigo=312326  sospechosos=0
+ok data/deudas/deudas_declaradas.json  puntos_de_codigo=208611  sospechosos=0
+ok data/spec2/cifra_spec2.json  puntos_de_codigo=4149  sospechosos=0
+ok scripts/publicar_cifra_spec2.js  puntos_de_codigo=5160  sospechosos=0
+ok scripts/prueba_mordida_cifra.js  puntos_de_codigo=3269  sospechosos=0
+ok src/services/route-restriction-evaluator.js  puntos_de_codigo=3668  sospechosos=0
+ok package.json  puntos_de_codigo=1224  sospechosos=0
+ok C:/Users/katia/tmarea-pwa/src/components/verification/VoyageVerdict.jsx  puntos_de_codigo=7540  sospechosos=0
+
+TOTAL puntos de codigo recorridos: 708521   sospechosos: 0
+
+CONTROL POSITIVO — cadena fabricada con un U+0091 adentro:
+   puntos de codigo: 5   bytes UTF-8: 6
+   detectados por este control: 1  (esperado 1)
+   los bytes de U+0091 en UTF-8 son 0xC2 0x91 y ninguno es < 0x20:
+   por eso un control que mirara BYTES devolveria 0 aca, que es el defecto que H-T2 corrigio.
+   control por bytes sobre la misma cadena: 0  (falso negativo, como se esperaba)

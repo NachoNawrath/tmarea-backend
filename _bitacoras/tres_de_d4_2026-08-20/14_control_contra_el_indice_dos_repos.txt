@@ -1,0 +1,89 @@
+CONTROL CONTRA EL INDICE — LOS DOS REPOS
+Corrida: 2026-08-20T18:12:33.037Z
+
+1 · LA CADENA CORREGIDA, EN LOS DOS SITIOS
+  OK  backend: la cadena NUEVA esta en el indice
+  OK  backend: la cadena VIEJA ya NO esta en el indice
+  OK  PWA: la cadena NUEVA esta en el indice
+  OK  PWA: la cadena VIEJA ya NO esta en el indice
+  OK  CONTROL POSITIVO backend: el fichero es el que creemos (tiene evaluarRuta)
+  OK  CONTROL POSITIVO PWA: el fichero es el que creemos (tiene VoyageVerdict)
+  OK  CONTROL NEGATIVO: "ZZQX" no esta en ninguno
+  backend  indice sha256 b5fd822b95339e0f4ba7194bde12c3d821ea1a68c77717db507241b680afa08d   (blob: siempre LF)
+  backend  disco  finales de linea: CRLF
+  OK  backend: indice == arbol de trabajo (git diff --quiet)
+  PWA      indice sha256 a24a27e373c9e0d324e45df6f6c1f5c04129cf2627c0aa4acba638782f54880a
+  PWA      disco  finales de linea: LF
+  OK  PWA: indice == arbol de trabajo (git diff --quiet)
+warning: in the working copy of 'data/catalogo/estado_drift.json', LF will be replaced by CRLF the next time Git touches it
+  OK  CONTROL POSITIVO DEL PROPIO CONTROL: un fichero modificado y sin stagear tiene que dar FALSO  ->  estado_drift.json esta ` M`: si diera OK, este control no mordería
+
+  barrido del arbol vivo (src/ de los dos repos), desde el disco:
+  OK  la frase vieja no queda en ningun .js/.jsx vivo de los dos repos  ->  0 restos
+
+2 · LA CIFRA, DESDE EL INDICE
+  4 de 15, con 2 anuladas por decision del owner
+  OK  cumple + no_cumple == vigente  ->  4+11=15
+  OK  vigente + anuladas == original  ->  15+2=17
+  OK  las 2 anuladas estan nombradas  ->  S2(c),S5(b)
+  OK  la politica prohibe la forma pelada
+  OK  la vista por punto lleva su nota de DEROGACION
+  OK  npm run cifra existe en el indice  ->  node scripts/publicar_cifra_spec2.js
+  OK  npm run cifra:mordida existe en el indice  ->  node scripts/prueba_mordida_cifra.js
+
+3 · EL DECLARATIVO, DESDE EL INDICE
+  filas 65 · unicas 63 · vivas 58 · sitios 18 · barridos 9 · sin barrer 9
+  OK  suma de filas_en_este_declarativo == filas  ->  65 vs 65
+  OK  fila presente: D4D5::motivo-principal-muere-en-el-pasamanos
+  OK  fila presente: D4D5::spec2-sin-punto-de-veracidad
+  OK  fila presente: D4D5::la-cifra-tiene-emisor-pero-no-tiene-guardia
+  OK  la cifra apunta a una fila que EXISTE
+
+4 · EL PLAN, DESDE EL INDICE
+  OK  S5 lleva el tachado de "una sola vez"
+  OK  S5 trae la regla nueva
+  OK  S5 dice que S5(b) queda ANULADA
+  OK  la cifra esta en su forma legal
+  OK  la forma pelada esta declarada prohibida
+  OK  la vista por punto lleva su nota
+  OK  el PLAN apunta al dato como autoridad
+  OK  CONTROL NEGATIVO: "4 de 16" ya no esta
+  OK  CONTROL POSITIVO: "INV-3.6" sigue  ->  35 apariciones
+
+5 · LO QUE NO ENTRA AL INDICE
+  backend stageado: 26 · PWA stageado: 2
+  OK  .claude/launch.json fuera
+  OK  data/catalogo/estado_drift.json fuera
+  OK  CONTRATO_MOTOR.md fuera
+  OK  en la PWA entran exactamente los dos ficheros esperados  ->  src/components/verification/TransitRestrictionsBlock.jsx, src/components/verification/VoyageVerdict.jsx
+
+
+6 · «transitar» -> «navegar», DESDE EL INDICE
+  OK  PWA: "NO puede navegar en esta zona" esta
+  OK  PWA: "NO puede transitar" ya NO esta
+  OK  PWA: "precaución al navegar" esta
+  OK  PWA: "precaución al transitar" ya NO esta
+  OK  backend: "antes de navegar" esta
+  OK  backend: "antes de transitar" ya NO esta
+  OK  el titulo del bloque YA NO dice «en tránsito» (owner lo cambio)
+  OK  SE QUEDAN los DOS sustantivos del cuerpo — los que no llevan posesivo
+  OK  PWA: indice == arbol de trabajo
+  OK  backend: indice == arbol de trabajo
+  OK  fila del contrato §10 presente
+  OK  el hueco de §2 lleva LOS DOS casos
+  OK  el pasamanos va por la CUARTA instancia
+  OK  CONTRATO_MOTOR.md sigue SIN tocar (dice transitar)
+
+7 · EL ROTULO DE LA SECCION, DESDE EL INDICE
+  OK  el rotulo NUEVO esta
+  OK  el rotulo VIEJO ya NO esta
+  OK  la borderline resuelta: "afecta tu navegación"
+  OK  "afecta tu tránsito" ya NO esta
+  OK  SE QUEDAN los dos sustantivos del cuerpo del bloque
+  OK  NO se renombro el componente (sigue TransitRestrictionsBlock)
+  OK  NO se renombro la clave de la API (sigue restricciones_intermedias)
+  OK  el rotulo vive en UN solo sitio del arbol vivo de los dos repos
+  OK  la fila del pasamanos dice que la cuarta es una ADVERTENCIA DE SEGURIDAD
+  OK  la fila del contrato lleva el descarte de los dos argumentos del agente
+
+VERDE (con los dos anexos) — los dos repos.
