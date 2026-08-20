@@ -1,0 +1,118 @@
+==============================================================================
+¿INV-3.4 GOBIERNA EL CAMINO METEOROLOGICO DE /weather-ruta?
+SESION  : 2026-08-19. Pregunta del owner tras la lectura de E7.
+REPO    : tmarea-backend en 2d4702237051bf861403402086d9619a8abae25b (= origin/main)
+
+RESPUESTA: NO. El filtro por bahia donde el contrato manda Capitania sigue en DOS
+lugares y no en tres, los dos en src/routes/sitport-routes.js. E6 no tiene que
+tocar /weather-ruta por INV-3.4.
+==============================================================================
+
+------------------------------------------------------------------------------
+1 . el sujeto de INV-3.4, contado sobre su propio texto
+COMANDO : node C:/Users/katia/AppData/Local/Temp/claude/C--Users-katia--claude/c58e323e-5007-4343-af4c-c9a29a7006d0/scratchpad/medir_inv34_weather.js
+------------------------------------------------------------------------------
+=== 1 . EL SUJETO DE INV-3.4, contado sobre su propio texto ===
+    (texto de INV-3.4: 17 lineas)
+    restriccion/restricción     6
+    bahia/bahía                 5
+    Capitania/Capitanía         4
+    pronostico/pronóstico       0
+    meteorolog*                 0
+    viento                      0
+    clima                       0
+
+    LA VERIFICACION DE INV-3.4, literal:
+      - **Verificación:** el motor no puede descartar una restricción por comparación de nombre de
+      bahía contra la posición de la ruta.
+
+=== 2 . QUE OBJETO DESCARTA CADA CAMINO ===
+    transito, el filtro           :847  if (!bahiaIdsEnRuta.has(bahiaId)) continue;
+    transito, la fuente del dato  :837  restriccionesTransito.map(r => ({ id_bahia: Number(r.bahia), origen: 'consultaRestricciones', no
+    weather, la seleccion         :515  if (mejor && !bahiasEnRuta.has(mejor.idBahia)) {
+    weather, la fuente del dato   :463  const pronosticos = await sitportService.totalPronostico();
+
+=== 3 . EL MECANISMO DE CADA UNO ===
+    transito : pertenencia. La restriccion entra si su bahia esta en el Set que
+               produjo ST_Intersects(ruta, celdas de jurisdiccion). Es una
+               pregunta de TERRITORIO.
+    weather  : proximidad. Por cada punto de ruta se toma la bahia mas cercana
+               dentro de un radio, y de esas se toma el MAXIMO de viento. Es una
+               pregunta de DISTANCIA, y no consulta ninguna capa de jurisdiccion.
+
+    ¿el camino weather consulta alguna capa de jurisdiccion? -> NO
+    ¿usa un radio en km?                                    -> SI  (MAX_DIST_KM = ?)
+    CONTROL POSITIVO, el mismo test sobre bahiasEnRutaPostGIS -> SI consulta capa
+
+=== 4 . MENCIONES DEL CAMINO METEOROLOGICO EN TODO EL CONTRATO ===
+    linea 726: | Clima por segmento | SITPORT `Totalpronostico` | OK |
+    CONTROL POSITIVO: lineas con restriccion/restricción -> 48
+------------------------------------------------------------------------------
+2 . el bloque de /weather-ruta, literal
+COMANDO : sed -n '500,524p' src/routes/sitport-routes.js
+------------------------------------------------------------------------------
+    const bahiasEnRuta = new Map(); // idBahia → registro
+
+    for (const punto of ruta_puntos) {
+      if (!punto.lat || !punto.lng) continue;
+      let mejor = null;
+      let mejorDist = Infinity;
+
+      for (const p of enriquecidos) {
+        const d = distKm(punto.lat, punto.lng, p.lat, p.lng);
+        if (d < mejorDist && d < MAX_DIST_KM) {
+          mejorDist = d;
+          mejor = p;
+        }
+      }
+
+      if (mejor && !bahiasEnRuta.has(mejor.idBahia)) {
+        bahiasEnRuta.set(mejor.idBahia, {
+          ...mejor,
+          distancia_km: Math.round(mejorDist)
+        });
+      }
+    }
+
+    const bahias = Array.from(bahiasEnRuta.values());
+------------------------------------------------------------------------------
+3 . el bloque de transito, literal, para el contraste
+COMANDO : sed -n '659,678p' src/routes/sitport-routes.js; echo ---; sed -n '845,848p' src/routes/sitport-routes.js
+------------------------------------------------------------------------------
+async function bahiasEnRutaPostGIS(waypoints) {
+  if (waypoints.length < 2) return new Set();
+  const capa = await capaJurisdiccionesVigente(pool);
+  const coordinates = waypoints.map(wp => [wp.lng, wp.lat]);
+  const rutaGeoJSON = JSON.stringify({ type: 'LineString', coordinates });
+  const { rows } = await pool.query(
+    `SELECT bahia_id
+     FROM "${capa}"
+     WHERE ST_Intersects(geom, ST_SetSRID(ST_GeomFromGeoJSON($1), 4326))`,
+    [rutaGeoJSON]
+  );
+  const ids = new Set(rows.map(r => r.bahia_id));
+
+  const ensanche = await ensancheVigente(pool);
+  if (!ensanche) return ids;
+  for (const bahiaId of await bahiasDelEnsanche(pool, rutaGeoJSON, ensanche)) ids.add(bahiaId);
+  return ids;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+---
+    for (const restriccion of restriccionesTransito) {
+      const bahiaId = restriccion.bahia;
+      if (!bahiaIdsEnRuta.has(bahiaId)) continue;
+      const coordsBahia = BAHIA_COORDS[bahiaId];
+------------------------------------------------------------------------------
+4 . LO QUE ESTO NO DICE
+------------------------------------------------------------------------------
+  El camino meteorologico TIENE un defecto de la misma familia: descartar una
+  bahia solo puede BAJAR la alerta, porque peorTramo es un maximo. Eso NO lo
+  gobierna INV-3.4: lo cubre el control de drift A3 (D7, owner 2026-08-11), que
+  se llama en la linea 527 con el Set de las bahias que si matchearon.
+
+  Y una observacion medida que NO se convirtio en fila porque el owner no la
+  pidio: el contrato nombra el camino meteorologico UNA sola vez, en la tabla de
+  fuentes de la linea 726, marcado OK. No hay ningun invariante que gobierne su
+  unidad. Ofrecida al owner, sin aplicar.

@@ -1,0 +1,49 @@
+==============================================================================
+DEFECTO PROPIO: 2d47022 COMMITEO UN INDICE OBSOLETO DEL DECLARATIVO
+SESION  : 2026-08-19. Cazado al comparar contra HEAD antes de la vuelta siguiente.
+==============================================================================
+
+------------------------------------------------------------------------------
+1 . LO QUE EL MENSAJE AFIRMA CONTRA LO QUE EL OBJETO TIENE
+------------------------------------------------------------------------------
+  mensaje de 2d47022 : 36 filas | 34 unicas | 29 VIVAS
+  objeto commiteado  : 34 filas | 32 unicas | 28 VIVAS
+  disco al medirlo   : 39 filas | 37 unicas | 32 VIVAS
+
+------------------------------------------------------------------------------
+2 . QUE FALTA EN EL OBJETO COMMITEADO
+------------------------------------------------------------------------------
+  - fila ausente: SESION-caracterizacion-deudas-2026-08-19::nada-ata-categoria-contractual-al-contrato
+  - fila ausente: SESION-caracterizacion-deudas-2026-08-19::seccion-7-no-cita-fase5Z
+  - fila ausente: SESION-caracterizacion-deudas-2026-08-19::nombre-de-frente-que-solo-vive-en-el-chat
+  - fila ausente: SESION-caracterizacion-deudas-2026-08-19::control-de-fidelidad-de-los-campos-literales
+  - fila ausente: SESION-caracterizacion-deudas-2026-08-19::commit-de-un-indice-obsoleto
+  - la reparacion del texto_literal que bash mutilo (iba dentro de seccion-7-no-cita-fase5Z)
+  - modo-de-falla-del-entorno quedo en la version de TRES casos; en disco son CINCO
+
+------------------------------------------------------------------------------
+3 . LA CAUSA
+------------------------------------------------------------------------------
+  git add del fichero se hizo ANTES de tres ediciones posteriores, y despues solo
+  se agregaron OTROS dos ficheros al indice. git commit toma el INDICE, no el
+  disco. Entre el add y el commit hubo tres escrituras que nunca entraron.
+
+------------------------------------------------------------------------------
+4 . POR QUE LA VERIFICACION NO LO CAZO -- y es el sexto de la misma familia
+------------------------------------------------------------------------------
+  La verificacion publicada fue: git fetch, comparar local main contra
+  origin/main, y leer los blob-sha del arbol REMOTO. Todo dio SI y todo era
+  cierto. Pero eso comprueba que LO QUE SUBI ES LO QUE COMMITEE. NO comprueba
+  que LO QUE COMMITEE ES LO QUE MEDI.
+
+  Es la forma exacta de los cinco anteriores -- el instrumento corre perfecto y
+  verifica otra cosa -- esta vez sobre la verificacion misma.
+
+------------------------------------------------------------------------------
+5 . QUE NO CAMBIA
+------------------------------------------------------------------------------
+  El CONTENIDO nunca estuvo mal: el disco siempre tuvo lo medido. Lo que fallo
+  es que ese contenido no entro al objeto. El commit siguiente lo lleva entero.
+  El mensaje de 2d47022 NO se reescribe: ya esta pusheado. Se corrige en el
+  mensaje del siguiente y queda como fila del declarativo.
+
