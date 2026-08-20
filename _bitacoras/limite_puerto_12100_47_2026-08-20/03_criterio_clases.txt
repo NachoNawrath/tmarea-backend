@@ -1,0 +1,156 @@
+P3 - CRITERIO DE CLASIFICACION POR FORMATO
+==============================================================================
+
+ESTE FICHERO SE ESCRIBE ANTES DE CORRER 04_clasificar.js Y NO SE TOCA DESPUES.
+
+Si al aplicarlo aparece una entrada que no entra en ninguna clase, la clase
+nueva se agrega ACA con su motivo y se vuelve a correr. Lo que no se hace es
+estirar una clase existente para que la entrada quepa: eso es acomodar el
+criterio al dato, que es la forma barata de no medir nada.
+
+
+------------------------------------------------------------------------------
+1. POR QUE SON DOS EJES Y NO UNO
+------------------------------------------------------------------------------
+
+El encargo pide dos cosas que parecen una sola y no lo son:
+
+  (3) clasificar cada entrada por FORMATO
+  (5) cuantas traen COORDENADAS EXPLICITAS
+
+Si la clase fuera un solo eje, (5) saldria de (3) y no haria falta preguntarla.
+No sale. Un ejemplo del propio documento lo muestra:
+
+  HANGA VINAPU   "Linea imaginaria que une Punta Poukura (Lat. 27 10' 06,5" S /
+                  Long. 109 22' 53,3" W) y Punta Kikiriroa (Lat. 27 11' 32,5" S
+                  / Long. 109 24' 49,9" W)."
+
+Por FORMATO es una linea entre dos topónimos, igual que LEBU. Por COORDENADAS
+es lo contrario de LEBU: los dos extremos vienen con numero y LEBU no trae
+ninguno. Meterlas en la misma clase pierde justamente el dato que decide si
+esto vale la pena.
+
+Por eso se miden DOS EJES independientes y la clase del encargo se deriva de
+ellos. La respuesta a (5) sale del EJE 2, no de la clase.
+
+
+------------------------------------------------------------------------------
+2. EJE 1 - PRIMITIVA: que figura geometrica define el limite
+------------------------------------------------------------------------------
+
+  P-VERT    El limite se da como una LISTA ENUMERADA de vertices: "1)", "2)",
+            "3)"..., cada uno con su latitud y su longitud.
+
+  P-LIN     El limite es una LINEA que une puntos nombrados (puntas, faros,
+            islotes, rocas, desembocaduras), sin enumeracion.
+
+  P-PARMER  El limite se define por uno o mas PARALELOS y/o MERIDIANOS.
+            Da igual que el eje venga con numero ("paralelo 36 38' 00" S") o
+            anclado a un topónimo ("el meridiano que pasa por el muelle del Ex
+            Frigorifico"): en los dos casos la primitiva es la misma y lo que
+            cambia es el EJE 2.
+
+  P-MIXTA   La entrada COMBINA una linea entre topónimos con un paralelo o un
+            meridiano dentro del mismo limite. No es "linea con un punto en
+            coordenadas" -- eso sigue siendo P-LIN. Es que hacen falta las dos
+            primitivas para cerrar el limite.
+
+PRECEDENCIA, para que la asignacion sea determinista y no dependa del orden en
+que uno lea el parrafo:
+
+  1. Si hay lista enumerada de vertices  -> P-VERT   (gana sobre todo lo demas)
+  2. Si no, y hay linea Y paralelo/meridiano -> P-MIXTA
+  3. Si no, y hay paralelo/meridiano     -> P-PARMER
+  4. Si no                               -> P-LIN
+
+
+------------------------------------------------------------------------------
+3. EJE 2 - COORDENADAS: cuanto del limite viene con numero
+------------------------------------------------------------------------------
+
+Se cuenta como COORDENADA EXPLICITA un valor numerico de latitud o de longitud
+en el texto de la entrada. NO cuenta el numero de la carta del SHOA ni el ano
+de su edicion.
+
+  C-TODAS    Todo punto y todo eje que define el limite trae numero. La entrada
+             se podria volver geometria sin resolver un solo topónimo y sin
+             abrir una sola carta.
+
+  C-ALGUNAS  Alguno trae numero y alguno no. Hace falta resolver al menos un
+             topónimo.
+
+  C-NINGUNA  Ni una sola coordenada numerica en la entrada.
+
+El eje 2 NO se mide contando cuantos numeros hay en el parrafo. Se mide
+preguntando, punto por punto y eje por eje, si ESE elemento del limite trae su
+valor. Un parrafo con dos coordenadas y tres topónimos sin resolver es
+C-ALGUNAS, no C-TODAS. Esto se revisa a mano, entrada por entrada.
+
+
+------------------------------------------------------------------------------
+4. LAS CLASES DEL ENCARGO, DERIVADAS
+------------------------------------------------------------------------------
+
+  F1  POLIGONO / VERTICES ENUMERADOS      = P-VERT
+  F2  LINEA ENTRE TOPONIMOS, SIN COORDS   = P-LIN  + C-NINGUNA
+  F3  PARALELO Y/O MERIDIANO              = P-PARMER
+  F4  MIXTO (linea con coordenadas)       = P-LIN  + (C-ALGUNAS o C-TODAS)
+  F5  CLASE NUEVA -- ver 5                = P-MIXTA
+
+
+------------------------------------------------------------------------------
+5. LA CLASE NUEVA, DECLARADA ANTES DE APLICAR
+------------------------------------------------------------------------------
+
+Las cuatro clases del encargo NO cubren el documento, y se dice ahora y no
+despues de ver el resultado.
+
+Hay entradas que necesitan una linea entre topónimos Y un paralelo o meridiano
+para cerrar el limite. Ejemplo leido en el bloque antes de escribir esto:
+
+  ANCUD   "Linea que une punta Ahui con roca Cochinos, y el meridiano de la
+           isla Cochinos por el E."
+
+Eso no es F2 (hay un meridiano), no es F3 (hay una linea entre puntas), y no es
+F4 (no hay una sola coordenada). Es una quinta forma:
+
+  F5  LINEA + PARALELO/MERIDIANO EN EL MISMO LIMITE
+
+Se declara como clase propia en vez de forzarla a una de las cuatro porque el
+insumo que le falta es distinto al de las otras, y (3) pregunta exactamente
+eso.
+
+
+------------------------------------------------------------------------------
+6. QUE HARIA FALTA PARA VOLVER CADA CLASE GEOMETRIA
+------------------------------------------------------------------------------
+
+Se declara aca, ANTES, para que no se confunda con un plan. NADA DE ESTO SE
+HACE EN ESTA SESION.
+
+DEFINICION DE "GEOMETRIA", que es donde esto se puede exagerar solo:
+  Geometria = LA LINEA O EL EJE QUE EL TEXTO DESCRIBE. No es el area encerrada.
+  Casi todos estos limites cierran contra la costa, y el area exige ademas una
+  linea de costa -- que no es una carta del SHOA, pero tampoco es gratis.
+  Cuando abajo se dice "sale sola", se dice de la LINEA.
+
+  F1  sale sola. Los vertices ya son coordenadas.
+  F2  hay que georreferenciar CADA topónimo -- puntas, faros, islotes, rocas.
+      Ninguno esta en el documento. Es abrir la carta del SHOA que la entrada
+      cita, o encontrar el topónimo en otra fuente.
+  F3  si los dos ejes traen numero, sale sola. Si un eje esta anclado a un
+      topónimo ("el paralelo que pasa por punta Choros"), hay que
+      georreferenciar ese topónimo -- pero SOLO SU LATITUD si es un paralelo, o
+      SOLO SU LONGITUD si es un meridiano. Es media coordenada, no una entera:
+      un eje tolera mucho mas error en la direccion que no lo define.
+  F4  hay que georreferenciar los extremos que no traen numero. Los que traen,
+      ya estan.
+  F5  las dos cosas a la vez.
+
+
+------------------------------------------------------------------------------
+7. LO QUE ESTA CLASIFICACION NO DICE
+------------------------------------------------------------------------------
+
+No dice si el limite es CORRECTO, ni si esta VIGENTE, ni si sirve para algo
+distinto del practicaje. Dice de que forma esta escrito. Nada mas.

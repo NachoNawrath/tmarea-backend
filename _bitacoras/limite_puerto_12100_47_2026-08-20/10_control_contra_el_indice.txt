@@ -1,0 +1,103 @@
+CONTROL CONTRA EL INDICE
+==============================================================================
+
+HEAD        : af5d09951515855dadefaaea714d32117040ff39
+origin/main : af5d09951515855dadefaaea714d32117040ff39
+
+1 - INDICE CONTRA DISCO   (por git diff --quiet, NO por sha)
+
+  TERCER DEFECTO DE INSTRUMENTO PROPIO DE ESTA SESION, y va escrito.
+  La primera version media TODO lo stageado, incluida su PROPIA SALIDA. La
+  primera corrida paso solo porque 10_control_contra_el_indice.txt todavia no
+  estaba versionado. En cuanto lo estuvo, la redireccion del shell TRUNCA el
+  fichero antes de que node arranque, asi que el control se encontraba con su
+  propia salida vacia en disco y llena en el indice, y salia ROJO sobre un
+  arbol correcto. Otra vez la misma familia: corria perfecto y medía otra cosa.
+
+  Correccion: la salida de este control queda FUERA de su propio alcance. Un
+  instrumento no puede comparar contra el indice un fichero que todavia no
+  termino de escribir. LIMITE QUE ESO DEJA, dicho y no escondido: quien
+  audite esto tiene que comprobar aparte que 10_control_contra_el_indice.txt
+  se stageo despues de correr -- y ahi lo unico que vale es git status.
+
+  alcance: la bitacora + el declarativo + el validador, MENOS
+           _bitacoras/limite_puerto_12100_47_2026-08-20/10_control_contra_el_indice.txt
+  git diff --quiet -> exit 0
+  VEREDICTO: OK - lo que esta en el indice es byte a byte lo que esta en disco
+
+  CONTROL POSITIVO de este control: el mismo git diff --quiet, corrido sobre
+  los DOS INTOCABLES, tiene que dar distinto de 0 -- porque estan modificados
+  a proposito y sin stagear. Si diera 0, el instrumento no sabria ver una
+  diferencia y su OK de arriba no valdria nada.
+warning: in the working copy of '.claude/launch.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'data/catalogo/estado_drift.json', LF will be replaced by CRLF the next time Git touches it
+  -> OK - da distinto de 0 sobre los intocables. El instrumento SI ve diferencias.
+
+2 - LOS INTOCABLES NO ENTRARON
+  .claude/launch.json                -> " M"  OK (modificado, SIN stagear)
+  data/catalogo/estado_drift.json    -> " M"  OK (modificado, SIN stagear)
+  intocables dentro del indice: ninguno  OK
+
+  ficheros en el indice: 30
+    NOTA de unidad: este numero es el del indice EN EL MOMENTO DE ESTA
+    CORRIDA. La salida de este mismo control -- 10_control_contra_el_indice.txt --
+    se escribe despues y se stagea despues, asi que el indice final tiene 31.
+    Se dice en vez de dejar dos numeros sueltos que no cuadran.
+
+3 - LAS CIFRAS DEL MENSAJE DE COMMIT, LEIDAS DEL INDICE
+  filas      indice:  68   disco:  68   OK
+  unicas     indice:  66   disco:  66   OK
+  vivas      indice:  61   disco:  61   OK
+  sitios     indice:  19   disco:  19   OK
+  barridos   indice:  10   disco:  10   OK
+
+  LAS CIFRAS QUE PUEDEN IR EN EL MENSAJE, y salen del INDICE:
+    68 filas · 66 unicas · 61 vivas · 19 sitios · 10 barridos · 9 sin barrer
+    la fila nueva esta en el indice: SI
+      grupo 2_decision_del_owner · estado viva · firmada false
+    el sitio nuevo esta en SITIOS_CANON del indice: SI
+
+4 - EL sha256 SOBREVIVE AL INDICE   (para esto se puso el .gitattributes)
+  No se da por bueno porque el fichero exista: se saca el blob DEL INDICE
+  y se le vuelve a calcular el sha256.
+  DGTM-MM_12100-47_2009-09-01_mod-2021-08-16.txt
+    declarado en PROCEDENCIA.md : dc8a1506291c3172f47cc4a4e872dc475c777c3429ad8d3e989df9844eb2430a
+    recalculado desde el indice : dc8a1506291c3172f47cc4a4e872dc475c777c3429ad8d3e989df9844eb2430a
+    bytes en el indice          : 57.213
+    -> OK
+  DGTM-MM_12100-47_2009-09-01_mod-2021-08-16.pdf
+    declarado en PROCEDENCIA.md : a9045b8801adff2240d6c8327800750d16d33ac578d06ceb73bf17111f6fc005
+    recalculado desde el indice : a9045b8801adff2240d6c8327800750d16d33ac578d06ceb73bf17111f6fc005
+    bytes en el indice          : 143.375
+    -> OK
+
+  CONTROL POSITIVO de este control.
+
+  DEFECTO DE INSTRUMENTO PROPIO, cazado en la primera corrida y por eso queda
+  escrito. La primera version comparaba el TAMANO en indice contra el tamano
+  en disco, esperando ver normalizacion. Dio 0 de 25 y salio ROJO sobre un
+  arbol correcto. Estaba mal PENSADO: con core.autocrlf=true la conversion
+  LF->CRLF ocurre al SACAR (checkout), no al METER (add), asi que comparar
+  indice contra disco no puede verla nunca. Corria perfecto y medía otra cosa,
+  que es la familia de siempre.
+
+  El instrumento correcto es git ls-files --eol, que dice el fin de linea
+  REAL del blob en el indice y el atributo en vigor:
+    DGTM-MM_12100-47_2009-09-01_mod-2021-08-16.txt
+      i/crlf  attr/-text   <- CRLF conservado en el INDICE, por -text
+    01_descarga.js
+      i/lf  attr/(sin especificar)   <- LF, y CRLF al sacarlo en un clon
+
+  O sea que la regla no es preventiva para el futuro: TRABAJO EN ESTE MISMO
+  add. pdftotext escribio el .txt con CRLF; sin el .gitattributes, autocrlf
+  lo habria pasado a LF AL METERLO y el sha declarado seria falso YA, no en
+  un clon. La contrafactual, calculada:
+    sha256 real, con la regla    : dc8a1506291c3172f47cc4a4e872dc475c777c3429ad8d3e989df9844eb2430a  (57.213 bytes)
+    sha256 si git lo normalizaba : ddf77b2a4805d0420d79d91c76f6a718fb1d223cfee8bb8842a4550a9defe296  (55.520 bytes)
+    -> OK - son sha distintos y 1.693 bytes de diferencia. La regla evito un sha falso, medido.
+
+==============================================================================
+VEREDICTO: VERDE - los cuatro controles pasan
+
+LO QUE ESTE CONTROL NO PRUEBA: que lo commiteado sea lo correcto. Prueba que
+lo que se va a commitear es lo que se midio. Sin commit hasta autorizacion.

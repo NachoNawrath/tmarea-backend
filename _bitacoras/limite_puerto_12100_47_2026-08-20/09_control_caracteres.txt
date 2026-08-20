@@ -1,0 +1,53 @@
+CONTROL DE CARACTERES — limite_puerto_12100_47_2026-08-20
+CRITERIO (H-T2): puntos de codigo. Se marca < 0x20 salvo LF/CR/TAB, 0x7F, y C1 0x80-0x9F.
+
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\.gitattributes
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\01_descarga.js
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\01_descarga.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\02_extraer.js
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\02_extraer.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\03_criterio_clases.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\04_clasificar.js
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\04_clasificar.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\05_criterio_cruce.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\06_cruzar.js
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\06_cruzar.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\07_fila_declarativo.js
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\07_fila_declarativo.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\08_validador.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\09_control_caracteres.js
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\09_control_caracteres.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\10_control_contra_el_indice.js
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\10_control_contra_el_indice.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\11_fila_metodo.js
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\11_fila_metodo.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\12_validador_final.txt
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\DGTM-MM_12100-47_2009-09-01_mod-2021-08-16.txt   (poblacion 2 — captura cruda)
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\PROCEDENCIA.md
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\clasificacion_punto1.json
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\cruce_12100_47.json
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\entradas_punto1.json
+  OK  _bitacoras\limite_puerto_12100_47_2026-08-20\headers_crudos.txt
+  OK  data/deudas/deudas_declaradas.json
+  OK  scripts/validar_deudas_declaradas.js
+
+POBLACION 2 — LA CAPTURA CRUDA, REPORTADA APARTE
+  U+000C (form feed) en el .txt .......... 28
+  objetos /Type /Page en el PDF .......... 28
+  -> OK — uno por pagina, exacto. Es el separador de pagina de pdftotext,
+     no algo que alguien tecleo. Por eso se admite, y solo este.
+  otros sospechosos en la captura ........ NINGUNO  -> OK
+
+  SALTADOS por binarios (sha256 es su control): DGTM-MM_12100-47_2009-09-01_mod-2021-08-16.pdf
+
+  ficheros revisados       : 29  (poblacion 1: 28 escritos en esta sesion · poblacion 2: 1 captura cruda)
+  puntos de codigo         : 560.921
+  ficheros con sospechosos : 0   (poblacion 1 tiene que dar 0)
+  BOM UTF-8 al principio   : ninguno  -> OK
+
+CONTROL POSITIVO del propio control: se construye U+0091 por punto de codigo
+y tiene que cazarlo. Un control de caracteres que nunca marco nada no ha
+demostrado que sepa marcar.
+  -> OK — el criterio caza U+0091
+
+EXIT 0  — VERDE

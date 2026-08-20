@@ -1,0 +1,111 @@
+EL LIMITE DEL PUERTO EXISTE Y ESTA MEDIDO: 44 de 164 bahias, y solo 9 sin abrir cartas
+
+La Res. D.G.T.M. y M.M. Ex. 12100/47 del 01.SEP.2009 —ocho modificaciones, la ultima del
+16.AGO.2021— fija los limites de puerto en su ANEXO "A" punto 1. Descargada, con sha256 y
+clase, y cruzada contra el catalogo. Alcance CERRADO por el owner: se cuenta y se
+clasifica. No se digitalizo nada, no se resolvio ningun toponimo, no se abrio ninguna
+carta del SHOA, no se construyo ninguna geometria, y no se toco la base ni el catalogo ni
+una linea del motor.
+
+LA RESPUESTA, Y CONTESTA QUE NO
+  44 de las 164 bahias del catalogo (26,8 %) corresponden a un puerto con limite fijado:
+  11 por calce EXACTO · 33 por calce PROBABLE revisado a mano · 120 SIN CALCE. Suma 164.
+  De esas 44, solo 9 traen coordenadas suficientes para volverse geometria sin resolver
+  un toponimo y sin abrir una carta: 5,5 % de 164, 20,5 % de las 44.
+  En la otra direccion, que no se promedia con la primera porque la relacion es muchos a
+  muchos: 45 de los 53 puertos aterrizan en el catalogo.
+  Que la respuesta sea "no rinde" es un resultado, no un fracaso de la medicion.
+
+  DENOMINADORES, que son tres y no uno: ENTRADA = un encabezado del punto 1 con su
+  parrafo y su carta, son 49. PUERTO = cada nombre propio que ese encabezado nombra, son
+  53, porque cuatro entradas nombran dos. BAHIA = fila de join_bahia_jurisdiccion.json,
+  son 164 — y ese 164 es DE ESA FUENTE: estado_drift.json declara F1:163 F2:163 F3:164
+  F4:163 F5:163 sobre un universo_sitport de 166.
+
+LOS FORMATOS SON CINCO, NO CUATRO
+  F1 poligono/vertices 3 · F2 linea sin coordenadas 18 · F3 paralelo y/o meridiano 16 ·
+  F4 mixto 9 · F5 LINEA + PARALELO/MERIDIANO 3. Suma 49.
+  La quinta clase se declaro en el criterio ANTES de correr, no despues de ver el
+  resultado. El caso puro es ANCUD: "linea que une punta Ahui con roca Cochinos, y el
+  meridiano de la isla Cochinos por el E" no es F2 (hay meridiano), no es F3 (hay linea) y
+  no es F4 (no hay una sola coordenada). Con TALCAHUANO y PUERTO MONTT.
+
+EL HALLAZGO DE METODO, QUE VA COMO FILA PROPIA
+  El generador automatico de candidatos propuso 31 pares y NO VIO 9 verdaderos, que son 7
+  bahias. Creerle habria dado 37 en vez de 44: SUBCONTEO DEL 16 %, EN SILENCIO.
+  Cuatro modos de falla: un PLURAL (PATILLOS / "PATILLO") · un ESPACIO (TALTAL / "TAL
+  TAL") · un PARENTESIS (ANTOFAGASTA dentro de "BAHIA MORENO (ANTOFAGASTA)") · y OTRO
+  NOMBRE PARA EL MISMO LUGAR.
+  El cuarto es el que prueba el punto: JUAN FERNANDEZ contra ISLA ROBINSON CRUSOE son el
+  mismo lugar —el limite "entre Punta San Carlos y Punta Loberia" es bahia Cumberland, en
+  Robinson Crusoe, isla principal del archipielago Juan Fernandez— y las dos cadenas NO
+  COMPARTEN UNA SOLA LETRA UTIL. Ningun umbral, ninguna fonetica, ningun trigrama llega de
+  una a la otra: la relacion es geografica, no ortografica. Y aflojar el umbral para cazar
+  los tres primeros mete MAS falsos amigos. Lo unico que caza el modo 4 es mirar la lista
+  entera.
+  LOS DOS NO CAROS, publicados con su razon junto a los otros cuatro rechazos: CALETA
+  CHAÑARAL Y ENSENADA GAVIOTA (bahia 158) NO es el puerto de Chañaral —la entrada cita la
+  carta SHOA 2213, que es la otra, y el documento traia el desempate adentro—; y CANAL
+  CHACAO SECTOR PARGUA Y PUNTA CORONEL (bahia 114) NO es el puerto de Coronel: 600 km
+  entre los dos, homonimo puro, con el patron acertando y el mundo no.
+
+EL AVISO QUE NO SE PIERDE, Y LA CONVERGENCIA
+  Estos limites se fijan PARA PRACTICAJE — Titulo V del D.S. (M.) 397 de 1985, y lo dice
+  el propio dispositivo. Que el "DENTRO DEL LIMITE DEL PUERTO" de AreaRestriccion sea ESTE
+  limite es PLAUSIBLE y NO ESTA PROBADO. No se resuelve acá.
+  data/decreto/fuente_resoluciones_locales/PROCEDENCIA.md ya lo declaraba el 2026-08-12
+  sobre DIECINUEVE resoluciones locales y sin excepcion. Esta sesion mide lo mismo en la
+  FUENTE MADRE que esas diecinueve citan: dos mediciones independientes que dan lo mismo.
+  Lo que ya no se puede sostener es que el limite del puerto sea una nocion vaga.
+
+POR QUE EL CAMINO DE 9 A 21 ESTA FRENADO, y no es tecnico
+  El derrotero de la costa de Chile del SHOA resolveria los toponimos —coordenadas por
+  lugar, precision de minuto de arco— pero el proyecto NO tiene licencia propia y hoy no
+  hay presupuesto. El camino existe, tiene precio, y esta frenado por eso.
+  PRIMERA MEDICION de quien retome la fila, escrita como encargo: antes de gastar, mirar
+  si los toponimos estan en fuentes abiertas (IDE Chile, GeoNames, catalogos del Estado).
+  Hacerla despues de comprar seria haber comprado sin saber.
+
+EL DECLARATIVO
+  68 filas · 66 unicas · 61 VIVAS · 19 sitios · 10 barridos · 9 sin barrer.
+  Cifras leidas del INDICE (git show :data/deudas/deudas_declaradas.json), no del disco.
+  DOS filas nuevas, las dos VIVAS y SIN FIRMAR:
+    LIMITE-PUERTO::12100-47-cruzada-contra-el-catalogo  (2_decision_del_owner)
+    METODO::emparejar-por-nombre-sin-revision-subcuenta-en-silencio  (1_cierra_con_lo_que_hay)
+  Un sitio nuevo, SESION-limite-puerto-12100-47-2026-08-20, en los DOS lados: cobertura.
+  sitios y SITIOS_CANON del validador, o [V5] se pone rojo — y esta bien que lo haga.
+  NO SE CIERRA D4D5::la-segunda-direccion-no-es-decidible: esto contesta la mitad de su
+  pregunta —esta publicado— y la otra mitad sigue siendo dato externo. Cerrarla es firma
+  del owner y sigue viva.
+
+EL .gitattributes NO ERA PREVENTIVO: EVITO UN sha256 FALSO HOY
+  pdftotext escribio el .txt con CRLF. Sin la regla, autocrlf=true lo habria pasado a LF
+  AL METERLO y el sha declarado seria falso YA, no en un clon. Medido con git ls-files
+  --eol (i/crlf attr/-text) y con la contrafactual: dc8a1506… con la regla contra
+  ddf77b2a… sin ella, 1.693 bytes de diferencia — uno por linea.
+
+CONTROLES
+  Frontera del bloque por la numeracion del propio documento (punto 1 = lineas 74..464),
+  no por heuristica. POSITIVO: el conteo a ojo de 49 entradas se hizo ANTES de correr la
+  regla y coincidio. NEGATIVO: la misma regla sobre el punto 2 devuelve 41 encabezados, 6
+  ausentes del punto 1. LA MAQUINA CONTRA EL HUMANO: los detectores mecanicos se corrieron
+  CONTRA la tabla manual de 49 filas, 0 desacuerdos, y muerden en 24 y en 3 de 49 — o sea
+  que separan. RECALL medido y publicado. H-T2 verde sobre 560.921 puntos de codigo, con
+  la captura cruda reportada aparte: sus 28 U+000C son 28 paginas del PDF, exacto.
+  INDICE CONTRA DISCO por git diff --quiet, exit 0. Los dos intocables —.claude/launch.
+  json y data/catalogo/estado_drift.json— siguen en " M", fuera del indice.
+
+  EL HALLAZGO DEL GATE: grep "ANEXO" —patron ASCII PURO— devuelve UNA linea, la 1377, que
+  es el Anexo B. El Anexo A esta en la 69 escrito "A N E X O “A”", con espacio entre letra
+  y letra. El problema no era el encoding: era que el vocabulario del documento no es el
+  que uno supone. Un control positivo hace falta TAMBIEN cuando el patron es ASCII puro.
+
+  TRES DEFECTOS DE INSTRUMENTO PROPIOS, cazados y escritos, todos de la misma familia —
+  corre perfecto y mide otra cosa: (1) el rotulo decia "wc -l" y contaba una linea de mas;
+  (2) el control positivo del sha comparaba tamaño indice-contra-disco esperando ver una
+  normalizacion que con autocrlf ocurre al SACAR y no al METER, y salio rojo sobre un
+  arbol correcto; (3) el control de indice se media A SI MISMO, y en cuanto su salida
+  quedo versionada la redireccion del shell la truncaba antes de arrancar. Los tres
+  corregidos, con el limite que deja el tercero dicho y no escondido.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

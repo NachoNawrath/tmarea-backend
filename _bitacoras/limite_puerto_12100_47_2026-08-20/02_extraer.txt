@@ -1,0 +1,114 @@
+P2 - EXTRACCION DE LAS ENTRADAS DEL ANEXO "A" PUNTO 1
+==============================================================================
+
+FUENTE  : DGTM-MM_12100-47_2009-09-01_mod-2021-08-16.txt
+          sha256 dc8a1506291c3172f47cc4a4e872dc475c777c3429ad8d3e989df9844eb2430a
+BLOQUE  : lineas 74..464 (391 lineas)
+
+CONTROL 3 - LA CABECERA DEL PUNTO 1 NO DEBE ENTRAR
+  linea 74: "1.-  FÍJANSE, para los fines prescritos en el Título V del D.S. (M.) N° "
+  termina en ":" ? false
+  la regla la toma ? false   (debe ser false: tiene minusculas)
+  VEREDICTO: OK
+
+CONTROL 1 - POSITIVO POR CONTEO A MANO
+  contadas a ojo leyendo el bloque entero : 49
+  devueltas por la regla                  : 49
+  VEREDICTO: OK - coinciden
+
+CONTROL 2 - NEGATIVO / DE DISCRIMINACION (punto 2, que NO es el blanco)
+  encabezados que la MISMA regla encuentra en el punto 2 : 41
+  de ellos, ausentes del punto 1                         : 6
+  VEREDICTO: OK - la regla muerde en los dos bloques y devuelve conjuntos distintos:
+  primeros 6 del punto 2, para que se vea que son OTROS puertos:
+    469  ARICA:
+    488  PISAGUA:
+    495  JUNIN:
+    503  CALETA BUENA:
+    510  IQUIQUE:
+    522  PATILLOS:
+
+  QUE PRUEBA ESTE CONTROL: que la regla de encabezado no esta pegada al
+  punto 1. Lo que deja fuera al punto 2 es el RECORTE POR LINEA, no la
+  regla. Si manana alguien mueve la frontera, las 49 se contaminan y este
+  control no lo va a cazar: lo unico que lo caza es la numeracion del
+  documento, que es por lo que la frontera se puso ahi.
+
+EL RESULTADO - LA UNIDAD, QUE NO ES UNA SOLA
+  ENTRADAS del punto 1 ........................ 49
+  PUERTOS nombrados por esas entradas ......... 53
+  entradas que nombran mas de un puerto ....... 4
+
+  DEFINICIONES
+    ENTRADA = un encabezado del punto 1 con su parrafo de limite y su carta.
+    PUERTO  = cada nombre propio que el encabezado nombra, separados por el
+              conector " y " o por guion. Denominador de (2) y de (3).
+
+  LAS QUE NOMBRAN DOS:
+    #16  HANGA ROA – HANGA PIKO   ->   HANGA ROA  |  HANGA PIKO
+    #29  PENCO y LIRQUÉN   ->   PENCO  |  LIRQUÉN
+    #44  NATALES y BORIES   ->   NATALES  |  BORIES
+    #47  PERCY y CLARENCIA   ->   PERCY  |  CLARENCIA
+
+  ATENCION, y es juicio mio, no del documento: las tres que el encargo
+  anticipaba usan el conector " y ". La cuarta, HANGA ROA - HANGA PIKO, usa
+  un guion largo. La parti igual porque son dos caletas distintas de Isla de
+  Pascua, pero el documento le fija UN limite unico a las dos, igual que a
+  PENCO y LIRQUEN. Si el owner prefiere contarla como un puerto, el total
+  baja de 53 a 52 y ninguna otra cifra se mueve.
+
+LISTADO CRUDO DE LAS 49 ENTRADAS
+------------------------------------------------------------------------------
+ 1  L 78  ARICA
+ 2  L 86  PISAGUA
+ 3  L 93  JUNIN
+ 4  L100  CALETA BUENA
+ 5  L107  IQUIQUE
+ 6  L114  PATILLOS
+ 7  L122  PATACHE
+ 8  L132  TOCOPILLA
+ 9  L140  MEJILLONES
+10  L147  ANTOFAGASTA
+11  L159  COLOSO
+12  L166  TALTAL
+13  L173  CHAÑARÁL
+14  L181  CALDERA
+15  L189  CALDERILLA
+16  L197  HANGA ROA – HANGA PIKO   [2 puertos]
+17  L206  HANGA VINAPU
+18  L214  HUASCO
+19  L221  CRUZ GRANDE
+20  L228  COQUIMBO
+21  L235  GUAYACÁN
+22  L242  LOS VILOS
+23  L249  QUINTERO
+24  L258  VALPARAÍSO
+25  L265  JUAN FERNÁNDEZ
+26  L272  SAN ANTONIO
+27  L280  CONSTITUCIÓN
+28  L287  TOME
+29  L294  PENCO y LIRQUÉN   [2 puertos]
+30  L301  TALCAHUANO
+31  L310  SAN VICENTE
+32  L320  CORONEL
+33  L330  LOTA
+34  L337  LEBU
+35  L344  CORRAL
+36  L351  ANCUD
+37  L358  SAN JOSÉ DE CALBUCO
+38  L365  PUERTO MONTT
+39  L373  RÍO NEGRO HORNOPIRÉN
+40  L386  CHAITÉN
+41  L393  PUERTO CISNES
+42  L400  CHACABUCO
+43  L407  EDÉN
+44  L415  NATALES y BORIES   [2 puertos]
+45  L422  PUNTA ARENAS
+46  L435  CABO NEGRO
+47  L443  PERCY y CLARENCIA   [2 puertos]
+48  L450  GREGORIO
+49  L458  PUERTO WILLIAMS
+
+ESCRITO: entradas_punto1.json
+
+VEREDICTO P2: VERDE - los tres controles pasan

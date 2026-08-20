@@ -1,0 +1,152 @@
+P3 - CLASIFICACION POR FORMATO
+==============================================================================
+
+CRITERIO: 03_criterio_clases.txt, escrito ANTES de correr esto.
+DECIDE  : la tabla manual de este fichero, de leer las 49 entradas enteras.
+LA MAQUINA NO CLASIFICA: coteja al humano en lo mecanizable.
+DENOMINADOR: las 49 ENTRADAS del ANEXO "A" punto 1. No son 53 -- 53 son los
+PUERTOS, y una entrada puede nombrar dos. El formato es de la ENTRADA.
+
+CONTROL A - COORDENADAS: LA MAQUINA CONTRA MI TABLA
+  La maquina dice si HAY o NO HAY una coordenada numerica. Yo dije C-NINGUNA
+  en unas y no en otras. Tienen que coincidir en las 49.
+  desacuerdos: 0   VEREDICTO: OK
+
+CONTROL B - VERTICES ENUMERADOS: LA MAQUINA CONTRA MI TABLA
+  desacuerdos: 0   VEREDICTO: OK
+
+CONTROL C - POSITIVO: LA MAQUINA MUERDE
+  entradas donde el detector de coordenadas muerde : 24 de 49
+  entradas donde el detector de vertices muerde    : 3 de 49
+  VEREDICTO: OK - los dos detectores separan, no dicen que si a todo ni que no a todo
+
+CONTROL D - LAS CLASES SUMAN 49
+  suma de las clases: 49 de 49   VEREDICTO: OK
+
+EL RESULTADO - LAS ENTRADAS POR CLASE
+------------------------------------------------------------------------------
+
+F1  POLIGONO / VERTICES ENUMERADOS
+    entradas: 3 de 49        puertos: 3 de 53
+    para volverla geometria hace falta: nada. Los vertices ya son coordenadas: la linea sale sola.
+    ANTOFAGASTA · RÍO NEGRO HORNOPIRÉN · PUNTA ARENAS
+
+F2  LINEA ENTRE TOPONIMOS, SIN COORDENADAS
+    entradas: 18 de 49        puertos: 18 de 53
+    para volverla geometria hace falta: georreferenciar CADA toponimo. Ninguno esta en el documento -> carta del SHOA u otra fuente.
+    PISAGUA · JUNIN · CALETA BUENA · TALTAL · CALDERILLA · HUASCO · CRUZ GRANDE · GUAYACÁN · LOS VILOS · VALPARAÍSO · JUAN FERNÁNDEZ · LOTA · LEBU · CORRAL · SAN JOSÉ DE CALBUCO · PUERTO CISNES · CHACABUCO · PUERTO WILLIAMS
+
+F3  PARALELO Y/O MERIDIANO
+    entradas: 16 de 49        puertos: 19 de 53
+    para volverla geometria hace falta: si los dos ejes traen numero, nada. Si un eje cuelga de un toponimo, hace falta MEDIA coordenada de ese toponimo: solo la latitud si es un paralelo, solo la longitud si es un meridiano.
+    IQUIQUE · PATACHE · MEJILLONES · COLOSO · CHAÑARÁL · COQUIMBO · SAN ANTONIO · CONSTITUCIÓN · TOME · PENCO y LIRQUÉN · SAN VICENTE · CHAITÉN · NATALES y BORIES · CABO NEGRO · PERCY y CLARENCIA · GREGORIO
+
+F4  MIXTO - LINEA CON COORDENADAS
+    entradas: 9 de 49        puertos: 10 de 53
+    para volverla geometria hace falta: georreferenciar solo los extremos sin numero. Los que traen, ya estan.
+    ARICA · PATILLOS · TOCOPILLA · CALDERA · HANGA ROA – HANGA PIKO · HANGA VINAPU · QUINTERO · CORONEL · EDÉN
+
+F5  LINEA + PARALELO/MERIDIANO (clase nueva)
+    entradas: 3 de 49        puertos: 3 de 53
+    para volverla geometria hace falta: las dos cosas a la vez: los toponimos de la linea y el eje del paralelo/meridiano.
+    TALCAHUANO · ANCUD · PUERTO MONTT
+
+EL RESULTADO - EL EJE 2, QUE ES EL QUE CONTESTA LA PREGUNTA (5)
+------------------------------------------------------------------------------
+  C-TODAS    10 de 49 entradas   11 de 53 puertos
+  C-ALGUNAS  14 de 49 entradas   16 de 53 puertos
+  C-NINGUNA  25 de 49 entradas   26 de 53 puertos
+
+  C-TODAS es la lista corta que importa: se vuelven geometria sin resolver
+  un solo toponimo y sin abrir una sola carta.
+    # 7  PATACHE                   F3
+    #10  ANTOFAGASTA               F1
+    #11  COLOSO                    F3
+    #16  HANGA ROA – HANGA PIKO    F4
+    #17  HANGA VINAPU              F4
+    #30  TALCAHUANO                F5
+    #31  SAN VICENTE               F3
+    #39  RÍO NEGRO HORNOPIRÉN      F1
+    #45  PUNTA ARENAS              F1
+    #48  GREGORIO                  F3
+
+LA TABLA COMPLETA, 49 FILAS, CON LA RAZON DONDE HUBO JUICIO
+------------------------------------------------------------------------------
+ 1  F4  P-LIN    C-ALGUNAS  ARICA
+      punto intermedio con numero; Peninsula Alacran y Punta Chacalluta sin el
+ 2  F2  P-LIN    C-NINGUNA  PISAGUA
+ 3  F2  P-LIN    C-NINGUNA  JUNIN
+ 4  F2  P-LIN    C-NINGUNA  CALETA BUENA
+ 5  F3  P-PARMER C-ALGUNAS  IQUIQUE
+      paralelo con numero; el meridiano cuelga del faro Peninsula Serrano
+ 6  F4  P-LIN    C-ALGUNAS  PATILLOS
+ 7  F3  P-PARMER C-TODAS    PATACHE
+      meridiano Y paralelo los dos con numero. Punta Patache solo dice donde nace: los dos ejes ya cierran la linea contra la costa, asi que el toponimo es DESCRIPTIVO, no definitorio
+ 8  F4  P-LIN    C-ALGUNAS  TOCOPILLA
+ 9  F3  P-PARMER C-NINGUNA  MEJILLONES
+      un solo paralelo, colgado de punta Choros
+10  F1  P-VERT   C-TODAS    ANTOFAGASTA
+      poligono de 5 vertices
+11  F3  P-PARMER C-TODAS    COLOSO
+12  F2  P-LIN    C-NINGUNA  TALTAL
+13  F3  P-PARMER C-NINGUNA  CHAÑARÁL
+      los dos ejes colgados de toponimos, y uno es "la parte norte del cementerio"
+14  F4  P-LIN    C-ALGUNAS  CALDERA
+15  F2  P-LIN    C-NINGUNA  CALDERILLA
+16  F4  P-LIN    C-TODAS    HANGA ROA – HANGA PIKO
+      los TRES vertices traen coordenada. Es linea, no lista enumerada, por eso no es P-VERT
+17  F4  P-LIN    C-TODAS    HANGA VINAPU
+      los dos extremos traen coordenada
+18  F2  P-LIN    C-NINGUNA  HUASCO
+19  F2  P-LIN    C-NINGUNA  CRUZ GRANDE
+20  F3  P-PARMER C-NINGUNA  COQUIMBO
+21  F2  P-LIN    C-NINGUNA  GUAYACÁN
+22  F2  P-LIN    C-NINGUNA  LOS VILOS
+23  F4  P-LIN    C-ALGUNAS  QUINTERO
+24  F2  P-LIN    C-NINGUNA  VALPARAÍSO
+25  F2  P-LIN    C-NINGUNA  JUAN FERNÁNDEZ
+26  F3  P-PARMER C-ALGUNAS  SAN ANTONIO
+      tres ejes: dos paralelos colgados de toponimos y un meridiano con numero
+27  F3  P-PARMER C-ALGUNAS  CONSTITUCIÓN
+28  F3  P-PARMER C-ALGUNAS  TOME
+29  F3  P-PARMER C-ALGUNAS  PENCO y LIRQUÉN
+      meridiano con numero; el paralelo cuelga de Punta Lirquen
+30  F5  P-MIXTA  C-TODAS    TALCAHUANO
+      linea por el paralelo 36 41 18 S hasta el punto en coordenadas, y DESPUES baja por ese meridiano: hacen falta las dos primitivas. El faro Molo Caleta Manzano es descriptivo, la latitud que lo acompana ya define el tramo
+31  F3  P-PARMER C-TODAS    SAN VICENTE
+      meridiano 073 11 28,5 W y paralelo 36 43 17,5 S, los dos con numero; faro Punta Gualpen y Punta Pardo son descriptivos
+32  F4  P-LIN    C-ALGUNAS  CORONEL
+      dos puntos intermedios con numero, pero los DOS extremos sin: el faro Punta Puchoco y un islote que el documento ni nombra -- "el islote que se encuentra al Surweste de la Punta Oeste de Caleta Lotilla"
+33  F2  P-LIN    C-NINGUNA  LOTA
+34  F2  P-LIN    C-NINGUNA  LEBU
+      el caso que el encargo cita: linea entre dos toponimos, cero coordenadas
+35  F2  P-LIN    C-NINGUNA  CORRAL
+36  F5  P-MIXTA  C-NINGUNA  ANCUD
+      linea entre punta Ahui y roca Cochinos MAS el meridiano de isla Cochinos. Ni F2 ni F3 ni F4: es la entrada que obligo a declarar F5
+37  F2  P-LIN    C-NINGUNA  SAN JOSÉ DE CALBUCO
+38  F5  P-MIXTA  C-ALGUNAS  PUERTO MONTT
+      paralelo con numero + meridiano colgado del muelle del Ex Frigorifico, Y ADEMAS una linea aparte para el canal Tenglo. Dos primitivas, y en dos lugares distintos
+39  F1  P-VERT   C-TODAS    RÍO NEGRO HORNOPIRÉN
+      cuatro vertices enumerados, todos con lat y long
+40  F3  P-PARMER C-NINGUNA  CHAITÉN
+41  F2  P-LIN    C-NINGUNA  PUERTO CISNES
+42  F2  P-LIN    C-NINGUNA  CHACABUCO
+43  F4  P-LIN    C-ALGUNAS  EDÉN
+44  F3  P-PARMER C-NINGUNA  NATALES y BORIES
+45  F1  P-VERT   C-TODAS    PUNTA ARENAS
+      cinco vertices enumerados. OJO: los cinco traen el signo de grado DONDE VA EL DE MINUTO en la longitud -- "70 52 36 W" sale como 70(grado)52(grado)36(comilla). Legible para un humano, NO parseable a ciegas
+46  F3  P-PARMER C-NINGUNA  CABO NEGRO
+47  F3  P-PARMER C-ALGUNAS  PERCY y CLARENCIA
+48  F3  P-PARMER C-TODAS    GREGORIO
+      un paralelo y DOS meridianos, los tres con numero. Unica entrada que se declara como AREA y no como linea: "el area interior que se forma entre..."
+49  F2  P-LIN    C-NINGUNA  PUERTO WILLIAMS
+      unica anclada a una BOYA (boya Banco Herradura), que es un objeto que se mueve y se cambia de lugar
+
+LAS CARTAS DEL SHOA (medido, de paso)
+  menciones de "Edicion AAAA" en las 49 entradas : 50
+  edicion mas vieja / mas nueva                  : 1951 / 2017
+  TODA entrada cita al menos una carta con su edicion: SI (49 de 49)
+
+ESCRITO: clasificacion_punto1.json
+
+VEREDICTO P3: VERDE - los cuatro controles pasan

@@ -1,0 +1,108 @@
+P4 - CRITERIO DE EMPAREJAMIENTO
+==============================================================================
+
+ESTE FICHERO SE ESCRIBE ANTES DE CORRER 06_cruzar.js Y NO SE TOCA DESPUES.
+
+Aprobado por el owner en la PARADA 1, sin cambios.
+
+
+------------------------------------------------------------------------------
+1. LOS DOS LADOS, CON SU FUENTE Y SU DENOMINADOR
+------------------------------------------------------------------------------
+
+LADO A - LOS PUERTOS
+  53 puertos, nombrados por las 49 entradas del ANEXO "A" punto 1 de la
+  Res. D.G.T.M. y M.M. Ex. 12100/47.
+  Fuente: entradas_punto1.json, derivado del PDF descargado en P1.
+
+LADO B - LAS BAHIAS DEL CATALOGO
+  164 entradas.
+  Fuente: data/decreto/join_bahia_jurisdiccion.json, campo nombre_sitport.
+
+  POR QUE ESA FUENTE Y NO OTRA, que es una correccion del gate y no una
+  comodidad: hay DOS ficheros de 164 en el arbol. src/data/bahia-capitania-map.json
+  esta indexado por bahia_id y NO TRAE NOMBRE DE BAHIA -- sus campos son
+  capitania, gobernacion y telefono. Es el unico dato que hace falta acá y no lo
+  tiene. join_bahia_jurisdiccion.json es el unico de los dos con la columna.
+
+  Y EL 164 ES DE UNA FUENTE, NO DEL CATALOGO ENTERO: data/catalogo/estado_drift.json,
+  corrida del 2026-08-20T19:13:55Z, declara F1:163 · F2:163 · F3:164 · F4:163 ·
+  F5:163, sobre un universo_sitport de 166. Toda cifra de esta sesion que diga
+  "de 164" se refiere a las 164 entradas de join_bahia_jurisdiccion.json y a
+  ninguna otra poblacion.
+
+
+------------------------------------------------------------------------------
+2. NORMALIZACION - Y LO QUE DELIBERADAMENTE NO HACE
+------------------------------------------------------------------------------
+
+  NFD  ->  quitar marcas diacriticas combinantes  ->  mayusculas  ->  colapsar
+  espacios  ->  trim.
+
+  Nada mas. En particular NO se descartan tokens.
+
+  NO se borran "BAHIA", "BAHIA DE", "PUERTO", "CALETA", "SAN", "ISLA".
+  Borrar tokens es una heuristica de similitud disfrazada de normalizacion: hace
+  que "CALETA BUENA" y "BAHIA BUENA" se vuelvan la misma cadena sin que nadie
+  haya decidido que lo son. Si dos nombres solo coinciden despues de tirar
+  tokens, eso NO es un calce exacto -- es un candidato, y va a revision a mano
+  como todos los demas.
+
+
+------------------------------------------------------------------------------
+3. LOS TRES CONTEOS
+------------------------------------------------------------------------------
+
+CALCE EXACTO
+  El nombre normalizado del puerto es IDENTICO al nombre_sitport normalizado.
+  Automatico, y no se revisa: no hay nada que juzgar en una igualdad de cadenas.
+
+CALCE PROBABLE
+  Todo lo demas que el generador de candidatos proponga.
+  EL GENERADOR NO DECIDE NADA. Solo arma la lista de revision.
+  Cada candidato lleva veredicto MANUAL SI/NO con su RAZON ESCRITA, y la lista
+  se publica COMPLETA, con los NO incluidos. Un NO sin razon escrita es rojo.
+
+SIN CALCE
+  El resto.
+
+GENERADOR DE CANDIDATOS (solo para armar la lista):
+  contencion de una cadena normalizada en la otra, en las dos direcciones, con
+  frontera de palabra. Es a proposito un generador GENEROSO: prefiero leer
+  candidatos de mas que perderme uno. Su unica falla cara seria omitir un par
+  verdadero, no proponer uno falso -- lo falso lo mata la revision.
+
+  LO QUE NO SE USA: ninguna medida de similitud automatica (Levenshtein,
+  trigramas, fonetica) como criterio de DECISION. Un falso emparejamiento acá se
+  propaga a todo lo que venga despues.
+
+
+------------------------------------------------------------------------------
+4. LA RELACION ES MUCHOS A MUCHOS, Y POR ESO SE PUBLICAN DOS DIRECCIONES
+------------------------------------------------------------------------------
+
+Un solo numero esconde la forma de la relacion. Se publican las dos:
+
+  DIRECCION B->A   de las 164 bahias, cuantas corresponden a un puerto con
+                   limite fijado. EXACTO + PROBABLE + SIN CALCE = 164.
+                   Es la pregunta literal del encargo.
+
+  DIRECCION A->B   de los 53 puertos, cuantos quedaron emparejados con al menos
+                   una bahia. Es la que dice cuanto del documento aterriza.
+
+Los dos numeros no tienen por que parecerse y no se promedian.
+
+
+------------------------------------------------------------------------------
+5. LO QUE ESTE CRUCE NO PRUEBA
+------------------------------------------------------------------------------
+
+Que una bahia del catalogo y un puerto de la resolucion se llamen igual NO
+prueba que sean el mismo lugar, y menos que el limite del puerto sea el borde de
+la bahia. Prueba que hay un limite publicado que nombra ese topónimo.
+
+Y NO PRUEBA -- esto es lo que va en la fila del declarativo -- que el
+"DENTRO DEL LIMITE DEL PUERTO" que SITPORT declara en AreaRestriccion sea ESTE
+limite. Es plausible y NO esta probado. Estos limites se fijan para efectos de
+PRACTICAJE, Titulo V del D.S. (M.) 397 de 1985, no para restricciones de
+navegacion. Esta sesion no lo resuelve.
