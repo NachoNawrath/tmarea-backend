@@ -1,0 +1,65 @@
+CONTROL CONTRA EL INDICE — las cifras del mensaje de commit salen de aca.
+Corrida: 2026-08-20T19:54:52.057Z
+
+1 · DECLARATIVO, DESDE EL INDICE (git show :data/deudas/deudas_declaradas.json)
+     filas 66 · unicas 64 · vivas 59 · cerradas 2
+     sitios 18 · barridos 9 · sin barrer 9
+     grupo 2: 12 filas · 11 vivas · 10 firmadas
+     grupo 2 VIVAS SIN FIRMAR: 1
+        PLAN-7.2::e7-pieza-2-sin-criterio
+  OK  suma de filas_en_este_declarativo == filas  ->  66 vs 66
+  OK  el total de filas no bajo (66)  ->  66
+  OK  las vivas no bajaron (59): firmar es responder, no hacer  ->  59
+
+2 · LAS DIEZ FIRMADAS, EN EL INDICE — firmada=true Y estado=viva
+  OK  PLAN-2::licencia-de-bahia-en-ruta-costera-sin-aviso  ->  estado=viva firmada=true
+  OK  PLAN-2::spec-no-cubre-p4  ->  estado=viva firmada=true
+  OK  D4D5::puerto-escala-lo-que-declara-no-aplicable  ->  estado=viva firmada=true
+  OK  D4D5::abierto-y-con-restriccion-colapsados-en-pantalla  ->  estado=viva firmada=true
+  OK  D4D5::spec2-sin-punto-de-veracidad  ->  estado=viva firmada=true
+  OK  D4D5::e2-y-e6-sin-premisa  ->  estado=viva firmada=true
+  OK  D4D5::inv34-derogado-por-d5  ->  estado=viva firmada=true
+  OK  D4D5::contrato-10-dice-transitar  ->  estado=viva firmada=true
+  OK  PLAN-2::desacople-licencia-uso  ->  estado=viva firmada=true
+  OK  PLAN-2::usos-inertes-en-el-formulario  ->  estado=viva firmada=true
+  OK  las diez, completas  ->  10/10
+
+3 · LA UNDECIMA: reencuadrada, NO firmada
+  OK  lleva el bloque de pregunta agendada
+  OK  lleva la medicion que la anticipa
+  OK  sigue SIN firmar y viva
+
+4 · LA ENMIENDA DEL BLOQUE OCEANOGRAFICO
+  OK  lleva enmienda_2026_08_20
+  OK  la frase vieja ya no esta en quien_lo_necesita
+  OK  la frase vieja queda CITADA en la enmienda
+
+5 · LA POLITICA DE FIRMA
+  OK  trae la regla nueva
+  OK  anota la asimetria de la fila del ambito antartico
+
+6 · INDICE vs DISCO — tienen que ser el mismo objeto
+     indice sha256 f0bf5b9b692aeaad62eb1b8840e9b5d97bc230d86617f86916afbeacb939fcd3
+     disco  sha256 f0bf5b9b692aeaad62eb1b8840e9b5d97bc230d86617f86916afbeacb939fcd3
+  OK  identicos
+
+7 · LOS INTOCABLES — tienen que seguir FUERA del indice
+  OK  fuera del stage: .claude/launch.json
+  OK  fuera del stage: data/catalogo/estado_drift.json
+
+   LO QUE SI ESTA EN EL STAGE (11):
+     _bitacoras/las_once_2026-08-20/01_medir_uso.js
+     _bitacoras/las_once_2026-08-20/01_medir_uso.txt
+     _bitacoras/las_once_2026-08-20/02_escribir_ocho.js
+     _bitacoras/las_once_2026-08-20/02_escribir_ocho.txt
+     _bitacoras/las_once_2026-08-20/03_escribir_tres_y_diez.js
+     _bitacoras/las_once_2026-08-20/03_escribir_tres_y_diez.txt
+     _bitacoras/las_once_2026-08-20/04_control_caracteres.js
+     _bitacoras/las_once_2026-08-20/04_control_caracteres.txt
+     _bitacoras/las_once_2026-08-20/05_control_contra_el_indice.js
+     _bitacoras/las_once_2026-08-20/06_mensaje_commit.txt
+     data/deudas/deudas_declaradas.json
+  OK  no entro nada de contrabando
+  OK  no falta nada de lo esperado
+
+VERDE — el indice es lo medido. Se puede commitear.

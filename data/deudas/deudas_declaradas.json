@@ -29,7 +29,7 @@
     "5_obsoleta": "La deuda SIGUE SIENDO CIERTA y se podria medir, pero el resultado ya no le sirve a nadie porque el contexto que la hacia util se fue. Exige que_cambio y que_se_perderia_si_no_se_hace. Es PROPUESTA: la firma el owner una por una.",
     "6_se_descarta": "No se hace, con motivo escrito. Es PROPUESTA: la firma el owner una por una."
   },
-  "politica_de_firma": "Los grupos 5 y 6 nacen con firma_owner.firmada = false. Mientras sea false la fila SIGUE CONTANDO como deuda viva. Bajar la lista por decreto en vez de por trabajo es el modo de falla que este campo existe para impedir.",
+  "politica_de_firma": "Los grupos 5 y 6 nacen con firma_owner.firmada = false. Mientras sea false la fila SIGUE CONTANDO como deuda viva. Bajar la lista por decreto en vez de por trabajo es el modo de falla que este campo existe para impedir.  ||  REGLA AGREGADA EL 2026-08-20, y vale para TODOS los grupos: FIRMAR ES RESPONDER, NO HACER. Una fila del grupo 2 con firma_owner.firmada = true y estado \"viva\" es lo NORMAL y no es una contradiccion: el owner contesto la pregunta y el trabajo sigue pendiente. El estado \"cerrada\" esta reservado a que SE HIZO EL TRABAJO — el propio validador rotula ese numero como \"CERRADAS por trabajo\". Cerrar las diez filas firmadas el 2026-08-20 habria bajado las vivas de 59 a 49 sin que nadie tocara una linea, que es exactamente el modo de falla que este campo existe para impedir. LA ASIMETRIA QUE VA ANOTADA Y NO SE CORRIGE: la fila PLAN-3-E8::p1-en-e4 esta cerrada y con firmada=false. No es un defecto y no se toca: esa fila cerro AL APLICAR el texto, no al decidirlo, asi que su cierre lo dio el trabajo y no la firma. Las dos convenciones conviven porque describen dos cosas distintas.",
   "vocabulario_de_estado": {
     "viva": "La deuda existe y no se hizo nada todavia.",
     "cerrada": "Se hizo el trabajo. Exige cerrada_el y cerrada_por, con la evidencia de que se hizo. LA FILA NO SE BORRA: se cierra y sigue en el fichero, porque borrarla haria bajar el numero sin dejar rastro de por que.",
@@ -634,7 +634,7 @@
         "firmada": false,
         "fecha": null
       },
-      "pregunta": "Hay una pieza de trabajo aplicada y en observacion desde el 2026-08-10. Su regla de silenciamiento silencia dos tramos que no deberia, medido sobre 34, y quien la audito dejo cinco caminos con una recomendacion. La condicion de salida ya esta decidida: no se elige camino hasta que cierre la etapa de la que depende el unico camino que arregla la raiz. La pregunta que queda, y que se contesta DESPUES de esa etapa y no antes: ¿que camino se toma entonces, sabiendo que el que arregla la raiz vuelve innecesarios a los otros?",
+      "pregunta": "La app calla el aviso de \"Capitania sin limite cargado\" en los tramos donde da por hecho que la jurisdiccion dueña de esas aguas ya esta en la lista de la ruta; en dos tramos medidos no lo esta y calla igual. ESTA PREGUNTA ES AGENDADA Y NO ABIERTA: por decision del owner del 2026-08-19 no se elige camino hasta que cierre la etapa de la capa por Capitania. Cuando esa etapa cierre: ¿sigue haciendo falta una regla de silenciamiento propia, o el defecto desaparece con el cambio de unidad?",
       "por_que_es_del_owner": "Fijar la condicion de salida de una pieza es decidir cuando el trabajo esta hecho. No se deduce del arbol: no existe escrita en ninguna parte, y eso es exactamente lo que la deuda denuncia.",
       "medicion": {
         "hecha_el": "2026-08-19",
@@ -647,7 +647,21 @@
       "que_se_observa_esta_escrito_aca": "fase5Y seccion 4 y _bitacoras/fase5Z_cierre_2026-08-10.txt",
       "condicion_de_cierre": "DECIDIDA POR EL OWNER el 2026-08-19. La pieza 2 de E7 NO se cierra eligiendo entre O1..O5 mientras E4/C3 siga abierta. Motivo escrito por el owner: O4 depende de una capa por Capitania confiable que hoy no existe -- el ambito maritimo tiene controles_ok=false, 44 de 52 con geometria y NO esta publicado, medido en jurisdicciones_ds991_publicacion el 2026-08-19 -- y eso es E4/C3, trabada en D16. Y O2 seria un parche de dos lineas sobre la grieta que E6 cierra entera. La pieza deja de ser un estado sin puerta: su puerta es E4/C3.",
       "lo_que_esta_fila_denunciaba_quedo_contestado": "La fila denunciaba un estado sin condicion de salida: \"un estado sin condicion de salida no se cierra, se olvida\". Ya tiene condicion de salida, escrita arriba. LA DEUDA SIGUE VIVA porque la pieza sigue abierta -- lo que se cerro es el hueco del criterio, no la pieza.",
-      "depende_de": "E4/C3. Por decision del owner del 2026-08-19, la eleccion de camino no se toma antes."
+      "depende_de": "E4/C3. Por decision del owner del 2026-08-19, la eleccion de camino no se toma antes.",
+      "NO_ES_UNA_PREGUNTA_ABIERTA_ES_AGENDADA": {
+        "aceptado_por_el_owner_el": "2026-08-20",
+        "por_que_se_reencuadra": "La fila estaba redactada como una pregunta abierta y su propia condicion de cierre prohibe contestarla hoy. Mezclada con las demas hacia leer ONCE preguntas trabadas esperando al owner cuando habia DIEZ. El reencuadre no cambia el estado de la deuda: cambia lo que la fila le dice a quien la lee.",
+        "la_puerta": "La etapa de la capa por Capitania (E4/C3), por decision del owner del 2026-08-19.",
+        "y_ademas_estaba_mal_redactada_al_reves_que_las_otras": "No nombraba ni la pieza, ni los caminos, ni la etapa. Era tan anonima que no se podia contestar sin abrir el repositorio, que es justo lo que el grupo 2 promete evitar. La pregunta de arriba es la version que se entiende sola."
+      },
+      "LA_MEDICION_YA_ANTICIPA_LA_RESPUESTA": {
+        "medido_el": "2026-08-10, sobre 8 rutas reales · denominador: 34 tramos silenciados",
+        "a_nivel_de_Capitania": "0 de 34 tramos rompen.",
+        "a_nivel_de_bahia": "2 de 34 rompen. Los dos en la ruta Anahuac -> Chacabuco: un tramo de 6,3855 km con 2,240 km de aguas de Canal Chaffers Sur sin matchear, y uno de 6,1500 km con 2,839 km de Bahia Chacabuco sin matchear. 12,54 km entre los dos.",
+        "lo_que_eso_significa": "El fundamento se sostiene en la unidad que el contrato manda y se cae en la unidad que el codigo usa. Con el cambio de unidad el defecto desaparece POR CONSTRUCCION, y ninguno de los cinco caminos de la auditoria hace falta.",
+        "el_aviso_que_va_con_esto": "Ninguna de las dos bahias publica restriccion hoy. Eso NO salva al criterio: las restricciones cambian por hora y la pregunta es estructural.",
+        "por_que_NO_conviene_construir_la_tercera_condicion_mientras_tanto": "Su precio es reconstruir de quien serian esas aguas SIN el recorte, y eso se apoya en el mismo teselado que otra fila de este declarativo declara NO concluyente para esta pregunta exacta: navegar las aguas de una bahia sin cruzar su celda no es decidible con el dato de hoy. Seria pagar codigo nuevo por una respuesta que no podemos sostener."
+      }
     },
     {
       "id": "PLAN-7.2::e8-sin-desglose",
@@ -1994,12 +2008,28 @@
       "grupo": "2_decision_del_owner",
       "estado": "viva",
       "firma_owner": {
-        "firmada": false,
-        "fecha": null
+        "firmada": true,
+        "fecha": "2026-08-20",
+        "que_significa_esta_firma": "El owner firmo la RESPUESTA A LA PREGUNTA, no el trabajo. La fila sigue VIVA a proposito: el vocabulario de estado de este declarativo reserva \"cerrada\" para cuando se hizo el trabajo, y el propio validador rotula ese numero como \"CERRADAS por trabajo\". Una decision no es el trabajo. Nadie debe leer esta firma como una deuda cerrada."
       },
       "redactada_no_aplicada": true,
       "duplicada_de": null,
-      "pregunta": "Cuando escribimos que el patron ve todas las Capitanias que su ruta atraviesa, y que se le avisa si cruza una sin limite cargado, ¿eso valia solo para la pantalla donde revisa el viaje ANTES de zarpar, o tambien para la pantalla que usa mientras navega? Hoy solo la primera tiene criterio escrito y la segunda no tiene ninguno."
+      "pregunta": "Cuando escribimos que el patron ve todas las Capitanias que su ruta atraviesa, y que se le avisa si cruza una sin limite cargado, ¿eso valia solo para la pantalla donde revisa el viaje ANTES de zarpar, o tambien para la pantalla que usa mientras navega? Hoy solo la primera tiene criterio escrito y la segunda no tiene ninguno.",
+      "decision_del_owner": {
+        "fecha": "2026-08-20",
+        "LA_REGLA": "La especificacion cubre TAMBIEN la pantalla del viaje activo, y con un criterio propio y ACOTADO: mientras navega, al patron se le dice LO QUE CAMBIO respecto de lo que verifico antes de zarpar. No los nueve puntos.",
+        "el_fundamento": {
+          "seguridad_del_patron": "La verificacion hecha en tierra CADUCA durante la travesia. La auditoria del fundamento del 2026-08-10 lo dice textual: \"las restricciones de SITPORT cambian por hora\". El unico momento en que una restriccion nueva puede hacerle cambiar el rumbo es cuando esta navegando, y hoy esa pantalla no pregunta nada.",
+          "por_que_acotado_y_no_los_nueve": "Pedirle los nueve puntos a la pantalla del agua es pedirle que sea la otra pantalla: cara de construir y ruidosa para alguien que esta gobernando. Un solo criterio, verificable, y la deuda de infraestructura queda acotada a \"esta pantalla tambien pregunta\"."
+        },
+        "las_consecuencias": {
+          "la_pantalla_del_agua_pasa_a_tener_criterio": "Hoy no tiene ninguno: pesa 45.326 bytes, no usa el hook de verificacion y no importa ninguno de los 8 bloques de verificacion.",
+          "el_ambito_de_la_especificacion_deja_de_ser_nota_al_pie": "La especificacion era contrastable solo contra la pantalla de antes de zarpar, y su ambito viajaba declarado en el veredicto de cada medicion. Con el punto nuevo, el ambito queda escrito en la propia especificacion.",
+          "lo_que_NO_cambia": "La cifra de la medicion del 2026-08-20 no se recalcula: se midio en el unico ambito contra el que la especificacion era contrastable ese dia, y asi quedo declarada."
+        }
+      },
+      "lo_que_queda": "Escribir el punto en la especificacion. Es texto de producto y lo escribe el owner. El cableado de la pantalla del viaje activo ya tiene su propia fila en el grupo 1.",
+      "por_que_sigue_viva": "DECIDIDA Y NO CERRADA. El grupo dice QUE HACE FALTA para cerrarla y el estado dice si ya se hizo: lo que hacia falta era la decision del owner y ya esta; lo que falta es el trabajo, y en la sesion del 2026-08-20 se decidio explicitamente no implementar nada. Cuando el trabajo se haga, la fila cierra con su evidencia."
     },
     {
       "id": "PLAN-2::viaje-activo-sin-jurisdiccion",
@@ -2054,7 +2084,7 @@
         "controles": "viento 20 en el backend y 36 en la PWA, sobre los mismos dos recorridos.",
         "los_ocho_bloques_de_p3": "PortStatusBlock, TransitRestrictionsBlock, DriftCatalogoBlock, WeatherBlock, TideBlock, NavigationBlock, NormativeBlock y VoyageVerdict. La lista es exhaustiva y ninguno es oceanografico.",
         "el_unico_camino_indirecto": "/api/navegacion/calculo consume ocean-data-reader para corrientes y eso alimenta el ETA. En la pantalla medida ese campo salio vacio: \"Velocidad sobre el fondo —\".",
-        "quien_lo_necesita": "El perfil de pesca, que es uno de los usos declarables del formulario."
+        "quien_lo_necesita": "El viaje que va a pescar. Se lo reconoce por el DESTINO — Caladero, Centro salmonero, Centro mitilidos — mas la ESPECIE que ya se exige en caladero y en coordenadas. Ver la enmienda de abajo."
       },
       "donde": {
         "fichero": "tmarea-pwa/src/screens/P3_VoyageVerification.jsx",
@@ -2073,7 +2103,14 @@
       "redactada_no_aplicada": true,
       "duplicada_de": null,
       "costo_estimado": "Medio. El dato existe y esta servido; falta decidir que se muestra y a quien, y escribir el bloque.",
-      "depende_de": "Producto tiene que decir que ve el pescador. Hoy no esta escrito en §2 ni en ningun otro lado."
+      "depende_de": "Producto tiene que decir que ve el pescador; hoy no esta escrito en la especificacion ni en ningun otro lado. Lo que SI quedo decidido el 2026-08-20 es DE DONDE sale que este viaje es de pesca: del destino y la especie, no del uso de la nave.",
+      "enmienda_2026_08_20": {
+        "la_frase_que_se_enmienda_textual": "El perfil de pesca, que es uno de los usos declarables del formulario.",
+        "por_que_es_falsa_desde_hoy": "Con la decision del owner del 2026-08-20 el uso declarado de la nave deja de gobernar y la lista de usos se va entera. Una fuente que va a dejar de existir no puede ser la fuente de este bloque.",
+        "la_fuente_nueva": "El DESTINO del viaje mas la ESPECIE. Ya existe y ya esta cableado: el patron comercial elige entre Caladero, Centro salmonero, Centro mitilidos, Puerto o caleta y Coordenadas GPS, y la especie es obligatoria en caladero y en coordenadas.",
+        "por_que_ademas_es_MEJOR": "El bloque sirve para buscar caladeros. El destino dice si ESTE viaje va a un caladero; el uso decia si la NAVE se marco alguna vez como de pesca. La fuente nueva es del viaje y la vieja era de la nave.",
+        "lo_que_NO_cambia": "Todo lo demas de esta fila sigue en pie: el servicio oceanografico esta entero en el backend, los ocho bloques de la pantalla de verificacion son exhaustivos y ninguno es oceanografico, y el unico camino indirecto — las corrientes que alimentan el ETA — salio vacio en la pantalla medida."
+      }
     },
     {
       "id": "PLAN-2::formatlicense-desalineada-con-el-registro",
@@ -2137,12 +2174,25 @@
       "grupo": "2_decision_del_owner",
       "estado": "viva",
       "firma_owner": {
-        "firmada": false,
-        "fecha": null
+        "firmada": true,
+        "fecha": "2026-08-20",
+        "que_significa_esta_firma": "El owner firmo la RESPUESTA A LA PREGUNTA, no el trabajo. La fila sigue VIVA a proposito: el vocabulario de estado de este declarativo reserva \"cerrada\" para cuando se hizo el trabajo, y el propio validador rotula ese numero como \"CERRADAS por trabajo\". Una decision no es el trabajo. Nadie debe leer esta firma como una deuda cerrada."
       },
       "redactada_no_aplicada": true,
       "duplicada_de": null,
-      "pregunta": "¿Que tiene que cambiar en lo que ve el patron cuando declara que su nave se usa para acuicultura, o para transporte? Hoy no cambia nada: elegir cualquiera de esas dos da exactamente la misma pantalla que no elegir. O hacen algo, o no deberian estar en la lista."
+      "pregunta": "¿Que tiene que cambiar en lo que ve el patron cuando declara que su nave se usa para acuicultura, o para transporte? Hoy no cambia nada: elegir cualquiera de esas dos da exactamente la misma pantalla que no elegir. O hacen algo, o no deberian estar en la lista.",
+      "por_que_sigue_viva": "DECIDIDA Y NO CERRADA. El grupo dice QUE HACE FALTA para cerrarla y el estado dice si ya se hizo: lo que hacia falta era la decision del owner y ya esta; lo que falta es el trabajo, y en la sesion del 2026-08-20 se decidio explicitamente no implementar nada. Cuando el trabajo se haga, la fila cierra con su evidencia.",
+      "decision_del_owner": {
+        "fecha": "2026-08-20",
+        "LA_REGLA": "La pregunta se contesta POR ABSORCION: no es que dos opciones de cuatro no hagan nada, es que LA LISTA ENTERA SE VA. Con el regimen en la licencia y la actividad en el destino, el campo no tiene trabajo que hacer.",
+        "la_pregunta_que_esta_fila_hacia": "Decia \"o hacen algo, o no deberian estar en la lista\". La respuesta del owner del 2026-08-20 es la segunda, y para las cuatro.",
+        "TRANSPORTE": "NO existe como perfil de usuario del producto. Decision del owner, textual en su intencion: si un transportista necesita algo distinto, lo dira su licencia o su destino, no un campo que se marca una vez en la vida.",
+        "ACUICULTURA": "Deja de ser una opcion inerte que habia que llenar y pasa a ser un DESTINO — Centro salmonero, Centro mitilidos — que el patron ya elige por viaje. No se pierde el perfil: se lo lee donde de verdad se declara.",
+        "por_que_esta_fila_NO_es_del_grupo_4": "Su afirmacion NO es falsa: hasta que el campo se saque, elegir acuicultura o transporte sigue dando exactamente la misma pantalla que no elegir. La fila no murio, fue CONTESTADA. El grupo tampoco se reescribe: sigue siendo del owner y conserva su pregunta.",
+        "un_dato_que_la_medicion_agrego_a_la_fila": "El ambito se calcula como \"recreativo -> deportivo, cualquier otra cosa -> comercial\". O sea que acuicultura y transporte no solo son inertes entre si: son indistinguibles del CAMPO VACIO. La fila decia \"da la misma pantalla que no elegir\" y la medicion lo confirma por construccion, no por casualidad."
+      },
+      "lo_que_queda": "Se cierra con el borrado del campo, que es la ULTIMA linea del trabajo de la fila PLAN-2::desacople-licencia-uso. Esta fila no se toca antes que aquella: borrar la lista sin haber reemplazado el bloqueo es el bloqueo universal.",
+      "depende_de": "PLAN-2::desacople-licencia-uso. Las dos se firmaron juntas el 2026-08-20 y se cierran con el mismo trabajo."
     },
     {
       "id": "PLAN-2::desacople-licencia-uso",
@@ -2172,12 +2222,46 @@
       "grupo": "2_decision_del_owner",
       "estado": "viva",
       "firma_owner": {
-        "firmada": false,
-        "fecha": null
+        "firmada": true,
+        "fecha": "2026-08-20",
+        "que_significa_esta_firma": "El owner firmo la RESPUESTA A LA PREGUNTA, no el trabajo. La fila sigue VIVA a proposito: el vocabulario de estado de este declarativo reserva \"cerrada\" para cuando se hizo el trabajo, y el propio validador rotula ese numero como \"CERRADAS por trabajo\". Una decision no es el trabajo. Nadie debe leer esta firma como una deuda cerrada."
       },
       "redactada_no_aplicada": true,
       "duplicada_de": null,
-      "pregunta": "¿Quien decide si a un patron se le aplican las reglas deportivas: su licencia, o el uso que declara para su nave? Hoy decide el uso de la nave, asi que un capitan con licencia deportiva que declara su nave como de pesca no recibe ninguna verificacion deportiva, y al reves si."
+      "pregunta": "¿Quien decide si a un patron se le aplican las reglas deportivas: su licencia, o el uso que declara para su nave? Hoy decide el uso de la nave, asi que un capitan con licencia deportiva que declara su nave como de pesca no recibe ninguna verificacion deportiva, y al reves si.",
+      "por_que_sigue_viva": "DECIDIDA Y NO CERRADA. El grupo dice QUE HACE FALTA para cerrarla y el estado dice si ya se hizo: lo que hacia falta era la decision del owner y ya esta; lo que falta es el trabajo, y en la sesion del 2026-08-20 se decidio explicitamente no implementar nada. Cuando el trabajo se haga, la fila cierra con su evidencia.",
+      "decision_del_owner": {
+        "fecha": "2026-08-20",
+        "LA_REGLA": "El uso declarado de la nave DEJA DE GOBERNAR. El REGIMEN — deportivo o comercial — sale de la LICENCIA del registro. La ACTIVIDAD — pesca, acuicultura, transporte — sale del DESTINO del viaje, que ya la declara y por viaje.",
+        "el_fundamento_del_owner_textual": "\"Da lo mismo para que usa esa embarcacion, todos los barcos navegan y listo; eso es hilar muy fino y no aporta, trae confusion.\"",
+        "la_precision_que_agrego_la_medicion_y_que_el_owner_hizo_suya": "El campo hacia DOS trabajos con UN SOLO control: decidia el REGIMEN y pretendia decir la ACTIVIDAD. El que sobra es el que esta mal, y esta mal por una razon precisa: es un hecho de la NAVE, marcado una vez, cuando la actividad es un hecho del VIAJE. El mismo hecho preguntado dos veces, y la vez que sobra es la peor de las dos.",
+        "por_que_la_licencia_puede_con_el_regimen": "Medido: de las cinco licencias del registro, TRES dicen \"deportivo\" en el propio nombre, y el conjunto de licencias deportivas ya existe en el codigo y ya gobierna un bloqueo normativo.",
+        "por_que_el_destino_puede_con_la_actividad": "Medido: el patron comercial ya elige Caladero, Centro salmonero o Centro mitilidos entre los tipos de destino, y ya se le exige declarar ESPECIE en caladero y en coordenadas. La actividad ya esta declarada, dos pantallas mas adelante y mejor.",
+        "el_motor_no_participa": "Medido: en el backend, `uso` aparece 4 veces y las cuatro son prosa. CERO comportamientos. El motor nunca ve el campo: recibe `perfil_deportivo` y `navegacion_deportiva`, que la PWA construye a partir de el. La decision es entera de la PWA."
+      },
+      "EL_ORDEN_DEL_TRABAJO_ES_PARTE_DE_LA_DECISION": {
+        "firmado_por_el_owner_el": "2026-08-20",
+        "PRIMERO_DE_TODO": "Reemplazar el bloqueo del TM-002 Art. 22 para que se apoye en la LICENCIA y no en el ambito derivado del uso.",
+        "el_motivo_y_es_medido": "Hoy el bloqueo es \"ambito COMERCIAL y licencia DEPORTIVA\". Sin el campo, el ambito es comercial PARA TODOS, asi que el bloqueo pasaria a dispararse SIEMPRE: ningun patron con licencia deportiva podria guardar un viaje, nunca. Sacar el campo sin reemplazo convierte un bloqueo normativo correcto en un BLOQUEO UNIVERSAL. El modo de falla no es \"deja de bloquear\": es \"bloquea a todos los deportivos, siempre\".",
+        "DESPUES": [
+          "Que la rama deportiva se abra por LICENCIA y no por uso: hoy el perfil deportivo y la navegacion deportiva solo se construyen dentro de la rama que exige uso recreativo.",
+          "Que el selector de licencia deje de estar escondido detras del uso — hoy solo se dibuja si el uso es recreativo — y que ofrezca las CINCO del registro, no las cuatro deportivas.",
+          "Que la actividad se lea del DESTINO del viaje."
+        ],
+        "ULTIMA_LINEA": "Borrar el campo del formulario. Es la ultima linea del trabajo, no la primera.",
+        "por_que_el_orden_va_escrito_en_la_fila": "Porque la fila se va a leer despues, cuando nadie recuerde la medicion. Un orden que vive solo en la conversacion se pierde, y el primer paso que se saltee es justamente el que evita el bloqueo universal."
+      },
+      "LA_PERDIDA_MEDIDA_Y_SU_RECUPERACION": {
+        "que_se_pierde": "El Patron de Nave Menor que pesca deja de recibir el recordatorio de registrar zarpe y recalada en Sernapesca. La condicion de ese recordatorio es un O de TRES — la licencia contiene \"artesanal\", o contiene \"pesca\", o el uso es pesca — y el uso era el tercer termino. Su licencia no contiene ninguna de las dos palabras.",
+        "como_se_recupera": "POR DESTINO: Caladero. Y no es un parche, es mejor que lo que se pierde — el destino es del VIAJE y el uso se marca UNA VEZ EN LA VIDA. Un patron que declaro \"pesca\" hace seis meses y hoy sale a buscar combustible recibia el recordatorio igual; con el destino, lo recibe el que va a pescar.",
+        "quien_no_pierde_nada": "El Patron de Pesca Artesanal: su licencia contiene las dos palabras y el recordatorio ya le llega hoy SIN pasar por el uso."
+      },
+      "las_consecuencias": {
+        "cuanto_cuelga_del_campo": "Medido: 6 ramas de comportamiento en la PWA, de las que cuelgan 13 cosas que el patron deportivo ve en pantalla. Las cuatro capitales: el selector de licencia entero — y con el la frase \"Tu licencia determina el ambito de navegacion habilitado (RGDN Art. 12)\" —, el autocompletado del arqueo bruto desde la eslora (TM-002 Art. 28), el autocompletado de la clasificacion de bahia, y el veredicto deportivo completo.",
+        "el_obstaculo_de_plomeria_que_hay_que_resolver_por_el_camino": "Hay DOS campos de licencia con vocabularios distintos. El del formulario ofrece CUATRO — solo deportivas — y solo se dibuja si el uso es recreativo; el del registro tiene CINCO y solo se escribe en el alta, asi que cambiar de licencia exige borrar el perfil. Si la licencia va a gobernar, la autoridad tiene que ser la del registro, y eso toca dos filas del grupo 1 ya declaradas.",
+        "que_habilita": "La fila PLAN-2::licencia-de-bahia-en-ruta-costera-sin-aviso, firmada el mismo dia y declarada NO aplicable hasta que este trabajo este hecho."
+      },
+      "lo_que_queda": "En este orden: (1) reemplazar el bloqueo del TM-002 Art. 22 por uno que se apoye en la licencia; (2) abrir la rama deportiva por licencia; (3) mostrar el selector de licencia siempre y con las cinco del registro; (4) leer la actividad del destino del viaje; (5) recuperar el recordatorio de Sernapesca por destino; (6) y recien ahi, borrar el campo del formulario."
     },
     {
       "id": "PLAN-2::licencia-de-bahia-en-ruta-costera-sin-aviso",
@@ -2210,12 +2294,34 @@
       "grupo": "2_decision_del_owner",
       "estado": "viva",
       "firma_owner": {
-        "firmada": false,
-        "fecha": null
+        "firmada": true,
+        "fecha": "2026-08-20",
+        "que_significa_esta_firma": "El owner firmo la RESPUESTA A LA PREGUNTA, no el trabajo. La fila sigue VIVA a proposito: el vocabulario de estado de este declarativo reserva \"cerrada\" para cuando se hizo el trabajo, y el propio validador rotula ese numero como \"CERRADAS por trabajo\". Una decision no es el trabajo. Nadie debe leer esta firma como una deuda cerrada."
       },
       "redactada_no_aplicada": true,
       "duplicada_de": null,
-      "pregunta": "¿La app tiene que avisarle al patron cuando la travesia que esta planificando excede el alcance de la licencia que declaro? Hoy no avisa: alguien con licencia de bahia puede planificar una travesia de ochenta y cuatro millas por canales abiertos y la app no le dice nada sobre su habilitacion, aunque al pedirle la licencia le promete que esa licencia determina el ambito de navegacion habilitado."
+      "pregunta": "¿La app tiene que avisarle al patron cuando la travesia que esta planificando excede el alcance de la licencia que declaro? Hoy no avisa: alguien con licencia de bahia puede planificar una travesia de ochenta y cuatro millas por canales abiertos y la app no le dice nada sobre su habilitacion, aunque al pedirle la licencia le promete que esa licencia determina el ambito de navegacion habilitado.",
+      "decision_del_owner": {
+        "fecha": "2026-08-20",
+        "LA_REGLA": "Cuando la travesia planificada excede el alcance de la licencia declarada, la app AVISA. El aviso escala el veredicto a U y NUNCA a U+V: informa el limite, no prohibe la salida.",
+        "el_fundamento": {
+          "normativo_y_es_de_la_propia_app": "El RGDN Art. 12 no lo trajo el agente a la conversacion: lo cita la propia pantalla al pedir el dato, con el texto \"Tu licencia determina el ambito de navegacion habilitado (RGDN Art. 12).\" Una app que promete determinar el ambito habilitado y despues calla en el caso mas claro no queda incompleta: queda FALSA en un punto que el patron usa para decidir.",
+          "coherencia_con_D5": "El fundamento con que el owner cerro D5 dice, textual, que \"la app es informativa: entrega una opcion de ruta segun el trazado normado en el TM-008. Es el patron quien, con el instrumento de navegacion de su barco, aplica ese trayecto\". Avisar es exactamente eso.",
+          "por_que_U_y_no_U_mas_V": "Mismo trato que S3 le da a la Capitania sin limite cargado: \"Escala el veredicto a U, nunca a U+V\". Se informa el limite; no se le prohibe salir."
+        },
+        "las_consecuencias": {
+          "la_distancia_entra_en_la_pregunta": "Hoy, cuando la clasificacion es de bahia, el ambito se fija en \"bahia\" ANTES de llamar al validador y sin mirar la distancia de la ruta. La regla exige que la distancia real de la ruta entre en la pregunta.",
+          "un_test_cambia_y_esta_bien": "La suite prueba hoy lo contrario a proposito, con el nombre puesto. Ese test es la decision vieja escrita SOLO en codigo: al cambiar la decision cambia el test, y deja de ser una regla de producto que vive escondida en una asercion.",
+          "el_caso_medido_que_se_cierra": "Patron Deportivo de Bahia, nave de bahia a motor, Caleta Pesquera Quellon -> Caleta Pesquera San Rafael, 84,3 millas nauticas por canales abiertos de Chiloe: hoy bandera Q, cero motivos, y cero apariciones de \"licencia\", \"no habilit\" e \"ilegal\" en toda la pantalla."
+        },
+        "ESTA_NO_SE_APLICA_TODAVIA_Y_TAMPOCO_SE_CIERRA": {
+          "de_que_depende": "De la decision sobre si el uso declarado de la nave sigue gobernando algo.",
+          "medido_el_2026_08_20": "El veredicto deportivo entero y la alerta de licencia en la pantalla de armado del viaje SOLO se construyen dentro de la rama que exige uso \"recreativo\". El perfil deportivo se arma si el uso es recreativo Y ademas hay licencia, clasificacion y propulsion cargadas; si esa rama no corre, el motor no recibe perfil deportivo ni navegacion deportiva y no hay veredicto deportivo que avisar. Y el selector de licencia que muestra la promesa del RGDN Art. 12 solo se dibuja cuando el uso es recreativo.",
+          "la_consecuencia_practica": "Aplicar esta regla antes de decidir que abre la rama deportiva seria construir el aviso adentro de una puerta que puede desaparecer. Por eso el owner la firmo y NO la mando a implementar."
+        }
+      },
+      "lo_que_queda": "Decidir primero que gobierna la rama deportiva. Despues: que la distancia real de la ruta entre en la pregunta al validador, el aviso propio con su cita, y el test que hoy prueba lo contrario reescrito con la decision nueva.",
+      "por_que_sigue_viva": "DECIDIDA Y NO CERRADA. El grupo dice QUE HACE FALTA para cerrarla y el estado dice si ya se hizo: lo que hacia falta era la decision del owner y ya esta; lo que falta es el trabajo, y en la sesion del 2026-08-20 se decidio explicitamente no implementar nada. Cuando el trabajo se haga, la fila cierra con su evidencia."
     },
     {
       "id": "PLAN-2::campo-que-desaparece-conservando-su-valor",
@@ -2265,8 +2371,9 @@
       "nota_fecha": "El documento no fecha estas deudas: no estaban escritas en ninguna parte. Nacen de las cuatro mediciones de la sesion del 2026-08-20, cuya salida cruda vive en _bitacoras/tres_de_d4_2026-08-20/.",
       "estado": "viva",
       "firma_owner": {
-        "firmada": false,
-        "fecha": null
+        "firmada": true,
+        "fecha": "2026-08-20",
+        "que_significa_esta_firma": "El owner firmo la RESPUESTA A LA PREGUNTA, no el trabajo. La fila sigue VIVA a proposito: el vocabulario de estado de este declarativo reserva \"cerrada\" para cuando se hizo el trabajo, y el propio validador rotula ese numero como \"CERRADAS por trabajo\". Una decision no es el trabajo. Nadie debe leer esta firma como una deuda cerrada."
       },
       "redactada_no_aplicada": true,
       "duplicada_de": null,
@@ -2301,7 +2408,21 @@
         "ESTO_GOBIERNA_EL_ORDEN": "El texto de reemplazo NO se redacta antes de que la celda este medida y resuelta (decision del owner, 2026-08-20). Escribir \"aplica donde el trazado navega esa bahia\" sobre el dato de hoy seria escribir una regla que el motor NO PUEDE CUMPLIR: ver D4D5::la-segunda-direccion-no-es-decidible.",
         "medido_el": "2026-08-20",
         "salida_cruda": "_bitacoras/tres_de_d4_2026-08-20/"
-      }
+      },
+      "decision_del_owner": {
+        "fecha": "2026-08-20",
+        "QUE_SE_FIRMO": "La DIRECCION. El texto NO.",
+        "LA_DIRECCION": "El TITULO SOBREVIVE, con otra redaccion. La bahia sigue siendo ETIQUETA de la restriccion; la unidad de aplicacion es la CAPITANIA cuyo territorio el trazado navega, salvo que el propio texto de la restriccion acote el area.",
+        "el_fundamento": {
+          "es_la_unica_lectura_que_el_motor_puede_cumplir": "La geometria de \"las aguas de una bahia\" NO existe en el arbol. La celda no lo es -- se aparta hasta 73,7 km del punto de su bahia, medido --, hay un punto por bahia, y la capa por Capitania esta declarada andamio no promovible. Elegir que la bahia es extension seria escribir hoy una regla cuya segunda mitad el motor no puede comprobar con ningun dato que tenga.",
+          "coherencia_con_el_contrato": "INV-3.3 ya declara a la Capitania como la unidad jurisdiccional, y la propia nota de alcance de INV-3.4 dice que el motor evalua a nivel de Capitania porque \"es el envolvente: muestra de mas, nunca de menos\".",
+          "el_dato_que_sostiene_la_salvedad": "AreaRestriccion no esta vacio: sobre las 20 filas vigentes del 2026-08-20 hay filas que declaran \"DENTRO DEL LIMITE DEL PUERTO\", \"FUERA DEL LIMITE DEL PUERTO\" y las dos a la vez. La propia autoridad acota el area en el dato."
+        },
+        "LO_QUE_NO_SE_FIRMO_Y_SIGUE_EN_PIE": "El TEXTO de reemplazo. La condicion que el owner fijo el 2026-08-20 no se movio: no se redacta antes de que la celda este resuelta. Y la segunda direccion de la regla de D5 sigue sin ser decidible con el dato de hoy.",
+        "consecuencia_hoy": "El contrato y la seccion de decisiones del plan siguen afirmando cosas contrarias. Queda declarado, no en silencio, y ahora con la direccion escrita para que el texto se redacte en una sola pasada cuando la celda se resuelva."
+      },
+      "lo_que_queda": "Redactar el texto de reemplazo del invariante, cuando la celda este resuelta. Texto de contrato: lo escribe el owner. La direccion ya no es la pregunta.",
+      "por_que_sigue_viva": "DECIDIDA Y NO CERRADA. El grupo dice QUE HACE FALTA para cerrarla y el estado dice si ya se hizo: lo que hacia falta era la decision del owner y ya esta; lo que falta es el trabajo, y en la sesion del 2026-08-20 se decidio explicitamente no implementar nada. Cuando el trabajo se haga, la fila cierra con su evidencia."
     },
     {
       "token_local": null,
@@ -2314,8 +2435,9 @@
       "nota_fecha": "El documento no fecha estas deudas: no estaban escritas en ninguna parte. Nacen de las cuatro mediciones de la sesion del 2026-08-20, cuya salida cruda vive en _bitacoras/tres_de_d4_2026-08-20/.",
       "estado": "viva",
       "firma_owner": {
-        "firmada": false,
-        "fecha": null
+        "firmada": true,
+        "fecha": "2026-08-20",
+        "que_significa_esta_firma": "El owner firmo la RESPUESTA A LA PREGUNTA, no el trabajo. La fila sigue VIVA a proposito: el vocabulario de estado de este declarativo reserva \"cerrada\" para cuando se hizo el trabajo, y el propio validador rotula ese numero como \"CERRADAS por trabajo\". Una decision no es el trabajo. Nadie debe leer esta firma como una deuda cerrada."
       },
       "redactada_no_aplicada": true,
       "duplicada_de": null,
@@ -2342,7 +2464,22 @@
         "cuanto_es_hacia_abajo_MEDIDO": "Sobre las 8 rutas calculables del arnes, contra el andamio por Capitania y con las restricciones vivas del 2026-08-20: R1 Quellon->San Rafael mostraria 4 restricciones MAS bajo la regla vieja (bahias 112, 148, 251, 252, todas con TODOS viva), C1 Punta Arenas->Williams 1 mas (bahia 165), C4 Quellon->Melinka 1 mas (bahia 252). CAVEAT que viaja con el numero: el andamio jurisdicciones_decreto esta declarado NO promovible (60 pares traslapados, 44.875,6 km2, 10 de 64 sin geometria, insumo v1 con 11 jurisdicciones que difieren del v2 y todas en el corredor de Chiloe). Es COTA, no medida exacta. 02_celda_causas_y_cota.txt.",
         "medido_el": "2026-08-20",
         "salida_cruda": "_bitacoras/tres_de_d4_2026-08-20/"
-      }
+      },
+      "decision_del_owner": {
+        "fecha": "2026-08-20",
+        "LA_REGLA": "E6 se ACOTA: pasa a gobernar A QUIEN SE NOMBRA y A QUIEN SE LLAMA, y deja de gobernar QUE RESTRICCIONES SE LISTAN. La direccion esperada que E2 declaraba -- hacia arriba -- queda RETIRADA.",
+        "el_fundamento": {
+          "E6_no_vivia_solo_de_D5": "Vive de INV-3.3, que prohibe resolver jurisdiccion por celda de un teselado, y eso D5 no lo toca. Lo que murio es la premisa de volumen, no la etapa.",
+          "por_que_no_se_disuelve_en_E4": "Disolverla perderia el unico trabajo que hoy sostiene S1 -- ver todas las Capitanias que la ruta atraviesa -- y S3 -- el aviso de Capitania sin limite cargado --."
+        },
+        "las_consecuencias": {
+          "cuanto_es_hacia_abajo_y_es_COTA_no_medida": "Sobre las 8 rutas calculables del arnes, con las restricciones vigentes del 2026-08-20 y contra el andamio por Capitania: Quellon -> San Rafael mostraria 4 restricciones MENOS que bajo la regla vieja (bahias 112, 148, 251 y 252), Punta Arenas -> Williams 1 menos (bahia 165) y Quellon -> Melinka 1 menos (bahia 252). CAVEAT que viaja con el numero: el andamio esta declarado NO promovible, asi que es cota y no medida exacta.",
+          "el_premio_que_cobra_gratis": "Con la unidad Capitania, el defecto de la pieza 2 de E7 desaparece por construccion: a nivel de Capitania rompen 0 de 34 tramos silenciados, contra 2 de 34 a nivel de bahia.",
+          "lo_que_hay_que_reescribir": "El punto 1 de E2 -- la direccion esperada -- y el alcance y el criterio de aceptacion de E6, que hoy nombra S2."
+        }
+      },
+      "lo_que_queda": "Reescribir E2 y E6 en el plan, con el criterio de aceptacion nuevo. Texto de plan: lo escribe el owner.",
+      "por_que_sigue_viva": "DECIDIDA Y NO CERRADA. El grupo dice QUE HACE FALTA para cerrarla y el estado dice si ya se hizo: lo que hacia falta era la decision del owner y ya esta; lo que falta es el trabajo, y en la sesion del 2026-08-20 se decidio explicitamente no implementar nada. Cuando el trabajo se haga, la fila cierra con su evidencia."
     },
     {
       "token_local": null,
@@ -2355,8 +2492,9 @@
       "nota_fecha": "El documento no fecha estas deudas: no estaban escritas en ninguna parte. Nacen de las cuatro mediciones de la sesion del 2026-08-20, cuya salida cruda vive en _bitacoras/tres_de_d4_2026-08-20/.",
       "estado": "viva",
       "firma_owner": {
-        "firmada": false,
-        "fecha": null
+        "firmada": true,
+        "fecha": "2026-08-20",
+        "que_significa_esta_firma": "El owner firmo la RESPUESTA A LA PREGUNTA, no el trabajo. La fila sigue VIVA a proposito: el vocabulario de estado de este declarativo reserva \"cerrada\" para cuando se hizo el trabajo, y el propio validador rotula ese numero como \"CERRADAS por trabajo\". Una decision no es el trabajo. Nadie debe leer esta firma como una deuda cerrada."
       },
       "redactada_no_aplicada": true,
       "duplicada_de": null,
@@ -2386,7 +2524,23 @@
         "lo_que_esta_fila_NO_decide": "Si eso esta MAL. Puede ser deliberado: la condicion de puerto es un ESTADO del lugar y no un veredicto por nave, y el propio backend lo dice donde emite `cierre` (\"Estado de puerto, no veredicto por nave: no depende del AB de quien pregunta\"). La medicion solo dice que hoy las dos fuentes se contradicen en la misma pantalla, y que S6 lleva un \"nunca se contradice con lo que hay debajo\".",
         "medido_el": "2026-08-20",
         "salida_cruda": "_bitacoras/tres_de_d4_2026-08-20/"
-      }
+      },
+      "decision_del_owner": {
+        "fecha": "2026-08-20",
+        "LA_REGLA": "El estado del puerto sigue escalando el veredicto SIEMPRE, porque es un estado del LUGAR y no un veredicto por nave. Lo que cambia es el TEXTO: el motivo tiene que decir, en la misma linea, que el puerto tiene restriccion vigente y si esa restriccion le aplica o no a la nave.",
+        "el_fundamento": {
+          "coherencia_con_algo_ya_escrito": "El backend ya lo declara donde emite el cierre: \"Estado de puerto, no veredicto por nave: no depende del AB de quien pregunta\". La regla no inventa un criterio nuevo: le da voz al que ya estaba.",
+          "seguridad_del_patron": "El mal tiempo empeora, no mejora, en el rato entre que verifica y suelta amarras. Bajar el estado de un puerto porque hoy no le aplica a este arqueo seria ocultar un hecho del lugar que puede cambiar en horas.",
+          "que_era_lo_que_estaba_mal": "No que subiera: que subiera SIN DECIR POR QUE. Eso es lo que violaba S6 -- \"nunca se contradice con lo que hay debajo\" -- y es lo que el texto arregla."
+        },
+        "las_consecuencias": {
+          "no_se_toca_la_composicion_del_maximo": "El veredicto se sigue componiendo igual.",
+          "no_se_toca_la_API": "El endpoint de puerto sigue sin recibir el arqueo bruto, y no le hace falta.",
+          "la_contradiccion_medida_se_cierra_por_el_texto": "Las dos pasadas del 2026-08-20 sobre Quellon -> San Rafael con la unica restriccion vigente de Bahia Quellon: con AB 50 el motivo decia \"Puerto de zarpe con restricciones\" mientras la misma tarjeta decia \"Tu embarcacion (AB 50) no esta afectada por esta restriccion\". Con la regla, el motivo dice las dos cosas."
+        }
+      },
+      "lo_que_queda": "Escribir la cadena del motivo del veredicto para que nombre las dos cosas. Una cadena, un sitio.",
+      "por_que_sigue_viva": "DECIDIDA Y NO CERRADA. El grupo dice QUE HACE FALTA para cerrarla y el estado dice si ya se hizo: lo que hacia falta era la decision del owner y ya esta; lo que falta es el trabajo, y en la sesion del 2026-08-20 se decidio explicitamente no implementar nada. Cuando el trabajo se haga, la fila cierra con su evidencia."
     },
     {
       "token_local": null,
@@ -2399,8 +2553,9 @@
       "nota_fecha": "El documento no fecha estas deudas: no estaban escritas en ninguna parte. Nacen de las cuatro mediciones de la sesion del 2026-08-20, cuya salida cruda vive en _bitacoras/tres_de_d4_2026-08-20/.",
       "estado": "viva",
       "firma_owner": {
-        "firmada": false,
-        "fecha": null
+        "firmada": true,
+        "fecha": "2026-08-20",
+        "que_significa_esta_firma": "El owner firmo la RESPUESTA A LA PREGUNTA, no el trabajo. La fila sigue VIVA a proposito: el vocabulario de estado de este declarativo reserva \"cerrada\" para cuando se hizo el trabajo, y el propio validador rotula ese numero como \"CERRADAS por trabajo\". Una decision no es el trabajo. Nadie debe leer esta firma como una deuda cerrada."
       },
       "redactada_no_aplicada": true,
       "duplicada_de": null,
@@ -2423,7 +2578,21 @@
         "en_la_pantalla": "NO. 🟢 \"Abierto\" solo sale junto a \"Sin restricciones activas\"; basta UNA restriccion para que el rotulo pase a 🟡 \"Con restricciones\", sin mirar `cierre` y sin mirar la nave. Medido en las dos tarjetas de las dos pasadas.",
         "por_que_importa_para_S5": "Si el bloque de puertos cuenta el ESTADO del lugar y el de transito cuenta las RESTRICCIONES que la ruta encuentra, entonces no cuentan lo mismo y \"duplicado\" en S5 significa otra cosa: no es la misma informacion dos veces, son dos informaciones distintas del mismo sitio, hoy fundidas en un solo rotulo. Con el dato de hoy la bahia 117 aparece en los dos bloques y en los dos como \"cerrado\".",
         "salida_cruda": "_bitacoras/tres_de_d4_2026-08-20/"
-      }
+      },
+      "decision_del_owner": {
+        "fecha": "2026-08-20",
+        "LA_REGLA": "Dos rotulos separados: la CONDICION del puerto (abierto o cerrado) y las RESTRICCIONES VIGENTES (cuantas). Son dos hechos distintos del mismo lugar y no se funden en un color.",
+        "el_fundamento": {
+          "es_la_lectura_literal_de_S5_tal_como_el_owner_la_reescribio": "S5 quedo, textual: \"un hecho puede aparecer en mas de un bloque si sirve a mas de una decision; lo que no puede es que dos apariciones del mismo hecho digan cosas distintas sin decir cual manda\". Aca no hay dos apariciones de un hecho: hay DOS HECHOS fundidos en uno, y el color se lo come al que decide si puede zarpar.",
+          "el_dato_ya_los_separa": "Sobre las 20 filas de restriccion vigentes del 2026-08-20, 14 declaran cierre y 6 no. Tres de esas 6 son de tipo TODOS: Bahia Gregorio, Puerto Williams y Primera Angostura, las tres por viento. Un puerto puede tener restriccion vigente y NO estar cerrado."
+        },
+        "las_consecuencias": {
+          "queda_definido_que_significa_duplicado": "El bloque de puerto cuenta el ESTADO del lugar y el de transito cuenta las RESTRICCIONES que la ruta encuentra. No cuentan lo mismo, y con dos rotulos la pantalla lo dice en vez de suponerlo.",
+          "lo_que_el_patron_deja_de_ver": "Deja de ver el mismo amarillo para un puerto con aviso de viento fuera del limite portuario y para un puerto cerrado."
+        }
+      },
+      "lo_que_queda": "Separar el rotulo en el componente de la tarjeta de puerto. Un componente.",
+      "por_que_sigue_viva": "DECIDIDA Y NO CERRADA. El grupo dice QUE HACE FALTA para cerrarla y el estado dice si ya se hizo: lo que hacia falta era la decision del owner y ya esta; lo que falta es el trabajo, y en la sesion del 2026-08-20 se decidio explicitamente no implementar nada. Cuando el trabajo se haga, la fila cierra con su evidencia."
     },
     {
       "token_local": null,
@@ -2554,8 +2723,9 @@
       "nota_fecha": "El documento no fecha estas deudas: nacen de la medicion y de la firma de D4 del 2026-08-20. Salida cruda en _bitacoras/tres_de_d4_2026-08-20/.",
       "estado": "viva",
       "firma_owner": {
-        "firmada": false,
-        "fecha": null
+        "firmada": true,
+        "fecha": "2026-08-20",
+        "que_significa_esta_firma": "El owner firmo la RESPUESTA A LA PREGUNTA, no el trabajo. La fila sigue VIVA a proposito: el vocabulario de estado de este declarativo reserva \"cerrada\" para cuando se hizo el trabajo, y el propio validador rotula ese numero como \"CERRADAS por trabajo\". Una decision no es el trabajo. Nadie debe leer esta firma como una deuda cerrada."
       },
       "redactada_no_aplicada": true,
       "duplicada_de": null,
@@ -2589,7 +2759,23 @@
       },
       "pregunta": "¿§2 tiene que incluir un punto sobre la calidad de lo que se le dice al patron? Van dos casos en un dia y ninguno lo detecta un test ni un validador: «zona intermedia» sobre el puerto de zarpe, que afirma algo FALSO, y «Tu embarcación NO puede transitar», que es cierto pero esta MAL DICHO —un barco navega—. El primero se cazo por casualidad dentro de la medicion de S5(b), que acaba de anularse; el segundo lo vio el owner en pantalla y ningun instrumento lo habria encontrado. La pregunta tiene dos mitades: ¿el punto nuevo cubre VERACIDAD, cubre REGISTRO, o cubre las dos? Y si cubre registro, ¿contra que se verifica, si no hay instrumento que lo mida?",
       "por_que_es_del_owner": "§2 es la especificacion de producto y sus puntos los aprueba el owner. Agregar un decimo punto cambia el criterio de aceptacion de todas las etapas que lo citan.",
-      "consecuencia_hoy": "El defecto concreto esta CORREGIDO (la cadena se cambio el 2026-08-20 en los dos repos). Lo que queda abierto es que no hay criterio que lo hubiera exigido, ni que lo exija la proxima vez."
+      "consecuencia_hoy": "El defecto concreto esta CORREGIDO (la cadena se cambio el 2026-08-20 en los dos repos). Lo que queda abierto es que no hay criterio que lo hubiera exigido, ni que lo exija la proxima vez.",
+      "decision_del_owner": {
+        "fecha": "2026-08-20",
+        "LA_REGLA": "La especificacion suma un punto que cubre VERACIDAD y solo veracidad: ningun mensaje afirma sobre la posicion, la nave o la norma algo que el dato emitido contradiga. El REGISTRO -- que este dicho en el idioma del patron -- queda como REGLA DE ESTILO que NO bloquea y NO es criterio de aceptacion.",
+        "el_fundamento": {
+          "veracidad_si_tiene_instrumento": "Los dos casos del 2026-08-20 son de la misma forma: el mensaje le pone a un lugar un rol que el dato emitido contradice -- llamar \"zona intermedia\" al puerto de zarpe --. Eso se assertea, y por lo tanto se puede exigir.",
+          "registro_no_lo_tiene_y_por_eso_no_bloquea": "El segundo caso -- \"transitar\" por \"navegar\" -- lo vio el owner en pantalla y ningun instrumento lo habria encontrado. Un criterio de aceptacion cuyo instrumento es \"que alguien lo mire\" no se verifica: se declara cumplido.",
+          "el_modo_de_falla_ya_esta_fichado_en_este_mismo_declarativo": "Una fila de este grupo lo dice textual: \"un estado sin condicion de salida no se cierra: se olvida\". Un punto de aceptacion sin instrumento le baja el precio a los otros nueve."
+        },
+        "las_consecuencias": {
+          "cambia_el_criterio_de_aceptacion_de_varias_etapas": "Todas las etapas que citan la especificacion suman el punto nuevo.",
+          "los_dos_casos_quedan_cubiertos_hacia_adelante": "El primero por el punto; el segundo por la regla de estilo. Se dice cual cubre cual, para que nadie crea que el segundo esta garantizado por un test.",
+          "lo_que_sigue_sin_estar_garantizado_y_se_declara": "Un mensaje mal dicho pero cierto puede volver a pasar. La regla de estilo lo hace corregible, no lo hace detectable."
+        }
+      },
+      "lo_que_queda": "Escribir el punto nuevo en la especificacion, y la regla de estilo donde no se lea como criterio de aceptacion. Texto de producto: lo escribe el owner.",
+      "por_que_sigue_viva": "DECIDIDA Y NO CERRADA. El grupo dice QUE HACE FALTA para cerrarla y el estado dice si ya se hizo: lo que hacia falta era la decision del owner y ya esta; lo que falta es el trabajo, y en la sesion del 2026-08-20 se decidio explicitamente no implementar nada. Cuando el trabajo se haga, la fila cierra con su evidencia."
     },
     {
       "token_local": null,
@@ -2668,8 +2854,9 @@
       "grupo": "2_decision_del_owner",
       "estado": "viva",
       "firma_owner": {
-        "firmada": false,
-        "fecha": null
+        "firmada": true,
+        "fecha": "2026-08-20",
+        "que_significa_esta_firma": "El owner firmo la RESPUESTA A LA PREGUNTA, no el trabajo. La fila sigue VIVA a proposito: el vocabulario de estado de este declarativo reserva \"cerrada\" para cuando se hizo el trabajo, y el propio validador rotula ese numero como \"CERRADAS por trabajo\". Una decision no es el trabajo. Nadie debe leer esta firma como una deuda cerrada."
       },
       "redactada_no_aplicada": true,
       "texto_ya_redactado_en": "esta misma fila, campo LO_QUE_CAMBIA_Y_LO_QUE_NO.capa_1_CAMBIA. Esta listo para pegar: cambia UNA palabra de UNA celda.",
@@ -2677,7 +2864,25 @@
       "por_que_es_del_owner": "Es texto de contrato. Precedente D9 (INV-3.5) y D4D5::inv34-derogado-por-d5: el agente mide y redacta, el texto del contrato lo pega el owner.",
       "medicion": "_bitacoras/tres_de_d4_2026-08-20/15_inventario_transitar.txt",
       "consecuencia_hoy": "La app ya dice «navegar» y el contrato sigue diciendo «transitar». Mientras eso dure, la Verificacion de §10 contra la pantalla da distinto por una palabra, y es NUESTRA divergencia, no un defecto de la app.",
-      "duplicada_de": null
+      "duplicada_de": null,
+      "decision_del_owner": {
+        "fecha": "2026-08-20",
+        "LA_REGLA": "Se pegan los DOS sitios del contrato, no uno. Y el nombre de la fila \"Zona intermedia cerrada\" SE QUEDA.",
+        "LA_CORRECCION_DE_ALCANCE_QUE_ENCONTRO_LA_LECTURA_DEL_2026_08_20": {
+          "lo_que_esta_fila_decia": "Que era \"UNA palabra de UNA celda\".",
+          "lo_que_se_midio": "Son DOS sitios. Barrido declarado: el fichero del contrato completo, patron LITERAL \"transitar\" -- literal y no clase de caracteres, justamente por el defecto de acentos ya fichado --, 2 apariciones.",
+          "sitio_1": "La celda de Capa 1 de la fila \"Zona intermedia cerrada\" del catalogo de mensajes.",
+          "sitio_2": "La linea del invariante del mensaje en doble capa, que dice: Mensaje inequivoco (\"Tu embarcacion NO puede transitar\" vs \"No afectada\"). Es la misma cadena al patron y le corresponde el mismo cambio.",
+          "lo_que_NO_se_toca": "La Capa 2, que parafrasea la norma -- el D.L. 2222 Art. 32 habla de prohibir el TRANSITO -- y cambiarla seria citar mal."
+        },
+        "el_fundamento_del_nombre_que_se_queda": {
+          "la_regla_verbo_sustantivo_es_del_propio_owner": "Se corrige el VERBO, no el SUSTANTIVO. \"Zona intermedia\" es el nombre de una CATEGORIA del contrato, definida en INV-3.1 -- una jurisdiccion que la ruta atraviesa y no es origen ni destino --, no es texto que lea el patron.",
+          "el_defecto_no_era_la_palabra": "Lo que se cazo en pantalla no fue la palabra: fue aplicarsela al puerto de ZARPE, o sea un mensaje falso. Eso lo cubre el punto de veracidad nuevo de la especificacion, no el nombre de una fila del contrato. Cambiar el nombre haria desaparecer la palabra sin arreglar el defecto."
+        },
+        "consecuencia_hoy": "La app ya dice \"navegar\" y el contrato sigue diciendo \"transitar\" en dos sitios. Mientras dure, la verificacion del contrato contra la pantalla da distinto por una palabra, y es NUESTRA divergencia, no un defecto de la app."
+      },
+      "lo_que_queda": "Pegar la palabra en los DOS sitios. Texto de contrato: lo pega el owner. Es lo mas barato de las once.",
+      "por_que_sigue_viva": "DECIDIDA Y NO CERRADA. El grupo dice QUE HACE FALTA para cerrarla y el estado dice si ya se hizo: lo que hacia falta era la decision del owner y ya esta; lo que falta es el trabajo, y en la sesion del 2026-08-20 se decidio explicitamente no implementar nada. Cuando el trabajo se haga, la fila cierra con su evidencia."
     },
     {
       "id": "D4D5::detectararea-colapsa-un-vocabulario-de-tres",

@@ -1,0 +1,133 @@
+MEDICION DEL CAMPO `uso`
+Corrida: 2026-08-20T19:50:18.272Z
+
+ARBOL A · tmarea-pwa/src   · ficheros .js/.jsx: 43
+ARBOL B · backend src+scripts · ficheros .js  : 111
+
+CONTROLES
+  positivo · `perfil_deportivo` en el arbol B : 4  -> OK
+      src/routes/sitport-routes.js:772
+      src/routes/sitport-routes.js:972
+      src/routes/sitport-routes.js:974
+      src/routes/sitport-routes.js:975
+  negativo · `ZZQXNOEXISTE`                   : A 0 · B 0  -> OK
+
+ARBOL B — `uso` en el backend: 4 linea(s)
+    scripts/e3_verificacion_paso6.js:36  //   node scripts/e3_verificacion_paso6.js --pasada off   (uso interno)
+    src/routes/sitport-routes.js:269  // SE RETIRA ENTERO Y NO SE DEJA SIN LLAMADOR: un resolvedor vivo y sin uso es
+    src/services/ocean-data-reader.js:270  console.warn('[OCEAN] IFOP fallÃ³ para segmento, uso Open-Meteo:', error.message);
+    src/services/routes-service.js:86  // Devuelve las reglas del motor (para uso futuro en el Decision Engine)
+  CLASIFICACION: las 4 son PROSA (comentarios y un mensaje de consola).
+  COMPORTAMIENTOS EN EL BACKEND: 0. El motor NUNCA ve el campo.
+  Lo que si recibe es `perfil_deportivo` y `navegacion_deportiva`, que la PWA
+  construye A PARTIR de `uso`. La decision es entera de la PWA.
+
+ARBOL A — `uso` en la PWA: 19 linea(s)
+    src/components/screens/ModuloView.jsx:41  regla_practica, accion, jerarquia, radio_vhf, uso, ejemplo,
+    src/components/screens/ModuloView.jsx:83  {uso && (
+    src/components/screens/ModuloView.jsx:84  <p style={styles.textoNormal}>{uso}</p>
+    src/components/screens/S0Onboarding.jsx:44  <p>Tmarea es una herramienta digital de apoyo a la decisión navegacional. Su uso está sujeto a estos
+    src/components/verification/TransitRestrictionsBlock.jsx:165  es el uso correcto del sustantivo.
+    src/hooks/useVoyageVerification.js:727  // ── R7 — Licencia/uso artesanal o de pesca ─────────────────────────────────
+    src/hooks/useVoyageVerification.js:729  if (licLower.includes('artesanal') || licLower.includes('pesca') || vessel?.uso === 'pesca') {
+    src/hooks/useVoyageVerification.js:956  const isRecreativo = vessel?.uso === 'recreativo';
+    src/screens/P1_VesselProfile.jsx:53  uso: '',
+    src/screens/P1_VesselProfile.jsx:119  // Ámbito se deriva del uso, no de la licencia (spec §15.3)
+    src/screens/P1_VesselProfile.jsx:120  const ambitoDeportivo = form.uso === 'recreativo';
+    src/screens/P1_VesselProfile.jsx:163  if (name === 'uso' && nuevoValor !== 'recreativo') {
+    src/screens/P1_VesselProfile.jsx:199  if (!form.uso) errs.uso = 'Selecciona el uso de la embarcación';
+    src/screens/P1_VesselProfile.jsx:361  <select name="uso" value={form.uso} onChange={handleChange}
+    src/screens/P1_VesselProfile.jsx:362  style={{ ...estilos.select, borderColor: errores.uso ? '#f44336' : '#d0d0d0' }}>
+    src/screens/P1_VesselProfile.jsx:366  {errores.uso && <div style={estilos.errorField}>⚠ {errores.uso}</div>}
+    src/screens/P2_VoyageSetup.jsx:672  // Ámbito deportivo/comercial se deriva del uso declarado de la nave, no
+    src/screens/P2_VoyageSetup.jsx:675  const ambito = useMemo(() => (vessel?.uso === 'recreativo' ? 'deportivo' : 'comercial'), [vessel]);
+    src/utils/license-rules.js:35  // nave se deriva de su uso declarado (§15.3 del spec), no de este set.
+
+CLASIFICACION, una por una:
+    src/components/screens/ModuloView.jsx:41                  FP · campo homonimo de la Biblioteca (un modulo tiene su propio campo `uso`)
+    src/components/screens/ModuloView.jsx:83                  FP · idem
+    src/components/screens/ModuloView.jsx:84                  FP · idem
+    src/components/screens/S0Onboarding.jsx:44                FP · prosa de los terminos de uso
+    src/components/verification/TransitRestrictionsBlock.jsx:165FP · comentario sobre el sustantivo
+    src/hooks/useVoyageVerification.js:727                    FP · comentario
+    src/hooks/useVoyageVerification.js:729                    RAMA 5 · recordatorio de Sernapesca (tercer termino de un O de tres)
+    src/hooks/useVoyageVerification.js:956                    RAMA 6 · puerta del perfil deportivo hacia el motor
+    src/screens/P1_VesselProfile.jsx:53                       CAMPO · valor inicial del formulario
+    src/screens/P1_VesselProfile.jsx:119                      FP · comentario
+    src/screens/P1_VesselProfile.jsx:120                      RAMA 1 · deriva el ambito deportivo del perfil de nave
+    src/screens/P1_VesselProfile.jsx:163                      RAMA 2 · borrado en cascada de licencia, clasificacion y potencia
+    src/screens/P1_VesselProfile.jsx:199                      RAMA 3 · obligatoriedad del propio campo
+    src/screens/P1_VesselProfile.jsx:361                      CAMPO · el selector
+    src/screens/P1_VesselProfile.jsx:362                      CAMPO · el selector (estilo de error)
+    src/screens/P1_VesselProfile.jsx:366                      CAMPO · el selector (mensaje de error)
+    src/screens/P2_VoyageSetup.jsx:672                        FP · comentario
+    src/screens/P2_VoyageSetup.jsx:675                        RAMA 4 · deriva el ambito en el armado del viaje
+    src/utils/license-rules.js:35                             FP · comentario
+
+  falsos positivos declarados : 9
+  el campo del formulario     : 4 linea(s)
+  RAMAS DE COMPORTAMIENTO     : 6
+  sin clasificar              : 0  -> OK
+  suma 19 == total 19 -> OK
+
+QUE DESAPARECE DE LA PANTALLA SI `uso` DEJA DE EXISTIR Y NADA LO REEMPLAZA
+Supuesto medido: el ambito se calcula como "recreativo -> deportivo, cualquier
+otra cosa -> comercial", asi que sin el campo TODOS quedan comerciales.
+
+  RAMA 1a · El selector de licencia ENTERO. Solo se dibuja si el uso es recreativo. Con el desaparece la frase "Tu licencia determina el ambito de navegacion habilitado (RGDN Art. 12)."
+  RAMA 1b · La obligatoriedad de esa licencia.
+  RAMA 1c · El autocompletado del arqueo bruto desde la eslora (TM-002 Art. 28). El AB es el numero que decide el veredicto: AB 50 dio bandera U y AB 10 dio U+V con la MISMA restriccion, medido en pantalla el 2026-08-20.
+  RAMA 1d · El autocompletado de la clasificacion BAHIA_VELA / BAHIA_MOTOR para naves eximidas (< 5 m, y < 10 HP si es a motor). Esa clasificacion es la que hoy fija el ambito "bahia".
+  RAMA 2  · El borrado en cascada de licencia, clasificacion y potencia. Desaparece con el campo.
+  RAMA 3  · La validacion "Selecciona el uso de la embarcacion": una pregunta menos.
+  RAMA 4a · EL BLOQUEO TM-002 Art. 22. Ver el bloque de abajo: no sobrevive, y falla al reves.
+  RAMA 4b · El badge "Perfil Deportivo - <licencia>".
+  RAMA 4c · El bloque "Capitania de zarpe" con su VHF primario y secundario.
+  RAMA 4d · La alerta de licencia en linea cuando el validador detecta violacion de alcance.
+  RAMA 4e · La checklist de 5 items de seguridad antes de guardar.
+  RAMA 4f · Los tipos de destino cambian enteros. Deportivo: Puerto/Caleta, Marina o Club Nautico, Fondeadero/Bahia, Paseo Circular, Coordenadas GPS. Comercial: Puerto o caleta, Centro salmonero, Centro mitilidos, Caladero/Zona de pesca, Coordenadas GPS. Cinco y cinco, y solo DOS coinciden.
+  RAMA 4g · La exigencia de declarar ESPECIE (solo comercial, en caladero y coordenadas).
+  RAMA 4h · El boton: "Verificar viaje deportivo" contra "Verificar condiciones del viaje".
+  RAMA 4i · Tres campos del viaje guardado: perfil deportivo, validacion de licencia y capitania mas cercana.
+  RAMA 5  · El recordatorio de Sernapesca PARA QUIEN NO LO TIENE EN LA LICENCIA. La condicion es un O de tres: licencia contiene "artesanal", o contiene "pesca", o el uso es pesca.
+  RAMA 6  · El VEREDICTO DEPORTIVO ENTERO: bandera, arqueo efectivo y alertas de licencia. Sin la puerta, el motor no recibe perfil deportivo ni navegacion deportiva.
+
+  RESUMEN SIN OPINION: el patron DEPORTIVO pierde 13 cosas de pantalla.
+  El COMERCIAL no pierde nada, salvo un caso: el que tiene licencia de Patron de
+  Nave Menor y sale a pescar deja de recibir el recordatorio de Sernapesca,
+  porque su licencia no contiene la palabra.
+
+EL BLOQUEO TM-002 Art. 22 — ¿sobrevive sin el campo?
+  NO, y falla al reves de lo que se teme.
+  La condicion es: ambito COMERCIAL **y** licencia DEPORTIVA.
+  Sin el campo, el ambito es comercial PARA TODOS.
+  Entonces cualquier patron con licencia deportiva veria el banner de bloqueo y
+  NO PODRIA GUARDAR NINGUN VIAJE, NUNCA. El modo de falla no es "deja de
+  bloquear": es "bloquea a todos los deportivos, siempre".
+  Por eso su reemplazo es la PRIMERA linea del trabajo y el borrado del campo la ULTIMA.
+
+¿PUEDE LA LICENCIA SOLA GOBERNARLO TODO?
+  Las cinco del registro: patron_nave_menor, patron_pesca_artesanal,
+  patron_deportivo_bahia, capitan_deportivo_costero, capitan_deportivo_alta_mar.
+    regimen deportivo/comercial      -> SI. Esta en el nombre de 3 de 5, y el
+                                        conjunto ya existe y ya gobierna el bloqueo.
+    recordatorio de Sernapesca       -> SI, y ya lo hace hoy sin el uso:
+                                        patron_pesca_artesanal contiene las dos palabras.
+    pesca / acuicultura / transporte -> NO. patron_nave_menor cubre las tres.
+                                        La licencia dice que PUEDE gobernar la persona,
+                                        no a que VA hoy.
+  OBSTACULO MEDIDO, de plomeria y no de diseno: hay DOS campos de licencia con
+  vocabularios distintos. El del formulario ofrece CUATRO (solo deportivas) y solo
+  se dibuja si el uso es recreativo; el del registro tiene CINCO y solo se escribe
+  en el alta. Si la licencia va a gobernar, la autoridad es la del registro.
+
+EL BLOQUE OCEANOGRAFICO — ¿de donde sale que este patron es pescador?
+  Tres fuentes posibles y NINGUNA es `uso`:
+    (i)   la licencia patron_pesca_artesanal — dice que la PERSONA pesca, no que
+          ESTE viaje sea de pesca;
+    (ii)  el DESTINO del viaje: Caladero, Centro salmonero, Centro mitilidos, mas
+          la ESPECIE que ya se exige. Es por viaje, ya existe y ya esta cableado;
+    (iii) el campo tipo_actividad de "Mi Perfil", tercer vocabulario, hoy solo lo
+          lee la Biblioteca.
+  La (ii) sobrevive a la decision y es MEJOR que `uso` incluso si `uso` se queda:
+  la clorofila sirve para buscar caladeros, no para ir a cargar combustible.

@@ -1,0 +1,84 @@
+LAS ONCE DEL GRUPO 2, CONTESTADAS: diez firmadas y la undecima es AGENDADA
+
+Las once preguntas del owner se presentaron juntas, con ejemplo de pantalla, opciones y
+recomendacion. El owner firmo DIEZ. La undecima no se contesta hoy por decision suya
+previa, y la fila lo dice ahora en vez de hacerse pasar por abierta.
+
+EL CONTEO NO SE MOVIO, Y ESO ES LO CORRECTO
+  66 filas · 64 unicas · 59 VIVAS · 18 sitios · 9 barridos · 9 sin barrer.
+  Grupo 2: 12 filas · 11 vivas · 10 FIRMADAS · 1 viva sin firmar.
+  Cifras leidas del INDICE (git show :data/deudas/deudas_declaradas.json), no del disco.
+
+  FIRMAR ES RESPONDER, NO HACER. Se agrega como regla a politica_de_firma y vale para
+  todos los grupos: una fila del grupo 2 con firmada=true y estado "viva" es lo normal.
+  "cerrada" esta reservado a que SE HIZO EL TRABAJO — el validador rotula ese numero
+  como "CERRADAS por trabajo" — y esta sesion no implemento nada, por decision del owner.
+  Cerrar las diez habria bajado las vivas de 59 a 49 sin que nadie tocara una linea, que
+  es exactamente el modo de falla que el campo de firma existe para impedir.
+  Queda anotada la asimetria que NO se corrige: PLAN-3-E8::p1-en-e4 esta cerrada con
+  firmada=false porque cerro AL APLICAR el texto, no al decidirlo.
+
+LA DECISION MAS GRANDE: EL USO DE LA NAVE DEJA DE GOBERNAR
+  Regla del owner: el REGIMEN — deportivo o comercial — sale de la LICENCIA del registro;
+  la ACTIVIDAD — pesca, acuicultura, transporte — sale del DESTINO del viaje.
+  La medicion que la sostiene, y que cambio la recomendacion del agente:
+    · en el backend `uso` da 4 apariciones y las cuatro son PROSA: CERO comportamientos.
+      El motor nunca ve el campo. La decision es entera de la PWA.
+    · en la PWA, 19 lineas: 9 falsos positivos declarados, 4 del campo, 6 RAMAS de las
+      que cuelgan 13 cosas que el patron deportivo ve en pantalla.
+    · el campo hacia DOS trabajos con UN control, y el que sobra esta mal por una razon
+      precisa: es un hecho de la NAVE cuando la actividad es un hecho del VIAJE.
+  EL ORDEN DEL TRABAJO ES PARTE DE LA DECISION, y va escrito en la fila:
+    PRIMERO reemplazar el bloqueo del TM-002 Art. 22 por uno apoyado en la licencia.
+    Motivo medido: hoy el bloqueo es "ambito comercial Y licencia deportiva"; sin el
+    campo el ambito es comercial para TODOS, asi que el bloqueo pasaria a dispararse
+    SIEMPRE. Sacar el campo sin reemplazo convierte un bloqueo normativo correcto en un
+    BLOQUEO UNIVERSAL: ningun patron con licencia deportiva podria guardar un viaje.
+    ULTIMA linea: borrar el campo del formulario.
+  LA PERDIDA MEDIDA, ACEPTADA CON RECUPERACION: el Patron de Nave Menor que pesca deja
+  de recibir el recordatorio de Sernapesca por licencia — la condicion es un O de tres y
+  el uso era el tercer termino. Se recupera POR DESTINO (Caladero), que es mejor: el
+  destino es del viaje y el uso se marca una vez en la vida.
+
+LAS OTRAS NUEVE, EN UNA LINEA CADA UNA
+  · licencia de bahia en ruta costera: la app AVISA, escalando a U y nunca a U+V.
+    NO se aplica todavia: depende del reemplazo del regimen. Medido: el veredicto
+    deportivo, la alerta de licencia y el propio selector con la frase del RGDN Art. 12
+    solo existen dentro de la rama que exige uso recreativo.
+  · viaje activo: la especificacion lo cubre con un criterio ACOTADO — lo que cambio
+    respecto de lo verificado antes de zarpar. Fundamento: la verificacion en tierra
+    caduca, y las restricciones de SITPORT cambian por hora.
+  · puerto que escala lo que declara no aplicable: sigue escalando, y el TEXTO dice por
+    que. Es estado del LUGAR, como el backend ya declara donde emite el cierre.
+  · abierto y con restriccion: DOS rotulos separados. El dato ya los separa — 14 de 20
+    filas vigentes declaran cierre y 6 no, tres de ellas tipo TODOS.
+  · veracidad: la especificacion suma un punto que cubre VERACIDAD y solo veracidad. El
+    REGISTRO queda como estilo que no bloquea, porque no tiene instrumento.
+  · E2 y E6: E6 se ACOTA — gobierna a quien se nombra y a quien se llama. Sobrevive por
+    INV-3.3, no por D5.
+  · INV-3.4: se firma la DIRECCION — el titulo sobrevive, la bahia sigue siendo etiqueta
+    y la unidad de aplicacion es la Capitania. El TEXTO no se firma: la condicion sigue.
+  · catalogo de mensajes: se pegan los DOS sitios, no uno — el barrido literal del
+    contrato dio 2 apariciones — y el nombre "Zona intermedia cerrada" SE QUEDA.
+  · usos inertes: la pregunta desaparece por absorcion. No sobran dos opciones de cuatro:
+    se va la lista entera. Transporte no existe como perfil.
+
+LA UNDECIMA
+  La pieza 2 de E7 queda reencuadrada como pregunta AGENDADA, con su puerta nombrada
+  (la etapa de la capa por Capitania) y con la medicion que ya anticipa la respuesta:
+  a nivel de Capitania rompen 0 de 34 tramos silenciados; a nivel de bahia, 2 de 34.
+
+UNA ENMIENDA
+  La fila del bloque oceanografico decia que lo necesita "el perfil de pesca, uno de los
+  usos declarables del formulario". Con esta decision es FALSA. Su fuente pasa a ser el
+  DESTINO del viaje mas la ESPECIE, que ya existe y ya esta cableado. La frase vieja
+  queda citada dentro de la enmienda, no borrada.
+
+CONTROLES
+  validador del declarativo VERDE · mordida 32/32 + control negativo
+  control de caracteres por PUNTOS DE CODIGO: 9 ficheros, 0 sospechosos, sin BOM, con
+  control positivo del propio criterio. Defecto de instrumento cazado y escrito: la
+  primera version traia el U+0091 del control positivo como literal en su propio fichero
+  y se marcaba a si misma. Ahora se construye por punto de codigo.
+  control contra el INDICE con los INTOCABLES verificados fuera: .claude/launch.json y
+  data/catalogo/estado_drift.json siguen sin stagear.

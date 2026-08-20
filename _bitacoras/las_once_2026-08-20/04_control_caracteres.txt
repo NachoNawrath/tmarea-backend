@@ -1,0 +1,22 @@
+CONTROL DE CARACTERES — las_once_2026-08-20
+CRITERIO (H-T2): puntos de codigo. Se marca < 0x20 salvo LF/CR/TAB, 0x7F, y C1 0x80-0x9F.
+
+  OK  _bitacoras\las_once_2026-08-20\01_medir_uso.js
+  OK  _bitacoras\las_once_2026-08-20\01_medir_uso.txt
+  OK  _bitacoras\las_once_2026-08-20\02_escribir_ocho.js
+  OK  _bitacoras\las_once_2026-08-20\02_escribir_ocho.txt
+  OK  _bitacoras\las_once_2026-08-20\03_escribir_tres_y_diez.js
+  OK  _bitacoras\las_once_2026-08-20\03_escribir_tres_y_diez.txt
+  OK  _bitacoras\las_once_2026-08-20\04_control_caracteres.js
+  OK  _bitacoras\las_once_2026-08-20\04_control_caracteres.txt
+  OK  data/deudas/deudas_declaradas.json
+
+  ficheros revisados : 9
+  puntos de codigo   : 323651
+  ficheros con sospechosos : 0
+  BOM UTF-8 al principio    : ninguno  -> OK
+
+CONTROL POSITIVO del propio control: se construye U+0091 por punto de codigo y tiene que cazarlo.
+  -> OK — el criterio caza U+0091
+
+EXIT 0  — VERDE
