@@ -1,0 +1,146 @@
+LICENCIAS Y USOS — LO QUE HAY DE VERDAD EN EL ARBOL
+==============================================================================
+Medido el 2026-08-20, antes de montar ninguna pantalla. Corrige dos premisas.
+
+ARBOLES: C:/Users/katia/tmarea-pwa/src y C:/Users/katia/tmarea-backend/src,
+sin node_modules, sin dist, sin __tests__.
+
+
+------------------------------------------------------------------------------
+1 . SON CINCO LICENCIAS, NO SIETE
+------------------------------------------------------------------------------
+Unica lista que el patron puede elegir, en S0_5Registro.jsx:
+
+    patron_nave_menor           'Patron de Nave Menor (Comercial)'
+    patron_pesca_artesanal      'Patron de Pesca Artesanal (Comercial)'
+    patron_deportivo_bahia      'Patron Deportivo de Bahia (Recreativo)'
+    capitan_deportivo_costero   'Capitan Deportivo Costero (Recreativo)'
+    capitan_deportivo_alta_mar  'Capitan Deportivo de Alta Mar (Recreativo)'
+
+  nave_mayor       -> 1 aparicion en todo el arbol, y NO es una opcion: esta en
+                      el mapa de rotulos de NormativeBlock.jsx
+  capitan_nave     -> 0
+  capitan_de_nave  -> 0
+  otra_licencia    -> 0
+  CONTROL POSITIVO: patron_nave_menor -> 2
+
+HAY TRES VOCABULARIOS DE LICENCIA EN LA MISMA APP, y no son el mismo conjunto:
+  (a) S0_5Registro  -> user_profile.licenseType, los cinco de arriba
+  (b) P1            -> vessel.licencia, cuatro: PLDB, PDB, CDC, CDAM
+  (c) MiPerfil      -> tipo_actividad, cinco mas: pesca_artesanal,
+                       nave_menor_comercial, deportivo_bahia, capitan_costero,
+                       capitan_altamar — y solo lo lee la Biblioteca Nautica
+
+Y la licencia NO se puede cambiar desde la app: la escribe solo la pantalla de
+registro, que solo aparece si no hay user_profile. "Mi Perfil" no la toca.
+
+
+------------------------------------------------------------------------------
+2 . SON CUATRO USOS DECLARABLES Y DOS SON INERTES
+------------------------------------------------------------------------------
+La lista de P1_VesselProfile.jsx: pesca, acuicultura, transporte, recreativo.
+
+Lo que el codigo hace con cada uno, contado en los DOS arboles:
+
+    uso === 'recreativo'   -> 3   (P1, P2 y el hook; abre el camino deportivo)
+    uso === 'pesca'        -> 1   (el hook, recordatorio R7 de Sernapesca)
+    uso === 'acuicultura'  -> 0
+    uso === 'transporte'   -> 0
+
+CONTROLES sobre los mismos dos recorridos:
+    POSITIVO require(          ->   1 / 174
+    POSITIVO export            ->  83 /  74
+    NEGATIVO ZZQXNOEXISTE      ->   0 /   0
+
+
+------------------------------------------------------------------------------
+3 . LA LICENCIA CAMBIA LA RUTA — TRES CLASES, NO CINCO
+------------------------------------------------------------------------------
+/api/rutas/calcular recibe licencia y la convierte en perfil de costo:
+
+    aplicarAjusteLicencia(costo, licencia)
+      PLDB o PDB -> bandaMaxM = 1500
+      CDAM       -> penalMax  = 1.2
+      resto      -> sin ajuste
+
+Con normalizeLicense, las cinco del registro colapsan asi:
+
+    patron_nave_menor           -> (null) -> PNM   base
+    patron_pesca_artesanal      -> (null) -> PNM   base
+    capitan_deportivo_costero   -> CDC            base   (no recibe ajuste)
+    patron_deportivo_bahia      -> PDB            bandaMaxM=1500
+    capitan_deportivo_alta_mar  -> CDAM           penalMax=1.2
+
+TRES clases de comportamiento de ruteo. Es la particion que sostiene el descarte
+de las pasadas que NO se montaron: capitan_deportivo_costero comparte clase con
+patron_nave_menor, y patron_pesca_artesanal tambien.
+
+
+------------------------------------------------------------------------------
+4 . RAMAS POR LICENCIA O USO, POR FICHERO
+------------------------------------------------------------------------------
+tmarea-pwa/src (43 ficheros .js/.jsx sin tests):
+    components/screens/S0_5Registro.jsx        licenseType x7
+    components/verification/NormativeBlock.jsx licenseType x6   (solo el ROTULO)
+    components/verification/VoyageVerdict.jsx  veredicto_deportivo x1
+    hooks/useVoyageVerification.js             licenseType x7, normalizeLicense x3,
+                                               perfil_deportivo x8, isRecreativo x2,
+                                               umbralVientoLicencia x2,
+                                               uso==='recreativo' x1, uso==='pesca' x1
+    screens/P1_VesselProfile.jsx               uso==='recreativo' x1
+    screens/P2_VoyageSetup.jsx                 licenseType x4, isSportLicense x1
+    screens/P3_VoyageVerification.jsx          licenseType x2   (solo lo pasa al rotulo)
+    screens/P4_ActiveVoyage.jsx                licenseType x2, normalizeLicense x2
+    utils/license-rules.js                     LICENSE_TYPES x22, licenseType x11
+
+tmarea-backend/src (71 ficheros sin tests):
+    routes/sitport-routes.js                   perfil_deportivo x4, veredictoDep x6
+    services/deportivo-validator.js            clasificacion_nave x5
+    services/voyage-report-service.js          licenseType x2
+
+
+------------------------------------------------------------------------------
+5 . CUALES DE LOS 17 PODRIAN CAMBIAR — Y CUALES NO, CON EL MOTIVO
+------------------------------------------------------------------------------
+PODRIAN (5):
+  S4     el fallo ES de ruteo, y la clase de perfil de costo cambia el ruteo
+  S6(a)  con perfil deportivo entra UNA FUENTE MAS al maximo (veredictoDep)
+  S7(a)  el camino deportivo mete mensajes nuevos en pantalla (m.capa1 de cada
+         motivo entra en las razones del veredicto)
+  S7(b)  idem
+  S8     modo de fallo candidato: perfilDeportivo null en silencio
+
+NO PODRIAN (12), con la razon de cada uno:
+  S1     el fallo es estructural: se lista bahias con restriccion, no Capitanias
+  S2(a)  el filtrado es por nave_ab en el BRE; el deportivo no toca las intermedias
+  S2(b)  idem
+  S2(c)  el filtro es por bahia cruzada. Estructural
+  S3(a-d) "cobertura" tiene 0 apariciones en todo tmarea-pwa/src
+  S5(a)  bloque de puertos, sin rama de licencia
+  S5(b)  faltan zarpe_id y recalada_id en el cuerpo. Estructural
+  S6(b)  verde sobre fallo con backend caido. Sin rama de licencia
+  S9     registro de drift, sin rama de licencia
+
+
+------------------------------------------------------------------------------
+6 . EL BLOQUE OCEANOGRAFICO: NO ESTA CABLEADO EN P3
+------------------------------------------------------------------------------
+P3 importa y dibuja OCHO bloques, y la lista es exhaustiva:
+  PortStatusBlock · TransitRestrictionsBlock · DriftCatalogoBlock · WeatherBlock
+  TideBlock · NavigationBlock · NormativeBlock · VoyageVerdict
+Ninguno es oceanografico.
+
+    termino                  backend/src   pwa/src
+    clorofila                      42          1   (rotulo de caladeros en P2)
+    sst                            30         10   (WindLayer, Reportar, P4)
+    wave                           27          0
+    corriente                      21          5
+    oleaje                          5          4
+    oceanograf                      0          0
+    CONTROL POSITIVO viento        20         36
+
+Concentrado en marine-weather-service.js (clorofila 41, sst 24, wave 25) y en
+ocean-data-reader.js (corriente 17). El unico camino por el que dato oceanico
+toca P3 es indirecto: /api/navegacion/calculo consume ocean-data-reader para
+corrientes y eso alimenta el ETA — que en la pantalla medida salio vacio,
+"Velocidad sobre el fondo —".

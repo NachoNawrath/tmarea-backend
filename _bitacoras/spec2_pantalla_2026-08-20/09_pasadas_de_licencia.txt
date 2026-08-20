@@ -1,0 +1,165 @@
+LAS DOS PASADAS DE LICENCIA — Y LA VARIANTE DEL ROTULO
+==============================================================================
+Fecha: 2026-08-20. Se miden los CINCO veredictos que la medicion sobre el arbol
+habia marcado como sensibles al tipo de licencia o al uso: S4, S6(a), S7(a),
+S7(b) y S8. Los otros doce tienen fallo o cumplimiento estructural.
+
+LA PARTICION, Y POR QUE ESAS CLASES
+  Dimension A — clase de perfil de costo del motor de rutas, via
+  aplicarAjusteLicencia (src/config/perfiles-costo.js). Las CINCO licencias del
+  registro colapsan en TRES clases:
+      base            <- patron_nave_menor, patron_pesca_artesanal,
+                         capitan_deportivo_costero   (CDC no recibe ajuste)
+      bandaMaxM=1500  <- patron_deportivo_bahia (PDB)
+      penalMax=1.2    <- capitan_deportivo_alta_mar (CDAM)
+  Dimension B — camino deportivo, que NO se abre por la licencia sino por
+  uso === 'recreativo' mas licencia, clasificacion y propulsion cargadas.
+
+  Por eso dos pasadas y no cinco: la pasada 1 ya cubria base + deportivo OFF.
+
+COMO SE CONDUJO
+  Mismo metodo declarado en 06: el pipeline de raton del panel no entregaba
+  eventos, asi que se sustituyo el RATON por element.click() y por el setter
+  nativo de value con eventos input/change. El mecanismo bajo medicion —el
+  render— no se toca.
+  Para cambiar de licencia hay que borrar user_profile y re-registrarse: la
+  licencia solo la escribe la pantalla de registro, y esa pantalla solo aparece
+  si no hay user_profile. Es el camino de la propia app (instalacion nueva).
+
+
+------------------------------------------------------------------------------
+VARIANTE DE LA PASADA 1 · patron_pesca_artesanal, nave uso pesca, AB 50
+------------------------------------------------------------------------------
+Sin rehacer ruta, como propuso el owner. Misma ruta Quellon -> San Rafael.
+
+EXPECTATIVA ESCRITA ANTES: el rotulo del bloque normativo mostrara la clave
+cruda, porque formatLicense no conoce patron_pesca_artesanal.
+
+EN PANTALLA:
+    RECORDATORIOS NORMATIVOS
+    patron_pesca_artesanal
+    OBLIGATORIO  TM-006 Art. 3  ...
+
+  Expectativa CUMPLIDA. Sostiene PLAN-2::formatlicense-desalineada-con-el-registro.
+
+
+------------------------------------------------------------------------------
+PASADA 2 · capitan_deportivo_alta_mar · nave uso recreativo, PDB->CDAM,
+           clasificacion ALTA_MAR, motor 250 hp, AB 50
+------------------------------------------------------------------------------
+EXPECTATIVA ESCRITA ANTES: la ruta puede cambiar (penalMax 1.2); el cuerpo debe
+llevar perfil_deportivo y volver veredicto_deportivo; y los motivos deportivos
+deben aparecer como mensajes nuevos en las razones del veredicto.
+
+EL FLUJO CAMBIA ENTERO ANTES DE P3:
+  · el boton de P2 pasa a decir "Verificar viaje deportivo"
+  · aparece un bloque "Capitania de zarpe" con VHF Ch 16 y Ch 13
+  · se interponen DOS puertas que el perfil comercial no ve:
+      1. Verificacion de Seguridad, 5 items (chalecos, comunicaciones, senales,
+         achique, documentacion), con progreso 0/5 y boton bloqueado hasta 5/5
+      2. modal "Aviso de Zarpe Obligatorio" con Capitania de Puerto de Castro,
+         VHF Ch 16 y Ch 13, telefono +56652632334 y una NOTA LOCAL
+
+EN P3, PAYLOAD RECIBIDO POR EL NAVEGADOR:
+    veredicto_deportivo: { bandera: "Q", motivos: [], alertas: [],
+                           ab_efectivo: 50, ab_derivado: false, licencia: "CDAM" }
+    cobertura_jurisdiccional: bandera Q, avisos 0, defectos 2
+    restricciones_intermedias: 4
+    bandera_final: Q
+
+EN PANTALLA: estructura identica a la comercial. La palabra "deportiv" aparece
+UNA sola vez en toda P3, y es el rotulo de licencia del bloque normativo
+("Capitan Deportivo de Alta Mar"). NO hay ninguna seccion deportiva.
+
+LO QUE LA LICENCIA SI CAMBIO: los waypoints, de 38 a 37.
+LO QUE NO CAMBIO: el conjunto de bahias cruzadas, las mismas 4.
+
+CORRECCION DE UNA INFERENCIA MIA, HECHA ANTES DE PUBLICARLA
+  Al ver 4 zonas donde antes habia 5, infer que la licencia habia cambiado la
+  ruta. FALSO. El log tiene DOS lineas y hay que separarlas: la pasada de pesca
+  artesanal dio "waypoints=38 ... deportivo=-" con 4 bahias, y la CDAM dio
+  "waypoints=37 ... deportivo=Q" tambien con 4. La caida de 5 a 4 ya habia
+  ocurrido SIN cambiar de licencia. Medido contra SITPORT: la bahia 122 (Achao)
+  dejo de tener restriccion vigente. Es dato vivo, no la licencia.
+
+
+------------------------------------------------------------------------------
+PASADA 3 · patron_deportivo_bahia · nave uso recreativo, PDB,
+           clasificacion BAHIA_MOTOR, motor 60 hp, AB 50
+------------------------------------------------------------------------------
+3a · SOBRE EL LAGO (Gral Carrera: Pto Ibanez -> Rio Tranquilo)
+
+EXPECTATIVA ESCRITA ANTES: bandaMaxM=1500 NO destrabara el lago, porque
+SNAP_FAILED es distancia a agua navegable y no ancho de corredor.
+
+EN PANTALLA: identica a la pasada 1. Misma pagina de 1100 caracteres, mismo
+"No se pudo trazar la ruta", ninguna tarjeta de veredicto, los dos puertos en
+verde "Abierto". Expectativa CUMPLIDA.
+
+Y para no dejar la tercera clase sin medir, se pregunto al motor directamente
+(08_lago_contra_las_tres_clases): 4 lagos x 3 clases = 12 combinaciones,
+12 fallas, con la maritima calculando ok en las tres. S4 queda medido contra el
+espacio completo de clases de ruta.
+
+3b · SOBRE LA COSTERA (Quellon -> San Rafael, 84,3 mn por canales abiertos)
+
+EXPECTATIVA ESCRITA ANTES: el veredicto deportivo SI traera motivos, porque una
+licencia de bahia no cubre 84 mn de canales.
+
+EXPECTATIVA FALLADA, Y ES EL HALLAZGO MAS GRANDE DE LAS DOS PASADAS:
+    veredicto_deportivo: { bandera: "Q", motivos: [], alertas: [],
+                           ab_efectivo: 50, ab_derivado: false, licencia: "PDB" }
+
+  En pantalla: "licencia" 0 apariciones, "no habilit" 0, "ilegal" 0. La unica
+  aparicion de "deportiv" es, otra vez, el rotulo del bloque normativo.
+
+  LA CAUSA, MEDIDA: cuando la clasificacion es BAHIA_VELA o BAHIA_MOTOR, el
+  hook fija ambito_millas en 'bahia' sin mirar la distancia real de la ruta, y
+  el validador entonces responde Q. La suite del backend lo prueba a proposito:
+  "NUEVO — BAHIA_* -> ambito bahia por clasificacion, independiente de distancia
+  de ruta". No es un defecto de codigo: es una decision de producto que hoy vive
+  solo en el codigo. Va en PLAN-2::desacople-licencia-uso.
+
+3c · EL MODO DE FALLO QUE YO HABIA PREDICHO PARA S8, Y NO EXISTE
+
+  Prediccion: si uso es 'recreativo' pero falta clasificacion, perfilDeportivo
+  queda null y la validacion deportiva se salta EN SILENCIO.
+
+  NO ES ALCANZABLE. Se intento por los dos caminos:
+    · nave existente llevada a eslora 4,5 m y 8 hp: el campo clasificacion
+      DESAPARECE del formulario, pero el valor viejo BAHIA_MOTOR sobrevive
+    · nave nueva creada directamente como eximida: sale igual con BAHIA_MOTOR
+  La causa esta en P1_VesselProfile.jsx: un efecto deriva la clasificacion a
+  BAHIA_VELA o BAHIA_MOTOR segun la propulsion cuando la nave es eximida.
+
+  EXPECTATIVA FALLADA A FAVOR DE LA APP. La app cierra el hueco a proposito y se
+  declara asi, no se calla.
+
+  (Queda anotado, sin fila y para que el owner decida: un campo que desaparece
+  del formulario conservando su valor es un dato que el patron ya no puede ver
+  ni corregir.)
+
+
+------------------------------------------------------------------------------
+LOS CINCO VEREDICTOS RE-MEDIDOS
+------------------------------------------------------------------------------
+  S4    NO CUMPLE — SIN CAMBIO. Medido ahora contra las 3 clases de ruta y los
+        4 lagos: 12 de 12 fallan. Antes estaba medido contra 1 clase.
+  S6(a) NO CUMPLE — SIN CAMBIO. La fuente deportiva SI entra al maximo, y entro
+        con bandera Q en las dos pasadas. El contraejemplo sigue siendo la
+        cobertura: fuente en U y veredicto en Q.
+  S7(a) NO CUMPLE — SIN CAMBIO. Los mensajes nuevos que yo esperaba no
+        aparecieron: motivos vacios en las dos pasadas deportivas. El
+        denominador de mensajes con cita no se movio.
+  S7(b) NO CUMPLE — SIN CAMBIO. Mismo motivo.
+  S8    NO CUMPLE — SIN CAMBIO. El modo de fallo nuevo que yo predije no es
+        alcanzable. El veredicto se sostiene sobre la evidencia original: con el
+        backend caido el bloque de transito desaparece sin decir que no se pudo
+        evaluar.
+
+  NINGUNO DE LOS CINCO CAMBIA DE VEREDICTO. Lo que cambia es su ALCANCE: ahora
+  estan medidos sobre 3 clases de ruta y sobre los dos caminos del motor, en vez
+  de sobre una sola combinacion.
+
+  LA CIFRA DEL 2026-08-20 NO SE MUEVE: 4 CUMPLE · 13 NO CUMPLE · 0 NO MEDIBLE
+  sobre 17 afirmaciones. Y su AMBITO ES P3 — ver PLAN-2::spec-no-cubre-p4.

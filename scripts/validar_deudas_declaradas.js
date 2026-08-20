@@ -24,7 +24,7 @@ const FICHERO = iArg !== -1 && process.argv[iArg + 1]
   : path.join(RAIZ, 'data', 'deudas', 'deudas_declaradas.json');
 
 // ---------------------------------------------------------------------------
-// LA CANON DE LOS DIECISEIS SITIOS.
+// LA CANON DE LOS DIECISIETE SITIOS.
 //
 // Vive ACA y no en el dato, y el motivo es el unico que importa: si la lista de
 // sitios esperados viviera dentro del propio declarativo, borrar un sitio de la
@@ -32,12 +32,21 @@ const FICHERO = iArg !== -1 && process.argv[iArg + 1]
 // completo sin que nada mordiera. Al vivir en el control, quitar un sitio exige
 // tocar ESTE fichero, y eso deja diff.
 //
-// Procedencia: medidos el 2026-08-19 en la sesion de caracterizacion de deudas.
-// Son los doce sitios del backend (7.1 partido en dos por la medicion), los tres
-// de tmarea-pwa y el de la propia sesion. "6. RIESGOS" quedo FUERA por decision
-// del owner: un riesgo mitigado no es una deuda y confunde el denominador.
+// Procedencia: DIECISEIS medidos el 2026-08-19 en la sesion de caracterizacion de
+// deudas. Son los doce sitios del backend (7.1 partido en dos por la medicion),
+// los tres de tmarea-pwa y el de la propia sesion. "6. RIESGOS" quedo FUERA por
+// decision del owner: un riesgo mitigado no es una deuda y confunde el
+// denominador.
+//
+// EL DECIMOSEPTIMO, 'PLAN-2', se agrega el 2026-08-20. No aparecio en la medicion
+// del 2026-08-19 porque §2 no es una LISTA de deudas: es la especificacion, y
+// nadie la habia contrastado nunca contra la app. Al contrastarla produjo 13
+// filas. Que un sitio de deuda pueda ser un documento que no declara ninguna
+// deuda —y que aun asi las genere al medirlo— es el motivo por el que se agrega
+// con esta nota y a los DOS lados, en vez de sumarse en silencio.
 // ---------------------------------------------------------------------------
 const SITIOS_CANON = [
+  'PLAN-2',
   'PLAN-7-TABLA',
   'PLAN-7.1-FILTRO',
   'PLAN-7.1-CONTACTO-CIERRE',

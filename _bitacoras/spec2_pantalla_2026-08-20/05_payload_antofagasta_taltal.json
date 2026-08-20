@@ -1,0 +1,68 @@
+{
+  "_que_es": "El cuerpo EXACTO que /api/sitport/restricciones-ruta le devolvio AL NAVEGADOR que estaba mostrando P3, leido del panel de red del propio navegador (POST 364.187), no de una sonda aparte. Ruta: Puerto de Antofagasta -> Caleta Pesquera Taltal, nave AB 50.",
+  "_por_que_esta_aca": "Es la evidencia de S3. La pantalla que se dibujo con este payload decia 'BANDERA Q / Zarpe autorizado / Condiciones favorables para navegar / Puertos despejados', y no contenia ninguna de las nueve cadenas buscadas en su texto.",
+  "_control_de_la_busqueda_en_pantalla": {
+    "buscadas_y_ausentes": ["No tenemos cargado el limite", "limite de esta jurisdiccion", "Sin cita", "INV-3.6", "jurisdiccion", "Antofagasta antes de zarpar", "24.6", "24,6", "VHF Canal 16"],
+    "controles_positivos_presentes": ["BANDERA Q", "Puerto de Antofagasta"]
+  },
+  "payload": {
+    "success": true,
+    "veredicto": "Q",
+    "bandera_final": "Q",
+    "cobertura_jurisdiccional": {
+      "estado": "evaluada",
+      "motivo": null,
+      "capa": "bahia_jurisdicciones",
+      "bandera": "U",
+      "avisos": [
+        {
+          "orden_en_ruta": 1,
+          "causa": "jurisdiccion_sin_geometria",
+          "origen": "ambito_no_publicado",
+          "ambito_no_publicado": "maritima",
+          "bandera": "U",
+          "largo_km": 24.6646,
+          "lat_ini": -24.472219632381034,
+          "lon_ini": -70.57495815796625,
+          "lat_fin": -24.694610303892958,
+          "lon_fin": -70.58236786054222,
+          "jurisdicciones_probables": ["antofagasta", "taltal"],
+          "capitanias": [
+            {
+              "jurisdiccion_id": "antofagasta",
+              "nombre": "Antofagasta",
+              "telefono": "+56 55 263 0000",
+              "tipo": "capitania",
+              "bahia_id": 74
+            }
+          ],
+          "contacto_generico": null,
+          "capa_1": "No tenemos cargado el límite de esta jurisdicción.",
+          "capa_2": "Confirma con la Capitanía Antofagasta antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.",
+          "es_restriccion": false
+        }
+      ],
+      "defectos_registrados": 3,
+      "total": 1
+    },
+    "drift_catalogo": {
+      "estado": "evaluado",
+      "motivo": null,
+      "bandera": "Q",
+      "avisos": [],
+      "total": 0,
+      "defectos_registrados": 0,
+      "defectos": []
+    },
+    "veredicto_deportivo": null,
+    "motivo_principal": null,
+    "ultimo_tramo_seguro": null,
+    "fondeadero_sugerido": null,
+    "restricciones_intermedias": [],
+    "total": 0,
+    "fuente": "SITPORT/DIRECTEMAR",
+    "timestamp": "2026-08-20T03:36:44.582Z",
+    "timestamp_sitport": "2026-08-20T03:36:42.275Z",
+    "error": null
+  }
+}

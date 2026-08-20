@@ -4,16 +4,16 @@
   "_por_que_existe": "Se hicieron cuatro o cinco inventarios de deudas y ninguno cerro nada. La causa medida: las deudas se anotan en la bitacora de la sesion que las creo, esa bitacora no se vuelve a abrir, y la sesion siguiente arranca en frio sin verlas. El precedente de forma es 7.2 del PLAN_JURISDICCION.md, que ya razono lo mismo para las afirmaciones verificables: parsear la prosa seria adivinar, declararlas es el camino.",
   "_como_se_lee": "Ninguna fila queda sin grupo. Los grupos 5 y 6 son PROPUESTAS: no cuentan como baja hasta que firma_owner.firmada sea true. El conteo se publica siempre dos veces, con firma y sin firma.",
   "_por_que_vive_en_el_backend": "Medido el 2026-08-19: tmarea-pwa no tiene _bitacoras/, ni CLAUDE.md, ni documento de plan, ni un solo sitio donde se anoten deudas (TODO/FIXME/HACK/XXX/DEUDA/PENDIENTE = 0, con dos controles positivos). Todo el aparato de deuda vive en tmarea-backend. Y la direccion de la referencia ya la fijo el codigo, no la comodidad: tmarea-pwa/src/screens/P3_VoyageVerification.jsx cita tmarea-backend/_bitacoras/, y ningun fichero del backend cita a la PWA.",
-  "version": 1,
-  "generado": "2026-08-19",
-  "generado_por": "sesion de caracterizacion de deudas, tramo 1 y tramo 2",
+  "version": 2,
+  "generado": "2026-08-20",
+  "generado_por": "sesion de caracterizacion de deudas (tramo 1 y 2, 2026-08-19) + medicion de §2 contra la pantalla (2026-08-20)",
   "procedencia": "_bitacoras/declarativo_deudas_2026-08-19/",
   "lo_lee": "scripts/validar_deudas_declaradas.js (npm run deudas). Agregar una fila aca NO exige tocar codigo.",
   "repos": {
     "tmarea-backend": {
       "ruta_en_esta_maquina": "C:/Users/katia/tmarea-backend",
-      "main_al_generar": "67aa8bb9101e49b47394d40cee5df29604ea6455",
-      "nota": "main = origin/main al generar. Suite 157/157."
+      "main_al_generar": "cc572598f39be3588dd440caabe121e4a0a0d57e",
+      "nota": "main = origin/main al generar. Suite 157/157, corrida el 2026-08-20 antes de arrancar el backend."
     },
     "tmarea-pwa": {
       "ruta_en_esta_maquina": "C:/Users/katia/tmarea-pwa",
@@ -318,6 +318,23 @@
         "por_que_todavia_no": "El sitio mas grande: 41% del total. Medido el 2026-08-19 sobre 638 ficheros: 116 pares (espacio_de_nombres, token); 66 con declaracion propia y 50 que son SOLO referencias cruzadas y no generan fila; de los 66, 15 descartados por pronunciamiento de cierre y 51 admitidos por el criterio D.3a. Va ultimo para que el criterio de admision salga del vocabulario que fijan los otros quince sitios.",
         "el_51_SE_REMIDE_NO_SE_CITA": "OBLIGATORIO al barrer este sitio: el 51 y el 15 se vuelven a medir con un instrumento VERSIONADO, y no se heredan de aca. El instrumento que produjo estos numeros el 2026-08-19 quedo FUERA DEL ARBOL, en el scratchpad de aquella sesion, porque su resultado no sostenia ninguna fila -- este sitio esta en barrido=false. Un numero sin instrumento versionado es una ESTIMACION HEREDADA, no una medicion, y este campo existe para que nadie lo cite como si fuera lo segundo. Dos motivos concretos por los que el numero puede moverse: (1) las bitacoras se agregan, asi que 638 ficheros de entonces no son los de manana; (2) la casilla AMBAS del criterio tuvo 1 caso que hubo que leer a mano -- ver la fila SESION-caracterizacion-deudas-2026-08-19::casilla-ambas-del-criterio-d3a -- y con 51 filas por delante ese arreglo puede pagarse.",
         "aviso_de_identificador": "Los tokens H-n y D-n NO son identificadores estables: la numeracion es local a cada bitacora y colisiona. Medido: 'D-1' significa tres cosas distintas en causa_pd_tdf_2026-08-15, filtro_puerto_2026-08-17 y cableo_cierre_2026-08-17. Por eso el id de este declarativo lleva el espacio de nombres adentro."
+      },
+      {
+        "id": "PLAN-2",
+        "repo": "tmarea-backend",
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "2. ESPECIFICACION — QUE VE EL PATRON CUANDO ESTO ESTE TERMINADO",
+        "vocabulario_del_barrido": [
+          "los nueve puntos S1 a S9",
+          "la marca [C] de contrato y la marca [P] de producto",
+          "cada afirmacion separable dentro de cada punto"
+        ],
+        "orden": 2,
+        "barrido": true,
+        "barrido_el": "2026-08-20",
+        "filas_en_este_declarativo": 15,
+        "nota": "Sitio DECIMOSEPTIMO. No estaba entre los dieciseis medidos el 2026-08-19, y por eso la canon del validador tambien sube a 17: un sitio nuevo se agrega a los DOS lados, a proposito. Se barrio contrastando §2 contra la app montada en el navegador, no por lectura de codigo. Los nueve puntos contienen 17 afirmaciones separables; el barrido produjo 4 CUMPLE, 13 NO CUMPLE y 0 NO MEDIBLE, y su ambito es P3 — ver la fila PLAN-2::spec-no-cubre-p4. Las filas subieron de 13 a 15 el mismo dia: dos mas salieron de las pasadas de licencia, y una de ellas se EXTRAJO de PLAN-2::desacople-licencia-uso por decision del owner, porque estaba metida ahi como un \"y ademas\".",
+        "bitacora": "_bitacoras/spec2_pantalla_2026-08-20/"
       }
     ]
   },
@@ -1672,6 +1689,552 @@
         "salida_cruda_en": "_bitacoras/e7_pieza2_lectura_2026-08-19/02_inv34_y_weather.txt"
       },
       "duplicada_de": null
+    },
+    {
+      "id": "PLAN-2::procedencia-copia-congelada-mal-ubicada",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "La copia congelada que testimonia H-T1 no esta donde la bitacora hace buscarla",
+      "evidencia_en_el_arbol": {
+        "donde_esta_de_verdad": "_bitacoras/control_ancla_2026-08-19/HT1_estado_drift_working_tree_2026-08-19.json, con su HT1_PROCEDENCIA.txt al lado.",
+        "donde_se_la_busca": "El apartado \"11 . LO QUE NO SE TOCO\" de la bitacora del declarativo dice que estado_drift.json quedo modificado y sin stagear, y NO dice donde esta la copia. Quien lo lea buscara en ese directorio y no la encontrara.",
+        "comprobacion": "sha256 identico entre la copia y el fichero vivo antes de arrancar el backend: 3a350d5ab3293ab2304e8029200ea6e42927e8e4b8b9d891ae36c533f8300b00, 1380 bytes.",
+        "por_que_importa": "La evidencia de H-T1 vivia SOLO en el working tree. Un puntero que no existe convierte una copia congelada en una copia perdida."
+      },
+      "donde": {
+        "fichero": "_bitacoras/declarativo_deudas_2026-08-19/declarativo_deudas_2026-08-19.txt",
+        "seccion_por_titulo": "11 . LO QUE NO SE TOCO",
+        "cita_de_anclaje": "la linea que dice \"data/catalogo/estado_drift.json  modificado y sin stagear. No se toco.\""
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "Minimo: una linea de puntero en la bitacora del 2026-08-19, o en la fila de H-T1.",
+      "depende_de": "Nada. Es escritura."
+    },
+    {
+      "id": "PLAN-2::consultabahias-no-alimenta-el-detector-de-drift",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "El detector de drift del ambito A mira dos canales de tres, y la clase de defecto que hoy existe entra por el tercero",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "los_dos_canales_que_mira": "totalPronostico (en el handler de weather-ruta) y consultaRestricciones (en el de restricciones-ruta).",
+        "el_canal_que_no_mira": "consultaBahias.",
+        "lo_que_hoy_sale_por_ahi": "Las bahias 257 RIO COCHRANE y 258 RIO BUENO, SECTOR LLANCACURA, ninguna en bahias_sitport (163 filas). La 258 aparecio el 2026-08-13 y sigue viva.",
+        "la_unica_que_si_alimenta": "La bahia 108, por totalPronostico. Resuelve a reparticion 190 CAPITANIA DE PUERTO CARAHUE, y NINGUNA otra bahia de Totalgeneral comparte esa reparticion, asi que cae siempre en fuera_de_ruta y su aviso no puede encenderse en pantalla por ninguna ruta del arbol.",
+        "salida_cruda": "[drift-ruta] defecto bahia_publicada_fuera_del_catalogo bahia=108 origen=totalPronostico capitania=CAPITANIA DE PUERTO CARAHUE (fuera de la ruta)",
+        "RELACION_CON_S9_MEDIDA_Y_NO_SUPUESTA": "NO la toca, y el motivo es de alcance. S9 gobierna RESTRICCIONES, y los dos canales por los que SITPORT publica restricciones estan los dos mirados. Las 257 y 258 son drift de CATALOGO, no restricciones, y las registra el instrumento que les corresponde: el control de drift lo declaro en el arranque de esta sesion con \"total 4 · no declaradas 1 · abiertas 3\". Cada defecto quedo registrado por el instrumento cuyo alcance lo cubre. S9 CUMPLE."
+      },
+      "donde": {
+        "fichero": "src/routes/sitport-routes.js",
+        "seccion_por_titulo": "handler de /restricciones-ruta y handler de /weather-ruta -> la construccion de driftCatalogo",
+        "cita_de_anclaje": "las dos llamadas a evaluarDriftCatalogo, una con origen totalPronostico y otra con origen consultaRestricciones"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "3_dato_externo",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "que_dato": "Si DIRECTEMAR considera consultaBahias un canal de publicacion de datos operativos o solo un catalogo de nombres. De eso depende si una bahia que aparece solo ahi es un dato que se nos pierde o un cambio de catalogo.",
+      "a_quien": "DIRECTEMAR, por el mismo canal por el que van las seis preguntas de consulta_directemar_registro.md."
+    },
+    {
+      "id": "PLAN-2::cobertura-jurisdiccional-muere-en-el-pasamanos",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-pwa",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "El aviso de jurisdiccion sin limite cargado llega al navegador y no se dibuja: el pasamanos de la PWA no nombra el campo",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "lo_que_el_backend_mando_a_este_navegador": "Ruta Puerto de Antofagasta -> Caleta Pesquera Taltal, nave AB 50. cobertura_jurisdiccional.bandera \"U\", 1 aviso, causa jurisdiccion_sin_geometria, origen ambito_no_publicado, 24,6646 km, capitanias [{nombre:\"Antofagasta\", telefono:\"+56 55 263 0000\"}], capa_1 \"No tenemos cargado el limite de esta jurisdiccion.\".",
+        "lo_que_la_pantalla_mostro": "BANDERA Q — Zarpe autorizado — Condiciones favorables para navegar — Puertos despejados. Pagina recorrida entera, 2809 px.",
+        "control": "Nueve cadenas del aviso buscadas en el texto de la pantalla: las nueve en falso. Dos controles positivos (\"BANDERA Q\", \"Puerto de Antofagasta\") en verdadero. Y \"cobertura\" tiene 0 apariciones en todo tmarea-pwa/src, contra 4 de \"drift_catalogo\", que es su campo hermano y si se consume.",
+        "sostiene": "S3(a), S3(b), S3(c), S3(d) y la mitad de S6(a).",
+        "el_pasamanos": "El objeto result de fetchTransitRestrictions copia campo por campo. Un campo que no se nombre ahi no llega al componente. Es el mismo pasamanos que ya se corrigio una vez para cierre y otra para drift_catalogo.",
+        "medido_en_tres_licencias": "La rama no depende de la licencia: se midio con patron_nave_menor, capitan_deportivo_alta_mar y patron_deportivo_bahia, y el campo se cae en las tres."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/hooks/useVoyageVerification.js",
+        "seccion_por_titulo": "FETCH RESTRICCIONES DE TRANSITO -> fetchTransitRestrictions",
+        "cita_de_anclaje": "el objeto const result = { veredicto, bandera_final, ... drift_catalogo }, donde cobertura_jurisdiccional no aparece"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "Bajo para el pasamanos: nombrar el campo. Alto para el bloque: hay que escribir el componente que lo dibuja, y §10 ya fija su texto en dos capas.",
+      "depende_de": "Nada abierto para el pasamanos. El bloque depende de que se decida donde va en P3, que es producto."
+    },
+    {
+      "id": "PLAN-2::zarpe-y-recalada-entran-como-transito",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-pwa",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "La bahia del puerto de zarpe y la de recalada aparecen en la lista de transito, y con AB bajo el veredicto llama zona intermedia al muelle del que sale",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "en_pantalla": "Ruta Caleta Pesquera Quellon -> Caleta Pesquera San Rafael. \"Bahia Quellon\" —la bahia del ZARPE— encabeza RESTRICCIONES EN TRANSITO y \"Bahia de Calbuco\" —la de la RECALADA— la cierra. 2 de 2 extremos duplicados.",
+        "y_sube_al_veredicto": "Con AB 10 el primer motivo del veredicto dice \"Restriccion de transito en zona intermedia (Bahia Quellon)\" sobre el puerto del que el patron zarpa.",
+        "causa_medida": "El backend excluye por zarpe_id y recalada_id. El cuerpo que manda la PWA lleva solo { ruta_puntos, nave_ab, perfil_deportivo?, navegacion_deportiva? }: ninguno de los dos ids viaja.",
+        "sostiene": "S5(b)."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/hooks/useVoyageVerification.js",
+        "seccion_por_titulo": "FETCH RESTRICCIONES DE TRANSITO -> fetchTransitRestrictions",
+        "cita_de_anclaje": "el const body = { ruta_puntos, nave_ab }, contra el bloque \"4. Excluir zarpe y recalada por ID explicito\" del handler del backend"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "Bajo: los dos ids ya existen en voyageData. El riesgo esta en elegir CUAL id, porque el puerto y la bahia no son la misma unidad.",
+      "depende_de": "Nada abierto."
+    },
+    {
+      "id": "PLAN-2::ninguna-ruta-lacustre-es-calculable",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "El ambito lacustre esta publicado con sus seis geometrias y no puede llegar a la pantalla: ninguna ruta de lago se rutea",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "las_cuatro_jurisdicciones_con_puerto": "De las 6 lacustres publicadas, 4 tienen puerto del catalogo dentro de su geometria. Las cuatro fallan.",
+        "medido_contra_las_tres_clases_de_perfil_de_costo": "12 combinaciones (4 lagos x 3 clases), 12 fallas. Gral Carrera y Llanquihue con SNAP_FAILED; Villarrica con \"Origen o destino fuera de la cobertura de tiles de Chile\"; Panguipulli con \"Origen o destino fuera del tile AUSTRAL_N\".",
+        "control_positivo": "La misma llamada sobre la ruta maritima Quellon -> Calbuco devuelve ok con 2 tramos en las tres clases.",
+        "la_consecuencia": "P3 solo llama a restricciones-ruta si la ruta se calculo. Sin ruta, el ambito lacustre —publicado desde E3, con sus 6 geometrias construidas— no puede llegar a la pantalla por NINGUNA ruta del arbol.",
+        "lo_que_ve_el_patron": "Pagina de 1100 caracteres: \"No se pudo trazar la ruta\", NINGUNA tarjeta de veredicto, y los dos puertos en verde \"Abierto\". Identica con patron_nave_menor y con patron_deportivo_bahia.",
+        "nota_de_alcance_honesta": "Hoy SITPORT no publica ni una restriccion ni un pronostico para ninguna de las 6 lacustres (0 de 6 en consultaRestricciones y en totalPronostico). Eso NO rescata el veredicto: el mecanismo no llega a preguntar.",
+        "sostiene": "S4."
+      },
+      "donde": {
+        "fichero": "src/services/raster-router-service.js",
+        "seccion_por_titulo": "respuesta de /api/rutas/calcular sobre las cuatro rutas lacustres",
+        "cita_de_anclaje": "los codigos SNAP_FAILED y \"fuera de la cobertura de tiles de Chile\""
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "Primero medir cual de las dos causas aplica a cada lago: SNAP_FAILED es enganche a agua navegable y el error de tiles es cobertura del raster. Son dos arreglos distintos y esa medicion es barata. Puede destapar una dependencia de dato externo (carta navegable de los lagos), y si la destapa, esta fila se parte.",
+      "depende_de": "Nada abierto hoy, pero ver la nota de costo: la particion de causas puede abrir una fila de grupo 3."
+    },
+    {
+      "id": "PLAN-2::el-fallo-de-transito-desaparece-en-vez-de-decirse",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-pwa",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "Con el backend caido el bloque de transito no dice que no se pudo evaluar: no esta, y el clima se pinta verde sobre el fallo",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "como_se_midio": "Apagando el backend, que es una condicion real de operacion y no la simulacion de un mecanismo interno.",
+        "lo_que_desaparece": "El bloque RESTRICCIONES EN TRANSITO no se dibuja. La corrida anterior sobre la misma ruta mostraba 5 zonas con restriccion. Nada dice que no se pudo evaluar.",
+        "el_verde_sobre_el_fallo": "El bloque de clima muestra verde \"Condicion Normal\" e inmediatamente debajo \"No se pudo obtener datos de clima. Verificar condiciones directamente.\"",
+        "la_pantalla_de_carga": "Marca con tilde verde \"Conectando con SITPORT\" y \"Consultando condiciones meteorologicas\" mientras los dos fallaban.",
+        "lo_que_si_hace_y_hay_que_decirlo": "Dice \"No se pudo conectar con SITPORT\" en las dos tarjetas de puerto, \"Informacion de mareas no disponible\", \"No se pudo calcular ETA\" y \"Dato SITPORT desactualizado\". El veredicto no se va a verde. La mayor parte de S8 se cumple; lo que la refuta es el bloque que se va sin avisar, y S8 lleva un \"nunca\".",
+        "sostiene": "S8 y S6(b)."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+        "seccion_por_titulo": "export default function TransitRestrictionsBlock",
+        "cita_de_anclaje": "el if (lista.length === 0) return null, contra el estado conservador que devuelve el hook cuando el fetch falla"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "Bajo: el bloque necesita distinguir \"no hay restricciones\" de \"no se pudo preguntar\", y el hook ya devuelve null en el segundo caso. El de clima es mas caro: hay que decidir que color lleva un dato que no se pudo traer.",
+      "depende_de": "Nada abierto."
+    },
+    {
+      "id": "PLAN-2::la-lista-de-capitanias-atravesadas-no-existe-en-pantalla",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "P3 no lista las Capitanias que la ruta atraviesa: lista las bahias con restriccion vigente, que es otra cosa",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "la_ruta": "Caleta Pesquera Quellon -> Caleta Pesquera San Rafael, 38 waypoints del motor raster (no la recta).",
+        "lo_que_cruza": "7 bahias — 113 Bahia de Calbuco, 117 Bahia Quellon, 120 Puerto Quemchi, 122 Achao, 155 Queilen, 232 San Jose - Caicaen, 235 Chequian — que son 5 Capitanias: Achao, Calbuco, Chonchi, Quellon, Quemchi.",
+        "lo_que_la_pantalla_nombro": "4. Falta CHONCHI, que entra por la bahia 155 Queilen y no tiene restriccion vigente.",
+        "la_prueba_de_que_es_estructural": "En Antofagasta -> Taltal y en Valparaiso -> San Antonio la pantalla nombro 0 Capitanias atravesadas, porque ninguna bahia cruzada tenia restriccion. Lo que se lista no son las Capitanias: son las restricciones.",
+        "no_hay_sustituto": "La lista \"VIENTO POR TRAMO DE LA RUTA\" no sirve: incluye Puerto Montt, que la ruta no cruza.",
+        "el_mismo_mecanismo_produce_otro_fallo": "El filtro es por BAHIA cruzada y no por CAPITANIA en ruta. Por eso la bahia 114 CANAL CHACAO SECTOR PARGUA Y PUNTA CORONEL, de la Capitania de Calbuco que SI esta en la ruta, con restriccion tipo TODOS vigente, no le llega al patron.",
+        "sostiene": "S1 y S2(c)."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/screens/P3_VoyageVerification.jsx",
+        "seccion_por_titulo": "el render de P3, entre PortStatusBlock y TransitRestrictionsBlock",
+        "cita_de_anclaje": "el hueco entre los dos bloques, que es donde esta lista no esta"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "Medio. El backend ya calcula el conjunto de bahias en ruta (bahiasEnRutaPostGIS) y no lo devuelve; habria que emitirlo, expandirlo a Capitania y escribir el bloque.",
+      "depende_de": "Nada abierto."
+    },
+    {
+      "id": "PLAN-2::spec-no-cubre-p4",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "La especificacion solo es contrastable contra P3, y la pantalla del viaje activo no tiene criterio escrito",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "lo_que_2_nombra": "Cuatro mecanismos: \"bloque de puerto\" y \"bloque de transito\" (S5), \"su propio bloque\" (S3), \"seccion informativa\" (S2) y \"la misma pantalla\" (S6). Los cuatro son estructura de P3.",
+        "lo_que_2_no_nombra": "Ninguna pantalla. Los tokens P1, P2, P3 y P4 dan 0 dentro de la seccion, delimitada por sus encabezados.",
+        "el_documento_entero": "P3_VoyageVerification aparece 2 veces y P2_VoyageSetup 1. P1_VesselProfile y P4_ActiveVoyage aparecen 0 veces. Control positivo: el mismo patron encuentra P4_ActiveVoyage 2 veces en tmarea-pwa/src/App.jsx.",
+        "cuidado_con_el_token": "En este documento P3 y P4 casi siempre significan otra cosa: los pasos de construccion de la receta de E4 (P2 -> P4prima -> P3). 13 ocurrencias clasificadas como paso. Por eso la medicion valida es por nombre de fichero.",
+        "el_hecho_tecnico": "P4_ActiveVoyage.jsx pesa 45.326 bytes, no usa useVoyageVerification, no importa ninguno de los 8 bloques de verificacion, y no comparte ningun mecanismo con los que §2 nombra.",
+        "lo_que_esta_fila_NO_decide": "Si §2 DEBIA cubrir P4. Eso es producto y lo firma el owner. La medicion solo dice que hoy no lo cubre y que P4 no tiene criterio escrito.",
+        "consecuencia_para_la_cifra": "La cifra de la medicion del 2026-08-20 NO queda parcial: se midio en el unico ambito contra el que §2 es contrastable. Pero su ambito es P3 y asi va declarado en el propio veredicto."
+      },
+      "donde": {
+        "fichero": "PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "2. ESPECIFICACION — QUE VE EL PATRON CUANDO ESTO ESTE TERMINADO",
+        "cita_de_anclaje": "el encabezado de la seccion y las cuatro menciones de bloque: \"bloque de puerto\", \"el de transito\", \"su propio bloque\" y \"seccion informativa\""
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "2_decision_del_owner",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "pregunta": "Cuando escribimos que el patron ve todas las Capitanias que su ruta atraviesa, y que se le avisa si cruza una sin limite cargado, ¿eso valia solo para la pantalla donde revisa el viaje ANTES de zarpar, o tambien para la pantalla que usa mientras navega? Hoy solo la primera tiene criterio escrito y la segunda no tiene ninguno."
+    },
+    {
+      "id": "PLAN-2::viaje-activo-sin-jurisdiccion",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-pwa",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "El patron en el agua no recibe restricciones ni veredicto: la pantalla del viaje activo no pide jurisdiccion",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "los_tres_endpoints_que_pide": "/api/mapa/capas, /api/sitport/weather-ruta y /api/rutas/calcular.",
+        "los_que_NO_pide": "/api/sitport/restricciones, /api/sitport/restricciones-ruta, /api/tide/predict y /api/navegacion/calculo.",
+        "vocabulario_medido_en_el_fichero": "restriccion 0 · restriccion con tilde 0 · capitania 0 · capitania con tilde 0 · jurisdicc 0 · veredicto 0 · bandera 0. Y recalada 23, que la sigue como PUNTO GEOGRAFICO.",
+        "controles": "En el mismo fichero: ruta 81 y viento 11 (positivos), ZZQX 0 (negativo).",
+        "lo_que_parecian_excepciones_y_no_lo_son": "alerta aparece 1 vez y es un comentario sobre proximidad a centros acuicolas; cierre aparece 1 vez y es el modal de fin de viaje.",
+        "DICHO_CON_EL_PESO_QUE_TIENE": "Durante el viaje activo, que es cuando el patron esta en el agua y ya no puede consultar a nadie, la app NO le da ninguna informacion de jurisdiccion. Ni restricciones de transito, ni Capitania, ni veredicto, ni bandera. La alerta por cambio de condicion de recalada no existe."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/screens/P4_ActiveVoyage.jsx",
+        "seccion_por_titulo": "los fetch del componente y su render",
+        "cita_de_anclaje": "las tres llamadas a BACKEND_URL, y la ausencia de useVoyageVerification"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "Alto. No es cablear un endpoint: P4 no tiene ningun bloque de verificacion y habria que decidir que se muestra en marcha y con que cadencia, que es distinto de lo que se muestra antes de zarpar.",
+      "depende_de": "PLAN-2::spec-no-cubre-p4. Sin criterio escrito para P4 no hay contra que construir."
+    },
+    {
+      "id": "PLAN-2::sin-bloque-oceanografico-en-p3",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-pwa",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "El servicio oceanografico esta entero en el backend y no llega a la pantalla",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "en_el_backend": "clorofila 42 · sst 30 · wave 27 · corriente 21 · oleaje 5, concentrados en marine-weather-service.js (clorofila 41, sst 24, wave 25) y ocean-data-reader.js (corriente 17).",
+        "en_la_pwa": "oceanograf 0 · wave 0 · clorofila 1 (rotulo de busqueda de caladeros en P2) · sst 10 (WindLayer, ReportarProblema y P4, ninguno en P3).",
+        "controles": "viento 20 en el backend y 36 en la PWA, sobre los mismos dos recorridos.",
+        "los_ocho_bloques_de_p3": "PortStatusBlock, TransitRestrictionsBlock, DriftCatalogoBlock, WeatherBlock, TideBlock, NavigationBlock, NormativeBlock y VoyageVerdict. La lista es exhaustiva y ninguno es oceanografico.",
+        "el_unico_camino_indirecto": "/api/navegacion/calculo consume ocean-data-reader para corrientes y eso alimenta el ETA. En la pantalla medida ese campo salio vacio: \"Velocidad sobre el fondo —\".",
+        "quien_lo_necesita": "El perfil de pesca, que es uno de los usos declarables del formulario."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/screens/P3_VoyageVerification.jsx",
+        "seccion_por_titulo": "los imports de bloques de verificacion y su render",
+        "cita_de_anclaje": "los ocho import de ../components/verification/, donde no hay ninguno oceanografico"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "Medio. El dato existe y esta servido; falta decidir que se muestra y a quien, y escribir el bloque.",
+      "depende_de": "Producto tiene que decir que ve el pescador. Hoy no esta escrito en §2 ni en ningun otro lado."
+    },
+    {
+      "id": "PLAN-2::formatlicense-desalineada-con-el-registro",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-pwa",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "El rotulo de licencia conoce una licencia que no se puede elegir y no conoce una que si",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "las_cinco_del_registro": "patron_nave_menor, patron_pesca_artesanal, patron_deportivo_bahia, capitan_deportivo_costero, capitan_deportivo_alta_mar. Son cinco, no siete: nave_mayor tiene 1 aparicion en todo el arbol y NO es una opcion; capitan_nave, capitan_de_nave y otra_licencia dan 0, 0 y 0. Control positivo: patron_nave_menor da 2.",
+        "el_mapa_de_rotulos": "formatLicense conoce patron_nave_mayor, que no se puede elegir, y NO conoce patron_pesca_artesanal, que si.",
+        "en_pantalla": "Registrado como Patron de Pesca Artesanal, el bloque RECORDATORIOS NORMATIVOS muestra el rotulo crudo \"patron_pesca_artesanal\".",
+        "y_ademas": "La licencia solo la escribe la pantalla de registro, y esa pantalla solo aparece si no hay user_profile. \"Mi Perfil\" no la edita: tiene otro campo, tipo_actividad, con un TERCER vocabulario (pesca_artesanal, nave_menor_comercial, deportivo_bahia, capitan_costero, capitan_altamar) que solo lee la Biblioteca. Cambiar de licencia exige borrar el perfil."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/components/verification/NormativeBlock.jsx",
+        "seccion_por_titulo": "function formatLicense",
+        "cita_de_anclaje": "el objeto map que arranca en patron_nave_menor y termina en patron_nave_mayor"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "Minimo para el rotulo: una clave. Lo que no es minimo es la pregunta de por que hay tres vocabularios de licencia en la misma app.",
+      "depende_de": "Nada abierto."
+    },
+    {
+      "id": "PLAN-2::usos-inertes-en-el-formulario",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "Dos de los cuatro usos que el formulario ofrece no tienen ninguna rama en ninguno de los dos repositorios",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "la_lista_del_formulario": "pesca, acuicultura, transporte, recreativo.",
+        "lo_que_el_codigo_hace_con_cada_uno": "uso === recreativo -> 3 ramas (P1, P2 y el hook, y es la que abre el camino deportivo). uso === pesca -> 1 rama (el recordatorio de Sernapesca). uso === acuicultura -> 0. uso === transporte -> 0.",
+        "controles": "Sobre los mismos dos recorridos: require( 1 y 174, export 83 y 74 (positivos); ZZQXNOEXISTE 0 y 0 (negativo).",
+        "por_que_no_es_cosmetico": "El patron elige una opcion y la app se comporta igual que si no hubiera elegido nada. Y la acuicultura es uno de los perfiles de usuario objetivo del producto."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/screens/P1_VesselProfile.jsx",
+        "seccion_por_titulo": "la constante de usos, arriba del componente",
+        "cita_de_anclaje": "la lista que va de { value: pesca } a { value: recreativo }"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "2_decision_del_owner",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "pregunta": "¿Que tiene que cambiar en lo que ve el patron cuando declara que su nave se usa para acuicultura, o para transporte? Hoy no cambia nada: elegir cualquiera de esas dos da exactamente la misma pantalla que no elegir. O hacen algo, o no deberian estar en la lista."
+    },
+    {
+      "id": "PLAN-2::desacople-licencia-uso",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "El camino deportivo del motor no se abre por la licencia del patron sino por el uso declarado de la nave",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "la_puerta": "El perfil deportivo se arma solo si el uso de la nave es recreativo Y ademas estan cargadas su licencia, su clasificacion y su propulsion. El tipo de licencia del registro no entra en esa condicion.",
+        "las_dos_consecuencias": "Un Capitan Deportivo de Alta Mar que declare su nave con uso pesca NO activa la validacion deportiva. Un Patron de Nave Menor que declare uso recreativo y complete los campos SI la activa.",
+        "medido_en_pantalla": "Con licencia capitan_deportivo_alta_mar y uso recreativo, el flujo cambia entero: P2 pasa a decir \"Verificar viaje deportivo\", aparece un bloque de Capitania de zarpe, y se interponen dos puertas nuevas —una lista de 5 items de seguridad y un modal de Aviso de Zarpe Obligatorio— que el perfil comercial no ve.",
+        "lo_que_NO_es": "No es un defecto tecnico: el codigo lo dice explicitamente (\"el ambito deportivo/comercial de la nave se deriva de su uso declarado, no de este set\") y la suite lo prueba. Es una decision de producto que hoy vive solo en el codigo.",
+        "lo_que_SALIO_de_esta_fila": "El caso de la licencia de bahia en ruta costera estaba escrito aca como un \"y ademas\". El owner lo saco el 2026-08-20 con su motivo: no es un matiz del desacople, es la promesa de la app incumplida en el caso mas claro. Vive en PLAN-2::licencia-de-bahia-en-ruta-costera-sin-aviso."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/hooks/useVoyageVerification.js",
+        "seccion_por_titulo": "el bloque que arma perfilDeportivo antes de llamar a fetchTransitRestrictions",
+        "cita_de_anclaje": "la condicion que exige uso recreativo mas licencia, clasificacion y propulsion cargadas"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de la medicion de §2 contra la pantalla del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/.",
+      "grupo": "2_decision_del_owner",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "pregunta": "¿Quien decide si a un patron se le aplican las reglas deportivas: su licencia, o el uso que declara para su nave? Hoy decide el uso de la nave, asi que un capitan con licencia deportiva que declara su nave como de pesca no recibe ninguna verificacion deportiva, y al reves si."
+    },
+    {
+      "id": "PLAN-2::licencia-de-bahia-en-ruta-costera-sin-aviso",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-pwa",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "La app da visto bueno a una navegacion que la licencia declarada no cubre, y no dice ni una palabra",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "la_promesa_de_la_app_leida_de_vuelta_contra_su_origen": "P1 muestra, junto al selector de licencia deportiva, el texto literal: \"Tu licencia determina el ambito de navegacion habilitado (RGDN Art. 12).\"",
+        "el_caso": "Patron Deportivo de Bahia (PDB), nave clasificada BAHIA_MOTOR, ruta Caleta Pesquera Quellon -> Caleta Pesquera San Rafael: 84,3 mn por canales abiertos de Chiloe.",
+        "lo_que_devolvio_el_motor": "veredicto_deportivo: { bandera: \"Q\", motivos: [], alertas: [], ab_efectivo: 50, ab_derivado: false, licencia: \"PDB\" }",
+        "lo_que_mostro_la_pantalla": "Nada sobre la habilitacion. Buscado en el texto de P3: \"licencia\" 0 apariciones, \"no habilit\" 0, \"ilegal\" 0. La unica aparicion de \"deportiv\" en toda la pantalla es el rotulo de licencia del bloque de recordatorios normativos.",
+        "LA_CAUSA_MEDIDA": "Cuando la clasificacion de la nave es BAHIA_VELA o BAHIA_MOTOR, el hook fija el ambito en \"bahia\" ANTES de llamar al validador y SIN mirar la distancia real de la ruta. El validador recibe \"ambito bahia\" sobre una licencia de bahia y responde Q, que es lo correcto para lo que se le pregunto. La distancia de la ruta nunca entra en la pregunta.",
+        "no_es_un_descuido": "La suite del backend lo prueba a proposito, con el nombre puesto: \"NUEVO — BAHIA_* -> ambito bahia por clasificacion, independiente de distancia de ruta\". Esta decidido; lo que no esta es escrito fuera del codigo.",
+        "por_que_no_vive_dentro_del_desacople": "El desacople licencia/uso dice QUIEN abre el camino deportivo. Esta fila dice otra cosa: que abierto el camino, la app valida la licencia y le da el visto bueno a una travesia que esa licencia no cubre. Es la promesa de P1 incumplida en el caso mas claro que hay.",
+        "lo_que_el_patron_ve": "Bandera U por condicion de puertos, y ninguna mencion de que su licencia no alcanza. Un patron que confia en la frase de P1 lee ese U como \"hay mal tiempo\" y no como \"esto no lo podes hacer\"."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/hooks/useVoyageVerification.js",
+        "seccion_por_titulo": "el bloque que arma navegacionDeportiva antes de llamar a fetchTransitRestrictions",
+        "cita_de_anclaje": "la rama que, cuando la clasificacion es BAHIA_VELA o BAHIA_MOTOR, asigna el ambito \"bahia\" sin consultar la distancia a costa de la ruta"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de las dos pasadas de licencia del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/09_pasadas_de_licencia.txt.",
+      "grupo": "2_decision_del_owner",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "pregunta": "¿La app tiene que avisarle al patron cuando la travesia que esta planificando excede el alcance de la licencia que declaro? Hoy no avisa: alguien con licencia de bahia puede planificar una travesia de ochenta y cuatro millas por canales abiertos y la app no le dice nada sobre su habilitacion, aunque al pedirle la licencia le promete que esa licencia determina el ambito de navegacion habilitado."
+    },
+    {
+      "id": "PLAN-2::campo-que-desaparece-conservando-su-valor",
+      "token_local": null,
+      "espacio_de_nombres": "PLAN_JURISDICCION.md 2 — medicion contra la pantalla",
+      "sitio": "PLAN-2",
+      "repo": "tmarea-pwa",
+      "texto_literal": null,
+      "sin_texto": true,
+      "titulo": "Un dato que gobierna el veredicto se oculta del formulario y conserva su valor: el patron no lo puede ver ni corregir",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "el_campo": "La clasificacion de la nave (ALTA_MAR, COSTERA_60, COSTERA_12, BAHIA_VELA, BAHIA_MOTOR).",
+        "cuando_desaparece": "Cuando la nave queda EXIMIDA: uso recreativo, eslora menor a 5 m y propulsion no-motor o motor de menos de 10 hp. El selector deja de renderizarse.",
+        "lo_que_se_midio_en_pantalla": "Nave con clasificacion ALTA_MAR guardada, llevada a eslora 4,5 m y motor 8 hp: el selector desaparece y el valor guardado queda en BAHIA_MOTOR. Nave NUEVA creada directamente como eximida: sale tambien con BAHIA_MOTOR sin que el campo aparezca nunca.",
+        "de_donde_sale_el_valor": "Un efecto de P1 deriva la clasificacion a BAHIA_VELA o BAHIA_MOTOR segun la propulsion cuando la nave es eximida. La derivacion es deliberada.",
+        "por_que_es_deuda_igual": "Ese campo NO es decorativo: es el que fija el ambito con el que se evalua la habilitacion deportiva (ver PLAN-2::licencia-de-bahia-en-ruta-costera-sin-aviso) y el que resuelve el umbral de viento de la licencia. Gobierna el veredicto y el patron no lo ve ni lo puede corregir si la derivacion se equivoca.",
+        "como_se_encontro": "Buscando otra cosa. La prediccion era que un perfil deportivo incompleto saltaria la validacion EN SILENCIO; resulto que no es alcanzable porque esta derivacion cierra el hueco. Cerrarlo derivando un valor invisible es lo que dejo esta deuda."
+      },
+      "donde": {
+        "fichero": "tmarea-pwa/src/screens/P1_VesselProfile.jsx",
+        "seccion_por_titulo": "el efecto que deriva la clasificacion cuando la nave es eximida",
+        "cita_de_anclaje": "el efecto que elige entre BAHIA_VELA y BAHIA_MOTOR segun la propulsion, y el render condicional del selector de clasificacion"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: no estaba escrita en ninguna parte. Nace de las dos pasadas de licencia del 2026-08-20, cuya salida cruda vive en _bitacoras/spec2_pantalla_2026-08-20/09_pasadas_de_licencia.txt.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "costo_estimado": "Bajo. Dos caminos posibles y los dos son escritura: mostrar el valor derivado en modo lectura con su motivo, o no derivarlo y declarar que la nave eximida no tiene clasificacion. El segundo cambia el comportamiento del motor y por eso no es gratis.",
+      "depende_de": "PLAN-2::licencia-de-bahia-en-ruta-costera-sin-aviso. Si el owner decide que la app debe avisar cuando la ruta excede el alcance, este campo deja de poder ser invisible."
     }
   ]
 }

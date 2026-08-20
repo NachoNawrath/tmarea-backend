@@ -1,0 +1,71 @@
+EL CRUCE DEL estado_drift.json — SHA ANTES, SHA DESPUES, Y QUE SE PERDIO
+==============================================================================
+Sesion: PLAN-7.2::spec-2-nunca-releida, medicion de §2 contra la pantalla.
+Fecha : 2026-08-20
+Autorizacion del owner: ACEPTADO que se pise, con este procedimiento.
+
+POR QUE HAY CRUCE
+  src/services/drift-arranque.js dispara el control de drift en CADA arranque
+  del backend y reescribe data/catalogo/estado_drift.json. Esta pieza exigia
+  levantar el backend. El fichero llevaba, modificado y sin stagear, la unica
+  evidencia viva de H-T1 (bahia 258 «RIO BUENO, SECTOR LLANCACURA», divergencia
+  en estado "no_declarada").
+
+CORRECCION DE PREMISA
+  La copia congelada NO esta en _bitacoras/declarativo_deudas_2026-08-19/ —ese
+  directorio solo trae la anotacion «no se toco»—. Esta en:
+      _bitacoras/control_ancla_2026-08-19/HT1_estado_drift_working_tree_2026-08-19.json
+      _bitacoras/control_ancla_2026-08-19/HT1_PROCEDENCIA.txt
+  Comprobado byte a byte contra el fichero vivo antes de arrancar: sha identico.
+
+PROCEDIMIENTO APLICADO
+  1. sha256 del fichero en disco, antes de arrancar
+  2. copia al scratchpad de la sesion
+  3. arranque del backend
+  4. sha256 y diff despues
+
+MEDICION
+  ANTES  sha256 3a350d5ab3293ab2304e8029200ea6e42927e8e4b8b9d891ae36c533f8300b00
+         bytes  1380
+         mtime  2026-08-19T21:07:00.218Z
+
+  copia al scratchpad, sha256 identico:
+         3a350d5ab3293ab2304e8029200ea6e42927e8e4b8b9d891ae36c533f8300b00  1380 bytes
+
+  DESPUES DEL PRIMER ARRANQUE
+         sha256 6d112686e99d3b4901f5288ac7aab29836e60abc01d9e7651556a06830a30122
+         bytes  1380
+         mtime  2026-08-20T03:19:08.335Z
+
+  DESPUES DEL SEGUNDO ARRANQUE (el backend se apago a proposito para medir S8 y
+  se volvio a levantar para medir las Capitanias cruzadas)
+         sha256 46523a50381086602fcdba6e2d6e8ff50db4351e2783de9b357f2b1028af3ca8
+         bytes  1380
+
+QUE SE PERDIO — NADA
+  diff de la copia congelada contra el fichero tras las dos corridas:
+
+      2c2
+      <   "ultima_corrida": "2026-08-19T21:07:00.218Z",
+      ---
+      >   "ultima_corrida": "2026-08-20T03:41:55.078Z",
+
+  UNA sola linea, y es el sello de tiempo. Sobrevivieron intactos:
+      veredicto        DRIFT_NO_DECLARADO
+      universo_sitport 166
+      la divergencia   id_bahia 258, clase sitport_sin_catalogo, estado no_declarada
+
+  Y el log del arranque lo dijo con sus propias palabras:
+      [drift] DRIFT NO DECLARADO — aparecio una divergencia que nadie habia visto
+              :: total 4 · no declaradas 1 · abiertas 3 · adjudicadas 0 · vencidas 0
+              (901ms, salida 1) — detalle en data\catalogo\estado_drift.json
+
+LO QUE ESTO NO PRUEBA
+  Que el procedimiento fuera innecesario. Que la corrida nueva coincidiera con la
+  vieja es un hecho del mundo —SITPORT sigue publicando la 258 hoy—, no una
+  propiedad del arranque. Si SITPORT hubiera dejado de publicarla, la corrida
+  nueva la habria borrado y la copia congelada seria lo unico que quedaba.
+
+NO SE STAGEA
+  data/catalogo/estado_drift.json queda modificado y SIN STAGEAR, igual que
+  estaba. La reescritura es un efecto del arranque, no un cambio de esta sesion.

@@ -1,0 +1,179 @@
+TEXTO CRUDO DE LAS PANTALLAS MEDIDAS — P3, 2026-08-20
+==============================================================================
+Extraido con document.body.innerText del propio navegador que mostraba P3.
+Las capturas de imagen correspondientes se entregaron en la sesion.
+
+Perfil usado en todas: patron.prueba@ejemplo.cl / «Patron de Prueba» /
+licencia patron_nave_menor. Nave: lancha, eslora 18,5 m, manga 5,2 m, TRG 45,
+calado 1,2 m, uso pesca, propulsion motor, 8 kn, 25 L/h, combustible 800 L.
+El AB cambia entre pasadas y se dice en cada una.
+
+NOTA SOBRE COMO SE CONDUJO EL NAVEGADOR
+  El pipeline de raton del panel no entregaba eventos (left_click devolvia
+  timeout a los 30 s y la casilla no cambiaba; readyState era 'complete' y la
+  consola estaba limpia). Se sustituyo el raton por element.click() y por el
+  setter nativo de value con eventos 'input'/'change', que es lo que React ya
+  escucha. Se sustituye el RATON, no el mecanismo bajo medicion: los renders
+  medidos son los de la app.
+
+
+==============================================================================
+A · R1 — Caleta Pesquera Quellon -> Caleta Pesquera San Rafael · AB 50
+==============================================================================
+La ruta que la app calculo tiene 38 waypoints (motor raster, no la recta).
+
+  BANDERA U — Navegar con precaucion
+    · Puerto de zarpe "Caleta Pesquera Quellon" con restricciones
+    · Puerto de recalada "Caleta Pesquera San Rafael" con restricciones
+
+  [tarjeta] Puerto de recalada cerrado. Alcanza a las naves menores de 25 AB.
+            Texto de la Capitania: SE ESTABLECE CONDICION DE PUERTO VARIABLE
+            FUERA DE LOS LIMITES DE LA BAHIA DE CALBUCO ...
+            Contacta a la Capitania de Puerto de Calbuco por VHF Canal 16 antes
+            de recalar.
+
+  CONDICION DE PUERTOS
+    ZARPE    Caleta Pesquera Quellon      [amarillo] Con restricciones
+             Gobernacion Maritima de Castro — +56 65 262 9405
+    RECALADA Caleta Pesquera San Rafael   [amarillo] Con restricciones
+             Capitania de Puerto de Calbuco — +56 65 2462434
+
+  RESTRICCIONES EN TRANSITO
+    «La ruta pasa por 5 zona(s) con restricciones activas. Ninguna afecta tu
+     embarcacion, pero se recomienda precaucion.»
+      1. Bahia Quellon      Quellon  +56 65 262 9405   <-- ES LA BAHIA DEL ZARPE
+      2. Achao              Achao    +56 65 262 9405
+      3. Chequian           Quemchi  +56 65 262 9405
+      4. Puerto Quemchi     Quemchi  +56 65 262 9405
+      5. Bahia de Calbuco   Calbuco  +56 65 2462434    <-- ES LA BAHIA DE LA RECALADA
+    Ninguna trae cita normativa. Ninguna dice que no la tenga.
+    NO APARECE la bahia 114 «CANAL CHACAO SECTOR PARGUA Y PUNTA CORONEL»,
+    Capitania Calbuco, que SI esta en la ruta (bahias 113 y 232), y cuya
+    restriccion tipo TODOS estaba vigente en el momento de la medicion.
+
+  CLIMA Y OLEAJE DE LA RUTA — [naranja] Tiempo Variable
+    VIENTO POR TRAMO: Puerto Montt · Puerto Quemchi · Chonchi · Bahia Quellon
+    (esta lista NO es la de Capitanias atravesadas: incluye Puerto Montt, que
+     la ruta no cruza, y omite Achao, Chequian y Calbuco, que si cruza)
+
+  RECORDATORIOS NORMATIVOS — 5, TODOS con cita:
+    TM-006 Art. 3 · TM-011 · DS 129/2013 · DGTM O-41/001 · TM-008 Art. 45
+
+  NO HAY bloque de jurisdiccion sin limite cargado. NO HAY bloque de drift.
+
+
+==============================================================================
+A' · R1 — SEGUNDA PASADA · AB 10
+==============================================================================
+  BANDERA U + V — Navegacion no recomendada
+    · Restriccion de transito en zona intermedia (Bahia Quellon)   <-- ES EL ZARPE
+    · Puerto de zarpe "Caleta Pesquera Quellon" con restricciones
+    · Puerto de recalada "Caleta Pesquera San Rafael" con restricciones
+
+  RESTRICCIONES EN TRANSITO
+    «La ruta cruza 5 jurisdiccion(es) con Condicion de Puerto activa que afecta
+     tu embarcacion.»
+    Las 5 pasan a aplicar. Sigue sin haber mezcla, asi que la separacion
+    informativa sigue sin poder observarse.
+
+
+==============================================================================
+A'' · R1 — TERCERA PASADA · AB 30
+==============================================================================
+Motivo de la tercera pasada, escrito antes de correrla: con AB 50 las cinco
+restricciones son informativas y con AB 10 las cinco aplican. AB 30 es el unico
+valor que produce mezcla, porque Quellon restringe bajo 50 AB y las otras cuatro
+bajo 25. Sin mezcla, S2(b) no se puede observar.
+
+  BANDERA U + V
+  RESTRICCIONES EN TRANSITO
+    «La ruta cruza 1 zona(s) con restricciones que afectan tu embarcacion y
+     4 zona(s) con restricciones activas que no te afectan.»
+      Bahia Quellon   [rojo]  Tu embarcacion NO puede transitar
+      ---- RESTRICCIONES ACTIVAS — NO AFECTAN TU EMBARCACION ----
+      Achao · Chequian · Puerto Quemchi · Bahia de Calbuco
+
+
+==============================================================================
+B · R2 — Puerto de Antofagasta -> Caleta Pesquera Taltal · AB 50
+==============================================================================
+Payload recibido por este mismo navegador en 05_payload_antofagasta_taltal.json:
+  cobertura_jurisdiccional.bandera = "U"
+  1 aviso, 24,6646 km, causa jurisdiccion_sin_geometria, origen ambito_no_publicado
+  capitanias: [{nombre:"Antofagasta", telefono:"+56 55 263 0000"}]
+  capa_1: "No tenemos cargado el limite de esta jurisdiccion."
+  bandera_final = "Q"
+
+Lo que la pantalla mostro, entera (2809 px, recorrida de arriba abajo):
+
+  BANDERA Q — Zarpe autorizado
+  Condiciones favorables para navegar.
+  ✓ Puertos despejados · Clima dentro de limites · Autonomia suficiente
+
+  CONDICION DE PUERTOS
+    ZARPE    Puerto de Antofagasta    [verde] Abierto · Sin restricciones activas
+    RECALADA Caleta Pesquera Taltal   [verde] Abierto · Sin restricciones activas
+  CLIMA — [verde] Condicion Normal
+  MAREAS · ETA Y COMBUSTIBLE · RECORDATORIOS NORMATIVOS (5, con cita)
+
+  Busqueda de nueve cadenas del aviso en el texto de la pantalla: LAS NUEVE EN
+  FALSO. Controles positivos ("BANDERA Q", "Puerto de Antofagasta"): en verdadero.
+
+
+==============================================================================
+C · R3 — Lago General Carrera · AB 50
+==============================================================================
+Terminal Conectividad Puerto Ibanez -> Embarcadero Muelle Rio Tranquilo.
+Pagina COMPLETA, 1016 px, sin scroll. Texto integro:
+
+  [triangulo] No se pudo trazar la ruta
+  El destino seleccionado esta fuera de zona navegable conocida. El punto esta a
+  mas de 5 km de aguas navegables segun la carta del motor de rutas. Intenta
+  seleccionar un punto mas cercano a un canal o bahia, o usa Coordenadas GPS
+  para ajustar manualmente.
+  [boton] ← Modificar viaje
+
+  CONDICION DE PUERTOS
+    ZARPE    Terminal Conectividad Puerto Ibanez - Lago General Carrera
+             [verde] Abierto · Gobernacion Maritima de Aysen — +56 67 233 1405
+             Sin restricciones activas
+    RECALADA Embarcadero Muelle Rio Tranquilo - Lago General Carrera
+             [verde] Abierto · (SIN CONTACTO) · Sin restricciones activas
+
+  NO HAY tarjeta de veredicto. NO HAY bandera. Cero menciones de la condicion
+  del lago, de su jurisdiccion lacustre, ni de que falte el dato.
+
+
+==============================================================================
+D · BACKEND CAIDO — R1 otra vez · AB 50
+==============================================================================
+El backend se detuvo a proposito. No es una simulacion de un mecanismo interno:
+es una condicion real de operacion de la app.
+
+  Pantalla de carga, con el backend ya caido:
+    ✅ Conectando con SITPORT (Armada de Chile)...
+    ✅ Consultando condiciones meteorologicas de la ruta...
+    (los dos pasos marcados con tilde verde mientras fallaban)
+
+  BANDERA U — Navegar con precaucion
+    · Puerto de zarpe "Caleta Pesquera Quellon" con restricciones
+    · Puerto de recalada "Caleta Pesquera San Rafael" con restricciones
+    · Dato SITPORT desactualizado — verificar con Capitania
+
+  CONDICION DE PUERTOS
+    ZARPE    [amarillo] Con restricciones · ⚠ No se pudo conectar con SITPORT
+    RECALADA [amarillo] Con restricciones · ⚠ No se pudo conectar con SITPORT
+    (el rotulo afirma que HAY restricciones sobre un dato que nunca se trajo)
+
+  CLIMA Y OLEAJE DE LA RUTA
+    [VERDE] Condicion Normal
+    ⚠ No se pudo obtener datos de clima. Verificar condiciones directamente.
+    (verde y ambar en la misma tarjeta)
+
+  MAREAS   Informacion de mareas no disponible para esta ubicacion
+  ETA      ⚠ No se pudo calcular ETA. Verificar parametros de la embarcacion.
+
+  EL BLOQUE «RESTRICCIONES EN TRANSITO» NO APARECE. No dice que no se pudo
+  evaluar: no esta. La corrida anterior sobre la misma ruta mostraba 5 zonas.
+
+  El boton «Iniciar navegacion →» sigue habilitado.

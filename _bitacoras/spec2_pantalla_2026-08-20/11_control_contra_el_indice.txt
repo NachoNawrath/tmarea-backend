@@ -1,0 +1,47 @@
+FICHEROS EXTRAIDOS DEL INDICE
+  data/deudas/deudas_declaradas.json    170676 bytes
+  scripts/validar_deudas_declaradas.js  17912 bytes
+
+CANON DEL VALIDADOR **DEL INDICE**: 17 sitios
+  ¿incluye PLAN-2? SI
+
+CONTADO A MANO SOBRE EL DATO **DEL INDICE**
+  version                : 2   generado: 2026-08-20
+  sitios en cobertura    : 17   barridos 8   sin barrer 9
+  FILAS                  : 55
+  unicas                 : 53   duplicadas 2
+  VIVAS                  : 48   no vivas 5   (cerradas por trabajo 2)
+  filas del sitio PLAN-2 : 15
+  PLAN-2 declara         : 15   -> CALZA
+
+EL VALIDADOR DEL INDICE, CORRIDO SOBRE EL DATO DEL INDICE
+  VALIDADOR DEL DECLARATIVO DE DEUDAS
+  fichero : indice-deudas-oRYV6L/deudas_declaradas.json
+  version : 2   generado: 2026-08-20
+  COBERTURA
+    sitios en la canon                : 17
+    barridos                          : 8
+    sin barrer                        : 9
+  CONTEO -- unidad: FILAS del declarativo. Denominador: las filas de los sitios BARRIDOS.
+    filas                             : 55
+    deudas unicas (sin duplicadas)    : 53
+    duplicadas de otra fila           : 2
+    de las unicas:
+      VIVAS                           : 48
+      no vivas (cerradas + caducas)   : 5   de las cuales CERRADAS por trabajo: 2
+    El total de filas NUNCA baja: una deuda cerrada se queda con estado "cerrada".
+    Lo que baja es VIVAS, y los dos numeros van siempre juntos.
+    por grupo                           filas   unicas    vivas
+      1_cierra_con_lo_que_hay            32       32       31
+      2_decision_del_owner                6        6        5
+      3_dato_externo                     14       12       12
+      4_caduca                            3        3        0
+      5_obsoleta                          0        0        0
+      6_se_descarta                       0        0        0
+    grupos 5 y 6 SIN FIRMAR del owner : 0  -- siguen contando como deuda viva
+  VERDE -- el declarativo es valido. Y NO es completo: 9 sitio(s) sin barrer, por diseno.
+  exit 0
+
+COMPARACION INDICE vs DISCO
+  filas  indice 55   disco 55   -> IGUALES
+  sitios indice 17   disco 17   -> IGUALES

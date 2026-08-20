@@ -1,0 +1,585 @@
+§2 DEL PLAN_JURISDICCION, LEIDA CONTRA LA PANTALLA POR PRIMERA VEZ
+==============================================================================
+Fila del declarativo : PLAN-7.2::spec-2-nunca-releida
+Fecha                : 2026-08-20
+Alcance              : MIDE Y PARA. No se arreglo nada. No se toco codigo de la
+                       PWA ni del backend.
+Arboles              : C:/Users/katia/tmarea-backend  (backend main = origin/main = cc57259)
+                       C:/Users/katia/tmarea-pwa      (pwa main = origin/main = 6443178)
+Suite                : 157/157, salida cruda verificada antes de arrancar.
+
+
+------------------------------------------------------------------------------
+0 . LO PRIMERO: §2 SIGUE SIENDO NUEVE Y SIGUE MARCADA
+------------------------------------------------------------------------------
+Instrumento sobre la seccion «2. ESPECIFICACION» de PLAN_JURISDICCION.md:
+
+    S1 S2 S3 S4 S5 S6 S7 S8 S9      total 9
+    bloques S: 9
+    S1 C=true P=false      S6 C=true  P=false
+    S2 C=true P=false      S7 C=true  P=false
+    S3 C=true P=false      S8 C=true  P=false
+    S4 C=true P=false      S9 C=true  P=false
+    S5 C=false P=true
+    CONTROL: '**S10 ·' en todo el fichero -> 0
+
+Nueve puntos, ocho [C] y un [P] (S5). No hay hallazgo por ahi.
+
+
+------------------------------------------------------------------------------
+1 . POR QUE SON 17 VEREDICTOS Y NO 9
+------------------------------------------------------------------------------
+No existe «cumple a medias». Releida palabra por palabra, §2 contiene 17
+afirmaciones separables repartidas en 9 puntos. El reparto se acordo con el
+owner ANTES de medir:
+
+  S1  1    S2  3    S3  4    S4  1    S5  2    S6  2    S7  2    S8  1    S9  1
+
+Denominador primario: 17 afirmaciones. Unidad: afirmacion de §2.
+De los 9 puntos se informa solo los que salen unanimes; los divididos se nombran
+aparte.
+
+
+------------------------------------------------------------------------------
+2 . COMO SE MIDIO, Y EL INSTRUMENTO QUE SALIO MAL
+------------------------------------------------------------------------------
+Con la app montada en el navegador: backend en 3000, PWA en 5173, PostgreSQL
+arriba (26 tablas + 2 matviews), SITPORT respondiendo en vivo.
+
+DEFECTO DE INSTRUMENTO PROPIO, DECLARADO. La primera sonda de seleccion de ruta
+(01_sonda_rutas_v1_INSTRUMENTO_EQUIVOCADO.js) mandaba la RECTA entre los dos
+puertos densificada a 50 km. La app NO manda eso: llama primero a
+/api/rutas/calcular y despues manda los waypoints REALES del motor raster. La v1
+dio 3 waypoints para Valparaiso -> San Antonio y dijo que ahi habia un hueco de
+62,7 km; el log del backend, cuando llamo el navegador, decia waypoints=26 y
+avisos=0. La v1 medía OTRA RUTA. Se conserva en esta bitacora, con su nombre
+diciendolo, porque el defecto es el mismo de siempre: corre perfecto y mide otra
+cosa. Lo cazo mirar el log de la app, no un validador.
+
+La v2 (02_sonda_rutas_v2.js) replica la app y sale con CONTROL POSITIVO: para
+R1 tiene que dar 38 waypoints, que es lo que el log registro cuando llamo el
+navegador. Da 38.
+
+Las sondas seleccionan ruta. NINGUN veredicto sale de ellas: todos salen de la
+pantalla, y donde hace falta contrastar, del payload que el propio navegador
+recibio (05_payload_antofagasta_taltal.json).
+
+
+------------------------------------------------------------------------------
+3 . LOS 17 VEREDICTOS
+------------------------------------------------------------------------------
+
+S1 · «Ve todas las Capitanias que su ruta atraviesa.»
+    NO CUMPLE
+    Evidencia: ruta Quellon -> Calbuco, 38 waypoints. Cruza 7 bahias que son
+    5 Capitanias: Achao, Calbuco, Chonchi, Quellon, Quemchi. La pantalla nombro
+    4. CHONCHI (bahia 155, Queilen) no aparece en ningun lugar de P3.
+    Denominador: 4 de 5 Capitanias atravesadas nombradas. Unidad: Capitania.
+    Que hace en su lugar: lista las BAHIAS CON RESTRICCION VIGENTE, no las
+    Capitanias atravesadas. Se ve en las otras dos rutas: Antofagasta -> Taltal
+    y Valparaiso -> San Antonio nombraron 0 Capitanias, porque ninguna bahia
+    cruzada tenia restriccion. La lista «VIENTO POR TRAMO DE LA RUTA» tampoco es
+    esa lista: incluye Puerto Montt, que la ruta no cruza.
+
+S2(a) · «Ve toda restriccion vigente de esas Capitanias, aplique o no a su nave.»
+    CUMPLE
+    Lectura declarada: (a) es la afirmacion sobre el filtrado POR NAVE; el
+    alcance bahia-vs-Capitania es (c).
+    Evidencia: con AB 50 las 5 restricciones vigentes de las bahias cruzadas se
+    muestran, las 5 rotuladas «Tu embarcacion (AB 50) no esta afectada por esta
+    restriccion». Ninguna oculta. Repetido con AB 10 y AB 30.
+
+S2(b) · «Las que no le aplican, en seccion informativa, nunca ocultas.»
+    CUMPLE
+    Evidencia: tercera pasada, AB 30 —el unico valor que produce mezcla—. La
+    pantalla separa: la que bloquea arriba, y bajo el rotulo «RESTRICCIONES
+    ACTIVAS — NO AFECTAN TU EMBARCACION» las cuatro informativas.
+    Con AB 50 (5 de 5 informativas) y con AB 10 (5 de 5 aplicables) la
+    separacion no se puede observar. Por eso hubo tercera pasada.
+
+S2(c) · «Una restriccion publicada bajo el nombre de una bahia le llega si su
+         Capitania esta en la ruta, aunque su ruta no pase por esa bahia.»
+    NO CUMPLE
+    Evidencia: bahia 114 «CANAL CHACAO SECTOR PARGUA Y PUNTA CORONEL»,
+    Capitania CALBUCO, restriccion tipo TODOS vigente en el momento de la
+    medicion (motivo VIENTO). Calbuco SI esta en la ruta: la ruta cruza sus
+    bahias 113 y 232. La ruta no cruza la 114. La restriccion NO aparece en
+    pantalla. Controles: bahia 117 (que si salio) devuelve 1; bahia 999
+    (inexistente) devuelve 0.
+    Que hace en su lugar: filtra por BAHIA cruzada, no por Capitania en ruta.
+
+S3(a) · «Si su ruta cruza una Capitania sin limite cargado, se le dice.»
+    NO CUMPLE
+    Evidencia: Antofagasta -> Taltal. El backend le mando A ESTE NAVEGADOR
+    cobertura_jurisdiccional.bandera "U" con 1 aviso de 24,6646 km, causa
+    jurisdiccion_sin_geometria. La pantalla, recorrida entera (2809 px), dice
+    «BANDERA Q — Zarpe autorizado — Condiciones favorables para navegar —
+    ✓ Puertos despejados». Nueve cadenas del aviso buscadas en el texto de la
+    pantalla: las nueve en falso, con dos controles positivos en verdadero.
+    Que hace en su lugar: nada. El campo llega al navegador y muere ahi.
+
+S3(b) · «En su propio bloque, nunca entre las restricciones.»
+    NO CUMPLE
+    Evidencia: la misma. No existe tal bloque en ninguna de las cuatro rutas
+    medidas. La segunda mitad —«nunca entre las restricciones»— se cumple de
+    forma vacia, porque no hay nada que pudiera estar mal colocado. Se dice.
+
+S3(c) · «Con la Capitania nombrada y su telefono cuando se pueda nombrar sin
+         inventarla, y con la derivacion generica cuando no.»
+    NO CUMPLE
+    Evidencia: el payload traia capitanias:[{nombre:"Antofagasta",
+    telefono:"+56 55 263 0000"}] y el texto ya compuesto «Confirma con la
+    Capitania Antofagasta antes de zarpar». El patron no vio ninguno de los dos.
+    El motor SI supo nombrarla; lo que falla no es la nominacion.
+
+S3(d) · «Escala el veredicto a U, nunca a U+V.»
+    NO CUMPLE
+    Evidencia: en el mismo payload, cobertura.bandera = "U" y
+    bandera_final = "Q". En pantalla, BANDERA Q. No escala.
+    Falla en DOS capas y las dos se midieron: el backend no compone el aviso en
+    el veredicto —esta escrito en sitport-routes.js como pieza pendiente— y la
+    PWA ademas no recibe el campo. La segunda mitad, «nunca a U+V», se cumple de
+    forma vacia: nunca escala, luego nunca escala de mas.
+
+S4 · «Si navega en un lago, ve la condicion de su lago.»
+    NO CUMPLE
+    Evidencia: las CUATRO jurisdicciones lacustres publicadas que tienen puerto
+    en el catalogo fallan en el motor raster —Llanquihue SNAP_FAILED, Gral
+    Carrera SNAP_FAILED, Villarrica «fuera de la cobertura de tiles de Chile»,
+    Panguipulli «fuera del tile AUSTRAL_N»—, con control positivo de que las
+    marítimas del mismo motor si calculan. En la unica pantalla lacustre
+    alcanzada: «No se pudo trazar la ruta», NINGUNA tarjeta de veredicto, dos
+    puertos en verde «Abierto», cero menciones del lago o de su jurisdiccion.
+    Nota de alcance, y no rescata el veredicto: hoy SITPORT no publica ni una
+    restriccion ni un pronostico para ninguna de las 6 lacustres publicadas
+    (0 de 6 en consultaRestricciones y en totalPronostico). No rescata porque el
+    mecanismo NO LLEGA A PREGUNTAR: sin ruta calculada, restricciones-ruta no se
+    llama nunca. La carencia es del camino, no del dato.
+
+S5(a) · «Ve el estado de su puerto de zarpe y de recalada.»
+    CUMPLE
+    Evidencia: bloque «CONDICION DE PUERTOS» con tarjeta ZARPE y tarjeta
+    RECALADA, cada una con estado, contacto, telefono y hora de actualizacion,
+    en las cuatro rutas medidas, incluida la lacustre y la del backend caido.
+
+S5(b) · «Una sola vez. No duplicado entre el bloque de puerto y el de transito.»
+    NO CUMPLE
+    Evidencia: ruta Quellon -> Calbuco. «Bahia Quellon» —la bahia del puerto de
+    ZARPE— encabeza la lista de transito, y «Bahia de Calbuco» —la de la
+    RECALADA— la cierra. Los dos extremos duplicados: 2 de 2.
+    Y con AB 10 la duplicacion sube al veredicto: el primer motivo dice
+    «Restriccion de transito en zona intermedia (Bahia Quellon)» sobre el puerto
+    del que el patron zarpa.
+    Causa medida, y es dato, no arreglo: el backend excluye por zarpe_id y
+    recalada_id; la PWA no manda ninguno de los dos en el cuerpo del POST.
+
+S6(a) · «El veredicto es el maximo de todas las fuentes.»
+    NO CUMPLE
+    Evidencia: Antofagasta -> Taltal. La fuente cobertura_jurisdiccional vale U
+    y el veredicto sale Q. Una fuente queda fuera del maximo.
+    Con AB 10 el veredicto SI escalo a U+V por la fuente de transito, asi que el
+    maximo funciona sobre las fuentes que entran; lo que falla es cuales entran.
+
+S6(b) · «No hay verde con algo ambar en la misma pantalla.»
+    NO CUMPLE
+    Evidencia: backend caido. El bloque de clima muestra [VERDE] «Condicion
+    Normal» e inmediatamente debajo «⚠ No se pudo obtener datos de clima»,
+    mientras las dos tarjetas de puerto estan en ambar. Verde y ambar en la
+    misma pantalla, y el verde encima de un fallo.
+    Segundo caso: la pantalla lacustre muestra dos puertos en verde «Abierto»
+    sobre un viaje cuya ruta no se pudo trazar.
+
+S7(a) · «Cada mensaje trae su cita.»
+    NO CUMPLE
+    Evidencia: en la pantalla de Quellon -> Calbuco hay 12 mensajes al patron.
+    Traen cita los 5 recordatorios normativos (TM-006 Art. 3, TM-011,
+    DS 129/2013, DGTM O-41/001, TM-008 Art. 45). No traen cita las 5 tarjetas de
+    restriccion de transito ni las 2 de puerto.
+    Denominador: 5 de 12 mensajes con cita. Unidad: mensaje en pantalla.
+    ESTE ES EL VEREDICTO MAS SENSIBLE AL CRITERIO, y se dice: las 7 sin cita
+    traen el TEXTO LITERAL de la Capitania entrecomillado. Si el owner considera
+    que reproducir el texto de la Capitania ES su cita, este veredicto se da
+    vuelta y pasa a CUMPLE. No lo decido yo: dejo el hecho y el criterio a la
+    vista. Lo que si es un hecho bajo cualquier criterio: ninguna de las 7
+    NOMBRA la resolucion ni el articulo.
+
+S7(b) · «O dice explicitamente que no hay cita porque no hay norma sino un dato
+         que nos falta.»
+    NO CUMPLE
+    Evidencia: la frase existe redactada en el arbol —en el capa_2 del aviso de
+    cobertura y en el bloque de drift— y NO llego a pantalla en ninguna de las
+    cuatro rutas. Y los mensajes que en pantalla si son «un dato que nos falta»
+    no la llevan: «No se pudo trazar la ruta», «No se pudo conectar con SITPORT»,
+    «No se pudo obtener datos de clima» aparecen sin decir que la carencia es
+    nuestra y no una norma.
+
+S8 · «Cuando el motor no puede evaluar algo, lo dice. Nunca un fallo se presenta
+      como "no hay nada".»
+    NO CUMPLE
+    Lo que SI hace, y hay que decirlo porque es la mayor parte: con el backend
+    caido dice «No se pudo conectar con SITPORT» en las dos tarjetas de puerto,
+    «No se pudo obtener datos de clima», «Informacion de mareas no disponible»,
+    «No se pudo calcular ETA» y «Dato SITPORT desactualizado». En la lacustre
+    dice «No se pudo trazar la ruta» con su motivo. El veredicto no se va a
+    verde.
+    Lo que lo refuta, y S8 lleva un «nunca», asi que basta un caso: con el
+    backend caido EL BLOQUE «RESTRICCIONES EN TRANSITO» DESAPARECE ENTERO. No
+    dice que no se pudo evaluar: no esta. En la corrida anterior sobre la misma
+    ruta ese bloque mostraba 5 zonas con restriccion. Un fallo presentado como
+    nada.
+    Segundo caso: la pantalla de carga marca con tilde verde ✅ «Conectando con
+    SITPORT» y ✅ «Consultando condiciones meteorologicas» mientras los dos
+    fallaban.
+
+S9 · «Ninguna restriccion publicada por SITPORT desaparece sin registro. Si llega
+      una bahia que no conocemos, se registra como defecto; no se descarta en
+      silencio.»
+    CUMPLE — EVIDENCIA DE LOG, NO DE PANTALLA
+    Evidencia, en cada carga de P3:
+      [drift-ruta] defecto bahia_publicada_fuera_del_catalogo bahia=108
+                   origen=totalPronostico
+                   capitania=CAPITANIA DE PUERTO CARAHUE (fuera de la ruta)
+    La bahia 108 la publica SITPORT en totalPronostico, el catalogo no la conoce,
+    y queda registrada como defecto. No se descarta en silencio.
+    S9 habla de un REGISTRO, no de una pantalla; por eso su instrumento es la
+    salida del backend, y por eso el veredicto lleva la etiqueta. Acordado con el
+    owner antes de medir.
+
+
+------------------------------------------------------------------------------
+4 . ¿EL HALLAZGO DEL DRIFT TOCA S9?  —  ES UN VEREDICTO, NO UNA NOTA AL PIE
+------------------------------------------------------------------------------
+La pregunta del owner: ¿puede S9 CUMPLIR sobre un detector que mira dos canales
+de tres, cuando la clase de defecto que hoy existe —la bahia 258, aparecida el
+2026-08-13 y viva hoy— entra por el canal que no mira?
+
+RESPUESTA: NO LO TOCA. Y el motivo es de alcance, no de indulgencia.
+
+  · S9 gobierna RESTRICCIONES. Los dos canales por los que SITPORT publica
+    restricciones son consultaRestricciones y totalPronostico, y el detector
+    mira los DOS. Hoy la 108 salio por totalPronostico y quedo registrada.
+  · Las bahias 257 y 258 no aparecen hoy en ninguno de esos dos canales: salen
+    solo por consultaBahias, que es el LISTADO DE BAHIAS, no un canal de
+    restricciones. No son la clase que S9 gobierna.
+  · Y no se pierden: las registra el instrumento que les corresponde, el control
+    de drift del catalogo, que lo dijo en el arranque de esta misma sesion —
+    «total 4 · no declaradas 1 · abiertas 3».
+
+O sea: cada defecto quedo registrado por el instrumento cuyo alcance lo cubre.
+S9 CUMPLE, y el hueco del detector de drift es una deuda de OTRO frente —queda
+como fila propia, y es mas grande que esta sesion.
+
+
+------------------------------------------------------------------------------
+5 . LA CIFRA
+------------------------------------------------------------------------------
+DENOMINADOR 17. Unidad: afirmacion de §2. Definicion: enunciado separable de la
+especificacion, contrastable contra lo que la pantalla muestra.
+
+    CUMPLE ....... 4 de 17    (S2a, S2b, S5a, S9)
+    NO CUMPLE .... 13 de 17
+    NO MEDIBLE ... 0 de 17
+
+  Ninguna quedo NO MEDIBLE: las cuatro rutas se alcanzaron con el perfil de
+  prueba y las 17 afirmaciones tuvieron pantalla donde contrastarse. La unica
+  que se midio fuera de pantalla es S9, y lleva su etiqueta.
+
+DENOMINADOR 9. Unidad: punto de §2.
+
+    UNANIMES ........... 7 de 9
+        CUMPLE ......... 1   (S9)
+        NO CUMPLE ...... 6   (S1, S3, S4, S6, S7, S8)
+    DIVIDIDOS .......... 2 de 9   (S2 y S5, nombrados)
+        S2: (a) CUMPLE, (b) CUMPLE, (c) NO CUMPLE
+        S5: (a) CUMPLE, (b) NO CUMPLE
+
+SEGUNDA CIFRA — cuantos NO CUMPLE pueden llevar al patron a una decision
+equivocada. Criterio, escrito: el patron ve la pantalla y toma una decision
+distinta de la que tomaria con la informacion completa. Se responde una linea
+por NO CUMPLE, sin proponer arreglo.
+
+    S1    SI — Quellon -> Calbuco: atraviesa Chonchi y no lo sabe; si Chonchi
+              publica algo entre la consulta y el zarpe no sabe ni a quien llamar.
+    S2(c) SI — la bahia 114, Capitania Calbuco que esta en su ruta, tiene
+              restriccion de viento vigente y no le llega.
+    S3(a) SI — Antofagasta -> Taltal: 24,6646 km sin jurisdiccion cargada y la
+              pantalla dice «Zarpe autorizado».
+    S3(b) SI — misma pantalla, mismo caso: no hay bloque donde pudiera leerlo.
+    S3(c) SI — misma pantalla: el telefono +56 55 263 0000 existia y no se dio.
+    S3(d) SI — misma pantalla: el verde es el vehiculo del silencio.
+    S4    SI — viaje en Lago General Carrera: dos puertos en verde «Abierto» y
+              ninguna condicion del lago.
+    S5(b) SI — con AB 10 el veredicto llama «zona intermedia» a la Bahia Quellon,
+              que es su puerto de zarpe; puede buscar fondeadero intermedio para
+              un problema que esta en el muelle del que sale.
+    S6(a) SI — mismo caso que S3(a): una fuente en U y el veredicto en Q.
+    S6(b) SI — backend caido: verde «Condicion Normal» sobre «no se pudo obtener
+              datos de clima».
+    S7(a) NO — ve el texto literal de la Capitania; la falta de la cita formal no
+              cambia que decide.
+    S7(b) NO — los mensajes que carecen de la frase igual dicen que algo fallo.
+    S8    SI — backend caido: el bloque de transito desaparece; el patron que
+              minutos antes vio 5 zonas restringidas ahora no ve ninguna.
+
+    PUEDEN LLEVAR A DECISION EQUIVOCADA: 11 de 13.
+
+  Y LO QUE ESA CIFRA NO DICE, que hay que decirlo para que no infle: las 11 se
+  concentran en SEIS situaciones de pantalla distintas. S3(a,b,c,d) y S6(a) son
+  la MISMA pantalla verde; S6(b) y S8 son la MISMA pantalla del backend caido.
+  Contadas por situacion:
+      1. Quellon -> Calbuco: Chonchi atravesada y no nombrada
+      2. Quellon -> Calbuco: bahia 114 de una Capitania en ruta, ausente
+      3. Antofagasta -> Taltal: verde sobre 24,6646 km sin jurisdiccion
+      4. Lago General Carrera: dos puertos verdes, cero condicion del lago
+      5. Backend caido: verde de clima sobre un fallo, y transito desaparecido
+      6. Quellon -> Calbuco AB 10: el puerto de zarpe llamado zona intermedia
+  SEIS situaciones, 11 afirmaciones. Los dos numeros van juntos.
+
+
+------------------------------------------------------------------------------
+6 . EXPECTATIVAS QUE FALLARON — SE DECLARAN, PORQUE UNA EXPECTATIVA FALLADA ES
+    INFORMACION
+------------------------------------------------------------------------------
+  1. Escribi que esperaba VEREDICTO VERDE en R1 con AB 50, porque la sonda
+     midio veredicto=Q en restricciones-ruta. Salio BANDERA U. Motivo: el
+     veredicto de pantalla lo compone la PWA sumando el estado de los puertos,
+     que la sonda no miraba. La apuesta era mia y estaba mal planteada.
+  2. Escribi que la separacion informativa de S2(b) se veria con AB 50. No se
+     vio con AB 50 ni con AB 10: hizo falta una tercera pasada con AB 30.
+  3. Escribi que R2 (Valparaiso -> San Antonio) tenia un hueco de 62,7 km. Con
+     la ruta que la app calcula de verdad no hay hueco: la sonda v1 era el
+     instrumento equivocado. Se cambio la ruta, no el veredicto.
+  4. NO esperaba que las cuatro rutas lacustres fallaran en el motor raster.
+     Ese fue el hallazgo mas grande de S4 y no estaba en el plan.
+
+
+------------------------------------------------------------------------------
+7 . LO QUE NO SE TOCO
+------------------------------------------------------------------------------
+  .claude/launch.json                 modificado y sin stagear. No se toco. El
+                                      launch.json que se uso para levantar los
+                                      servidores es otro: el de la sesion,
+                                      C:/Users/katia/.claude/.claude/launch.json.
+  data/catalogo/estado_drift.json     lo reescribio el arranque, como estaba
+                                      previsto y autorizado. NO SE STAGEA.
+                                      Detalle en 04_estado_drift_antes_y_despues.txt:
+                                      cambio una linea, el sello de tiempo.
+  Codigo de la PWA y del backend, CONTRATO_MOTOR.md, el motor BRE, cualquier DML
+  o DDL, el declarativo de deudas.
+  Los nueve sitios de deuda que faltan barrer: no son de esta sesion.
+
+  LAS FILAS DE DEUDA DE ESTA SESION VAN REDACTADAS Y NO APLICADAS, igual que las
+  dos del gate. Estan en la seccion 8. Nadie las escribio todavia en
+  data/deudas/deudas_declaradas.json.
+
+
+------------------------------------------------------------------------------
+8 . FILAS PARA EL DECLARATIVO — [ENMENDADO, VER §11]
+------------------------------------------------------------------------------
+ENMIENDA DEL 2026-08-20: EL TITULO DE ESTA SECCION DECIA "REDACTADAS, NO
+APLICADAS" Y YA NO ES CIERTO. El owner ordeno escribirlas en el declarativo
+antes del commit, y estan escritas. Ademas fueron SIETE aca y terminaron siendo
+TRECE: seis mas salieron de la medicion de licencias y de P4 que el owner pidio
+despues. Los ids tambien cambiaron de prefijo, de PLAN-7.2:: a PLAN-2::, porque
+el sitio del barrido resulto ser §2 y no 7.2.
+
+El texto de abajo se conserva TAL COMO SE ESCRIBIO, sin retocar: es el registro
+de que estas siete se redactaron antes de que existiera el sitio que las aloja.
+Lo que vale hoy esta en §11.
+
+Van las dos del gate y cinco nuevas. Todas con grupo, texto y ubicacion.
+
+F1  PLAN-7.2::procedencia-copia-congelada-mal-ubicada
+    grupo 1_cierra_con_lo_que_hay · repo tmarea-backend · sitio PLAN-7.2
+    La copia congelada de estado_drift.json que testimonia H-T1 vive en
+    _bitacoras/control_ancla_2026-08-19/, no en _bitacoras/declarativo_deudas_2026-08-19/.
+    Verificado por sha256 identico (3a350d5a…, 1380 bytes).
+    donde: _bitacoras/declarativo_deudas_2026-08-19/declarativo_deudas_2026-08-19.txt,
+           apartado «11 . LO QUE NO SE TOCO»
+
+F2  DRIFT-A3::consultabahias-no-alimenta-el-detector
+    grupo 3_necesita_medicion · repo tmarea-backend · sitio src/routes/sitport-routes.js
+    El detector de drift del ambito A se alimenta de totalPronostico y de
+    consultaRestricciones, no de consultaBahias. Medido el 2026-08-20: las dos
+    bahias fuera de catalogo que SITPORT publica hoy —257 RIO COCHRANE y 258 RIO
+    BUENO, SECTOR LLANCACURA— salen SOLO por consultaBahias. La 258 aparecio el
+    2026-08-13 y sigue viva. La unica que si alimenta el detector, la 108,
+    resuelve a reparticion 190 (CARAHUE) y ninguna otra bahia comparte esa
+    reparticion, asi que cae siempre en fuera_de_ruta.
+    RELACION CON S9, medida y no supuesta: NO la toca. S9 gobierna restricciones
+    y los dos canales de restricciones estan mirados; 257 y 258 son drift de
+    CATALOGO y las registra el control de drift, que las declaro en el arranque
+    («total 4 · no declaradas 1»). S9 CUMPLE. Esta fila es de otro frente.
+    donde: la construccion de driftCatalogo en los handlers de restricciones-ruta
+           y de weather-ruta
+
+F3  PWA-P3::cobertura-jurisdiccional-muere-en-el-pasamanos
+    grupo 1_cierra_con_lo_que_hay · repo tmarea-pwa
+    sitio src/hooks/useVoyageVerification.js
+    El backend emite cobertura_jurisdiccional con sus avisos, su bandera y su
+    texto ya compuesto, y el objeto que fetchTransitRestrictions arma copia campo
+    por campo y no lo nombra. Medido contra el navegador el 2026-08-20: payload
+    con bandera U y 1 aviso de 24,6646 km sobre Antofagasta -> Taltal; pantalla
+    en BANDERA Q, «Zarpe autorizado», sin ninguna de nueve cadenas del aviso.
+    Sostiene S3(a), S3(b), S3(c), S3(d) y la mitad de S6(a).
+    donde: el objeto `result` de fetchTransitRestrictions, el mismo pasamanos que
+           ya se corrigio una vez para `cierre` y para `drift_catalogo`
+
+F4  PWA-P3::zarpe-y-recalada-entran-como-transito
+    grupo 1_cierra_con_lo_que_hay · repo tmarea-pwa
+    sitio src/hooks/useVoyageVerification.js
+    El backend excluye del transito la bahia del zarpe y la de la recalada por
+    zarpe_id y recalada_id; el cuerpo que manda la PWA no incluye ninguno de los
+    dos. Medido: en Quellon -> Calbuco las dos bahias de los extremos aparecen en
+    la lista de transito (2 de 2), y con AB 10 el veredicto llama «zona
+    intermedia» al puerto de zarpe. Sostiene S5(b).
+    donde: el `body` de fetchTransitRestrictions, contra el bloque «4. Excluir
+           zarpe y recalada por ID explicito» del handler del backend
+
+F5  RASTER::ninguna-ruta-lacustre-es-calculable
+    grupo 3_necesita_medicion · repo tmarea-backend
+    sitio src/services/raster-router-service.js
+    Las cuatro jurisdicciones lacustres publicadas que tienen puerto en el
+    catalogo fallan en el motor raster: Llanquihue y General Carrera con
+    SNAP_FAILED, Villarrica «fuera de la cobertura de tiles de Chile»,
+    Panguipulli «fuera del tile AUSTRAL_N». Control positivo: las maritimas del
+    mismo motor calculan. Consecuencia medida: sin ruta, P3 nunca llama a
+    restricciones-ruta, asi que el ambito lacustre —publicado y con sus 6
+    geometrias construidas desde E3— no puede llegar a la pantalla por ninguna
+    ruta del arbol. Sostiene S4.
+    donde: la respuesta de /api/rutas/calcular sobre las cuatro rutas lacustres
+
+F6  PWA-P3::el-fallo-de-transito-desaparece-en-vez-de-decirse
+    grupo 1_cierra_con_lo_que_hay · repo tmarea-pwa
+    sitio src/components/verification/TransitRestrictionsBlock.jsx
+    Con el backend caido, fetchTransitRestrictions devuelve null y el bloque de
+    transito no se dibuja. No dice que no se pudo evaluar: no esta. Medido sobre
+    la misma ruta que minutos antes mostraba 5 zonas con restriccion. En la misma
+    pantalla el bloque de clima muestra verde «Condicion Normal» sobre «No se
+    pudo obtener datos de clima», y la pantalla de carga marca con tilde verde
+    dos pasos que fallaban. Sostiene S8 y S6(b).
+    donde: el `if (lista.length === 0) return null` del bloque, y el estado
+           conservador que devuelve el hook cuando el fetch falla
+
+F7  PLAN-2::la-lista-de-capitanias-atravesadas-no-existe-en-pantalla
+    grupo 3_necesita_medicion · repo tmarea-pwa · sitio P3
+    No hay ningun elemento de P3 que liste las Capitanias que la ruta atraviesa.
+    Lo que hay es la lista de bahias CON RESTRICCION VIGENTE. Medido: la ruta
+    Quellon -> Calbuco atraviesa 5 Capitanias y la pantalla nombra 4 —falta
+    Chonchi—; y en dos rutas sin restricciones vigentes la pantalla nombro 0 de
+    las Capitanias atravesadas. La lista «VIENTO POR TRAMO DE LA RUTA» no sirve
+    de sustituto: incluye Puerto Montt, que la ruta no cruza. Sostiene S1 y,
+    por el mismo mecanismo de filtrado por bahia, S2(c).
+    donde: P3, entre el bloque de puertos y el de transito, que es donde no esta
+
+
+------------------------------------------------------------------------------
+9 . FICHEROS DE ESTE DIRECTORIO
+------------------------------------------------------------------------------
+  spec2_pantalla_2026-08-20.txt              este
+  01_sonda_rutas_v1_INSTRUMENTO_EQUIVOCADO.js/.txt   el que medía la recta
+  02_sonda_rutas_v2.js/.txt                  el que replica la app, con control
+                                             positivo de 38 waypoints
+  03_medir_capitanias_ruta.js/.txt           las 5 Capitanias atravesadas
+  04_estado_drift_antes_y_despues.txt        sha antes, sha despues, y que se perdio
+  05_payload_antofagasta_taltal.json         lo que el navegador recibio para S3
+  06_pantallas_texto_crudo.txt               el texto de cada pantalla medida
+  07_control_caracteres.js/.txt              puntos de codigo, criterio de H-T2
+  08_lago_contra_las_tres_clases.js/.txt     4 lagos x 3 clases = 12 fallas
+  09_pasadas_de_licencia.txt                 las dos pasadas y la variante del rotulo
+  10_licencias_y_usos_medidos.txt            cinco licencias, dos usos inertes,
+                                             tres clases de ruta, y el oceanografico
+  11_control_contra_el_indice.js/.txt        el validador DEL INDICE corrido sobre
+                                             el dato DEL INDICE, y la comparacion
+                                             contra el disco. Es la regla de 2d47022
+
+
+------------------------------------------------------------------------------
+10 . LO QUE MIDIERON LAS DOS PASADAS DE LICENCIA
+------------------------------------------------------------------------------
+Detalle entero en 09 y 10. Lo que hay que retener:
+
+  · Las CINCO licencias del registro (no siete) colapsan en TRES clases de ruta.
+    Dos usos de cuatro —acuicultura y transporte— tienen CERO ramas.
+  · El camino deportivo NO se abre por la licencia sino por el uso de la nave.
+  · Los CINCO veredictos sensibles se re-midieron y NINGUNO cambia. Lo que
+    cambia es su ALCANCE: ahora estan medidos sobre 3 clases de ruta y sobre los
+    dos caminos del motor.
+  · DOS expectativas mias fallaron y las dos van declaradas: (a) inferí que la
+    licencia habia cambiado el conteo de bahias y era dato vivo —la 122 dejo de
+    tener restriccion—; (b) predije un salto silencioso de la validacion
+    deportiva que NO es alcanzable, porque P1 deriva la clasificacion sola.
+  · Hallazgo que no esperaba: un Patron Deportivo de Bahia con nave BAHIA_MOTOR
+    en una ruta costera de 84,3 mn recibe veredicto deportivo Q sin motivos, y
+    nada en pantalla dice que su licencia no cubre esa navegacion.
+
+LA CIFRA NO SE MUEVE: 4 CUMPLE · 13 NO CUMPLE · 0 NO MEDIBLE sobre 17
+afirmaciones. SU AMBITO ES P3, y asi queda declarado.
+
+
+------------------------------------------------------------------------------
+11 . LAS QUINCE FILAS, ESCRITAS EN EL DECLARATIVO
+------------------------------------------------------------------------------
+Enmienda a §8, que las daba por redactadas y no aplicadas. El owner ordeno
+escribirlas antes del commit y estan escritas en
+data/deudas/deudas_declaradas.json, todas bajo el sitio nuevo PLAN-2.
+
+Fueron TRECE primero y QUINCE despues, el mismo dia. Las dos ultimas las pidio
+el owner tras leer PARADA 2, y las dos salen de la misma medicion.
+
+  1_cierra_con_lo_que_hay (10)
+    PLAN-2::procedencia-copia-congelada-mal-ubicada
+    PLAN-2::cobertura-jurisdiccional-muere-en-el-pasamanos
+    PLAN-2::zarpe-y-recalada-entran-como-transito
+    PLAN-2::ninguna-ruta-lacustre-es-calculable
+    PLAN-2::el-fallo-de-transito-desaparece-en-vez-de-decirse
+    PLAN-2::la-lista-de-capitanias-atravesadas-no-existe-en-pantalla
+    PLAN-2::viaje-activo-sin-jurisdiccion
+    PLAN-2::sin-bloque-oceanografico-en-p3
+    PLAN-2::formatlicense-desalineada-con-el-registro
+    PLAN-2::campo-que-desaparece-conservando-su-valor            <- fila 15
+  2_decision_del_owner (4)
+    PLAN-2::spec-no-cubre-p4
+    PLAN-2::usos-inertes-en-el-formulario
+    PLAN-2::desacople-licencia-uso
+    PLAN-2::licencia-de-bahia-en-ruta-costera-sin-aviso          <- fila 14
+  3_dato_externo (1)
+    PLAN-2::consultabahias-no-alimenta-el-detector-de-drift
+
+LA FILA 14 SE EXTRAJO DE OTRA FILA, y eso importa mas que el numero. El caso de
+la licencia de bahia en ruta costera estaba escrito dentro de
+PLAN-2::desacople-licencia-uso como un "y ademas". El owner lo saco con su
+motivo: no es un matiz del desacople, es la promesa que la app le hace al patron
+—"Tu licencia determina el ambito de navegacion habilitado (RGDN Art. 12)",
+leida de vuelta contra P1— incumplida en el caso mas claro que hay. La fila de
+origen quedo con un puntero a la nueva y con la segunda mitad de su pregunta
+recortada, para que no queden dos preguntas pidiendo la misma decision.
+
+LA FILA 15 SALIO DE UNA PREDICCION FALLADA. Buscando un salto silencioso de la
+validacion deportiva que resulto NO ser alcanzable, aparecio POR QUE no lo es:
+P1 deriva la clasificacion de la nave eximida a un valor que el patron no ve ni
+puede corregir, y ese valor gobierna el veredicto. Cerrar un hueco derivando un
+dato invisible dejo esta deuda.
+
+POR QUE TRECE Y NO DOCE, en su momento. El owner conto once mas la de los usos
+inertes = doce, y ademas pidio "fila propia, grupo 2" para el desacople
+licencia/uso, que no estaba entre las once. Se escribieron las TRECE en vez de
+descartar una fila pedida para cuadrar un numero. El owner confirmo despues que
+el numero era suyo y estaba mal contado.
+
+EL SITIO ES NUEVO Y V5 SUBE A DIECISIETE. §2 no estaba entre los dieciseis
+medidos el 2026-08-19, y el motivo es interesante: §2 no es una LISTA de deudas
+—es la especificacion— y aun asi produjo quince al contrastarla. El sitio se
+agrego a los DOS lados: cobertura.sitios en el dato, y SITIOS_CANON en
+scripts/validar_deudas_declaradas.js, que es donde vive la expectativa
+justamente para que quitarlo deje diff.
+
+CONTEO FINAL, salido del validador:
+    sitios en la canon  17     barridos 8     sin barrer 9
+    filas               55     unicas  53     duplicadas 2
+    VIVAS               48     no vivas 5     (2 cerradas por trabajo)
+    por grupo: (1) 32 · (2) 6 · (3) 14 · (4) 3 · (5) 0 · (6) 0
+    VERDE. Mordida 32/32 con su control negativo.
+
+  Antes de esta sesion: 40 filas · 38 unicas · 33 vivas · 16 sitios · 7 barridos.
+  Las dos cifras van siempre juntas: FILAS 40 -> 55, VIVAS 33 -> 48.

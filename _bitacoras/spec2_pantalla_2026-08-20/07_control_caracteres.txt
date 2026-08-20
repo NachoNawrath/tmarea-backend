@@ -1,0 +1,29 @@
+CRITERIO (H-T2): puntos de codigo. Se marca < 0x20 salvo LF/CR/TAB, 0x7F, y C1 0x80-0x9F.
+
+ok 01_sonda_rutas_v1_INSTRUMENTO_EQUIVOCADO.js  puntos_de_codigo=4418  sospechosos=0
+ok 01_sonda_rutas_v1_INSTRUMENTO_EQUIVOCADO.txt  puntos_de_codigo=2652  sospechosos=0
+ok 02_sonda_rutas_v2.js  puntos_de_codigo=3863  sospechosos=0
+ok 02_sonda_rutas_v2.txt  puntos_de_codigo=6155  sospechosos=0
+ok 03_medir_capitanias_ruta.js  puntos_de_codigo=2973  sospechosos=0
+ok 03_medir_capitanias_ruta.txt  puntos_de_codigo=741  sospechosos=0
+ok 04_estado_drift_antes_y_despues.txt  puntos_de_codigo=3188  sospechosos=0
+ok 05_payload_antofagasta_taltal.json  puntos_de_codigo=2859  sospechosos=0
+ok 06_pantallas_texto_crudo.txt  puntos_de_codigo=8884  sospechosos=0
+ok 07_control_caracteres.js  puntos_de_codigo=2172  sospechosos=0
+ok 07_control_caracteres.txt  puntos_de_codigo=814  sospechosos=0
+ok 08_lago_contra_las_tres_clases.js  puntos_de_codigo=2071  sospechosos=0
+ok 08_lago_contra_las_tres_clases.txt  puntos_de_codigo=1114  sospechosos=0
+ok 09_pasadas_de_licencia.txt  puntos_de_codigo=8692  sospechosos=0
+ok 10_licencias_y_usos_medidos.txt  puntos_de_codigo=7440  sospechosos=0
+ok 11_control_contra_el_indice.js  puntos_de_codigo=4555  sospechosos=0
+ok 11_control_contra_el_indice.txt  puntos_de_codigo=2141  sospechosos=0
+ok spec2_pantalla_2026-08-20.txt  puntos_de_codigo=33347  sospechosos=0
+
+TOTAL puntos de codigo recorridos: 98079   sospechosos: 0
+
+CONTROL POSITIVO — cadena fabricada con un U+0091 adentro:
+   puntos de codigo: 5   bytes UTF-8: 6
+   detectados por este control: 1  (esperado 1)
+   los bytes de U+0091 en UTF-8 son 0xC2 0x91 y ninguno es < 0x20:
+   por eso un control que mirara BYTES devolveria 0 aca, que es el defecto que H-T2 corrigio.
+   control por bytes sobre la misma cadena: 0  (falso negativo, como se esperaba)
