@@ -1,0 +1,256 @@
+LA COBERTURA HISTORICA DE AreaRestriccion — 2026-08-20
+======================================================================
+
+UNA pregunta, cerrada. Alcance cerrado y no ensanchado.
+
+LA PREGUNTA
+  ¿AreaRestriccion esta poblado en la bolsa historica de capturas de SITPORT
+  con la misma cobertura que hoy, o el poblamiento de hoy es de hoy nomas?
+
+LA RESPUESTA
+  NO es de hoy. La cobertura es alta y estable en las DIEZ capturas del arbol,
+  del 2026-07-30 al 2026-08-20 — veintidos dias. En el subconjunto que le
+  importa a la regla —tipo TODOS— falta en 6 filas de 379.
+
+----------------------------------------------------------------------
+EL GATE — cuatro decisiones del owner antes de medir
+----------------------------------------------------------------------
+1 · PROPOSITO. La pregunta nacio como "¿puede INV-3.4 apoyarse en este campo?".
+    INV-3.4 quedo DEROGADA el mismo 2026-08-20 por el commit ec25dae, cuyo
+    asunto lo dice: "D5 CERRADA: el trazado es el criterio. Y deroga INV-3.4,
+    que es el punto de fondo". Re-anclado por el owner a la regla que la
+    reemplaza. La medicion no cambio ni un paso: la regla nueva necesita
+    exactamente lo mismo, saber si el campo alcanza para acotar el area.
+
+2 · EL ANCLA DE HOY. El "16 de 18" del owner no tiene artefacto en el arbol y
+    no se puede volver a ver: va como DECLARADO. Lo MEDIDO del mismo dia que si
+    esta es 03_puerto_abierto_con_restriccion.txt de la sesion de D4, 16:52:48Z,
+    20 filas con TODOS=17. El owner autorizo tomar UNA captura propia: se tomo a
+    las 18:29:41Z, HTTP 200, 22.900 bytes, 17 filas. Queda en esta bitacora y es
+    la captura mas reciente de la bolsa.
+
+3 · EL DENOMINADOR. Bolsa amplia, deduplicada por md5. Trece candidatos en el
+    arbol; entran DIEZ capturas distintas.
+
+4 · EL SITIO DE LA FILA. Cuelga de SESION-tres-de-d4-2026-08-20, que ya existe.
+    Un sitio nuevo habria exigido tocar SITIOS_CANON de
+    scripts/validar_deudas_declaradas.js, y esta sesion no toca codigo.
+
+----------------------------------------------------------------------
+(1) EL DENOMINADOR REAL
+----------------------------------------------------------------------
+  DIEZ capturas · 509 filas de restriccion · del 2026-07-30 al 2026-08-20.
+
+  Unidad: captura = un payload DISTINTO de consultaRestricciones, deduplicado
+  por md5 del conjunto de filas. Fila = un elemento del recordset, por
+  IDRestriccion.
+
+  EXCLUIDO (1): el insumo alterado a proposito de la prueba de mordida de drift
+    del 2026-08-11. Es un fichero fabricado, no una captura.
+  DEDUPLICADOS (2): restricciones_2026-07-31_21-01.json es byte a byte identico
+    a _20-32.json; la copia de insumo_2026-08-11 lo es de la del directorio
+    padre. Cinco ficheros en sondaje-sitport son CUATRO payloads.
+  ABSUELTO (1): la captura de 9 filas del 2026-08-13 se sospecho subconjunto.
+    El criterio se declaro ANTES de aplicarlo —contencion de IDRestriccion— y la
+    absolvio. Corroboracion no buscada: el log del servidor de esa misma sesion,
+    _bitacoras/e3_paso6_2026-08-13/06_server_log.txt, dice textual
+    "[SITPORT] consultaRestricciones: 9 registros obtenidos". Dos instrumentos,
+    el mismo 9. Ese dia el endpoint devolvio nueve.
+
+----------------------------------------------------------------------
+(2) LA COBERTURA  ·  (3) SOBRE TIPO TODOS
+----------------------------------------------------------------------
+  BOLSA ENTERA   POBLADO 437 de 509 = 85,9 %   ·   VACIO 72 de 509 = 14,1 %
+  TIPO TODOS     POBLADO 373 de 379 = 98,4 %   ·   VACIO  6 de 379 =  1,6 %
+
+  Poblado = la clave esta presente, no es null, y su String() sin espacios tiene
+  largo mayor que 0.
+  "tipo TODOS" se cuenta DESPUES de recortar espacios: en el crudo los otros
+  vienen con espacio al final —"FRENTE ATRAQUE ", "INSTALACION "— y sin recortar
+  la comparacion falla. El recorte se declara y no se aplica en silencio.
+
+  REPARTO por valor, sobre las 509:
+    las dos ..................... 277   54,4 %
+    FUERA solo .................. 115   22,6 %
+    vacio .......................  72   14,1 %
+    DENTRO solo .................  29    5,7 %
+    poblado, ni una ni otra .....  16    3,1 %
+
+----------------------------------------------------------------------
+(4) SI CAMBIA EN EL TIEMPO — el numero por captura, sin modelar nada
+----------------------------------------------------------------------
+  captura                 filas   poblado         TODOS   poblado(TODOS)
+  2026-07-30 19:42          73    58/73  79,5 %     53     51/53   96,2 %
+  2026-07-31 16:32          83    79/83  95,2 %     71     71/71  100,0 %
+  2026-07-31 20:32          83    78/83  94,0 %     72     71/72   98,6 %
+  2026-08-01 13:14          83    73/83  88,0 %     69     69/69  100,0 %
+  2026-08-03                39    30/39  76,9 %     29     28/29   96,6 %
+  2026-08-08                57    44/57  77,2 %     38     37/38   97,4 %
+  2026-08-11                39    31/39  79,5 %     20     19/20   95,0 %
+  2026-08-13                 9     7/9   77,8 %      6      6/6   100,0 %
+  2026-08-17 23:02Z         26    22/26  84,6 %      7      7/7   100,0 %
+  2026-08-20 18:29Z         17    15/17  88,2 %     14     14/14  100,0 %
+
+  ESTABLE. Sobre tipo TODOS nunca baja de 95,0 %. Sobre la bolsa entera oscila
+  entre 76,9 % y 95,2 % sin tendencia. No se modelo nada.
+
+  Nota de calibracion: la captura de esta sesion da 15 de 17 y 14 de 14 en
+  TODOS, contra el 16 de 18 y 15 de 15 que el owner declaro dos horas antes. El
+  dato vivo se mueve; los dos dicen lo mismo.
+
+----------------------------------------------------------------------
+(5) EL CASO "NO SE" — separado SIN tocar el parser
+----------------------------------------------------------------------
+  365 de las 509 filas salen hoy por la etiqueta DENTRO_Y_FUERA. No son una cosa:
+    277  son DE VERDAD las dos areas          (75,9 % de las 365)
+     72  son "no se" — el campo en null       (19,7 % de las 365)
+     16  son un TERCER valor que detectarArea no conoce
+
+  Se pudo separar sin tocar detectarArea porque quien colapsa es la SALIDA de la
+  funcion, no el dato: null es distinguible de una cadena, y una cadena con los
+  dos terminos lo es de una con uno. El instrumento IMPORTA normalizarTexto de
+  src/services/sitport-parser.js en vez de reimplementarlo, para que su lectura
+  sea la del motor. src/ no se toco.
+
+----------------------------------------------------------------------
+EL HALLAZGO QUE NO SE BUSCABA — el vocabulario es de TRES, no de dos
+----------------------------------------------------------------------
+  Los valores crudos distintos del campo, en las 509 filas:
+
+     262  "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+     108  "FUERA DEL LÍMITE DEL PUERTO"
+      72  null
+      29  "DENTRO DEL LÍMITE DEL PUERTO"
+      16  "OTRA ÁREA FIJADA POR LA AML"
+      15  "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO, OTRA ÁREA FIJADA POR LA AML"
+       7  "FUERA DEL LÍMITE DEL PUERTO, OTRA ÁREA FIJADA POR LA AML"
+
+  Son TRES terminos combinandose, no dos. El tercero —"OTRA ÁREA FIJADA POR LA
+  AML"— aparece en 38 filas: SOLO en 16, acompañado en 22. detectarArea() busca
+  DENTRO y FUERA; las 16 que traen unicamente el tercero no contienen ninguna de
+  las dos subcadenas y caen por el return final, o sea salen como DENTRO_Y_FUERA
+  igual que el campo vacio.
+
+  Esto NO ensancha el alcance: es el reparto por valor que el owner pidio. Que
+  el reparto de cuatro casillas no cerrara fue el resultado, no una pregunta
+  nueva. No se midio nada mas sobre la AML.
+
+  COMO LO NOMBRA EL OWNER, y con esas palabras va en la fila (enmienda de
+  PARADA 2): hay restricciones cuya area SITPORT SI declara —"OTRA ÁREA FIJADA
+  POR LA AML", 38 filas de las 509, 16 de ellas con ese valor SOLO— y que la app
+  trata igual que si no la declarara. NO es un campo mal parseado: es
+  informacion de alcance que LLEGA y se DESCARTA. Entra por
+  consultaRestricciones, cruza el parser, y sale por la misma etiqueta que una
+  fila con el campo en null.
+
+  NO se arregla y no se mide nada mas sobre la AML. Queda para cuando se
+  redacte la regla que reemplaza a INV-3.4, que es donde va a hacer falta.
+
+----------------------------------------------------------------------
+D6 — LA CLAVE DE LA FILA HERMANA: SE SOSTIENE, NO SE TOCA
+----------------------------------------------------------------------
+  La fila D4D5::inv34-derogado-por-d5 dice, en la clave
+  y_un_dato_medido_que_juega_a_favor_de_la_regla:
+
+    "AreaRestriccion NO esta vacio. De las 20 filas vigentes del 2026-08-20, hay
+     filas que declaran DENTRO DEL LIMITE DEL PUERTO, FUERA DEL LIMITE DEL
+     PUERTO y las dos a la vez. La propia SITPORT acota el area en el dato."
+
+  El resultado la SOSTIENE y la refuerza: lo que se escribio sobre una foto de un
+  dia vale sobre diez capturas y veintidos dias. Ninguna de sus afirmaciones se
+  vuelve falsa. Por instruccion del owner —"si el resultado la sostiene, decilo y
+  no la toques"— NO se enmienda.
+
+----------------------------------------------------------------------
+CONTROLES
+----------------------------------------------------------------------
+  POSITIVO para todo cero: la clave AreaRestriccion esta PRESENTE en las 509
+    filas, o sea que los 72 vacios son campo VACIO y no campo AUSENTE. Y
+    MotivoRestriccion no vacio en 509 de 509, que prueba que cada fichero se
+    leyo de verdad y no devolvio una lista vacia.
+  NEGATIVO: la clave inventada AreaRestriccionXX da 0 de 509.
+  DE FORMA: las cinco casillas del reparto suman 509 de 509, y por captura
+    tambien; el vocabulario crudo suma 509 de 509.
+  DEL RECORTE: los valores crudos de `tipo` son "TODOS" (379), "FRENTE ATRAQUE "
+    (109), "INSTALACION " (17) y "-" (4). El espacio final existe de verdad.
+  DE CARACTERES (H-T2, por puntos de codigo): 331.300 puntos recorridos, 0
+    sospechosos, 0 BOM. Control positivo con U+0091 fabricado: detectado 1 de 1,
+    y el control por bytes sobre la misma cadena da 0 — el falso negativo que
+    H-T2 corrigio. La captura cruda de la red ENTRA al control a proposito.
+  VALIDADOR: verde. MORDIDA: 32/32 mas el control negativo.
+  CONTRA EL INDICE: toda cifra del mensaje de commit sale de `git show :ruta`, y
+    el control de indice contra disco va por `git diff --quiet`, no por
+    comparacion de sha — con core.autocrlf=true el blob guarda LF y el disco
+    CRLF, y la comparacion de sha da rojo sobre un arbol correcto.
+
+----------------------------------------------------------------------
+DEFECTO DE INSTRUMENTO PROPIO — declarado porque llego a correr
+----------------------------------------------------------------------
+  La primera pasada dejo fuera CONGELADO_vivo.json EN SILENCIO. Su forma es
+  {congelado_en, ruta, n, cuerpo:{success, data}} y el extractor no conocia la
+  capa `data`, asi que el fichero se caia de la lista sin un mensaje. La bolsa
+  salio de NUEVE capturas y 483 filas en vez de DIEZ y 509, y el punto (4) perdia
+  justo el dato del 2026-08-17.
+
+  Es la misma forma de siempre: el instrumento corria perfecto, con exit 0, y
+  medía otra cosa. Lo unico que lo delato fue mirar la tabla de candidatos y ver
+  un guion donde tenia que haber un numero.
+
+  CORREGIDO: un candidato ilegible ahora ABORTA la corrida. Un fichero que no se
+  puede leer no se descarta solo.
+
+  La pasada mala no se publica; que existio, si.
+
+----------------------------------------------------------------------
+LO QUE VI Y NO MEDI — una linea cada uno, por la regla del alcance
+----------------------------------------------------------------------
+  · Los dos ficheros de e01_drift_catalogo_2026-08-11 pesan 31.838 B los dos:
+    el mismo payload duplicado en el arbol. El dedup por md5 lo resolvio solo.
+  · "OTRA ÁREA FIJADA POR LA AML" sugiere que la Autoridad Maritima Local fija
+    areas que no son ni dentro ni fuera del limite del puerto. Que sean, no se
+    midio.
+
+----------------------------------------------------------------------
+LO QUE SE ESCRIBIO
+----------------------------------------------------------------------
+  UNA fila: D4D5::detectararea-colapsa-un-vocabulario-de-tres
+    sitio SESION-tres-de-d4-2026-08-20 · grupo 1_cierra_con_lo_que_hay ·
+    estado viva · sin firma del owner.
+  Y el sitio subio de 10 a 11 filas, con su vocabulario_del_barrido ampliado
+  para declarar que esta medicion es una QUINTA y no una de las cuatro que el
+  owner pidio para D4 y D5. Sin eso el sitio afirmaria de si mismo algo que no
+  hizo.
+
+  Declarativo: 65 -> 66 filas · 63 -> 64 unicas · 58 -> 59 vivas.
+  18 sitios · 9 barridos · SIGUEN 9 SIN BARRER.
+
+  NO se toco: src/ de los dos repos, el parser, detectarArea,
+  scripts/validar_deudas_declaradas.js, CONTRATO_MOTOR.md, el motor BRE,
+  PLAN_JURISDICCION.md, .claude/launch.json ni data/catalogo/estado_drift.json.
+
+----------------------------------------------------------------------
+EL VEREDICTO, EN UNA LINEA
+----------------------------------------------------------------------
+  SI: el campo alcanza para que la regla que reemplaza a INV-3.4 se apoye en el
+  —98,4 % de cobertura sobre 379 filas de tipo TODOS en diez capturas de
+  veintidos dias, sin caer de 95 % en ninguna—, y lo que falta para afirmarlo
+  del todo son DOS cosas que ya estan declaradas y no son de este campo: la
+  geometria del "limite del puerto", que no esta en el repositorio y es dato de
+  DIRECTEMAR, y que el motor deje de leer con dos valores un vocabulario de tres.
+
+----------------------------------------------------------------------
+DOS NOTAS SOBRE LOS CONTROLES, QUE SE LEEN A SI MISMOS
+----------------------------------------------------------------------
+  · 03_control_caracteres.txt se lee a si mismo mientras se escribe, asi que su
+    propio conteo de puntos de codigo es parcial en cada corrida. No afecta al
+    veredicto: lo que el control mide son los OTROS ficheros, y todos dan 0.
+  · 04_control_contra_el_indice NO puede comprobar indice-contra-disco sobre su
+    PROPIO fichero de salida —lo esta escribiendo mientras corre—, asi que esa
+    linea sale declarada como no comprobable desde adentro y se verifica aparte
+    con `git status --porcelain` despues de la corrida. Un control que se
+    aprobara a si mismo por casualidad seria peor que uno que declara el hueco.
+  · Y el 04 salio ROJO en su primera corrida, con razon: buscaba la frase "DIEZ
+    capturas y 509 filas" y la fila dice "DIEZ capturas distintas y 509 filas de
+    restriccion". El defecto estaba en el CONTROL. Corregido para comprobar los
+    dos NUMEROS y no una frase, que es lo que habia que comprobar desde el
+    principio. Queda dicho porque el control mordio de verdad.

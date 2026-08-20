@@ -1,0 +1,29 @@
+CRITERIO (H-T2): puntos de codigo. Se marca < 0x20 salvo LF/CR/TAB, 0x7F, y C1 0x80-0x9F.
+ALCANCE: todo lo que esta sesion escribio o toco. La captura cruda ENTRA:
+viene de la red y es justo el sitio por donde un caracter raro se cuela.
+
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/01_medir_cobertura.js  puntos_de_codigo=23762  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/01_medir_cobertura.txt  puntos_de_codigo=15400  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/02_escribir_fila.js  puntos_de_codigo=10771  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/02_escribir_fila.txt  puntos_de_codigo=269  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/03_control_caracteres.js  puntos_de_codigo=2975  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/03_control_caracteres.txt  puntos_de_codigo=796  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/04_control_contra_el_indice.js  puntos_de_codigo=10893  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/04_control_contra_el_indice.txt  puntos_de_codigo=4618  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/05_enmendar_fila.js  puntos_de_codigo=2001  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/05_enmendar_fila.txt  puntos_de_codigo=328  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/captura_2026-08-20_18-29Z.json  puntos_de_codigo=22746  sospechosos=0
+ok _bitacoras/cobertura_arearestriccion_2026-08-20/cobertura_arearestriccion_2026-08-20.txt  puntos_de_codigo=14636  sospechosos=0
+ok data/deudas/deudas_declaradas.json  puntos_de_codigo=228373  sospechosos=0
+
+TOTAL puntos de codigo recorridos: 337568   sospechosos: 0
+
+CONTROL POSITIVO — cadena fabricada con un U+0091 adentro:
+   puntos de codigo: 5   bytes UTF-8: 6
+   detectados por este control: 1  (esperado 1)
+   los bytes de U+0091 en UTF-8 son 0xC2 0x91 y ninguno es < 0x20:
+   por eso un control que mirara BYTES devolveria 0 aca, que es el defecto que H-T2 corrigio.
+   control por bytes sobre la misma cadena: 0  (falso negativo, como se esperaba)
+
+BOM: ningun fichero escrito por esta sesion debe arrancar con U+FEFF.
+   ficheros con BOM: 0  (esperado 0)

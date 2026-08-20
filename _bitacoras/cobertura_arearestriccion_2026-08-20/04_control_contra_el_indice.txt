@@ -1,0 +1,86 @@
+CONTROL CONTRA EL INDICE — cobertura de AreaRestriccion, 2026-08-20
+Corrida: 2026-08-20T18:45:30.066Z
+
+1 · LAS CIFRAS DEL MENSAJE DE COMMIT SALEN DE `git show :ruta`
+     filas totales en el INDICE   : 66
+     unicas                       : 64
+     vivas                        : 59
+     sitios                       : 18   barridos: 9   sin barrer: 9
+  OK  el indice trae 66 filas  ->  trae 66
+  OK  el indice trae 64 unicas  ->  trae 64
+  OK  el indice trae 59 vivas  ->  trae 59
+  OK  siguen 9 sitios sin barrer
+
+2 · LA FILA NUEVA ESTA EN EL OBJETO, NO SOLO EN EL DISCO
+  OK  la fila D4D5::detectararea-colapsa-un-vocabulario-de-tres esta en el indice
+  OK  su sitio es SESION-tres-de-d4-2026-08-20  ->  SESION-tres-de-d4-2026-08-20
+  OK  su grupo es 1_cierra_con_lo_que_hay  ->  1_cierra_con_lo_que_hay
+  OK  estado viva y sin firma del owner
+  OK  sin_texto=true con evidencia_en_el_arbol no vacia [V7]
+  OK  abierta_el es null porque el documento no la fecha [V7]
+  OK  la evidencia declara DIEZ capturas y 509 filas
+  OK  la evidencia declara 437 de 509 global
+  OK  la evidencia declara 373 de 379 en TODOS
+  OK  la evidencia cita ec25dae como el commit que derogo INV-3.4
+  OK  la evidencia cita su salida cruda
+  OK  la enmienda de PARADA 2 esta en el indice
+  OK  dice que SITPORT SI declara el area
+  OK  nombra las 38 filas y las 16 con el valor solo
+  OK  dice que NO es un campo mal parseado
+  OK  dice que la informacion LLEGA y se DESCARTA
+  OK  el sitio declara 11 filas y tiene 11 [V4]
+
+3 · LA CLAVE DE LA FILA HERMANA SE SOSTIENE Y NO SE TOCO (D6)
+  OK  la fila hermana sigue en el indice
+  OK  la clave y_un_dato_medido_que_juega_a_favor_de_la_regla sigue ahi
+  OK  y sigue diciendo "20 filas vigentes del 2026-08-20" — sin enmendar
+     motivo: el resultado la SOSTIENE. Instruccion del owner: si se sostiene, no se toca.
+
+4 · LA CAPTURA DE ESTA SESION ESTA EN EL INDICE Y ES LA QUE SE MIDIO
+     filas: 17   poblados: 15   TODOS: 14   poblados(TODOS): 14
+  OK  la captura del indice da 17 filas, 15 poblados, 14 de 14 en TODOS
+
+5 · INDICE CONTRA DISCO — por `git diff --quiet`, no por sha
+  OK  indice == disco  data/deudas/deudas_declaradas.json
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/01_medir_cobertura.js
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/01_medir_cobertura.txt
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/02_escribir_fila.js
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/02_escribir_fila.txt
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/03_control_caracteres.js
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/03_control_caracteres.txt
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/04_control_contra_el_indice.js
+  --  _bitacoras/cobertura_arearestriccion_2026-08-20/04_control_contra_el_indice.txt  ->  NO comprobable desde adentro: es la salida de este mismo control
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/05_enmendar_fila.js
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/05_enmendar_fila.txt
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/captura_2026-08-20_18-29Z.json
+  OK  indice == disco  _bitacoras/cobertura_arearestriccion_2026-08-20/cobertura_arearestriccion_2026-08-20.txt
+
+6 · LOS INTOCABLES — tienen que seguir MODIFICADOS Y FUERA DEL INDICE
+  OK  .claude/launch.json sigue " M" (modificado, NO stageado)  ->  " M"
+  OK  data/catalogo/estado_drift.json sigue " M" (modificado, NO stageado)  ->  " M"
+
+   Y NADA de src/, del parser, del validador ni del contrato entro al indice:
+  OK  0 intrusos en el indice
+
+   FICHEROS EN EL INDICE (13):
+     _bitacoras/cobertura_arearestriccion_2026-08-20/01_medir_cobertura.js
+     _bitacoras/cobertura_arearestriccion_2026-08-20/01_medir_cobertura.txt
+     _bitacoras/cobertura_arearestriccion_2026-08-20/02_escribir_fila.js
+     _bitacoras/cobertura_arearestriccion_2026-08-20/02_escribir_fila.txt
+     _bitacoras/cobertura_arearestriccion_2026-08-20/03_control_caracteres.js
+     _bitacoras/cobertura_arearestriccion_2026-08-20/03_control_caracteres.txt
+     _bitacoras/cobertura_arearestriccion_2026-08-20/04_control_contra_el_indice.js
+     _bitacoras/cobertura_arearestriccion_2026-08-20/04_control_contra_el_indice.txt
+     _bitacoras/cobertura_arearestriccion_2026-08-20/05_enmendar_fila.js
+     _bitacoras/cobertura_arearestriccion_2026-08-20/05_enmendar_fila.txt
+     _bitacoras/cobertura_arearestriccion_2026-08-20/captura_2026-08-20_18-29Z.json
+     _bitacoras/cobertura_arearestriccion_2026-08-20/cobertura_arearestriccion_2026-08-20.txt
+     data/deudas/deudas_declaradas.json
+  OK  el indice trae exactamente los 13 ficheros declarados y ninguno mas  ->  indice=13 declarados=13
+
+CONTROL NEGATIVO DEL PROPIO CONTROL — tiene que saber decir que no
+fatal: path 'data/deudas/NO_EXISTE.json' does not exist (neither on disk nor in the index)
+  OK  `git show :data/deudas/NO_EXISTE.json` falla, o sea que el control lee de verdad del indice
+  OK  la fila inventada "D4D5::ZZQX" NO esta en el indice
+
+VERDE — 0 fallos.

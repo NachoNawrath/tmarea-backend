@@ -1,0 +1,223 @@
+LA COBERTURA HISTORICA DE AreaRestriccion
+Corrida: 2026-08-20T18:34:10.704Z
+Instrumento: este fichero. normalizarTexto importado de src/services/sitport-parser.js — NO se modifico.
+
+DEFINICIONES — toda cifra de abajo se lee con estas y con ninguna otra
+  captura ......... un payload DISTINTO de consultaRestricciones, deduplicado por md5 del
+                    conjunto de filas (no del fichero: hay copias indentadas del mismo payload).
+                    Unidad: captura.
+  fila ............ un elemento del recordset, identificado por IDRestriccion. Unidad: fila de restriccion.
+  poblado ......... la clave AreaRestriccion esta PRESENTE, no es null y su String() sin espacios
+                    tiene largo > 0. Unidad: filas / filas de esa captura.
+  tipo TODOS ...... campo `tipo` igual a "TODOS" DESPUES de recortar espacios y pasar a mayuscula.
+                    EL RECORTE SE DECLARA: en el crudo los otros vienen con espacio al final
+                    ("INSTALACION ", "FRENTE ATRAQUE "), y sin recortar la comparacion falla.
+  reparto ......... DENTRO solo · FUERA solo · las_dos (contiene ambas subcadenas) · vacio.
+                    Se comprueba por captura que los cuatro suman el total.
+  DENTRO/FUERA .... subcadenas ASCII buscadas sobre normalizarTexto(valor). No se usa grep ni
+                    clase de caracteres: "LIMITE" acentuado nunca se matchea, y no hace falta.
+
+==============================================================================
+PASO 1 — LOS CANDIDATOS DEL ARBOL, Y QUE ENTRA
+==============================================================================
+
+  bytes   filas  md5(fichero)  md5(filas)    forma                        fichero
+   103736     73  9a36e2d782ea  145f1acc5d53  {recordsets:[[...]]}          sondaje-sitport/restricciones_2026-07-30_19-42.json
+   117014     83  37aab596d79b  0f30d743fd4a  {recordsets:[[...]]}          sondaje-sitport/restricciones_2026-07-31_16-32.json
+   116892     83  99e92aaaf7e3  08f24b87ad25  {recordsets:[[...]]}          sondaje-sitport/restricciones_2026-07-31_20-32.json
+   116892     83  99e92aaaf7e3  08f24b87ad25  {recordsets:[[...]]}          sondaje-sitport/restricciones_2026-07-31_21-01.json
+   118762     83  a1535896ffbb  b351a4404f5c  {recordsets:[[...]]}          sondaje-sitport/restricciones_2026-08-01_13-14.json
+    53952     39  98e54569e064  a51cdbd9defc  {recordsets:[[...]]}          sondaje-sitport/check_ahora.json
+    77866     57  ca2f4f03e319  fc7fa5407c47  {recordsets:[[...]]}          _bitacoras/sitport_crudo_2026-08-08.json
+    31838     39  c38d0af42397  907a80bd8fac  array plano                   _bitacoras/e01_drift_catalogo_2026-08-11/sitport_consultaRestricciones.json
+    31838     39  c38d0af42397  907a80bd8fac  array plano                   _bitacoras/e01_drift_catalogo_2026-08-11/insumo_2026-08-11/sitport_consultaRestricciones.json
+    21727     26  9c191045e440  e85fba959586  array plano                   _bitacoras/e01_drift_catalogo_2026-08-11/insumo_alterado_2026-08-11/sitport_consultaRestricciones.json
+     6764      9  7f851600249f  985c9dd27979  array plano                   _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaRestricciones.json
+    18207     26  94dedaa928f2  a97b65a67505  {…,cuerpo} -> {success,data,error}  _bitacoras/filtro_puerto_2026-08-17/insumos/CONGELADO_vivo.json
+    22900     17  2957b1b738ba  6e34f28358b4  {recordsets:[[...]]}          _bitacoras/cobertura_arearestriccion_2026-08-20/captura_2026-08-20_18-29Z.json
+
+------------------------------------------------------------------------------
+EL CRITERIO CON QUE SE DECIDE e3_paso6 — declarado ANTES de aplicarlo
+------------------------------------------------------------------------------
+Una captura es SUBCONJUNTO, y por tanto NO es una captura, si su conjunto de
+IDRestriccion esta contenido ENTERO en el de otro fichero de la lista y ademas es
+mas chico. Un porcentaje de cobertura calculado sobre un subconjunto filtrado no
+mide la cobertura del endpoint: mide el filtro de quien lo guardo.
+
+  candidato : _bitacoras/e3_paso6_2026-08-13/01_sitport_crudo/consultaRestricciones.json
+  sus filas : 9  (IDRestriccion distintos: 9)
+  VEREDICTO : NO es subconjunto de ningun otro fichero de la lista. ENTRA a la bolsa.
+              (es chico, pero chico no es subconjunto — el criterio es el de arriba)
+  CORROBORACION INDEPENDIENTE, no buscada: el log del servidor de esa misma sesion,
+              _bitacoras/e3_paso6_2026-08-13/06_server_log.txt, dice textual
+              "[SITPORT] consultaRestricciones: 9 registros obtenidos".
+              O sea: las 9 filas son LA RESPUESTA ENTERA de ese dia, no un recorte.
+              Dos instrumentos distintos, el mismo 9.
+  CONTROL POSITIVO del test de subconjunto: un fichero contra si mismo debe dar
+              contenido=SI. Comprobado: SI
+  CONTROL NEGATIVO: el ID inventado 999999999 NO esta en el sospechoso: correcto
+
+------------------------------------------------------------------------------
+LA BOLSA QUE QUEDA
+------------------------------------------------------------------------------
+EXCLUIDOS (1):
+  · _bitacoras/e01_drift_catalogo_2026-08-11/insumo_alterado_2026-08-11/sitport_consultaRestricciones.json
+      ALTERADO A PROPOSITO. Es el insumo de una prueba de mordida de drift: su contenido fue modificado para que el control se pusiera rojo. Un fichero fabricado no es una captura.
+
+DEDUPLICADOS por md5 del conjunto de filas:
+  · sondaje-sitport/restricciones_2026-07-31_21-01.json
+      payload IDENTICO a sondaje-sitport/restricciones_2026-07-31_20-32.json (md5 filas 08f24b87ad25)
+  · _bitacoras/e01_drift_catalogo_2026-08-11/insumo_2026-08-11/sitport_consultaRestricciones.json
+      payload IDENTICO a _bitacoras/e01_drift_catalogo_2026-08-11/sitport_consultaRestricciones.json (md5 filas 907a80bd8fac)
+
+==============================================================================
+(1) EL DENOMINADOR REAL
+==============================================================================
+CAPTURAS EN LA BOLSA: 10  ·  FILAS QUE SUMAN: 509
+Unidad: captura (payload distinto) y fila de restriccion (IDRestriccion).
+
+  #  fecha declarada de la captura                      filas   FCinicio max (UTC, corrobora)
+   1  2026-07-30 19:42 (local, del nombre)                  73   2026-07-30 22:03
+   2  2026-07-31 16:32 (local, del nombre)                  83   2026-07-31 19:51
+   3  2026-07-31 20:32 (local, del nombre)                  83   2026-07-31 23:50
+   4  2026-08-01 13:14 (local, del nombre)                  83   2026-08-01 17:04
+   5  2026-08-03 (mtime; el contenido no se fecha a si mismo)    39   2026-08-03 21:10
+   6  2026-08-08 (del nombre)                               57   2026-08-09 01:38
+   7  2026-08-11 (del nombre del directorio)                39   2026-08-11 12:53
+   8  2026-08-13 (del nombre del directorio)                 9   2026-08-13 21:00
+   9  2026-08-17T23:02:53.110Z (declarado adentro, campo congelado_en)    26   2026-08-17 22:53
+  10  2026-08-20T18:29:41Z (captura de ESTA sesion)         17   2026-08-20 16:17
+
+RANGO: de 2026-07-30 a 2026-08-20 — 10 capturas.
+
+==============================================================================
+(2) LA COBERTURA — sobre la bolsa entera
+==============================================================================
+  DENOMINADOR: 509 filas de restriccion, en 10 capturas.
+
+  AreaRestriccion POBLADO ....... 437 de 509   (85,9 %)
+  AreaRestriccion VACIO ......... 72 de 509   (14,1 %)
+
+  REPARTO POR VALOR, sobre las mismas 509 filas:
+    DENTRO solo .................   29   (5,7 %)
+    FUERA solo ..................  115   (22,6 %)
+    las dos .....................  277   (54,4 %)
+    poblado, ni una ni otra .....   16   (3,1 %)
+    vacio .......................   72   (14,1 %)
+    CONTROL DE FORMA  los cinco suman 509 y el denominador es 509: CUADRA
+
+  EL VOCABULARIO ENTERO DEL CAMPO — todo valor crudo distinto y sus filas.
+  Va porque el reparto de cuatro casillas no lo cubre: hay una quinta.
+     262  las_dos                           "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+     108  FUERA                             "FUERA DEL LÍMITE DEL PUERTO"
+      72  vacio                             "(vacio: null)"
+      29  DENTRO                            "DENTRO DEL LÍMITE DEL PUERTO"
+      16  poblado_pero_ni_DENTRO_ni_FUERA   "OTRA ÁREA FIJADA POR LA AML"
+      15  las_dos                           "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO, OTRA ÁREA FIJADA POR LA AML"
+       7  FUERA                             "FUERA DEL LÍMITE DEL PUERTO, OTRA ÁREA FIJADA POR LA AML"
+    CONTROL DE FORMA  el vocabulario suma 509 contra 509
+
+==============================================================================
+(3) LA COBERTURA SOBRE TIPO TODOS — el subconjunto que le importa a la regla
+==============================================================================
+  DENOMINADOR: 379 filas de tipo TODOS, en las mismas 10 capturas.
+
+  POBLADO ....................... 373 de 379   (98,4 %)
+    DENTRO solo .................   16
+    FUERA solo ..................   97
+    las dos .....................  245
+    poblado, ni una ni otra .....   15
+    vacio .......................    6
+    CONTROL DE FORMA  suman 379 contra 379: CUADRA
+
+==============================================================================
+(4) SI CAMBIA EN EL TIEMPO — el numero por captura, sin modelar nada
+==============================================================================
+
+  fecha de la captura                     filas  poblado         TODOS  poblado(TODOS)
+  2026-07-30 19:42 (local, del nombre)      73  58 de 73   79,5 %     53  51 de 53   96,2 %
+  2026-07-31 16:32 (local, del nombre)      83  79 de 83   95,2 %     71  71 de 71   100,0 %
+  2026-07-31 20:32 (local, del nombre)      83  78 de 83   94,0 %     72  71 de 72   98,6 %
+  2026-08-01 13:14 (local, del nombre)      83  73 de 83   88,0 %     69  69 de 69   100,0 %
+  2026-08-03 (mtime; el contenido no se     39  30 de 39   76,9 %     29  28 de 29   96,6 %
+  2026-08-08 (del nombre)                   57  44 de 57   77,2 %     38  37 de 38   97,4 %
+  2026-08-11 (del nombre del directorio)    39  31 de 39   79,5 %     20  19 de 20   95,0 %
+  2026-08-13 (del nombre del directorio)     9  7 de 9     77,8 %      6  6 de 6     100,0 %
+  2026-08-17T23:02:53.110Z (declarado ad    26  22 de 26   84,6 %      7  7 de 7     100,0 %
+  2026-08-20T18:29:41Z (captura de ESTA     17  15 de 17   88,2 %     14  14 de 14   100,0 %
+
+  reparto por captura:
+  fecha                                   DENTRO  FUERA  las_dos  vacio
+  2026-07-30 19:42 (local, del nombre)        4     14       38     15   [suma 73/73 ok]
+  2026-07-31 16:32 (local, del nombre)        3     21       53      4   [suma 83/83 ok]
+  2026-07-31 20:32 (local, del nombre)        3     17       56      5   [suma 83/83 ok]
+  2026-08-01 13:14 (local, del nombre)        4     13       54     10   [suma 83/83 ok]
+  2026-08-03 (mtime; el contenido no se       2      8       18      9   [suma 39/39 ok]
+  2026-08-08 (del nombre)                     5     16       19     13   [suma 57/57 ok]
+  2026-08-11 (del nombre del directorio)      5      8       16      8   [suma 39/39 ok]
+  2026-08-13 (del nombre del directorio)      1      0        6      2   [suma 9/9 ok]
+  2026-08-17T23:02:53.110Z (declarado ad      1     10       11      4   [suma 26/26 ok]
+  2026-08-20T18:29:41Z (captura de ESTA       1      8        6      2   [suma 17/17 ok]
+
+==============================================================================
+(5) EL CASO "NO SE" — separado SIN tocar el parser
+==============================================================================
+detectarArea() colapsa dos cosas en DENTRO_Y_FUERA: la fila que declara las dos
+areas, y la fila que no declara ninguna. El CRUDO no las colapsa, asi que la
+separacion se hace leyendo el campo y no cambiando la funcion.
+
+  filas que HOY se leerian como DENTRO_Y_FUERA: 365 de 509
+    de esas, son DE VERDAD las dos ............ 277   (75,9 % de las 365)
+    de esas, son "no se" (campo vacio) ........ 72   (19,7 % de las 365)
+    de esas, poblado pero ni una ni otra ...... 16
+
+  EJEMPLARES de "las dos", los primeros 6 de 277:
+    2026-07-30 19:42  bahia   84  BAHÍA PUERTO HUASCO         "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+    2026-07-30 19:42  bahia   85  BAHÍA COQUIMBO              "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+    2026-07-30 19:42  bahia   85  BAHÍA COQUIMBO              "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+    2026-07-30 19:42  bahia   86  BAHÍA HERRADURA DE GUAYACÁ  "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+    2026-07-30 19:42  bahia   86  BAHÍA HERRADURA DE GUAYACÁ  "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+    2026-07-30 19:42  bahia   86  BAHÍA HERRADURA DE GUAYACÁ  "DENTRO DEL LÍMITE DEL PUERTO, FUERA DEL LÍMITE DEL PUERTO"
+
+==============================================================================
+CONTROLES
+==============================================================================
+
+CONTROL POSITIVO OBLIGATORIO PARA TODO CERO — separa "campo vacio" de "campo ausente"
+  La clave AreaRestriccion esta PRESENTE en las 509 filas de la bolsa: SI
+  Detalle por captura (clave presente / filas), y un campo vecino no vacio que
+  prueba que el fichero se leyo de verdad:
+    2026-07-30 19:42 (local, del n  73/73   MotivoRestriccion no vacio: 73/73
+    2026-07-31 16:32 (local, del n  83/83   MotivoRestriccion no vacio: 83/83
+    2026-07-31 20:32 (local, del n  83/83   MotivoRestriccion no vacio: 83/83
+    2026-08-01 13:14 (local, del n  83/83   MotivoRestriccion no vacio: 83/83
+    2026-08-03 (mtime; el contenid  39/39   MotivoRestriccion no vacio: 39/39
+    2026-08-08 (del nombre)         57/57   MotivoRestriccion no vacio: 57/57
+    2026-08-11 (del nombre del dir  39/39   MotivoRestriccion no vacio: 39/39
+    2026-08-13 (del nombre del dir  9/9   MotivoRestriccion no vacio: 9/9
+    2026-08-17T23:02:53.110Z (decl  26/26   MotivoRestriccion no vacio: 26/26
+    2026-08-20T18:29:41Z (captura   17/17   MotivoRestriccion no vacio: 17/17
+
+CONTROL NEGATIVO — una clave que no existe debe dar 0 poblados en todas
+  filas con la clave inventada AreaRestriccionXX: 0 de 509  (correcto)
+
+CONTROL DEL RECORTE DE `tipo` — que el espacio final existe de verdad
+  valores CRUDOS distintos del campo tipo, tal cual vienen:
+    "TODOS"                379 filas
+    "FRENTE ATRAQUE "      109 filas
+    "INSTALACION "         17 filas
+    "-"                    4 filas
+  filas de tipo TODOS despues del recorte: 379 de 509
+
+CONTROL DE LECTURA — normalizarTexto es el del motor, no una copia
+  require(src/services/sitport-parser.js).normalizarTexto("dentro del limite") = "DENTRO DEL LIMITE"
+  normalizarTexto(null) = ""  (la rama que hace indistinguible el "no se")
+
+EL ANCLA DE HOY — declarado, no medido aca
+  El owner declara 16 de 18 poblados y 15 de 15 de tipo TODOS, medido el 2026-08-20
+  sobre el vivo. Ese momento no tiene artefacto y NO se puede volver a ver: va como
+  DECLARADO. Lo MEDIDO del mismo dia y que si esta en el arbol es
+  _bitacoras/tres_de_d4_2026-08-20/03_puerto_abierto_con_restriccion.txt, 16:52:48Z,
+  20 filas vigentes, TODOS=17. Y la captura de esta sesion, 18:29:41Z, esta en la tabla.
+
+FIN.
