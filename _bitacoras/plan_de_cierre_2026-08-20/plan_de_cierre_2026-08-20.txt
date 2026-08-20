@@ -650,9 +650,16 @@ LA CIFRA: SE MUEVE +1. S1. De 4 de 15 a 5 de 15.
 
 === U7 · EL LAGO =============================================================
 
-QUE ES DE VERDAD — hoy: UNA MEDICION QUE FALTA. Y despues de esa medicion, o
-falta un DATO FUENTE o falta una decision de arquitectura. No lo se todavia, y
-el prompt lo da por sabido (G5).
+QUE ES DE VERDAD — ~~hoy: UNA MEDICION QUE FALTA~~ LA MEDICION SE HIZO EL
+MISMO DIA: ES (m1), Y ESTA EN EL APARTADO 12. El parrafo decia «hoy: UNA
+MEDICION QUE FALTA. Y despues de esa medicion, o falta un DATO FUENTE o falta
+una decision de arquitectura. No lo se todavia, y el prompt lo da por sabido
+(G5)». Se conserva tachado porque era cierto cuando el plan se propuso.
+LO QUE (m1) CAMBIA DE ESTA UNIDAD, y no es un detalle: U7 NO TIENE UN COSTO,
+TIENE TRES. Dos lagos del lado caro —mascara—, uno de extent, uno mixto. El
+texto de abajo describe la unidad como si tuviera un camino caro y uno barato;
+con (m1) medido, el barato NO ALCANZA PARA NINGUNO DE LOS CUATRO por si solo.
+Se lee entero contra el apartado 12.
   Lo MEDIDO: 4 lagos x 3 clases = 12 fallas, con control positivo maritimo.
   Lo INFERIDO, y declarado como inferencia por el plan anterior: que la mascara
   de agua navegable sale de water polygons del OCEANO —derivadas de
@@ -1376,6 +1383,7 @@ CONTROLES DE ESTA ESCRITURA
 
 ------------------------------------------------------------------------------
 11 . TRES DEFECTOS DE INSTRUMENTO, DECLARADOS PORQUE LOS TRES LLEGARON A CORRER
+     [AL CERRAR LA SESION SON SEIS. Los otros tres, en el apartado 12.]
 ------------------------------------------------------------------------------
 Los tres fallaron RUIDOSO y NINGUNO llego al dato: el declarativo, el commit y
 el objeto remoto son correctos y quedaron verificados. Lo que estos tres tocan
@@ -1495,3 +1503,199 @@ QUE NO SE TOCO EN ESTA ENMIENDA
   ni src/ de ninguno de los dos repos. Los dos intocables siguen ' M' y sin
   stagear. La cifra de §2 no se movio y el conteo del declarativo tampoco:
   siguen 72 filas · 70 unicas · 64 VIVAS · 20 sitios · 11 barridos · 9 SIN BARRER.
+
+
+------------------------------------------------------------------------------
+12 . (m1) — CHECK_CONTROL_POINTS SOBRE LOS OCHO PUNTOS LACUSTRES
+------------------------------------------------------------------------------
+Pedida por el owner el 2026-08-20 con ALCANCE CERRADO: correr el instrumento
+sobre los ocho puntos y publicar el resultado. Nada mas. No se regeneraron
+tiles, no se toco la mascara, no se diseno la solucion.
+
+LO PRIMERO, Y ES UN HALLAZGO: EL INSTRUMENTO NO CORRIA
+------------------------------------------------------------------------------
+tools/raster-build/check_control_points.py moria en el import: falta pyproj, que
+su propio tools/raster-build/requirements.txt declara en 3.7.2. De las veinte
+dependencias pinneadas solo quedaba numpy —y en la version EXACTA del pin,
+2.5.1—, asi que este es el entorno que construyo los tiles y las pesadas se
+sacaron despues.
+Se instalo el pin. ES LO UNICO QUE SE TOCO DEL ENTORNO EN TODA LA SESION:
+    pyproj 3.7.2
+No se actualizo nada mas, no se toco ninguna otra dependencia, y no se modifico
+ningun fichero de tools/. Queda anotado porque un entorno que cambia sin
+registro es un resultado que no se puede repetir.
+
+CON EL INSTALADO, EL INSTRUMENTO TRACKEADO DA 10 DE 11. El que falla es CORRAL,
+que espera AGUA en un puerto maritimo real y obtiene TIERRA. Es PREEXISTENTE, es
+de un instrumento TRACKEADO, y nadie lo sabia porque el instrumento no corria.
+Va como FILA PROPIA por decision del owner, redactada y no aplicada, y NO SE
+INVESTIGO. La fila dice las dos cosas: el fallo, y que se supo solo porque
+alguien instalo el pin. UN INSTRUMENTO QUE NO CORRE NO REPORTA NADA, Y ESO NO ES
+LO MISMO QUE REPORTAR VERDE.
+
+POR QUE HIZO FALTA EXTENDERLO, y que se reuso
+------------------------------------------------------------------------------
+El instrumento trackeado tiene su lista de puntos CLAVADA en el codigo y mira UN
+SOLO TILE por corrida (--tile, por defecto AUSTRAL_N). Con eso no se puede
+contestar la pregunta de EXTENT, que exige preguntarle a los CINCO.
+Asi que se corrio TAL CUAL primero —salida en 10a_instrumento_trackeado.txt— y
+la extension REUSA sus modulos y su aritmetica, sin reimplementar nada:
+   · el mismo unpack_cells de packing.py
+   · la misma formula col=(x-origin_x)/res, fila=(origin_y-y)/res
+   · el mismo criterio: confianza_raw == 0 -> TIERRA, > 0 -> AGUA
+   · la proyeccion, con el crs_proj4 que cada tile declara en SU PROPIO
+     descriptor. NO se reimplemento la transversa Mercator: una proyeccion mal
+     escrita a mano devuelve la celda equivocada EN SILENCIO, que es la familia
+     de defecto que este repositorio lleva doce fichados.
+Los OCHO PUNTOS salen literales de
+_bitacoras/spec2_pantalla_2026-08-20/08_lago_contra_las_tres_clases.js, el
+instrumento trackeado que produjo el 12/12. No se copiaron de ninguna prosa.
+
+EL RESULTADO — los ocho puntos contra los cinco tiles
+------------------------------------------------------------------------------
+  Gral Carrera  Pto Ibanez      DENTRO AUSTRAL_N  raw=32768 conf=0 TIERRA  0/6561
+  Gral Carrera  Rio Tranquilo   DENTRO AUSTRAL_N  raw=32768 conf=0 TIERRA  0/6561
+  Llanquihue    Muelle          DENTRO AUSTRAL_N  raw=32768 conf=0 TIERRA  0/6561
+  Llanquihue    Frutillar       DENTRO AUSTRAL_N  raw=32768 conf=0 TIERRA  0/6561
+  Villarrica    Pucon           FUERA DE TODO TILE
+  Villarrica    Villarrica      FUERA DE TODO TILE
+  Panguipulli   Costanera       DENTRO AUSTRAL_N  raw=32768 conf=0 TIERRA  0/6561
+  Panguipulli   Pto Fuy         FUERA DE TODO TILE
+
+  El ultimo numero es CELDAS NAVEGABLES DENTRO DEL SNAP, sobre 6561 celdas de la
+  ventana. El radio son 2000 m y NO ES UN UMBRAL DE ESTA SESION: es el snap que
+  el propio descriptor de AUSTRAL_N declara en sus observaciones, «0 puertos
+  aislados (snap 2000m)».
+
+EL CONTROL POSITIVO, Y ES EL HALLAZGO DE LA SESION
+------------------------------------------------------------------------------
+  CP Quellon                    DENTRO AUSTRAL_N  raw=40965 conf=1 AGUA    2278/6561
+  CP Calbuco                    DENTRO AUSTRAL_N  raw=32768 conf=0 TIERRA  3644/6561
+  CP Anahuac / Pto Montt        DENTRO AUSTRAL_N  raw=41011 conf=1 AGUA    2808/6561
+  CONTROL NEGATIVO: Cordoba, Argentina -> FUERA DE TODO TILE, 1 de 1.
+
+Son coordenadas de PUERTO, de la misma fuente que las ocho, y de una ruta que SI
+calcula. Y destaparon esto, que va con las palabras del owner:
+
+  EL VALOR DE LA CELDA NO SEPARA LAGO DE MAR. Calbuco lee raw=32768,
+  confianza=0, TIERRA, IGUAL QUE LLANQUIHUE — y la ruta de Calbuco calcula. Lo
+  que separa es el VECINDARIO: 2278 y 3644 contra 0 de 6561. Una medicion que
+  hubiera publicado solo el valor de la celda habria concluido que son el mismo
+  caso.
+
+La separacion por vecindario es TOTAL y no hay caso intermedio: 2278, 3644 y
+2808 de un lado; 0, 0, 0, 0, 0 del otro. Y estaba avisado en el arbol: el propio
+check_control_points.py dice en su comentario que un punto de muelle o rampa cae
+LEGITIMAMENTE en TIERRA y que eso se resuelve con snap-to-navigable, no es un
+defecto del raster. Leer ese comentario ANTES de publicar es lo que impidio
+publicar un empate falso.
+
+LA SEPARACION DE CAUSAS — la que el plan anterior dejo DERIVADA
+------------------------------------------------------------------------------
+  Gral Carrera    MASCARA   dentro del extent, celda TIERRA, 0 navegables en el snap
+  Llanquihue      MASCARA   idem
+  Villarrica      EXTENT    los dos extremos fuera de todos los tiles
+  Panguipulli     MIXTA     Costanera dentro y sin agua; Pto Fuy fuera de todo tile
+
+  DE LOS CUATRO, TRES COINCIDEN CON EL REPARTO DERIVADO DEL PLAN ANTERIOR Y UNO
+  NO. Aquel daba Panguipulli como «extent, marginal, por unos 0,7 km». Es MIXTA:
+  corregir el extent NO lo arregla. Es exactamente el riesgo que el plan viejo
+  declaro al marcar ese reparto como derivado y no medido.
+
+EL VEREDICTO, EN UNA LINEA
+------------------------------------------------------------------------------
+LA INFERENCIA SE CONFIRMA DONDE APLICA Y DEJA DE SER INFERENCIA —para Llanquihue
+y Gral Carrera esta MEDIDO que dentro del extent no hay una sola celda navegable
+en 2 km a la redonda, contra 2278-3644 en los maritimos—, NO APLICA a Villarrica
+—el problema es extent, no mascara— y APLICA A MEDIAS a Panguipulli.
+
+Y LO QUE NO SE MIDIO, QUE VA PEGADO AL VEREDICTO: que el agua no esta, ESTA
+PROBADO. Que la CAUSA sea la fuente de agua del pipeline, NO. Eso SIGUE SIENDO
+INFERENCIA, con su instrumento nombrado y sin correr: habria que abrir la fuente
+declarada del build y comprobar que los lagos interiores no estan en ella. La
+medicion prueba la AUSENCIA; no prueba la CAUSA.
+
+LO QUE ESTO LE HACE AL PLAN
+------------------------------------------------------------------------------
+U7 NO TIENE UN COSTO: TIENE TRES, Y ESO REORDENA LA UNIDAD (decision del owner,
+2026-08-20). Dos lagos del lado caro —el que exige tocar la mascara y por lo
+tanto regenerar tiles—, uno de extent, uno mixto. Consecuencia medida: ARREGLAR
+SOLO EL EXTENT DEJA TRES DE LOS CUATRO SIN RUTA. El apartado 2 lleva la enmienda
+en la cabecera de U7 y el reparto vive aca.
+Lo que (m1) NO toca: el orden de §3. U7 sigue octava, porque el criterio no es
+el costo. Lo que cambia es que ahora se sabe que detras de la posicion 8 hay
+tres trabajos y no uno.
+
+DOS FILAS
+------------------------------------------------------------------------------
+  SESION-plan-de-cierre-2026-08-20::las-cuatro-lacustres-son-TRES-causas-y-esta-medido
+  SESION-plan-de-cierre-2026-08-20::corral-falla-en-un-instrumento-trackeado-y-nadie-lo-sabia
+  El sitio pasa a declarar 6 filas. Los nueve sin barrer SIGUEN SIENDO NUEVE.
+
+LOS OTROS TRES DEFECTOS DE INSTRUMENTO — el apartado 11 dice TRES y son SEIS
+------------------------------------------------------------------------------
+D4 · UNA FILA ESCRITA SIN SU CAMPO id — Y LO CAZO EL VALIDADOR
+     instrumento: 11_fila_m1.js
+     Armo la fila ENTERA y no le puso el campo id. Usaba la constante ID para
+     comprobar que no existiera y para imprimir el log, asi que EL INSTRUMENTO
+     DIJO HABER ESCRITO UNA FILA CON id Y HABIA ESCRITO UNA SIN. La salida decia
+     «ESCRITA UNA FILA» con el id impreso al lado.
+     LO CAZO EL VALIDADOR: [V7] hay una fila sin id. Es uno de los DOS de los seis
+     que caza un control de FORMA -- el otro es D6 --, y por eso vale nombrarlo: cuando el defecto
+     ES de forma, el validador lo agarra. Los otros cuatro no lo eran.
+     COMO SE ARREGLO, y es la parte que el owner marco: se RESTAURO el
+     declarativo a HEAD con git checkout y se corrigio el INSTRUMENTO, en vez de
+     parchear el dato encima. Un instrumento que ya mintio una vez y se parcha
+     por fuera queda sirviendo para nada.
+     Se agrego ademas, al instrumento siguiente, una asercion de que no hay
+     ninguna fila sin id.
+
+D5 · UN CONTROL DEMASIADO ANCHO ACUSANDO A UN TEXTO CORRECTO
+     instrumento: 09_verificar_push_enmienda.js
+     Exigia que el mensaje de commit no dijera «de 15» en NINGUNA forma. El
+     mensaje lo decia dos veces y las dos son legitimas, y la distincion es la
+     que importa: una CITA la forma partida como EJEMPLO del defecto D3, y la
+     otra cita el costo_estimado de una fila, que contiene el nombre del patron.
+     LA POLITICA DEL OWNER PROHIBE PUBLICAR LA CIFRA PELADA, NO NOMBRAR LA
+     CADENA MIENTRAS SE DISCUTE EL GUARDIA QUE LA VA A BUSCAR. Acotado a: toda
+     aparicion viene con su salvedad O esta entrecomillada, con control negativo
+     del propio criterio.
+     Y ES OTRA COSA QUE EL GUARDIA DE LA CIFRA VA A NECESITAR, medida antes de
+     que se escriba, igual que D3: no basta con normalizar el espacio, hay que
+     distinguir PUBLICAR de CITAR. Un guardia que no lo haga rompe todo
+     documento que hable del guardia.
+
+     Y EN LA MISMA CORRIDA, D3 MORDIO EN VIVO POR CUARTA VEZ: el control buscaba
+     el literal «NORMALIZAR EL ESPACIO EN BLANCO» dentro de la bitacora, y en la
+     bitacora ese texto cae en el corte de linea. El control dijo que el
+     documento NO traia la leccion que el documento estaba escribiendo. No es un
+     defecto nuevo: es D3, y es la mejor prueba que produjo la sesion de que D3
+     es cierto.
+
+D6 · BOM Y CRLF EN LA SALIDA CRUDA DE (m1) — Y LO CAZO EL CONTROL DE CARACTERES
+     instrumento: la propia captura de la corrida, no un fichero mio
+     Las dos salidas crudas de (m1) se capturaron desde PowerShell, con
+     redireccion y con Tee-Object. LAS DOS SALIERON CON BOM UTF-8 Y CON CRLF:
+     10_m1_ocho_puntos_lacustres.txt y 10a_instrumento_trackeado.txt.
+     ES LA FAMILIA DEL BOM QUE ESTE REPOSITORIO YA TIENE FICHADA desde el
+     2026-08-12, y aparecio por la puerta menos vigilada: no al ESCRIBIR un
+     fichero sino al CAPTURAR la salida de un programa. El fichero se ve
+     perfecto en pantalla y arranca con tres bytes que nadie pidio.
+     LO CAZO EL CONTROL DE CARACTERES antes del commit: 2 ficheros con BOM,
+     salida en ROJO. Es el segundo de los seis que caza un control -- el otro es
+     D4 -- y los dos son de FORMA. Los cuatro que ningun control agarro eran de
+     SIGNIFICADO.
+     COMO SE ARREGLO: se retiro el BOM y se normalizaron 45 y 19 CRLF a LF, y se
+     volvio a correr el control hasta verde. La salida cruda NO se regenero: se
+     limpio el envoltorio, no el contenido, y el contenido es el de la corrida.
+     LA REGLA QUE QUEDA, y no estaba escrita para este caso: capturar salida
+     desde PowerShell mete BOM. Si la captura va al arbol, se limpia y se corre
+     el control de caracteres ANTES de stagear.
+
+QUE NO SE TOCO
+------------------------------------------------------------------------------
+  tools/ no se modifico: check_control_points.py, packing.py y los descriptores
+  quedaron como estaban. Los tiles no se tocaron ni se regeneraron. La mascara
+  tampoco. PLAN_JURISDICCION.md sigue sin tocarse. src/ de los dos repos,
+  intacto. Los dos intocables siguen ' M' y sin stagear.
+  Del entorno, SOLO pyproj 3.7.2.

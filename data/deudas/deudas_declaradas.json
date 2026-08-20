@@ -375,13 +375,15 @@
         "seccion_por_titulo": "deudas que genera el gate y el plan de cierre, rehecho entero",
         "vocabulario_del_barrido": [
           "los ocho hallazgos del gate, G1 a G8: cuales sobreviven como deuda y cuales son correccion de rotulo",
-          "las decisiones que el plan descubrio que NO existen como fila: el color de la carencia y el camino de la jurisdiccion"
+          "las decisiones que el plan descubrio que NO existen como fila: el color de la carencia y el camino de la jurisdiccion",
+          "la medicion (m1) del 2026-08-20: check_control_points sobre los ocho puntos lacustres contra los cinco tiles, con control positivo maritimo y control negativo. El owner la pidio con alcance CERRADO a correr y publicar.",
+          "el hallazgo LATERAL que (m1) destapo y que el owner mando a fila propia: que un punto de control de un instrumento trackeado falla, y que se supo solo porque hubo que instalar una dependencia para poder correrlo"
         ],
         "orden": 3,
         "barrido": true,
         "barrido_el": "2026-08-20",
-        "filas_en_este_declarativo": 4,
-        "nota": "Mismo precedente que SESION-caracterizacion-deudas-2026-08-19, SESION-tres-de-d4-2026-08-20 y SESION-limite-puerto-12100-47-2026-08-20: una sesion es un sitio de deuda propio. Esta sesion NO midio el producto: leyo los dos arboles, el declarativo contra el indice, las bitacoras, y el plan anterior — que no estaba en ningun arbol, y esa es una de las cuatro filas. Este sitio NO marca barrido ningun otro: PLAN-5-DECISIONES y CLAUDE-MD siguen en false aunque dos de estas cuatro filas caigan cerca de ellos, y se dice en el `depende_de` de cada una. De los cuatro hallazgos del gate que producian escritura, DOS quedaron fuera por decision del owner: los cuatro sitios donde el plan todavia dice que D4 sigue abierta los pega el owner como texto —opcion (c) de las tres que el gate ofrecio—, y S7(a) no se firma hoy porque el owner quiere mirarla en pantalla antes.",
+        "filas_en_este_declarativo": 6,
+        "nota": "Mismo precedente que SESION-caracterizacion-deudas-2026-08-19, SESION-tres-de-d4-2026-08-20 y SESION-limite-puerto-12100-47-2026-08-20: una sesion es un sitio de deuda propio. Esta sesion NO midio el producto: leyo los dos arboles, el declarativo contra el indice, las bitacoras, y el plan anterior — que no estaba en ningun arbol, y esa es una de las cuatro filas. Este sitio NO marca barrido ningun otro: PLAN-5-DECISIONES y CLAUDE-MD siguen en false aunque dos de estas cuatro filas caigan cerca de ellos, y se dice en el `depende_de` de cada una. De los cuatro hallazgos del gate que producian escritura, DOS quedaron fuera por decision del owner: los cuatro sitios donde el plan todavia dice que D4 sigue abierta los pega el owner como texto —opcion (c) de las tres que el gate ofrecio—, y S7(a) no se firma hoy porque el owner quiere mirarla en pantalla antes. AMPLIADO el 2026-08-20 con la fila de (m1): el owner ordeno correr check_control_points sobre los ocho puntos lacustres. Es una QUINTA fila y no una de las cuatro del gate, y va declarada aparte para que el sitio no afirme de si mismo algo que no hizo.",
         "bitacora": "_bitacoras/plan_de_cierre_2026-08-20/"
       }
     ]
@@ -3267,6 +3269,96 @@
         "cita_de_anclaje": "la frase «Si navega en un lago, ve la condicion de su lago», que no dice por que camino se responde, y la ausencia de cualquier punto que lo diga"
       },
       "medicion": "_bitacoras/plan_de_cierre_2026-08-20/, unidad U7; y _bitacoras/spec2_pantalla_2026-08-20/, veredicto S4."
+    },
+    {
+      "id": "SESION-plan-de-cierre-2026-08-20::las-cuatro-lacustres-son-TRES-causas-y-esta-medido",
+      "token_local": null,
+      "espacio_de_nombres": "sesion del plan de cierre 2026-08-20 — medicion (m1)",
+      "sitio": "SESION-plan-de-cierre-2026-08-20",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: nace de la medicion (m1) del 2026-08-20, corrida por orden del owner con alcance cerrado a correr y publicar. Salida cruda en _bitacoras/plan_de_cierre_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "titulo": "Las cuatro rutas lacustres NO fallan por una causa: fallan por TRES, y Panguipulli es MIXTA. El plan anterior las reparto por aritmetica y se equivoco en una",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "instrumento": "Se corrio PRIMERO el instrumento trackeado tal cual —tools/raster-build/check_control_points.py sobre AUSTRAL_N, 10 de 11— para probar la cadena de herramientas y heredar su semantica. Ese instrumento tiene su lista de puntos CLAVADA y mira UN SOLO tile, asi que no puede contestar la pregunta de extent. La extension de esta sesion reusa sus mismos modulos y su misma aritmetica —el mismo unpack_cells, la misma formula de fila y columna, el mismo criterio confianza_raw == 0 -> TIERRA— y pregunta a los CINCO tiles. No reimplementa la proyeccion: usa el crs_proj4 que cada tile declara en su propio descriptor.",
+        "procedencia_de_los_ocho_puntos": "Literales de _bitacoras/spec2_pantalla_2026-08-20/08_lago_contra_las_tres_clases.js, que es el instrumento trackeado que produjo el 12/12 de las fallas lacustres. No se copiaron de ninguna prosa.",
+        "EL_RESULTADO": {
+          "Gral Carrera (Pto Ibanez / Rio Tranquilo)": "MASCARA. Los DOS extremos caen DENTRO de AUSTRAL_N, la celda vale raw=32768 confianza=0 —TIERRA— y hay CERO celdas navegables en el radio de snap. 0 de 6561.",
+          "Llanquihue (Muelle / Frutillar)": "MASCARA. Identico: los dos dentro de AUSTRAL_N, celda TIERRA, 0 de 6561 navegables.",
+          "Villarrica (Pucon / Villarrica)": "EXTENT. Los DOS extremos caen FUERA DE TODOS LOS TILES. No es un problema de mascara: no hay raster que consultar.",
+          "Panguipulli (Costanera / Pto Fuy)": "MIXTA, y es la correccion que esta medicion trae. Costanera cae DENTRO de AUSTRAL_N con celda TIERRA y 0 de 6561 navegables —o sea MASCARA—; Pto Fuy cae FUERA DE TODO TILE —o sea EXTENT—. Un solo lago con las dos causas, una en cada punta."
+        },
+        "EL_CONTROL_POSITIVO_Y_LO_QUE_DESTAPO": "El control son coordenadas de PUERTO de la misma fuente y de una ruta que SI calcula. Y destapo algo que obliga a decir COMO se midio: CALBUCO LEE EXACTAMENTE LO MISMO QUE LOS LAGOS EN LA CELDA —raw=32768, confianza=0, TIERRA— y sin embargo su ruta calcula. O sea que EL VALOR DE LA CELDA, SOLO, NO SEPARA LAGO DE MAR. Lo que separa es el VECINDARIO: Quellon 2278 de 6561 celdas navegables, Calbuco 3644 de 6561, Anahuac 2808 de 6561, y los cuatro puntos lacustres de dentro del extent, 0 de 6561. La separacion es total y no hay caso intermedio. Un punto de muelle cae LEGITIMAMENTE en tierra —lo dice el propio check_control_points.py en su comentario— y por eso una medicion que solo hubiera publicado el valor de la celda habria concluido que Calbuco y Llanquihue son el mismo caso. No lo son.",
+        "el_radio_no_es_un_umbral_inventado": "Los 2000 m son el snap que el propio descriptor de AUSTRAL_N declara en sus observaciones: \"0 puertos aislados (snap 2000m)\". No se eligio en esta sesion.",
+        "CONTROL_NEGATIVO": "Un punto de Cordoba, Argentina: FUERA DE TODO TILE, 1 de 1.",
+        "LO_QUE_ESTO_LE_HACE_A_LA_INFERENCIA_DEL_PLAN": "La inferencia era: la mascara de agua se construyo con datos del OCEANO, asi que los lagos no estan en ella por construccion. QUEDA CONFIRMADA DONDE APLICA y deja de ser inferencia: para Llanquihue y Gral Carrera esta MEDIDO que dentro del extent no hay una sola celda de agua navegable en 2 km a la redonda, contra 2278-3644 en los tres marítimos. Para Villarrica NO APLICA —el problema es extent, no mascara— y para Panguipulli aplica a medias. Lo que sigue SIN medir, y se dice: que la CAUSA de esa ausencia sea la fuente de agua del pipeline. La medicion prueba que el agua no esta; no prueba por que no esta. Para eso habria que abrir la fuente, y no es lo que el owner pidio.",
+        "LO_QUE_CORRIGE_DEL_PLAN_ANTERIOR": "El plan anterior repartio las causas por ARITMETICA sobre el registry y los descriptores, y lo declaro como derivado y no medido. De los cuatro, TRES coinciden con lo medido. El cuarto NO: daba Panguipulli como \"extent, marginal, por unos 0,7 km\", y es MIXTA. Corregir el extent no lo arregla.",
+        "salida_cruda": "_bitacoras/plan_de_cierre_2026-08-20/10_m1_ocho_puntos_lacustres.py y .txt, con la corrida del instrumento trackeado en 10a_instrumento_trackeado.txt.",
+        "UN_HALLAZGO_LATERAL_QUE_NO_ES_ESTO_Y_VA_EN_UNA_LINEA": "El instrumento trackeado NO CORRIA: le faltaba pyproj, que su propio requirements.txt pinea en 3.7.2 y que no estaba instalado —solo quedaba numpy, y en la version exacta del pin—. Se instalo el pin para poder correrlo. Y con el instalado, el instrumento da 10 de 11: su punto de control CORRAL espera AGUA y obtiene TIERRA. Es preexistente, es de un instrumento trackeado, y no es esta medicion.",
+        "EL_HALLAZGO_DE_LA_SESION_CON_LAS_PALABRAS_DEL_OWNER": "EL VALOR DE LA CELDA NO SEPARA LAGO DE MAR. Calbuco lee raw=32768, confianza=0, TIERRA, IGUAL QUE LLANQUIHUE — y la ruta de Calbuco calcula. Lo que separa es el VECINDARIO: 2278 y 3644 contra 0 de 6561. Una medicion que hubiera publicado solo el valor de la celda habria concluido que son el mismo caso. Va con estas palabras porque el owner lo fijo asi el 2026-08-20, y porque es el hallazgo de la sesion: no es un detalle de como se midio, es la diferencia entre medir y no medir.",
+        "LO_QUE_ESTA_MEDICION_NO_MIDIO_Y_SE_DICE": "QUE EL AGUA NO ESTA, ESTA PROBADO: dentro del extent, cero celdas navegables en el radio de snap alrededor de los cuatro puntos lacustres que caen dentro. QUE LA CAUSA SEA LA FUENTE DE AGUA DEL PIPELINE, NO. Eso SIGUE SIENDO INFERENCIA, y su instrumento esta nombrado y sin correr: habria que abrir la fuente declarada del build —water-polygons-split-4326, derivada de la linea de costa— y comprobar que los lagos interiores no estan en ella. La medicion prueba la AUSENCIA del agua; no prueba su CAUSA. Las dos cosas se confundieron una vez en este frente y no se van a confundir otra.",
+        "LO_QUE_ESTO_LE_HACE_A_U7_DEL_PLAN": "U7 NO TIENE UN COSTO: TIENE TRES, y eso REORDENA LA UNIDAD. Dos lagos —Llanquihue y Gral Carrera— caen del lado CARO, el que exige tocar la mascara y por lo tanto regenerar tiles. UNO —Villarrica— es solo EXTENT. UNO —Panguipulli— es MIXTO y necesita las dos cosas. Consecuencia directa y medida: arreglar SOLO el extent deja TRES de los cuatro lagos sin ruta. El plan de cierre trata U7 como una unidad con un solo camino caro y un solo camino barato; con esto medido, el camino barato no alcanza para ninguno de los cuatro por si solo. EL PLAN TIENE QUE REFLEJARLO — decision del owner del 2026-08-20 — y esta fila es donde queda escrito hasta que se refleje.",
+        "LO_UNICO_QUE_SE_TOCO_DEL_ENTORNO": "pyproj 3.7.2 INSTALADO. Es el pin que el propio tools/raster-build/requirements.txt declara, y sin el el instrumento trackeado no arranca. No se instalo nada mas, no se actualizo nada, y no se toco ninguna otra dependencia: numpy ya estaba, y en la version exacta del pin. Queda anotado porque un entorno que cambia sin registro es un resultado que no se puede repetir."
+      },
+      "donde": {
+        "fichero": "tmarea-backend/tools/raster-build/check_control_points.py",
+        "seccion_por_titulo": "la lista CONTROL_POINTS y el argumento --tile",
+        "cita_de_anclaje": "la lista de puntos clavada en el codigo y el hecho de que el instrumento mire un solo tile por corrida, que es lo que impide contestar la pregunta de extent sin extenderlo"
+      },
+      "costo_estimado": "ESTA FILA NO PIDE ARREGLAR NADA: pide que el reparto medido reemplace al derivado alli donde el derivado esta escrito. Eso es escritura. Lo que la medicion SI acota, y es su valor: la unidad U7 del plan de cierre no tiene UN costo sino TRES, y dos lagos de cuatro caen del lado caro —el que exige tocar la mascara— asi que arreglar solo el extent deja tres de los cuatro sin ruta.",
+      "depende_de": "Nada abierto para escribir el reparto. La DECISION de que hacer con el sigue siendo la fila hermana SESION-plan-de-cierre-2026-08-20::jurisdiccion-por-trayecto-o-por-extremos, del grupo 2 y sin firmar: si la condicion se responde por EXTREMOS, ninguna de las tres causas hay que arreglarla. Y la fila PLAN-2::ninguna-ruta-lacustre-es-calculable predijo en su costo_estimado que esta medicion podia partirla; partirla o enmendarla NO se hizo aca, porque el owner cerro el alcance a correr y publicar.",
+      "medicion": "_bitacoras/plan_de_cierre_2026-08-20/, medicion (m1) del 2026-08-20.",
+      "enmienda_2026_08_20": "ENRIQUECIDA EL MISMO DIA, por decision del owner, con cuatro cosas que la primera version no decia y que no son adorno: (a) el hallazgo del control positivo con las palabras del owner; (b) lo que la medicion NO midio; (c) que U7 tiene TRES costos y no uno, lo que reordena la unidad; (d) la unica mutacion del entorno. Nada de la medicion cambio: los numeros son los mismos de la corrida del 2026-08-20."
+    },
+    {
+      "id": "SESION-plan-de-cierre-2026-08-20::corral-falla-en-un-instrumento-trackeado-y-nadie-lo-sabia",
+      "token_local": null,
+      "espacio_de_nombres": "sesion del plan de cierre 2026-08-20 — hallazgo lateral de (m1)",
+      "sitio": "SESION-plan-de-cierre-2026-08-20",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no fecha esta deuda: el instrumento no declara sus fallos en ninguna parte, porque no se corria. Nace del 2026-08-20, al correrlo. Salida cruda en _bitacoras/plan_de_cierre_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "titulo": "Un punto de control de un instrumento TRACKEADO falla, y nadie lo sabia porque el instrumento no corria por falta de una dependencia que su propio requirements pinea",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "EL_FALLO": "tools/raster-build/check_control_points.py, corrido sobre AUSTRAL_N, da 10 de 11. El que falla es CORRAL: lat -39.8700, lon -73.4300, esperado AGUA, obtenido TIERRA, en fila=841 col=3746 con confianza_raw=0. No es un punto cualquiera de la lista: es un PUERTO MARITIMO REAL, y esta en la lista junto a Anahuac / Puerto Montt y Paso Tenglo, que son los dos que SI dan AGUA.",
+        "Y_LA_OTRA_MITAD_QUE_ES_LA_QUE_IMPORTA": "SE DESCUBRIO SOLO PORQUE ALGUIEN INSTALO EL PIN. El instrumento NO CORRIA: le faltaba pyproj, que su propio tools/raster-build/requirements.txt declara en 3.7.2. Sin esa dependencia el fichero muere en el import y no reporta nada. UN INSTRUMENTO QUE NO CORRE NO REPORTA NADA, Y ESO NO ES LO MISMO QUE REPORTAR VERDE. Mientras estuvo roto, el repositorio tenia un control de puntos de raster trackeado, citado en la spec del router, y en estado desconocido. La deuda no es solo Corral: es que nada obliga a que un instrumento trackeado se pueda correr.",
+        "lo_que_NO_se_hizo_y_es_deliberado": "NO SE INVESTIGO, por instruccion explicita del owner del 2026-08-20. No se sabe si el defecto es de la mascara en ese punto, de la linea de costa de la fuente, o del valor ESPERADO que la lista declara. Las tres son posibles y esta fila no elige. Se escribe el hecho.",
+        "lo_que_juega_a_favor_de_mirarlo_algun_dia": "Corral esta a -39.87 de latitud, o sea en el borde NORTE de AUSTRAL_N, que es la zona que el propio comentario del instrumento dice que se agrego al corregir el bbox. La fila lo anota como CONTEXTO, no como diagnostico.",
+        "salida_cruda": "_bitacoras/plan_de_cierre_2026-08-20/10a_instrumento_trackeado.txt",
+        "relacion_con_la_otra_fila_de_la_sesion": "Es hallazgo LATERAL de la medicion (m1) y no es (m1). Va como fila propia por decision del owner, para que la fila de (m1) no afirme de si misma algo que no le encargaron."
+      },
+      "donde": {
+        "fichero": "tmarea-backend/tools/raster-build/check_control_points.py",
+        "seccion_por_titulo": "la lista CONTROL_POINTS",
+        "cita_de_anclaje": "la entrada que espera AGUA en Corral, y el bloque de imports de la cabecera, que es donde el fichero moria sin la dependencia"
+      },
+      "costo_estimado": "DOS COSAS DE PRECIO MUY DISTINTO, y la fila no las funde. Mirar Corral: barato, es un punto y el instrumento ya corre. Que un instrumento trackeado no se pueda correr: eso NO es barato ni es de este fichero — toca como se declara y se comprueba el entorno de las herramientas del repositorio, y hoy nada lo comprueba.",
+      "depende_de": "Nada abierto. Cae cerca de CLAUDE-MD, que es uno de los NUEVE sitios sin barrer y sigue en false: esta fila esta escrita aca porque la produjo esta sesion, no porque ese sitio se haya barrido.",
+      "medicion": "_bitacoras/plan_de_cierre_2026-08-20/, corrida del instrumento trackeado del 2026-08-20."
     }
   ]
 }

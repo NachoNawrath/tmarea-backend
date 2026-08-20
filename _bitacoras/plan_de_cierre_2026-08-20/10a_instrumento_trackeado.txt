@@ -1,0 +1,19 @@
+punto                                         esperado obtenido     dist_m  resultado
+-----------------------------------------------------------------------------------------------
+interior de Isla Grande de Chiloe             TIERRA   TIERRA            0  OK  (fila=6919, col=2992, confianza_raw=0)
+Isla Guafo                                    TIERRA   TIERRA            0  OK  (fila=9131, col=1783, confianza_raw=0)
+cordillera continental                        TIERRA   TIERRA            0  OK  (fila=11104, col=5715, confianza_raw=0)
+continente, sector Coyhaique                  TIERRA   TIERRA            0  OK  (fila=13107, col=5096, confianza_raw=0)
+Pacifico abierto                              AGUA     AGUA          61530  OK  (fila=10104, col=740, confianza_raw=1)
+Golfo Corcovado                               AGUA     AGUA          19680  OK  (fila=8454, col=4083, confianza_raw=1)
+Golfo de Ancud                                AGUA     AGUA            450  OK  (fila=5340, col=4367, confianza_raw=1)
+Canal Moraleda                                AGUA     AGUA           1680  OK  (fila=11348, col=3731, confianza_raw=1)
+Anahuac / Puerto Montt                        AGUA     AGUA            510  OK  (fila=4399, col=4624, confianza_raw=1)
+Paso Tenglo                                   AGUA     AGUA             50  OK  (fila=4416, col=4589, confianza_raw=1)
+Corral                                        AGUA     TIERRA            0  *** FALLA ***  (fila=841, col=3746, confianza_raw=0)
+-----------------------------------------------------------------------------------------------
+1 PUNTO(S) DE CONTROL FALLARON de 11
+Si los puntos TIERRA fallaron dando AGUA: rasterize() probablemente
+ignoro los anillos interiores (islas) de los poligonos OSM. Hay que
+revisar que las geometrias conserven sus holes al pasar por to_crs()
+y rasterize(), y rehacer el tile.

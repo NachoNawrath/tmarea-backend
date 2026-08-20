@@ -1,0 +1,45 @@
+(m1) — LOS OCHO PUNTOS LACUSTRES CONTRA EL RASTER
+
+  tiles cargados del registry: AUSTRAL_N, AUSTRAL_S, CENTRO, NORTE, SUR
+  snap declarado por el propio meta del tile: 2000 m
+  criterio heredado de check_control_points.py: confianza_raw == 0 -> TIERRA, > 0 -> AGUA
+
+LOS OCHO PUNTOS LACUSTRES
+  Gral Carrera  zarpe    Pto Ibanez       -46.2947  -71.9264  ->  MASCARA
+      AUSTRAL_N[f=15090,c=6305] raw=32768 conf=0 -> TIERRA dist_m=0 · navegables en 2000m: 0/6561
+  Gral Carrera  recalada Rio Tranquilo    -46.6194  -72.6733  ->  MASCARA
+      AUSTRAL_N[f=15816,c=5160] raw=32768 conf=0 -> TIERRA dist_m=0 · navegables en 2000m: 0/6561
+  Llanquihue    zarpe    Muelle           -41.2553  -73.0026  ->  MASCARA
+      AUSTRAL_N[f=3906,c=4512] raw=32768 conf=0 -> TIERRA dist_m=0 · navegables en 2000m: 0/6561
+  Llanquihue    recalada Frutillar        -41.0726  -72.9353  ->  MASCARA
+      AUSTRAL_N[f=3499,c=4620] raw=32768 conf=0 -> TIERRA dist_m=0 · navegables en 2000m: 0/6561
+  Villarrica    zarpe    Pucon            -39.2765  -71.9803  ->  FUERA DE TODO TILE                         causa: EXTENT
+  Villarrica    recalada Villarrica       -39.2883  -72.2195  ->  FUERA DE TODO TILE                         causa: EXTENT
+  Panguipulli   zarpe    Costanera        -39.6439  -72.3220  ->  MASCARA
+      AUSTRAL_N[f=320,c=5639] raw=32768 conf=0 -> TIERRA dist_m=0 · navegables en 2000m: 0/6561
+  Panguipulli   recalada Pto Fuy          -39.8720  -71.8891  ->  FUERA DE TODO TILE                         causa: EXTENT
+
+CONTROL POSITIVO — misma clase de punto (coordenada de PUERTO), misma fuente,
+y esta ruta SI calcula en el motor
+  CP maritimo  zarpe    Quellon           -43.1208  -73.6232  ->  AGUA
+      AUSTRAL_N[f=8065,c=3551] raw=40965 conf=1 -> AGUA dist_m=50 · navegables en 2000m: 2278/6561
+  CP maritimo  recalada Calbuco           -41.7639  -73.1303  ->  TIERRA_CON_AGUA_CERCA
+      AUSTRAL_N[f=5038,c=4312] raw=32768 conf=0 -> TIERRA dist_m=0 · navegables en 2000m: 3644/6561
+  CP maritimo           Anahuac/Pto Montt  -41.4776  -72.9388  ->  AGUA
+      AUSTRAL_N[f=4399,c=4624] raw=41011 conf=1 -> AGUA dist_m=510 · navegables en 2000m: 2808/6561
+
+CONTROL NEGATIVO — tiene que dar FUERA DE TODO TILE
+  CN fuera de Chile     Cordoba, AR       -31.4200  -64.1800  ->  FUERA DE TODO TILE                         causa: EXTENT
+
+-----------------------------------------------------------------------------------------------
+SEPARACION DE CAUSAS, POR LAGO — la que el plan anterior dejo DERIVADA y no medida
+-----------------------------------------------------------------------------------------------
+  Gral Carrera     MASCARA — dentro del extent, celda TIERRA y CERO navegables en el snap
+  Llanquihue       MASCARA — dentro del extent, celda TIERRA y CERO navegables en el snap
+  Villarrica       EXTENT — los dos extremos fuera de todo tile
+  Panguipulli      MIXTA — un extremo fuera del extent y el otro dentro
+
+-----------------------------------------------------------------------------------------------
+CONTROL POSITIVO: 3 de 3 maritimos con agua navegable alcanzable
+CONTROL NEGATIVO: 1 de 1 fuera de todo tile
+
