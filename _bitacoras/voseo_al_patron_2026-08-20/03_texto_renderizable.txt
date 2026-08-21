@@ -36,7 +36,7 @@ fragmentos de texto extraidos : 43511
      L339        [tienes]  Autocompletado desde la eslora (TM-002 Art. 28). Editable si tienes certificado de arqueo.
 
 ════ TUTEO · AMBIGUAS (homografo — las resuelve la lectura) ════
-  204 cadenas DISTINTAS en texto renderizable de ROL P
+  201 cadenas DISTINTAS en texto renderizable de ROL P
 
   ── backend/data/contacto/reparticiones_publicadas.json ──
      decision    [usa]  R4 = opcion B, owner 2026-08-15. El nombre sale del titulo publicado por DIRECTEMAR; la columna `Capitania` del CSV NO se usa como rotulo porque es la cadena cruda de SITPORT (medido 64 de 64).
@@ -57,8 +57,6 @@ fragmentos de texto extraidos : 43511
      mensaje.actualizado_2026-08-13  [verifica]  El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el cont
      mensaje.actualizado_2026-08-13  [cambia]  El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el cont
      mensaje.actualizado_2026-08-13  [muestra]  El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el cont
-     mensaje.capa_2_con_capitania  [confirma]  Confirma con la Capitanía {nombre} antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exi
-     mensaje.capa_2_sin_capitania  [coordina]  Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricci
      mensaje.nota_capa_2_sin_capitania  [usa]  Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada forzosa y z
      mensaje.nota_capa_2_sin_capitania  [agrega]  Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada forzosa y z
      cotejo_con_el_contrato.por_que_existe  [cambia]  El bloque `mensaje` promete arriba que 'si el catalogo cambia, cambia aca y se nota'. El 2026-08-13 el catalogo cambio —la v1.8 le saco el telefono a la fila— y NO se noto: el dato sirvio el texto de 
@@ -70,7 +68,6 @@ fragmentos de texto extraidos : 43511
      cotejo_con_el_contrato.lo_que_NO_cubre[1]  [declara]  NO caza que FALTE una transcripcion que deberia existir. Si manana el §10 sumara una fila que el motor tiene que servir y nadie la transcribe aca, este control seguiria en verde. Es el segundo hueco q
      cotejo_con_el_contrato.lo_que_NO_cubre[3]  [verifica]  NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde.
      cotejo_con_el_contrato.lo_que_NO_cubre[3]  [comprueba]  NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde.
-     contacto_generico.texto  [coordina]  Coordina con la Autoridad Maritima por VHF Canal 16 antes de zarpar.
      zonas[6].contacto.nota_2026-08-16_retiro  [toca]  RETIRADA LA DISCREPANCIA, 2026-08-16. La mitad (ii) de la `nota_2026-08-16` —la Gobernacion que el mapa le ponia a la bahia 129 (Aysen) contra la que le da el decreto (Punta Arenas)— quedo ADJUDICADA 
      zonas[7].contacto.motivo  [toma]  Las bahias de su sector (131 Gregorio, 132 Clarencia) estan atribuidas en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, n
      zonas[7].motivo_sin_ambito  [define]  El decreto no le da paralelos: la define por la linea Punta Harry - Cabo San Vicente y por el limite maritimo internacional por el Oriente, que invoca sin darlo en coordenadas.

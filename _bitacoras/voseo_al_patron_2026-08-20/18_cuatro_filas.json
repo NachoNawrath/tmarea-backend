@@ -1,0 +1,144 @@
+[
+ {
+  "id": "SESION-voseo-al-patron-2026-08-20::el-contrato-se-cita-a-si-mismo-y-nadie-vigila-esa-cita",
+  "token_local": null,
+  "espacio_de_nombres": "sesion del voseo al patron 2026-08-20 — hallazgos de aplicar el §10",
+  "sitio": "SESION-voseo-al-patron-2026-08-20",
+  "repo": "tmarea-backend",
+  "texto_literal": null,
+  "sin_texto": true,
+  "abierta_el": null,
+  "abierta_el_lo_dice_el_documento": false,
+  "nota_fecha": "Nace de APLICAR el §10 en usted el 2026-08-20, autorizado por el owner. Las tres primeras se buscaron ANTES de escribir, no despues.",
+  "grupo": "1_cierra_con_lo_que_hay",
+  "estado": "viva",
+  "firma_owner": {
+   "firmada": true,
+   "fecha": "2026-08-20"
+  },
+  "redactada_no_aplicada": true,
+  "duplicada_de": null,
+  "titulo": "INV-3.2 cita la capa 1 del §10 y esa cita quedo desactualizada al pasar la fila a usted: el contrato se contradice DENTRO DEL MISMO FICHERO, y ningun control lo mira porque cotejo-contrato.js compara el DATO contra el §10, nunca el contrato contra si mismo",
+  "el_hueco_es_lo_que_importa": "Mas que la linea. Hoy existe un control que vigila que el DATO no divergisa del CONTRATO (cotejo-contrato.js, nacido de una divergencia real del 2026-08-13). NO existe ninguno que vigile que el contrato no divergisa DE SI MISMO. Cada vez que el §10 cambie, cualquier parte del contrato que lo cite se desactualiza en silencio. Esta fila es el primer caso conocido y aparecio a la primera.",
+  "donde": {
+   "fichero": "CONTRATO_MOTOR.md",
+   "seccion_por_titulo": "INV-3.2 — Mensaje en transito (doble capa)",
+   "cita_de_anclaje": "Mensaje inequivoco (\"Tu embarcacion NO puede transitar\" vs \"No afectada\")."
+  },
+  "evidencia_en_el_arbol": {
+   "medido_el": "2026-08-20",
+   "la_cita": "INV-3.2 cierra su parrafo de Capa 2 citando literalmente la capa 1 de la fila «Zona intermedia cerrada» del §10, para ejemplificar que el mensaje es inequivoco.",
+   "que_cambio": "Esa fila del §10 paso de \"Tu embarcacion NO puede transitar por [zona].\" a \"Su embarcacion NO puede transitar por [zona].\" en el mismo commit que abre esta deuda. La cita de INV-3.2 quedo con el texto viejo.",
+   "lo_que_NINGUN_control_ve": "cotejo-contrato.js declara su alcance en zonas_aviso.json y es entre el dato y el §10. npm test da 157/157 con la contradiccion adentro, medido.",
+   "causa_directa": "Es consecuencia de lo autorizado por el owner, no un defecto preexistente. Se busco antes de aplicar y se declara en el mismo acto."
+  },
+  "costo_estimado": "La linea es de un minuto y es mano del owner (texto del contrato) — redactada en 18_cuatro_filas.md. El HUECO no: un control que compare las citas internas del contrato contra el §10 exige antes decidir que es una cita —una comilla dentro de un parrafo no es un marcador— y eso es diseño, no escritura.",
+  "depende_de": "De nada externo. Los dos ficheros y el control estan en el arbol."
+ },
+ {
+  "id": "SESION-voseo-al-patron-2026-08-20::inv-36-transcribe-la-v17-y-trae-el-telefono-que-inv-101-saco",
+  "token_local": null,
+  "espacio_de_nombres": "sesion del voseo al patron 2026-08-20 — hallazgos de aplicar el §10",
+  "sitio": "SESION-voseo-al-patron-2026-08-20",
+  "repo": "tmarea-backend",
+  "texto_literal": null,
+  "sin_texto": true,
+  "abierta_el": null,
+  "abierta_el_lo_dice_el_documento": false,
+  "nota_fecha": "Nace de APLICAR el §10 en usted el 2026-08-20, autorizado por el owner. Las tres primeras se buscaron ANTES de escribir, no despues.",
+  "grupo": "1_cierra_con_lo_que_hay",
+  "estado": "viva",
+  "firma_owner": {
+   "firmada": true,
+   "fecha": "2026-08-20"
+  },
+  "redactada_no_aplicada": true,
+  "duplicada_de": null,
+  "titulo": "INV-3.6 transcribe el mensaje del §10 en su version v1.7 y trae el [telefono] que INV-10.1 saco expresamente: el contrato se contradice consigo mismo, y esto YA ERA FALSO antes de tocar el §10",
+  "donde": {
+   "fichero": "CONTRATO_MOTOR.md",
+   "seccion_por_titulo": "INV-3.6 — Una jurisdiccion sin geometria se declara, nunca se resuelve en silencio",
+   "cita_de_anclaje": "se informa: \"No tenemos cargado el limite de esta jurisdiccion — verifica con la Capitania [nombre]: [telefono]\"."
+  },
+  "evidencia_en_el_arbol": {
+   "medido_el": "2026-08-20",
+   "que_dice_INV_36": "verifica con la Capitania [nombre]: [telefono]",
+   "que_dice_el_10": "Confirme con la Capitania [nombre] antes de zarpar. Sin telefono.",
+   "las_dos_divergencias": "DOS, no una: el verbo (verifica / Confirme) y el TELEFONO. El telefono es la grave: INV-10.1 del mismo contrato dice que el contacto se muestra SOLO en el punto de zarpe y recalada, NUNCA dentro de un mensaje normativo. INV-3.6 muestra un mensaje normativo con telefono adentro.",
+   "es_preexistente": "SI. La divergencia del telefono nace de la v1.8 (2026-08-13), no de la sesion del voseo. Esta sesion solo la encontro. La del verbo la agrega el paso a usted.",
+   "no_estaba_anotada": "PLAN_JURISDICCION.md tiene anotada la misma clase de deuda para data/decreto/zonas_aviso.json, y esa YA se cerro. La del propio contrato no esta anotada en ningun lado."
+  },
+  "costo_estimado": "Reescribir dos lineas de INV-3.6 para que citen el §10 vigente y sacar el [telefono]. Mano del owner; redactada en 18_cuatro_filas.md. No exige medir nada mas.",
+  "depende_de": "De H1 no: son sitios distintos del mismo fichero. Si se construye el control de H1, esta la habria cazado sola."
+ },
+ {
+  "id": "SESION-voseo-al-patron-2026-08-20::tuteo-al-patron-dentro-del-contrato-y-fuera-del-10",
+  "token_local": null,
+  "espacio_de_nombres": "sesion del voseo al patron 2026-08-20 — hallazgos de aplicar el §10",
+  "sitio": "SESION-voseo-al-patron-2026-08-20",
+  "repo": "tmarea-backend",
+  "texto_literal": null,
+  "sin_texto": true,
+  "abierta_el": null,
+  "abierta_el_lo_dice_el_documento": false,
+  "nota_fecha": "Nace de APLICAR el §10 en usted el 2026-08-20, autorizado por el owner.",
+  "grupo": "1_cierra_con_lo_que_hay",
+  "estado": "viva",
+  "firma_owner": {
+   "firmada": true,
+   "fecha": "2026-08-20"
+  },
+  "redactada_no_aplicada": true,
+  "duplicada_de": null,
+  "titulo": "Hay texto al patron en TUTEO dentro de CONTRATO_MOTOR.md y fuera del §10: el §10 en usted lo deja conviviendo con tuteo en el mismo fichero",
+  "por_que_quedo_afuera": "POR ALCANCE, NO POR CRITERIO. Palabras del owner, 2026-08-20: su decision fue «usted en todos». Lo que cerro el alcance de la pieza del voseo fue el §10 y su espejo en el dato, no el contrato entero. Esta fila existe para que la diferencia entre «no se decidio» y «no se hizo» no se pierda.",
+  "donde": {
+   "fichero": "CONTRATO_MOTOR.md",
+   "seccion_por_titulo": "INV-4.7 — Naves deportivas eximidas de matricula (sin clasificacion registrada)",
+   "cita_de_anclaje": "muestra un aviso informativo: \"Tu embarcacion esta eximida de matricula (CIRC A-41/014 C.2); la evaluamos como navegacion de bahia.\""
+  },
+  "evidencia_en_el_arbol": {
+   "medido_el": "2026-08-20",
+   "el_denominador": "Lineas ENTRECOMILLADAS de CONTRATO_MOTOR.md fuera del rango del §10 (1164-1209) que traen marca de segunda persona. Son CINCO. De esas, tres son mensaje al patron: INV-3.2 (que es H1), INV-3.6 (que es H2) y esta, INV-4.7. Las otras dos son prosa sobre el mecanismo, no mensaje.",
+   "por_que_esta_es_distinta_de_H1_y_H2": "H1 y H2 son CITAS del §10 que quedaron desincronizadas. Esta NO cita nada: es un mensaje al patron redactado en el contrato, con su propia norma citada (CIRC A-41/014 C.2), que vive fuera del catalogo. O sea que el §10 NO es la unica fuente de mensajes del contrato, y la Regla de uso del §10 no lo dice.",
+   "lo_que_esto_abre_y_no_se_midio": "Si hay un mensaje al patron fuera del §10, puede haber mas de los que estas cinco lineas muestran: el barrido miro lineas entrecomilladas, y un mensaje sin comillas no cae. NO SE MIDIO."
+  },
+  "costo_estimado": "La linea es mano del owner y esta redactada en 18_cuatro_filas.md. Lo caro no es la linea: es contestar si el §10 es o no la fuente unica de mensajes del contrato, porque hoy la Regla de uso lo afirma y este caso lo desmiente.",
+  "depende_de": "De nada externo. Comparte fichero con H1 y H2 y conviene moverlas juntas."
+ },
+ {
+  "id": "SESION-voseo-al-patron-2026-08-20::plan-1927-cita-un-10-que-ya-no-existe",
+  "token_local": null,
+  "espacio_de_nombres": "sesion del voseo al patron 2026-08-20 — hallazgos de aplicar el §10",
+  "sitio": "SESION-voseo-al-patron-2026-08-20",
+  "repo": "tmarea-backend",
+  "texto_literal": null,
+  "sin_texto": true,
+  "abierta_el": null,
+  "abierta_el_lo_dice_el_documento": false,
+  "nota_fecha": "Nace de APLICAR el §10 en usted el 2026-08-20, autorizado por el owner.",
+  "grupo": "1_cierra_con_lo_que_hay",
+  "estado": "viva",
+  "firma_owner": {
+   "firmada": true,
+   "fecha": "2026-08-20"
+  },
+  "redactada_no_aplicada": true,
+  "duplicada_de": null,
+  "titulo": "PLAN_JURISDICCION.md cita el texto del §10 en dos versiones y las dos son falsas hoy: la primera mitad ya lo era antes de esta sesion",
+  "fuera_de_lo_autorizado": "El owner autorizo tocar CONTRATO_MOTOR.md y data/decreto/zonas_aviso.json. El PLAN no. Se anota y no se toca.",
+  "donde": {
+   "fichero": "PLAN_JURISDICCION.md",
+   "seccion_por_titulo": "La distancia entre el codigo y INV-10.1, medida y no arreglada — primera fila de la tabla",
+   "cita_de_anclaje": "transcribe la v1.7: \"Verifica con la Capitania {nombre}: {telefono}...\". El §10 v1.8 dice \"Confirma con la Capitania [nombre]\", sin telefono"
+  },
+  "evidencia_en_el_arbol": {
+   "medido_el": "2026-08-20",
+   "la_primera_mitad_ya_era_falsa": "La fila afirma que zonas_aviso.json «transcribe la v1.7» con {telefono} adentro. Es falso desde antes de esta sesion: el dato ya decia «Confirma con la Capitania {nombre} antes de zarpar», sin telefono.",
+   "la_segunda_mitad_la_hizo_falsa_esta_sesion": "La fila dice que el §10 v1.8 dice «Confirma con la Capitania [nombre]». Desde hoy dice «Confirme».",
+   "por_que_importa": "La tabla se titula «medida y no arreglada» y es insumo de una promocion. Un insumo cuyas dos mitades son falsas por motivos distintos —una por arreglo, otra por cambio— no se puede usar sin releerlo entero."
+  },
+  "costo_estimado": "Releer esa tabla entera contra el arbol, no solo esa fila: si una fila envejecio por arreglo y otra por cambio, las demas pueden estar igual y nadie las midio.",
+  "depende_de": "De nada externo. Fuera del alcance autorizado el 2026-08-20."
+ }
+]
