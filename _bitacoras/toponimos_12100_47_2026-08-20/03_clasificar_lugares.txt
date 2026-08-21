@@ -1,0 +1,157 @@
+P3 - CLASIFICACION POR CLASE DE LUGAR
+==============================================================================
+
+CRITERIO : 01_criterio_lugares.txt, escrito ANTES de correr esto.
+UNIDAD   : el TOPONIMO. En los dos conjuntos ocurrencias = lugares
+           distintos (0 colapsos, 02_extraer_toponimos.txt), asi que la
+           cifra vale para las dos unidades a la vez. Se dice igual.
+DENOMINADOR: A = 27 toponimos de 14 entradas · B = 50 de 25 entradas.
+           NO SE SUMAN.
+
+CONTROL A - NINGUNA CLASE FUERA DE LAS DOCE DECLARADAS
+  clases declaradas en el criterio : 12
+  toponimos sin clase declarada    : 0
+  VEREDICTO: OK - no hubo que declarar clase nueva
+
+CONTROL B - CUANTAS DE LAS DOCE CLASES SE USAN
+  usadas : 12 de 12   ->  L-BALIZA L-BOYA L-CALETA L-CANAL L-DESEMBOC L-FARO L-ISLOTE L-MORRO L-MUELLE L-OBRA L-PUNTA L-ROCA
+  vacias : 0
+  Una clase vacia no es un error: se declaro porque el vocabulario del
+  documento la tenia, y que no aparezca en las 39 es un dato.
+
+CONTROL CA - LAS CLASES SUMAN EL CONJUNTO A
+  suma de las clases: 27 de 27   VEREDICTO: OK
+CONTROL CB - LAS CLASES SUMAN EL CONJUNTO B
+  suma de las clases: 50 de 50   VEREDICTO: OK
+
+==============================================================================
+CONJUNTO A - 14 entradas C-ALGUNAS - escalon 9 -> 21 bahias
+==============================================================================
+  toponimos: 27   entradas: 14
+
+  EJE A - CLASE DE LUGAR
+    L-PUNTA     15
+        Península Alacrán · Punta Chacalluta · Punta Cotitira · punta Caldera · punta Francisco · Punta Liles · Punta Fraile · punta Molo Sur · punta Montecristo · Punta Lirquén · la Punta Oeste de Caleta Lotilla… · punta Anselmo · punta Codina · Punta Lackawana · punta Zegers
+    L-ISLOTE     4
+        Islote Patillos · Islote Blanco · islote que se encuentra al Surwest… · islotes Eva
+    L-ROCA       2
+        roca Blanca · Piedra de la Iglesia
+    L-FARO       3
+        faro Península Serrano · faro Punta Panul · faro Punta Puchoco
+    L-CALETA     1
+        Caleta Lotilla
+    L-CANAL      1
+        canal Tenglo
+    L-MUELLE     1
+        muelle del Ex Frigorífico
+
+  EJE B - NOMBRADO vs DESCRITO   (el que decide la via del gazetteer)
+    B-NOMBRE    25 de 27
+    B-DESCRITO   2 de 27
+        #32 CORONEL: "islote que se encuentra al Surweste de la Punta Oeste de Caleta Lotilla"
+        #32 CORONEL: "la Punta Oeste de Caleta Lotilla"
+
+  EJE C - ENTERO vs PARTE   (residuo que el nombre NO cierra)
+    C-ENTERO 25   C-PARTE  2
+        #1 ARICA: "el canto Weste de la Península Alacrán"
+        #8 TOCOPILLA: "el canto Weste de roca Blanca"
+
+  BANDERA MEDIA COORDENADA   (a favor: tolera mas error)
+    solo LATITUD   3   solo LONGITUD  5   las dos 19
+
+  EJE D - ROL
+    D-DEFINE 24   D-AUXILIAR  3   D-DESCRIPT  0
+        #32 CORONEL: "la Punta Oeste de Caleta Lotilla"
+        #32 CORONEL: "Caleta Lotilla"
+        #38 PUERTO MONTT: "canal Tenglo"
+
+  >>> EL VEREDICTO DEL ENCARGO - LO QUE UNA PUBLICACION NAUTICA NOMBRA
+      N-SEGURA      24 de 27   clase que un derrotero de costa seguro nombra
+      N-DUDOSA       3 de 27   clase dudosa, o sin nombre en el documento
+      N-IMPROBABLE   0 de 27   casi seguro no
+      suma 27 de 27  OK
+      El desglose de N-DUDOSA, porque son dos cosas distintas en la misma casilla:
+        por CLASE dudosa con nombre : 1  (L-MUELLE muelle del Ex Frigorífico)
+        por NO TENER NOMBRE         : 2
+
+==============================================================================
+CONJUNTO B - 25 entradas C-NINGUNA - escalon 21 -> 44 bahias
+==============================================================================
+  toponimos: 50   entradas: 25
+
+  EJE A - CLASE DE LUGAR
+    L-PUNTA     32
+        punta Pichalo · punta Pisagua · punta Landgren · punta Junín · punta Rabo de Ballena · punta Monreal · punta Choros · punta Hueso Parado · la punta Rocosa y blanca notable… · punta Caldereta · punta Zorro · punta Medanitos · punta Mostacilla · punta Miedo · punta Herradura · Punta Cabo Tablas · punta Gruesa · Punta San Carlos · Punta Lobería · punta Lutrín · punta Villagrán · punta Millaneco · punta Molino · punta San Carlos · punta Ahui · punta Pichi Nichi · punta García · Punta Cubillos · Punta Ganso · punta Sofía · punta Weste · punta Mila
+    L-ISLOTE     6
+        islote Puntilla · islote Blanco · isla Huevos · isla Cochinos · isla Calbuco · Islotes Cisnes
+    L-ROCA       3
+        roca La Baja · roca Cochinos · roca San Pedro
+    L-MORRO      1
+        morro Pelícano
+    L-FARO       3
+        faro Punta Tucapel · faro Isla Isabel · faro Punta Gusano
+    L-BALIZA     1
+        baliza Punta Truco
+    L-BOYA       1
+        boya Banco Herradura
+    L-DESEMBOC   1
+        río Huasco
+    L-OBRA       2
+        la parte norte del cementerio… · Puente Negro
+
+  EJE B - NOMBRADO vs DESCRITO   (el que decide la via del gazetteer)
+    B-NOMBRE    47 de 50
+    B-DESCRITO   3 de 50
+        #13 CHAÑARÁL: "la parte norte del cementerio"
+        #13 CHAÑARÁL: "la punta Rocosa y blanca notable"
+        #42 CHACABUCO: "punta Weste"   [DUDA - se busca igual, seccion 9]
+
+  EJE C - ENTERO vs PARTE   (residuo que el nombre NO cierra)
+    C-ENTERO 46   C-PARTE  4
+        #13 CHAÑARÁL: "la parte norte del cementerio"
+        #22 LOS VILOS: "el canto Weste de isla Huevos"
+        #22 LOS VILOS: "el canto Weste de Punta Cabo Tablas"
+        #37 SAN JOSÉ DE CALBUCO: "canto S de isla Calbuco"
+
+  BANDERA MEDIA COORDENADA   (a favor: tolera mas error)
+    solo LATITUD   5   solo LONGITUD  5   las dos 40
+
+  EJE D - ROL
+    D-DEFINE 50   D-AUXILIAR  0   D-DESCRIPT  0
+
+  >>> EL VEREDICTO DEL ENCARGO - LO QUE UNA PUBLICACION NAUTICA NOMBRA
+      N-SEGURA      44 de 50   clase que un derrotero de costa seguro nombra
+      N-DUDOSA       5 de 50   clase dudosa, o sin nombre en el documento
+      N-IMPROBABLE   1 de 50   casi seguro no
+      suma 50 de 50  OK
+      El desglose de N-DUDOSA, porque son dos cosas distintas en la misma casilla:
+        por CLASE dudosa con nombre : 2  (L-DESEMBOC río Huasco · L-BOYA boya Banco Herradura)
+        por NO TENER NOMBRE         : 3
+
+==============================================================================
+CONJUNTO B, SOLO LO UTIL AL CATALOGO - 22 entradas, 23 bahias
+==============================================================================
+  JUNIN, CALETA BUENA y LOS VILOS no aterrizan en ninguna bahia: resolver
+  sus 6 toponimos suma CERO bahias. La cifra util va siempre al lado.
+  toponimos utiles : 44 de 50
+      N-SEGURA      38 de 44
+      N-DUDOSA       5 de 44
+      N-IMPROBABLE   1 de 44
+
+==============================================================================
+LO QUE ESTA CLASIFICACION YA DEJA DICHO, ANTES DE BUSCAR NADA
+==============================================================================
+  1. ES UNA LISTA DE PUNTAS. 47 de los 77 toponimos de las 39 entradas
+     son L-PUNTA (61 %), y con islotes, rocas, faros y morros
+     se llega a la enorme mayoria. Eso es exactamente el catalogo de un
+     derrotero de costa — y tambien, y esto es lo que hay que medir, el
+     catalogo de un gazetteer costero.
+  2. SOLO 4 TOPONIMOS DE 77 NO TIENEN NOMBRE. Son los unicos que la via
+     del gazetteer no puede ni intentar. El techo de las fuentes abiertas
+     NO esta en la falta de nombre: hay nombre casi siempre.
+  3. EL TECHO VA A ESTAR EN LA VERIFICACION, no en el hallazgo. Con 40+
+     puntas de nombre corto y comun en 4.000 km de costa, encontrar "una"
+     punta Blanca es facil y encontrar "la" punta Blanca de la entrada es
+     el trabajo. Por eso el diseno de la busqueda se para en PARADA 1.
+
+VEREDICTO P3: VERDE

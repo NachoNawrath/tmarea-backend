@@ -1,0 +1,279 @@
+P1 - CRITERIO DE CLASE DE LUGAR
+==============================================================================
+
+ESTE FICHERO SE ESCRIBE ANTES DE CORRER 02 Y 03 Y NO SE TOCA DESPUES.
+
+Si al aplicarlo aparece un toponimo que no entra en ninguna clase, la clase
+nueva se agrega ACA con su motivo y se vuelve a correr. Lo que no se hace es
+estirar una clase existente para que el toponimo quepa.
+
+DE DONDE SALE LA TAXONOMIA, dicho antes de que alguien lo pregunte: de los
+SUSTANTIVOS GENERICOS QUE EL PROPIO DOCUMENTO USA. Las 39 entradas se leyeron
+enteras en el gate, para verificar la premisa de las 25. O sea que la lista de
+clases se escribe con el vocabulario ya visto, igual que hizo el criterio del
+2026-08-20 cuando declaro F5 despues de leer ANCUD y antes de correr nada.
+Lo que estaria mal es distinto: mover una clase DESPUES de ver como sale el
+conteo. Eso no se hace, y por eso este fichero se congela ahora.
+
+
+------------------------------------------------------------------------------
+0. EL DENOMINADOR, FIJADO ANTES DE CONTAR
+------------------------------------------------------------------------------
+
+DOS CONJUNTOS, y NO SE SUMAN NUNCA EN UNA SOLA CIFRA:
+
+  CONJUNTO A - las 14 entradas C-ALGUNAS.
+      Es el escalon 9 -> 21 bahias. El que nombra el declarativo en
+      LA_PRIMERA_MEDICION_DE_QUIEN_RETOME_ESTA_FILA. Va primero.
+
+  CONJUNTO B - las 25 entradas C-NINGUNA.
+      Es el escalon 21 -> 44 bahias.
+      Y de las 25, TRES NO MUEVEN NINGUNA CIFRA sobre el denominador 164:
+      JUNIN, CALETA BUENA y LOS VILOS son C-NINGUNA y estan entre los 8
+      puertos que no aterrizan en ninguna bahia del catalogo (06_cruzar.txt,
+      direccion A->B). Resolver sus toponimos suma CERO bahias.
+      Por eso el conjunto B se reporta SIEMPRE con dos cifras:
+        25 entradas del documento  ·  22 entradas utiles al catalogo
+      y las 22 utiles rinden 23 BAHIAS, porque ANCUD aporta dos filas del
+      catalogo (118 y 214).
+
+  39 = 14 + 25. La suma existe como universo de trabajo y NO como resultado:
+  ninguna cifra de clase, de fuente abierta ni de derrotero se publica sobre
+  las 39 juntas.
+
+DOS UNIDADES DE CONTEO, y toda cifra dice cual usa:
+
+  OCURRENCIA        - una mencion de un lugar en UNA entrada. Si el mismo
+                      lugar hace falta en dos entradas, son dos ocurrencias.
+  LUGAR DISTINTO    - un lugar del mundo real, deduplicado.
+
+  LA DEDUPLICACION NO ES POR CADENA. Se propone por cadena normalizada y se
+  RESUELVE A MANO, uno por uno, con razon escrita. Dos ocurrencias con el
+  mismo nombre en regiones distintas son DOS LUGARES DISTINTOS, no uno.
+  Este es el mismo filo del 2026-08-20 —Chanaral de Aceituno contra Chanaral
+  de Atacama— aplicado ahora DENTRO del propio denominador. Colapsar por
+  cadena aca subcontaria el trabajo y ademas fabricaria un falso positivo
+  gratis mas adelante. Todo colapso y todo no-colapso se publica.
+
+
+------------------------------------------------------------------------------
+1. POR QUE SON CUATRO EJES Y NO UNO
+------------------------------------------------------------------------------
+
+El encargo pide "clasificados por clase de lugar" y despues pide derivar de
+eso cuantos nombraria seguro una publicacion nautica. Si la clase fuera un
+solo eje, lo segundo saldria solo. No sale, y el documento lo muestra en una
+sola linea, la de CORONEL:
+
+  "...y finalmente al islote que se encuentra al Surweste de la Punta Oeste
+   de Caleta Lotilla."
+
+Por CLASE eso es un islote, y un islote es exactamente lo que un derrotero de
+costa nombra. Por NOMBRE no es nada: el documento no se lo da. Un gazetteer no
+puede buscar un nombre que no existe. Meter ese islote en la misma casilla que
+"Islote Patillos" pierde justamente el dato que decide la compra.
+
+Por eso se miden CUATRO ejes independientes y el veredicto del encargo se
+deriva de ellos.
+
+
+------------------------------------------------------------------------------
+2. EJE A - CLASE DE LUGAR
+------------------------------------------------------------------------------
+
+La clase la fija el SUSTANTIVO GENERICO con que el documento nombra al objeto,
+no lo que uno sepa del lugar. Si el documento dice "roca", es roca, aunque en
+la carta figure como islote.
+
+  L-PUNTA      punta, peninsula, cabo. Saliente de tierra sobre el mar.
+  L-ISLOTE     islote, islotes, isla. Tierra rodeada de agua.
+  L-ROCA       roca, piedra. Incluye "la Piedra de la Iglesia": el objeto es
+               el mismo aunque el generico cambie de palabra.
+  L-MORRO      morro, cerro. Elevacion de tierra. NO es L-PUNTA: un morro se
+               nombra por su altura, una punta por su saliente, y un
+               gazetteer los indexa distinto.
+  L-FARO       faro. Estructura de senalizacion fija, con nombre propio y
+               posicion publicada por la autoridad maritima.
+  L-BALIZA     baliza. Senalizacion fija menor, sin luz o con luz menor.
+  L-BOYA       boya. Senalizacion FLOTANTE. Se separa de L-BALIZA a proposito:
+               una boya se fondea, se corre y se cambia de lugar. El
+               2026-08-20 ya lo anoto para PUERTO WILLIAMS.
+  L-DESEMBOC   desembocadura de rio. El RIO tiene nombre; la desembocadura es
+               un punto derivado de el y ademas movil.
+  L-CALETA     caleta, bahia, ensenada. Cuerpo de agua abrigado con nombre.
+  L-MUELLE     muelle, molo, rampa. Obra portuaria.
+  L-OBRA       obra o edificio en tierra SIN funcion nautica declarada:
+               cementerio, puente, iglesia como edificio.
+  L-CANAL      canal, paso. Cuerpo de agua de transito con nombre.
+
+  CLASE NUEVA: si aparece un objeto que no es ninguno de los doce, se declara
+  aca con su motivo antes de contarlo.
+
+
+------------------------------------------------------------------------------
+3. EJE B - NOMBRADO vs DESCRITO. EL EJE QUE DECIDE
+------------------------------------------------------------------------------
+
+  B-NOMBRE     El documento le da NOMBRE PROPIO al objeto.
+               "punta Pichalo", "faro Isla Isabel", "islotes Eva".
+
+  B-DESCRITO   El documento NO le da nombre: lo ubica por posicion, por
+               aspecto o por relacion con otra cosa.
+               "el islote que se encuentra al Surweste de la Punta Oeste de
+               Caleta Lotilla" · "la punta Rocosa y blanca notable".
+
+  COMO SE DECIDE, para que no dependa de como suene: se pregunta si la cadena
+  funcionaria como ENTRADA DE INDICE. "Pichalo" indexa. "Rocosa y blanca
+  notable" no indexa: es un adjetivo, y ademas es el adjetivo con que
+  cualquier derrotero describiria docenas de puntas distintas. En caso de
+  duda genuina se marca B-DESCRITO y se escribe la duda, porque el error caro
+  de esta sesion es el FALSO POSITIVO: contar como resoluble algo que no lo es
+  infla el numero que evita la compra.
+
+  LA ASIMETRIA, declarada aca porque es la que separa las dos cifras de (4):
+
+    B-DESCRITO MATA LA VIA DEL GAZETTEER, SIEMPRE Y SIN EXCEPCION.
+        Un catalogo geografico se consulta por nombre. Sin nombre no hay
+        consulta. No es que sea dificil: es que no hay operacion que hacer.
+
+    B-DESCRITO SOLO DEBILITA LA VIA DEL DERROTERO.
+        Un derrotero es PROSA de costa: describe accidentes sin nombre
+        ("un islote al SW de...") con demarcaciones y distancias. Puede
+        resolver un B-DESCRITO, y puede no traerlo. Queda en DUDOSA, nunca
+        en SEGURA.
+
+  Esta asimetria es la razon de que las dos cifras de (4) no se puedan sacar
+  una de la otra, y de que la del derrotero sea ESTIMACION y la de fuentes
+  abiertas sea MEDICION.
+
+
+------------------------------------------------------------------------------
+4. EJE C - ENTERO vs PARTE
+------------------------------------------------------------------------------
+
+  C-ENTERO     El limite usa el lugar completo. "punta Pisagua".
+  C-PARTE      El limite usa un BORDE o un SECTOR del lugar.
+               "el canto Weste de la Peninsula Alacran" · "canto S de isla
+               Calbuco" · "la parte norte del cementerio".
+
+  Por que se mide: un gazetteer devuelve UN PUNTO por lugar. Si la entrada
+  pide el canto Weste, ese punto no cierra el limite -- deja un residuo que el
+  nombre resuelto NO cierra. C-PARTE no impide encontrar el lugar; impide dar
+  por CERRADA la entrada con solo encontrarlo. Se anota y se arrastra hasta
+  (4), donde cambia el veredicto de la ENTRADA aunque el toponimo cuente como
+  encontrado.
+
+  MEDIA COORDENADA, el caso contrario y a favor: si el toponimo cuelga de un
+  PARALELO solo hace falta su LATITUD, y si cuelga de un MERIDIANO solo su
+  LONGITUD (03_criterio_clases.txt del 2026-08-20, seccion 6). Ahi un punto
+  de gazetteer con error de varios cientos de metros en la direccion que NO
+  define el eje sigue sirviendo. Se marca como C-MEDIA y se arrastra igual.
+
+
+------------------------------------------------------------------------------
+5. EJE D - ROL EN EL LIMITE
+------------------------------------------------------------------------------
+
+  D-DEFINE     El toponimo ES un vertice de la linea o el ancla de un eje.
+  D-AUXILIAR   El toponimo solo sirve para ubicar a otro que si define.
+               Caso unico anticipado: "Caleta Lotilla" en CORONEL, que no es
+               vertice de nada -- esta ahi para ubicar al islote sin nombre.
+  D-DESCRIPT   El toponimo acompana pero NO hace falta para cerrar el limite,
+               porque los ejes o los vertices ya lo cierran solos. El
+               2026-08-20 ya identifico tres asi: "Punta Patache", "faro Molo
+               Caleta Manzano", "faro Punta Gualpen" y "Punta Pardo".
+
+  Los D-DESCRIPT NO ENTRAN en el denominador de trabajo: resolverlos no
+  cambia nada. Se listan aparte para que se vea que se miraron y por que se
+  dejaron fuera. Los D-AUXILIAR SI ENTRAN: sin ellos no hay como llegar al
+  que define.
+
+
+------------------------------------------------------------------------------
+6. EL VEREDICTO DEL ENCARGO, DERIVADO
+------------------------------------------------------------------------------
+
+"Cuantos son de clase que una publicacion nautica seguro nombra, cuantos de
+clase dudosa, y cuantos que casi seguro no." Se deriva de A y B con esta
+tabla, escrita ahora:
+
+  N-SEGURA      B-NOMBRE  y  clase en {L-PUNTA, L-ISLOTE, L-ROCA, L-MORRO,
+                L-FARO, L-BALIZA, L-CALETA, L-CANAL}.
+                Son los accidentes y las senales fijas que un derrotero de
+                costa existe para describir. Un derrotero que no nombre las
+                puntas y los faros de la costa que cubre no es un derrotero.
+
+  N-DUDOSA      B-NOMBRE y clase en {L-BOYA, L-DESEMBOC, L-MUELLE}.
+                Las tres por motivos distintos y los tres se escriben:
+                  L-BOYA    - aparece en la lista de faros y en el
+                              balizamiento, no siempre en el derrotero, y
+                              cambia de posicion entre ediciones.
+                  L-DESEMBOC- el rio se nombra seguro; la desembocadura como
+                              PUNTO es interpretacion, y ademas migra.
+                  L-MUELLE  - un derrotero describe las obras del puerto que
+                              cubre, con nombre, pero un muelle particular
+                              puede no estar y ademas se demuele.
+                MAS: todo B-DESCRITO cae aca, cualquiera sea su clase.
+
+  N-IMPROBABLE  clase L-OBRA.
+                Un cementerio y un puente no son objetos de una publicacion
+                nautica de costa. Pueden aparecer como marca de enfilacion
+                visible desde el mar, y por eso no se dice "imposible" sino
+                "casi seguro no".
+
+  ESTA TABLA ES SOBRE LA CLASE, NO SOBRE EL LUGAR. Dice que un faro es la
+  clase de cosa que un derrotero trae. NO dice que ESE faro este en ESE tomo.
+  La distancia entre las dos afirmaciones es exactamente lo que hace que la
+  cifra de (4) sea ESTIMACION y vaya rotulada.
+
+
+------------------------------------------------------------------------------
+7. LO QUE ESTA CLASIFICACION NO DICE
+------------------------------------------------------------------------------
+
+No dice donde esta el lugar. No dice si el limite es correcto ni si esta
+vigente. No dice si el toponimo sigue en uso. Dice que CLASE DE COSA es cada
+nombre que hay que resolver, y con eso se pueden separar los que un gazetteer
+podria traer de los que no.
+
+Y no dice nada sobre el DERROTERO como fuente: en esta sesion no se abre, no
+se consulta y no se cita. La cifra del derrotero sale de la CLASE, que es
+informacion del documento publico, y de nada mas.
+
+
+------------------------------------------------------------------------------
+8. ENMIENDA AL EJE C, ESCRITA ANTES DE CORRER 02 Y 03
+------------------------------------------------------------------------------
+
+Al armar la tabla manual aparecio un caso que el eje C, como quedo escrito en
+la seccion 4, no puede representar: el cementerio de CHANARAL es a la vez
+C-PARTE ("la parte norte del cementerio") y media coordenada (cuelga de un
+PARALELO, o sea que solo hace falta su latitud). Con C-ENTERO / C-PARTE /
+C-MEDIA como tres valores del mismo eje hay que elegir uno y se pierde el otro.
+
+Son DOS PREGUNTAS INDEPENDIENTES y por eso no caben en un eje:
+  - "entero o parte"  habla del LUGAR: cuanto del lugar usa el limite.
+  - "media coordenada" habla del EJE DEL LIMITE: cuanto del punto hace falta.
+Un lugar puede ser parte-de-algo Y aportar media coordenada, o entero y
+aportar las dos.
+
+QUEDA ASI, y se corrige aca en vez de acomodar el dato al criterio:
+  EJE C   : C-ENTERO | C-PARTE            (del lugar)
+  BANDERA : media_coordenada = LAT | LON | NO   (del eje del limite)
+
+No se agrega ni se quita ninguna clase de lugar. La seccion 4 se lee con esta
+enmienda encima.
+
+------------------------------------------------------------------------------
+9. LOS B-DESCRITO CON DUDA SE BUSCAN IGUAL
+------------------------------------------------------------------------------
+
+La seccion 3 manda marcar B-DESCRITO en caso de duda genuina. Eso protege el
+conteo de clase, pero si ademas los sacara de la busqueda, la clasificacion se
+volveria imposible de falsificar: nunca se sabria si el nombre existia.
+
+Por eso: todo B-DESCRITO marcado con duda=SI ENTRA IGUAL en la busqueda de
+fuentes abiertas. Si aparece verificado, el hallazgo CORRIGE la clasificacion
+y se publica como correccion, no se esconde. Los B-DESCRITO sin duda -- los
+que el documento directamente no nombra -- no se buscan, porque no hay cadena
+que consultar.

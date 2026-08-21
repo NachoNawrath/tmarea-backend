@@ -1,0 +1,26 @@
+P12 - LAS FILAS DEL DECLARATIVO
+==============================================================================
+ANTES  : 77 filas · 21 sitios
+DESPUES: 80 filas · 22 sitios
+
+FILAS AGREGADAS:
+  LIMITE-PUERTO::los-toponimos-en-fuentes-abiertas
+     grupo 2_decision_del_owner · estado viva · firmada false
+  LICENCIA::osm-es-gratis-con-compartir-igual-y-el-derrotero-cuesta-sin-esa-clausula
+     grupo 2_decision_del_owner · estado viva · firmada false
+  METODO::la-contencion-no-discrimina-cuando-el-borde-de-la-caja-es-el-falso-positivo
+     grupo 1_cierra_con_lo_que_hay · estado viva · firmada false
+
+SITIO AGREGADO: SESION-toponimos-12100-47-2026-08-20
+
+NO SE TOCO NINGUNA FILA EXISTENTE. En particular
+LIMITE-PUERTO::12100-47-cruzada-contra-el-catalogo sigue VIVA y sin firmar:
+esta sesion contesta su encargo LA_PRIMERA_MEDICION_DE_QUIEN_RETOME_ESTA_FILA,
+y darla por contestada es firma del owner, no mia. Y
+METODO::emparejar-por-nombre-sin-revision-subcuenta-en-silencio tampoco se
+toco: la fila nueva de metodo la EXTIENDE desde afuera.
+
+FALTA EL SEGUNDO LADO: agregar el sitio a SITIOS_CANON en
+scripts/validar_deudas_declaradas.js. Sin eso [V5] se pone rojo, y esta bien.
+
+Corra ahora: npm run deudas

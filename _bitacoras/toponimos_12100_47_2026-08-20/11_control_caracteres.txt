@@ -1,0 +1,55 @@
+CONTROL DE CARACTERES - toponimos_12100_47_2026-08-20
+CRITERIO 1 (H-T2)     : puntos de codigo de control.
+CRITERIO 2 (ALFABETO) : puntos de codigo fuera del latino, que H-T2 no ve.
+
+  OK     01_criterio_lugares.txt
+  OK     02_extraer_toponimos.js
+  OK     02_extraer_toponimos.txt
+  OK     03_clasificar_lugares.js
+  OK     03_clasificar_lugares.txt
+  OK     04_criterio_busqueda.txt
+  OK     05_anclas.js
+  OK     05_anclas.txt
+  OK     06_buscar_osm.js
+  OK     06b_buscar_osm_reintento.js
+  OK     06c_buscar_nominatim.js
+  OK     07_buscar_geonames.js
+  OK     08_cotejar.js
+  OK     08_cotejar.txt
+  OK     09_veredictos.js
+  OK     09_veredictos.txt
+  OK     10_los_dos_numeros.js
+  OK     10_los_dos_numeros.txt
+  OK     11_control_caracteres.js
+  OK     11_control_caracteres.txt
+  OK     12_filas_declarativo.js
+  OK     12_filas_declarativo.txt
+  OK     13_mensaje_commit.js
+  OK     13_mensaje_commit.txt
+  OK     14_decision_del_owner.js
+  OK     14_decision_del_owner.txt
+  OK     PROCEDENCIA.md
+  OK     _bahias_coords.json
+  OK     anclas_39.json
+  OK     candidatos.json
+  OK     geonames_crudo.json
+  OK     los_dos_numeros.json
+  OK     nominatim_crudo.json
+  OK     nominatim_pase2b.json
+  OK     osm_crudo.json
+  OK     toponimos_39.json
+  OK     veredictos.json
+
+  ficheros revisados       : 37
+  puntos de codigo         : 651.386
+  con sospechosos H-T2     : 0
+  con sospechosos ALFABETO : 0
+  con BOM UTF-8            : 0
+
+CONTROLES POSITIVOS - los dos criterios tienen que morder
+  H-T2 contra U+0091 fabricado          : CAZA  OK
+  ALFABETO contra "coteja" con a cirilica: CAZA  OK
+  Y EL CONTROL CRUZADO QUE IMPORTA:
+  H-T2 contra la a cirilica              : NO LA VE  -- confirmado que es un hueco de H-T2
+
+EXIT 0  -- VERDE

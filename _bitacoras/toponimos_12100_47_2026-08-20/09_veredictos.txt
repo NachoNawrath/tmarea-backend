@@ -1,0 +1,542 @@
+P9 - PASE 3: LA REVISION MANUAL
+==============================================================================
+CRITERIO: 04_criterio_busqueda.txt, las cinco V. DECIDE: la tabla manual.
+DOS VEREDICTOS por toponimo: ESTRICTO (las cinco V como estan escritas) y
+LAXO (identico salvo UN relajamiento declarado de V3: el mismo lugar bajo
+otro accidente). No se relaja V1, ni V2, ni V4, ni V5.
+PROCEDENCIAS INDEPENDIENTES: maximo 2. Overpass y Nominatim son la MISMA
+base OSM y cuentan UNA; GeoNames es la otra.
+
+CONTROL 1 - LA TABLA CUBRE EXACTAMENTE LOS 73 CON CADENA DE BUSQUEDA
+  toponimos con cadena : 73
+  filas de veredicto   : 73
+  sin veredicto: ninguno   de mas: ninguno
+  VEREDICTO: OK
+
+CONTROL 2 - TODO VEREDICTO TIENE RAZON ESCRITA
+  filas sin razon (o de menos de 40 caracteres) : 0   OK
+
+CONTROL 3 - TODO VERIFICADO ESTRICTO TIENE AL MENOS UNA PROCEDENCIA
+  verificados sin procedencia declarada : 0   OK
+
+==============================================================================
+CONJUNTO A - 14 entradas C-ALGUNAS - escalon 9 -> 21 bahias
+==============================================================================
+  DENOMINADOR: 25 toponimos con cadena de busqueda (de 27 en total)
+
+  LOS TRES CONTEOS, VEREDICTO ESTRICTO
+    ENCONTRADO Y VERIFICADO ... 16 de 25
+    ENCONTRADO Y DESCARTADO ...  8 de 25
+    NO ENCONTRADO .............  1 de 25
+    suma 25 de 25  OK
+
+  LOS MISMOS TRES, VEREDICTO LAXO (solo se relaja V3)
+    VERIFICADO 20 · DESCARTADO  4 · NO ENCONTRADO  1
+    la diferencia es de 4 toponimos, y es UNA decision: cuanto vale
+    la posicion de un accidente vecino cuando el que se busca no esta.
+
+  >>> SOBRE CUANTAS PROCEDENCIAS DESCANSA CADA VERIFICADO (estricto)
+    con DOS procedencias (OSM y GeoNames) ...  7 de 16
+    con UNA, solo GeoNames ..................  6 de 16
+    con UNA, solo OSM .......................  3 de 16
+    SIN GEONAMES el conteo cae de 16 a 10.
+    SIN OSM      el conteo cae de 16 a 13.
+
+  LA TABLA, UNO POR UNO
+  #1 ARICA · "Península Alacrán"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM
+      OSM da "Peninsula del Alacran" (peninsula) a 2,1 km; es el brazo sur que
+      cierra la bahia de Arica y el otro extremo, Chacalluta, queda al N.
+      V1-V5 pasan. GeoNames la trae como ISL y como faro: mismo lugar, clase
+      que no calza con L-PUNTA, asi que no suma procedencia en estricto.
+
+  #1 ARICA · "Punta Chacalluta"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO VERIFICADO     procedencias: (laxo: OSM)
+      V3 FALLA. Lo unico que aparece es un man_made=beacon llamado CHACALLUTA
+      a 12,0 km, y una baliza no es una punta. El otro candidato, "Punta
+      Chacota" a 6,6 km, es OTRO NOMBRE (Chacota != Chacalluta) y se rechaza
+      por eso. En laxo pasa: la baliza esta en el extremo N de la linea, que
+      es donde la entrada la pone.
+
+  #5 IQUIQUE · "faro Península Serrano"  [L-FARO]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames trae "Peninsula Serrano Lighthouse" (LTHSE) a 1,2 km. V3 calza
+      exacto con L-FARO. El meridiano que pasa por ahi corta la bahia de
+      Iquique (V4). Solo hace falta su LONGITUD. OSM no lo devolvio: UNA sola
+      procedencia.
+
+  #6 PATILLOS · "Islote Patillos"  [L-ISLOTE]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames "Islote Patillos" (ISLS) a 0,9 km. En la caja hay ademas Punta,
+      Caleta y Cerro Patillos: son otros accidentes del mismo topinimo, no
+      otros candidatos al mismo objeto, asi que V5 no se rompe. UNA
+      procedencia.
+
+  #6 PATILLOS · "Punta Cotitira"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames+OSM
+      GeoNames PT a 2,9 km y OSM cape a 3,1 km, el mismo lugar. Queda al N del
+      islote Patillos, que es el otro extremo: la linea cruza la boca (V4).
+      DOS procedencias.
+
+  #8 TOCOPILLA · "Islote Blanco"  [L-ISLOTE]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames+OSM
+      GeoNames ISL y OSM place=islet, los dos a 2,5 km del ancla de Tocopilla.
+      DOS procedencias. Y es el HOMONIMO del islote Blanco de HUASCO (#18):
+      los dos candidatos verificados quedan a ~700 km uno del otro, que es la
+      prueba de que no colapsarlos por cadena en P2 era lo correcto.
+
+  #8 TOCOPILLA · "roca Blanca"  [L-ROCA]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V3 FALLA EN LOS NUEVE. La caja devuelve Caleta Blanca, tres Quebrada
+      Blanca, Punta Blanca (hamlet), Punta Blanca (cape, src=IGM), Punta
+      Blanca (GeoNames PT) y Cerro Valablanca. NINGUNO es una roca. "Blanca"
+      es el adjetivo mas repetido de la costa chilena y esta caja lo muestra:
+      nueve candidatos y cero aciertos. Tampoco pasa en laxo: una punta y una
+      roca no son el mismo accidente, y la entrada distingue.
+
+  #14 CALDERA · "punta Caldera"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames PT "Punta Caldera" a 3,1 km, con su faro homonimo al lado. OSM
+      no la devolvio -- lo que Nominatim saco fueron Punta Zorro, Punta
+      Caldereta, Punta Negro y Punta Frodden, que son T3 de puro ranking y no
+      comparten nucleo. UNA procedencia.
+
+  #14 CALDERA · "punta Francisco"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames+OSM
+      GeoNames PT y OSM cape, los dos a 3,2 km. Queda al N de punta Caldera:
+      la linea cruza la boca de bahia Caldera (V4). DOS procedencias.
+
+  #23 QUINTERO · "Punta Liles"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM cape a 1,9 km y GeoNames PT a 2,0 km. DOS procedencias.
+
+  #23 QUINTERO · "Punta Fraile"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO VERIFICADO     procedencias: (laxo: OSM)
+      V3 FALLA. Lo unico es "Punta de Fraile" con clase residential a 8,1 km:
+      un area poblada, no el accidente. En laxo pasa, porque un barrio llamado
+      Punta de Fraile esta casi con seguridad en la punta de ese nombre --
+      pero eso es una inferencia, no un dato, y por eso no cuenta en estricto.
+
+  #26 SAN ANTONIO · "faro Punta Panul"  [L-FARO]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM
+      OSM devuelve "Faro Punta Panul" con clase lighthouse a 1,2 km: V3 calza
+      exacto con L-FARO. GeoNames trae la PUNTA y un MUELLE Panul, no el faro,
+      asi que en estricto no suma. Solo hace falta su LATITUD.
+
+  #26 SAN ANTONIO · "punta Molo Sur"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO VERIFICADO     procedencias: (laxo: GeoNames)
+      V3 FALLA. GeoNames da "Faro Molo Sur" (LTHSE) a 0,7 km y no da la punta.
+      En laxo pasa: el faro del Molo Sur esta sobre el molo sur. Y como la
+      entrada solo pide su LATITUD, el error de usar el faro por la punta
+      seria minusculo -- pero eso es un argumento para relajar V3, no para
+      decir que la punta esta en el gazetteer.
+
+  #27 CONSTITUCIÓN · "Piedra de la Iglesia"  [L-ROCA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames "Piedra La Iglesia" (RK) a 2,8 km: V3 calza con L-ROCA. OSM
+      devuelve tres residential y un cave_entrance con ese nombre, que fallan
+      V3. UNA procedencia. Solo hace falta su LONGITUD.
+
+  #28 TOME · "punta Montecristo"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames+OSM
+      GeoNames PT a 2,1 km y OSM cape a 2,2 km. Ancla de RESPALDO PUNTUAL
+      (Tome no aterriza en ninguna bahia), y aun asi el candidato cae a 2 km.
+      DOS procedencias.
+
+  #29 PENCO y LIRQUÉN · "Punta Lirquén"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM cape a 0,9 km y GeoNames PT a 1,2 km. GeoNames trae DOS "Punta
+      Lirquen" a 1,2 y 1,5 km: se revisan y son el mismo accidente duplicado
+      en el gazetteer, a 300 m, no dos lugares -- V5 no se rompe. DOS
+      procedencias.
+
+  #32 CORONEL · "faro Punta Puchoco"  [L-FARO]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM lighthouse y GeoNames LTHSE, los dos a 2,2 km. V3 calza exacto. DOS
+      procedencias.
+
+  #32 CORONEL · "Caleta Lotilla"  [L-CALETA]
+      ESTRICTO NO ENCONTRADO  LAXO NO ENCONTRADO  procedencias: -
+      NO ENCONTRADO. Ni acotado, ni sin acotar, ni consultando el nucleo
+      "Lotilla" solo (pase 2b). Lo unico que Nominatim propone es "Caleta El
+      Blanco" a 7,9 km, que es ranking puro (T3) y no comparte una letra util.
+      Y esto duele mas de lo que parece: Caleta Lotilla es el AUXILIAR sin el
+      cual no hay como ubicar el islote sin nombre que cierra el limite de
+      CORONEL.
+
+  #38 PUERTO MONTT · "muelle del Ex Frigorífico"  [L-MUELLE]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V3 y V4 FALLAN. La consulta por nucleo "Frigorifico" (pase 2b) devuelve
+      15 sitios industriales; el mas cercano, "Frigorifico Santa Cruz" en
+      Trapen, cae a ~13 km del ancla pero es un landuse=industrial tierra
+      adentro, no un muelle en el borde, y ademas no se llama "Ex
+      Frigorifico". Una obra portuaria que ya no existe con ese nombre no esta
+      en ningun gazetteer.
+
+  #38 PUERTO MONTT · "canal Tenglo"  [L-CANAL]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames "Canal Tenglo" (CHNM) a 6,7 km: V3 calza con L-CANAL. Lo que
+      OSM devuelve con ese nombre es una via pedestrian -- una pasarela, no el
+      canal --, asi que falla V3 y no suma procedencia. UNA procedencia.
+
+  #38 PUERTO MONTT · "punta Anselmo"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V1 FALLA POR 1.284 km. Lo unico que aparece es "Anselmo Carabantes
+      Tomlin", una living_street en La Serena. Nada en la caja de Puerto
+      Montt. Es un rechazo facil y por eso se publica: el buscador SIEMPRE
+      devuelve algo.
+
+  #38 PUERTO MONTT · "punta Codina"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V1 y V3 FALLAN. La consulta por nucleo (pase 2b) devuelve un solo
+      resultado en todo Chile: "Pasaje Codina", una calle de Vina del Mar, a
+      ~700 km. La punta que cierra el canal Tenglo por el otro lado no esta en
+      ninguna de las dos fuentes.
+
+  #43 EDÉN · "islotes Eva"  [L-ISLOTE]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames "Islotes Eva" (ISLS) a 1,9 km. El unico candidato que OSM
+      ofrece es "Isla Eva" a 279,7 km, que se rechaza por V1. UNA procedencia
+      -- y este es un caso donde GeoNames sola sostiene el resultado.
+
+  #43 EDÉN · "Punta Lackawana"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO VERIFICADO     procedencias: (laxo: OSM)
+      V3 FALLA. La consulta por nucleo (pase 2b) encuentra "Caleta Lackawana"
+      a 4,4 km del ancla de Eden: clase locality, no cape. El TOPONIMO existe
+      y esta donde tiene que estar; el ACCIDENTE que la entrada nombra, no. En
+      laxo pasa.
+
+  #47 PERCY y CLARENCIA · "punta Zegers"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM
+      EXCEPCION V1 ARGUMENTADA, y el argumento lo da el propio documento. OSM
+      cape "Punta Zegers" cae a 78,2 km del ancla (bahia Clarencia), fuera de
+      R. Pero la entrada fija el limite en el PARALELO 52 56 00 S = -52,933, y
+      el candidato esta en -52,911: a 2,4 km de ese paralelo. O sea que el
+      candidato es coherente con el eje que la entrada declara, y lo que
+      estaba corrido era el ancla. Se acepta con la razon escrita, que es
+      exactamente lo que V1 preve. UNA procedencia.
+
+==============================================================================
+CONJUNTO B - 25 entradas C-NINGUNA - escalon 21 -> 44 bahias
+==============================================================================
+  DENOMINADOR: 48 toponimos con cadena de busqueda (de 50 en total)
+
+  LOS TRES CONTEOS, VEREDICTO ESTRICTO
+    ENCONTRADO Y VERIFICADO ... 33 de 48
+    ENCONTRADO Y DESCARTADO ... 13 de 48
+    NO ENCONTRADO .............  2 de 48
+    suma 48 de 48  OK
+
+  LOS MISMOS TRES, VEREDICTO LAXO (solo se relaja V3)
+    VERIFICADO 39 · DESCARTADO  7 · NO ENCONTRADO  2
+    la diferencia es de 6 toponimos, y es UNA decision: cuanto vale
+    la posicion de un accidente vecino cuando el que se busca no esta.
+
+  >>> SOBRE CUANTAS PROCEDENCIAS DESCANSA CADA VERIFICADO (estricto)
+    con DOS procedencias (OSM y GeoNames) ... 13 de 33
+    con UNA, solo GeoNames .................. 13 de 33
+    con UNA, solo OSM .......................  7 de 33
+    SIN GEONAMES el conteo cae de 33 a 20.
+    SIN OSM      el conteo cae de 33 a 26.
+
+  LA TABLA, UNO POR UNO
+  #2 PISAGUA · "punta Pichalo"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM
+      OSM natural=cape a 1,9 km. Es el morro que cierra Pisagua por el N. UNA
+      procedencia: GeoNames no lo trae en la caja.
+
+  #2 PISAGUA · "punta Pisagua"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames+OSM
+      GeoNames PT a 3,6 km y OSM cape a 4,0 km. La caja devuelve ademas el
+      pueblo, la bahia, un muelle historico y un cementerio con el mismo
+      nombre: todos fallan V3 y ninguno compite. DOS procedencias.
+
+  #3 JUNIN · "punta Landgren"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V1 FALLA POR ~3.100 km. La consulta por nucleo devuelve un solo Landgren
+      en Chile: "Estero Landgren", en Tortel, Aysen. Homonimo puro. Y la
+      entrada es JUNIN, que ademas no aterriza en ninguna bahia: no mueve
+      ninguna cifra.
+
+  #3 JUNIN · "punta Junín"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM cape y GeoNames PT, los dos a 26,0 km del centro del cajon. ANCLA
+      DEBIL: JUNIN es la unica de las 39 sin ancla puntual, porque el
+      geocodificador devolvio una calle de Iquique y el control (c2) la
+      rechazo. El candidato cae dentro del cajon de 68 km entre Pisagua e
+      Iquique. DOS procedencias, pero con ancla debil, y se marca.
+
+  #4 CALETA BUENA · "punta Rabo de Ballena"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM
+      OSM cape a 1,7 km del ancla de respaldo de Caleta Buena. Nombre largo y
+      sin homonimos: el candidato es inequivoco. UNA procedencia.
+
+  #4 CALETA BUENA · "punta Monreal"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V1 y V3 FALLAN. Todo lo que hay en Chile con ese nucleo esta en Aysen,
+      alrededor del lago Monreal, a ~2.900 km, y son lagos y cerros. Nada en
+      la caja de Caleta Buena.
+
+  #9 MEJILLONES · "punta Choros"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames PT a 7,9 km del ancla de bahia Mejillones. ESTE ES EL CASO QUE
+      JUSTIFICA ACOTAR: "Punta Choros" es un lugar conocido de la region de
+      Coquimbo, a ~700 km al S, y una busqueda sin acotar lo habria traido con
+      toda seguridad. El acotado devolvio la punta Choros DE ANTOFAGASTA, que
+      es la que la entrada nombra. Solo hace falta su LATITUD. UNA
+      procedencia.
+
+  #12 TALTAL · "punta Hueso Parado"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM cape a 2,5 km y GeoNames PT a 2,6 km. DOS procedencias.
+
+  #12 TALTAL · "islote Puntilla"  [L-ISLOTE]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V1 FALLA. La consulta por nucleo devuelve 15 "Puntilla" en Chile --
+      cerros, caserios, barrios -- y el mas cercano a Taltal esta a ~380 km,
+      en Tocopilla. Ninguno es un islote y ninguno esta en la caja. "Puntilla"
+      es un generico disfrazado de nombre.
+
+  #15 CALDERILLA · "punta Caldereta"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM
+      OSM natural=cape a 1,1 km del ancla de bahia Calderilla. V3 calza con
+      L-PUNTA, V2 es Atacama y V5 no se rompe: es el unico Caldereta de la
+      caja. GeoNames no lo trae, asi que UNA procedencia. Ojo con el
+      vecindario: la caja de CALDERA (#14), que es la entrada de al lado y
+      comparte la carta 3111, tambien contiene esta punta -- lo que las separa
+      es que cada entrada se juzga contra SU ancla.
+
+  #15 CALDERILLA · "punta Zorro"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM
+      OSM cape a 1,2 km. Con punta Caldereta cierra la boca de bahia
+      Calderilla (V4). UNA procedencia.
+
+  #18 HUASCO · "río Huasco"  [L-DESEMBOC]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames+OSM
+      GeoNames "Rio Huasco" (STM) a 2,3 km y OSM "Humedal Urbano Desembocadura
+      del Rio Huasco" a 1,8 km. DOS procedencias. SE ANOTA EL RESIDUO: el RIO
+      esta; la DESEMBOCADURA como PUNTO no la da ninguna de las dos -- una es
+      una linea y el otro es un area --, y ademas migra. El toponimo cuenta
+      como encontrado; la entrada no queda cerrada por el.
+
+  #18 HUASCO · "islote Blanco"  [L-ISLOTE]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM
+      OSM place=islet "Islote Blanco" a 4,5 km. UNA procedencia. Es el
+      homonimo del de TOCOPILLA (#8), y los dos verificados quedan a ~700 km:
+      la decision de no colapsarlos era correcta y ahora esta medida.
+
+  #19 CRUZ GRANDE · "punta Medanitos"  [L-PUNTA]
+      ESTRICTO NO ENCONTRADO  LAXO NO ENCONTRADO  procedencias: -
+      NO ENCONTRADO. Cero resultados en la caja, cero sin acotar, y CERO en
+      todo Chile consultando el nucleo "Medanitos" solo (pase 2b). Es de los
+      pocos ceros de esta medicion que estan realmente sostenidos.
+
+  #19 CRUZ GRANDE · "punta Mostacilla"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM cape a 1,5 km y GeoNames PT a 1,6 km. DOS procedencias.
+
+  #20 COQUIMBO · "morro Pelícano"  [L-MORRO]
+      ESTRICTO DESCARTADO     LAXO VERIFICADO     procedencias: (laxo: GeoNames)
+      V3 FALLA. GeoNames da "Punta Pelicano" (PT) y "Roca Pelicanos" (RK) a
+      1,9 km, y ninguno es un MORRO. Casi con seguridad son el mismo accidente
+      que el documento llama morro, pero decidir esa identidad es justo lo que
+      hace una publicacion nautica y no hace un gazetteer. En laxo pasa. Solo
+      hace falta su LATITUD, asi que el relajamiento aca costaria poco.
+
+  #20 COQUIMBO · "Puente Negro"  [L-OBRA]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V1 FALLA. Hay cuatro "Puente Negro" en Chile y el mas cercano esta a
+      83,4 km de Coquimbo; los otros a 194, 414 y 450 km. En la caja no hay
+      ninguno. Un puente urbano con nombre generico: ni el gazetteer ni,
+      probablemente, una publicacion nautica.
+
+  #21 GUAYACÁN · "punta Miedo"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM
+      OSM natural=cape a 1,2 km del ancla de bahia Herradura de Guayacan. V3
+      calza con L-PUNTA. Con punta Herradura, que es el otro extremo y esta a
+      2,1 km por el lado opuesto, cierra la boca de la herradura: V4 se cumple
+      mirando los dos juntos, que es como manda evaluarse. GeoNames no lo
+      trae: UNA procedencia.
+
+  #21 GUAYACÁN · "punta Herradura"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM cape a 2,1 km y GeoNames PT a 2,2 km, en la bahia Herradura de
+      Guayacan, que es exactamente donde la entrada la pone. DOS procedencias.
+
+  #22 LOS VILOS · "isla Huevos"  [L-ISLOTE]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM islet "Isla de los Huevos" y GeoNames ISL "Isla Huevos", los dos a
+      1,4 km, con su faro. DOS procedencias. RESIDUO C-PARTE: la entrada pide
+      el CANTO WESTE y las dos fuentes dan un punto.
+
+  #22 LOS VILOS · "Punta Cabo Tablas"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames PT "Cabo Tablas" a 8,6 km. El documento escribe "Punta Cabo
+      Tablas" y la fuente "Cabo Tablas": mismo lugar, generico distinto. UNA
+      procedencia. RESIDUO C-PARTE.
+
+  #24 VALPARAÍSO · "roca La Baja"  [L-ROCA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames "Roca La Baja" (RK) a 1,5 km: V3 calza con L-ROCA. UNA
+      procedencia, y de las que solo GeoNames sostiene.
+
+  #24 VALPARAÍSO · "punta Gruesa"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames+OSM
+      GeoNames PT y OSM cape, los dos a 4,7 km. Hay ademas un "Punta Gruesa"
+      residential a 2,8 km que falla V3: dos candidatos con el mismo nombre
+      pero uno solo pasa V1-V4, asi que V5 no se rompe. DOS procedencias.
+
+  #25 JUAN FERNÁNDEZ · "Punta San Carlos"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM cape a 1,8 km y GeoNames PT a 2,0 km, en isla Robinson Crusoe. Es un
+      extremo de la bahia Cumberland, que es lo que la entrada de JUAN
+      FERNANDEZ describe. DOS procedencias.
+
+  #25 JUAN FERNÁNDEZ · "Punta Lobería"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames+OSM
+      GeoNames PT a 3,4 km y OSM cape a 3,5 km. DOS procedencias.
+
+  #33 LOTA · "punta Lutrín"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO VERIFICADO     procedencias: (laxo: GeoNames)
+      V3 FALLA. GeoNames da "Faro Punta Lutrin" (LTHSE) a 2,9 km y NO da la
+      punta; el otro candidato de la caja es "Punta Lota", que es otro nombre.
+      En laxo pasa: el faro Punta Lutrin esta en punta Lutrin.
+
+  #33 LOTA · "punta Villagrán"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM
+      OSM cape a 6,3 km. GeoNames solo tiene "Cerro Villagran" (HLL), que
+      falla V3 y no suma. UNA procedencia.
+
+  #34 LEBU · "punta Millaneco"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames PT a 2,7 km del ancla de Lebu. V3 calza con L-PUNTA, V2 es
+      Biobio. V4 se cumple con el otro extremo: el faro Punta Tucapel esta a
+      1,4 km por el lado opuesto de la boca del rio Lebu. OSM no lo devolvio
+      ni acotado ni sin acotar: UNA procedencia, y de las que se caen enteras
+      si GeoNames no estuviera.
+
+  #34 LEBU · "faro Punta Tucapel"  [L-FARO]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames "Faro Punta Tucapel" (LTHSE) a 1,4 km: V3 calza exacto con
+      L-FARO. UNA procedencia.
+
+  #35 CORRAL · "punta Molino"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V1 y V3 FALLAN. Lo unico con ese nucleo son "Camino El Molino" a 700 km
+      y una panaderia "El Molino" a 1.487 km. En la caja de Corral, nada.
+      "Molino" es de los nucleos mas comunes de Chile y aca no rindio ni un
+      candidato serio.
+
+  #35 CORRAL · "punta San Carlos"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames PT a 3,1 km, en la boca del rio Valdivia. Y ACA APARECE EL
+      HOMONIMO VIVO: el otro candidato que el buscador ofrece es la Punta San
+      Carlos de isla Robinson Crusoe, A 845,6 km, que es la de la entrada #25.
+      Colapsar los dos por cadena, como el encargo daba por supuesto, habria
+      puesto el limite de CORRAL en Juan Fernandez. UNA procedencia.
+
+  #36 ANCUD · "punta Ahui"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames+OSM
+      GeoNames PT a 4,5 km, su faro a 4,6 y OSM cape a 6,4. DOS procedencias.
+
+  #36 ANCUD · "roca Cochinos"  [L-ROCA]
+      ESTRICTO DESCARTADO     LAXO VERIFICADO     procedencias: (laxo: GeoNames)
+      V3 FALLA. Las dos fuentes tienen "Isla Cochinos" y NINGUNA tiene una
+      roca Cochinos. Esto confirma la duda que se anoto en P2: el documento
+      nombra una ROCA y una ISLA Cochinos como dos elementos del mismo limite,
+      y las fuentes abiertas solo conocen una. Cual es cual, y si son dos o
+      una, es exactamente lo que decide una publicacion nautica.
+
+  #36 ANCUD · "isla Cochinos"  [L-ISLOTE]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM islet y GeoNames ISL, los dos a 3,4 km. DOS procedencias. Solo hace
+      falta su LONGITUD.
+
+  #37 SAN JOSÉ DE CALBUCO · "roca San Pedro"  [L-ROCA]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V1 y V3 FALLAN. En la caja hay "Punta San Pedro" (PT) a 26,2 km -- fuera
+      de R y ademas otra clase -- y un viewpoint "Roca San Pedro" a 661 km.
+      Ninguno sirve.
+
+  #37 SAN JOSÉ DE CALBUCO · "isla Calbuco"  [L-ISLOTE]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: OSM+GeoNames
+      OSM island a 1,7 km y GeoNames ISL a 2,0 km. DOS procedencias. RESIDUO
+      C-PARTE: la entrada pide el CANTO SUR.
+
+  #40 CHAITÉN · "punta Pichi Nichi"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames PT a 2,8 km. Nombre mapuche compuesto, sin homonimos. UNA
+      procedencia. Solo hace falta su LATITUD.
+
+  #40 CHAITÉN · "punta García"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames PT a 7,8 km. UNA procedencia. Solo hace falta su LONGITUD -- y
+      menos mal, porque "Garcia" es un apellido y en otra caja habria sido un
+      problema.
+
+  #41 PUERTO CISNES · "Punta Cubillos"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames PT a 2,7 km del ancla de Puerto Cisnes. V3 calza con L-PUNTA.
+      El unico otro candidato con ese nucleo es un barrio llamado Cubillos a
+      944,8 km, que V1 rechaza sin discusion. OSM no trae la punta: UNA
+      procedencia.
+
+  #41 PUERTO CISNES · "Punta Ganso"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames PT a 4,8 km. Con Punta Cubillos cierra la boca de Puerto
+      Cisnes. UNA procedencia.
+
+  #42 CHACABUCO · "punta Sofía"  [L-PUNTA]
+      ESTRICTO DESCARTADO     LAXO DESCARTADO     procedencias: -
+      V1 FALLA. Lo que devuelve el buscador son un pasaje, una veterinaria,
+      una atraccion y una mueblereria, entre 863 y 1.344 km. En la caja de
+      bahia Chacabuco, nada. Rechazo facil y se publica igual.
+
+  #42 CHACABUCO · "punta Weste"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      VERIFICADO Y CORRIGE LA CLASIFICACION. GeoNames tiene "Punta Weste" (PT)
+      a 5,0 km de bahia Chacabuco. En P2 se marco B-DESCRITO con duda,
+      razonando que "Weste" es la palabra que el propio documento usa como
+      direccion en otras cuatro entradas. El dato dice que ACA es nombre
+      propio. La seccion 9 del criterio mandaba buscarlo igual justamente para
+      esto, y se publica como correccion: eje B pasa de B-DESCRITO a B-NOMBRE.
+      UNA procedencia.
+
+  #44 NATALES y BORIES · "punta Mila"  [L-PUNTA]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames PT a 6,1 km. UNA procedencia. Solo hace falta su LONGITUD.
+
+  #44 NATALES y BORIES · "Islotes Cisnes"  [L-ISLOTE]
+      ESTRICTO VERIFICADO     LAXO VERIFICADO     procedencias: GeoNames
+      GeoNames "Islotes Cisnes" (ISLS) a 3,3 km. UNA procedencia. Solo hace
+      falta su LATITUD.
+
+  #46 CABO NEGRO · "faro Isla Isabel"  [L-FARO]
+      ESTRICTO DESCARTADO     LAXO VERIFICADO     procedencias: (laxo: OSM)
+      V3 FALLA y V1 QUEDA EN EXCEPCION. La consulta por nucleo (pase 2b)
+      encuentra "Isla Isabel" (island) a ~36 km del ancla de Cabo Negro: fuera
+      de R, aunque es la unica Isla Isabel del estrecho de Magallanes -- las
+      otras tres de Chile estan en Ultima Esperanza y en Cabo de Hornos. Falla
+      V3 porque la entrada nombra el FARO y la fuente da la ISLA. En laxo
+      pasa. Y queda anotado que esta entrada ancla su limite de puerto en un
+      punto a 36 km, que es raro y no lo resuelve esta sesion.
+
+  #49 PUERTO WILLIAMS · "faro Punta Gusano"  [L-FARO]
+      ESTRICTO DESCARTADO     LAXO VERIFICADO     procedencias: (laxo: GeoNames)
+      V3 FALLA. GeoNames da "Punta Gusano" (PT) a 1,4 km y no da el faro. En
+      laxo pasa: el faro Punta Gusano esta en punta Gusano.
+
+  #49 PUERTO WILLIAMS · "boya Banco Herradura"  [L-BOYA]
+      ESTRICTO DESCARTADO     LAXO VERIFICADO     procedencias: (laxo: GeoNames)
+      V3 FALLA. GeoNames da "Banco Herradura" (SHOL, bajo fondo) a 3,8 km. El
+      BANCO esta; la BOYA no, y no podria estar: una boya se fondea, se corre
+      y se cambia de lugar, que es lo que el 2026-08-20 ya habia anotado de
+      esta entrada. En laxo pasa por el banco, con la advertencia de que la
+      boya no tiene por que estar encima hoy.
+
+  #49 PUERTO WILLIAMS · "baliza Punta Truco"  [L-BALIZA]
+      ESTRICTO NO ENCONTRADO  LAXO NO ENCONTRADO  procedencias: -
+      NO ENCONTRADO. Cero en la caja, cero sin acotar y CERO en todo Chile por
+      el nucleo "Punta Truco" (pase 2b). Ni la baliza ni la punta que le da
+      nombre estan en ninguna de las dos fuentes.
+

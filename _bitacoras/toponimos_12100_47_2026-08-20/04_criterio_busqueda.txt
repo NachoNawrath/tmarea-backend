@@ -1,0 +1,315 @@
+P4 - CRITERIO DE BUSQUEDA EN FUENTES ABIERTAS
+==============================================================================
+
+ESTE FICHERO SE ESCRIBE ANTES DE CORRER LA BUSQUEDA Y NO SE TOCA DESPUES.
+Va a PARADA 1 antes de aplicarse.
+
+------------------------------------------------------------------------------
+0. CUAL ES EL ERROR CARO, DICHO PRIMERO
+------------------------------------------------------------------------------
+
+El riesgo de esta medicion NO es el falso negativo. Es el FALSO POSITIVO.
+
+Un toponimo que no se encuentra deja la entrada donde estaba: sin resolver.
+Un toponimo que se "encuentra" y es OTRO lugar produce una cifra alta de
+fuentes abiertas, y esa cifra es la que puede EVITAR UNA COMPRA. Un falso
+positivo aca no cuesta una linea mal dibujada: cuesta una decision de plata
+tomada sobre un numero inventado.
+
+Por eso todo el diseno esta inclinado a favor del NO: en la duda, no cuenta.
+Y por eso hay TRES conteos separados y nunca uno solo.
+
+------------------------------------------------------------------------------
+1. EL UNIVERSO
+------------------------------------------------------------------------------
+
+  77 toponimos (A=27 · B=50). De ellos:
+    con cadena de busqueda ....... 73
+    SIN cadena (B-DESCRITO puro) ..  4   no se buscan: no hay que consultar
+                                        #32 CORONEL x2 · #13 CHANARAL x2
+  Los B-DESCRITO CON DUDA se buscan igual (criterio, seccion 9): hoy es uno,
+  "punta Weste" de #42 CHACABUCO. Si aparece verificado, CORRIGE la
+  clasificacion del eje B y se publica como correccion.
+
+  Los conteos salen SIEMPRE por conjunto, A y B separados, nunca sumados.
+
+------------------------------------------------------------------------------
+2. EL ANCLA GEOGRAFICA - DE DONDE SALE, PARA CADA TOPONIMO
+------------------------------------------------------------------------------
+
+Buscar "punta Blanca" en Chile devuelve muchas. Buscar "punta Blanca a menos
+de 25 km de ESTE punto" devuelve una o ninguna. El ancla es lo que convierte
+una busqueda por nombre en una busqueda por lugar.
+
+  ANCLA PRIMARIA - la bahia del catalogo con que la entrada calzo el
+  2026-08-20 (cruce_12100_47.json). Tiene lat/lon en
+  data/decreto/join_bahia_jurisdiccion.json. Cubre 36 de las 39 entradas.
+
+  ANCLA DE RESPALDO - para las TRES que no aterrizan en ninguna bahia
+  (JUNIN, CALETA BUENA, LOS VILOS): el ANEXO "A" punto 1 esta ordenado de
+  norte a sur, asi que cada entrada queda ENCAJONADA entre las anclas de la
+  anterior y la siguiente. Se usa el punto medio del cajon y se ensancha el
+  radio hasta cubrirlo. Se declara entrada por entrada cual ancla se uso.
+
+  EL ANCLA NO ES PRUEBA. Es el foco de la busqueda. Que un candidato caiga
+  cerca del ancla no lo verifica: lo hace elegible para que lo revise una
+  persona.
+
+------------------------------------------------------------------------------
+3. EL RADIO, Y POR QUE NO DECIDE NADA SOLO
+------------------------------------------------------------------------------
+
+  R = 25 km alrededor del ancla.
+
+  POR QUE 25: un limite de puerto es la BOCA DE UNA BAHIA -- dos puntas que
+  cierran un mismo cuerpo de agua. 25 km es holgado para una boca de bahia y
+  sigue estando dos ordenes de magnitud por debajo de los dos falsos amigos
+  que el 2026-08-20 ya identifico: Chanaral de Aceituno esta a cientos de km
+  del puerto de Chanaral, y la punta Coronel del canal Chacao a ~600 km del
+  puerto de Coronel. O sea que el radio esta calibrado contra casos reales de
+  este mismo documento, no contra una intuicion.
+
+  UN CANDIDATO FUERA DEL RADIO NO SE RECHAZA SOLO. Se reporta como
+  "encontrado fuera del radio" y va a veredicto manual con razon escrita. El
+  radio acota la BUSQUEDA; no dicta el VEREDICTO. Un umbral que descarta en
+  silencio es exactamente el modo de falla que
+  METODO::emparejar-por-nombre-sin-revision-subcuenta-en-silencio ya midio.
+
+------------------------------------------------------------------------------
+4. LOS TRES PASES
+------------------------------------------------------------------------------
+
+  PASE 1 - ACOTADO. Consulta por nombre dentro del bbox de R alrededor del
+           ancla. Produce candidatos.
+
+  PASE 2 - SIN ACOTAR. Para TODO toponimo que salga con CERO candidatos en el
+           pase 1, se repite la consulta sobre Chile entero y se mira lo que
+           vuelve A MANO.
+           Este pase es el que el 2026-08-20 obliga a poner. Un cero del pase
+           1 tiene dos causas posibles y no se distinguen solas: que el
+           toponimo no este en la fuente, o que el ANCLA o el RADIO esten
+           mal. Sin el pase 2, las dos se reportan como "no encontrado" y una
+           de las dos seria mentira.
+
+  PASE 3 - REVISION A MANO de todo candidato de los pases 1 y 2, uno por uno,
+           con razon escrita. SE PUBLICAN TAMBIEN LOS RECHAZADOS. Publicar
+           los NO no es cortesia: es lo que permite auditar el criterio.
+
+------------------------------------------------------------------------------
+5. CUANDO UN CANDIDATO CUENTA COMO VERIFICADO
+------------------------------------------------------------------------------
+
+Tiene que pasar las CINCO. Si falla una, no cuenta. Si hay duda, no cuenta.
+
+  V1 DISTANCIA   cae dentro de R del ancla; o cae fuera y hay un argumento
+                 manual escrito de por que el ancla estaba mal.
+
+  V2 REGION      es costero y esta en la region administrativa del puerto de
+                 la entrada. Una "punta X" tierra adentro no es el vertice de
+                 una boca de bahia.
+
+  V3 CLASE       la clase de la fuente es compatible con el eje A del
+                 criterio: natural=cape para L-PUNTA, place=islet|island o
+                 natural=island para L-ISLOTE, natural=rock|reef para L-ROCA,
+                 man_made=lighthouse para L-FARO, natural=peak|hill para
+                 L-MORRO. Una "Punta X" que vuelve como barrio o como calle
+                 NO es la punta. Este control es barato y caza mucho.
+
+  V4 COHERENCIA  -- el que ninguna coincidencia de nombre puede dar --
+                 el candidato tiene que ser geometricamente posible COMO ESE
+                 ELEMENTO DE ESE LIMITE:
+                   · en una linea entre dos puntas, los dos extremos tienen
+                     que quedar a LADOS OPUESTOS de la boca, no los dos en la
+                     misma orilla;
+                   · en un paralelo o un meridiano, el eje que el candidato
+                     define tiene que CORTAR la bahia, no pasar de largo;
+                   · el orden norte-sur del documento tiene que respetarse.
+                 V4 se evalua a mano, mirando los dos extremos juntos.
+
+  V5 UNICIDAD    si DOS candidatos del radio pasan V1..V4, el toponimo queda
+                 NO VERIFICADO por ambiguo. Dos respuestas es lo mismo que
+                 ninguna cuando lo que se necesita es una coordenada.
+
+  Y una regla que vale para todo: EL NOMBRE COINCIDENTE NO ES NINGUNA DE LAS
+  CINCO. Es lo que trae al candidato a la mesa. Nada mas.
+
+------------------------------------------------------------------------------
+6. LOS TRES CONTEOS QUE SE PUBLICAN
+------------------------------------------------------------------------------
+
+  ENCONTRADO Y VERIFICADO  paso las cinco. Unidad: toponimo. Por conjunto.
+  ENCONTRADO Y DESCARTADO  hubo candidato y la revision lo mato. Con la razon
+                           de cada uno, publicada.
+  NO ENCONTRADO            ni el pase 1 ni el pase 2 devolvieron candidato.
+
+  Suman el universo con cadena de busqueda (73), por conjunto. Los 4 sin
+  cadena se reportan aparte y NO se meten en "no encontrado": no es lo mismo
+  buscar y no hallar que no poder buscar.
+
+------------------------------------------------------------------------------
+7. LAS FUENTES - LO QUE SE CONSULTA SIN INSTALAR NADA
+------------------------------------------------------------------------------
+
+Probado hoy, 2026-08-20, con curl.exe -sS -L. Sin cuenta y sin instalar:
+
+  OSM Overpass API      HTTP 200, 1,6 s.  overpass-api.de/api/interpreter
+      LA HERRAMIENTA PRINCIPAL, y por una razon precisa: es la unica que
+      permite acotar por bbox EN LA PROPIA CONSULTA. Todas las demas obligan
+      a buscar global y filtrar despues, que es la receta del falso positivo.
+      Ademas devuelve las etiquetas, o sea que V3 sale de la misma respuesta.
+
+  OSM Nominatim         HTTP 200, 0,8 s.  nominatim.openstreetmap.org
+      Segunda opinion. Devuelve la region administrativa ya resuelta, que es
+      V2 servido. Politica de uso: 1 consulta/segundo y User-Agent propio.
+
+  GeoNames dump CL.zip  HTTP 200, 1,42 MB. download.geonames.org
+      Gazetteer offline de Chile entero. NO PIDE CUENTA -- el API de GeoNames
+      si pide usuario, el dump no. Se descomprime con tar.exe, que ya viene
+      en Windows. Es una TERCERA fuente de procedencia distinta a OSM, y por
+      eso vale: dos fuentes que se copian una a otra no son dos fuentes.
+
+  Lista de Faros del SHOA / DIRECTEMAR    NO PROBADA
+      Resolveria con posicion oficial los 6 L-FARO + 1 L-BALIZA + 1 L-BOYA.
+      Se intenta SOLO si esos ocho no salen de OSM/GeoNames.
+
+  LO QUE PROBABLEMENTE NO HACE FALTA, y es un hallazgo del sondeo:
+      490 de los 1.156 natural=cape de Chile en OSM traen source=IGM. El
+      gazetteer del Estado ya esta ADENTRO de OSM. Ir a IDE Chile por
+      separado seria, en buena parte, consultar dos veces la misma fuente y
+      contarla como dos. Se declara y no se hace, salvo que la busqueda lo
+      pida.
+
+  LO QUE NO SE USA, con su motivo:
+      GeoNames API           - pide crear cuenta. No se crean cuentas.
+                               El dump da lo mismo sin ninguna.
+      chile-latest.osm.pbf   - 344 MB en C:/Users/katia/, sin lector en el
+                               PATH. Decision del owner: no se instala nada
+                               ni se escribe un lector de PBF. Y Overpass da
+                               lo mismo, mas fresco (base 2026-08-21).
+
+------------------------------------------------------------------------------
+8. LO QUE ESTA BUSQUEDA NO ES
+------------------------------------------------------------------------------
+
+No es georreferenciar. Se sostienen las coordenadas del candidato en los
+ficheros de trabajo de esta bitacora PORQUE SIN ELLAS NO SE PUEDE VERIFICAR
+NADA -- V1 y V4 son distancias. No se escribe geometria, no se toca data/, ni
+la capa, ni la base, ni src/ de ningun repo.
+
+AVISO DE LICENCIA, que no bloquea nada hoy y hay que saberlo: los datos de
+OSM son ODbL. Sostener coordenadas en la bitacora como RECONOCIMIENTO es la
+misma clase que la resolucion del 2026-08-20 -- fuente citable, no
+incorporada. Si esto alguna vez alimenta una capa publicada, la ODbL y su
+clausula de compartir-igual se activan, y esa es una decision del owner que
+esta sesion NO toma y deja escrita.
+
+
+------------------------------------------------------------------------------
+9. CORRECCION AL PARRAFO DEL ANCLA (seccion 2), ANTES DE CORRER
+------------------------------------------------------------------------------
+
+La seccion 2 dice "cubre 36 de las 39 entradas" y habla de "las TRES que no
+aterrizan". LAS DOS CIFRAS ESTAN MAL, y se corrigen antes de usarlas.
+
+Confundi dos cosas distintas:
+  - las TRES entradas C-NINGUNA que no mueven ninguna bahia (JUNIN, CALETA
+    BUENA, LOS VILOS), que es lo que se midio en P2; con
+  - las entradas de las 39 QUE NO TIENEN BAHIA PARA ANCLARSE, que son CINCO.
+
+Los 8 puertos que no aterrizan (06_cruzar.txt) se reparten asi sobre las
+entradas de las 39:
+  entrada ENTERA sin bahia .... 5 : #3 JUNIN · #4 CALETA BUENA · #8 TOCOPILLA
+                                    · #22 LOS VILOS · #28 TOME
+  puerto sin bahia PERO la entrada tiene otro que si .... 3 :
+       PENCO   en #29 (LIRQUEN si calza, bahia 97)
+       BORIES  en #44 (NATALES si calza, bahia 130)
+       PERCY   en #47 (CLARENCIA si calza, bahia 132)
+
+  ANCLA PRIMARIA: 34 de 39 entradas, no 36.
+
+Y LA CORRECCION ARRASTRA UNA CIFRA QUE EL OWNER VA A LEER, asi que se dice
+fuerte: DOS DE LAS CINCO SIN ANCLA SON DEL CONJUNTO A -- TOCOPILLA y TOME.
+O sea que el conjunto A tiene la MISMA estructura que el B y en P2 solo se
+dijo del B:
+
+  CONJUNTO A : 14 entradas C-ALGUNAS · 12 UTILES al catalogo -> 12 bahias
+  CONJUNTO B : 25 entradas C-NINGUNA · 22 UTILES al catalogo -> 23 bahias
+
+  Y cierra contra el 2026-08-20 sin tocar nada: 12 + 23 = 35, mas las 9
+  C-TODAS = 44, que son las 44 bahias que calzan. Las dos cifras utiles NO
+  son un invento de esta sesion: son el reparto que 06_cruzar.txt ya publico.
+
+Que el conjunto A rinda 12 bahias y no 14 es exactamente el escalon 9 -> 21
+del declarativo (9 + 12 = 21). La aritmetica del owner era correcta; lo que
+estaba mal era mi frase de la seccion 2.
+
+------------------------------------------------------------------------------
+10. EL ANCLA DE RESPALDO, REDEFINIDA (reemplaza el parrafo de la seccion 2)
+------------------------------------------------------------------------------
+
+El encajonamiento entre vecinas sirve, pero solo. Para #8 TOCOPILLA el cajon
+entre PATACHE y MEJILLONES mide ~255 km de alto: acota, pero acota poco, y un
+radio flojo es justo lo que fabrica falsos positivos.
+
+Se usan LAS DOS COSAS, y tienen que estar de acuerdo:
+
+  (a) CAJON DE VECINAS - el ANEXO "A" punto 1 esta ordenado norte a sur, asi
+      que cada entrada sin ancla queda encajonada entre las anclas de la
+      entrada anterior y la siguiente que si tengan. Es informacion del
+      propio documento.
+
+  (b) GEOCODIFICAR EL NOMBRE DEL PUERTO - el nombre del puerto lo da el
+      documento. Se consulta en Nominatim acotado a Chile.
+
+  REGLA: el resultado de (b) tiene que CAER DENTRO del cajon de (a). Si cae,
+  ese es el ancla y R = 25 km como todas las demas. Si NO cae, (b) se
+  descarta —es un falso positivo del propio geocodificador— y se busca en el
+  cajon (a) entero, declarando que ESA entrada se midio con ancla debil.
+
+  Toda entrada que use ancla de respaldo se reporta MARCADA. Un verificado
+  con ancla debil no vale lo mismo que uno con ancla de bahia, y mezclarlos
+  en una sola cifra seria esconder la diferencia.
+
+
+------------------------------------------------------------------------------
+11. EL CONTROL (c), QUE SE AGREGO PORQUE EL INSTRUMENTO FALLO AL CORRERLO
+------------------------------------------------------------------------------
+
+La seccion 10 decia que bastaba con que (b) cayera dentro del cajon (a).
+NO BASTA, y se supo porque fallo en el PRIMERO de los cinco.
+
+QUE PASO: para #3 JUNIN, Nominatim devolvio
+    "Eleuterio Ramirez, Poblacion Naval Marinero Ugarte, Iquique"
+    lat -20,2121  lon -70,1492  clase highway/tertiary
+que es UNA CALLE DE IQUIQUE. Y la contencion la ACEPTO, porque el borde SUR
+del cajon de #3 es justamente Iquique: el falso positivo cayo pegado al borde
+del cajon que tenia que filtrarlo.
+
+LA LECCION, que es la de esta sesion entera aplicada a mi propio instrumento:
+UNA PRUEBA DE CONTENCION NO PUEDE DISCRIMINAR CUANDO EL BORDE DE LA CAJA ES
+EL FALSO POSITIVO. La caja acota "donde", no "que". Hacia falta preguntar por
+el QUE, y no estaba preguntado.
+
+SE AGREGAN DOS CONTROLES, y se corren sobre los cinco:
+  (c2) EL DISPLAY TIENE QUE NOMBRAR AL PUERTO. Si se pidio "Junin" y lo que
+       vuelve se llama "Eleuterio Ramirez", no es. Es barato y es decisivo.
+  (c3) LA CLASE NO PUEDE SER UNA CALLE (highway/*). Una boca de puerto no se
+       ancla en una calle. Es el mismo control V3 de la seccion 5, aplicado
+       un escalon antes: al ancla, no al candidato.
+
+RESULTADO DESPUES DE AGREGARLOS:
+  ancla PRIMARIA .......... 34 de 39
+  ancla RESPALDO PUNTUAL ... 4 de 39   (CALETA BUENA, TOCOPILLA, LOS VILOS, TOME)
+  ancla RESPALDO DEBIL ..... 1 de 39   (#3 JUNIN, cajon de 68 km)
+
+Y hay que decir lo que esto NO fue: no fue el criterio salvando la medicion.
+El criterio escrito ANTES habria dejado pasar el ancla falsa de JUNIN. Lo que
+la caza fue CORRER EL INSTRUMENTO Y MIRAR LA SALIDA, uno por uno, en cinco
+filas. Cinco filas se miran; setenta y tres no se miran igual, y por eso el
+pase 3 de revision manual no es una formalidad.
+
+DONDE CAE EL DANO SI ESTO NO SE HUBIERA CAZADO: #3 JUNIN es una de las TRES
+entradas que no mueven ninguna bahia. O sea que el ancla falsa no habria
+cambiado ninguna cifra publicada. Se dice para no cobrarse un merito que no
+corresponde: el control se agrego porque el fallo era real, no porque el
+numero estuviera en juego.

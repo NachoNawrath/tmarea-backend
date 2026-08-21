@@ -1,0 +1,116 @@
+LAS FUENTES ABIERTAS LLEVAN EL LIMITE DE PUERTO DE 9 A 26 BAHIAS DE 164 SIN GASTAR NADA, y el derrotero ya no compra el problema entero: compra el ultimo tercio
+
+Contesta el encargo que LIMITE-PUERTO::12100-47-cruzada-contra-el-catalogo
+dejo escrito el 2026-08-20 en LA_PRIMERA_MEDICION_DE_QUIEN_RETOME_ESTA_FILA:
+mirar las fuentes abiertas ANTES de gastar en licencia del derrotero.
+
+EMPIEZA POR UNA PREMISA FALSA DEL ENCARGO, CORREGIDA EN EL GATE
+El encargo encadenaba el salto 9 -> 21 con las 25 entradas sin coordenada, y
+son conjuntos distintos. El 9 -> 21 son las 12 bahias C-ALGUNAS (14 entradas);
+las 25 C-NINGUNA son el tramo 21 -> 44 (23 bahias). Trabajar solo las 25 se
+salteaba el escalon barato. Se midieron LOS DOS, separados de punta a punta.
+
+LAS CIFRAS UTILES, QUE NO SON LAS DEL DOCUMENTO
+  conjunto A: 14 entradas · 12 utiles al catalogo · 12 bahias
+  conjunto B: 25 entradas · 22 utiles al catalogo · 23 bahias
+JUNIN, CALETA BUENA y LOS VILOS (C-NINGUNA) no aterrizan en ninguna bahia:
+resolver sus 6 toponimos suma CERO. Y lo mismo le pasa al conjunto A, que no
+se habia dicho: TOCOPILLA y TOME tampoco aterrizan. Cierra sin tocar nada:
+12 + 23 + las 9 C-TODAS = 44, que son las 44 que calzan.
+
+LOS DOS NUMEROS
+  SOLO FUENTES ABIERTAS -- MEDIDO
+    estricto 26 de 164   ·   laxo 34 de 164
+  CON DERROTERO -- ESTIMADO, y va rotulado
+    cota baja 40 de 164  ·  cota alta 43 de 164  ·  techo absoluto 44
+No se invento un porcentaje: las cotas salen de la CLASE DE LUGAR, que es
+informacion del documento publico. NO SE ABRIO NINGUN DERROTERO.
+
+LOS TRES CONTEOS, POR SEPARADO Y POR CONJUNTO (veredicto estricto)
+  conjunto A: 16 verificados · 8 descartados · 1 no encontrados  (de 25)
+  conjunto B: 33 verificados · 13 descartados · 2 no encontrados  (de 48)
+Los 21 rechazados se publican con su razon escrita, uno por uno.
+
+SOBRE CUANTAS PROCEDENCIAS DESCANSA CADA VERIFICADO
+Overpass y Nominatim son LA MISMA BASE OSM por dos puertas: cuentan UNA.
+  A: 7 con dos · 6 solo GeoNames · 3 solo OSM
+  B: 13 con dos · 13 solo GeoNames · 7 solo OSM
+NINGUNA DE LAS DOS SOLA SOSTIENE EL RESULTADO: sin GeoNames A cae de 16 a
+10 y B de 33 a 20; sin OSM, de 16 a 13 y de 33 a 26.
+
+EL LIMITE DEL INSTRUMENTO, QUE VA EN EL NUMERO Y NO EN UNA NOTA
+Overpass devolvio 429 y despues corto: se trajeron 7 CAJAS DE 39. Los dos
+espejos publicos dan HTTP 500 hasta para la consulta mas trivial, asi que no
+era la consulta. Esas 32 se reportan como CAJA NO TRAIDA y NUNCA como "sin
+candidatos": leerlas como ceros habria fabricado 32 entradas sin resultado que
+nunca se consultaron, y el numero que puede evitar una compra habria salido de
+un silencio. Los VERIFICADOS no estan en duda; los DESCARTADOS y NO ENCONTRADOS
+si, porque en 32 cajas no se pudo volcar la caja entera. El numero de fuentes
+abiertas es una COTA INFERIOR y se declara asi.
+
+DOS DEFECTOS DE INSTRUMENTO PROPIOS, LOS DOS PUBLICADOS
+1. La prueba de contencion geografica fallo en el PRIMERO de cinco: para
+   JUNIN el geocodificador devolvio una CALLE DE IQUIQUE y la contencion la
+   acepto, porque el borde sur del cajon ES Iquique. La caja acota el DONDE,
+   no el QUE. Tiene fila propia.
+2. El pase sin acotar se corrio con la cadena completa ("faro Isla Isabel") y
+   dio cero; repetido por nucleo aparecieron TRES que se habian dado por
+   inexistentes. Un cero de una consulta mal formulada se lee igual que un
+   cero real.
+
+LO QUE CONTRADICE OTRA PREMISA: NO HAY UN SOLO TOPONIMO REPETIDO
+Las dos unicas colisiones de cadena son homonimos de lugares distintos --
+"Punta San Carlos" (Juan Fernandez / Corral, 1.400 km) e "Islote Blanco"
+(Tocopilla / Huasco, 700 km). Y no quedo en teoria: buscando la punta San
+Carlos de CORRAL, el buscador ofrecio la de Juan Fernandez A 845,6 km.
+
+LA FILA DE LICENCIA, POR PEDIDO EXPLICITO DEL OWNER
+Ninguna via es gratis-y-sin-condiciones: OSM no cuesta plata y arrastra ODbL
+con compartir-igual si alguna vez alimenta una capa publicada; el derrotero
+cuesta plata y no trae esa clausula. Las dos cosas pesan. Y 19 de los 49
+verificados dependen solo de GeoNames, que es CC-BY sin compartir-igual.
+
+LA DECISION DEL OWNER, FIRMADA EN LA MISMA SESION
+  NO SE COMPRA EL DERROTERO DE LA COSTA DE CHILE.
+  El fundamento NO es el presupuesto, y se dice explicitamente porque la fila
+  del 2026-08-20 habia dejado escrito que el freno era el precio y la licencia.
+  Ya no lo es: con precio y licencia resueltos la decision seria la misma,
+  porque el problema no es cuanto cuesta sino que no esta probado que sirva.
+  QUE LA REABRIRIA: que se pruebe que el limite de practicaje ES el que SITPORT
+  declara. Esa es la mitad viva de D4D5::la-segunda-direccion-no-es-decidible.
+  LO QUE NO DECIDE: si se digitalizan las 26 que ya estan resueltas. Por eso la
+  fila queda VIVA y firmada a la vez -- firmar es responder, no hacer.
+
+EL DECLARATIVO
+  ANTES  : 77 filas · 21 sitios
+  DESPUES: 80 filas · 22 sitios · 72 vivas · 12 firmadas
+  filas agregadas (3), todas VIVAS. Una firmada en esta sesion (la
+  decision de no comprar) y 2 sin firmar:
+    LIMITE-PUERTO::los-toponimos-en-fuentes-abiertas   [FIRMADA 2026-08-20: no se compra]
+    LICENCIA::osm-es-gratis-con-compartir-igual-y-el-derrotero-cuesta-sin-esa-clausula
+    METODO::la-contencion-no-discrimina-cuando-el-borde-de-la-caja-es-el-falso-positivo
+  sitio agregado: SESION-toponimos-12100-47-2026-08-20, en los DOS lados
+  (declarativo y SITIOS_CANON del validador).
+NO se toco ninguna fila existente. LIMITE-PUERTO::12100-47-cruzada-contra-el-
+catalogo sigue VIVA y sin firmar: esta sesion contesta su encargo, y darlo por
+contestado es firma del owner. METODO::emparejar-por-nombre-sin-revision-
+subcuenta-en-silencio tampoco se toco: la fila nueva de metodo la extiende
+desde afuera.
+
+CONTROLES
+  02 cotejo de las 77 citas contra el cuerpo de su entrada: 0 fallas, cebo
+     fabricado no muerde, 39/39 entradas cubiertas.
+  03 doce clases declaradas antes de aplicarse, las doce usadas, 0 clases
+     nuevas, las sumas cierran 27/27 y 50/50.
+  09 73 filas de veredicto, 0 sin razon escrita, 0 verificados sin procedencia.
+  11 caracteres: 37 ficheros, 0 sospechosos H-T2, 0 fuera del latino, 0 BOM.
+     Y UN HUECO DE H-T2 QUE SE DECLARA: una "a" cirilica dentro de una palabra
+     de 02_extraer_toponimos.js compilaba, corria y H-T2 NO LA VE, porque solo
+     mira caracteres de control. Se agrego el criterio ALFABETO, con su control
+     positivo y el control cruzado que confirma que H-T2 no la caza.
+  npm run deudas: VERDE.
+
+NO SE TOCO: src/ de ningun repo (la sesion del voseo esta ahi), la base, la
+capa, data/ salvo el declarativo, CONTRATO_MOTOR.md ni el motor BRE. No se
+georreferencio nada y no se construyo geometria. Los dos intocables siguen
+sin stagear.

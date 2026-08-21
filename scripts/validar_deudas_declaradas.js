@@ -67,6 +67,7 @@ const SITIOS_CANON = [
   'SESION-limite-puerto-12100-47-2026-08-20',
   'SESION-plan-de-cierre-2026-08-20',
   'SESION-voseo-al-patron-2026-08-20',
+  'SESION-toponimos-12100-47-2026-08-20',
 ];
 
 const GRUPOS = {

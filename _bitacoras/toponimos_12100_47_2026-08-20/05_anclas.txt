@@ -1,0 +1,66 @@
+P5 - LAS ANCLAS GEOGRAFICAS
+==============================================================================
+CRITERIO: 04_criterio_busqueda.txt, secciones 2/3/9/10.
+FUENTE de la coordenada de bahia: scripts/seed-bahias-sitport.js (162
+  bahias con lat/lng). FUENTE del par entrada->bahia: 06_cruzar.txt del
+  2026-08-20, calce exacto + calce probable ACEPTADO. Los 6 rechazados
+  no entran: si la revision los mato, no pueden anclar nada.
+
+ANCLA PRIMARIA - bahia del catalogo
+  entradas con ancla primaria : 34 de 39
+
+ANCLA DE RESPALDO - las CINCO sin bahia
+  (a) cajon entre las anclas de la entrada anterior y la siguiente
+  (b) Nominatim sobre el nombre del puerto, acotado a Chile
+  REGLA: (b) tiene que caer dentro de (a). Si no cae, se descarta (b).
+
+  #3 Junín, Chile
+     cajon (a): lat -20.213 .. -19.598  (68 km de alto)  entre bahias 204 y 72
+     geocod (b): -20.2121 -70.1492  [highway/tertiary]  Eleuterio Ramírez, Población Naval Marinero Ugarte, Iquique, Pro
+     (c1) cae en el cajon ............. SI
+     (c2) el display NOMBRA al puerto . NO  <- RECHAZA
+     (c3) la clase no es una calle .... NO  <- RECHAZA
+     VEREDICTO: ancla DEBIL: se busca el cajon entero
+
+  #4 Caleta Buena, Chile
+     cajon (a): lat -20.213 .. -19.598  (68 km de alto)  entre bahias 204 y 72
+     geocod (b): -19.8808 -70.1317  [place/locality]  Caleta Buena, Huara, Provincia del Tamarugal, Región de Tarapacá
+     (c1) cae en el cajon ............. SI
+     (c2) el display NOMBRA al puerto . SI
+     (c3) la clase no es una calle .... SI
+     VEREDICTO: ancla PUNTUAL con R=25 km
+
+  #8 Tocopilla, Chile
+     cajon (a): lat -23.100 .. -20.800  (255 km de alto)  entre bahias 73 y 75
+     geocod (b): -22.0887 -70.1961  [boundary/administrative]  Tocopilla, Provincia de Tocopilla, Región de Antofagasta, Chile
+     (c1) cae en el cajon ............. SI
+     (c2) el display NOMBRA al puerto . SI
+     (c3) la clase no es una calle .... SI
+     VEREDICTO: ancla PUNTUAL con R=25 km
+
+  #22 Los Vilos, Chile
+     cajon (a): lat -32.783 .. -29.967  (313 km de alto)  entre bahias 86 y 91
+     geocod (b): -31.9122 -71.5139  [boundary/administrative]  Los Vilos, Provincia de Choapa, Región de Coquimbo, Chile
+     (c1) cae en el cajon ............. SI
+     (c2) el display NOMBRA al puerto . SI
+     (c3) la clase no es una calle .... SI
+     VEREDICTO: ancla PUNTUAL con R=25 km
+
+  #28 Tomé, Chile
+     cajon (a): lat -36.710 .. -35.333  (153 km de alto)  entre bahias 103 y 97
+     geocod (b): -36.6171 -72.9575  [boundary/administrative]  Tomé, Provincia de Concepción, Región del Biobío, Chile
+     (c1) cae en el cajon ............. SI
+     (c2) el display NOMBRA al puerto . SI
+     (c3) la clase no es una calle .... SI
+     VEREDICTO: ancla PUNTUAL con R=25 km
+
+EL REPARTO
+  PRIMARIA (bahia del catalogo) : 34 de 39
+  RESPALDO PUNTUAL (b cayo en a): 4 de 39
+  RESPALDO DEBIL (cajon entero) : 1 de 39
+  suma: 39 de 39  OK
+
+CONTROL POSITIVO DEL GEOCODIFICADOR: si las cinco consultas hubieran
+devuelto lo mismo, o ninguna, el paso (b) no habria demostrado nada.
+  consultas con resultado : 5 de 5
+  resultados distintos    : 5

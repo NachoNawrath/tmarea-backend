@@ -1,0 +1,87 @@
+P2 - LOS TOPONIMOS DE LAS 39 ENTRADAS SIN COORDENADAS SUFICIENTES
+==============================================================================
+
+CRITERIO : 01_criterio_lugares.txt, escrito ANTES de correr esto.
+DECIDE   : la tabla manual de este fichero. La maquina coteja, no extrae.
+ARBOL    : las 49 entradas de entradas_punto1.json de la bitacora del
+           2026-08-20. Vocabulario: el castellano del documento, con
+           "Weste" por Oeste y el generico en minuscula o mayuscula
+           indistintamente ("punta Caldera" / "Punta Liles").
+
+CONTROL 1 - TODA CITA APARECE LITERAL EN EL CUERPO DE SU ENTRADA
+  Cotejo mecanico contra el texto extraido del PDF, espacios normalizados
+  y diacriticos plegados. Caza un nombre mal tecleado y uno inventado.
+  ocurrencias de la tabla : 77
+  citas que NO aparecen   : 0
+  VEREDICTO: OK
+
+CONTROL 2 - POSITIVO: EL COTEJO MUERDE
+  Se le pasa un nombre fabricado que NO esta en el documento. Un cotejo
+  que nunca marca nada no ha demostrado que sepa marcar.
+  cebo "punta Inexistente de la Sesion" encontrado: NO
+  VEREDICTO: OK - el cotejo distingue
+
+CONTROL 3 - COBERTURA: NINGUNA ENTRADA SIN TOPONIMO, NINGUNA DE MAS
+  entradas C-ALGUNAS (conjunto A) : 14
+  entradas C-NINGUNA (conjunto B) : 25
+  entradas cubiertas por la tabla : 39
+  faltan: ninguna   sobran: ninguna
+  VEREDICTO: OK
+
+CONTROL 4 - LOS D-DESCRIPT, QUE NO ENTRAN EN EL DENOMINADOR
+  toponimos D-DESCRIPT dentro de las 39 : 0
+  Y no es que no se hayan mirado: los CUATRO que el 2026-08-20 identifico
+  como descriptivos —Punta Patache, faro Molo Caleta Manzano, faro Punta
+  Gualpen, Punta Pardo— estan TODOS en entradas C-TODAS, que por definicion
+  quedan fuera de este universo. Dentro de las 39 no hay ninguno: si el
+  limite no trae coordenadas, todo nombre que aparece hace falta.
+  VEREDICTO: OK - el cero tiene explicacion, no es un cero de no haber mirado
+
+EL RESULTADO - CUANTOS TOPONIMOS HAY QUE RESOLVER
+------------------------------------------------------------------------------
+LOS DOS CONJUNTOS NO SE SUMAN. Cada cifra dice su conjunto y su unidad.
+
+  CONJUNTO A - las 14 entradas C-ALGUNAS   (escalon 9 -> 21 bahias)
+    ocurrencias de toponimo : 27
+    entradas                : 14 de 14
+    media por entrada       : 1.93 toponimos/entrada
+
+  CONJUNTO B - las 25 entradas C-NINGUNA   (escalon 21 -> 44 bahias)
+    ocurrencias de toponimo : 50
+    entradas                : 25 de 25
+    media por entrada       : 2.00 toponimos/entrada
+
+    Y LA CIFRA UTIL, que es distinta y va siempre al lado:
+      de esas 25 entradas, 3 no aterrizan en ninguna bahia del catalogo
+      (JUNIN · CALETA BUENA · LOS VILOS), y aportan 6 ocurrencias.
+      ENTRADAS UTILES AL CATALOGO : 22 de 25   ->  23 bahias (ANCUD aporta dos filas, 118 y 214)
+      OCURRENCIAS UTILES          : 44 de 50
+
+CUANTOS DISTINTOS - LA DEDUPLICACION, QUE NO ES POR CADENA
+------------------------------------------------------------------------------
+  colisiones de cadena normalizada que la maquina propone : 2
+
+  "ISLOTE BLANCO"  en #8 TOCOPILLA [A]  ·  #18 HUASCO [B]
+     veredicto MANUAL: NO COLAPSA
+     NO. #8 TOCOPILLA es Antofagasta (carta 1311); #18 HUASCO es Atacama (carta 3211). ~700 km. DOS LUGARES. Y ademas caen en conjuntos distintos —A y B—, asi que el colapso ni siquiera seria legal: las cifras de A y B no se suman.
+
+  "PUNTA SAN CARLOS"  en #25 JUAN FERNÁNDEZ [B]  ·  #35 CORRAL [B]
+     veredicto MANUAL: NO COLAPSA
+     NO. #25 JUAN FERNANDEZ es la bahia Cumberland en isla Robinson Crusoe, a ~670 km de la costa; #35 CORRAL esta en la desembocadura del rio Valdivia, Los Rios. Mismo nombre, ~1.400 km de distancia y dos cartas del SHOA distintas (5411 y 6241). DOS LUGARES.
+
+  colisiones sin veredicto manual escrito : 0  OK
+
+  EL RESULTADO DE LA DEDUPLICACION:
+    conjunto A : 27 ocurrencias  ->  27 lugares distintos   (0 colapsos)
+    conjunto B : 50 ocurrencias  ->  50 lugares distintos   (0 colapsos)
+
+  EL HALLAZGO, que el encargo daba por supuesto al reves: NO HAY UN SOLO
+  TOPONIMO REPETIDO. El encargo decia "hay repetidos entre entradas" y
+  medido no los hay: las dos unicas colisiones de cadena son HOMONIMOS DE
+  LUGARES DISTINTOS, y colapsarlas habria fabricado un falso positivo
+  adentro del propio denominador — antes de buscar nada.
+  Ocurrencias y lugares distintos coinciden en los dos conjuntos.
+
+ESCRITO: toponimos_39.json
+
+VEREDICTO P2: VERDE - los cuatro controles pasan
