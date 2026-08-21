@@ -510,6 +510,28 @@ texto exista no es una decisión suya.
   escribirlo.
   **La identidad se prueba contra el blob, nunca contra el tamaño ni contra `git
   status`:** `sha256sum <f>` contra `git show HEAD:<f> | sha256sum`.
+- **Arrancar este backend deja modificado `data/catalogo/estado_drift.json`, siempre.** El
+  servidor dispara el control de drift apenas queda escuchando —lo hace
+  `src/services/drift-arranque.js`, sin condición y sin flag que lo apague— y el estado que
+  ese control publica lleva la marca temporal de la corrida, así que el fichero cambia
+  aunque el veredicto no cambie. Ese fichero es uno de los que el árbol mantiene
+  modificados fuera del índice a propósito y que una sesión no puede pisar, de modo que
+  **«levanto mi propio backend» y «no toques los ` M` intocables» no se pueden cumplir a la
+  vez**: no hay orden de arranque que respete los dos.
+  **REGLA DE DECISIÓN, que es lo que vuelve esto accionable en un gate:** si lo que se está
+  tocando es **dato del backend**, se levanta backend propio y se cuenta con el choque —el
+  fichero va a quedar reescrito y eso se declara—; si lo que se está tocando es la **PWA**,
+  se reusa el backend que ya esté corriendo y no se levanta ninguno.
+- **`cmd | tee fichero | head -N` TRUNCA el fichero y sale con exit 0.** `head` cierra la
+  tubería al llegar a N, eso mata el `tee` por SIGPIPE, y el fichero queda con lo que
+  alcanzó a escribirse: **se lee como completo — sin marca de corte, sin error y con código
+  de salida 0**. MEDIDO EL 2026-08-21 sobre la salida de un verificador de push: el `.txt`
+  quedó con todas sus líneas en `ok` y **sin la línea final que dice `VERIFICADO`**, que es
+  justamente la que prueba que el verificador llegó al final. El fichero hermano de la misma
+  sesión estaba entero porque su recorte era `sed`, que lee hasta el final, y esa diferencia
+  no se ve en la salida. **Cómo evitarlo:** el fichero se escribe primero
+  (`cmd > fichero 2>&1`) y se lee después con un segundo comando; si hay que mirar al vuelo,
+  el recorte va **antes** del `tee`, nunca después.
 
 ### 7.2 — Convenciones de PowerShell: para los comandos que corre el owner
 
