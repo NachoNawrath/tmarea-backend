@@ -1,0 +1,298 @@
+BARRIDO CLASIFICADO DEL REGISTRO — voseo / tuteo / usted
+sesion voseo_al_patron_2026-08-20 · PARADA 1
+shell del agente: Git Bash. Los comandos reproducibles para el owner van en
+PowerShell al pie.
+
+DECISION QUE ESTA PIEZA EJECUTA: los mensajes al patron van en USTED. Se corrige
+el VOSEO. El TUTEO se mide y se entrega sin tocar. El §10 se redacta para pegar.
+La fila del registro NO SE CIERRA EN ESTA SESION: cierra cuando el owner pegue el
+§10 y el codigo quede alineado con el.
+
+================================================================================
+1. QUE SE MIDIO, Y CONTRA QUE
+================================================================================
+
+CORPUS (denominador de toda cifra de este documento)
+  definicion : ficheros VERSIONADOS de tmarea-backend y tmarea-pwa, extensiones
+               .js .jsx .json .md .html .css .txt .sql .py
+  excluidos  : _bitacoras/ , node_modules/ , geodata/ , sondaje-sitport/
+  tamano     : 349 ficheros — 285 backend + 64 pwa — 42.441.991 puntos de codigo
+  arboles    : backend 05c79eacfcb51160905400f018c65d27d234ff15 (= origin/main)
+               pwa     df26887946973cfb3c85d243dec78e8e7aa5e011 (= origin/main)
+
+UNIDAD. Dos unidades distintas, y no son la misma:
+  APARICION      = una forma del vocabulario en una linea de un fichero.
+  CADENA DISTINTA = una forma en un texto renderizable distinto. Es la unidad del
+                    paso 03, donde una misma frase repetida en 60 bahias cuenta
+                    UNA vez.
+
+INSTRUMENTO. Node, no grep: bajo este locale una clase de caracteres con
+multibyte adentro no muerde. Las fronteras de palabra se arman por PUNTO DE
+CODIGO; la palabra va literal.
+
+================================================================================
+2. DOS DEFECTOS DE INSTRUMENTO CAZADOS ANTES DE MEDIR
+================================================================================
+
+D1 — NFD vs NFC. Los heredocs de esta maquina produjeron la misma letra de dos
+     formas: la "a" con tilde salio DESCOMPUESTA (a + U+0301) en el vocabulario y
+     PRECOMPUESTA (U+00E1) en el resto. Un vocabulario descompuesto contra un
+     arbol precompuesto da CERO VOSEO, y cero se lee como arbol limpio. Lo cazo
+     el control positivo del propio barrido, no la lectura del resultado.
+     Arreglo: se normaliza a NFC en las dos puntas, y el control prueba las dos
+     direcciones.
+
+D2 — El heredoc se come un nivel de barra invertida. La regla escrita en el arbol
+     dice que el heredoc SE CORTA sobre ~6 KB; esto es OTRA cosa y no estaba
+     escrita: `p{L}` en vez de `p{L}` con su barra no falla, MIDE MAL EN SILENCIO.
+     Mordio dos veces: una en la frontera del barrido y otra en la regla de
+     particion, que quedo como /^backend/src// — sintacticamente rota, y ahi si
+     se vio. Arreglo: la barra se construye por punto de codigo, y la particion
+     se reescribio con predicados de cadena, sin expresiones regulares.
+
+Los dos son del mismo genero que H-T2: un instrumento que corre perfecto y mide
+otra cosa. Por eso van escritos aunque ya esten arreglados.
+
+================================================================================
+3. LOS TRES BUCKETS
+================================================================================
+
+--------------------------------------------------------------------------------
+BUCKET A — TEXTO AL PATRON EN CODIGO NUESTRO · SE CORRIGE
+--------------------------------------------------------------------------------
+VOSEO en ROL P: 4 apariciones, 4 cadenas distintas, 2 ficheros. Las cuatro son
+inequivocas —imperativo voseante de verbo -ar, ninguna otra forma se escribe
+asi— y las cuatro son texto que la pantalla pinta.
+
+  pwa/src/components/verification/DriftCatalogoBlock.jsx
+    · tarjeta "Hay un dato de la Capitania de X que no pudimos leer", tercer
+      parrafo: "...significa que el motor no puede responder por ese dato.
+      Consulta con la Autoridad Maritima antes de zarpar, o por VHF Canal 16."
+      (en el arbol: "Consulta" va con tilde final)
+    · rama `no_evaluado`, "No pudimos verificar si quedo algun dato sin leer":
+      "La comprobacion no se pudo completar (motivo). Consulta con la Autoridad
+      Maritima antes de zarpar."   (idem)
+
+  pwa/src/screens/P3_VoyageVerification.jsx — escalon 3 de la tarjeta de cierre
+    · rama con rotulo   : "Contacta a {rotulo} por VHF Canal 16 antes de recalar."
+    · rama de fallback  : "Contacta a la autoridad maritima por VHF Canal 16
+                           antes de recalar."
+      (las dos con tilde final en el arbol)
+
+  SON DOS CADENAS Y NO UNA, y el nombre de la Capitania NO esta en el arbol: es
+  {rotulo}, que arma codigo nuestro. Buscar la frase literal que se vio en
+  pantalla da cero; por eso el barrido busca el verbo.
+
+  La rama de fallback NO ES VERIFICABLE EN PANTALLA: por construccion no se pinta
+  cuando hay rotulo. Se corrige igual y su control es de codigo, no de pantalla.
+
+  CORRECCION PREVISTA (PARADA 2): Consulta -> Consulte · Contacta -> Contacte.
+  Nada mas del mensaje cambia. Ninguna de las cuatro queda rara ni ambigua al
+  pasar a usted, asi que no hay pregunta que subir por este bucket.
+
+--------------------------------------------------------------------------------
+BUCKET B — CATALOGO §10 DE CONTRATO_MOTOR.md · NO SE TOCA · SE REDACTA
+--------------------------------------------------------------------------------
+VOSEO en §10: CERO. Ninguna forma voseante, ni inequivoca ni ambigua.
+
+  ESTO INVALIDA LA PREMISA DEL BUCKET tal como venia escrita en el encargo: bajo
+  un vocabulario de voseo, el catalogo no tiene nada que redactar. Lo que tiene
+  es TUTEO, que es otro registro y la otra mitad de la fila del owner.
+
+TUTEO en §10: 9 DE LAS 9 FILAS del catalogo estan fuera de usted.
+  8 filas con VERBO en tuteo:
+    Zarpe cerrado ............... "aseguras" · "te responsabilizas" · "Coordina"
+    Recalada cerrada ............ "debes" · "solicita"
+    Recalada cierra en transito . "puedes" · "Avisa"
+    Zona intermedia cerrada ..... "No ingreses" · "Contacta" · "coordina" · "recala"
+    Aviso de arribada ........... "avisa tu arribada"
+    Zarpe sin despacho .......... "Gestiona tu despacho"
+    Deportivo sin zarpe ......... "Informa tu intencion" · "tu navegacion"
+    Jurisdiccion sin limite ..... "Confirma con la Capitania"
+  1 fila solo con POSESIVO, sin verbo de trato:
+    Moto de agua nocturna ....... "Tu horario estimado excede la luz diurna"
+
+  El §10 se redacta entero en usted en PARADA 2, para que el owner lo pegue.
+
+--------------------------------------------------------------------------------
+BUCKET C — TEXTO QUE VIENE DE SITPORT · NO SE TOCA NUNCA
+--------------------------------------------------------------------------------
+VOSEO en SITPORT: CERO apariciones.
+
+  DENOMINADOR, Y ES CHICO: la respuesta VIVA de
+  http://localhost:3000/api/sitport/restricciones capturada el 2026-08-20 en esta
+  sesion — 23 filas, 178 campos de texto, 7.368 puntos de codigo — sobre los
+  campos Detalle, Observacion, tiporestriccion, MotivoRestriccion,
+  AreaRestriccion, NaveRecibe, GLBahia y NombreInstalacion.
+  Cruda en 05_sitport_vivo.json.
+
+  23 FILAS DE UN INSTANTE NO SON EL UNIVERSO. La misma consulta habia devuelto 21
+  filas una hora antes, dentro de esta misma sesion: la fuente se mueve mientras
+  se la mide. Este cero dice que hoy, en lo que SITPORT publica ahora mismo, no
+  hay voseo. No dice que no pueda haberlo manana, y si lo hay se declara y se
+  deja: es la palabra literal de la Capitania.
+
+  Forma del texto en la muestra: mayusculas y construccion impersonal
+  ("SE ESTABLECE CONDICION DE TIEMPO VARIABLE...", "AVISO DE VIENTO FUERTE...").
+  El voseo ahi era improbable; improbable no es medido, y ahora esta medido.
+
+  La instantanea versionada data/catalogo/estado_drift.json quedo en su propio rol
+  (S) y tampoco trae voseo. Su unico hit —"consulta en vivo a orion.directemar.cl"—
+  es texto NUESTRO y es un sustantivo, no un imperativo.
+
+================================================================================
+4. EL TUTEO EN CODIGO NUESTRO — MEDIDO, NO TOCADO
+================================================================================
+
+ROL P, texto renderizable (unidad: cadena distinta):
+  tuteo inequivoco ....................  8
+  tuteo ambiguo por homografia ........ 204   <- leidas una por una
+  usted ...............................   5   (ver §5)
+
+RESOLUCION DE LAS 204 AMBIGUAS, por lectura:
+
+  SI ES TUTEO — imperativo o 2a persona dirigida al patron .......... 62
+    zonas_aviso.json (3) ...... "Confirma con la Capitania {nombre} antes de
+                                zarpar" · "Coordina con la Autoridad Maritima por
+                                VHF Canal 16 antes de zarpar" (x2 sitios).
+                                SON TRANSCRIPCION DEL §10: mismo texto, otra
+                                puerta. Cambiarlos sin cambiar el §10 pondria el
+                                dato fuera de sincronia con su fuente unica.
+    P2_VoyageSetup.jsx (17) ... "Busca por nombre de..." (6) · "Ingresa..." (5) ·
+                                "Selecciona..." (4) · "Completa este destino" ·
+                                "Revisa los campos marcados antes de continuar."
+    P1_VesselProfile.jsx (10) . "Selecciona..." (5) · "Ingresa la potencia del
+                                motor (HP)" · "Verifica el espacio disponible" ·
+                                "Completa todos los campos requeridos" ·
+                                "Revisa o actualiza los datos"
+    DeportiveAlerts.jsx (4) ... "avisa tu zarpe" · "avisa por radio" · "Confirma
+                                que tu embarcacion cuenta con el equipamiento" ·
+                                "Marca todos los items para continuar"
+    P4_ActiveVoyage.jsx (3) ... "Navega con carta SHOA." (3 mensajes distintos)
+    Biblioteca (3) ............ "deja la boya ROJA a tu derecha" · "navega de
+                                cara al viento" · "Navega lo mas cerca posible
+                                del limite exterior de tu ESTRIBOR."
+    ReportarProblema.jsx (3) .. "Verifica tu conexion." · "Describe brevemente
+                                que paso" · "Se conciso."
+    S0Onboarding.jsx (2) ...... "Verifica condiciones de navegacion..." ·
+                                "Verifica todo contra fuentes oficiales..."
+    S0_5Registro.jsx (2) ...... "Completa tus datos para acceder a Tmarea" ·
+                                "Selecciona tu licencia"
+    TransitRestrictionsBlock (2) "Carga tu AB en el perfil..." · "Confirma con la
+                                Capitania si esta restriccion afecta tu navegacion"
+    deportivo-validator.js (2)  "Verifica que tu licencia... sea la correcta" ·
+                                "Declara el tipo de propulsion de tu embarcacion"
+    restricciones.js (2) ...... "Verifica si esta restriccion aplica..." ·
+                                "ingresa tu Arqueo Bruto (AB) en el perfil"
+    restriction-rules-engine (1) "carga tu AB en el perfil para verificar si te
+                                afecta"
+    VoyageVerdict.jsx (1) ..... "Restriccion en {bahia} — verifica tu AB"
+    P3_VoyageVerification (1) . "Verifica los puertos de zarpe y recalada."
+
+  NO ES TUTEO — indicativo de 3a persona, sustantivo o adjetivo ..... 134
+    Todo el bloque de guardas y mensajes de control del backend
+    (ambitos-publicados, anclas-declaradas, andamio-medicion, catalogo-bahias,
+    cobertura-jurisdiccional, cotejo-contrato, zonas-aviso.js,
+    join-bahia-jurisdiccion): "el ambito declara...", "la fuente no declara...",
+    "el motor consulta otra capa". Son terceras personas, y ademas no las lee el
+    patron: salen por consola y por la suite.
+    Nombres y sustantivos: `carga` (Vessel.js, vesselTypes.js,
+    displacementCalculator.js, ship-physics.js), `muestra` como variable
+    (fondeadero-service.js), "Marca ROJA" y "Marca de tope" (balizamiento),
+    "Restriccion activa" / "Navegacion activa" / "escucha activa" (adjetivo),
+    "la ruta completa", "la marea baja".
+    Terceras personas de la propia app: "Tmarea informa", "Tmarea recuerda",
+    "El texto no declara tonelaje".
+
+  DUDOSO — no lo resuelve la lectura ................................. 8
+    Se cuentan aparte a proposito. No se resolvieron para cuadrar una cifra.
+
+    (a) EL LEMA — "NAVEGA CON CERTEZA" (6 sitios: App.jsx, AppSidebar.jsx,
+        P3_VoyageVerification.jsx, P4_ActiveVoyage.jsx, S0Onboarding.jsx,
+        S0_5Registro.jsx, y ademas en el PDF de voyage-report-service.js).
+        Gramaticalmente es imperativo tuteante y bajo "usted en todos" seria
+        "Navegue con certeza". Pero un lema de marca no es un mensaje al patron:
+        cambiarlo es decision de PRODUCTO, no de registro. NO SE TOCA sin que el
+        owner lo diga. Es la unica pieza de este barrido que cambia como se llama
+        el producto a si mismo.
+
+    (b) "¿Que recurso busca explotar?" — P2_VoyageSetup.jsx. Leido como usted es
+        correcto ("busca" = usted); leido como tercera persona tambien.
+        Conviviendo con 17 tuteos en la MISMA pantalla, lo mas probable es que
+        sea un descuido y no una decision. No lo resuelvo.
+
+    (c) "Verifica que especies_pesca.json este en el directorio raiz del backend"
+        — marine-weather-service.js. Es imperativo tuteante, pero le habla a
+        quien despliega, no al patron. Si nunca llega a pantalla, no es de este
+        alcance; no medi si llega.
+
+================================================================================
+5. LA PREGUNTA (5): NO SON DOS REGISTROS NI TRES
+================================================================================
+
+SI, hay texto al patron en tuteo — 62 cadenas medidas en ROL P, mas las 9 filas
+del §10. Y hay algo mas que el encargo no preveia: YA HAY TEXTO EN USTED.
+
+  5 cadenas en usted, texto al patron, hoy en el arbol:
+    pwa/src/data/maritime_data.json.json  "Verifique tabla de marea local."
+    pwa/src/data/maritime_data.json.json  "Mantenga escucha activa."
+    pwa/src/screens/P4_ActiveVoyage.jsx   "...sin dato de profundidad verificado
+                                           — navegue con sonda"
+    backend raster-router-service.js      "Sin datos de profundidad en este
+                                           tramo. Navegue con sonda."
+    backend raster/cotejo-vertical.js     "Posicion aproximada del dato:
+                                           verifique con ecosonda antes de navegar."
+
+  Asi que hoy conviven TRES registros de trato — voseo (4), tuteo (62 + el §10),
+  usted (5) — y ademas una cuarta forma que no es trato: el IMPERSONAL en
+  infinitivo, "Verificar con el armador antes de zarpar" (NavigationBlock.jsx),
+  "Llevar mas carga de la declarada..." (Biblioteca). El impersonal no contradice
+  el usted y por eso no entra en la cuenta de registros, pero conviene saber que
+  esta.
+
+  Y el usted que ya existe esta CONCENTRADO en un sitio: los mensajes de sonda y
+  batimetria, mas los `tips` de maritime_data.json. No esta repartido.
+
+================================================================================
+6. LO QUE ESTA CIFRA DE TUTEO NO ES
+================================================================================
+
+LAS 62 SON UN PISO, NO EL UNIVERSO. El vocabulario de tuteo se declaro por
+formas, y al leer los resultados aparecieron imperativos tuteantes que NO estan
+en el vocabulario y por lo tanto NO estan contados:
+
+    "Intenta seleccionar un punto mas cercano..."  P3_VoyageVerification.jsx
+    "Descarga el informe operacional antes de cerrar."  P4_ActiveVoyage.jsx
+    "No navegues entre estas boyas."  Biblioteca/balizamiento_01.json
+
+Los tres se vieron de reojo, en el texto de al lado de un hit que si mordio. No
+se salieron a buscar sus hermanos. El vocabulario de tuteo se cierra en PARADA 2
+antes de entregar el inventario, y ahi la cifra deja de ser un piso.
+
+El vocabulario de VOSEO no tiene este problema del mismo modo: el imperativo
+voseante es una familia cerrada y regular —tilde final en -a / -e / -i— y se
+barrio con 91 formas. Aun asi, un verbo raro fuera de la lista tampoco se veria.
+Lo que si esta cerrado es que las 4 encontradas son texto al patron y se corrigen.
+
+================================================================================
+7. FUERA DE ALCANCE, TOCADO POR NADA
+================================================================================
+- CONTRATO_MOTOR.md no se edito. El §10 se leyo y se conto; no se cambio.
+- El motor BRE no se toco.
+- Ningun texto de SITPORT se toco.
+- El bloque de clima de Puerto Montt/Quemchi en ruta de Hornopiren: no es de esta
+  sesion, no se miro.
+- Los dos intocables siguen ` M` sin stagear, exactamente como estaban.
+
+================================================================================
+8. PARA REPRODUCIRLO — PowerShell, en la terminal del owner
+================================================================================
+cd C:\Users\katia\tmarea-backend
+node _bitacoras\voseo_al_patron_2026-08-20\01_barrido.js
+node _bitacoras\voseo_al_patron_2026-08-20\02_clasificar.js
+node _bitacoras\voseo_al_patron_2026-08-20\03_extraer.js
+node _bitacoras\voseo_al_patron_2026-08-20\04_usted.js
+
+Los cuatro escriben su .txt al lado y 01 y 03 salen con EXIT 0 solo si sus
+controles positivos pasan. La captura viva de SITPORT no se repite igual: la
+fuente se mueve.

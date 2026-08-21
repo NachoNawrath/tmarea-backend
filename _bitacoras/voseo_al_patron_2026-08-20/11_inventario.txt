@@ -1,0 +1,166 @@
+INVENTARIO DEL REGISTRO — voseo_al_patron_2026-08-20 · PARADA 2
+
+vocabulario  : CERRADO, 226 formas (paso 10)
+ambito       : texto renderizable de ROL P que es prosa castellana
+unidad       : cadena distinta por fichero y por forma
+
+  hits              : 246
+  VOSEO             : 0
+  TUTEO             : 99
+  NO_TUTEO          : 138
+  NO_AL_PATRON      : 2
+  LEMA              : 6
+  DUDOSO            : 1
+  SIN_RESOLVER      : 0
+
+════ VOSEO — 0 ════
+
+════ TUTEO — 99 ════
+  ── backend/data/decreto/zonas_aviso.json ──
+     contacto_generico.texto [coordina]  Coordina con la Autoridad Maritima por VHF Canal 16 antes de zarpar.
+     mensaje.capa_2_con_capitania [confirma]  Confirma con la Capitanía {nombre} antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No
+     mensaje.capa_2_sin_capitania [coordina]  Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nues
+  ── backend/src/services/deportivo-validator.js ──
+     L78        [verifica]  Verifica que tu licencia (PLDB, PDB, CDC o CDAM) sea la correcta según RGDN (TM-002) Art. 12.
+     L98        [declara]  Declara el tipo de propulsión de tu embarcación (motor, vela, mixto o manual).
+  ── backend/src/services/restriction-rules-engine.js ──
+     L113       [activa]  Condición VARIABLE — restricción activa para tu embarcación (AB {nave_ab}, menores de {umbral} AB)
+     L154       [activa]  Restricción activa — carga tu AB en el perfil para verificar si te afecta
+     L154       [carga]  Restricción activa — carga tu AB en el perfil para verificar si te afecta
+  ── pwa/src/components/DeportiveAlerts.jsx ──
+     L162       [avisa]  Antes de salir a pasear, avisa tu zarpe a la Autoridad Marítima.
+     L163       [da]  Antes de soltar amarras, da aviso a la Capitanía más cercana.
+     L211       [realizas]  💡  e-Zarpe:  Si realizas una travesía costera, genera tu zarpe digital en
+     L211       [genera]  💡  e-Zarpe:  Si realizas una travesía costera, genera tu zarpe digital en
+     L212       [avisa]  ezarpe.directemar.cl  o avisa por radio en canal de guardia.
+     L336       [confirma]  Confirma que tu embarcación cuenta con el equipamiento mínimo exigido por DIRECTEMAR.
+     L394       [marca]  Marca todos los ítems para continuar
+     L476       [da]  Da aviso de recalada de inmediato para cerrar tu bitácora SAR.
+  ── pwa/src/components/screens/ReportarProblema.jsx ──
+     L100       [elige]  La imagen supera los 2 MB. Elige una más pequeña.
+     L109       [intenta]  No se pudo procesar la imagen. Intenta con otro archivo.
+     L141       [verifica]  No se pudo conectar con el servidor. Verifica tu conexión.
+     L216       [sé]  Describe brevemente qué pasó o qué no funciona. Sé conciso.
+     L216       [describe]  Describe brevemente qué pasó o qué no funciona. Sé conciso.
+     L266       [comunícate]  Si tu problema es urgente y afecta la seguridad de la navegación, comunícate
+  ── pwa/src/components/screens/S0_5Registro.jsx ──
+     L122       [adquieras]  Tus datos se guardan localmente y se sincronizarán cuando adquieras un plan.
+     L54        [crea]  Crea tu Perfil de Patrón
+     L56        [completa]  Completa tus datos para acceder a Tmarea
+     L94        [selecciona]  Selecciona tu licencia
+  ── pwa/src/components/screens/S0Onboarding.jsx ──
+     L31        [verifica]  Verifica condiciones de navegación antes de ejecutar tu zarpe autorizado.
+     L46        [aceptas]  Al usar Tmarea, aceptas estos términos en su totalidad.
+     L50        [eres]  Eres responsable de tu cuenta y de toda actividad en ella.
+     L77        [verifica]  Verifica todo contra fuentes oficiales antes de zarpar.
+  ── pwa/src/components/verification/TransitRestrictionsBlock.jsx ──
+     L186       [puedes]  📍 Puedes navegar hasta    . A partir de ahí, la zona está restringida.
+     L67        [carga]  ⚠️ Carga tu AB en el perfil para verificar si esta restricción te aplica
+     L73        [confirma]  ⚠️ Confirma con la Capitanía si esta restricción afecta tu navegación
+  ── pwa/src/components/verification/VoyageVerdict.jsx ──
+     L155       [puedes]  Puedes navegar hasta  . A partir de ahí, la zona está restringida.
+     L71        [verifica]  Restricción en ${r.nombre_bahia} — verifica tu AB
+  ── pwa/src/data/Biblioteca/balizamiento_01.json ──
+     secciones[0].conceptos_clave[0].explicacion [sales]  En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés.
+     secciones[0].conceptos_clave[0].explicacion [deja]  En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés.
+     secciones[1].conceptos_clave[0].explicacion [puedes]  No navegues entre estas boyas. Demarcan 'balsas jaula' y sus sistemas de fondeo, que tienen extensos cabos submarinos donde puedes enredar tu hélice.
+     secciones[1].conceptos_clave[0].explicacion [navegues]  No navegues entre estas boyas. Demarcan 'balsas jaula' y sus sistemas de fondeo, que tienen extensos cabos submarinos donde puedes enredar tu hélice.
+  ── pwa/src/data/Biblioteca/emergencias_01.json ──
+     secciones[0].conceptos_clave[0].explicacion [haces]  Significa acercarse de modo que el viento golpee primero a la persona y luego a tu embarcación. Si lo haces al revés, el viento empujará tu lancha sob
+     secciones[1].conceptos_clave[0].explicacion [navega]  Si el fuego está en la popa, navega de cara al viento. Si el viento sopla desde la popa hacia la proa, avivará las llamas hacia la cabina.
+  ── pwa/src/data/Biblioteca/maniobras_01.json ──
+     secciones[0].conceptos_clave[0].explicacion [asegúrate]  Tu nave girará alrededor del ancla según cambie el viento o marea. Asegúrate de tener espacio libre en los 360 grados.
+     secciones[1].conceptos_clave[0].explicacion [recibes]  Si la red se atora en el fondo y recibes una ola fuerte de costado (través) mientras tiras de ella, la embarcación puede volcar de inmediato.
+     secciones[1].conceptos_clave[0].explicacion [tiras]  Si la red se atora en el fondo y recibes una ola fuerte de costado (través) mientras tiras de ella, la embarcación puede volcar de inmediato.
+     secciones[2].conceptos_clave[0].explicacion [piensas]  La regla de oro a vela: Si piensas que quizás deberías tomar un rizo, ese es el momento exacto para hacerlo.
+     secciones[2].conceptos_clave[0].explicacion [deberías]  La regla de oro a vela: Si piensas que quizás deberías tomar un rizo, ese es el momento exacto para hacerlo.
+  ── pwa/src/data/Biblioteca/reglamentos_01.json ──
+     secciones[2].conceptos_clave[1].explicacion [sufres]  Es tu única defensa legal. Si chocas, varas o sufres daños, esta declaración escrita ante la Armada es requisito indispensable para cobrar seguros mar
+     secciones[2].conceptos_clave[1].explicacion [chocas]  Es tu única defensa legal. Si chocas, varas o sufres daños, esta declaración escrita ante la Armada es requisito indispensable para cobrar seguros mar
+     secciones[2].conceptos_clave[1].explicacion [varas]  Es tu única defensa legal. Si chocas, varas o sufres daños, esta declaración escrita ante la Armada es requisito indispensable para cobrar seguros mar
+  ── pwa/src/data/Biblioteca/ripa_01.json ──
+     secciones[0].accion[0] [cedes]  Si otra lancha se acerca por tu ESTRIBOR (derecha), TÚ cedes el paso.
+     secciones[1].regla_practica [navega]  Navega lo más cerca posible del límite exterior de tu ESTRIBOR.
+  ── pwa/src/screens/P1_VesselProfile.jsx ──
+     L181       [selecciona]  Selecciona el tipo de embarcación
+     L199       [selecciona]  Selecciona el uso de la embarcación
+     L200       [selecciona]  Selecciona el tipo de propulsión
+     L201       [selecciona]  Selecciona tu licencia deportiva
+     L202       [selecciona]  Selecciona la clasificación de la nave
+     L205       [ingresa]  Ingresa la potencia del motor (HP)
+     L221       [corrige]  Corrige los campos marcados antes de guardar.
+     L230       [verifica]  Error al guardar. Verifica el espacio disponible en tu dispositivo.
+     L238       [completa]  Completa todos los campos requeridos antes de continuar.
+     L245       [intenta]  Error al guardar los datos. Intenta nuevamente.
+     L252       [quieres]  ¿Seguro que quieres limpiar los datos de la nave?
+     L272       [revisa]  Revisa o actualiza los datos antes de iniciar el viaje.
+     L272       [actualiza]  Revisa o actualiza los datos antes de iniciar el viaje.
+     L273       [configura]  Configura los datos de la embarcación que operarás.
+     L273       [operarás]  Configura los datos de la embarcación que operarás.
+     L339       [tienes]  Autocompletado desde la eslora (TM-002 Art. 28). Editable si tienes certificado de arqueo.
+     L341       [déjalo]  Aparece en el Certificado de Matrícula de la nave. Si no lo conoces, déjalo en blanco.
+     L341       [conoces]  Aparece en el Certificado de Matrícula de la nave. Si no lo conoces, déjalo en blanco.
+  ── pwa/src/screens/P2_VoyageSetup.jsx ──
+     L110       [busca]  Busca por nombre de caleta, sector o comuna — cobertura nacional
+     L124       [busca]  Busca por nombre de marina o club náutico
+     L136       [busca]  Busca por nombre de fondeadero o bahía
+     L380       [selecciona]  — Selecciona la especie objetivo —
+     L388       [recibirás]  Al verificar condiciones recibirás temperatura del mar, clorofila y alertas normativas para esta especie en el punto de destino.
+     L454       [ingresa]  ℹ Ingresa coordenadas en grados decimales negativos (Sur/Oeste)
+     L573       [regresarás]  🔄 Paseo circular — regresarás al mismo punto de zarpe
+     L585       [selecciona]  ⚠ Selecciona la duración estimada
+     L685       [regulariza]  Tu licencia es deportiva y no habilita actividad comercial (pesca, acuicultura o transporte). Regulariza tu licencia con DIRECTEMAR antes de zarpar.
+     L69        [busca]  Busca por nombre del puerto o caleta
+     L754       [selecciona]  Selecciona el puerto de zarpe
+     L757       [completa]  Completa este destino
+     L759       [selecciona]  Selecciona el recurso que vas a explotar
+     L762       [ingresa]  Ingresa la fecha de zarpe
+     L763       [ingresa]  Ingresa la fecha de recalada
+     L767       [ingresa]  Ingresa un valor válido en litros
+     L776       [revisa]  Revisa los campos marcados antes de continuar.
+     L821       [ingresa]  Ingresa los datos del viaje que vas a realizar.
+     L84        [busca]  Busca por nombre de empresa o ubicación geográfica del centro
+     L97        [busca]  Busca por código RNA/SERNAPESCA, apellido del titular o sector geográfico
+  ── pwa/src/screens/P3_VoyageVerification.jsx ──
+     L115       [usa]  El destino seleccionado está fuera de zona navegable conocida. El punto está a más de 5 km de aguas navegables según la carta del motor de rutas. Inte
+     L115       [intenta]  El destino seleccionado está fuera de zona navegable conocida. El punto está a más de 5 km de aguas navegables según la carta del motor de rutas. Inte
+     L116       [verifica]  No se encontró ruta navegable entre los puntos seleccionados. Verifica los puertos de zarpe y recalada.
+  ── pwa/src/screens/P4_ActiveVoyage.jsx ──
+     L724       [navega]  Destino fuera de zona navegable. Navega con carta SHOA.
+     L726       [navega]  No hay ruta navegable entre los puntos. Navega con carta SHOA.
+     L727       [navega]  Ruta no disponible. Navega con carta SHOA.
+     L872       [descarga]  Descarga el informe operacional antes de cerrar.
+  ── pwa/src/utils/license-rules.js ──
+     L167       [verifícalo]  El límite de tu zona de bahía lo fija tu Capitanía de Puerto. Verifícalo antes de zarpar.
+  ── pwa/src/utils/restricciones.js ──
+     L53        [verifica]  Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático
+     L53        [ingresa]  Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático
+
+════ DUDOSO — 1 ════
+  ── pwa/src/screens/P2_VoyageSetup.jsx ──
+     L371       [busca]  🐠 ¿Qué recurso busca explotar?
+
+════ NO_AL_PATRON — 2 ════
+  ── backend/src/services/marine-weather-service.js ──
+     L129       [consulta]  ⚠ ALERTA FAN PREVENTIVA: concentración de clorofila anormalmente alta (${clorofila.toFixed(2)} mg/m³, umbral: ${umbral.toFixed(1)} mg/m³). Riesgo elev
+     L25        [verifica]  No se pudo cargar la base de conocimiento de especies. Verifica que especies_pesca.json esté en el directorio raíz del backend.
+
+════ LEMA — 6 ════
+  ── backend/src/services/voyage-report-service.js ──
+     L166       [navega]  NAVEGA CON CERTEZA
+  ── pwa/src/App.jsx ──
+     L93        [navega]  NAVEGA CON CERTEZA
+  ── pwa/src/components/AppSidebar.jsx ──
+     L75        [navega]  Tmarea — Navega con Certeza
+  ── pwa/src/components/screens/S0_5Registro.jsx ──
+     L51        [navega]  Navega con Certeza
+  ── pwa/src/components/screens/S0Onboarding.jsx ──
+     L27        [navega]  Navega con Certeza
+  ── pwa/src/screens/P3_VoyageVerification.jsx ──
+     L44        [navega]  NAVEGA CON CERTEZA
+
+════ SIN_RESOLVER — 0 ════
+
+════ NO_TUTEO — 138 (no se enumeran: la forma esta, el trato no) ════
+
+EXIT 0  — VERDE: todo hit cae bajo una regla escrita

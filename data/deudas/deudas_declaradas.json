@@ -4,7 +4,7 @@
   "_por_que_existe": "Se hicieron cuatro o cinco inventarios de deudas y ninguno cerro nada. La causa medida: las deudas se anotan en la bitacora de la sesion que las creo, esa bitacora no se vuelve a abrir, y la sesion siguiente arranca en frio sin verlas. El precedente de forma es 7.2 del PLAN_JURISDICCION.md, que ya razono lo mismo para las afirmaciones verificables: parsear la prosa seria adivinar, declararlas es el camino.",
   "_como_se_lee": "Ninguna fila queda sin grupo. Los grupos 5 y 6 son PROPUESTAS: no cuentan como baja hasta que firma_owner.firmada sea true. El conteo se publica siempre dos veces, con firma y sin firma.",
   "_por_que_vive_en_el_backend": "Medido el 2026-08-19: tmarea-pwa no tiene _bitacoras/, ni CLAUDE.md, ni documento de plan, ni un solo sitio donde se anoten deudas (TODO/FIXME/HACK/XXX/DEUDA/PENDIENTE = 0, con dos controles positivos). Todo el aparato de deuda vive en tmarea-backend. Y la direccion de la referencia ya la fijo el codigo, no la comodidad: tmarea-pwa/src/screens/P3_VoyageVerification.jsx cita tmarea-backend/_bitacoras/, y ningun fichero del backend cita a la PWA.",
-  "version": 8,
+  "version": 9,
   "generado": "2026-08-20",
   "generado_por": "sesion de caracterizacion de deudas (tramo 1 y 2, 2026-08-19) + medicion de §2 contra la pantalla (2026-08-20) + S7(a) mirada en pantalla (2026-08-20)",
   "procedencia": "_bitacoras/declarativo_deudas_2026-08-19/",
@@ -386,6 +386,22 @@
         "filas_en_este_declarativo": 7,
         "nota": "Mismo precedente que SESION-caracterizacion-deudas-2026-08-19, SESION-tres-de-d4-2026-08-20 y SESION-limite-puerto-12100-47-2026-08-20: una sesion es un sitio de deuda propio. Esta sesion NO midio el producto: leyo los dos arboles, el declarativo contra el indice, las bitacoras, y el plan anterior — que no estaba en ningun arbol, y esa es una de las cuatro filas. Este sitio NO marca barrido ningun otro: PLAN-5-DECISIONES y CLAUDE-MD siguen en false aunque dos de estas cuatro filas caigan cerca de ellos, y se dice en el `depende_de` de cada una. De los cuatro hallazgos del gate que producian escritura, DOS quedaron fuera por decision del owner: los cuatro sitios donde el plan todavia dice que D4 sigue abierta los pega el owner como texto —opcion (c) de las tres que el gate ofrecio—, y S7(a) no se firma hoy porque el owner quiere mirarla en pantalla antes. AMPLIADO el 2026-08-20 con la fila de (m1): el owner ordeno correr check_control_points sobre los ocho puntos lacustres. Es una QUINTA fila y no una de las cuatro del gate, y va declarada aparte para que el sitio no afirme de si mismo algo que no hizo.",
         "bitacora": "_bitacoras/plan_de_cierre_2026-08-20/"
+      },
+      {
+        "id": "SESION-voseo-al-patron-2026-08-20",
+        "repo": "tmarea-backend",
+        "fichero": "_bitacoras/voseo_al_patron_2026-08-20/",
+        "seccion_por_titulo": "medicion del registro del texto al patron",
+        "barrido": true,
+        "nota": "La sesion barrio el registro (voseo/tuteo/usted) en los dos repos. Lo que deja como deuda es lo que la medicion encontro de paso y el owner ordeno declarar sin arreglar.",
+        "barrido_el": "2026-08-20",
+        "filas_en_este_declarativo": 1,
+        "bitacora": "_bitacoras/voseo_al_patron_2026-08-20/",
+        "orden": 6,
+        "vocabulario_del_barrido": [
+          "el registro del texto al patron en los dos repos: voseo, tuteo y usted, con vocabulario cerrado derivado del corpus",
+          "lo que la medicion encontro DE PASO y el owner ordeno declarar sin arreglar: la cobertura parcial de cotejo-contrato.js"
+        ]
       }
     ]
   },
@@ -3452,6 +3468,48 @@
       "depende_de": "La decision es la fila hermana SESION-plan-de-cierre-2026-08-20::jurisdiccion-por-trayecto-o-por-extremos, del grupo 2 y SIN FIRMAR. Esta medicion no la contesta: le pone el numero. Y no cierra PLAN-2::ninguna-ruta-lacustre-es-calculable, que sigue viva: ninguna ruta lacustre se rutea igual, y esta fila no lo arregla — lo rodea, y solo para la pregunta jurisdiccional.",
       "medicion": "_bitacoras/plan_de_cierre_2026-08-20/, medicion (m2) del 2026-08-20.",
       "enmienda_2026_08_20": "ENRIQUECIDA EL MISMO DIA, por decision del owner, con dos cosas que la primera version tenia dispersas y que el owner quiso con esas palabras: la REGLA del control positivo que se sospecha a si mismo, y el cruce de (m1) con (m2) sobre el mismo punto. Ningun numero de la medicion cambio."
+    },
+    {
+      "id": "SESION-voseo-al-patron-2026-08-20::cotejo-contrato-cubre-2-de-4-cadenas-y-da-verde",
+      "token_local": null,
+      "espacio_de_nombres": "sesion del voseo al patron 2026-08-20 — medicion",
+      "sitio": "SESION-voseo-al-patron-2026-08-20",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "Nace de la medicion del registro del texto al patron del 2026-08-20. Salida cruda en _bitacoras/voseo_al_patron_2026-08-20/.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": true,
+        "fecha": "2026-08-20"
+      },
+      "redactada_no_aplicada": true,
+      "duplicada_de": null,
+      "titulo": "cotejo-contrato.js vigila 2 de las 4 cadenas que el dato transcribe del catalogo, y las otras 2 no las mira nadie: el control da VERDE con la mitad de su objeto sin cotejar",
+      "el_defecto": "Un control que cubre la mitad de su objeto es PEOR que ninguno, porque da verde. Si nadie sabe que cubre la mitad, el verde se lee como \"las cuatro coinciden con el catalogo\".",
+      "costo_estimado": "Chico y acotado: agregar dos afirmaciones al bloque cotejo_con_el_contrato de zonas_aviso.json NO sirve — el propio bloque explica por que esas dos no son transcripciones de una fila. Lo que hace falta es OTRA clase de afirmacion, una que cotege contra el catalogo entero y no contra una fila, o un control aparte con su propio criterio. Decidir cual es la parte cara; escribirlo, no.",
+      "depende_de": "De nada externo. El dato, el catalogo y el control ya estan en el arbol. NO depende de que el owner pegue el §10 en usted: el hueco existe hoy, con el arbol como esta.",
+      "no_se_arregla_en_esta_pieza": "Por orden del owner del 2026-08-20: se declara con su medicion y no se toca. El alcance de la sesion era el registro, no la cobertura del control.",
+      "donde": {
+        "fichero": "src/services/cotejo-contrato.js",
+        "seccion_por_titulo": "el fichero entero, contra data/decreto/zonas_aviso.json bloque cotejo_con_el_contrato",
+        "cita_de_anclaje": "NO cubre `capa_2_sin_capitania` ni `contacto_generico`: no son transcripciones de una fila del §10."
+      },
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-20",
+        "la_declaracion_es_correcta": "El bloque cotejo_con_el_contrato.lo_que_NO_cubre de zonas_aviso.json declara exactamente que no cubre esas dos, y da el motivo bueno: no son transcripciones de una fila del §10, nacen de la misma fila con la derivacion cambiada. Nada de esto es un defecto de esa declaracion.",
+        "lo_que_NO_esta_escrito_en_ningun_lado": "La consecuencia. Que el VERDE del control no dice nada sobre esas dos cadenas, y que un lector razonable lo lee como \"el dato coincide con el catalogo\".",
+        "las_cuatro_cadenas": [
+          "mensaje.capa_1 — sin trato, no cambia. VIGILADA.",
+          "mensaje.capa_2_con_capitania — empieza con \"Confirma\". VIGILADA.",
+          "mensaje.capa_2_sin_capitania — empieza con \"Coordina\". SIN VIGILAR.",
+          "contacto_generico.texto — empieza con \"Coordina\". SIN VIGILAR."
+        ],
+        "como_se_comprueba_hoy": "node scripts/validar_deudas_declaradas.js no mide esto. Lo miden: npm test (cotejo-contrato.test.js) para las DOS vigiladas, y _bitacoras/voseo_al_patron_2026-08-20/11_inventario.js para las CUATRO — hoy cuenta 3 con veredicto TUTEO, que son las tres que llevan trato."
+      }
     }
   ]
 }

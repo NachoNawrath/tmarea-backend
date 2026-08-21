@@ -1,0 +1,302 @@
+TEXTO RENDERIZABLE DE ROL P — voseo_al_patron_2026-08-20
+
+QUE MIRA: solo literales de cadena y texto JSX, con comentarios quitados.
+QUE NO MIRA: comentarios, nombres de variable, claves de JSON.
+APROXIMACION DECLARADA: el troceo es por linea; una plantilla de varias
+  lineas se ve por partes y un // dentro de una cadena se toma por comentario.
+
+ficheros de ROL P con al menos un hit en el paso 02 : 86
+
+fragmentos de texto extraidos : 43511
+
+════ VOSEO · INEQUIVOCAS ════
+  0 cadenas DISTINTAS en texto renderizable de ROL P
+
+
+════ VOSEO · AMBIGUAS (homografo — las resuelve la lectura) ════
+  0 cadenas DISTINTAS en texto renderizable de ROL P
+
+
+════ TUTEO · INEQUIVOCAS ════
+  8 cadenas DISTINTAS en texto renderizable de ROL P
+
+  ── pwa/src/components/screens/S0Onboarding.jsx ──
+     L50         [eres]  Eres responsable de tu cuenta y de toda actividad en ella.
+  ── pwa/src/components/verification/TransitRestrictionsBlock.jsx ──
+     L186        [puedes]  📍 Puedes navegar hasta    . A partir de ahí, la zona está restringida.
+  ── pwa/src/components/verification/VoyageVerdict.jsx ──
+     L155        [puedes]  Puedes navegar hasta  . A partir de ahí, la zona está restringida.
+  ── pwa/src/data/Biblioteca/balizamiento_01.json ──
+     secciones[0].conceptos_clave[0].explicacion  [sales]  En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés.
+     secciones[1].conceptos_clave[0].explicacion  [puedes]  No navegues entre estas boyas. Demarcan 'balsas jaula' y sus sistemas de fondeo, que tienen extensos cabos submarinos donde puedes enredar tu hélice.
+  ── pwa/src/data/Biblioteca/emergencias_01.json ──
+     secciones[0].conceptos_clave[0].explicacion  [haces]  Significa acercarse de modo que el viento golpee primero a la persona y luego a tu embarcación. Si lo haces al revés, el viento empujará tu lancha sobre la persona.
+  ── pwa/src/screens/P1_VesselProfile.jsx ──
+     L252        [quieres]  ¿Seguro que quieres limpiar los datos de la nave?
+     L339        [tienes]  Autocompletado desde la eslora (TM-002 Art. 28). Editable si tienes certificado de arqueo.
+
+════ TUTEO · AMBIGUAS (homografo — las resuelve la lectura) ════
+  204 cadenas DISTINTAS en texto renderizable de ROL P
+
+  ── backend/data/contacto/reparticiones_publicadas.json ──
+     decision    [usa]  R4 = opcion B, owner 2026-08-15. El nombre sale del titulo publicado por DIRECTEMAR; la columna `Capitania` del CSV NO se usa como rotulo porque es la cadena cruda de SITPORT (medido 64 de 64).
+  ── backend/data/decreto/zonas_aviso.json ──
+     rige        [declara]  CONTRATO_MOTOR.md v1.7 — INV-3.6 (una jurisdiccion sin geometria se declara, nunca se resuelve en silencio)
+     que_es      [toca]  La declaracion de las jurisdicciones que el motor sabe que NO puede resolver, y de a quien deriva al patron cuando su ruta pasa por una de ellas. Es dato, no codigo: agregar, quitar o corregir una zon
+     correccion_2026-08-16_del_bloque_reversibilidad  [deja]  El texto de arriba decia, hasta hoy: "Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria en el insumo ~~(participa_matching = false)~~". ERA FALSO desde que entro el tercer est
+     correccion_2026-08-16_del_bloque_reversibilidad  [cambia]  El texto de arriba decia, hasta hoy: "Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria en el insumo ~~(participa_matching = false)~~". ERA FALSO desde que entro el tercer est
+     derivacion_de_contacto.regla  [toma]  El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion
+     derivacion_de_contacto.regla  [carga]  El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion
+     derivacion_de_contacto.regla  [declara]  El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion
+     derivacion_de_contacto.tipo capitania  [usa]  Solo si el mapa atribuye esa bahia a una Capitania cuyo nombre coincide con el de la jurisdiccion del decreto. Si no coincide, no se usa.
+     derivacion_de_contacto.tipo sin_contacto  [declara]  Cuando ninguna de las dos coincide. Es el caso de las jurisdicciones cuyas bahias el mapa operativo atribuye a una Capitania vecina: usar ese telefono seria dejar que el mapa revoque al decreto, que e
+     derivacion_de_contacto.campo discrepancias_declaradas  [sigue]  AGREGADO EL 2026-08-16. Los tres tipos de arriba suponian que la coincidencia entre el mapa y el decreto era UNA. Son DOS NIVELES —Capitania y Gobernacion— y pueden caer distinto: un contacto de Capit
+     derivacion_de_contacto.que exige el campo  [carga]  UNA sola cosa, y es la misma vara de `sin_contacto`: el nivel declarado tiene que DISCREPAR HOY contra la fuente. Si el mapa pasa a coincidir en ese nivel, la carga se detiene y obliga a retirar la de
+     derivacion_de_contacto.por que no puede reclamar tramo  [marca]  Una zona que da contacto y ademas arrastra una discrepancia declarada NO puede declarar `ambito`. Motivo medido el 2026-08-16: el consumidor de una zona reclamante (`src/services/cobertura-jurisdiccio
+     mensaje.procedencia  [cambia]  CONTRATO_MOTOR.md §10, fila 'Jurisdiccion sin limite cargado', contrato v1.9 (commit 8ab2955; el texto vigente de esta fila entro en la v1.8, d9f7f9e). TRANSCRITO de ahi, no redactado aca: el §10 es l
+     mensaje.actualizado_2026-08-13  [verifica]  El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el cont
+     mensaje.actualizado_2026-08-13  [cambia]  El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el cont
+     mensaje.actualizado_2026-08-13  [muestra]  El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el cont
+     mensaje.capa_2_con_capitania  [confirma]  Confirma con la Capitanía {nombre} antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exi
+     mensaje.capa_2_sin_capitania  [coordina]  Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricci
+     mensaje.nota_capa_2_sin_capitania  [usa]  Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada forzosa y z
+     mensaje.nota_capa_2_sin_capitania  [agrega]  Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada forzosa y z
+     cotejo_con_el_contrato.por_que_existe  [cambia]  El bloque `mensaje` promete arriba que 'si el catalogo cambia, cambia aca y se nota'. El 2026-08-13 el catalogo cambio —la v1.8 le saco el telefono a la fila— y NO se noto: el dato sirvio el texto de 
+     cotejo_con_el_contrato.por_que_la_fila_se_declara_y_no_se_deduce  [declara]  La propuesta original decia que el control leeria `mensaje.procedencia` para ubicar la fila. `procedencia` es PROSA: parsearla seria deducir la afirmacion del texto, que es justo lo que §7.2 prohibe. 
+     cotejo_con_el_contrato.normalizacion[0]  [marca]  NEGRITAS: el contrato es markdown y marca `**...**`; el dato es texto plano. Se quitan los asteriscos, no lo que envuelven.
+     cotejo_con_el_contrato.afirmaciones[2].nombre  [declara]  la bandera del codigo es la que declara el catalogo
+     cotejo_con_el_contrato.por_que_entra_la_bandera  [declara]  La misma celda de capa 1 declara el nivel (`🟡 U`) y el motor lo tiene como constante en cobertura-jurisdiccional.js (BANDERA_AVISO). Hasta hoy nadie cotejaba las dos. Si dejaran de coincidir, INV-3.6
+     cotejo_con_el_contrato.lo_que_NO_cubre[0]  [declara]  UNA SOLA FILA: la que se declara arriba. Las otras nueve del §10 no tienen dato transcrito que cotejar — el `[tel]` que la v1.8 le saco a la fila 'Zarpe cerrado' no vive en ningun archivo de datos, as
+     cotejo_con_el_contrato.lo_que_NO_cubre[1]  [declara]  NO caza que FALTE una transcripcion que deberia existir. Si manana el §10 sumara una fila que el motor tiene que servir y nadie la transcribe aca, este control seguiria en verde. Es el segundo hueco q
+     cotejo_con_el_contrato.lo_que_NO_cubre[3]  [verifica]  NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde.
+     cotejo_con_el_contrato.lo_que_NO_cubre[3]  [comprueba]  NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde.
+     contacto_generico.texto  [coordina]  Coordina con la Autoridad Maritima por VHF Canal 16 antes de zarpar.
+     zonas[6].contacto.nota_2026-08-16_retiro  [toca]  RETIRADA LA DISCREPANCIA, 2026-08-16. La mitad (ii) de la `nota_2026-08-16` —la Gobernacion que el mapa le ponia a la bahia 129 (Aysen) contra la que le da el decreto (Punta Arenas)— quedo ADJUDICADA 
+     zonas[7].contacto.motivo  [toma]  Las bahias de su sector (131 Gregorio, 132 Clarencia) estan atribuidas en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, n
+     zonas[7].motivo_sin_ambito  [define]  El decreto no le da paralelos: la define por la linea Punta Harry - Cabo San Vicente y por el limite maritimo internacional por el Oriente, que invoca sin darlo en coordenadas.
+     zonas[8].contacto.motivo  [toma]  Su bahia (137, Bahia Chilota, Porvenir) esta atribuida en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el tel
+     zonas[9].motivo_sin_ambito  [describe]  El decreto la describe por accidentes y canales, sin paralelos de norte y sur que permitan declarar una banda.
+  ── backend/src/constants/vesselTypes.js ──
+     L60         [carga]  Carga y Servicios
+     L60         [carga]  carga_servicios:  ,
+  ── backend/src/models/Vessel.js ──
+     L11         [define]  const Vessel = sequelize.define(
+     L58         [carga]  carga_servicios
+     L105        [carga]  Desplazamiento sin carga (toneladas)
+     L110        [carga]  Calado aproximado sin carga (metros)
+  ── backend/src/routes/navigation-routes.js ──
+     L15         [carga]  peso_carga_adicional_ton
+  ── backend/src/routes/sitport-routes.js ──
+     L857        [entra]  [sitport/restricciones-ruta] bahía ${bahiaId} entra al matching y no tiene coordenada
+     L916        [activa]  Restricción activa
+  ── backend/src/services/ambitos-publicados.js ──
+     L60         [consulta]  declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca
+     L60         [marca]  declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca
+     L60         [declara]  declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca
+     L78         [declara]  C2: el registro declara el ambito '${e.ambito}', que no existe en el insumo.
+     L98         [declara]  C9: el ambito '${e.ambito}' no declara "habilitado_para_publicar" booleano. Ese campo es el que
+     L103        [declara]  C9: el ambito '${e.ambito}' declara "habilitado_para_publicar": ${e.habilitado_para_publicar} y no
+     L113        [declara]  ambito '${e.ambito}': declara ${e.jurisdicciones_esperadas} jurisdicciones esperadas y el insumo tiene
+     L141        [declara]  C6: el ambito '${e.ambito}' no declara geografia de reclamo y no escribe
+     L227        [declara]  C6: el ambito '${e.ambito}' declara su geografia de reclamo en '${g.relacion}', que no existe en el
+  ── backend/src/services/anclas-declaradas.js ──
+     L103        [declara]  no declara ancla_esperada.
+     L118        [declara]  declara ancla_esperada =
+     L121        [prueba]  por un tipeo. Ensancharlo es deliberado y va con su familia en la prueba de mordida.
+     L135        [consulta]  -- la consulta cambio de forma y el control estaria comparando contra undefined
+  ── backend/src/services/andamio-medicion.js ──
+     L51         [declara]  el bloque "andamio" no declara es_andamio === true (vale ${JSON.stringify(a.es_andamio)}).
+     L52         [marca]  Una capa que no se declara andamio no puede usarse como andamio: sin esa marca no hay nada que impida promoverla.
+     L52         [declara]  Una capa que no se declara andamio no puede usarse como andamio: sin esa marca no hay nada que impida promoverla.
+     L64         [marca]  que el bloque "andamio" marca como andamio de medición. Esa capa no puede responderle al patrón:
+     L83         [consulta]  [andamio] OK: '${andamio.capa}' declarada como andamio de medición; el motor consulta otra capa.
+     L114        [declara]  el comentario de '${andamio.capa}' en la base NO es el que declara capa_consultada.json. Los dos guards
+  ── backend/src/services/catalogo-bahias.js ──
+     L75         [declara]  ${rutaArchivo} no declara BAHIA_COORDS — la fuente interna cambió de forma y la extracción quedó ciega
+     L138        [usa]  la que usa el runtime — el descarte de restricciones-ruta y weather-ruta se decide acá
+     L154        [declara]  id → Capitanía y teléfono; no declara ninguno de los campos comparables
+     L304        [declara]  la fuente interna ${f.clave} no declara "campos" — si no aporta ninguno tiene que decirlo con []
+     L308        [declara]  la fuente interna ${f.clave} declara campo(s) que no se comparan: ${desconocidos.join(',')}
+     L311        [declara]  la fuente interna ${f.clave} declara campos (${f.campos.join(',')}) pero no trae contenido con qué compararlos
+  ── backend/src/services/cierre-derivador.js ──
+     L120        [carga]  /\b(?:CARGA|DESCARGA)\b/,
+  ── backend/src/services/cobertura-jurisdiccional.js ──
+     L92         [declara]  capa_consultada.json no declara '${campo}'.
+     L133        [consulta]  consulta la capa publicada, y no se supone que no: un bloque borrado apagaria el cableado en silencio,
+     L141        [declara]  ${BLOQUE_ENSANCHE}: ambitos_publicados.json no declara una 'capa_publicada' usable ('${capa}').
+     L153        [declara]  ${BLOQUE_ENSANCHE}: declara 'consultada': true y ambitos_publicados.json no publica ningun ambito.
+     L219        [declara]  capa_consultada.json: el bloque '${BLOQUE_ENSANCHE}' falta o no declara 'consultada' booleano.
+     L220        [completa]  La verificacion completa vive en ensancheDeclarado(); esto es solo el arranque.
+     L319        [declara]  capa_consultada.json no declara 'tolerancia_fuera_del_recorte_m' como numero.
+     L465        [muestra]  declarada lo cubre. Se muestra al patron y queda registrado como defecto de construccion.
+  ── backend/src/services/cotejo-contrato.js ──
+     L137        [declara]  contrato transcribe este dato, y el cotejo no se supone: se declara.
+  ── backend/src/services/deportivo-validator.js ──
+     L78         [verifica]  Verifica que tu licencia (PLDB, PDB, CDC o CDAM) sea la correcta según RGDN (TM-002) Art. 12.
+     L98         [declara]  Declara el tipo de propulsión de tu embarcación (motor, vela, mixto o manual).
+  ── backend/src/services/fondeadero-service.js ──
+     L72         [muestra]  const muestra = [];
+     L73         [muestra]  for (let i = 0; i < rutaAntes.length; i += step) muestra.push(rutaAntes[i]);
+     L75         [muestra]  if (muestra[muestra.length - 1] !== ultimo) muestra.push(ultimo);
+     L83         [muestra]  for (const rp of muestra) {
+  ── backend/src/services/join-bahia-jurisdiccion.js ──
+     L70         [pregunta]  exigir(f && textoNoVacio(f.id) && textoNoVacio(f.a_quien) && textoNoVacio(f.que_falta) && textoNoVacio(f.pregunta),
+     L71         [pregunta]  bahia ${id}: 'sin_resolver' exige 'fuente_a_consultar' con id, a_quien, que_falta y pregunta escritos.
+     L72         [avisa]  Una pendiente sin fuente identificada queda como verdad y no avisa.
+     L94         [declara]  bahia ${id}: declara ${destinos.length} jurisdicciones con respaldo '${e.respaldo}'. Atribuirla a varias
+  ── backend/src/services/marine-weather-service.js ──
+     L25         [verifica]  No se pudo cargar la base de conocimiento de especies. Verifica que especies_pesca.json esté en el directorio raíz del backend.
+     L113        [baja]  baja
+     L129        [consulta]  ⚠ ALERTA FAN PREVENTIVA: concentración de clorofila anormalmente alta (${clorofila.toFixed(2)} mg/m³, umbral: ${umbral.toFixed(1)} mg/m³). Riesgo elevado de Floraciones Algales Nocivas. Consulta la Re
+  ── backend/src/services/raster-router-service.js ──
+     L643        [completa]  La ruta cruza el tile "${s.id}" que aún no está generado. Ver docs/RUNBOOK_tiles_costa_completa.md.
+  ── backend/src/services/raster/canal-geometria.js ──
+     L27         [completa]  red_nautica_chile_completa.geojson
+  ── backend/src/services/raster/tile-loader.js ──
+     L26         [espera]  Tile ${tileId}: .bin tiene ${packed.length} celdas, meta.json espera ${meta.rows * meta.cols} (rows*cols)
+  ── backend/src/services/restriction-rules-engine.js ──
+     L113        [activa]  Condición VARIABLE — restricción activa para tu embarcación (AB {nave_ab}, menores de {umbral} AB)
+     L134        [activa]  Condición VARIABLE — restricción activa para embarcaciones menores
+     L154        [activa]  Restricción activa — carga tu AB en el perfil para verificar si te afecta
+     L154        [carga]  Restricción activa — carga tu AB en el perfil para verificar si te afecta
+  ── backend/src/services/ship-physics.js ──
+     L22         [carga]  const Delta_total = Delta_lightship + peso_carga_adicional_ton;
+  ── backend/src/services/voyage-report-service.js ──
+     L166        [navega]  NAVEGA CON CERTEZA
+  ── backend/src/services/zonas-aviso.js ──
+     L97         [declara]  la jurisdiccion '${jur.id}' declara estado_geometria '${e}', que no esta en
+     L99         [declara]  un estado nuevo decide si su carencia se le declara al patron o no, y eso no
+     L132        [declara]  un elemento. Declarar el campo vacio no declara nada: o se escribe la discrepancia, o se omite el campo.
+     L140        [declara]  zona '${zona.jurisdiccion_id}': la discrepancia de la bahia ${item.bahia_id} declara nivel '${item.nivel}',
+     L142        [comprueba]  que campo se comprueba, y adivinarlo comprobaria otra cosa.
+     L162        [declara]  zona '${zona.jurisdiccion_id}': la bahia ${item.bahia_id} declara una discrepancia en nivel
+     L164        [deja]  coinciden. Una discrepancia declarada que se resolvio deja de declararse: mantenerla escrita haria
+     L206        [declara]  (mapa: capitania='${e.capitania}', gobernacion='${e.gobernacion}'). La discrepancia que declara el
+     L263        [declara]  ('${entrada.capitania}'). Derivar a la Gobernacion solo se declara cuando la fuente no atribuye Capitania.
+     L267        [declara]  Las dos fuentes no coinciden: no se declara contacto hasta adjudicar cual manda.
+     L267        [manda]  Las dos fuentes no coinciden: no se declara contacto hasta adjudicar cual manda.
+     L322        [marca]  "mensaje.capa_2_con_capitania" no incluye la marca {nombre}: saldria a pantalla sin ese dato.
+     L330        [muestra]  un mensaje del catalogo: el contacto se muestra en el punto de zarpe y recalada, no aca.
+     L360        [declara]  la jurisdiccion '${id}' esta sin geometria pero no declara 'causa_sin_geometria' en el insumo.
+     L386        [declara]  la zona '${id}' declara un contacto de tipo '${contacto.tipo}' CON ${contacto.discrepancias.length}
+     L388        [marca]  (cobertura-jurisdiccional.js) se queda con nombre, telefono y tipo: la marca de la discrepancia se
+     L390        [marca]  norma: se levanta cuando el consumidor sepa cargar la marca.
+     L413        [cuenta]  Una 'cerrable_parcial' cuenta acá igual que una 'no_cerrable': su parte no cubierta
+  ── backend/src/utils/displacementCalculator.js ──
+     L63         [carga]  const factor_carga = 0.10;
+     L65         [carga]  const consumoDinamico = consumoNominal * (1 + factor_carga * cargaPct);
+  ── backend/src/workers/queueWorker.js ──
+     L89         [consulta]  sitport:${puerto}:${tipo_consulta}
+  ── pwa/src/App.jsx ──
+     L93         [navega]  NAVEGA CON CERTEZA
+  ── pwa/src/components/AppSidebar.jsx ──
+     L75         [navega]  Tmarea — Navega con Certeza
+  ── pwa/src/components/DeportiveAlerts.jsx ──
+     L162        [avisa]  Antes de salir a pasear, avisa tu zarpe a la Autoridad Marítima.
+     L212        [avisa]  ezarpe.directemar.cl  o avisa por radio en canal de guardia.
+     L251        [activa]  Ver datos de capitanía activa
+     L270        [activa]  Jurisdicción activa
+     L336        [confirma]  Confirma que tu embarcación cuenta con el equipamiento mínimo exigido por DIRECTEMAR.
+     L336        [cuenta]  Confirma que tu embarcación cuenta con el equipamiento mínimo exigido por DIRECTEMAR.
+     L394        [marca]  Marca todos los ítems para continuar
+  ── pwa/src/components/screens/ReportarProblema.jsx ──
+     L141        [verifica]  No se pudo conectar con el servidor. Verifica tu conexión.
+     L216        [sé]  Describe brevemente qué pasó o qué no funciona. Sé conciso.
+     L216        [describe]  Describe brevemente qué pasó o qué no funciona. Sé conciso.
+  ── pwa/src/components/screens/S0_5Registro.jsx ──
+     L51         [navega]  Navega con Certeza
+     L56         [completa]  Completa tus datos para acceder a Tmarea
+     L94         [selecciona]  Selecciona tu licencia
+  ── pwa/src/components/screens/S0Onboarding.jsx ──
+     L27         [navega]  Navega con Certeza
+     L31         [verifica]  Verifica condiciones de navegación antes de ejecutar tu zarpe autorizado.
+     L50         [cuenta]  Eres responsable de tu cuenta y de toda actividad en ella.
+     L55         [completa]  Ver versión completa →
+     L77         [verifica]  Verifica todo contra fuentes oficiales antes de zarpar.
+  ── pwa/src/components/verification/NavigationBlock.jsx ──
+     L134        [completa]  ⚠ El combustible disponible no cubre la ruta completa. Verificar con el armador antes de zarpar.
+  ── pwa/src/components/verification/NormativeBlock.jsx ──
+     L143        [recuerda]  El cumplimiento normativo es responsabilidad exclusiva del patrón. Tmarea recuerda, no autoriza.
+  ── pwa/src/components/verification/PortStatusBlock.jsx ──
+     L50         [activa]  Restricción activa — verificar con Capitanía.
+  ── pwa/src/components/verification/TransitRestrictionsBlock.jsx ──
+     L48         [activa]  ⚠ Restricción activa en zona de tránsito
+     L51         [activa]  ⚠️ Restricción activa en tránsito
+     L67         [carga]  ⚠️ Carga tu AB en el perfil para verificar si esta restricción te aplica
+     L73         [confirma]  ⚠️ Confirma con la Capitanía si esta restricción afecta tu navegación
+     L146        [activa]  La ruta cruza ${nAplican} jurisdicción(es) con Condición de Puerto activa que afecta tu embarcación.
+  ── pwa/src/components/verification/VoyageVerdict.jsx ──
+     L71         [verifica]  Restricción en ${r.nombre_bahia} — verifica tu AB
+  ── pwa/src/data/Biblioteca/balizamiento_01.json ──
+     secciones[0].detalles[0]  [marca]  ESTRIBOR (Derecha): Marca ROJA. Luz Roja.
+     secciones[0].detalles[1]  [marca]  BABOR (Izquierda): Marca VERDE. Luz Verde.
+     secciones[0].conceptos_clave[0].explicacion  [deja]  En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés.
+     secciones[1].caracteristicas  [marca]  Color Amarillo. Marca de tope: X amarilla. Luz amarilla intermitente.
+  ── pwa/src/data/Biblioteca/emergencias_01.json ──
+     secciones[1].conceptos_clave[0].explicacion  [navega]  Si el fuego está en la popa, navega de cara al viento. Si el viento sopla desde la popa hacia la proa, avivará las llamas hacia la cabina.
+     secciones[2].conceptos_clave[0].explicacion  [baja]  Las mareas tienen gran amplitud. Si la marea baja y no hay riesgo de hundimiento, la opción más segura suele ser esperar la pleamar.
+  ── pwa/src/data/Biblioteca/reglamentos_01.json ──
+     secciones[1].conceptos_clave[0].explicacion  [carga]  Llevar más carga de la declarada no solo es una falta a la LGPA (suspensión de 3 meses), sino que altera la estabilidad de la nave, poniéndola en riesgo inminente de hundimiento.
+     secciones[2].puntos_clave[2]  [carga]  Estabilidad y Carga (D.S. 388, Art. 38): Obligatorio respetar la línea de carga (francobordo). Prohibido concentrar peso en altura.
+     secciones[2].conceptos_clave[0].explicacion  [carga]  Estibar carga pesada sobre cubierta o en el techo de la caseta eleva el centro de gravedad. Con el oleaje o corrientes fuertes, la nave pierde su capacidad de adrizarse (enderezarse) y volcará.
+  ── pwa/src/data/Biblioteca/ripa_01.json ──
+     secciones[1].regla_practica  [navega]  Navega lo más cerca posible del límite exterior de tu ESTRIBOR.
+  ── pwa/src/data/maritime_data.json.json ──
+     capitanias[4].tips  [activa]  Tránsito constante de naves mayores acuícolas. Mantenga escucha activa.
+  ── pwa/src/hooks/useVoyageVerification.js ──
+     L537        [carga]  peso_carga_adicional_ton: vessel.carga_ton || 0,
+  ── pwa/src/screens/P1_VesselProfile.jsx ──
+     L181        [selecciona]  Selecciona el tipo de embarcación
+     L199        [selecciona]  Selecciona el uso de la embarcación
+     L200        [selecciona]  Selecciona el tipo de propulsión
+     L201        [selecciona]  Selecciona tu licencia deportiva
+     L202        [selecciona]  Selecciona la clasificación de la nave
+     L205        [ingresa]  Ingresa la potencia del motor (HP)
+     L230        [verifica]  Error al guardar. Verifica el espacio disponible en tu dispositivo.
+     L238        [completa]  Completa todos los campos requeridos antes de continuar.
+     L272        [revisa]  Revisa o actualiza los datos antes de iniciar el viaje.
+     L272        [actualiza]  Revisa o actualiza los datos antes de iniciar el viaje.
+  ── pwa/src/screens/P2_VoyageSetup.jsx ──
+     L69         [busca]  Busca por nombre del puerto o caleta
+     L84         [busca]  Busca por nombre de empresa o ubicación geográfica del centro
+     L97         [busca]  Busca por código RNA/SERNAPESCA, apellido del titular o sector geográfico
+     L110        [busca]  Busca por nombre de caleta, sector o comuna — cobertura nacional
+     L124        [busca]  Busca por nombre de marina o club náutico
+     L136        [busca]  Busca por nombre de fondeadero o bahía
+     L371        [busca]  🐠 ¿Qué recurso busca explotar?
+     L380        [selecciona]  — Selecciona la especie objetivo —
+     L454        [ingresa]  ℹ Ingresa coordenadas en grados decimales negativos (Sur/Oeste)
+     L585        [selecciona]  ⚠ Selecciona la duración estimada
+     L754        [selecciona]  Selecciona el puerto de zarpe
+     L757        [completa]  Completa este destino
+     L759        [selecciona]  Selecciona el recurso que vas a explotar
+     L762        [ingresa]  Ingresa la fecha de zarpe
+     L763        [ingresa]  Ingresa la fecha de recalada
+     L767        [ingresa]  Ingresa un valor válido en litros
+     L776        [revisa]  Revisa los campos marcados antes de continuar.
+     L821        [ingresa]  Ingresa los datos del viaje que vas a realizar.
+  ── pwa/src/screens/P3_VoyageVerification.jsx ──
+     L44         [navega]  NAVEGA CON CERTEZA
+     L115        [usa]  El destino seleccionado está fuera de zona navegable conocida. El punto está a más de 5 km de aguas navegables según la carta del motor de rutas. Intenta seleccionar un punto más cercano a un canal o 
+     L116        [verifica]  No se encontró ruta navegable entre los puntos seleccionados. Verifica los puertos de zarpe y recalada.
+     L206        [declara]  Alcanza a las naves menores. El texto no declara tonelaje.
+     L442        [informa]  Tmarea informa. El zarpe y la navegación son responsabilidad exclusiva del patrón.
+  ── pwa/src/screens/P4_ActiveVoyage.jsx ──
+     L617        [activa]  NAVEGACIÓN ACTIVA
+     L683        [activa]  ¿Seguro? Se cancelará la navegación activa.
+     L724        [navega]  Destino fuera de zona navegable. Navega con carta SHOA.
+     L726        [navega]  No hay ruta navegable entre los puntos. Navega con carta SHOA.
+     L727        [navega]  Ruta no disponible. Navega con carta SHOA.
+  ── pwa/src/utils/restricciones.js ──
+     L53         [verifica]  Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático
+     L53         [ingresa]  Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático
+
+════ CONTROLES DEL EXTRACTOR ════
+  (1) la frase del escalon 3 sobrevive al troceo: 2 fragmentos (esperado 2)
+        L394  Contacte a     por VHF Canal 16 antes de recalar.
+        L396  Contacte a la autoridad marítima por VHF Canal 16 antes de recalar.
+  (2) un comentario NO sobrevive : OK
+  (3) una cadena SI sobrevive    : OK
+  (4) en .json solo se leen VALORES, nunca claves. Ficheros .json en ROL P: 10
+
+EXIT 0  — VERDE

@@ -1,0 +1,108 @@
+CONTROL DE CITAS — voseo_al_patron_2026-08-20
+
+Cada cita de 06_barrido_clasificado.txt se lee de vuelta contra su fichero.
+El cotejo pliega tildes en las DOS puntas: la bitacora va sin tildes y el
+arbol con ellas, asi que lo que se compara es la letra, no la codificacion.
+
+── citas del texto al patron y del §10 (16) ──
+  OK  pwa/src/components/verification/DriftCatalogoBlock.jsx
+        "Autoridad Maritima antes de zarpar, o por VHF Canal 16."
+  OK  pwa/src/components/verification/DriftCatalogoBlock.jsx
+        "La comprobacion no se pudo completar"
+  OK  pwa/src/screens/P3_VoyageVerification.jsx
+        "por VHF Canal 16 antes de recalar."
+  OK  pwa/src/screens/P3_VoyageVerification.jsx
+        "Verifica los puertos de zarpe y recalada."
+  OK  backend/data/decreto/zonas_aviso.json
+        "Confirma con la Capitania {nombre} antes de zarpar."
+  OK  backend/data/decreto/zonas_aviso.json
+        "Coordina con la Autoridad Maritima por VHF Canal 16 antes de zarpar."
+  OK  backend/CONTRATO_MOTOR.md
+        "si aseguras que la nave esta en condiciones y te responsabilizas"
+  OK  backend/CONTRATO_MOTOR.md
+        "si debes cambiar el puerto de recalada, solicita permiso"
+  OK  backend/CONTRATO_MOTOR.md
+        "puedes efectuar arribada forzosa"
+  OK  backend/CONTRATO_MOTOR.md
+        "Avisa de inmediato a la Autoridad Maritima por VHF Canal 16."
+  OK  backend/CONTRATO_MOTOR.md
+        "No ingreses a la zona. Contacta por VHF Canal 16"
+  OK  backend/CONTRATO_MOTOR.md
+        "avisa tu arribada a la Autoridad Maritima"
+  OK  backend/CONTRATO_MOTOR.md
+        "Gestiona tu despacho antes de navegar."
+  OK  backend/CONTRATO_MOTOR.md
+        "Informa tu intencion de movimiento al club nautico"
+  OK  backend/CONTRATO_MOTOR.md
+        "Tu horario estimado excede la luz diurna."
+  OK  backend/CONTRATO_MOTOR.md
+        "Confirma con la Capitania [nombre] antes de zarpar."
+
+── citas de usted (5) ──
+  OK  pwa/src/data/maritime_data.json.json
+        "Verifique tabla de marea local."
+  OK  pwa/src/data/maritime_data.json.json
+        "Mantenga escucha activa."
+  OK  pwa/src/screens/P4_ActiveVoyage.jsx
+        "navegue con sonda"
+  OK  backend/src/services/raster-router-service.js
+        "Sin datos de profundidad en este tramo. Navegue con sonda."
+  OK  backend/src/services/raster/cotejo-vertical.js
+        "verifique con ecosonda antes de navegar."
+
+── citas de los casos dudosos (3) ──
+  OK  pwa/src/App.jsx
+        "NAVEGA CON CERTEZA"
+  OK  pwa/src/screens/P2_VoyageSetup.jsx
+        "Que recurso busca explotar?"
+  OK  backend/src/services/marine-weather-service.js
+        "Verifica que especies_pesca.json este en el directorio raiz del backend."
+
+── citas del piso — formas fuera del vocabulario (3) ──
+  OK  pwa/src/screens/P3_VoyageVerification.jsx
+        "Intenta seleccionar un punto mas cercano"
+  OK  pwa/src/screens/P4_ActiveVoyage.jsx
+        "Descarga el informe operacional antes de cerrar."
+  OK  pwa/src/data/Biblioteca/balizamiento_01.json
+        "No navegues entre estas boyas."
+
+── citas de PARADA 2 — lo corregido y lo medido (12) ──
+  OK  pwa/src/components/verification/DriftCatalogoBlock.jsx
+        "Consulte con la"
+  OK  pwa/src/screens/P3_VoyageVerification.jsx
+        "Contacte a <strong>{rotulo}</strong> por VHF Canal 16 antes de recalar."
+  OK  pwa/src/screens/P3_VoyageVerification.jsx
+        "Contacte a la autoridad maritima por VHF Canal 16 antes de recalar."
+  OK  backend/data/decreto/zonas_aviso.json
+        "Coordina con la Autoridad Maritima por VHF Canal 16 antes de zarpar."
+  OK  backend/data/decreto/zonas_aviso.json
+        "No cubre `capa_2_sin_capitania` ni `contacto_generico`"
+  OK  backend/src/services/marine-weather-service.js
+        "Verifica que especies_pesca.json este en el directorio raiz del backend."
+  OK  backend/src/routes/marine-weather-routes.js
+        "Demasiadas solicitudes. Intenta en un minuto."
+  OK  pwa/src/screens/P2_VoyageSetup.jsx
+        "api/marine-weather/especies"
+  OK  pwa/src/components/DeportiveAlerts.jsx
+        "genera tu zarpe digital en"
+  OK  pwa/src/data/Biblioteca/reglamentos_01.json
+        "Si chocas, varas o sufres danos"
+  OK  pwa/src/data/Biblioteca/maniobras_01.json
+        "mientras tiras de ella"
+  OK  pwa/src/screens/P4_ActiveVoyage.jsx
+        "Descarga el informe operacional antes de cerrar."
+
+── citas RETIRADAS: tienen que NO estar (2) ──
+  OK  pwa/src/components/verification/DriftCatalogoBlock.jsx
+        "Consulta con la"  -> ausente: true
+  OK  pwa/src/screens/P3_VoyageVerification.jsx
+        "Contacta a la autoridad maritima por VHF Canal 16 antes de recalar."  -> ausente: true
+
+CONTROL POSITIVO DEL PROPIO CONTROL: una cita inventada tiene que fallar.
+  OK  una frase que NO esta en el arbol da negativo
+  (se probo con el texto ya corregido, que hoy todavia no existe)
+
+  citas leidas de vuelta : 41
+  citas que no cotejaron : 0
+
+EXIT 0  — VERDE

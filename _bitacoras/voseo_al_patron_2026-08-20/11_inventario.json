@@ -1,0 +1,2462 @@
+[
+ {
+  "clave": "backend/data/contacto/reparticiones_publicadas.json",
+  "sitio": "decision",
+  "forma": "usa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "R4 = opcion B, owner 2026-08-15. El nombre sale del titulo publicado por DIRECTEMAR; la columna `Capitania` del CSV NO se usa como rotulo porque es la cadena cruda de SITPORT (medido 64 de 64).",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/contacto/reparticiones_publicadas.json",
+  "sitio": "reparticiones.201.titulo_publicado",
+  "forma": "varas",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Capitanía de Puerto de Puerto Varas",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "rige",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "CONTRATO_MOTOR.md v1.7 — INV-3.6 (una jurisdiccion sin geometria se declara, nunca se resuelve en silencio)",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "que_es",
+  "forma": "toca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La declaracion de las jurisdicciones que el motor sabe que NO puede resolver, y de a quien deriva al patron cuando su ruta pasa por una de ellas. Es dato, no codigo: agregar, quitar o corregir una zona no toca el motor.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "correccion_2026-08-16_del_bloque_reversibilidad",
+  "forma": "deja",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de arriba decia, hasta hoy: \"Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria en el insumo ~~(participa_matching = false)~~\". ERA FALSO desde que entro el tercer estado (`8267461`, 2026-08-15): el guard dejo de colgar de `participa_matching` y pasa a leer `estado_geometria`, y una jurisdiccion 'cerrable_parcial' tiene `participa_matching: true` y CONSERVA su zona. O sea que el criterio escrito aca daba por retirada una zona que el codigo mantiene. Se corrige y se deja constancia en vez de sobrescribir en silencio (CLAUDE.md §2 y §3.3). No cambia ninguna zona: las diez son 'no_cerrable' hoy.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "correccion_2026-08-16_del_bloque_reversibilidad",
+  "forma": "cambia",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de arriba decia, hasta hoy: \"Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria en el insumo ~~(participa_matching = false)~~\". ERA FALSO desde que entro el tercer estado (`8267461`, 2026-08-15): el guard dejo de colgar de `participa_matching` y pasa a leer `estado_geometria`, y una jurisdiccion 'cerrable_parcial' tiene `participa_matching: true` y CONSERVA su zona. O sea que el criterio escrito aca daba por retirada una zona que el codigo mantiene. Se corrige y se deja constancia en vez de sobrescribir en silencio (CLAUDE.md §2 y §3.3). No cambia ninguna zona: las diez son 'no_cerrable' hoy.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "correccion_2026-08-16_del_bloque_reversibilidad",
+  "forma": "corrige",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de arriba decia, hasta hoy: \"Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria en el insumo ~~(participa_matching = false)~~\". ERA FALSO desde que entro el tercer estado (`8267461`, 2026-08-15): el guard dejo de colgar de `participa_matching` y pasa a leer `estado_geometria`, y una jurisdiccion 'cerrable_parcial' tiene `participa_matching: true` y CONSERVA su zona. O sea que el criterio escrito aca daba por retirada una zona que el codigo mantiene. Se corrige y se deja constancia en vez de sobrescribir en silencio (CLAUDE.md §2 y §3.3). No cambia ninguna zona: las diez son 'no_cerrable' hoy.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.regla",
+  "forma": "toma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion que deje de coincidir detiene la carga en vez de mentir.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.regla",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion que deje de coincidir detiene la carga en vez de mentir.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.regla",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion que deje de coincidir detiene la carga en vez de mentir.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.tipo capitania",
+  "forma": "usa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Solo si el mapa atribuye esa bahia a una Capitania cuyo nombre coincide con el de la jurisdiccion del decreto. Si no coincide, no se usa.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.tipo gobernacion",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Solo si el mapa no atribuye Capitania a esa bahia (capitania = null) y su Gobernacion coincide con la que el decreto le da a la jurisdiccion. Deriva un escalon mas arriba, que es donde la fuente si tiene respaldo.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.tipo sin_contacto",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Cuando ninguna de las dos coincide. Es el caso de las jurisdicciones cuyas bahias el mapa operativo atribuye a una Capitania vecina: usar ese telefono seria dejar que el mapa revoque al decreto, que es exactamente lo que INV-3.3 prohibe. Se declara la carencia con su motivo y el aviso deriva al contacto generico.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.campo discrepancias_declaradas",
+  "forma": "sigue",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "AGREGADO EL 2026-08-16. Los tres tipos de arriba suponian que la coincidencia entre el mapa y el decreto era UNA. Son DOS NIVELES —Capitania y Gobernacion— y pueden caer distinto: un contacto de Capitania se puede dar y a la vez la Gobernacion estar en desacuerdo. Ese caso no era ni 'capitania' limpio ni 'sin_contacto' honesto. `discrepancias_declaradas` es ORTOGONAL al tipo, no un cuarto tipo: el tipo dice QUE CONTACTO SE DA y esto dice QUE SIGUE EN DESACUERDO. Cada entrada lleva `bahia_id`, `nivel` ('capitania' o 'gobernacion', sin caso por defecto) y `motivo` escrito.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.campo discrepancias_declaradas",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "AGREGADO EL 2026-08-16. Los tres tipos de arriba suponian que la coincidencia entre el mapa y el decreto era UNA. Son DOS NIVELES —Capitania y Gobernacion— y pueden caer distinto: un contacto de Capitania se puede dar y a la vez la Gobernacion estar en desacuerdo. Ese caso no era ni 'capitania' limpio ni 'sin_contacto' honesto. `discrepancias_declaradas` es ORTOGONAL al tipo, no un cuarto tipo: el tipo dice QUE CONTACTO SE DA y esto dice QUE SIGUE EN DESACUERDO. Cada entrada lleva `bahia_id`, `nivel` ('capitania' o 'gobernacion', sin caso por defecto) y `motivo` escrito.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.que exige el campo",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "UNA sola cosa, y es la misma vara de `sin_contacto`: el nivel declarado tiene que DISCREPAR HOY contra la fuente. Si el mapa pasa a coincidir en ese nivel, la carga se detiene y obliga a retirar la declaracion — el mismo retiro automatico que tiene la zona entera. De esa unica exigencia cae sola la contradiccion: declarar que discrepa el MISMO nivel del que sale el contacto es imposible, porque esa rama ya exigio que coincidiera. Se detiene por la medicion, no por una regla que nombre el caso (CLAUDE.md §4.3).",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.por que no puede reclamar tramo",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una zona que da contacto y ademas arrastra una discrepancia declarada NO puede declarar `ambito`. Motivo medido el 2026-08-16: el consumidor de una zona reclamante (`src/services/cobertura-jurisdiccional.js:405`) se queda con `{nombre, telefono, tipo}` y la marca se pierde en ese mapeo, o sea que el valor en desacuerdo llegaria sin ella. Es CRITERIO DEL AGENTE, no norma, y su condicion de revocacion esta escrita: se levanta el dia que el consumidor sepa cargar la marca. NO alcanza a `sin_contacto`, que no entrega contacto y por lo tanto no tiene marca que perder.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.por que no puede reclamar tramo",
+  "forma": "levanta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una zona que da contacto y ademas arrastra una discrepancia declarada NO puede declarar `ambito`. Motivo medido el 2026-08-16: el consumidor de una zona reclamante (`src/services/cobertura-jurisdiccional.js:405`) se queda con `{nombre, telefono, tipo}` y la marca se pierde en ese mapeo, o sea que el valor en desacuerdo llegaria sin ella. Es CRITERIO DEL AGENTE, no norma, y su condicion de revocacion esta escrita: se levanta el dia que el consumidor sepa cargar la marca. NO alcanza a `sin_contacto`, que no entrega contacto y por lo tanto no tiene marca que perder.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "derivacion_de_contacto.por que no puede reclamar tramo",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una zona que da contacto y ademas arrastra una discrepancia declarada NO puede declarar `ambito`. Motivo medido el 2026-08-16: el consumidor de una zona reclamante (`src/services/cobertura-jurisdiccional.js:405`) se queda con `{nombre, telefono, tipo}` y la marca se pierde en ese mapeo, o sea que el valor en desacuerdo llegaria sin ella. Es CRITERIO DEL AGENTE, no norma, y su condicion de revocacion esta escrita: se levanta el dia que el consumidor sepa cargar la marca. NO alcanza a `sin_contacto`, que no entrega contacto y por lo tanto no tiene marca que perder.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "mensaje.procedencia",
+  "forma": "cambia",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "CONTRATO_MOTOR.md §10, fila 'Jurisdiccion sin limite cargado', contrato v1.9 (commit 8ab2955; el texto vigente de esta fila entro en la v1.8, d9f7f9e). TRANSCRITO de ahi, no redactado aca: el §10 es la fuente unica de mensajes y el codigo no inventa texto. Si el catalogo cambia, cambia aca y se nota.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "mensaje.actualizado_2026-08-13",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el contacto se muestra en el punto de zarpe y recalada, nunca dentro de un mensaje del catalogo. Queda escrito porque la divergencia vivio sin que nada la detectara: este mismo bloque promete arriba que 'si el catalogo cambia, cambia aca y se nota', y NO se noto — no hay ningun control que compare los dos textos. Construirlo es trabajo aparte, anotado en PLAN_JURISDICCION.md §7.1.",
+  "veredicto": "NO_TUTEO",
+  "por": "nota historica: cita el texto viejo para dejar constancia, no se sirve al cliente"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "mensaje.actualizado_2026-08-13",
+  "forma": "cambia",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el contacto se muestra en el punto de zarpe y recalada, nunca dentro de un mensaje del catalogo. Queda escrito porque la divergencia vivio sin que nada la detectara: este mismo bloque promete arriba que 'si el catalogo cambia, cambia aca y se nota', y NO se noto — no hay ningun control que compare los dos textos. Construirlo es trabajo aparte, anotado en PLAN_JURISDICCION.md §7.1.",
+  "veredicto": "NO_TUTEO",
+  "por": "nota historica: cita el texto viejo para dejar constancia, no se sirve al cliente"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "mensaje.actualizado_2026-08-13",
+  "forma": "muestra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el contacto se muestra en el punto de zarpe y recalada, nunca dentro de un mensaje del catalogo. Queda escrito porque la divergencia vivio sin que nada la detectara: este mismo bloque promete arriba que 'si el catalogo cambia, cambia aca y se nota', y NO se noto — no hay ningun control que compare los dos textos. Construirlo es trabajo aparte, anotado en PLAN_JURISDICCION.md §7.1.",
+  "veredicto": "NO_TUTEO",
+  "por": "nota historica: cita el texto viejo para dejar constancia, no se sirve al cliente"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "mensaje.capa_2_con_capitania",
+  "forma": "confirma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Confirma con la Capitanía {nombre} antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.",
+  "veredicto": "TUTEO",
+  "por": "transcripcion del §10 servida al cliente — se mueve CON el §10"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "mensaje.capa_2_sin_capitania",
+  "forma": "coordina",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.",
+  "veredicto": "TUTEO",
+  "por": "transcripcion del §10 servida al cliente — se mueve CON el §10"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "mensaje.nota_capa_2_sin_capitania",
+  "forma": "usa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada forzosa y zona intermedia cerrada). No se agrega una via nueva ni un numero que la fuente no tenga.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "mensaje.nota_capa_2_sin_capitania",
+  "forma": "agrega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada forzosa y zona intermedia cerrada). No se agrega una via nueva ni un numero que la fuente no tenga.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "cotejo_con_el_contrato.por_que_existe",
+  "forma": "cambia",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El bloque `mensaje` promete arriba que 'si el catalogo cambia, cambia aca y se nota'. El 2026-08-13 el catalogo cambio —la v1.8 le saco el telefono a la fila— y NO se noto: el dato sirvio el texto de la v1.7 hasta que una medicion lo encontro a mano. La promesa estaba escrita y no habia nada que la sostuviera. Esto es lo que la sostiene.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "cotejo_con_el_contrato.hermano_de_72_no_extension",
+  "forma": "vigila",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "PLAN_JURISDICCION.md §7.2 vigila que el PLAN no mienta sobre el REPOSITORIO. Esto vigila que un DATO no divergisa del CONTRATO. Distinto alcance, misma forma. Se construye al lado y no adentro porque estirar §7.2 para meter esto seria el error que §7.2 mismo nombra: 'construir solo este y darse por cubierto'. De §7.2 se copia lo que se midio aplicable: la afirmacion declarada en el dato y no deducida de la prosa, el tipo `linea_dice`, la semantica de salida de E0.1 y la mordida con control negativo primero.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "cotejo_con_el_contrato.por_que_la_fila_se_declara_y_no_se_deduce",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La propuesta original decia que el control leeria `mensaje.procedencia` para ubicar la fila. `procedencia` es PROSA: parsearla seria deducir la afirmacion del texto, que es justo lo que §7.2 prohibe. Por eso la fila se declara aca, legible por maquina, y `procedencia` queda como lo que es — el motivo, para quien lee.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "cotejo_con_el_contrato.normalizacion[0]",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NEGRITAS: el contrato es markdown y marca `**...**`; el dato es texto plano. Se quitan los asteriscos, no lo que envuelven.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "cotejo_con_el_contrato.afirmaciones[2].nombre",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la bandera del codigo es la que declara el catalogo",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "cotejo_con_el_contrato.por_que_entra_la_bandera",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La misma celda de capa 1 declara el nivel (`🟡 U`) y el motor lo tiene como constante en cobertura-jurisdiccional.js (BANDERA_AVISO). Hasta hoy nadie cotejaba las dos. Si dejaran de coincidir, INV-3.6 tendria dos topes distintos segun donde se mire, y el tope duro dejaria de ser duro. Sale barato porque la fila ya esta localizada para lo demas.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "cotejo_con_el_contrato.lo_que_NO_cubre[0]",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "UNA SOLA FILA: la que se declara arriba. Las otras nueve del §10 no tienen dato transcrito que cotejar — el `[tel]` que la v1.8 le saco a la fila 'Zarpe cerrado' no vive en ningun archivo de datos, asi que este control no lo habria cazado.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "cotejo_con_el_contrato.lo_que_NO_cubre[1]",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NO caza que FALTE una transcripcion que deberia existir. Si manana el §10 sumara una fila que el motor tiene que servir y nadie la transcribe aca, este control seguiria en verde. Es el segundo hueco que §7.2 declara —'que el plan no diga algo que deberia decir'— y ningun control de esta familia lo cubre.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "cotejo_con_el_contrato.lo_que_NO_cubre[3]",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "cotejo_con_el_contrato.lo_que_NO_cubre[3]",
+  "forma": "comprueba",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "contacto_generico.texto",
+  "forma": "coordina",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Coordina con la Autoridad Maritima por VHF Canal 16 antes de zarpar.",
+  "veredicto": "TUTEO",
+  "por": "transcripcion del §10 servida al cliente — se mueve CON el §10"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[0].motivo_sin_ambito",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El decreto da el limite Sur (19 13 00 S) y remite el Norte al limite politico internacional Chile-Peru, sin coordenadas. Cerrar la banda por el Norte es una convencion del dueño del producto, no dato del decreto.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[2].contacto.motivo",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La unica bahia del catalogo en su territorio (90, Isla Robinson Crusoe) esta atribuida en el mapa operativo a la Capitania de Valparaiso, no a Juan Fernandez, a la que el decreto le da Capitania propia. Tomar ese telefono seria dejar que el mapa operativo revoque al decreto (INV-3.3).",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[3].contacto.motivo",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Su bahia homonima (97, Bahia Concepcion - Lirquen) esta atribuida en el mapa operativo a la Capitania de Talcahuano, y el decreto le da Capitania propia. Es una discrepancia de clase C: se registra, no se resuelve tomando el telefono del vecino.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[3].motivo_sin_ambito",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El decreto si da los dos paralelos (36 00 00 S a 36 44 10 S), pero Lirquen y Talcahuano se reparten la Bahia de Concepcion lateralmente y sus bandas se contienen una a la otra: una banda de latitud no las separa, las confunde. Es el bug 5 de §7 — las Capitanias no se apilan por latitud.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[5].motivo_sin_ambito",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El decreto da el limite Norte (47 00 00 S) y remite el Sur al limite de la Region de Aysen, sin coordenadas. Cerrar la banda por el Sur exige una fuente regional que el insumo no trae.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[6].contacto.nota_2026-08-16",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "ESTE CONTACTO ERA `sin_contacto` HASTA HOY, y su motivo declaraba DOS discrepancias: (i) 'no tiene Capitania atribuida en el mapa operativo' y (ii) 'la Gobernacion que el mapa le pone (Aysen) no es la que le da el decreto (Punta Arenas)'. La Pieza A del 2026-08-15 (`f3936b8`) le escribio la Capitania a la bahia 129, y con eso la mitad (i) PASO A SER FALSA mientras la (ii) seguia en pie. El guard de `zonas-aviso.js` lo cazo y dejo la suite en 69/84 a proposito. La mitad muerta NO se conserva en el `motivo` porque el `motivo` es dato y el dato tiene que ser cierto; queda registrada aca y, entera, en `_bitacoras/pieza_a_nulas_2026-08-15/` §12 y §16 y en `_bitacoras/zonas_aviso_discrepancia_2026-08-16/`.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[6].contacto.nota_2026-08-16_retiro",
+  "forma": "toca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "RETIRADA LA DISCREPANCIA, 2026-08-16. La mitad (ii) de la `nota_2026-08-16` —la Gobernacion que el mapa le ponia a la bahia 129 (Aysen) contra la que le da el decreto (Punta Arenas)— quedo ADJUDICADA por el owner contra la fuente publicada por DIRECTEMAR (region de Magallanes, consultada el 2026-08-16): la Capitania de Puerto de Puerto Eden esta publicada bajo la Gobernacion Maritima de PUNTA ARENAS, y coincide con el decreto. El mapa paso a decir `Punta Arenas`, la discrepancia dejo de existir y la declaracion se retira, que es lo que el retiro automatico de `bd75c494` obliga a hacer. La `nota_2026-08-16` NO se toca: es la constancia de como se llego hasta aca (CLAUDE.md §3.3). Evidencia: `_bitacoras/bahia_129_gobernacion_2026-08-16/`.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[6].contacto.nota_2026-08-16_retiro",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "RETIRADA LA DISCREPANCIA, 2026-08-16. La mitad (ii) de la `nota_2026-08-16` —la Gobernacion que el mapa le ponia a la bahia 129 (Aysen) contra la que le da el decreto (Punta Arenas)— quedo ADJUDICADA por el owner contra la fuente publicada por DIRECTEMAR (region de Magallanes, consultada el 2026-08-16): la Capitania de Puerto de Puerto Eden esta publicada bajo la Gobernacion Maritima de PUNTA ARENAS, y coincide con el decreto. El mapa paso a decir `Punta Arenas`, la discrepancia dejo de existir y la declaracion se retira, que es lo que el retiro automatico de `bd75c494` obliga a hacer. La `nota_2026-08-16` NO se toca: es la constancia de como se llego hasta aca (CLAUDE.md §3.3). Evidencia: `_bitacoras/bahia_129_gobernacion_2026-08-16/`.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[6].motivo_sin_ambito",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El decreto da el limite Sur (50 33 00 S) y remite el Norte al limite Sur de la Gobernacion Maritima, sin coordenadas.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[7].contacto.motivo",
+  "forma": "toma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Las bahias de su sector (131 Gregorio, 132 Clarencia) estan atribuidas en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el telefono del vecino.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[7].contacto.motivo",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Las bahias de su sector (131 Gregorio, 132 Clarencia) estan atribuidas en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el telefono del vecino.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[7].motivo_sin_ambito",
+  "forma": "define",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El decreto no le da paralelos: la define por la linea Punta Harry - Cabo San Vicente y por el limite maritimo internacional por el Oriente, que invoca sin darlo en coordenadas.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[7].motivo_sin_ambito",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El decreto no le da paralelos: la define por la linea Punta Harry - Cabo San Vicente y por el limite maritimo internacional por el Oriente, que invoca sin darlo en coordenadas.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[8].contacto.motivo",
+  "forma": "toma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Su bahia (137, Bahia Chilota, Porvenir) esta atribuida en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el telefono del vecino.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[8].contacto.motivo",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Su bahia (137, Bahia Chilota, Porvenir) esta atribuida en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el telefono del vecino.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[8].motivo_sin_ambito",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Le falta el limite oriental y un ancla; el decreto no le da paralelos que permitan declarar una banda.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "sitio": "zonas[9].motivo_sin_ambito",
+  "forma": "describe",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El decreto la describe por accidentes y canales, sin paralelos de norte y sur que permitan declarar una banda.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/constants/vesselTypes.js",
+  "sitio": "L60",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Carga y Servicios",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/index.js",
+  "sitio": "L82",
+  "forma": "levanta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El backend no levanta con una capa de andamio declarada como capa del motor.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/index.js",
+  "sitio": "L83",
+  "forma": "corrige",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Se corrige en data/decreto/capa_consultada.json. Ver src/services/andamio-medicion.js.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/routes/sitport-routes.js",
+  "sitio": "L857",
+  "forma": "entra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "[sitport/restricciones-ruta] bahía ${bahiaId} entra al matching y no tiene coordenada",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "sitio": "L60",
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "sitio": "L60",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "sitio": "L60",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "sitio": "L78",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "C2: el registro declara el ambito '${e.ambito}', que no existe en el insumo.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "sitio": "L98",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "C9: el ambito '${e.ambito}' no declara \"habilitado_para_publicar\" booleano. Ese campo es el que",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "sitio": "L103",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "C9: el ambito '${e.ambito}' declara \"habilitado_para_publicar\": ${e.habilitado_para_publicar} y no",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "sitio": "L113",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "ambito '${e.ambito}': declara ${e.jurisdicciones_esperadas} jurisdicciones esperadas y el insumo tiene",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "sitio": "L123",
+  "forma": "vuelve",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Sin su declaracion, una ruta que caiga ahi vuelve a ser indistinguible de una ruta sin restricciones (INV-3.6).",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "sitio": "L141",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "C6: el ambito '${e.ambito}' no declara geografia de reclamo y no escribe",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "sitio": "L227",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "C6: el ambito '${e.ambito}' declara su geografia de reclamo en '${g.relacion}', que no existe en el",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/anclas-declaradas.js",
+  "sitio": "L103",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "no declara ancla_esperada.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/anclas-declaradas.js",
+  "sitio": "L121",
+  "forma": "prueba",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "por un tipeo. Ensancharlo es deliberado y va con su familia en la prueba de mordida.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/anclas-declaradas.js",
+  "sitio": "L135",
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "-- la consulta cambio de forma y el control estaria comparando contra undefined",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "sitio": "L51",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "el bloque \"andamio\" no declara es_andamio === true (vale ${JSON.stringify(a.es_andamio)}).",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "sitio": "L52",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una capa que no se declara andamio no puede usarse como andamio: sin esa marca no hay nada que impida promoverla.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "sitio": "L52",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una capa que no se declara andamio no puede usarse como andamio: sin esa marca no hay nada que impida promoverla.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "sitio": "L64",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "que el bloque \"andamio\" marca como andamio de medición. Esa capa no puede responderle al patrón:",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "sitio": "L83",
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "[andamio] OK: '${andamio.capa}' declarada como andamio de medición; el motor consulta otra capa.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "sitio": "L114",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "el comentario de '${andamio.capa}' en la base NO es el que declara capa_consultada.json. Los dos guards",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "sitio": "L75",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "${rutaArchivo} no declara BAHIA_COORDS — la fuente interna cambió de forma y la extracción quedó ciega",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "sitio": "L103",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "${rutaArchivo}: ${ilegibles.length} entrada(s) de BAHIA_COORDS no se pudieron leer (${ilegibles.slice(0, 5).join(',')}...) — extracción parcial, no se da por buena",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "sitio": "L138",
+  "forma": "usa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la que usa el runtime — el descarte de restricciones-ruta y weather-ruta se decide acá",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "sitio": "L154",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "id → Capitanía y teléfono; no declara ninguno de los campos comparables",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "sitio": "L304",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la fuente interna ${f.clave} no declara \"campos\" — si no aporta ninguno tiene que decirlo con []",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "sitio": "L308",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la fuente interna ${f.clave} declara campo(s) que no se comparan: ${desconocidos.join(',')}",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "sitio": "L311",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la fuente interna ${f.clave} declara campos (${f.campos.join(',')}) pero no trae contenido con qué compararlos",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/coastline-guard.js",
+  "sitio": "L108",
+  "forma": "intenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "[CoastlineGuard] coastline_compact.json corrupto, se intenta el siguiente en cascada:",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/coastline-guard.js",
+  "sitio": "L117",
+  "forma": "intenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "[CoastlineGuard] coastline_raw.json inválido o incompleto, se intenta el respaldo:",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "sitio": "L92",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "capa_consultada.json no declara '${campo}'.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "sitio": "L133",
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "consulta la capa publicada, y no se supone que no: un bloque borrado apagaria el cableado en silencio,",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "sitio": "L141",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "${BLOQUE_ENSANCHE}: ambitos_publicados.json no declara una 'capa_publicada' usable ('${capa}').",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "sitio": "L153",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "${BLOQUE_ENSANCHE}: declara 'consultada': true y ambitos_publicados.json no publica ningun ambito.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "sitio": "L219",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "capa_consultada.json: el bloque '${BLOQUE_ENSANCHE}' falta o no declara 'consultada' booleano.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "sitio": "L220",
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La verificacion completa vive en ensancheDeclarado(); esto es solo el arranque.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "sitio": "L319",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "capa_consultada.json no declara 'tolerancia_fuera_del_recorte_m' como numero.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "sitio": "L465",
+  "forma": "muestra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "declarada lo cubre. Se muestra al patron y queda registrado como defecto de construccion.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/cotejo-contrato.js",
+  "sitio": "L115",
+  "forma": "elige",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "una afirmacion verificable: no se elige una.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/cotejo-contrato.js",
+  "sitio": "L137",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "contrato transcribe este dato, y el cotejo no se supone: se declara.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/deportivo-validator.js",
+  "sitio": "L78",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Verifica que tu licencia (PLDB, PDB, CDC o CDAM) sea la correcta según RGDN (TM-002) Art. 12.",
+  "veredicto": "TUTEO",
+  "por": "mensaje al patron del validador deportivo"
+ },
+ {
+  "clave": "backend/src/services/deportivo-validator.js",
+  "sitio": "L98",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Declara el tipo de propulsión de tu embarcación (motor, vela, mixto o manual).",
+  "veredicto": "TUTEO",
+  "por": "mensaje al patron del validador deportivo"
+ },
+ {
+  "clave": "backend/src/services/join-bahia-jurisdiccion.js",
+  "sitio": "L70",
+  "forma": "pregunta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "exigir(f && textoNoVacio(f.id) && textoNoVacio(f.a_quien) && textoNoVacio(f.que_falta) && textoNoVacio(f.pregunta),",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/join-bahia-jurisdiccion.js",
+  "sitio": "L71",
+  "forma": "pregunta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "bahia ${id}: 'sin_resolver' exige 'fuente_a_consultar' con id, a_quien, que_falta y pregunta escritos.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/join-bahia-jurisdiccion.js",
+  "sitio": "L72",
+  "forma": "avisa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una pendiente sin fuente identificada queda como verdad y no avisa.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/join-bahia-jurisdiccion.js",
+  "sitio": "L94",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "bahia ${id}: declara ${destinos.length} jurisdicciones con respaldo '${e.respaldo}'. Atribuirla a varias",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/join-bahia-jurisdiccion.js",
+  "sitio": "L112",
+  "forma": "vuelve",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "vuelve a descartarse en silencio cuando el motor filtre por Capitania (INV-3.6).",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/marine-weather-service.js",
+  "sitio": "L25",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "No se pudo cargar la base de conocimiento de especies. Verifica que especies_pesca.json esté en el directorio raíz del backend.",
+  "veredicto": "NO_AL_PATRON",
+  "por": "viaja por /api/marine-weather/analyze, que la pwa NO llama; medido el 2026-08-20"
+ },
+ {
+  "clave": "backend/src/services/marine-weather-service.js",
+  "sitio": "L129",
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠ ALERTA FAN PREVENTIVA: concentración de clorofila anormalmente alta (${clorofila.toFixed(2)} mg/m³, umbral: ${umbral.toFixed(1)} mg/m³). Riesgo elevado de Floraciones Algales Nocivas. Consulta la Red de Monitoreo de SERNAPESCA antes de extraer recursos bentónicos o pelágicos en la zona.",
+  "veredicto": "NO_AL_PATRON",
+  "por": "viaja por /api/marine-weather/analyze, que la pwa NO llama; medido el 2026-08-20"
+ },
+ {
+  "clave": "backend/src/services/raster-router-service.js",
+  "sitio": "L643",
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La ruta cruza el tile \"${s.id}\" que aún no está generado. Ver docs/RUNBOOK_tiles_costa_completa.md.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/restriction-rules-engine.js",
+  "sitio": "L113",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Condición VARIABLE — restricción activa para tu embarcación (AB {nave_ab}, menores de {umbral} AB)",
+  "veredicto": "TUTEO",
+  "por": "mensaje al patron del motor de restricciones"
+ },
+ {
+  "clave": "backend/src/services/restriction-rules-engine.js",
+  "sitio": "L134",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Condición VARIABLE — restricción activa para embarcaciones menores",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "backend/src/services/restriction-rules-engine.js",
+  "sitio": "L154",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Restricción activa — carga tu AB en el perfil para verificar si te afecta",
+  "veredicto": "TUTEO",
+  "por": "mensaje al patron del motor de restricciones"
+ },
+ {
+  "clave": "backend/src/services/restriction-rules-engine.js",
+  "sitio": "L154",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Restricción activa — carga tu AB en el perfil para verificar si te afecta",
+  "veredicto": "TUTEO",
+  "por": "mensaje al patron del motor de restricciones"
+ },
+ {
+  "clave": "backend/src/services/voyage-report-service.js",
+  "sitio": "L166",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NAVEGA CON CERTEZA",
+  "veredicto": "LEMA",
+  "por": "lema de marca. Decision del owner 2026-08-20: no es mensaje al patron"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L97",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la jurisdiccion '${jur.id}' declara estado_geometria '${e}', que no esta en",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L99",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "un estado nuevo decide si su carencia se le declara al patron o no, y eso no",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L132",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "un elemento. Declarar el campo vacio no declara nada: o se escribe la discrepancia, o se omite el campo.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L140",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "zona '${zona.jurisdiccion_id}': la discrepancia de la bahia ${item.bahia_id} declara nivel '${item.nivel}',",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L142",
+  "forma": "comprueba",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "que campo se comprueba, y adivinarlo comprobaria otra cosa.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L162",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "zona '${zona.jurisdiccion_id}': la bahia ${item.bahia_id} declara una discrepancia en nivel",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L164",
+  "forma": "deja",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "coinciden. Una discrepancia declarada que se resolvio deja de declararse: mantenerla escrita haria",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L206",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "(mapa: capitania='${e.capitania}', gobernacion='${e.gobernacion}'). La discrepancia que declara el",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L263",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "('${entrada.capitania}'). Derivar a la Gobernacion solo se declara cuando la fuente no atribuye Capitania.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L267",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Las dos fuentes no coinciden: no se declara contacto hasta adjudicar cual manda.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L267",
+  "forma": "manda",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Las dos fuentes no coinciden: no se declara contacto hasta adjudicar cual manda.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L322",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "\"mensaje.capa_2_con_capitania\" no incluye la marca {nombre}: saldria a pantalla sin ese dato.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L330",
+  "forma": "muestra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "un mensaje del catalogo: el contacto se muestra en el punto de zarpe y recalada, no aca.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L360",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la jurisdiccion '${id}' esta sin geometria pero no declara 'causa_sin_geometria' en el insumo.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L386",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la zona '${id}' declara un contacto de tipo '${contacto.tipo}' CON ${contacto.discrepancias.length}",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L388",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "(cobertura-jurisdiccional.js) se queda con nombre, telefono y tipo: la marca de la discrepancia se",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L390",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "norma: se levanta cuando el consumidor sepa cargar la marca.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L390",
+  "forma": "levanta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "norma: se levanta cuando el consumidor sepa cargar la marca.",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "sitio": "L413",
+  "forma": "cuenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una 'cerrable_parcial' cuenta acá igual que una 'no_cerrable': su parte no cubierta",
+  "veredicto": "NO_TUTEO",
+  "por": "guarda, mensaje de control o prosa de declaracion en 3a persona"
+ },
+ {
+  "clave": "pwa/src/App.jsx",
+  "sitio": "L93",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NAVEGA CON CERTEZA",
+  "veredicto": "LEMA",
+  "por": "lema de marca. Decision del owner 2026-08-20: no es mensaje al patron"
+ },
+ {
+  "clave": "pwa/src/components/AppSidebar.jsx",
+  "sitio": "L75",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Tmarea — Navega con Certeza",
+  "veredicto": "LEMA",
+  "por": "lema de marca. Decision del owner 2026-08-20: no es mensaje al patron"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "sitio": "L162",
+  "forma": "avisa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Antes de salir a pasear, avisa tu zarpe a la Autoridad Marítima.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — avisos de zarpe y recalada del modulo deportivo"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "sitio": "L163",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Antes de soltar amarras, da aviso a la Capitanía más cercana.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — avisos de zarpe y recalada del modulo deportivo"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "sitio": "L211",
+  "forma": "realizas",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "💡  e-Zarpe:  Si realizas una travesía costera, genera tu zarpe digital en",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — avisos de zarpe y recalada del modulo deportivo"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "sitio": "L211",
+  "forma": "genera",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "💡  e-Zarpe:  Si realizas una travesía costera, genera tu zarpe digital en",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — avisos de zarpe y recalada del modulo deportivo"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "sitio": "L212",
+  "forma": "avisa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "ezarpe.directemar.cl  o avisa por radio en canal de guardia.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — avisos de zarpe y recalada del modulo deportivo"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "sitio": "L251",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ver datos de capitanía activa",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "sitio": "L336",
+  "forma": "confirma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Confirma que tu embarcación cuenta con el equipamiento mínimo exigido por DIRECTEMAR.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — avisos de zarpe y recalada del modulo deportivo"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "sitio": "L336",
+  "forma": "cuenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Confirma que tu embarcación cuenta con el equipamiento mínimo exigido por DIRECTEMAR.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "sitio": "L394",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Marca todos los ítems para continuar",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — avisos de zarpe y recalada del modulo deportivo"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "sitio": "L476",
+  "forma": "da",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Da aviso de recalada de inmediato para cerrar tu bitácora SAR.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — avisos de zarpe y recalada del modulo deportivo"
+ },
+ {
+  "clave": "pwa/src/components/screens/ReportarProblema.jsx",
+  "sitio": "L100",
+  "forma": "elige",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La imagen supera los 2 MB. Elige una más pequeña.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — formulario de reporte de problema"
+ },
+ {
+  "clave": "pwa/src/components/screens/ReportarProblema.jsx",
+  "sitio": "L109",
+  "forma": "intenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "No se pudo procesar la imagen. Intenta con otro archivo.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — formulario de reporte de problema"
+ },
+ {
+  "clave": "pwa/src/components/screens/ReportarProblema.jsx",
+  "sitio": "L141",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "No se pudo conectar con el servidor. Verifica tu conexión.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — formulario de reporte de problema"
+ },
+ {
+  "clave": "pwa/src/components/screens/ReportarProblema.jsx",
+  "sitio": "L216",
+  "forma": "sé",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Describe brevemente qué pasó o qué no funciona. Sé conciso.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — formulario de reporte de problema"
+ },
+ {
+  "clave": "pwa/src/components/screens/ReportarProblema.jsx",
+  "sitio": "L216",
+  "forma": "describe",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Describe brevemente qué pasó o qué no funciona. Sé conciso.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — formulario de reporte de problema"
+ },
+ {
+  "clave": "pwa/src/components/screens/ReportarProblema.jsx",
+  "sitio": "L266",
+  "forma": "comunícate",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Si tu problema es urgente y afecta la seguridad de la navegación, comunícate",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — formulario de reporte de problema"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "sitio": "L27",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Navega con Certeza",
+  "veredicto": "LEMA",
+  "por": "lema de marca. Decision del owner 2026-08-20: no es mensaje al patron"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "sitio": "L31",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Verifica condiciones de navegación antes de ejecutar tu zarpe autorizado.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — onboarding y terminos de uso"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "sitio": "L46",
+  "forma": "aceptas",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Al usar Tmarea, aceptas estos términos en su totalidad.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — onboarding y terminos de uso"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "sitio": "L50",
+  "forma": "eres",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Eres responsable de tu cuenta y de toda actividad en ella.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — onboarding y terminos de uso"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "sitio": "L50",
+  "forma": "cuenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Eres responsable de tu cuenta y de toda actividad en ella.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "sitio": "L77",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Verifica todo contra fuentes oficiales antes de zarpar.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — onboarding y terminos de uso"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0_5Registro.jsx",
+  "sitio": "L51",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Navega con Certeza",
+  "veredicto": "LEMA",
+  "por": "lema de marca. Decision del owner 2026-08-20: no es mensaje al patron"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0_5Registro.jsx",
+  "sitio": "L54",
+  "forma": "crea",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Crea tu Perfil de Patrón",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — pantalla de registro"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0_5Registro.jsx",
+  "sitio": "L56",
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Completa tus datos para acceder a Tmarea",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — pantalla de registro"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0_5Registro.jsx",
+  "sitio": "L94",
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona tu licencia",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — pantalla de registro"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0_5Registro.jsx",
+  "sitio": "L122",
+  "forma": "adquieras",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Tus datos se guardan localmente y se sincronizarán cuando adquieras un plan.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — pantalla de registro"
+ },
+ {
+  "clave": "pwa/src/components/verification/NavigationBlock.jsx",
+  "sitio": "L134",
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠ El combustible disponible no cubre la ruta completa. Verificar con el armador antes de zarpar.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/components/verification/NormativeBlock.jsx",
+  "sitio": "L143",
+  "forma": "recuerda",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El cumplimiento normativo es responsabilidad exclusiva del patrón. Tmarea recuerda, no autoriza.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/components/verification/PortStatusBlock.jsx",
+  "sitio": "L50",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Restricción activa — verificar con Capitanía.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "sitio": "L48",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠ Restricción activa en zona de tránsito",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "sitio": "L51",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠️ Restricción activa en tránsito",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "sitio": "L67",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠️ Carga tu AB en el perfil para verificar si esta restricción te aplica",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — bloque de restricciones en transito"
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "sitio": "L73",
+  "forma": "confirma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠️ Confirma con la Capitanía si esta restricción afecta tu navegación",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — bloque de restricciones en transito"
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "sitio": "L146",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La ruta cruza ${nAplican} jurisdicción(es) con Condición de Puerto activa que afecta tu embarcación.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "sitio": "L186",
+  "forma": "puedes",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "📍 Puedes navegar hasta    . A partir de ahí, la zona está restringida.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — bloque de restricciones en transito"
+ },
+ {
+  "clave": "pwa/src/components/verification/VoyageVerdict.jsx",
+  "sitio": "L71",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Restricción en ${r.nombre_bahia} — verifica tu AB",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — veredicto del viaje"
+ },
+ {
+  "clave": "pwa/src/components/verification/VoyageVerdict.jsx",
+  "sitio": "L155",
+  "forma": "puedes",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Puedes navegar hasta  . A partir de ahí, la zona está restringida.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — veredicto del viaje"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "sitio": "secciones[0].conceptos_clave[0].explicacion",
+  "forma": "sales",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — balizamiento"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "sitio": "secciones[0].conceptos_clave[0].explicacion",
+  "forma": "deja",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — balizamiento"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "sitio": "secciones[1].caracteristicas",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Color Amarillo. Marca de tope: X amarilla. Luz amarilla intermitente.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "sitio": "secciones[1].conceptos_clave[0].explicacion",
+  "forma": "puedes",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "No navegues entre estas boyas. Demarcan 'balsas jaula' y sus sistemas de fondeo, que tienen extensos cabos submarinos donde puedes enredar tu hélice.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — balizamiento"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "sitio": "secciones[1].conceptos_clave[0].explicacion",
+  "forma": "navegues",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "No navegues entre estas boyas. Demarcan 'balsas jaula' y sus sistemas de fondeo, que tienen extensos cabos submarinos donde puedes enredar tu hélice.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — balizamiento"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/emergencias_01.json",
+  "sitio": "secciones[0].conceptos_clave[0].explicacion",
+  "forma": "haces",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Significa acercarse de modo que el viento golpee primero a la persona y luego a tu embarcación. Si lo haces al revés, el viento empujará tu lancha sobre la persona.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — emergencias"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/emergencias_01.json",
+  "sitio": "secciones[1].conceptos_clave[0].explicacion",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Si el fuego está en la popa, navega de cara al viento. Si el viento sopla desde la popa hacia la proa, avivará las llamas hacia la cabina.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — emergencias"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/emergencias_01.json",
+  "sitio": "secciones[2].conceptos_clave[0].explicacion",
+  "forma": "baja",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Las mareas tienen gran amplitud. Si la marea baja y no hay riesgo de hundimiento, la opción más segura suele ser esperar la pleamar.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/maniobras_01.json",
+  "sitio": "secciones[0].conceptos_clave[0].explicacion",
+  "forma": "asegúrate",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Tu nave girará alrededor del ancla según cambie el viento o marea. Asegúrate de tener espacio libre en los 360 grados.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — maniobras"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/maniobras_01.json",
+  "sitio": "secciones[1].conceptos_clave[0].explicacion",
+  "forma": "recibes",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Si la red se atora en el fondo y recibes una ola fuerte de costado (través) mientras tiras de ella, la embarcación puede volcar de inmediato.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — maniobras"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/maniobras_01.json",
+  "sitio": "secciones[1].conceptos_clave[0].explicacion",
+  "forma": "tiras",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Si la red se atora en el fondo y recibes una ola fuerte de costado (través) mientras tiras de ella, la embarcación puede volcar de inmediato.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — maniobras"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/maniobras_01.json",
+  "sitio": "secciones[2].conceptos_clave[0].explicacion",
+  "forma": "piensas",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "La regla de oro a vela: Si piensas que quizás deberías tomar un rizo, ese es el momento exacto para hacerlo.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — maniobras"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/maniobras_01.json",
+  "sitio": "secciones[2].conceptos_clave[0].explicacion",
+  "forma": "deberías",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "La regla de oro a vela: Si piensas que quizás deberías tomar un rizo, ese es el momento exacto para hacerlo.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — maniobras"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/reglamentos_01.json",
+  "sitio": "secciones[1].conceptos_clave[0].explicacion",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Llevar más carga de la declarada no solo es una falta a la LGPA (suspensión de 3 meses), sino que altera la estabilidad de la nave, poniéndola en riesgo inminente de hundimiento.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/reglamentos_01.json",
+  "sitio": "secciones[2].puntos_clave[2]",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Estabilidad y Carga (D.S. 388, Art. 38): Obligatorio respetar la línea de carga (francobordo). Prohibido concentrar peso en altura.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/reglamentos_01.json",
+  "sitio": "secciones[2].conceptos_clave[0].explicacion",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Estibar carga pesada sobre cubierta o en el techo de la caseta eleva el centro de gravedad. Con el oleaje o corrientes fuertes, la nave pierde su capacidad de adrizarse (enderezarse) y volcará.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/reglamentos_01.json",
+  "sitio": "secciones[2].conceptos_clave[1].explicacion",
+  "forma": "sufres",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Es tu única defensa legal. Si chocas, varas o sufres daños, esta declaración escrita ante la Armada es requisito indispensable para cobrar seguros marítimos o defenderte ante tribunales.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — reglamentos"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/reglamentos_01.json",
+  "sitio": "secciones[2].conceptos_clave[1].explicacion",
+  "forma": "chocas",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Es tu única defensa legal. Si chocas, varas o sufres daños, esta declaración escrita ante la Armada es requisito indispensable para cobrar seguros marítimos o defenderte ante tribunales.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — reglamentos"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/reglamentos_01.json",
+  "sitio": "secciones[2].conceptos_clave[1].explicacion",
+  "forma": "varas",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Es tu única defensa legal. Si chocas, varas o sufres daños, esta declaración escrita ante la Armada es requisito indispensable para cobrar seguros marítimos o defenderte ante tribunales.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — reglamentos"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/ripa_01.json",
+  "sitio": "secciones[0].accion[0]",
+  "forma": "cedes",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Si otra lancha se acerca por tu ESTRIBOR (derecha), TÚ cedes el paso.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — RIPA"
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/ripa_01.json",
+  "sitio": "secciones[1].regla_practica",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Navega lo más cerca posible del límite exterior de tu ESTRIBOR.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — Biblioteca — RIPA"
+ },
+ {
+  "clave": "pwa/src/data/maritime_data.json.json",
+  "sitio": "capitanias[4].tips",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Tránsito constante de naves mayores acuícolas. Mantenga escucha activa.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L181",
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona el tipo de embarcación",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L199",
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona el uso de la embarcación",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L200",
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona el tipo de propulsión",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L201",
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona tu licencia deportiva",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L202",
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona la clasificación de la nave",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L205",
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ingresa la potencia del motor (HP)",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L221",
+  "forma": "corrige",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Corrige los campos marcados antes de guardar.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L230",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Error al guardar. Verifica el espacio disponible en tu dispositivo.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L238",
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Completa todos los campos requeridos antes de continuar.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L245",
+  "forma": "intenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Error al guardar los datos. Intenta nuevamente.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L252",
+  "forma": "quieres",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "¿Seguro que quieres limpiar los datos de la nave?",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L272",
+  "forma": "revisa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Revisa o actualiza los datos antes de iniciar el viaje.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L272",
+  "forma": "actualiza",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Revisa o actualiza los datos antes de iniciar el viaje.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L273",
+  "forma": "configura",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Configura los datos de la embarcación que operarás.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L273",
+  "forma": "operarás",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Configura los datos de la embarcación que operarás.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L339",
+  "forma": "tienes",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Autocompletado desde la eslora (TM-002 Art. 28). Editable si tienes certificado de arqueo.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L341",
+  "forma": "déjalo",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Aparece en el Certificado de Matrícula de la nave. Si no lo conoces, déjalo en blanco.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "sitio": "L341",
+  "forma": "conoces",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Aparece en el Certificado de Matrícula de la nave. Si no lo conoces, déjalo en blanco.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — perfil de la nave: rotulos, validaciones y errores"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L69",
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por nombre del puerto o caleta",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L84",
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por nombre de empresa o ubicación geográfica del centro",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L97",
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por código RNA/SERNAPESCA, apellido del titular o sector geográfico",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L110",
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por nombre de caleta, sector o comuna — cobertura nacional",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L124",
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por nombre de marina o club náutico",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L136",
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por nombre de fondeadero o bahía",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L371",
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "🐠 ¿Qué recurso busca explotar?",
+  "veredicto": "DUDOSO",
+  "por": "leido como usted es correcto y como 3a persona tambien; convive con 21 tuteos en la misma pantalla"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L380",
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "— Selecciona la especie objetivo —",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L388",
+  "forma": "recibirás",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Al verificar condiciones recibirás temperatura del mar, clorofila y alertas normativas para esta especie en el punto de destino.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L454",
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "ℹ Ingresa coordenadas en grados decimales negativos (Sur/Oeste)",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L573",
+  "forma": "regresarás",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "🔄 Paseo circular — regresarás al mismo punto de zarpe",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L585",
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠ Selecciona la duración estimada",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L685",
+  "forma": "regulariza",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Tu licencia es deportiva y no habilita actividad comercial (pesca, acuicultura o transporte). Regulariza tu licencia con DIRECTEMAR antes de zarpar.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L754",
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona el puerto de zarpe",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L757",
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Completa este destino",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L759",
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona el recurso que vas a explotar",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L762",
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ingresa la fecha de zarpe",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L763",
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ingresa la fecha de recalada",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L767",
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ingresa un valor válido en litros",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L776",
+  "forma": "revisa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Revisa los campos marcados antes de continuar.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "sitio": "L821",
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ingresa los datos del viaje que vas a realizar.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — armado del viaje: buscadores, rotulos y validaciones"
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "sitio": "L44",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NAVEGA CON CERTEZA",
+  "veredicto": "LEMA",
+  "por": "lema de marca. Decision del owner 2026-08-20: no es mensaje al patron"
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "sitio": "L115",
+  "forma": "usa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El destino seleccionado está fuera de zona navegable conocida. El punto está a más de 5 km de aguas navegables según la carta del motor de rutas. Intenta seleccionar un punto más cercano a un canal o bahía, o usa Coordenadas GPS para ajustar manualmente.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — verificacion previa al zarpe"
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "sitio": "L115",
+  "forma": "intenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El destino seleccionado está fuera de zona navegable conocida. El punto está a más de 5 km de aguas navegables según la carta del motor de rutas. Intenta seleccionar un punto más cercano a un canal o bahía, o usa Coordenadas GPS para ajustar manualmente.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — verificacion previa al zarpe"
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "sitio": "L116",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "No se encontró ruta navegable entre los puntos seleccionados. Verifica los puertos de zarpe y recalada.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — verificacion previa al zarpe"
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "sitio": "L206",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Alcanza a las naves menores. El texto no declara tonelaje.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "sitio": "L442",
+  "forma": "informa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Tmarea informa. El zarpe y la navegación son responsabilidad exclusiva del patrón.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/screens/P4_ActiveVoyage.jsx",
+  "sitio": "L683",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "¿Seguro? Se cancelará la navegación activa.",
+  "veredicto": "NO_TUTEO",
+  "por": "no es trato de tu: 3a persona, sustantivo o adjetivo"
+ },
+ {
+  "clave": "pwa/src/screens/P4_ActiveVoyage.jsx",
+  "sitio": "L724",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Destino fuera de zona navegable. Navega con carta SHOA.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — navegacion activa y cierre de viaje"
+ },
+ {
+  "clave": "pwa/src/screens/P4_ActiveVoyage.jsx",
+  "sitio": "L726",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "No hay ruta navegable entre los puntos. Navega con carta SHOA.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — navegacion activa y cierre de viaje"
+ },
+ {
+  "clave": "pwa/src/screens/P4_ActiveVoyage.jsx",
+  "sitio": "L727",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ruta no disponible. Navega con carta SHOA.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — navegacion activa y cierre de viaje"
+ },
+ {
+  "clave": "pwa/src/screens/P4_ActiveVoyage.jsx",
+  "sitio": "L872",
+  "forma": "descarga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Descarga el informe operacional antes de cerrar.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — navegacion activa y cierre de viaje"
+ },
+ {
+  "clave": "pwa/src/utils/license-rules.js",
+  "sitio": "L167",
+  "forma": "verifícalo",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "El límite de tu zona de bahía lo fija tu Capitanía de Puerto. Verifícalo antes de zarpar.",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — reglas de licencia mostradas al patron"
+ },
+ {
+  "clave": "pwa/src/utils/restricciones.js",
+  "sitio": "L53",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — texto de restriccion mostrado al patron"
+ },
+ {
+  "clave": "pwa/src/utils/restricciones.js",
+  "sitio": "L53",
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático",
+  "veredicto": "TUTEO",
+  "por": "imperativo o 2a persona dirigida al patron — texto de restriccion mostrado al patron"
+ }
+]

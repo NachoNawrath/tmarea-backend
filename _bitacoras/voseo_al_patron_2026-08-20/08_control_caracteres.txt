@@ -1,0 +1,57 @@
+CONTROL DE CARACTERES — voseo_al_patron_2026-08-20
+CRITERIO (H-T2): puntos de codigo. Se marca < 0x20 salvo LF/CR/TAB, 0x7F,
+y el bloque C1 0x80-0x9F.
+
+  OK  .gitignore
+  OK  01_barrido.js
+  OK  01_barrido.json
+  OK  01_barrido.txt
+  OK  02_clasificacion.json
+  OK  02_clasificacion.txt
+  OK  02_clasificar.js
+  OK  03_extraer.js
+  OK  03_texto_renderizable.json
+  OK  03_texto_renderizable.txt
+  OK  04_usted.js
+  OK  04_usted.txt
+  OK  06_barrido_clasificado.txt
+  OK  07_control_citas.js
+  OK  07_control_citas.txt
+  OK  08_control_caracteres.js
+  OK  08_control_caracteres.txt
+  OK  09_candidatos.json
+  OK  09_candidatos.txt
+  OK  09_cerrar_vocabulario.js
+  OK  10_vocabulario_cerrado.js
+  OK  10_vocabulario_cerrado.json
+  OK  10_vocabulario_cerrado.txt
+  OK  11_inventario.js
+  OK  11_inventario.json
+  OK  11_inventario.txt
+  OK  12_correccion_voseo.txt
+  OK  12_corregir_voseo.js
+  OK  13_seccion10_en_usted.md
+  OK  16_control_pantalla.txt
+  OK  PROCEDENCIA.md
+
+EVIDENCIA CRUDA Y DERIVADA (se informa, no decide el exit — motivo trazado
+arriba del fichero, no supuesto):
+  ..  03_fragmentos.json  -> U+0093, U+0094, U+0089, U+009A, U+0091, U+008D
+  ..  05_sitport_vivo.json  -> ninguno
+  ..  14_sitport_vivo_pantalla.json  -> ninguno
+  ..  15_sitport_al_capturar.json  -> ninguno
+
+  ficheros revisados        : 35
+  puntos de codigo          : 11402705
+  ficheros con sospechosos  : 0
+  BOM UTF-8 al principio    : ninguno  -> OK
+
+CONTROL POSITIVO DEL PROPIO CONTROL: se construye U+0091 por punto de codigo
+y el criterio tiene que cazarlo.
+  -> OK — el criterio caza U+0091
+
+CONTROL NEGATIVO: una letra con tilde NO debe marcarse. U+00E1 es 0xC3 0xA1
+en UTF-8 y un control por bytes la confundiria con el bloque C1.
+  -> OK — no marca la tilde
+
+EXIT 0  — VERDE

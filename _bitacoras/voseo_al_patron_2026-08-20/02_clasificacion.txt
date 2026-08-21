@@ -1,0 +1,1522 @@
+CLASIFICACION POR ROL — voseo_al_patron_2026-08-20
+
+REGLA DE PARTICION (declarada, no decidida caso a caso)
+  D  __tests__                         un test no se renderiza
+  D  PROCEDENCIA.*                     prosa de procedencia, no texto al patron
+  D  backend/src/services/data/        dataset geografico, no frases
+  D  backend/src/config/               configuracion interna
+  S  estado_drift.json                 instantanea de SITPORT
+  D  backend/data/catalogo/            declarativo interno; sus notas no salen en respuesta
+  D  backend/data/spec2/               cifra interna
+  P  reparticiones_publicadas.json     nombres y direcciones que la app muestra
+  D  backend/data/contacto/            insumo y correccion interna
+  P  pwa/src/                          la pwa renderiza todo lo de src/
+  P  pwa/index.html                    cascara de la app
+  P  backend/src/                      el backend arma mensajes que la pwa muestra
+  P  zonas_aviso.json                  textos de aviso servidos al cliente
+  C  CONTRATO_MOTOR.md                 catalogo normativo — fuente unica de mensajes
+  D  (resto)                           prosa de trabajo, plan, deudas, scripts
+  C10 = dentro del §10 de CONTRATO_MOTOR.md (lineas 1164-1209)
+
+════ CONTEO POR ROL Y REGISTRO ════
+unidad: aparicion de forma del vocabulario en una linea de un fichero del corpus
+
+  rol      voseo-ine  voseo-amb  tuteo-ine  tuteo-amb  no-usted
+  P             0          0          9        642        83
+  C10           0          0          4         16         7
+  Cresto        0          0          0        143         3
+  S             0          0          0          1         0
+  D             3          1          5       4148        33
+
+
+════ ROL P — TEXTO AL PATRON en codigo nuestro   (SE CORRIGE el voseo) ════
+
+  ── VOSEO en P : 0 apariciones en 0 lineas ──
+     (ninguna)
+
+  ── TUTEO en P : 651 apariciones en 637 lineas ──
+     [AMB] usa  ·  backend/data/contacto/reparticiones_publicadas.json  L6
+           "decision": "R4 = opcion B, owner 2026-08-15. El nombre sale del titulo publicado por DIRECTEMAR; la columna `Capitania` del CSV NO se usa como rotulo porque es la cadena cruda de SITPORT (medido 64 de 64).",
+     [AMB] declara  ·  backend/data/decreto/zonas_aviso.json  L4
+           "rige": "CONTRATO_MOTOR.md v1.7 — INV-3.6 (una jurisdiccion sin geometria se declara, nunca se resuelve en silencio)",
+     [AMB] toca  ·  backend/data/decreto/zonas_aviso.json  L5
+           "que_es": "La declaracion de las jurisdicciones que el motor sabe que NO puede resolver, y de a quien deriva al patron cuando su ruta pasa por una de ellas. Es dato, no codigo: agregar, quitar o corregir una zona no toca
+     [AMB] deja  ·  backend/data/decreto/zonas_aviso.json  L8
+           "correccion_2026-08-16_del_bloque_reversibilidad": "El texto de arriba decia, hasta hoy: \"Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria en el insumo ~~(participa_matching = false)~~\". ERA F
+     [AMB] cambia  ·  backend/data/decreto/zonas_aviso.json  L8
+           "correccion_2026-08-16_del_bloque_reversibilidad": "El texto de arriba decia, hasta hoy: \"Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria en el insumo ~~(participa_matching = false)~~\". ERA F
+     [AMB] toma  ·  backend/data/decreto/zonas_aviso.json  L14
+           "regla": "El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion que deje 
+     [AMB] carga  ·  backend/data/decreto/zonas_aviso.json  L14
+           "regla": "El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion que deje 
+     [AMB] declara  ·  backend/data/decreto/zonas_aviso.json  L14
+           "regla": "El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion que deje 
+     [AMB] usa  ·  backend/data/decreto/zonas_aviso.json  L15
+           "tipo capitania": "Solo si el mapa atribuye esa bahia a una Capitania cuyo nombre coincide con el de la jurisdiccion del decreto. Si no coincide, no se usa.",
+     [AMB] declara  ·  backend/data/decreto/zonas_aviso.json  L17
+           "tipo sin_contacto": "Cuando ninguna de las dos coincide. Es el caso de las jurisdicciones cuyas bahias el mapa operativo atribuye a una Capitania vecina: usar ese telefono seria dejar que el mapa revoque al decreto, que
+     [AMB] sigue  ·  backend/data/decreto/zonas_aviso.json  L18
+           "campo discrepancias_declaradas": "AGREGADO EL 2026-08-16. Los tres tipos de arriba suponian que la coincidencia entre el mapa y el decreto era UNA. Son DOS NIVELES —Capitania y Gobernacion— y pueden caer distinto: un co
+     [AMB] carga  ·  backend/data/decreto/zonas_aviso.json  L19
+           "que exige el campo": "UNA sola cosa, y es la misma vara de `sin_contacto`: el nivel declarado tiene que DISCREPAR HOY contra la fuente. Si el mapa pasa a coincidir en ese nivel, la carga se detiene y obliga a retirar la
+     [AMB] marca  ·  backend/data/decreto/zonas_aviso.json  L20
+           "por que no puede reclamar tramo": "Una zona que da contacto y ademas arrastra una discrepancia declarada NO puede declarar `ambito`. Motivo medido el 2026-08-16: el consumidor de una zona reclamante (`src/services/cober
+     [AMB] cambia  ·  backend/data/decreto/zonas_aviso.json  L23
+           "procedencia": "CONTRATO_MOTOR.md §10, fila 'Jurisdiccion sin limite cargado', contrato v1.9 (commit 8ab2955; el texto vigente de esta fila entro en la v1.8, d9f7f9e). TRANSCRITO de ahi, no redactado aca: el §10 es la fu
+     [AMB] verifica  ·  backend/data/decreto/zonas_aviso.json  L24
+           "actualizado_2026-08-13": "El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: 
+     [AMB] cambia  ·  backend/data/decreto/zonas_aviso.json  L24
+           "actualizado_2026-08-13": "El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: 
+     [AMB] muestra  ·  backend/data/decreto/zonas_aviso.json  L24
+           "actualizado_2026-08-13": "El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: 
+     [AMB] confirma  ·  backend/data/decreto/zonas_aviso.json  L26
+           "capa_2_con_capitania": "Confirma con la Capitanía {nombre} antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que n
+     [AMB] coordina  ·  backend/data/decreto/zonas_aviso.json  L27
+           "capa_2_sin_capitania": "Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una rest
+     [AMB] usa  ·  backend/data/decreto/zonas_aviso.json  L28
+           "nota_capa_2_sin_capitania": "Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada f
+     [AMB] agrega  ·  backend/data/decreto/zonas_aviso.json  L28
+           "nota_capa_2_sin_capitania": "Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada f
+     [AMB] cambia  ·  backend/data/decreto/zonas_aviso.json  L32
+           "por_que_existe": "El bloque `mensaje` promete arriba que 'si el catalogo cambia, cambia aca y se nota'. El 2026-08-13 el catalogo cambio —la v1.8 le saco el telefono a la fila— y NO se noto: el dato sirvio el texto de l
+     [AMB] declara  ·  backend/data/decreto/zonas_aviso.json  L34
+           "por_que_la_fila_se_declara_y_no_se_deduce": "La propuesta original decia que el control leeria `mensaje.procedencia` para ubicar la fila. `procedencia` es PROSA: parsearla seria deducir la afirmacion del texto, que es j
+     [AMB] marca  ·  backend/data/decreto/zonas_aviso.json  L40
+           "NEGRITAS: el contrato es markdown y marca `**...**`; el dato es texto plano. Se quitan los asteriscos, no lo que envuelven.",
+     [AMB] declara  ·  backend/data/decreto/zonas_aviso.json  L48
+           { "nombre": "la bandera del codigo es la que declara el catalogo", "tipo": "linea_dice", "origen": "codigo", "campo": "BANDERA_AVISO", "celda": "capa_1", "extraer": "bandera" }
+     [AMB] declara  ·  backend/data/decreto/zonas_aviso.json  L50
+           "por_que_entra_la_bandera": "La misma celda de capa 1 declara el nivel (`🟡 U`) y el motor lo tiene como constante en cobertura-jurisdiccional.js (BANDERA_AVISO). Hasta hoy nadie cotejaba las dos. Si dejaran de coincidir
+     [AMB] entra  ·  backend/data/decreto/zonas_aviso.json  L50
+           "por_que_entra_la_bandera": "La misma celda de capa 1 declara el nivel (`🟡 U`) y el motor lo tiene como constante en cobertura-jurisdiccional.js (BANDERA_AVISO). Hasta hoy nadie cotejaba las dos. Si dejaran de coincidir
+     [AMB] declara  ·  backend/data/decreto/zonas_aviso.json  L52
+           "UNA SOLA FILA: la que se declara arriba. Las otras nueve del §10 no tienen dato transcrito que cotejar — el `[tel]` que la v1.8 le saco a la fila 'Zarpe cerrado' no vive en ningun archivo de datos, asi que este control 
+     [AMB] declara  ·  backend/data/decreto/zonas_aviso.json  L53
+           "NO caza que FALTE una transcripcion que deberia existir. Si manana el §10 sumara una fila que el motor tiene que servir y nadie la transcribe aca, este control seguiria en verde. Es el segundo hueco que §7.2 declara —'q
+     [AMB] verifica  ·  backend/data/decreto/zonas_aviso.json  L55
+           "NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde."
+     [AMB] comprueba  ·  backend/data/decreto/zonas_aviso.json  L55
+           "NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde."
+     [AMB] coordina  ·  backend/data/decreto/zonas_aviso.json  L60
+           "texto": "Coordina con la Autoridad Maritima por VHF Canal 16 antes de zarpar.",
+     [AMB] toca  ·  backend/data/decreto/zonas_aviso.json  L131
+           "nota_2026-08-16_retiro": "RETIRADA LA DISCREPANCIA, 2026-08-16. La mitad (ii) de la `nota_2026-08-16` —la Gobernacion que el mapa le ponia a la bahia 129 (Aysen) contra la que le da el decreto (Punta Arenas)— quedo ADJU
+     [AMB] toma  ·  backend/data/decreto/zonas_aviso.json  L140
+           "motivo": "Las bahias de su sector (131 Gregorio, 132 Clarencia) estan atribuidas en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma
+     [AMB] define  ·  backend/data/decreto/zonas_aviso.json  L147
+           "motivo_sin_ambito": "El decreto no le da paralelos: la define por la linea Punta Harry - Cabo San Vicente y por el limite maritimo internacional por el Oriente, que invoca sin darlo en coordenadas."
+     [AMB] toma  ·  backend/data/decreto/zonas_aviso.json  L153
+           "motivo": "Su bahia (137, Bahia Chilota, Porvenir) esta atribuida en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el telefono del
+     [AMB] describe  ·  backend/data/decreto/zonas_aviso.json  L168
+           "motivo_sin_ambito": "El decreto la describe por accidentes y canales, sin paralelos de norte y sur que permitan declarar una banda."
+     [AMB] ajusta  ·  backend/src/constants/vesselTypes.js  L6
+           * pero todavía NO ajusta el Cb: falta la tabla empírica real por
+     [AMB] carga  ·  backend/src/constants/vesselTypes.js  L60
+           carga_servicios: { label: 'Carga y Servicios' },
+     [AMB] declara  ·  backend/src/index.js  L71
+           // declara "no bloquea ni demora el arranque": ahí una fuente externa caída no
+     [AMB] informa  ·  backend/src/index.js  L74
+           // respondería mal y sin avisar. Por eso este detiene y aquel informa.
+     [AMB] toca  ·  backend/src/index.js  L91
+           // descubrirse en la primera ruta. Con el cableado apagado esto no toca el join.
+     [AMB] cambia  ·  backend/src/index.js  L116
+           // arranque, no toca ningún flujo de veredicto y no cambia ninguna respuesta.
+     [AMB] toca  ·  backend/src/index.js  L116
+           // arranque, no toca ningún flujo de veredicto y no cambia ninguna respuesta.
+     [AMB] deja  ·  backend/src/index.js  L117
+           // Solo deja rastro para el equipo — condición del owner sobre D8.
+     [AMB] activa  ·  backend/src/models/Vessel.js  L5
+           * Un usuario = UNA nave activa (última registrada sobrescribe anterior).
+     [AMB] define  ·  backend/src/models/Vessel.js  L11
+           const Vessel = sequelize.define(
+     [AMB] carga  ·  backend/src/models/Vessel.js  L58
+           'carga_servicios',
+     [AMB] carga  ·  backend/src/models/Vessel.js  L105
+           comment: 'Desplazamiento sin carga (toneladas)'
+     [AMB] carga  ·  backend/src/models/Vessel.js  L110
+           comment: 'Calado aproximado sin carga (metros)'
+     [AMB] carga  ·  backend/src/routes/navigation-routes.js  L15
+           'peso_carga_adicional_ton',
+     [AMB] deja  ·  backend/src/routes/sitport-routes.js  L269
+           // SE RETIRA ENTERO Y NO SE DEJA SIN LLAMADOR: un resolvedor vivo y sin uso es
+     [AMB] usa  ·  backend/src/routes/sitport-routes.js  L336
+           // Y NO SE USA `Number(valor) === id` A SECAS PORQUE COERCIONA DE MÁS: `Number(null)`,
+     [AMB] acepta  ·  backend/src/routes/sitport-routes.js  L344
+           // Una cadena con dígitos se acepta; null, undefined, '' y sólo-espacios no.
+     [AMB] toca  ·  backend/src/routes/sitport-routes.js  L374
+           // `filtradas[0]?.bahia` NO SE TOCA — es atribución de CONTACTO y está
+     [AMB] deja  ·  backend/src/routes/sitport-routes.js  L375
+           // escalada al frente de contacto. Bajo F2 deja de ser un riesgo por
+     [AMB] sigue  ·  backend/src/routes/sitport-routes.js  L393
+           // atribución sigue midiendo, y retirarlos ahora rompería P1 y P2 sin que
+     [AMB] muestra  ·  backend/src/routes/sitport-routes.js  L395
+           // rotular; `contacto.nivel === null` significa que el campo NO SE MUESTRA.
+     [AMB] declara  ·  backend/src/routes/sitport-routes.js  L409
+           //   bahia_declarada_lejos ....... el nodo declara una y está demasiado
+     [AMB] llama  ·  backend/src/routes/sitport-routes.js  L419
+           // `km_a_la_bahia` NO se llama `km_al_ancla`: de las 497 filas con
+     [AMB] declara  ·  backend/src/routes/sitport-routes.js  L424
+           // el nodo no la DECLARA, la escribe el trigger `trg_jurisdiccion_auto` de la
+     [AMB] toca  ·  backend/src/routes/sitport-routes.js  L586
+           // A3. `condicion_puerto` NO se toca: no sabemos qué viento hacía en la
+     [AMB] usa  ·  backend/src/routes/sitport-routes.js  L645
+           // El nombre de la capa NO está escrito acá: sale de la misma declaración que usa
+     [AMB] declara  ·  backend/src/routes/sitport-routes.js  L651
+           // intersecta la ruta, y sólo en los ámbitos que el registro declara publicados:
+     [AMB] saca  ·  backend/src/routes/sitport-routes.js  L655
+           // Es ADITIVO sobre el Set: no saca ninguna de las que hoy entran. Una restricción
+     [AMB] sigue  ·  backend/src/routes/sitport-routes.js  L658
+           // —dejar de filtrar por bahía y filtrar por Capitanía— sigue entero en E6.
+     [AMB] responde  ·  backend/src/routes/sitport-routes.js  L851
+           // pero no se descarta en silencio (CLAUDE.md §4.2). Quien responde por
+     [AMB] avisa  ·  backend/src/routes/sitport-routes.js  L852
+           // este caso es el control de drift A3, que la registra SIEMPRE y avisa
+     [AMB] entra  ·  backend/src/routes/sitport-routes.js  L857
+           console.warn(`[sitport/restricciones-ruta] bahía ${bahiaId} entra al matching y no tiene coordenada ` +
+     [AMB] activa  ·  backend/src/routes/sitport-routes.js  L916
+           restriccion: r.MotivoRestriccion || r.tiporestriccion || 'Restricción activa',
+     [AMB] cambia  ·  backend/src/routes/sitport-routes.js  L920
+           // cambia ninguna de sus salidas: los 157 de 173 que "tapaba" el cierre
+     [AMB] declara  ·  backend/src/routes/sitport-routes.js  L923
+           // 254 de la bolsa que declara cierre.
+     [AMB] pregunta  ·  backend/src/routes/sitport-routes.js  L926
+           // de quien pregunta. Se emite acá y NO como `evaluacion.nivel`, que es
+     [AMB] entra  ·  backend/src/routes/sitport-routes.js  L983
+           // El drift entra al máximo de INV-1.1 como una fuente más, topado en U.
+     [AMB] calcula  ·  backend/src/routes/sitport-routes.js  L987
+           // Se calcula y se devuelve en su PROPIO campo. NO entra en
+     [AMB] entra  ·  backend/src/routes/sitport-routes.js  L987
+           // Se calcula y se devuelve en su PROPIO campo. NO entra en
+     [AMB] carga  ·  backend/src/services/ambitos-publicados.js  L3
+           // ambitos-publicados.js — carga y VALIDA el registro de ambitos publicados.
+     [AMB] declara  ·  backend/src/services/ambitos-publicados.js  L5
+           // CONTRATO_MOTOR.md INV-3.6: una jurisdiccion sin geometria cargada se declara,
+     [AMB] define  ·  backend/src/services/ambitos-publicados.js  L8
+           // clasificado como (b) hueco de la propia capa, que el contrato define como
+     [AMB] carga  ·  backend/src/services/ambitos-publicados.js  L13
+           // validacion vive ADENTRO de la carga, no hay forma de consumir la declaracion
+     [AMB] prueba  ·  backend/src/services/ambitos-publicados.js  L45
+           * para que la prueba de mordida la ejerza con variantes en memoria sin copiar
+     [AMB] consulta  ·  backend/src/services/ambitos-publicados.js  L55
+           // C7 — la capa publicada NO puede ser la capa provisoria que el motor consulta.
+     [AMB] consulta  ·  backend/src/services/ambitos-publicados.js  L60
+           `declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca ` +
+     [AMB] marca  ·  backend/src/services/ambitos-publicados.js  L60
+           `declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca ` +
+     [AMB] declara  ·  backend/src/services/ambitos-publicados.js  L60
+           `declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca ` +
+     [AMB] declara  ·  backend/src/services/ambitos-publicados.js  L78
+           `C2: el registro declara el ambito '${e.ambito}', que no existe en el insumo. ` +
+     [AMB] declara  ·  backend/src/services/ambitos-publicados.js  L98
+           `C9: el ambito '${e.ambito}' no declara "habilitado_para_publicar" booleano. Ese campo es el que ` +
+     [AMB] declara  ·  backend/src/services/ambitos-publicados.js  L103
+           `C9: el ambito '${e.ambito}' declara "habilitado_para_publicar": ${e.habilitado_para_publicar} y no ` +
+     [AMB] declara  ·  backend/src/services/ambitos-publicados.js  L113
+           `ambito '${e.ambito}': declara ${e.jurisdicciones_esperadas} jurisdicciones esperadas y el insumo tiene ` +
+     [AMB] declara  ·  backend/src/services/ambitos-publicados.js  L141
+           `C6: el ambito '${e.ambito}' no declara geografia de reclamo y no escribe ` +
+     [AMB] cuenta  ·  backend/src/services/ambitos-publicados.js  L179
+           * Cuenta, por ambito, cuantas geometrias NO vacias tiene la capa publicada.
+     [AMB] declara  ·  backend/src/services/ambitos-publicados.js  L227
+           `C6: el ambito '${e.ambito}' declara su geografia de reclamo en '${g.relacion}', que no existe en el ` +
+     [AMB] sigue  ·  backend/src/services/ambitos-publicados.js  L242
+           * y sigue siendo la causa (b) de INV-3.6.
+     [AMB] usa  ·  backend/src/services/ambitos-publicados.js  L291
+           * coincidir con el que el mapa operativo atribuye; si no coincide, no se usa
+     [AMB] consulta  ·  backend/src/services/ambitos-publicados.js  L296
+           * mano; aca resuelve una jurisdiccion que salio de una consulta geografica. Se
+     [AMB] toca  ·  backend/src/services/ambitos-publicados.js  L297
+           * unifican en E0.3, que es la etapa que toca el join bahia -> Capitania.
+     [AMB] carga  ·  backend/src/services/ambitos-publicados.js  L318
+           * Carga el registro, lo valida contra el insumo y contra la base, y lo devuelve.
+     [AMB] comprueba  ·  backend/src/services/anclas-declaradas.js  L10
+           // BASE. scripts/prueba_mordida_ancla.js le inyecta filas rotas y comprueba que
+     [AMB] prueba  ·  backend/src/services/anclas-declaradas.js  L10
+           // BASE. scripts/prueba_mordida_ancla.js le inyecta filas rotas y comprueba que
+     [AMB] declara  ·  backend/src/services/anclas-declaradas.js  L103
+           throw new ErrorAnclasDeclaradas('la fila declarada ' + f.nodo_id + ' no declara ancla_esperada. ' +
+     [AMB] prueba  ·  backend/src/services/anclas-declaradas.js  L115
+           // familia en scripts/prueba_mordida_ancla.js. La comparacion de mas abajo
+     [AMB] declara  ·  backend/src/services/anclas-declaradas.js  L118
+           throw new ErrorAnclasDeclaradas('la fila declarada ' + f.nodo_id + ' declara ancla_esperada = ' +
+     [AMB] prueba  ·  backend/src/services/anclas-declaradas.js  L121
+           'por un tipeo. Ensancharlo es deliberado y va con su familia en la prueba de mordida.');
+     [AMB] consulta  ·  backend/src/services/anclas-declaradas.js  L135
+           ' -- la consulta cambio de forma y el control estaria comparando contra undefined');
+     [AMB] deja  ·  backend/src/services/anclas-declaradas.js  L164
+           // NULL de otro. Aca es donde la fragilidad del id por renumeracion deja de
+     [AMB] prueba  ·  backend/src/services/anclas-declaradas.js  L199
+           // declaradas no prueba nada. Eso no es un defecto del dato: es que no se
+     [AMB] define  ·  backend/src/services/andamio-medicion.js  L11
+           // CÓMO SE DEFINE "CONTEXTO DE MEDICIÓN" — camino B, aprobado por el owner el
+     [AMB] declara  ·  backend/src/services/andamio-medicion.js  L14
+           // contexto no se DECLARA, se DEMUESTRA: el nombre de la capa sólo se obtiene
+     [AMB] guarda  ·  backend/src/services/andamio-medicion.js  L17
+           // la guarda de E0.3: la condición se deduce de lo que el proceso ES, no de lo
+     [AMB] comprueba  ·  backend/src/services/andamio-medicion.js  L22
+           // script de aplicación lo escribe y `verificarComentarioEnLaBase()` comprueba
+     [AMB] prueba  ·  backend/src/services/andamio-medicion.js  L40
+           * prueba de mordida la ejerza con variantes en memoria sin copiar reglas.
+     [AMB] declara  ·  backend/src/services/andamio-medicion.js  L51
+           `el bloque "andamio" no declara es_andamio === true (vale ${JSON.stringify(a.es_andamio)}). ` +
+     [AMB] marca  ·  backend/src/services/andamio-medicion.js  L52
+           `Una capa que no se declara andamio no puede usarse como andamio: sin esa marca no hay nada que impida promoverla.`);
+     [AMB] declara  ·  backend/src/services/andamio-medicion.js  L52
+           `Una capa que no se declara andamio no puede usarse como andamio: sin esa marca no hay nada que impida promoverla.`);
+     [AMB] consulta  ·  backend/src/services/andamio-medicion.js  L61
+           // EL GUARD CENTRAL. La capa que el motor consulta no puede ser el andamio.
+     [AMB] marca  ·  backend/src/services/andamio-medicion.js  L64
+           `que el bloque "andamio" marca como andamio de medición. Esa capa no puede responderle al patrón: ` +
+     [AMB] declara  ·  backend/src/services/andamio-medicion.js  L77
+           * E0.1, que es informativo y declara "no bloquea ni demora el arranque": ahí una
+     [AMB] consulta  ·  backend/src/services/andamio-medicion.js  L83
+           log.log(`[andamio] OK: '${andamio.capa}' declarada como andamio de medición; el motor consulta otra capa.`);
+     [AMB] declara  ·  backend/src/services/andamio-medicion.js  L98
+           * declara, literal. Si alguien edita el COMMENT ON a mano, esto se detiene.
+     [AMB] declara  ·  backend/src/services/andamio-medicion.js  L114
+           `el comentario de '${andamio.capa}' en la base NO es el que declara capa_consultada.json. Los dos guards ` +
+     [AMB] sigue  ·  backend/src/services/capitania-de-bahia.js  L10
+           //   · el TELEFONO sigue saliendo de src/data/bahia-capitania-map.json, que es
+     [AMB] llama  ·  backend/src/services/capitania-de-bahia.js  L13
+           // POR QUE. El mapa mezcla quien tiene jurisdiccion con a quien se llama, y E0.3
+     [AMB] deja  ·  backend/src/services/capitania-de-bahia.js  L23
+           // ESTO NO ARREGLA EL MAPA: lo deja de consultar para el nombre, y solo en los
+     [AMB] sigue  ·  backend/src/services/capitania-de-bahia.js  L24
+           // ambitos publicados. El frente de contacto (§7.1 del plan) sigue abierto, y en
+     [AMB] sigue  ·  backend/src/services/capitania-de-bahia.js  L25
+           // cualquier otro ambito el nombre sigue saliendo de donde salia.
+     [AMB] sigue  ·  backend/src/services/capitania-de-bahia.js  L27
+           // LA GOBERNACION SIGUE SALIENDO DEL MAPA, dicho en vez de tapado. El owner
+     [AMB] toca  ·  backend/src/services/capitania-de-bahia.js  L32
+           // discrepancia medida que arreglar y no se toca por anticipado.
+     [AMB] declara  ·  backend/src/services/capitania-de-bahia.js  L45
+           *   declara publicados. Vacio (el estado de hoy) = se comporta exactamente como
+     [AMB] declara  ·  backend/src/services/catalogo-bahias.js  L40
+           // Campos que más de una fuente interna declara y que, por lo tanto, tienen que
+     [AMB] pregunta  ·  backend/src/services/catalogo-bahias.js  L44
+           // por copia literal, la tolerancia vuelve a ser una pregunta y hay que medirla
+     [AMB] declara  ·  backend/src/services/catalogo-bahias.js  L75
+           throw new ErrorCatalogoBahias(`${rutaArchivo} no declara BAHIA_COORDS — la fuente interna cambió de forma y la extracción quedó ciega`);
+     [AMB] agrega  ·  backend/src/services/catalogo-bahias.js  L129
+           // agrega el script, porque este módulo no abre conexiones.
+     [AMB] usa  ·  backend/src/services/catalogo-bahias.js  L138
+           rol: 'la que usa el runtime — el descarte de restricciones-ruta y weather-ruta se decide acá',
+     [AMB] declara  ·  backend/src/services/catalogo-bahias.js  L154
+           rol: 'id → Capitanía y teléfono; no declara ninguno de los campos comparables',
+     [AMB] usa  ·  backend/src/services/catalogo-bahias.js  L163
+           // EL UNIVERSO DE IDS QUE SITPORT USA
+     [AMB] usa  ·  backend/src/services/catalogo-bahias.js  L167
+           // los ids que la propia fuente usa. Por eso el universo es la UNIÓN de los tres
+     [AMB] deja  ·  backend/src/services/catalogo-bahias.js  L168
+           // endpoints y no el catálogo: compararse solo contra consultaBahias deja pasar
+     [AMB] sigue  ·  backend/src/services/catalogo-bahias.js  L210
+           // Es dato, no código (§4.3). Y no silencia: una divergencia declarada se sigue
+     [AMB] cambia  ·  backend/src/services/catalogo-bahias.js  L211
+           // listando en el informe; lo único que cambia es el código de salida. Una
+     [AMB] declara  ·  backend/src/services/catalogo-bahias.js  L300
+           // Cada fuente declara QUÉ campos aporta. Un array vacío es una declaración
+     [AMB] declara  ·  backend/src/services/catalogo-bahias.js  L304
+           throw new ErrorCatalogoBahias(`la fuente interna ${f.clave} no declara "campos" — si no aporta ninguno tiene que decirlo con []`);
+     [AMB] declara  ·  backend/src/services/catalogo-bahias.js  L308
+           throw new ErrorCatalogoBahias(`la fuente interna ${f.clave} declara campo(s) que no se comparan: ${desconocidos.join(',')}`);
+     [AMB] declara  ·  backend/src/services/catalogo-bahias.js  L311
+           throw new ErrorCatalogoBahias(`la fuente interna ${f.clave} declara campos (${f.campos.join(',')}) pero no trae contenido con qué compararlos`);
+     [AMB] usa  ·  backend/src/services/catalogo-bahias.js  L376
+           //     usa el endpoint, el control aprobaría una cosa y el motor usaría otra.
+     [AMB] declara  ·  backend/src/services/catalogo-bahias.js  L379
+           // Solo se comparan las fuentes que DECLARAN el campo. Una que no lo declara
+     [AMB] pregunta  ·  backend/src/services/cierre-derivador.js  L7
+           // del AB de quien pregunta (mismo registro: AB 15 → UV, AB 60 → null, medido en
+     [AMB] pregunta  ·  backend/src/services/cierre-derivador.js  L9
+           // depender de quién pregunta. Y no vive en la ruta porque `derivarCondicion`
+     [AMB] sigue  ·  backend/src/services/cierre-derivador.js  L16
+           //         ranura: conviven. La causa sigue saliendo por `condicion` (motor) y
+     [AMB] define  ·  backend/src/services/cierre-derivador.js  L19
+           //   D-C3  el umbral define el ALCANCE, no la existencia. Cuatro estados de
+     [AMB] declara  ·  backend/src/services/cierre-derivador.js  L43
+           // LO QUE NINGUNA ARREGLA, y se declara: palabras pegadas ("CONDICIONDE",
+     [AMB] entra  ·  backend/src/services/cierre-derivador.js  L67
+           // único tipeo conocido ("PURTO CERRADO", ID 95208) entra solo por el predicado,
+     [AMB] deja  ·  backend/src/services/cierre-derivador.js  L75
+           // El `\b` deja CERRAZON afuera POR CONSTRUCCIÓN, no por excepción: un predicado
+     [AMB] cancela  ·  backend/src/services/cierre-derivador.js  L84
+           // últimos, y son los que sostienen "el zarpe sólo se cancela cuando el puerto
+     [AMB] carga  ·  backend/src/services/cierre-derivador.js  L120
+           /\b(?:CARGA|DESCARGA)\b/,
+     [AMB] deja  ·  backend/src/services/cierre-derivador.js  L167
+           // Deja de inferirse "qué quiso decir el null" y pasa a decirse "qué se leyó".
+     [AMB] sigue  ·  backend/src/services/cierre-derivador.js  L175
+           // sigue leyendo `umbral_ab_fuera` y `bloqueo_total` para producir UN componente
+     [AMB] entra  ·  backend/src/services/cierre-derivador.js  L176
+           // de piso. No decide el resultado: entra a la unión como uno más. Está medido por
+     [AMB] guarda  ·  backend/src/services/cierre-derivador.js  L188
+           // se guarda es la grafía reducida a su unidad, y el número tal como el parser
+     [AMB] sigue  ·  backend/src/services/cierre-derivador.js  L195
+           // sigue a un número" y la barra partió ese token, así que la grafía no apareció
+     [AMB] acepta  ·  backend/src/services/cierre-derivador.js  L197
+           // El parser YA la leía — sitport-parser.js:47 acepta `A\/?\.?B` — y por eso el
+     [AMB] marca  ·  backend/src/services/cierre-derivador.js  L243
+           // leer QUÉ GOBIERNA el sintagma ... eso no es una marca: es análisis sintáctico".
+     [AMB] termina  ·  backend/src/services/cierre-derivador.js  L246
+           // texto por un predicado de cierre, y la ventana termina en el primer marcador
+     [AMB] sigue  ·  backend/src/services/cierre-derivador.js  L249
+           //   95156-95159  "...DE NAVES MAYORES EN PUERTOS..." — sigue a DE, no a PARA, y
+     [AMB] sigue  ·  backend/src/services/cierre-derivador.js  L251
+           //   95072        "...CON NAVES SUPERIORES A 25 AB" — sigue a CON, no a PARA.
+     [AMB] declara  ·  backend/src/services/cierre-derivador.js  L254
+           // a entrar. Se declara con su n y la suite lo vigila con el conjunto negativo.
+     [AMB] cambia  ·  backend/src/services/cierre-derivador.js  L261
+           //   filas cuyo NÚMERO DE COMPONENTES cambia sin el guard      36
+     [AMB] cambia  ·  backend/src/services/cierre-derivador.js  L262
+           //   filas cuyo ALCANCE EMITIDO cambia sin el guard             0
+     [AMB] termina  ·  backend/src/services/cierre-derivador.js  L278
+           // La ventana se cierra en el primer marcador que termina el sintagma de alcance.
+     [AMB] sigue  ·  backend/src/services/cierre-derivador.js  L310
+           // Lee los alcances de UN segmento ya acotado (lo que sigue a un PARA hasta el
+     [AMB] deja  ·  backend/src/services/cierre-derivador.js  L316
+           // (1) el universal modificado se consume entero y deja su clase.
+     [AMB] marca  ·  backend/src/services/cierre-derivador.js  L331
+           // conjunto. Sin este colapso, la primera marca se queda sin número y emite
+     [AMB] sigue  ·  backend/src/services/cierre-derivador.js  L339
+           // (3) cada clase absorbe el primer número que la sigue antes de la clase
+     [AMB] declara  ·  backend/src/services/cierre-derivador.js  L411
+           // `menores_sin_umbral` significa TODAS las menores —así lo declara el parser en
+     [AMB] entra  ·  backend/src/services/cierre-derivador.js  L423
+           // ── EL PISO. Un componente derivado de las ramas del parser. No decide: entra
+     [AMB] completa  ·  backend/src/services/cierre-derivador.js  L438
+           // ── LA SUMA. Si algún par no se puede sumar, el resultado NO se completa con
+     [AMB] sigue  ·  backend/src/services/cierre-derivador.js  L449
+           // EL VOCABULARIO DE `alcance.tipo` ES CERRADO y sigue siendo el de D-C3:
+     [AMB] agrega  ·  backend/src/services/cierre-derivador.js  L452
+           // para "sólo las mayores" y esta sesión NO lo agrega, porque agregarlo cambia
+     [AMB] cambia  ·  backend/src/services/cierre-derivador.js  L452
+           // para "sólo las mayores" y esta sesión NO lo agrega, porque agregarlo cambia
+     [AMB] agrega  ·  backend/src/services/cierre-derivador.js  L483
+           // primaria de D-C2; la red es lo que D agrega sobre Ba.
+     [AMB] usa  ·  backend/src/services/coastline-guard.js  L7
+           * No reconstruye polígonos (costoso y frágil con miles de islas) — usa test de
+     [AMB] carga  ·  backend/src/services/coastline-guard.js  L11
+           * Carga en cascada, una sola vez por proceso (singleton in-memory):
+     [AMB] usa  ·  backend/src/services/coastline-guard.js  L13
+           *   2. coastline_raw.json      — export crudo de Overpass; si se usa, además
+     [AMB] carga  ·  backend/src/services/coastline-guard.js  L182
+           // Fuerza un nuevo intento de carga (p.ej. una vez terminada una descarga en curso).
+     [AMB] verifica  ·  backend/src/services/coastline-guard.js  L202
+           * Verifica si una línea (array de [lon,lat], típicamente 2 puntos: un feeder)
+     [AMB] evita  ·  backend/src/services/coastline-guard.js  L224
+           // en el R-tree por cada par de puntos (evita miles de flatbush.search()) ──────
+     [AMB] entra  ·  backend/src/services/cobertura-jurisdiccional.js  L5
+           // CONTRATO_MOTOR.md INV-3.6: si una ruta entra en una zona sin geometria
+     [AMB] informa  ·  backend/src/services/cobertura-jurisdiccional.js  L6
+           // cargada, se informa; nunca se resuelve en silencio. Hoy el motor pregunta
+     [AMB] pregunta  ·  backend/src/services/cobertura-jurisdiccional.js  L6
+           // cargada, se informa; nunca se resuelve en silencio. Hoy el motor pregunta
+     [AMB] pregunta  ·  backend/src/services/cobertura-jurisdiccional.js  L7
+           // "que jurisdicciones toca la ruta" y no pregunta "que parte de la ruta no toca
+     [AMB] toca  ·  backend/src/services/cobertura-jurisdiccional.js  L7
+           // "que jurisdicciones toca la ruta" y no pregunta "que parte de la ruta no toca
+     [AMB] pregunta  ·  backend/src/services/cobertura-jurisdiccional.js  L8
+           // ninguna". Este modulo hace la segunda pregunta.
+     [AMB] define  ·  backend/src/services/cobertura-jurisdiccional.js  L26
+           //   INV-3.6 define (a) como "una jurisdiccion [que] NO TIENE GEOMETRIA CARGADA".
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L34
+           //                                        -> lo declara zonas_aviso.json
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L36
+           //                                        -> lo declara ambitos_publicados.json
+     [AMB] cambia  ·  backend/src/services/cobertura-jurisdiccional.js  L39
+           //   U topada. Lo que cambia es el registro interno, que es exactamente la
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L92
+           `capa_consultada.json no declara '${campo}'.`);
+     [AMB] sigue  ·  backend/src/services/cobertura-jurisdiccional.js  L104
+           // El motor sigue consultando `capa_jurisdicciones` y ADEMAS, si el dato lo
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L105
+           // declara, la capa publicada del D.S. 991, acotada a los ambitos que
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L106
+           // ambitos_publicados.json declara publicados. Es ADITIVO: suma cobertura y
+     [AMB] saca  ·  backend/src/services/cobertura-jurisdiccional.js  L107
+           // suma bahias al matching, nunca saca.
+     [AMB] entra  ·  backend/src/services/cobertura-jurisdiccional.js  L109
+           // SE CABLEAN LOS DOS CONSUMIDORES O NINGUNO. La capa entra al motor por dos
+     [AMB] define  ·  backend/src/services/cobertura-jurisdiccional.js  L114
+           // hueco de nuestra capa, que INV-3.6 define como defecto de construccion. Es la
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L117
+           // EL NOMBRE DE LA CAPA NO SE DECLARA DOS VECES: sale de ambitos_publicados.json,
+     [AMB] consulta  ·  backend/src/services/cobertura-jurisdiccional.js  L119
+           // impide que sea la capa que el motor ya consulta (C7).
+     [AMB] prueba  ·  backend/src/services/cobertura-jurisdiccional.js  L126
+           * que la prueba de mordida la ejerza con variantes en memoria sin copiar
+     [AMB] consulta  ·  backend/src/services/cobertura-jurisdiccional.js  L133
+           `consulta la capa publicada, y no se supone que no: un bloque borrado apagaria el cableado en silencio, ` +
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L141
+           `${BLOQUE_ENSANCHE}: ambitos_publicados.json no declara una 'capa_publicada' usable ('${capa}').`);
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L153
+           `${BLOQUE_ENSANCHE}: declara 'consultada': true y ambitos_publicados.json no publica ningun ambito. ` +
+     [AMB] agrega  ·  backend/src/services/cobertura-jurisdiccional.js  L174
+           * Las bahias que el ensanche agrega para una ruta:
+     [AMB] consulta  ·  backend/src/services/cobertura-jurisdiccional.js  L179
+           * DOS consumidores de la capa publicada —esta consulta y el CTE `cob` de arriba—
+     [AMB] prueba  ·  backend/src/services/cobertura-jurisdiccional.js  L182
+           * Recibe el cliente en vez de tomarlo de un modulo para que la prueba de mordida
+     [AMB] carga  ·  backend/src/services/cobertura-jurisdiccional.js  L200
+           * Si el cableado esta ACTIVO, el join de E0.3 se carga y se VALIDA aca, para que
+     [AMB] pregunta  ·  backend/src/services/cobertura-jurisdiccional.js  L201
+           * un defecto suyo —una de las 6 sin resolver sin su pregunta redactada, una
+     [AMB] toca  ·  backend/src/services/cobertura-jurisdiccional.js  L206
+           * Con el cableado APAGADO no se toca. El join no se consume, y hacerlo capaz de
+     [AMB] usa  ·  backend/src/services/cobertura-jurisdiccional.js  L207
+           * tumbar un backend que no lo usa seria ensanchar el radio de falla sin que
+     [AMB] llama  ·  backend/src/services/cobertura-jurisdiccional.js  L210
+           // `decl` es SIEMPRE el archivo real en produccion —src/index.js lo llama sin
+     [AMB] prueba  ·  backend/src/services/cobertura-jurisdiccional.js  L211
+           // argumentos— y existe para que la prueba de mordida pueda ejercer LAS DOS
+     [AMB] activa  ·  backend/src/services/cobertura-jurisdiccional.js  L213
+           // que la rama activa no se ejercia; con el paso 5 el interruptor quedo en true y
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L219
+           `capa_consultada.json: el bloque '${BLOQUE_ENSANCHE}' falta o no declara 'consultada' booleano. ` +
+     [AMB] completa  ·  backend/src/services/cobertura-jurisdiccional.js  L220
+           `La verificacion completa vive en ensancheDeclarado(); esto es solo el arranque.`);
+     [AMB] entra  ·  backend/src/services/cobertura-jurisdiccional.js  L228
+           * puntos por los que la capa entra al motor.
+     [AMB] consulta  ·  backend/src/services/cobertura-jurisdiccional.js  L240
+           // Una sola consulta. Devuelve los trozos de ruta que no caen en ninguna
+     [AMB] muestra  ·  backend/src/services/cobertura-jurisdiccional.js  L241
+           // jurisdiccion, cada uno con los dos hechos que deciden si se muestra:
+     [AMB] muestra  ·  backend/src/services/cobertura-jurisdiccional.js  L247
+           //                       que la ruta SI resolvio y SI muestra.
+     [AMB] pregunta  ·  backend/src/services/cobertura-jurisdiccional.js  L249
+           // "Entero dentro" se MIDE en metros fuera, no se pregunta con ST_CoveredBy: ese
+     [AMB] sigue  ·  backend/src/services/cobertura-jurisdiccional.js  L252
+           // sigue calculando el predicado, pero solo como diagnostico: que la medida y el
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L319
+           `capa_consultada.json no declara 'tolerancia_fuera_del_recorte_m' como numero. ` +
+     [AMB] deja  ·  backend/src/services/cobertura-jurisdiccional.js  L345
+           // cobertura salio de dos deja al lector persiguiendo el hueco en el lugar
+     [AMB] cambia  ·  backend/src/services/cobertura-jurisdiccional.js  L346
+           // equivocado; es dato interno y no cambia lo que el patron ve.
+     [AMB] declara  ·  backend/src/services/cobertura-jurisdiccional.js  L386
+           // Hoy ninguna declara ambito, asi que ninguna reclama: no se adivina.
+     [AMB] pregunta  ·  backend/src/services/cobertura-jurisdiccional.js  L390
+           // Se pregunta SOLO si ninguna zona declarada lo reclamo — una zona nombra
+     [AMB] manda  ·  backend/src/services/cobertura-jurisdiccional.js  L392
+           // declaracion mas especifica manda.
+     [AMB] saca  ·  backend/src/services/cobertura-jurisdiccional.js  L420
+           // Sólo {nombre}: INV-10.1 saca el teléfono de los mensajes del catálogo, y el
+     [AMB] muestra  ·  backend/src/services/cobertura-jurisdiccional.js  L422
+           // y dirección— se muestra en el punto de zarpe y recalada, no acá.
+     [AMB] entra  ·  backend/src/services/cobertura-jurisdiccional.js  L451
+           // Un ambito no publicado NO entra aca, y ese es el arreglo de E0.2: es
+     [AMB] muestra  ·  backend/src/services/cobertura-jurisdiccional.js  L465
+           `declarada lo cubre. Se muestra al patron y queda registrado como defecto de construccion.`,
+     [AMB] consulta  ·  backend/src/services/cobertura-jurisdiccional.js  L486
+           * Nombre validado de la capa que el motor consulta. Existe para que el matching
+     [AMB] prueba  ·  backend/src/services/cobertura-jurisdiccional.js  L502
+           // Se exportan para la prueba de mordida: la regla se ejerce con variantes en
+     [AMB] cuenta  ·  backend/src/services/contacto-por-escalon.js  L7
+           // `telefono` sueltos, y cada consumidor decidia por su cuenta que rotular. El
+     [AMB] muestra  ·  backend/src/services/contacto-por-escalon.js  L17
+           //   3. Si no hay ninguno de los dos, EL CAMPO NO SE MUESTRA. Sin texto de
+     [AMB] entra  ·  backend/src/services/contacto-por-escalon.js  L33
+           // CONTRATO_MOTOR.md §5 que entra con esta pieza; no ocurre de costado.
+     [AMB] llama  ·  backend/src/services/contacto-por-escalon.js  L37
+           //     `data/decreto/` (INV-3.3). Aca solo se decide A QUIEN SE LLAMA y COMO SE
+     [AMB] consulta  ·  backend/src/services/contacto-por-escalon.js  L39
+           //   · NO consulta la tabla de Gobernaciones de `src/utils/capitanias.js`.
+     [AMB] declara  ·  backend/src/services/contacto-por-escalon.js  L40
+           //     CONTRATO_MOTOR.md §5.1 declara que esa tabla NO ES FUENTE, y leerla en
+     [AMB] define  ·  backend/src/services/contacto-por-escalon.js  L56
+           // se define uno nuevo aca a proposito: dos criterios de atomicidad conviviendo
+     [AMB] entra  ·  backend/src/services/contacto-por-escalon.js  L65
+           // Una reparticion sin `nombre_publicado` NO entra al indice, y eso es un estado
+     [AMB] muestra  ·  backend/src/services/contacto-por-escalon.js  L68
+           // muestra. No se inventa una clave para ellas.
+     [AMB] muestra  ·  backend/src/services/contacto-por-escalon.js  L120
+           *   significa EL CAMPO NO SE MUESTRA: quien lo consuma no debe sustituirlo por
+     [AMB] muestra  ·  backend/src/services/contacto-por-escalon.js  L139
+           // hablan de que numero se muestra. Sin numero no hay escalon 1 ni 2, y el
+     [AMB] manda  ·  backend/src/services/contacto-por-escalon.js  L156
+           // numero que manda a otra reparticion.
+     [AMB] consulta  ·  backend/src/services/contacto-por-escalon.js  L165
+           // Gobernacion lo trae la propia entrada; NO se consulta ninguna tabla.
+     [AMB] llama  ·  backend/src/services/contacto-por-escalon.js  L179
+           // que lo haya tocado. El servicio no lo llama.
+     [AMB] declara  ·  backend/src/services/cotejo-contrato.js  L6
+           // `data/decreto/zonas_aviso.json` declara en su propia `procedencia` que su
+     [AMB] cambia  ·  backend/src/services/cotejo-contrato.js  L8
+           // cambia, cambia aca y se nota". El 2026-08-13 el catalogo cambio —la v1.8 le
+     [AMB] declara  ·  backend/src/services/cotejo-contrato.js  L30
+           // fila se declara en `cotejo_con_el_contrato.fila`, legible por maquina, y
+     [AMB] muestra  ·  backend/src/services/cotejo-contrato.js  L35
+           // (`### 5.1` e `### INV-5.1`), lo que muestra que los numeros se pisan; la
+     [AMB] usa  ·  backend/src/services/cotejo-contrato.js  L49
+           // "algo se rompio". La usa el script; el test mira `estado`.
+     [AMB] marca  ·  backend/src/services/cotejo-contrato.js  L64
+           //   1. NEGRITAS      el contrato marca `**...**` porque es markdown; el dato es
+     [AMB] declara  ·  backend/src/services/cotejo-contrato.js  L70
+           //                    en las dos celdas y por eso se declara por celda: en la de
+     [AMB] declara  ·  backend/src/services/cotejo-contrato.js  L88
+           // `🟡 U "No tenemos..."` -> `U`. Es el nivel que la celda declara, y el
+     [AMB] declara  ·  backend/src/services/cotejo-contrato.js  L137
+           `contrato transcribe este dato, y el cotejo no se supone: se declara.`);
+     [AMB] verifica  ·  backend/src/services/deportivo-validator.js  L78
+           capa2: 'Verifica que tu licencia (PLDB, PDB, CDC o CDAM) sea la correcta según RGDN (TM-002) Art. 12.',
+     [AMB] declara  ·  backend/src/services/deportivo-validator.js  L98
+           capa2: 'Declara el tipo de propulsión de tu embarcación (motor, vela, mixto o manual).',
+     [AMB] avisa  ·  backend/src/services/drift-ambito-a.js  L10
+           // A3: se avisa, y el aviso **escala el veredicto a U, nunca a U+V**. El tope es
+     [AMB] manda  ·  backend/src/services/drift-ambito-a.js  L19
+           // INV-3.3 manda, así que con eso alcanza para saber si la ruta la cruza.
+     [AMB] consulta  ·  backend/src/services/drift-ambito-a.js  L21
+           // A3 rige mientras no esté la consulta formal a DIRECTEMAR, que el owner gestiona
+     [AMB] gestiona  ·  backend/src/services/drift-ambito-a.js  L21
+           // A3 rige mientras no esté la consulta formal a DIRECTEMAR, que el owner gestiona
+     [AMB] avisa  ·  backend/src/services/drift-arranque.js  L4
+           // al patrón no se le avisa, PERO la divergencia no puede ser silenciosa del lado
+     [AMB] deja  ·  backend/src/services/drift-arranque.js  L8
+           // aparte y deja dos rastros —una línea de log y un archivo de estado versionado
+     [AMB] cambia  ·  backend/src/services/drift-arranque.js  L15
+           //   · No toca ningún flujo de veredicto ni cambia ninguna respuesta. Qué hace el
+     [AMB] toca  ·  backend/src/services/drift-arranque.js  L15
+           //   · No toca ningún flujo de veredicto ni cambia ninguna respuesta. Qué hace el
+     [AMB] usa  ·  backend/src/services/drift-arranque.js  L42
+           // (scripts/e01_prueba_mordida_arranque.js). El arranque real no lo usa.
+     [AMB] prueba  ·  backend/src/services/drift-arranque.js  L42
+           // (scripts/e01_prueba_mordida_arranque.js). El arranque real no lo usa.
+     [AMB] busca  ·  backend/src/services/fondeadero-service.js  L3
+           // Busca el puerto/fondeadero más cercano ANTES de una restricción de tránsito,
+     [AMB] activa  ·  backend/src/services/fondeadero-service.js  L39
+           * fondeadero no caiga dentro de ninguna zona con restricción activa.
+     [AMB] activa  ·  backend/src/services/fondeadero-service.js  L46
+           *        restricción activa — el fondeadero candidato no puede caer dentro
+     [AMB] muestra  ·  backend/src/services/fondeadero-service.js  L72
+           const muestra = [];
+     [AMB] muestra  ·  backend/src/services/fondeadero-service.js  L73
+           for (let i = 0; i < rutaAntes.length; i += step) muestra.push(rutaAntes[i]);
+     [AMB] muestra  ·  backend/src/services/fondeadero-service.js  L75
+           if (muestra[muestra.length - 1] !== ultimo) muestra.push(ultimo);
+     [AMB] muestra  ·  backend/src/services/fondeadero-service.js  L83
+           for (const rp of muestra) {
+     [AMB] carga  ·  backend/src/services/join-bahia-jurisdiccion.js  L3
+           // join-bahia-jurisdiccion.js — carga y VALIDA el join bahia -> jurisdiccion.
+     [AMB] entra  ·  backend/src/services/join-bahia-jurisdiccion.js  L7
+           // el que la atribucion entra al motor, y valida antes de entregarla.
+     [AMB] carga  ·  backend/src/services/join-bahia-jurisdiccion.js  L9
+           // La validacion va ADENTRO de la carga, como en zonas-aviso.js y
+     [AMB] llama  ·  backend/src/services/join-bahia-jurisdiccion.js  L15
+           // QUIEN TIENE JURISDICCION; aquel dice A QUIEN SE LLAMA. E0.3 midio que
+     [AMB] declara  ·  backend/src/services/join-bahia-jurisdiccion.js  L20
+           // eso se declara con `estado` explicito y con la fuente a consultar. Lo que NO
+     [AMB] carga  ·  backend/src/services/join-bahia-jurisdiccion.js  L21
+           // es legitimo es que falte: una bahia del catalogo sin entrada detiene la carga.
+     [AMB] carga  ·  backend/src/services/join-bahia-jurisdiccion.js  L41
+           * Funcion pura sobre los tres objetos: la carga desde disco la envuelve y la
+     [AMB] prueba  ·  backend/src/services/join-bahia-jurisdiccion.js  L42
+           * prueba de mordida la ejerce con variantes en memoria, sin copiar reglas.
+     [AMB] pregunta  ·  backend/src/services/join-bahia-jurisdiccion.js  L70
+           exigir(f && textoNoVacio(f.id) && textoNoVacio(f.a_quien) && textoNoVacio(f.que_falta) && textoNoVacio(f.pregunta),
+     [AMB] pregunta  ·  backend/src/services/join-bahia-jurisdiccion.js  L71
+           `bahia ${id}: 'sin_resolver' exige 'fuente_a_consultar' con id, a_quien, que_falta y pregunta escritos. ` +
+     [AMB] avisa  ·  backend/src/services/join-bahia-jurisdiccion.js  L72
+           `Una pendiente sin fuente identificada queda como verdad y no avisa.`);
+     [AMB] muestra  ·  backend/src/services/join-bahia-jurisdiccion.js  L91
+           // INV-3.4 (muestra de mas, nunca de menos). Pero exige evidencia de las dos.
+     [AMB] declara  ·  backend/src/services/join-bahia-jurisdiccion.js  L94
+           `bahia ${id}: declara ${destinos.length} jurisdicciones con respaldo '${e.respaldo}'. Atribuirla a varias ` +
+     [AMB] usa  ·  backend/src/services/join-bahia-jurisdiccion.js  L130
+           * El sentido inverso: que bahias cuelgan de estas jurisdicciones. Lo usa el
+     [AMB] entra  ·  backend/src/services/join-bahia-jurisdiccion.js  L136
+           * jurisdicciones entra por cualquiera de las dos. Es INV-3.4 aplicado al
+     [AMB] muestra  ·  backend/src/services/join-bahia-jurisdiccion.js  L137
+           * reves, muestra de mas y nunca de menos.
+     [AMB] consulta  ·  backend/src/services/join-puerto-bahia.js  L6
+           // en el motivo por el que no hay ninguna. NO consulta SITPORT, no filtra
+     [AMB] pregunta  ·  backend/src/services/join-puerto-bahia.js  L8
+           // pregunta —«¿qué bahía le corresponde a este nombre, y si no le corresponde
+     [AMB] deja  ·  backend/src/services/join-puerto-bahia.js  L17
+           // `4f9fbdc3…` deja de existir como concepto.
+     [AMB] declara  ·  backend/src/services/join-puerto-bahia.js  L34
+           // F2 NO le cree a `anclado_por_el_nodo` cuando la bahía que el nodo declara
+     [AMB] empieza  ·  backend/src/services/join-puerto-bahia.js  L38
+           // mismas 8 con cierre—, por debajo de 75 empieza a barrer anclas legítimas, y
+     [AMB] deja  ·  backend/src/services/join-puerto-bahia.js  L39
+           // por encima de 100 se cae a 6 y deja pasar la mitad del defecto de los 6,00°.
+     [AMB] evita  ·  backend/src/services/join-puerto-bahia.js  L42
+           // SU BALANCE ESTÁ PUBLICADO Y NO ES NEUTRO: evita 8 falsos positivos y causa 2
+     [AMB] declara  ·  backend/src/services/join-puerto-bahia.js  L68
+           // El nodo declara una bahía, pero está a más de KM_MAX_BAHIA_DECLARADA. Es el
+     [AMB] guarda  ·  backend/src/services/join-puerto-bahia.js  L85
+           // El artefacto guarda la distancia en TRES CAMPOS DISTINTOS según el estado, y
+     [AMB] llama  ·  backend/src/services/join-puerto-bahia.js  L88
+           // DERIVADA, que no es el ancla de nadie. Por eso el campo emitido se llama
+     [AMB] confirma  ·  backend/src/services/join-puerto-bahia.js  L95
+           // por el mismo motivo que el párrafo de arriba: nada CONFIRMA ese ancla y el
+     [AMB] declara  ·  backend/src/services/join-puerto-bahia.js  L96
+           // nodo no la DECLARA. Medido ese día: 193 de las 198 filas tienen
+     [AMB] toca  ·  backend/src/services/join-puerto-bahia.js  L108
+           // la PWA, y ningún test de la suite toca el lector. El campo `fuente_del_km` SÍ
+     [AMB] declara  ·  backend/src/services/join-puerto-bahia.js  L118
+           // Los cinco estados que el artefacto declara en su propio `vocabulario_estado`.
+     [AMB] declara  ·  backend/src/services/join-puerto-bahia.js  L147
+           // Se normaliza SÓLO lo que el generador normalizó, y se declara qué: retornos de
+     [AMB] toca  ·  backend/src/services/join-puerto-bahia.js  L149
+           // los extremos. NO se toca ni el caso ni los acentos: el artefacto conserva el
+     [AMB] carga  ·  backend/src/services/join-puerto-bahia.js  L160
+           // LA CARGA — perezosa, con el error CACHEADO y RE-LANZADO en cada llamada.
+     [AMB] carga  ·  backend/src/services/join-puerto-bahia.js  L163
+           //   · no se carga al `require` porque un artefacto ilegible dejaría al backend
+     [AMB] guarda  ·  backend/src/services/join-puerto-bahia.js  L169
+           //   · el error se guarda y se re-lanza en vez de reintentar la lectura en cada
+     [AMB] pregunta  ·  backend/src/services/join-puerto-bahia.js  L236
+           // LA PREGUNTA — `fichaDePuerto(nombre)`.
+     [AMB] consulta  ·  backend/src/services/map-service.js  L52
+           // Timeout de 15s por consulta espacial
+     [AMB] carga  ·  backend/src/services/marine-weather-service.js  L14
+           // ─── Carga de base de conocimiento de especies ───────────────────────────────
+     [AMB] verifica  ·  backend/src/services/marine-weather-service.js  L25
+           throw new Error('No se pudo cargar la base de conocimiento de especies. Verifica que especies_pesca.json esté en el directorio raíz del backend.');
+     [AMB] baja  ·  backend/src/services/marine-weather-service.js  L83
+           *  Norte  (lat > -30):          aguas oligotróficas del Pacífico subtropical → clorofila baja
+     [AMB] baja  ·  backend/src/services/marine-weather-service.js  L113
+           : sstOk ? 'optima' : sst < especie.temp_min_optima ? 'baja' : 'alta';
+     [AMB] baja  ·  backend/src/services/marine-weather-service.js  L116
+           : cloroOk ? 'optima' : clorofila < especie.clorofila_min_optima ? 'baja' : 'alta';
+     [AMB] consulta  ·  backend/src/services/marine-weather-service.js  L129
+           return `⚠ ALERTA FAN PREVENTIVA: concentración de clorofila anormalmente alta (${clorofila.toFixed(2)} mg/m³, umbral: ${umbral.toFixed(1)} mg/m³). Riesgo elevado de Floraciones Algales Nocivas. Consulta la Red de Monitor
+     [AMB] carga  ·  backend/src/services/mitilidos-service.js  L47
+           //  Carga del dataset
+     [AMB] consulta  ·  backend/src/services/mitilidos-service.js  L71
+           //  Funciones de consulta
+     [AMB] evita  ·  backend/src/services/ocean-data-reader.js  L159
+           // (antes de interpolar) evita el problema de interpolar linealmente un
+     [AMB] carga  ·  backend/src/services/ocean-data-reader.js  L188
+           // razonable â€”el STW real difiere por carga y deriva, que calculan
+     [AMB] sigue  ·  backend/src/services/ocean-data-reader.js  L243
+           // sigue viniendo de Open-Meteo incluso cuando IFOP responde bien. Se intenta
+     [AMB] responde  ·  backend/src/services/ocean-data-reader.js  L243
+           // sigue viniendo de Open-Meteo incluso cuando IFOP responde bien. Se intenta
+     [AMB] espera  ·  backend/src/services/puertos-service.js  L11
+           // Convierte una fila de nodos_maritimos al shape que espera el frontend
+     [AMB] verifica  ·  backend/src/services/raster-router-service.js  L7
+           * de §7.6 son hipotesis: el router se construye libre y se verifica caso
+     [AMB] completa  ·  backend/src/services/raster-router-service.js  L10
+           * COBERTURA MULTI-TILE (cobertura costa completa de Chile):
+     [AMB] selecciona  ·  backend/src/services/raster-router-service.js  L12
+           *   router selecciona automaticamente el tile segun las coordenadas de
+     [AMB] completa  ·  backend/src/services/raster-router-service.js  L21
+           *   (nunca un crash). Ver docs/RUNBOOK_tiles_costa_completa.md para generarlos.
+     [AMB] completa  ·  backend/src/services/raster-router-service.js  L38
+           // ---- registry de tiles (cobertura costa completa) -------------------------
+     [AMB] toma  ·  backend/src/services/raster-router-service.js  L45
+           // sobre agua cubierta por AMBOS tiles adyacentes (seamLat toma el midpoint del
+     [AMB] toca  ·  backend/src/services/raster-router-service.js  L57
+           // los que la operacion realmente toca.
+     [AMB] usa  ·  backend/src/services/raster-router-service.js  L121
+           *  Se usa para posar el punto de traspaso sobre agua real.
+     [AMB] acepta  ·  backend/src/services/raster-router-service.js  L188
+           *  lejos del litoral. Si no hay agua costera a esa latitud, acepta cualquier
+     [AMB] evita  ·  backend/src/services/raster-router-service.js  L276
+           // ---- geodesia local (evita depender de exports internos de otros servicios)
+     [AMB] prueba  ·  backend/src/services/raster-router-service.js  L302
+           // 50m). Cada transicion de nivel prueba dilatacion iterativa 3/6/12 km
+     [AMB] completa  ·  backend/src/services/raster-router-service.js  L391
+           // alternativa completa que el corredor previo no contenia. Se agotan
+     [AMB] sigue  ·  backend/src/services/raster-router-service.js  L399
+           // supera el tope, se devuelve el error explicito, no se sigue insistiendo.
+     [AMB] cambia  ·  backend/src/services/raster-router-service.js  L419
+           /** Corta la secuencia de waypoints en tramos donde cambia confianza_batimetrica. */
+     [AMB] toca  ·  backend/src/services/raster-router-service.js  L524
+           // trazada, no toca el raster ni el A*. Cotejo vertical y peligros por canal
+     [AMB] completa  ·  backend/src/services/raster-router-service.js  L643
+           `La ruta cruza el tile "${s.id}" que aún no está generado. Ver docs/RUNBOOK_tiles_costa_completa.md.`,
+     [AMB] sigue  ·  backend/src/services/raster-router-service.js  L654
+           // continente al este de los canales). Asi la polilinea sigue un corredor
+     [AMB] usa  ·  backend/src/services/raster/astar-bbox.js  L13
+           * "sin restriccion" (bbox = tile completo) tambien usa esta misma
+     [AMB] sigue  ·  backend/src/services/raster/astar-bbox.js  L14
+           * funcion -- ahi si el bbox es grande (~1,3GB en total) pero sigue
+     [AMB] evita  ·  backend/src/services/raster/astar-bbox.js  L21
+           // Vecinos aplanados en typed arrays paralelos (no array-de-arrays): evita
+     [AMB] completa  ·  backend/src/services/raster/canal-geometria.js  L11
+           *   - "Canal Chacao"  -> red_nautica_chile_completa.geojson, feature
+     [AMB] usa  ·  backend/src/services/raster/canal-geometria.js  L12
+           *     "Canal de Chacao" (alias: pasos_full.csv usa "Canal Chacao", el
+     [AMB] usa  ·  backend/src/services/raster/canal-geometria.js  L13
+           *     geojson usa "Canal de Chacao" -- mismo canal, dos pipelines de
+     [AMB] completa  ·  backend/src/services/raster/canal-geometria.js  L15
+           *   - "Canal Moraleda" -> red_nautica_chile_completa.geojson, feature
+     [AMB] completa  ·  backend/src/services/raster/canal-geometria.js  L27
+           const GEOJSON_PATH = path.join(__dirname, '..', 'data', 'red_nautica_chile_completa.geojson');
+     [AMB] toma  ·  backend/src/services/raster/cost-lut.js  L82
+           // (toma el MAXIMO del bloque, nunca subestima cuanta agua hay). Pero el
+     [AMB] usa  ·  backend/src/services/raster/cost-lut.js  L91
+           // Arreglo de una linea, sin tocar el formato del .bin: la LUT gruesa usa
+     [AMB] sigue  ·  backend/src/services/raster/cost-lut.js  L94
+           // canal que el fino podria usar; el fino sigue aplicando el margen
+     [AMB] sigue  ·  backend/src/services/raster/cost-lut.js  L107
+           * monotonia (el fino sigue siendo quien decide el camino final).
+     [AMB] describe  ·  backend/src/services/raster/cotejo-vertical.js  L6
+           * Por que advertencia y no bloqueo, a diferencia de como SS6.3 lo describe
+     [AMB] navega  ·  backend/src/services/raster/cotejo-vertical.js  L12
+           * seguro es advertir sin necesidad, no cerrar un paso que si se navega.
+     [AMB] navega  ·  backend/src/services/raster/cotejo-vertical.js  L64
+           // UN BARCO NAVEGA, NO TRANSITA (owner, 2026-08-20). Esta cadena es TEXTO
+     [AMB] evita  ·  backend/src/services/raster/multi-level.js  L11
+           * despreciable en el redondeo del padding de borde). Evita duplicar
+     [AMB] llama  ·  backend/src/services/raster/multi-level.js  L110
+           * indice O(1) sin hashing -- se llama ~8 veces por celda expandida en el
+     [AMB] toca  ·  backend/src/services/raster/string-pull.js  L12
+           * practica para geometrias razonables (cada celda se toca un numero
+     [AMB] espera  ·  backend/src/services/raster/tile-loader.js  L26
+           `Tile ${tileId}: .bin tiene ${packed.length} celdas, meta.json espera ${meta.rows * meta.cols} (rows*cols)`
+     [AMB] activa  ·  backend/src/services/restriction-rules-engine.js  L113
+           'Condición VARIABLE — restricción activa para tu embarcación (AB {nave_ab}, menores de {umbral} AB)',
+     [AMB] activa  ·  backend/src/services/restriction-rules-engine.js  L134
+           'Condición VARIABLE — restricción activa para embarcaciones menores',
+     [AMB] activa  ·  backend/src/services/restriction-rules-engine.js  L154
+           'Restricción activa — carga tu AB en el perfil para verificar si te afecta',
+     [AMB] carga  ·  backend/src/services/restriction-rules-engine.js  L154
+           'Restricción activa — carga tu AB en el perfil para verificar si te afecta',
+     [AMB] completa  ·  backend/src/services/route-restriction-evaluator.js  L2
+           // Evalúa la ruta completa contra restricciones SITPORT normalizadas.
+     [AMB] sigue  ·  backend/src/services/route-restriction-evaluator.js  L3
+           // Fail-fast: si cualquier bahía da UV → veredicto UV, no sigue evaluando.
+     [AMB] navega  ·  backend/src/services/route-restriction-evaluator.js  L58
+           // correcto bajo D5, porque el trazado la navega—, esta frase le llamaba
+     [AMB] navega  ·  backend/src/services/route-restriction-evaluator.js  L64
+           // trazado navega. La frase gemela vive en la PWA
+     [AMB] cambia  ·  backend/src/services/route-restriction-evaluator.js  L67
+           // cambia igual: un campo de API no puede quedar emitiendo la frase vieja
+     [AMB] completa  ·  backend/src/services/routes-service.js  L40
+           // Línea completa: waypoints entrada + waypoints salida (sin duplicar la estación)
+     [AMB] carga  ·  backend/src/services/ship-physics.js  L12
+           const { tipo_embarcacion, eslora, manga, velocidad_crucero_nominal, peso_carga_adicional_ton } = params;
+     [AMB] carga  ·  backend/src/services/ship-physics.js  L22
+           const Delta_total = Delta_lightship + peso_carga_adicional_ton;
+     [AMB] revisa  ·  backend/src/services/sitport-parser.js  L35
+           // Prioridad 3: VARIABLE — BUG FIX: también revisa motivoNorm para sub-zonas donde
+     [AMB] usa  ·  backend/src/services/sitport-parser.js  L87
+           // Umbral único (se usa para ambos)
+     [AMB] evita  ·  backend/src/services/sitport-service.js  L9
+           // alcanza para 3 endpoints de bajo tráfico y evita sumar infraestructura
+     [AMB] completa  ·  backend/src/services/tide-astronomy.js  L16
+           * nodal lunar de 18.6 años con precisión completa en vez de la aproximación
+     [AMB] calcula  ·  backend/src/services/tide-astronomy.js  L121
+           * Calcula los elementos astronómicos necesarios para argumentos de equilibrio
+     [AMB] carga  ·  backend/src/services/tide-prediction-service.js  L12
+           // El JSON de constantes se carga una sola vez al iniciar el servidor -- no
+     [AMB] busca  ·  backend/src/services/tide-prediction-service.js  L187
+           * largo de una ruta. Para cada punto de la ruta busca la estación más cercana
+     [AMB] calcula  ·  backend/src/services/tide-prediction-service.js  L189
+           * deduplica estaciones consecutivas repetidas y calcula la hora estimada de
+     [INE] ven  ·  backend/src/services/tide-prediction-service.js  L195
+           * Ancud M2=665mm se ven a la misma escala, que es justo el punto de mostrarlas
+     [AMB] baja  ·  backend/src/services/tide-prediction-service.js  L204
+           * velocidad es muy baja.
+     [AMB] evita  ·  backend/src/services/tide-prediction-service.js  L217
+           const WINDOW_MAX_H = 72;   // tope de ventana (evita curvas absurdas a baja velocidad)
+     [AMB] baja  ·  backend/src/services/tide-prediction-service.js  L217
+           const WINDOW_MAX_H = 72;   // tope de ventana (evita curvas absurdas a baja velocidad)
+     [AMB] navega  ·  backend/src/services/voyage-report-service.js  L166
+           .text('NAVEGA CON CERTEZA', 66, y + 41, { letterSpacing: 3 });
+     [AMB] carga  ·  backend/src/services/zonas-aviso.js  L3
+           // zonas-aviso.js — carga y VALIDA la declaracion de zonas de aviso.
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L5
+           // CONTRATO_MOTOR.md INV-3.6: una jurisdiccion sin geometria se declara, nunca se
+     [AMB] entra  ·  backend/src/services/zonas-aviso.js  L7
+           // entra al motor, y valida antes de entregarla.
+     [AMB] carga  ·  backend/src/services/zonas-aviso.js  L9
+           // La validacion va ADENTRO de la carga, no en un script aparte: no hay forma de
+     [AMB] carga  ·  backend/src/services/zonas-aviso.js  L14
+           // declarada sin geometria en el insumo. Cuando deje de estarlo, esta carga se
+     [AMB] carga  ·  backend/src/services/zonas-aviso.js  L25
+           // Tipos aceptados. Cualquier otro valor detiene la carga: sin caso por defecto,
+     [AMB] agrega  ·  backend/src/services/zonas-aviso.js  L47
+           // NO SE AGREGA UN CUARTO TIPO. El `tipo` dice QUE CONTACTO SE DA; la
+     [AMB] agrega  ·  backend/src/services/zonas-aviso.js  L49
+           // producto (nivel x tipo). Se agrega un campo declarativo, admisible en los
+     [AMB] pregunta  ·  backend/src/services/zonas-aviso.js  L74
+           // Ahora la pregunta se le hace a `estado_geometria`, que tiene los tres valores,
+     [AMB] agrega  ·  backend/src/services/zonas-aviso.js  L77
+           // —'cerrable' prohibe, 'no_cerrable' obliga— y lo que se agrega es una tercera
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L82
+           //                     lleva zona, y la zona declara LA PARTE NO CUBIERTA.
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L97
+           `la jurisdiccion '${jur.id}' declara estado_geometria '${e}', que no esta en ` +
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L99
+           `un estado nuevo decide si su carencia se le declara al patron o no, y eso no ` +
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L132
+           `un elemento. Declarar el campo vacio no declara nada: o se escribe la discrepancia, o se omite el campo.`);
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L140
+           `zona '${zona.jurisdiccion_id}': la discrepancia de la bahia ${item.bahia_id} declara nivel '${item.nivel}', ` +
+     [AMB] comprueba  ·  backend/src/services/zonas-aviso.js  L142
+           `que campo se comprueba, y adivinarlo comprobaria otra cosa.`);
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L162
+           `zona '${zona.jurisdiccion_id}': la bahia ${item.bahia_id} declara una discrepancia en nivel ` +
+     [AMB] deja  ·  backend/src/services/zonas-aviso.js  L164
+           `coinciden. Una discrepancia declarada que se resolvio deja de declararse: mantenerla escrita haria ` +
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L179
+           // Cada tipo declara que tiene que cumplirse en la fuente para poder usarlo. La
+     [AMB] comprueba  ·  backend/src/services/zonas-aviso.js  L180
+           // coincidencia se comprueba SIEMPRE: si el mapa operativo dejo de coincidir con
+     [AMB] carga  ·  backend/src/services/zonas-aviso.js  L181
+           // el decreto, la carga se detiene en vez de servir el telefono equivocado.
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L206
+           `(mapa: capitania='${e.capitania}', gobernacion='${e.gobernacion}'). La discrepancia que declara el ` +
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L214
+           // se DECLARA. La asimetria esta anotada como deuda en la bitacora del
+     [AMB] toca  ·  backend/src/services/zonas-aviso.js  L216
+           // `sin_contacto` toca cinco zonas que estan en verde.
+     [AMB] carga  ·  backend/src/services/zonas-aviso.js  L232
+           // detenga la carga en vez de viajar al lado de un telefono correcto.
+     [AMB] marca  ·  backend/src/services/zonas-aviso.js  L253
+           // lado, con `dice_el_decreto` adentro. La marca acompaña al valor; no lo
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L263
+           `('${entrada.capitania}'). Derivar a la Gobernacion solo se declara cuando la fuente no atribuye Capitania.`);
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L267
+           `Las dos fuentes no coinciden: no se declara contacto hasta adjudicar cual manda.`);
+     [AMB] manda  ·  backend/src/services/zonas-aviso.js  L267
+           `Las dos fuentes no coinciden: no se declara contacto hasta adjudicar cual manda.`);
+     [AMB] carga  ·  backend/src/services/zonas-aviso.js  L303
+           * Es una funcion pura sobre los tres objetos: la carga desde disco la envuelve,
+     [AMB] prueba  ·  backend/src/services/zonas-aviso.js  L304
+           * y la prueba de mordida la ejerce con variantes en memoria. Una sola
+     [AMB] usa  ·  backend/src/services/zonas-aviso.js  L314
+           // SI usa esten, y que la que el contrato PROHIBE no este.
+     [AMB] marca  ·  backend/src/services/zonas-aviso.js  L322
+           `"mensaje.capa_2_con_capitania" no incluye la marca {nombre}: saldria a pantalla sin ese dato.`);
+     [AMB] cambia  ·  backend/src/services/zonas-aviso.js  L327
+           // INVIERTE, no se quita: el mismo campo sigue vigilado, cambia el signo.
+     [AMB] sigue  ·  backend/src/services/zonas-aviso.js  L327
+           // INVIERTE, no se quita: el mismo campo sigue vigilado, cambia el signo.
+     [AMB] muestra  ·  backend/src/services/zonas-aviso.js  L330
+           `un mensaje del catalogo: el contacto se muestra en el punto de zarpe y recalada, no aca.`);
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L360
+           `la jurisdiccion '${id}' esta sin geometria pero no declara 'causa_sin_geometria' en el insumo. ` +
+     [AMB] marca  ·  backend/src/services/zonas-aviso.js  L370
+           // POR QUE: la marca de la discrepancia viaja en el contacto resuelto, pero
+     [AMB] carga  ·  backend/src/services/zonas-aviso.js  L371
+           // el consumidor no la carga. Medido el 2026-08-16 en
+     [AMB] carga  ·  backend/src/services/zonas-aviso.js  L376
+           // alguien le declare un ambito a una zona en esta condicion, la carga se
+     [AMB] marca  ·  backend/src/services/zonas-aviso.js  L377
+           // detiene con el motivo en vez de dejar caer la marca en el mapeo.
+     [AMB] marca  ·  backend/src/services/zonas-aviso.js  L380
+           // la marca. No antes, y no por conveniencia de que una zona reclame.
+     [AMB] marca  ·  backend/src/services/zonas-aviso.js  L383
+           // la filtra en :404 y deriva al generico—, asi que no hay marca que perder.
+     [AMB] declara  ·  backend/src/services/zonas-aviso.js  L386
+           `la zona '${id}' declara un contacto de tipo '${contacto.tipo}' CON ${contacto.discrepancias.length} ` +
+     [AMB] marca  ·  backend/src/services/zonas-aviso.js  L388
+           `(cobertura-jurisdiccional.js) se queda con nombre, telefono y tipo: la marca de la discrepancia se ` +
+     [AMB] marca  ·  backend/src/services/zonas-aviso.js  L390
+           `norma: se levanta cuando el consumidor sepa cargar la marca.`);
+     [AMB] cuenta  ·  backend/src/services/zonas-aviso.js  L413
+           `Una 'cerrable_parcial' cuenta acá igual que una 'no_cerrable': su parte no cubierta ` +
+     [AMB] carga  ·  backend/src/services/zonas-aviso.js  L430
+           * Carga la declaracion desde disco, la valida y devuelve las zonas resueltas.
+     [AMB] usa  ·  backend/src/utils/capitanias.js  L5
+           //   getCapitania(lat, lon)        — por franja de latitud (legacy, usa el frontend)
+     [AMB] usa  ·  backend/src/utils/capitanias.js  L6
+           //   getCapitaniaByBahiaId(id)     — por bahia_id SITPORT (lookup exacto, usa el backend)
+     [AMB] cambia  ·  backend/src/utils/coincidencia-nombres.js  L10
+           // de los dos cambia.
+     [AMB] deja  ·  backend/src/utils/coincidencia-nombres.js  L14
+           // el join pasa a la clave del decreto y deja de ser una regla: es un lookup por
+     [AMB] carga  ·  backend/src/utils/displacementCalculator.js  L63
+           const factor_carga = 0.10;
+     [AMB] carga  ·  backend/src/utils/displacementCalculator.js  L65
+           const consumoDinamico = consumoNominal * (1 + factor_carga * cargaPct);
+     [AMB] consulta  ·  backend/src/workers/queueWorker.js  L83
+           const { puerto, tipo_consulta } = job.data;
+     [AMB] consulta  ·  backend/src/workers/queueWorker.js  L89
+           `sitport:${puerto}:${tipo_consulta}`,
+     [AMB] confirma  ·  pwa/src/App.jsx  L60
+           // P3 → P4: el patrón confirma que va a zarpar
+     [AMB] activa  ·  pwa/src/App.jsx  L66
+           // P4 → P3: cancelar navegación activa (conserva voyageData para que P3 lo muestre)
+     [AMB] acepta  ·  pwa/src/App.jsx  L79
+           // solo debería navegar si el usuario lo acepta; por ahora lo permitimos
+     [AMB] navega  ·  pwa/src/App.jsx  L93
+           <span style={styles.loadingTagline}>NAVEGA CON CERTEZA</span>
+     [AMB] navega  ·  pwa/src/components/AppSidebar.jsx  L75
+           <p style={styles.footerText}>Tmarea — Navega con Certeza</p>
+     [AMB] activa  ·  pwa/src/components/DeportiveAlerts.jsx  L7
+           *   <ActiveCapitaniaWidget> Banner/widget dinámico de jurisdicción activa
+     [AMB] muestra  ·  pwa/src/components/DeportiveAlerts.jsx  L137
+           * Muestra VHF, teléfono y tips de la capitanía más cercana al zarpe.
+     [AMB] confirma  ·  pwa/src/components/DeportiveAlerts.jsx  L143
+           * @param {Function} props.onConfirm — callback: usuario confirma y zarpa
+     [AMB] avisa  ·  pwa/src/components/DeportiveAlerts.jsx  L162
+           ? 'Antes de salir a pasear, avisa tu zarpe a la Autoridad Marítima.'
+     [AMB] avisa  ·  pwa/src/components/DeportiveAlerts.jsx  L212
+           <strong>ezarpe.directemar.cl</strong> o avisa por radio en canal de guardia.
+     [AMB] activa  ·  pwa/src/components/DeportiveAlerts.jsx  L227
+           // ─── 2. WIDGET CAPITANÍA ACTIVA ───────────────────────────────────────────────
+     [AMB] activa  ·  pwa/src/components/DeportiveAlerts.jsx  L230
+           * Widget flotante que muestra la jurisdicción activa durante la navegación.
+     [AMB] muestra  ·  pwa/src/components/DeportiveAlerts.jsx  L230
+           * Widget flotante que muestra la jurisdicción activa durante la navegación.
+     [AMB] actualiza  ·  pwa/src/components/DeportiveAlerts.jsx  L231
+           * Se actualiza dinámicamente cuando el usuario cruza hacia otra capitanía.
+     [AMB] activa  ·  pwa/src/components/DeportiveAlerts.jsx  L251
+           aria-label="Ver datos de capitanía activa"
+     [AMB] activa  ·  pwa/src/components/DeportiveAlerts.jsx  L270
+           {isWithinJurisdiction ? 'Jurisdicción activa' : 'Capitanía más cercana'}
+     [AMB] confirma  ·  pwa/src/components/DeportiveAlerts.jsx  L336
+           Confirma que tu embarcación cuenta con el equipamiento mínimo exigido por DIRECTEMAR.
+     [AMB] cuenta  ·  pwa/src/components/DeportiveAlerts.jsx  L336
+           Confirma que tu embarcación cuenta con el equipamiento mínimo exigido por DIRECTEMAR.
+     [AMB] marca  ·  pwa/src/components/DeportiveAlerts.jsx  L394
+           {allChecked ? 'Todo listo — Continuar' : 'Marca todos los ítems para continuar'}
+     [AMB] muestra  ·  pwa/src/components/DeportiveAlerts.jsx  L406
+           * Alerta inline que se muestra en el setup cuando la ruta viola la licencia.
+     [AMB] activa  ·  pwa/src/components/DeportiveAlerts.jsx  L457
+           * Se activa desde P4 cuando el GPS entra en la geocerca del destino.
+     [AMB] entra  ·  pwa/src/components/DeportiveAlerts.jsx  L457
+           * Se activa desde P4 cuando el GPS entra en la geocerca del destino.
+     [AMB] activa  ·  pwa/src/components/DeportiveAlerts.jsx  L514
+           * Hook para trackear la capitanía activa durante la navegación.
+     [AMB] actualiza  ·  pwa/src/components/DeportiveAlerts.jsx  L515
+           * Actualiza automáticamente al cambiar posición GPS.
+     [AMB] carga  ·  pwa/src/components/map/ConcesionesLayer.jsx  L18
+           //  Hook de carga por grupo
+     [AMB] cambia  ·  pwa/src/components/map/ConcesionesLayer.jsx  L137
+           // Togglear visibilidad cuando cambia gruposVisibles
+     [AMB] deja  ·  pwa/src/components/screens/MiPerfil.jsx  L69
+           {/* Header — deja espacio al hamburger (top 12+40+8=60px) */}
+     [AMB] verifica  ·  pwa/src/components/screens/ReportarProblema.jsx  L141
+           setResultado({ ok: false, mensaje: 'No se pudo conectar con el servidor. Verifica tu conexión.' });
+     [AMB] sé  ·  pwa/src/components/screens/ReportarProblema.jsx  L216
+           placeholder="Describe brevemente qué pasó o qué no funciona. Sé conciso."
+     [AMB] describe  ·  pwa/src/components/screens/ReportarProblema.jsx  L216
+           placeholder="Describe brevemente qué pasó o qué no funciona. Sé conciso."
+     [AMB] navega  ·  pwa/src/components/screens/S0_5Registro.jsx  L51
+           <p className={styles.tagline}>Navega con Certeza</p>
+     [AMB] completa  ·  pwa/src/components/screens/S0_5Registro.jsx  L56
+           Completa tus datos para acceder a Tmarea
+     [AMB] selecciona  ·  pwa/src/components/screens/S0_5Registro.jsx  L94
+           <option value="">Selecciona tu licencia</option>
+     [AMB] navega  ·  pwa/src/components/screens/S0Onboarding.jsx  L27
+           <p className={styles.tagline}>Navega con Certeza</p>
+     [AMB] verifica  ·  pwa/src/components/screens/S0Onboarding.jsx  L31
+           Verifica condiciones de navegación antes de ejecutar tu zarpe autorizado.
+     [INE] eres  ·  pwa/src/components/screens/S0Onboarding.jsx  L50
+           <p>Eres responsable de tu cuenta y de toda actividad en ella.</p>
+     [AMB] cuenta  ·  pwa/src/components/screens/S0Onboarding.jsx  L50
+           <p>Eres responsable de tu cuenta y de toda actividad en ella.</p>
+     [AMB] completa  ·  pwa/src/components/screens/S0Onboarding.jsx  L55
+           Ver versión completa →
+     [AMB] verifica  ·  pwa/src/components/screens/S0Onboarding.jsx  L77
+           <p>Verifica todo contra fuentes oficiales antes de zarpar.</p>
+     [AMB] completa  ·  pwa/src/components/screens/S0Onboarding.jsx  L80
+           Ver versión completa →
+     [AMB] muestra  ·  pwa/src/components/verification/DriftCatalogoBlock.jsx  L67
+           // `estado` siempre viene explícito. Un fallo de evaluación NO se muestra como
+     [AMB] completa  ·  pwa/src/components/verification/NavigationBlock.jsx  L134
+           ⚠ El combustible disponible no cubre la ruta completa. Verificar con el armador antes de zarpar.
+     [AMB] muestra  ·  pwa/src/components/verification/NormativeBlock.jsx  L76
+           INV-10.1 dice que el contacto se muestra sólo en el punto de zarpe
+     [AMB] manda  ·  pwa/src/components/verification/NormativeBlock.jsx  L81
+           conservan: las manda la norma citada, no somos nosotros. */}
+     [AMB] recuerda  ·  pwa/src/components/verification/NormativeBlock.jsx  L143
+           El cumplimiento normativo es responsabilidad exclusiva del patrón. Tmarea recuerda, no autoriza.
+     [AMB] activa  ·  pwa/src/components/verification/PortStatusBlock.jsx  L50
+           mensaje: restriccion.Observacion || restriccion.MotivoRestriccion || restriccion.descripcion || 'Restricción activa — verificar con Capitanía.',
+     [AMB] muestra  ·  pwa/src/components/verification/PortStatusBlock.jsx  L78
+           //   nivel null          -> ESCALÓN 3: el campo NO SE MUESTRA, sin texto de
+     [AMB] declara  ·  pwa/src/components/verification/PortStatusBlock.jsx  L83
+           // getCapitania(lat,lng), que CONTRATO_MOTOR.md §5.1 declara que NO ES FUENTE y
+     [AMB] usa  ·  pwa/src/components/verification/PortStatusBlock.jsx  L91
+           // usa el resto del frente de contacto. Sin ese veredicto no se arma el
+     [AMB] usa  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L4
+           // Usa la evaluación pre-calculada del backend (motor de reglas BRE) en lugar
+     [AMB] navega  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L37
+           // UN BARCO NAVEGA, NO TRANSITA. Decisión del owner, 2026-08-20, vista en
+     [AMB] activa  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L48
+           mensajeTexto = '⚠ Restricción activa en zona de tránsito';
+     [AMB] activa  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L51
+           mensajeTexto = '⚠️ Restricción activa en tránsito';
+     [AMB] manda  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L59
+           // cuando el BRE no manda motivo, así que en pantalla se ve poco — y por eso
+     [AMB] carga  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L67
+           motivoTexto = '⚠️ Carga tu AB en el perfil para verificar si esta restricción te aplica';
+     [AMB] confirma  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L73
+           motivoTexto = '⚠️ Confirma con la Capitanía si esta restricción afecta tu navegación';
+     [AMB] activa  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L146
+           introTexto = `La ruta cruza ${nAplican} jurisdicción(es) con Condición de Puerto activa que afecta tu embarcación.`;
+     [INE] puedes  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L186
+           📍 Puedes navegar hasta <strong>{ultimoTramo.bahia}</strong>. A partir de ahí, la zona está restringida.
+     [AMB] usa  ·  pwa/src/components/verification/VoyageVerdict.jsx  L49
+           // Restricciones de tránsito que BLOQUEAN — usa la evaluación del backend (BRE)
+     [AMB] manda  ·  pwa/src/components/verification/VoyageVerdict.jsx  L53
+           // ESTA ES LA FRASE QUE EL PATRÓN LEE. El `motivo_principal` que manda el
+     [AMB] navega  ·  pwa/src/components/verification/VoyageVerdict.jsx  L59
+           // duplicado se mantiene —el trazado navega esa bahía, y bajo D5 corresponde—
+     [AMB] verifica  ·  pwa/src/components/verification/VoyageVerdict.jsx  L71
+           razones.push(`Restricción en ${r.nombre_bahia} — verifica tu AB`);
+     [INE] puedes  ·  pwa/src/components/verification/VoyageVerdict.jsx  L155
+           Puedes navegar hasta {ultimoTramo.bahia}. A partir de ahí, la zona está restringida.
+     [AMB] carga  ·  pwa/src/components/verification/WeatherBlock.jsx  L106
+           {/* Error de carga */}
+     [AMB] agrega  ·  pwa/src/components/verification/WeatherBlock.jsx  L170
+           uno solo no agrega valor sobre el peor tramo ya mostrado. */}
+     [AMB] muestra  ·  pwa/src/components/verification/WeatherBlock.jsx  L179
+           // por bahia_id). Muestra el teléfono solo en la primera bahía de
+     [AMB] completa  ·  pwa/src/components/voyage/TideCurvePanel.jsx  L10
+           // El endpoint /api/tide/curve-ruta devuelve la curva completa de cada estación
+     [AMB] toca  ·  pwa/src/components/voyage/TideCurvePanel.jsx  L11
+           // sobre la ventana del viaje; acá se RECORTA cada una a su tramo. No se toca la
+     [AMB] carga  ·  pwa/src/components/voyage/TideCurvePanel.jsx  L14
+           // Fetch asíncrono al abrir el panel, con skeleton de carga — nunca bloquea P4.
+     [AMB] muestra  ·  pwa/src/components/voyage/TideCurvePanel.jsx  L161
+           // fin de la ventana (así la recalada muestra su marea tras la llegada).
+     [AMB] marca  ·  pwa/src/data/Biblioteca/balizamiento_01.json  L14
+           "ESTRIBOR (Derecha): Marca ROJA. Luz Roja.",
+     [AMB] marca  ·  pwa/src/data/Biblioteca/balizamiento_01.json  L15
+           "BABOR (Izquierda): Marca VERDE. Luz Verde."
+     [INE] sales  ·  pwa/src/data/Biblioteca/balizamiento_01.json  L20
+           "explicacion": "En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés."
+     [AMB] deja  ·  pwa/src/data/Biblioteca/balizamiento_01.json  L20
+           "explicacion": "En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés."
+     [AMB] marca  ·  pwa/src/data/Biblioteca/balizamiento_01.json  L30
+           "caracteristicas": "Color Amarillo. Marca de tope: X amarilla. Luz amarilla intermitente.",
+     [INE] puedes  ·  pwa/src/data/Biblioteca/balizamiento_01.json  L35
+           "explicacion": "No navegues entre estas boyas. Demarcan 'balsas jaula' y sus sistemas de fondeo, que tienen extensos cabos submarinos donde puedes enredar tu hélice."
+     [INE] haces  ·  pwa/src/data/Biblioteca/emergencias_01.json  L27
+           "explicacion": "Significa acercarse de modo que el viento golpee primero a la persona y luego a tu embarcación. Si lo haces al revés, el viento empujará tu lancha sobre la persona."
+     [AMB] navega  ·  pwa/src/data/Biblioteca/emergencias_01.json  L54
+           "explicacion": "Si el fuego está en la popa, navega de cara al viento. Si el viento sopla desde la popa hacia la proa, avivará las llamas hacia la cabina."
+     [AMB] baja  ·  pwa/src/data/Biblioteca/emergencias_01.json  L75
+           "explicacion": "Las mareas tienen gran amplitud. Si la marea baja y no hay riesgo de hundimiento, la opción más segura suele ser esperar la pleamar."
+     [AMB] carga  ·  pwa/src/data/Biblioteca/reglamentos_01.json  L46
+           "explicacion": "Llevar más carga de la declarada no solo es una falta a la LGPA (suspensión de 3 meses), sino que altera la estabilidad de la nave, poniéndola en riesgo inminente de hundimiento."
+     [AMB] carga  ·  pwa/src/data/Biblioteca/reglamentos_01.json  L59
+           "Estabilidad y Carga (D.S. 388, Art. 38): Obligatorio respetar la línea de carga (francobordo). Prohibido concentrar peso en altura.",
+     [AMB] carga  ·  pwa/src/data/Biblioteca/reglamentos_01.json  L68
+           "explicacion": "Estibar carga pesada sobre cubierta o en el techo de la caseta eleva el centro de gravedad. Con el oleaje o corrientes fuertes, la nave pierde su capacidad de adrizarse (enderezarse) y volcará."
+     [AMB] navega  ·  pwa/src/data/Biblioteca/ripa_01.json  L25
+           "regla_practica": "Navega lo más cerca posible del límite exterior de tu ESTRIBOR.",
+     [AMB] activa  ·  pwa/src/data/maritime_data.json.json  L56
+           "tips": "Tránsito constante de naves mayores acuícolas. Mantenga escucha activa."
+     [AMB] actualiza  ·  pwa/src/hooks/useStationName.js  L6
+           // desde el propio id) y lo actualiza al nombre oficial en cuanto
+     [AMB] usa  ·  pwa/src/hooks/useVoyageVerification.js  L127
+           // Usa el veredicto pre-calculado por el backend (motor de reglas BRE).
+     [AMB] baja  ·  pwa/src/hooks/useVoyageVerification.js  L188
+           // Recalada: máximo U — UV se baja a U con flag (Art. 24 Regl. Despacho:
+     [AMB] cambia  ·  pwa/src/hooks/useVoyageVerification.js  L252
+           // La lógica no cambia: son las mismas líneas, con `ahora` inyectable para que la
+     [AMB] toca  ·  pwa/src/hooks/useVoyageVerification.js  L263
+           // NO SE TOCA EN ESTE TRAMO, Y NO ES UN OLVIDO. `nivel` no existe en ninguna de
+     [AMB] muestra  ·  pwa/src/hooks/useVoyageVerification.js  L291
+           // campo no se muestra y no se sustituye por nada.
+     [AMB] verifica  ·  pwa/src/hooks/useVoyageVerification.js  L490
+           // FETCH RUTA RASTER — verifica si el destino es alcanzable por agua
+     [AMB] carga  ·  pwa/src/hooks/useVoyageVerification.js  L537
+           peso_carga_adicional_ton: vessel.carga_ton || 0,
+     [AMB] agrega  ·  pwa/src/hooks/useVoyageVerification.js  L575
+           // Cada regla evalúa una condición del viaje concreto y solo se agrega si se
+     [AMB] muestra  ·  pwa/src/hooks/useVoyageVerification.js  L618
+           return null; // escalón 3 — el campo NO se muestra, y no se sustituye por nada
+     [AMB] declara  ·  pwa/src/hooks/useVoyageVerification.js  L622
+           // `fallbackNombre` es la tabla de `utils/capitanias.js`, que §5.1 declara que
+     [AMB] consulta  ·  pwa/src/hooks/useVoyageVerification.js  L623
+           // NO ES FUENTE: sólo se consulta cuando el backend no mandó `contacto`, y
+     [AMB] muestra  ·  pwa/src/hooks/useVoyageVerification.js  L650
+           // que el contacto se muestra "sólo en el punto de zarpe y en el de recalada,
+     [AMB] sigue  ·  pwa/src/hooks/useVoyageVerification.js  L651
+           // nunca dentro de un mensaje normativo". El teléfono sigue en la tarjeta de
+     [AMB] evita  ·  pwa/src/hooks/useVoyageVerification.js  L688
+           // no se puede determinar la hora y la regla no se evalúa (evita falso positivo
+     [AMB] navega  ·  pwa/src/hooks/useVoyageVerification.js  L763
+           //   1. AbortController por ejecución → cancela fetch si usuario navega hacia atrás
+     [AMB] cancela  ·  pwa/src/hooks/useVoyageVerification.js  L763
+           //   1. AbortController por ejecución → cancela fetch si usuario navega hacia atrás
+     [AMB] evita  ·  pwa/src/hooks/useVoyageVerification.js  L770
+           //   8. voyageData como dependencia estabilizada → evita re-ejecuciones fantasma
+     [AMB] activa  ·  pwa/src/hooks/useVoyageVerification.js  L792
+           // Ref para identificar la ejecución activa y descartar ejecuciones previas
+     [AMB] actualiza  ·  pwa/src/hooks/useVoyageVerification.js  L798
+           // setState seguro: no actualiza si el componente ya se desmontó
+     [AMB] usa  ·  pwa/src/hooks/useVoyageVerification.js  L837
+           // Ubicación de recalada: mismo fallback que usa fetchPortStatus más abajo
+     [AMB] llama  ·  pwa/src/hooks/useVoyageVerification.js  L951
+           // Restricciones de tránsito — se llama de forma secuencial usando los
+     [AMB] llama  ·  pwa/src/hooks/useVoyageVerification.js  L953
+           // Si la ruta falló (SNAP_FAILED, NO_ROUTE, FETCH_FAILED) no se llama:
+     [AMB] usa  ·  pwa/src/hooks/useVoyageVerification.js  L1005
+           // Se adjunta la ubicación del puerto al estado — PortStatusBlock la usa
+     [AMB] cancela  ·  pwa/src/hooks/useVoyageVerification.js  L1061
+           // Exponer retry manual (también cancela ejecución previa vía run())
+     [AMB] usa  ·  pwa/src/screens/P1_VesselProfile.jsx  L96
+           // navigate eliminado - usa onComplete prop
+     [AMB] deja  ·  pwa/src/screens/P1_VesselProfile.jsx  L129
+           // (TM-002 Art. 28), pero queda editable — se deja de autocompletar en
+     [AMB] selecciona  ·  pwa/src/screens/P1_VesselProfile.jsx  L181
+           if (!form.tipo) errs.tipo = 'Selecciona el tipo de embarcación';
+     [AMB] selecciona  ·  pwa/src/screens/P1_VesselProfile.jsx  L199
+           if (!form.uso) errs.uso = 'Selecciona el uso de la embarcación';
+     [AMB] selecciona  ·  pwa/src/screens/P1_VesselProfile.jsx  L200
+           if (!form.propulsion) errs.propulsion = 'Selecciona el tipo de propulsión';
+     [AMB] selecciona  ·  pwa/src/screens/P1_VesselProfile.jsx  L201
+           if (ambitoDeportivo && !form.licencia) errs.licencia = 'Selecciona tu licencia deportiva';
+     [AMB] selecciona  ·  pwa/src/screens/P1_VesselProfile.jsx  L202
+           if (ambitoDeportivo && !isEximida && !form.clasificacion) errs.clasificacion = 'Selecciona la clasificación de la nave';
+     [AMB] ingresa  ·  pwa/src/screens/P1_VesselProfile.jsx  L205
+           errs.motor_hp = 'Ingresa la potencia del motor (HP)';
+     [AMB] verifica  ·  pwa/src/screens/P1_VesselProfile.jsx  L230
+           setErrorGeneral('Error al guardar. Verifica el espacio disponible en tu dispositivo.');
+     [AMB] completa  ·  pwa/src/screens/P1_VesselProfile.jsx  L238
+           setErrorGeneral('Completa todos los campos requeridos antes de continuar.');
+     [INE] quieres  ·  pwa/src/screens/P1_VesselProfile.jsx  L252
+           if (!window.confirm('¿Seguro que quieres limpiar los datos de la nave?')) return;
+     [AMB] revisa  ·  pwa/src/screens/P1_VesselProfile.jsx  L272
+           ? 'Revisa o actualiza los datos antes de iniciar el viaje.'
+     [AMB] actualiza  ·  pwa/src/screens/P1_VesselProfile.jsx  L272
+           ? 'Revisa o actualiza los datos antes de iniciar el viaje.'
+     [INE] tienes  ·  pwa/src/screens/P1_VesselProfile.jsx  L339
+           <div style={estilos.hint}>Autocompletado desde la eslora (TM-002 Art. 28). Editable si tienes certificado de arqueo.</div>
+     [AMB] busca  ·  pwa/src/screens/P2_VoyageSetup.jsx  L69
+           helper: 'Busca por nombre del puerto o caleta',
+     [AMB] busca  ·  pwa/src/screens/P2_VoyageSetup.jsx  L84
+           helper: 'Busca por nombre de empresa o ubicación geográfica del centro',
+     [AMB] busca  ·  pwa/src/screens/P2_VoyageSetup.jsx  L97
+           helper: 'Busca por código RNA/SERNAPESCA, apellido del titular o sector geográfico',
+     [AMB] busca  ·  pwa/src/screens/P2_VoyageSetup.jsx  L110
+           helper: 'Busca por nombre de caleta, sector o comuna — cobertura nacional',
+     [AMB] busca  ·  pwa/src/screens/P2_VoyageSetup.jsx  L124
+           helper: 'Busca por nombre de marina o club náutico',
+     [AMB] busca  ·  pwa/src/screens/P2_VoyageSetup.jsx  L136
+           helper: 'Busca por nombre de fondeadero o bahía',
+     [AMB] busca  ·  pwa/src/screens/P2_VoyageSetup.jsx  L371
+           <label style={estilos.especieLabel}>🐠 ¿Qué recurso busca explotar?</label>
+     [AMB] selecciona  ·  pwa/src/screens/P2_VoyageSetup.jsx  L380
+           <option value="">— Selecciona la especie objetivo —</option>
+     [AMB] ingresa  ·  pwa/src/screens/P2_VoyageSetup.jsx  L454
+           <div style={estilos.helper}>ℹ Ingresa coordenadas en grados decimales negativos (Sur/Oeste)</div>
+     [AMB] muestra  ·  pwa/src/screens/P2_VoyageSetup.jsx  L494
+           // ─── SelectorDestino — detecta perfil y muestra tabs correctos ───────────────
+     [AMB] muestra  ·  pwa/src/screens/P2_VoyageSetup.jsx  L569
+           {/* ← NUEVO: circular — solo muestra selector de duración */}
+     [AMB] selecciona  ·  pwa/src/screens/P2_VoyageSetup.jsx  L585
+           <div style={{ ...estilos.errorField, marginTop: '8px' }}>⚠ Selecciona la duración estimada</div>
+     [AMB] guarda  ·  pwa/src/screens/P2_VoyageSetup.jsx  L680
+           // cotejo bloquea y el viaje no se guarda.
+     [AMB] selecciona  ·  pwa/src/screens/P2_VoyageSetup.jsx  L754
+           if (!puertoZarpe) errs.zarpe = 'Selecciona el puerto de zarpe';
+     [AMB] completa  ·  pwa/src/screens/P2_VoyageSetup.jsx  L757
+           if (!destinoValido(d)) errs[`destino_${i}`] = 'Completa este destino';
+     [AMB] selecciona  ·  pwa/src/screens/P2_VoyageSetup.jsx  L759
+           errs[`destino_${i}_especie`] = 'Selecciona el recurso que vas a explotar';
+     [AMB] ingresa  ·  pwa/src/screens/P2_VoyageSetup.jsx  L762
+           if (!form.fecha_zarpe)    errs.fecha_zarpe    = 'Ingresa la fecha de zarpe';
+     [AMB] ingresa  ·  pwa/src/screens/P2_VoyageSetup.jsx  L763
+           if (!form.fecha_recalada) errs.fecha_recalada = 'Ingresa la fecha de recalada';
+     [AMB] ingresa  ·  pwa/src/screens/P2_VoyageSetup.jsx  L767
+           errs.combustible_disponible = 'Ingresa un valor válido en litros';
+     [AMB] revisa  ·  pwa/src/screens/P2_VoyageSetup.jsx  L776
+           setErrorGeneral('Revisa los campos marcados antes de continuar.');
+     [AMB] ingresa  ·  pwa/src/screens/P2_VoyageSetup.jsx  L821
+           <p style={estilos.subtitulo}>Ingresa los datos del viaje que vas a realizar.</p>
+     [AMB] carga  ·  pwa/src/screens/P3_VoyageVerification.jsx  L26
+           // ── Mensajes de carga dinámica ─────────────────────────────────────────────
+     [AMB] carga  ·  pwa/src/screens/P3_VoyageVerification.jsx  L34
+           // ── Pantalla de carga ──────────────────────────────────────────────────────
+     [AMB] navega  ·  pwa/src/screens/P3_VoyageVerification.jsx  L44
+           <span style={styles.loadingTagline}>NAVEGA CON CERTEZA</span>
+     [AMB] usa  ·  pwa/src/screens/P3_VoyageVerification.jsx  L115
+           ? 'El destino seleccionado está fuera de zona navegable conocida. El punto está a más de 5 km de aguas navegables según la carta del motor de rutas. Intenta seleccionar un punto más cercano a un canal o bahía, o usa Coor
+     [AMB] verifica  ·  pwa/src/screens/P3_VoyageVerification.jsx  L116
+           : 'No se encontró ruta navegable entre los puntos seleccionados. Verifica los puertos de zarpe y recalada.';
+     [AMB] toca  ·  pwa/src/screens/P3_VoyageVerification.jsx  L171
+           // Se arma en una FUNCIÓN PURA, exportada, que no toca React: el control tiene
+     [AMB] manda  ·  pwa/src/screens/P3_VoyageVerification.jsx  L198
+           // `default` no es un cajón de sastre: cubre `no_legible`, donde D-C3 manda no
+     [AMB] declara  ·  pwa/src/screens/P3_VoyageVerification.jsx  L206
+           return 'Alcanza a las naves menores. El texto no declara tonelaje.';
+     [AMB] deja  ·  pwa/src/screens/P3_VoyageVerification.jsx  L346
+           // pantalla armó su propio rótulo, y compartir la etiqueta sola deja el
+     [AMB] sigue  ·  pwa/src/screens/P3_VoyageVerification.jsx  L351
+           // mensaje normativo", y esto es un mensaje normativo. Sigue visible —con su
+     [AMB] declara  ·  pwa/src/screens/P3_VoyageVerification.jsx  L356
+           // El fallback es la tabla de `utils/capitanias.js`, que §5.1 declara que NO
+     [AMB] consulta  ·  pwa/src/screens/P3_VoyageVerification.jsx  L357
+           // ES FUENTE: sólo se consulta cuando el backend no mandó `contacto`, y
+     [AMB] muestra  ·  pwa/src/screens/P3_VoyageVerification.jsx  L390
+           // CONTACTO, y acá no se sustituye: no se muestra ningún número.
+     [AMB] informa  ·  pwa/src/screens/P3_VoyageVerification.jsx  L442
+           Tmarea informa. El zarpe y la navegación son responsabilidad exclusiva del patrón.
+     [AMB] marca  ·  pwa/src/screens/P3_VoyageVerification.jsx  L679
+           // LEGIBILIDAD — VALORES PROVISORIOS, EL PASE DE MARCA LOS REEMPLAZA.
+     [AMB] marca  ·  pwa/src/screens/P3_VoyageVerification.jsx  L680
+           // No son una decisión de diseño y no eligen paleta: el manual de marca de
+     [AMB] saca  ·  pwa/src/screens/P3_VoyageVerification.jsx  L682
+           // saca al bloque de ser ilegible.
+     [AMB] sigue  ·  pwa/src/screens/P3_VoyageVerification.jsx  L688
+           // El fondo ámbar, el borde y el ícono NO se tocan: el bloque sigue leyéndose
+     [AMB] usa  ·  pwa/src/screens/P3_VoyageVerification.jsx  L689
+           // como alerta. `#333` no es un valor inventado — es el que ya usa
+     [AMB] agrega  ·  pwa/src/screens/P3_VoyageVerification.jsx  L704
+           // Capitanía de lo que escribe la app. No agrega color nuevo.
+     [AMB] activa  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L2
+           // Pantalla de navegación activa con mapa MapLibre + capas PostGIS
+     [AMB] carga  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L82
+           // ── Hook: carga capas PostGIS ──────────────────────────────────────────────
+     [AMB] usa  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L148
+           // el texto de POSICIÓN del bottom sheet sí se actualiza en cada fix (usa `pos`).
+     [AMB] actualiza  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L148
+           // el texto de POSICIÓN del bottom sheet sí se actualiza en cada fix (usa `pos`).
+     [AMB] actualiza  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L230
+           // montado — SITPORT actualiza ~cada 25-35 min). Si falla, no se muestran
+     [AMB] agrega  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L304
+           // normal de un mapa raster). El efecto que agrega capas necesitaba
+     [AMB] guarda  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L307
+           // nunca agregaba la ruta. mapLoadedRef guarda ese hecho una sola vez.
+     [AMB] manda  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L439
+           // no se manda en el body y el backend aplica su default (1.5 m).
+     [AMB] espera  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L441
+           // espera el backend (PDB/CDC/CDAM); las licencias comerciales y
+     [AMB] usa  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L449
+           } catch { /* localStorage corrupto -- se usa el default del backend */ }
+     [AMB] activa  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L617
+           <span style={styles.headerSub}>NAVEGACIÓN ACTIVA</span>
+     [AMB] activa  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L630
+           {/* Oculta durante navegación activa — capa esquemática de referencia (Art.45),
+     [AMB] activa  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L634
+           {/* Oculta durante navegación activa — se reutiliza para alertas de proximidad a centros acuícolas (bioseguridad) */}
+     [AMB] activa  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L678
+           {/* Volver — cancela navegación activa con confirmación */}
+     [AMB] cancela  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L678
+           {/* Volver — cancela navegación activa con confirmación */}
+     [AMB] activa  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L683
+           if (window.confirm('¿Seguro? Se cancelará la navegación activa.')) {
+     [AMB] navega  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L724
+           ? 'Destino fuera de zona navegable. Navega con carta SHOA.'
+     [AMB] navega  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L726
+           ? 'No hay ruta navegable entre los puntos. Navega con carta SHOA.'
+     [AMB] navega  ·  pwa/src/screens/P4_ActiveVoyage.jsx  L727
+           : `Ruta no disponible. Navega con carta SHOA.`}
+     [AMB] muestra  ·  pwa/src/utils/license-rules.js  L162
+           // se muestra la advertencia como único límite práctico (spec §6.2/§14).
+     [AMB] usa  ·  pwa/src/utils/license-rules.js  L236
+           // eslora máxima; se usa la primera fila que la eslora declarada no supere.
+     [AMB] calcula  ·  pwa/src/utils/maritime-geo.js  L13
+           * Calcula distancia en km entre dos puntos geográficos.
+     [AMB] activa  ·  pwa/src/utils/maritime-geo.js  L153
+           * Analiza si un destino activa modo CIRCULAR (mismo origen).
+     [AMB] calcula  ·  pwa/src/utils/maritime-geo.js  L165
+           * Calcula la distancia total de una ruta por puntos (array de {lat, lng}).
+     [AMB] verifica  ·  pwa/src/utils/restricciones.js  L53
+           'Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático',
+     [AMB] ingresa  ·  pwa/src/utils/restricciones.js  L53
+           'Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático',
+
+  ── posesivos de no-usted (tu/tus/ti/tuyo...) en P : 79 apariciones en 73 lineas ──
+     (no deciden tuteo vs voseo; prueban que no es usted)
+     tu  ·  backend/src/routes/support-routes.js  L180
+           message: 'Reporte recibido. Revisaremos tu caso en un plazo de 24 a 72 horas.',
+     tu  ·  backend/src/services/concesiones_mitilidos_loslagos.json  L15381
+           "ubicacion": "ESTERO CASTRO, SECTOR ENTRE PUNTA ANIMO Y PUNTA TU",
+     tu  ·  backend/src/services/deportivo-validator.js  L78
+           capa2: 'Verifica que tu licencia (PLDB, PDB, CDC o CDAM) sea la correcta según RGDN (TM-002) Art. 12.',
+     tu  ·  backend/src/services/deportivo-validator.js  L98
+           capa2: 'Declara el tipo de propulsión de tu embarcación (motor, vela, mixto o manual).',
+     tu  ·  backend/src/services/restriction-rules-engine.js  L87
+           'Condición MAL TIEMPO — tu embarcación (AB {nave_ab}) no puede navegar (restricción para menores de {umbral} AB)',
+     tu  ·  backend/src/services/restriction-rules-engine.js  L113
+           'Condición VARIABLE — restricción activa para tu embarcación (AB {nave_ab}, menores de {umbral} AB)',
+     tu  ·  backend/src/services/restriction-rules-engine.js  L154
+           'Restricción activa — carga tu AB en el perfil para verificar si te afecta',
+     tu  ·  backend/src/services/restriction-rules-engine.js  L196
+           motivo: 'Esta restricción aplica a naves mayores, no a tu embarcación',
+     tu  ·  backend/src/services/restriction-rules-engine.js  L205
+           ? `Tu embarcación (AB ${ab}) no está afectada por esta restricción`
+     tu  ·  backend/src/services/restriction-rules-engine.js  L206
+           : 'Esta restricción no afecta a tu embarcación',
+     tu  ·  backend/src/services/route-restriction-evaluator.js  L62
+           // corrige la palabra. «en tu ruta» es verdadero en los tres casos —zarpe,
+     tu  ·  backend/src/services/route-restriction-evaluator.js  L69
+           resultado.motivo_principal = `Restricción de tránsito en tu ruta (${r.nombre_bahia || norm.bahia_nombre})`;
+     tu  ·  pwa/src/components/DeportiveAlerts.jsx  L162
+           ? 'Antes de salir a pasear, avisa tu zarpe a la Autoridad Marítima.'
+     tu  ·  pwa/src/components/DeportiveAlerts.jsx  L211
+           💡 <strong>e-Zarpe:</strong> Si realizas una travesía costera, genera tu zarpe digital en{' '}
+     tu  ·  pwa/src/components/DeportiveAlerts.jsx  L295
+           {distNM} MN desde tu posición
+     tu  ·  pwa/src/components/DeportiveAlerts.jsx  L336
+           Confirma que tu embarcación cuenta con el equipamiento mínimo exigido por DIRECTEMAR.
+     tu  ·  pwa/src/components/DeportiveAlerts.jsx  L476
+           Da aviso de recalada de inmediato para cerrar tu bitácora SAR.
+     tu  ·  pwa/src/components/screens/BibliotecaHome.jsx  L8
+           { emoji: '⚖️', titulo: 'Reglamentos',              desc: 'Normativa según tu licencia',          id: 'reglamentos_01' },
+     tu  ·  pwa/src/components/screens/BibliotecaHome.jsx  L28
+           <p style={styles.subtitulo}>Guías y protocolos para tu actividad — disponibles offline</p>
+     tu  ·  pwa/src/components/screens/MiPerfil.jsx  L75
+           <p style={estilos.subtitulo}>Datos del patrón — guardados localmente en tu dispositivo</p>
+     tu  ·  pwa/src/components/screens/MiPerfil.jsx  L119
+           La Biblioteca Náutica usará este campo para filtrar contenido relevante a tu tipo de licencia.
+     tu  ·  pwa/src/components/screens/ModuloView.jsx  L249
+           Sin contenido para tu perfil de actividad.
+     tu  ·  pwa/src/components/screens/ReportarProblema.jsx  L141
+           setResultado({ ok: false, mensaje: 'No se pudo conectar con el servidor. Verifica tu conexión.' });
+     tu  ·  pwa/src/components/screens/ReportarProblema.jsx  L266
+           Si tu problema es urgente y afecta la seguridad de la navegación, comunícate
+     tu  ·  pwa/src/components/screens/S0Onboarding.jsx  L31
+           Verifica condiciones de navegación antes de ejecutar tu zarpe autorizado.
+     tu  ·  pwa/src/components/screens/S0Onboarding.jsx  L50
+           <p>Eres responsable de tu cuenta y de toda actividad en ella.</p>
+     tu  ·  pwa/src/components/screens/S0Onboarding.jsx  L71
+           <p>Tmarea NO autoriza tu zarpe. Esa responsabilidad es exclusiva del armador y DIRECTEMAR.</p>
+     tu  ·  pwa/src/components/screens/S0Onboarding.jsx  L76
+           <h5>3. Tu Responsabilidad</h5>
+     tu  ·  pwa/src/components/screens/S0_5Registro.jsx  L54
+           <h2 className={styles.heading}>Crea tu Perfil de Patrón</h2>
+     tus  ·  pwa/src/components/screens/S0_5Registro.jsx  L56
+           Completa tus datos para acceder a Tmarea
+     tu  ·  pwa/src/components/screens/S0_5Registro.jsx  L67
+           placeholder="tu.email@ejemplo.com"
+     tu  ·  pwa/src/components/screens/S0_5Registro.jsx  L79
+           placeholder="Tu nombre"
+     tu  ·  pwa/src/components/screens/S0_5Registro.jsx  L94
+           <option value="">Selecciona tu licencia</option>
+     tus  ·  pwa/src/components/screens/S0_5Registro.jsx  L122
+           Tus datos se guardan localmente y se sincronizarán cuando adquieras un plan.
+     tu  ·  pwa/src/components/verification/PortStatusBlock.jsx  L57
+           mensaje: `Puerto cerrado para naves < ${trg_limite} TRG. Tu embarcación (${trg_nave} TRG) puede navegar siguiendo las indicaciones.`,
+     tu  ·  pwa/src/components/verification/PortStatusBlock.jsx  L62
+           mensaje: `Puerto cerrado para naves < ${trg_limite} TRG. Tu embarcación (${trg_nave} TRG) NO puede navegar. Comunicar a jefe de operaciones.`,
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L44
+           // el BRE dice «tu embarcación (AB 10) no puede navegar». Medido en pantalla.
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L45
+           mensajeTexto = '⛔ Tu embarcación NO puede navegar en esta zona';
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L61
+           motivoTexto = ev.motivo || 'No afecta a tu embarcación, pero se recomienda precaución al navegar.';
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L67
+           motivoTexto = '⚠️ Carga tu AB en el perfil para verificar si esta restricción te aplica';
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L69
+           // LA BORDERLINE, resuelta por el owner el 2026-08-20: «tu tránsito» lleva
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L71
+           // el nombre de la categoría—. Pasa a «tu navegación». Las otras cadenas con
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L73
+           motivoTexto = '⚠️ Confirma con la Capitanía si esta restricción afecta tu navegación';
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L144
+           introTexto = `La ruta cruza ${nAplican} zona(s) con restricciones que afectan tu embarcación y ${nInfo} zona(s) con restricciones activas que no te afectan.`;
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L146
+           introTexto = `La ruta cruza ${nAplican} jurisdicción(es) con Condición de Puerto activa que afecta tu embarcación.`;
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L148
+           introTexto = `La ruta pasa por ${nInfo} zona(s) con restricciones activas. Ninguna afecta tu embarcación, pero se recomienda precaución.`;
+     tu  ·  pwa/src/components/verification/TransitRestrictionsBlock.jsx  L197
+           {nAplican > 0 && <div style={styles.separadorInfo}>Restricciones activas — no afectan tu embarcación</div>}
+     tu  ·  pwa/src/components/verification/VoyageVerdict.jsx  L60
+           // y se corrige la palabra. «en tu ruta» es verdadero en los tres casos.
+     tu  ·  pwa/src/components/verification/VoyageVerdict.jsx  L64
+           razones.push(`Restricción de tránsito en tu ruta (${r.nombre_bahia})`);
+     tu  ·  pwa/src/components/verification/VoyageVerdict.jsx  L71
+           razones.push(`Restricción en ${r.nombre_bahia} — verifica tu AB`);
+     tu  ·  pwa/src/components/voyage/TideCurvePanel.jsx  L359
+           Estimación basada en tu velocidad de crucero ({velocidadNudos} nudos) y hora de zarpe ({formatHora(horaZarpe)}).
+     tu  ·  pwa/src/data/Biblioteca/balizamiento_01.json  L20
+           "explicacion": "En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés."
+     tu  ·  pwa/src/data/Biblioteca/balizamiento_01.json  L35
+           "explicacion": "No navegues entre estas boyas. Demarcan 'balsas jaula' y sus sistemas de fondeo, que tienen extensos cabos submarinos donde puedes enredar tu hélice."
+     tu  ·  pwa/src/data/Biblioteca/emergencias_01.json  L27
+           "explicacion": "Significa acercarse de modo que el viento golpee primero a la persona y luego a tu embarcación. Si lo haces al revés, el viento empujará tu lancha sobre la persona."
+     tu  ·  pwa/src/data/Biblioteca/maniobras_01.json  L22
+           "explicacion": "Tu nave girará alrededor del ancla según cambie el viento o marea. Asegúrate de tener espacio libre en los 360 grados."
+     tu  ·  pwa/src/data/Biblioteca/radio_vhf_01.json  L35
+           "explicacion": "En zonas de fiordos y acuicultura, avisar sobre cetáceos o redes a la deriva previene colisiones que pueden destruir tu hélice o dañar a la fauna."
+     tu  ·  pwa/src/data/Biblioteca/reglamentos_01.json  L72
+           "explicacion": "Es tu única defensa legal. Si chocas, varas o sufres daños, esta declaración escrita ante la Armada es requisito indispensable para cobrar seguros marítimos o defenderte ante tribunales."
+     tu  ·  pwa/src/data/Biblioteca/ripa_01.json  L15
+           "Si otra lancha se acerca por tu ESTRIBOR (derecha), TÚ cedes el paso.",
+     tu  ·  pwa/src/data/Biblioteca/ripa_01.json  L25
+           "regla_practica": "Navega lo más cerca posible del límite exterior de tu ESTRIBOR.",
+     tu  ·  pwa/src/hooks/useVoyageVerification.js  L721
+           texto: `Pronóstico de viento (${Math.round(vientoPeor)} kt en ${nombreTramo}) supera el umbral de tu categoría de licencia (${categoria}, ${umbral} kt)`,
+     tu  ·  pwa/src/screens/P1_VesselProfile.jsx  L201
+           if (ambitoDeportivo && !form.licencia) errs.licencia = 'Selecciona tu licencia deportiva';
+     tu  ·  pwa/src/screens/P1_VesselProfile.jsx  L230
+           setErrorGeneral('Error al guardar. Verifica el espacio disponible en tu dispositivo.');
+     tu  ·  pwa/src/screens/P1_VesselProfile.jsx  L345
+           <div style={estilos.hint}>El TRG y el AB definen qué restricciones portuarias aplican a tu embarcación.</div>
+     tu  ·  pwa/src/screens/P1_VesselProfile.jsx  L394
+           <div style={estilos.hint}>Sin motor auxiliar operativo, tu límite de distancia a costa queda en 12 MN independiente de tu licencia y clasificación.</div>
+     tu  ·  pwa/src/screens/P1_VesselProfile.jsx  L408
+           <div style={estilos.hint}>Tu licencia determina el ámbito de navegación habilitado (RGDN Art. 12).</div>
+     tu  ·  pwa/src/screens/P1_VesselProfile.jsx  L433
+           <div style={estilos.hint}>Está en tu certificado de matrícula y de navegabilidad. No se infiere de la eslora.</div>
+     tu  ·  pwa/src/screens/P1_VesselProfile.jsx  L440
+           Tu embarcación está eximida de matrícula (CIRC A-41/014 C.2); la evaluamos como navegación de bahía.
+     tu  ·  pwa/src/screens/P2_VoyageSetup.jsx  L685
+           ? 'Tu licencia es deportiva y no habilita actividad comercial (pesca, acuicultura o transporte). Regulariza tu licencia con DIRECTEMAR antes de zarpar.'
+     tu  ·  pwa/src/utils/license-rules.js  L110
+           ? `Tu ruta se aleja ${maxDistNM.toFixed(1)} MN de la costa. Tu licencia CDC solo permite navegar hasta ${CDC_MAX_COAST_NM} MN de la costa.`
+     tu  ·  pwa/src/utils/license-rules.js  L167
+           message: 'El límite de tu zona de bahía lo fija tu Capitanía de Puerto. Verifícalo antes de zarpar.',
+     tu  ·  pwa/src/utils/restricciones.js  L53
+           'Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático',
+     tu  ·  pwa/src/utils/restricciones.js  L63
+           mensaje: `Esta restricción aplica a tu embarcación (AB ${ab_nave} < ${limite} AB)`,
+     tu  ·  pwa/src/utils/restricciones.js  L72
+           mensaje: `Tu embarcación (AB ${ab_nave}) no está afectada por esta restricción`,
+
+
+════ ROL C10 — CATALOGO §10                      (NO SE TOCA · se redacta) ════
+
+  ── VOSEO en C10 : 0 apariciones en 0 lineas ──
+     (ninguna)
+
+  ── TUTEO en C10 : 20 apariciones en 20 lineas ──
+     [INE] aseguras  ·  backend/CONTRATO_MOTOR.md  L1175
+           | **Zarpe cerrado** | 🔴 U+V "Puerto de zarpe cerrado. Navegación no recomendada." | "Según D.S. 364 (RRDN) Art. 36, en caso de mal tiempo con puerto cerrado la Autoridad Marítima puede autorizar el zarpe a la gira hacia
+     [INE] responsabilizas  ·  backend/CONTRATO_MOTOR.md  L1175
+           | **Zarpe cerrado** | 🔴 U+V "Puerto de zarpe cerrado. Navegación no recomendada." | "Según D.S. 364 (RRDN) Art. 36, en caso de mal tiempo con puerto cerrado la Autoridad Marítima puede autorizar el zarpe a la gira hacia
+     [AMB] coordina  ·  backend/CONTRATO_MOTOR.md  L1175
+           | **Zarpe cerrado** | 🔴 U+V "Puerto de zarpe cerrado. Navegación no recomendada." | "Según D.S. 364 (RRDN) Art. 36, en caso de mal tiempo con puerto cerrado la Autoridad Marítima puede autorizar el zarpe a la gira hacia
+     [INE] debes  ·  backend/CONTRATO_MOTOR.md  L1176
+           | **Recalada cerrada (en puerto)** | 🟡 U "Puerto de recalada cerrado." | "Según D.S. 364 Art. 16, si debes cambiar el puerto de recalada, solicita permiso a la Autoridad Marítima con anticipación. Podría exigirse declar
+     [AMB] solicita  ·  backend/CONTRATO_MOTOR.md  L1176
+           | **Recalada cerrada (en puerto)** | 🟡 U "Puerto de recalada cerrado." | "Según D.S. 364 Art. 16, si debes cambiar el puerto de recalada, solicita permiso a la Autoridad Marítima con anticipación. Podría exigirse declar
+     [INE] puedes  ·  backend/CONTRATO_MOTOR.md  L1177
+           | **Recalada cierra en tránsito** | 🟡 U + flag arribadaForzosa | "Según D.L. 2222 Art. 27 y D.S. 364 Art. 17, puedes efectuar arribada forzosa a puerto/lugar distinto del prefijado. Avisa de inmediato a la Autoridad Mar
+     [AMB] avisa  ·  backend/CONTRATO_MOTOR.md  L1177
+           | **Recalada cierra en tránsito** | 🟡 U + flag arribadaForzosa | "Según D.L. 2222 Art. 27 y D.S. 364 Art. 17, puedes efectuar arribada forzosa a puerto/lugar distinto del prefijado. Avisa de inmediato a la Autoridad Mar
+     [AMB] contacta  ·  backend/CONTRATO_MOTOR.md  L1178
+           | **Zona intermedia cerrada** | 🔴 U+V "Tu embarcación NO puede transitar por [zona]." | "Según D.L. 2222 Art. 32, la Autoridad Marítima puede prohibir el tránsito por aguas jurisdiccionales. No ingreses a la zona. Conta
+     [AMB] coordina  ·  backend/CONTRATO_MOTOR.md  L1178
+           | **Zona intermedia cerrada** | 🔴 U+V "Tu embarcación NO puede transitar por [zona]." | "Según D.L. 2222 Art. 32, la Autoridad Marítima puede prohibir el tránsito por aguas jurisdiccionales. No ingreses a la zona. Conta
+     [AMB] no ingreses  ·  backend/CONTRATO_MOTOR.md  L1178
+           | **Zona intermedia cerrada** | 🔴 U+V "Tu embarcación NO puede transitar por [zona]." | "Según D.L. 2222 Art. 32, la Autoridad Marítima puede prohibir el tránsito por aguas jurisdiccionales. No ingreses a la zona. Conta
+     [AMB] avisa  ·  backend/CONTRATO_MOTOR.md  L1179
+           | **Aviso de arribada** | ℹ️ recordatorio | "Según D.S. 364 Art. 13, avisa tu arribada a la Autoridad Marítima con mínimo 24 horas de anticipación." |
+     [AMB] gestiona  ·  backend/CONTRATO_MOTOR.md  L1180
+           | **Zarpe sin despacho (comercial)** | ℹ️ recordatorio | "Según D.L. 2222 Art. 23, zarpar sin despacho se sanciona hasta con la cancelación del título. Gestiona tu despacho antes de navegar." |
+     [AMB] informa  ·  backend/CONTRATO_MOTOR.md  L1181
+           | **Deportivo — sin zarpe** | ℹ️ informativo | "Según RGDN (TM-002) Art. 34, tu navegación deportiva nacional no requiere autorización de zarpe. Informa tu intención de movimiento al club náutico o, en su defecto, a la A
+     [AMB] confirma  ·  backend/CONTRATO_MOTOR.md  L1183
+           | **Jurisdicción sin límite cargado** | 🟡 U "No tenemos cargado el límite de esta jurisdicción." | "Confirma con la Capitanía [nombre] antes de zarpar. **Sin cita: esta situación no la produce una norma sino la ausencia
+     [AMB] cambia  ·  backend/CONTRATO_MOTOR.md  L1185
+           **Regla de uso:** Capa 2 nunca cambia la bandera de Capa 1. **Los mensajes de este catálogo
+     [AMB] manda  ·  backend/CONTRATO_MOTOR.md  L1187
+           menciones a VHF Canal 16 que aparecen en el catálogo son las que **la norma citada** manda, no
+     [AMB] muestra  ·  backend/CONTRATO_MOTOR.md  L1198
+           3. Si no hay ninguno de los dos, **el campo no se muestra**. Sin texto de reemplazo, sin
+     [AMB] sigue  ·  backend/CONTRATO_MOTOR.md  L1201
+           La dirección sigue la misma prelación y la misma regla de rotulación.
+     [AMB] muestra  ·  backend/CONTRATO_MOTOR.md  L1204
+           renderiza como enlace** — un campo con dos números, con `/` o con texto adentro se muestra
+     [AMB] muestra  ·  backend/CONTRATO_MOTOR.md  L1207
+           **Verificación:** ningún mensaje del catálogo contiene `[tel]`. Ninguna tarjeta muestra un
+
+  ── posesivos de no-usted (tu/tus/ti/tuyo...) en C10 : 6 apariciones en 5 lineas ──
+     (no deciden tuteo vs voseo; prueban que no es usted)
+     tu  ·  backend/CONTRATO_MOTOR.md  L1178
+           | **Zona intermedia cerrada** | 🔴 U+V "Tu embarcación NO puede transitar por [zona]." | "Según D.L. 2222 Art. 32, la Autoridad Marítima puede prohibir el tránsito por aguas jurisdiccionales. No ingreses a la zona. Conta
+     tu  ·  backend/CONTRATO_MOTOR.md  L1179
+           | **Aviso de arribada** | ℹ️ recordatorio | "Según D.S. 364 Art. 13, avisa tu arribada a la Autoridad Marítima con mínimo 24 horas de anticipación." |
+     tu  ·  backend/CONTRATO_MOTOR.md  L1180
+           | **Zarpe sin despacho (comercial)** | ℹ️ recordatorio | "Según D.L. 2222 Art. 23, zarpar sin despacho se sanciona hasta con la cancelación del título. Gestiona tu despacho antes de navegar." |
+     tu  ·  backend/CONTRATO_MOTOR.md  L1181
+           | **Deportivo — sin zarpe** | ℹ️ informativo | "Según RGDN (TM-002) Art. 34, tu navegación deportiva nacional no requiere autorización de zarpe. Informa tu intención de movimiento al club náutico o, en su defecto, a la A
+     tu  ·  backend/CONTRATO_MOTOR.md  L1182
+           | **Moto de agua nocturna** | 🟡 U | "Según RGDN Art. 26, las motos de agua solo pueden navegar entre el orto y el ocaso de sol. Tu horario estimado excede la luz diurna." |
+

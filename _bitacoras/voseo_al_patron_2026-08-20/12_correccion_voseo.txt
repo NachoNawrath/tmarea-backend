@@ -1,0 +1,21 @@
+CORRECCION DEL VOSEO — voseo_al_patron_2026-08-20
+
+  OK  src/components/verification/DriftCatalogoBlock.jsx
+        tarjeta de dato ilegible y rama no_evaluado
+        "Consultá con la"  ->  "Consulte con la"    esperadas 2 · encontradas 2
+  OK  src/screens/P3_VoyageVerification.jsx
+        escalon 3, rama con rotulo
+        "Contactá a <strong>{rotulo}</strong>"  ->  "Contacte a <strong>{rotulo}</strong>"    esperadas 1 · encontradas 1
+  OK  src/screens/P3_VoyageVerification.jsx
+        escalon 3, rama de fallback — no se pinta si hay rotulo
+        "Contactá a la autoridad marítima"  ->  "Contacte a la autoridad marítima"    esperadas 1 · encontradas 1
+
+ficheros escritos : 2
+
+CONTROL DESPUES DE ESCRIBIR: ninguna de las formas viejas puede quedar viva,
+y cada forma nueva tiene que aparecer las veces previstas.
+  OK  src/components/verification/DriftCatalogoBlock.jsx  viejas=0 nuevas=2 (esperado 0 / 2)
+  OK  src/screens/P3_VoyageVerification.jsx  viejas=0 nuevas=1 (esperado 0 / 1)
+  OK  src/screens/P3_VoyageVerification.jsx  viejas=0 nuevas=1 (esperado 0 / 1)
+
+EXIT 0  — VERDE

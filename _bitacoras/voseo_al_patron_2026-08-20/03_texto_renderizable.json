@@ -1,0 +1,1910 @@
+[
+ {
+  "clave": "backend/data/contacto/reparticiones_publicadas.json",
+  "linea": 0,
+  "ruta": "decision",
+  "forma": "usa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "R4 = opcion B, owner 2026-08-15. El nombre sale del titulo publicado por DIRECTEMAR; la columna `Capitania` del CSV NO se usa como rotulo porque es la cadena cruda de SITPORT (medido 64 de 64)."
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "rige",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "CONTRATO_MOTOR.md v1.7 — INV-3.6 (una jurisdiccion sin geometria se declara, nunca se resuelve en silencio)"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "que_es",
+  "forma": "toca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La declaracion de las jurisdicciones que el motor sabe que NO puede resolver, y de a quien deriva al patron cuando su ruta pasa por una de ellas. Es dato, no codigo: agregar, quitar o corregir una zon"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "correccion_2026-08-16_del_bloque_reversibilidad",
+  "forma": "deja",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de arriba decia, hasta hoy: \"Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria en el insumo ~~(participa_matching = false)~~\". ERA FALSO desde que entro el tercer est"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "correccion_2026-08-16_del_bloque_reversibilidad",
+  "forma": "cambia",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de arriba decia, hasta hoy: \"Una zona existe SOLO mientras su jurisdiccion siga declarada sin geometria en el insumo ~~(participa_matching = false)~~\". ERA FALSO desde que entro el tercer est"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "derivacion_de_contacto.regla",
+  "forma": "toma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "derivacion_de_contacto.regla",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "derivacion_de_contacto.regla",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El contacto NO se escribe aca: se declara de que bahia del catalogo se toma, y se resuelve desde la fuente autorizada en cada carga. Asi un cambio de telefono en la fuente llega solo, y una atribucion"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "derivacion_de_contacto.tipo capitania",
+  "forma": "usa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Solo si el mapa atribuye esa bahia a una Capitania cuyo nombre coincide con el de la jurisdiccion del decreto. Si no coincide, no se usa."
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "derivacion_de_contacto.tipo sin_contacto",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Cuando ninguna de las dos coincide. Es el caso de las jurisdicciones cuyas bahias el mapa operativo atribuye a una Capitania vecina: usar ese telefono seria dejar que el mapa revoque al decreto, que e"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "derivacion_de_contacto.campo discrepancias_declaradas",
+  "forma": "sigue",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "AGREGADO EL 2026-08-16. Los tres tipos de arriba suponian que la coincidencia entre el mapa y el decreto era UNA. Son DOS NIVELES —Capitania y Gobernacion— y pueden caer distinto: un contacto de Capit"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "derivacion_de_contacto.que exige el campo",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "UNA sola cosa, y es la misma vara de `sin_contacto`: el nivel declarado tiene que DISCREPAR HOY contra la fuente. Si el mapa pasa a coincidir en ese nivel, la carga se detiene y obliga a retirar la de"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "derivacion_de_contacto.por que no puede reclamar tramo",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una zona que da contacto y ademas arrastra una discrepancia declarada NO puede declarar `ambito`. Motivo medido el 2026-08-16: el consumidor de una zona reclamante (`src/services/cobertura-jurisdiccio"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "mensaje.procedencia",
+  "forma": "cambia",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "CONTRATO_MOTOR.md §10, fila 'Jurisdiccion sin limite cargado', contrato v1.9 (commit 8ab2955; el texto vigente de esta fila entro en la v1.8, d9f7f9e). TRANSCRITO de ahi, no redactado aca: el §10 es l"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "mensaje.actualizado_2026-08-13",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el cont"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "mensaje.actualizado_2026-08-13",
+  "forma": "cambia",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el cont"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "mensaje.actualizado_2026-08-13",
+  "forma": "muestra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El texto de 'capa_2_con_capitania' llevaba el telefono adentro ('Verifica con la Capitania {nombre}: {telefono} antes de zarpar...'), que es lo que el §10 dijo hasta la v1.7. INV-10.1 lo saco: el cont"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "mensaje.capa_2_con_capitania",
+  "forma": "confirma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Confirma con la Capitanía {nombre} antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exi"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "mensaje.capa_2_sin_capitania",
+  "forma": "coordina",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Coordina con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricci"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "mensaje.nota_capa_2_sin_capitania",
+  "forma": "usa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada forzosa y z"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "mensaje.nota_capa_2_sin_capitania",
+  "forma": "agrega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Es la misma fila del §10 con la derivacion cambiada: cuando no hay Capitania que nombrar sin inventarla, se deriva por la via que el propio catalogo ya usa (VHF Canal 16, filas de arribada forzosa y z"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "cotejo_con_el_contrato.por_que_existe",
+  "forma": "cambia",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El bloque `mensaje` promete arriba que 'si el catalogo cambia, cambia aca y se nota'. El 2026-08-13 el catalogo cambio —la v1.8 le saco el telefono a la fila— y NO se noto: el dato sirvio el texto de "
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "cotejo_con_el_contrato.por_que_la_fila_se_declara_y_no_se_deduce",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La propuesta original decia que el control leeria `mensaje.procedencia` para ubicar la fila. `procedencia` es PROSA: parsearla seria deducir la afirmacion del texto, que es justo lo que §7.2 prohibe. "
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "cotejo_con_el_contrato.normalizacion[0]",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NEGRITAS: el contrato es markdown y marca `**...**`; el dato es texto plano. Se quitan los asteriscos, no lo que envuelven."
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "cotejo_con_el_contrato.afirmaciones[2].nombre",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la bandera del codigo es la que declara el catalogo"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "cotejo_con_el_contrato.por_que_entra_la_bandera",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La misma celda de capa 1 declara el nivel (`🟡 U`) y el motor lo tiene como constante en cobertura-jurisdiccional.js (BANDERA_AVISO). Hasta hoy nadie cotejaba las dos. Si dejaran de coincidir, INV-3.6"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "cotejo_con_el_contrato.lo_que_NO_cubre[0]",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "UNA SOLA FILA: la que se declara arriba. Las otras nueve del §10 no tienen dato transcrito que cotejar — el `[tel]` que la v1.8 le saco a la fila 'Zarpe cerrado' no vive en ningun archivo de datos, as"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "cotejo_con_el_contrato.lo_que_NO_cubre[1]",
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NO caza que FALTE una transcripcion que deberia existir. Si manana el §10 sumara una fila que el motor tiene que servir y nadie la transcribe aca, este control seguiria en verde. Es el segundo hueco q"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "cotejo_con_el_contrato.lo_que_NO_cubre[3]",
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde."
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "cotejo_con_el_contrato.lo_que_NO_cubre[3]",
+  "forma": "comprueba",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NO verifica que el contrato tenga razon. Comprueba que el dato diga lo que el contrato dice; si el contrato estuviera mal, el control estaria en verde."
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "contacto_generico.texto",
+  "forma": "coordina",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Coordina con la Autoridad Maritima por VHF Canal 16 antes de zarpar."
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "zonas[6].contacto.nota_2026-08-16_retiro",
+  "forma": "toca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "RETIRADA LA DISCREPANCIA, 2026-08-16. La mitad (ii) de la `nota_2026-08-16` —la Gobernacion que el mapa le ponia a la bahia 129 (Aysen) contra la que le da el decreto (Punta Arenas)— quedo ADJUDICADA "
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "zonas[7].contacto.motivo",
+  "forma": "toma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Las bahias de su sector (131 Gregorio, 132 Clarencia) estan atribuidas en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, n"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "zonas[7].motivo_sin_ambito",
+  "forma": "define",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El decreto no le da paralelos: la define por la linea Punta Harry - Cabo San Vicente y por el limite maritimo internacional por el Oriente, que invoca sin darlo en coordenadas."
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "zonas[8].contacto.motivo",
+  "forma": "toma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Su bahia (137, Bahia Chilota, Porvenir) esta atribuida en el mapa operativo a la Capitania de Punta Arenas, y el decreto le da Capitania propia. Discrepancia de clase C: se registra, no se toma el tel"
+ },
+ {
+  "clave": "backend/data/decreto/zonas_aviso.json",
+  "linea": 0,
+  "ruta": "zonas[9].motivo_sin_ambito",
+  "forma": "describe",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El decreto la describe por accidentes y canales, sin paralelos de norte y sur que permitan declarar una banda."
+ },
+ {
+  "clave": "backend/src/constants/vesselTypes.js",
+  "linea": 60,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Carga y Servicios"
+ },
+ {
+  "clave": "backend/src/constants/vesselTypes.js",
+  "linea": 60,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "carga_servicios:  ,"
+ },
+ {
+  "clave": "backend/src/models/Vessel.js",
+  "linea": 11,
+  "ruta": null,
+  "forma": "define",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "const Vessel = sequelize.define("
+ },
+ {
+  "clave": "backend/src/models/Vessel.js",
+  "linea": 58,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "carga_servicios"
+ },
+ {
+  "clave": "backend/src/models/Vessel.js",
+  "linea": 105,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Desplazamiento sin carga (toneladas)"
+ },
+ {
+  "clave": "backend/src/models/Vessel.js",
+  "linea": 110,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Calado aproximado sin carga (metros)"
+ },
+ {
+  "clave": "backend/src/routes/navigation-routes.js",
+  "linea": 15,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "peso_carga_adicional_ton"
+ },
+ {
+  "clave": "backend/src/routes/sitport-routes.js",
+  "linea": 857,
+  "ruta": null,
+  "forma": "entra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "[sitport/restricciones-ruta] bahía ${bahiaId} entra al matching y no tiene coordenada"
+ },
+ {
+  "clave": "backend/src/routes/sitport-routes.js",
+  "linea": 916,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Restricción activa"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "linea": 60,
+  "ruta": null,
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "linea": 60,
+  "ruta": null,
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "linea": 60,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "declara como la capa que el motor consulta hoy. Esa capa resuelve por teselado y el contrato la marca"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "linea": 78,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "C2: el registro declara el ambito '${e.ambito}', que no existe en el insumo."
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "linea": 98,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "C9: el ambito '${e.ambito}' no declara \"habilitado_para_publicar\" booleano. Ese campo es el que"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "linea": 103,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "C9: el ambito '${e.ambito}' declara \"habilitado_para_publicar\": ${e.habilitado_para_publicar} y no"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "linea": 113,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "ambito '${e.ambito}': declara ${e.jurisdicciones_esperadas} jurisdicciones esperadas y el insumo tiene"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "linea": 141,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "C6: el ambito '${e.ambito}' no declara geografia de reclamo y no escribe"
+ },
+ {
+  "clave": "backend/src/services/ambitos-publicados.js",
+  "linea": 227,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "C6: el ambito '${e.ambito}' declara su geografia de reclamo en '${g.relacion}', que no existe en el"
+ },
+ {
+  "clave": "backend/src/services/anclas-declaradas.js",
+  "linea": 103,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "no declara ancla_esperada."
+ },
+ {
+  "clave": "backend/src/services/anclas-declaradas.js",
+  "linea": 118,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "declara ancla_esperada ="
+ },
+ {
+  "clave": "backend/src/services/anclas-declaradas.js",
+  "linea": 121,
+  "ruta": null,
+  "forma": "prueba",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "por un tipeo. Ensancharlo es deliberado y va con su familia en la prueba de mordida."
+ },
+ {
+  "clave": "backend/src/services/anclas-declaradas.js",
+  "linea": 135,
+  "ruta": null,
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "-- la consulta cambio de forma y el control estaria comparando contra undefined"
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "linea": 51,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "el bloque \"andamio\" no declara es_andamio === true (vale ${JSON.stringify(a.es_andamio)})."
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "linea": 52,
+  "ruta": null,
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una capa que no se declara andamio no puede usarse como andamio: sin esa marca no hay nada que impida promoverla."
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "linea": 52,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una capa que no se declara andamio no puede usarse como andamio: sin esa marca no hay nada que impida promoverla."
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "linea": 64,
+  "ruta": null,
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "que el bloque \"andamio\" marca como andamio de medición. Esa capa no puede responderle al patrón:"
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "linea": 83,
+  "ruta": null,
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "[andamio] OK: '${andamio.capa}' declarada como andamio de medición; el motor consulta otra capa."
+ },
+ {
+  "clave": "backend/src/services/andamio-medicion.js",
+  "linea": 114,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "el comentario de '${andamio.capa}' en la base NO es el que declara capa_consultada.json. Los dos guards"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "linea": 75,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "${rutaArchivo} no declara BAHIA_COORDS — la fuente interna cambió de forma y la extracción quedó ciega"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "linea": 138,
+  "ruta": null,
+  "forma": "usa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la que usa el runtime — el descarte de restricciones-ruta y weather-ruta se decide acá"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "linea": 154,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "id → Capitanía y teléfono; no declara ninguno de los campos comparables"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "linea": 304,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la fuente interna ${f.clave} no declara \"campos\" — si no aporta ninguno tiene que decirlo con []"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "linea": 308,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la fuente interna ${f.clave} declara campo(s) que no se comparan: ${desconocidos.join(',')}"
+ },
+ {
+  "clave": "backend/src/services/catalogo-bahias.js",
+  "linea": 311,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la fuente interna ${f.clave} declara campos (${f.campos.join(',')}) pero no trae contenido con qué compararlos"
+ },
+ {
+  "clave": "backend/src/services/cierre-derivador.js",
+  "linea": 120,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "/\\b(?:CARGA|DESCARGA)\\b/,"
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "linea": 92,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "capa_consultada.json no declara '${campo}'."
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "linea": 133,
+  "ruta": null,
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "consulta la capa publicada, y no se supone que no: un bloque borrado apagaria el cableado en silencio,"
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "linea": 141,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "${BLOQUE_ENSANCHE}: ambitos_publicados.json no declara una 'capa_publicada' usable ('${capa}')."
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "linea": 153,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "${BLOQUE_ENSANCHE}: declara 'consultada': true y ambitos_publicados.json no publica ningun ambito."
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "linea": 219,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "capa_consultada.json: el bloque '${BLOQUE_ENSANCHE}' falta o no declara 'consultada' booleano."
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "linea": 220,
+  "ruta": null,
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La verificacion completa vive en ensancheDeclarado(); esto es solo el arranque."
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "linea": 319,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "capa_consultada.json no declara 'tolerancia_fuera_del_recorte_m' como numero."
+ },
+ {
+  "clave": "backend/src/services/cobertura-jurisdiccional.js",
+  "linea": 465,
+  "ruta": null,
+  "forma": "muestra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "declarada lo cubre. Se muestra al patron y queda registrado como defecto de construccion."
+ },
+ {
+  "clave": "backend/src/services/cotejo-contrato.js",
+  "linea": 137,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "contrato transcribe este dato, y el cotejo no se supone: se declara."
+ },
+ {
+  "clave": "backend/src/services/deportivo-validator.js",
+  "linea": 78,
+  "ruta": null,
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Verifica que tu licencia (PLDB, PDB, CDC o CDAM) sea la correcta según RGDN (TM-002) Art. 12."
+ },
+ {
+  "clave": "backend/src/services/deportivo-validator.js",
+  "linea": 98,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Declara el tipo de propulsión de tu embarcación (motor, vela, mixto o manual)."
+ },
+ {
+  "clave": "backend/src/services/fondeadero-service.js",
+  "linea": 72,
+  "ruta": null,
+  "forma": "muestra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "const muestra = [];"
+ },
+ {
+  "clave": "backend/src/services/fondeadero-service.js",
+  "linea": 73,
+  "ruta": null,
+  "forma": "muestra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "for (let i = 0; i < rutaAntes.length; i += step) muestra.push(rutaAntes[i]);"
+ },
+ {
+  "clave": "backend/src/services/fondeadero-service.js",
+  "linea": 75,
+  "ruta": null,
+  "forma": "muestra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "if (muestra[muestra.length - 1] !== ultimo) muestra.push(ultimo);"
+ },
+ {
+  "clave": "backend/src/services/fondeadero-service.js",
+  "linea": 83,
+  "ruta": null,
+  "forma": "muestra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "for (const rp of muestra) {"
+ },
+ {
+  "clave": "backend/src/services/join-bahia-jurisdiccion.js",
+  "linea": 70,
+  "ruta": null,
+  "forma": "pregunta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "exigir(f && textoNoVacio(f.id) && textoNoVacio(f.a_quien) && textoNoVacio(f.que_falta) && textoNoVacio(f.pregunta),"
+ },
+ {
+  "clave": "backend/src/services/join-bahia-jurisdiccion.js",
+  "linea": 71,
+  "ruta": null,
+  "forma": "pregunta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "bahia ${id}: 'sin_resolver' exige 'fuente_a_consultar' con id, a_quien, que_falta y pregunta escritos."
+ },
+ {
+  "clave": "backend/src/services/join-bahia-jurisdiccion.js",
+  "linea": 72,
+  "ruta": null,
+  "forma": "avisa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una pendiente sin fuente identificada queda como verdad y no avisa."
+ },
+ {
+  "clave": "backend/src/services/join-bahia-jurisdiccion.js",
+  "linea": 94,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "bahia ${id}: declara ${destinos.length} jurisdicciones con respaldo '${e.respaldo}'. Atribuirla a varias"
+ },
+ {
+  "clave": "backend/src/services/marine-weather-service.js",
+  "linea": 25,
+  "ruta": null,
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "No se pudo cargar la base de conocimiento de especies. Verifica que especies_pesca.json esté en el directorio raíz del backend."
+ },
+ {
+  "clave": "backend/src/services/marine-weather-service.js",
+  "linea": 113,
+  "ruta": null,
+  "forma": "baja",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "baja"
+ },
+ {
+  "clave": "backend/src/services/marine-weather-service.js",
+  "linea": 129,
+  "ruta": null,
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠ ALERTA FAN PREVENTIVA: concentración de clorofila anormalmente alta (${clorofila.toFixed(2)} mg/m³, umbral: ${umbral.toFixed(1)} mg/m³). Riesgo elevado de Floraciones Algales Nocivas. Consulta la Re"
+ },
+ {
+  "clave": "backend/src/services/raster-router-service.js",
+  "linea": 643,
+  "ruta": null,
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La ruta cruza el tile \"${s.id}\" que aún no está generado. Ver docs/RUNBOOK_tiles_costa_completa.md."
+ },
+ {
+  "clave": "backend/src/services/raster/canal-geometria.js",
+  "linea": 27,
+  "ruta": null,
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "red_nautica_chile_completa.geojson"
+ },
+ {
+  "clave": "backend/src/services/raster/tile-loader.js",
+  "linea": 26,
+  "ruta": null,
+  "forma": "espera",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Tile ${tileId}: .bin tiene ${packed.length} celdas, meta.json espera ${meta.rows * meta.cols} (rows*cols)"
+ },
+ {
+  "clave": "backend/src/services/restriction-rules-engine.js",
+  "linea": 113,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Condición VARIABLE — restricción activa para tu embarcación (AB {nave_ab}, menores de {umbral} AB)"
+ },
+ {
+  "clave": "backend/src/services/restriction-rules-engine.js",
+  "linea": 134,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Condición VARIABLE — restricción activa para embarcaciones menores"
+ },
+ {
+  "clave": "backend/src/services/restriction-rules-engine.js",
+  "linea": 154,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Restricción activa — carga tu AB en el perfil para verificar si te afecta"
+ },
+ {
+  "clave": "backend/src/services/restriction-rules-engine.js",
+  "linea": 154,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Restricción activa — carga tu AB en el perfil para verificar si te afecta"
+ },
+ {
+  "clave": "backend/src/services/ship-physics.js",
+  "linea": 22,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "const Delta_total = Delta_lightship + peso_carga_adicional_ton;"
+ },
+ {
+  "clave": "backend/src/services/voyage-report-service.js",
+  "linea": 166,
+  "ruta": null,
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NAVEGA CON CERTEZA"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 97,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la jurisdiccion '${jur.id}' declara estado_geometria '${e}', que no esta en"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 99,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "un estado nuevo decide si su carencia se le declara al patron o no, y eso no"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 132,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "un elemento. Declarar el campo vacio no declara nada: o se escribe la discrepancia, o se omite el campo."
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 140,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "zona '${zona.jurisdiccion_id}': la discrepancia de la bahia ${item.bahia_id} declara nivel '${item.nivel}',"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 142,
+  "ruta": null,
+  "forma": "comprueba",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "que campo se comprueba, y adivinarlo comprobaria otra cosa."
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 162,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "zona '${zona.jurisdiccion_id}': la bahia ${item.bahia_id} declara una discrepancia en nivel"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 164,
+  "ruta": null,
+  "forma": "deja",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "coinciden. Una discrepancia declarada que se resolvio deja de declararse: mantenerla escrita haria"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 206,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "(mapa: capitania='${e.capitania}', gobernacion='${e.gobernacion}'). La discrepancia que declara el"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 263,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "('${entrada.capitania}'). Derivar a la Gobernacion solo se declara cuando la fuente no atribuye Capitania."
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 267,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Las dos fuentes no coinciden: no se declara contacto hasta adjudicar cual manda."
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 267,
+  "ruta": null,
+  "forma": "manda",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Las dos fuentes no coinciden: no se declara contacto hasta adjudicar cual manda."
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 322,
+  "ruta": null,
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "\"mensaje.capa_2_con_capitania\" no incluye la marca {nombre}: saldria a pantalla sin ese dato."
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 330,
+  "ruta": null,
+  "forma": "muestra",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "un mensaje del catalogo: el contacto se muestra en el punto de zarpe y recalada, no aca."
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 360,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la jurisdiccion '${id}' esta sin geometria pero no declara 'causa_sin_geometria' en el insumo."
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 386,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "la zona '${id}' declara un contacto de tipo '${contacto.tipo}' CON ${contacto.discrepancias.length}"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 388,
+  "ruta": null,
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "(cobertura-jurisdiccional.js) se queda con nombre, telefono y tipo: la marca de la discrepancia se"
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 390,
+  "ruta": null,
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "norma: se levanta cuando el consumidor sepa cargar la marca."
+ },
+ {
+  "clave": "backend/src/services/zonas-aviso.js",
+  "linea": 413,
+  "ruta": null,
+  "forma": "cuenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Una 'cerrable_parcial' cuenta acá igual que una 'no_cerrable': su parte no cubierta"
+ },
+ {
+  "clave": "backend/src/utils/displacementCalculator.js",
+  "linea": 63,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "const factor_carga = 0.10;"
+ },
+ {
+  "clave": "backend/src/utils/displacementCalculator.js",
+  "linea": 65,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "const consumoDinamico = consumoNominal * (1 + factor_carga * cargaPct);"
+ },
+ {
+  "clave": "backend/src/workers/queueWorker.js",
+  "linea": 89,
+  "ruta": null,
+  "forma": "consulta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "sitport:${puerto}:${tipo_consulta}"
+ },
+ {
+  "clave": "pwa/src/App.jsx",
+  "linea": 93,
+  "ruta": null,
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NAVEGA CON CERTEZA"
+ },
+ {
+  "clave": "pwa/src/components/AppSidebar.jsx",
+  "linea": 75,
+  "ruta": null,
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Tmarea — Navega con Certeza"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "linea": 162,
+  "ruta": null,
+  "forma": "avisa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Antes de salir a pasear, avisa tu zarpe a la Autoridad Marítima."
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "linea": 212,
+  "ruta": null,
+  "forma": "avisa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "ezarpe.directemar.cl  o avisa por radio en canal de guardia."
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "linea": 251,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ver datos de capitanía activa"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "linea": 270,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Jurisdicción activa"
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "linea": 336,
+  "ruta": null,
+  "forma": "confirma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Confirma que tu embarcación cuenta con el equipamiento mínimo exigido por DIRECTEMAR."
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "linea": 336,
+  "ruta": null,
+  "forma": "cuenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Confirma que tu embarcación cuenta con el equipamiento mínimo exigido por DIRECTEMAR."
+ },
+ {
+  "clave": "pwa/src/components/DeportiveAlerts.jsx",
+  "linea": 394,
+  "ruta": null,
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Marca todos los ítems para continuar"
+ },
+ {
+  "clave": "pwa/src/components/screens/ReportarProblema.jsx",
+  "linea": 141,
+  "ruta": null,
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "No se pudo conectar con el servidor. Verifica tu conexión."
+ },
+ {
+  "clave": "pwa/src/components/screens/ReportarProblema.jsx",
+  "linea": 216,
+  "ruta": null,
+  "forma": "sé",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Describe brevemente qué pasó o qué no funciona. Sé conciso."
+ },
+ {
+  "clave": "pwa/src/components/screens/ReportarProblema.jsx",
+  "linea": 216,
+  "ruta": null,
+  "forma": "describe",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Describe brevemente qué pasó o qué no funciona. Sé conciso."
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "linea": 27,
+  "ruta": null,
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Navega con Certeza"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "linea": 31,
+  "ruta": null,
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Verifica condiciones de navegación antes de ejecutar tu zarpe autorizado."
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "linea": 50,
+  "ruta": null,
+  "forma": "eres",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Eres responsable de tu cuenta y de toda actividad en ella."
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "linea": 50,
+  "ruta": null,
+  "forma": "cuenta",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Eres responsable de tu cuenta y de toda actividad en ella."
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "linea": 55,
+  "ruta": null,
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ver versión completa →"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0Onboarding.jsx",
+  "linea": 77,
+  "ruta": null,
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Verifica todo contra fuentes oficiales antes de zarpar."
+ },
+ {
+  "clave": "pwa/src/components/screens/S0_5Registro.jsx",
+  "linea": 51,
+  "ruta": null,
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Navega con Certeza"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0_5Registro.jsx",
+  "linea": 56,
+  "ruta": null,
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Completa tus datos para acceder a Tmarea"
+ },
+ {
+  "clave": "pwa/src/components/screens/S0_5Registro.jsx",
+  "linea": 94,
+  "ruta": null,
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona tu licencia"
+ },
+ {
+  "clave": "pwa/src/components/verification/NavigationBlock.jsx",
+  "linea": 134,
+  "ruta": null,
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠ El combustible disponible no cubre la ruta completa. Verificar con el armador antes de zarpar."
+ },
+ {
+  "clave": "pwa/src/components/verification/NormativeBlock.jsx",
+  "linea": 143,
+  "ruta": null,
+  "forma": "recuerda",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El cumplimiento normativo es responsabilidad exclusiva del patrón. Tmarea recuerda, no autoriza."
+ },
+ {
+  "clave": "pwa/src/components/verification/PortStatusBlock.jsx",
+  "linea": 50,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Restricción activa — verificar con Capitanía."
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "linea": 48,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠ Restricción activa en zona de tránsito"
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "linea": 51,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠️ Restricción activa en tránsito"
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "linea": 67,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠️ Carga tu AB en el perfil para verificar si esta restricción te aplica"
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "linea": 73,
+  "ruta": null,
+  "forma": "confirma",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠️ Confirma con la Capitanía si esta restricción afecta tu navegación"
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "linea": 146,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "La ruta cruza ${nAplican} jurisdicción(es) con Condición de Puerto activa que afecta tu embarcación."
+ },
+ {
+  "clave": "pwa/src/components/verification/TransitRestrictionsBlock.jsx",
+  "linea": 186,
+  "ruta": null,
+  "forma": "puedes",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "📍 Puedes navegar hasta    . A partir de ahí, la zona está restringida."
+ },
+ {
+  "clave": "pwa/src/components/verification/VoyageVerdict.jsx",
+  "linea": 71,
+  "ruta": null,
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Restricción en ${r.nombre_bahia} — verifica tu AB"
+ },
+ {
+  "clave": "pwa/src/components/verification/VoyageVerdict.jsx",
+  "linea": 155,
+  "ruta": null,
+  "forma": "puedes",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Puedes navegar hasta  . A partir de ahí, la zona está restringida."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "linea": 0,
+  "ruta": "secciones[0].detalles[0]",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "ESTRIBOR (Derecha): Marca ROJA. Luz Roja."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "linea": 0,
+  "ruta": "secciones[0].detalles[1]",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "BABOR (Izquierda): Marca VERDE. Luz Verde."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "linea": 0,
+  "ruta": "secciones[0].conceptos_clave[0].explicacion",
+  "forma": "sales",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "linea": 0,
+  "ruta": "secciones[0].conceptos_clave[0].explicacion",
+  "forma": "deja",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "En Chile, al entrar a puerto o canal desde el mar, deja la boya ROJA a tu derecha (Estribor). Si sales, es al revés."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "linea": 0,
+  "ruta": "secciones[1].caracteristicas",
+  "forma": "marca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Color Amarillo. Marca de tope: X amarilla. Luz amarilla intermitente."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/balizamiento_01.json",
+  "linea": 0,
+  "ruta": "secciones[1].conceptos_clave[0].explicacion",
+  "forma": "puedes",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "No navegues entre estas boyas. Demarcan 'balsas jaula' y sus sistemas de fondeo, que tienen extensos cabos submarinos donde puedes enredar tu hélice."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/emergencias_01.json",
+  "linea": 0,
+  "ruta": "secciones[0].conceptos_clave[0].explicacion",
+  "forma": "haces",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Significa acercarse de modo que el viento golpee primero a la persona y luego a tu embarcación. Si lo haces al revés, el viento empujará tu lancha sobre la persona."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/emergencias_01.json",
+  "linea": 0,
+  "ruta": "secciones[1].conceptos_clave[0].explicacion",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Si el fuego está en la popa, navega de cara al viento. Si el viento sopla desde la popa hacia la proa, avivará las llamas hacia la cabina."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/emergencias_01.json",
+  "linea": 0,
+  "ruta": "secciones[2].conceptos_clave[0].explicacion",
+  "forma": "baja",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Las mareas tienen gran amplitud. Si la marea baja y no hay riesgo de hundimiento, la opción más segura suele ser esperar la pleamar."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/reglamentos_01.json",
+  "linea": 0,
+  "ruta": "secciones[1].conceptos_clave[0].explicacion",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Llevar más carga de la declarada no solo es una falta a la LGPA (suspensión de 3 meses), sino que altera la estabilidad de la nave, poniéndola en riesgo inminente de hundimiento."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/reglamentos_01.json",
+  "linea": 0,
+  "ruta": "secciones[2].puntos_clave[2]",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Estabilidad y Carga (D.S. 388, Art. 38): Obligatorio respetar la línea de carga (francobordo). Prohibido concentrar peso en altura."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/reglamentos_01.json",
+  "linea": 0,
+  "ruta": "secciones[2].conceptos_clave[0].explicacion",
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Estibar carga pesada sobre cubierta o en el techo de la caseta eleva el centro de gravedad. Con el oleaje o corrientes fuertes, la nave pierde su capacidad de adrizarse (enderezarse) y volcará."
+ },
+ {
+  "clave": "pwa/src/data/Biblioteca/ripa_01.json",
+  "linea": 0,
+  "ruta": "secciones[1].regla_practica",
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Navega lo más cerca posible del límite exterior de tu ESTRIBOR."
+ },
+ {
+  "clave": "pwa/src/data/maritime_data.json.json",
+  "linea": 0,
+  "ruta": "capitanias[4].tips",
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Tránsito constante de naves mayores acuícolas. Mantenga escucha activa."
+ },
+ {
+  "clave": "pwa/src/hooks/useVoyageVerification.js",
+  "linea": 537,
+  "ruta": null,
+  "forma": "carga",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "peso_carga_adicional_ton: vessel.carga_ton || 0,"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 181,
+  "ruta": null,
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona el tipo de embarcación"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 199,
+  "ruta": null,
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona el uso de la embarcación"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 200,
+  "ruta": null,
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona el tipo de propulsión"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 201,
+  "ruta": null,
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona tu licencia deportiva"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 202,
+  "ruta": null,
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona la clasificación de la nave"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 205,
+  "ruta": null,
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ingresa la potencia del motor (HP)"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 230,
+  "ruta": null,
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Error al guardar. Verifica el espacio disponible en tu dispositivo."
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 238,
+  "ruta": null,
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Completa todos los campos requeridos antes de continuar."
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 252,
+  "ruta": null,
+  "forma": "quieres",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "¿Seguro que quieres limpiar los datos de la nave?"
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 272,
+  "ruta": null,
+  "forma": "revisa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Revisa o actualiza los datos antes de iniciar el viaje."
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 272,
+  "ruta": null,
+  "forma": "actualiza",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Revisa o actualiza los datos antes de iniciar el viaje."
+ },
+ {
+  "clave": "pwa/src/screens/P1_VesselProfile.jsx",
+  "linea": 339,
+  "ruta": null,
+  "forma": "tienes",
+  "registro": "tuteo",
+  "ambiguo": false,
+  "frag": "Autocompletado desde la eslora (TM-002 Art. 28). Editable si tienes certificado de arqueo."
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 69,
+  "ruta": null,
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por nombre del puerto o caleta"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 84,
+  "ruta": null,
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por nombre de empresa o ubicación geográfica del centro"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 97,
+  "ruta": null,
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por código RNA/SERNAPESCA, apellido del titular o sector geográfico"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 110,
+  "ruta": null,
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por nombre de caleta, sector o comuna — cobertura nacional"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 124,
+  "ruta": null,
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por nombre de marina o club náutico"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 136,
+  "ruta": null,
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Busca por nombre de fondeadero o bahía"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 371,
+  "ruta": null,
+  "forma": "busca",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "🐠 ¿Qué recurso busca explotar?"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 380,
+  "ruta": null,
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "— Selecciona la especie objetivo —"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 454,
+  "ruta": null,
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "ℹ Ingresa coordenadas en grados decimales negativos (Sur/Oeste)"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 585,
+  "ruta": null,
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "⚠ Selecciona la duración estimada"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 754,
+  "ruta": null,
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona el puerto de zarpe"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 757,
+  "ruta": null,
+  "forma": "completa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Completa este destino"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 759,
+  "ruta": null,
+  "forma": "selecciona",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Selecciona el recurso que vas a explotar"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 762,
+  "ruta": null,
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ingresa la fecha de zarpe"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 763,
+  "ruta": null,
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ingresa la fecha de recalada"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 767,
+  "ruta": null,
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ingresa un valor válido en litros"
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 776,
+  "ruta": null,
+  "forma": "revisa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Revisa los campos marcados antes de continuar."
+ },
+ {
+  "clave": "pwa/src/screens/P2_VoyageSetup.jsx",
+  "linea": 821,
+  "ruta": null,
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ingresa los datos del viaje que vas a realizar."
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "linea": 44,
+  "ruta": null,
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NAVEGA CON CERTEZA"
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "linea": 115,
+  "ruta": null,
+  "forma": "usa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "El destino seleccionado está fuera de zona navegable conocida. El punto está a más de 5 km de aguas navegables según la carta del motor de rutas. Intenta seleccionar un punto más cercano a un canal o "
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "linea": 116,
+  "ruta": null,
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "No se encontró ruta navegable entre los puntos seleccionados. Verifica los puertos de zarpe y recalada."
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "linea": 206,
+  "ruta": null,
+  "forma": "declara",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Alcanza a las naves menores. El texto no declara tonelaje."
+ },
+ {
+  "clave": "pwa/src/screens/P3_VoyageVerification.jsx",
+  "linea": 442,
+  "ruta": null,
+  "forma": "informa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Tmarea informa. El zarpe y la navegación son responsabilidad exclusiva del patrón."
+ },
+ {
+  "clave": "pwa/src/screens/P4_ActiveVoyage.jsx",
+  "linea": 617,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "NAVEGACIÓN ACTIVA"
+ },
+ {
+  "clave": "pwa/src/screens/P4_ActiveVoyage.jsx",
+  "linea": 683,
+  "ruta": null,
+  "forma": "activa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "¿Seguro? Se cancelará la navegación activa."
+ },
+ {
+  "clave": "pwa/src/screens/P4_ActiveVoyage.jsx",
+  "linea": 724,
+  "ruta": null,
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Destino fuera de zona navegable. Navega con carta SHOA."
+ },
+ {
+  "clave": "pwa/src/screens/P4_ActiveVoyage.jsx",
+  "linea": 726,
+  "ruta": null,
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "No hay ruta navegable entre los puntos. Navega con carta SHOA."
+ },
+ {
+  "clave": "pwa/src/screens/P4_ActiveVoyage.jsx",
+  "linea": 727,
+  "ruta": null,
+  "forma": "navega",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Ruta no disponible. Navega con carta SHOA."
+ },
+ {
+  "clave": "pwa/src/utils/restricciones.js",
+  "linea": 53,
+  "ruta": null,
+  "forma": "verifica",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático"
+ },
+ {
+  "clave": "pwa/src/utils/restricciones.js",
+  "linea": 53,
+  "ruta": null,
+  "forma": "ingresa",
+  "registro": "tuteo",
+  "ambiguo": true,
+  "frag": "Verifica si esta restricción aplica a tu embarcación — ingresa tu Arqueo Bruto (AB) en el perfil para cotejo automático"
+ }
+]

@@ -1,0 +1,127 @@
+CONTROL DE PANTALLA — voseo_al_patron_2026-08-20 · PARADA 2
+
+App montada: Vite en localhost:5173, backend en localhost:3000, PostgreSQL en
+5432. Los tres ya estaban corriendo; no se levanto nada para esta medicion.
+
+================================================================================
+1. CONTROL POSITIVO — LA PANTALLA SE SIRVE DEL ARBOL NUEVO
+================================================================================
+
+Se pidio al propio servidor de Vite el modulo corregido, no el fichero del disco:
+
+    GET http://localhost:5173/src/screens/P3_VoyageVerification.jsx
+    -> 92.315 bytes
+       "Contacte a" ..... 2 apariciones
+       "Contacta a" (con tilde en la ultima a) ..... 0 apariciones
+
+Esto es lo que hace que el resto del control signifique algo: mide el arbol que
+el navegador esta ejecutando, no el que esta en el disco.
+
+================================================================================
+2. EL VIAJE, ELEGIDO DESDE LAS RESTRICCIONES VIVAS
+================================================================================
+
+zarpe    : Embarcadero Rampa Hornopiren   (Palena, -41.9712 / -72.4718)
+recalada : Embarcadero Rampa de Ayacara   (Palena, -42.3177 / -72.7874)
+nave     : 18,5 m · 45 TRG · AB 50 · 8 kn
+fechas   : zarpe 2026-08-21 · recalada 2026-08-22 · 800 L
+
+El destino NO se eligio de antemano: se eligio de la lista de restricciones vivas
+al momento de montar. Cruda en 15_sitport_al_capturar.json — 23 filas, y cinco de
+ellas en la jurisdiccion de Hornopiren:
+
+    182  ESTERO COMAU          LIMITES OPERACIONALES   nrecalada=0
+    184  ENSENADA HUALAIHUE    LIMITES OPERACIONALES   nrecalada=0
+    185  ENSENADA ROLECHA      LIMITES OPERACIONALES   nrecalada=0
+    186  SECTOR AYACARA        LIMITES OPERACIONALES   nrecalada=0
+    187  SECTOR BUILL          LIMITES OPERACIONALES   nrecalada=0
+
+================================================================================
+3. UNA LECTURA MIA QUE ESTABA MAL, Y QUE ESTA MEDICION CORRIGE
+================================================================================
+
+En el gate dije que la tarjeta de recalada cerrada necesitaba una fila con
+`nrecalada = 1`, y que ese dia habia exactamente una — Bahia de Quintero.
+
+ES FALSO, y lo prueba esta captura: la tarjeta salio de SECTOR AYACARA, que tiene
+`nrecalada = 0`. El cierre no lo declara esa bandera: lo deriva el motor leyendo
+el texto de la Capitania —«CERRADO PARA EE.MM DE 25 A.B. DENTRO Y FUERA DE LA
+BAHIA»— y cruzandolo contra el AB de la nave. Por eso la tarjeta aparece con el
+alcance escrito («Alcanza a las naves menores de 25 AB») en vez de un cierre
+plano.
+
+Consecuencia practica: la tarjeta es MUCHO mas alcanzable de lo que estime, y el
+riesgo que levante en el gate —que el control negativo pasara en falso por no
+haber cierre vivo— era menor de lo que dije. El riesgo sigue existiendo; el
+numero con el que lo cuantifique estaba mal.
+
+================================================================================
+4. LA TARJETA, EN PANTALLA
+================================================================================
+
+Renderizada en P3, bloque de cierre de recalada. Transcripcion literal de lo que
+el navegador muestra:
+
+    ⚠️  Puerto de recalada cerrado.
+        Alcanza a las naves menores de 25 AB.
+        Texto de la Capitania: SE ESTABLECE CONDICION DE PUERTO VARIABLE,
+        CERRADO PARA EE.MM DE 25 A.B. DENTRO Y FUERA DE LA BAHIA, TRABAJOS EN
+        CENTROS DE CULTIVOS, FAENAS DE BUCEO Y REMOLQUES SUSPENDIDOS, SE
+        ACEPTAN CARTAS DE CONTINUIDAD.
+        Contacte a la Capitania de Puerto de Hornopiren por VHF Canal 16 antes
+        de recalar.
+
+Es la misma tarjeta que el owner vio hoy, con la misma Capitania, en usted.
+
+El texto de la Capitania sale TAL CUAL, en mayusculas y sin tildes, como lo
+publica SITPORT. No se toco: es el bucket C.
+
+================================================================================
+5. CONTROL NEGATIVO — Y LA PRUEBA DE QUE NO PASA EN FALSO
+================================================================================
+
+Sobre `document.body.innerText` de la pantalla renderizada: 4.503 puntos de
+codigo, contra las 96 formas de VOSEO del vocabulario cerrado.
+
+    formas de voseo con al menos una aparicion : 0
+    la cadena corregida, en pantalla           : 1
+
+UN CERO NO PRUEBA NADA POR SI SOLO. Asi que el mismo comparador se corrio tres
+veces, sobre el mismo texto:
+
+    sobre la pantalla de hoy ................................ 0
+    sobre la MISMA pantalla con el defecto devuelto ......... 1
+    sobre "contactandose a la" (prueba de frontera) ......... 0
+
+La linea del medio es la que sostiene el control: se tomo el innerText vivo, se
+le devolvio el defecto —«Contacte a la Capitania» -> «Contacta a la Capitania»
+con tilde— y el comparador lo cazo. El cero de la primera linea es un cero que
+NO sale igual con y sin el defecto.
+
+La tercera linea prueba que la frontera por punto de codigo sigue funcionando en
+el navegador y no solo en Node.
+
+================================================================================
+6. LO QUE ESTE CONTROL NO CUBRE
+================================================================================
+
+- LA RAMA DE FALLBACK de P3 —«Contacte a la autoridad maritima…»— NO se pinto y
+  NO PUEDE pintarse en esta corrida: por construccion sale solo cuando NO hay
+  rotulo, y aca lo hubo. Su correccion esta verificada por codigo (paso 12 y
+  ancla del paso 01), no por pantalla, y asi queda declarado.
+
+- LAS DOS CADENAS DE DriftCatalogoBlock tampoco se pintaron: exigen una
+  divergencia de catalogo viva, que hoy no la hay en esta ruta. Mismo trato:
+  verificadas por codigo, no por pantalla.
+
+- La consola del navegador trae dos `ERR_CONNECTION_RESET` de recursos. No son
+  de esta pieza y no se investigaron: no tocan texto.
+
+================================================================================
+7. PARA REPRODUCIRLO — PowerShell
+================================================================================
+curl.exe -s http://localhost:5173/src/screens/P3_VoyageVerification.jsx | Select-String "Contacte a"
+curl.exe -s http://localhost:3000/api/sitport/restricciones
+
+El viaje NO se reproduce igual: la fuente se mueve. La captura de la que salio
+esta pantalla esta congelada en 15_sitport_al_capturar.json.
