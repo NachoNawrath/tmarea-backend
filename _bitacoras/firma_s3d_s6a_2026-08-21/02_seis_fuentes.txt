@@ -1,0 +1,20 @@
+ESTADO CRUDO DE LOS PUERTOS (mapearRespuestaPuerto real):
+  zarpe    estado=ambar  dato_viejo=true
+  recalada estado=ambar  dato_viejo=true
+
+LAS SEIS FUENTES, HOY:
+  zarpe                   U
+  recalada                U
+  recalada_ajustada       U
+  clima                   Q
+  transito                U
+  drift_catalogo          Q
+  cobertura_jurisdiccionalU
+
+  VEREDICTO DE PANTALLA = U
+  arribadaForzosa = false
+
+DE DONDE SALE CADA U:
+  escalarPorTransito lee bandera_final del backend = U  -> U
+  escalarPorDrift                                     -> Q
+  escalarPorCobertura lee cobertura.bandera = U   -> U

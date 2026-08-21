@@ -435,6 +435,21 @@
         "filas_en_este_declarativo": 4,
         "nota": "Mismo precedente que SESION-caracterizacion-deudas-2026-08-19, SESION-tres-de-d4-2026-08-20, SESION-limite-puerto-12100-47-2026-08-20, SESION-plan-de-cierre-2026-08-20 y SESION-voseo-al-patron-2026-08-20: una sesion es un sitio de deuda propio. El sitio se crea el 2026-08-21, en la pieza que inserta las filas, y NO el dia del barrido: las cuatro se redactaron el 2026-08-20 sin sitio donde alojarse, y por eso §6 decia «sitio a decidir». Este sitio NO marca barrido ningun otro: PWA-COMENTARIOS y PWA-SIN-ANOTAR siguen en false aunque dos de estas cuatro filas sean de tmarea-pwa y caigan cerca de ellos. LO QUE LA PIEZA NO BARRIO Y NO SE DECLARA ACA: la capa B —el bloque que dibuja el aviso, item 2 del orden del plan de cierre— y la cifra de §2 con su nota, que son piezas propias.",
         "bitacora": "_bitacoras/cobertura_capas_a_c_2026-08-20/"
+      },
+      {
+        "id": "SESION-firma-s3d-s6a-2026-08-21",
+        "repo": "tmarea-backend",
+        "fichero": "_bitacoras/firma_s3d_s6a_2026-08-21/",
+        "seccion_por_titulo": "deudas que deja la sesion en que el owner firmo S3(d) y rechazo S6(a) mirando la pantalla",
+        "vocabulario_del_barrido": [
+          "las TRES deudas que salieron de mirar la pantalla: la fuente que falta en el maximo —la marea contra el calado—, el texto al patron sobre muelles y rampas, y la pregunta normativa de las horas de luz"
+        ],
+        "orden": 9,
+        "barrido": true,
+        "barrido_el": "2026-08-21",
+        "filas_en_este_declarativo": 3,
+        "nota": "Mismo precedente que SESION-cobertura-capas-a-c-2026-08-20 y las cinco anteriores: una sesion es un sitio de deuda propio. LO QUE ESTE SITIO NO BARRE Y SE DICE PARA QUE NADIE LO BUSQUE ACA: la auditoria de la fuente de marea, que va agendada como pieza sin numero en el orden del plan de cierre y no como fila; la capa B; y la cifra de §2 con su nota, que sigue siendo pieza propia.",
+        "bitacora": "_bitacoras/firma_s3d_s6a_2026-08-21/"
       }
     ]
   },
@@ -4021,6 +4036,115 @@
       },
       "costo_estimado": "Medio y con decision adentro: hay que elegir entre parsear el `res.json` del handler —fragil ante cualquier refactor— o levantar el endpoint en el propio test, que le mete red o base a una suite que hoy no las necesita. Ninguna de las dos es una linea.",
       "depende_de": "Nada abierto. El control existe y funciona; lo que falta es de donde saca su universo."
+    },
+    {
+      "token_local": null,
+      "texto_literal": null,
+      "sin_texto": true,
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": false,
+      "duplicada_de": null,
+      "medicion": "_bitacoras/firma_s3d_s6a_2026-08-21/",
+      "sitio": "SESION-firma-s3d-s6a-2026-08-21",
+      "espacio_de_nombres": "PLAN_JURISDICCION.md §2 — S6(a), la lista de fuentes del maximo",
+      "nota_fecha": "El documento no fecha esta deuda: nace de la firma de S3(d) y del rechazo de S6(a) del 2026-08-21, con la pantalla delante. Salida cruda en _bitacoras/firma_s3d_s6a_2026-08-21/.",
+      "id": "SESION-firma-s3d-s6a-2026-08-21::la-marea-contra-el-calado-no-es-fuente-del-veredicto",
+      "repo": "tmarea-backend",
+      "grupo": "2_decision_del_owner",
+      "titulo": "La altura de marea contra el calado del patron no es fuente del veredicto, y por eso S6(a) quedo NO CUMPLE",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-21",
+        "como_se_midio": "Con la pantalla de P3 delante del owner. Ruta Puerto de Antofagasta -> Caleta Pesquera Taltal, nave AB 50, uso transporte, licencia PNM. Los dos puertos elegidos por el buscador de P2 y el localStorage verificado antes de medir.",
+        "las_fuentes_que_SI_entran": "Se enumeraron las seis que el maximo compone —zarpe, recalada, clima, transito, drift de catalogo y cobertura jurisdiccional— y se corrieron sobre el dato vivo con las funciones reales de la PWA. El veredicto de pantalla salio como el maximo de esas seis. S6(a)(i) quedo firmada CUMPLE.",
+        "la_que_falta": "La altura de marea contra el calado. La app tiene las dos piezas por separado —el motor de mareas y el calado que el propio patron carga en su perfil— y no las cruza. Un patron que sale con marea baja donde su calado no le da esta frente a una condicion previa al zarpe que la tarjeta no mira.",
+        "la_forma_que_el_owner_pide": "En que zona de su navegacion, a que hora, que altura de marea, contra el calado que el mismo seteo, y que hay posibilidad de encallar.",
+        "la_cobertura_ya_se_vio_partida_esa_misma_noche": "En la pantalla firmada, el bloque de mareas dio prediccion para el puerto de zarpe con su estacion de referencia nombrada, y para el de recalada dijo que no habia informacion de mareas para esa ubicacion. Los dos extremos de la MISMA ruta, uno con dato y otro sin dato. No es la auditoria: es el caso que la motiva.",
+        "LA_CONDICION_DEL_OWNER_TAL_CUAL": "«la marea entra como fuente del veredicto SOLO SI la forma de cálculo es correcta y existen todos los datos para ofrecer ese dato. No quiero una fuente que adivine.» — owner, 2026-08-21. Es la PUERTA de esta fila, no un comentario: sin auditoria que la satisfaga, la fuente no entra.",
+        "LA_MITAD_QUE_YA_EXISTE_Y_YA_SE_TIRA": "Verificado en el arbol el 2026-08-21, no citado de una fila vieja: el backend YA calcula la mitad ESTATICA de este mismo asunto. Cuando la ruta cruza donde el Derrotero documenta menos sonda que el calado de la nave mas su margen de resguardo, compone una advertencia al patron. La PWA no la lee ni una vez. El agua bajo la quilla ya tiene media respuesta escrita y tirada, y LA MAREA ES LA MITAD QUE FALTA, NO EL ASUNTO ENTERO. Esa mitad estatica NO tiene fila propia: vive ABSORBIDA dentro de D4D5::motivo-principal-muere-en-el-pasamanos, en su bloque CUARTA_INSTANCIA_2026_08_20, o sea bajo un titulo que habla de otro campo. Se nombra el bloque a proposito, para que quien siga el enlace no tenga que buscarlo. NO es duplicada de aquella: aquella dice que un campo existente no se lee, esta dice que una fuente no existe.",
+        "sostiene": "S6(a), que por esta fila queda NO CUMPLE aunque el maximo sobre las seis funcione. La lista esta incompleta, no mal compuesta."
+      },
+      "pregunta": "Con la auditoria de la fuente ya hecha —que dato hay, donde se puede calcular y donde no, que significa calculo correcto, y que hace la app donde no puede calcular—: ¿la marea entra como fuente del veredicto, y bajo que forma exacta se le dice al patron? La condicion del owner ya esta puesta y no se repregunta. Lo que falta contestar es si la auditoria la satisface, y que hace la app en la parte del territorio donde no se puede calcular.",
+      "donde": {
+        "fichero": "tmarea-backend/src/routes/sitport-routes.js y tmarea-pwa/src/hooks/useVoyageVerification.js",
+        "seccion_por_titulo": "la composicion de bandera_final en el handler de restricciones-ruta, y calcularVeredicto en el hook de verificacion",
+        "cita_de_anclaje": "la lista de fuentes que entran al maximo: no hay ninguna que mire la marea contra el calado, ni en el backend ni en la PWA"
+      }
+    },
+    {
+      "token_local": null,
+      "texto_literal": null,
+      "sin_texto": true,
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": false,
+      "duplicada_de": null,
+      "medicion": "_bitacoras/firma_s3d_s6a_2026-08-21/",
+      "sitio": "SESION-firma-s3d-s6a-2026-08-21",
+      "espacio_de_nombres": "texto al patron — recomendacion previa al zarpe",
+      "nota_fecha": "El documento no fecha esta deuda: nace de mirar la pantalla el 2026-08-21. Salida cruda en _bitacoras/firma_s3d_s6a_2026-08-21/.",
+      "id": "SESION-firma-s3d-s6a-2026-08-21::muelles-y-rampas-recomendacion-que-la-app-no-hace",
+      "repo": "tmarea-pwa",
+      "grupo": "2_decision_del_owner",
+      "titulo": "La app no le recomienda al patron averiguar el estado de muelles y rampas antes de zarpar",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-21",
+        "el_hecho": "En la pantalla de P3 recorrida entera no hay ninguna mencion al estado de muelles ni de rampas, ni como dato ni como recomendacion.",
+        "LO_QUE_ESTA_FILA_NO_PIDE_Y_HAY_QUE_LEERLO_PRIMERO": "NO pide que la app mida el estado de muelles y rampas, y NO pide que pinte ambar por eso. Instruccion del owner el 2026-08-21, con estas palabras: la app NO lo puede saber, y no puede pintar ambar por algo que no midio. Lo que pide es una RECOMENDACION al patron de que lo averigue siempre antes de zarpar.",
+        "por_que_no_es_fuente_del_veredicto": "Porque no hay dato. Una recomendacion no compone el maximo de INV-1.1 y no toca ninguna bandera.",
+        "quien_lo_escribe": "Es TEXTO AL PATRON, asi que va por el ciclo del owner y no lo redacta quien implementa. Precedente D9 e INV-3.5."
+      },
+      "pregunta": "¿Cual es el texto exacto de la recomendacion sobre muelles y rampas, y en que bloque de P3 vive? El owner ya decidio que la recomendacion existe y que NO pinta ambar; lo que falta es el texto y su sitio en la pantalla.",
+      "donde": {
+        "fichero": "tmarea-pwa/src/screens/P3_VoyageVerification.jsx",
+        "seccion_por_titulo": "la pantalla de verificacion, entre los bloques que ya le hablan al patron",
+        "cita_de_anclaje": "la ausencia de toda mencion a muelles o rampas en el texto que P3 le muestra al patron"
+      }
+    },
+    {
+      "token_local": null,
+      "texto_literal": null,
+      "sin_texto": true,
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": false,
+        "fecha": null
+      },
+      "redactada_no_aplicada": false,
+      "duplicada_de": null,
+      "medicion": "_bitacoras/firma_s3d_s6a_2026-08-21/",
+      "sitio": "SESION-firma-s3d-s6a-2026-08-21",
+      "espacio_de_nombres": "pregunta normativa — habilitacion para navegar de noche",
+      "nota_fecha": "El documento no fecha esta deuda: nace de mirar la pantalla el 2026-08-21. Salida cruda en _bitacoras/firma_s3d_s6a_2026-08-21/.",
+      "id": "SESION-firma-s3d-s6a-2026-08-21::horas-de-luz-y-navegacion-nocturna-pregunta-normativa",
+      "repo": "tmarea-backend",
+      "grupo": "3_dato_externo",
+      "titulo": "No se sabe si las horas de luz o la habilitacion para navegar de noche son normativas, y NO se contesta de memoria",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-21",
+        "el_hecho": "En la pantalla firmada, la ETA calculada pone la llegada a la manana siguiente sobre un viaje de trece horas, o sea que hay navegacion nocturna, y ninguna parte de la pantalla dice nada sobre horas de luz ni sobre habilitacion nocturna.",
+        "LO_QUE_ESTA_FILA_DECLARA_ES_UNA_IGNORANCIA_Y_NO_UN_DEFECTO": "El owner lo dijo asi el 2026-08-21: NO SABE si es normativo y no lo da por sabido. Esta fila NO afirma que falte un requisito. Afirma que la pregunta no esta contestada y que contestarla de memoria seria inventarla.",
+        "por_que_no_es_fuente_del_veredicto_todavia": "Porque no se sabe si hay norma. Si la hubiera, recien ahi seria candidata a fuente, y ese seria otro trato."
+      },
+      "que_dato": "Si la normativa vigente condiciona el zarpe o la navegacion a horas de luz, o exige una habilitacion para navegar de noche, y en su caso para que licencias y en que ambitos. Se contesta LEYENDO el texto normativo, nunca de memoria.",
+      "a_quien": "Al texto normativo mismo —el cuerpo de decretos y reglamentos que el arbol ya usa como fuente de citas— y, si ahi no aparece, a DIRECTEMAR.",
+      "donde": {
+        "fichero": "tmarea-backend/PLAN_JURISDICCION.md",
+        "seccion_por_titulo": "§2 — la especificacion de lo que el patron ve, y su lista de lo que NO promete",
+        "cita_de_anclaje": "la ausencia de toda mencion a horas de luz o a habilitacion nocturna, tanto en los nueve puntos como en la lista de lo que la especificacion no promete"
+      }
     }
   ]
 }

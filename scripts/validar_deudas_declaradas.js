@@ -78,6 +78,7 @@ const SITIOS_CANON = [
   'SESION-voseo-al-patron-2026-08-20',
   'SESION-toponimos-12100-47-2026-08-20',
   'SESION-cobertura-capas-a-c-2026-08-20',
+  'SESION-firma-s3d-s6a-2026-08-21',
 ];
 
 const GRUPOS = {
