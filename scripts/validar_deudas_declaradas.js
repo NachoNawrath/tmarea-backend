@@ -65,6 +65,15 @@ const FICHERO = iArg !== -1 && process.argv[iArg + 1]
 // ningun control mira. Crear el sitio mueve dos cifras mas de las previstas
 // —sitios 24->25 y barridos 15->16— y es el unico camino que no obliga a
 // escribir algo falso. Decision del owner, 2026-08-21.
+//
+// EL VIGESIMOSEXTO, 'SESION-u2-capa-b-2026-08-21', se agrega el 2026-08-21, el
+// mismo dia de su barrido y por la pieza que inserta su unica fila. El motivo de
+// crear sitio propio es el MISMO que el del vigesimoquinto y esta medido igual:
+// 'SESION-cobertura-capas-a-c-2026-08-20' declara por escrito en su `nota` que NO
+// barre «la capa B —el bloque que dibuja el aviso, item 2 del orden del plan de
+// cierre—», asi que alojar ahi esta fila obligaria a volver falso ese campo, que
+// es un campo que ningun control mira. Mueve sitios 25->26 y barridos 16->17, y
+// se dijo antes de escribirlo. Decision del owner, 2026-08-21.
 // ---------------------------------------------------------------------------
 const SITIOS_CANON = [
   'PLAN-2',
@@ -92,6 +101,7 @@ const SITIOS_CANON = [
   'SESION-cobertura-capas-a-c-2026-08-20',
   'SESION-firma-s3d-s6a-2026-08-21',
   'SESION-cifra-s3d-2026-08-21',
+  'SESION-u2-capa-b-2026-08-21',
 ];
 
 const GRUPOS = {

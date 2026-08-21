@@ -7,6 +7,8 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
+const { readFileSync } = require('node:fs');
+const { join } = require('node:path');
 
 const { componerAvisos, BANDERA_AVISO } = require('../cobertura-jurisdiccional');
 const { cargarZonasAviso } = require('../zonas-aviso');
@@ -161,6 +163,64 @@ test('sin Capitania que nombrar, deriva al contacto generico y no inventa telefo
   assert.ok(!/\+56/.test(a.capa_2), 'no puede aparecer un telefono que la fuente no da');
   assert.ok(!/\{[a-z_]+\}/.test(a.capa_2), 'no pueden quedar marcas sin sustituir');
   assert.ok(!/\{[a-z_]+\}/.test(a.capa_1));
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EL ANCLA DE INV-10.1 — POR QUE LA CAPA B MUESTRA EL TELEFONO
+//
+// Va pegada a la asercion de arriba porque es su hermana: aquella dice que el
+// telefono NO puede estar DENTRO del texto; esta dice bajo que lectura del
+// contrato SI puede estar EN LA PANTALLA, del otro lado del borde.
+//
+// EL CONFLICTO, MEDIDO EL 2026-08-21: INV-3.6 manda informar «verifica con la
+// Capitania [nombre]: [telefono]» para este caso exacto, y INV-10.1 dice que el
+// telefono se muestra «solo en el punto de zarpe y en el de recalada». Un tramo
+// intermedio no es ninguno de los dos. DECISION DEL OWNER, 2026-08-21: se
+// muestra. Fundamento firmado: el proposito de INV-10.1 esta escrito dentro del
+// propio invariante —no rotular como Capitania un numero que es de la
+// Gobernacion— y el render lo cumple, porque el rotulo sale de
+// `capitanias[i].tipo`. El «solo» es la ortografia de la regla, no lo que
+// persigue. CONSECUENCIA ACEPTADA: ese «solo» queda FALSO desde esta pieza.
+//
+// POR QUE ESTO ES UNA ASERCION Y NO UNA LINEA DE BITACORA: hoy nada mira si lo
+// que un texto vivo afirma sigue siendo cierto —medido, y es el defecto que el
+// declarativo ya tiene fichado sobre si mismo—. Esto se pone ROJO el dia que
+// alguien enmiende INV-10.1, que es el dia en que hay que releer la decision.
+// Es el mismo retiro automatico que `zonas_aviso.json` declara en su bloque de
+// reversibilidad: la declaracion no puede sobrevivir a lo que la justifica.
+//
+// ── §4.9: LA FORMA ES POR IDENTIDAD, Y EL CONTRAEJEMPLO OBLIGA A ESA FORMA ───
+// Este es el PRIMER uso de §4.9 en una guarda nueva —hasta hoy la regla habia
+// corregido guardas existentes—, asi que el contraejemplo se escribio ANTES de
+// dar la forma por buena, no despues:
+//
+//   «El telefono y la direccion de la autoridad se muestran SOLO en el punto de
+//    zarpe, en el de recalada Y EN EL AVISO DE COBERTURA JURISDICCIONAL.»
+//
+// Ese texto CONTIENE la palabra «solo» y significa lo contrario. Una guarda
+// anclada en la palabra lo dejaria pasar EN VERDE. Anclada en la frase entera por
+// identidad normalizada se pone ROJA — que es la forma que el barrido del
+// 2026-08-21 declaro correcta y ya construida en `andamio-medicion.js`:
+// «compara por IDENTIDAD normalizada, no por palabra: no hay contraejemplo
+// posible y es la forma correcta».
+// ─────────────────────────────────────────────────────────────────────────────
+test('INV-10.1 sigue diciendo lo que decia el dia que se decidio mostrar el telefono en la capa B', () => {
+  const FRASE_AL_DECIDIR =
+    'El teléfono y la dirección de la autoridad se muestran **sólo** en el punto de zarpe y en el ' +
+    'de recalada, nunca dentro de un mensaje normativo.';
+  const contrato = readFileSync(
+    join(__dirname, '..', '..', '..', 'CONTRATO_MOTOR.md'), 'utf8'
+  ).normalize('NFC');
+  const normalizar = (s) => s.normalize('NFC').replace(/\s+/g, ' ').trim();
+
+  assert.ok(
+    normalizar(contrato).includes(normalizar(FRASE_AL_DECIDIR)),
+    'INV-10.1 ya no dice lo que decia el 2026-08-21. La capa B muestra el telefono de la ' +
+    'Capitania en un tramo que NO es zarpe ni recalada, apoyada en la lectura de que el «solo» ' +
+    'era la ortografia de la regla y no su proposito (owner, 2026-08-21). Si el invariante se ' +
+    'enmendo, esa lectura hay que releerla antes de tocar este control: ver la fila ' +
+    'SESION-u2-capa-b-2026-08-21::inv-101-solo-quedo-falso del declarativo de deudas.'
+  );
 });
 
 test('el texto del aviso es el transcrito del §10, no uno redactado en el codigo', async () => {

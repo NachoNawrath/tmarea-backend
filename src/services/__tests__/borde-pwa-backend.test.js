@@ -49,7 +49,14 @@ const DECLARADO = {
   success:                   { tipo: 'consumido',  nota: 'la compuerta `!data.success` de fetchTransitRestrictions' },
   veredicto:                 { tipo: 'consumido',  nota: 'escalarPorTransito, como respaldo de bandera_final' },
   bandera_final:             { tipo: 'consumido',  nota: 'escalarPorTransito' },
-  cobertura_jurisdiccional:  { tipo: 'consumido',  nota: 'escalarPorCobertura — U2 capa C. NO renderizado todavia: la capa B es el item 2 del orden del plan de cierre' },
+  // CORREGIDA A MANO EL 2026-08-21, Y SE DICE PORQUE NINGUN CONTROL LO OBLIGO.
+  // Decia «NO renderizado todavia: la capa B es el item 2 del orden del plan de
+  // cierre», y la capa B la volvio falsa el mismo dia. La asercion NO se pone
+  // roja cuando eso pasa —mira el largo de la nota y la ausencia de lector, nunca
+  // si la nota es cierta—, o sea que se habria quedado VERDE afirmando lo
+  // contrario de lo que pasa, justo donde alguien se apoya en el control. Es la
+  // SEGUNDA instancia del precedente R2 de U2 A+C, y la tercera de la familia.
+  cobertura_jurisdiccional:  { tipo: 'consumido',  nota: 'escalarPorCobertura (capa C) y CoberturaJurisdiccionalBlock via avisosDeCobertura (capa B, 2026-08-21)' },
   drift_catalogo:            { tipo: 'consumido',  nota: 'escalarPorDrift y DriftCatalogoBlock' },
   veredicto_deportivo:       { tipo: 'consumido',  nota: 'VoyageVerdict' },
   ultimo_tramo_seguro:       { tipo: 'consumido',  nota: 'VoyageVerdict y TransitRestrictionsBlock' },

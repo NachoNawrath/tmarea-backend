@@ -1,0 +1,81 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// MORDIDA DEL ANCLA DE INV-10.1 — §4.6 Y §4.9
+//
+// Un control que no puede fallar no es un control, y una guarda de texto que SI
+// puede fallar todavia puede estar comprobando otra cosa. Esto corre las dos
+// preguntas sobre el ancla nueva, SIN TOCAR CONTRATO_MOTOR.md: el contrato se lee
+// del disco y se muta EN MEMORIA.
+//
+// LO QUE SE PRUEBA:
+//   M1 · el ancla se pone ROJA si el invariante se enmienda        (puede fallar)
+//   M2 · el CONTRAEJEMPLO DE §4.9 — un texto que CONTIENE «solo» y significa lo
+//        contrario. Una guarda anclada en la palabra lo dejaria pasar en VERDE;
+//        la de identidad tiene que ponerse ROJA.
+//   M3 · control negativo: sobre el contrato SIN mutar, verde.
+// ─────────────────────────────────────────────────────────────────────────────
+
+import { readFileSync } from 'node:fs';
+
+const CONTRATO = 'C:/Users/katia/tmarea-backend/CONTRATO_MOTOR.md';
+
+const FRASE_AL_DECIDIR =
+  'El teléfono y la dirección de la autoridad se muestran **sólo** en el punto de zarpe y en el ' +
+  'de recalada, nunca dentro de un mensaje normativo.';
+
+const normalizar = (s) => s.normalize('NFC').replace(/\s+/g, ' ').trim();
+
+// La forma FIRMADA: identidad de la frase entera.
+const anclaPorIdentidad = (texto) => normalizar(texto).includes(normalizar(FRASE_AL_DECIDIR));
+// La forma DESCARTADA, para mostrar por que se descarto.
+const anclaPorPalabra = (texto) => /INV-10\.1[\s\S]{0,400}?sólo/.test(texto.normalize('NFC'));
+
+const enDisco = readFileSync(CONTRATO, 'utf8').normalize('NFC');
+
+// LA MORDIDA SE MUTA SOBRE EL TEXTO NORMALIZADO, Y ESO COSTO UNA CORRIDA. En su
+// PRIMERA pasada mutaba el texto crudo con una aguja normalizada: la frase vive
+// PARTIDA EN DOS LINEAS en el contrato, asi que el `replace` no encontraba nada,
+// las tres mutaciones eran no-ops y la mordida salia «verde» sin haber mordido.
+// Es el mismo modo de falla que esta mordida existe para cazar, una capa mas
+// arriba: un control que no puede fallar no es un control (§4.6).
+const original = normalizar(enDisco);
+
+// M2 · el contraejemplo: conserva «sólo» y dice lo contrario.
+const CONTRAEJEMPLO =
+  'El teléfono y la dirección de la autoridad se muestran **sólo** en el punto de zarpe, en el ' +
+  'de recalada y en el aviso de cobertura jurisdiccional.';
+
+// M1 · una enmienda cualquiera que borre la frase.
+const ENMIENDA_SIMPLE = 'El contacto de la autoridad se muestra donde el motor lo tenga resuelto.';
+
+const casos = [
+  { id: 'M3', nombre: 'control negativo — contrato SIN mutar', texto: original, esperado_identidad: true },
+  { id: 'M1', nombre: 'el invariante se enmienda y la frase desaparece',
+    texto: original.replace(normalizar(FRASE_AL_DECIDIR), ENMIENDA_SIMPLE), esperado_identidad: false },
+  { id: 'M2', nombre: 'CONTRAEJEMPLO §4.9 — conserva «sólo» y dice lo contrario',
+    texto: original.replace(normalizar(FRASE_AL_DECIDIR), CONTRAEJEMPLO), esperado_identidad: false },
+];
+
+console.log('MORDIDA DEL ANCLA DE INV-10.1 — el contrato se muta EN MEMORIA, no en disco');
+console.log('');
+console.log('  caso                                                  identidad   por-palabra   veredicto');
+let fallos = 0;
+for (const c of casos) {
+  const id = anclaPorIdentidad(c.texto);
+  const pal = anclaPorPalabra(c.texto);
+  const ok = id === c.esperado_identidad;
+  if (!ok) fallos++;
+  const et = (v) => (v ? 'VERDE' : 'ROJO ');
+  console.log(`  ${c.id} · ${c.nombre.padEnd(48)} ${et(id)}       ${et(pal)}         ${ok ? 'OK' : 'FALLA'}`);
+}
+console.log('');
+console.log('  LO QUE MUESTRA LA COLUMNA «por-palabra», Y ES EL MOTIVO DE LA FORMA:');
+console.log('  en M2 la guarda por palabra queda VERDE sobre un texto que dice lo contrario.');
+console.log('  Es §4.9 medido, no citado: una guarda que busca una palabra comprueba que el');
+console.log('  texto la MENCIONE, no que lo AFIRME.');
+console.log('');
+console.log(`  ${casos.length - fallos} de ${casos.length}`);
+
+// Comprobacion aparte: el fichero en disco no se toco.
+const despues = readFileSync(CONTRATO, 'utf8').normalize('NFC');
+console.log(`  CONTRATO_MOTOR.md intacto en disco: ${despues === enDisco ? 'SI' : 'NO'}`);
+process.exit(fallos === 0 && despues === enDisco ? 0 : 1);

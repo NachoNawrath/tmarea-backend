@@ -1,0 +1,167 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// U2 CAPA B — CONTROL DE ACEPTACION DE LA FUNCION PURA
+//
+// Vive en el SCRATCHPAD DE SESION, fuera de los dos repos, por firma del owner
+// (precedente 2026-08-17, y el mismo que uso U2 A+C). RESERVA DE §3.4, DICHA Y
+// NO TAPADA: esta medicion NO SE REGENERA DESDE EL REPOSITORIO; solo se versiona
+// su salida.
+//
+// POR QUE EL ROJO DE §4.6 APUNTA A UNA FUNCION Y NO AL COMPONENTE: tmarea-pwa no
+// tiene runner (0 ficheros de test, 0 devDependencies de test), y un .mjs de node
+// no importa JSX sin transformacion. El sujeto es la funcion pura, y el
+// precedente esta escrito DENTRO del propio fichero que se toca:
+// `mapearRespuestaPuerto` salio de dentro de `fetchPortStatus` "para que un
+// instrumento pueda medirlo sin red y sin React".
+//
+// LOS ESPERADOS NO SON LITERALES DE ESTE FICHERO. Salen del catalogo
+// (data/decreto/zonas_aviso.json) y del payload vivo capturado hoy. Un literal
+// aca caduca el dia que el dato lo alcanza, y ya paso una vez en este arbol.
+// ─────────────────────────────────────────────────────────────────────────────
+
+import { readFileSync } from 'node:fs';
+
+const PWA = 'C:/Users/katia/tmarea-pwa/src/hooks/useVoyageVerification.js';
+const CATALOGO = 'C:/Users/katia/tmarea-backend/data/decreto/zonas_aviso.json';
+const PAYLOAD = new URL('./payload_vivo_antofagasta.json', import.meta.url);
+
+const catalogo = JSON.parse(readFileSync(CATALOGO, 'utf8')).mensaje;
+const vivo = JSON.parse(readFileSync(PAYLOAD, 'utf8'));
+
+let mod;
+try {
+  mod = await import('file:///' + PWA);
+} catch (e) {
+  console.log('IMPORT FALLO:', e.message);
+  process.exit(3);
+}
+
+const { avisosDeCobertura, textoDeLargo } = mod;
+
+const casos = [];
+const chequear = (nombre, fn) => {
+  try {
+    const r = fn();
+    casos.push({ nombre, ok: r === true, detalle: r === true ? '' : String(r) });
+  } catch (e) {
+    casos.push({ nombre, ok: false, detalle: e.message });
+  }
+};
+
+// La ancla de INV-10.1, ANCLADA EN LA COSA Y NO EN SU ORTOGRAFIA: un telefono es
+// una corrida larga de digitos, se escriba como se escriba. Es la misma forma y
+// el mismo umbral que la guarda G3 de zonas-aviso.js, corregida el 2026-08-21.
+const CORRIDA_DE_DIGITOS = /[0-9][0-9\s()+]*[0-9]/g;
+const cuantosDigitos = (c) => (c.match(/[0-9]/g) || []).length;
+const traeTelefono = (t) =>
+  (String(t).match(CORRIDA_DE_DIGITOS) || []).some((c) => cuantosDigitos(c) >= 6);
+
+const envuelto = { cobertura_jurisdiccional: vivo.cobertura_jurisdiccional };
+
+// ── P · EL POSITIVO. Es el que tiene que estar ROJO antes del arreglo ────────
+chequear('P1 · la funcion existe y devuelve algo sobre el payload vivo', () => {
+  if (typeof avisosDeCobertura !== 'function') return 'avisosDeCobertura no es una funcion';
+  const r = avisosDeCobertura(envuelto);
+  return r !== null && r !== undefined ? true : 'devolvio ' + String(r);
+});
+
+chequear('P2 · trae UN aviso, el mismo que el payload', () => {
+  const r = avisosDeCobertura(envuelto);
+  const esperado = vivo.cobertura_jurisdiccional.avisos.length;
+  return r.avisos.length === esperado ? true : `${r.avisos.length} avisos y el payload trae ${esperado}`;
+});
+
+chequear('P3 · capa_1 llega IDENTICA a la del catalogo, sin recomponer', () => {
+  const a = avisosDeCobertura(envuelto).avisos[0];
+  return a.capa_1 === catalogo.capa_1
+    ? true
+    : `capa_1 = "${a.capa_1}" y el catalogo dice "${catalogo.capa_1}"`;
+});
+
+chequear('P4 · capa_2 llega IDENTICA a la del catalogo con {nombre} sustituido', () => {
+  const a = avisosDeCobertura(envuelto).avisos[0];
+  const nombre = vivo.cobertura_jurisdiccional.avisos[0].capitanias[0].nombre;
+  const esperado = catalogo.capa_2_con_capitania.replace('{nombre}', nombre);
+  return a.capa_2 === esperado ? true : `capa_2 = "${a.capa_2}"`;
+});
+
+chequear('P5 · el rotulo del contacto sale de `tipo`, no de un literal', () => {
+  const a = avisosDeCobertura(envuelto).avisos[0];
+  const src = vivo.cobertura_jurisdiccional.avisos[0].capitanias[0];
+  if (!a.contacto) return 'no hay contacto';
+  if (a.contacto.nombre !== src.nombre) return 'nombre distinto';
+  if (a.contacto.telefono !== src.telefono) return 'telefono distinto';
+  return /^Capitan[ií]a de Puerto de$/.test(a.contacto.etiqueta)
+    ? true
+    : `etiqueta = "${a.contacto.etiqueta}" para tipo "${src.tipo}"`;
+});
+
+chequear('P6 · el largo se escribe entero y con «unos»', () => {
+  const a = avisosDeCobertura(envuelto).avisos[0];
+  const km = Math.round(vivo.cobertura_jurisdiccional.avisos[0].largo_km);
+  return a.largo === `unos ${km} km` ? true : `largo = "${a.largo}"`;
+});
+
+// ── INV-10.1 · el telefono NO puede estar dentro del texto ───────────────────
+chequear('P7 · INV-10.1 — ni capa_1 ni capa_2 traen una corrida con forma de telefono', () => {
+  const a = avisosDeCobertura(envuelto).avisos[0];
+  if (traeTelefono(a.capa_1)) return 'capa_1 trae telefono';
+  if (traeTelefono(a.capa_2)) return 'capa_2 trae telefono';
+  return true;
+});
+
+// ── N · EL NEGATIVO. Tiene que estar VERDE antes y despues ───────────────────
+chequear('N1 · sin cobertura en la respuesta, no hay bloque', () => {
+  const r = avisosDeCobertura({});
+  return r === null ? true : 'devolvio ' + JSON.stringify(r);
+});
+
+chequear('N2 · control negativo del barrido — una clave que no existe', () => {
+  const r = avisosDeCobertura({ cobertura_jurisdiccional: { estado: 'evaluada', avisos: [] } });
+  return r === null ? true : 'devolvio ' + JSON.stringify(r);
+});
+
+// ── LAS DOS RAMAS QUE LA PANTALLA DE CONTROL NO EJERCE ───────────────────────
+chequear('R1 · rama GENERICA — con 0 Capitanias no se muestra contacto', () => {
+  const sin = JSON.parse(JSON.stringify(vivo.cobertura_jurisdiccional));
+  sin.avisos[0].capitanias = [];
+  sin.avisos[0].capa_2 = catalogo.capa_2_sin_capitania;
+  const a = avisosDeCobertura({ cobertura_jurisdiccional: sin }).avisos[0];
+  return a.contacto === null ? true : 'mostro contacto: ' + JSON.stringify(a.contacto);
+});
+
+chequear('R2 · MORDIDA — con DOS Capitanias el texto deriva al generico y el contacto se calla', () => {
+  // El backend elige capa_2 con `capitanias.length === 1`. Si el bloque mostrara
+  // telefonos con dos, la tarjeta diria dos cosas sobre a quien llamar.
+  const dos = JSON.parse(JSON.stringify(vivo.cobertura_jurisdiccional));
+  dos.avisos[0].capitanias = [
+    dos.avisos[0].capitanias[0],
+    { jurisdiccion_id: 'taltal', nombre: 'Taltal', telefono: '+56 55 261 1234', tipo: 'capitania' },
+  ];
+  dos.avisos[0].capa_2 = catalogo.capa_2_sin_capitania;
+  const a = avisosDeCobertura({ cobertura_jurisdiccional: dos }).avisos[0];
+  return a.contacto === null ? true : 'mostro contacto con 2 Capitanias: ' + JSON.stringify(a.contacto);
+});
+
+chequear('R3 · `no_evaluada` NO se muestra como "no hay nada" (INV-0.2)', () => {
+  const r = avisosDeCobertura({ cobertura_jurisdiccional: { estado: 'no_evaluada', motivo: 'pool caido' } });
+  if (r === null) return 'devolvio null: un fallo de evaluacion se leeria como "no hay nada"';
+  return r.estado === 'no_evaluada' ? true : 'estado = ' + r.estado;
+});
+
+chequear('R4 · un tramo de menos de 1 km no se escribe «unos 0 km»', () => {
+  const t = textoDeLargo(0.4);
+  return t === 'menos de 1 km' ? true : `devolvio "${t}"`;
+});
+
+// ── SALIDA ──────────────────────────────────────────────────────────────────
+const verdes = casos.filter((c) => c.ok).length;
+console.log('U2 CAPA B — CONTROL DE ACEPTACION DE LA FUNCION PURA');
+console.log('payload: capturado del endpoint vivo hoy · esperados: del catalogo, no de este fichero');
+console.log('');
+for (const c of casos) {
+  console.log(`  ${c.ok ? 'VERDE' : 'ROJO '}  ${c.nombre}`);
+  if (!c.ok) console.log(`         ${c.detalle}`);
+}
+console.log('');
+console.log(`  ${verdes} de ${casos.length}`);
+process.exit(verdes === casos.length ? 0 : 1);

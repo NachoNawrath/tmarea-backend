@@ -465,6 +465,21 @@
         "filas_en_este_declarativo": 1,
         "nota": "Mismo precedente que SESION-firma-s3d-s6a-2026-08-21 y las seis anteriores: una sesion es un sitio de deuda propio. EL SITIO SE CREA EN VEZ DE ALOJAR LA FILA EN UNO EXISTENTE, y el motivo esta medido y no es de comodidad: los dos sitios que por fecha y tema podrian haberla recibido —SESION-firma-s3d-s6a-2026-08-21 y SESION-cobertura-capas-a-c-2026-08-20— DECLARAN POR ESCRITO en su propia `nota` que no barren «la cifra de §2 con su nota, que sigue siendo pieza propia». Alojarla ahi habria exigido ademas dejar falso su `vocabulario_del_barrido` («las TRES deudas»), que es un campo que ningun control mira. Crear el sitio mueve dos cifras mas de las previstas —sitios 24->25 y barridos 15->16— y es el unico camino que no obliga a escribir algo falso. Decision del owner, 2026-08-21.  ||  LO QUE ESTE SITIO NO BARRE, Y SE DICE PARA QUE NADIE LO BUSQUE ACA: la segunda regla que esa misma sesion dejo escrita en su §5 bis —UN CONTROL NO VERIFICA EL ARTEFACTO QUE ESTA PRODUCIENDO—, que el owner ordeno abrir como PIEZA PROPIA y no como apendice de esta. Es del mismo tamano que la que si entra y merece su propia fila; agregarla de contrabando habria sumado una fila que el owner no autorizo, y callarla habria dejado este sitio afirmando un barrido que no hizo. Tampoco barre la cobertura de marea medida en el §5 de esa bitacora, que va agendada como pieza en el plan de cierre y no como fila, ni la capa B.  ||  DONDE VIVE LA MEDICION: el barrido de guardas de texto, los contraejemplos corridos y las cuatro correcciones estan en _bitacoras/guardas_de_texto_2026-08-21/, que es la bitacora de la pieza que crea este sitio. La bitacora de la sesion barrida es la de arriba y no se reescribe: es cita historica.",
         "bitacora": "_bitacoras/cifra_s3d_2026-08-21/"
+      },
+      {
+        "id": "SESION-u2-capa-b-2026-08-21",
+        "repo": "tmarea-backend",
+        "fichero": "_bitacoras/u2_capa_b_2026-08-21/",
+        "seccion_por_titulo": "deudas que genera la U2 capa B — que el patron pueda leer por que esta en ambar",
+        "vocabulario_del_barrido": [
+          "la UNICA deuda que la capa B abre: que INV-10.1 dice «solo en el punto de zarpe y en el de recalada» y desde esta pieza el telefono se muestra tambien en el bloque de cobertura, por decision del owner. Se barre el conflicto entre INV-3.6 e INV-10.1 sobre este caso, no el resto del contrato."
+        ],
+        "orden": 11,
+        "barrido": true,
+        "barrido_el": "2026-08-21",
+        "filas_en_este_declarativo": 1,
+        "nota": "Mismo precedente que SESION-cifra-s3d-2026-08-21: una sesion es un sitio de deuda propio, y se crea el mismo dia de su barrido por la pieza que inserta su unica fila. SE CREA SITIO PROPIO Y NO SE ALOJA EN UNO EXISTENTE por el mismo motivo medido que aquella: SESION-cobertura-capas-a-c-2026-08-20 declara POR ESCRITO en su `nota` que NO barre «la capa B —el bloque que dibuja el aviso, item 2 del orden del plan de cierre—», asi que meter esta fila ahi obligaria a volver falso un campo que ningun control mira. Crear el sitio mueve dos cifras mas de las previstas —sitios 25->26 y barridos 16->17— y se dice antes de escribirlo. LO QUE ESTA PIEZA NO BARRIO Y NO SE DECLARA ACA, y va como linea en su bitacora: la asimetria de que la cobertura pone linea en `razones` y drift no; que el array `capitanias` no trae `telefono_atomico` y por eso el bloque no arma `tel:`; y que la guarda de la nota de S3 va a exigir una nota que ya sera mentira, que es alcance de la pieza de la cifra.",
+        "bitacora": "_bitacoras/u2_capa_b_2026-08-21/"
       }
     ]
   },
@@ -4231,6 +4246,48 @@
       },
       "cerrada_el": "2026-08-21",
       "cerrada_por": "Autorizacion del owner el 2026-08-21, por el ciclo de CLAUDE.md §5.6 — gate sobre el fichero entero al abrir, diff crudo stageado al cerrar, sin autorizar sobre descripcion. CIERRA AL APLICAR EL TEXTO, no al decidirlo, igual que el precedente PLAN-3-E8::p1-en-e4. APLICADO en CLAUDE.md: la regla entra como §4.9 «Una guarda de texto comprueba que lo mencione, no que lo afirme», al final de §4 y con sus DOS MITADES — la de las guardas positivas, donde el literal caduca en rojo, y la de las de prohibicion, donde caduca en verde y en silencio. Declara que es §2 aplicado a los controles que miran texto, nombra a §4.6 como su par desde su primera linea, y §4.6 gana una linea de vuelta para que el par apunte en los dos sentidos. Lleva el id de esta fila como unico puntero a su medicion: sin cifras y sin fichero:linea, porque CLAUDE.md sobrevive a todas las piezas y un id no se mueve. NO SE RENUMERO NADA: numerarla §4.7 para pegarla fisicamente a §4.6 habria vuelto falsas 31 citas en hasta 14 ficheros, medido sobre el arbol. Y se anoto al pie de la bitacora del 2026-08-17 que su cita a «(§4.9)» no apuntaba a nada cuando se escribio y desde hoy apunta a otra cosa (§3.3): sin esa nota la cita dejaba de estar rota y pasaba a resolver a una seccion que se lee bien y dice otra cosa, que es el defecto que la propia §4.9 viene a declarar. LO QUE EL CIERRE NO ARRASTRA, y se dice: el hueco de G6 sigue DECLARADO dentro de esta fila y dentro de validar_deudas_declaradas.js, sin fila propia, por decision del owner del 2026-08-21 — es una INSTANCIA de la regla y no un defecto aparte, y abrir una fila por instancia infla el conteo sin agregar informacion. Regresion: suite 169/169, declarativo VERDE, deudas:mordida 32/32, cifra:mordida 13/13, mordida del cotejo 15/15."
+    },
+    {
+      "id": "SESION-u2-capa-b-2026-08-21::inv-101-solo-quedo-falso",
+      "token_local": null,
+      "espacio_de_nombres": "Contrato — invariantes que una pieza de render volvio falsos",
+      "sitio": "SESION-u2-capa-b-2026-08-21",
+      "repo": "tmarea-backend",
+      "texto_literal": "El teléfono y la dirección de la autoridad se muestran **sólo** en el punto de zarpe y en el de recalada, nunca dentro de un mensaje normativo.",
+      "sin_texto": false,
+      "donde": {
+        "fichero": "CONTRATO_MOTOR.md",
+        "seccion_por_titulo": "INV-10.1 — El contacto vive en el punto de zarpe y recalada — INVARIANTE",
+        "cita_de_anclaje": "la palabra «solo» de la primera frase del invariante"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "CONTRATO_MOTOR.md NO fecha este hallazgo —el invariante no sabe que quedo falso—, asi que abierta_el va en null y la fecha vive aca: la abre el 2026-08-21 la pieza que la vuelve falsa, en el mismo acto que la decision del owner que la produce. Lo cazo el propio validador por [V7] al primer intento, con abierta_el puesto: el control funciono.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": true,
+        "fecha": "2026-08-21"
+      },
+      "redactada_no_aplicada": false,
+      "duplicada_de": null,
+      "titulo": "El «solo … en el punto de zarpe y en el de recalada» de INV-10.1 quedo FALSO: desde la capa B el telefono de la Capitania se muestra tambien en el bloque de cobertura, en un tramo que no es ninguno de los dos",
+      "costo_estimado": "Chico y de escritura, no de codigo: es enmendar la primera frase de INV-10.1 para que el «solo» describa lo que el sistema hace. NO se hizo en esta pieza porque CONTRATO_MOTOR.md estaba FUERA DE SU ALCANCE por instruccion del owner, no por falta de tiempo. El render ya esta y ya se verifico en pantalla sobre dos rutas.",
+      "depende_de": "Nada externo. La decision ya esta tomada y firmada; lo que falta es escribirla en el contrato.",
+      "por_que_es_deuda": "INV-3.6 y INV-10.1 se contradicen EN LA LETRA sobre este caso y el arbol nunca lo resolvio: INV-3.6 manda informar «verifica con la Capitania [nombre]: [telefono]» para una jurisdiccion sin limite cargado, e INV-10.1 dice que el telefono se muestra «solo» en zarpe y recalada. Un tramo intermedio no es ninguno de los dos. Mientras el contrato diga una cosa y la pantalla haga otra, cualquiera que lea el invariante para decidir algo nuevo va a decidir sobre un texto falso — y este repositorio ya midio que un texto vivo que envejecio no lo caza nada.",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-21",
+        "la_pregunta_que_se_contesto": "Puede el bloque de cobertura mostrar el telefono de la Capitania, siendo que el tramo no es el punto de zarpe ni el de recalada?",
+        "LA_RESPUESTA": "SI, por decision del owner del 2026-08-21. El fundamento firmado: el PROPOSITO de INV-10.1 esta escrito dentro del propio invariante —«Rotular como Capitania un numero que es de la Gobernacion es el defecto que este invariante existe para cerrar»— y el render lo cumple, porque el rotulo sale de `capitanias[i].tipo` via `etiquetaDeNivel` y no de un literal del JSX. El «solo» es la ortografia de la regla, no lo que persigue.",
+        "LO_QUE_QUEDA_FALSO": "La primera frase de INV-10.1, literal. Medido en pantalla el 2026-08-21 sobre Puerto de Antofagasta -> Caleta Pesquera Taltal: el telefono +56 55 263 0000 aparece CUATRO veces en la pagina, y una de ellas esta dentro del bloque de cobertura, que no es el punto de zarpe ni el de recalada.",
+        "lo_que_NO_cubre": "NO cubre el resto de INV-10.1. La prelacion de tres escalones, la regla de rotulacion y la condicion del `tel:` siguen enteras y se cumplen: el bloque usa `etiquetaDeNivel`, que devuelve null en el tercer escalon, y NO arma enlace porque el array `capitanias` no trae `telefono_atomico`.",
+        "el_ancla_que_la_sostiene": "src/services/__tests__/cobertura-jurisdiccional.test.js — asercion «INV-10.1 sigue diciendo lo que decia el dia que se decidio mostrar el telefono en la capa B». Compara la frase entera del contrato POR IDENTIDAD NORMALIZADA y se pone ROJA el dia que alguien la enmiende, que es el dia en que hay que releer esta fila. Es el mismo retiro automatico que zonas_aviso.json declara en su bloque de reversibilidad.",
+        "por_que_por_IDENTIDAD_y_no_por_la_palabra": "Es el PRIMER uso de §4.9 en una guarda NUEVA —hasta hoy la regla habia corregido guardas existentes—, y el contraejemplo se escribio ANTES de dar la forma por buena, no despues. El contraejemplo, corrido en la mordida: «El telefono y la direccion de la autoridad se muestran **solo** en el punto de zarpe, en el de recalada Y EN EL AVISO DE COBERTURA JURISDICCIONAL». CONTIENE la palabra «solo» y significa lo contrario. Medido: la guarda por palabra queda VERDE sobre ese texto y la de identidad se pone ROJA. La forma correcta ya estaba construida en andamio-medicion.js.",
+        "la_mordida": "_bitacoras/u2_capa_b_2026-08-21/03_mordida_ancla_inv101.txt — tres casos, 3 de 3, y CONTRATO_MOTOR.md verificado intacto en disco: la mordida muta el contrato EN MEMORIA. Su primera corrida NO MORDIO —mutaba el texto crudo con una aguja normalizada y la frase vive partida en dos lineas, asi que las tres mutaciones eran no-ops y salia «verde» sin haber mordido—; queda dicho porque es el mismo modo de falla que la mordida existe para cazar, una capa mas arriba."
+      },
+      "pregunta": null,
+      "que_dato": null,
+      "a_quien": null
     }
   ]
 }

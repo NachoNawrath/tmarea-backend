@@ -1,0 +1,69 @@
+// MORDIDA DEL CONTROL DE ACEPTACION — §4.6
+//
+// El "antes" salio 0 de 13, y eso NO prueba que el control mida esta pieza: salio
+// todo rojo por un solo motivo (la funcion no existia), incluidos el negativo y el
+// control del barrido. Un control asi podria estar midiendo el ENTORNO.
+//
+// LA MORDIDA: se rompe UNA cosa —que capa_1 pase LITERAL— y se mira que se mueva
+// SOLO lo que le corresponde. Si N1 y N2 tambien se movieran, el control estaria
+// midiendo otra cosa. Es el mismo criterio de M-A de U2 A+C.
+//
+// El fichero real NO se toca: se copia mutado al lado, se importa la copia y se
+// borra. La copia vive dentro de src/hooks/ para que sus imports relativos
+// resuelvan igual que los del original.
+
+import { readFileSync, writeFileSync, unlinkSync, existsSync } from 'node:fs';
+
+const ORIGINAL = 'C:/Users/katia/tmarea-pwa/src/hooks/useVoyageVerification.js';
+const COPIA = 'C:/Users/katia/tmarea-pwa/src/hooks/__mordida_tmp.js';
+const CATALOGO = 'C:/Users/katia/tmarea-backend/data/decreto/zonas_aviso.json';
+const PAYLOAD = new URL('./payload_vivo_antofagasta.json', import.meta.url);
+
+const antes = readFileSync(ORIGINAL, 'utf8');
+const catalogo = JSON.parse(readFileSync(CATALOGO, 'utf8')).mensaje;
+const vivo = JSON.parse(readFileSync(PAYLOAD, 'utf8'));
+const envuelto = { cobertura_jurisdiccional: vivo.cobertura_jurisdiccional };
+
+// LA MUTACION: la funcion deja de pasar `capa_1` literal y la RECOMPONE, que es
+// exactamente el defecto que este diseno existe para impedir — darle dos fuentes
+// a un texto que tiene una.
+const mutado = antes.replace(
+  '    capa_1: a.capa_1,',
+  "    capa_1: 'No tenemos cargado el limite de esta jurisdiccion.',"
+);
+if (mutado === antes) { console.log('LA MUTACION NO SE APLICO — la mordida no muerde'); process.exit(3); }
+
+writeFileSync(COPIA, mutado, 'utf8');
+let mod;
+try {
+  mod = await import('file:///' + COPIA + '?t=' + Date.now());
+} finally {
+  if (existsSync(COPIA)) unlinkSync(COPIA);
+}
+
+const { avisosDeCobertura } = mod;
+const r = avisosDeCobertura(envuelto);
+
+const P3 = r.avisos[0].capa_1 === catalogo.capa_1;
+const P4 = r.avisos[0].capa_2 === catalogo.capa_2_con_capitania.replace(
+  '{nombre}', vivo.cobertura_jurisdiccional.avisos[0].capitanias[0].nombre);
+const N1 = avisosDeCobertura({}) === null;
+const N2 = avisosDeCobertura({ cobertura_jurisdiccional: { estado: 'evaluada', avisos: [] } }) === null;
+
+const et = (v) => (v ? 'VERDE' : 'ROJO ');
+console.log('MORDIDA DEL CONTROL DE ACEPTACION — se rompe que capa_1 pase LITERAL');
+console.log('');
+console.log(`  P3 · capa_1 identica al catalogo   ${et(P3)}   <- TIENE que moverse`);
+console.log(`  P4 · capa_2 identica al catalogo   ${et(P4)}   <- NO tiene que moverse`);
+console.log(`  N1 · sin cobertura, no hay bloque  ${et(N1)}   <- NO tiene que moverse`);
+console.log(`  N2 · control negativo del barrido  ${et(N2)}   <- NO tiene que moverse`);
+console.log('');
+console.log(`  capa_1 que devolvio la version mutada: "${r.avisos[0].capa_1}"`);
+console.log(`  capa_1 del catalogo:                   "${catalogo.capa_1}"`);
+console.log('');
+
+const muerde = P3 === false && P4 === true && N1 === true && N2 === true;
+console.log(`  LA MORDIDA ${muerde ? 'MUERDE' : 'NO MUERDE'}: se movio solo lo que le corresponde.`);
+console.log(`  fichero original intacto: ${readFileSync(ORIGINAL, 'utf8') === antes ? 'SI' : 'NO'}`);
+console.log(`  copia temporal borrada:   ${existsSync(COPIA) ? 'NO' : 'SI'}`);
+process.exit(muerde ? 0 : 1);

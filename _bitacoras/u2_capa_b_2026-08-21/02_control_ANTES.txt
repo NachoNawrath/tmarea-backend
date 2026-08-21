@@ -1,0 +1,32 @@
+U2 CAPA B — CONTROL DE ACEPTACION DE LA FUNCION PURA
+payload: capturado del endpoint vivo hoy · esperados: del catalogo, no de este fichero
+
+  ROJO   P1 · la funcion existe y devuelve algo sobre el payload vivo
+         avisosDeCobertura no es una funcion
+  ROJO   P2 · trae UN aviso, el mismo que el payload
+         avisosDeCobertura is not a function
+  ROJO   P3 · capa_1 llega IDENTICA a la del catalogo, sin recomponer
+         avisosDeCobertura is not a function
+  ROJO   P4 · capa_2 llega IDENTICA a la del catalogo con {nombre} sustituido
+         avisosDeCobertura is not a function
+  ROJO   P5 · el rotulo del contacto sale de `tipo`, no de un literal
+         avisosDeCobertura is not a function
+  ROJO   P6 · el largo se escribe entero y con «unos»
+         avisosDeCobertura is not a function
+  ROJO   P7 · INV-10.1 — ni capa_1 ni capa_2 traen una corrida con forma de telefono
+         avisosDeCobertura is not a function
+  ROJO   N1 · sin cobertura en la respuesta, no hay bloque
+         avisosDeCobertura is not a function
+  ROJO   N2 · control negativo del barrido — una clave que no existe
+         avisosDeCobertura is not a function
+  ROJO   R1 · rama GENERICA — con 0 Capitanias no se muestra contacto
+         avisosDeCobertura is not a function
+  ROJO   R2 · MORDIDA — con DOS Capitanias el texto deriva al generico y el contacto se calla
+         avisosDeCobertura is not a function
+  ROJO   R3 · `no_evaluada` NO se muestra como "no hay nada" (INV-0.2)
+         avisosDeCobertura is not a function
+  ROJO   R4 · un tramo de menos de 1 km no se escribe «unos 0 km»
+         textoDeLargo is not a function
+
+  0 de 13
+exit 1

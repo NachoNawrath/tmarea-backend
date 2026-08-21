@@ -1,0 +1,18 @@
+U2 CAPA B — CONTROL DE ACEPTACION DE LA FUNCION PURA
+payload: capturado del endpoint vivo hoy · esperados: del catalogo, no de este fichero
+
+  VERDE  P1 · la funcion existe y devuelve algo sobre el payload vivo
+  VERDE  P2 · trae UN aviso, el mismo que el payload
+  VERDE  P3 · capa_1 llega IDENTICA a la del catalogo, sin recomponer
+  VERDE  P4 · capa_2 llega IDENTICA a la del catalogo con {nombre} sustituido
+  VERDE  P5 · el rotulo del contacto sale de `tipo`, no de un literal
+  VERDE  P6 · el largo se escribe entero y con «unos»
+  VERDE  P7 · INV-10.1 — ni capa_1 ni capa_2 traen una corrida con forma de telefono
+  VERDE  N1 · sin cobertura en la respuesta, no hay bloque
+  VERDE  N2 · control negativo del barrido — una clave que no existe
+  VERDE  R1 · rama GENERICA — con 0 Capitanias no se muestra contacto
+  VERDE  R2 · MORDIDA — con DOS Capitanias el texto deriva al generico y el contacto se calla
+  VERDE  R3 · `no_evaluada` NO se muestra como "no hay nada" (INV-0.2)
+  VERDE  R4 · un tramo de menos de 1 km no se escribe «unos 0 km»
+
+  13 de 13

@@ -1,0 +1,357 @@
+U2 · CAPA B — QUE EL PATRON PUEDA LEER POR QUE ESTA EN AMBAR
+==============================================================================
+Unidad          : U2 capa B del plan de cierre, item 2 del orden.
+Fecha           : 2026-08-21
+Arboles al abrir: tmarea-backend  main = origin/main = 955f837
+                  tmarea-pwa      main = origin/main = 7800992
+Suite al abrir  : 170/170 backend (169 al abrir; la 170 la agrega esta pieza).
+Declarativo     : 92 · 90 · 83 · 25 · 16 · 9 al abrir.
+                  93 · 91 · 84 · 26 · 17 · 9 al cerrar.
+
+
+------------------------------------------------------------------------------
+0 . QUE ESTABA MAL, Y QUE SE ARREGLA
+------------------------------------------------------------------------------
+El item 1 hizo que el veredicto dejara de mentir. Lo que dejo debiendo, firmado
+como O1 el 2026-08-20, es que el patron NO podia leer POR QUE: en Antofagasta ->
+Taltal la tarjeta decia BANDERA U, «Navegar con precaucion», y debajo NO HABIA
+NADA. Medido antes de tocar: la palabra «jurisdiccion» aparecia CERO veces en
+toda la pantalla, y `razones` salia vacio, asi que la lista entera estaba
+escondida.
+
+El backend ya tenia todo: el largo del tramo, las jurisdicciones probables, el
+telefono resuelto en `capitanias`, y el texto en dos capas ya compuesto.
+
+ESTA PIEZA CIERRA ESA VENTANA. Y con eso S3 deja de estar DIVIDIDO, que era la
+condicion —enunciada como ESTADO, no como conteo de piezas— bajo la que valia la
+firma O1.
+
+
+------------------------------------------------------------------------------
+1 . LO QUE EL GATE ENCONTRO, Y CAMBIO LA PIEZA ANTES DE ESCRIBIRLA
+------------------------------------------------------------------------------
+A · EL CRITERIO DE ACEPTACION ERA INEJECUTABLE COMO ESTABA ESCRITO.
+    «Las doce cadenas del aviso tienen que pasar a verdadero»: CUATRO no pueden.
+    Tres son los gemelos SIN TILDE del barrido de A+C —solo uno de cada par
+    puede dar verdadero jamas—, y "VHF Canal 16" es de la rama del texto que esa
+    ruta no ejerce. Una quinta, "24,6", dependia de una decision sin tomar: el
+    aviso vivo trae `largo_km = 24.6646`, que a un decimal se escribe «24,7».
+    Reformulado a SEIS derivadas del dato vivo, con las cuatro RETIRADAS Y SU
+    MOTIVO ESCRITO en vez de borradas. Firmado por el owner.
+    Y la retirada de "VHF Canal 16" quedo probada por la segunda pantalla, donde
+    da TRUE: no era un defecto, era la cadena de otra rama.
+
+B · EL TEXTO NO ERA MIO PARA PROPONERLO. El prompt pedia redactar la Capa 1 y la
+    Capa 2 para la firma del owner. Ya estaban escritas y firmadas: §10 de
+    CONTRATO_MOTOR.md las fija, `data/decreto/zonas_aviso.json` las transcribe,
+    `cotejo-contrato.js` las coteja contra el contrato en cada `npm test`, y el
+    backend ya las compone por aviso. Redactarlas de nuevo le habria dado DOS
+    fuentes a un texto que tiene una — que es el defecto que `DriftCatalogoBlock`
+    tiene hoy: su texto vive en el JSX y nadie lo coteja. El owner corrigio su
+    propia premisa y el bloque RENDERIZA `capa_1` y `capa_2` LITERALES.
+
+C · INV-3.6 E INV-10.1 SE CONTRADICEN EN LA LETRA SOBRE ESTE CASO, y el arbol
+    nunca lo habia resuelto. Ver §4.
+
+D · EL GUARD DE zonas-aviso.js NO PROTEGE NADA DE LO QUE ESTA PIEZA ESCRIBE.
+    Vigila el CATALOGO del backend, no el render de la PWA: esta del otro lado
+    del borde. Por eso INV-10.1 se comprueba acá sobre el TEXTO DE PANTALLA.
+
+
+------------------------------------------------------------------------------
+2 . EL CAMBIO — CINCO SUPERFICIES
+------------------------------------------------------------------------------
+tmarea-pwa/src/hooks/useVoyageVerification.js
+    `textoDeLargo`, `contactoDelAviso` y `avisosDeCobertura`. La funcion pura
+    sale del componente por el motivo que el propio fichero ya declara dos
+    funciones mas arriba: «para que un instrumento pueda medirlo sin red y sin
+    React». Es la costura por la que entra el rojo de §4.6.
+    Y CORRIGE UN PARRAFO QUE ESTA MISMA PIEZA VOLVIO FALSO: el comentario de
+    `escalarPorCobertura` decia «pieza aparte y decision de producto pendiente:
+    donde va en P3». Ya no.
+
+tmarea-pwa/src/components/verification/CoberturaJurisdiccionalBlock.jsx
+    El bloque. Calcado de `DriftCatalogoBlock` en forma y en paleta, CON UNA
+    DIFERENCIA DECLARADA EN SU CABECERA: drift escribe su texto normativo en el
+    JSX y nadie lo coteja; este renderiza el del catalogo, literal.
+
+tmarea-pwa/src/screens/P3_VoyageVerification.jsx
+    El import y el bloque en el SITIO A.
+
+tmarea-pwa/src/components/verification/VoyageVerdict.jsx
+    La linea en `razones` (D5).
+
+tmarea-backend/src/services/__tests__/cobertura-jurisdiccional.test.js
+    EL ANCLA DE INV-10.1. Ver §4. Suite 169 -> 170.
+
+Y ADEMAS, sin ser superficie de producto:
+tmarea-backend/src/services/__tests__/borde-pwa-backend.test.js
+    La nota de `cobertura_jurisdiccional` decia «NO renderizado todavia: la capa
+    B es el item 2 del orden». CORREGIDA A MANO, y se dice porque NINGUN CONTROL
+    LO OBLIGO: la asercion mira el largo de la nota y la ausencia de lector,
+    nunca si la nota es cierta, asi que se habria quedado VERDE afirmando lo
+    contrario de lo que pasa, justo donde alguien se apoya en el control. Es la
+    SEGUNDA instancia del precedente R2 de U2 A+C.
+    ES LA TERCERA VEZ QUE ESTA PIEZA VUELVE FALSO UN TEXTO VIVO —esta, el
+    parrafo de `escalarPorCobertura` y el «solo» de INV-10.1— y las tres se
+    corrigieron o se anclaron en el mismo acto. Ninguna de las tres la habria
+    cazado un control.
+
+tmarea-backend/data/deudas/deudas_declaradas.json y
+tmarea-backend/scripts/validar_deudas_declaradas.js
+    El sitio y la unica fila que esta pieza abre, registrado a los DOS lados.
+
+
+------------------------------------------------------------------------------
+3 . LAS SIETE DECISIONES DEL OWNER, Y COMO SE VE CADA UNA
+------------------------------------------------------------------------------
+SITIO A — el bloque va DESPUES de `DriftCatalogoBlock`, dentro de
+    `blocksContainer`. Motivo: es el unico de los tres que NO CORRE NADA de
+    sitio (§4.8); reusa el precedente A3 escrito dentro del propio P3 —«va
+    DESPUES de las restricciones y en su propio bloque»—; y sobre la ruta de
+    control A y B caen en el MISMO PIXEL, porque los dos vecinos devuelven null.
+    Se descarto el sitio C —bajo la tarjeta— por CONTENIDO y no por costo: dejaba
+    el «no sabemos» ENCIMA del aviso de cierre de recalada (D-C9), que es un
+    hecho real. Es la prohibicion de INV-3.6 con otra ropa.
+
+D1 · encabezado «⚠ Tramos por los que el motor no puede responder (N)». Son las
+    palabras que el propio §10 le dice al patron —«implica que el motor no puede
+    responder por esa zona»—, asi que encabezado y cuerpo hablan con UNA voz. Y
+    va sin segunda persona a proposito: el §10 pasó a usted y el resto de la PWA
+    tutea; un encabezado sin persona no abre ese frente en esta pieza.
+
+D2 · el rotulo NO era decision del owner y me equivoque al llevarselo. Ya existe:
+    `etiquetaDeNivel(nivel)`, exportada, con fuente unica, y su vocabulario
+    —'capitania'/'gobernacion', null en el tercer escalon— calza EXACTO con
+    `capitanias[i].tipo`. Su comentario dice para que existe: «para que los dos
+    consumidores no puedan divergir en el literal». Este es el tercero.
+    SIN `tel:`, y eso si fue decision: INV-10.1 solo admite enlace si el numero
+    es atomico, y ese veredicto lo emite el motor en `telefono_atomico`, campo
+    que el array `capitanias` NO trae. Sin el veredicto no se arma el enlace.
+
+D3 · el largo va ENTERO y con «unos». El motivo que decidio: no caduca. Los dos
+    valores medidos del MISMO tramo el mismo dia —24,6646 desde la app y 24,6449
+    desde mis waypoints— dan los dos 25; a un decimal habrian dado 24,7 y 24,6.
+
+D4 · las `jurisdicciones_probables` NO se muestran. Son ids internos en
+    minuscula, y ademas CONTRADIRIAN a la Capa 2 en la misma tarjeta: la lista
+    nombra dos («antofagasta», «taltal») y el texto nombra una. Es lo que la
+    regla de S5 prohibe. Tampoco va `defectos_registrados`: INV-3.6 lo manda
+    registrar «ademas de mostrarse», o sea internamente.
+
+D5 · SI va la linea en `razones`, con su costo aceptado. Sin ella la tarjeta
+    seguia sin una sola razon —medido: `razones` salia vacio sobre la ruta de
+    control— y el patron leia ambar, despues dos puertos en VERDE, y recien
+    despues el motivo. La linea NOMBRA el hecho y nada mas: sin cita, sin
+    telefono, sin instruccion. El precedente de que un «no sabemos» puede ser
+    razon esta dos lineas mas arriba en el mismo fichero: 'Dato SITPORT
+    desactualizado'.
+
+INV-10.1 · fila del declarativo MAS ancla por identidad, y NO texto agendado en
+    el plan. Ver §4.
+
+
+------------------------------------------------------------------------------
+4 . EL TELEFONO SE MUESTRA — LA FIRMA, Y LO QUE LA SOSTIENE
+------------------------------------------------------------------------------
+EL CONFLICTO, MEDIDO: INV-3.6 manda informar «verifica con la Capitania
+[nombre]: [telefono]» para este caso exacto. INV-10.1 dice que el telefono se
+muestra «SOLO en el punto de zarpe y en el de recalada, nunca dentro de un
+mensaje normativo». Un tramo intermedio no es ninguno de los dos.
+
+DECISION DEL OWNER, 2026-08-21: se muestra. Fundamento firmado: el PROPOSITO de
+INV-10.1 esta escrito dentro del propio invariante —«Rotular como Capitania un
+numero que es de la Gobernacion es el defecto que este invariante existe para
+cerrar»— y el render lo cumple, porque el rotulo sale de `tipo` y no de un
+literal. El «solo» es la ortografia de la regla, no lo que persigue.
+
+CONSECUENCIA ACEPTADA: ese «solo» queda FALSO desde esta pieza.
+
+DONDE SE ESCRIBE PARA QUE SOBREVIVA. El owner pregunto si fila, plan, o las dos.
+La respuesta fue: fila SI, plan NO, y NINGUNA DE LAS DOS ALCANZA.
+  · El PLAN no, porque el plan ORDENA TRABAJO y esto no es trabajo que ordenar;
+    y porque §7.2 —el control que vigilaria que el plan no mienta— esta DECIDIDO
+    Y SIN IMPLEMENTAR desde el 2026-08-12. Seria un tercer texto que nadie mira.
+  · La FILA si, porque es el unico documento que alguien ABRE al arrancar, tiene
+    validador, y lleva `firma_owner` con fecha: queda registrado que la lectura
+    del «solo» fue una DECISION del owner y no la interpretacion de un agente.
+  · PERO NI LA FILA NI EL PLAN SE PONEN ROJOS. El validador comprueba FORMA, y
+    una fila cuya evidencia envejecio es formalmente perfecta — es el defecto que
+    el declarativo ya tiene fichado SOBRE SI MISMO. Lo que sobrevive es un ANCLA
+    QUE SE PONE ROJA.
+
+EL ANCLA: `cobertura-jurisdiccional.test.js`, pegada a su hermana de la linea
+161 —aquella dice que el telefono NO puede estar DENTRO del texto; esta dice
+bajo que lectura del contrato SI puede estar EN LA PANTALLA—. Compara la frase
+entera de INV-10.1 POR IDENTIDAD NORMALIZADA y se pone ROJA el dia que alguien la
+enmiende, que es el dia en que hay que releer la decision. Es el mismo retiro
+automatico que `zonas_aviso.json` declara en su bloque de reversibilidad: la
+declaracion no puede sobrevivir a lo que la justifica.
+
+>>> PRIMER USO DE §4.9 EN UNA GUARDA NUEVA. Hasta hoy la regla habia CORREGIDO
+>>> guardas existentes —las cinco del barrido del 2026-08-21—. Esta es la
+>>> primera que nace bajo ella, y por eso el contraejemplo se escribio ANTES de
+>>> dar la forma por buena y no despues:
+>>>
+>>>   «El telefono y la direccion de la autoridad se muestran **solo** en el
+>>>    punto de zarpe, en el de recalada Y EN EL AVISO DE COBERTURA
+>>>    JURISDICCIONAL.»
+>>>
+>>> CONTIENE la palabra «solo» y significa lo contrario. Medido en
+>>> 03_mordida_ancla_inv101.txt: la guarda anclada en LA PALABRA queda VERDE
+>>> sobre ese texto; la anclada en LA FRASE ENTERA se pone ROJA. Es §4.9 medido
+>>> y no citado. La forma correcta ya estaba construida en `andamio-medicion.js`,
+>>> y el barrido del 2026-08-21 ya la habia declarado como la que no tiene
+>>> contraejemplo posible.
+
+
+------------------------------------------------------------------------------
+5 . LOS CONTROLES — EL ROJO ANTES, Y LAS DOS MORDIDAS
+------------------------------------------------------------------------------
+(1) 01_control_capa_b.mjs — EN EL SCRATCHPAD DE SESION, fuera de los dos repos.
+    ANTES: 0 de 13, TODOS ROJOS (02_control_ANTES.txt).
+    DESPUES: 13 de 13 (04_control_DESPUES.txt).
+    RESERVA DE §3.4, DICHA Y NO TAPADA: esta medicion NO SE REGENERA DESDE EL
+    REPOSITORIO; solo se versiona su salida. Es la misma reserva del precedente
+    del 2026-08-17 y de U2 A+C. Versionarlo sigue siendo decision abierta.
+    SUS ESPERADOS NO SON LITERALES DEL FICHERO: salen del catalogo y del payload
+    vivo capturado hoy. Un literal ahi caduca cuando el dato lo alcanza.
+
+(2) 06_mordida_capa_b.txt — LA MORDIDA DEL CONTROL, y hacia falta.
+    «0 de 13» NO prueba que el control mida esta pieza: salio todo rojo por UN
+    solo motivo —la funcion no existia—, negativo incluido. Un control asi podria
+    estar midiendo el entorno.
+    Se rompe UNA cosa —que `capa_1` pase literal— y se mira que se mueva SOLO lo
+    que le corresponde:
+        P3 capa_1 identica   ROJO   <- se movio
+        P4 capa_2 identica   VERDE  <- no
+        N1 sin cobertura     VERDE  <- no
+        N2 negativo barrido  VERDE  <- no
+    El fichero real no se toca: se copia mutado al lado, se importa y se borra;
+    verificado intacto y copia borrada en la misma salida.
+
+(3) 03_mordida_ancla_inv101.txt — LA MORDIDA DEL ANCLA. 3 de 3, y
+    CONTRATO_MOTOR.md verificado INTACTO en disco: el contrato se muta en
+    memoria, nunca en el fichero.
+    SU PRIMERA CORRIDA NO MORDIO, y queda dicho: mutaba el texto CRUDO con una
+    aguja NORMALIZADA, y la frase de INV-10.1 vive PARTIDA EN DOS LINEAS, asi
+    que las tres mutaciones eran no-ops y la mordida salia «verde» sin haber
+    mordido. Es el mismo modo de falla que la mordida existe para cazar, una capa
+    mas arriba: un control que no puede fallar no es un control (§4.6).
+
+(4) LA PANTALLA, y es obligatoria por la regla de precedencia dura del plan:
+    ningun cierre que cruce el borde se da por bueno sin control positivo del
+    campo en pantalla. DOS rutas, en 05_pantallas_texto_crudo.txt.
+
+(5) El validador del declarativo CAZO UN DEFECTO MIO al primer intento, por
+    [V7]: le puse `abierta_el: "2026-08-21"` a una fila cuyo documento
+    —CONTRATO_MOTOR.md— no fecha nada. Corregido a null con su `nota_fecha`. Se
+    dice porque es un control ajeno funcionando sobre trabajo mio.
+
+
+------------------------------------------------------------------------------
+6 . QUE GANA LA CIFRA — MEDIDO, Y NO SE MUEVE EN ESTA PIEZA
+------------------------------------------------------------------------------
+⚠ LA CIFRA NO SE MUEVE ACA. Se mide, se declara, y la mueve la pieza siguiente
+con su nota y su guarda, como se hizo con S3(d). `npm run cifra` sigue emitiendo
+lo que su dato dice, y ese dato no se toco.
+
+S3(a) «Si su ruta cruza una Capitania sin limite cargado, se le dice.»
+      CUMPLE. Las seis cadenas pasaron de falso a verdadero en pantalla.
+
+S3(b) «En su propio bloque, nunca entre las restricciones.»
+      CUMPLE. Antes cumplia DE FORMA VACIA —no habia bloque que pudiera estar
+      mal puesto—; ahora hay bloque y esta fuera de las restricciones.
+
+S3(c) «Con la Capitania nombrada y su telefono cuando se pueda nombrar sin
+      inventarla, y con la derivacion generica cuando no.»
+      CUMPLE, Y LAS DOS MITADES ESTAN EN PANTALLA. La primera en Antofagasta ->
+      Taltal; la segunda en Puerto Eden -> Tortel, donde el bloque muestra la
+      derivacion por VHF Canal 16 y NO muestra contacto. El owner prefirio pagar
+      la segunda medicion antes que firmar mitad y mitad.
+
+  DENOMINADOR FINO — unidad: afirmacion de §2, ambito P3, denominador 15:
+      de 5 de 15 a 8 de 15, con 2 anuladas por decision del owner.
+  VISTA POR PUNTO — unidad: punto de §2, denominador 9:
+      S3 deja de estar DIVIDIDO; sus cuatro mitades cumplen.
+      {unanimes 8, divididos 1, cumple 3, no cumple 5} pasa a
+      {unanimes 9, divididos 0, cumple 4, no cumple 5}.
+
+  S6(a) NO ENTRA, y el motivo es el nuevo: le falta la marea contra el calado, y
+      NINGUNA capa de U2 trae esa fuente.
+
+  LA VENTANA O1 SE APAGA. Valia «mientras S3 este dividido», enunciado como
+  estado. Con S3 entero, la tarjeta ambar deja de estar autorizada a quedarse
+  muda — y de hecho ya no lo esta.
+
+  VENTANA QUE ESTO ABRE, DICHA: entre esta pieza y la de la cifra, el arbol se
+  gana S3(a)(b)(c) y el emisor sigue publicando lo de antes. Se paga con que
+  SUB-REPORTA, cosa que se nota a la primera corrida.
+
+
+------------------------------------------------------------------------------
+7 . LAS TRES LINEAS — LO QUE APARECIO AL PASAR Y NO ABRE FILA
+------------------------------------------------------------------------------
+Por instruccion del owner: van como UNA LINEA, no como filas.
+
+L1 · ASIMETRIA ACEPTADA: la cobertura pone linea en `razones` y `drift_catalogo`
+     NO, aunque escala la bandera igual. Firmado con su costo. No se toca acá
+     (§4.8): arreglarlo es tocar el vecino.
+
+L2 · El array `capitanias` de cobertura no trae `telefono_atomico`, y por eso el
+     bloque muestra el telefono como TEXTO y no como `tel:`. Cerrarlo es agregar
+     el campo en el backend — y R4 ya probo que la asercion del borde NO veria la
+     clave nueva, porque mira el payload congelado. Otra pieza.
+
+L3 · DIRIGIDA A LA PIEZA DE LA CIFRA, PARA QUE LO LLEVE EN SU ALCANCE Y NO LO
+     DESCUBRA: `scripts/publicar_cifra_spec2.js:134` exige que
+     `nota_obligatoria_s3_dividido` exista Y diga «DIVIDIDO por TRABAJO». Desde
+     esta pieza S3 ya no esta dividido, asi que esa guarda VA A EXIGIR UNA NOTA
+     QUE YA ES MENTIRA para que `npm run cifra` corra. Es guarda POSITIVA, o sea
+     que caduca en ROJO y alguien la mira — §4.9 funcionando —, pero caduca
+     EXIGIENDO la mentira, no señalandola.
+
+
+------------------------------------------------------------------------------
+8 . DOS VECES QUE ME CORREGI SOLO, Y LAS DOS ANTES DE QUE EL OWNER LAS NOTARA
+------------------------------------------------------------------------------
+· EN LA PARADA 2, sobre el rotulo del contacto: se lo lleve como decision suya y
+  NO LO ERA. `etiquetaDeNivel` ya existia, exportada, con fuente unica, y su
+  vocabulario calzaba exacto con `capitanias[i].tipo`. Llevar como decision algo
+  que el arbol ya tiene resuelto es pedirle al owner que firme trabajo hecho.
+
+· EN LA PARADA 2 tambien, sobre el alcance: en el gate afirme que la pieza seria
+  «PWA pura», y el ancla de INV-10.1 la hace tocar el backend. No toca `src/` ni
+  el contrato —es una asercion en la suite— pero la afirmacion anterior era
+  falsa y se dijo en el momento de proponerla, no despues.
+
+
+------------------------------------------------------------------------------
+9 . LO QUE NO SE TOCO
+------------------------------------------------------------------------------
+  CONTRATO_MOTOR.md — el «solo» de INV-10.1 queda falso Y NO SE EDITA. Fuera de
+      alcance por instruccion. Vive en la fila y en el ancla.
+  CLAUDE.md y el motor BRE.
+  data/spec2/cifra_spec2.json y PLAN_JURISDICCION.md §5 — pieza siguiente.
+  El plan de cierre. No se le agrego texto, por recomendacion y firma.
+  DriftCatalogoBlock.jsx — su texto normativo sigue viviendo en el JSX sin que
+      nadie lo coteje. Se menciona, no se arregla (§4.8).
+  PortStatusBlock.jsx — el «Capitania de Puerto de Puerto Eden». Idem.
+  La fuente de marea y su Paso 0. La advertencia de sonda (Paso 1).
+  La tabla canonica de D4 y los cuatro sitios de T6 — tinta del owner.
+  Los tres ` M` intocables del backend: .claude/launch.json,
+      _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json y
+      data/catalogo/estado_drift.json. Verificados fuera del indice al cerrar.
+
+MAQUINA — Y LA OTRA SESION QUEDO INTACTA, VERIFICADO POR PID:
+  Su backend (3000, PID 17800) corre `node src/index.js` SIN `--watch`, asi que
+  no se reinicio con mis ediciones y NO reescribio estado_drift.json. La leccion
+  del 2026-08-20 ya estaba aplicada por ellos.
+  Su PWA (5173, PID 14072) es vite pelado, con HMR. Por eso esta pieza levanto un
+  vite PROPIO: se pidio el 5174 y vite eligio el 55736, y se reporta el numero
+  que salio. Efecto lateral util: 55736 es OTRO ORIGEN, asi que su localStorage
+  esta vacio y no habia forma de pisarles el estado aunque quisiera.
+  Los dos PID siguen vivos al cerrar.
+  DECLARADO: durante el gate camine hasta P2 en su 5173 para intentar medir sin
+  levantar nada. NO llegue a P3 y NO mute nada: P2 solo guarda al enviar y nunca
+  envio — `voyage_setup.timestamp` seguia en 16:28:37.012Z, verificado.

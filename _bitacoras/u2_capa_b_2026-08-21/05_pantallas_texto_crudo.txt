@@ -1,0 +1,163 @@
+==============================================================================
+LAS DOS PANTALLAS — U2 CAPA B
+2026-08-21
+==============================================================================
+Servidor de esta medicion: vite PROPIO en el 55736. La configuracion pedia el
+5174 con autoPort y vite eligio el 55736 porque el 5173 estaba tomado; se
+reporta el numero que salio, no el que se pidio. El 5173 y el 3000 de la OTRA
+SESION quedaron intactos, verificado por PID antes y despues (14072 y 17800).
+
+Y hay una segunda razon por la que la otra sesion no se pudo tocar aunque
+hubiera querido: localhost:55736 es OTRO ORIGEN, asi que su localStorage esta
+vacio. Los dos puertos se eligieron por la UI de P2 en las dos rutas, como manda
+el precedente de U2 A+C. Lo unico que se sembro a mano fue el perfil (s0, usuario
+y nave), que no participa de lo que se mide.
+
+
+------------------------------------------------------------------------------
+A · ANTES — Puerto de Antofagasta -> Caleta Pesquera Taltal · AB 50
+------------------------------------------------------------------------------
+Capturado con el codigo de hoy, ANTES de tocar nada. Sin eso, "lo que daba
+antes" habria salido de mi cabeza.
+
+  BANDERA U — Navegar con precaucion
+  Hay restricciones o condiciones que requieren atencion antes de zarpar.
+  (NINGUNA razon debajo)
+
+  CONDICION DE PUERTOS -> CLIMA Y OLEAJE -> MAREAS -> ETA -> NORMATIVOS
+
+  Largo del texto: 2803 caracteres.
+  NO existe ningun bloque de cobertura. `razones` sale VACIO, asi que la lista
+  entera esta escondida por `{razones.length > 0 && ...}`.
+
+LAS SEIS CADENAS DEL AVISO — LAS SEIS EN FALSO
+  "No tenemos cargado el limite" (con tilde)  -> false
+  "limite de esta jurisdiccion"  (con tildes) -> false
+  "Sin cita"                                  -> false
+  "INV-3.6"                                   -> false
+  "jurisdiccion"                 (con tilde)  -> false
+  "Antofagasta antes de zarpar"               -> false
+
+CONTROLES
+  "BANDERA U"             -> true    (entorno: lo gano A+C)
+  "Puerto de Antofagasta" -> true    (entorno)
+  "ZZQXNOEXISTE"          -> false   (negativo del barrido)
+  "BANDERA Q"             -> false
+  "Zarpe autorizado"      -> false
+
+
+------------------------------------------------------------------------------
+B · DESPUES — la misma ruta
+------------------------------------------------------------------------------
+  BANDERA U — Navegar con precaucion
+  Hay restricciones o condiciones que requieren atencion antes de zarpar.
+  > Tramo de la ruta sin limite de jurisdiccion cargado (unos 25 km)   <- D5
+
+  CONDICION DE PUERTOS
+    ZARPE    Puerto de Antofagasta   Abierto
+    RECALADA Caleta Pesquera Taltal  Abierto
+
+  ⚠ Tramos por los que el motor no puede responder (1)               <- CAPA B
+    No tenemos cargado el limite de esta jurisdiccion.
+    Son unos 25 km de la ruta.
+    Confirme con la Capitania Antofagasta antes de zarpar. Sin cita: esta
+    situacion no la produce una norma sino la ausencia de un dato nuestro
+    (INV-3.6). No implica que exista una restriccion, ni que no exista: implica
+    que el motor no puede responder por esa zona.
+    Capitania de Puerto de Antofagasta — +56 55 263 0000
+
+  CLIMA Y OLEAJE -> MAREAS -> ETA -> NORMATIVOS
+
+  Largo del texto: 3324 caracteres (antes 2803).
+
+LAS SEIS — LAS SEIS EN VERDADERO
+  "No tenemos cargado el limite"  -> true
+  "limite de esta jurisdiccion"   -> true
+  "Sin cita"                      -> true
+  "INV-3.6"                       -> true
+  "jurisdiccion"                  -> true
+  "Antofagasta antes de zarpar"   -> true
+
+CONTROLES
+  "BANDERA U"                             -> true
+  "ZZQXNOEXISTE"                          -> false   (negativo del barrido)
+  "BANDERA Q" / "Zarpe autorizado"        -> false
+  "unos 25 km"                            -> true    (D3)
+  "sin limite de jurisdiccion cargado"    -> true    (D5, la linea de razones)
+  "Capitania de Puerto de Antofagasta"    -> true    (rotulo desde `tipo`)
+
+INV-10.1, MEDIDO DENTRO DEL BLOQUE Y NO SOBRE LA PAGINA
+  corridas con forma de telefono dentro de capa_1 y capa_2 : NINGUNA
+  elementos <a> dentro del bloque                          : 0
+  o sea: el telefono esta, viene del array, no esta en el texto, y no es enlace.
+
+LAS CUATRO CADENAS RETIRADAS — las cuatro en falso, Y ES LO ESPERADO
+  "No tenemos cargado el limite" / "limite de esta jurisdiccion" /
+  "jurisdiccion", las tres SIN TILDE  -> false. Imposibles por ortografia: son
+  los gemelos NFD del barrido viejo, y solo uno de cada par puede dar verdadero.
+  "24.6" -> false. Separador decimal ingles; la app nunca lo escribe.
+  "24,6" -> false. El largo se escribe ENTERO por decision del owner (D3).
+  "VHF Canal 16" -> false EN ESTA RUTA, y ver la pantalla C: ahi da true. No era
+  un defecto, era la cadena de OTRA RAMA.
+
+
+------------------------------------------------------------------------------
+C · LA SEGUNDA RUTA — Muelle Fiscal de Puerto Eden -> Caleta Tortel · AB 50
+------------------------------------------------------------------------------
+POR QUE EXISTE: S3(c) tiene DOS mitades —«con la Capitania nombrada y su
+telefono cuando se pueda nombrar sin inventarla, y con la derivacion generica
+cuando no»— y la ruta de control solo ejerce la primera. El owner prefirio pagar
+una medicion mas antes que firmar mitad y mitad, que es lo que se hizo con S3(d).
+
+COMO SE ELIGIO, y no la elegi yo: el backend deriva al generico cuando
+`capitanias.length !== 1` (cobertura-jurisdiccional.js:442). Se probaron cinco
+rutas contra el endpoint vivo (07_busqueda_ruta_generica.txt) y dieron los DOS
+sub-casos distintos: Valparaiso -> Juan Fernandez con DOS Capitanias, y
+Puerto Eden -> Tortel con CERO. Se midio en pantalla la de cero.
+
+  BANDERA U — Navegar con precaucion
+  > Tramo de la ruta sin limite de jurisdiccion cargado (unos 53 km)
+
+  CONDICION DE PUERTOS
+    ZARPE    Muelle Fiscal de Puerto Eden  Abierto
+             Capitania de Puerto de Puerto Eden — +56 61 2201164
+    RECALADA Caleta Tortel                 Abierto
+             Gobernacion Maritima de Aysen — +56 67 233 1405
+
+  ⚠ Tramos por los que el motor no puede responder (1)
+    No tenemos cargado el limite de esta jurisdiccion.
+    Son unos 53 km de la ruta.
+    Coordine con la Autoridad Maritima por VHF Canal 16 antes de zarpar. Sin
+    cita: esta situacion no la produce una norma sino la ausencia de un dato
+    nuestro (INV-3.6). No implica que exista una restriccion, ni que no exista:
+    implica que el motor no puede responder por esa zona.
+
+  Largo del texto: 2764 caracteres.
+
+LO QUE ESTA PANTALLA PRUEBA, Y NO LO PROBABA NINGUNA OTRA
+  "VHF Canal 16"                        -> true    <- la derivacion generica
+  contacto dentro del bloque            -> NO HAY
+  corridas con forma de telefono en el bloque -> NINGUNA
+  elementos <a> dentro del bloque       -> 0
+  "BANDERA U" true · "BANDERA Q" false · "ZZQXNOEXISTE" false
+
+  Y prueba la regla de contenido que decidio el diseno: el bloque NO muestra
+  contacto cuando el texto deriva al generico. La pagina SI trae telefonos —dos,
+  en la tarjeta de puertos— asi que la ausencia dentro del bloque no es que no
+  haya datos: es la condicion `capitanias.length !== 1` funcionando.
+
+
+------------------------------------------------------------------------------
+D · DOS COSAS QUE APARECIERON AL MEDIR Y NO SON DE ESTA PIEZA
+------------------------------------------------------------------------------
+1. En la pantalla A el telefono +56 55 263 0000 aparece CUATRO veces: zarpe,
+   recalada, el tramo de clima y ahora el bloque de cobertura. Las cuatro dicen
+   lo mismo, asi que no cae bajo la regla de D4 —«dos apariciones del mismo
+   hecho que digan cosas distintas»—. Se anota y no se toca.
+
+2. En la pantalla C la tarjeta de zarpe dice «Capitania de Puerto de Puerto
+   Eden»: el rotulo de `etiquetaDeNivel` termina en «de» y el nombre empieza con
+   «Puerto». Es de PortStatusBlock y es anterior a esta pieza. Se menciona, no
+   se toca (§4.8). El bloque de cobertura no lo reproduce en estas dos rutas
+   porque su Capitania se llama «Antofagasta», pero LO REPRODUCIRIA con una
+   Capitania cuyo nombre empiece por «Puerto»: comparte la funcion.
