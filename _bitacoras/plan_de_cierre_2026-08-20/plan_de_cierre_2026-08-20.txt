@@ -475,6 +475,31 @@ LA CIFRA: SE MUEVE, Y ES LA QUE MAS LA MUEVE.
   S6(a) (2). B sola no cierra ninguna: S3(a) y S3(b) piden el bloque Y que el
   campo llegue. A+B cierran S3(a), S3(b), S3(c) (3).
 
+  CORREGIDO EL 2026-08-21 — LAS DOS LINEAS DE ARRIBA ERAN UNA PROYECCION Y LA
+  FIRMA DEL OWNER LAS VOLVIO FALSAS. No se borran: son el criterio contra el
+  que se ordeno este tablero, y hacerlas desaparecer volveria incomprensible
+  por que U2 salio primera.
+
+    · A + B + C cierran CUATRO, no CINCO. Pasa de 5 de 15 a 9 de 15, con 2
+      anuladas. (El punto de partida tampoco es el de arriba: A+C ya movieron
+      la cifra a 5 de 15, con 2 anuladas por decision del owner.)
+    · A + C solas cerraron UNA, no dos: S3(d). S6(a) NO.
+    · A + B siguen cerrando TRES: S3(a), S3(b), S3(c). Esa linea no se movio.
+
+  Y EL MOTIVO POR EL QUE S6(a) SIGUE NO CUMPLE CAMBIO, que es lo que mas facil
+  se pierde: antes fallaba porque la cobertura quedaba FUERA del maximo — eso
+  se arreglo y se verifico, las seis fuentes se corrieron sobre el dato vivo
+  con las funciones reales de la PWA y el veredicto de pantalla salio como su
+  maximo. Ahora falla porque la LISTA de fuentes esta INCOMPLETA: falta la
+  altura de marea contra el calado. Es otro defecto con el mismo rotulo.
+
+  LO QUE ESTO LE HACE A ESTE ITEM, Y NO ES ARITMETICA: S6(a) DEJA DE SER UNA
+  AFIRMACION QUE ESTA UNIDAD PUEDE CERRAR. Lo que le falta no es la capa B y
+  no tiene nada que ver con la cobertura jurisdiccional — es una fuente que no
+  existe, y ninguna capa de U2 la trae. Se muda al grupo de las que ninguna
+  unidad de codigo cierra, con S7(a) y S7(b). Ver la agenda SIN NUMERO al
+  final del orden. Medicion: _bitacoras/firma_s3d_s6a_2026-08-21/.
+
 
 === U3 · EL FALLO QUE SE PRESENTA COMO «NO HAY NADA» ==========================
 
@@ -1029,6 +1054,125 @@ caso que motiva la pieza, no su resultado.
 NO SE ABRE EN LA SESION QUE LA AGENDA. Instruccion del owner.
 
 
+------------------------------------------------------------------------------
+LA AGENDA DE LA MAREA GANA UN PASO 0, MEDIDO EL 2026-08-21
+------------------------------------------------------------------------------
+VA ACA Y NO SOLO EN UNA BITACORA, POR INSTRUCCION DEL OWNER: es la respuesta
+medida a la condicion que el propio owner le puso a esta fuente, y quien abra
+la auditoria tiene que encontrarla ANTES de disenar nada.
+
+  LOS DOS NUMEROS QUE HAY QUE CRUZAR NO ESTAN MEDIDOS DESDE EL MISMO CERO.
+
+La altura de marea sale de 21 estaciones armonicas cuyo origen es UHSLC e IOC
+—mareografos de investigacion—, y su campo `z0_mm` es el nivel medio del
+registro DE ESE MAREOGRAFO. La sonda del Derrotero esta referida al NIVEL DE
+REDUCCION DE SONDAS del SHOA, que es otro cero y lo fija otra convencion.
+Sumarlos hoy es sumar dos numeros medidos desde ceros distintos y desconocidos.
+Y el desnivel entre ambos NO EXISTE EN EL REPOSITORIO: 0 campos de datum en los
+tres ficheros de marea, medido.
+
+Los `z0_mm` van de 710,6 mm en Antofagasta a 6.272,8 mm en Puerto Aguirre. No
+son el desnivel al datum del SHOA, pero dicen que el cero de un mareografo se
+mide en METROS — el mismo orden de magnitud que el calado de la flota que usa
+esta app (1,2 m en la nave de la pantalla firmada).
+
+PASO 0 DE LA AUDITORIA, Y VA ANTES QUE TODO LO DEMAS: existe ese desnivel por
+estacion, y se puede conseguir? Si no se consigue, LA AUDITORIA SE DETIENE AHI
+Y ESO ES UN RESULTADO, NO UN FRACASO: S6(a) queda NO CUMPLE con CAUSA MEDIDA y
+declarada, que vale infinitamente mas que una fuente que adivina medio metro
+bajo la quilla. La condicion del owner —«solo si la forma de calculo es
+correcta y existen todos los datos»— queda contestada con evidencia y no con
+una promesa.
+
+LA COBERTURA YA ESTA MEDIDA Y NO HAY QUE IR A BUSCARLA. Unidad: nodo portuario.
+Denominador: los 498 nodos de data/catalogo/join_puerto_bahia.json con
+`bahia_id` —o sea atados al catalogo maritimo—. Criterio: el del codigo vivo,
+estacion armonica a <= 50 mn, sin interpolar.
+  · 391 CON dato (78,5 %) — 315 a precision plena, 76 a precision reducida
+    (30-50 mn, 15,3 %).
+  · 107 SIN dato (21,5 %), y es COTA SUPERIOR del hueco maritimo: adentro
+    quedan nodos lacustres que igual traen `bahia_id`. Separarlos es una
+    medicion de la propia auditoria.
+  · EL HUECO ES AUSTRAL Y ES DONDE VIVE LA FLOTA QUE ESTA APP DICE SERVIR:
+    Puerto Eden a 229 mn de la estacion mas cercana, Bahia Tarn 222, Rio Bravo
+    151, Puerto Yungay 150, Tortel y Baker 143, Natales 103.
+  · Castro sola cuelga 85 nodos. `san_felix` no cubre ninguno.
+  · Y «hay estacion» NO ES «hay dato bueno»: el R2 del ajuste armonico va de
+    0,7898 (Isla de Pascua) a 0,9818 (Castro), y tres estaciones tienen huecos
+    de mas de 30 dias en su registro.
+
+DEL LADO DE LA SONDA EL PROBLEMA ES PEOR Y NADIE LO HABIA DICHO: el Derrotero
+tiene SIETE pasos cargados y SOLO TRES con geometria. El cotejo vertical que
+hoy se calcula puede evaluar TRES PASOS EN TODO CHILE. Eso no es una capa, es
+una muestra — y explica por que nadie noto que la PWA no la lee.
+
+LO QUE SI ESTA CONSTRUIDO Y LA AGENDA NO SUPONIA: `/api/tide/curve-ruta` YA
+calcula, POR RUTA, la estacion mas cercana a cada punto, la HORA ESTIMADA DE
+PASO por cada zona, la distancia desde el zarpe, la distancia a la estacion, un
+rotulo de precision reducida y la curva de altura. Ya trata los huecos sin
+interpolar. O sea que «en que zona de su navegacion, a que hora, que altura» —
+la forma que el owner pidio— YA ESTA CALCULADA. Falta cruzarla con el calado y
+meterla al veredicto.
+  PERO VIVE EN LA PANTALLA EQUIVOCADA: `TideCurvePanel` se renderiza en P4, el
+  viaje activo. P3 —la pantalla del veredicto— usa `TideBlock`, que es de UN
+  punto. POR ESO la pantalla firmada dio zarpe con prediccion y recalada sin
+  informacion: P3 no le pregunta a la ruta, le pregunta dos veces a un punto.
+  La cobertura no estaba partida — estaba mal consultada.
+
+Y LA FORMA MECANICA DE «LA LISTA DE FUENTES ESTA INCOMPLETA» ES DE UNA LINEA:
+`calcularVeredicto({ portStatus, weather, navigation, transitRestrictions })`.
+`tide` NO ES NI SIQUIERA UN PARAMETRO. El dato de marea se pide, se dibuja y
+nunca llega a la funcion que compone el maximo. Ese es el anclaje verificable
+de S6(a), y no envejece con el numero.
+
+TRES DECISIONES DEL OWNER, FIRMADAS EL 2026-08-21 SOBRE EL PLAN Y NO SOBRE EL
+CODIGO, para que la auditoria no las reabra:
+  · DONDE NO SE PUEDE CALCULAR (los 107): se dice y NO se escala. Fundamento:
+    la cobertura jurisdiccional escala porque hay una restriccion posible que no
+    se pudo leer — hay algo detras del hueco. Aca el hueco es de un dato
+    PREDICTIVO, y escalar por el pondria en ambar todo viaje austral, siempre.
+    Un ambar que sale en el 21,5 % de los casos sin distinguir nada deja de
+    leerse, y con el deja de leerse el que si importa.
+  · SI EL DATUM NO APARECE: la marea entra igual como BLOQUE INFORMATIVO
+    —altura y hora por zona— y NO como fuente del veredicto, sin cruzarla con
+    la sonda. La altura por zona y hora sirve sola y no necesita ningun datum,
+    porque no se esta sumando a nada. Lo que necesita datum es EL CRUCE, y ese
+    espera. Un desnivel estimado con su margen fue descartado explicitamente:
+    es la fuente que adivina.
+  · DONDE VA EN P3: el bloque de mareas de P3 crece y consume `curve-ruta`; P4
+    queda como esta. P3 decide si zarpar y P4 acompana — no se atan.
+
+EL ORDEN DE LA AUDITORIA, ENTONCES: Paso 0 el datum · Paso 1 la mitad estatica
+(no depende del 0) · Paso 2 `curve-ruta` a P3 (no depende del 0) · Paso 3 el
+cruce y la fuente al veredicto (depende del 0) · Paso 4 el control de S6(a),
+que es una lista declarada de fuentes contrastada contra la firma VIVA de
+`calcularVeredicto`, mas su control positivo: sacar la marea de la lista y
+comprobar que el control se pone ROJO. Un control de completitud que nunca se
+vio rojo no prueba completitud.
+
+
+------------------------------------------------------------------------------
+EL PASO 1 NO ESPERA A NADA, Y VA NOMBRADO POR LO QUE ES
+------------------------------------------------------------------------------
+LA UNICA ADVERTENCIA DE SEGURIDAD FISICA QUE LA APP CALCULA Y DESCARTA.
+
+El backend YA compone, en `advertenciasCotejoVertical`, el texto al patron para
+cuando la ruta cruza donde el Derrotero documenta MENOS SONDA que el calado de
+la nave mas su margen de resguardo. Es texto en segunda persona, con la pagina
+del Derrotero citada, con el margen calculado y con la salvedad de que la
+posicion del dato es aproximada. Viaja en `advertencias` de
+/api/rutas/calcular.
+
+MEDIDO EL 2026-08-21: `advertencias` tiene CERO apariciones en todo el arbol de
+tmarea-pwa. No se dibuja ni una vez.
+
+NO DEPENDE DEL DATUM NI DE LA MAREA NI DE NINGUNA DECISION ABIERTA: la sonda
+documentada contra el calado no necesita la marea para decirse. Es la pieza mas
+barata de este tablero y la unica advertencia de seguridad fisica que la app
+calcula y tira. LA MAREA ES LA MITAD QUE FALTA, NO EL ASUNTO ENTERO — y esta es
+la mitad que ya esta escrita y no llega.
+
+
 EFECTO LATERAL QUE ACEPTO Y DECLARO: este orden NO es el orden de la cifra. La
 unidad mas grande del tablero (U4) sale quinta y no mueve el numero; la que mas
 lo mueve (U2) sale primera por otra razon. Si el owner quiere el orden de la
@@ -1235,12 +1379,24 @@ Denominador 15. Unidad: afirmacion de §2. Ambito P3. Punto de partida:
 Las 11 NO CUMPLE son: S1 · S3(a) · S3(b) · S3(c) · S3(d) · S4 · S6(a) · S6(b) ·
 S7(a) · S7(b) · S8. Cada unidad se mapea contra esa lista y no contra otra cosa.
 
+AL DIA EL 2026-08-21, Y LA TABLA DE ABAJO SE LEE CON ESTO PUESTO. El punto de
+partida ya no es el de arriba: es 5 de 15, con 2 anuladas por decision del
+owner. S3(d) SALIO de la lista de NO CUMPLE —el owner la firmo CUMPLE mirando
+la pantalla—, asi que quedan DIEZ y son: S1 · S3(a) · S3(b) · S3(c) · S4 ·
+S6(a) · S6(b) · S7(a) · S7(b) · S8. El renglon viejo no se borra porque es
+contra esa lista que se armo la tabla.
+
   UNIDAD                          MUEVE   CUALES                    QUEDA EN
   ------------------------------- ------  ------------------------  ---------
   U1 · el borde                     0     ninguna                   4 de 15
   U2 · cobertura (A+B+C)           +5     S3a S3b S3c S3d S6a       9 de 15
        ... solo A+C                (+2)   S3d S6a
        ... solo A+B                (+3)   S3a S3b S3c
+   >> CORREGIDO 2026-08-21, y las tres lineas de arriba quedan a la vista:
+       U2 (A+B+C)                  +4     S3a S3b S3c S3d           9 de 15
+       ... solo A+C                (+1)   S3d           -- YA APLICADO: 5 de 15
+       ... solo A+B                (+3)   S3a S3b S3c   -- sin cambio
+       S6a SALE de esta fila entera. No la cierra ninguna capa de U2.
   U3 · el fallo (S8 + S6b)         +2     S8 S6b                    6 de 15
        ... solo la mitad S8        (+1)   S8
   U4 · la cadena del uso            0     ninguna                   4 de 15
@@ -1262,6 +1418,18 @@ S7(a) · S7(b) · S8. Cada unidad se mapea contra esa lista y no contra otra cos
   anuladas por decision del owner. Ninguna afirmacion de §2 se mueve ya sin
   trabajo. La linea «TODAS LAS UNIDADES DE CODIGO CERRADAS: 13 de 15» sigue
   valiendo tal cual, con S7(a) y S7(b) afuera por el mismo motivo de siempre.
+
+  AL DIA EL 2026-08-21, Y ESTA VEZ EL TECHO BAJA: la suma pasa a
+  4 + 4 + 2 + 1 + 1 = 12 de 15, con 2 anuladas por decision del owner. El 5 de
+  U2 era 4. Y lo que cambia no es la aritmetica: quedarian TRES afuera y no
+  dos — S6(a) se suma a S7(a) y S7(b).
+  POR QUE S6(a) SE MUDA DE COLUMNA. Las otras dos estan afuera porque la propia
+  medicion declara que no pueden desviar al patron. S6(a) esta afuera por un
+  motivo DISTINTO y peor: le falta una FUENTE QUE NO EXISTE —la altura de marea
+  contra el calado—, y ninguna unidad de codigo de este tablero la trae. No es
+  que ninguna la cierre por ahora: es que ninguna de las nueve la puede cerrar.
+  Su pieza es la agenda SIN NUMERO del final del orden, y hasta que esa agenda
+  conteste, el techo de este tablero es 12 de 15 con 2 anuladas.
 
   LO QUE ESTA TABLA DICE Y HAY QUE LEER DERECHO: CUATRO de las nueve unidades de
   trabajo NO MUEVEN EL NUMERO — U1, U4, U5 y U9 —, y entre ellas estan la mas

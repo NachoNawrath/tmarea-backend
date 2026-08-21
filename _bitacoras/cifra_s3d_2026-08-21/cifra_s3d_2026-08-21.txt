@@ -1,0 +1,250 @@
+LA CIFRA DE §2 SE MUEVE POR TRABAJO POR PRIMERA VEZ — 4 A 5, SOLO S3(d)
+==============================================================================
+Unidad          : la cifra de §2, su nota, su guarda y su mordida. Tres cosas,
+                  no una, como el parrafo del item 1 del plan de cierre las
+                  dejo escritas.
+Fecha           : 2026-08-21
+Arboles al abrir: tmarea-backend  main = origin/main = dde9374
+                  tmarea-pwa      main = origin/main = 7800992
+Declarativo     : 91 · 89 · 83 · 24 sitios · 15 barridos · 9 sin barrer.
+                  Igual al cerrar: no se redacto NINGUNA fila nueva.
+Suite           : 169/169 al abrir y al cerrar.
+
+
+------------------------------------------------------------------------------
+0 . LO QUE ESTA PIEZA HIZO
+------------------------------------------------------------------------------
+· MOVIO EL DATO. cumple 4 -> 5. Entro S3(d) y nada mas. S6(a) quedo NO CUMPLE
+  por firma del owner del 2026-08-21.
+· ESCRIBIO LA SEGUNDA NOTA OBLIGATORIA, atada a S3 DIVIDIDO, en campo separado
+  de la de derogacion. Texto aprobado por el owner sin cambios.
+· LE PUSO SUS GUARDAS en publicar_cifra_spec2.js y sus MORDIDAS en
+  prueba_mordida_cifra.js. Mordida de 8/8 a 13/13.
+· CORRIGIO las lineas que la firma del 2026-08-21 volvio falsas: seis en §5 de
+  PLAN_JURISDICCION.md y seis sitios del plan de cierre.
+
+LA PROYECCION VIEJA DECIA 4 -> 6 CON S3(d) Y S6(a). Esa cuenta no valia y se
+rehizo desde el arbol, no se arrastro.
+
+
+------------------------------------------------------------------------------
+1 . EL GATE ENCONTRO TRES COSAS Y LAS TRES CAMBIARON LA PIEZA
+------------------------------------------------------------------------------
+(1) INEJECUTABLE — LA GUARDA DEL EMISOR RECHAZABA EL DATO QUE ESTA PIEZA
+    PRODUCE, Y NO ERA UNA GUARDA QUE PASABA: ERA UNA QUE NO SE EJERCIA.
+
+    Decia `p.cumple + p.no_cumple !== p.total`. Un punto DIVIDIDO no cuenta ni
+    en cumple ni en no_cumple, asi que ese invariante solo vale mientras
+    `divididos` sea 0. Lo era, y por eso pasaba por accidente.
+
+    EL CONTRAEJEMPLO ESTABA DENTRO DEL MISMO FICHERO. La foto `antes` de
+    {unanimes 7, divididos 2, cumple 1, no_cumple 6} da 1 + 6 = 7 != 9: la
+    version vieja REPROBABA un dato que el fichero guardaba doce lineas mas
+    abajo. Medido de escritorio con las ocho guardas copiadas verbatim, sin
+    tocar el arbol.
+
+    Y HABIA UNA SALIDA FALSA QUE PUBLICABA EN VERDE: mover solo el denominador
+    fino y no tocar la vista por punto. Exit 0, con la vista por punto diciendo
+    que S3 es un NO CUMPLE unanime, que es falso desde el 2026-08-21.
+
+(2) CONTRADECIA UNA REGLA VIGENTE — «LA NOTA OBLIGATORIA» YA EXISTIA Y ERA DE
+    OTRA. El campo `nota_obligatoria` estaba ocupado por la nota de derogacion,
+    que es regla del owner del 2026-08-20 y que la octava guarda hacia
+    obligatoria. Escribir la de S3 ahi la borraba. Y el fondo importa mas que
+    el campo: las dos notas dicen cosas de SIGNO OPUESTO sobre la misma vista
+    —una, que un punto llego a CUMPLE sin que nadie trabajara; la otra, que un
+    punto se partio PORQUE alguien trabajo—, asi que la vista necesita las dos.
+    Resuelto en dos campos con dos guardas: borrables por separado es
+    detectables por separado.
+
+(3) DUPLICABA ALGO YA CONSTRUIDO. «Ponerle su guarda» describia un mecanismo
+    que ya existia y mordia: guarda de nota + mordida de nota, en verde desde
+    el 2026-08-20. Lo que esta pieza agrega es una SEGUNDA INSTANCIA, no un
+    control nuevo. Y la guarda que de verdad falta es otra —nada impide
+    escribir la cifra pelada a mano en otro documento—, sigue VIVA, y NO se
+    construyo aca por decision del owner.
+
+
+------------------------------------------------------------------------------
+2 . LA MORDIDA CRUZADA SALIO ROJA EN SU PRIMERA CORRIDA, Y TENIA RAZON
+------------------------------------------------------------------------------
+ES EL DEFECTO MAS INTERESANTE DEL DIA Y ERA MIO.
+
+Las dos guardas de nota se anclaban en una PALABRA SUELTA: /DEROGACION/i y
+/DIVIDIDO/i. La nota nueva de S3 dice, textual, «DIVIDIDO por TRABAJO, no por
+derogacion» — nombra la derogacion justamente para contrastar con ella.
+
+CONSECUENCIA: copiada en el campo de la otra, la nota de S3 PASABA la guarda de
+derogacion. Una nota podia hacerse pasar por la otra y borrarla sin que nadie
+se enterara. Los dos campos separados no alcanzaban; las guardas tambien tenian
+que serlo.
+
+LO CAZO LA MORDIDA CRUZADA —«la de derogacion se borra pero la de S3 queda:
+igual se detiene»—, que se escribio precisamente para eso y salio FALLA con
+exit 0 en su primera corrida. Se aplico la regla del repo: un control positivo
+que falla se sospecha a si mismo antes de acusar al dato. Se reviso, el control
+tenia razon y el diseno estaba mal.
+
+ARREGLO: cada guarda se ancla ahora en la AFIRMACION de su propia nota y no en
+una palabra. «CUMPLE por DEROGACION» solo esta en una, «DIVIDIDO por TRABAJO»
+solo en la otra, y ninguna satisface a la ajena. 11/11 despues del arreglo.
+
+LA REGLA QUE DEJA, Y EL OWNER PIDIO QUE QUEDE ASI DE EXPLICITA — VALE PARA TODA
+GUARDA DE TEXTO DE ESTE REPOSITORIO, NO SOLO PARA ESTAS DOS:
+
+    UNA GUARDA QUE BUSCA UNA PALABRA NO COMPRUEBA QUE EL TEXTO AFIRME ALGO:
+    COMPRUEBA QUE LO MENCIONE. Y UN TEXTO QUE CONTRASTA CON OTRO LO MENCIONA
+    POR DEFINICION.
+
+Quien escriba la proxima guarda de texto en este repo —sobre una nota, sobre
+una cadena al patron, sobre una cita del contrato— tiene que preguntarse si su
+patron distingue AFIRMAR de MENCIONAR, y probarlo con el texto que contrasta.
+Hay al menos tres guardas de texto vivas en el arbol ademas de estas dos, y
+ninguna se reviso bajo este criterio: queda dicho para que no se lea como si el
+problema hubiera sido solo de aca.
+
+La regla esta escrita tambien en la cabecera de las dos guardas en
+scripts/publicar_cifra_spec2.js, que es donde va a caer el que escriba la
+proxima. Decision del owner, 2026-08-21.
+
+
+------------------------------------------------------------------------------
+3 . DOS DEFECTOS MAS DE LA MORDIDA, Y UNO ERA GRAVE
+------------------------------------------------------------------------------
+SON LA MISMA FAMILIA QUE LA REGLA DE §2, Y EL OWNER PIDIO QUE QUEDE DICHO: un
+instrumento que corre perfecto y comprueba OTRA COSA que la que hay que
+comprobar. Nadie los vio venir, y los dos se cazaron por correr el instrumento
+y mirar la salida, no por leer el codigo.
+
+(a) UNA MORDIDA DEJO DE MORDER SIN QUE NADIE SE ENTERARA, Y ES LA MAS GRAVE DE
+    LAS DOS PORQUE HABRIA SALIDO EN VERDE. La primera mutaba
+    `no_cumple` a 10 para romper la suma. Al pasar la cifra a 5 de 15, con 2
+    anuladas por decision del owner, `no_cumple` PASO A VALER 10 — o sea que la
+    mutacion se volvio una copia identica del dato y la mordida habria salido
+    en verde sin morder nada. UNA MORDIDA CON UN LITERAL ADENTRO CADUCA CUANDO
+    EL DATO LA ALCANZA. Se cambio por `no_cumple - 1`, derivado del dato vivo,
+    que no puede coincidir con el. Lo mismo con la mutacion de forma_legal, que
+    ahora usa `forma_prohibida` en vez de una cadena escrita a mano.
+
+(b) LA CABECERA DECIA «cinco formas» Y LA LISTA TENIA SEIS. El total que el
+    script imprime sale de contar la lista, asi que el numero publicado era
+    correcto y la prosa de al lado no. La prosa pegada a un instrumento
+    envejece sola y nada la mira.
+
+
+------------------------------------------------------------------------------
+4 . LA VISTA POR PUNTO — MEDIDA, Y LA SERIE SE ACUMULA
+------------------------------------------------------------------------------
+                     hoy (dde9374)      con esta pieza
+  UNANIMES               9 de 9            8 de 9
+  DIVIDIDOS                0                 1  -- S3
+  CUMPLE                   3                 3  -- sin cambio
+  NO CUMPLE                6                 5
+
+EL CUMPLE POR PUNTO NO SE MUEVE, y hay que leerlo derecho: S3 sale de NO CUMPLE
+y NO entra a CUMPLE — se parte. Es la primera vez que esta vista registra
+trabajo real, y su forma de registrarlo es que un punto deja de ser una cosa
+sola. La vista fina sube de 4 a 5; la vista por punto no sube nada. Las dos son
+ciertas, y por eso la vista por punto no se publica sin decirlo.
+
+LAS TRES OPCIONES DEL BLOQUE `antes`, CORRIDAS CONTRA EL EMISOR:
+  · BORRARLO: el emisor REVIENTA con TypeError, y revienta DESPUES de las
+    guardas y DESPUES de imprimir la cifra. O sea que publicaria el titular y
+    se caeria antes de la nota obligatoria: PUBLICARIA EL NUMERO SIN SU
+    SALVEDAD, por la unica via que ninguna guarda mira.
+  · PISARLO CON LA FOTO DE HOY: publica limpio y le saca el piso a la nota de
+    derogacion, que se prueba con la foto de {7,2,1,6}.
+  · ACUMULAR: verde, y `antes` sigue apuntando a la mas reciente para que las
+    tres lineas de impresion del emisor no se toquen.
+
+DECISION DEL OWNER: ACUMULAR. Fundamento: hay DOS notas obligatorias y cada una
+necesita su propio numero detras; una sola ranura obliga a dejar una de las dos
+sin prueba. Cada foto lleva `de_cuando` y `que_la_movio`, porque cuatro numeros
+pelados no son una cifra.
+
+
+------------------------------------------------------------------------------
+5 . LO QUE SE MIDIO PARA EL PLAN DE LA MAREA, Y NO SE CONSTRUYO NADA
+------------------------------------------------------------------------------
+EL HALLAZGO: LOS DOS NUMEROS QUE HAY QUE CRUZAR NO ESTAN MEDIDOS DESDE EL MISMO
+CERO. 21 estaciones armonicas de origen UHSLC/IOC, con `z0_mm` = nivel medio
+del registro de ese mareografo; la sonda del Derrotero referida al nivel de
+reduccion de sondas del SHOA. El desnivel entre ambos NO EXISTE en el
+repositorio: 0 campos de datum. Es la respuesta medida a la condicion del
+owner, y esta escrita en el plan de cierre y en la fila de la marea — no solo
+aca.
+
+COBERTURA. Unidad: nodo portuario. Denominador: 498 nodos con bahia_id.
+Criterio: el del codigo vivo, <=50 mn sin interpolar.
+  391 CON dato (78,5 %) · 76 de ellos a precision reducida (30-50 mn)
+  107 SIN dato (21,5 %) — COTA SUPERIOR: adentro quedan lacustres con bahia_id
+  Hueco austral: Puerto Eden 229 mn · Bahia Tarn 222 · Rio Bravo 151 ·
+  Yungay 150 · Tortel y Baker 143 · Natales 103
+  Castro sola cuelga 85 nodos. san_felix no cubre ninguno.
+  R2 del ajuste de 0,7898 (Isla de Pascua) a 0,9818 (Castro); 3 estaciones con
+  huecos de mas de 30 dias. «Hay estacion» no es «hay dato bueno».
+
+SONDA: 7 pasos cargados, SOLO 3 con geometria. El cotejo vertical puede evaluar
+tres pasos en todo Chile.
+
+YA CONSTRUIDO Y LA AGENDA NO LO SUPONIA: /api/tide/curve-ruta ya calcula por
+ruta la estacion, la HORA ESTIMADA DE PASO, las distancias y la curva, sin
+interpolar sobre los huecos. Pero se consume en P4 y no en P3. Por eso la
+pantalla firmada dio zarpe con dato y recalada sin dato: P3 usa TideBlock, que
+es de UN punto. LA COBERTURA NO ESTABA PARTIDA, ESTABA MAL CONSULTADA.
+
+EL ANCLAJE DE S6(a) QUE NO ENVEJECE:
+`calcularVeredicto({ portStatus, weather, navigation, transitRestrictions })`.
+`tide` no es ni siquiera un parametro.
+
+`advertencias` = 0 apariciones en todo tmarea-pwa. La unica advertencia de
+seguridad fisica que la app calcula y descarta.
+
+
+------------------------------------------------------------------------------
+5 bis . UNA REGLA MAS, Y NO ES UNA NOTA DE ESTA CORRIDA
+------------------------------------------------------------------------------
+    UN CONTROL NO VERIFICA EL ARTEFACTO QUE ESTA PRODUCIENDO.
+
+Vale para TODO control de este repositorio que escriba su propia salida, y son
+varios: el patron `node instrumento.js > instrumento.txt` esta en casi todas
+las bitacoras del arbol. Va como REGLA y no como nota de esta corrida, por
+instruccion del owner del 2026-08-21.
+
+COMO APARECIO. El control contra el indice compara INDICE contra DISCO en cada
+ruta stageada. Su propia salida es una de esas rutas, y en el instante en que
+compara, el .txt en disco todavia es el de la corrida ANTERIOR: el que va a
+quedar no existe todavia. Salio FALLA 11/12 acusando de divergencia a un
+fichero que estaba bien.
+
+POR QUE NO ES UNA EXCEPCION DE CONVENIENCIA, que es lo que parece. Dejarlo
+dentro produce un control que SIEMPRE sale rojo por una ruta que nunca puede
+estar verde, y un control que siempre sale rojo se ignora en dos corridas. Y la
+alternativa mala de verdad seria sacarlo EN SILENCIO: ahi el control diria «12
+de 12» y alguien leeria que esa ruta esta cubierta.
+
+LA FORMA CORRECTA, Y ES LA QUE SE APLICO: excluirlo, y DECLARARLO EN LA SALIDA
+con su motivo. Lo que cubre a ese fichero no es una comprobacion — es que su
+contenido ES esa salida, que se lee entera. Eso hay que decirlo, no suponerlo.
+
+QUIEN ESCRIBA EL PROXIMO CONTROL QUE SE VERSIONE A SI MISMO tiene que decidir
+esto a proposito y escribirlo, no descubrirlo con un rojo.
+
+------------------------------------------------------------------------------
+6 . RESERVA DE INSTRUMENTO, DICHA Y NO TAPADA
+------------------------------------------------------------------------------
+Los cuatro scripts de medicion de esta sesion —las guardas de escritorio, las
+tres opciones de `antes`, la cobertura de marea y el que enmendo el
+declarativo— VIVEN EN EL SCRATCHPAD DE SESION, fuera de los dos repos. Sus
+resultados estan en esta bitacora y en el arbol; los instrumentos no. Es la
+misma reserva que cargan los precedentes del 2026-08-17, 08-20 y 08-21, y
+versionarlos sigue siendo una decision abierta.
+
+SE USO node Y NO heredoc para escribir en el declarativo, a proposito: el
+heredoc de esta maquina se come barras y produce NFD. Se comprobo NFC despues
+de escribir.
+
+NO SE TOCO: estado_drift.json, .claude/launch.json ni el osm_crudo.json de
+toponimos — los tres ` M` intocables siguen fuera del indice. Ni la tabla
+canonica de D4 en §5, ni los cuatro sitios de T6, ni CONTRATO_MOTOR.md, ni
+CLAUDE.md, ni el motor BRE, ni la capa B. No se redacto ninguna fila nueva.

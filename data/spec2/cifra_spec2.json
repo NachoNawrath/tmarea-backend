@@ -1,18 +1,21 @@
 {
-  "version": 1,
-  "generado": "2026-08-20",
+  "version": 2,
+  "generado": "2026-08-21",
   "_que_es": "La cifra de cumplimiento de la ESPECIFICACION (PLAN_JURISDICCION.md 2) medida contra la pantalla, y la POLITICA con la que se publica. Es dato, no prosa: el numero vive aca y en ningun otro lado.",
-  "_que_no_es": "NO es un indicador de progreso y no se puede leer como tal. Dos de sus afirmaciones fueron ANULADAS por decision del owner, no cumplidas. El denominador bajo sin que la pantalla cambiara.",
+  "_que_no_es": "NO es un indicador de progreso y no se puede leer como tal. Dos de sus afirmaciones fueron ANULADAS por decision del owner, no cumplidas: el denominador bajo sin que la pantalla cambiara. Y desde el 2026-08-21 tampoco se puede leer al reves: una de sus afirmaciones SI paso a CUMPLE por trabajo. El numero se movio por dos causas distintas que se ven iguales en el ratio, y por eso el ratio solo no dice nada — hay que mirar que se movio y por que.",
   "_por_que_existe": "Porque el ratio SUBE cuando se derogan criterios. 4 de 17 y 4 de 15 tienen el mismo numerador y la misma pantalla detras, y el segundo se lee mejor. Un numero que mejora sin trabajo es una trampa, y la unica defensa es que no se pueda citar sin su salvedad.",
-  "procedencia": "Medicion de 2 contra la pantalla del 2026-08-20 (_bitacoras/spec2_pantalla_2026-08-20/), corregida el mismo dia por D5 y D4 (_bitacoras/tres_de_d4_2026-08-20/).",
-  "lo_lee": "scripts/publicar_cifra_spec2.js, que es el UNICO emisor. PLAN_JURISDICCION.md 5 cita el resultado y apunta aca como autoridad.",
+  "procedencia": "Medicion de 2 contra la pantalla del 2026-08-20 (_bitacoras/spec2_pantalla_2026-08-20/), corregida el mismo dia por D5 y D4 (_bitacoras/tres_de_d4_2026-08-20/), y movida el 2026-08-21 por la firma de S3(d) sobre la pantalla (_bitacoras/firma_s3d_s6a_2026-08-21/).",
+  "por_que_el_numerador_se_movio_esta_vez_y_las_anteriores_no": "Las dos veces anteriores el numero cambio por DEROGACION: bajo el denominador y el numerador no se movio ni una vez. Esta es la PRIMERA vez que el numerador sube, y sube por TRABAJO — las capas A+C hicieron que el veredicto escale por cobertura, el owner lo miro en pantalla el 2026-08-21 y firmo S3(d) CUMPLE. La distincion no es de estilo: un ratio que sube por derogacion y uno que sube por trabajo se leen igual y no valen lo mismo.",
+  "lo_lee": "scripts/publicar_cifra_spec2.js, que es el UNICO emisor (`npm run cifra`), y scripts/prueba_mordida_cifra.js, que es su mordida (`npm run cifra:mordida`) y no publica nada. PLAN_JURISDICCION.md 5 cita el resultado y apunta aca como autoridad.",
 
   "politica_de_publicacion": {
     "regla": "Decision del owner, 2026-08-20. LA CIFRA NO SE PUBLICA PELADA, en ningun documento, bitacora ni mensaje de commit.",
-    "forma_legal": "4 de 15, con 2 anuladas por decision del owner",
-    "forma_prohibida": "4 de 15",
-    "por_que": "Un ratio que sube cuando se derogan criterios se lee como progreso, y aca no hubo ninguno: el numerador nunca se movio.",
-    "vale_tambien_para_la_vista_por_punto": "La vista de 9 puntos lleva SIEMPRE la nota de que S2 y S5 llegaron a CUMPLE por DEROGACION y no por trabajo. Sola, esa vista miente peor que la fina: pasa de 1 punto cumplido a 3 sin que la pantalla cambie."
+    "forma_legal": "5 de 15, con 2 anuladas por decision del owner",
+    "forma_prohibida": "5 de 15",
+    "por_que": "Un ratio que sube cuando se derogan criterios se lee como progreso. Las dos primeras veces que este numero se movio no hubo ninguno: el denominador bajo de 17 a 15 y el numerador no se toco. La tercera vez, el 2026-08-21, el numerador SI subio y SI fue trabajo. Las dos causas se ven identicas en el ratio, y esa es toda la razon por la que la cifra no se publica pelada: la salvedad es lo unico que las distingue.",
+    "OJO_ESTA_LINEA_YA_DIJO_ALGO_FALSO_UNA_VEZ": "Hasta el 2026-08-21 decia «y aca no hubo ninguno: el numerador nunca se movio». Era cierta cuando se escribio y la firma de S3(d) la volvio falsa el mismo dia en que se movio la cifra — dentro del propio emisor, en la linea que el emisor imprime. Queda anotado porque es la cuarta variante del mismo agujero: una linea envejece por el TRABAJO, por una DECISION, por una FIRMA, y ahora tambien por el propio dato que el instrumento publica. Ningun control mira ninguna de las cuatro.",
+    "vale_tambien_para_la_vista_por_punto": "La vista de 9 puntos lleva SIEMPRE la nota de que S2 y S5 llegaron a CUMPLE por DEROGACION y no por trabajo. Sola, esa vista miente peor que la fina: pasa de 1 punto cumplido a 3 sin que la pantalla cambie.",
+    "y_desde_el_2026_08_21_lleva_DOS_notas_y_no_una": "La vista por punto lleva AHORA dos notas obligatorias, y dicen cosas de signo opuesto sobre la misma vista: una, que un punto llego a CUMPLE sin que nadie trabajara (derogacion); la otra, que un punto se partio PORQUE alguien trabajo (S3 dividido). Leer cualquiera de las dos sola deforma la vista en una direccion distinta. Son campos SEPARADOS a proposito y cada una tiene su guarda: borrables por separado es detectables por separado."
   },
 
   "denominador_fino": {
@@ -21,11 +24,27 @@
     "ambito": "P3. 2 no es contrastable contra P4 — ver la fila PLAN-2::spec-no-cubre-p4.",
     "original": 17,
     "vigente": 15,
-    "cumple": 4,
-    "no_cumple": 11,
+    "cumple": 5,
+    "no_cumple": 10,
     "anuladas": 2,
-    "cumple_cuales": ["S2(a)", "S2(b)", "S5(a)", "S9"],
-    "medido_el": "2026-08-20"
+    "cumple_cuales": ["S2(a)", "S2(b)", "S3(d)", "S5(a)", "S9"],
+    "medido_el": "2026-08-21",
+    "que_entro_la_ultima_vez": {
+      "afirmacion": "S3(d)",
+      "texto": "Escala el veredicto a U, nunca a U+V.",
+      "paso_a_CUMPLE_el": "2026-08-21",
+      "por_que": "Las capas A+C de U2 hicieron que la cobertura jurisdiccional componga el veredicto sin sobrescribirlo: el endpoint devuelve veredicto Q con bandera_final U sobre la ruta Antofagasta -> Taltal, y la tarjeta que el 2026-08-20 decia BANDERA Q dice BANDERA U. El owner lo firmo mirando la pantalla.",
+      "la_mitad_que_no_esta_en_la_pantalla_y_se_firmo_igual": "«Nunca» no lo muestra ninguna pantalla. Esa mitad se firmo apoyada en el tope del backend, en el tope re-aplicado de la PWA y en la asercion de que el tope del aviso es U. Queda dicho para que nadie crea que la pantalla probo las dos mitades.",
+      "medicion": "_bitacoras/firma_s3d_s6a_2026-08-21/"
+    },
+    "lo_que_NO_entro_y_por_que_importa": {
+      "afirmacion": "S6(a)",
+      "veredicto": "NO CUMPLE, firmado el 2026-08-21",
+      "el_motivo_es_NUEVO_y_no_es_el_viejo": "Antes S6(a) fallaba porque la cobertura quedaba FUERA del maximo. Eso se arreglo y se verifico: las seis fuentes se corrieron sobre el dato vivo con las funciones reales de la PWA y el veredicto de pantalla salio como su maximo. Hoy falla por otra cosa: la LISTA de fuentes esta INCOMPLETA. Es otro defecto con el mismo rotulo, y arrastrar el motivo viejo seria escribir algo falso desde el 2026-08-21.",
+      "la_fuente_que_falta": "La altura de marea contra el calado que el propio patron cargo en su perfil. La app tiene las dos piezas por separado y no las cruza.",
+      "consecuencia_sobre_la_proyeccion_vieja": "La proyeccion decia que las capas A+C movian la cifra +2 (S3d y S6a). Movieron +1. Y A+B+C mueven +4, no +5: lo que le falta a S6(a) no es la capa B y no tiene nada que ver con la cobertura jurisdiccional. Ninguna capa de U2 trae esa fuente.",
+      "fila": "SESION-firma-s3d-s6a-2026-08-21::la-marea-contra-el-calado-no-es-fuente-del-veredicto"
+    }
   },
 
   "anuladas": [
@@ -52,14 +71,41 @@
   "denominador_por_punto": {
     "unidad": "punto de 2",
     "total": 9,
-    "unanimes": 9,
-    "divididos": 0,
+    "unanimes": 8,
+    "divididos": 1,
     "cumple": 3,
     "cumple_cuales": ["S2", "S5", "S9"],
-    "no_cumple": 6,
-    "no_cumple_cuales": ["S1", "S3", "S4", "S6", "S7", "S8"],
-    "antes": { "unanimes": 7, "divididos": 2, "cumple": 1, "no_cumple": 6 },
-    "nota_obligatoria": "S2 y S5 llegaron a CUMPLE por DEROGACION, no por trabajo. Dejaron de estar divididos porque su mitad en falta fue anulada. La pantalla no cambio."
+    "no_cumple": 5,
+    "no_cumple_cuales": ["S1", "S4", "S6", "S7", "S8"],
+    "divididos_cuales": ["S3"],
+    "antes": { "unanimes": 9, "divididos": 0, "cumple": 3, "no_cumple": 6 },
+    "_como_se_lee_antes": "`antes` es SIEMPRE la ultima foto de `serie`, y esta duplicado a proposito: las tres lineas de comparacion del emisor lo leen de aca. La serie completa vive en `serie` y no se poda.",
+    "serie": [
+      {
+        "de_cuando": "2026-08-20, antes de D4 y D5",
+        "que_la_movio": "Nada todavia: es la foto de partida, medida contra la pantalla del 2026-08-20.",
+        "unidad": "punto de 2",
+        "denominador": 9,
+        "unanimes": 7,
+        "divididos": 2,
+        "cumple": 1,
+        "no_cumple": 6
+      },
+      {
+        "de_cuando": "2026-08-20, despues de D4 y D5",
+        "que_la_movio": "Las dos ANULACIONES por decision del owner. S2(c) cayo por D5 y S5(b) por D4, y con eso S2 y S5 dejaron de estar divididos y pasaron a CUMPLE. NADIE TOCO UNA LINEA DE CODIGO: es el salto de 1 punto cumplido a 3 que la nota de derogacion existe para que no se lea como progreso.",
+        "unidad": "punto de 2",
+        "denominador": 9,
+        "unanimes": 9,
+        "divididos": 0,
+        "cumple": 3,
+        "no_cumple": 6
+      }
+    ],
+    "_por_que_la_serie_se_acumula_y_no_se_pisa": "Decision del owner, 2026-08-21. Hay DOS notas obligatorias sobre esta vista y cada una necesita su propio numero detras: la de derogacion se prueba con la foto de {7,2,1,6}, y la de S3 dividido con la de {9,0,3,6}. Una sola ranura obligaria a dejar una de las dos sin evidencia, y una regla del owner sin su numero al lado es exactamente el modo de falla que este fichero existe para impedir. Cada foto lleva de cuando es y que la movio, porque cuatro numeros pelados no son una cifra.",
+    "nota_obligatoria": "S2 y S5 llegaron a CUMPLE por DEROGACION, no por trabajo. Dejaron de estar divididos porque su mitad en falta fue anulada. La pantalla no cambio.",
+    "nota_obligatoria_s3_dividido": "S3 quedo DIVIDIDO por TRABAJO, no por derogacion: S3(d) —escala el veredicto a U, nunca a U+V— cumple desde las capas A+C, y S3(a)(b)(c) siguen sin cumplir porque el aviso no se renderiza. El CUMPLE por punto no subio: un punto salio de NO CUMPLE y no entro a CUMPLE. Esta division es la ventana muda que la firma O1 del 2026-08-20 acepto, y vale mientras dure — se apaga sola cuando entre la capa B.",
+    "_por_que_la_nota_de_s3_esta_en_un_campo_APARTE": "Aprobada por el owner el 2026-08-21, y va sin tildes como todo el resto de este fichero: el emisor la imprime en la consola de Windows, donde un acento ya mato un control una vez. En campo separado de la nota de derogacion para que las dos sean borrables por separado, que es lo mismo que decir detectables por separado: cada una tiene su propia guarda en el emisor."
   },
 
   "advertencia_sobre_el_hueco": "El defecto que destapo esta correccion —un mensaje que afirma algo falso al patron— NO tiene punto en 2 que lo cubra. Se cazo solo porque S5(b) estaba siendo medido. Ver la fila D4D5::spec2-sin-punto-de-veracidad."

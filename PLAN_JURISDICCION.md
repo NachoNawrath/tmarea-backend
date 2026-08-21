@@ -1387,7 +1387,7 @@ traslapados, 44.875,6 km², 10 de 64 sin geometría, insumo v1 con 11 jurisdicci
 del v2 y **todas en el corredor de Chiloé**, que es donde corren estas rutas—. Es **cota**, no
 medida exacta.
 
-#### La corrección de S2(c): ANULADA, no CUMPLE. Y la cifra es 4 de 15, con 2 anuladas.
+#### La corrección de S2(c): ANULADA, no CUMPLE. Y la cifra es 5 de 15, con 2 anuladas.
 
 La medición de §2 del 2026-08-20 dio **S2(c) NO CUMPLE** porque la bahía 114 —Canal Chacao,
 Capitanía Calbuco, en la ruta— tenía restricción vigente y no aparecía, y la ruta no la cruza.
@@ -1397,23 +1397,83 @@ Capitanía Calbuco, en la ruta— tenía restricción vigente y no aparecía, y 
 sostiene subiría la cifra **sin que la pantalla cambiara un píxel**, que es el mismo modo de falla
 que la `politica_de_conteo` del declarativo existe para impedir. Lo que baja es el **denominador**:
 
-> **4 de 15, con 2 anuladas por decisión del owner.**
-> CUMPLE **4 de 15** (S2a, S2b, S5a, S9) · NO CUMPLE **11 de 15** · ANULADAS **2**: S2(c) por D5
-> y S5(b) por D4. Antes era 4 de 17. **El numerador no se movió ni una vez.**
+> **5 de 15, con 2 anuladas por decisión del owner.**
+> CUMPLE **5 de 15** (S2a, S2b, **S3d**, S5a, S9) · NO CUMPLE **10 de 15** · ANULADAS **2**: S2(c)
+> por D5 y S5(b) por D4. Antes era 4 de 17 y después 4 de 15, ~~y el numerador no se movió ni una
+> vez~~ — **se movió el 2026-08-21, y esa vez fue TRABAJO.**
+
+> **MOVIDA EL 2026-08-21 POR LA FIRMA DE S3(d).** El tachado de arriba no se borra: «el numerador
+> no se movió ni una vez» fue **cierto durante un día** y describe las dos primeras veces que este
+> número cambió, las dos por derogación. La tercera es de otra clase y por eso el renglón queda a
+> la vista con su corrección al lado.
+>
+> **S3(d)** — *«Escala el veredicto a U, nunca a U+V»* — pasa a **CUMPLE**. Las capas A+C de U2
+> hicieron que la cobertura jurisdiccional **componga** el veredicto sin sobrescribirlo: el
+> endpoint devuelve `veredicto "Q"` con `bandera_final "U"` sobre Antofagasta → Taltal, y la
+> tarjeta que el 2026-08-20 decía BANDERA Q dice **BANDERA U**. El owner lo firmó mirando la
+> pantalla. **La segunda mitad —«nunca»— no la muestra ninguna pantalla** y se firmó como tal,
+> apoyada en el tope del backend, en el tope re-aplicado de la PWA y en la aserción de que el tope
+> del aviso es U.
+>
+> **Y S6(a) NO entró, aunque la proyección decía que sí.** Quedó **NO CUMPLE** por firma del mismo
+> día, **y su motivo es OTRO que el de antes**: antes fallaba porque la cobertura quedaba FUERA del
+> máximo —eso se arregló y se verificó, las seis fuentes se corrieron sobre el dato vivo y el
+> veredicto de pantalla salió como su máximo—; **ahora falla porque la LISTA de fuentes está
+> INCOMPLETA**. Falta la altura de marea contra el calado que el propio patrón cargó. Es otro
+> defecto con el mismo rótulo, y el motivo viejo es **falso desde el 2026-08-21**.
+>
+> **Consecuencia sobre el reparto por capa, que estaba escrito y era una proyección, no una
+> medida:** A+C cerraron **UNA** afirmación y no dos, y A+B+C cierran **CUATRO** y no cinco. Lo que
+> le falta a S6(a) no es la capa B y no tiene nada que ver con la cobertura jurisdiccional: es una
+> fuente que no existe, y **ninguna capa de U2 la trae**. Medición en
+> `_bitacoras/firma_s3d_s6a_2026-08-21/`.
 
 **LA CIFRA NO SE PUBLICA PELADA. Es regla del owner, del 2026-08-20, y vale para toda cita de
 este número en cualquier documento, bitácora o mensaje de commit.** La forma legal es
-**«4 de 15, con 2 anuladas por decisión del owner»**; «4 de 15» a secas está prohibido, porque un
-ratio que sube cuando se derogan criterios se lee como progreso y acá **no hubo ninguno**. El dato
-y su política viven en `data/spec2/cifra_spec2.json`, que es su autoridad, y `npm run cifra` es lo
-único que la emite. Un instrumento que la imprima de otra forma es un defecto de instrumento.
+**«5 de 15, con 2 anuladas por decisión del owner»**; «5 de 15» a secas está prohibido, porque un
+ratio que sube cuando se derogan criterios se lee como progreso. El dato y su política viven en
+`data/spec2/cifra_spec2.json`, que es su autoridad, y `npm run cifra` es lo único que la emite. Un
+instrumento que la imprima de otra forma es un defecto de instrumento.
 
-**Y la vista por punto lleva su nota, porque sola miente peor.** Con S2(c) y S5(b) anuladas, S2 y
-S5 dejan de estar divididos y pasan a CUMPLE:
+> **ESTE RENGLÓN LLEVA LA CIFRA DOS VECES Y EN ROLES OPUESTOS** — la primera es la forma **legal**,
+> la segunda el ejemplo de la **prohibida** —, así que un reemplazo global reescribe la prohibición
+> en el mismo acto de actualizar la regla. Las dos se movieron el 2026-08-21, **a mano y una por
+> una**. Queda dicho para el próximo que mueva la cifra.
+>
+> **Y el motivo se enmienda, porque desde el 2026-08-21 dice de menos.** La regla nació contra un
+> ratio que sube **por derogación**, y ése era el único caso que había. Ahora hay dos causas que
+> se ven **idénticas en el ratio y no valen lo mismo**: las dos primeras veces el denominador bajó
+> y el numerador no se movió; la tercera, S3(d) pasó a CUMPLE **por trabajo**. La salvedad sigue
+> siendo obligatoria por la misma razón de siempre, sólo que ahora también protege al revés: sin
+> ella, un movimiento ganado se lee igual que uno regalado.
 
-> **UNÁNIMES 9 de 9** (antes 7) · CUMPLE **3** — S2, S5, S9 — (antes **1**) · NO CUMPLE **6** —
-> S1, S3, S4, S6, S7, S8 — (sin cambio) · DIVIDIDOS **0** (antes 2).
+**Y la vista por punto lleva sus notas, porque sola miente peor.** Con S2(c) y S5(b) anuladas, S2 y
+S5 dejaron de estar divididos y pasaron a CUMPLE; con S3(d) cumpliendo, **S3 se partió**:
+
+> **UNÁNIMES 8 de 9** (antes 9) · CUMPLE **3** — S2, S5, S9 — (antes **3**) · NO CUMPLE **5** —
+> S1, S4, S6, S7, S8 — (antes 6) · **DIVIDIDOS 1 — S3** (antes 0).
 > **S2 y S5 llegaron a CUMPLE por DEROGACIÓN, no por trabajo. La pantalla no cambió un píxel.**
+> **S3 quedó DIVIDIDO por TRABAJO, no por derogación: S3(d) cumple desde las capas A+C y
+> S3(a)(b)(c) siguen sin cumplir porque el aviso no se renderiza. El CUMPLE por punto NO subió —
+> un punto salió de NO CUMPLE y no entró a CUMPLE.**
+
+> **SON DOS NOTAS Y NO UNA, Y DICEN COSAS DE SIGNO OPUESTO SOBRE LA MISMA VISTA.** Una, que un
+> punto llegó a CUMPLE sin que nadie trabajara. La otra, que un punto se partió **porque** alguien
+> trabajó. Leer cualquiera de las dos sola deforma la vista en una dirección distinta, así que
+> viven en **campos separados** de `cifra_spec2.json`, cada uno con **su propia guarda** en el
+> emisor: borrables por separado es detectables por separado.
+>
+> **Y las dos fotos `antes` se acumulan en vez de pisarse** (decisión del owner, 2026-08-21):
+> la nota de derogación se prueba con la foto de {unánimes 7, divididos 2, cumple 1}, y la de S3
+> dividido con la de {9, 0, 3}. Una sola ranura obligaría a dejar una de las dos notas **sin su
+> número al lado**, que es una regla del owner sin evidencia — el modo de falla que este fichero
+> existe para impedir. La serie completa, cada foto con de cuándo es y qué la movió, la emite
+> `npm run cifra`.
+>
+> **La división de S3 no es permanente y ése es el punto:** es la **ventana muda** que la firma O1
+> del 2026-08-20 aceptó —el veredicto deja de mentir y el patrón todavía no puede leer por qué—, y
+> **se apaga sola cuando entre la capa B**. La condición de esa firma se enuncia como **estado**, no
+> como conteo de piezas: vale *mientras S3 esté dividido*, y desde hoy eso está **en el dato**.
 
 **Y en su lugar queda una afirmación NUEVA que NO está medida.** La regla del owner genera su
 propio enunciado — llamémoslo **S2(c′)**: *una restricción le llega si y sólo si su trazado navega

@@ -1,0 +1,35 @@
+CONTROL CONTRA EL INDICE — 2026-08-21, pieza de la cifra de §2
+
+(A) LA CIFRA SALE DEL INDICE, NO DEL DISCO
+  ok    el dato DEL INDICE pasa las once guardas del emisor  ->  sin fallos
+
+      LA CIFRA PARA EL MENSAJE DE COMMIT, medida contra el indice:
+        >>  5 de 15, con 2 anuladas por decision del owner  <<
+        unidad: afirmacion de 2  ·  definicion: enunciado separable de la especificacion, contrastable contra lo que la pantalla muestra
+        ambito: P3. 2 no es contrastable contra P4 — ver la fila PLAN-2::spec-no-cubre-p4.
+        CUMPLE 5 de 15 (S2(a), S2(b), S3(d), S5(a), S9) · NO CUMPLE 10 · ANULADAS 2 (original 17)
+        por punto: unanimes 8 de 9 · divididos 1 (S3) · cumple 3 · no cumple 5
+        la serie tiene 2 fotos, cada una con de_cuando y que_la_movio
+
+  ok    la forma PROHIBIDA del indice quedo al dia  ->  "5 de 15"
+  ok    las dos fotos de la serie traen de_cuando y que_la_movio
+  ok    `antes` coincide con la ULTIMA foto de la serie
+
+    EL DECLARATIVO, contado sobre el OBJETO DEL INDICE:
+      filas 91 · unicas 89 · vivas 83 · sitios 24 · barridos 15
+  ok    el declarativo NO se movio: 91 · 89 · 83 (ninguna fila nueva)
+
+(B) INDICE CONTRA DISCO — nadie edito despues de stagear
+     (fuera de esta comprobacion, a proposito: _bitacoras/cifra_s3d_2026-08-21/04_control_contra_el_indice.txt — es la salida de este mismo control)
+  ok    las 11 rutas stageadas son identicas en indice y disco  ->  11/11
+
+(C) LOS TRES INTOCABLES NO ENTRARON AL INDICE
+  ok    .claude/launch.json sigue « M » (modificado y NO stageado)  ->  " M"
+  ok    _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json sigue « M » (modificado y NO stageado)  ->  " M"
+  ok    data/catalogo/estado_drift.json sigue « M » (modificado y NO stageado)  ->  " M"
+  ok    ninguno de los tres aparece entre las rutas stageadas
+
+CONTROL POSITIVO DEL METODO — una ruta inexistente tiene que fallar
+  ok    git show sobre una ruta que no esta en el indice falla
+
+CONTROL CONTRA EL INDICE: 11/11

@@ -1,0 +1,57 @@
+
+> tmarea-backend@0.1.0 cifra
+> node scripts/publicar_cifra_spec2.js
+
+CIFRA DE §2 — cumplimiento de la especificacion medido contra la PANTALLA
+Fuente: data/spec2/cifra_spec2.json  ·  medido el 2026-08-21
+
+  >>  5 de 15, con 2 anuladas por decision del owner  <<
+
+  unidad: afirmacion de 2
+  definicion: enunciado separable de la especificacion, contrastable contra lo que la pantalla muestra
+  ambito: P3. 2 no es contrastable contra P4 — ver la fila PLAN-2::spec-no-cubre-p4.
+
+  CUMPLE ....... 5 de 15   (S2(a), S2(b), S3(d), S5(a), S9)
+  NO CUMPLE .... 10 de 15
+  ANULADAS ..... 2   (denominador original 17)
+     S2(c)  anulada por D5 el 2026-08-20 — tenia NO CUMPLE
+        Contar como cumplida una afirmacion que ya nadie sostiene subiria la cifra sin que la pantalla cambiara un pixel. Se deroga, no se cumple.
+     S5(b)  anulada por D4 el 2026-08-20 — tenia NO CUMPLE
+        Mismo motivo que S2(c).
+
+VISTA POR PUNTO — no se publica sin sus DOS notas
+  UNANIMES 8 de 9 (antes 9)  ·  DIVIDIDOS 1 (antes 0)  ->  S3
+  CUMPLE 3 (antes 3)  ->  S2, S5, S9
+  NO CUMPLE 5 (antes 6)  ->  S1, S4, S6, S7, S8
+  ** S2 y S5 llegaron a CUMPLE por DEROGACION, no por trabajo. Dejaron de estar divididos porque su mitad en falta fue anulada. La pantalla no cambio.
+  ** S3 quedo DIVIDIDO por TRABAJO, no por derogacion: S3(d) —escala el veredicto a U, nunca a U+V— cumple desde las capas A+C, y S3(a)(b)(c) siguen sin cumplir porque el aviso no se renderiza. El CUMPLE por punto no subio: un punto salio de NO CUMPLE y no entro a CUMPLE. Esta division es la ventana muda que la firma O1 del 2026-08-20 acepto, y vale mientras dure — se apaga sola cuando entre la capa B.
+
+  LA SERIE — cada foto con de cuando es y que la movio. No se poda.
+    2026-08-20, antes de D4 y D5
+      unanimes 7 de 9  ·  divididos 2  ·  cumple 1  ·  no cumple 6   [unidad: punto de 2]
+      que la movio: Nada todavia: es la foto de partida, medida contra la pantalla del 2026-08-20.
+    2026-08-20, despues de D4 y D5
+      unanimes 9 de 9  ·  divididos 0  ·  cumple 3  ·  no cumple 6   [unidad: punto de 2]
+      que la movio: Las dos ANULACIONES por decision del owner. S2(c) cayo por D5 y S5(b) por D4, y con eso S2 y S5 dejaron de estar divididos y pasaron a CUMPLE. NADIE TOCO UNA LINEA DE CODIGO: es el salto de 1 punto cumplido a 3 que la nota de derogacion existe para que no se lea como progreso.
+    2026-08-21 — la de hoy, arriba. que la movio: la firma de S3(d) sobre la pantalla. TRABAJO, no derogacion.
+
+POLITICA (owner, 2026-08-20)
+  Decision del owner, 2026-08-20. LA CIFRA NO SE PUBLICA PELADA, en ningun documento, bitacora ni mensaje de commit.
+  forma legal ....... "5 de 15, con 2 anuladas por decision del owner"
+  forma PROHIBIDA ... "5 de 15"
+  motivo ............ Un ratio que sube cuando se derogan criterios se lee como progreso. Las dos primeras veces que este numero se movio no hubo ninguno: el denominador bajo de 17 a 15 y el numerador no se toco. La tercera vez, el 2026-08-21, el numerador SI subio y SI fue trabajo. Las dos causas se ven identicas en el ratio, y esa es toda la razon por la que la cifra no se publica pelada: la salvedad es lo unico que las distingue.
+
+El defecto que destapo esta correccion —un mensaje que afirma algo falso al patron— NO tiene punto en 2 que lo cubra. Se cazo solo porque S5(b) estaba siendo medido. Ver la fila D4D5::spec2-sin-punto-de-veracidad.
+
+LO QUE ESTE INSTRUMENTO NO HACE, y hay que saberlo: nada lo corre solo. No hay
+gancho que impida a una persona escribir "5 de 15" a mano en otro documento. Lo
+que hace es que exista UNA salida correcta y que su procedencia sea citable. Es
+la misma carencia que el declarativo de deudas tiene declarada sobre si mismo.
+
+Y HOY ESA CARENCIA MUERDE MAS QUE AYER: al moverse la cifra, toda copia escrita
+a mano quedo falsa de golpe. Medido el 2026-08-21 sobre los ficheros trackeados
+de este repo: 54 apariciones de la cadena vieja en 21 ficheros, ninguna en la
+PWA. La MAYORIA tiene que seguir diciendo la cadena vieja —viven en bitacoras y
+son el registro de lo que era cierto cuando se escribieron—, asi que el barrido
+que falta no es un buscar-y-reemplazar: tiene que separar CITA HISTORICA de
+AFIRMACION VIVA. Fila D4D5::la-cifra-tiene-emisor-pero-no-tiene-guardia.
