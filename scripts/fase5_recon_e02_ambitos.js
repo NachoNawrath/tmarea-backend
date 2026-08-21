@@ -222,9 +222,12 @@ async function main() {
 
   linea('â”€');
   console.log('\nNOTA sobre el alcance de lo medido en el bloque 3: el aviso de cobertura se');
-  console.log('calcula y se devuelve en su propio campo del endpoint, pero NO compone el');
-  console.log('veredicto â€” asi esta escrito en sitport-routes.js:852 ("Todavia NO compone el');
-  console.log('veredicto â€” esa es la pieza 4"). Lo que se mide arriba es lo que el backend');
+  console.log('calcula, se devuelve en su propio campo del endpoint y SI compone el veredicto');
+  console.log('desde U2 capas A+C (componerConCobertura en cobertura-jurisdiccional.js). Esta');
+  console.log('nota decia lo contrario y citaba una linea que ya se habia corrido; se corrige');
+  console.log('aca porque fue esa pieza la que la volvio falsa. Lo que NO existe todavia es el');
+  console.log('bloque que le muestra el aviso al patron: la bandera escala y por que escalo no');
+  console.log('se puede leer en pantalla. Lo que se mide arriba sigue siendo lo que el backend');
   console.log('produce, no lo que el patron ve hoy en pantalla.');
 
   await pool.end();

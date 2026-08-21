@@ -908,6 +908,39 @@ EL ORDEN
     05_payload_antofagasta_taltal.json — la bandera de pantalla tiene que pasar
     de Q a U sobre ese caso.
 
+    AGREGADO EL 2026-08-20, AL CERRAR ESTE ITEM. Nada de arriba cambia: esto es
+    lo que el item 1 deja DEBIENDO, y va aca para que lo lea quien lea el orden.
+    · LA CIFRA DE §2 SE MUEVE EN PIEZA PROPIA, INMEDIATAMENTE DESPUES, y no en
+      esta. Motivo: moverla arrastra §5 de PLAN_JURISDICCION.md, que escribe la
+      cifra a mano y hoy tiene texto del owner pendiente; y la vista por punto
+      no se edita sino que se remodela. Ninguna de las dos cosas traza a una
+      pieza de render (§4.8). El numero no se copia aca a proposito: lo emite
+      `npm run cifra` y esa es la unica salida legal.
+    · ESA PIEZA HACE TRES COSAS, NO UNA: mueve el dato, escribe en
+      cifra_spec2.json la NOTA OBLIGATORIA atada a S3 DIVIDIDO, y le pone su
+      GUARDA en publicar_cifra_spec2.js con su MORDIDA en
+      prueba_mordida_cifra.js. Sin la guarda la nota se puede borrar sin que
+      nadie se entere, y entonces no es un control.
+    · QUE DICE ESA NOTA, Y POR QUE EXISTE. Al cerrar A+C el veredicto deja de
+      mentir y el patron TODAVIA NO PUEDE LEER POR QUE: la tarjeta queda en
+      ambar sin una sola razon debajo, porque las razones se arman de las otras
+      fuentes y la cobertura no tiene bloque. Es consecuencia aceptada y
+      firmada por el owner (O1, 2026-08-20), no un descuido.
+      LA CONDICION DE ESA FIRMA SE ENUNCIA COMO ESTADO Y NO COMO CONTEO DE
+      PIEZAS: vale MIENTRAS S3 ESTE DIVIDIDO — S3(d) cumpliendo por composicion
+      y S3(a)(b)(c) sin cumplir porque el aviso no se renderiza. Esa division ES
+      la ventana muda, esta en el dato, y se apaga sola cuando entra el item 2
+      de abajo. Un conteo de piezas no habria servido: entre el item 1 y el
+      item 2 hay ahora una pieza mas, la de la cifra.
+    · POR QUE NO ES UNIDAD PROPIA, dicho para que nadie lo vuelva a plantear:
+      por la definicion de §1 CALIFICA como unidad. No se la nombra igual
+      porque una unidad nueva obliga a renumerar este orden, y hay punteros
+      vivos al «item 2» —empezando por el parrafo de arriba—. §7.2 de
+      PLAN_JURISDICCION.md, que es el control que cazaria esa clase de mentira,
+      esta DECIDIDO Y SIN IMPLEMENTAR desde el 2026-08-12: hoy nada vigila que
+      lo escrito aca siga siendo cierto, asi que el cambio correcto es el que no
+      mueve indices y no copia numeros.
+
 2 · U2, CAPA B — el bloque de cobertura.
     Se separa del 1 a proposito: el 1 hace que EL VEREDICTO DEJE DE MENTIR; el 2
     hace que el patron PUEDA LEER POR QUE. El 1 sin el 2 ya retira riesgo. El 2

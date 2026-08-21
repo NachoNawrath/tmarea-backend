@@ -1,0 +1,13 @@
+CONTROL DE ACEPTACION — U2 CAPAS A + C   [M-A: pasamanos sin la clave]
+==============================================================================
+fichero bajo prueba : C:/Users/katia/tmarea-pwa/src/hooks/useVoyageVerification.js
+sha256              : 334c074daec177580443caf62ddf424f5ae91327ee25cfce654534f81c5b986f
+clave cableada      : NO
+
+  ROJO  P   payload congelado INTACTO (cobertura U) -> la bandera escala esperado U   obtenido Q
+  OK    N   el MISMO payload SIN cobertura -> lo que daba antes (baseline) esperado Q   obtenido Q
+  OK    P2  cobertura Q sobre transito UV -> compone, no sobrescribe esperado UV  obtenido UV
+
+LECTURA DE LA MORDIDA: P tiene que ponerse ROJO y N tiene que quedarse VERDE.
+Si los dos se movieran, el control estaria midiendo el entorno y no el cableado.
+EXIT=1

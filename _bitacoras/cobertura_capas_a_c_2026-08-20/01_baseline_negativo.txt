@@ -1,0 +1,25 @@
+BASELINE DEL CONTROL NEGATIVO — codigo de HOY, sin tocar nada
+==============================================================================
+fichero bajo prueba : C:/Users/katia/tmarea-pwa/src/hooks/useVoyageVerification.js
+sha256              : dd35a2fc4fa51de83a602fc32a0b83eaaf1f9d271ae01f890402fe9a71e3e847
+payload congelado   : C:/Users/katia/tmarea-backend/_bitacoras/spec2_pantalla_2026-08-20/05_payload_antofagasta_taltal.json
+
+CONTROL DE LA REPLICA DEL PASAMANOS
+  claves en el fichero : bandera_final drift_catalogo fondeadero_sugerido motivo_principal restricciones_intermedias total ultimo_tramo_seguro veredicto veredicto_deportivo
+  claves en la replica : bandera_final drift_catalogo fondeadero_sugerido motivo_principal restricciones_intermedias total ultimo_tramo_seguro veredicto veredicto_deportivo
+  replica fiel         : SI
+  cobertura_jurisdiccional entre ellas: NO (es el defecto)
+
+CASO P — payload congelado INTACTO   (cobertura.bandera = U)
+  veredicto de pantalla : Q
+  detalles              : {"zarpe":"Q","recalada":"Q","recalada_ajustada":"Q","clima":"Q","transito":"Q","drift_catalogo":"Q"}
+
+CASO N — el MISMO payload SIN cobertura_jurisdiccional
+  veredicto de pantalla : Q
+  detalles              : {"zarpe":"Q","recalada":"Q","recalada_ajustada":"Q","clima":"Q","transito":"Q","drift_catalogo":"Q"}
+
+LO QUE ESTE FICHERO CONGELA, y es lo unico que congela:
+  el esperado del CASO N despues del cambio es  Q  (identico a hoy)
+  el esperado del CASO P despues del cambio es  U  (hoy da Q)
+
+EXIT 0

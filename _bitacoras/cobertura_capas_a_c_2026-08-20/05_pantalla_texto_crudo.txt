@@ -1,0 +1,80 @@
+==============================================================================
+LA PANTALLA, DESPUES DE U2 CAPAS A + C
+Ruta Puerto de Antofagasta -> Caleta Pesquera Taltal · nave AB 50
+Perfil: Medicion D4, licencia patron_nave_menor — el mismo de spec2
+2026-08-20
+==============================================================================
+
+localStorage VERIFICADO ANTES DE MEDIR, no despues:
+  voyage_setup.vessel.ab                 = "50"
+  voyage_setup.puerto_zarpe.nombre       = "Puerto de Antofagasta"
+  voyage_setup.destinos[0].puerto.nombre = "Caleta Pesquera Taltal"
+Los dos puertos se eligieron por la UI de P2, no escribiendo el localStorage a
+mano: un id de bahia inventado habria cambiado la pantalla que se queria medir.
+
+------------------------------------------------------------------------------
+1 . LA TARJETA DE VEREDICTO — LO QUE CAMBIO
+------------------------------------------------------------------------------
+ANTES (spec2, 2026-08-20, misma ruta, mismo perfil):
+
+  BANDERA Q — Zarpe autorizado
+  Condiciones favorables para navegar.
+  ✓ Puertos despejados · Clima dentro de limites · Autonomia suficiente
+
+AHORA:
+
+  🟨 BANDERA U — Navegar con precaucion
+  Hay restricciones o condiciones que requieren atencion antes de zarpar.
+  (ninguna razon debajo)
+
+LA TARJETA QUEDA MUDA, Y ESO ES LA FIRMA O1 DEL OWNER, NO UN DESCUIDO. Se
+predijo leyendo VoyageVerdict.jsx antes de montar y la pantalla lo confirmo
+igual: `razones` se arma de transito, puerto, clima, autonomia y deportivo —
+ninguna de cobertura—, y la linea de los tres ✓ esta condicionada a
+`veredicto === 'Q'`, asi que se va junto con la Q. Se pierden TRES afirmaciones
+ciertas y se pierden DOS falsas, que eran el titular: «Zarpe autorizado» y
+«Condiciones favorables para navegar» sobre 24,6646 km de los que no se sabe
+nada. El criterio firmado: una bandera falsa es una afirmacion que el motor no
+puede respaldar; una bandera cierta sin razon es informacion que falta.
+
+------------------------------------------------------------------------------
+2 . EL CONTROL DE CADENAS — REPLICA DEL INSTRUMENTO DE SPEC2
+------------------------------------------------------------------------------
+Buscadas sobre el texto de la pantalla entera, normalizado a NFC y probando las
+dos formas (con y sin tilde), porque el heredoc y las copias de esta maquina
+producen NFD y una busqueda ingenua da falso negativo.
+
+  LAS DEL AVISO — TODAS SIGUEN EN FALSO, y es lo esperado: la capa B no entra
+  "No tenemos cargado el limite"      -> false
+  "No tenemos cargado el límite"      -> false
+  "limite de esta jurisdiccion"       -> false
+  "límite de esta jurisdicción"       -> false
+  "Sin cita"                          -> false
+  "INV-3.6"                           -> false
+  "jurisdiccion" / "jurisdicción"     -> false
+  "Antofagasta antes de zarpar"       -> false
+  "24.6" / "24,6"                     -> false
+  "VHF Canal 16"                      -> false
+
+  CONTROLES POSITIVOS
+  "BANDERA U"                         -> true    <- LO QUE ESTA PIEZA GANA
+  "Puerto de Antofagasta"             -> true
+  "Navegar con precaución"            -> true
+
+  LO QUE TENIA QUE DEJAR DE ESTAR
+  "BANDERA Q"                         -> false
+  "Zarpe autorizado"                  -> false
+  "Puertos despejados"                -> false
+  "ZZQXNOEXISTE"                      -> false   <- control negativo del barrido
+
+  Largo del texto medido: 2867 caracteres.
+
+------------------------------------------------------------------------------
+3 . LO QUE NO ES DE ESTA PIEZA Y APARECIO EN LA CONSOLA
+------------------------------------------------------------------------------
+Tres 503 de /api/tide/predict sobre las coordenadas de Taltal, que en pantalla
+son «Informacion de mareas no disponible para esta ubicacion». Es cobertura de
+estaciones de marea y NO lo toca este cambio: la ruta, el veredicto y el
+endpoint de restricciones-ruta contestaron 200. Se anota y no se arregla.
+
+Ningun otro error de consola.

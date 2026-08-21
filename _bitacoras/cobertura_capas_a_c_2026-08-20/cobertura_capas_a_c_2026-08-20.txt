@@ -1,0 +1,235 @@
+U2 · CAPAS A + C — QUE EL VEREDICTO DEJE DE DECIR VERDE
+==============================================================================
+Unidad          : U2 capas A y C del plan de cierre, item 1 del orden.
+                  LA CAPA B NO ENTRA — es el item 2 y pide una decision de
+                  producto que el owner no tomo: donde va el bloque en P3.
+Fecha           : 2026-08-20
+Arboles al abrir: tmarea-backend  main = origin/main = a5ec9c4
+                  tmarea-pwa      main = origin/main = 1a9a816
+Suite al abrir  : 157/157. Al cerrar: 169/169.
+
+
+------------------------------------------------------------------------------
+0 . QUE ESTABA MAL, Y QUE SE ARREGLA
+------------------------------------------------------------------------------
+En Antofagasta -> Taltal la pantalla decia «BANDERA Q — Zarpe autorizado —
+Condiciones favorables para navegar». El backend, EN LA MISMA RESPUESTA, mandaba
+cobertura jurisdiccional con bandera U, un aviso de 24,6646 km con causa
+jurisdiccion_sin_geometria, y el telefono de la Capitania de Antofagasta ya
+resuelto. El patron leia verde sobre 24,6646 km de los que no sabemos nada.
+
+Fallaba en DOS capas y las dos se cierran aca:
+  A · el pasamanos de la PWA no nombraba `cobertura_jurisdiccional`, asi que el
+      campo llegaba al navegador y moria ahi.
+  C · el backend no metia la cobertura en el maximo de INV-1.1, y lo declaraba
+      en su propio comentario como «pieza 4» pendiente.
+
+LO QUE ESTA PIEZA NO HACE, Y ES A PROPOSITO: el veredicto deja de mentir, y el
+patron TODAVIA NO PUEDE LEER POR QUE. Consecuencia aceptada y firmada por el
+owner (O1). Ver §4.
+
+
+------------------------------------------------------------------------------
+1 . EL CAMBIO — CINCO SUPERFICIES
+------------------------------------------------------------------------------
+_bitacoras/plan_de_cierre_2026-08-20/plan_de_cierre_2026-08-20.txt
+    El parrafo AGREGADO al item 1 del orden. No se reescribio nada (§3.3), no se
+    renumero nada, y no se copio ningun numero. Ver §5.
+
+src/services/cobertura-jurisdiccional.js
+    `componerConCobertura`, CALCADA de `componerConDrift` (drift-ambito-a.js),
+    topada con `BANDERA_AVISO`. No es un mecanismo nuevo: es el mismo, con el
+    otro tope. El patron de doble composicion ya estaba escrito y pagado.
+
+src/routes/sitport-routes.js
+    El import, la linea que compone, y el comentario de «esa es la pieza 4»
+    reemplazado por lo que la linea hace y por lo que sigue faltando.
+
+tmarea-pwa/src/hooks/useVoyageVerification.js
+    La clave en el pasamanos, `escalarPorCobertura` calcada de `escalarPorDrift`
+    con el tope re-aplicado, y la fuente nueva en `maxVeredicto` y en `detalles`.
+
+scripts/fase5_recon_e02_ambitos.js
+    Su nota de alcance decia que la cobertura NO compone el veredicto y citaba
+    `sitport-routes.js:852`, linea que ya se habia corrido a :990. Esta pieza la
+    volvio falsa, asi que traza a lo pedido y se corrige (§4.8, §0.1). Es prosa
+    de un instrumento nuestro, no texto que vea el patron.
+
+
+------------------------------------------------------------------------------
+2 . LOS CONTROLES — LOS TRES EN ROJO ANTES DEL ARREGLO (§4.6)
+------------------------------------------------------------------------------
+(1) src/services/__tests__/cobertura-compone-veredicto.test.js
+    7 casos. 6 ROJOS antes («componerConCobertura is not a function»). El unico
+    verde era `BANDERA_AVISO === 'U'`, que asserta dato que ya existia.
+    Fija a la vista la rama `null`: la cobertura `no_evaluada` NO aporta en el
+    backend. Ver §6.
+
+(2) src/services/__tests__/borde-pwa-backend.test.js — LA ASERCION DE U1
+    1 ROJO antes, y es el que muerde: «"cobertura_jurisdiccional" esta declarado
+    consumido y no lo lee nadie fuera del pasamanos». Los otros 4 son el andamio:
+    control positivo y negativo del barrido, cierre de la lista, los no
+    consumidos siguen sin lector, y toda deuda trae su motivo.
+
+(3) 01_control_aceptacion.mjs — EN EL SCRATCHPAD DE SESION, fuera de los dos
+    repos, calcado del precedente de _bitacoras/cableo_cierre_2026-08-17/.
+    ANTES: P ROJO (esperado U, obtenido Q) · N verde · P2 verde.
+    DESPUES: los tres verdes.
+    MORDIDA M-A (quitarle la clave al pasamanos): P se pone ROJO y N SE QUEDA
+    VERDE. Si se movieran los dos, el control estaria midiendo el entorno y no
+    el cableado.
+
+    RESERVA DE §3.4, DICHA Y NO TAPADA: el .mjs vive en el scratchpad por firma
+    del owner, asi que ESTA MEDICION NO SE REGENERA DESDE EL REPOSITORIO. Solo
+    se versiona su salida. Es la misma reserva que ya carga el precedente del
+    2026-08-17. Versionarlo es una decision abierta.
+
+EL BASELINE DEL NEGATIVO SE CAPTURO CON EL CODIGO DE HOY, ANTES DE TOCAR NADA
+(01_baseline_negativo.txt). Sin eso, «lo que daba antes» habria salido de mi
+cabeza y el control habria probado mi suposicion en vez del comportamiento.
+Dos cosas que dejo esa corrida:
+  · el arnes REPRODUCE la pantalla medida sin navegador: dio Q, que es lo que el
+    patron vio. El entorno se transcribe de spec2/06_pantallas_texto_crudo.txt
+    lineas 114-117, no se inventa, y entre los dos casos varia UNA sola cosa.
+  · sha256 de useVoyageVerification.js = dd35a2fc...e3e847, IDENTICO al que
+    anoto la bitacora del 2026-08-17: el fichero no se movio desde entonces.
+    Identidad probada contra el contenido, nunca contra el tamano ni contra
+    git status (§7.1).
+
+
+------------------------------------------------------------------------------
+3 . LO QUE SE ROMPE — LISTA TRAIDA ANTES DE ARREGLAR, Y CLASIFICADA
+------------------------------------------------------------------------------
+  1. bandera_final sube de Q a U en rutas con hueco     EL CAMBIO FUNCIONANDO
+  2. el veredicto de pantalla sube de Q a U             EL CAMBIO FUNCIONANDO
+  3. el CTA de P3                                       NO SE ROMPE — solo se
+     deshabilita en UV, y la cobertura esta topada en U POR CONSTRUCCION, asi
+     que esta pieza no puede apagar el boton
+  4. la tarjeta queda en ambar SIN RAZONES              DECISION DEL OWNER — es
+     texto que ve el patron, no lo clasifico yo. Firmado O1. Ver §4
+  5. la nota de fase5_recon_e02_ambitos.js              REGRESION DE
+     DOCUMENTACION que produce esta pieza. Corregida
+  6. «4 de 15» a mano en PLAN_JURISDICCION.md §5        NO SE TOCA: solo se
+     rompe si se mueve la cifra, y la cifra es pieza aparte. Ver §5
+  7. data/spec2/cifra_spec2.json y su guarda            idem
+  8. la suite del backend                               NO SE ROMPE. Ningun test
+     assertaba bandera_final ni la no-composicion. 157/157 -> 169/169
+
+NO SE ACERCA, y se dice para que nadie lo busque: el guard de zonas-aviso.js
+sobre `{telefono}` mira `mensaje.capa_2_con_capitania` DEL CATALOGO. La capa A no
+toca texto ni catalogo. El telefono del payload viaja en el array `capitanias`,
+nunca dentro del texto (INV-10.1).
+
+
+------------------------------------------------------------------------------
+4 . LA TARJETA MUDA — LA FIRMA O1, Y SU CONDICION
+------------------------------------------------------------------------------
+Se evaluo una alternativa y SE DESCARTO CON MOTIVO. O2 era despintar la compuerta
+de la linea «✓ Puertos despejados · Clima dentro de limites · Autonomia
+suficiente» para que tambien se viera en U. No es texto nuevo: es una cadena que
+el patron ya ve. Se descarta porque esa linea se pinta en `C.turquesa` —el verde
+de la Q— y la pondria DENTRO de una tarjeta ambar: una instancia nueva de
+S6(b) «No hay verde con algo ambar en la misma pantalla», que es un NO CUMPLE
+vivo y el item 7 del orden. Cerrar una afirmacion de §2 fabricando un caso de
+otra es mudar el defecto, no arreglarlo.
+
+EL ARBOL NUNCA ESTUVO EN ESTE ESTADO. `drift_catalogo` tambien escala a U sin
+poner razon en la tarjeta, pero TIENE SU BLOQUE (DriftCatalogoBlock.jsx). El
+precedente vivo es «escala + bloque», nunca «escala mudo». Esta pieza lo estrena.
+
+LA CONDICION DE LA FIRMA SE ENUNCIA COMO ESTADO Y NO COMO CONTEO DE PIEZAS:
+vale MIENTRAS S3 ESTE DIVIDIDO — S3(d) cumpliendo por composicion y S3(a)(b)(c)
+sin cumplir porque el aviso no se renderiza. Y NO VIVE EN ESTA BITACORA: vive en
+el plan (§5) y su control armado va en la pieza de la cifra. Una condicion que
+solo vive en la bitacora de la pieza que la creo no la mira nadie despues.
+
+
+------------------------------------------------------------------------------
+5 . LA CIFRA NO SE MUEVE ACA, Y ESO ES DEUDA NOMBRADA
+------------------------------------------------------------------------------
+A+C ganan S3(d) y S6(a) — el reparto ya estaba escrito en la tabla §7 del plan
+(«... solo A+C (+2) S3d S6a»), asi que esa tabla NO se toca y sigue siendo
+cierta. Pero LA CIFRA NO SE PUBLICA EN ESTA PIEZA, y el mensaje de commit no
+lleva ninguna: `npm run cifra` sigue emitiendo lo que su dato dice, y ese dato lo
+mueve LA PIEZA SIGUIENTE.
+
+POR QUE APARTE: mover la cifra arrastra §5 de PLAN_JURISDICCION.md, que la
+escribe a mano en tres lineas y hoy tiene texto del owner pendiente (la tabla
+canonica sigue diciendo `D4 · abierta`); y la vista por punto no se edita sino
+que se remodela — S3 y S6 vuelven a estar DIVIDIDOS y el bloque `antes` deja de
+describir un antes que exista. Ninguna de las dos cosas traza a una pieza de
+render (§4.8).
+
+VENTANA QUE ESO ABRE, DICHA: entre esta pieza y la siguiente, el arbol se gana
+S3(d) y S6(a) y el emisor sigue publicando lo de antes. Se paga con que el
+emisor SUB-REPORTA, cosa que se nota a la primera corrida, y con que la pieza
+que lo cierra queda nombrada en el plan y en el mensaje de commit.
+
+ESA PIEZA HACE TRES COSAS, NO UNA: mueve el dato, escribe la NOTA OBLIGATORIA
+atada a S3 dividido, y le pone su GUARDA en publicar_cifra_spec2.js con su
+MORDIDA. Sin la guarda la nota se puede borrar sin que nadie se entere, y
+entonces no es un control.
+
+
+------------------------------------------------------------------------------
+6 . FILAS PARA EL DECLARATIVO — REDACTADAS Y NO APLICADAS
+------------------------------------------------------------------------------
+NINGUNA SE INSERTA EN ESTA PIEZA. Instruccion del owner.
+
+R1  la asimetria de `no_evaluada` entre el backend y la PWA
+    grupo 1 · repo tmarea-backend · sitio a decidir
+    `componerConDrift` y ahora `componerConCobertura` NO escalan cuando la
+    bandera llega en null, que es el estado `no_evaluada`/`no_evaluado`. Quien
+    escala en ese caso es la PWA, que mapea el estado a U. O sea `bandera_final`
+    puede decir Q sobre una cobertura que no se pudo evaluar mientras la pantalla
+    dice U. LA ASIMETRIA ES HEREDADA DE DRIFT — esta pieza la calca, no la
+    introduce — y por eso se declara en vez de corregirse de paso (§4.8). Queda
+    FIJADA POR TEST a la vista en cobertura-compone-veredicto.test.js.
+
+R2  `fondeadero_sugerido` no lo lee nadie — SENAL PERDIDA
+    grupo 1 · repo tmarea-pwa · sitio useVoyageVerification.js
+    Medido el 2026-08-20 con la asercion de U1: el motor calcula un fondeadero
+    sugerido, el pasamanos lo copia, y CERO lectores en toda la PWA. Misma clase
+    que `advertencias`, la advertencia de sonda que nunca llego al patron.
+    Comparte causa con D4D5::motivo-principal-muere-en-el-pasamanos.
+
+R3  `total` es redundante y conviene decirlo
+    grupo 1 · repo tmarea-pwa · sitio useVoyageVerification.js
+    Copiado y sin lectores, pero NO es senal perdida: los bloques cuentan
+    `restricciones_intermedias.length` por su cuenta. Se separa de R2 a proposito:
+    meter los dos en la misma bolsa convertiria la lista en un vaciadero.
+
+R4  la asercion del borde mira el PAYLOAD CONGELADO, no el endpoint vivo
+    grupo 1 · repo tmarea-backend · sitio borde-pwa-backend.test.js
+    El universo de campos sale de 05_payload_antofagasta_taltal.json. SI MANANA
+    EL HANDLER EMITE UNA CLAVE MAS, LA ASERCION SIGUE VERDE y el borde tiene un
+    campo sin declarar. Cerrarlo es leer el `res.json` del handler, o sea
+    parsear codigo: otra pieza con su propia decision. Queda escrito ADEMAS
+    dentro del propio test, en bloque destacado, porque ahi es donde alguien se
+    va a apoyar en el control — y no solo aca.
+
+
+------------------------------------------------------------------------------
+7 . LO QUE NO SE TOCO
+------------------------------------------------------------------------------
+  La capa B. No se escribio el bloque ni se empezo.
+  CONTRATO_MOTOR.md y el motor BRE.
+  data/deudas/deudas_declaradas.json — las cuatro filas de §6 van redactadas.
+  data/spec2/cifra_spec2.json y PLAN_JURISDICCION.md §5 — pieza siguiente.
+  Las cuatro filas pendientes del voseo. El bloque de clima de Hornopiren.
+  .claude/launch.json del repo — modificado y sin stagear desde el 2026-08-18,
+      no es de esta pieza. El que levanta los servidores es el de la sesion.
+  _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json — frente de toponimos.
+  data/catalogo/estado_drift.json — lo pisa el arranque. NO SE STAGEA. Detalle
+      en 06_estado_drift_antes_y_despues.txt, incluido el DRIFT_NO_DECLARADO con
+      universo 166 que registra la bahia 258, que es de OTRO frente.
+
+DOS COSAS DE MAQUINA QUE COSTARON TIEMPO Y VAN FICHADAS:
+  · La otra sesion habia parado el CHAT y no sus PROCESOS. El backend seguia vivo
+    con `node --watch`, se reinicio solo con mis ediciones y reescribio
+    estado_drift.json. «La sesion paro» no quiere decir que los puertos esten
+    libres: se comprueba con netstat, y se mata POR PID, nunca por nombre.
+  · preview_start siguio negandose a levantar el backend en el 3000 por REGISTRO
+    OBSOLETO del harness, con el puerto ya libre y verificado. Se levanto con
+    `npm start` en segundo plano —sin --watch, a proposito— y la PWA si por
+    preview_start. Es un desvio de la regla de la maquina, declarado.

@@ -8,7 +8,7 @@ const { evaluarRuta } = require('../services/route-restriction-evaluator');
 const { derivarCierre } = require('../services/cierre-derivador');
 const { validarHabilitacionDeportiva } = require('../services/deportivo-validator');
 const {
-  medirCoberturaRuta, componerAvisos, capaJurisdiccionesVigente,
+  medirCoberturaRuta, componerAvisos, componerConCobertura, capaJurisdiccionesVigente,
   ensancheVigente, bahiasDelEnsanche,
 } = require('../services/cobertura-jurisdiccional');
 const { capitaniaDeBahia } = require('../services/capitania-de-bahia');
@@ -987,8 +987,12 @@ router.post('/restricciones-ruta', async (req, res) => {
     // Se calcula y se devuelve en su PROPIO campo. NO entra en
     // restricciones_intermedias: un "no sabemos" mezclado entre las
     // restricciones reales de la ruta tendría una autoridad que no tiene
-    // (INV-1.2). Todavía NO compone el veredicto — esa es la pieza 4.
+    // (INV-1.2). SÍ compone el veredicto, igual que el drift: INV-3.6 dice que
+    // el aviso es "una fuente más del máximo de INV-1.1", con su aporte topado
+    // en U. Lo que todavía NO existe es el bloque que se lo muestra al patrón:
+    // la bandera deja de mentir, y por qué escaló no se puede leer en pantalla.
     const cobertura = await evaluarCobertura(puntosValidos);
+    banderaFinal = componerConCobertura(banderaFinal, cobertura.bandera);
 
     console.log(`[sitport/restricciones-ruta] waypoints=${puntosValidos.length} bahias_matcheadas=${porBahia.size} restricciones=${intermediasEnriquecidas.length} omitidas=${bahiasOmitidas} veredicto=${evaluacion.veredicto} deportivo=${veredictoDep?.bandera || '-'} final=${banderaFinal} cobertura=${cobertura.estado}/${cobertura.bandera || '-'} avisos=${cobertura.total} defectos=${cobertura.defectos_registrados} drift=${driftCatalogo.estado}/${driftCatalogo.bandera || '-'} avisos_drift=${driftCatalogo.total} defectos_drift=${driftCatalogo.defectos_registrados}`);
 

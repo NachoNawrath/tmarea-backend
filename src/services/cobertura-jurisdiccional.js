@@ -492,9 +492,31 @@ async function capaJurisdiccionesVigente(pool) {
   return (await capaDeclarada(pool)).capa_jurisdicciones;
 }
 
+// Composición del veredicto (INV-1.1). CALCADO de `componerConDrift`
+// (drift-ambito-a.js), porque el mecanismo ya está escrito y pagado: el aviso de
+// cobertura es una FUENTE MÁS del máximo, y su aporte está topado en U POR
+// CONSTRUCCIÓN. Aunque llegara otra cosa, esta función no puede devolver UV por
+// causa de la cobertura — INV-3.6: "escala el veredicto a U, y NUNCA a U+V. La
+// ausencia de dato no es una prohibición".
+//
+// `banderaCobertura` en null es el estado `no_evaluada`, y acá NO aporta. Es lo
+// mismo que hace `componerConDrift` con su propio null, y se conserva idéntico a
+// propósito: quien escala en ese caso es la PWA, que mapea el estado a U. La
+// asimetría es HEREDADA de drift, no la introduce esta pieza, y queda declarada
+// como fila aparte en vez de corregirse de paso (§4.8).
+const RANGO_VEREDICTO = { Q: 0, U: 1, UV: 2 };
+function componerConCobertura(banderaPrevia, banderaCobertura) {
+  const previa = RANGO_VEREDICTO[banderaPrevia] != null ? banderaPrevia : 'Q';
+  if (!banderaCobertura || banderaCobertura === 'Q') return previa;
+  const aporte = RANGO_VEREDICTO[banderaCobertura] > RANGO_VEREDICTO[BANDERA_AVISO]
+    ? BANDERA_AVISO : banderaCobertura;
+  return RANGO_VEREDICTO[aporte] > RANGO_VEREDICTO[previa] ? aporte : previa;
+}
+
 module.exports = {
   medirCoberturaRuta,
   componerAvisos,
+  componerConCobertura,
   capaJurisdiccionesVigente,
   ensancheVigente,
   bahiasDelEnsanche,

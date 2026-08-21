@@ -1,0 +1,25 @@
+{
+  "_que_es": "El cuerpo que /api/sitport/restricciones-ruta le devolvio AL NAVEGADOR que mostraba P3 DESPUES de U2 capas A+C, leido del panel de red del propio navegador (POST 21536.85). Misma ruta y mismo perfil que 05_payload_antofagasta_taltal.json de spec2.",
+  "_lo_que_prueba": "veredicto 'Q' y bandera_final 'U'. La cobertura COMPONE: el veredicto base no se movio y el maximo si. Si alguien hubiera implementado sobrescribir en vez de componer, los dos dirian lo mismo.",
+  "_antes": "En spec2, el mismo endpoint sobre la misma ruta devolvia veredicto 'Q' y bandera_final 'Q' con la misma cobertura en U.",
+  "veredicto": "Q",
+  "bandera_final": "U",
+  "cobertura_jurisdiccional": {
+    "estado": "evaluada",
+    "capa": "bahia_jurisdicciones",
+    "bandera": "U",
+    "total": 1,
+    "defectos_registrados": 3,
+    "aviso_1": {
+      "causa": "jurisdiccion_sin_geometria",
+      "origen": "ambito_no_publicado",
+      "largo_km": 24.6646,
+      "jurisdicciones_probables": ["antofagasta", "taltal"],
+      "capitanias": [{ "nombre": "Antofagasta", "telefono": "+56 55 263 0000", "bahia_id": 74 }],
+      "es_restriccion": false
+    }
+  },
+  "drift_catalogo_bandera": "Q",
+  "restricciones_intermedias": [],
+  "timestamp": "2026-08-21T03:41:15.030Z"
+}

@@ -1,0 +1,31 @@
+SHA Y DIFF DE data/catalogo/estado_drift.json — MONTAJE DE U2 A+C
+==================================================================
+
+El fichero lo pisa el arranque del backend. Esta autorizado y NO SE STAGEA.
+
+ANTES de montar (copia congelada en el scratchpad de sesion):
+  sha256 10c968df968b4bca2fccfaf7f05ec52d17fd3871b82c4b6a82ad1d91a1c26300
+DESPUES del arranque:
+  sha256 588bc76061de362fefd1bb2c9e1efdf9bdeae3853f195c79278b5da1f63fabbf *data/catalogo/estado_drift.json
+
+DIFF — UNA SOLA LINEA:
+2c2
+<   "ultima_corrida": "2026-08-21T03:32:07.096Z",
+---
+>   "ultima_corrida": "2026-08-21T03:38:30.710Z",
+
+SE MOVIO TRES VECES EN LA SESION, Y DOS NO FUERON MIAS:
+  ef3de2ff...  en el gate, y todavia a las 23:29:55 CON BYTES IDENTICOS y
+               mtime distinto — §7.1 en vivo: el reloj se movio, el contenido no.
+  10c968df...  23:32:07. Lo reescribio el 'node --watch' HUERFANO de otra
+               sesion, que seguia vivo y se reinicio con mis ediciones.
+  588bc760...  23:38:30. Mi propio arranque, con npm start (sin --watch, a
+               proposito, para que no siguiera reescribiendose solo).
+
+LO QUE EL FICHERO REGISTRA AHORA, Y NO ES DE ESTA PIEZA:
+  veredicto  DRIFT_DECLARADO_ABIERTO -> DRIFT_NO_DECLARADO
+  universo_sitport  165 -> 166, con la divergencia de la BAHIA 258.
+  Es el frente de 257/258 y de la fila
+  PLAN-2::consultabahias-no-alimenta-el-detector-de-drift. Queda anotado
+  aca porque el fichero commiteado dice otra cosa y quien lo mire despues
+  va a querer saber de donde salio. NO ES DE U2 Y NO SE TOCA.
