@@ -1,0 +1,256 @@
+CLAUDE.md GANA §4.9 — UNA GUARDA DE TEXTO COMPRUEBA QUE LO MENCIONE, NO QUE LO
+AFIRME. Y LA FILA DE METODO CIERRA AL APLICAR EL TEXTO
+==============================================================================
+Unidad          : una seccion de CLAUDE.md. Texto que gobierna, o sea ciclo de
+                  §5.6: gate sobre el fichero entero al abrir, diff crudo
+                  stageado al cerrar, y no se autoriza sobre descripcion.
+Fecha           : 2026-08-21
+Arbol al abrir  : tmarea-backend  main = origin/main = cacb2b5
+                  CLAUDE.md en disco identico al blob de cacb2b5 (339b737)
+Declarativo     : 92 · 90 · 84 · 25 sitios · 16 barridos · 9 sin barrer al abrir
+                  92 · 90 · 83 · 25 sitios · 16 barridos · 9 sin barrer al cerrar
+Suite           : 169/169 al abrir y al cerrar.
+SHELL           : Git Bash (§7.3). Los comandos que hay que repetir van en su
+                  forma PowerShell en 02_cita_huerfana.txt.
+
+
+------------------------------------------------------------------------------
+0 . LO QUE ESTA PIEZA HIZO
+------------------------------------------------------------------------------
+· ESCRIBIO §4.9 en CLAUDE.md, al final de §4, CON SUS DOS MITADES.
+· LE PUSO A §4.6 UNA LINEA DE VUELTA, para que el par apunte en los dos
+  sentidos. El owner levanto el fuera-de-alcance para esa linea sola.
+· ANOTO AL PIE de la bitacora del 2026-08-17 que su cita a «(§4.9)» no apuntaba
+  a nada cuando se escribio y desde hoy apunta a otra cosa.
+· CERRO la fila METODO al APLICAR el texto: vivas 84 -> 83.
+
+NO SE RENUMERO NADA, y no es comodidad: esta medido. Ver §2.
+
+
+------------------------------------------------------------------------------
+1 . EL GATE ENCONTRO CUATRO COSAS. LA CUARTA NO ESTABA PEDIDA Y ES LA QUE MAS
+    IMPORTA
+------------------------------------------------------------------------------
+(1) INEJECUTABLE — «§4.9, PEGADA A §4.6» NO PUEDE SER LAS DOS COSAS.
+    §4 terminaba en §4.8, asi que un §4.9 cae DESPUES de §4.8, a unas 65 lineas
+    de §4.6. Para pegarla fisicamente habria que numerarla §4.7 y correr las
+    otras dos. COSTO MEDIDO sobre el arbol de cacb2b5, no proyectado: §4.7 tiene
+    12 citas en 3 ficheros y §4.8 tiene 19 en 11 — 31 citas quedarian falsas.
+    DECISION DEL OWNER: §4.9 al final de §4, nombrando a §4.6 desde su primera
+    linea. «31 citas falsas no se pagan por una adyacencia fisica.»
+
+(2) CONTRADECIA UNA REGLA VIGENTE — «SIN NUMEROS Y SIN FICHERO:LINEA» CHOCA CON
+    LA CONVENCION MEDIDA DEL PROPIO FICHERO. CLAUDE.md lleva sus mediciones
+    adentro: §7.1 trae «MEDIDO EL 2026-08-20» con bytes y CR contados, §3.5 fija
+    su umbral y lo declara movible, §7.2 cita shas, §4.6 trae su caso. Y §1.2 y
+    §2 exigen que el fundamento se mida. Una §4.9 sin nada de eso queda como
+    prosa inverificable.
+    SE SEPARO EN TRES, Y LA INSTRUCCION ERA CORRECTA EN DOS: las CIFRAS quedan
+    fuera —caducan solas—; FICHERO:LINEA queda fuera —las lineas se mueven—;
+    pero EL CASO CONCRETO NO ES UN NUMERO. «Una guarda que prohibia la marca
+    {telefono} y dejaba pasar un telefono escrito a mano» es una FORMA, y
+    sobrevive a todas las piezas igual que el caso de §4.6. Y un ID DE FILA del
+    declarativo tampoco es fichero:linea: no se mueve, y `npm run deudas` lo
+    encuentra. DECISION DEL OWNER: el ejemplo va, el id va, las cifras no.
+    DESCARTADO Y DICHO: se evaluo si anclar guardas en frases literales choca
+    con §4.3 —«sin casos particulares en el codigo»—. NO CHOCA: §4.3 prohibe
+    nombrar una ENTIDAD concreta, y un literal que describe la afirmacion que se
+    vigila no nombra a nadie.
+
+(3) DUPLICABA — §2 YA ES ESTA REGLA, UN NIVEL MAS ARRIBA. «Si un argumento se
+    apoya en una medicion, esa medicion tiene que probar lo que el argumento
+    dice. No algo parecido», y uno de sus cinco casos —el conteo de testigos que
+    se uso para juzgar una capa de costa y no la media— es este mismo defecto
+    sobre una medicion en vez de sobre una guarda. Hay mas: §7.2 tiene una
+    instancia VIVA de la familia sin nombrarla, en su bloque de deuda abierta —
+    los controles de BOM «miran FICHEROS, no MENSAJES».
+    §4.9 declara la relacion en una clausula: es §2 aplicado a los controles que
+    miran texto. Sin esa clausula es §2 otra vez con otras palabras. Es el mismo
+    precedente que la propia fila, que declara que generaliza a
+    casilla-ambas-del-criterio-d3a.
+
+
+------------------------------------------------------------------------------
+2 . LO QUE LA PIEZA HABRIA ROTO SIN QUERER, Y ES EL HALLAZGO DEL DIA
+------------------------------------------------------------------------------
+YA HABIA UNA CITA A «§4.9» EN EL ARBOL, Y NO APUNTABA A NADA.
+
+`_bitacoras/alcance_union_2026-08-17/` dice, textual: «por eso existe el CONTROL
+DE CONTENCION (§4.9): todo umbral que el parser extrae tiene que estar CONTENIDO
+en la union».
+
+MEDIDO CONTRA TODA LA HISTORIA DEL FICHERO: `### 4.9` no existio NUNCA en
+CLAUDE.md hasta hoy. Y el dia en que se escribio ese documento —2026-08-17— la
+seccion 4 terminaba en §4.6: §4.7 y §4.8 entraron tres dias despues, en
+`74eff43`. La cita nacio rota.
+
+AHI ESTA EL PROBLEMA, Y ES EXACTAMENTE LA REGLA QUE SE ESTABA POR ESCRIBIR
+COBRANDOSE ANTES DE ESCRIBIRLA. Hoy, quien la sigue encuentra que §4.9 no existe
+y sabe que tiene que buscar en otro lado. Al crear §4.9, la cita DEJA DE ESTAR
+ROTA Y PASA A RESOLVER — a una regla sobre guardas de texto que no tiene nada
+que ver con un control de contencion sobre umbrales del parser. EL DEFECTO PASA
+DE RUIDOSO A SILENCIOSO. Es §4.1 al reves y es la segunda mitad de §4.9.
+
+DECISION DEL OWNER: nota al pie de esa bitacora, por §3.3 — se agrega, no se
+reescribe. Se descarto numerar la nueva regla §4.10 para esquivar el choque:
+dejaba un hueco de numeracion permanente y NO arreglaba nada, porque la cita
+seguiria sin resolver. Y se descarto no hacer nada, que era lo mas barato hoy y
+lo mas caro despues: una referencia que se lee bien y es falsa es, en su forma
+chica, lo que §2 llama fabricar autoridad.
+
+EL TEXTO DE LA BITACORA VIEJA NO SE TOCA. Lo que describe es cierto: el control
+de contencion existe y esta en el arbol. Lo unico falso era su numero de
+seccion.
+
+
+------------------------------------------------------------------------------
+3 . LO QUE DICE §4.9, Y POR QUE VAN LAS DOS MITADES
+------------------------------------------------------------------------------
+La primera mitad es la que se escribio el 2026-08-21 y ya estaba en el arbol en
+prosa: una guarda que busca una palabra no comprueba que el texto AFIRME algo,
+comprueba que lo MENCIONE, y un texto que contrasta con otro lo menciona por
+definicion. Con su prueba: escribir el texto que la pasaria diciendo lo
+contrario, y si no se puede escribir, decirlo tambien.
+
+LA SEGUNDA MITAD ES LA QUE MUERDE, y sin ella §4.9 repetiria el defecto que
+viene a declarar. LA FORMA DE LA GUARDA DECIDE DE QUE LADO CAE EL ERROR:
+
+  · en una guarda POSITIVA —«el texto tiene que decir esto»— el literal que
+    lleva adentro caduca en ROJO el dia que el texto cambia, y alguien lo mira;
+  · en una de PROHIBICION —«el texto no puede decir esto»— caduca en VERDE Y EN
+    SILENCIO, porque basta escribir lo prohibido de otra manera.
+
+De ahi la consecuencia practica: una prohibicion se ancla en LA COSA PROHIBIDA,
+nunca en su ortografia habitual.
+
+EL EJEMPLO ES EL DE LA GUARDA DEL TELEFONO, y esta escrito sin nombres de
+fichero ni numeros: una guarda hacia cumplir un invariante que prohibe el
+telefono dentro de un mensaje del catalogo y lo que miraba era la marca de
+plantilla. Un mensaje con el numero escrito a mano la pasaba; y el mismo texto
+que nombraba la marca para negarla la detenia. Aceptaba el incorrecto y
+rechazaba el correcto, las dos por el mismo motivo.
+
+EL UNICO PUNTERO ES EL ID DE LA FILA. Sin cifras y sin fichero:linea, porque
+CLAUDE.md sobrevive a todas las piezas y un id no se mueve.
+
+
+------------------------------------------------------------------------------
+4 . UNA FORMA REUTILIZABLE: EL CONTROL DE REFERENCIAS DE UNA PIEZA DE TEXTO QUE
+    GOBIERNA. NO ES UN DETALLE DE ESTA PIEZA
+------------------------------------------------------------------------------
+QUEDA ESCRITO ASI POR INSTRUCCION DEL OWNER, 2026-08-21: toda pieza que escriba
+texto que gobierna deberia tener un control como este. Lo que sigue es la forma,
+no la anecdota — la instancia de hoy va abajo.
+
+EL MODO DE FALLA QUE ATACA. Un texto que gobierna se sostiene sobre referencias:
+a otras secciones de si mismo, a otro documento, a una fila del declarativo. Una
+referencia rota se ve; UNA REFERENCIA QUE RESUELVE A OTRA COSA NO. Ese es el
+modo de falla propio de esta clase de pieza, y el gate de hoy lo destapo antes
+de que costara: una cita a «§4.9» que llevaba cuatro dias sin apuntar a nada iba
+a empezar a apuntar a algo, y a algo equivocado.
+
+LAS CUATRO REGLAS DE LA FORMA:
+
+  (1) EL CONTROL NO MIRA QUE EL TEXTO MENCIONE — COMPRUEBA QUE CADA REFERENCIA
+      RESUELVA CONTRA EL DATO VIVO. Un `grep` de «§4.9» dice que la cadena esta;
+      no dice que haya una seccion detras. Es §4.9 aplicada al control que la
+      instala.
+
+  (2) CADA LADO DE UN PAR TIENE QUE ESTAR DENTRO DE SU SECCION, no suelto en el
+      fichero. Dos referencias cruzadas en cualquier parte del documento pasan
+      un `grep` y NO son un par: el que llega por una sección tiene que
+      encontrar la otra ahi, no en la misma bolsa de texto.
+
+  (3) NINGUNA LISTA ESCRITA A MANO. El universo de lo que EXISTE se lee del
+      propio fichero —las secciones, con la misma expresion que las escribe— y
+      del propio declarativo —los ids—. Un control con la lista adentro caduca
+      el dia que alguien agrega una seccion, y caduca EN VERDE.
+
+  (4) CONTROL POSITIVO Y NEGATIVO DEL PROPIO CONTROL. Sin ellos, un control que
+      resolviera CUALQUIER cosa pasaria todo lo demas y pareceria perfecto. El
+      positivo: secciones que si estan tienen que reconocerse. El negativo: una
+      seccion inventada y un id inventado NO pueden resolver.
+
+LA INSTANCIA DE HOY, que es lo que se corrio:
+
+  · «### 4.9» existe una sola vez y es la ultima de §4;
+  · el par apunta en los DOS sentidos, y cada lado esta DENTRO de su seccion;
+  · TODA referencia «§N.M» de las dos secciones resuelve contra las 40 secciones
+    que el propio fichero declara. Tres referencias, las tres resuelven;
+  · el id que §4.9 cita EXISTE en el declarativo;
+  · la fila quedo cerrada con lo que V8 exige;
+  · positivo: §4.6 y §2 se reconocen. Negativo: §9.9 no existe y un id inventado
+    tampoco resuelve.
+
+Salida cruda en 03_control_referencias.txt.
+
+EL INSTRUMENTO VIVE EN EL SCRATCHPAD DE SESION, fuera de los dos repos, con la
+misma reserva declarada que sus precedentes. Su salida esta aca; el instrumento
+no. Versionarlos sigue siendo decision abierta — y con esta forma escrita como
+forma, la decision pesa mas que antes: lo que se reusa es el criterio, y el
+criterio esta aca, pero el codigo que lo ejecuta hay que volver a escribirlo.
+
+
+------------------------------------------------------------------------------
+5 . EL CIERRE DE LA FILA
+------------------------------------------------------------------------------
+METODO::una-guarda-de-texto-comprueba-que-lo-mencione-no-que-lo-afirme pasa a
+`estado: cerrada`, con `cerrada_el` y `cerrada_por` — que es lo que V8 exige.
+
+CIERRA AL APLICAR EL TEXTO, NO AL DECIDIRLO. Es el precedente de
+PLAN-3-E8::p1-en-e4, y es la otra cara de la regla del 2026-08-20: FIRMAR ES
+RESPONDER, NO HACER. La firma estaba desde ayer; lo que faltaba era el trabajo,
+y el trabajo era este.
+
+EL MOVIMIENTO, ANTICIPADO EN EL GATE Y MEDIDO SOBRE UNA COPIA ANTES DE TOCAR EL
+ARBOL: vivas 84 -> 83. Filas, unicas, sitios, barridos y sin barrer QUIETOS. Los
+otros dos numeros que se mueven —no vivas 6 -> 7, de las cuales cerradas por
+trabajo 2 -> 3, y grupo 1 vivas 52 -> 51— no son un movimiento extra: son el
+mismo, visto del otro lado, y el propio validador los imprime con la leyenda
+«los dos numeros van siempre juntos».
+
+LO QUE EL CIERRE NO ARRASTRA, Y SE DICE: el hueco de G6 —la guarda del
+declarativo que afirma comprobar que una pregunta «se contesta sin abrir el
+repositorio» y busca la ortografia de una mencion— sigue DECLARADO dentro de la
+fila y dentro de validar_deudas_declaradas.js, SIN FILA PROPIA. Decision del
+owner del 2026-08-21: es una INSTANCIA de la regla y no un defecto aparte, y
+abrir una fila por instancia infla el conteo sin agregar informacion.
+
+
+------------------------------------------------------------------------------
+6 . NO SE TOCO
+------------------------------------------------------------------------------
+Ninguna otra seccion de CLAUDE.md — el fuera-de-alcance se levanto para UNA
+linea de vuelta en §4.6 y para nada mas, y la linea es una referencia: no toca
+lo que §4.6 dice. CONTRATO_MOTOR.md. La cifra de §2. La capa B. El motor BRE.
+Ninguna fila nueva. Los tres ` M` intocables siguen fuera del indice.
+
+------------------------------------------------------------------------------
+6 bis . LAS DOS COMPROBACIONES QUE SE HICIERON ANTES DE ESCRIBIR, Y QUEDAN
+        ESCRITAS PORQUE NINGUNA DEJA RASTRO SI SALE BIEN
+------------------------------------------------------------------------------
+Las dos son de la familia de «reconocer antes de tocar» (§6). Ninguna produjo un
+cambio, y por eso mismo hay que escribirlas: una comprobacion que sale bien no
+deja ninguna huella en el diff, y la sesion siguiente no puede saber si se hizo.
+
+(a) NADIE LEE CLAUDE.md POR CODIGO. Se barrio antes de cambiarlo: todas las
+    apariciones de «CLAUDE.md» en src/, scripts/ y tools/ son citas en
+    comentarios o dentro de mensajes de error. Ningun instrumento lo parsea, asi
+    que agregar una seccion no puede romper nada corriendo. Si alguno lo
+    parseara, agregar §4.9 al final de §4 seria un cambio de dato y no de prosa,
+    y esta pieza habria tenido otro alcance.
+
+(b) LA NOTA QUE ARREGLA UNA REFERENCIA ROTA NO PODIA LLEVAR UNA ADENTRO. La nota
+    al pie dice «El §2.1 de arriba dice ...». Se verifico contra el propio
+    documento que la cita huerfana esta efectivamente dentro de «2.1 — LA
+    FUENTE» —arranca en su linea 81 y «2.2» arranca en la 96—, en vez de
+    escribirlo de memoria. Habria sido un final pobre que el texto que corrige
+    una referencia falsa cargara una falsa.
+
+------------------------------------------------------------------------------
+7 . RESERVA Y ENTORNO
+------------------------------------------------------------------------------
+
+SE USO node Y NO heredoc para escribir, y desde un FICHERO y no con `node -e`
+inline: las dos son reglas que este repositorio pago. NFC comprobado despues de
+componer y antes de escribir, en los dos ficheros que se tocaron por script.

@@ -1,0 +1,42 @@
+LA CITA HUERFANA A «§4.9», MEDIDA — 2026-08-21
+==============================================
+
+SHELL: los comandos de abajo se corrieron en Git Bash (§7.3). La forma
+PowerShell equivalente va al pie.
+
+1 · QUIEN CITA §4.9 EN EL ARBOL, ANTES DE ESTA PIEZA
+cacb2b5:_bitacoras/alcance_union_2026-08-17/alcance_union_2026-08-17.txt:91:  CONTROL DE CONTENCION (§4.9): todo umbral que el parser extrae tiene que estar
+
+2 · SU CONTEXTO
+  EL COSTO, DECLARADO: el derivador tiene lexico de extraccion propio, que
+  DUPLICA del parser la lectura de numero+unidad y de las expresiones
+  universales. Los dos lectores pueden separarse con el tiempo. Por eso existe el
+  CONTROL DE CONTENCION (§4.9): todo umbral que el parser extrae tiene que estar
+  CONTENIDO en la union. No los obliga a ser iguales —D-C6 amplia a proposito—
+  pero caza que se separen HACIA ABAJO.
+
+
+3 · ¿EXISTIO ALGUNA VEZ UN «### 4.9» EN CLAUDE.md? — toda la historia
+  (sin salida = NUNCA existio)
+
+4 · QUE SECCIONES DE §4 HABIA EL DIA EN QUE SE ESCRIBIO ESA BITACORA
+  commit de la bitacora: a050ac797e6940ef3bddc56bede82627fa14960b  2026-08-17
+  ### 4.1 — Falla ruidoso
+  ### 4.2 — Ningún mapeo por clave con caso por defecto silencioso
+  ### 4.3 — Sin casos particulares en el código
+  ### 4.4 — Autoverificado
+  ### 4.5 — Preparado para que la fuente cambie
+  ### 4.6 — Un control tiene que poder fallar
+
+5 · CUANDO ENTRARON §4.7 Y §4.8
+  74eff43  2026-08-20  CLAUDE.md GANA SIMPLICIDAD PRIMERO Y CAMBIOS QUIRURGICOS, y el codigo muerto por firma reciente se borra solo si se puede PROBAR muerto
+
+6 · COSTO DE RENUMERAR, que es la opcion que se descarto
+  §4.6 : 85 apariciones en 61 ficheros
+  §4.7 : 12 apariciones en 3 ficheros
+  §4.8 : 19 apariciones en 11 ficheros
+  Numerarla §4.7 para pegarla a §4.6 volveria falsas las de §4.7 y §4.8.
+
+--- FORMA REPRODUCIBLE EN POWERSHELL (§7.3) ---
+  git grep -nE "§ ?4\.9\b" cacb2b5 -- . ":!node_modules"
+  foreach ($c in (git log --format=%H cacb2b5 -- CLAUDE.md)) { if ((git show "${c}:CLAUDE.md") -match "^### 4\.9") { $c } }

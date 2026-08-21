@@ -1,0 +1,59 @@
+LOS CONTROLES, CORRIDOS AL CERRAR — 2026-08-21
+==============================================
+
+SHELL: Git Bash (§7.3). Los comandos son npm, identicos en PowerShell.
+
+--- npm run deudas ---
+COBERTURA
+  sitios en la canon                : 25
+  barridos                          : 16
+  sin barrer                        : 9
+
+CONTEO -- unidad: FILAS del declarativo. Denominador: las filas de los sitios BARRIDOS.
+  filas                             : 92
+  deudas unicas (sin duplicadas)    : 90
+  duplicadas de otra fila           : 2
+
+  de las unicas:
+    VIVAS                           : 83
+    no vivas (cerradas + caducas)   : 7   de las cuales CERRADAS por trabajo: 3
+  El total de filas NUNCA baja: una deuda cerrada se queda con estado "cerrada".
+  Lo que baja es VIVAS, y los dos numeros van siempre juntos.
+
+  por grupo                           filas   unicas    vivas
+    1_cierra_con_lo_que_hay            53       53       51
+    2_decision_del_owner               19       19       18
+    3_dato_externo                     16       14       14
+    4_caduca                            4        4        0
+    5_obsoleta                          0        0        0
+    6_se_descarta                       0        0        0
+
+  grupos 5 y 6 SIN FIRMAR del owner : 0  -- siguen contando como deuda viva
+
+VERDE -- el declarativo es valido. Y NO es completo: 9 sitio(s) sin barrer, por diseno.
+
+--- npm run deudas:mordida (cola) ---
+CONTROL NEGATIVO -- la copia SIN mutar tiene que salir en verde:
+  ok    copia intacta -> exit 0
+
+MORDIDA: 32/32
+
+--- npm test ---
+ℹ tests 169
+ℹ suites 16
+ℹ pass 169
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 539.2087
+
+--- npm run cifra:mordida (cola) ---
+  ok    el dato quedo byte a byte como estaba
+
+MORDIDA: 13/13
+
+--- node scripts/prueba_mordida_cotejo_contrato.js (cola) ---
+================================================================
+RESULTADO: cotejo real en verde y mordida 15/15 + control negativo.
+================================================================

@@ -1,0 +1,29 @@
+ESTADO AL ABRIR — 2026-08-21, contra el BLOB y no contra git status
+==================================================================
+
+backend  main       : cacb2b5a006db283c23efe9c9d09b3b7c8ede38f
+backend  origin/main: cacb2b5a006db283c23efe9c9d09b3b7c8ede38f
+
+CLAUDE.md, blob en disco antes de tocarlo : 339b7378be7abbb1f8485a88f9368310a2b758e2
+CLAUDE.md, blob en cacb2b5                : 339b7378be7abbb1f8485a88f9368310a2b758e2
+(iguales; medido antes de escribir nada)
+
+LOS TRES ' M' INTOCABLES, fuera del indice:
+ M .claude/launch.json
+ M _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json
+ M data/catalogo/estado_drift.json
+
+DECLARATIVO AL ABRIR, del arbol de cacb2b5:
+COBERTURA
+  sitios en la canon                : 25
+  barridos                          : 16
+  sin barrer                        : 9
+
+CONTEO -- unidad: FILAS del declarativo. Denominador: las filas de los sitios BARRIDOS.
+  filas                             : 92
+  deudas unicas (sin duplicadas)    : 90
+  duplicadas de otra fila           : 2
+
+  de las unicas:
+    VIVAS                           : 84
+    no vivas (cerradas + caducas)   : 6   de las cuales CERRADAS por trabajo: 2

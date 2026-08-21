@@ -1,0 +1,32 @@
+CONTROL DE LA PIEZA DE §4.9 — cada referencia tiene que RESOLVER
+================================================================
+
+1 · §4.9 EXISTE, UNA SOLA VEZ, Y ESTA AL FINAL DE §4
+  ok  una sola cabecera «### 4.9»
+  ok  es la ultima de §4: 4.1 · 4.2 · 4.3 · 4.4 · 4.5 · 4.6 · 4.7 · 4.8 · 4.9
+
+2 · EL PAR APUNTA EN LOS DOS SENTIDOS
+  ok  §4.6 -> §4.9, y la referencia esta DENTRO de §4.6 (no suelta en el fichero)
+  ok  §4.9 -> §4.6, en su primer parrafo
+  ok  §4.9 declara que es §2 aplicado a los controles que miran texto
+
+3 · TODA REFERENCIA «§N.M» DE LAS DOS SECCIONES RESUELVE — el defecto del gate
+  ok  3 referencias, todas resuelven contra las 40 secciones del fichero
+
+4 · EL ID QUE §4.9 CITA EXISTE EN EL DECLARATIVO
+  ok  resuelve: METODO::una-guarda-de-texto-comprueba-que-lo-mencione-no-que-lo-afirme
+
+5 · LA FILA QUEDO CERRADA CON LO QUE V8 EXIGE
+  ok  estado = cerrada
+  ok  cerrada_el = 2026-08-21
+  ok  cerrada_por, 1774 caracteres, dice que APLICO el texto
+
+6 · CONTROL POSITIVO Y NEGATIVO DEL INSTRUMENTO
+    Sin esto, un control que resolviera CUALQUIER cosa pasaria todo lo de arriba.
+  ok  positivo: §4.6 y §2 se reconocen como existentes
+  ok  negativo: §9.9 no existe y el instrumento no la inventa
+  ok  negativo: un id inventado no resuelve
+
+================================================================
+VERDE. Cada referencia de la pieza resuelve contra el dato vivo.
+================================================================

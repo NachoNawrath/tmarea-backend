@@ -256,6 +256,8 @@ Lo mismo vale **antes** de arreglar, y no sólo después de tocar un auditor: en
 arreglo cuyo test nunca estuvo en rojo es un control que no puede fallar: pasa por
 construcción, y no prueba que el defecto existiera ni que se haya ido.
 
+**Su par es §4.9** — un control que sí puede fallar todavía puede estar comprobando otra cosa.
+
 ### 4.7 — Simplicidad primero
 
 - **El mínimo código que resuelve el problema. Nada especulativo.**
@@ -318,6 +320,34 @@ mató, y la sesión siguiente lo lee como vivo.
 - **Lo que no se borra tampoco queda pelado:** se entrega el borrado **redactado y listo
   para aplicar**, y qué autorización haría falta. **Redactar no es aplicar** — esto es §6.1
   en código en vez de en prosa.
+
+### 4.9 — Una guarda de texto comprueba que lo mencione, no que lo afirme
+
+Es el par de §4.6: allá, un control tiene que poder fallar; acá, un control que **sí** puede
+fallar todavía puede estar comprobando otra cosa. Una guarda que busca una palabra dentro de
+un texto no comprueba que el texto **afirme** algo — comprueba que lo **mencione**, y un
+texto que contrasta con otro lo menciona por definición. Antes de darla por buena hay que
+escribir el texto que la pasaría diciendo lo contrario; si no se puede escribir, la guarda
+está bien y **eso también se anota**. Y la **forma** de la guarda decide de qué lado cae el
+error, que es lo que hace cara la distinción: en una guarda **positiva** —«el texto tiene que
+decir esto»— el literal que lleva adentro caduca en **rojo** el día que el texto cambia, y
+alguien lo mira; en una de **prohibición** —«el texto no puede decir esto»— caduca en
+**verde y en silencio**, porque basta escribir lo prohibido de otra manera para que la guarda
+no lo vea. Por eso una prohibición se ancla en **la cosa prohibida**, nunca en su ortografía
+habitual.
+
+El caso que la produjo: una guarda hacía cumplir un invariante que prohíbe el teléfono dentro
+de un mensaje del catálogo, y lo que miraba era la marca de plantilla `{telefono}`. Un mensaje
+con el número escrito a mano la pasaba y violaba el contrato en la cara; y el mismo texto que
+nombraba la marca para negarla —«este mensaje no lleva `{telefono}`»— la detenía. Aceptaba el
+texto incorrecto y rechazaba el correcto, las dos por el mismo motivo.
+
+Es **§2 aplicado a los controles que miran texto**: allá la medición tiene que probar lo que
+el argumento dice, acá el patrón tiene que probar lo que la guarda dice. La medición que la
+sostiene —el barrido de las guardas de texto vivas del árbol, cada una con su contraejemplo
+corrido— vive en la fila
+`METODO::una-guarda-de-texto-comprueba-que-lo-mencione-no-que-lo-afirme` del declarativo de
+deudas.
 
 ---
 
