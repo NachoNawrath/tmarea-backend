@@ -150,8 +150,14 @@ test('sin Capitania que nombrar, deriva al contacto generico y no inventa telefo
   const { avisos } = await componerAvisos(medicion([pieza()]), poolFalso());
   const a = avisos[0];
   assert.deepStrictEqual(a.capitanias, []);
-  assert.ok(a.contacto_generico, 'debe traer la derivacion generica');
-  assert.match(a.capa_2, /VHF Canal 16/);
+  // CORREGIDA EL 2026-08-21. Decia `assert.match(a.capa_2, /VHF Canal 16/)`, que
+  // comprobaba que el canal estuviera MENCIONADO en alguna parte del texto, no
+  // que el aviso derivara a el. Contraejemplo corrido, que la asercion vieja
+  // dejaba pasar: «No use VHF Canal 16 para esta zona; llame por telefono.»
+  // La derivacion se prueba por IDENTIDAD contra el bloque declarado, que es lo
+  // unico que distingue derivar de nombrar.
+  assert.deepStrictEqual(a.contacto_generico, cargarZonasAviso().contacto_generico,
+    'sin Capitania el aviso tiene que traer LA derivacion generica declarada, entera, no un texto que la nombre');
   assert.ok(!/\+56/.test(a.capa_2), 'no puede aparecer un telefono que la fuente no da');
   assert.ok(!/\{[a-z_]+\}/.test(a.capa_2), 'no pueden quedar marcas sin sustituir');
   assert.ok(!/\{[a-z_]+\}/.test(a.capa_1));
@@ -224,7 +230,16 @@ test('E0.2: el ambito no publicado nombra la Capitania cuando el mapa la atribuy
   const { avisos } = await componerAvisos(medicion([pieza()]), pool);
   assert.strictEqual(avisos[0].capitanias.length, 1);
   assert.strictEqual(avisos[0].capitanias[0].nombre, 'Punta Arenas');
-  assert.match(avisos[0].capa_2, /Punta Arenas/);
+  // CORREGIDA EL 2026-08-21. Decia `assert.match(avisos[0].capa_2, /Punta Arenas/)`,
+  // que pasaba con que el nombre estuviera en cualquier parte del texto — incluso
+  // con la sustitucion de {nombre} rota. Contraejemplo corrido, que la asercion
+  // vieja dejaba pasar: «No pudimos identificar la Capitania; no es Punta Arenas.»
+  // Lo que hay que probar es que el nombre cayo EN EL HUECO, y eso se prueba por
+  // identidad contra el texto compuesto. La forma estaba tres tests mas abajo,
+  // en «el texto del aviso es el transcrito del §10»: se copia de ahi.
+  assert.strictEqual(avisos[0].capa_2,
+    cargarZonasAviso().mensaje.capa_2_con_capitania.replace('{nombre}', 'Punta Arenas'),
+    'el aviso tiene que ser el texto del §10 con el nombre sustituido en {nombre}, no un texto que lo mencione');
   assert.strictEqual(avisos[0].contacto_generico, null, 'con Capitania nombrada no deriva al generico');
 });
 

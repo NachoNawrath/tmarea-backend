@@ -75,10 +75,50 @@ class ErrorCotejo extends Error {
 // Medido el 2026-08-13: con estas tres y el recorte de la celda alcanza — no
 // hace falta colapsar espacios internos, los textos calzan sin eso.
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// CORREGIDO EL 2026-08-21 — LOS DOS EXTRACTORES TOMABAN LO PRIMERO QUE PARECIA
+// EL TEXTO, NO EL TEXTO.
+//
+// `entrecomillado` devolvia el PRIMER tramo entre comillas de la celda y
+// `bandera` la PRIMERA aparicion de Q/U/UV/U+V antes de las comillas. Ninguno de
+// los dos exigia que hubiera UNA SOLA. Los dos contraejemplos, corridos:
+//
+//   celda `🟡 U (antes "Falta el limite") "No tenemos cargado el limite."`
+//        -> cotejaba contra `Falta el limite`, o sea contra la cita historica.
+//   celda `🔴 sube de U a Q "..."`
+//        -> la celda declara Q y devolvia "U". INV-3.6 quedaria con dos topes
+//           distintos segun donde se mire, que es literalmente lo que este
+//           cotejo existe para impedir.
+//
+// EL ARREGLO NO INVENTA CRITERIO: es el que este mismo fichero ya aplica veinte
+// lineas mas abajo cuando el contrato tiene dos filas con la misma etiqueta —
+// «dos candidatas no son una afirmacion verificable: no se elige una». Se
+// extiende de dos filas a dos coincidencias dentro de la celda. Cero coincidencias
+// sigue devolviendo null, que es el camino de «no se pudo extraer» que ya existia.
+//
+// Es la regla de las guardas de texto del 2026-08-21 en su tercera forma: no
+// alcanza con que la celda MENCIONE una bandera o un texto entrecomillado; la
+// afirmacion es que la celda DECLARA una, y una sola.
+// ─────────────────────────────────────────────────────────────────────────────
 const quitarNegritas = s => s.replace(/\*\*/g, '');
 const unificarMarcas = s => s.replace(/\[([a-z_]+)\]/g, '{$1}');
-const entrecomillado = s => { const m = s.match(/"([^"]*)"/); return m ? m[1] : null; };
 const sinComillasEnvolventes = s => s.replace(/^"/, '').replace(/"$/, '');
+
+/** La unica coincidencia, o null si no hay. Con dos o mas, se detiene. */
+function unicaCoincidencia(texto, patron, que) {
+  const todas = [...texto.matchAll(patron)];
+  if (todas.length === 0) return null;
+  if (todas.length > 1) {
+    throw new ErrorCotejo(
+      `la celda trae ${todas.length} ${que} (${todas.map(m => JSON.stringify(m[1])).join(', ')}) y ` +
+      `el cotejo necesita una sola. Dos candidatas no son una afirmacion verificable: no se elige una. ` +
+      `Si la celda cambio de forma a proposito, se declara la forma nueva; el control no adivina cual ` +
+      `de las dos es la vigente.`);
+  }
+  return todas[0][1];
+}
+
+const entrecomillado = s => unicaCoincidencia(s, /"([^"]*)"/g, 'tramos entre comillas');
 
 function normalizar(texto, extraer) {
   const base = quitarNegritas(unificarMarcas((texto || '').trim()));
@@ -89,8 +129,7 @@ function normalizar(texto, extraer) {
     // motor tiene su propia constante: si dejan de coincidir, INV-3.6 tendria
     // dos topes distintos segun donde se mire.
     const antes = base.split('"')[0];
-    const m = antes.match(/\b(Q|U\+V|UV|U)\b/);
-    return m ? m[1] : null;
+    return unicaCoincidencia(antes, /\b(Q|U\+V|UV|U)\b/g, 'banderas antes del texto');
   }
   throw new ErrorCotejo(`modo de extraccion desconocido: '${extraer}'. No hay caso por defecto.`);
 }

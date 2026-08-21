@@ -1,0 +1,115 @@
+LOS CONTROLES, CORRIDOS AL CERRAR — 2026-08-21
+==============================================
+
+--- npm run deudas ---
+VALIDADOR DEL DECLARATIVO DE DEUDAS
+fichero : data/deudas/deudas_declaradas.json
+version : 9   generado: 2026-08-20
+
+COBERTURA
+  sitios en la canon                : 25
+  barridos                          : 16
+  sin barrer                        : 9
+
+CONTEO -- unidad: FILAS del declarativo. Denominador: las filas de los sitios BARRIDOS.
+  filas                             : 92
+  deudas unicas (sin duplicadas)    : 90
+  duplicadas de otra fila           : 2
+
+  de las unicas:
+    VIVAS                           : 84
+    no vivas (cerradas + caducas)   : 6   de las cuales CERRADAS por trabajo: 2
+  El total de filas NUNCA baja: una deuda cerrada se queda con estado "cerrada".
+  Lo que baja es VIVAS, y los dos numeros van siempre juntos.
+
+  por grupo                           filas   unicas    vivas
+    1_cierra_con_lo_que_hay            53       53       52
+    2_decision_del_owner               19       19       18
+    3_dato_externo                     16       14       14
+    4_caduca                            4        4        0
+    5_obsoleta                          0        0        0
+    6_se_descarta                       0        0        0
+
+  grupos 5 y 6 SIN FIRMAR del owner : 0  -- siguen contando como deuda viva
+
+VERDE -- el declarativo es valido. Y NO es completo: 9 sitio(s) sin barrer, por diseno.
+
+--- npm run deudas:mordida (cola) ---
+CONTROL NEGATIVO -- la copia SIN mutar tiene que salir en verde:
+  ok    copia intacta -> exit 0
+
+MORDIDA: 32/32
+
+--- npm run cifra (titular) ---
+CIFRA DE §2 — cumplimiento de la especificacion medido contra la PANTALLA
+Fuente: data/spec2/cifra_spec2.json  ·  medido el 2026-08-21
+
+  >>  5 de 15, con 2 anuladas por decision del owner  <<
+
+  unidad: afirmacion de 2
+
+--- npm run cifra:mordida (cola) ---
+CONTROL NEGATIVO — la copia SIN mutar tiene que publicar en verde:
+  ok    copia intacta -> exit 0
+  ok    el dato quedo byte a byte como estaba
+
+MORDIDA: 13/13
+
+--- npm test ---
+✔ totalPronostico maneja error de red (0.598ms)
+ℹ tests 169
+ℹ suites 16
+ℹ pass 169
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 502.9709
+
+--- node scripts/prueba_mordida_cotejo_contrato.js ---
+PRUEBA DE MORDIDA
+================================================================
+
+M0  control negativo — dato y contrato intactos     : NO muerde, 3 afirmaciones. OK
+M1  el texto del dato se aparta del catalogo        : diverge. "capa 2 con Capitania dice lo que el catalogo dice" · salida 1
+M2  vuelve el telefono al texto, como estaba hasta la v1.7: diverge. "capa 2 con Capitania dice lo que el catalogo dice" · salida 1
+M3  la capa 1 del dato se aparta del catalogo       : diverge. "capa 1 dice lo que el catalogo dice" · salida 1
+M4  la BANDERA del codigo deja de ser la que el catalogo declara: diverge. "la bandera del codigo es la que declara el catalogo" · salida 1
+M5  la bandera de la CELDA cambia y el codigo se queda atras: diverge. "la bandera del codigo es la que declara el catalogo" · salida 1
+M6  la procedencia apunta a una fila que no existe  : muerde. [cotejo-contrato] el contrato no tiene ninguna fila con la etiqueta 'Fila que nadie 
+M7  la fila se borro del catalogo                   : muerde. [cotejo-contrato] el contrato no tiene ninguna fila con la etiqueta 'Jurisdicción si
+M8  hay DOS filas con la misma etiqueta: no se elige una: muerde. [cotejo-contrato] el contrato tiene 2 filas con la etiqueta 'Jurisdicción sin límite
+M9  el bloque de cotejo se borro del dato — no se apaga en silencio: muerde. [cotejo-contrato] zonas_aviso.json no trae el bloque 'cotejo_con_el_contrato'. Sin e
+M10 una afirmacion sin afirmaciones que hacer       : muerde. [cotejo-contrato] 'cotejo_con_el_contrato.afirmaciones' tiene que ser un arreglo no 
+M11 tipo de afirmacion desconocido: no hay caso por defecto: muerde. [cotejo-contrato] afirmacion de tipo 'parecido' desconocido. Aceptado: linea_dice. N
+M12 la afirmacion apunta a una celda que la fila no tiene: muerde. [cotejo-contrato] la afirmacion apunta a la celda 'capa_9', que la fila no tiene.
+M13 la celda de capa 1 pierde las comillas y no se puede extraer: muerde. [cotejo-contrato] no se pudo extraer 'entrecomillado' de la celda 'capa_1' de la fil
+M14 la celda de capa 1 trae DOS tramos entrecomillados: no se elige uno: muerde. [cotejo-contrato] la celda trae 2 tramos entre comillas ("una cita vieja", "No tenem
+M15 la celda declara DOS banderas antes del texto: no se elige una: muerde. [cotejo-contrato] la celda trae 2 banderas antes del texto ("U", "Q") y el cotejo ne
+
+================================================================
+RESULTADO: cotejo real en verde y mordida 15/15 + control negativo.
+================================================================
+
+--- node scripts/fase5_validar_zonas_aviso.js (solo M22* y resultado) ---
+M22 el mensaje reinyecta {telefono}, que INV-10.1 prohibe: muerde. [zonas_aviso] "mensaje.capa_2_con_capitania" lleva {telefono}, y INV-10.1 prohibe el telefono dentro de un men
+M22b el mensaje escribe el telefono a mano, sin usar la marca: muerde. [zonas_aviso] "mensaje.capa_2_con_capitania" trae la corrida "56 61 220 1234" (11 digitos, umbral 6), que tien
+M22c el mismo telefono en capa_1, que el guard viejo no miraba: muerde. [zonas_aviso] "mensaje.capa_1" trae la corrida "612201234" (9 digitos, umbral 6), que tiene forma de telefono.
+M22d CONTROL DE DISCRIMINACION: una fecha y una resolucion no son un telefono: acepta, como debe. OK
+M29 zona con discrepancia viva que ademas reclama un tramo: muerde con otro motivo -> [zonas_aviso] zona 'puerto_eden': la bahia 129 declara una discrepancia en nivel 'gobernacion' que HOY NO EXISTE: el mapa dice 'Punta Arenas' y el decreto dice 'Punta Arenas', y coinciden. Una discrepancia declarada que se resolvio deja de declararse: mantenerla escrita haria que el registro afirme un desacuerdo que ya no hay. (Si el nivel declarado es el mismo del que sale el contacto, esto es lo que lo detiene: esa rama ya exigio que coincidiera.)
+M30 una discrepancia VIVA sobre un contacto que si se da: se acepta: MUERDE cuando debia aceptar -> [zonas_aviso] zona 'puerto_eden': la bahia 129 declara una discrepancia en nivel 'gobernacion' que HOY NO EXISTE: el mapa dice 'Punta Arenas' y el decreto dice 'Punta Arenas', y coinciden. Una discrepancia declarada que se resolvio deja de declararse: mantenerla escrita haria que el registro afirme un desacuerdo que ya no hay. (Si el nivel declarado es el mismo del que sale el contacto, esto es lo que lo detiene: esa rama ya exigio que coincidiera.)
+RESULTADO: 2 problema(s). NO se da por buena.
+
+--- npm run ancla (no lo toca esta pieza; se corre igual) ---
+declaradas 11 · estado roto 0 · declaracion no calza 0
+VEREDICTO: SIN_NOVEDAD  (salida 0)
+--------------------------------------------------------------------------------
+
+--- npm run drift (no lo toca esta pieza; se corre igual) ---
+total 4 · no declaradas 1 · abiertas 3 · adjudicadas 0 · vencidas 0
+VEREDICTO: DRIFT_NO_DECLARADO  (salida 1)
+--------------------------------------------------------------------------------
+
+NOTA: el rojo de 'drift' es ANTERIOR y ajeno a esta pieza — sale de estado_drift.json,
+que es uno de los tres ' M' intocables y sigue fuera del indice. No se toco nada de
+ese frente. Se corre y se publica igual, para no elegir que controles se muestran.

@@ -280,6 +280,45 @@ const FAMILIAS = [
     /INV-10\.1 prohibe el telefono dentro de un mensaje del catalogo/],
 
   // ───────────────────────────────────────────────────────────────────────────
+  // M22b, M22c y M22d — EL AGUJERO DE M22, ABIERTO EL 2026-08-21.
+  //
+  // M22 y el guard que probaba miraban la MARCA {telefono}. INV-10.1 no prohibe
+  // la marca: prohibe EL TELEFONO. Un texto que escribe el numero a mano pasaba
+  // las dos en verde y publicaba al patron justo lo que el contrato prohibe.
+  // Es la forma de PROHIBICION de la regla de las guardas de texto — ver la fila
+  // METODO::una-guarda-de-texto-comprueba-que-lo-mencione-no-que-lo-afirme —, y
+  // es la peligrosa de las dos: en una guarda positiva el literal caduca en ROJO
+  // y se nota; en una de prohibicion caduca en VERDE y en silencio.
+  //
+  // LAS TRES MUTACIONES SE DERIVAN DEL TEXTO VIVO: le insertan algo al texto que
+  // la declaracion trae HOY, sea cual sea. Ninguna lleva el mensaje escrito a
+  // mano adentro, asi que ninguna puede volverse un no-op el dia que el §10
+  // cambie — que es como M1 de la mordida del cotejo se murio en silencio.
+  //
+  // M22d ES EL CONTROL DE DISCRIMINACION y vale tanto como las otras dos: un
+  // guard que mordiera cualquier digito pasaria M22b y M22c y pareceria
+  // perfecto, y ademas seria inutilizable, porque estos textos citan invariantes
+  // y numeros de resolucion todo el tiempo.
+  ['M22b el mensaje escribe el telefono a mano, sin usar la marca',
+    () => { const d = clonar(DECL);
+      d.mensaje.capa_2_con_capitania =
+        d.mensaje.capa_2_con_capitania.replace('{nombre}', '{nombre} al +56 61 220 1234');
+      return [d, INSUMO, CONTACTOS]; },
+    /tiene forma de telefono/],
+
+  ['M22c el mismo telefono en capa_1, que el guard viejo no miraba',
+    () => { const d = clonar(DECL);
+      d.mensaje.capa_1 = d.mensaje.capa_1 + ' Llame al 612201234.';
+      return [d, INSUMO, CONTACTOS]; },
+    /"mensaje\.capa_1" trae la corrida/],
+
+  ['M22d CONTROL DE DISCRIMINACION: una fecha y una resolucion no son un telefono',
+    () => { const d = clonar(DECL);
+      d.mensaje.capa_1 = d.mensaje.capa_1 + ' Vigente desde 2026-08-21 por Res. 12.100/47. VHF Canal 16.';
+      return [d, INSUMO, CONTACTOS]; },
+    null],
+
+  // ───────────────────────────────────────────────────────────────────────────
   // M23–M31 — LA DISCREPANCIA DECLARADA SOBRE UN CONTACTO QUE SI SE DA.
   // 2026-08-16.
   //

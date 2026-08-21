@@ -53,6 +53,18 @@ const FICHERO = iArg !== -1 && process.argv[iArg + 1]
 // PARTIDA a proposito -- 'barrido_el' dice cuando se midio y esta nota dice
 // cuando se registro --, porque juntarlas haria parecer que el sitio existia
 // mientras las filas estaban sueltas.
+//
+// EL VIGESIMOQUINTO, 'SESION-cifra-s3d-2026-08-21', se agrega el 2026-08-21, el
+// mismo dia de su barrido y por la pieza que inserta su unica fila. SE CREA
+// SITIO PROPIO EN VEZ DE ALOJARLA EN UNO EXISTENTE, y el motivo esta medido: los
+// dos sitios que por fecha y tema podrian haberla recibido —
+// 'SESION-firma-s3d-s6a-2026-08-21' y 'SESION-cobertura-capas-a-c-2026-08-20'—
+// DECLARAN POR ESCRITO, en su campo `nota`, que no barren «la cifra de §2 con su
+// nota, que sigue siendo pieza propia». Meterla ahi habria exigido ademas dejar
+// falso su `vocabulario_del_barrido`, que dice «las TRES deudas»: un campo que
+// ningun control mira. Crear el sitio mueve dos cifras mas de las previstas
+// —sitios 24->25 y barridos 15->16— y es el unico camino que no obliga a
+// escribir algo falso. Decision del owner, 2026-08-21.
 // ---------------------------------------------------------------------------
 const SITIOS_CANON = [
   'PLAN-2',
@@ -79,6 +91,7 @@ const SITIOS_CANON = [
   'SESION-toponimos-12100-47-2026-08-20',
   'SESION-cobertura-capas-a-c-2026-08-20',
   'SESION-firma-s3d-s6a-2026-08-21',
+  'SESION-cifra-s3d-2026-08-21',
 ];
 
 const GRUPOS = {
@@ -300,12 +313,39 @@ for (const d of D.deudas) {
   }
 
   // (2) la pregunta se contesta sin abrir el repositorio
+  //
+  // LAS DOS GUARDAS DE ESTE BLOQUE SE REVISARON EL 2026-08-21 BAJO LA REGLA DE
+  // LAS GUARDAS DE TEXTO, Y LAS DOS TIENEN EL HUECO. Queda escrito porque el
+  // owner decidio DECLARARLO y no arreglarlo hoy. Ver la fila
+  // METODO::una-guarda-de-texto-comprueba-que-lo-mencione-no-que-lo-afirme.
+  //
+  // OLOR_A_REPOSITORIO (abajo) busca rutas y extensiones, o sea la ORTOGRAFIA
+  // habitual de una mencion al repositorio, no la propiedad. Contraejemplo
+  // corrido: «¿La tabla canonica de D4 del plan de jurisdiccion se mueve, o la
+  // reescribe el owner?» PASA la guarda y exige abrir el repositorio para
+  // contestarse. NO SE ARREGLA CON UN PATRON MEJOR, y ese es el punto: «se
+  // contesta sin abrir el repositorio» es un JUICIO, no una propiedad del texto.
+  // Convertir un juicio en patron es exactamente lo que la regla nueva prohibe,
+  // asi que el arreglo honesto no es un patron mas largo — es dejar de fingir
+  // que hay control. La propuesta escrita, sin firmar: bajar esto a AVISO y
+  // mover la exigencia a un campo declarado por quien redacta la fila.
   if (d.grupo === '2_decision_del_owner' && typeof d.pregunta === 'string') {
     if (OLOR_A_REPOSITORIO.test(d.pregunta))
       F('V7', yo + ': la pregunta del grupo 2 nombra un fichero o una ruta del repositorio. ' +
         'Tiene que poder contestarse sin abrirlo.');
-    if (!/\?/.test(d.pregunta))
-      F('V7', yo + ': la pregunta del grupo 2 no tiene signo de interrogacion.');
+    // CORREGIDA EL 2026-08-21, Y NO CIERRA SU HUECO — se dice para que nadie la
+    // lea como cerrada. Decia `/\?/`: un signo suelto en cualquier parte. Lo
+    // firmado fue exigir que la pregunta TERMINE en `?`, y al medirlo NO SE
+    // PUEDE: 14 de las 19 filas del grupo 2 no terminan en `?`, porque en este
+    // declarativo `pregunta` es un parrafo que CONTIENE la pregunta y sigue con
+    // su contexto. Aplicarlo habria puesto el validador en rojo sobre 14 filas
+    // que son tinta del owner. Lo que SI vale hoy, medido sobre las 19: las 19
+    // traen el par completo `¿ ... ?`. Se exige eso, que es estrictamente mas
+    // fuerte que un signo suelto y es cierto sobre el dato vivo.
+    // LO QUE SIGUE SIN CAZAR: «El owner ya contesto ¿va o no va? el 2026-08-20:
+    // va.» pasa igual. Eso es el mismo juicio de arriba y se declara con el.
+    if (!/¿[^?]*\?/.test(d.pregunta))
+      F('V7', yo + ': la pregunta del grupo 2 no trae una oracion interrogativa completa (¿ ... ?).');
   }
 
   // V8 · el estado, y lo que exige cerrar una deuda

@@ -68,6 +68,33 @@ const DECLARADO = {
 
 const payload = JSON.parse(fs.readFileSync(PAYLOAD, 'utf8')).payload;
 
+// LOS COMENTARIOS NO CUENTAN COMO LECTOR — agregado el 2026-08-21.
+//
+// EL DEFECTO: `lectores()` cuenta apariciones de la cadena `data.<campo>` en el
+// texto de la PWA. Comprobaba que el campo estuviera ESCRITO, no que se USARA.
+// Contraejemplo corrido: la linea `// TODO: algun dia leer data.ultimo_tramo_seguro`
+// daba 1 lector, y con eso un campo declarado CONSUMIDO pasaba el test sin que
+// nadie lo leyera. Y muerde en UN SOLO SENTIDO: en la lista de los consumidos
+// produce un VERDE FALSO, que es el lado silencioso; en la de los no consumidos
+// produce un rojo, que es ruidoso y barato. La familia del borde ya fallo cuatro
+// veces —ver D4D5::motivo-principal-muere-en-el-pasamanos, y la cuarta era una
+// advertencia de seguridad que nunca llego al patron—, y este es el control que
+// existe para que no vuelva a pasar.
+//
+// ES LA MISMA RESTA QUE YA HACIA ESTE FICHERO con el objeto `result` del
+// pasamanos, por el mismo motivo: alla «copiar no es consumir», aca «mencionar
+// no es consumir». No es criterio nuevo.
+//
+// LO QUE ESTA RESTA NO CUBRE, Y SE DICE EN VEZ DE SUPONERSE:
+//   · CODIGO MUERTO. `if (false) { render(data.campo) }` sigue contando como
+//     lector. Distinguirlo exige parsear la PWA de verdad y no se paga hoy.
+//   · un `//` dentro de una cadena que no venga precedido de `:` se recorta de
+//     mas. Eso solo puede SUBCONTAR lectores, o sea sale ROJO, y el control
+//     positivo de abajo lo caza en la misma corrida.
+const sinComentarios = (s) => s
+  .replace(/\/\*[\s\S]*?\*\//g, ' ')   // de bloque
+  .replace(/(?<!:)\/\/[^\n]*/g, ' ');  // de linea, sin comerse http://
+
 // El texto de la PWA SIN el objeto `result` del pasamanos: copiar no es consumir,
 // asi que la copia no puede contar como lector de si misma.
 function pwaSinElPasamanos() {
@@ -84,16 +111,28 @@ function pwaSinElPasamanos() {
   const ini = hook.indexOf('const result = {');
   const fin = hook.indexOf('\n  };', ini);
   assert.ok(ini > 0 && fin > ini, 'no se encontro el objeto `result` del pasamanos');
-  return texto.split(hook.slice(ini, fin)).join('');
+  return sinComentarios(texto.split(hook.slice(ini, fin)).join(''));
 }
 
 const TEXTO = pwaSinElPasamanos();
-const lectores = (campo) =>
-  (TEXTO.match(new RegExp('(?:transitRestrictions|data)\\s*\\??\\.\\s*' + campo + '\\b', 'g')) || []).length;
+const contarEn = (texto, campo) =>
+  (texto.match(new RegExp('(?:transitRestrictions|data)\\s*\\??\\.\\s*' + campo + '\\b', 'g')) || []).length;
+const lectores = (campo) => contarEn(TEXTO, campo);
 
 test('el barrido de lectores alcanza y discrimina — control positivo y negativo', () => {
   assert.ok(lectores('restricciones_intermedias') > 0, 'positivo: restricciones_intermedias se lee');
   assert.strictEqual(lectores('ZZQXNOEXISTE'), 0, 'negativo');
+
+  // El tercer control, del 2026-08-21: una MENCION no es un lector. Se ejerce
+  // sobre texto en memoria y no sobre la PWA, porque lo que se prueba es el
+  // criterio de conteo, no el arbol de al lado.
+  const soloEnComentario = '// TODO: algun dia leer data.ZZQXNOEXISTE\n';
+  assert.strictEqual(contarEn(sinComentarios(soloEnComentario), 'ZZQXNOEXISTE'), 0,
+    'un campo nombrado solo en un comentario no tiene lector: mencionar no es consumir');
+  assert.strictEqual(contarEn(sinComentarios('const x = data.ZZQXNOEXISTE;\n'), 'ZZQXNOEXISTE'), 1,
+    'control negativo del propio recorte: un uso real sigue contando despues de quitar comentarios');
+  assert.strictEqual(contarEn(sinComentarios("fetch('https://api/x'); const y = data.ZZQXNOEXISTE;\n"), 'ZZQXNOEXISTE'), 1,
+    'el recorte no se come la linea entera por un http:// que va delante');
 });
 
 test('TODO campo emitido esta en la lista, y la lista no declara campos que no se emiten', () => {

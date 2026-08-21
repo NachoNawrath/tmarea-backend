@@ -1,0 +1,44 @@
+ESTADO AL ABRIR — 2026-08-21, verificado contra el BLOB y no contra git status
+==============================================================================
+
+backend  main       : 3f28ea6f23cf55bf2db21475720fb4450d188a9b
+backend  origin/main: 3f28ea6f23cf55bf2db21475720fb4450d188a9b
+pwa      HEAD       : 7800992863199c5680ba9a8448a1f9cdbf39cbf2
+
+LOS TRES ' M' INTOCABLES — tienen que estar FUERA del indice (espacio delante):
+ M .claude/launch.json
+ M _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json
+ M data/catalogo/estado_drift.json
+
+IDENTIDAD BLOB A BLOB de los ficheros diagnosticados, disco contra 3f28ea6:
+  873496686e913cc7c1ace1dbfa912e2809acf5bd  scripts/publicar_cifra_spec2.js
+  61f9c10085e79e51c8c7b5ba06ef2fbe204a8632  _bitacoras/cifra_s3d_2026-08-21/cifra_s3d_2026-08-21.txt
+  a2c373ac348d7017dea654bb5e229a417cb9d71b  data/deudas/deudas_declaradas.json
+  7542ce74cc9db69e853f2f365338bd8583b457f3  src/services/zonas-aviso.js
+  6eb6f95faf0050fe426aba8aea2a70e780b1a4e8  src/services/cotejo-contrato.js
+  33b4723d9ac8afbdc16c24ef2b75ec6f39aa43fa  src/services/__tests__/cobertura-jurisdiccional.test.js
+  9ccc6c9658075b6eb5e27d3112504b82b40030b7  src/services/__tests__/borde-pwa-backend.test.js
+  42fc445b9b008ebd949262c752d91fce671ccc7c  scripts/validar_deudas_declaradas.js
+  f94e0bff19fdfee3a3fb94fdbf427618e609b852  scripts/prueba_mordida_cotejo_contrato.js
+  b36e395fb9180e4b2724ff13798345124b6a7a66  scripts/fase5_validar_zonas_aviso.js
+
+(medido antes de tocar nada; los diez coincidian con el disco en ese momento)
+
+DECLARATIVO AL ABRIR — corrido con el VALIDADOR Y EL DATO DE 3f28ea6, los dos
+extraidos con git archive a un directorio aparte. Correrlo con el validador de
+hoy contra el dato de ayer mezclaria dos arboles: publicaria una canon de 25
+sitios sobre un dato de 24.
+
+COBERTURA
+  sitios en la canon                : 24
+  barridos                          : 15
+  sin barrer                        : 9
+
+CONTEO -- unidad: FILAS del declarativo. Denominador: las filas de los sitios BARRIDOS.
+  filas                             : 91
+  deudas unicas (sin duplicadas)    : 89
+  duplicadas de otra fila           : 2
+
+  de las unicas:
+    VIVAS                           : 83
+    no vivas (cerradas + caducas)   : 6   de las cuales CERRADAS por trabajo: 2

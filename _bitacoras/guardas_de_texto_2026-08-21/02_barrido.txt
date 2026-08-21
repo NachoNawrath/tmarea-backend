@@ -1,0 +1,134 @@
+BARRIDO CONTRA EL ARBOL DE 3f28ea6, EXTRAIDO CON git archive A UN DIRECTORIO
+APARTE. Se corre asi A PROPOSITO: este barrido describe el arbol en el que se
+hizo el diagnostico, y correrlo sobre el arbol de trabajo lo mediria DESPUES de
+sus propias correcciones. Es el §5 bis de la bitacora de la cifra —un control no
+verifica el artefacto que esta produciendo— aplicado a una MEDICION.
+El barrido del arbol ya corregido esta en 04_barrido_despues.txt.
+
+BARRIDO DE GUARDAS DE TEXTO — universo y candidatos
+raiz: C:/Users/katia/AppData/Local/Temp/t3f28ea6
+
+UNIDAD: LINEA de codigo donde una decision mira un texto por patron o subcadena.
+DENOMINADOR: los 82 ficheros del cierre de require de los 18 puntos de entrada vivos.
+
+CANDIDATOS EN BRUTO: 85 linea(s) en 27 fichero(s)
+
+  scripts/control_ancla_declarada.js
+      59: if (v === undefined || v.startsWith('--')) {
+  scripts/e01_control_drift_catalogo.js
+      64: if (!t.startsWith('--')) {
+      73: if (v === undefined || v.startsWith('--')) {
+  scripts/e01_prueba_mordida_drift.js
+      247: else if (!esperado.error.test(error.message)) { L(`${etq}: muerde por otro motivo -> ${error.message}`); fallas++; }
+  scripts/prueba_mordida_deudas.js
+      230: const porElControl = new RegExp('\\[' + control + '\\]').test(r.out);
+      251: console.log(cn.out.split('\n').filter(l => /^\s*\[/.test(l)).join('\n'));
+  scripts/publicar_cifra_spec2.js
+      98: if (!p.nota_obligatoria || !/CUMPLE por DEROGACION/i.test(p.nota_obligatoria)) {
+      108: if (!p.nota_obligatoria_s3_dividido || !/DIVIDIDO por TRABAJO/i.test(p.nota_obligatoria_s3_dividido)) {
+  scripts/validar_deudas_declaradas.js
+      304: if (OLOR_A_REPOSITORIO.test(d.pregunta))
+      307: if (!/\?/.test(d.pregunta))
+  src/routes/mitilidos-routes.js
+      56: if (e.message.includes('larga') || e.message.includes('permitidos')) {
+      108: if (e.message.includes('inválid') || e.message.includes('radio')) {
+  src/routes/sitport-routes.js
+      617: if (t.includes('TEMPORAL')) return 'Temporal';
+      618: if (t.includes('MAL TIEMPO')) return 'Mal Tiempo';
+      619: if (t.includes('TIEMPO VARIABLE')) return 'Tiempo Variable';
+      620: if (t.includes('PUERTO CERRADO') || t.includes('CERRADO')) return 'Puerto Cerrado';
+      632: return /(\d+)\s*AB\b/i.test(t) || /EEMM/i.test(t);
+  src/services/__tests__/borde-pwa-backend.test.js
+      79: else if (/\.jsx?$/.test(e.name)) texto += fs.readFileSync(p, 'utf8') + '\n';
+      92: (TEXTO.match(new RegExp('(?:transitRestrictions|data)\\s*\\??\\.\\s*' + campo + '\\b', 'g')) || []).length;
+      125: if (!d.tipo.startsWith('deuda')) continue;
+  src/services/__tests__/cierre-derivador.test.js
+      184: assert.ok(!claves.some(k => /mensaje|aviso_texto|leyenda/.test(k)));
+      554: assert.ok(clases.includes('mayores') && clases.includes('menores_sin_umbral'),
+  src/services/__tests__/cobertura-jurisdiccional.test.js
+      62: if (sql.includes('pg_tables')) {
+      65: if (sql.includes('pg_attribute')) {
+      68: if (sql.includes('count(*) FILTER')) return { rows: FILAS_PUBLICADAS };
+      74: if (sql.includes('ST_MakeLine')) {
+      154: assert.match(a.capa_2, /VHF Canal 16/);
+      155: assert.ok(!/\+56/.test(a.capa_2), 'no puede aparecer un telefono que la fuente no da');
+      156: assert.ok(!/\{[a-z_]+\}/.test(a.capa_2), 'no pueden quedar marcas sin sustituir');
+      157: assert.ok(!/\{[a-z_]+\}/.test(a.capa_1));
+      227: assert.match(avisos[0].capa_2, /Punta Arenas/);
+  src/services/__tests__/cotejo-contrato.test.js
+      38: await t.test(a.nombre, () => {
+  src/services/__tests__/datos-sin-bom.test.js
+      33: else if (entrada.name.endsWith('.json')) salida.push(completa);
+  src/services/__tests__/sitport-service.test.js
+      17: assert.ok(url.includes('consultaRestricciones'));
+  src/services/ambitos-publicados.js
+      52: exigir(IDENT.test(decl.capa_publicada),
+      145: exigir(textoNoVacio(g.relacion) && IDENT.test(g.relacion),
+      147: exigir(textoNoVacio(g.columna_ambito) && IDENT.test(g.columna_ambito),
+  src/services/andamio-medicion.js
+      49: exigir(/^[a-z_][a-z0-9_]*$/i.test(a.capa), `el nombre de capa '${a.capa}' no es un identificador válido.`);
+  src/services/catalogo-bahias.js
+      117: if (!/^\d+$/.test(k)) {
+      247: if (!/^\d{4}-\d{2}-\d{2}$/.test(d.visto_desde || '')) {
+  src/services/cierre-derivador.js
+      90: return FAMILIA_CIERRE.test(textoN3) || PREDICADOS_DE_CIERRE.test(textoN3);
+      140: const porCampo = /DENTRO|FUERA/.test(normalizarTexto(registro.AreaRestriccion));
+      141: const porTexto = /\bDENTRO\b|\bFUERA\b/.test(textoN3.replace(FUERA_NO_GEOGRAFICO, ' '));
+      146: return ACTIVIDADES.some((re) => re.test(textoN3));
+      208: const unidad = m[2].startsWith('TRG') ? 'TRG' : 'AB';
+      318: comps.push({ tipo: /MAYOR/.test(m.g1) ? 'mayores' : 'menores_sin_umbral', umbral: null, unidad: null, literal: m.txt });
+      350: unidad: n.txt.replace(/\d|\s/g, '').startsWith('TRG') ? 'TRG' : 'AB',
+      365: unidad: n.txt.replace(/\d|\s/g, '').startsWith('TRG') ? 'TRG' : 'AB',
+      428: } else if (norm.bloqueo_total === true || RAMA_TODO_TIPO_DE_NAVES.test(textoMotor)) {
+      430: } else if (RAMA_MENORES_SIN_NUMERO.test(textoMotor)) {
+      432: } else if (RAMA_TODO_TIPO_DE_EMBARCACIONES.test(textoMotor)) {
+  src/services/cobertura-jurisdiccional.js
+      140: exigir(typeof capa === 'string' && IDENT.test(capa),
+      145: exigir(typeof b[campo] === 'string' && IDENT.test(b[campo]),
+  src/services/contacto-por-escalon.js
+      58: const esAtomico = t => typeof t === 'string' && /^\+?[\d]+(?: [\d]+)*$/.test(t);
+  src/services/cotejo-contrato.js
+      80: const entrecomillado = s => { const m = s.match(/"([^"]*)"/); return m ? m[1] : null; };
+      92: const m = antes.match(/\b(Q|U\+V|UV|U)\b/);
+      102: if (!l.startsWith('|')) return false;
+  src/services/drift-arranque.js
+      60: const resumen = (stdout || '').split('\n').find(l => l.startsWith('total ')) || '';
+  src/services/mitilidos-service.js
+      81: if (query && !SAFE_QUERY_REGEX.test(query)) throw new Error('Caracteres no permitidos');
+  src/services/ocean-data-reader.js
+      76: return new Date(/[zZ]|[+-]\d\d:\d\d$/.test(isoStr) ? isoStr : `${isoStr}Z`);
+  src/services/sitport-parser.js
+      28: if (obsNorm.includes('TEMPORAL') || motivoNorm.includes('TEMPORAL')) return 'TEMPORAL';
+      31: if (obsNorm.includes('MAL TIEMPO') ||
+      32: (obsNorm.includes('PUERTO CERRADO') && motivoNorm.includes('MAL TIEMPO')) ||
+      33: motivoNorm.includes('MAL TIEMPO')) return 'MAL_TIEMPO';
+      37: if (obsNorm.includes('VARIABLE') || motivoNorm.includes('VARIABLE')) return 'VARIABLE';
+      69: if (/TODO\s+TIPO\s+DE\s+NAVES/.test(textoNorm)) {
+      74: const dentroMatch = textoNorm.match(/(\d+)\s*(?:A\.?B\.?|TRG)\s+(?:[A-Z\s]*?)DENTRO/) ||
+      75: textoNorm.match(/DENTRO[^.;]*?(\d+)\s*(?:A\.?B|TRG)/);
+      76: const fueraMatch  = textoNorm.match(/(\d+)\s*(?:A\.?B\.?|TRG)\s+(?:[A-Z\s]*?)FUERA/) ||
+      77: textoNorm.match(/FUERA[^.;]*?(\d+)\s*(?:A\.?B|TRG)/);
+      92: if (/EMBARCACIONES\s+MENORES/.test(textoNorm) || /NAVES\s+MENORES/.test(textoNorm)) {
+      95: if (/TODO\s+TIPO\s+DE\s+EMBARCACIONES/.test(textoNorm)) {
+      108: const dentro = a.includes('DENTRO');
+      109: const fuera = a.includes('FUERA');
+      126: const afecta_menores = naveRecibeNorm.includes('MENOR') ||
+      127: naveRecibeNorm.includes('TODO') ||
+      128: obsNorm.includes('TODO TIPO DE NAVES') ||
+      129: obsNorm.includes('TODO TIPO DE EMBARCACIONES');
+      130: const afecta_mayores = naveRecibeNorm.includes('MAYOR') ||
+      131: naveRecibeNorm.includes('TODO') ||
+      132: obsNorm.includes('TODO TIPO DE NAVES');
+  src/services/voyage-report-service.js
+      433: return s.includes(',') || s.includes('"') || s.includes('\n')
+  src/services/zonas-aviso.js
+      321: exigir(msg.capa_2_con_capitania.includes('{nombre}'),
+      328: exigir(!msg.capa_2_con_capitania.includes('{telefono}'),
+      331: exigir(!/\{[a-z_]+\}/.test(msg.capa_1) && !/\{[a-z_]+\}/.test(msg.capa_2_sin_capitania),
+
+FICHEROS ALCANZADOS SIN NINGUN CANDIDATO: 55
+
+--- CONTROL POSITIVO: las DOS guardas ya corregidas tienen que aparecer ---
+  guarda de derogacion visible : SI
+  guarda de S3 dividido visible : SI
+  el barrido ve las dos: no es un cero por no haber mirado.

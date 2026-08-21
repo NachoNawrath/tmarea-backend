@@ -1,0 +1,411 @@
+LA REGLA DE LAS GUARDAS DE TEXTO — LA FILA Y LAS CINCO QUE NADIE REVISO
+==============================================================================
+Unidad          : la regla como fila del declarativo, y las guardas de texto
+                  vivas del arbol revisadas bajo ella. No es una pieza de
+                  escritura: la fila sale de un barrido y las correcciones
+                  salen de contraejemplos corridos.
+Fecha           : 2026-08-21
+Arboles al abrir: tmarea-backend  main = origin/main = 3f28ea6
+                  tmarea-pwa      main = origin/main = 7800992
+Declarativo     : 91 · 89 · 83 · 24 sitios · 15 barridos · 9 sin barrer al abrir
+                  92 · 90 · 84 · 25 sitios · 16 barridos · 9 sin barrer al cerrar
+Suite           : 169/169 al abrir y al cerrar.
+
+
+------------------------------------------------------------------------------
+0 . LO QUE ESTA PIEZA HIZO
+------------------------------------------------------------------------------
+· BARRIO las guardas de texto del arbol vivo. El numero que traia la bitacora
+  de la cifra era TRES y son CINCO. El tres salio de una lectura; el cinco de
+  correr un barrido.
+· MIDIO las cinco contra un contraejemplo cada una, con el predicado copiado
+  verbatim: 9 de 9 contraejemplos pasan. Las cinco tenian el hueco.
+· CORRIGIO CUATRO —G7, G3, G5, G4— con sus mordidas, y DECLARO la quinta —G6—
+  con el motivo por el que no se arregla.
+· ESCRIBIO LA REGLA como fila METODO:: del declarativo, CON SU SEGUNDA MITAD,
+  que la version de ayer no tenia, y creo el sitio que la aloja.
+· ENCONTRO DE PASO UNA MORDIDA MUERTA que ya estaba en rojo en el arbol al
+  abrir, y la arreglo derivandola del dato vivo.
+
+LO QUE NO HIZO, y va primero para que no se lea de mas: la cifra de §2 no se
+toco, la capa B no se toco, y de la regla del §5 bis de la bitacora de la cifra
+—un control no verifica el artefacto que esta produciendo— NO se abrio fila. Va
+como pieza propia por decision del owner, y el sitio nuevo lo dice por escrito.
+
+
+------------------------------------------------------------------------------
+1 . EL GATE ENCONTRO TRES COSAS Y LAS TRES CAMBIARON LA PIEZA
+------------------------------------------------------------------------------
+(1) INEJECUTABLE — NO HABIA SITIO DONDE LA FILA PUDIERA IR SIN ESCRIBIR ALGO
+    FALSO, Y LA ARITMETICA PROMETIDA NO SE PODIA CUMPLIR POR NINGUN CAMINO.
+
+    La aritmetica primero, que es lo barato: «pasa a 92 y ese es el unico
+    movimiento» no es alcanzable. Una fila unica y viva mueve TRES contadores —
+    filas 91->92, unicas 89->90, vivas 83->84. Para que 89 no se moviera habria
+    que declararla duplicada de otra; para que 83 no se moviera habria que
+    nacerla cerrada. Las dos son mentiras. El owner corrigio su propia premisa
+    al firmarla.
+
+    El sitio es lo caro. Los DOS sitios que por fecha y tema podian alojarla
+    DECLARAN POR ESCRITO que no la barren. SESION-firma-s3d-s6a-2026-08-21, en
+    su campo `nota`: «LO QUE ESTE SITIO NO BARRE Y SE DICE PARA QUE NADIE LO
+    BUSQUE ACA: ... la cifra de §2 con su nota, que sigue siendo pieza propia.»
+    SESION-cobertura-capas-a-c-2026-08-20 dice lo mismo con esas palabras.
+    Meterla ahi exigia ademas subir `filas_en_este_declarativo` de 3 a 4 —V4 lo
+    caza— y dejar FALSO su `vocabulario_del_barrido`, que dice «las TRES
+    deudas»: un campo que ningun control mira, o sea el §3(b) de la bitacora de
+    la cifra otra vez.
+
+    DECISION DEL OWNER: crear SESION-cifra-s3d-2026-08-21. Fundamento escrito:
+    es el unico camino que no obliga a escribir algo falso. Cuesta dos cifras
+    mas de las previstas —sitios 24->25, barridos 15->16— y el criterio no podia
+    ser cual mueve menos numeros, porque ninguno movia solo uno.
+
+(2) CONTRADECIA UNA REGLA VIGENTE — «AL MENOS TRES GUARDAS DE TEXTO VIVAS» ES
+    UNA CIFRA PUBLICADA SIN DENOMINADOR, SIN UNIDAD Y SIN DEFINICION.
+
+    La regla del repositorio es que toda cifra nombra las tres cosas. La linea
+    que quedo en el arbol a 3f28ea6 no nombra ninguna, y ademas es falsa: son
+    cinco. Queda enmendada en la fila del declarativo. LA BITACORA DE LA CIFRA
+    NO SE REESCRIBE: es cita historica y decia lo que era cierto cuando se
+    escribio. La distincion la firmo el owner.
+
+(3) DUPLICABA ALGO QUE YA ESTABA, POR PARTIDA DOBLE.
+
+    La regla ya estaba escrita en DOS lugares del arbol a 3f28ea6 —la bitacora
+    de la cifra §2 y la cabecera de scripts/publicar_cifra_spec2.js— sin nada
+    que las mantuviera sincronizadas. La fila seria la tercera copia. Resuelto:
+    el TEXTO CANONICO es la fila; la cabecera del script queda con la regla
+    corta, su segunda mitad y un puntero que dice que si las dos dejan de decir
+    lo mismo manda la fila; la bitacora vieja no se toca.
+
+    Y en el declarativo ya vivia el mismo caso en pequeno:
+    SESION-caracterizacion-deudas-2026-08-19::casilla-ambas-del-criterio-d3a
+    dice que un criterio «mira el token, no la linea» y propone arreglarlo
+    mirando «la posicion relativa de las dos palabras en vez de su mera
+    presencia». Eso ES esta regla, escrita dos dias antes y sin nombrarla como
+    regla. La fila nueva DECLARA QUE LA GENERALIZA, en campo propio, con el
+    precedente de METODO::la-contencion-no-discrimina. Sin ese campo, duplica.
+
+
+------------------------------------------------------------------------------
+2 . LA SEGUNDA MITAD DE LA REGLA, QUE ES EL HALLAZGO DE ESTA PIEZA
+------------------------------------------------------------------------------
+La version escrita ayer decia:
+
+    UNA GUARDA QUE BUSCA UNA PALABRA NO COMPRUEBA QUE EL TEXTO AFIRME ALGO:
+    COMPRUEBA QUE LO MENCIONE. Y UN TEXTO QUE CONTRASTA CON OTRO LO MENCIONA
+    POR DEFINICION.
+
+Es cierta y es LA MITAD BUENA. Falta separar dos formas, porque el mismo
+literal se comporta al reves en cada una:
+
+  · GUARDA POSITIVA — «el texto tiene que decir X». El literal escrito a mano
+    caduca en ROJO: si el dato cambia, la guarda se detiene y alguien lo mira.
+    Es lo que hacen las dos guardas corregidas ayer.
+  · GUARDA DE PROHIBICION — «el texto no puede decir X». El mismo literal
+    caduca en VERDE Y EN SILENCIO: basta escribir lo prohibido de otra manera
+    para que la guarda no lo vea, y nadie se entera nunca.
+
+CASO MEDIDO, no hipotesis: zonas-aviso.js prohibia la MARCA {telefono} para
+hacer cumplir INV-10.1, que prohibe EL TELEFONO. El texto «Confirme con la
+Capitania {nombre} al +56 61 220 1234 antes de zarpar» pasaba la guarda y viola
+el contrato en la cara.
+
+CONSECUENCIA PRACTICA, y es la mitad que faltaba: UNA GUARDA DE PROHIBICION SE
+ANCLA EN LA COSA PROHIBIDA Y NO EN SU ORTOGRAFIA HABITUAL.
+
+Sin esta mitad, la fila repetiria el defecto que viene a declarar: diria «anclate
+en la afirmacion» sin decir que en las prohibiciones la afirmacion no es una
+frase, es una propiedad.
+
+
+------------------------------------------------------------------------------
+3 . EL BARRIDO — EL TRES ERA CINCO
+------------------------------------------------------------------------------
+UNIDAD: GUARDA DE TEXTO. Definicion: un control VIVO —que corre solo, en
+`npm test`, en un `npm run` o en el arranque del servidor— que decide pasa o
+falla comparando un texto de PROSA contra un patron o una subcadena.
+
+DENOMINADOR: los 82 ficheros del cierre de `require` de los 18 puntos de entrada
+vivos del backend: los 10 *.test.js de `npm test`, los 8 `npm run` (drift, ancla,
+deudas, cifra y sus cuatro mordidas) y src/index.js. Fuera: _bitacoras/, que son
+instrumentos de una sola corrida, y todo script que ningun punto de entrada vivo
+alcance. MEDIDO DE PASO: bre-test.js NO entra en la suite, porque el patron es
+*.test.js y ese fichero no lo cumple.
+
+RESULTADO: 85 lineas candidatas en 27 ficheros, que se resuelven en SIETE
+guardas de texto — DOS corregidas ayer y CINCO sin revisar. Las cinco tienen el
+hueco.
+
+  15 lineas  son guarda de texto (las siete guardas)
+  11 lineas  son del motor BRE en cierre-derivador.js. FUERA DE ALCANCE, y ya
+             traen su mitigacion escrita (FUERA_NO_GEOGRAFICO): ahi la familia
+             ya se conocia.
+  21 lineas  son del derivador de SITPORT en sitport-parser.js, que es OTRO
+             ANIMAL: clasifica texto externo, no decide pasa ni falla.
+  38 lineas  son forma o plomeria — identificadores, fechas, extensiones, argv,
+             ruteo de SQL en mocks, comillas de CSV. Un patron sobre la FORMA no
+             puede tener este hueco: no hay afirmacion que confundir.
+
+EL BARRIDO SE CORRIO CONTRA UN `git archive` DE 3f28ea6, EN UN DIRECTORIO
+APARTE. Correrlo sobre el arbol de trabajo lo habria medido DESPUES de sus
+propias correcciones: es el §5 bis —un control no verifica el artefacto que esta
+produciendo— aplicado a una MEDICION. El barrido del arbol ya corregido esta al
+lado, en 04_barrido_despues.txt, y da 82: las cuatro correcciones cambiaron tres
+lineas candidatas. Las cifras de la fila son las de 3f28ea6, que es donde se
+hizo el diagnostico.
+
+CONTROL POSITIVO DEL BARRIDO: tiene que ver las DOS guardas que ya sabemos que
+estan, y las ve. Sin eso, un cero o un numero bajo no significarian nada.
+CONTROL DE DISCRIMINACION: de las siete guardas, DOS no admiten contraejemplo.
+El barrido no acusa a todo lo que toca.
+
+
+------------------------------------------------------------------------------
+4 . LAS CINCO, Y LOS 9 DE 9 CONTRAEJEMPLOS
+------------------------------------------------------------------------------
+Cada hueco se CORRIO, no se argumento: un instrumento copia el PREDICADO
+VERBATIM de cada guarda y lo ejerce contra un texto que dice lo contrario de lo
+que la guarda afirma comprobar, con CONTROL NEGATIVO PRIMERO en cada bloque — el
+texto legitimo tiene que pasar. Salida cruda en 03_contraejemplos.txt.
+
+G7 · borde-pwa-backend.test.js — MENCION NO ES CONSUMO.  CORREGIDA
+    Afirmaba que cada campo declarado CONSUMIDO tiene por lo menos un lector en
+    la PWA. Contaba apariciones de la cadena `data.<campo>` en el texto: probaba
+    que estuviera ESCRITO, no que se USARA.
+    Contraejemplos: `// TODO: algun dia leer data.ultimo_tramo_seguro` daba 1
+    lector; `if (false) { render(data.ultimo_tramo_seguro) }` tambien.
+    MUERDE EN UN SOLO SENTIDO, y es lo que lo hace grave: en la lista de los
+    CONSUMIDOS produce un VERDE FALSO —el lado silencioso—; en la de los no
+    consumidos produce un rojo, que es ruidoso y barato. La familia del borde ya
+    fallo cuatro veces, y la cuarta era una advertencia de seguridad que nunca
+    llego al patron.
+    ARREGLO: se restan los comentarios antes de contar. Es LA MISMA RESTA que el
+    fichero ya hacia con el objeto `result` del pasamanos —alla «copiar no es
+    consumir», aca «mencionar no es consumir»—, o sea que no es criterio nuevo.
+    NO CUBRE EL CODIGO MUERTO y queda dicho en el propio fichero.
+    MORDIDA: al control positivo y negativo que ya tenia se le suman tres casos,
+    uno de ellos el del comentario y dos que prueban que el recorte no se come
+    un uso real ni una linea con http:// delante.
+
+    LO QUE COSTABA NO VERLO, MEDIDO PARA NO COBRARSE UN MERITO QUE NO
+    CORRESPONDE: hoy, sobre 37 campos distintos leidos en la PWA, 6 apariciones
+    vivian dentro de comentarios y CERO campos perdian su unico lector. O sea:
+    la guarda estaba mal y el arbol estaba bien. El arreglo no destapo nada; le
+    saca al control la unica forma que tenia de mentir en verde.
+
+G3 · zonas-aviso.js — MIRABA LA MARCA, NO EL TELEFONO.  CORREGIDA
+    Afirmaba hacer cumplir INV-10.1 con `!includes('{telefono}')`.
+    Contraejemplo: «Confirme con la Capitania {nombre} al +56 61 220 1234 antes
+    de zarpar» PASABA. Y el espejo, que prueba que el ancla estaba MAL y no
+    floja: «Este mensaje no lleva {telefono}, por INV-10.1» la DETENIA.
+    Rechazaba el texto correcto y aceptaba el incorrecto, las dos por el mismo
+    motivo.
+    ARREGLO: se prohibe LA CORRIDA DE DIGITOS. Umbral 6, unidad DIGITO, contando
+    a traves de espacios, parentesis y el signo mas, y NO a traves del punto ni
+    del guion — para no confundir una fecha ni un numero de resolucion. LOS DOS
+    MARGENES, MEDIDOS sobre el propio bloque `mensaje` y sobre
+    `contacto_generico`: la corrida legitima mas larga que existe hoy tiene 2
+    digitos («Canal 16») y el telefono chileno mas corto tiene 8. El umbral deja
+    tres digitos de aire de cada lado.
+    ENSANCHE DECLARADO: la guarda vieja miraba UN campo y la nueva mira los
+    TRES de `mensaje`. Se dice en vez de deslizarse: INV-10.1 habla de «un
+    mensaje del catalogo» y los tres lo son. Dejarlo en uno habria dejado una
+    guarda cuyo comentario afirma mas de lo que comprueba, que es este mismo
+    defecto otra vez una linea mas abajo.
+    LA MARCA SIGUE PROHIBIDA APARTE, y no es redundante: `{telefono}` no tiene
+    ningun digito, asi que la corrida no la ve. Son dos formas de meter un
+    telefono y hacen falta las dos.
+    MORDIDA: M22b (telefono a mano en capa_2), M22c (el mismo en capa_1, que el
+    guard viejo ni miraba) y M22d, que es el CONTROL DE DISCRIMINACION — una
+    fecha y un numero de resolucion en el mismo texto tienen que ACEPTARSE. Sin
+    M22d, un guard que mordiera cualquier digito pasaria las otras dos y
+    pareceria perfecto, ademas de ser inutilizable.
+
+G5 · cobertura-jurisdiccional.test.js — EL MANUAL DE LA REGLA.  CORREGIDA
+    Dos aserciones de la suite: `assert.match(capa_2, /Punta Arenas/)` y
+    `assert.match(capa_2, /VHF Canal 16/)`.
+    Contraejemplo, que pasaba las dos: «No pudimos identificar la Capitania; no
+    es Punta Arenas. Llame por VHF Canal 16.»
+    Y la primera ni siquiera probaba lo que decia. Lo que hay que probar es que
+    el nombre cayo EN EL HUECO {nombre}; que la cadena este en algun lado del
+    texto no lo prueba.
+    ARREGLO: identidad. La de la Capitania, contra el texto compuesto
+    —`capa_2_con_capitania.replace('{nombre}', 'Punta Arenas')`—; la del generico,
+    contra el bloque `contacto_generico` declarado, entero.
+    LA FORMA CORRECTA YA ESTABA TRES TESTS MAS ABAJO, en el mismo fichero, en
+    «el texto del aviso es el transcrito del §10». Se copio de ahi: no se
+    invento criterio.
+
+G4 · cotejo-contrato.js — TOMABA LO PRIMERO QUE PARECIA EL TEXTO.  CORREGIDO
+    Los dos extractores de la celda del §10 devolvian el PRIMER tramo entre
+    comillas y la PRIMERA bandera, sin exigir que hubiera UNA SOLA.
+    Contraejemplos: una celda con dos tramos entrecomillados cotejaba contra la
+    CITA HISTORICA en vez de contra el texto vigente; y la celda «sube de U a Q»
+    declara Q y el extractor devolvia U — INV-3.6 con dos topes distintos segun
+    donde se mire, que es literalmente lo que ese cotejo existe para impedir.
+    ARREGLO: se exige UNA SOLA coincidencia y con dos se detiene. NO ES CRITERIO
+    NUEVO: es el que el propio fichero ya aplicaba veinte lineas mas abajo para
+    dos filas con la misma etiqueta —«dos candidatas no son una afirmacion
+    verificable: no se elige una»—, extendido de dos filas a dos coincidencias
+    dentro de la celda.
+    MORDIDA: M14 y M15, las dos DERIVADAS de la fila viva del contrato — se lee
+    su linea cruda y se reescribe, asi que no caducan si el §10 se mueve.
+
+G6 · validar_deudas_declaradas.js — EL UNICO QUE NO SE ARREGLA CON UN PATRON
+    MEJOR.  DECLARADO, NO CORREGIDO
+    OLOR_A_REPOSITORIO afirma comprobar que una pregunta del grupo 2 «se
+    contesta sin abrir el repositorio», y busca rutas y extensiones: la
+    ORTOGRAFIA habitual de una mencion al repositorio.
+    Contraejemplo, que pasa: «¿La tabla canonica de D4 del plan de jurisdiccion
+    se mueve, o la reescribe el owner?»
+    DECISION DEL OWNER: se declara y no se toca. Fundamento: «se contesta sin
+    abrir el repositorio» es un JUICIO, no una propiedad del texto, y convertir
+    un juicio en patron es exactamente lo que la regla nueva prohibe. El arreglo
+    honesto no es un patron mas largo — es dejar de fingir que hay control.
+    Propuesta escrita y SIN FIRMAR, en el propio fichero: bajarlo a AVISO y
+    mover la exigencia a un campo declarado por quien redacta la fila.
+
+
+------------------------------------------------------------------------------
+4 bis . LA UNICA INSTRUCCION FIRMADA QUE NO SE PUDO APLICAR COMO ESTABA
+------------------------------------------------------------------------------
+El owner firmo: «SI arreglá :307 hoy: exigir que la pregunta termine en signo de
+interrogación es una línea, sin literal y sin juicio.» AL MEDIRLO, NO SE PUEDE.
+
+  grupo 2 con pregunta ....................... 19 filas
+  que NO terminan en `?` ..................... 14 de 19
+
+En este declarativo `pregunta` no es una pregunta pelada: es un PARRAFO que
+contiene la pregunta y sigue con su contexto. Aplicar lo firmado habria puesto
+el validador en ROJO sobre 14 filas que son tinta del owner, y reescribirlas
+esta fuera de alcance. La recomendacion que lo origino era mia y la di sin
+medir el campo: ese es el defecto, y es mio.
+
+LO QUE SI SE APLICO, que es lo mas fuerte que es CIERTO hoy sobre el dato vivo:
+se exige el PAR COMPLETO `¿ ... ?`. Las 19 lo cumplen. Es estrictamente mas
+fuerte que un signo suelto en cualquier parte, que es lo que habia.
+
+Y SE DICE LO QUE NO CIERRA, para que nadie lo lea como cerrado: «El owner ya
+contesto ¿va o no va? el 2026-08-20: va.» sigue pasando. Eso es el mismo juicio
+de G6 y queda declarado con el, en el mismo comentario del fichero.
+
+
+------------------------------------------------------------------------------
+5 . DOS ROJOS QUE YA ESTABAN EN EL ARBOL AL ABRIR
+------------------------------------------------------------------------------
+Los dos se encontraron al correr los controles de las guardas corregidas, no
+buscandolos. Se comprobaron contra el fichero de 3f28ea6 antes de decir nada:
+los dos son ANTERIORES a esta pieza.
+
+(a) UNA MORDIDA MUERTA, Y ES EL §3(a) DE LA BITACORA DE LA CIFRA OTRA VEZ.
+    M1 de prueba_mordida_cotejo_contrato.js decia
+    `.replace('Confirma', 'Verifica')`. El 2026-08-20 el §10 paso a usted: el
+    texto dejo de decir «Confirma» y paso a decir «Confirme». Desde ese dia el
+    replace era un no-op, la copia «mutada» era IDENTICA al dato y la mordida
+    salia «NO MUERDE» — o sea que ese control llevaba un dia entero declarando
+    que no hace lo que dice, con su rojo en el arbol.
+    UNA MORDIDA CON UN LITERAL ADENTRO CADUCA CUANDO EL DATO LA ALCANZA. Ya
+    estaba escrito ayer, y aca se cobro sola.
+    ARREGLADO en dos niveles, y el segundo importa mas: la mutacion de M1 ahora
+    se DERIVA del texto vivo —da vuelta su primera palabra, sea cual sea—, y el
+    arnes entero gano un control GENERICO que compara la copia rota contra la
+    intacta y grita «LA MUTACION NO MUTO» por su nombre. No reemplaza a derivar
+    del dato: hace RUIDOSA la caducidad cuando alguien no lo hizo.
+    prueba_mordida_cotejo_contrato.js paso de 13/13 con una falla a 15/15.
+
+(b) fase5_validar_zonas_aviso.js SALE CON 2 PROBLEMAS Y NO SON DE ESTA PIEZA.
+    Son M29 y M30, de la familia de la discrepancia declarada sobre la bahia
+    129: el mapa y el decreto hoy COINCIDEN en «Punta Arenas», asi que la
+    discrepancia que el dato sigue declarando ya no existe. Se comprobo
+    ejecutando el mismo script con el zonas-aviso.js de 3f28ea6: mismos dos
+    problemas, mismo texto. NO SE TOCA — es otro frente y no estaba en el
+    alcance de esta pieza. Queda dicho aca porque el que corra ese script se lo
+    va a encontrar, y porque tapar un rojo ajeno con «yo no fui» sin medirlo
+    seria peor que el rojo.
+
+
+------------------------------------------------------------------------------
+6 . DEFECTO MIO DEL DIA, Y COMO SE CAZO
+------------------------------------------------------------------------------
+EL CONTRAEJEMPLO DE G4 ESTABA ESCRITO AL REVES, Y SU SALIDA SE LEIA COMO LO
+CONTRARIO DE LO QUE PASABA.
+
+Para el caso «la celda menciona la bandera vieja primero» escribi la afirmacion
+como `bandera(celda) === 'Q'`. El extractor devolvia 'U' —o sea que el hueco
+ESTABA— y el instrumento imprimio `pasa=no`, que en la convencion de su propia
+salida significa «la guarda esta bien». Un contraejemplo confirmado se estaba
+publicando como guarda sana. Ademas habia un caso rotulado CONTRAEJEMPLO que en
+realidad era un ACIERTO del extractor, y estaba inflando el denominador.
+
+COMO SE CAZO: MIRANDO LA SALIDA, NO RELEYENDO EL CODIGO. La linea decia
+`pasa=no` al lado de una nota que explicaba por que el extractor se equivoca —
+las dos cosas juntas no podian ser ciertas. El codigo compilaba y corria
+perfecto, y releerlo no habria mostrado nada: el predicado era JavaScript
+valido, solo que afirmaba otra cosa que la que hacia falta afirmar.
+
+ARREGLADO: el predicado pasa a ser «el extractor devuelve la bandera que la
+celda DECLARA», el caso mal rotulado se reclasifico como acierto y se dejo
+escrito para no cobrarse un hueco que no hay, y la correccion quedo anotada
+dentro del propio instrumento. El conteo paso de «9 de 10» a «9 de 9».
+
+ES LA MISMA FAMILIA QUE LA REGLA QUE ESTA PIEZA VIENE A ESCRIBIR, aplicada a mi
+propio instrumento: un control que corre perfecto y comprueba OTRA COSA que la
+que hay que comprobar. Y confirma lo que la bitacora de ayer ya habia dicho en
+§3: estos defectos no los caza leer el codigo; los caza correr el instrumento y
+mirar la salida.
+
+
+------------------------------------------------------------------------------
+7 . LA FILA Y EL SITIO
+------------------------------------------------------------------------------
+SITIO NUEVO: SESION-cifra-s3d-2026-08-21, orden 10, barrido el 2026-08-21, 1
+fila. Agregado a los DOS lados a proposito —cobertura.sitios y SITIOS_CANON
+dentro del validador—, porque si la expectativa viviera en el dato, borrar el
+sitio borraria tambien la expectativa.
+
+Su `nota` dice por escrito QUE NO BARRE: la regla del §5 bis de la bitacora de
+la cifra, que va como pieza propia; la cobertura de marea, que va agendada en el
+plan de cierre; y la capa B. Agregar la del §5 bis de contrabando habria sumado
+una fila que el owner no autorizo; callarla habria dejado el sitio afirmando un
+barrido que no hizo.
+
+FILA: METODO::una-guarda-de-texto-comprueba-que-lo-mencione-no-que-lo-afirme.
+Grupo 1, estado viva, firma_owner true del 2026-08-21 — FIRMAR ES RESPONDER, NO
+HACER: el owner contesto y el trabajo de llevar la regla a CLAUDE.md sigue
+pendiente, que es lo unico que le falta para cerrar. Lleva el barrido con su
+unidad y su denominador, las cinco con su contraejemplo, la segunda mitad de la
+regla, lo que se corrigio y lo que se declara sin corregir, y el campo que
+declara que GENERALIZA a casilla-ambas-del-criterio-d3a sin tocarla.
+
+CIFRAS DEL DECLARATIVO AL CERRAR: 92 · 90 · 84 · 25 sitios · 16 barridos · 9 sin
+barrer. Los tres primeros suben por la fila; los dos del medio, por el sitio.
+Todos previstos y firmados.
+
+
+------------------------------------------------------------------------------
+8 . RESERVA DE INSTRUMENTO, DICHA Y NO TAPADA
+------------------------------------------------------------------------------
+Los DOS instrumentos de medicion de esta sesion —el barrido de guardas de texto
+y el de contraejemplos— VIVEN EN EL SCRATCHPAD DE SESION, fuera de los dos
+repos. Sus salidas estan en esta bitacora (02, 03, 04); los instrumentos no. Es
+la misma reserva que cargan los precedentes del 2026-08-17, 08-20 y 08-21, y
+versionarlos sigue siendo una decision abierta. Lo que SI quedo versionado son
+las mordidas, porque son controles y no mediciones.
+
+SE USO node Y NO heredoc para escribir en el declarativo y para los ficheros con
+acentos, a proposito. El primer intento de escribir el instrumento del barrido
+CON heredoc fallo en el acto: `/\\/g` quedo en disco como `/\/g` y no compilo.
+Fallo ruidoso, costo cero. El modo caro de ese mismo defecto es el que no falla.
+
+EL ROUND-TRIP DEL DECLARATIVO SE COMPROBO ANTES DE TOCARLO: JSON.parse seguido
+de JSON.stringify(,2) mas salto final da el fichero IDENTICO, 421.881 bytes byte
+a byte. Por eso reescribirlo entero no mueve ninguna linea que no sea la nueva.
+NFC comprobado despues de componer y antes de escribir.
+
+NO SE TOCO: estado_drift.json, .claude/launch.json ni el osm_crudo.json de
+toponimos — los tres ` M` intocables siguen fuera del indice. Ni la cifra de §2,
+ni cifra_spec2.json, ni PLAN_JURISDICCION.md, ni la capa B, ni CONTRATO_MOTOR.md,
+ni CLAUDE.md, ni el motor BRE, ni la tabla canonica de D4, ni los cuatro sitios
+de T6. No se redacto ninguna fila mas que la de la regla.

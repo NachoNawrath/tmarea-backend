@@ -94,6 +94,32 @@ if (p.divididos !== p.total - p.unanimes) {
 // ajena. Quien escriba la proxima guarda de texto en este repo — sobre una nota,
 // una cadena al patron, una cita del contrato — tiene que preguntarse si su
 // patron distingue AFIRMAR de MENCIONAR, y probarlo con el texto que contrasta.
+//
+// ── LA SEGUNDA MITAD, DEL 2026-08-21 ───────────────────────────────────────
+// LO DE ARRIBA CUBRE SOLO LAS GUARDAS POSITIVAS, Y ES LA MITAD BUENA. El mismo
+// literal se comporta al reves segun la forma de la guarda:
+//
+//   · GUARDA POSITIVA — «el texto tiene que decir X». El literal escrito a mano
+//     caduca en ROJO: si el dato cambia, la guarda se detiene y alguien mira.
+//     Es lo que hacen las dos de aca abajo.
+//   · GUARDA DE PROHIBICION — «el texto no puede decir X». El mismo literal
+//     caduca en VERDE Y EN SILENCIO: basta escribir lo prohibido de otra manera
+//     para que la guarda no lo vea, y nadie se entera nunca.
+//
+// CASO MEDIDO, y por eso esto no es teoria: zonas-aviso.js prohibia la MARCA
+// {telefono} para hacer cumplir INV-10.1, que prohibe EL TELEFONO. El texto
+// «Confirme con la Capitania {nombre} al +56 61 220 1234 antes de zarpar»
+// pasaba la guarda y viola el contrato en la cara.
+//
+// CONSECUENCIA PRACTICA: una guarda de PROHIBICION se ancla en LA COSA
+// PROHIBIDA y no en su ortografia habitual.
+//
+// EL TEXTO CANONICO DE ESTA REGLA VIVE EN EL DECLARATIVO, no aca:
+// METODO::una-guarda-de-texto-comprueba-que-lo-mencione-no-que-lo-afirme, con
+// el barrido —SIETE guardas de texto vivas, CINCO sin revisar, las cinco con el
+// hueco, 9 de 9 contraejemplos corridos— y con las cuatro correcciones y la que
+// se declara y no se arregla. Esto de aca es la copia que le queda a mano al que
+// escriba la proxima guarda: si las dos dejan de decir lo mismo, manda la fila.
 // ═══════════════════════════════════════════════════════════════════════════
 if (!p.nota_obligatoria || !/CUMPLE por DEROGACION/i.test(p.nota_obligatoria)) {
   fallos.push('falta la nota obligatoria de derogacion, o no afirma que un punto llego a CUMPLE por DEROGACION');

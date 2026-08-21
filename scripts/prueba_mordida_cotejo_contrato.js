@@ -26,7 +26,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { cotejar, cotejarReal, SALIDA, RUTA_CONTRATO, RUTA_DECL } =
+const { cotejar, cotejarReal, filaDelCatalogo, SALIDA, RUTA_CONTRATO, RUTA_DECL } =
   require('../src/services/cotejo-contrato');
 
 const RAIZ = path.join(__dirname, '..');
@@ -86,9 +86,21 @@ try {
 // `esperado` se aplica sobre el nombre de la divergencia o sobre el mensaje del
 // error, segun el caso lo produzca como divergencia o como excepcion.
 const FAMILIAS = [
+  // M1 ESTUVO MUERTA Y NADIE SE ENTERO. Decia
+  // `.replace('Confirma', 'Verifica')`, y el 2026-08-20 el §10 paso a usted:
+  // el texto dejo de decir «Confirma» y paso a decir «Confirme». Desde ese dia
+  // el replace era un no-op, la copia mutada era IDENTICA al dato, y la mordida
+  // salia «NO MUERDE» — o sea que el control llevaba un dia entero diciendo que
+  // no hace lo que dice, y ese rojo estaba en el arbol al abrir la sesion del
+  // 2026-08-21. Es el mismo defecto que el §3(a) de la bitacora de la cifra:
+  // UNA MORDIDA CON UN LITERAL ADENTRO CADUCA CUANDO EL DATO LA ALCANZA.
+  // La mutacion se DERIVA ahora del texto vivo: se da vuelta su primera
+  // palabra, sea cual sea. No puede coincidir con el original y no envejece.
   ['M1  el texto del dato se aparta del catalogo',
     () => { const d = clonar(DECL);
-      d.mensaje.capa_2_con_capitania = d.mensaje.capa_2_con_capitania.replace('Confirma', 'Verifica');
+      const t = d.mensaje.capa_2_con_capitania;
+      const primera = t.split(' ')[0];
+      d.mensaje.capa_2_con_capitania = [...primera].reverse().join('') + t.slice(primera.length);
       return [d, CONTRATO, CODIGO]; },
     { divergencia: /capa 2 con Capitania/ }],
 
@@ -147,12 +159,56 @@ const FAMILIAS = [
     () => [DECL, CONTRATO.replace('🟡 U "No tenemos cargado el límite de esta jurisdicción."',
                                   '🟡 U No tenemos cargado el límite de esta jurisdicción.'), CODIGO],
     { error: /no se pudo extraer 'entrecomillado'/ }],
+
+  // ── M14 y M15: las dos mordidas de la correccion del 2026-08-21 ────────────
+  // Los dos extractores tomaban LO PRIMERO QUE PARECIA el texto y ahora exigen
+  // una sola coincidencia. Las dos mutaciones se DERIVAN de la fila viva del
+  // contrato —se lee su linea cruda y se reescribe— para que no caduquen si el
+  // §10 se mueve o si la fila cambia de texto.
+  ['M14 la celda de capa 1 trae DOS tramos entrecomillados: no se elige uno',
+    () => {
+      const cruda = filaDelCatalogo(CONTRATO, DECL.cotejo_con_el_contrato.fila).cruda;
+      const celdas = cruda.split('|');
+      celdas[2] = celdas[2].replace('"', '(antes "una cita vieja") "');
+      return [DECL, CONTRATO.replace(cruda, celdas.join('|')), CODIGO];
+    },
+    { error: /2 tramos entre comillas/ }],
+
+  ['M15 la celda declara DOS banderas antes del texto: no se elige una',
+    () => {
+      const cruda = filaDelCatalogo(CONTRATO, DECL.cotejo_con_el_contrato.fila).cruda;
+      const celdas = cruda.split('|');
+      // Se antepone OTRA bandera a la que la celda ya trae, derivada de la que
+      // el codigo declara: si el motor dijera Q, se antepone U, y al reves.
+      const otra = CODIGO.BANDERA_AVISO === 'Q' ? 'U' : 'Q';
+      celdas[2] = celdas[2].replace(/(\s)(?=\S*")/, `$1sube de ${otra} a `);
+      return [DECL, CONTRATO.replace(cruda, celdas.join('|')), CODIGO];
+    },
+    { error: /2 banderas antes del texto/ }],
 ];
+
+// LA MUTACION TIENE QUE MUTAR — agregado el 2026-08-21, y es generico a
+// proposito. Varias familias rompen el dato con un `.replace()` de un literal
+// escrito a mano; cuando el dato se mueve, el replace se vuelve un no-op y la
+// copia «mutada» es identica al original. Ahi la mordida deja de morder, y en el
+// mejor caso sale un rojo confuso («NO MUERDE») que acusa al control cuando el
+// culpable es la mutacion. Eso fue exactamente M1 desde el 2026-08-20.
+// Se comprueba ANTES de cotejar y se dice por su nombre, en vez de dejar que el
+// sintoma se lea como otra cosa. No reemplaza a derivar la mutacion del dato
+// vivo: la hace RUIDOSA cuando alguien no lo hizo.
+const INTACTO = JSON.stringify([DECL, CONTRATO, CODIGO]);
 
 for (const [nombre, romper, esperado] of FAMILIAS) {
   let salida, error;
+  const roto = romper();
+  if (JSON.stringify(roto) === INTACTO) {
+    console.log(`${nombre.padEnd(52)}: LA MUTACION NO MUTO — la copia es identica al dato. ` +
+                `Un literal de esta familia caduco: la mordida no puede morder con una copia igual.`);
+    fallas++;
+    continue;
+  }
   try {
-    salida = cotejar(...romper());
+    salida = cotejar(...roto);
   } catch (e) {
     error = e;
   }

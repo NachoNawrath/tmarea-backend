@@ -325,6 +325,51 @@ function validarDeclaracion(decl, insumo, contactos) {
   // guard exigia {telefono} y era correcto; con el invariante escrito, exigirlo
   // IMPIDE cumplir el contrato — medido: el dato corregido abortaba aca. Se
   // INVIERTE, no se quita: el mismo campo sigue vigilado, cambia el signo.
+  //
+  // ── CORREGIDA EL 2026-08-21: MIRABA LA MARCA, NO EL TELEFONO ────────────────
+  // La version vieja era SOLO el `!includes('{telefono}')` de abajo: comprobaba
+  // que no estuviera la MARCA DE PLANTILLA, no que no hubiera un telefono.
+  // Contraejemplo corrido: «Confirme con la Capitania {nombre} al +56 61 220 1234
+  // antes de zarpar» PASABA la guarda, y viola INV-10.1 en la cara. Y el espejo,
+  // que prueba que el ancla estaba mal y no floja: «Este mensaje no lleva
+  // {telefono}, por INV-10.1» la DETENIA. Rechazaba el texto correcto y aceptaba
+  // el incorrecto, las dos por el mismo motivo.
+  //
+  // ES LA FORMA DE PROHIBICION DE LA REGLA DE LAS GUARDAS DE TEXTO, Y ES LA
+  // PELIGROSA DE LAS DOS. En una guarda POSITIVA el literal caduca en ROJO y se
+  // nota; en una de PROHIBICION caduca en VERDE y en silencio, que es lo que
+  // pasaba aca. La regla entera, con sus dos mitades, esta en la cabecera de
+  // scripts/publicar_cifra_spec2.js y en la fila
+  // METODO::una-guarda-de-texto-comprueba-que-lo-mencione-no-que-lo-afirme.
+  //
+  // EL ANCLA NUEVA ES LA COSA PROHIBIDA Y NO SU ORTOGRAFIA: un telefono es una
+  // corrida larga de digitos, se escriba como se escriba. UMBRAL 6, unidad:
+  // DIGITO, contando a traves de espacios, parentesis y el signo mas, y NO a
+  // traves del punto ni del guion — para no confundir una fecha (2026-08-21) ni
+  // un numero de resolucion (12.100/47). Los dos margenes, MEDIDOS el 2026-08-21
+  // sobre el propio bloque `mensaje` y sobre `contacto_generico`: la corrida
+  // legitima mas larga que existe hoy tiene 2 digitos («Canal 16») y el telefono
+  // chileno mas corto tiene 8. El umbral deja tres digitos de aire de cada lado.
+  //
+  // SE APLICA A LOS TRES CAMPOS DE `mensaje`, Y LA VIEJA MIRABA UNO. Es un
+  // ensanche a proposito y se dice en vez de deslizarse: INV-10.1 habla de «un
+  // mensaje del catalogo» y los tres lo son. Dejarlo en uno habria dejado una
+  // guarda cuyo comentario afirma mas de lo que comprueba, que es este mismo
+  // defecto otra vez, una linea mas abajo.
+  const CORRIDA_DE_DIGITOS = /[0-9][0-9\s()+]*[0-9]/g;
+  const DIGITOS_DE_TELEFONO = 6;
+  const cuantosDigitos = c => (c.match(/[0-9]/g) || []).length;
+  for (const campo of ['capa_1', 'capa_2_con_capitania', 'capa_2_sin_capitania']) {
+    const larga = (msg[campo].match(CORRIDA_DE_DIGITOS) || [])
+      .find(c => cuantosDigitos(c) >= DIGITOS_DE_TELEFONO);
+    exigir(!larga,
+      `"mensaje.${campo}" trae la corrida "${larga}" (${larga ? cuantosDigitos(larga) : 0} digitos, umbral ` +
+      `${DIGITOS_DE_TELEFONO}), que tiene forma de telefono. INV-10.1 prohibe el telefono dentro de un mensaje ` +
+      `del catalogo: el contacto se muestra en el punto de zarpe y recalada, no aca.`);
+  }
+  // La marca sigue prohibida aparte, y no es redundante: `{telefono}` no tiene
+  // ningun digito, asi que la corrida de arriba no la ve. Son dos formas de
+  // meter un telefono y hacen falta las dos.
   exigir(!msg.capa_2_con_capitania.includes('{telefono}'),
     `"mensaje.capa_2_con_capitania" lleva {telefono}, y INV-10.1 prohibe el telefono dentro de ` +
     `un mensaje del catalogo: el contacto se muestra en el punto de zarpe y recalada, no aca.`);

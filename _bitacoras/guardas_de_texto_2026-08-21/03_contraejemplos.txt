@@ -1,0 +1,41 @@
+CONTRAEJEMPLOS CORRIDOS CONTRA EL PREDICADO VERBATIM DE CADA GUARDA VIVA
+unidad: CASO. "pasa=SI" en una fila CONTRAEJEMPLO = hueco confirmado.
+
+  [pasa=SI] G3 zonas-aviso:328         legitimo (sin telefono)
+             control negativo: tiene que pasar
+  [pasa=SI] G3 zonas-aviso:328         CONTRAEJEMPLO: telefono escrito a mano
+             viola INV-10.1 y la guarda no lo ve: mira la MARCA, no el telefono
+  [pasa=no] G3 zonas-aviso:328         falso positivo: la prosa nombra la marca
+             lo detiene por mencionarla
+  [pasa=SI] G4 cotejo-contrato:92      legitimo (la celda de hoy)
+             control negativo: extrae U
+  [pasa=SI] G4 cotejo-contrato:92      la celda contrasta con la bandera vieja (acierta)
+             devuelve Q, que es la que la celda declara
+  [pasa=SI] G4 cotejo-contrato:92      CONTRAEJEMPLO: menciona la vieja primero
+             la celda declara Q y el extractor devuelve "U": coteja el motor contra la bandera mencionada, no contra la declarada
+  [pasa=SI] G4b cotejo-contrato:80     legitimo
+             control negativo
+  [pasa=SI] G4b cotejo-contrato:80     CONTRAEJEMPLO: dos tramos entrecomillados
+             coteja contra la cita historica y no contra el texto vigente
+  [pasa=SI] G5 test:227                legitimo
+             control negativo
+  [pasa=SI] G5 test:227                CONTRAEJEMPLO: la nombra para negarla
+             la asercion pasa con la sustitucion rota
+  [pasa=SI] G5b test:154               legitimo
+             control negativo
+  [pasa=SI] G5b test:154               CONTRAEJEMPLO: lo nombra para excluirlo
+             la asercion pasa diciendo lo contrario
+  [pasa=SI] G6 validar_deudas:304      legitimo
+             control negativo
+  [pasa=SI] G6 validar_deudas:304      CONTRAEJEMPLO: nombra el fichero sin escribir la ruta
+             exige abrir el repositorio y la guarda la deja pasar: mira la FORMA de la mencion
+  [pasa=SI] G6 validar_deudas:307      CONTRAEJEMPLO: signo de pregunta sin pregunta
+             no es una pregunta abierta y trae el signo
+  [pasa=SI] G7 borde-pwa:92            legitimo (uso real)
+             control negativo
+  [pasa=SI] G7 borde-pwa:92            CONTRAEJEMPLO: solo en un comentario
+             declarado CONSUMIDO y nadie lo lee: VERDE en el lado silencioso
+  [pasa=SI] G7 borde-pwa:92            CONTRAEJEMPLO: en codigo muerto
+             lo mismo, sin comentario
+
+CONTRAEJEMPLOS QUE LA GUARDA DEJA PASAR: 9 de 9
