@@ -254,3 +254,91 @@ deja ninguna huella en el diff, y la sesion siguiente no puede saber si se hizo.
 SE USO node Y NO heredoc para escribir, y desde un FICHERO y no con `node -e`
 inline: las dos son reglas que este repositorio pago. NFC comprobado despues de
 componer y antes de escribir, en los dos ficheros que se tocaron por script.
+
+
+==============================================================================
+ADENDA — 2026-08-21.  Se AGREGA, no se reescribe (CLAUDE.md §3.3).
+==============================================================================
+
+UN CONTROL QUE COPIA UNA DEFINICION EN VEZ DE LEERLA DE QUIEN LA DEFINE
+
+LA FORMA, QUE ES LO QUE TIENE QUE SOBREVIVIR:
+
+    UN CONTROL QUE COPIA UNA DEFINICION EN VEZ DE LEERLA DE QUIEN LA DEFINE
+    COMPARA DOS NUMEROS CON DISTINTO DENOMINADOR. SALE ROJO SOBRE UN ARBOL
+    SANO — O PEOR, VERDE SOBRE UNO ENFERMO. EL ARREGLO NO ES CONTAR MEJOR:
+    ES NO COPIAR LA DEFINICION.
+
+POR QUE «O PEOR, VERDE», que es la mitad que no se ve. Un control con la
+definicion copiada adentro falla en las dos direcciones y solo una hace ruido.
+Si la copia es MAS estricta que la definicion, sale rojo sobre un arbol sano y
+alguien lo mira. Si es MAS LAXA —o si la definicion se afina y la copia se
+queda con la vieja—, sale VERDE sobre un arbol enfermo y no lo mira nadie. La
+direccion del error no la elige quien escribe el control: la elige el cambio
+que venga despues.
+
+ES LA MISMA FAMILIA QUE §4.9, EN SU FORMA DE NUMERO. §4.9 dice que una guarda
+de texto comprueba que lo MENCIONE y no que lo AFIRME. Esto dice que un control
+de conteo comprueba UN numero y no EL numero. En los dos casos el control corre
+perfecto y comprueba otra cosa, y en los dos el arreglo no es afinar el patron
+ni afinar la cuenta: es anclar en quien define.
+
+------------------------------------------------------------------------------
+TERCERA INSTANCIA EN DOS DIAS, Y ESTA SE PAGO EN EL INSTRUMENTO DE VERIFICACION
+------------------------------------------------------------------------------
+La familia, acotada para que el «tres» sea comprobable: CONTROLES CUYA
+COMPARACION QUEDO APOYADA EN UN NUMERO O UN LITERAL QUE DEJO DE SIGNIFICAR LO
+QUE EL CONTROL CREE. Las tres estan escritas en el arbol con su bitacora:
+
+  (1) 2026-08-21, bitacora de la cifra, §3(a). Una mordida mutaba `no_cumple`
+      a 10 para romper la suma. Al pasar la cifra a 5 de 15, `no_cumple` PASO
+      A VALER 10: la mutacion se volvio una copia identica del dato y la
+      mordida habria salido EN VERDE sin morder nada.
+
+  (2) 2026-08-21, bitacora de las guardas de texto, §5(a). M1 del cotejo decia
+      `.replace("Confirma", "Verifica")`; el §10 paso a usted y el replace se
+      volvio un no-op. Salia «NO MUERDE» — rojo, pero acusando al control
+      cuando el culpable era la mutacion.
+
+  (3) HOY, en el verificador de push de esta pieza. Contaba a mano
+      `estado === "viva"` y lo comparaba contra 83. Da 85: la cifra publicada
+      de VIVAS se calcula sobre las deudas UNICAS, y este declarativo tiene DOS
+      filas `duplicada_de`, las dos vivas. Salio ROJO sobre un arbol sano.
+
+LO QUE DISTINGUE A LA TERCERA, Y ES POR ESO QUE SE ESCRIBE: las dos primeras
+eran MORDIDAS, o sea controles del dato. La tercera es el INSTRUMENTO DE
+VERIFICACION DE PUSH — el control del control, el ultimo que corre y el unico
+que queda entre un push y darlo por bueno. Es el peor lugar posible para un
+control que mide otra cosa: no hay nada mas abajo que lo cace.
+
+COMO SE CAZO, y no es la primera vez que la respuesta es la misma: MIRANDO LA
+SALIDA. El codigo compilaba, corria y contaba bien lo que contaba. Releerlo no
+habria mostrado nada, porque el defecto no estaba en la cuenta sino en contra
+que se comparaba. Se aplico la regla del repo —un control positivo que falla se
+sospecha a si mismo antes de acusar al dato— y el arbol estaba bien.
+
+EL ARREGLO, QUE ES LA FORMA APLICADA: el verificador ya no cuenta. Baja el
+VALIDADOR del remoto, lo corre sobre el DATO del remoto y lee la cifra de la
+salida de quien la define. Si manana la definicion de VIVAS cambia, el control
+la sigue solo. Es lo mismo que ya hacen bien otros controles de este arbol
+cuando comparan por IDENTIDAD en vez de reimplementar: el cotejo dato-contrato
+y el guard del comentario del andamio.
+
+DONDE QUEDO: en la cabecera del propio verificador,
+`_bitacoras/claudemd_49_2026-08-21/05_verificar_push.js`, que NO esta
+versionado — misma reserva de instrumento que todos sus precedentes. Por eso
+esta adenda existe: sin ella la forma vivia solo en un fichero que no viaja con
+el repositorio, que es exactamente el modo de falla que el declarativo de
+deudas existe para impedir.
+
+------------------------------------------------------------------------------
+Y UNA ANOMALIA DE LA SESION ANTERIOR QUE QUEDA CERRADA
+------------------------------------------------------------------------------
+En `_bitacoras/guardas_de_texto_2026-08-21/05_controles.txt` faltaba la seccion
+«npm run ancla», y en su momento se agrego al final en vez de investigarlo.
+Apareció el motivo: un `$B` que no expandio dentro de un bloque escapado creo
+un fichero llamado literalmente `$B` en la raiz del repositorio, y ahi habia
+caido esa parte de la salida. Nunca estuvo rastreado, su contenido esta
+superado por el `05_controles.txt` versionado —se comparo linea por linea antes
+de tocarlo— y se borro. La seccion que «faltaba» no se habia perdido: estaba en
+otro fichero, invisible porque nadie lo habia nombrado.
