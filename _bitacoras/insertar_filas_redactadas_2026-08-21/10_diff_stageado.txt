@@ -1,0 +1,496 @@
+diff --git a/_bitacoras/cobertura_capas_a_c_2026-08-20/cobertura_capas_a_c_2026-08-20.txt b/_bitacoras/cobertura_capas_a_c_2026-08-20/cobertura_capas_a_c_2026-08-20.txt
+index f7a9c3a..7dbb28b 100644
+--- a/_bitacoras/cobertura_capas_a_c_2026-08-20/cobertura_capas_a_c_2026-08-20.txt
++++ b/_bitacoras/cobertura_capas_a_c_2026-08-20/cobertura_capas_a_c_2026-08-20.txt
+@@ -172,8 +172,69 @@ entonces no es un control.
+ 
+ 
+ ------------------------------------------------------------------------------
+-6 . FILAS PARA EL DECLARATIVO — REDACTADAS Y NO APLICADAS
++6 . FILAS PARA EL DECLARATIVO — [ENMENDADO EL 2026-08-21: YA ESTAN INSERTADAS]
+ ------------------------------------------------------------------------------
++ENMIENDA DEL 2026-08-21. EL TITULO DE ESTA SECCION DECIA "REDACTADAS Y NO
++APLICADAS" Y YA NO ES CIERTO. Las CUATRO estan en data/deudas/deudas_declaradas.json
++desde el 2026-08-21, insertadas por la pieza que vacio la cola.
++
++  · SON CUATRO, NO CINCO. Se cuenta una vez, no dos: "el limite del control del
++    borde" ES R4, no una quinta.
++  · EL SITIO QUE ESTA SECCION DEJO "a decidir" EXISTE Y SE LLAMA
++    SESION-cobertura-capas-a-c-2026-08-20. Se registro a los DOS lados —
++    cobertura.sitios y SITIOS_CANON de scripts/validar_deudas_declaradas.js —, y
++    no es un tramite: con el sitio en un solo lado el validador salio ROJO por
++    [V5], medido.
++  · LOS IDS, en el mismo orden de abajo:
++      R1  SESION-cobertura-capas-a-c-2026-08-20::asimetria-de-no-evaluada-entre-el-backend-y-la-pwa
++      R2  SESION-cobertura-capas-a-c-2026-08-20::fondeadero-sugerido-no-lo-lee-nadie
++      R3  SESION-cobertura-capas-a-c-2026-08-20::total-es-redundante-y-conviene-decirlo
++      R4  SESION-cobertura-capas-a-c-2026-08-20::la-asercion-del-borde-mira-el-payload-congelado
++  · R2 VOLVIO FALSA UNA LINEA DEL ARBOL AL ENTRAR, y por eso se corrigio en el
++    mismo acto: borde-pwa-backend.test.js declaraba fondeadero_sugerido como
++    `deuda_sin_fila` con la nota "Fila redactada y no aplicada en la bitacora de
++    U2 A+C". Esa linea NO se pone roja cuando la fila aparece — las aserciones
++    miran el largo de la nota y la ausencia de lector, nunca si la fila existe —,
++    o sea que se habria quedado VERDE afirmando lo contrario de lo que pasa, en
++    el sitio exacto donde alguien se apoya en el control. Pasa a `deuda_con_fila`
++    y la nota cita el id.
++  · R2 va como FILA PROPIA y no absorbida dentro de
++    D4D5::motivo-principal-muere-en-el-pasamanos. Los dos precedentes existian:
++    `advertencias` se absorbio (misma sesion, misma fila) y
++    `cobertura_jurisdiccional` tiene fila propia (otra sesion, otro sitio). R2 es
++    el segundo caso. Es la QUINTA instancia del mismo pasamanos.
++  · LAS CUATRO NACEN CON firma_owner.firmada = false. Ninguna pregunta esta
++    contestada; lo unico que paso es que estan escritas.
++  · NO LLEVAN redactada_no_aplicada. Ese campo dice que hay un texto de
++    correccion escrito y sin aplicar, y ninguna de estas cuatro lo tiene.
++
++El texto de abajo se conserva TAL COMO SE ESCRIBIO, sin retocar (§3.3): es el
++registro de que estas cuatro se redactaron antes de que existiera el sitio que
++las aloja.
++
++
++UNA COSA QUE ESTA PIEZA DESTAPO SOBRE EL DECLARATIVO, Y NO ES DE ESTAS CUATRO
++------------------------------------------------------------------------------
++NINGUN CONTROL MIRA SI LA EVIDENCIA DE UNA FILA ENVEJECIO.
++
++La capa A de esta pieza cableo `cobertura_jurisdiccional` en el pasamanos de la
++PWA. La fila PLAN-2::cobertura-jurisdiccional-muere-en-el-pasamanos sostiene su
++diagnostico sobre un control que dice, textual, que «"cobertura" tiene 0
++apariciones en todo tmarea-pwa/src». Medido el 2026-08-21: hay SEIS, y TRES de
++ellas son `cobertura_jurisdiccional`. La fila sigue VIVA y la mitad de su
++evidencia ya es falsa.
++
++Es un defecto del declarativo SOBRE SI MISMO, y de la misma familia que el que ya
++esta fichado —«una decision del owner que ANULA una afirmacion de §2 no propaga
++sola al declarativo»—: el validador comprueba FORMA, y una fila cuya medicion
++envejecio es formalmente perfecta. La diferencia es que aquella envejecia por
++una DECISION y esta envejece por el TRABAJO: la pieza que arregla una deuda
++vuelve falsa la evidencia de la fila que la declaraba, y nada lo caza.
++
++NO SE REDACTA COMO FILA ACA. Va anotado por instruccion del owner el 2026-08-21,
++con estas palabras, porque va a hacer falta despues.
++------------------------------------------------------------------------------
++
+ NINGUNA SE INSERTA EN ESTA PIEZA. Instruccion del owner.
+ 
+ R1  la asimetria de `no_evaluada` entre el backend y la PWA
+@@ -215,8 +276,13 @@ R4  la asercion del borde mira el PAYLOAD CONGELADO, no el endpoint vivo
+   La capa B. No se escribio el bloque ni se empezo.
+   CONTRATO_MOTOR.md y el motor BRE.
+   data/deudas/deudas_declaradas.json — las cuatro filas de §6 van redactadas.
++      [ENMENDADO EL 2026-08-21: siguio siendo cierto ese dia y ya no lo es. Las
++       cuatro estan insertadas. Ver la enmienda al principio de §6.]
+   data/spec2/cifra_spec2.json y PLAN_JURISDICCION.md §5 — pieza siguiente.
+   Las cuatro filas pendientes del voseo. El bloque de clima de Hornopiren.
++      [ENMENDADO EL 2026-08-21: las cuatro del voseo tampoco estan pendientes ya.
++       Entraron el mismo dia y en el mismo acto que estas cuatro. El bloque de
++       clima de Hornopiren sigue pendiente.]
+   .claude/launch.json del repo — modificado y sin stagear desde el 2026-08-18,
+       no es de esta pieza. El que levanta los servidores es el de la sesion.
+   _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json — frente de toponimos.
+diff --git a/_bitacoras/voseo_al_patron_2026-08-20/18_cuatro_filas.md b/_bitacoras/voseo_al_patron_2026-08-20/18_cuatro_filas.md
+index b0c6b12..ccd97a8 100644
+--- a/_bitacoras/voseo_al_patron_2026-08-20/18_cuatro_filas.md
++++ b/_bitacoras/voseo_al_patron_2026-08-20/18_cuatro_filas.md
+@@ -3,7 +3,30 @@
+ Sesión `voseo_al_patron_2026-08-20`. Las cuatro se buscaron **antes** de escribir
+ en el contrato, no después. **Ninguna se aplicó.**
+ 
+-## ⚠ POR QUÉ NO ESTÁN YA EN `deudas_declaradas.json`
++## ✅ ENMIENDA DEL 2026-08-21 — YA ESTÁN. EL BLOQUE DE ABAJO ES HISTORIA
++
++**Las cuatro están insertadas en `data/deudas/deudas_declaradas.json`**, byte por
++byte como se redactaron en `18_cuatro_filas.json`, sin retocar una coma. El
++bloqueo que describe el `⚠` **caducó**: la otra sesión aterrizó en `8859da8`, el
++índice quedó limpio y las 80 filas que tenía stageadas son las del commit.
++
++Pasaron por el validador **por primera vez** ese día, y **pasaron**: las cuatro
++cumplen el esquema tal como estaban. El contador del sitio
++`SESION-voseo-al-patron-2026-08-20` subió de **1 a 5**, que es lo que `[V4]`
++exige, y el `vocabulario_del_barrido` del sitio se amplió para que no siguiera
++declarando un solo hallazgo de paso mientras aloja cinco filas.
++
++**Lo que sigue sin hacerse, y por eso las filas siguen `viva`s:** el texto
++redactado para `CONTRATO_MOTOR.md` en H1, H2 y H3 **no se aplicó** — ese fichero
++está fuera del alcance de la pieza que insertó las filas. `redactada_no_aplicada:
++true` sigue siendo cierto, que es exactamente lo que ese campo dice.
++
++El texto de abajo se conserva **tal como se escribió**, sin retocar: es el
++registro de por qué estas cuatro esperaron un día.
++
++---
++
++## ⚠ POR QUÉ NO ESTÁN YA EN `deudas_declaradas.json` — [SUPERADO, VER LA ENMIENDA DE ARRIBA]
+ 
+ Porque **no se puede escribir ahí ahora mismo**: una segunda sesión del owner
+ tiene ese fichero *stageado* en el índice compartido del repositorio, con su
+diff --git a/data/deudas/deudas_declaradas.json b/data/deudas/deudas_declaradas.json
+index e42ae37..f78c465 100644
+--- a/data/deudas/deudas_declaradas.json
++++ b/data/deudas/deudas_declaradas.json
+@@ -393,14 +393,15 @@
+         "fichero": "_bitacoras/voseo_al_patron_2026-08-20/",
+         "seccion_por_titulo": "medicion del registro del texto al patron",
+         "barrido": true,
+-        "nota": "La sesion barrio el registro (voseo/tuteo/usted) en los dos repos. Lo que deja como deuda es lo que la medicion encontro de paso y el owner ordeno declarar sin arreglar.",
++        "nota": "La sesion barrio el registro (voseo/tuteo/usted) en los dos repos. Lo que deja como deuda es lo que la medicion encontro de paso y el owner ordeno declarar sin arreglar. AMPLIADO el 2026-08-21: entran las CUATRO filas que la sesion dejo REDACTADAS Y NO APLICADAS en 18_cuatro_filas.json, y el contador sube de 1 a 5. No se aplicaron el 2026-08-20 porque otra sesion tenia el declarativo stageado en el indice compartido; esa sesion aterrizo en 8859da8 y el bloqueo caduco. Las cuatro entran BYTE POR BYTE como se redactaron, sin retocar: ninguna paso por el validador antes de hoy. Se declaran aparte de la fila de cotejo-contrato.js para que el sitio no afirme de si mismo algo que no hizo: aquella salio de medir el registro, estas cuatro salieron de APLICARLO.",
+         "barrido_el": "2026-08-20",
+-        "filas_en_este_declarativo": 1,
++        "filas_en_este_declarativo": 5,
+         "bitacora": "_bitacoras/voseo_al_patron_2026-08-20/",
+         "orden": 6,
+         "vocabulario_del_barrido": [
+           "el registro del texto al patron en los dos repos: voseo, tuteo y usted, con vocabulario cerrado derivado del corpus",
+-          "lo que la medicion encontro DE PASO y el owner ordeno declarar sin arreglar: la cobertura parcial de cotejo-contrato.js"
++          "lo que la medicion encontro DE PASO y el owner ordeno declarar sin arreglar: la cobertura parcial de cotejo-contrato.js",
++          "las CUATRO filas que salieron de APLICAR el §10 en usted el 2026-08-20: el contrato citandose a si mismo, INV-3.6 con el [telefono] que INV-10.1 saco, el tuteo de INV-4.7 fuera del §10, y la tabla del PLAN que cita un §10 que ya no existe. Se buscaron ANTES de escribir en el contrato, no despues."
+         ]
+       },
+       {
+@@ -419,6 +420,21 @@
+           "las condiciones de licencia de las fuentes usadas, que salieron de paso y el owner ordeno declarar como fila propia",
+           "el fallo de la prueba de contencion geografica, que tampoco es de esta pieza"
+         ]
++      },
++      {
++        "id": "SESION-cobertura-capas-a-c-2026-08-20",
++        "repo": "tmarea-backend",
++        "fichero": "_bitacoras/cobertura_capas_a_c_2026-08-20/",
++        "seccion_por_titulo": "deudas que genera la U2 capas A y C — que el veredicto deje de decir verde",
++        "vocabulario_del_barrido": [
++          "las CUATRO deudas que la pieza de las capas A y C dejo redactadas en su §6 y que el owner ordeno NO insertar ese dia: lo que la pieza CALCA de drift y no introduce, lo que el pasamanos copia y nadie lee, lo que copia y NO es senal perdida, y el limite del control del borde que la propia pieza construyo"
++        ],
++        "orden": 8,
++        "barrido": true,
++        "barrido_el": "2026-08-20",
++        "filas_en_este_declarativo": 4,
++        "nota": "Mismo precedente que SESION-caracterizacion-deudas-2026-08-19, SESION-tres-de-d4-2026-08-20, SESION-limite-puerto-12100-47-2026-08-20, SESION-plan-de-cierre-2026-08-20 y SESION-voseo-al-patron-2026-08-20: una sesion es un sitio de deuda propio. El sitio se crea el 2026-08-21, en la pieza que inserta las filas, y NO el dia del barrido: las cuatro se redactaron el 2026-08-20 sin sitio donde alojarse, y por eso §6 decia «sitio a decidir». Este sitio NO marca barrido ningun otro: PWA-COMENTARIOS y PWA-SIN-ANOTAR siguen en false aunque dos de estas cuatro filas sean de tmarea-pwa y caigan cerca de ellos. LO QUE LA PIEZA NO BARRIO Y NO SE DECLARA ACA: la capa B —el bloque que dibuja el aviso, item 2 del orden del plan de cierre— y la cifra de §2 con su nota, que son piezas propias.",
++        "bitacora": "_bitacoras/cobertura_capas_a_c_2026-08-20/"
+       }
+     ]
+   },
+@@ -3727,6 +3743,284 @@
+           "salida_cruda": "_bitacoras/toponimos_12100_47_2026-08-20/nominatim_pase2b.json"
+         }
+       }
++    },
++    {
++      "id": "SESION-voseo-al-patron-2026-08-20::el-contrato-se-cita-a-si-mismo-y-nadie-vigila-esa-cita",
++      "token_local": null,
++      "espacio_de_nombres": "sesion del voseo al patron 2026-08-20 — hallazgos de aplicar el §10",
++      "sitio": "SESION-voseo-al-patron-2026-08-20",
++      "repo": "tmarea-backend",
++      "texto_literal": null,
++      "sin_texto": true,
++      "abierta_el": null,
++      "abierta_el_lo_dice_el_documento": false,
++      "nota_fecha": "Nace de APLICAR el §10 en usted el 2026-08-20, autorizado por el owner. Las tres primeras se buscaron ANTES de escribir, no despues.",
++      "grupo": "1_cierra_con_lo_que_hay",
++      "estado": "viva",
++      "firma_owner": {
++        "firmada": true,
++        "fecha": "2026-08-20"
++      },
++      "redactada_no_aplicada": true,
++      "duplicada_de": null,
++      "titulo": "INV-3.2 cita la capa 1 del §10 y esa cita quedo desactualizada al pasar la fila a usted: el contrato se contradice DENTRO DEL MISMO FICHERO, y ningun control lo mira porque cotejo-contrato.js compara el DATO contra el §10, nunca el contrato contra si mismo",
++      "el_hueco_es_lo_que_importa": "Mas que la linea. Hoy existe un control que vigila que el DATO no divergisa del CONTRATO (cotejo-contrato.js, nacido de una divergencia real del 2026-08-13). NO existe ninguno que vigile que el contrato no divergisa DE SI MISMO. Cada vez que el §10 cambie, cualquier parte del contrato que lo cite se desactualiza en silencio. Esta fila es el primer caso conocido y aparecio a la primera.",
++      "donde": {
++        "fichero": "CONTRATO_MOTOR.md",
++        "seccion_por_titulo": "INV-3.2 — Mensaje en transito (doble capa)",
++        "cita_de_anclaje": "Mensaje inequivoco (\"Tu embarcacion NO puede transitar\" vs \"No afectada\")."
++      },
++      "evidencia_en_el_arbol": {
++        "medido_el": "2026-08-20",
++        "la_cita": "INV-3.2 cierra su parrafo de Capa 2 citando literalmente la capa 1 de la fila «Zona intermedia cerrada» del §10, para ejemplificar que el mensaje es inequivoco.",
++        "que_cambio": "Esa fila del §10 paso de \"Tu embarcacion NO puede transitar por [zona].\" a \"Su embarcacion NO puede transitar por [zona].\" en el mismo commit que abre esta deuda. La cita de INV-3.2 quedo con el texto viejo.",
++        "lo_que_NINGUN_control_ve": "cotejo-contrato.js declara su alcance en zonas_aviso.json y es entre el dato y el §10. npm test da 157/157 con la contradiccion adentro, medido.",
++        "causa_directa": "Es consecuencia de lo autorizado por el owner, no un defecto preexistente. Se busco antes de aplicar y se declara en el mismo acto."
++      },
++      "costo_estimado": "La linea es de un minuto y es mano del owner (texto del contrato) — redactada en 18_cuatro_filas.md. El HUECO no: un control que compare las citas internas del contrato contra el §10 exige antes decidir que es una cita —una comilla dentro de un parrafo no es un marcador— y eso es diseño, no escritura.",
++      "depende_de": "De nada externo. Los dos ficheros y el control estan en el arbol."
++    },
++    {
++      "id": "SESION-voseo-al-patron-2026-08-20::inv-36-transcribe-la-v17-y-trae-el-telefono-que-inv-101-saco",
++      "token_local": null,
++      "espacio_de_nombres": "sesion del voseo al patron 2026-08-20 — hallazgos de aplicar el §10",
++      "sitio": "SESION-voseo-al-patron-2026-08-20",
++      "repo": "tmarea-backend",
++      "texto_literal": null,
++      "sin_texto": true,
++      "abierta_el": null,
++      "abierta_el_lo_dice_el_documento": false,
++      "nota_fecha": "Nace de APLICAR el §10 en usted el 2026-08-20, autorizado por el owner. Las tres primeras se buscaron ANTES de escribir, no despues.",
++      "grupo": "1_cierra_con_lo_que_hay",
++      "estado": "viva",
++      "firma_owner": {
++        "firmada": true,
++        "fecha": "2026-08-20"
++      },
++      "redactada_no_aplicada": true,
++      "duplicada_de": null,
++      "titulo": "INV-3.6 transcribe el mensaje del §10 en su version v1.7 y trae el [telefono] que INV-10.1 saco expresamente: el contrato se contradice consigo mismo, y esto YA ERA FALSO antes de tocar el §10",
++      "donde": {
++        "fichero": "CONTRATO_MOTOR.md",
++        "seccion_por_titulo": "INV-3.6 — Una jurisdiccion sin geometria se declara, nunca se resuelve en silencio",
++        "cita_de_anclaje": "se informa: \"No tenemos cargado el limite de esta jurisdiccion — verifica con la Capitania [nombre]: [telefono]\"."
++      },
++      "evidencia_en_el_arbol": {
++        "medido_el": "2026-08-20",
++        "que_dice_INV_36": "verifica con la Capitania [nombre]: [telefono]",
++        "que_dice_el_10": "Confirme con la Capitania [nombre] antes de zarpar. Sin telefono.",
++        "las_dos_divergencias": "DOS, no una: el verbo (verifica / Confirme) y el TELEFONO. El telefono es la grave: INV-10.1 del mismo contrato dice que el contacto se muestra SOLO en el punto de zarpe y recalada, NUNCA dentro de un mensaje normativo. INV-3.6 muestra un mensaje normativo con telefono adentro.",
++        "es_preexistente": "SI. La divergencia del telefono nace de la v1.8 (2026-08-13), no de la sesion del voseo. Esta sesion solo la encontro. La del verbo la agrega el paso a usted.",
++        "no_estaba_anotada": "PLAN_JURISDICCION.md tiene anotada la misma clase de deuda para data/decreto/zonas_aviso.json, y esa YA se cerro. La del propio contrato no esta anotada en ningun lado."
++      },
++      "costo_estimado": "Reescribir dos lineas de INV-3.6 para que citen el §10 vigente y sacar el [telefono]. Mano del owner; redactada en 18_cuatro_filas.md. No exige medir nada mas.",
++      "depende_de": "De H1 no: son sitios distintos del mismo fichero. Si se construye el control de H1, esta la habria cazado sola."
++    },
++    {
++      "id": "SESION-voseo-al-patron-2026-08-20::tuteo-al-patron-dentro-del-contrato-y-fuera-del-10",
++      "token_local": null,
++      "espacio_de_nombres": "sesion del voseo al patron 2026-08-20 — hallazgos de aplicar el §10",
++      "sitio": "SESION-voseo-al-patron-2026-08-20",
++      "repo": "tmarea-backend",
++      "texto_literal": null,
++      "sin_texto": true,
++      "abierta_el": null,
++      "abierta_el_lo_dice_el_documento": false,
++      "nota_fecha": "Nace de APLICAR el §10 en usted el 2026-08-20, autorizado por el owner.",
++      "grupo": "1_cierra_con_lo_que_hay",
++      "estado": "viva",
++      "firma_owner": {
++        "firmada": true,
++        "fecha": "2026-08-20"
++      },
++      "redactada_no_aplicada": true,
++      "duplicada_de": null,
++      "titulo": "Hay texto al patron en TUTEO dentro de CONTRATO_MOTOR.md y fuera del §10: el §10 en usted lo deja conviviendo con tuteo en el mismo fichero",
++      "por_que_quedo_afuera": "POR ALCANCE, NO POR CRITERIO. Palabras del owner, 2026-08-20: su decision fue «usted en todos». Lo que cerro el alcance de la pieza del voseo fue el §10 y su espejo en el dato, no el contrato entero. Esta fila existe para que la diferencia entre «no se decidio» y «no se hizo» no se pierda.",
++      "donde": {
++        "fichero": "CONTRATO_MOTOR.md",
++        "seccion_por_titulo": "INV-4.7 — Naves deportivas eximidas de matricula (sin clasificacion registrada)",
++        "cita_de_anclaje": "muestra un aviso informativo: \"Tu embarcacion esta eximida de matricula (CIRC A-41/014 C.2); la evaluamos como navegacion de bahia.\""
++      },
++      "evidencia_en_el_arbol": {
++        "medido_el": "2026-08-20",
++        "el_denominador": "Lineas ENTRECOMILLADAS de CONTRATO_MOTOR.md fuera del rango del §10 (1164-1209) que traen marca de segunda persona. Son CINCO. De esas, tres son mensaje al patron: INV-3.2 (que es H1), INV-3.6 (que es H2) y esta, INV-4.7. Las otras dos son prosa sobre el mecanismo, no mensaje.",
++        "por_que_esta_es_distinta_de_H1_y_H2": "H1 y H2 son CITAS del §10 que quedaron desincronizadas. Esta NO cita nada: es un mensaje al patron redactado en el contrato, con su propia norma citada (CIRC A-41/014 C.2), que vive fuera del catalogo. O sea que el §10 NO es la unica fuente de mensajes del contrato, y la Regla de uso del §10 no lo dice.",
++        "lo_que_esto_abre_y_no_se_midio": "Si hay un mensaje al patron fuera del §10, puede haber mas de los que estas cinco lineas muestran: el barrido miro lineas entrecomilladas, y un mensaje sin comillas no cae. NO SE MIDIO."
++      },
++      "costo_estimado": "La linea es mano del owner y esta redactada en 18_cuatro_filas.md. Lo caro no es la linea: es contestar si el §10 es o no la fuente unica de mensajes del contrato, porque hoy la Regla de uso lo afirma y este caso lo desmiente.",
++      "depende_de": "De nada externo. Comparte fichero con H1 y H2 y conviene moverlas juntas."
++    },
++    {
++      "id": "SESION-voseo-al-patron-2026-08-20::plan-1927-cita-un-10-que-ya-no-existe",
++      "token_local": null,
++      "espacio_de_nombres": "sesion del voseo al patron 2026-08-20 — hallazgos de aplicar el §10",
++      "sitio": "SESION-voseo-al-patron-2026-08-20",
++      "repo": "tmarea-backend",
++      "texto_literal": null,
++      "sin_texto": true,
++      "abierta_el": null,
++      "abierta_el_lo_dice_el_documento": false,
++      "nota_fecha": "Nace de APLICAR el §10 en usted el 2026-08-20, autorizado por el owner.",
++      "grupo": "1_cierra_con_lo_que_hay",
++      "estado": "viva",
++      "firma_owner": {
++        "firmada": true,
++        "fecha": "2026-08-20"
++      },
++      "redactada_no_aplicada": true,
++      "duplicada_de": null,
++      "titulo": "PLAN_JURISDICCION.md cita el texto del §10 en dos versiones y las dos son falsas hoy: la primera mitad ya lo era antes de esta sesion",
++      "fuera_de_lo_autorizado": "El owner autorizo tocar CONTRATO_MOTOR.md y data/decreto/zonas_aviso.json. El PLAN no. Se anota y no se toca.",
++      "donde": {
++        "fichero": "PLAN_JURISDICCION.md",
++        "seccion_por_titulo": "La distancia entre el codigo y INV-10.1, medida y no arreglada — primera fila de la tabla",
++        "cita_de_anclaje": "transcribe la v1.7: \"Verifica con la Capitania {nombre}: {telefono}...\". El §10 v1.8 dice \"Confirma con la Capitania [nombre]\", sin telefono"
++      },
++      "evidencia_en_el_arbol": {
++        "medido_el": "2026-08-20",
++        "la_primera_mitad_ya_era_falsa": "La fila afirma que zonas_aviso.json «transcribe la v1.7» con {telefono} adentro. Es falso desde antes de esta sesion: el dato ya decia «Confirma con la Capitania {nombre} antes de zarpar», sin telefono.",
++        "la_segunda_mitad_la_hizo_falsa_esta_sesion": "La fila dice que el §10 v1.8 dice «Confirma con la Capitania [nombre]». Desde hoy dice «Confirme».",
++        "por_que_importa": "La tabla se titula «medida y no arreglada» y es insumo de una promocion. Un insumo cuyas dos mitades son falsas por motivos distintos —una por arreglo, otra por cambio— no se puede usar sin releerlo entero."
++      },
++      "costo_estimado": "Releer esa tabla entera contra el arbol, no solo esa fila: si una fila envejecio por arreglo y otra por cambio, las demas pueden estar igual y nadie las midio.",
++      "depende_de": "De nada externo. Fuera del alcance autorizado el 2026-08-20."
++    },
++    {
++      "id": "SESION-cobertura-capas-a-c-2026-08-20::asimetria-de-no-evaluada-entre-el-backend-y-la-pwa",
++      "token_local": null,
++      "espacio_de_nombres": "sesion U2 capas A y C 2026-08-20 — lo que la pieza declara en vez de corregir de paso",
++      "sitio": "SESION-cobertura-capas-a-c-2026-08-20",
++      "repo": "tmarea-backend",
++      "texto_literal": null,
++      "sin_texto": true,
++      "titulo": "La cobertura `no_evaluada` NO aporta en el backend y SI escala en la PWA: `bandera_final` puede decir Q sobre una cobertura que no se pudo evaluar mientras la pantalla dice U",
++      "abierta_el": null,
++      "abierta_el_lo_dice_el_documento": false,
++      "nota_fecha": "El documento no fecha estas deudas: nacen de construir la composicion de la cobertura el 2026-08-20. La bitacora las redacto en su §6 con la instruccion del owner escrita al lado —«NINGUNA SE INSERTA EN ESTA PIEZA»— y se insertan el 2026-08-21, en la pieza que vacia la cola. Salida cruda en _bitacoras/cobertura_capas_a_c_2026-08-20/.",
++      "grupo": "1_cierra_con_lo_que_hay",
++      "estado": "viva",
++      "firma_owner": {
++        "firmada": false,
++        "fecha": null
++      },
++      "duplicada_de": null,
++      "evidencia_en_el_arbol": {
++        "medido_el": "2026-08-20",
++        "el_hecho": "componerConCobertura devuelve la bandera previa cuando banderaCobertura llega en null, y null es el estado no_evaluada. El backend NO escala ese estado. Quien si lo escala es la PWA: useVoyageVerification.js hace `const bandera = c.estado === \"no_evaluada\" ? \"U\" : c.bandera`, dentro de escalarPorCobertura. Los dos extremos del borde tratan el mismo estado de forma distinta.",
++        "la_asimetria_es_heredada": "De componerConDrift, en drift-ambito-a.js. componerConCobertura esta CALCADA de ella y topada con BANDERA_AVISO. Esta pieza calca la asimetria, no la introduce, y por eso se declara en vez de corregirse de paso (§4.8).",
++        "fijada_por_test": "src/services/__tests__/cobertura-compone-veredicto.test.js, caso «bandera NULL (cobertura no_evaluada) NO aporta — la asimetria heredada de drift», que asserta componerConCobertura(\"Q\", null) === \"Q\" y componerConCobertura(\"U\", null) === \"U\". La rama esta fijada A LA VISTA: el test la AFIRMA en vez de taparla, asi que corregirla exige tocar el test y deja diff.",
++        "lo_que_NO_esta_medido": "Cuantas rutas reales llegan hoy con estado no_evaluada. El test fija el comportamiento sobre entradas construidas; nadie conto el caso en el trafico."
++      },
++      "donde": {
++        "fichero": "src/services/cobertura-jurisdiccional.js y src/services/__tests__/cobertura-compone-veredicto.test.js",
++        "seccion_por_titulo": "componerConCobertura -> la rama de banderaCobertura en null",
++        "cita_de_anclaje": "el comentario «`banderaCobertura` en null es el estado `no_evaluada`, y aca NO aporta», y el caso de test «bandera NULL (cobertura no_evaluada) NO aporta — la asimetria heredada de drift»"
++      },
++      "costo_estimado": "Bajo si se decide que el backend escale: es una rama y su test. Lo que no es bajo es DECIDIR de que lado se unifica, porque la misma asimetria vive en drift y arreglar solo la cobertura dejaria a los dos hermanos discrepando entre si.",
++      "depende_de": "Nada abierto. Comparte causa con la rama equivalente de componerConDrift, que no tiene fila propia."
++    },
++    {
++      "id": "SESION-cobertura-capas-a-c-2026-08-20::fondeadero-sugerido-no-lo-lee-nadie",
++      "token_local": null,
++      "espacio_de_nombres": "sesion U2 capas A y C 2026-08-20 — lo que la pieza declara en vez de corregir de paso",
++      "sitio": "SESION-cobertura-capas-a-c-2026-08-20",
++      "repo": "tmarea-pwa",
++      "texto_literal": null,
++      "sin_texto": true,
++      "titulo": "QUINTA instancia del mismo pasamanos: `fondeadero_sugerido` se calcula, se copia y no lo lee nadie en toda la PWA — es senal perdida, no campo redundante",
++      "abierta_el": null,
++      "abierta_el_lo_dice_el_documento": false,
++      "nota_fecha": "El documento no fecha estas deudas: nacen de construir la composicion de la cobertura el 2026-08-20. La bitacora las redacto en su §6 con la instruccion del owner escrita al lado —«NINGUNA SE INSERTA EN ESTA PIEZA»— y se insertan el 2026-08-21, en la pieza que vacia la cola. Salida cruda en _bitacoras/cobertura_capas_a_c_2026-08-20/.",
++      "grupo": "1_cierra_con_lo_que_hay",
++      "estado": "viva",
++      "firma_owner": {
++        "firmada": false,
++        "fecha": null
++      },
++      "duplicada_de": null,
++      "evidencia_en_el_arbol": {
++        "medido_el": "2026-08-20",
++        "el_hecho": "El motor calcula un fondeadero sugerido, useVoyageVerification.js lo copia en su objeto `result` (`fondeadero_sugerido: data.fondeadero_sugerido || null`) y esa copia es su UNICA aparicion en la PWA. Copiar no es consumir.",
++        "el_instrumento": "La asercion de U1 en src/services/__tests__/borde-pwa-backend.test.js, que mide el consumo SIN el objeto `result` del pasamanos, a proposito: un control que comparara claves emitidas contra claves copiadas lo daria por verde.",
++        "es_la_QUINTA_del_mismo_pasamanos": "Van cinco: `cierre` (corregida en 6443178), `cobertura_jurisdiccional` (PLAN-2::cobertura-jurisdiccional-muere-en-el-pasamanos, cableada por esta misma pieza en su capa A), `motivo_principal` y `advertencias` (las dos dentro de D4D5::motivo-principal-muere-en-el-pasamanos), y esta. Va como FILA PROPIA y no absorbida, con el precedente de la segunda: instancia medida en otra sesion, fila propia, sitio propio.",
++        "por_que_es_senal_y_no_redundancia": "Se separa de `total` A PROPOSITO. `total` lo recalcula el consumidor por su cuenta; el fondeadero no lo calcula nadie mas en la PWA, asi que su perdida cuesta informacion. Meter los dos en la misma bolsa convertiria la lista en un vaciadero.",
++        "lo_que_esta_fila_NO_pide": "Cablearlo. Lo que pide decidir es lo mismo que pide su hermana: si el pasamanos sigue siendo una copia campo por campo, todo campo nuevo del backend nace invisible."
++      },
++      "donde": {
++        "fichero": "tmarea-pwa/src/hooks/useVoyageVerification.js",
++        "seccion_por_titulo": "FETCH RESTRICCIONES DE TRANSITO -> fetchTransitRestrictions",
++        "cita_de_anclaje": "la linea `fondeadero_sugerido: data.fondeadero_sugerido || null` dentro del objeto `result`, y la ausencia de cualquier lector de ese campo fuera de esa copia"
++      },
++      "costo_estimado": "Bajo si se decide dibujarlo. Alto —y es la pregunta real, la misma que ya trae D4D5::motivo-principal-muere-en-el-pasamanos— si se decide que el pasamanos deje de ser una copia manual.",
++      "depende_de": "Nada abierto. Comparte causa con D4D5::motivo-principal-muere-en-el-pasamanos y con PLAN-2::cobertura-jurisdiccional-muere-en-el-pasamanos."
++    },
++    {
++      "id": "SESION-cobertura-capas-a-c-2026-08-20::total-es-redundante-y-conviene-decirlo",
++      "token_local": null,
++      "espacio_de_nombres": "sesion U2 capas A y C 2026-08-20 — lo que la pieza declara en vez de corregir de paso",
++      "sitio": "SESION-cobertura-capas-a-c-2026-08-20",
++      "repo": "tmarea-pwa",
++      "texto_literal": null,
++      "sin_texto": true,
++      "titulo": "`total` se copia y no lo lee nadie, pero NO es senal perdida: el consumidor lo recalcula. Se declara para que la exencion no quede en silencio",
++      "abierta_el": null,
++      "abierta_el_lo_dice_el_documento": false,
++      "nota_fecha": "El documento no fecha estas deudas: nacen de construir la composicion de la cobertura el 2026-08-20. La bitacora las redacto en su §6 con la instruccion del owner escrita al lado —«NINGUNA SE INSERTA EN ESTA PIEZA»— y se insertan el 2026-08-21, en la pieza que vacia la cola. Salida cruda en _bitacoras/cobertura_capas_a_c_2026-08-20/.",
++      "grupo": "1_cierra_con_lo_que_hay",
++      "estado": "viva",
++      "firma_owner": {
++        "firmada": false,
++        "fecha": null
++      },
++      "duplicada_de": null,
++      "evidencia_en_el_arbol": {
++        "medido_el": "2026-08-20",
++        "el_hecho": "useVoyageVerification.js copia `total: data.total || 0` en su objeto `result` y ningun componente lo lee. Lo que si hace el consumidor es contar por su cuenta: TransitRestrictionsBlock.jsx liga `const lista = transitRestrictions?.restricciones_intermedias || []` y cuenta `lista.length`, `aplican.length` e `informativas.length`. Verificado el 2026-08-21: el literal `restricciones_intermedias.length` da 0 apariciones en tmarea-pwa/src — el conteo pasa por la ligadura `lista`, no por el campo.",
++        "por_que_es_FILA_y_no_un_detalle": "Porque la alternativa es una exencion sin motivo. La lista declarada del borde tiene un tipo `redundante` justamente para esto, y §4.2 prohibe que un campo salga de la cuenta sin decir por que.",
++        "la_separacion_es_deliberada": "Va aparte de fondeadero_sugerido. Los dos se copian y ninguno tiene lector, pero uno cuesta informacion y el otro no. Meterlos juntos borraria la unica distincion que hace util la lista."
++      },
++      "donde": {
++        "fichero": "tmarea-pwa/src/hooks/useVoyageVerification.js y tmarea-pwa/src/components/verification/TransitRestrictionsBlock.jsx",
++        "seccion_por_titulo": "FETCH RESTRICCIONES DE TRANSITO -> fetchTransitRestrictions",
++        "cita_de_anclaje": "la linea `total: data.total || 0` dentro del objeto `result`, contra `const lista = transitRestrictions?.restricciones_intermedias || []` y sus `.length` en el bloque"
++      },
++      "costo_estimado": "Casi nulo como escritura: es una linea de la lista declarada del borde, y ya esta puesta como `redundante`. Lo que la fila conserva es el MOTIVO, para que nadie la reclasifique como senal perdida ni la borre por parecer trivial.",
++      "depende_de": "Nada abierto. Es la contracara de la fila de fondeadero_sugerido y solo se entiende junto a ella."
++    },
++    {
++      "id": "SESION-cobertura-capas-a-c-2026-08-20::la-asercion-del-borde-mira-el-payload-congelado",
++      "token_local": null,
++      "espacio_de_nombres": "sesion U2 capas A y C 2026-08-20 — lo que la pieza declara en vez de corregir de paso",
++      "sitio": "SESION-cobertura-capas-a-c-2026-08-20",
++      "repo": "tmarea-backend",
++      "texto_literal": null,
++      "sin_texto": true,
++      "titulo": "La asercion de U1 saca su universo de campos de un payload CONGELADO y no del endpoint vivo: si manana el handler emite una clave mas, el control sigue VERDE y el borde tiene un campo sin declarar",
++      "abierta_el": null,
++      "abierta_el_lo_dice_el_documento": false,
++      "nota_fecha": "El documento no fecha estas deudas: nacen de construir la composicion de la cobertura el 2026-08-20. La bitacora las redacto en su §6 con la instruccion del owner escrita al lado —«NINGUNA SE INSERTA EN ESTA PIEZA»— y se insertan el 2026-08-21, en la pieza que vacia la cola. Salida cruda en _bitacoras/cobertura_capas_a_c_2026-08-20/.",
++      "grupo": "1_cierra_con_lo_que_hay",
++      "estado": "viva",
++      "firma_owner": {
++        "firmada": false,
++        "fecha": null
++      },
++      "duplicada_de": null,
++      "evidencia_en_el_arbol": {
++        "medido_el": "2026-08-20",
++        "el_hecho": "borde-pwa-backend.test.js compara las claves de _bitacoras/spec2_pantalla_2026-08-20/05_payload_antofagasta_taltal.json contra su lista DECLARADO. El payload es lo que el navegador recibio el 2026-08-20. Una clave nueva del handler no aparece en ese fichero, asi que no puede romper la comparacion.",
++        "el_modo_de_falla": "El control no se pone rojo: se queda verde afirmando algo que dejo de ser cierto. Es la familia que este repositorio tiene fichada —el instrumento corre perfecto y verifica otra cosa— aplicada al control que existe para impedirla.",
++        "esta_dicho_DENTRO_del_control": "Y no solo en la bitacora. El propio test lo declara en bloque destacado antes de la lista, con el motivo escrito: «Queda dicho aca y no en una bitacora porque aca es donde alguien se va a apoyar en el control».",
++        "lo_que_cerrarlo_exige": "Leer el `res.json` del handler, o sea parsear codigo. Es otra pieza con su propia decision, y por eso el limite se declara en vez de taparse."
++      },
++      "donde": {
++        "fichero": "src/services/__tests__/borde-pwa-backend.test.js",
++        "seccion_por_titulo": "LO QUE ESTE CONTROL NO MIRA, Y HAY QUE SABERLO ANTES DE APOYARSE EN EL",
++        "cita_de_anclaje": "LAS CLAVES SALEN DEL PAYLOAD CONGELADO, NO DEL ENDPOINT VIVO."
++      },
++      "costo_estimado": "Medio y con decision adentro: hay que elegir entre parsear el `res.json` del handler —fragil ante cualquier refactor— o levantar el endpoint en el propio test, que le mete red o base a una suite que hoy no las necesita. Ninguna de las dos es una linea.",
++      "depende_de": "Nada abierto. El control existe y funciona; lo que falta es de donde saca su universo."
+     }
+   ]
+ }
+diff --git a/scripts/validar_deudas_declaradas.js b/scripts/validar_deudas_declaradas.js
+index 7d08215..966f2d6 100644
+--- a/scripts/validar_deudas_declaradas.js
++++ b/scripts/validar_deudas_declaradas.js
+@@ -44,6 +44,15 @@ const FICHERO = iArg !== -1 && process.argv[iArg + 1]
+ // filas. Que un sitio de deuda pueda ser un documento que no declara ninguna
+ // deuda —y que aun asi las genere al medirlo— es el motivo por el que se agrega
+ // con esta nota y a los DOS lados, en vez de sumarse en silencio.
++//
++// EL VIGESIMOTERCERO, 'SESION-cobertura-capas-a-c-2026-08-20', se agrega el
++// 2026-08-21 y NO el dia de su barrido. Sus cuatro filas se redactaron el
++// 2026-08-20 en el §6 de la bitacora de las capas A y C, con la instruccion del
++// owner de no insertarlas ese dia, y quedaron con "sitio a decidir": o sea, sin
++// donde alojarse. La pieza que las inserta es la que crea el sitio. La fecha va
++// PARTIDA a proposito -- 'barrido_el' dice cuando se midio y esta nota dice
++// cuando se registro --, porque juntarlas haria parecer que el sitio existia
++// mientras las filas estaban sueltas.
+ // ---------------------------------------------------------------------------
+ const SITIOS_CANON = [
+   'PLAN-2',
+@@ -68,6 +77,7 @@ const SITIOS_CANON = [
+   'SESION-plan-de-cierre-2026-08-20',
+   'SESION-voseo-al-patron-2026-08-20',
+   'SESION-toponimos-12100-47-2026-08-20',
++  'SESION-cobertura-capas-a-c-2026-08-20',
+ ];
+ 
+ const GRUPOS = {
+diff --git a/src/services/__tests__/borde-pwa-backend.test.js b/src/services/__tests__/borde-pwa-backend.test.js
+index b972cc2..9ccc6c9 100644
+--- a/src/services/__tests__/borde-pwa-backend.test.js
++++ b/src/services/__tests__/borde-pwa-backend.test.js
+@@ -63,7 +63,7 @@ const DECLARADO = {
+   total:                     { tipo: 'redundante', nota: 'los bloques cuentan restricciones_intermedias.length por su cuenta' },
+ 
+   motivo_principal:          { tipo: 'deuda_con_fila',  nota: 'D4D5::motivo-principal-muere-en-el-pasamanos — el owner ordeno escribirla, no arreglarla' },
+-  fondeadero_sugerido:       { tipo: 'deuda_sin_fila',  nota: 'el motor calcula un fondeadero y el patron no lo ve nunca. Misma clase que `advertencias`. Fila redactada y no aplicada en la bitacora de U2 A+C' },
++  fondeadero_sugerido:       { tipo: 'deuda_con_fila',  nota: 'SESION-cobertura-capas-a-c-2026-08-20::fondeadero-sugerido-no-lo-lee-nadie — el motor calcula un fondeadero y el patron no lo ve nunca. Misma clase que `advertencias`. Era deuda_sin_fila: la fila se inserto el 2026-08-21' },
+ };
+ 
+ const payload = JSON.parse(fs.readFileSync(PAYLOAD, 'utf8')).payload;

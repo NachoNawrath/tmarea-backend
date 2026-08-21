@@ -1,0 +1,127 @@
+CONTROL CONTRA EL INDICE — las cifras del informe salen de aca, no del disco.
+Corrida: 2026-08-21T15:51:40.462Z
+
+DECLARATIVO, DESDE EL INDICE (git show :data/deudas/deudas_declaradas.json)
+  filas 88 · unicas 86 · vivas 80
+  sitios 23 · barridos 14 · sin barrer 9
+  OK  suma de filas_en_este_declarativo == filas  ->  88 vs 88
+
+  LAS OCHO FILAS DE ESTA PIEZA, EN EL INDICE:
+  OK  sitio del voseo: 5 filas (1 de antes + 4 de hoy)
+        SESION-voseo-al-patron-2026-08-20::cotejo-contrato-cubre-2-de-4-cadenas-y-da-verde
+        SESION-voseo-al-patron-2026-08-20::el-contrato-se-cita-a-si-mismo-y-nadie-vigila-esa-cita
+        SESION-voseo-al-patron-2026-08-20::inv-36-transcribe-la-v17-y-trae-el-telefono-que-inv-101-saco
+        SESION-voseo-al-patron-2026-08-20::tuteo-al-patron-dentro-del-contrato-y-fuera-del-10
+        SESION-voseo-al-patron-2026-08-20::plan-1927-cita-un-10-que-ya-no-existe
+  OK  sitio de U2 A+C: 4 filas (4 de hoy)
+        SESION-cobertura-capas-a-c-2026-08-20::asimetria-de-no-evaluada-entre-el-backend-y-la-pwa  [tmarea-backend]
+        SESION-cobertura-capas-a-c-2026-08-20::fondeadero-sugerido-no-lo-lee-nadie  [tmarea-pwa]
+        SESION-cobertura-capas-a-c-2026-08-20::total-es-redundante-y-conviene-decirlo  [tmarea-pwa]
+        SESION-cobertura-capas-a-c-2026-08-20::la-asercion-del-borde-mira-el-payload-congelado  [tmarea-backend]
+
+  CONTADORES DE SITIO, EN EL INDICE:
+  OK  voseo  filas_en_este_declarativo = 5 (esperado 5)
+  OK  U2 A+C filas_en_este_declarativo = 4 (esperado 4)
+  OK  U2 A+C barrido=true barrido_el=2026-08-20 bitacora citada=true
+  OK  voseo vocabulario_del_barrido = 3 entradas (era 2)
+
+  FIRMA Y ESTADO DE LAS OCHO:
+  OK  las CUATRO de U2 nacen con firmada=false
+  OK  las CUATRO de U2 NO llevan redactada_no_aplicada (ninguna trae texto de correccion)
+  OK  las CUATRO de U2: estado viva, grupo 1
+  OK  de las CUATRO de U2, 2 son de tmarea-pwa y 2 de tmarea-backend
+
+  INDICE vs DISCO (tienen que ser el mismo objeto):
+    indice sha256 35a75a06ed6b4189a35338767c2a4a836447d8cfb5deced296b8045d26858ac8
+    disco  sha256 35a75a06ed6b4189a35338767c2a4a836447d8cfb5deced296b8045d26858ac8
+    -> IDENTICOS
+
+LAS CUATRO DEL VOSEO, CONTRA 18_cuatro_filas.json — identidad, no parecido
+  OK  el-contrato-se-cita-a-si-mismo-y-nadie-vigila-esa-cita
+  OK  inv-36-transcribe-la-v17-y-trae-el-telefono-que-inv-101-saco
+  OK  tuteo-al-patron-dentro-del-contrato-y-fuera-del-10
+  OK  plan-1927-cita-un-10-que-ya-no-existe
+  OK  4/4 identicas al objeto redactado el 2026-08-20 (sha256 del JSON canonico)
+
+scripts/validar_deudas_declaradas.js, DESDE EL INDICE
+  OK  el sitio nuevo esta en SITIOS_CANON
+  OK  lleva su nota de procedencia al lado
+  OK  indice == disco
+
+src/services/__tests__/borde-pwa-backend.test.js, DESDE EL INDICE — el desmentido de C-2
+  OK  ya NO dice que fondeadero_sugerido es deuda_sin_fila
+  OK  ahora dice deuda_con_fila
+  OK  la nota cita el id de la fila
+  OK  ninguna entrada de DECLARADO tiene tipo deuda_sin_fila (0)
+      la cadena `deuda_sin_fila` aparece 2 vez/veces, y las dos son PROSA: el vocabulario de la cabecera y la nota que dice «Era deuda_sin_fila»
+
+LAS DOS BITACORAS QUE IBAN A QUEDAR MINTIENDO, DESDE EL INDICE
+  OK  18_cuatro_filas.md trae su enmienda
+  OK    ...y conserva el texto original sin retocar (§3.3)
+  OK  cobertura_capas_a_c §6 trae su enmienda
+  OK    ...y conserva el texto original sin retocar (§3.3)
+  OK  la nota que el owner pidio, con esas palabras
+  OK  queda escrito que eran cuatro y no cinco
+
+LO QUE NO ENTRA AL INDICE — control explicito de los TRES intocables:
+  OK  .claude/launch.json -> el indice tiene la version de HEAD, no la modificada
+  OK  data/catalogo/estado_drift.json -> el indice tiene la version de HEAD, no la modificada
+  OK  _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json -> el indice tiene la version de HEAD, no la modificada
+
+  ficheros stageados: 21
+    _bitacoras/cobertura_capas_a_c_2026-08-20/cobertura_capas_a_c_2026-08-20.txt
+    _bitacoras/insertar_filas_redactadas_2026-08-21/01_barrido_ids.js
+    _bitacoras/insertar_filas_redactadas_2026-08-21/01_barrido_ids.txt
+    _bitacoras/insertar_filas_redactadas_2026-08-21/02_control_positivo_ceros.js
+    _bitacoras/insertar_filas_redactadas_2026-08-21/02_control_positivo_ceros.txt
+    _bitacoras/insertar_filas_redactadas_2026-08-21/03_v5_rojo.js
+    _bitacoras/insertar_filas_redactadas_2026-08-21/03_v5_rojo.txt
+    _bitacoras/insertar_filas_redactadas_2026-08-21/04_escritura_voseo.js
+    _bitacoras/insertar_filas_redactadas_2026-08-21/05_escritura_u2.js
+    _bitacoras/insertar_filas_redactadas_2026-08-21/06_validador.txt
+    _bitacoras/insertar_filas_redactadas_2026-08-21/07_mordida.txt
+    _bitacoras/insertar_filas_redactadas_2026-08-21/08_suite.txt
+    _bitacoras/insertar_filas_redactadas_2026-08-21/09_control_contra_el_indice.js
+    _bitacoras/insertar_filas_redactadas_2026-08-21/09_control_contra_el_indice.txt
+    _bitacoras/insertar_filas_redactadas_2026-08-21/10_diff_stageado.txt
+    _bitacoras/insertar_filas_redactadas_2026-08-21/11_mensaje_commit.txt
+    _bitacoras/insertar_filas_redactadas_2026-08-21/insertar_filas_redactadas_2026-08-21.txt
+    _bitacoras/voseo_al_patron_2026-08-20/18_cuatro_filas.md
+    data/deudas/deudas_declaradas.json
+    scripts/validar_deudas_declaradas.js
+    src/services/__tests__/borde-pwa-backend.test.js
+  OK  estan las CINCO escrituras sustantivas
+  OK  todo lo demas stageado es bitacora de esta pieza (16 ficheros)
+  OK  ninguno de los tres intocables entre ellos
+  OK  CONTRATO_MOTOR.md NO esta
+  OK  PLAN_JURISDICCION.md NO esta
+  OK  CLAUDE.md NO esta
+  OK  la cifra de §2 (data/spec2/) NO esta — es la pieza siguiente
+  de src/ hay 1: src/services/__tests__/borde-pwa-backend.test.js
+  OK  el unico de src/ es el desmentido de C-2, autorizado por el owner el 2026-08-21
+
+CONTROL DE CARACTERES sobre TODOS los objetos del INDICE (21):
+  OK  _bitacoras/cobertura_capas_a_c_2026-08-20/cobertura_capas_a_c_2026-08-20.txt  puntos_de_codigo=17848  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/01_barrido_ids.js  puntos_de_codigo=1703  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/01_barrido_ids.txt  puntos_de_codigo=4973  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/02_control_positivo_ceros.js  puntos_de_codigo=4540  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/02_control_positivo_ceros.txt  puntos_de_codigo=2929  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/03_v5_rojo.js  puntos_de_codigo=3833  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/03_v5_rojo.txt  puntos_de_codigo=1236  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/04_escritura_voseo.js  puntos_de_codigo=2737  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/05_escritura_u2.js  puntos_de_codigo=12857  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/06_validador.txt  puntos_de_codigo=1424  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/07_mordida.txt  puntos_de_codigo=2498  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/08_suite.txt  puntos_de_codigo=14336  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/09_control_contra_el_indice.js  puntos_de_codigo=12955  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/09_control_contra_el_indice.txt  puntos_de_codigo=8594  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/10_diff_stageado.txt  puntos_de_codigo=38789  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/11_mensaje_commit.txt  puntos_de_codigo=7487  sospechosos=0  BOM=no
+  OK  _bitacoras/insertar_filas_redactadas_2026-08-21/insertar_filas_redactadas_2026-08-21.txt  puntos_de_codigo=18968  sospechosos=0  BOM=no
+  OK  _bitacoras/voseo_al_patron_2026-08-20/18_cuatro_filas.md  puntos_de_codigo=5475  sospechosos=0  BOM=no
+  OK  data/deudas/deudas_declaradas.json  puntos_de_codigo=404532  sospechosos=0  BOM=no
+  OK  scripts/validar_deudas_declaradas.js  puntos_de_codigo=18739  sospechosos=0  BOM=no
+  OK  src/services/__tests__/borde-pwa-backend.test.js  puntos_de_codigo=6916  sospechosos=0  BOM=no
+  CONTROL POSITIVO del lector del indice: una ruta inexistente tiene que fallar ->
+fatal: path 'data/deudas/NO_EXISTE.json' does not exist (neither on disk nor in the index)
+    OK  fallo, o sea que lee de verdad del indice

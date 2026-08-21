@@ -44,6 +44,15 @@ const FICHERO = iArg !== -1 && process.argv[iArg + 1]
 // filas. Que un sitio de deuda pueda ser un documento que no declara ninguna
 // deuda —y que aun asi las genere al medirlo— es el motivo por el que se agrega
 // con esta nota y a los DOS lados, en vez de sumarse en silencio.
+//
+// EL VIGESIMOTERCERO, 'SESION-cobertura-capas-a-c-2026-08-20', se agrega el
+// 2026-08-21 y NO el dia de su barrido. Sus cuatro filas se redactaron el
+// 2026-08-20 en el §6 de la bitacora de las capas A y C, con la instruccion del
+// owner de no insertarlas ese dia, y quedaron con "sitio a decidir": o sea, sin
+// donde alojarse. La pieza que las inserta es la que crea el sitio. La fecha va
+// PARTIDA a proposito -- 'barrido_el' dice cuando se midio y esta nota dice
+// cuando se registro --, porque juntarlas haria parecer que el sitio existia
+// mientras las filas estaban sueltas.
 // ---------------------------------------------------------------------------
 const SITIOS_CANON = [
   'PLAN-2',
@@ -68,6 +77,7 @@ const SITIOS_CANON = [
   'SESION-plan-de-cierre-2026-08-20',
   'SESION-voseo-al-patron-2026-08-20',
   'SESION-toponimos-12100-47-2026-08-20',
+  'SESION-cobertura-capas-a-c-2026-08-20',
 ];
 
 const GRUPOS = {

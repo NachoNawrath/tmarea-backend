@@ -1,0 +1,45 @@
+
+> tmarea-backend@0.1.0 deudas:mordida
+> node scripts/prueba_mordida_deudas.js
+
+PRUEBA DE MORDIDA DEL VALIDADOR DE DEUDAS
+origen   : data/deudas/deudas_declaradas.json
+temporal : C:\Users\katia\AppData\Local\Temp\mordida-deudas-BGYdgy
+
+  ok    V5 · falta un sitio de la canon  -> rojo por [V5]
+  ok    V5 · sitio que la canon no conoce  -> rojo por [V5]
+  ok    V1 · sitio barrido con 0 filas y sin vacio_verificado  -> rojo por [V1]
+  ok    V1 · vacio_verificado sin control positivo  -> rojo por [V1]
+  ok    V1 · vacio_verificado con un conteo distinto de 0  -> rojo por [V1]
+  ok    V3 · sitio barrido=false que sin embargo tiene filas  -> rojo por [V3]
+  ok    V4 · conteo declarado distinto del real  -> rojo por [V4]
+  ok    V6 · barrido=true sin barrido_el  -> rojo por [V6]
+  ok    V2 · fila cuyo sitio no esta en la cobertura  -> rojo por [V2]
+  ok    V7 · fila sin grupo  -> rojo por [V7]
+  ok    V7 · grupo fuera del vocabulario  -> rojo por [V7]
+  ok    V7 · grupo 3 sin a_quien  -> rojo por [V7]
+  ok    V7 · grupo 4 sin medicion  -> rojo por [V7]
+  ok    V7 · grupo 4 con medicion sin salida cruda  -> rojo por [V7]
+  ok    V7 · pregunta del grupo 2 que nombra un fichero del repositorio  -> rojo por [V7]
+  ok    V7 · id duplicado  -> rojo por [V7]
+  ok    V7 · texto_literal y sin_texto a la vez  -> rojo por [V7]
+  ok    V7 · sin_texto sin evidencia_en_el_arbol  -> rojo por [V7]
+  ok    V7 · el documento no la fecha pero abierta_el trae valor  -> rojo por [V7]
+  ok    V7 · firma_owner.firmada=true sin fecha  -> rojo por [V7]
+  ok    V7 · duplicada_de apunta a una fila que no existe  -> rojo por [V7]
+  ok    V7 · donde sin cita_de_anclaje  -> rojo por [V7]
+  ok    V8 · estado fuera del vocabulario  -> rojo por [V8]
+  ok    V8 · estado=cerrada sin cerrada_por  -> rojo por [V8]
+  ok    V8 · estado=cerrada sin cerrada_el  -> rojo por [V8]
+  ok    V8 · cerrada_por puesto en una fila que NO esta cerrada  -> rojo por [V8]
+  ok    V8 · estado=caduca con un grupo que no es 4  -> rojo por [V8]
+  ok    ESTRUCTURA · falta una clave de nivel 1  -> rojo por [ESTRUCTURA]
+  ok    CARACTERES · U+0091 dentro de una cadena, JSON valido -- el caso real de H-T2  -> rojo por [CARACTERES]
+  ok    CARACTERES · U+0091 fuera de cadena, que ademas rompe el parseo  -> rojo por [CARACTERES]
+  ok    CARACTERES · BOM UTF-8 al principio  -> rojo por [CARACTERES]
+
+CONTROL NEGATIVO -- la copia SIN mutar tiene que salir en verde:
+  ok    copia intacta -> exit 0
+
+MORDIDA: 32/32
+mordida exit=0

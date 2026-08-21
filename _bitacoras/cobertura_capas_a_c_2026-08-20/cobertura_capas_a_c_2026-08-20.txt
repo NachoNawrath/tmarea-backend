@@ -172,8 +172,69 @@ entonces no es un control.
 
 
 ------------------------------------------------------------------------------
-6 . FILAS PARA EL DECLARATIVO — REDACTADAS Y NO APLICADAS
+6 . FILAS PARA EL DECLARATIVO — [ENMENDADO EL 2026-08-21: YA ESTAN INSERTADAS]
 ------------------------------------------------------------------------------
+ENMIENDA DEL 2026-08-21. EL TITULO DE ESTA SECCION DECIA "REDACTADAS Y NO
+APLICADAS" Y YA NO ES CIERTO. Las CUATRO estan en data/deudas/deudas_declaradas.json
+desde el 2026-08-21, insertadas por la pieza que vacio la cola.
+
+  · SON CUATRO, NO CINCO. Se cuenta una vez, no dos: "el limite del control del
+    borde" ES R4, no una quinta.
+  · EL SITIO QUE ESTA SECCION DEJO "a decidir" EXISTE Y SE LLAMA
+    SESION-cobertura-capas-a-c-2026-08-20. Se registro a los DOS lados —
+    cobertura.sitios y SITIOS_CANON de scripts/validar_deudas_declaradas.js —, y
+    no es un tramite: con el sitio en un solo lado el validador salio ROJO por
+    [V5], medido.
+  · LOS IDS, en el mismo orden de abajo:
+      R1  SESION-cobertura-capas-a-c-2026-08-20::asimetria-de-no-evaluada-entre-el-backend-y-la-pwa
+      R2  SESION-cobertura-capas-a-c-2026-08-20::fondeadero-sugerido-no-lo-lee-nadie
+      R3  SESION-cobertura-capas-a-c-2026-08-20::total-es-redundante-y-conviene-decirlo
+      R4  SESION-cobertura-capas-a-c-2026-08-20::la-asercion-del-borde-mira-el-payload-congelado
+  · R2 VOLVIO FALSA UNA LINEA DEL ARBOL AL ENTRAR, y por eso se corrigio en el
+    mismo acto: borde-pwa-backend.test.js declaraba fondeadero_sugerido como
+    `deuda_sin_fila` con la nota "Fila redactada y no aplicada en la bitacora de
+    U2 A+C". Esa linea NO se pone roja cuando la fila aparece — las aserciones
+    miran el largo de la nota y la ausencia de lector, nunca si la fila existe —,
+    o sea que se habria quedado VERDE afirmando lo contrario de lo que pasa, en
+    el sitio exacto donde alguien se apoya en el control. Pasa a `deuda_con_fila`
+    y la nota cita el id.
+  · R2 va como FILA PROPIA y no absorbida dentro de
+    D4D5::motivo-principal-muere-en-el-pasamanos. Los dos precedentes existian:
+    `advertencias` se absorbio (misma sesion, misma fila) y
+    `cobertura_jurisdiccional` tiene fila propia (otra sesion, otro sitio). R2 es
+    el segundo caso. Es la QUINTA instancia del mismo pasamanos.
+  · LAS CUATRO NACEN CON firma_owner.firmada = false. Ninguna pregunta esta
+    contestada; lo unico que paso es que estan escritas.
+  · NO LLEVAN redactada_no_aplicada. Ese campo dice que hay un texto de
+    correccion escrito y sin aplicar, y ninguna de estas cuatro lo tiene.
+
+El texto de abajo se conserva TAL COMO SE ESCRIBIO, sin retocar (§3.3): es el
+registro de que estas cuatro se redactaron antes de que existiera el sitio que
+las aloja.
+
+
+UNA COSA QUE ESTA PIEZA DESTAPO SOBRE EL DECLARATIVO, Y NO ES DE ESTAS CUATRO
+------------------------------------------------------------------------------
+NINGUN CONTROL MIRA SI LA EVIDENCIA DE UNA FILA ENVEJECIO.
+
+La capa A de esta pieza cableo `cobertura_jurisdiccional` en el pasamanos de la
+PWA. La fila PLAN-2::cobertura-jurisdiccional-muere-en-el-pasamanos sostiene su
+diagnostico sobre un control que dice, textual, que «"cobertura" tiene 0
+apariciones en todo tmarea-pwa/src». Medido el 2026-08-21: hay SEIS, y TRES de
+ellas son `cobertura_jurisdiccional`. La fila sigue VIVA y la mitad de su
+evidencia ya es falsa.
+
+Es un defecto del declarativo SOBRE SI MISMO, y de la misma familia que el que ya
+esta fichado —«una decision del owner que ANULA una afirmacion de §2 no propaga
+sola al declarativo»—: el validador comprueba FORMA, y una fila cuya medicion
+envejecio es formalmente perfecta. La diferencia es que aquella envejecia por
+una DECISION y esta envejece por el TRABAJO: la pieza que arregla una deuda
+vuelve falsa la evidencia de la fila que la declaraba, y nada lo caza.
+
+NO SE REDACTA COMO FILA ACA. Va anotado por instruccion del owner el 2026-08-21,
+con estas palabras, porque va a hacer falta despues.
+------------------------------------------------------------------------------
+
 NINGUNA SE INSERTA EN ESTA PIEZA. Instruccion del owner.
 
 R1  la asimetria de `no_evaluada` entre el backend y la PWA
@@ -215,8 +276,13 @@ R4  la asercion del borde mira el PAYLOAD CONGELADO, no el endpoint vivo
   La capa B. No se escribio el bloque ni se empezo.
   CONTRATO_MOTOR.md y el motor BRE.
   data/deudas/deudas_declaradas.json — las cuatro filas de §6 van redactadas.
+      [ENMENDADO EL 2026-08-21: siguio siendo cierto ese dia y ya no lo es. Las
+       cuatro estan insertadas. Ver la enmienda al principio de §6.]
   data/spec2/cifra_spec2.json y PLAN_JURISDICCION.md §5 — pieza siguiente.
   Las cuatro filas pendientes del voseo. El bloque de clima de Hornopiren.
+      [ENMENDADO EL 2026-08-21: las cuatro del voseo tampoco estan pendientes ya.
+       Entraron el mismo dia y en el mismo acto que estas cuatro. El bloque de
+       clima de Hornopiren sigue pendiente.]
   .claude/launch.json del repo — modificado y sin stagear desde el 2026-08-18,
       no es de esta pieza. El que levanta los servidores es el de la sesion.
   _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json — frente de toponimos.

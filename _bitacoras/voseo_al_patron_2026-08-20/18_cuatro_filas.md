@@ -3,7 +3,30 @@
 Sesión `voseo_al_patron_2026-08-20`. Las cuatro se buscaron **antes** de escribir
 en el contrato, no después. **Ninguna se aplicó.**
 
-## ⚠ POR QUÉ NO ESTÁN YA EN `deudas_declaradas.json`
+## ✅ ENMIENDA DEL 2026-08-21 — YA ESTÁN. EL BLOQUE DE ABAJO ES HISTORIA
+
+**Las cuatro están insertadas en `data/deudas/deudas_declaradas.json`**, byte por
+byte como se redactaron en `18_cuatro_filas.json`, sin retocar una coma. El
+bloqueo que describe el `⚠` **caducó**: la otra sesión aterrizó en `8859da8`, el
+índice quedó limpio y las 80 filas que tenía stageadas son las del commit.
+
+Pasaron por el validador **por primera vez** ese día, y **pasaron**: las cuatro
+cumplen el esquema tal como estaban. El contador del sitio
+`SESION-voseo-al-patron-2026-08-20` subió de **1 a 5**, que es lo que `[V4]`
+exige, y el `vocabulario_del_barrido` del sitio se amplió para que no siguiera
+declarando un solo hallazgo de paso mientras aloja cinco filas.
+
+**Lo que sigue sin hacerse, y por eso las filas siguen `viva`s:** el texto
+redactado para `CONTRATO_MOTOR.md` en H1, H2 y H3 **no se aplicó** — ese fichero
+está fuera del alcance de la pieza que insertó las filas. `redactada_no_aplicada:
+true` sigue siendo cierto, que es exactamente lo que ese campo dice.
+
+El texto de abajo se conserva **tal como se escribió**, sin retocar: es el
+registro de por qué estas cuatro esperaron un día.
+
+---
+
+## ⚠ POR QUÉ NO ESTÁN YA EN `deudas_declaradas.json` — [SUPERADO, VER LA ENMIENDA DE ARRIBA]
 
 Porque **no se puede escribir ahí ahora mismo**: una segunda sesión del owner
 tiene ese fichero *stageado* en el índice compartido del repositorio, con su

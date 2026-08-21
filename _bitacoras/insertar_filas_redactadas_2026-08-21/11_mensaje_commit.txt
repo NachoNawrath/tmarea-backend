@@ -1,0 +1,118 @@
+Las ocho filas redactadas y no aplicadas entran al declarativo. Eran nueve
+
+VACIA LA COLA, NO LA LLENA. No se redacta ninguna fila nueva por lo que
+aparecio al pasar, y no se arregla ninguna deuda: se declaran.
+
+EL BARRIDO, Y SU DENOMINADOR. Se creia que eran nueve y son OCHO. El conteo
+salio de una conversacion y no del arbol: "el limite del control del borde" y
+"R4" son la MISMA fila del §6 de la bitacora de U2 A+C, contada dos veces. La
+propia bitacora lo decia en su §7 —"las cuatro filas de §6"— y nadie lo cotejo.
+Instrumento: los ids con "::" de _bitacoras/**/*.{txt,md,json,js,py} contra los
+80 ids del declarativo. 87 hallados · 55 presentes · 32 ausentes, de las cuales
+28 son ruido probado (casts ::geography, ids partidos por el margen de la prosa,
+ids con prefijo superado). Control positivo satisfecho: 55 en el mismo arbol.
+Sobre los directorios que dieron cero se corrio control positivo aparte.
+
+HICIERON FALTA DOS INSTRUMENTOS, y esta medido por que: el barrido por PROSA,
+corrido solo, NO encuentra las cuatro del voseo —18_cuatro_filas.md no usa
+ninguno de esos encabezados—, y el barrido por ID no puede ver las de U2, que no
+tienen id. No se retocaron las agujas del segundo para que cazaran el caso ya
+conocido: ajustar el instrumento a la respuesta es fabricar un verde.
+
+LAS CIFRAS DEL BARRIDO SON DE ANTES DE INSERTAR. El mismo instrumento, corrido
+hoy sobre el arbol ya escrito, da 92 · 63 · 29: las ocho entraron y esta pieza
+agrego ids propios. Las dos mediciones son ciertas y miden momentos distintos; la
+de despues es la que cierra la pieza — de los 29 ausentes, los 29 son ruido.
+CERO FILAS REDACTADAS Y NO APLICADAS QUEDAN EN EL ARBOL, medido despues.
+
+CERO FALSOS PENDIENTES. spec2_pantalla §8 figuraba "REDACTADAS, NO APLICADAS" y
+ya traia su enmienda: sus siete se volvieron trece y cambiaron de prefijo a
+PLAN-2::. Verificadas una a una. Las cinco "ausentes" de e7_pieza2_lectura son
+el registro del commit de indice obsoleto del 2026-08-19 y estan las cinco.
+
+EL DECLARATIVO, MEDIDO CONTRA EL INDICE (git show :data/deudas/deudas_declaradas.json),
+nunca contra el disco. Es la regla que costo 2d47022.
+  filas    80 -> 88      unicas  78 -> 86      VIVAS   72 -> 80
+  sitios   22 -> 23      barridos 13 -> 14     SIN BARRER  9 -> 9
+  suma de filas_en_este_declarativo == filas: 88 vs 88.
+Los nueve sin barrer NO se movieron, y es a proposito. Las vivas suben ocho
+porque ocho deudas que ya existian en el arbol dejaron de vivir solo en una
+bitacora: ninguna cerro trabajo. Grupo 1 pasa de 44 a 52; los grupos 2 a 6 no se
+tocan. NO LLEVA LA CIFRA DE §2: ese dato lo mueve la pieza siguiente.
+
+LAS CUATRO DEL VOSEO ENTRAN BYTE POR BYTE. Identidad, no parecido: sha256 del
+JSON canonico de cada objeto de 18_cuatro_filas.json contra el objeto leido del
+indice, 4/4 identicas. No se retoco una coma. Pasaron el validador POR PRIMERA
+VEZ y pasaron: el dia que se redactaron el fichero estaba tomado por otra sesion
+en el indice compartido, y ese bloqueo caduco en 8859da8. El sitio del voseo
+sube de 1 a 5 filas, que es lo que [V4] exige, y amplia su nota y su vocabulario
+para no seguir declarando un solo hallazgo de paso mientras aloja cinco.
+
+LAS CUATRO DE U2 A+C SE COMPUSIERON, no se copiaron: el §6 las dejo en prosa,
+sin id y con "sitio a decidir". Los anclajes se verificaron en el arbol antes de
+escribirlos. Nacen firmada=false y sin redactada_no_aplicada, porque ninguna
+trae texto de correccion escrito. Dos son de tmarea-pwa y dos de tmarea-backend.
+En R3 la medicion se afino: el literal restricciones_intermedias.length da 0
+apariciones en tmarea-pwa/src — el conteo pasa por la ligadura `lista`. El hecho
+se sostiene, la cita de la bitacora no.
+
+EL SITIO SE REGISTRA A LOS DOS LADOS, y no es un tramite: con el sitio en
+cobertura.sitios y todavia no en SITIOS_CANON el validador salio ROJO por [V5],
+medido sobre el fichero real. La fecha va PARTIDA a proposito — barrido_el dice
+2026-08-20, que es cuando se midio, y la nota del validador dice 2026-08-21, que
+es cuando se registro: juntarlas haria parecer que el sitio existia mientras las
+filas estaban sueltas.
+
+EL HALLAZGO DE LA PIEZA, y es por que se toco un test. Insertar R2 volvia FALSA
+una linea viva del arbol SIN PONERLA ROJA: borde-pwa-backend.test.js declaraba
+fondeadero_sugerido como `deuda_sin_fila` con la nota "Fila redactada y no
+aplicada en la bitacora de U2 A+C". Sus aserciones miran el largo de la nota y
+la ausencia de lector, nunca si la fila existe. Se habria quedado VERDE
+afirmando lo contrario de lo que pasa, en el sitio exacto donde alguien se apoya
+en el control. Pasa a `deuda_con_fila` y la nota cita el id. Es una cadena, y es
+el desmentido de la fila, no su arreglo.
+
+R2 VA COMO FILA PROPIA y no absorbida dentro de
+D4D5::motivo-principal-muere-en-el-pasamanos. Los dos precedentes existian:
+`advertencias` se absorbio —misma sesion, misma fila— y `cobertura_jurisdiccional`
+tiene fila propia —otra sesion, otro sitio—. R2 es el segundo caso. Es la QUINTA
+instancia del mismo pasamanos.
+
+LAS DOS BITACORAS QUE IBAN A QUEDAR MINTIENDO se enmiendan con encabezado y se
+conservan sin retocar (§3.3), con el precedente de spec2_pantalla §8: el bloque
+"POR QUE NO ESTAN YA" de 18_cuatro_filas.md y el §6 y §7 de cobertura_capas_a_c.
+
+ANOTADO Y NO REDACTADO COMO FILA, por instruccion del owner: NINGUN CONTROL MIRA
+SI LA EVIDENCIA DE UNA FILA ENVEJECIO. PLAN-2::cobertura-jurisdiccional-muere-en-
+el-pasamanos sostiene su diagnostico sobre un control que dice "cobertura tiene 0
+apariciones en todo tmarea-pwa/src"; medido el 2026-08-21 hay SEIS, tres de ellas
+cobertura_jurisdiccional. La fila sigue viva con media evidencia falsa. Es la
+familia de "una anulacion de §2 no propaga sola", pero al reves: aquella
+envejecia por una DECISION y esta envejece por el TRABAJO.
+
+TRES LINEAS MAS, sin fila y sin arreglo: FA-4 —core.autocrlf=true sin
+.gitattributes, frentes_laterales_2026-08-19— no existe como fila en el
+declarativo, y se vio en vivo hoy en el aviso de git add sobre los cinco
+ficheros; y DOS defectos de instrumento mios, el mismo dia y de la misma
+familia —esperado CLAVADO en vez de derivado—: uno exigia una aparicion de una
+cadena que yo mismo habia escrito dos veces, y el otro uso como centinela
+negativo un literal que CUATRO bitacoras citan. Los dos salieron rojos sobre
+ficheros sanos. Corregidos a esperado derivado y a centinela generado al vuelo.
+
+VERIFICACION. Validador VERDE (exit 0) · mordida 32/32 con control negativo ·
+suite 169/169 · control contra el indice 0 rojos, con indice == disco por sha256
+y control positivo del lector (una ruta inexistente falla). Los TRES intocables
+—.claude/launch.json, data/catalogo/estado_drift.json y
+_bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json— siguen fuera del indice,
+comprobado uno por uno. Stageadas las CINCO escrituras y la bitacora de la
+pieza; nada mas.
+
+NO SE TOCO: CONTRATO_MOTOR.md —el texto redactado en H1, H2 y H3 sigue sin
+aplicar, y por eso las filas siguen vivas—, CLAUDE.md, PLAN_JURISDICCION.md, el
+motor BRE, data/spec2/ y la capa B. tmarea-pwa no tiene ningun cambio trackeado.
+
+LA BITACORA VA EN ESTE MISMO COMMIT, con sus instrumentos versionados y sus
+salidas crudas: sin ella el commit existe y nadie puede reproducir el barrido,
+que es exactamente el defecto que esta pieza vino a corregir. Los cuatro .js
+tienen UNA sola edicion respecto de lo que corrio —la raiz sale de __dirname y no
+clavada—, y se volvieron a correr despues de esa edicion.

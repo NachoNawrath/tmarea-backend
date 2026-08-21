@@ -1,0 +1,22 @@
+EL ROJO DEL [V5] — REPRODUCIDO, NO CITADO
+validador   : scripts/validar_deudas_declaradas.js
+declarativo : data/deudas/deudas_declaradas.json  (el REAL, sin mutar)
+temporal    : C:\Users\katia\AppData\Local\Temp\v5-rojo-yQX72y
+
+  OK  la linea del sitio aparece 1 vez/veces en el validador (esperado 1). Sin esto la "mutacion" no mutaria y el control probaria nada.
+  OK  la copia mutada es 43 bytes mas corta: solo se fue esa linea
+
+MUTADO — el sitio esta en cobertura.sitios y NO en SITIOS_CANON:
+  exit 1   y el fallo es [V5]
+  [V5] el sitio "SESION-cobertura-capas-a-c-2026-08-20" esta en cobertura.sitios y NO esta en la canon del validador. Un sitio nuevo se agrega a los DOS lados, a proposito.
+  OK  ROJO por [V5], que es lo que tenia que pasar
+
+SIN MUTAR — control positivo:
+  exit 0
+  VERDE -- el declarativo es valido. Y NO es completo: 9 sitio(s) sin barrer, por diseno.
+  OK  VERDE. El rojo de arriba lo produjo la mutacion y nada mas.
+
+LO QUE ESTO PRUEBA, Y LO QUE NO. Prueba que la regla de los dos lados
+MUERDE: registrar el sitio en el dato y olvidarlo en el control deja el
+validador en rojo, no en verde silencioso. NO prueba que el sitio sea el
+correcto para esas cuatro filas — eso es criterio, y lo firmo el owner.

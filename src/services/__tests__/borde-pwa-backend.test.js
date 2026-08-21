@@ -63,7 +63,7 @@ const DECLARADO = {
   total:                     { tipo: 'redundante', nota: 'los bloques cuentan restricciones_intermedias.length por su cuenta' },
 
   motivo_principal:          { tipo: 'deuda_con_fila',  nota: 'D4D5::motivo-principal-muere-en-el-pasamanos — el owner ordeno escribirla, no arreglarla' },
-  fondeadero_sugerido:       { tipo: 'deuda_sin_fila',  nota: 'el motor calcula un fondeadero y el patron no lo ve nunca. Misma clase que `advertencias`. Fila redactada y no aplicada en la bitacora de U2 A+C' },
+  fondeadero_sugerido:       { tipo: 'deuda_con_fila',  nota: 'SESION-cobertura-capas-a-c-2026-08-20::fondeadero-sugerido-no-lo-lee-nadie — el motor calcula un fondeadero y el patron no lo ve nunca. Misma clase que `advertencias`. Era deuda_sin_fila: la fila se inserto el 2026-08-21' },
 };
 
 const payload = JSON.parse(fs.readFileSync(PAYLOAD, 'utf8')).payload;
