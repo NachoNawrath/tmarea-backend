@@ -1,0 +1,35 @@
+
+> tmarea-backend@0.1.0 deudas
+> node scripts/validar_deudas_declaradas.js
+
+VALIDADOR DEL DECLARATIVO DE DEUDAS
+fichero : data/deudas/deudas_declaradas.json
+version : 9   generado: 2026-08-20
+
+COBERTURA
+  sitios en la canon                : 26
+  barridos                          : 17
+  sin barrer                        : 9
+
+CONTEO -- unidad: FILAS del declarativo. Denominador: las filas de los sitios BARRIDOS.
+  filas                             : 93
+  deudas unicas (sin duplicadas)    : 91
+  duplicadas de otra fila           : 2
+
+  de las unicas:
+    VIVAS                           : 84
+    no vivas (cerradas + caducas)   : 7   de las cuales CERRADAS por trabajo: 3
+  El total de filas NUNCA baja: una deuda cerrada se queda con estado "cerrada".
+  Lo que baja es VIVAS, y los dos numeros van siempre juntos.
+
+  por grupo                           filas   unicas    vivas
+    1_cierra_con_lo_que_hay            54       54       52
+    2_decision_del_owner               19       19       18
+    3_dato_externo                     16       14       14
+    4_caduca                            4        4        0
+    5_obsoleta                          0        0        0
+    6_se_descarta                       0        0        0
+
+  grupos 5 y 6 SIN FIRMAR del owner : 0  -- siguen contando como deuda viva
+
+VERDE -- el declarativo es valido. Y NO es completo: 9 sitio(s) sin barrer, por diseno.

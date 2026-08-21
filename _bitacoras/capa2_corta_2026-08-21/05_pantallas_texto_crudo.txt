@@ -1,0 +1,117 @@
+LA PANTALLA — DOS RUTAS, LAS DOS RAMAS DE LA FILA
+==============================================================================
+Fecha    : 2026-08-21
+Backend  : MIO, puerto 3100. NO el 3000 de la otra sesion — su proceso arranco
+           a las 12:12 y `zonas-aviso.js:478` cachea la declaracion en `_cache`,
+           asi que sirve el texto VIEJO. Probado en 04_dos_backends.txt: mismo
+           cuerpo, 261 caracteres contra 120.
+Vite     : MIO, puerto 5200 (PID 8536). El 5173 (PID 14072) de la otra sesion
+           quedo vivo y NO se toco.
+Como se  : `BACKEND_URL` esta HARDCODEADO en useVoyageVerification.js:6. NO se
+apunto     edito el fichero — editarlo habria disparado el HMR de la otra sesion
+           y les habria cambiado la pantalla debajo. La sustitucion 3000 -> 3100
+           vive en un vite.config del SCRATCHPAD, es de transformacion, y los
+           dos repos quedan intactos en disco.
+           `cacheDir` tambien sale del repo: su vite esta usando node_modules/.vite
+           ahora mismo.
+
+
+------------------------------------------------------------------------------
+A · Puerto de Antofagasta -> Caleta Pesquera Taltal · AB 50
+    LA RAMA CON LA CAPITANIA NOMBRADA (`capa_2_con_capitania`)
+------------------------------------------------------------------------------
+  BANDERA U — Navegar con precaucion
+  > Tramo de la ruta sin limite de jurisdiccion cargado (unos 25 km)    <- D5
+
+  CONDICION DE PUERTOS
+    ZARPE    Puerto de Antofagasta   Abierto
+    RECALADA Caleta Pesquera Taltal  Abierto
+
+  ⚠ Tramos por los que el motor no puede responder (1)
+    No tenemos cargado el limite de esta jurisdiccion.
+    Son unos 25 km de la ruta.
+    Confirme con la Capitania Antofagasta antes de zarpar. Nos falta el dato:
+    no sabemos si en esa zona hay una restriccion.
+    Capitania de Puerto de Antofagasta — +56 55 263 0000
+
+  Largo del texto de la pagina: 3041 caracteres.
+  (U2 capa B midio 3324 al cerrar su pieza. Esta pieza saca 283.)
+
+LA LISTA NUEVA — LAS SEIS CADENAS QUE SOSTIENEN S3(a) DESDE HOY
+  A1 "No tenemos cargado el limite"                       -> true
+  A2 "limite de esta jurisdiccion"                        -> true
+  A3 "Antofagasta antes de zarpar"                        -> true
+  A4 "Nos falta el dato"                                  -> true
+  A5 "no sabemos si en esa zona hay una restriccion"      -> true
+  A6 "unos 25 km"                                         -> true
+
+  ⚠ ESTA LISTA REEMPLAZA A LA DEL 2026-08-21 DE U2 CAPA B. Dos de aquellas seis
+    —"Sin cita" e "INV-3.6"— las borra esta pieza a proposito. La pieza de la
+    cifra tiene que citar ESTA lista, no aquella.
+
+LAS CUATRO RETIRADAS — LAS CUATRO EN FALSO, Y ES LO ESPERADO
+  "Sin cita"                      -> false
+  "INV-3.6"                       -> false
+  "ausencia de un dato nuestro"   -> false
+  "ni que no exista"              -> false
+
+CONTROLES
+  "BANDERA U"                             -> true
+  "BANDERA Q"                             -> false
+  "ZZQXNOEXISTE"                          -> false   (negativo del barrido)
+  "Capitania de Puerto de Antofagasta"    -> true     (rotulo desde `tipo`)
+  "sin limite de jurisdiccion cargado"    -> true     (D5, la linea de razones)
+
+LA DUPLICACION QUE SE FUE, MEDIDA
+  apariciones de "no puede responder" en la pagina : 1
+  Eran DOS: el encabezado (D1) y el final de la Capa 2. D1 habia elegido esas
+  palabras A PROPOSITO —«son las palabras que el propio §10 le dice al patron»—
+  y el resultado fue que el patron leia la misma frase dos veces en la misma
+  tarjeta, con tres lineas de por medio.
+
+
+------------------------------------------------------------------------------
+C · Muelle Fiscal de Puerto Eden -> Caleta Tortel · AB 50
+    LA RAMA DE DERIVACION GENERICA (`capa_2_sin_capitania`)
+------------------------------------------------------------------------------
+POR QUE EXISTE ESTA SEGUNDA MEDICION, Y NO ES SIMETRIA POR GUSTO. Es el hallazgo
+del gate: `capa_2_sin_capitania` NO lo cubre `cotejo-contrato.js` —el propio dato
+lo declara— y la mordida lo probo (M3: los dos controles VERDE con la cola larga
+puesta). Si esta rama no se hubiera movido, esta pantalla mostraria el texto
+largo y la suite habria dado 170/170. La unica forma de saberlo es mirarla.
+
+  BANDERA U — Navegar con precaucion
+  > Tramo de la ruta sin limite de jurisdiccion cargado (unos 53 km)
+
+  CONDICION DE PUERTOS
+    ZARPE    Muelle Fiscal de Puerto Eden   Abierto
+    RECALADA Caleta Tortel                  Abierto
+
+  ⚠ Tramos por los que el motor no puede responder (1)
+    No tenemos cargado el limite de esta jurisdiccion.
+    Son unos 53 km de la ruta.
+    Coordine con la Autoridad Maritima por VHF Canal 16 antes de zarpar. Nos
+    falta el dato: no sabemos si en esa zona hay una restriccion.
+
+  Largo del texto de la pagina: 2625 caracteres.
+
+  B1 "VHF Canal 16 antes de zarpar"                       -> true
+  B2 "Nos falta el dato"                                  -> true
+  B3 "no sabemos si en esa zona hay una restriccion"      -> true
+  B4 "No tenemos cargado el limite"                       -> true
+  "Sin cita"    -> false      "INV-3.6"      -> false
+  "BANDERA U"   -> true       "ZZQXNOEXISTE" -> false
+
+DENTRO DEL BLOQUE, MEDIDO Y NO SUPUESTO
+  linea de contacto   : AUSENTE — y es lo correcto. `contactoDelAviso` exige
+                        `capitanias.length === 1` y aca son 0, la misma condicion
+                        con la que el backend eligio el texto generico.
+  corrida telefonica  : ninguna
+  elementos <a>       : 0
+
+  ⚠ NOTESE EL LARGO: 53 km, no los 33 que midio U2 el 2026-08-21 sobre esta
+    misma pareja de puertos. NO es efecto de esta pieza —esta pieza no toca
+    geometria ni ruteo— sino de que el ruteo eligio otros waypoints: U2 midio
+    por su instrumento y esto se midio por la UI, que llama a /api/rutas/calcular.
+    El dato de 04_dos_backends.txt lo confirma: 40,92 km con MIS waypoints, en
+    los DOS backends por igual. Se dice para que nadie lea el 53 como un cambio.

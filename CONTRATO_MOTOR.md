@@ -1167,8 +1167,9 @@ Fuente única de mensajes que Claude Code debe usar. Cada uno: Capa 1 (estado) +
 
 **Excepción declarada:** la última fila es la única del catálogo que **no nace de un
 reglamento sino de una carencia nuestra**, y por eso es la única que no lleva cita. No hay
-artículo que citar porque no hay norma en juego: hay un dato que nos falta. Que no haya cita
-es, precisamente, lo que esa fila comunica.
+artículo que citar porque no hay norma en juego: hay un dato que nos falta. **Eso se explica
+acá y no en la fila:** al patrón se le dice qué hacer, no por qué no hay cita. Hasta el
+2026-08-21 la fila lo explicaba, y esa explicación salió por decisión del owner.
 
 | Situación | Capa 1 (estado) | Capa 2 (vía normativa + cita) |
 |---|---|---|
@@ -1180,7 +1181,7 @@ es, precisamente, lo que esa fila comunica.
 | **Zarpe sin despacho (comercial)** | ℹ️ recordatorio | "Según D.L. 2222 Art. 23, zarpar sin despacho se sanciona hasta con la cancelación del título. Gestione su despacho antes de navegar." |
 | **Deportivo — sin zarpe** | ℹ️ informativo | "Según RGDN (TM-002) Art. 34, su navegación deportiva nacional no requiere autorización de zarpe. Comunique su intención de movimiento al club náutico o, en su defecto, a la Autoridad Marítima local." |
 | **Moto de agua nocturna** | 🟡 U | "Según RGDN Art. 26, las motos de agua solo pueden navegar entre el orto y el ocaso de sol. Su horario estimado excede la luz diurna." |
-| **Jurisdicción sin límite cargado** | 🟡 U "No tenemos cargado el límite de esta jurisdicción." | "Confirme con la Capitanía [nombre] antes de zarpar. **Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro** (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona." |
+| **Jurisdicción sin límite cargado** | 🟡 U "No tenemos cargado el límite de esta jurisdicción." | "Confirme con la Capitanía [nombre] antes de zarpar. Nos falta el dato: no sabemos si en esa zona hay una restricción." |
 
 **Regla de uso:** Capa 2 nunca cambia la bandera de Capa 1. **Los mensajes de este catálogo
 no llevan teléfono ni canal de radio propio**: nombran la Capitanía y ahí terminan. Las

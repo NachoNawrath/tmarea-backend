@@ -1,0 +1,24 @@
+EL MISMO CUERPO CONTRA LOS DOS BACKENDS
+  3000 = otra sesion, PID 17800, arranco 12:12, NO reiniciado
+  3100 = mio, PID propio, arrancado despues de aplicar
+==============================================================================
+
+Antofagasta -> Taltal (rama CON Capitania nombrada)
+  3000: bandera_final U · estado evaluada · avisos 1
+        largo 24.6456 km · capitanias 1 · generico no
+        capa_2 (261 car): Confirme con la Capitanía Antofagasta antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.
+  3100: bandera_final U · estado evaluada · avisos 1
+        largo 24.6456 km · capitanias 1 · generico no
+        capa_2 (120 car): Confirme con la Capitanía Antofagasta antes de zarpar. Nos falta el dato: no sabemos si en esa zona hay una restricción.
+
+Puerto Eden -> Tortel (rama de DERIVACION GENERICA)
+  3000: bandera_final U · estado evaluada · avisos 1
+        largo 40.9247 km · capitanias 0 · generico SI
+        capa_2 (275 car): Coordine con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Sin cita: esta situación no la produce una norma sino la ausencia de un dato nuestro (INV-3.6). No implica que exista una restricción, ni que no exista: implica que el motor no puede responder por esa zona.
+  3100: bandera_final U · estado evaluada · avisos 1
+        largo 40.9247 km · capitanias 0 · generico SI
+        capa_2 (134 car): Coordine con la Autoridad Marítima por VHF Canal 16 antes de zarpar. Nos falta el dato: no sabemos si en esa zona hay una restricción.
+
+==============================================================================
+SI LAS DOS CAPA_2 SON DISTINTAS, la cache esta probada y la pantalla
+SOLO se puede medir contra el 3100.

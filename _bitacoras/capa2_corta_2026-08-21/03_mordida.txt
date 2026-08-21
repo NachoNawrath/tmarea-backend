@@ -1,0 +1,41 @@
+MORDIDA DE LOS CUATRO SITIOS — mutacion en memoria, ficheros intactos
+==============================================================================
+
+  ok    C0 · el arbol como quedo, sin mutar
+        cotejo-contrato.js : VERDE (esperado VERDE)
+        guard zonas-aviso  : VERDE (esperado VERDE)
+        control positivo: si esto sale rojo, el instrumento mide el entorno y no la pieza
+
+  ok    M1 · el §10 vuelve al texto largo y el dato NO
+        cotejo-contrato.js : ROJO  (esperado ROJO)
+        guard zonas-aviso  : VERDE (esperado VERDE)
+        SITIO 1 y 2 estan ACOPLADOS: mover uno sin el otro se detiene
+
+  ok    M2 · el dato vuelve al texto largo y el §10 NO
+        cotejo-contrato.js : ROJO  (esperado ROJO)
+        guard zonas-aviso  : VERDE (esperado VERDE)
+        el acople vale en los dos sentidos
+
+  ok    M3 · SOLO `capa_2_sin_capitania` vuelve al texto largo
+        cotejo-contrato.js : VERDE (esperado VERDE)
+        guard zonas-aviso  : VERDE (esperado VERDE)
+        >>> EL HALLAZGO DEL GATE, MEDIDO: LOS DOS CONTROLES DAN VERDE. Puerto Eden -> Tortel se habria quedado con la cola larga y nadie se entera.
+
+  ok    M4 · el preambulo del §10 vuelve a decir lo que ya no es cierto
+        cotejo-contrato.js : VERDE (esperado VERDE)
+        guard zonas-aviso  : VERDE (esperado VERDE)
+        >>> EL SEGUNDO SITIO CIEGO: el contrato se contradice a si mismo y los dos controles dan VERDE. cotejo-contrato.js compara el DATO contra el §10, nunca el contrato contra si mismo.
+
+  ok    N1 · negativo del barrido: se rompe la marca {nombre}
+        cotejo-contrato.js : ROJO  (esperado ROJO)
+        guard zonas-aviso  : ROJO  (esperado ROJO)
+        prueba que el instrumento sabe dar rojo por su cuenta
+
+==============================================================================
+RESULTADO: 6 de 6
+FICHEROS EN DISCO: INTACTOS, verificado por tamano
+
+LO QUE ESTA MORDIDA DEJA ESCRITO:
+  De los CUATRO sitios que esta pieza movio, DOS los vigila un control
+  (M1, M2) y DOS no los vigila nadie (M3, M4). Los dos ciegos se movieron
+  a mano y a proposito, y esta es la prueba de que hacia falta.

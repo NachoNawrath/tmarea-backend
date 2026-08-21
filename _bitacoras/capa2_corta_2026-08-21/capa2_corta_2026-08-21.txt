@@ -1,0 +1,288 @@
+ACORTAR LA CAPA 2 DEL §10 — «JURISDICCION SIN LIMITE CARGADO»
+==============================================================================
+Unidad          : item 3 del orden del plan de cierre. UNA FILA del §10.
+Fecha           : 2026-08-21
+Arboles al abrir: tmarea-backend  main = origin/main = 6db2fab
+                  tmarea-pwa      main = 5d0aaba
+Suite al abrir  : 170/170 backend, 16 suites. Al cerrar: 170/170.
+Declarativo     : 93 · 91 · 84 · 26 · 17 · 9 al abrir Y AL CERRAR. Esta pieza
+                  NO abre ninguna fila, por instruccion del owner.
+Cifra           : «5 de 15, con 2 anuladas por decision del owner». NO SE TOCA.
+
+
+------------------------------------------------------------------------------
+0 . QUE ESTABA MAL, Y QUE SE ARREGLA
+------------------------------------------------------------------------------
+La Capa 2 de esta fila eran CUATRO RENGLONES en pantalla. La primera frase le
+servia al patron; el resto explicaba la teoria del dato: por que no hay cita,
+que implica y que no implica, y como se llama el invariante.
+
+MEDIDO — unidad: caracteres del texto renderizado sobre Antofagasta:
+  261 en total · 54 la primera frase · 206 la cola = 79 %.
+
+Se acorta a 120. Queda: «Confirme con la Capitania {nombre} antes de zarpar.
+Nos falta el dato: no sabemos si en esa zona hay una restriccion.»
+
+
+------------------------------------------------------------------------------
+1 . LO QUE EL GATE ENCONTRO, Y CAMBIO EL ALCANCE ANTES DE ESCRIBIR
+------------------------------------------------------------------------------
+A · «ESTA PIEZA ES UNA FILA» ERA INEJECUTABLE COMO ESTABA ESCRITO. El §10 tiene
+    UNA celda de Capa 2; el dato la transcribe en DOS campos, y solo uno esta
+    vigilado. `capa_2_sin_capitania` es —segun el propio dato— «la misma fila
+    del §10 con la derivacion cambiada», y `cotejo_con_el_contrato.lo_que_NO_cubre`
+    declara que el control NO lo mira. Mover solo lo vigilado dejaba la ruta
+    Puerto Eden -> Tortel con la cola larga Y LA SUITE EN VERDE.
+    El owner firmo mover LOS DOS y pagar la segunda medicion de pantalla.
+
+B · ACORTAR VOLVIA FALSA UNA FRASE DEL PROPIO §10. El preambulo cerraba con
+    «Que no haya cita es, precisamente, lo que esa fila comunica». Sacada la
+    clausula «Sin cita», eso deja de ser cierto DENTRO DEL MISMO FICHERO, y
+    ningun control lo ve: `cotejo-contrato.js` compara el DATO contra el §10,
+    nunca el contrato contra si mismo. El owner firmo enmendarlo en el mismo
+    acto, con el precedente de la capa B: lo que la pieza vuelve falso se
+    corrige en la pieza.
+
+C · INV-3.6 NO OBLIGA A ENMENDAR NADA, Y ESO SE MIDIO ANTES DE PROPONER. Su
+    forma concreta es «No tenemos cargado el limite — verifica con la Capitania
+    [nombre]: [telefono]». Las tres partes sobreviven: la primera en la Capa 1
+    (no se toca), la segunda en la PRIMERA FRASE de la Capa 2 (se conserva
+    entera), la tercera en la linea de contacto del bloque (firma del owner del
+    2026-08-21). Nada de lo que INV-3.6 manda vive despues de «antes de zarpar.»
+    Leido entero, INV-3.6 NUNCA pide explicarle al patron por que no hay cita.
+    SALVEDAD DICHA: esa forma de INV-3.6 ya estaba desactualizada antes de esta
+    pieza —trae el [telefono] que INV-10.1 saco y tutea— y eso es la fila viva
+    `...::inv-36-transcribe-la-v17-y-trae-el-telefono-que-inv-101-saco`. Por eso
+    se midio contra lo que el invariante MANDA, no contra como lo escribe.
+
+D · LA VERSION MAXIMA ESTABA MAL, Y EL FUNDAMENTO LO DECIDIO. Se propusieron
+    tres. La V1 —solo la instruccion, 54 caracteres— es la que la consigna pedia
+    al pie de la letra, y se paso: le sacaba la unica frase que, EN PALABRAS, le
+    dice al patron que esto no es una prohibicion. La garantia que INV-3.6
+    eligio es ESTRUCTURAL —bandera topada en U, bloque propio fuera de las
+    restricciones— y es INVISIBLE para el patron. Un patron con apuro que lee
+    ambar y «llame a la Capitania» no zarpa, y la app habria fabricado una
+    restriccion que no existe: el resultado que INV-3.6 nombra como el que no
+    quiere. Cortar hasta ahi no es acortar, es cambiar lo que la tarjeta dice.
+
+
+------------------------------------------------------------------------------
+2 . LO QUE SE MOVIO — CUATRO SITIOS, UN SOLO ACTO
+------------------------------------------------------------------------------
+CONTRATO_MOTOR.md:1183   celda Capa 2 de la fila       (rojo si falta)
+data/decreto/zonas_aviso.json  mensaje.capa_2_con_capitania  (rojo si falta)
+data/decreto/zonas_aviso.json  mensaje.capa_2_sin_capitania  (SILENCIO)
+CONTRATO_MOTOR.md:1168-1172  preambulo «Excepcion declarada» (SILENCIO)
+
+Y ADEMAS, sin ser sitio de texto al patron:
+data/decreto/zonas_aviso.json  mensaje.actualizado_2026-08-21 — la constancia.
+    Es la convencion que el propio fichero ya tiene (`actualizado_2026-08-13`)
+    y CLAUDE.md §3.3: se deja constancia en vez de sobrescribir en silencio.
+
+NO SE SUBIO LA VERSION DEL CONTRATO, y no es olvido: `926db30` («El §10 pasa a
+usted») cambio el §10 y no toco el encabezado `Version: 2.5`. Se sigue el
+precedente medido, no una regla inventada.
+
+
+------------------------------------------------------------------------------
+3 . LA FRASE NUEVA — LO QUE ES Y LO QUE NO ES
+------------------------------------------------------------------------------
+«Nos falta el dato: no sabemos si en esa zona hay una restriccion.»
+
+ES REDACCION NUEVA, NO RECORTE, Y SE ESCRIBE ASI Y NO COMO EQUIVALENCIA
+(condicion del owner al firmar). Dice en voz de persona lo que el §10 decia en
+voz de contrato: «No implica que exista una restriccion, ni que no exista».
+
+PRECISION QUE IMPORTA: es parafrasis del texto VIEJO, no del nuevo. Desde esta
+pieza el §10 y el dato dicen lo mismo LITERALMENTE —lo garantiza y lo comprueba
+`cotejo-contrato.js` en cada corrida—. Lo que se perdio es el respaldo literal
+del §10 ANTERIOR: si algun dia se discute que prometio exactamente la pantalla,
+hay una frase redactada y no una celda citada. Costo aceptado y declarado.
+
+VOCABULARIO HEREDADO, NO INVENTADO: «No tenemos» ya es la Capa 1 y «esa zona» ya
+estaba en la Capa 2 vieja.
+
+
+------------------------------------------------------------------------------
+4 . LOS CONTROLES — Y LA MORDIDA CAZO UN DEFECTO MIO
+------------------------------------------------------------------------------
+(1) SUITE: 170/170 antes y 170/170 despues, con `cotejo-contrato.js` en verde,
+    o sea que el §10 y el dato dicen lo mismo.
+
+(2) 03_mordida.txt — LA MORDIDA DE LOS CUATRO SITIOS. 6 de 6. Mutacion en
+    MEMORIA; los dos ficheros verificados intactos en disco en la misma salida.
+      C0 sin mutar                          cotejo VERDE · guard VERDE
+      M1 §10 largo, dato corto              cotejo ROJO  · guard VERDE
+      M2 dato largo, §10 corto              cotejo ROJO  · guard VERDE
+      M3 SOLO capa_2_sin_capitania larga    cotejo VERDE · guard VERDE  <<<
+      M4 preambulo vuelve a lo falso        cotejo VERDE · guard VERDE  <<<
+      N1 se rompe la marca {nombre}         cotejo ROJO  · guard ROJO
+    M3 y M4 SON EL HALLAZGO DEL GATE, MEDIDO: dos de los cuatro sitios que esta
+    pieza movio no los mira nadie. Se movieron a mano y a proposito, y esto es
+    la prueba de que hacia falta.
+
+(3) >>> SU PRIMERA CORRIDA DIO 3 DE 6, Y LA FALLA ERA DEL INSTRUMENTO, NO DEL
+    ARBOL. `correr()` leia `try { cotejar(...) } catch`. `cotejar` SOLO LANZA
+    ante errores de FORMA; una DIVERGENCIA de texto la DEVUELVE en `estado`.
+    O sea que M1, M2 y N1 salieron «VERDE» sobre un cotejo que estaba
+    encontrando la divergencia y reportandola: el instrumento decia verde donde
+    el arbol decia rojo. Corregido a leer `res.estado`. Es §4.6 sobre el
+    instrumento de §4.6, y la que lo cazo fue la propia mordida — tres casos
+    esperados en ROJO no podian leerse como exito. M3 y M4 NO cambiaron con la
+    correccion: dan verde por el motivo declarado, no por el bug.
+
+(4) 04_dos_backends.txt — LA CACHE, PROBADA Y NO SUPUESTA. Mismo cuerpo contra
+    3000 (otra sesion, arranco 12:12) y 3100 (mio). El 3000 devuelve 261 y 275
+    caracteres; el 3100, 120 y 134. `zonas-aviso.js:478` cachea en `_cache` y
+    NADA en produccion llama con `recargar: true`. Medir la pantalla contra el
+    3000 habria dado un falso en verde.
+
+(5) LA PANTALLA, obligatoria por la regla del owner. DOS rutas, las dos ramas
+    de la fila, en 05_pantallas_texto_crudo.txt. Ver §5.
+
+(6) `npm run deudas`: VERDE, 93 · 91 · 84 · 26 · 17 · 9, sin moverse.
+
+
+------------------------------------------------------------------------------
+5 . LA LISTA NUEVA DE CADENAS — Y ES PARA LA PIEZA DE LA CIFRA
+------------------------------------------------------------------------------
+⚠ ESTA LISTA REEMPLAZA LA DEL 2026-08-21 DE U2 CAPA B. Aquella tenia SEIS
+cadenas y dos de ellas —"Sin cita" e "INV-3.6"— las borra esta pieza A PROPOSITO.
+La pieza de la cifra tiene que citar ESTA medicion.
+
+  A1 "No tenemos cargado el limite"                  -> true
+  A2 "limite de esta jurisdiccion"                   -> true
+  A3 "Antofagasta antes de zarpar"                   -> true
+  A4 "Nos falta el dato"                             -> true
+  A5 "no sabemos si en esa zona hay una restriccion" -> true
+  A6 "unos 25 km"                                    -> true
+
+Y las cuatro retiradas en falso, que es lo esperado: "Sin cita", "INV-3.6",
+"ausencia de un dato nuestro", "ni que no exista".
+
+LA CIFRA NO SE MUEVE ACA y no tenia por que: `nota_obligatoria_s3_dividido`
+sigue diciendo que S3(a)(b)(c) no cumplen —es L3 de U2 y es de la pieza de la
+cifra—. Lo que esta pieza entrega es evidencia FRESCA en vez de envejecida.
+
+
+------------------------------------------------------------------------------
+6 . COMO SE MIDIO SIN TOCAR A LA OTRA SESION
+------------------------------------------------------------------------------
+`BACKEND_URL` esta HARDCODEADO en useVoyageVerification.js:6 apuntando al 3000.
+NO se edito ese fichero: editarlo habria disparado el HMR del vite de la otra
+sesion (5173, PID 14072) y les habria cambiado la pantalla debajo. La
+sustitucion 3000 -> 3100 vive en un vite.config del SCRATCHPAD y es de
+TRANSFORMACION: los dos repos quedan intactos en disco. `cacheDir` tambien sale
+del repo, porque su vite esta usando node_modules/.vite ahora mismo y dos
+procesos sobre la misma cache de deps es como se corrompe la de ellos.
+
+Puertos propios: backend 3100, vite 5200. Los dos PID ajenos, vivos al cerrar.
+
+
+------------------------------------------------------------------------------
+7 . UN DEFECTO MIO, Y NO ES CHICO
+------------------------------------------------------------------------------
+LEVANTAR MI BACKEND REESCRIBIO `data/catalogo/estado_drift.json`, QUE ES UNO DE
+LOS TRES ` M` INTOCABLES.
+
+`src/index.js:118` corre `revisarDriftEnArranque()` INCONDICIONALMENTE en cada
+arranque, y ese control reescribe el fichero. No hay flag de entorno para
+saltearlo: se busco y no existe. El fichero quedo con `ultima_corrida`
+2026-08-21T22:49:18.431Z, que es mi arranque.
+
+LO QUE NO PASO: el fichero sigue FUERA DEL INDICE, que es lo que la premisa
+exigia, y se verifico al stagear. El proceso de la otra sesion no se reinicio y
+su estado en memoria no cambio.
+
+LO QUE SI PASO, SIN SUAVIZAR: cambie bytes de un fichero declarado intocable, y
+el contenido anterior del arbol de trabajo NO SE PUEDE RECUPERAR — era un
+derivado no versionado en ese estado.
+
+Y LO QUE HAY QUE DECIR ADEMAS: ESTO ERA PREVISIBLE EN EL GATE Y NO LO PREVI.
+«Levanta en puerto propio» y «no toques los tres ` M`» estan EN CONFLICTO
+ESTRUCTURAL en este repo: no se puede arrancar este backend sin reescribir
+estado_drift.json. U2 capa B no lo choco porque su cambio era de la PWA y pudo
+reusar el backend ajeno; esta pieza cambia DATO DEL BACKEND, asi que reusarlo
+habria medido el texto viejo. El conflicto era propio de esta pieza y tenia que
+haber salido en la PARADA 1, antes de arrancar nada.
+
+VA COMO LINEA, no como fila (instruccion del owner sobre lo que aparezca).
+
+
+------------------------------------------------------------------------------
+8 . LAS LINEAS — LO QUE APARECIO AL PASAR Y NO ABRE FILA
+------------------------------------------------------------------------------
+L1 · Al menos dos filas mas del §10 tienen cola que explica en vez de instruir:
+     «Recalada cierra en transito» cierra con «Prima la salvaguarda de la vida
+     humana en el mar» (principio, no accion) y «Zarpe cerrado» es la celda mas
+     larga del catalogo, con tres condiciones en una oracion. No se tocan;
+     `D4D5::contrato-10-dice-transitar` ya tiene texto redactado sin aplicar
+     para otra de ellas.
+
+L2 · `PLAN-2::cobertura-jurisdiccional-muere-en-el-pasamanos` sigue VIVA y su
+     evidencia murio el 2026-08-21: el pasamanos ya nombra el campo
+     (useVoyageVerification.js:545) y el bloque dibuja. Ver §9.
+
+L3 · `zonas_aviso.json:mensaje.procedencia` dice «contrato v1.9 (commit 8ab2955)»
+     y el contrato va en 2.5; ya era falso desde `926db30`. Ninguna guarda lo
+     mira: `zonas-aviso.js:315` solo exige que no este vacio. NO se corrigio en
+     esta pieza: tocarlo sin decidir que dice es cambiar una afirmacion por otra.
+
+L4 · No se puede arrancar este backend sin reescribir estado_drift.json. Ver §7.
+
+L5 · El encabezado del bloque y el final de la Capa 2 estaban DUPLICADOS porque
+     D1 los alineo A PROPOSITO al mismo literal del §10, «para que encabezado y
+     cuerpo hablen con UNA voz». Es informacion sobre COMO SE DECIDIO, no sobre
+     el texto: alinear dos textos al mismo literal es lo que produce la
+     duplicacion, y ningun control mide repeticion dentro de una pantalla.
+     Medido: de 2 apariciones de «no puede responder» se paso a 1.
+
+
+------------------------------------------------------------------------------
+9 . LA FAMILIA QUE YA NO PUEDE SEGUIR SIN DUEÑO — CONTADA
+------------------------------------------------------------------------------
+FAMILIA: «el trabajo vuelve falso un texto vivo, y ningun control lo caza».
+
+DOCE instancias nombradas. Unidad: instancia nombrada. Denominador: las
+bitacoras del 2026-08-20 y del 2026-08-21 mas el declarativo entero. EL
+2026-08-19 NO SE BARRIO, asi que DOCE ES UN PISO, NO UN TOTAL.
+
+   1 · 08-20 · una-anulacion-de-spec-no-propaga-sola (variante por DECISION)
+   2 · 08-20 · INV-3.2 cita la capa 1 del §10 y quedo vieja
+   3 · 08-20 · PLAN 19.27 cita un §10 que ya no existe
+   4 · 08-20 · R2 volvio falsa una linea del arbol al entrar
+   5 · 08-21 · PLAN-2 pasamanos: «0 apariciones» y hay SEIS
+   6 · 08-21 · la nota de borde-pwa-backend.test.js
+   7 · 08-21 · el comentario de escalarPorCobertura
+   8 · 08-21 · el «solo» de INV-10.1
+   9 · 08-21 · L3 de U2: la guarda que va a exigir una nota que ya es mentira
+  10 · HOY   · la frase del preambulo del §10        (la abre esta pieza)
+  11 · HOY   · zonas_aviso.json:procedencia dice v1.9
+  12 · HOY   · dos de las seis cadenas de S3(a) pasan a falso
+
+La familia ESTA DECLARADA Y NO TIENE FILA: la bitacora del 2026-08-20 dice
+textual «NO SE REDACTA COMO FILA ACA. Va anotado por instruccion del owner el
+2026-08-21... porque va a hacer falta despues». Doce instancias despues, hace
+falta. Esta pieza aporta tres (5, 10, 12) y corrige dos en el mismo acto.
+
+NO SE ABRE EN ESTA PIEZA — el alcance es una fila y se respeta. La recomendacion
+sobre su forma va en la entrega de la PARADA 3.
+
+
+------------------------------------------------------------------------------
+10 . LO QUE NO SE TOCO
+------------------------------------------------------------------------------
+  Las otras nueve filas del §10. INV-10.1 y su enmienda pendiente.
+  La cifra de §2 (`data/spec2/cifra_spec2.json`) y el emisor.
+  La fuente de marea, el Paso 1 y la geometria jurisdiccional.
+  CLAUDE.md, el motor BRE y PLAN_JURISDICCION.md.
+  El declarativo de deudas: ni una fila abierta, ni una cerrada.
+  tmarea-pwa: NI UN FICHERO. La pieza es de backend y contrato.
+  `mensaje.procedencia`, hoy falso. Ver L3.
+  Los tres ` M` intocables: verificados FUERA DEL INDICE al stagear. Pero uno
+      de ellos cambio bytes por mi arranque — ver §7, dicho y no tapado.
+
+MAQUINA — LA OTRA SESION QUEDO INTACTA, VERIFICADO POR PID:
+  3000 PID 17800 y 5173 PID 14072, los dos vivos al cerrar. No se edito ningun
+  fichero de la PWA, asi que su HMR no se disparo. Mis procesos: backend 3100
+  y vite 5200, en puertos propios.
