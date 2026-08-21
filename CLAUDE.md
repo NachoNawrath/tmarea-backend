@@ -346,6 +346,31 @@ estado registrado y retomar en sesión nueva.
 Sesiones cortas y de un solo objetivo. Si el trabajo se abre en frentes, se reporta y se
 elige uno.
 
+### 5.6 — Se abre con un gate, y el texto que gobierna se cierra con el diff crudo
+
+**Al abrir.** Se lee el pedido entero y los ficheros que gobiernan la pieza, y antes de
+escribir nada se reporta qué es inejecutable, qué contradice una regla vigente y qué
+duplica algo que ya está, con sus opciones y una recomendación (§0.2). Ahí se para.
+Un cotejo que trae el owner **se verifica, no se acepta**: en esta forma se cazó una cita
+que le atribuía a §5.2 lo contrario de lo que §5.2 dice, y que de haber entrado habría
+aflojado ese recorte apoyándose justo en el texto que lo escribió (§1.1).
+
+**Al cerrar, cuando lo que se toca es texto que gobierna** —este archivo,
+`CONTRATO_MOTOR.md`, un plan, un declarativo—: lo que se va a escribir se muestra como
+**diff crudo, stageado y sin commitear**. No se autoriza sobre descripción. Un texto
+descrito no es un texto revisado: el 2026-08-20 diez aserciones de token en verde no
+vieron un párrafo nuevo pegado al anterior, y lo cazó el diff
+(`_bitacoras/dos_reglas_claudemd_2026-08-20/`).
+
+**Fuera del texto que gobierna, el diff crudo se pide por pieza y no por regla.** Que acá
+no sea obligatorio no lo prohíbe ni lo desaconseja: sirve igual sobre código, y quien lo
+quiera lo pide. Se deja fuera de la regla a propósito — estirarla a todo commit le saca
+filo y convierte en obligación un ida y vuelta que en la mayoría de las piezas no compra
+nada.
+
+Cuántas paradas tiene una pieza lo fija la pieza. Que haya una al abrir, y una antes de
+escribir sobre lo que gobierna, no.
+
 ---
 
 ## 6. LÍMITES DUROS
@@ -438,6 +463,23 @@ texto exista no es una decisión suya.
 - SQL largo o con comillas: a archivo, y `psql -f`. No inline. Se rompe distinto en
   cada shell y además deja el SQL sin versionar.
 - **Nunca** matar node por nombre: mata Vite al mismo tiempo. Se mata por PID.
+- **`git restore` devuelve el fichero con CRLF, y a partir de ahí `git status` miente
+  sobre qué está modificado.** Este repositorio no tiene `.gitattributes` y la máquina
+  corre con `core.autocrlf=true`. MEDIDO EL 2026-08-20 sobre un fichero rastreado: tras
+  un `restore` real quedó en 860 bytes con 17 CR y `git status` lo dio por **limpio**;
+  normalizado a LF quedó en 843 bytes, `sha256` **idéntico al del blob**, y `git status`
+  lo dio por **` M`**. Dicho entero: **git da por limpia la versión que NO es el blob, y
+  por modificada la que coincide byte a byte.** El caso que lo destapó fue un `restore`
+  de este archivo: 24.312 → 24.758 bytes, 446 CR de más, que abortó el guard de CR de un
+  aplicador antes de que escribiera nada.
+  **Dos matices, que son los que hacen que esto cueste nombrar.** `git restore` sobre un
+  fichero que **ya coincide con el índice no reescribe nada**, así que no mete CRLF: la
+  conversión llega sólo cuando el restore es real. Y el ` M` sólo asoma cuando algo
+  **invalida la caché de `stat`** — reescribir el mismo fichero con **bytes idénticos**
+  deja el status vacío. Por eso aparece de a ratos, y por eso se vivió meses sin
+  escribirlo.
+  **La identidad se prueba contra el blob, nunca contra el tamaño ni contra `git
+  status`:** `sha256sum <f>` contra `git show HEAD:<f> | sha256sum`.
 
 ### 7.2 — Convenciones de PowerShell: para los comandos que corre el owner
 

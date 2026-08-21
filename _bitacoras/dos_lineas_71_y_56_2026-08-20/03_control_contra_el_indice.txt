@@ -1,0 +1,54 @@
+1 - LO STAGEADO
+OK    CLAUDE.md esta stageado
+OK    el aplicador arreglado esta stageado
+warning: in the working copy of '.claude/launch.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '_bitacoras/dos_lineas_71_y_56_2026-08-20/03_control_contra_el_indice.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '_bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'data/catalogo/estado_drift.json', LF will be replaced by CRLF the next time Git touches it
+OK    ningun fichero stageado tiene resto sin stagear (salvo la salida de este control)
+
+2 - EL BLOB DE CLAUDE.md QUE SE VA A COMMITEAR
+OK    sin BOM
+OK    sin CR
+OK    NFC
+OK    una vez: ### 5.6 — Se abre con un gate
+OK    una vez: core.autocrlf=true
+OK    una vez: git status` miente
+OK    una vez: se pide por pieza y no por regla
+OK    una vez: invalida la caché de `stat`
+OK    5.6 va despues de 5.5
+OK    5.6 va antes de la seccion 6
+OK    el bullet nuevo va al final de 7.1
+OK    el bullet nuevo va antes de 7.2
+
+3 - SOLO INSERCIONES EN CLAUDE.md
+      numstat CLAUDE.md: +42 -0
+OK    cero lineas borradas
+      numstat aplicador: +1 -1
+OK    el arreglo es exactamente una linea por una
+
+4 - LOS MODIFICADOS-NO-STAGEADOS, ENUMERADOS DESDE LA CORRIDA
+      encontrados: 3
+      - .claude/launch.json
+OK    fuera del indice: .claude/launch.json
+      - _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json
+OK    fuera del indice: _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json
+      - data/catalogo/estado_drift.json
+OK    fuera del indice: data/catalogo/estado_drift.json
+OK    el intocable sigue modificado y fuera: .claude/launch.json
+OK    el intocable sigue modificado y fuera: data/catalogo/estado_drift.json
+
+5 - NADA DEL MOTOR NI DEL CONTRATO
+OK    permitido: CLAUDE.md
+OK    permitido: _bitacoras/dos_lineas_71_y_56_2026-08-20/01_aplicar_lineas.js
+OK    permitido: _bitacoras/dos_lineas_71_y_56_2026-08-20/01_aplicar_lineas.txt
+OK    permitido: _bitacoras/dos_lineas_71_y_56_2026-08-20/02_prueba_arreglo_crlf.txt
+OK    permitido: _bitacoras/dos_lineas_71_y_56_2026-08-20/03_control_contra_el_indice.js
+OK    permitido: _bitacoras/dos_lineas_71_y_56_2026-08-20/03_control_contra_el_indice.txt
+OK    permitido: _bitacoras/dos_lineas_71_y_56_2026-08-20/04_mensaje_commit.txt
+OK    permitido: _bitacoras/dos_lineas_71_y_56_2026-08-20/a1_bullet_71.txt
+OK    permitido: _bitacoras/dos_lineas_71_y_56_2026-08-20/a2_seccion_56.txt
+OK    permitido: _bitacoras/dos_lineas_71_y_56_2026-08-20/dos_lineas_71_y_56_2026-08-20.txt
+OK    permitido: _bitacoras/dos_reglas_claudemd_2026-08-20/01_aplicar_claudemd.js
+
+VEREDICTO: VERDE

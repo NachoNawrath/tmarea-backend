@@ -12,7 +12,7 @@ const SP = process.argv[2] || __dirname;
 const CR = String.fromCharCode(13);
 
 const bloques = ['b1.txt', 'b2.txt', 'b3.txt', 'b4.txt']
-  .map(f => fs.readFileSync(path.join(SP, f), 'utf8').normalize('NFC'));
+  .map(f => fs.readFileSync(path.join(SP, f), 'utf8').split(CR).join('').normalize('NFC'));
 const inserto = bloques.join('');
 
 const ANCLA = 'fallar no prueba nada. Un auditor que pierde capacidad no avisa por si mismo.'

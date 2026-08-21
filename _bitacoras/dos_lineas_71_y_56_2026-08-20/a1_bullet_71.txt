@@ -1,0 +1,18 @@
+
+- **`git restore` devuelve el fichero con CRLF, y a partir de ahí `git status` miente
+  sobre qué está modificado.** Este repositorio no tiene `.gitattributes` y la máquina
+  corre con `core.autocrlf=true`. MEDIDO EL 2026-08-20 sobre un fichero rastreado: tras
+  un `restore` real quedó en 860 bytes con 17 CR y `git status` lo dio por **limpio**;
+  normalizado a LF quedó en 843 bytes, `sha256` **idéntico al del blob**, y `git status`
+  lo dio por **` M`**. Dicho entero: **git da por limpia la versión que NO es el blob, y
+  por modificada la que coincide byte a byte.** El caso que lo destapó fue un `restore`
+  de este archivo: 24.312 → 24.758 bytes, 446 CR de más, que abortó el guard de CR de un
+  aplicador antes de que escribiera nada.
+  **Dos matices, que son los que hacen que esto cueste nombrar.** `git restore` sobre un
+  fichero que **ya coincide con el índice no reescribe nada**, así que no mete CRLF: la
+  conversión llega sólo cuando el restore es real. Y el ` M` sólo asoma cuando algo
+  **invalida la caché de `stat`** — reescribir el mismo fichero con **bytes idénticos**
+  deja el status vacío. Por eso aparece de a ratos, y por eso se vivió meses sin
+  escribirlo.
+  **La identidad se prueba contra el blob, nunca contra el tamaño ni contra `git
+  status`:** `sha256sum <f>` contra `git show HEAD:<f> | sha256sum`.

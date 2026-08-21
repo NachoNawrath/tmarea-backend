@@ -1,0 +1,182 @@
+DOS LÍNEAS — §7.1 (`git restore` y el CRLF) y §5.6 (gate y diff crudo)
+=======================================================================
+Fecha: 2026-08-20
+Repositorio: tmarea-backend
+Base: main = origin/main = 74eff438e5aaa9853795a41653074b4a8dad54b1
+      («CLAUDE.md GANA SIMPLICIDAD PRIMERO Y CAMBIOS QUIRURGICOS…»)
+
+SHELL (§7.3)
+------------
+Ejecutado en Git Bash sobre Windows. Reproducible en PowerShell:
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\dos_lineas_71_y_56_2026-08-20\01_aplicar_lineas.js
+    node _bitacoras\dos_lineas_71_y_56_2026-08-20\03_control_contra_el_indice.js
+    git --no-pager diff --cached -- CLAUDE.md
+
+Las dos líneas salieron como líneas abiertas de la pieza anterior
+(`_bitacoras/dos_reglas_claudemd_2026-08-20/`, §4 y §9) y el owner las decidió juntas.
+
+
+1 · LAS DOS AFIRMACIONES DEL OWNER, MEDIDAS ANTES DE ACEPTARLAS
+----------------------------------------------------------------
+(A) «que git marque ` M` un fichero idéntico al blob explica fricción que venimos
+    viendo hace días» — SE SOSTIENE, Y ES MÁS FUERTE DE COMO ESTABA ESCRITA.
+
+    Experimento controlado sobre un fichero rastreado
+    (`_bitacoras/dos_reglas_claudemd_2026-08-20/b3.txt`), devuelto a su estado al
+    terminar. `core.autocrlf=true`, sin `.gitattributes`:
+
+        modificado           845 bytes             status = [ M ]
+        tras git restore     860 bytes, 17 CR      status = []
+        tras normalizar LF   843 bytes             status = [ M ]
+           sha256 árbol : bffdfa45d20304ec3aa9e375717bc1aef17617f29095ecddd05a731b52ef1c29
+           sha256 blob  : bffdfa45d20304ec3aa9e375717bc1aef17617f29095ecddd05a731b52ef1c29
+
+    No es sólo que marque ` M` algo idéntico: **da por LIMPIA la versión con CRLF, que
+    NO es el blob, y por MODIFICADA la que coincide byte a byte.** Así entró al texto.
+
+    Dos matices medidos, que son los que explican por qué costó nombrarlo:
+      · `git restore` sobre un fichero que YA coincide con el índice no reescribe nada,
+        así que no mete CRLF. La primera pasada del experimento dio 843 bytes y status
+        vacío justamente por eso, y no probaba nada.
+      · el ` M` sólo asoma cuando algo invalida la caché de `stat`: reescribir CLAUDE.md
+        con BYTES IDÉNTICOS dio status vacío.
+
+
+(B) «el diff crudo también sirvió esta semana sobre código que no gobierna — la pieza
+    del voseo, en la PWA» — SE SOSTIENE A MEDIAS.
+
+    LO MEDIDO: la pieza del voseo tocó código de la PWA que no gobierna. `1a9a816` en
+    tmarea-pwa, +4 −4 sobre `src/components/verification/DriftCatalogoBlock.jsx` y
+    `src/screens/P3_VoyageVerification.jsx`. Y corrió con PARADA 2 como etapa nombrada:
+    aparece en once sitios de `_bitacoras/voseo_al_patron_2026-08-20/`.
+
+    LO NO ENCONTRADO: ningún registro de un DIFF CRUDO sobre ese código. Lo que la
+    bitácora guarda es `12_correccion_voseo.txt`, un control por tokens.
+
+    Si el diff crudo se mostró, fue en el chat y no quedó en el repositorio. Desde acá
+    eso es «no lo encontré con mi parser» (§2), no «no pasó». Por eso §5.6 se redactó
+    SIN apoyarse en ese caso: la cláusula se sostiene por su argumento, y citar como
+    precedente algo que no se puede mostrar sería fabricar autoridad (§1.1).
+
+
+2 · LÍNEA — CÓDIGO PUSHEADO CON UNA VERIFICACIÓN DE LA CLASE QUE YA FALLÓ
+--------------------------------------------------------------------------
+No se mide ni se arregla acá; queda anotado por decisión del owner.
+
+La pieza del voseo tocó código de la PWA que no gobierna —`1a9a816`, +4 −4 sobre
+`src/components/verification/DriftCatalogoBlock.jsx` y
+`src/screens/P3_VoyageVerification.jsx`— y la única verificación que dejó registrada es
+`12_correccion_voseo.txt`: un control por tokens, `viejas=0 nuevas=N (esperado 0 / N)`,
+EXIT 0 VERDE.
+
+Es la MISMA FORMA que el 2026-08-20 dio diez tokens en verde sobre CLAUDE.md con un
+párrafo nuevo pegado al anterior. Un control por tokens prueba que el texto está; no
+prueba que esté bien puesto.
+
+No se afirma que ese código tenga un defecto: no se miró. Se afirma que su verificación
+registrada no habría visto uno de formato.
+
+
+3 · EL ARREGLO DEL APLICADOR DE LA PIEZA ANTERIOR — UNA LÍNEA, PROBADA
+------------------------------------------------------------------------
+DEFECTO, encontrado hoy sobre un instrumento pusheado hoy:
+`_bitacoras/dos_reglas_claudemd_2026-08-20/01_aplicar_claudemd.js` leía sus cuatro
+bloques SIN sacarles CR. En un clon limpio de esta máquina git los saca con CRLF, así
+que el inserto habría entrado con CRLF a CLAUDE.md — es el defecto de §7.1, mordiendo
+un instrumento que se escribió el mismo día.
+
+No era silencioso: la verificación posterior mira el fichero escrito y avisa. Pero
+avisa DESPUÉS de escribir, y deja el fichero dañado en disco. El owner descartó dejarlo
+así con el motivo correcto: «avisa después de romper» es lo que §4.1 existe para evitar.
+
+ARREGLO — una línea, sin declaraciones nuevas y sin mover nada:
+
+    -  .map(f => fs.readFileSync(path.join(SP, f), 'utf8').normalize('NFC'));
+    +  .map(f => fs.readFileSync(path.join(SP, f), 'utf8').split(CR).join('').normalize('NFC'));
+
+El diff crudo dejó ver, además, que el fichero ya declara `const CR` arriba de esa
+línea: repetir `String.fromCharCode(13)` era código de más, que es lo que §4.7 acaba de
+prohibir. Se simplificó y SE REHIZO LA PRUEBA — probar una versión y commitear otra es
+el modo de falla que este archivo persigue.
+
+No se agregó aserción: la verificación ya mira el CR sobre el fichero escrito, y un
+control redundante es lo que §4.7 acaba de prohibir. Es la primera vez que esa sección
+se aplica sobre algo.
+
+PRUEBA — `02_prueba_arreglo_crlf.txt`. Correrlo contra el fichero real sólo probaría
+que el guard muerde (aborta con exit 3 porque §4.7 ya existe), no el arreglo. Así que
+se armó una copia: objetivo = `git show 926db30:CLAUDE.md`, bloques convertidos a CRLF,
+en un árbol de mentira con la misma forma de directorios para que el script encuentre
+su `../../CLAUDE.md` sin tocarle una línea.
+
+    (A) SIN el arreglo : 28.372 bytes · FALLA CR · EXIT 1
+    (B) CON el arreglo : 28.304 bytes · OK sin CR · EXIT 0
+
+(A) es el control negativo: prueba que el defecto era real y que el arreglo hacía falta.
+28.372 − 28.304 = 68 CR, uno por cada línea insertada. (B) da exactamente los bytes del
+CLAUDE.md que se commiteó en `74eff43`.
+
+
+4 · QUÉ SE APLICÓ
+------------------
+  · §7.1 gana un séptimo bullet, al final, después del de matar node por PID.
+  · §5.6 «Se abre con un gate, y el texto que gobierna se cierra con el diff crudo»,
+    entre §5.5 y `## 6. LÍMITES DUROS`. §5 iba de 5.1 a 5.5: no renumera nada.
+  · una línea en el aplicador de la pieza anterior.
+
+Ubicación de la de entorno: §7.1 y NO §7.2. §7.2 son convenciones de PowerShell para
+los comandos que corre el owner; esto pasa con `git` en cualquier shell de esta
+máquina, que es la definición de §7.1 — «valen para cualquiera que ejecute».
+
+Alcance de §5.6: (b) de tres opciones. (a) todo commit — descartada: convierte en
+obligación un ida y vuelta que en la mayoría de las piezas no compra nada, y estirar la
+regla a todo le saca filo. (c) sólo el gate — descartada: deja fuera justo la parada
+que probó su valor. La cláusula del último párrafo existe para que el silencio no se
+lea como prohibición fuera del texto que gobierna.
+
+NO SE REESCRIBIÓ NADA EXISTENTE. El diff de CLAUDE.md es sólo inserciones.
+CLAUDE.md: 28.304 -> 31.224 bytes.
+
+
+5 · §4.7 MORDIÓ EL MISMO DÍA QUE ENTRÓ, Y MORDIÓ SOBRE SU AUTOR
+----------------------------------------------------------------
+La primera versión del arreglo escribía:
+
+    .split(String.fromCharCode(13)).join('')
+
+teniendo `const CR = String.fromCharCode(13);` declarado DOS LÍNEAS más arriba, en el
+mismo fichero. Eso es código de más: exactamente lo que §4.7 «Simplicidad primero»
+prohíbe, en la sección que se commiteó esa misma mañana en `74eff43`.
+
+Dos cosas que quedan de esto:
+
+  · **Es la primera vez que §4.7 se aplica sobre algo**, y lo que corrigió fue código
+    mío, escrito después de haberla redactado. Una regla que su propio autor incumple
+    a las horas no es un argumento contra la regla: es la prueba de que hacía falta
+    escribirla, porque la sola convicción no alcanzó.
+  · **Lo cazó el DIFF CRUDO, no un control.** Los tokens estaban todos en verde y el
+    control del índice también. Es el segundo caso del día en que la parada de §5.6
+    —la que esta misma pieza está escribiendo— ve lo que las aserciones no ven.
+
+Corregido a `.split(CR).join('')`, y SE REHIZO LA PRUEBA con el código final: probar
+una versión y commitear otra es el modo de falla que este archivo persigue.
+
+
+6 · TERCER DEFECTO DE MÁQUINA — LAS COMILLAS DE BASH SE COMEN LOS BACKTICKS
+----------------------------------------------------------------------------
+Al parchear esta bitácora con `node -e "…"` entre COMILLAS DOBLES, bash trató los
+backticks del texto como sustitución de comando y los ejecutó. El resultado quedó
+escrito así:
+
+    «...que el fichero ya declara  arriba de esa línea: repetir  era código de más...»
+
+Dos huecos donde iban `const CR` y `String.fromCharCode(13)`. El fichero no falló, no
+avisó, y decía otra cosa — que es la firma de esta familia entera: el heredoc que se
+come una barra, el heredoc que corta sobre 6 KB, el argumento con salto de línea que
+llega partido. Van varios.
+
+Se reescribió por heredoc citado + `fs` y se verificó POR TOKENS que los dos backticks
+volvieron. LÍNEA ABIERTA, no se escribe acá: §7.2 no dice nada de esto y podría
+decirlo. Se decide en otra pieza.
