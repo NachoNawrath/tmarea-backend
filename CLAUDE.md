@@ -251,6 +251,74 @@ Después de tocar un auditor o una verificación, se comprueba que **sigue mordi
 se le inyecta el defecto que debe cazar y se confirma que lo caza. Un control que no puede
 fallar no prueba nada. Un auditor que pierde capacidad no avisa por sí mismo.
 
+Lo mismo vale **antes** de arreglar, y no sólo después de tocar un auditor: en vez de
+«arreglá el bug», se escribe el test que lo reproduce y después se lo hace pasar. Un
+arreglo cuyo test nunca estuvo en rojo es un control que no puede fallar: pasa por
+construcción, y no prueba que el defecto existiera ni que se haya ido.
+
+### 4.7 — Simplicidad primero
+
+- **El mínimo código que resuelve el problema. Nada especulativo.**
+- **Sin funciones que no se pidieron. Sin abstracciones de un solo uso.**
+- **Sin manejo de errores para escenarios imposibles.**
+- **Si doscientas líneas pueden ser cincuenta, se reescribe.**
+
+**«Nada especulativo» no contradice §4.5.** La estructura que recibe una fuente mejor sin
+rehacerse es una **costura** —por dónde entra el dato—, no código para casos que todavía no
+existen. Una costura no cuesta líneas; una abstracción de un solo uso sí. Si para «estar
+preparado» hay que escribir una rama, un parámetro o una capa que hoy no recorre nadie,
+eso ya no es §4.5: es lo que esta sección prohíbe.
+
+**«Escenario imposible» no es «escenario improbable», y no toca §4.1.** El discriminador no
+es la probabilidad: es **de dónde viene el dato**.
+
+- Si viene de la fuente, del entorno, del insumo o de la salida de otro módulo, es un
+  **supuesto que puede fallar**: manda §4.1 —el proceso se detiene con el motivo— y nunca
+  por defecto silencioso (§4.2).
+- Si sólo puede llegar desde código propio que ya lo garantizó unas líneas arriba, es un
+  **escenario imposible**: no se le escribe camino.
+
+Lo que esta sección borra es **el camino degradado** —el default, el fallback, el reintento,
+el `catch` que sigue— y **nunca la detención**. Detenerse cuesta una línea; manejar cuesta
+un camino que ningún control recorre. **Si al escribir la rama no sabés cuál de los dos es,
+no era imposible.**
+
+**«Se reescribe» es sobre lo que se está escribiendo en esta pieza**, no sobre lo que ya
+estaba. Doscientas líneas ajenas y flojas no las toca esta sección: caen bajo §4.8, que dice
+lo contrario y manda sobre ellas.
+
+### 4.8 — Cambios quirúrgicos
+
+- **No se mejora código vecino, ni comentarios, ni formato.**
+- **No se refactoriza lo que no está roto.**
+- **Se respeta el estilo existente aunque vos lo harías distinto.**
+- **Si ves código muerto ajeno, lo mencionás; no lo borrás.**
+- **Cada línea cambiada debe trazar a lo que se pidió.**
+
+**Esto no cancela §0.1.** «No se refactoriza lo que no está roto» habla de lo que **no está
+roto**. Cuando el defecto real está más abajo, §0.1 sigue mandando: se dice, aunque la
+instrucción pida el parche. Lo que esta sección prohíbe es mejorar lo que funciona, no
+callar una causa.
+
+**Y «lo que se pidió» incluye lo que §0.4 te enrutó a vos.** Un hallazgo que resolvés de
+este lado y declarás con su medición es pedido; lo que no traza a nada declarado es lo que
+esta regla persigue.
+
+**Código muerto por una firma reciente: se borra lo que se puede probar muerto, y se muestra
+cómo se sabe.** Cuando el código quedó muerto **como consecuencia de una decisión que el
+owner acaba de firmar**, la mención sola deja al repositorio cargando código que esa firma
+mató, y la sesión siguiente lo lee como vivo.
+
+- **Se borra** lo que la firma vuelve inalcanzable **de forma demostrable**, y el borrado
+  llega con su prueba: la condición que quedó constante, el estado declarado que ya no
+  alcanza ninguna fila, el control que dejó de cubrirlo. Ahí cada línea borrada traza a lo
+  que se pidió, porque la firma **es** lo que se pidió.
+- **No se borra** lo que sólo *parece* consecuencia de la firma. «Consecuencia directa» sin
+  prueba es elástico, y a los dos meses cada uno lo estira distinto.
+- **Lo que no se borra tampoco queda pelado:** se entrega el borrado **redactado y listo
+  para aplicar**, y qué autorización haría falta. **Redactar no es aplicar** — esto es §6.1
+  en código en vez de en prosa.
+
 ---
 
 ## 5. RITMO Y LÍMITES

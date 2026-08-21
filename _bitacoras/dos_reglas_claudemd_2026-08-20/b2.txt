@@ -1,0 +1,18 @@
+
+**«Escenario imposible» no es «escenario improbable», y no toca §4.1.** El discriminador no
+es la probabilidad: es **de dónde viene el dato**.
+
+- Si viene de la fuente, del entorno, del insumo o de la salida de otro módulo, es un
+  **supuesto que puede fallar**: manda §4.1 —el proceso se detiene con el motivo— y nunca
+  por defecto silencioso (§4.2).
+- Si sólo puede llegar desde código propio que ya lo garantizó unas líneas arriba, es un
+  **escenario imposible**: no se le escribe camino.
+
+Lo que esta sección borra es **el camino degradado** —el default, el fallback, el reintento,
+el `catch` que sigue— y **nunca la detención**. Detenerse cuesta una línea; manejar cuesta
+un camino que ningún control recorre. **Si al escribir la rama no sabés cuál de los dos es,
+no era imposible.**
+
+**«Se reescribe» es sobre lo que se está escribiendo en esta pieza**, no sobre lo que ya
+estaba. Doscientas líneas ajenas y flojas no las toca esta sección: caen bajo §4.8, que dice
+lo contrario y manda sobre ellas.

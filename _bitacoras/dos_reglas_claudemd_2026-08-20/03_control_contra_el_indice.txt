@@ -1,0 +1,45 @@
+1 - CLAUDE.md EN EL INDICE
+OK    CLAUDE.md esta stageado
+OK    CLAUDE.md no tiene resto sin stagear (indice == arbol)
+
+2 - EL BLOB QUE SE VA A COMMITEAR
+OK    el blob no arranca con BOM
+OK    el blob no trae CR
+OK    el blob esta en NFC
+OK    el blob trae 1 vez: ### 4.7 — Simplicidad primero
+OK    el blob trae 1 vez: ### 4.8 — Cambios quirúrgicos
+OK    el blob trae 1 vez: el test que lo reproduce
+OK    el blob trae 1 vez: no era imposible.
+OK    el blob trae 1 vez: te enrutó a vos
+OK    el blob trae 1 vez: en código en vez de en prosa
+OK    el blob trae 2 veces (4.8 y 6.1): Redactar no es aplicar
+
+3 - SOLO INSERCIONES (no se reescribio nada existente)
+      numstat CLAUDE.md: +68 -0
+OK    cero lineas borradas en CLAUDE.md
+
+4 - LOS MODIFICADOS-NO-STAGEADOS, ENUMERADOS DESDE LA CORRIDA
+      encontrados: 3
+      - .claude/launch.json
+OK    fuera del indice: .claude/launch.json
+      - _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json
+OK    fuera del indice: _bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json
+      - data/catalogo/estado_drift.json
+OK    fuera del indice: data/catalogo/estado_drift.json
+OK    el intocable sigue modificado y fuera: .claude/launch.json
+OK    el intocable sigue modificado y fuera: data/catalogo/estado_drift.json
+
+5 - NADA DEL MOTOR NI DEL CONTRATO EN EL INDICE
+OK    permitido en el indice: CLAUDE.md
+OK    permitido en el indice: _bitacoras/dos_reglas_claudemd_2026-08-20/01_aplicar_claudemd.js
+OK    permitido en el indice: _bitacoras/dos_reglas_claudemd_2026-08-20/01_aplicar_claudemd.txt
+OK    permitido en el indice: _bitacoras/dos_reglas_claudemd_2026-08-20/02_control_negativo.txt
+OK    permitido en el indice: _bitacoras/dos_reglas_claudemd_2026-08-20/03_control_contra_el_indice.js
+OK    permitido en el indice: _bitacoras/dos_reglas_claudemd_2026-08-20/03_control_contra_el_indice.txt
+OK    permitido en el indice: _bitacoras/dos_reglas_claudemd_2026-08-20/b1.txt
+OK    permitido en el indice: _bitacoras/dos_reglas_claudemd_2026-08-20/b2.txt
+OK    permitido en el indice: _bitacoras/dos_reglas_claudemd_2026-08-20/b3.txt
+OK    permitido en el indice: _bitacoras/dos_reglas_claudemd_2026-08-20/b4.txt
+OK    permitido en el indice: _bitacoras/dos_reglas_claudemd_2026-08-20/dos_reglas_claudemd_2026-08-20.txt
+
+VEREDICTO: VERDE

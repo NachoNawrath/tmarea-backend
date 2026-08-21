@@ -1,0 +1,19 @@
+
+
+Lo mismo vale **antes** de arreglar, y no sólo después de tocar un auditor: en vez de
+«arreglá el bug», se escribe el test que lo reproduce y después se lo hace pasar. Un
+arreglo cuyo test nunca estuvo en rojo es un control que no puede fallar: pasa por
+construcción, y no prueba que el defecto existiera ni que se haya ido.
+
+### 4.7 — Simplicidad primero
+
+- **El mínimo código que resuelve el problema. Nada especulativo.**
+- **Sin funciones que no se pidieron. Sin abstracciones de un solo uso.**
+- **Sin manejo de errores para escenarios imposibles.**
+- **Si doscientas líneas pueden ser cincuenta, se reescribe.**
+
+**«Nada especulativo» no contradice §4.5.** La estructura que recibe una fuente mejor sin
+rehacerse es una **costura** —por dónde entra el dato—, no código para casos que todavía no
+existen. Una costura no cuesta líneas; una abstracción de un solo uso sí. Si para «estar
+preparado» hay que escribir una rama, un parámetro o una capa que hoy no recorre nadie,
+eso ya no es §4.5: es lo que esta sección prohíbe.

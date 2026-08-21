@@ -1,0 +1,262 @@
+DOS REGLAS NUEVAS EN CLAUDE.md — §4.7 SIMPLICIDAD PRIMERO y §4.8 CAMBIOS QUIRÚRGICOS
+====================================================================================
+Fecha: 2026-08-20
+Repositorio: tmarea-backend
+Base: main = origin/main = 926db30a9b202626c918b8cd042618b2a9c51d63
+      («El §10 pasa a usted, y el dato se mueve en el mismo acto»)
+
+SHELL (§7.3)
+------------
+Los comandos que esta bitácora transcribe se EJECUTARON en Git Bash sobre Windows.
+La forma REPRODUCIBLE, para que el owner los repita en su terminal (PowerShell):
+
+    cd C:\Users\katia\tmarea-backend
+    node _bitacoras\dos_reglas_claudemd_2026-08-20\01_aplicar_claudemd.js <dir-bloques>
+    node _bitacoras\dos_reglas_claudemd_2026-08-20\02_control_contra_el_indice.js
+    git --no-pager diff --cached -- CLAUDE.md
+
+Donde la forma ejecutada y la reproducible difieren, la diferencia es sólo la barra
+de las rutas.
+
+
+1 · PREMISAS DEL PROMPT, VERIFICADAS
+------------------------------------
+    git rev-parse HEAD        -> 926db30a9b202626c918b8cd042618b2a9c51d63
+    git rev-parse origin/main -> 926db30a9b202626c918b8cd042618b2a9c51d63
+    git rev-parse --abbrev-ref HEAD -> main
+
+(a) «backend main = origin/main = 926db30» — CIERTA.
+
+(b) «los dos intocables siguen ` M` sin stagear» — CIERTA, PERO NO ES TODO EL ÁRBOL.
+
+    Los dos intocables son `.claude/launch.json` y `data/catalogo/estado_drift.json`,
+    así nombrados en `_bitacoras/las_once_2026-08-20/06_mensaje_commit.txt`. Los dos
+    están ` M` y fuera del índice.
+
+    El árbol trae un TERCER fichero rastreado modificado, de otro frente:
+    `_bitacoras/toponimos_12100_47_2026-08-20/osm_crudo.json`, +3.921 líneas.
+    No bloquea esta pieza —CLAUDE.md se stagea por ruta exacta y no lo alcanza—,
+    pero un control que afirme «sólo dos ` M`» daría rojo por una razón ajena.
+    El esperado del control de esta pieza sale de la CORRIDA, no de la premisa:
+    tres ` M`, de los cuales dos son los intocables y uno es de otro frente; los
+    tres fuera del índice.
+
+Estado del fichero antes de tocarlo: 24.312 bytes, 446 líneas, SIN BOM, LF, NFC,
+secciones §0 a §8. No hay `.gitattributes`, así que git avisa
+`LF will be replaced by CRLF`: todo sha que se declare va sobre el BLOB de git,
+no sobre el disco (§3.5).
+
+
+2 · LOS SEIS COTEJOS DEL OWNER
+------------------------------
+Instrumento: lectura completa de las 446 líneas y
+
+    grep -n -i -E "parada|simplic|quirurg|quirúrg|refactor|código muerto|muerto|
+                   mínimo|especulat|abstrac|estilo existente|reproduzca" CLAUDE.md
+
+que devuelve CERO líneas para todos los términos de lo que entra (los únicos aciertos
+son «Reproducible» de §3.4 y «reproducible» de §7.2/§7.3, otro sentido). Ninguna de
+las dos secciones nuevas ni la línea suelta duplican texto existente.
+
+SE SOSTIENEN, TAL COMO EL OWNER LOS ESCRIBIÓ (4 de 6):
+
+  · «si existe un camino más simple, dilo» ya es §0.1 — SÍ.
+    §0.1: «¿El objetivo se logra así? Si ves un camino mejor, propónlo antes de
+    tomar el indicado.» «Mejor» contiene «más simple».
+
+  · «si hay dos interpretaciones, mostralas» ya es §0.2 — SÍ, con matiz.
+    §0.2: «Toda recomendación que implique una decisión del owner llega con al menos
+    dos caminos». §0.2 gobierna PROPUESTAS; una instrucción ambigua entra por §0.1 y
+    sale con la forma de §0.2. El par cubre el caso; ninguno de los dos solo.
+
+  · «criterio comprobable» ya es §4.4 y §4.6 — SÍ.
+    §4.6: «se le inyecta el defecto que debe cazar y se confirma que lo caza. Un
+    control que no puede fallar no prueba nada.»
+
+  · «si dudas, preguntá en vez de adivinar» CONTRADICE §0.4 — SÍ, literal.
+    §0.4: «Si dudás de qué lado cae, resolvelo y declará el criterio que usaste» y
+    «Preguntar lo que podías contestar cuesta un viaje de ida y vuelta y le devuelve
+    al owner una decisión que no es suya».
+    Agregado: en este archivo la alternativa a adivinar NO es preguntar, es MEDIR
+    (§1.2). La máxima ofrece dos opciones donde el archivo tiene tres, y la que borra
+    es la única que produce dato.
+
+
+3 · ANOTACIÓN — EL COTEJO DEL §5.2 ESTABA MAL CITADO
+-----------------------------------------------------
+No es una fila. Es una anotación, y el owner pidió que quedara escrita.
+
+El cotejo decía: «"si algo no se entiende, detente" ya es §5.2».
+§5.2 NO dice eso. Dice, en su segundo párrafo, lo contrario:
+
+    «Esto es sobre lo que invalida el trabajo, no sobre cualquier hallazgo. El
+     enrutamiento de un hallazgo nuevo lo fija §0.4: detenerse es para cuando seguir
+     produciría trabajo que hay que tirar, no para cada cosa no prevista que aparece.»
+
+§5.2 RECORTA la parada; no la extiende. La conclusión del owner —la línea no entra—
+es correcta, pero por el motivo del sexto cotejo (choca con §0.4), no por duplicación.
+
+Lo que importa: si la línea hubiera entrado citando a §5.2 como respaldo, habría
+aflojado un recorte apoyándose justo en el texto que lo escribió. Eso es §1.1,
+fabricar autoridad — presentar como respaldado por la regla algo que la regla no
+dice. Y es la forma que §2 persigue: una afirmación que se apoya en una medición
+—acá, en una cita— que no prueba lo que la afirmación dice.
+
+Segundo cotejo mal citado, misma familia, sin consecuencia sobre lo que entra:
+«el plan con su verificación por paso antes de empezar» ya es §5.1. §5.1 completo es
+«Cada fase termina con alto explícito y espera autorización. No se encadenan fases»:
+eso es el alto AL FINAL de una fase, no el plan ANTES de empezarla.
+
+
+4 · LÍNEA ABIERTA — UNA PRÁCTICA SIN REGLA
+-------------------------------------------
+No se escribe en esta pieza: el alcance está cerrado. Queda anotada para que el
+owner decida si entra en otra.
+
+    «PARADA 1» y «PARADA 2» NO EXISTEN en CLAUDE.md.
+
+Medición: `grep -i -c parada CLAUDE.md` sobre las 446 líneas del árbol 926db30
+devuelve 0. La práctica —gate, redacción propuesta, diff crudo antes de commitear—
+corre hace semanas y aparece en los prompts del owner; la regla no está escrita en
+el archivo que gobierna. §5.1 cubre el alto entre fases, no el plan con su
+verificación por paso antes de empezar.
+
+Que la práctica corra y la regla no exista es el hallazgo. Meterla de contrabando
+en esta pieza sería escribir una regla nueva fuera del alcance declarado.
+
+
+5 · DOS CHOQUES QUE EL COTEJO NO VIO, Y CÓMO SE RESOLVIERON
+------------------------------------------------------------
+E1 · Las dos secciones nuevas se contradecían ENTRE SÍ.
+     «Si doscientas líneas pueden ser cincuenta, se reescribe» (§4.7) contra «No se
+     refactoriza lo que no está roto» y «Cada línea cambiada debe trazar a lo que se
+     pidió» (§4.8). Un lector con doscientas líneas ajenas y flojas delante tenía una
+     sección que le ordenaba reescribirlas y otra que se lo prohibía.
+     RESUELTO con cláusula de alcance al pie de §4.7: «se reescribe» es sobre lo que
+     se está escribiendo en ESTA pieza, y las líneas ajenas caen bajo §4.8. La
+     cláusula dice a qué sección caen, en vez de dejar al lector eligiendo.
+
+E2 · «Nada especulativo» rozaba §4.5 («La estructura recibe una fuente mejor sin
+     rehacerse»), que es literalmente construir para un futuro que todavía no está.
+     RESUELTO distinguiendo COSTURA de CÓDIGO: §4.5 pide por dónde entra el dato, no
+     ramas para casos que no existen. Una costura no cuesta líneas; una abstracción
+     de un solo uso sí.
+
+(1) · «Sin manejo de errores para escenarios imposibles» rozaba §4.1 (falla ruidoso).
+     RESUELTO con un discriminador comprobable: no es la probabilidad, es DE DÓNDE
+     VIENE EL DATO. De la fuente, el entorno, el insumo o la salida de otro módulo =
+     supuesto que puede fallar, manda §4.1. Sólo desde código propio que lo garantizó
+     unas líneas arriba = escenario imposible, no se le escribe camino. Lo que se
+     borra es el CAMINO DEGRADADO —default, fallback, reintento, catch que sigue— y
+     NUNCA la detención. Cierre: «Si al escribir la rama no sabés cuál de los dos es,
+     no era imposible.»
+
+(2) · CÓDIGO MUERTO QUE ES CONSECUENCIA DIRECTA DE UNA FIRMA RECIENTE. Subió al owner
+     con tres opciones; el owner firmó (c).
+       (a) sólo se menciona, sin excepción — descartada: deja al repositorio cargando
+           código que la firma acaba de matar, y la sesión siguiente lo lee como vivo.
+           Es «una declaración medida como falsa que se queda escrita» (§6.1) en código.
+       (b) se borra siempre que sea consecuencia directa — descartada: «directa» sin
+           prueba es elástico y a los dos meses cada uno lo estira distinto.
+       (c) FIRMADA: se borra lo que se puede PROBAR muerto por la firma, mostrando cómo
+           se sabe; lo que no es demostrable no se borra pero tampoco queda pelado —se
+           entrega el borrado redactado y listo. Motivo: es la única con criterio
+           comprobable en vez de adjetivo, y no inventa maquinaria: reusa §6.1, que ya
+           resolvió este mismo problema para la prosa. El texto lo dice con esas
+           palabras: «Redactar no es aplicar — esto es §6.1 en código en vez de en prosa».
+
+Aclaración adicional, no prevista en el prompt y necesaria: §4.8 declara que «lo que se
+pidió» INCLUYE lo que §0.4 enrutó a este lado y quedó declarado. Sin eso, la regla nueva
+chocaba con §0.4, que permite resolver de este lado y reportar resuelto.
+
+
+6 · QUÉ SE APLICÓ
+------------------
+Instrumento: `01_aplicar_claudemd.js` (en este directorio). Salida literal:
+`01_aplicar_claudemd.txt`. Corrido, no sólo compilado.
+
+  · §4.6 gana un párrafo de cierre: el test que reproduce el bug antes del arreglo.
+  · §4.7 «Simplicidad primero» — nueva, entre §4.6 y §4.8.
+  · §4.8 «Cambios quirúrgicos» — nueva, entre §4.7 y `## 5. RITMO Y LÍMITES`.
+
+Ubicación: ambas bajo §4 CÓMO SE CONSTRUYE, que es de lo que hablan. No renumera ni
+reordena nada. Descartado ponerlas como §9 y §10 al final: quedarían DESPUÉS de §8,
+que es la sección de cierre, y reglas de construcción después del resumen final leen mal.
+
+NO SE REESCRIBIÓ NADA EXISTENTE. El diff es sólo inserciones.
+CLAUDE.md: 24.312 -> 28.304 bytes. Sin BOM, LF, NFC, verificado sobre el fichero en
+disco después de escribir (no sobre el tamaño).
+
+
+7 · LOS CONTROLES, Y EL ROJO QUE HUBO
+--------------------------------------
+`02_control_negativo.txt` — el aplicador VUELVE A CORRER y ABORTA con exit 3
+(«ABORTA: 4.7 o 4.8 ya existen»). El guard muerde (§4.6), y de paso prueba que el
+instrumento es autocontenido: lee sus cuatro bloques de este mismo directorio, sin
+argumento y sin depender del disco de nadie (§3.4).
+
+`03_control_contra_el_indice.txt` — VERDE. Pero su PRIMERA corrida dio ROJO (1), y
+queda escrito porque el defecto era MÍO y es de una familia conocida:
+
+    FALLA el blob trae 1 vez: §6.1 en código en vez de en prosa
+
+El fichero estaba bien. Lo que estaba mal era el ESPERADO: pedí ese token contiguo,
+y en el texto la frase cruza un salto de línea —«…esto es §6.1» / «en código en vez
+de en prosa.»—. El esperado salió de mi memoria del texto, no de la corrida. Es la
+misma forma que este repositorio ya pagó con el control negativo del centinela: la
+cifra clavada en vez de derivada.
+
+Se arregló EL CONTROL, no el texto: el token pasó a uno que no cruza línea, y se
+agregó una aserción de que «Redactar no es aplicar» aparece DOS veces —§4.8 nueva y
+§6.1 vieja—, que es lo que la corrida mide. Aflojar el criterio para que pasara
+habría sido §0.3.
+
+El esperado del punto 4 no está clavado: el control ENUMERA los ` M` que encuentra
+y exige que cada uno esté fuera del índice. Encontró TRES —los dos intocables más
+el `osm_crudo.json` de otro frente— y los tres están fuera.
+
+NOTA: `03_control_contra_el_indice.txt` se escribe DESPUÉS de correr, así que su
+listado del índice no se incluye a sí mismo. Es el último fichero que entra.
+
+
+8 · SEGUNDO ROJO — LO CAZÓ EL DIFF CRUDO, NO UN CONTROL
+--------------------------------------------------------
+La primera aplicación pasó los diez tokens y era VERDE, y el diff crudo mostró dos
+defectos de formato que ningún control miraba:
+
+  · el párrafo nuevo de §4.6 quedaba PEGADO al anterior —un solo salto de línea, o
+    sea el mismo párrafo en markdown—;
+  · al final quedaba una línea en blanco de más antes del `---`.
+
+Ninguno cambia una palabra del texto y los dos habrían quedado escritos. Es el motivo
+por el que el owner no autoriza sobre descripción: los tokens prueban que el texto
+está, no que esté bien puesto.
+
+Se arreglaron los BLOQUES —`b1.txt` arranca con dos saltos, `b4.txt` termina en punto
+sin salto final— y se REHIZO la aplicación desde HEAD, para que el fichero sea
+exactamente lo que produce el instrumento y no un fichero parchado a mano (§3.4).
+
+
+9 · HALLAZGO DE MÁQUINA, MEDIDO — `git restore` DEVUELVE CRLF
+---------------------------------------------------------------
+Al volver CLAUDE.md a HEAD para rehacer la aplicación:
+
+    git restore CLAUDE.md   ->  24.758 bytes (446 CR de más)
+
+Este repositorio no tiene `.gitattributes` y la máquina convierte al sacar, así que
+`git restore` NO devuelve el fichero como estaba: lo devuelve con CRLF. El guard de
+CR del aplicador lo cazó y abortó antes de escribir — el control mordió en un caso
+real, no inyectado.
+
+Se normalizó a LF y se probó la identidad con el blob, no con el tamaño:
+
+    sha256 del árbol : ceb3292374b938daba470a5110a5eb6daaf06845529e7db539fb21e7e866a86a
+    sha256 del blob  : ceb3292374b938daba470a5110a5eb6daaf06845529e7db539fb21e7e866a86a
+
+Idénticos: el contenido volvió a ser el de HEAD antes de aplicar nada. `git status`
+igual lo marca ` M` estando idéntico, que es la misma fricción de siempre y es el
+estado en el que el fichero ya estaba antes de esta sesión.
+
+LÍNEA ABIERTA, no se escribe acá: §7.1 «Hechos de la máquina» no dice que
+`git restore` devuelve CRLF en este repositorio. Es un hecho medido hoy y le falta
+a esa sección. Fuera del alcance de esta pieza; que el owner decida si entra en otra.
