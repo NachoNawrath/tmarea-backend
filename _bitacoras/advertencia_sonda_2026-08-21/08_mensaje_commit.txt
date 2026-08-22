@@ -1,0 +1,143 @@
+================ MENSAJE PARA tmarea-backend ================
+
+Paso 1: corregir la sonda del Derrotero y hacerla llegar al patron
+
+DOS COSAS, Y LA PRIMERA NO ESTABA EN EL ENCARGO.
+
+1. EL INSUMO ESTABA MAL, Y EN LA DIRECCION INSEGURA. La Sec 6.1 de la spec del
+   router pedia verificar los 7 registros de sonda caso por caso contra el texto
+   fuente ANTES de cargarlos ("Dato bien extraido, campo mal interpretado") y
+   nadie lo habia corrido. Se corrio el 2026-08-21 sobre el tomo cacheado:
+
+   · Canal Tenglo cargaba 11,0 m, que es el extremo bajo del RANGO DEL TRAMO MAS
+     PROFUNDO. p.291 dice "encontrandose MAYORES profundidades hacia su acceso
+     SW, donde hay de 11 a 21 metros", y la misma entrada declara el punto bajo
+     real: "frente a la punta Hoffmann, se sonda en bajamar apenas 1 metro,
+     siendo esta la parte mas angosta y baja del canal Tenglo". Con 11,0 cargado
+     ninguna nave de menos de 10,1 m de calado recibia aviso sobre un punto de
+     1 m. Corregido a 1,0 m.
+   · La sonda de 9,5 m estaba atribuida a CANAL MORALEDA y no es de ahi: p.482
+     dice "Es profundo y sin peligro; pero a medio canal en su ACCESO E hay una
+     sonda de 9,5 metros" -- del canal Pilcomayo. Reatribuida. Y es la MISMA
+     FRASE que la fila de p.538: dos de los siete registros son la misma sonda.
+
+   Las correcciones viven en el GENERADOR y no en el JSON, porque el JSON se
+   regenera desde el CSV y una correccion aplicada solo al JSON se pierde en
+   silencio. `pasos_full.csv` no se toca: es la salida cruda de la extraccion.
+
+2. `advertencias` de /api/rutas/calcular viajaba como string[] plano con CUATRO
+   clases mezcladas y la PWA no lo leia nunca. Ahora cada texto se tipa DONDE
+   NACE (§4.2) y el consumidor selecciona por clase, no por una frase.
+
+   POR QUE POR CLASE Y NO POR EL TEXTO (§4.9): filtrar por un literal deja de
+   dibujar EN VERDE Y EN SILENCIO el dia que alguien reescriba la frase. Este
+   arbol ya lo pago dos veces. El `canal`, la `fuente` y la `pagina` viajan como
+   DATO por el mismo motivo, en vez de sacarse de la cadena con un regex.
+
+EL TEXTO AL PATRON CAMBIA DE TONO, no solo de precision (decision del owner).
+Sonaba a medicion tecnica y le prestaba una certeza que este dato no tiene. El
+cuerpo va en lenguaje llano con "Segun fuentes oficiales"; la fuente concreta
+queda abajo y en chico como comprobacion. Sale el margen de resguardo del texto
+--sigue decidiendo QUIEN recibe el aviso, pero `margenBajoQuilla` esta declarado
+en su propio archivo como practica preliminar y NO dato de fuente, y mostrarlo
+con decimal lo presentaba como medicion--. Dos ramas: con el lugar nombrado
+cuando la fuente lo nombra, sin el cuando no. Medido: de los 7 registros solo
+Canal Tenglo nombra el lugar de SU SONDA; los demas toponimos ubican el paso.
+
+MEDIDO ANTES DE SACAR LA CITA DEL CUERPO, y es lo que autorizo el cambio: NO
+agrega un caso a S7. §10 es la fuente unica de mensajes normativos y manda "NO
+inventar citas fuera de este catalogo"; el Derrotero esta declarado en el propio
+contrato como fuente de DATOS, no como norma. Un "(p.291)" incrustado se leia
+como cita normativa sin serlo. La unica guarda del arbol que exigia la cita
+dentro del cuerpo era la de este mismo control, escrita en esta sesion: se puso
+ROJA al cambiar el texto (§4.9 funcionando) y se reanclo en los campos.
+
+EXCEPCION DEL BORDE, FIRMADA POR EL OWNER Y DECLARADA: esta pieza cruza el borde
+PWA-backend DOS veces y en las DOS direcciones, contra el "a lo sumo una vez y en
+una direccion" del plan de cierre. Motivo: partirla dejaba las dos mitades sin
+criterio de aceptacion corrible -- la mitad que solo dibuja no tiene pantalla que
+mirar, porque sin el calado el backend no compone nada.
+
+Cifras, todas contra el INDICE:
+- control nuevo sonda-al-patron.test.js: 18 pruebas. Antes del arreglo 1 pasaba
+  y 12 fallaban. Suite del repo 170 -> 188, todas verdes.
+- insumo: 7 registros · 2 con geometria (eran 3, baja por la reatribucion de
+  Moraleda) · 2 verificados a mano · Canal Tenglo en 1,0 m · sin Canal Moraleda.
+- Derrotero, unidad REGISTRO DE PASO: 247 extraidos (pasos_full.csv, pp.141-623)
+  · 7 con sonda documentada (2,8 % de 247) · 2 evaluables hoy.
+- declarativo IDENTICO: 93 filas · 91 unicas · 84 vivas. Ninguna fila nueva.
+
+Medido y NO arreglado (§4.8), va como linea: `canalesQueCruzaRuta` mira los
+VERTICES de la ruta y no sus TRAMOS, con buffer de 500 m. El transito real de
+Puerto Montt a Ancud pasa a 2 m del eje del Canal Chacao medido por tramo y a
+817 m por vertice, y NO se detecta. Son DOS causas y no una: Chacao es el
+algoritmo, Moraleda era la geometria (4.457 m por tramo). El buffer no se toco:
+subirlo hasta que el caso pase seria elegir el umbral que hace pasar la prueba.
+
+Evidencia en _bitacoras/advertencia_sonda_2026-08-21/ (siete mediciones, con sus
+instrumentos corribles).
+
+================ MENSAJE PARA tmarea-pwa ================
+
+Paso 1: P3 dibuja la advertencia de sonda y la mete al veredicto
+
+`advertencias` tenia CERO lectores en todo el arbol de la PWA. El backend componia
+un aviso de seguridad fisica -- sonda documentada del Derrotero contra el calado
+de la nave -- y no llegaba a la pantalla.
+
+DOS COSAS, PORQUE EL DEFECTO ERA DOBLE:
+1. `fetchRuta` manda `calado_m` desde `voyageData.vessel`. Sin eso el backend
+   caia a su default de 1,5 m y el cotejo devolvia el array VACIO para toda ruta
+   de P3, de toda nave, siempre. Dibujar sin esto habria dejado un control en
+   verde afirmando que la advertencia llega.
+2. `SondaDerroteroBlock` renderiza el texto LITERAL del backend, seleccionandolo
+   por CLASE y nunca por una frase (§4.9). No compone texto: misma regla que
+   `avisosDeCobertura`. Se busco antes si el catalogo lo tenia y no lo tiene.
+
+LA FUENTE ENTRA AL VEREDICTO, topada en U y NUNCA UV -- firma del owner.
+Dibujarla sin escalar habria puesto "Zarpe autorizado / Condiciones favorables"
+encima de "hay menos agua que la que su nave necesita", fabricando un caso nuevo
+de S6(b). El tope no se elige aca: `cotejo-vertical.js` ya argumenta por que es
+advertencia y no bloqueo. `ruta` pasa a ser parametro de `calcularVeredicto`; el
+anclaje de S6(a) sigue en pie para la MAREA, que sigue sin ser parametro.
+
+SITIO: debajo del bloque de mareas y arriba del de ETA. El criterio es de
+decision y no de tema -- la marea define la hora de zarpe, la sonda es la
+condicion del fondo, y las dos van antes del consumo. Queda pegado a mareas
+porque son las dos mitades del agua bajo la quilla, y NO se fusiona con el: sin
+el datum las dos cifras no se pueden sumar.
+
+EL TEXTO ES PRECAUTORIO Y NO TECNICO. Cuerpo en lenguaje llano con "Segun
+fuentes oficiales"; la fuente concreta abajo y en chico, como comprobacion para
+quien quiera verificar. La linea de alcance dice que la comprobacion no cubre
+toda la ruta y que el silencio NO significa agua suficiente.
+
+Verificado en pantalla (PWA en 5174 contra backend propio en 3100; no se tocaron
+3000 ni 5173 de la otra sesion). Ruta Muelle Puntilla de Tenglo -> Caleta
+Pesquera Anahuac con una LANCHA DE 1,8 m de calado -- la flota que esta app dice
+servir, y que con el insumo viejo no recibia nada --: BANDERA U con UNA sola
+razon, los dos puertos en verde, clima normal y autonomia suficiente. O sea que
+todas las demas fuentes dan Q y la bandera es U: la fuente compone.
+
+CADA TARJETA LLEVA SU CANAL COMO TITULO. Con dos avisos el patron leia dos
+parrafos que arrancan igual y ninguno decia de que canal hablaba: el de Chocoi
+dice "en este paso" sin que ningun paso este nombrado en el bloque. El titulo
+sale del campo `canal`, NO de parsear el cuerpo -- nombrarlo dentro del texto
+habria deshecho lo que esta pieza hizo (sacar la identidad de la prosa y
+meterla en campos) y habria cruzado el borde otra vez por algo de pantalla.
+Los CUATRO estados posibles del bloque quedaron renderizados de verdad, con los
+componentes reales pasados por react-dom/server, en 12_render_todos_los_textos.
+
+Tambien: se corrige el comentario de P4_ActiveVoyage.jsx que afirmaba que
+`calado_m` no existe en el formulario de P1. Existe, y es obligatorio.
+
+MENCIONADO Y NO TOCADO (§4.8): DeportiveAlerts.jsx:533 hace un require() dentro
+de un modulo ESM apuntando a ./maritime-geo.js, ruta que no existe -- el fichero
+vive en src/utils/. Medido: solo es alcanzable via useCapitaniaTracker, que
+tiene CERO consumidores (control positivo del barrido: LicenseAlert, del mismo
+fichero, da 2 fuera de el). No es codigo muerto que molesta: es codigo muerto
+cuyo PRIMER USO FALLA, y su consumidor natural es el seguimiento GPS de P4.
+
+Control: tmarea-backend/src/services/__tests__/sonda-al-patron.test.js, 18
+pruebas, 12 en rojo antes del arreglo. La PWA no tiene runner: la funcion pura se
+exporta y se prueba desde la suite del backend.

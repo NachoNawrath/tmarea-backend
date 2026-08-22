@@ -1,0 +1,46 @@
+MEDICION 3 — LA DETECCION MIRA VERTICES, NO TRAMOS
+==============================================================================
+
+Buffer que aplica canal-geometria.js: 500 m.
+Unidad de las dos columnas: METROS de distancia minima al eje del canal.
+  "por vertice" = lo que el codigo mide hoy (los waypoints de la respuesta).
+  "por tramo"   = lo mismo, densificando cada segmento a ~50 m.
+
+  Puerto Montt -> Ancud, el transito real del Canal Chacao
+    canal interrogado          : Canal Chacao
+    waypoints de la respuesta  : 41
+    por VERTICE (lo de hoy)    : 817 m  -> NO DETECTA
+    por TRAMO   (densificado)  : 2 m  -> DETECTA   (2147 puntos)
+    advertencia REALMENTE emitida por el backend: NO
+
+  cruce perpendicular del canal, de orilla a orilla
+    canal interrogado          : Canal Chacao
+    waypoints de la respuesta  : 10
+    por VERTICE (lo de hoy)    : 2492 m  -> NO DETECTA
+    por TRAMO   (densificado)  : 19 m  -> DETECTA   (154 puntos)
+    advertencia REALMENTE emitida por el backend: NO
+
+  Puntilla de Tenglo -> Anahuac, el caso que SI dispara
+    canal interrogado          : Canal Tenglo
+    waypoints de la respuesta  : 25
+    por VERTICE (lo de hoy)    : 33 m  -> DETECTA
+    por TRAMO   (densificado)  : 0 m  -> DETECTA   (61 puntos)
+    advertencia REALMENTE emitida por el backend: SI
+
+LO QUE ESTO CAMBIA DE LA PIEZA, Y NO LA INVALIDA:
+  La advertencia no exige solo (a) calado por encima del umbral y (b) uno de
+  los 3 canales con geometria. Exige ademas (c) que un VERTICE de la ruta caiga
+  dentro del buffer. En canales angostos y cortos —Tenglo, 39 vertices y ~2 km—
+  eso pasa; en Chacao, cuya linea son CINCO vertices sobre ~20 km, el transito
+  real de Puerto Montt a Ancud pasa a 817 m del eje y NO se detecta.
+
+  O sea: el hueco medido en 02_medir_huecos.txt es una COTA SUPERIOR de lo que
+  la app puede advertir. 3 de 247 registros es lo evaluable en teoria; en la
+  practica hay que restarle las rutas cuyos vertices no caen en el buffer, y
+  ese numero NO esta medido — haria falta un barrido de rutas reales.
+
+  NO SE ARREGLA ACA (§4.8): la deteccion por tramo cambia lo que el backend
+  emite para toda ruta. Va como LINEA.
+
+==============================================================================
+FIN DE LA MEDICION 3 — VERIFICADO

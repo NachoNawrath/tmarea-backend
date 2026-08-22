@@ -1,0 +1,94 @@
+MEDICION 1 — LA ADVERTENCIA DE SONDA: QUE EMITE Y CUANDO
+==============================================================================
+
+A · EL INSUMO — src/config/pasos-sonda-canal.json
+    Unidad: REGISTRO de paso. Denominador: los registros del fichero.
+
+    pasos cargados                    : 7
+    con geometria verificable         : 3  (42.9 % de 7)
+    SIN geometria (nunca evaluables)  : 4
+
+    [CON GEO] Canal Chacao / Paso Chocoi — sonda min 5 m — Derrotero p.159
+    [CON GEO] Canal Tenglo / Canal Tenglo — sonda min 11 m — Derrotero p.291
+    [sin geo] Canal Cruces / Canal Cruces — sonda min 6.6 m — Derrotero p.388
+    [CON GEO] Canal Moraleda / Canal Pilcomayo. Acceso W — sonda min 9.5 m — Derrotero p.482
+    [sin geo] Paso Galvarino / Paso Galvarino — sonda min 10 m — Derrotero p.519
+    [sin geo] Canal Pilcomayo / Canal Pilcomayo — sonda min 9.5 m — Derrotero p.538
+    [sin geo] Paso Vidts / Paso De Vidts — sonda min 12.5 m — Derrotero p.574
+
+B · LA GEOMETRIA QUE canal-geometria.js CARGA DE VERDAD
+    (el flag del JSON dice que deberia haber; esto mide que hay)
+
+    canales con linea cargada         : 3
+      Canal Chacao — 5 vertices
+      Canal Moraleda — 5 vertices
+      Canal Tenglo — 39 vertices
+    con flag=true y SIN linea cargada : 0
+
+C · SOBRE QUE RUTAS DISPARA — barrido de calado, canal por canal
+    Regla del codigo: dispara si  sonda_min < calado + max(0,5 ; 0,1 x calado)
+    Unidad del barrido: metros de calado. Paso: 0,1 m. Rango: 0,1 a 20,0
+    (el rango es el que P1_VesselProfile.jsx valida para el campo calado_m)
+
+    Canal Chacao
+      canales que el punto medio hace "cruzar" : Canal Chacao
+      sonda documentada                        : 5 m (Paso Chocoi, p.159)
+      calado MINIMO que dispara                : 4.6 m
+      margen a ese calado                      : 0.5 m
+
+    Canal Moraleda
+      canales que el punto medio hace "cruzar" : Canal Moraleda
+      sonda documentada                        : 9.5 m (Canal Pilcomayo. Acceso W, p.482)
+      calado MINIMO que dispara                : 8.7 m
+      margen a ese calado                      : 0.9 m
+
+    Canal Tenglo
+      canales que el punto medio hace "cruzar" : Canal Tenglo
+      sonda documentada                        : 11 m (Canal Tenglo, p.291)
+      calado MINIMO que dispara                : 10.1 m
+      margen a ese calado                      : 1.0 m
+
+D · EL CASO QUE LA PWA PRODUCE HOY
+    P3 llama /api/rutas/calcular desde fetchRuta (useVoyageVerification.js).
+    Su body NO lleva calado_m: el backend cae al default de routes-routes.js.
+
+    calado   1.5 m  ->  dispara en: NINGUN canal  <-- EL DEFAULT QUE P3 PRODUCE HOY
+    calado     2 m  ->  dispara en: NINGUN canal
+    calado     3 m  ->  dispara en: NINGUN canal
+    calado   4.5 m  ->  dispara en: NINGUN canal
+    calado   4.6 m  ->  dispara en: Canal Chacao
+    calado   8.7 m  ->  dispara en: Canal Chacao, Canal Moraleda
+    calado  10.1 m  ->  dispara en: Canal Chacao, Canal Moraleda, Canal Tenglo
+
+E · EL TEXTO LITERAL — asi sale del backend, sin tocar
+    Se muestra el peor caso: un calado que dispara en los tres canales.
+
+    [cotejo_vertical] Su ruta cruza Canal Chacao, donde el Derrotero SHOA documenta 5 m de sonda en Paso Chocoi (p.159) — menos que su calado (12 m) más margen de resguardo (1.2 m). Posición aproximada del dato: verifique con ecosonda antes de navegar.
+
+    [cotejo_vertical] Su ruta cruza Canal Moraleda, donde el Derrotero SHOA documenta 9.5 m de sonda en Canal Pilcomayo. Acceso W (p.482) — menos que su calado (12 m) más margen de resguardo (1.2 m). Posición aproximada del dato: verifique con ecosonda antes de navegar.
+
+    [cotejo_vertical] Su ruta cruza Canal Tenglo, donde el Derrotero SHOA documenta 11 m de sonda en Canal Tenglo (p.291) — menos que su calado (12 m) más margen de resguardo (1.2 m). Posición aproximada del dato: verifique con ecosonda antes de navegar.
+
+F · QUE MAS VIAJA EN `advertencias` — el array NO es de una sola clase
+    raster-router-service.js:659 arranca el array con ADVERTENCIAS_BASE y
+    despues le concatena cotejo + peligros + un diagnostico del motor.
+
+    clase BASE (siempre presentes, 2 de 2):
+      1. Corredor de Referencia Tmarea — linea segmentada informativa.
+      2. No reemplaza carta nautica SHOA. El patron mantiene responsabilidad absoluta de la derrota.
+
+    clase PELIGROS (peligros-canal.js, mismos 3 canales con geometria):
+      Canal Chacao: El derrotero menciona en este sector: Bajo Amazonas, Bajo Campana, Bajo Colo-Colo, Bajo Doce de Octubre, Bajo Esmeralda, Bajo Knoll, Bajo Seluian, Bajo Young, Banco Aquiles, Banco Núñez. Rocas Chaicura, Banco San Antonio, Banco lnglés, Restos Náufragos, Roca Capilla, Roca Cochinos, Roca Remolinos, Rocas Chacao, Rocas Guapacho, Rocas Mutrico, Carabantes y Cortés, Rocas Osorio, Rocas Pugueñún — consulte carta N° 7210.
+      Canal Moraleda: El derrotero menciona en este sector: Bajo Figari, Bajo Otranto, Bajo fondo, Roca, Roca Chacabuco, Roca Inal, Roca Negra, Roca Westhoff, Rocas, Rocas Blanco, Rocas Janequeo, Rocas Los Cayes — consulte carta N° 8000.
+      Canal Tenglo: sin texto de peligros catalogado
+
+    clase DIAGNOSTICO DEL MOTOR (raster-router-service.js:566):
+      "El string-pulling no pudo simplificar la ruta (linea de vista obstruida en todo el trayecto)."
+      NO es texto al patron: nombra un algoritmo interno. Viaja en el MISMO array.
+
+    CONSECUENCIA MEDIDA: `advertencias` es string[] plano, sin tipo por elemento.
+    Renderizarlo entero pone el diagnostico del motor delante del patron.
+    Renderizar solo la sonda exige un discriminador que HOY NO EXISTE en el dato.
+
+==============================================================================
+FIN DE LA MEDICION 1 — VERIFICADO

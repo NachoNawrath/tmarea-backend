@@ -563,7 +563,14 @@ function _routeInTile(tile, perfilCosto, origen, destino) {
   }
 
   if (waypointIdxs.length === resultado.path.length && resultado.path.length > 500) {
-    advertencias.push('El string-pulling no pudo simplificar la ruta (línea de vista obstruida en todo el trayecto).');
+    // ESTE TEXTO NO ES PARA EL PATRÓN Y POR ESO LLEVA SU PROPIA CLASE: nombra un
+    // algoritmo interno. Viajaba en el MISMO array plano que la advertencia de
+    // sonda, así que dibujar `advertencias` entero habría puesto «string-pulling»
+    // delante de alguien parado en el muelle.
+    advertencias.push({
+      clase: 'diagnostico_motor',
+      texto: 'El string-pulling no pudo simplificar la ruta (línea de vista obstruida en todo el trayecto).',
+    });
   }
 
   return {
@@ -585,9 +592,15 @@ function _routeInTile(tile, perfilCosto, origen, destino) {
 
 // ---- respuesta pública -----------------------------------------------------
 
+// `advertencias` LLEVA CUATRO CLASES Y CADA UNA SE TIPA DONDE NACE (§4.2). Las
+// cuatro: `descargo_base` (éstas, en TODA respuesta, incluidas las de error),
+// `cotejo_vertical` (sonda del Derrotero contra calado + margen — la única que P3
+// dibuja), `peligros_canal` y `diagnostico_motor`. La lista declarada, con qué es
+// cada una, vive en `__tests__/sonda-al-patron.test.js`, que es donde alguien se
+// apoya en ella — mismo precedente que `borde-pwa-backend.test.js`.
 const ADVERTENCIAS_BASE = [
-  'Corredor de Referencia Tmarea — línea segmentada informativa.',
-  'No reemplaza carta náutica SHOA. El patrón mantiene responsabilidad absoluta de la derrota.',
+  { clase: 'descargo_base', texto: 'Corredor de Referencia Tmarea — línea segmentada informativa.' },
+  { clase: 'descargo_base', texto: 'No reemplaza carta náutica SHOA. El patrón mantiene responsabilidad absoluta de la derrota.' },
 ];
 
 function respuestaError(error, extra = {}) {
@@ -702,7 +715,13 @@ function calcularRuta(perfilCosto, origen, destino) {
       }
       tramos.push(...leg.tramos);
       aggs.push(leg.agg);
-      for (const a of leg.advertencias) if (!advertencias.includes(a)) advertencias.push(a);
+      // LA DEDUPLICACIÓN VA POR `texto` Y NO POR IDENTIDAD DE OBJETO. Con el array
+      // de cadenas `includes` comparaba el valor; con objetos compara referencias,
+      // y cada leg construye los suyos, así que una ruta de varios tiles repetiría
+      // la misma advertencia una vez por leg. El tipado la habría roto en silencio.
+      for (const a of leg.advertencias) {
+        if (!advertencias.some((x) => x.texto === a.texto)) advertencias.push(a);
+      }
       debugLegs.push(leg._debug);
     }
     anchorLon = legEnd.lon;
@@ -728,4 +747,7 @@ module.exports = {
   selectTile,
   TILE_REGISTRY,
   TILES_DIR,
+  // Se exporta para que el control pueda comprobar que NINGÚN elemento de
+  // `advertencias` sale sin clase, incluidos los de las respuestas de error.
+  ADVERTENCIAS_BASE,
 };

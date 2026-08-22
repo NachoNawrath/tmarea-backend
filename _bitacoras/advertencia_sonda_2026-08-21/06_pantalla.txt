@@ -1,0 +1,63 @@
+PRUEBA DE PANTALLA — P3 CON LA ADVERTENCIA DE SONDA (version final)
+==============================================================================
+
+Montaje: PWA en 5174 contra backend propio en 3100. No se toco 3000 (PID
+17800) ni 5173 (PID 14072) de la otra sesion; el propio se mato POR PID.
+
+LA NAVE DE LA PRUEBA CAMBIO A PROPOSITO respecto de la corrida anterior:
+antes era un calado de 12,0 m —el unico que disparaba con el insumo viejo—;
+ahora es una LANCHA DE 1,8 m, que es la flota que esta app dice servir.
+Con el insumo viejo (Tenglo cargado en 11,0 m) esta nave NO recIBIA NADA.
+
+Ruta: Muelle Puntilla de Tenglo -> Caleta Pesquera Anahuac
+
+ORDEN REAL DE LA PANTALLA, transcrito del DOM:
+   Muelle Puntilla de Tenglo -> Caleta Pesquera Anahuac
+   [BANDERA U] Navegar con precaucion
+     > Poca agua documentada en Canal Tenglo          <- N3-b
+   [ancla] CONDICION DE PUERTOS   ZARPE verde · RECALADA verde
+   [ola]   CLIMA Y OLEAJE DE LA RUTA   verde Condicion Normal
+   [ola]   MAREAS EN ZARPE Y RECALADA  altura 4,93 m subiendo
+   [!]     Poca agua documentada en su ruta (1)       <- EL BLOQUE
+   [reloj] ETA Y COMBUSTIBLE
+   [lista] RECORDATORIOS NORMATIVOS
+
+EL SITIO, VERIFICADO: DEBAJO de mareas y ARRIBA de ETA, como el owner lo
+corrigio. Se movieron ETA y RECORDATORIOS un lugar hacia abajo; nada mas.
+
+EL TEXTO, LITERAL DE PANTALLA:
+
+   <<Poca agua documentada en su ruta (1)>>
+
+   <<Segun fuentes oficiales, hay sondas de 1 m frente a punta Hoffmann, la
+     parte mas angosta y baja del canal. No podemos ubicar ese punto en su
+     ruta. Su nave cala 1,8 m. Con marea baja puede haber menos agua que la
+     registrada. Navegue atento a la ecosonda y consulte la carta nautica.>>
+
+   <<Comprobar en: Derrotero SHOA, p. 291>>   (linea chica, gris)
+
+   <<Esta comprobacion no cubre toda su ruta: el Derrotero registra la sonda
+     solo en algunos pasos, y la app unicamente puede avisarle en aquellos
+     cuya posicion sabe ubicar. No puede decirle en cuales no pudo comprobar.
+     Que no aparezca un aviso no significa que haya agua suficiente.>>
+
+LO QUE LA PANTALLA PRUEBA:
+ · RAMA A del texto: nombra punta Hoffmann porque la fuente lo nombra, y NO
+   dice <<sin un punto exacto>>. Es la correccion del owner sobre V2.
+ · La fuente concreta NO esta en el cuerpo: esta abajo y en chico.
+ · No aparece el margen de resguardo con decimal. Sigue decidiendo quien
+   recibe el aviso, pero no se muestra.
+ · LA FUENTE COMPONE EL VEREDICTO: la lista de razones tiene UNA entrada y es
+   la sonda; los dos puertos en verde, clima normal, autonomia suficiente.
+   Todas las demas fuentes dan Q y la bandera es U.
+ · La correccion del insumo llega al patron: una lancha de 1,8 m recibe hoy
+   un aviso que con el dato viejo no habria recibido ninguna nave de menos
+   de 10,1 m de calado.
+
+RED: todas las llamadas a 3100 en 200 OK (rutas/calcular, restricciones-ruta,
+weather-ruta, tide/predict, navegacion/calculo). Los ERR_CONNECTION_REFUSED
+del buffer de consola son del intervalo en que el backend propio se reinicio
+para tomar la correccion del insumo, y quedan ANTES de esta corrida.
+
+==============================================================================
+FIN DE LA PRUEBA DE PANTALLA — VERIFICADO

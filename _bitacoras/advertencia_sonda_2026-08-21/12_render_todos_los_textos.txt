@@ -1,0 +1,89 @@
+MEDICION 7 — TODOS LOS TEXTOS DEL BLOQUE, RENDERIZADOS
+==============================================================================
+
+Renderizado real: los componentes de la PWA bundleados con esbuild y pasados
+por react-dom/server. No hay ninguna cadena reescrita a mano en este archivo.
+
+DENOMINADOR — unidad: ESTADO DEL BLOQUE (visible, nº de tarjetas, rama de cada una).
+  pasos que hoy pueden disparar : 2  (Paso Chocoi rama B · Canal Tenglo rama A)
+  estados VISIBLES              : 2^2 - 1 = 3  (subconjuntos no vacios)
+  estado INVISIBLE              : 1  (el bloque devuelve null; varias causas)
+  TOTAL                         : 4 estados
+
+Los calados de cada escenario son NAVES REALISTAS, no valores elegidos para
+que la frase quede linda: 1,8 m es una lancha; 6,0 m una nave mayor menor.
+
+==============================================================================
+1 · UNA TARJETA — RAMA A (la fuente NOMBRA el punto)
+   ruta por Canal Tenglo · lancha de calado 1,8 m
+
+   VEREDICTO: U   ·   detalles.sonda: U
+
+   LINEA(S) EN LA TARJETA DEL VEREDICTO (N3-b):
+     ▸ Poca agua documentada en Canal Tenglo
+
+   EL BLOQUE, TAL COMO SE RENDERIZA:
+     ⚠ Poca agua documentada en su ruta (1)
+     Canal Tenglo
+     Según fuentes oficiales, hay sondas de 1 m frente a punta Hoffmann, la parte más angosta y baja del canal. No podemos ubicar ese punto en su ruta. Su nave cala 1,8 m. Con marea baja puede haber menos agua que la registrada. Navegue atento a la ecosonda y consulte la carta náutica.
+     Comprobar en: Derrotero SHOA, p. 291
+     Esta comprobación no cubre toda su ruta: el Derrotero registra la sonda sólo en algunos pasos, y la app únicamente puede avisarle en aquellos cuya posición sabe ubicar. No puede decirle en cuáles no pudo comprobar. Que no aparezca un aviso no significa que haya agua suficiente.
+
+==============================================================================
+2 · UNA TARJETA — RAMA B (la fuente NO nombra el punto)
+   ruta por Canal Chacao (Paso Chocoi, sonda 5 m) · calado 6,0 m
+
+   VEREDICTO: U   ·   detalles.sonda: U
+
+   LINEA(S) EN LA TARJETA DEL VEREDICTO (N3-b):
+     ▸ Poca agua documentada en Canal Chacao
+
+   EL BLOQUE, TAL COMO SE RENDERIZA:
+     ⚠ Poca agua documentada en su ruta (1)
+     Canal Chacao
+     Según fuentes oficiales, hay sondas de 5 m en este paso, sin un punto exacto señalado. Su nave cala 6 m. Con marea baja puede haber menos agua que la registrada. Navegue atento a la ecosonda y consulte la carta náutica.
+     Comprobar en: Derrotero SHOA, p. 159
+     Esta comprobación no cubre toda su ruta: el Derrotero registra la sonda sólo en algunos pasos, y la app únicamente puede avisarle en aquellos cuya posición sabe ubicar. No puede decirle en cuáles no pudo comprobar. Que no aparezca un aviso no significa que haya agua suficiente.
+
+==============================================================================
+3 · DOS TARJETAS — la ruta cruza LOS DOS pasos
+   waypoints sobre Canal Chacao y Canal Tenglo · calado 6,0 m
+
+   VEREDICTO: U   ·   detalles.sonda: U
+
+   LINEA(S) EN LA TARJETA DEL VEREDICTO (N3-b):
+     ▸ Poca agua documentada en Canal Chacao
+     ▸ Poca agua documentada en Canal Tenglo
+
+   EL BLOQUE, TAL COMO SE RENDERIZA:
+     ⚠ Poca agua documentada en su ruta (2)
+     Canal Chacao
+     Según fuentes oficiales, hay sondas de 5 m en este paso, sin un punto exacto señalado. Su nave cala 6 m. Con marea baja puede haber menos agua que la registrada. Navegue atento a la ecosonda y consulte la carta náutica.
+     Comprobar en: Derrotero SHOA, p. 159
+     Canal Tenglo
+     Según fuentes oficiales, hay sondas de 1 m frente a punta Hoffmann, la parte más angosta y baja del canal. No podemos ubicar ese punto en su ruta. Su nave cala 6 m. Con marea baja puede haber menos agua que la registrada. Navegue atento a la ecosonda y consulte la carta náutica.
+     Comprobar en: Derrotero SHOA, p. 291
+     Esta comprobación no cubre toda su ruta: el Derrotero registra la sonda sólo en algunos pasos, y la app únicamente puede avisarle en aquellos cuya posición sabe ubicar. No puede decirle en cuáles no pudo comprobar. Que no aparezca un aviso no significa que haya agua suficiente.
+
+==============================================================================
+4 · EL BLOQUE NO SALE — un solo estado, varias causas
+   El patron ve LO MISMO en todas: nada. Se enumeran porque la causa importa
+   para quien lea el codigo, no para el que mira la pantalla.
+
+   sin bloque  ·  veredicto Q  ·  calado ausente (undefined)
+   sin bloque  ·  veredicto Q  ·  calado 0
+   sin bloque  ·  veredicto Q  ·  calado negativo (-1)
+   sin bloque  ·  veredicto Q  ·  calado bajo el umbral (0,4 m en Tenglo)
+   sin bloque  ·  veredicto Q  ·  sonda EXACTAMENTE igual a lo requerido (0,5 m: 1,0 no es < 1,0)
+   sin bloque  ·  veredicto Q  ·  la ruta no cruza ningun paso con geometria
+   sin bloque  ·  veredicto Q  ·  ruta.ok = false, con los descargos igual
+   sin bloque  ·  veredicto Q  ·  ruta = null
+   sin bloque  ·  veredicto Q  ·  ruta sin campo advertencias
+
+==============================================================================
+EL BORDE DEL DISPARO EN CANAL TENGLO, medido de 0,1 en 0,1 m de calado
+   regla: dispara si  sonda(1,0) < calado + max(0,5 ; 0,1 x calado)
+     cambia entre 0.5 m y 0.6 m  ->  EMPIEZA a avisar
+
+==============================================================================
+FIN DE LA MEDICION 7 — VERIFICADO

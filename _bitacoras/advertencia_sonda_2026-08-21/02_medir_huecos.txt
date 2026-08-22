@@ -1,0 +1,59 @@
+MEDICION 2 — LOS TRES HUECOS DEL COTEJO VERTICAL
+==============================================================================
+
+HUECO 1 · DE LA EXTRACCION AL INSUMO — cuanto del Derrotero trae sonda
+    Unidad: REGISTRO DE PASO extraido del Derrotero SHOA.
+    Denominador: los registros de tools/derrotero/piloto_chacao/pasos_full.csv,
+    que es la corrida completa de las paginas 141 a 623 del Derrotero.
+
+    registros extraidos                     : 247
+    con sonda_canal_min_m documentada       : 7   (2.8 % de 247)
+    SIN sonda — el cotejo no tiene que medir: 240   (97.2 %)
+
+    (control de forma: los 7 con sonda son los 7 de pasos-sonda-canal.json: COINCIDE)
+
+HUECO 2 · DEL INSUMO A LA GEOMETRIA — cuanto de la sonda es evaluable
+    Unidad: REGISTRO DE PASO con sonda. Denominador: los 7 del insumo.
+
+    pasos con sonda                         : 7
+    con geometria -> EVALUABLES             : 3   (42.9 % de 7)
+    sin geometria -> MUDOS PARA SIEMPRE     : 4   (57.1 %)
+
+      MUDO: Canal Cruces / Canal Cruces — sonda 6.6 m, p.388  [geometria_ref en el CSV: SIN_GEOMETRIA]
+      MUDO: Paso Galvarino / Paso Galvarino — sonda 10 m, p.519  [geometria_ref en el CSV: SIN_GEOMETRIA]
+      MUDO: Canal Pilcomayo / Canal Pilcomayo — sonda 9.5 m, p.538  [geometria_ref en el CSV: SIN_GEOMETRIA]
+      MUDO: Paso Vidts / Paso De Vidts — sonda 12.5 m, p.574  [geometria_ref en el CSV: SIN_GEOMETRIA]
+
+    ENCADENADO — lo evaluable sobre el denominador de la EXTRACCION:
+      3 de 247 registros = 1.2 %
+
+HUECO 3 · DEL DERROTERO A CHILE — cuanta agua queda fuera de la pregunta
+    Este hueco NO tiene denominador de paso: es geografico. Se acota con
+    dos denominadores que SI existen en el arbol, y se dice cual es cual.
+
+    (3a) CANALES QUE EL MISMO DERROTERO NOMBRA, unidad: canal.
+         Denominador: las claves de src/config/peligros-por-canal.json,
+         generado del MISMO CSV por generar_peligros_por_canal.py.
+         canales con peligros catalogados   : 61
+         de esos, con geometria en el arbol : 2
+         => de los 61 canales que el Derrotero nombra, el motor ubica 2.
+         (el tercer canal con geometria, Canal Tenglo, NO esta en el catalogo de
+          peligros: por eso 3 geometrias y 2 en la interseccion. Denominadores distintos.)
+
+    (3b) COBERTURA DEL RASTER, unidad: tile del motor de rutas.
+         Es el universo de agua sobre el que la app calcula CUALQUIER ruta.
+         tiles declarados en TILE_REGISTRY  : 5 (NORTE, CENTRO, SUR, AUSTRAL_N, AUSTRAL_S)
+
+    LO QUE ESTAS DOS CIFRAS NO SON: no son "porcentaje de Chile cubierto".
+    Nadie midio los km2 de agua navegable con sonda documentada, y este
+    instrumento NO lo estima. Lo que queda probado es la FORMA del hueco:
+    la app puede preguntar por la sonda en 3 canales y en ningun otro sitio.
+
+EL RESUMEN, CON CADA CIFRA SOBRE SU PROPIO DENOMINADOR:
+    247 registros de paso extraidos del Derrotero (pp. 141-623)
+     -> 7 traen sonda documentada          (2.8 % de 247)
+     -> 3 de esos 7 tienen geometria      (42.9 % de 7)
+     -> 3 canales interrogables por SONDA   (Chacao, Moraleda, Tenglo)
+
+==============================================================================
+FIN DE LA MEDICION 2 — VERIFICADO

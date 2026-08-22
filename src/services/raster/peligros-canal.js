@@ -28,7 +28,11 @@ function cargarPeligrosPorCanal() {
 
 /**
  * @param {Array<[number,number]>} waypointsLonLat
- * @returns {string[]} textos de advertencia, uno por canal cruzado con peligros catalogados
+ * @returns {Array<{clase:'peligros_canal', texto:string}>} uno por canal cruzado
+ *   con peligros catalogados. Va TIPADO por el mismo motivo que
+ *   `cotejo-vertical.js` —ver la nota de §4.9 allá—, y con su propia clase: es
+ *   texto al patrón, pero NO es un veredicto sobre su nave, así que el consumidor
+ *   tiene que poder separarlo de la advertencia de sonda sin mirar la frase.
  */
 function advertenciasPeligrosPorCanal(waypointsLonLat) {
   const canalesCruzados = canalesQueCruzaRuta(waypointsLonLat);
@@ -39,7 +43,7 @@ function advertenciasPeligrosPorCanal(waypointsLonLat) {
   for (const canal of canalesCruzados) {
     const entry = porCanal[canal];
     if (entry && entry.texto_advertencia) {
-      advertencias.push(entry.texto_advertencia);
+      advertencias.push({ clase: 'peligros_canal', texto: entry.texto_advertencia });
     }
   }
   return advertencias;

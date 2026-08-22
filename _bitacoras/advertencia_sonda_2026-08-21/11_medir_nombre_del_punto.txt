@@ -1,0 +1,87 @@
+MEDICION 6 — ¿LA FUENTE NOMBRA EL PUNTO BAJO?
+==============================================================================
+
+Unidad: REGISTRO DE PASO. Denominador: los 7 con sonda documentada.
+Se busca en la ORACION que contiene la profundidad, no en toda la entrada:
+un toponimo de otra frase no ubica esta sonda.
+
+==============================================================================
+Paso Chocoi — p.159 — sonda 5.0 m [CON GEOMETRIA]
+   ORACION: ...Se forma entre la punta Chocoi y la isla Doña Sebastiana, tiene 1,6 2 millas de ancho y de 5 a 27 metros de profundidad....
+   TOPONIMO EN LA MISMA ORACION : punta Chocoi · isla Doña Sebastiana
+   LECTURA A MANO — ¿el nombre ubica LA SONDA?: NO
+      «entre la punta Chocoi y la isla Dona Sebastiana» ubica donde SE FORMA el paso; los 5 a 27 m son del paso entero
+
+==============================================================================
+Canal Tenglo — p.291 — sonda 1.0 m [CON GEOMETRIA]
+   ORACION: ...La costa NW de la isla es también somera y frente a la punta Hoffmann, se sonda en bajamar apenas 1 metro, siendo esta la parte más angosta y baja del canal Tenglo....
+   TOPONIMO EN LA MISMA ORACION : punta Hoffmann
+   LECTURA A MANO — ¿el nombre ubica LA SONDA?: SI -> punta Hoffmann
+      «frente a la punta Hoffmann, se sonda en bajamar apenas 1 metro, siendo esta la parte mas angosta y baja del canal»: el nombre ES el lugar de la sonda
+
+==============================================================================
+Canal Cruces — p.388 — sonda 6.6 m [sin geometria]
+   ORACION: ...Es 2 angosto y con una profundidad mínima de 6,6 metros, con algunas rocas sumergidas y que afloran en bajamar, que se encuentran casi en el eje del canal, que es necesario sortear....
+   TOPONIMO                     : ninguno
+   LOCATIVO (ubica, no se senala en carta): en el eje del canal
+   LECTURA A MANO — ¿el nombre ubica LA SONDA?: NO
+      «casi en el eje del canal» habla de las rocas, no de la profundidad minima
+
+==============================================================================
+Canal Pilcomayo. Acceso W — p.482 — sonda 9.5 m [CON GEOMETRIA]
+   ORACION: ...pero a medio canal en su acceso E hay una sonda de 9,5 metros de profundidad que podría restringir el paso de una nave con demasiado calado....
+   TOPONIMO                     : ninguno
+   LOCATIVO (ubica, no se senala en carta): a medio canal · en su acceso E
+   LECTURA A MANO — ¿el nombre ubica LA SONDA?: NO
+      «a medio canal en su acceso E» ubica, pero no se senala en carta — y ademas la atribucion a Moraleda se saca
+
+==============================================================================
+Paso Galvarino — p.519 — sonda 10.0 m [sin geometria]
+   ORACION: ...Se forma al NE y 7,8 millas de la punta Cesari y como a los dos tercios del curso del seno Ventisquero, donde hay 1 un estrecho pasaje que se extiende casi 1 milla en dirección general NNE-SSW y ofrece un ancho útil de no más de 80 metros en su parte...
+   TOPONIMO EN LA MISMA ORACION : punta Cesari
+   LECTURA A MANO — ¿el nombre ubica LA SONDA?: NO
+      «al NE y 7,8 millas de la punta Cesari» ubica el PASO, no la sonda
+
+==============================================================================
+Canal Pilcomayo — p.538 — sonda 9.5 m [sin geometria]
+   ORACION: ...pero a medio canal en su acceso E hay una sonda de 9,5 metros de profundidad que podría restringir el paso de una nave con demasiado calado....
+   TOPONIMO                     : ninguno
+   LOCATIVO (ubica, no se senala en carta): a medio canal · en su acceso E
+   LECTURA A MANO — ¿el nombre ubica LA SONDA?: NO
+      idem Acceso W: es la misma frase, repetida en otra pagina
+
+==============================================================================
+Paso De Vidts — p.574 — sonda 12.5 m [sin geometria]
+   ORACION: ...Se forma en el extremo S del golfo Elefantes y hacia el S de la punta Leopardo, separando el pequeño islote Entrada —por el lado N— del veril N del bajo fondo que se proyecta hacia el N del islote Astudillo —por el lado S—, en una muy corta extensión...
+   TOPONIMO EN LA MISMA ORACION : punta Leopardo · islote Entrada · islote Astudillo
+   LECTURA A MANO — ¿el nombre ubica LA SONDA?: NO
+      «punta Leopardo / islote Entrada / islote Astudillo» ubican el PASO, no la sonda
+
+==============================================================================
+
+RESUMEN
+
+   registro                     geometria que da        detalle
+   Paso Chocoi                  SI        toponimo      punta Chocoi           no ubica la sonda
+   Canal Tenglo                 SI        toponimo      punta Hoffmann         SONDA -> punta Hoffmann
+   Canal Cruces                 no        locativo      en el eje del canal    no ubica la sonda
+   Canal Pilcomayo. Acceso W    SI        locativo      a medio canal          no ubica la sonda
+   Paso Galvarino               no        toponimo      punta Cesari           no ubica la sonda
+   Canal Pilcomayo              no        locativo      a medio canal          no ubica la sonda
+   Paso De Vidts                no        toponimo      punta Leopardo         no ubica la sonda
+
+   de 7: 4 con TOPONIMO · 3 con LOCATIVO · 0 solo el paso · 0 no aisladas
+
+   CON GEOMETRIA (los unicos que pueden salir a pantalla):
+     Paso Chocoi                  toponimo     no nombra la sonda
+     Canal Tenglo                 toponimo     NOMBRA LA SONDA: punta Hoffmann
+     Canal Pilcomayo. Acceso W    locativo     no nombra la sonda
+
+CONSECUENCIA PARA LA PLANTILLA: el nombre NO esta en todas las filas, asi que
+la frase necesita DOS RAMAS y la rama se elige por un campo declarado por fila,
+nunca por un regex en tiempo de render (§4.2: ningun mapeo con caso por defecto
+silencioso). Una plantilla que diga <<no precisa en que punto>> para todas seria
+FALSA en las filas que si lo precisan — que es la correccion del owner.
+
+==============================================================================
+FIN DE LA MEDICION 6 — VERIFICADO

@@ -1,0 +1,186 @@
+✖ la advertencia de sonda viaja tipada, no como cadena suelta (11.9336ms)
+✖ los peligros por canal viajan con su propia clase, distinta de la sonda (0.7236ms)
+✖ los descargos de base tambien van tipados — ninguno queda sin clase (§4.2) (0.1651ms)
+✖ toda clase emitida esta en la lista declarada — nada sin declarar (0.378ms)
+✔ con el default del backend (1,5 m) NINGUN canal dispara — el defecto medido (0.445ms)
+✖ P3 manda el calado de la nave: `fetchRuta` deja de caer al default (0.8003ms)
+✖ la PWA selecciona por CLASE y esa clase es una de las que el backend emite (9.9456ms)
+✖ el selector saca la de sonda y deja fuera las otras tres clases (1.4117ms)
+✖ una ruta fallida no dibuja nada, aunque el error traiga los descargos (0.56ms)
+✖ MORDIDA — cambiada la clase, el selector no la ve (1.167ms)
+✖ la sonda escala a U, y NUNCA a UV (0.3203ms)
+✖ `ruta` ES parametro de calcularVeredicto, y la sonda compone el maximo (0.7059ms)
+✖ sin sonda, el veredicto no se mueve — la fuente no inventa un ambar (0.3818ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 1
+ℹ fail 12
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 138.4355
+
+✖ failing tests:
+
+test at src\services\__tests__\sonda-al-patron.test.js:72:1
+✖ la advertencia de sonda viaja tipada, no como cadena suelta (11.9336ms)
+  AssertionError [ERR_ASSERTION]: `advertencias` dejo de ser string[]
+  
+  'string' !== 'object'
+  
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:75:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1325:25)
+      at Test.start (node:internal/test_runner/test:1191:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'string',
+    expected: 'object',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at src\services\__tests__\sonda-al-patron.test.js:80:1
+✖ los peligros por canal viajan con su propia clase, distinta de la sonda (0.7236ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'peligros_canal'
+  
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:83:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1325:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+      at Test.postRun (node:internal/test_runner/test:1465:19)
+      at Test.run (node:internal/test_runner/test:1390:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'peligros_canal',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at src\services\__tests__\sonda-al-patron.test.js:86:1
+✖ los descargos de base tambien van tipados — ninguno queda sin clase (§4.2) (0.1651ms)
+  TypeError: Cannot read properties of undefined (reading 'length')
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:87:40)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1325:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+      at Test.postRun (node:internal/test_runner/test:1465:19)
+      at Test.run (node:internal/test_runner/test:1390:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+
+test at src\services\__tests__\sonda-al-patron.test.js:91:1
+✖ toda clase emitida esta en la lista declarada — nada sin declarar (0.378ms)
+  TypeError: ADVERTENCIAS_BASE is not iterable
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:95:8)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1325:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+      at Test.postRun (node:internal/test_runner/test:1465:19)
+      at Test.run (node:internal/test_runner/test:1390:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+
+test at src\services\__tests__\sonda-al-patron.test.js:113:1
+✖ P3 manda el calado de la nave: `fetchRuta` deja de caer al default (0.8003ms)
+  AssertionError [ERR_ASSERTION]: fetchRuta tiene que mandar calado_m o el backend nunca compone la advertencia
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:117:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1325:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+      at Test.postRun (node:internal/test_runner/test:1465:19)
+      at Test.run (node:internal/test_runner/test:1390:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: "async function fetchRuta(origen, destino, licencia, signal) {\r\n  if (!origen?.lat || !origen?.lng || !destino?.lat || !destino?.lng) {\r\n    return { ok: false, error_code: 'SNAP_FAILED', error: 'Coordenadas de origen o destino no disponibles' };\r\n  }\r\n  const body = {\r\n    lat_origen: origen.lat,\r\n    lon_origen: origen.lng,\r\n    lat_destino: destino.lat,\r\n    lon_destino: destino.lng,\r\n    licencia: licencia || 'PNM',\r\n  };\r\n  const { ok, data, error } = await safeFetch(\r\n    `${BACKEND_URL}/api/rutas/calcular`,\r\n    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) },\r\n    { signal, retries: 0 }\r\n  );\r\n  if (!ok || !data) {\r\n    return { ok: false, error_code: 'FETCH_FAILED', error: error || 'No se pudo contactar el servidor de rutas' };\r\n  }\r\n  return data;\r\n}\r\n\r\n// ─────────────────────────────────────────────────────────────────────────────\r\n// FETCH NAVEGACIÓN — con caché y fallback\r\n// ─────────────────────────────────────────────────────────────────────────────\r\n",
+    expected: /calado_m/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at src\services\__tests__\sonda-al-patron.test.js:122:1
+✖ la PWA selecciona por CLASE y esa clase es una de las que el backend emite (9.9456ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:124:10)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at src\services\__tests__\sonda-al-patron.test.js:131:1
+✖ el selector saca la de sonda y deja fuera las otras tres clases (1.4117ms)
+  TypeError: advertenciasDeSonda is not a function
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:142:15)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+
+test at src\services\__tests__\sonda-al-patron.test.js:147:1
+✖ una ruta fallida no dibuja nada, aunque el error traiga los descargos (0.56ms)
+  TypeError: advertenciasDeSonda is not a function
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:150:26)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+
+test at src\services\__tests__\sonda-al-patron.test.js:155:1
+✖ MORDIDA — cambiada la clase, el selector no la ve (1.167ms)
+  TypeError: advertenciasDeSonda is not a function
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:166:22)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+
+test at src\services\__tests__\sonda-al-patron.test.js:172:1
+✖ la sonda escala a U, y NUNCA a UV (0.3203ms)
+  TypeError: escalarPorSonda is not a function
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:176:22)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+
+test at src\services\__tests__\sonda-al-patron.test.js:184:1
+✖ `ruta` ES parametro de calcularVeredicto, y la sonda compone el maximo (0.7059ms)
+  AssertionError [ERR_ASSERTION]: con todo lo demas en Q, la sonda sola tiene que subir a U
+  
+  'Q' !== 'U'
+  
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:188:10)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Q',
+    expected: 'U',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at src\services\__tests__\sonda-al-patron.test.js:192:1
+✖ sin sonda, el veredicto no se mueve — la fuente no inventa un ambar (0.3818ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 'Q'
+  
+      at TestContext.<anonymous> (C:\Users\katia\tmarea-backend\src\services\__tests__\sonda-al-patron.test.js:196:10)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'Q',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

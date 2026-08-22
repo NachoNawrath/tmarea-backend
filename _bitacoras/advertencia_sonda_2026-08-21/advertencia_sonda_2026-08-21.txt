@@ -1,0 +1,491 @@
+==============================================================================
+LA ADVERTENCIA DE SONDA QUE LA PWA TIRABA — PASO 1 DE LA AGENDA DE LA MAREA
+2026-08-21
+==============================================================================
+Shell del agente: Git Bash (bash) sobre Windows, mas node para todo lo que
+lleva acentos. Los comandos para el owner, si los hubiera, en PowerShell (§7.2).
+
+PUNTO DE PARTIDA
+  tmarea-backend  main = origin/main = 72a1121
+  tmarea-pwa      main = origin/main = 5d0aaba
+  declarativo     93 filas · 91 unicas · 84 vivas · 26 sitios · 17 barridos · 9 sin barrer
+  suite backend   170 pruebas
+
+LA PIEZA EN UNA LINEA
+  El backend componia el texto al patron para cuando la ruta cruza donde el
+  Derrotero SHOA documenta menos sonda que el calado de la nave mas su margen de
+  resguardo, y la PWA no lo dibujaba nunca: `advertencias` tenia CERO lectores en
+  todo el arbol. Era la unica advertencia de seguridad fisica que la app
+  calculaba y descartaba.
+
+
+------------------------------------------------------------------------------
+1 . LO QUE EL GATE ENCONTRO, Y CAMBIO EL ALCANCE
+------------------------------------------------------------------------------
+DOS DEFECTOS, NO UNO. El encargo decia «renderizar lo que ya esta compuesto».
+Medido, eso solo no alcanzaba:
+
+(I1) EL TEXTO NO SE COMPONIA NUNCA PARA UNA RUTA DE P3. `fetchRuta` no mandaba
+  `calado_m`, asi que el backend caia a su default de 1,5 m -> exige 2,0 m de
+  sonda -> los tres pasos que el motor sabe ubicar documentan 5, 9,5 y 11 m.
+  Para TODA ruta de P3, de toda nave, siempre: array vacio. Dibujar sin cablear
+  el calado habria dejado un control en VERDE afirmando que la advertencia llega.
+  El dato existia: `calado_m` es campo OBLIGATORIO de P1 y P4 ya lo mandaba.
+
+(I2) `advertencias` NO ERA UNA CLASE: eran CUATRO en un `string[]` plano y sin
+  discriminador. Los dos descargos de base, la sonda, los peligros de canal, y un
+  DIAGNOSTICO INTERNO DEL MOTOR que nombra un algoritmo («el string-pulling no
+  pudo simplificar la ruta»). Renderizar el array entero ponia eso ultimo delante
+  del patron; renderizar solo la sonda exigia un discriminador que no existia.
+
+FIRMAS DEL OWNER, 2026-08-21:
+  I1 -> (a) cablear el calado y despues dibujar.
+  I2 -> (b) tipar el array en el backend. Filtrar por un literal del texto seria
+        una guarda anclada en la ORTOGRAFIA: caduca EN VERDE Y EN SILENCIO el dia
+        que la frase se reescriba (§4.9). Este arbol ya lo pago dos veces.
+  C1 -> (b) funcion pura exportada de la PWA y probada desde la suite del
+        backend, con (a) —leer el fichero— como ANCLA, no como control principal.
+
+  Y LA EXCEPCION DEL BORDE, FIRMADA Y DECLARADA: esta pieza cruza el borde DOS
+  veces y en las DOS direcciones —PWA->backend con `calado_m`, backend->PWA con
+  la clase—, contra el «a lo sumo una vez y en una direccion» del plan de cierre.
+  Motivo: partirla dejaba las dos mitades sin criterio de aceptacion corrible, que
+  es el mismo argumento de I1 — la mitad que solo dibuja no tiene pantalla que
+  mirar.
+
+
+------------------------------------------------------------------------------
+2 . LA MEDICION — 01_medir_emision.txt
+------------------------------------------------------------------------------
+QUE EMITE Y CUANDO. Unidad: registro de paso. Denominador: los 7 de
+src/config/pasos-sonda-canal.json.
+  · 7 pasos cargados · 3 con geometria verificable (42,9 % de 7) · 4 mudos.
+  · El flag NO miente: los 3 tienen linea realmente cargada (Chacao 5 vertices,
+    Moraleda 5, Tenglo 39). 0 casos de flag sin linea.
+
+CALADO MINIMO QUE DISPARA, por canal. Unidad: metros de calado. Paso 0,1 m.
+Rango 0,1-20,0, que es el que P1 valida.
+  · Canal Chacao   — sonda 5 m   (p.159) -> dispara desde 4,6 m
+  · Canal Moraleda — sonda 9,5 m (p.482) -> dispara desde 8,7 m
+  · Canal Tenglo   — sonda 11 m  (p.291) -> dispara desde 10,1 m
+
+`advertencias` EN LA PWA: 0 apariciones en `src`. En todo el arbol hay 1, y es la
+palabra castellana suelta en un rotulo de color de un .md de especificacion.
+
+
+------------------------------------------------------------------------------
+3 . LOS TRES HUECOS — 02_medir_huecos.txt
+------------------------------------------------------------------------------
+No es un hueco: son tres, de clases distintas, y por eso no merecen la misma
+respuesta.
+
+H1 · DE LA EXTRACCION AL INSUMO. Denominador: los 247 registros de paso de
+  tools/derrotero/piloto_chacao/pasos_full.csv (corrida completa, pp. 141-623).
+  7 traen sonda documentada = 2,8 % de 247. Los otros 240 NO son un fallo del
+  motor: la fuente no documenta sonda para ese paso.
+
+H2 · DEL INSUMO A LA GEOMETRIA. Denominador: los 7 con sonda. 3 evaluables
+  (42,9 %) y 4 MUDOS —Cruces 6,6 m p.388 · Galvarino 10 m p.519 · Pilcomayo
+  9,5 m p.538 · De Vidts 12,5 m p.574—, los cuatro con `geometria_ref:
+  SIN_GEOMETRIA` en el CSV de origen. ESTO SI ES UN FALLO DEL MOTOR: el dato
+  existe y no se puede ubicar. Encadenado: 3 de 247 = 1,2 %.
+
+H3 · DEL DERROTERO A CHILE. El Derrotero nombra 61 canales en
+  peligros-por-canal.json —generado del MISMO CSV— y el motor ubica 2 de ellos;
+  el tercero con geometria, Canal Tenglo, no esta en ese catalogo. Son
+  denominadores distintos y se dice: 3 geometrias, 2 en la interseccion. Fuera de
+  esos canales, los 5 tiles del raster.
+  LO QUE NO SE MIDIO Y SE DECLARA: nadie sabe que porcentaje del agua navegable
+  de Chile tiene sonda documentada, y este instrumento NO lo estima.
+
+DECISION DEL OWNER SOBRE EL HUECO: opcion (d) — decir el alcance UNA VEZ, dentro
+del bloque, y solo cuando el bloque existe. Descartadas con motivo:
+  (a) silencio: repite la confusion que costo 24,6646 km en verde.
+  (b) linea fija siempre visible: saldria en ~100 % de las rutas y dejaria de
+      leerse — el mismo fundamento que el owner firmo para la marea, mas fuerte.
+  (c) avisar al cruzar uno de los 4 mudos: INEJECUTABLE. No se puede saber que la
+      ruta los cruza; esa es exactamente la razon de que sean mudos.
+
+LO QUE (d) NO CIERRA, Y SE DICE EN VEZ DE TAPARSE: el caso mayoritario, donde el
+bloque no existe. Donde declara esta app sus limites EN GENERAL es otra unidad
+del plan; no se contrabandea aca con un descargo permanente.
+
+
+------------------------------------------------------------------------------
+4 . EL DEFECTO POR DEBAJO — 07_medir_deteccion_por_vertice.txt
+------------------------------------------------------------------------------
+LA DETECCION MIRA VERTICES, NO TRAMOS. `canalesQueCruzaRuta` mide la distancia de
+cada WAYPOINT a la linea del canal, con buffer de 500 m. Como el string-pulling
+deja pocos waypoints y muy separados justo en agua abierta, una ruta puede cruzar
+un canal por el medio y no ser detectada.
+
+Unidad: metros al eje del canal. Medido sobre respuestas reales del endpoint:
+
+  Puerto Montt -> Ancud (el transito REAL del Canal Chacao), 41 waypoints
+    por vertice  817 m -> NO DETECTA          por tramo  2 m -> DETECTA
+  Cruce perpendicular del canal, 10 waypoints
+    por vertice 2492 m -> NO DETECTA          por tramo 19 m -> DETECTA
+  Puntilla de Tenglo -> Anahuac, 25 waypoints
+    por vertice   33 m -> DETECTA             por tramo  0 m -> DETECTA
+
+CONSECUENCIA: el 3 de 247 de H2 es una COTA SUPERIOR. Hay que restarle las rutas
+cuyos vertices no caen en el buffer, y ese numero NO esta medido.
+
+NO SE ARREGLA ACA (§4.8): la deteccion por tramo cambia lo que el backend emite
+para TODA ruta, y esta pieza es de render y tipado. Y NO SE TOCO EL BUFFER: subirlo
+hasta que el caso pase seria elegir el umbral que hace pasar la prueba (§0.3), no
+arreglar el mecanismo. VA COMO LINEA.
+
+
+------------------------------------------------------------------------------
+5 . EL CONTROL — ROJO ANTES, VERDE DESPUES
+------------------------------------------------------------------------------
+src/services/__tests__/sonda-al-patron.test.js, 13 pruebas.
+  ANTES del arreglo (03_rojo_antes.txt): 1 pasa · 12 FALLAN.
+  DESPUES (04_verde_despues.txt):       13 pasan · 0 fallan.
+  Suite completa (05_suite.txt): 170 -> 183, todas verdes.
+
+LA UNICA QUE YA ESTABA VERDE ES UNA PREMISA, NO UN DEFECTO: «con el default del
+backend (1,5 m) NINGUN canal dispara». Se deja para que se ponga roja si alguien
+cambia el default o la sonda de un paso, y lleva escrito que su rojo significa que
+la premisa de la pieza cambio.
+
+LA MORDIDA, con el control generico del arnes: se muta la clase y se comprueba que
+el selector devuelva vacio. Y ANTES se comprueba que la mutacion MUTO —«LA MUTACION
+NO MUTO»—, por el 13.º defecto de instrumento del 2026-08-21.
+
+EL ANCLA (C1(a)) ES POR IDENTIDAD, NO POR ORTOGRAFIA: el control comprueba que
+`CLASE_SONDA` de la PWA este en la lista de clases que el backend emite. Si alguien
+renombra la clase de un lado, el control se pone ROJO en vez de dejar de dibujar en
+silencio. Un ancla que buscara la frase «Derrotero» en el arbol de la PWA seria
+justo la guarda de prohibicion que §4.9 desautoriza.
+
+
+------------------------------------------------------------------------------
+6 . LA PANTALLA — 06_pantalla.txt
+------------------------------------------------------------------------------
+Montaje: PWA en 5174 y backend PROPIO en 3100. No se toco 3000 (PID 17800) ni
+5173 (PID 14072) de la otra sesion; el backend propio se mato POR PID.
+
+REGLA DE DECISION DE §7.1 — Y SU PREMISA NO SE CUMPLIA, ASI QUE SE DICE. §7.1
+parte el caso en «dato del backend» (levanto backend propio) o «PWA» (reuso el que
+corre). En el gate contesté PWA, y era correcto para la pieza TAL COMO ESTABA
+ESCRITA. Con la firma de I2(b) la pieza pasó a tocar los dos lados, o sea que la
+premisa de la regla dejo de valer: el backend de 3000 corre `node src/index.js` sin
+`--watch` y tenia el codigo viejo en memoria, asi que contra el la pantalla no
+probaba nada.
+
+  Lo que se hizo, y queda declarado: se levanto backend propio, se pago el choque
+  —`data/catalogo/estado_drift.json` QUEDO REESCRITO por el arranque, 4b5c6121 ->
+  89c2c53b— y se devolvio A LOS MISMOS BYTES escribiendo el snapshot encima, NO con
+  `git restore` (§7.1: restore trae CRLF y a partir de ahi `git status` miente).
+  Comprobado por sha256: 4b5c6121264b823aae96fa16baec575b012335e07cd3af6ecb97910cb5c13d8c,
+  1380 bytes, identico al de antes de arrancar. Los tres ` M` intocables siguen
+  fuera del indice.
+
+  Y `BACKEND_URL` esta hardcodeado a localhost:3000 en la PWA, asi que para apuntar
+  al backend propio hubo que cambiar esa linea y devolverla. Se devolvio y se
+  comprobo contra el DIFF, que es lo que manda: `git diff` no muestra esa linea.
+
+LO QUE LA PANTALLA DIJO, ruta Muelle Puntilla de Tenglo -> Caleta Pesquera
+Anahuac, nave de calado 12,0 m:
+
+  [BANDERA U] Navegar con precaucion
+    > Sonda documentada bajo el calado en Canal Tenglo
+  [!] Sonda del Derrotero bajo su calado (1)
+      «Su ruta cruza Canal Tenglo, donde el Derrotero SHOA documenta 11 m de sonda
+       en Canal Tenglo (p.291) — menos que su calado (12 m) mas margen de resguardo
+       (1.2 m). Posicion aproximada del dato: verifique con ecosonda antes de
+       navegar.»
+      «Esta comprobacion alcanza a 3 pasos del Derrotero: …»
+  [ancla] CONDICION DE PUERTOS — ZARPE verde Abierto · RECALADA verde Abierto
+
+LA PRUEBA DE QUE LA FUENTE COMPONE Y NO ES UN AMBAR PRESTADO: la lista de razones
+tiene UNA entrada y es la sonda; los dos puertos estan en VERDE sin restricciones;
+el clima es normal y la autonomia suficiente. Todas las demas fuentes dan Q y la
+bandera es U. ANTES DE ESTA PIEZA esta misma pantalla habria dicho BANDERA Q y
+«Condiciones favorables para navegar» con la sonda del Derrotero bajo la quilla.
+
+SITIO A, VERIFICADO EN PANTALLA: el bloque queda entre la tarjeta del veredicto y
+CONDICION DE PUERTOS. Ningun bloque existente cambio de orden. Consola: 0 errores.
+
+
+------------------------------------------------------------------------------
+7 . EL TEXTO — DE DONDE SALE CADA CADENA
+------------------------------------------------------------------------------
+SE BUSCO PRIMERO SI EL CATALOGO LO TENIA, que es el hallazgo de la capa B, y NO lo
+tiene: `/sonda|derrotero/i` sobre data/decreto/zonas_aviso.json (10 entradas) da
+false, y §10 de CONTRATO_MOTOR.md tampoco lo compone.
+
+LITERAL DEL BACKEND, se renderiza y no se redacta:
+  · la cadena de `advertenciasCotejoVertical`, una por canal cruzado.
+
+TEXTO NUEVO, redactado y FIRMADO por el owner el 2026-08-21:
+  [N1] encabezado  «Sonda del Derrotero bajo su calado (n)»
+  [N2] alcance     «Esta comprobacion alcanza a 3 pasos del Derrotero: …»
+  [N3] razon       «Sonda documentada bajo el calado en {canal}»
+
+[N3] VA SIN PERSONA, Y ES DECISION FIRMADA. El texto del backend esta en «usted» y
+las `razones` del veredicto estan en «tu»; las dos quedan en la misma pantalla. Se
+calca la salida de la cobertura —«Tramo de la ruta sin limite de jurisdiccion
+cargado»—, que no usa ninguna de las dos, para no agregarle una instancia a
+SESION-voseo-al-patron-2026-08-20::tuteo-al-patron-dentro-del-contrato-y-fuera-del-10
+por una linea. Alinear el registro de toda la pantalla es otra pieza.
+
+EL CANAL VIAJA COMO DATO, no se saca del texto. Se agrego el campo `canal` al
+objeto tipado en vez de parsear la cadena con una expresion regular: sacarlo del
+texto seria el mismo defecto que la clase existe para cerrar.
+
+
+------------------------------------------------------------------------------
+8 . LA FUENTE AL VEREDICTO, Y QUE MUEVE DE §2
+------------------------------------------------------------------------------
+FIRMADO: entra, topada en U y NUNCA UV. Dos fundamentos, y el primero decide solo:
+  · si se dibuja y no escala, S6 se rompe en el acto — la tarjeta diria «Zarpe
+    autorizado / Condiciones favorables» encima de «su calado mas margen no pasa».
+    Es el precedente O1 con los papeles cambiados: fabricar un caso nuevo de S6(b).
+  · el tope no se elige aca: `cotejo-vertical.js` ya argumenta en su cabecera por
+    que es advertencia y no bloqueo —6 de 7 registros tienen posicion aproximada—.
+    Una fuente que declara su propia posicion aproximada no cierra un puerto.
+
+QUE MUEVE, y LA CIFRA NO SE TOCA EN ESTA PIEZA:
+  S6(a) — sigue NO CUMPLE, y no se mueve. PERO SU MOTIVO ESCRITO QUEDA A MEDIAS:
+    cifra_spec2.json dice «la LISTA de fuentes esta INCOMPLETA … falta la altura de
+    marea contra el calado»; faltaban DOS fuentes y ahora falta UNA. Es la tercera
+    vez que el motivo de S6(a) cambia sin que el rotulo se mueva, y el propio JSON
+    advierte que arrastrar el motivo viejo seria escribir algo falso.
+  S6(b) — sigue NO CUMPLE, y NO se le agrega un caso nuevo, que es lo que pasaria
+    si se dibujara sin escalar.
+  S8   — sigue NO CUMPLE. Su fallo medido es otro. La opcion (d) del hueco decide
+    que TAMPOCO se le agrega uno.
+  S7   — SEÑALADO Y NO RESUELTO, por instruccion del owner. El texto trae cita
+    (p.291), pero el Derrotero NO es norma: CONTRATO_MOTOR.md:1149 dice que es
+    fuente de datos de backend. S7 admite las dos clases —cita normativa o «un dato
+    que nos falta»— y la pantalla no dice cual de las dos es. Es una distincion
+    real y no se resuelve de paso dentro de una pieza de render.
+  S1 S2 S3 S4 S5 S9 — sin cambio. La sonda no es jurisdiccion ni restriccion.
+
+EL ANCLAJE DE S6(a) SIGUE EN PIE PARA LA MAREA: `tide` no es parametro de
+`calcularVeredicto`. Lo que ya no se puede decir es que le falte la sonda — `ruta`
+SI es parametro desde hoy.
+
+
+------------------------------------------------------------------------------
+9 . LAS CINCO LINEAS QUE ESTA PIEZA DEJA
+------------------------------------------------------------------------------
+Ninguna se abre como fila; van como lineas, por instruccion del owner.
+
+L1 · La evidencia de D4D5::motivo-principal-muere-en-el-pasamanos QUEDA FALSA. Su
+     conteo dice «`advertencias`: 0 apariciones» y su CUARTA_INSTANCIA_2026_08_20
+     dice que la PWA no la lee CERO VECES. La fila NO cierra —lo que pide decidir
+     es si el pasamanos deja de ser una copia campo por campo—, pero su evidencia
+     envejecio por TRABAJO. Precedente identico:
+     PLAN-2::cobertura-jurisdiccional-muere-en-el-pasamanos.
+
+L2 · El motivo escrito de S6(a) en cifra_spec2.json queda a medias (ver §8).
+     DIRIGIDA A LA PIEZA DE LA CIFRA, para que la lleve en su alcance y no la
+     descubra — junto con L3 y con la deuda ya declarada de
+     publicar_cifra_spec2.js:134.
+
+L3 · El silencio del caso mayoritario queda ABIERTO y medido (§3). La opcion (d)
+     dice el alcance donde la app ya habla de sonda; donde declara sus limites en
+     general es otra unidad.
+
+L4 · S7 sobre el Derrotero: hay cita, pero de fuente de dato y no de norma, y la
+     pantalla no lo distingue (ver §8).
+
+L5 · `canalesQueCruzaRuta` mira VERTICES y no TRAMOS (§4). Medido con dos casos
+     reales. No arreglado, y el buffer NO se toco.
+
+
+------------------------------------------------------------------------------
+10 . DEFECTO DE INSTRUMENTO NUEVO — EL 14.º DE LA FAMILIA
+------------------------------------------------------------------------------
+`grep -c $'\r'` DIO 0 SOBRE UN FICHERO CON CRLF EN TODAS SUS LINEAS, en Git Bash
+sobre Windows. Se uso para comprobar que `sed -i` no hubiera cambiado los finales
+de linea al devolver `BACKEND_URL`; contesto que no habia CR ni antes ni despues, y
+era falso en los dos lados. Lo cazo que el sha256 no volviera al de antes y que los
+tamaños difirieran en exactamente 1225 bytes sobre 1225 lineas — un byte por linea.
+Confirmado con `od -c`: el fichero tenia `\r\n` y quedo con `\n`.
+
+  · Corre perfecto y mide otra cosa, como los trece anteriores.
+  · CONSECUENCIA REAL: NINGUNA. El repositorio no tiene .gitattributes y corre con
+    core.autocrlf=true, asi que git normaliza al leer: `git diff` muestra solo los
+    cambios de verdad y avisa «LF will be replaced by CRLF the next time Git touches
+    it». La identidad se probo CONTRA EL DIFF, que es lo que §7.1 manda —nunca
+    contra el tamaño ni contra `git status`—.
+  · COMO SE EVITA: para finales de linea, `od -c` o comparar tamaños contra lineas.
+    `grep` con un patron de CR no sirve en esta maquina.
+
+
+------------------------------------------------------------------------------
+11 . QUE NO SE TOCO
+------------------------------------------------------------------------------
+  · CONTRATO_MOTOR.md · CLAUDE.md · PLAN_JURISDICCION.md · el motor BRE.
+  · La cifra de §2 y su emisor. La fuente de marea y su Paso 0.
+  · El buffer de 500 m de canal-geometria.js, y la deteccion por vertice.
+  · Los cuatro pasos sin geometria: no se invento geometria para taparlos.
+  · Los tres ` M` intocables del backend, verificados fuera del indice al cerrar.
+  · Los procesos de la otra sesion: 3000 PID 17800 y 5173 PID 14072, vivos.
+
+==============================================================================
+FIN — VERIFICADO
+==============================================================================
+
+
+==============================================================================
+ENMIENDA DEL 2026-08-21 — LO QUE PASO DESPUES DE LA PRIMERA REDACCION
+==============================================================================
+Se AGREGA y no se reescribe (§3.3). Lo de arriba describe la pieza como se
+construyo primero; abajo esta lo que la revision del owner destapo, en orden.
+
+A · EL TEXTO QUE ESTA BITACORA CELEBRABA ERA FALSO EN SU LINEA DE ALCANCE.
+  N2 decia <<alcanza a 3 pasos: Canal Chacao, Canal Moraleda y Canal Tenglo>>.
+  Lo redacte ANTES de medir la deteccion por vertice y no volvi a mirarlo
+  despues: mi propia medicion volvio falso mi propio texto y ningun control lo
+  cazaba. Es la familia de <<insertar una fila puede volver falsa una linea viva
+  sin ponerla roja>>, aplicada a texto al patron y en la misma sesion.
+
+B · EL INSUMO ESTABA MAL Y NADIE LO HABIA VERIFICADO. Ver 09, 10 y 11.
+  Canal Tenglo cargaba 11,0 m -el extremo bajo del tramo MAS PROFUNDO- cuando
+  la misma pagina declara 1 m en bajamar frente a punta Hoffmann. La sonda de
+  9,5 m atribuida a Moraleda es del acceso E de Pilcomayo, y la fuente llama a
+  Moraleda <<profundo y sin peligro>>. Los tres que SI estaban limpios -Cruces,
+  Galvarino, Vidts, con <<profundidad minima>> declarada- son justo los que no
+  tienen geometria y nunca salen. EL DATO BUENO ERA EL QUE NO PODIA SALIR.
+
+C · TRES PUNTOS CIEGOS DE INSTRUMENTO, MIOS, EN LA MISMA MEDICION:
+  el guion de corte del OCR parte <<me- tros>>; los rangos <<de 5 a 27 metros>>
+  solo pegan el extremo ALTO al sustantivo; y excluir por la palabra <<ancho>>
+  tiraba el dato bueno de Chocoi. Los tres corregidos y declarados dentro del
+  instrumento. El primero lo tiene TAMBIEN el extractor original.
+  Y un CUARTO en la medicion 6: el regex encontro 4 toponimos y solo UNO nombra
+  el lugar de la sonda -los otros nombran donde SE FORMA el paso-. Por eso el
+  campo `punto_bajo` se llena a mano y no por extraccion.
+
+  (Y un QUINTO, de maquina y no de medicion: escribir esta enmienda con `node -e`
+  desde bash se comio la palabra entre backticks de la linea de arriba y dejo
+  <<campo  se llena a mano>>. Es el defecto ya fichado del backtick dentro de
+  `node -e`; lo caza releer el fichero escrito, no el exit code, que fue 0.)
+
+D · EL SITIO CAMBIO POR FIRMA DEL OWNER. Sitio A -arriba del todo- se revirtio:
+  va debajo de mareas y arriba de ETA. Mi argumento para ponerlo antes de
+  mareas era de MAQUETACION (el Paso 2 va a hacer crecer TideBlock) y el suyo
+  es de DECISION (la marea define la hora, la sonda es la condicion del fondo,
+  las dos antes del consumo). El mio no aguanta: crecer no cambia el orden.
+
+E · EL TEXTO CAMBIO DE TONO, NO SOLO DE PRECISION. Ver 08 para el detalle.
+  Y se midio antes: sacar la cita del cuerpo NO le agrega un caso a S7.
+
+F · UNA GUARDA DE PREMISA SE PUSO ROJA Y TENIA RAZON. La prueba que afirmaba
+  <<con el default de 1,5 m no dispara ningun canal>> llevaba escrito que su
+  rojo significaria que la premisa cambio. Al corregir Tenglo a 1,0 m, cambio:
+  ahora dispara. Se reescribio con la verdad nueva en vez de borrarla, y con
+  la consecuencia buena anotada -- aunque un cliente olvide mandar el calado,
+  Canal Tenglo avisa igual.
+
+G · LAS CIFRAS FINALES, contra el INDICE: suite 170 -> 187 · control de 17
+  pruebas · insumo de 7 registros con 2 evaluables (eran 3) y 2 verificados a
+  mano · declarativo IDENTICO en 93 · 91 · 84.
+
+==============================================================================
+FIN DE LA ENMIENDA — VERIFICADO
+
+
+==============================================================================
+SEGUNDA ENMIENDA — EL BARRIDO DE TODOS LOS TEXTOS (medicion 7)
+==============================================================================
+El owner pidio ver TODOS los textos que el bloque puede mostrar, renderizados
+de verdad y no listados de memoria. Instrumento: 12_render_todos_los_textos.js,
+que BUNDLEA los componentes reales de la PWA con esbuild y los pasa por
+react-dom/server. No hay ninguna cadena reescrita a mano en ese fichero: si
+alguien cambia una palabra en el JSX, la medicion cambia sola.
+
+DENOMINADOR — unidad: ESTADO DEL BLOQUE (visible, nº de tarjetas, rama de
+cada una). NO es <<cuantos textos distintos>>: el cuerpo lleva el calado de la
+nave, que es un numero libre, asi que los textos posibles son infinitos. Lo
+finito es el ESTADO.
+  pasos que hoy pueden disparar : 2 (Paso Chocoi rama B · Canal Tenglo rama A)
+  estados VISIBLES              : 2^2 - 1 = 3 (subconjuntos no vacios)
+  estado INVISIBLE              : 1, con NUEVE causas medidas
+  TOTAL                         : 4 estados
+
+DOS COSAS QUE APARECIERON AL MEDIR Y QUE LA LISTA DEL OWNER NO NOMBRABA:
+
+L6 · DOS TARJETAS SE ORDENAN POR EL INSUMO, NO POR LA RUTA. El bucle de
+  advertenciasCotejoVertical recorre la lista de pasos en el orden del JSON, que es el
+  del CSV, que es el de las PAGINAS del Derrotero. Medido: con una ruta que
+  cruza los dos, sale primero Chocoi (p.159) y despues Tenglo (p.291), sea cual
+  sea el orden en que la ruta los cruza. Un patron esperaria el orden de su
+  navegacion. NO SE ARREGLA ACA: ordenar por ruta exige saber en que waypoint
+  cae cada paso, que es justo lo que la deteccion por vertice no da. Queda
+  atado a la pieza de la deteccion.
+
+L7 · DEFECTO AJENO DESTAPADO POR EL BUNDLE, y no se toca (§4.8):
+  tmarea-pwa/src/components/DeportiveAlerts.jsx:533 hace un require() DENTRO DE
+  UN MODULO ESM y apuntando a una ruta QUE NO EXISTE -- pide ./maritime-geo.js
+  desde src/components/, y el fichero vive en src/utils/. No rompe el arranque
+  porque esta dentro de updatePosition() y solo se evalua si esa funcion corre;
+  el dia que corra, tira. Lo caza un bundler, no el navegador en dev.
+
+Y UN PUNTO CIEGO MAS DEL INSTRUMENTO, el sexto de la sesion: el filtro de las
+lineas del veredicto anclaba en INICIO DE LINEA, y el simbolo ▸ y el texto son
+dos <span> hermanos que al aplanar el HTML quedan PEGADOS. Daba CERO lineas
+sobre una pantalla que si las tiene. Lo cazo leer la salida, no el exit code,
+que fue 0.
+
+==============================================================================
+FIN DE LA SEGUNDA ENMIENDA — VERIFICADO
+
+
+==============================================================================
+TERCERA ENMIENDA — EL CANAL EN CADA TARJETA, Y LA MEDICION DE L7
+==============================================================================
+
+O1 · CADA TARJETA LLEVA SU CANAL COMO TITULO. Firma del owner, 2026-08-21,
+leyendo el estado 3 renderizado: con dos avisos el patron leia dos parrafos
+que arrancan los dos con <<Segun fuentes oficiales>> y ninguno decia de que
+canal hablaba. El de Chocoi dice <<en este paso>> sin que ningun paso este
+nombrado en el bloque; el de Tenglo dice <<frente a punta Hoffmann>> y hay
+que deducirlo.
+
+  DESCARTADA la alternativa de nombrar el canal DENTRO del cuerpo, y el
+  fundamento es el que decidio: toda esta pieza consistio en sacar la
+  identidad de la prosa y meterla en campos —canal, fuente, pagina,
+  punto_bajo—. Meter el canal de vuelta en el texto los vuelve a acoplar, y
+  encima cruza el borde otra vez por algo que es de PANTALLA.
+
+  El titulo NO es condicional: uno que aparece a veces deja al control
+  midiendo una estructura que la pantalla no siempre respeta. La forma se
+  calca de AvisoCard de CoberturaJurisdiccionalBlock.
+
+  EL ENCABEZADO NO SE TOCA. <<en su ruta>> no es el singular de canal: es el
+  ALCANCE, y es igual de cierto con una tarjeta que con dos. El numero lo
+  lleva el contador. La redundancia de tres niveles —linea del veredicto,
+  encabezado, titulo de tarjeta— se acepta por firma: cada uno se lee en un
+  momento distinto y ese ritmo ya existe en la pantalla.
+
+L7 · MEDIDA, Y NO ES SOLO CODIGO MUERTO.
+  tmarea-pwa/src/components/DeportiveAlerts.jsx:533 hace un require() dentro
+  de un modulo ESM, pidiendo ./maritime-geo.js desde src/components/ cuando
+  el fichero vive en src/utils/.
+
+  ALCANCE MEDIDO: updatePosition solo es alcanzable a traves del hook
+  useCapitaniaTracker (mismo fichero, linea 520), y ese hook tiene CERO
+  consumidores en toda la PWA: se exporta y nadie lo importa.
+  CONTROL POSITIVO DEL BARRIDO, para que el cero no sea un grep que no llega:
+  LicenseAlert, otro export del MISMO fichero, da 2 apariciones fuera de el
+  (VoyageVerdict.jsx:3 lo importa y :216 lo usa).
+
+  EL MATIZ, Y ES POR LO QUE SE ESCRIBE ASI (firma del owner): NO ES CODIGO
+  MUERTO QUE MOLESTA, ES CODIGO MUERTO CUYO PRIMER USO FALLA. Y su consumidor
+  natural es obvio —el seguimiento GPS de P4—, asi que quien cablee eso se lo
+  va a encontrar. Queda escrito para que lo encuentre ANTES y no despues.
+  NO SE TOCA (§4.8): no nace de una firma reciente, asi que se menciona.
+
+CIFRAS AL CERRAR: suite 170 -> 188. Control de 18 pruebas. Insumo de 7
+registros con 2 evaluables y 2 verificados a mano. Declarativo IDENTICO en
+93 · 91 · 84 · 26 · 17 · 9.
+
+==============================================================================
+FIN DE LA TERCERA ENMIENDA — VERIFICADO

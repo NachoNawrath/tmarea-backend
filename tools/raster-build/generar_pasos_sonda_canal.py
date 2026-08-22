@@ -29,19 +29,71 @@ OUT_JSON = r"C:\Users\katia\tmarea-backend\src\config\pasos-sonda-canal.json"
 CANALES_CON_GEOMETRIA = {"Canal Chacao", "Canal Tenglo", "Canal Moraleda"}
 
 
+# ---------------------------------------------------------------------------
+# VERIFICACION A MANO CONTRA EL TEXTO FUENTE — 2026-08-21
+#
+# La Sec 6.1 de docs/TMAREA_SPEC_Router_Raster_v1.md la pedia ANTES de cargar
+# ("Dato bien extraido, campo mal interpretado -- verificar caso por caso contra
+# el texto fuente") y no se habia corrido. Se corrio el 2026-08-21 sobre los 7,
+# leyendo el tomo cacheado; instrumentos reproducibles y salida cruda en
+# _bitacoras/advertencia_sonda_2026-08-21/ (mediciones 4, 5 y 6).
+#
+# ESTAS CORRECCIONES VIVEN ACA Y NO EN EL JSON A PROPOSITO: el JSON se REGENERA
+# desde el CSV, asi que una correccion aplicada solo al JSON la pierde en silencio
+# el proximo que corra este script. Puestas aca, sobreviven a la regeneracion.
+#
+# NO SE TOCA pasos_full.csv: es la salida cruda de la extraccion y tiene que
+# seguir diciendo lo que la extraccion produjo. Lo que se corrige es LA CARGA.
+VERIFICADO_A_MANO = {
+    "Canal Tenglo": {
+        "sonda_canal_min_m": 1.0,
+        # OJO: ESTA CADENA VA A PANTALLA, así que lleva acentos de verdad. El resto
+        # de los comentarios de este archivo están sin acentuar por convención del
+        # repositorio; este valor no es un comentario, es texto al patrón.
+        "punto_bajo": "frente a punta Hoffmann, la parte más angosta y baja del canal",
+        "_por_que": (
+            "El extractor cargaba 11.0, que es el extremo bajo del RANGO DEL TRAMO MAS "
+            "PROFUNDO: p.291 dice <<encontrandose MAYORES profundidades hacia su acceso SW, "
+            "donde hay de 11 a 21 metros>>. La misma entrada declara el punto bajo real: "
+            "<<frente a la punta Hoffmann, se sonda en bajamar apenas 1 metro, siendo esta "
+            "la parte mas angosta y baja del canal Tenglo>>, mas 6,1 m en la otra angostura "
+            "y 8,2 m en el acceso E. Cargar 11 dejaba SIN AVISO a toda nave de menos de "
+            "10,1 m de calado sobre un punto de 1 m: el error iba en la direccion INSEGURA."),
+    },
+    "Canal Pilcomayo. Acceso W": {
+        "canal": "Canal Pilcomayo",
+        "_por_que": (
+            "Estaba atribuida a CANAL MORALEDA y la sonda no es de ahi. p.482: <<Es profundo "
+            "y sin peligro; pero a medio canal en su ACCESO E hay una sonda de 9,5 metros>> "
+            "-- del canal Pilcomayo. Moraleda son ~200 km y la propia frase lo llama profundo "
+            "y sin peligro. Reatribuida a Canal Pilcomayo, que no tiene geometria, asi que "
+            "deja de poder salir a pantalla. Es ademas LA MISMA FRASE que la fila de p.538: "
+            "dos de los siete registros son la misma sonda."),
+    },
+}
+
+
 def main():
     registros = []
     with open(IN_CSV, encoding="utf-8") as f:
         for row in csv.DictReader(f):
             if not row.get("sonda_canal_min_m"):
                 continue
+            corr = VERIFICADO_A_MANO.get(row["nombre"], {})
+            canal = corr.get("canal", row["canal"])
             registros.append({
                 "nombre": row["nombre"],
-                "canal": row["canal"],
-                "sonda_canal_min_m": float(row["sonda_canal_min_m"]),
+                "canal": canal,
+                "sonda_canal_min_m": corr.get("sonda_canal_min_m", float(row["sonda_canal_min_m"])),
+                # El lugar que la fuente le pone a LA SONDA, no al paso. Null donde la
+                # fuente no lo nombra, y la rama del texto se elige por eso -- nunca
+                # por un regex sobre la prosa (§4.2). Medido: de 7, solo Canal Tenglo
+                # nombra el lugar de su sonda; los otros toponimos ubican EL PASO.
+                "punto_bajo": corr.get("punto_bajo"),
                 "geometria_ref": row["geometria_ref"],
                 "pagina": int(row["pagina"]),
-                "canal_geometria_disponible": row["canal"] in CANALES_CON_GEOMETRIA,
+                "canal_geometria_disponible": canal in CANALES_CON_GEOMETRIA,
+                "verificado_a_mano": row["nombre"] in VERIFICADO_A_MANO,
             })
 
     with open(OUT_JSON, "w", encoding="utf-8") as f:

@@ -1,0 +1,80 @@
+MEDICION 4 — LA FRASE DEL DERROTERO DETRAS DE CADA NUMERO
+==============================================================================
+
+Unidad: REGISTRO DE PASO. Denominador: los 7 con sonda documentada.
+Fuente: el tomo cacheado, pp. 141-623. Regex: el mismo de extract_full.py.
+
+==============================================================================
+Paso Chocoi — p.159 — cargado como sonda_canal_min_m = 5.0 m [CON GEOMETRIA]
+   canal al que se lo atribuye: Canal Chacao
+
+   FRASE FUENTE (contexto +-130 caracteres):
+     ...Paso Chocoi.- Carta No 7210. Se forma entre la punta Chocoi y la isla Doña Sebastiana, tiene 1,6 2 millas de ancho y de 5 a 27 metros de profundidad. Las corrientes en el paso Chocoi pueden tener bastante intensidad, donde la corriente de flujo pre- senta el mayor peligro, ya q...
+
+   FORMA DEL DATO EN LA FUENTE: RANGO 5 a 27 -> el extractor carga el MINIMO
+
+==============================================================================
+Canal Tenglo — p.291 — cargado como sonda_canal_min_m = 11.0 m [CON GEOMETRIA]
+   canal al que se lo atribuye: Canal Tenglo
+
+   NO SE REENCUENTRA LA FRASE en el fragmento de esta pagina.
+   (el extractor usa un corte de 700 caracteres o hasta la entrada siguiente)
+
+==============================================================================
+Canal Cruces — p.388 — cargado como sonda_canal_min_m = 6.6 m [sin geometria]
+   canal al que se lo atribuye: Canal Cruces
+
+   NO SE REENCUENTRA LA FRASE en el fragmento de esta pagina.
+   (el extractor usa un corte de 700 caracteres o hasta la entrada siguiente)
+
+==============================================================================
+Canal Pilcomayo. Acceso W — p.482 — cargado como sonda_canal_min_m = 9.5 m [CON GEOMETRIA]
+   canal al que se lo atribuye: Canal Moraleda
+
+   FRASE FUENTE (contexto +-130 caracteres):
+     ...esenta un ancho variable que no disminuye de 3 cables. Es profundo y sin peligro; pero a medio canal en su acceso E hay una sonda de 9,5 metros de profundidad que podría restringir el paso de una nave con demasiado calado. El canal Pilcomayo comunica el canal Moraleda con el fiordo Aysén...
+
+   FORMA DEL DATO EN LA FUENTE: VALOR UNICO 9,5
+
+==============================================================================
+Paso Galvarino — p.519 — cargado como sonda_canal_min_m = 10.0 m [sin geometria]
+   canal al que se lo atribuye: Paso Galvarino
+
+   FRASE FUENTE (contexto +-130 caracteres):
+     ...xtiende casi 1 milla en dirección general NNE-SSW y ofrece un ancho útil de no más de 80 metros en su parte más angosta y con una profundidad mínima de 10 metros. Comu- nica el seno Ventisquero con el puerto Puyuguapi. La costa W del paso Galvarino es acantilada y profunda; la del lado E, e...
+
+   FORMA DEL DATO EN LA FUENTE: PROFUNDIDAD (MINIMA) DE 10
+
+==============================================================================
+Canal Pilcomayo — p.538 — cargado como sonda_canal_min_m = 9.5 m [sin geometria]
+   canal al que se lo atribuye: Canal Pilcomayo
+
+   FRASE FUENTE (contexto +-130 caracteres):
+     ...esenta un ancho variable que no disminuye de 3 cables. Es profundo y sin peligro; pero a medio canal en su acceso E hay una sonda de 9,5 metros de profundidad que podría restringir el paso de una nave con demasiado calado. El canal Pilcomayo comunica el canal Moraleda 2 con el fiordo Ays...
+
+   FORMA DEL DATO EN LA FUENTE: VALOR UNICO 9,5
+
+==============================================================================
+Paso De Vidts — p.574 — cargado como sonda_canal_min_m = 12.5 m [sin geometria]
+   canal al que se lo atribuye: Paso Vidts
+
+   NO SE REENCUENTRA LA FRASE en el fragmento de esta pagina.
+   (el extractor usa un corte de 700 caracteres o hasta la entrada siguiente)
+
+==============================================================================
+
+RESUMEN — QUE ES CADA NUMERO EN LA FUENTE
+
+   paso                          cargado  forma en la fuente lo que dice la fuente
+   Paso Chocoi                       5.0  rango              5 a 27
+   Canal Tenglo                     11.0  no reencontrada    
+   Canal Cruces                      6.6  no reencontrada    
+   Canal Pilcomayo. Acceso W         9.5  unico              9,5
+   Paso Galvarino                   10.0  minima_declarada   10
+   Canal Pilcomayo                   9.5  unico              9,5
+   Paso De Vidts                    12.5  no reencontrada    
+
+   de 7 registros: 1 son el MINIMO DE UN RANGO · 2 valor unico · 1 minima declarada · 3 no reencontrada
+
+==============================================================================
+FIN DE LA MEDICION 4 — VERIFICADO
