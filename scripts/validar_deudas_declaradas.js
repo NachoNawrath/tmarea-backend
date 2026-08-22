@@ -74,6 +74,21 @@ const FICHERO = iArg !== -1 && process.argv[iArg + 1]
 // cierre—», asi que alojar ahi esta fila obligaria a volver falso ese campo, que
 // es un campo que ningun control mira. Mueve sitios 25->26 y barridos 16->17, y
 // se dijo antes de escribirlo. Decision del owner, 2026-08-21.
+//
+// EL VIGESIMOSEPTIMO, 'SESION-cifra-8de15-2026-08-21', se agrega el 2026-08-21 —
+// tercer sitio del mismo dia— por la pieza que movio la cifra a 8 de 15. SU
+// MOTIVO NO ES EL DE LOS DOS ANTERIORES y conviene decirlo: aquellos nacieron de
+// que otro sitio declaraba POR ESCRITO no barrer su asunto. Este nace de que la
+// deuda que abre NO ES DE LA CIFRA — es una regla sobre TODAS las suites de
+// mordida del arbol (CLAUDE.md 4.10), y ninguno de los 26 sitios anteriores podia
+// alojar una deuda de ese alcance sin volver falso su propio vocabulario.
+// Mueve sitios 26->27 y barridos 17->18, y se dijo antes de escribirlo.
+// Decision del owner, 2026-08-21.
+//
+// LA GUARDA DE LOS DOS LADOS MORDIO, y queda anotado porque es la primera vez que
+// se registra haciendolo: la fila entro al dato antes que a esta lista y [V2] la
+// rechazo por «contrabando»; despues el sitio entro al dato y [V5] lo rechazo por
+// no estar en la canon. Dos controles distintos, uno por lado, ninguno aflojado.
 // ---------------------------------------------------------------------------
 const SITIOS_CANON = [
   'PLAN-2',
@@ -102,6 +117,7 @@ const SITIOS_CANON = [
   'SESION-firma-s3d-s6a-2026-08-21',
   'SESION-cifra-s3d-2026-08-21',
   'SESION-u2-capa-b-2026-08-21',
+  'SESION-cifra-8de15-2026-08-21',
 ];
 
 const GRUPOS = {

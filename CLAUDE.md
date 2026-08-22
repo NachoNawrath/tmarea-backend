@@ -257,6 +257,8 @@ arreglo cuyo test nunca estuvo en rojo es un control que no puede fallar: pasa p
 construcción, y no prueba que el defecto existiera ni que se haya ido.
 
 **Su par es §4.9** — un control que sí puede fallar todavía puede estar comprobando otra cosa.
+**Y §4.10 cierra la familia**: una suite entera de controles que muerden y comprueban lo suyo
+puede, aun así, no estar midiendo nada — y el total que imprime no lo dice.
 
 ### 4.7 — Simplicidad primero
 
@@ -348,6 +350,45 @@ sostiene —el barrido de las guardas de texto vivas del árbol, cada una con su
 corrido— vive en la fila
 `METODO::una-guarda-de-texto-comprueba-que-lo-mencione-no-que-lo-afirme` del declarativo de
 deudas.
+
+### 4.10 — Con el control negativo en rojo, el numerador no vale n−1: vale CERO
+
+Regla del owner, 2026-08-21. **Vale para toda mordida de este árbol**, no para la que la
+produjo.
+
+Cierra la familia que abren §4.6 y §4.9. Allá: un control tiene que **poder** fallar; y uno que
+puede fallar todavía puede estar comprobando **otra cosa**. Acá: una suite entera de controles
+que sí muerden y sí comprueban lo suyo **puede no estar midiendo nada**, y el total que imprime
+no lo dice.
+
+**El mecanismo, y es simple una vez visto.** Una mordida afirma *«con el dato mutado, el
+instrumento tiene que detenerse»*. Si el instrumento **ya se detiene con el dato sin mutar**
+—porque el dato base es inválido—, entonces se detiene con cualquier mutación, todas las
+mordidas reportan `ok`, y **ninguna probó lo que dice probar**. El numerador se llena entero
+justamente cuando la medición vale cero.
+
+**El caso medido:** el 2026-08-21 se corrió la suite de `prueba_mordida_cifra.js` con el dato ya
+movido y el emisor todavía sin corregir. **Las once dijeron `ok`.** Lo único que lo delató fue el
+renglón de abajo — `FALLA copia intacta -> exit 1` —, y el total que el instrumento imprimió fue
+`12/13`. Crudo en `_bitacoras/cifra_8de15_2026-08-21/05_mordida_vieja_dato_nuevo.txt`.
+
+**Cómo se aplica, y es una lectura, no un instrumento nuevo:**
+
+1. El control negativo **no es el cierre cortés de la lista**. Es lo único que distingue «las n
+   guardas muerden» de «el instrumento está roto». Se lee **siempre y primero**.
+2. Un total **corto por el control negativo** no es un casi. **Los cuatro instrumentos de este
+   árbol acoplan el negativo a su total** —medido el 2026-08-21: `drift` y `ancla` lo nombran en
+   su línea de éxito, `deudas` y `cifra` lo cuentan dentro del denominador—, así que el síntoma
+   **nunca es `n/n`: es `n−1/n`**. Y esa forma se lee como una falla aislada cuando en realidad
+   es **la anulación de todas las demás**. Al citar un total corto, se dice **cuál** faltó.
+3. Vale para cualquier control cuya aserción sea *«esto tiene que fallar»* — mordidas, controles
+   de contención, guardas de texto —, porque en todos «falla siempre» es indistinguible de
+   «falla por lo que yo digo».
+
+Es **§2 aplicado a la suite y no a la guarda**: la medición tiene que probar lo que el número
+afirma, y un denominador que se llena por una causa ajena al mérito de cada caso es la misma
+trampa que la `política_de_conteo` de la cifra de §2 existe para impedir, un piso más abajo. La
+fila es `METODO::con-el-negativo-en-rojo-el-numerador-vale-cero`.
 
 ---
 

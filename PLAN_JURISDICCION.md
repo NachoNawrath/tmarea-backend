@@ -1387,7 +1387,7 @@ traslapados, 44.875,6 km², 10 de 64 sin geometría, insumo v1 con 11 jurisdicci
 del v2 y **todas en el corredor de Chiloé**, que es donde corren estas rutas—. Es **cota**, no
 medida exacta.
 
-#### La corrección de S2(c): ANULADA, no CUMPLE. Y la cifra es 5 de 15, con 2 anuladas.
+#### La corrección de S2(c): ANULADA, no CUMPLE. Y la cifra es 8 de 15 al 2026-08-21, con 2 anuladas.
 
 La medición de §2 del 2026-08-20 dio **S2(c) NO CUMPLE** porque la bahía 114 —Canal Chacao,
 Capitanía Calbuco, en la ruta— tenía restricción vigente y no aparecía, y la ruta no la cruza.
@@ -1397,10 +1397,11 @@ Capitanía Calbuco, en la ruta— tenía restricción vigente y no aparecía, y 
 sostiene subiría la cifra **sin que la pantalla cambiara un píxel**, que es el mismo modo de falla
 que la `politica_de_conteo` del declarativo existe para impedir. Lo que baja es el **denominador**:
 
-> **5 de 15, con 2 anuladas por decisión del owner.**
-> CUMPLE **5 de 15** (S2a, S2b, **S3d**, S5a, S9) · NO CUMPLE **10 de 15** · ANULADAS **2**: S2(c)
-> por D5 y S5(b) por D4. Antes era 4 de 17 y después 4 de 15, ~~y el numerador no se movió ni una
-> vez~~ — **se movió el 2026-08-21, y esa vez fue TRABAJO.**
+> **8 de 15 al 2026-08-21, con 2 anuladas por decisión del owner.**
+> CUMPLE **8 de 15** (S2a, S2b, **S3a, S3b, S3c, S3d**, S5a, S9) · NO CUMPLE **7 de 15** ·
+> ANULADAS **2**: S2(c) por D5 y S5(b) por D4. Antes era 4 de 17 y después 4 de 15, ~~y el
+> numerador no se movió ni una vez~~ — **se movió el 2026-08-21, y esa vez fue TRABAJO.**
+> ~~Y esa vez~~ **Esas dos veces: el mismo día, a las 15:04 y a las 18:11.**
 
 > **MOVIDA EL 2026-08-21 POR LA FIRMA DE S3(d).** El tachado de arriba no se borra: «el numerador
 > no se movió ni una vez» fue **cierto durante un día** y describe las dos primeras veces que este
@@ -1428,52 +1429,110 @@ que la `politica_de_conteo` del declarativo existe para impedir. Lo que baja es 
 > fuente que no existe, y **ninguna capa de U2 la trae**. Medición en
 > `_bitacoras/firma_s3d_s6a_2026-08-21/`.
 
+> **MOVIDA OTRA VEZ EL MISMO DÍA, TRES HORAS Y SEIS MINUTOS DESPUÉS — S3(a), S3(b) y S3(c).**
+> Nada del bloque de arriba se borra: describe el movimiento de las 15:04 y sigue siendo exacto.
+>
+> **La capa B de U2 le dio bloque propio al aviso de cobertura** y las tres pasaron a **CUMPLE**,
+> medidas en pantalla y firmadas por el owner: seis cadenas de falso a verdadero. **S3(b) cumplía
+> antes de forma vacía** —no había bloque que pudiera estar mal puesto— y ahora cumple de verdad.
+> **S3(c) cerró entera porque se pagó una segunda ruta**, Puerto Edén → Tortel, donde el bloque
+> muestra la derivación genérica por VHF y **no** muestra contacto: el owner prefirió pagar esa
+> medición antes que firmar mitad y mitad, como hubo que hacer con el «nunca» de S3(d).
+>
+> **Y S3 DEJA DE ESTAR DIVIDIDO.** La ventana muda de O1 **se apaga**, y se apaga por donde su
+> propia condición decía: estaba enunciada como **estado** —*mientras S3 esté dividido*— y el
+> estado terminó.
+>
+> **LO QUE ESTE MOVIMIENTO ENSEÑA, Y NO ES SOBRE S3:** la medición existía desde el 2026-08-21 en
+> `_bitacoras/u2_capa_b_2026-08-21/` §6, que la declara y **deliberadamente no mueve el dato**
+> —«la cifra no se mueve acá… la mueve la pieza siguiente»—. Entre esa pieza y ésta el emisor
+> **sub-reportó**: publicaba 5 sobre un árbol que valía 8, y esa ventana estaba **anunciada por
+> escrito antes de abrirse**. Una ventana declarada no es un descuido; pero se cierra en la pieza
+> siguiente y no más tarde, **porque el sub-reporte se compone** — la unidad U3 mueve +2, y
+> cerrarla con la cifra sin mover habría publicado 7 sobre un árbol que valdría 10. Medición de
+> esta pieza en `_bitacoras/cifra_8de15_2026-08-21/`.
+
 **LA CIFRA NO SE PUBLICA PELADA. Es regla del owner, del 2026-08-20, y vale para toda cita de
 este número en cualquier documento, bitácora o mensaje de commit.** La forma legal es
-**«5 de 15, con 2 anuladas por decisión del owner»**; «5 de 15» a secas está prohibido, porque un
-ratio que sube cuando se derogan criterios se lee como progreso. El dato y su política viven en
-`data/spec2/cifra_spec2.json`, que es su autoridad, y `npm run cifra` es lo único que la emite. Un
-instrumento que la imprima de otra forma es un defecto de instrumento.
+**«8 de 15 al 2026-08-21, con 2 anuladas por decisión del owner»**; «8 de 15» a secas está
+prohibido, porque un ratio que sube cuando se derogan criterios se lee como progreso. El dato y
+su política viven en `data/spec2/cifra_spec2.json`, que es su autoridad, y `npm run cifra` es lo
+único que la emite. Un instrumento que la imprima de otra forma es un defecto de instrumento.
 
 > **ESTE RENGLÓN LLEVA LA CIFRA DOS VECES Y EN ROLES OPUESTOS** — la primera es la forma **legal**,
 > la segunda el ejemplo de la **prohibida** —, así que un reemplazo global reescribe la prohibición
 > en el mismo acto de actualizar la regla. Las dos se movieron el 2026-08-21, **a mano y una por
-> una**. Queda dicho para el próximo que mueva la cifra.
+> una**. Queda dicho para el próximo que mueva la cifra. **Se movieron así DOS VECES ese día**, y
+> la segunda con el renglón ya advertido: la advertencia sirvió.
 >
 > **Y el motivo se enmienda, porque desde el 2026-08-21 dice de menos.** La regla nació contra un
 > ratio que sube **por derogación**, y ése era el único caso que había. Ahora hay dos causas que
 > se ven **idénticas en el ratio y no valen lo mismo**: las dos primeras veces el denominador bajó
-> y el numerador no se movió; la tercera, S3(d) pasó a CUMPLE **por trabajo**. La salvedad sigue
-> siendo obligatoria por la misma razón de siempre, sólo que ahora también protege al revés: sin
-> ella, un movimiento ganado se lee igual que uno regalado.
+> y el numerador no se movió; ~~la tercera, S3(d) pasó a CUMPLE **por trabajo**~~ — **la tercera y
+> la cuarta, S3(d) y después S3(a)(b)(c), pasaron a CUMPLE por trabajo, las dos el mismo día**. La
+> salvedad sigue siendo obligatoria por la misma razón de siempre, sólo que ahora también protege
+> al revés: sin ella, un movimiento ganado se lee igual que uno regalado.
+>
+> **LA FORMA LEGAL GANA SU FECHA — firma del owner del 2026-08-21, recomendada tres veces antes.**
+> Ya no es «8 de 15, con 2 anuladas»: es **«8 de 15 al 2026-08-21, con 2 anuladas por decisión del
+> owner»**. El motivo es una **tercera causa** que tampoco se ve en el ratio y que todavía no
+> ocurrió: **el denominador va a subir por ESCRITURA**, no por trabajo — S10 y el punto de P4 están
+> firmados y sin escribir —, y cuando suba la cifra **baja en ratio sin que nada haya empeorado**.
+> La fecha es lo único que distingue «el numerador no se movió» de «el denominador se movió
+> debajo». Se ató ahora porque atarla después obligaba a reabrir estos mismos renglones.
+> **Y la forma de ayer —con salvedad y sin fecha— deja de ser legal sin pasar a `forma_prohibida`**:
+> aquélla nombra la cifra **pelada**, que es un defecto de otra clase, y meter las dos en la misma
+> ranura borraría la diferencia que la ranura existe para marcar.
 
 **Y la vista por punto lleva sus notas, porque sola miente peor.** Con S2(c) y S5(b) anuladas, S2 y
-S5 dejaron de estar divididos y pasaron a CUMPLE; con S3(d) cumpliendo, **S3 se partió**:
+S5 dejaron de estar divididos y pasaron a CUMPLE; ~~con S3(d) cumpliendo, **S3 se partió**~~ —
+**y con S3(a)(b)(c) cumpliendo también, S3 se volvió a juntar y entró ENTERO a CUMPLE**:
 
-> **UNÁNIMES 8 de 9** (antes 9) · CUMPLE **3** — S2, S5, S9 — (antes **3**) · NO CUMPLE **5** —
-> S1, S4, S6, S7, S8 — (antes 6) · **DIVIDIDOS 1 — S3** (antes 0).
+> **UNÁNIMES 9 de 9** (antes 8) · CUMPLE **4** — S2, S3, S5, S9 — (antes **3**) · NO CUMPLE **5** —
+> S1, S4, S6, S7, S8 — (antes 5) · **DIVIDIDOS 0** (antes 1 — S3).
 > **S2 y S5 llegaron a CUMPLE por DEROGACIÓN, no por trabajo. La pantalla no cambió un píxel.**
-> **S3 quedó DIVIDIDO por TRABAJO, no por derogación: S3(d) cumple desde las capas A+C y
-> S3(a)(b)(c) siguen sin cumplir porque el aviso no se renderiza. El CUMPLE por punto NO subió —
-> un punto salió de NO CUMPLE y no entró a CUMPLE.**
+> **S3 llegó a CUMPLE ENTERO por TRABAJO: sus cuatro mitades cumplen — S3(d) por las capas A+C y
+> S3(a)(b)(c) por la capa B. Es el ÚNICO punto de esta vista que se ganó trabajando; de los otros
+> tres, S2 y S5 llegaron por anulación y S9 cumplía desde la primera medición.**
 
-> **SON DOS NOTAS Y NO UNA, Y DICEN COSAS DE SIGNO OPUESTO SOBRE LA MISMA VISTA.** Una, que un
-> punto llegó a CUMPLE sin que nadie trabajara. La otra, que un punto se partió **porque** alguien
-> trabajó. Leer cualquiera de las dos sola deforma la vista en una dirección distinta, así que
-> viven en **campos separados** de `cifra_spec2.json`, cada uno con **su propia guarda** en el
-> emisor: borrables por separado es detectables por separado.
+> **EL RENGLÓN TACHADO DE ARRIBA NO SE BORRA, y acá vale doble:** «S3 se partió» fue cierto
+> durante tres horas y seis minutos, y esa división **era** la ventana muda que la firma O1
+> aceptó. Borrarla dejaría sin sentido la condición de esa firma, que se enunció como estado
+> —*mientras S3 esté dividido*— justamente para poder apagarse sola. **Se apagó.**
+
+> **SON DOS NOTAS Y NO UNA, Y DICEN COSAS DE SIGNO OPUESTO SOBRE LA MISMA VISTA.** Una, que **dos**
+> puntos llegaron a CUMPLE sin que nadie trabajara. La otra, que **un** punto llegó a CUMPLE
+> **porque** alguien trabajó. Leer cualquiera de las dos sola deforma la vista en una dirección
+> distinta, así que viven en **campos separados** de `cifra_spec2.json`, cada uno con **su propia
+> guarda** en el emisor: borrables por separado es detectables por separado.
 >
-> **Y las dos fotos `antes` se acumulan en vez de pisarse** (decisión del owner, 2026-08-21):
-> la nota de derogación se prueba con la foto de {unánimes 7, divididos 2, cumple 1}, y la de S3
-> dividido con la de {9, 0, 3}. Una sola ranura obligaría a dejar una de las dos notas **sin su
-> número al lado**, que es una regla del owner sin evidencia — el modo de falla que este fichero
-> existe para impedir. La serie completa, cada foto con de cuándo es y qué la movió, la emite
-> `npm run cifra`.
+> **LA SEGUNDA NOTA CAMBIÓ DE AFIRMACIÓN EL 2026-08-21 SIN CAMBIAR DE PAPEL** —decía que S3 quedaba
+> DIVIDIDO por trabajo y ahora dice que entró ENTERO por trabajo—, **y su clave con ella**:
+> `nota_obligatoria_s3_dividido` pasó a `nota_obligatoria_s3_por_trabajo`. Una clave que dice
+> «dividido» colgando de un texto que afirma «entero» es el mismo género de defecto que este
+> fichero persigue. **Lo que no cambió es para qué existe:** que nadie lea el CUMPLE de S3 como si
+> fuera del mismo tipo que el de S2 y S5.
 >
-> **La división de S3 no es permanente y ése es el punto:** es la **ventana muda** que la firma O1
+> **Y LAS DOS GUARDAS TIENEN QUE SER MUTUAMENTE EXCLUYENTES, no sólo distintas** (§4.9). Ninguna de
+> las dos notas puede satisfacer a la guarda de la otra, y eso son **dos** afirmaciones, no una: se
+> miden **en las dos direcciones**, con dos mordidas cruzadas. La que existía probaba una sola —que
+> la nota de S3 no pudiera hacerse pasar por la de derogación—; la simétrica entró el 2026-08-21.
+>
+> **Y las fotos `antes` se acumulan en vez de pisarse** (decisión del owner, 2026-08-21): la nota de
+> derogación se prueba con el salto de {unánimes 7, divididos 2, cumple 1} a {9, 0, 3} —donde el
+> CUMPLE sube de 1 a 3 sin que la pantalla cambie—, y la de S3 por trabajo con el de {8, 1, 3} a
+> {9, 0, 4}, que es la única vez que un punto entero se ganó trabajando. Una sola ranura obligaría a
+> dejar una de las dos notas **sin su número al lado**, que es una regla del owner sin evidencia — el
+> modo de falla que este fichero existe para impedir. La serie completa, cada foto con de cuándo es
+> y qué la movió, la emite `npm run cifra`.
+>
+> ~~**La división de S3 no es permanente y ése es el punto:** es la **ventana muda** que la firma O1
 > del 2026-08-20 aceptó —el veredicto deja de mentir y el patrón todavía no puede leer por qué—, y
-> **se apaga sola cuando entre la capa B**. La condición de esa firma se enuncia como **estado**, no
-> como conteo de piezas: vale *mientras S3 esté dividido*, y desde hoy eso está **en el dato**.
+> **se apaga sola cuando entre la capa B**.~~ **LA CAPA B ENTRÓ Y LA VENTANA SE APAGÓ**, el mismo
+> 2026-08-21. El párrafo tachado no se borra porque describe la condición y la condición se cumplió
+> como estaba escrita: se enunció como **estado** —*mientras S3 esté dividido*— y no como conteo de
+> piezas, y por eso pudo apagarse sola cuando el estado terminó. Entre el ítem 1 y el ítem 2 se
+> metió una pieza más, la de la cifra; un conteo de piezas no habría servido.
 
 **Y en su lugar queda una afirmación NUEVA que NO está medida.** La regla del owner genera su
 propio enunciado — llamémoslo **S2(c′)**: *una restricción le llega si y sólo si su trazado navega

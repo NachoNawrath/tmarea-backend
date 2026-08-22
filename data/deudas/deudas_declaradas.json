@@ -480,6 +480,21 @@
         "filas_en_este_declarativo": 1,
         "nota": "Mismo precedente que SESION-cifra-s3d-2026-08-21: una sesion es un sitio de deuda propio, y se crea el mismo dia de su barrido por la pieza que inserta su unica fila. SE CREA SITIO PROPIO Y NO SE ALOJA EN UNO EXISTENTE por el mismo motivo medido que aquella: SESION-cobertura-capas-a-c-2026-08-20 declara POR ESCRITO en su `nota` que NO barre «la capa B —el bloque que dibuja el aviso, item 2 del orden del plan de cierre—», asi que meter esta fila ahi obligaria a volver falso un campo que ningun control mira. Crear el sitio mueve dos cifras mas de las previstas —sitios 25->26 y barridos 16->17— y se dice antes de escribirlo. LO QUE ESTA PIEZA NO BARRIO Y NO SE DECLARA ACA, y va como linea en su bitacora: la asimetria de que la cobertura pone linea en `razones` y drift no; que el array `capitanias` no trae `telefono_atomico` y por eso el bloque no arma `tel:`; y que la guarda de la nota de S3 va a exigir una nota que ya sera mentira, que es alcance de la pieza de la cifra.",
         "bitacora": "_bitacoras/u2_capa_b_2026-08-21/"
+      },
+      {
+        "id": "SESION-cifra-8de15-2026-08-21",
+        "repo": "tmarea-backend",
+        "fichero": "_bitacoras/cifra_8de15_2026-08-21/",
+        "seccion_por_titulo": "deudas que genera el movimiento de la cifra a 8 de 15 al 2026-08-21",
+        "vocabulario_del_barrido": [
+          "la UNICA deuda que esta pieza abre y que no es de la cifra: que si el dato base de un instrumento ya es invalido, TODAS sus mordidas pasan al vacio y solo el control negativo lo ve. Se barre esa regla —aplicada en CLAUDE.md 4.10— y NO se barre su consecuencia: ninguna de las otras suites de mordida del arbol se reviso bajo ese criterio."
+        ],
+        "orden": 12,
+        "barrido": true,
+        "barrido_el": "2026-08-21",
+        "filas_en_este_declarativo": 1,
+        "nota": "Segundo sitio de sesion creado el mismo dia, y el precedente es el de SESION-u2-capa-b-2026-08-21: una sesion es un sitio de deuda propio y se crea el dia de su barrido, por la pieza que inserta su unica fila. Crear el sitio mueve dos cifras mas de las previstas y se dice antes de escribirlo. LO QUE ESTA PIEZA NO BARRIO Y VA COMO LINEA EN SU BITACORA, no como fila: (L1) publicar_cifra_spec2.js normaliza una tilde que el dato no tiene, o sea un no-op que ademas tolera una forma_legal acentuada, que es lo que la convencion del fichero prohibe — el owner decidio el 2026-08-21 que queda como linea y NO se toca; (L2) el pie del emisor lleva numeros escritos a mano y va a envejecer, y no se deriva porque obligaria a `npm run cifra` a recorrer los dos repos en cada corrida; (L3) la guarda de una nota puede caducar en ROJO pero EXIGIENDO la mentira, que es el limite de la forma positiva y no lo arregla el reanclaje. LO QUE TAMPOCO BARRE, y es de otro frente: el barredor de copias a mano de la cifra sigue sin construirse — vive en D4D5::la-cifra-tiene-emisor-pero-no-tiene-guardia, que esta pieza REMIDIO y dejo viva.",
+        "bitacora": "_bitacoras/cifra_8de15_2026-08-21/"
       }
     ]
   },
@@ -2995,7 +3010,29 @@
       },
       "costo_estimado": "REVISADO EL 2026-08-21 CON MEDICION, Y EL ESTIMADO VIEJO SE QUEDABA CORTO POR EL MOTIVO EQUIVOCADO. Decia: «Bajo si alcanza con un control que barra los .md y las bitacoras buscando el patron \"N de 15\" sin su salvedad; el declarativo ya tiene un validador donde colgarlo. Alto si se quiere un gancho de commit, que es infraestructura y toca a todos.» Lo medido: 54 apariciones de la cadena vieja en 21 ficheros trackeados de tmarea-backend, 0 en tmarea-pwa. Y LA MAYORIA DE ESAS 54 TIENE QUE SEGUIR DICIENDO LA CADENA VIEJA: viven en bitacoras y son el registro de lo que era cierto cuando se escribieron. O sea que el barrido NO es un buscar-y-reemplazar ni un patron sobre .md: tiene que separar CITA HISTORICA de AFIRMACION VIVA, y esa distincion no esta en el texto — hay que decidirla. Eso es un instrumento nuevo con una decision de diseno adentro, no un grep. El estimado «bajo» describia el grep.",
       "depende_de": "Nada abierto.",
-      "por_que_muerde_mas_desde_el_2026_08_21": "Porque la cifra SE MOVIO. Al pasar a 5 de 15, con 2 anuladas por decision del owner, toda copia escrita a mano quedo falsa DE GOLPE y el mismo dia. Mientras el numero no se movia, la carencia era teorica; hoy tiene 54 casos con nombre y apellido. La fila sigue VIVA y el barredor NO se construyo en la pieza de la cifra: meterlo ahi habria convertido una pieza de tres cosas en una de cuatro, y la cuarta con una decision de diseno sin tomar. Decision del owner, 2026-08-21."
+      "por_que_muerde_mas_desde_el_2026_08_21": "Porque la cifra SE MOVIO. Al pasar a 5 de 15, con 2 anuladas por decision del owner, toda copia escrita a mano quedo falsa DE GOLPE y el mismo dia. Mientras el numero no se movia, la carencia era teorica; hoy tiene 54 casos con nombre y apellido. La fila sigue VIVA y el barredor NO se construyo en la pieza de la cifra: meterlo ahi habria convertido una pieza de tres cosas en una de cuatro, y la cuarta con una decision de diseno sin tomar. Decision del owner, 2026-08-21.",
+      "remedido_el_2026_08_21_tras_el_SEGUNDO_movimiento": {
+        "medido_el": "2026-08-21",
+        "que_lo_gatillo": "La cifra se movio por SEGUNDA vez el mismo dia: de 5 de 15 a 8 de 15 al 2026-08-21, con 2 anuladas por decision del owner, al entrar S3(a)(b)(c). Cada movimiento vuelve falsa de golpe toda copia escrita a mano, asi que el numero de esta fila envejece con la cifra y no con el calendario.",
+        "cadena_invalidada_por_este_movimiento": {
+          "patron": "5 de 15",
+          "apariciones": 37,
+          "ficheros": 17
+        },
+        "cadena_invalidada_por_el_movimiento_anterior": {
+          "patron": "4 de 15",
+          "apariciones": 47,
+          "ficheros": 20
+        },
+        "en_la_pwa": 0,
+        "ambito_del_conteo": "git ls-files de tmarea-backend Y tmarea-pwa, MENOS _bitacoras/cifra_8de15_2026-08-21/, que es la evidencia de la pieza que midio. Esa evidencia aporta 27 apariciones mas en 9 ficheros y son CITAS por construccion: la bitacora de un movimiento de la cifra cita la cifra vieja y no puede no hacerlo. El conteo del 2026-08-20 —54 en 21 ficheros— era de UN solo repo y de OTRA cadena; no se compara con este y no lo corrige.",
+        "es_cota_no_medida": "El conteo NO separa CITA HISTORICA de AFIRMACION VIVA, y la mayoria de las apariciones DEBE seguir diciendo la cadena vieja porque viven en bitacoras. Es cota superior del barrido pendiente.",
+        "lo_unico_que_esta_pieza_si_barrio": "Los tres restos de «5 de 15» que quedaban en scripts/publicar_cifra_spec2.js y scripts/prueba_mordida_cifra.js se revisaron uno por uno: los tres son cita historica —dicen que la cabecera LLEVABA esa cifra, o citan el caso en que no_cumple valio 10— y por eso se dejaron. Tres de 37; el resto sigue sin barrer.",
+        "defecto_de_esta_fila_sobre_si_misma": "Este conteo tambien esta escrito a mano, en el pie del emisor y aca. O sea que la fila que declara «la cifra se puede escribir a mano y nadie lo ve» tiene su propia medicion escrita a mano en dos sitios. No se deriva porque derivarla obligaria a `npm run cifra` a recorrer los dos repos en cada corrida; lo que se hace en cambio es que los dos sitios lleven FECHA y apunten al crudo.",
+        "medicion": "_bitacoras/cifra_8de15_2026-08-21/10_conteo_copias_a_mano.txt",
+        "medido_sobre": "el arbol FINAL de la pieza, no el intermedio. El primer conteo dio 37 en 18 y se tomo antes de barrer PLAN_JURISDICCION.md; este se tomo despues.",
+        "la_medicion_se_contamina_al_reportarse": "MEDIDO TRES VECES EL MISMO DIA, y las tres de forma distinta. (1) El barrido saco 5 apariciones VIVAS de PLAN_JURISDICCION.md y el pie del emisor mas esta misma fila metieron 5 CITAS nuevas: el total quedo CLAVADO y solo bajaron los ficheros, 18 -> 17. (2) Al stagear la evidencia el conteo salto a 66 en 27 sin que nadie escribiera una copia nueva: la evidencia paso a estar trackeada. (3) El instrumento ESCRIBIA SU SALIDA dentro del arbol que contaba, asi que dos corridas seguidas daban numeros distintos; lo destapo un segundo instrumento que no reprodujo al primero, con 2 apariciones y 1 fichero de diferencia. SE ARREGLO DECLARANDO EL CORPUS, no persiguiendo un punto fijo: el instrumento se excluye a si mismo y ahora dos corridas seguidas dan igual. CONSECUENCIA PARA EL BARRIDO PENDIENTE: este numero PUEDE NO MOVERSE aunque el barrido avance, y PUEDE MOVERSE sin que nadie barra nada. No mide progreso — el mismo defecto que la cifra de 2, un piso mas arriba."
+      }
     },
     {
       "id": "D4D5::contrato-10-dice-transitar",
@@ -4288,6 +4325,43 @@
       "pregunta": null,
       "que_dato": null,
       "a_quien": null
+    },
+    {
+      "id": "METODO::con-el-negativo-en-rojo-el-numerador-vale-cero",
+      "token_local": null,
+      "espacio_de_nombres": "Metodo — suites de mordida y cualquier control cuya asercion sea «esto tiene que fallar»",
+      "sitio": "SESION-cifra-8de15-2026-08-21",
+      "repo": "tmarea-backend",
+      "texto_literal": null,
+      "sin_texto": true,
+      "donde": {
+        "fichero": "_bitacoras/cifra_8de15_2026-08-21/05_mordida_vieja_dato_nuevo.txt",
+        "seccion_por_titulo": "CONTROL NEGATIVO — la copia SIN mutar tiene que publicar en verde",
+        "cita_de_anclaje": "la linea que dice \"FALLA copia intacta -> exit 1  (el guard muerde lo que no debe)\" debajo de once lineas que dicen ok"
+      },
+      "abierta_el": null,
+      "abierta_el_lo_dice_el_documento": false,
+      "nota_fecha": "El documento no la fecha porque no estaba escrita en ninguna parte. Nace de la medicion del 2026-08-21 y el owner pidio ese mismo dia que quedara como REGLA y no como nota, y que valiera para toda mordida del arbol.",
+      "grupo": "1_cierra_con_lo_que_hay",
+      "estado": "viva",
+      "firma_owner": {
+        "firmada": true,
+        "fecha": "2026-08-21"
+      },
+      "redactada_no_aplicada": false,
+      "duplicada_de": null,
+      "titulo": "Con el control negativo en ROJO, el numerador no vale n-1: vale CERO. Si el dato base ya es invalido, TODAS las mordidas pasan al vacio — se cumplen por una causa ajena al merito de cada caso — y el total corto se lee como una falla aislada cuando es la anulacion de todas las demas",
+      "evidencia_en_el_arbol": {
+        "medido_el": "2026-08-21",
+        "lo_que_se_midio": "Se corrio prueba_mordida_cifra.js con el dato ya movido a 8 de 15 y el emisor todavia sin corregir. LAS ONCE MORDIDAS DIJERON ok. Ninguna probo lo que dice probar: el emisor se detenia por el dato base, asi que mutarlo no cambiaba el resultado. El instrumento imprimio 12/13 y la unica linea roja fue el control negativo.",
+        "por_que_pasa": "Una mordida afirma «con el dato mutado, el instrumento tiene que detenerse». Si el instrumento YA se detiene con el dato sin mutar, se detiene con cualquier mutacion. La asercion se cumple por una causa ajena al merito de cada caso.",
+        "lo_que_NO_es": "NO es un defecto de una mordida en particular ni se arregla mordida por mordida. Es una propiedad de la SUITE, y por eso la regla no vive en prueba_mordida_cifra.js sino en CLAUDE.md §4.10.",
+        "donde_vive_el_texto_canonico": "CLAUDE.md §4.10, aplicado el 2026-08-21. Cierra la familia que abren §4.6 —un control tiene que poder fallar— y §4.9 —uno que puede fallar todavia puede comprobar otra cosa—. Si el texto y esta fila dejan de decir lo mismo, manda la fila."
+      },
+      "costo_estimado": "La REGLA ya esta aplicada y no cuesta nada: es una LECTURA, no un instrumento. Lo que queda abierto, y por eso la fila esta VIVA, es el BARRIDO: ninguna de las otras suites de mordida del arbol se reviso bajo este criterio. Y NO ES LO QUE ESTA FILA DECIA ANTES: afirmaba que ninguna de las cuatro suites acoplaba su control negativo al total, y lo medido es AL REVES — las cuatro lo acoplan. drift imprime su linea de exito solo si fallas === 0; ancla afirma en la suya que el control negativo no mordio y que las N familias mordieron; deudas y cifra lo cuentan DENTRO del denominador. De ahi que el sintoma sea siempre un total CORTO en uno, y que el barrido pendiente no sea de formato sino de LECTURA: revisar que ningun total corto de este repo se haya leido como un casi.",
+      "depende_de": "Nada abierto.",
+      "lo_que_esta_fila_NO_pide": "No pide cambiar el formato de salida de las cuatro suites. Un instrumento que se autocalifique tambien puede mentir; lo que la regla exige es una LECTURA, y quien no la haga no se salva con un rotulo. Si al barrer aparece que el rotulo ayuda, esa es una decision aparte y con su medicion.",
+      "la_correccion_de_esta_fila": "CORREGIDA EL 2026-08-21, EL MISMO DIA EN QUE SE ESCRIBIO Y ANTES DE COMMITEAR. Su titulo y su costo_estimado nacieron con la afirmacion equivocada: que la suite podia dar «n/n» con el control negativo en rojo. Salio de un reporte mal medido y el owner la elevo a regla sin verificarla; la destapo una pregunta suya que iba para otro lado —«¿que pasa con los cuatro instrumentos que no la cumplen?»—, y al ir a medirlos resulto que ninguno la incumple. El id tambien se renombro: era METODO::un-n-sobre-n-con-el-negativo-en-rojo-no-es-una-medicion. LA EVIDENCIA NO SE TOCO Y ESO ES EL PUNTO: `evidencia_en_el_arbol` decia desde el primer minuto «el instrumento imprimio 12/13 y la unica linea roja fue el control negativo». El dato estuvo bien siempre; lo que fallo fue el titular que se le colgo encima, y nadie lo contrasto contra su propia evidencia hasta que una pregunta lateral obligo a medir."
     }
   ]
 }

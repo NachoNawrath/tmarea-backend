@@ -1,0 +1,347 @@
+==============================================================================
+LA CIFRA DE §2 PASA A 8 DE 15 AL 2026-08-21, CON 2 ANULADAS POR DECISION DEL
+OWNER — Y LA FORMA LEGAL GANA SU FECHA
+==============================================================================
+Fecha: 2026-08-21.  Shell: Git Bash sobre Windows 10 (CLAUDE.md §7.3).
+Repo: tmarea-backend.  La PWA no se toca en esta pieza.
+
+QUE HACE ESTA PIEZA, EN UNA LINEA: mueve el dato que la pieza anterior midio y
+declaro SIN mover, y cierra la ventana de sub-reporte que aquella dejo anunciada
+por escrito antes de abrirse.
+
+
+------------------------------------------------------------------------------
+0 . POR QUE AHORA, Y NO DESPUES DE U3
+------------------------------------------------------------------------------
+_bitacoras/u2_capa_b_2026-08-21/ §6 midio S3(a)(b)(c) contra la pantalla, las
+firmo CUMPLE, y escribio al lado:
+
+    «LA CIFRA NO SE MUEVE ACA. Se mide, se declara, y la mueve la pieza
+     siguiente. [...] VENTANA QUE ESTO ABRE, DICHA: entre esta pieza y la de la
+     cifra, el arbol se gana S3(a)(b)(c) y el emisor sigue publicando lo de
+     antes. Se paga con que SUB-REPORTA.»
+
+La ventana estaba declarada, no olvidada. Lo que decide el turno es que EL
+SUB-REPORTE SE COMPONE: la tabla §7 del plan de cierre dice que U3 mueve +2, asi
+que cerrar U3 con la cifra sin mover habria publicado 7 sobre un arbol que valia
+10. Una ventana de una pieza es una ventana; de dos, es una deriva.
+
+
+------------------------------------------------------------------------------
+1 . EL GATE, Y LAS DOS COSAS QUE REPORTE MAL
+------------------------------------------------------------------------------
+El gate (§5.6) se abrio leyendo el emisor entero, su mordida entera, el dato, §5
+del plan, el precedente de la pieza anterior y la fuente de los veredictos. Se
+reportaron cuatro hallazgos con opciones y recomendacion, y el owner firmo cinco
+decisiones: A (reemplazar la afirmacion de la nota, no borrarla), B (mutacion
+derivada), C (las dos guardas que faltaban), D (derivar la linea 204) y el
+denominador fechado.
+
+DOS DE LO QUE REPORTE EN EL GATE ESTABA MAL, Y LAS DOS SE CORRIGEN CON MEDICION:
+
+(1) DIJE QUE LA MORDIDA nº10 «SALE VERDE SIN MORDER». Sale ROJA. Medido en
+    09_probar_que_la_vieja_no_mordia.txt: con `divididos` en 0, la mutacion vieja
+    `divididos_cuales = []` deja el dato intacto, el emisor PUBLICA (exit 0) y la
+    mordida reporta FALLA. Caduca en rojo, o sea que se anuncia sola. El arreglo
+    (B) sigue siendo el correcto y el mismo; lo que cambia es la gravedad, y
+    decirlo importa porque una guarda que se anuncia sola no es lo mismo que una
+    que se apaga en silencio.
+
+(2) DIJE QUE LA AGUJA DE `forma_legal` LLEVABA TILDE. No la lleva: el dato dice
+    "decision del owner" en ASCII plano, como todo el fichero, que va sin tildes
+    porque el emisor lo imprime en la consola de Windows. La asercion del script
+    de aplicacion lo detuvo antes de escribir una sola letra.
+    CONSECUENCIA MEDIDA Y NO ARREGLADA: el `.replace('decisión', 'decision')` de
+    publicar_cifra_spec2.js NUNCA SE EJECUTA — normaliza una tilde que el dato no
+    tiene. Va como linea, abajo.
+
+
+------------------------------------------------------------------------------
+2 . EL HALLAZGO DE LA PIEZA, Y NO ES SOBRE LA CIFRA
+------------------------------------------------------------------------------
+    SI EL DATO BASE YA ES INVALIDO, LAS MORDIDAS PASAN TODAS AL VACIO.
+
+Medido en 05_mordida_vieja_dato_nuevo.txt. Se corrio la suite de mordidas con el
+dato ya movido a 8 de 15 y el emisor todavia sin corregir. Las ONCE dijeron `ok`
+— las once —, y ninguna probo lo que dice probar: el emisor se detenia por el
+dato base, asi que mutarlo no cambiaba el resultado. Una mordida que exige «el
+emisor tiene que detenerse» no prueba nada cuando el emisor ya se detiene.
+
+LO CAZO EL CONTROL NEGATIVO, Y SOLO EL:
+
+    CONTROL NEGATIVO — la copia SIN mutar tiene que publicar en verde:
+      FALLA copia intacta -> exit 1  (el guard muerde lo que no debe)
+    MORDIDA: 12/13
+
+DE AHI SE SIGUE UNA REGLA PARA CUALQUIER SUITE DE MORDIDAS DE ESTE REPO: el
+control negativo no es el cierre cortes de la lista — es lo unico que distingue
+«once guardas muerden» de «el emisor esta roto». Un `MORDIDA: n/n` con el
+negativo en rojo NO es un 100 %: es una medicion que no se hizo. Queda escrito en
+la cabecera de prueba_mordida_cifra.js como hallazgo (3), al lado de los dos que
+ese fichero ya tenia sobre si mismo.
+
+
+------------------------------------------------------------------------------
+3 . LO QUE SE MOVIO — EL DATO
+------------------------------------------------------------------------------
+20 reemplazos de aguja unica en data/spec2/cifra_spec2.json (03_aplicar_dato).
+
+  DENOMINADOR FINO          antes    ahora
+    cumple                      5        8   (+S3(a), S3(b), S3(c))
+    no_cumple                  10        7
+    vigente / anuladas       15 / 2   15 / 2  (sin cambio)
+
+  VISTA POR PUNTO           antes    ahora
+    unanimes                    8        9
+    divididos                   1        0   (S3 sale)
+    cumple                      3        4   (+S3)
+    no_cumple                   5        5   (sin cambio)
+    serie                   2 fotos  3 fotos
+
+  FORMA LEGAL
+    antes  : «5 de 15, con 2 anuladas por decision del owner»
+    ahora  : «8 de 15 al 2026-08-21, con 2 anuladas por decision del owner»
+    PROHIBIDA: «8 de 15» — la cifra pelada, como siempre.
+
+LA NOTA DE S3 CAMBIA DE AFIRMACION Y DE CLAVE.
+`nota_obligatoria_s3_dividido` -> `nota_obligatoria_s3_por_trabajo`. Decia que S3
+quedaba DIVIDIDO por trabajo; dice que entro ENTERO por trabajo. La clave se
+renombro en el mismo acto porque nombraba un ESTADO que dejo de ser cierto, y una
+clave que dice «dividido» colgando de un texto que afirma «entero» es el genero
+de defecto que este fichero persigue. No es lo que el owner firmo literalmente
+—firmo reemplazar la afirmacion— y por eso se dice acá y se ve en el diff crudo.
+
+LO QUE NO CAMBIO, Y ES EL PUNTO DEL CAMPO: para que existe la nota. La vista por
+punto pasa de 3 puntos cumplidos a 4, y sin la nota el cuarto se leeria igual que
+los dos que nadie se gano.
+
+
+------------------------------------------------------------------------------
+4 . LO QUE SE MOVIO — EL INSTRUMENTO
+------------------------------------------------------------------------------
+13 reemplazos de aguja unica en los dos scripts (06_aplicar_instrumento).
+
+EMISOR
+  · la forma compuesta gana la fecha, DERIVADA de `medido_el`, no literal.
+  · la guarda de la nota de S3, reanclada en «CUMPLE ENTERO por TRABAJO».
+  · TRES GUARDAS NUEVAS: p.cumple_cuales, p.no_cumple_cuales, p.que_movio_la_de_hoy.
+  · la ultima linea de la serie sale del dato y no de un literal.
+  · la cabecera pierde la cifra escrita a mano.
+
+MORDIDA — de 11 a 15, mas los 2 controles = 17.
+  · divididos_cuales: mutacion DERIVADA (empuja una entrada de mas).
+  · la cruzada, ahora EN LAS DOS DIRECCIONES.
+  · tres mordidas nuevas, una por guarda nueva.
+  · la cabecera pierde su conteo literal, por su propia leccion (1).
+
+POR QUE LAS DOS GUARDAS DE (C) VAN EN ESTA PIEZA Y NO EN UNA FILA: el emisor
+imprime cada lista PEGADA A SU NUMERO, y esta es la primera pieza que MUEVE
+p.cumple_cuales — de 3 a 4 entradas. Si se me pasaba agregar "S3", el emisor
+publicaba `CUMPLE 4 -> S2, S5, S9` sin que ninguna de las once guardas lo viera.
+El riesgo se materializaba en ESTA corrida, no en una futura.
+
+POR QUE LA CRUZADA SIMETRICA NO ABRE ALCANCE: reanclar una guarda de texto obliga
+a probar que distingue AFIRMAR de MENCIONAR (§4.9), y exclusion mutua son DOS
+afirmaciones, no una. Probarla en una sola direccion prueba que UNA de las dos
+guardas no se deja tapar. La simetrica es parte del reanclaje, no un anexo.
+
+
+------------------------------------------------------------------------------
+5 . LOS CONTROLES
+------------------------------------------------------------------------------
+  01_cifra_ANTES.txt ................ exit 0, publica «5 de 15, con 2 anuladas»
+  02_mordida_ANTES.txt .............. 13/13
+  04_instrumento_viejo_dato_nuevo ... exit 1, DOS guardas rojas — la de la forma
+                                      legal y la de la nota de S3, que caduco
+                                      EXIGIENDO la mentira, tal como la L3 de la
+                                      pieza anterior lo predijo
+  05_mordida_vieja_dato_nuevo ....... 12/13 — las once al vacio, ver §2
+  07_cifra_DESPUES.txt .............. exit 0, publica la forma nueva con fecha
+  08_mordida_DESPUES.txt ............ 17/17, control negativo en VERDE
+  09_probar_que_la_vieja_no_mordia .. PASA: la vieja no mordia, la nueva muerde
+  12_deudas.txt ..................... validador exit 0 · mordida 32/32
+  13_suite.txt ...................... 188 tests, 188 pass, 0 fail
+  15/16_*_FINAL.txt ................. cifra exit 0 · mordida 17/17 sobre el
+                                      arbol final
+
+
+------------------------------------------------------------------------------
+6 . LA FILA REMEDIDA, Y UN DEFECTO DE LA PROPIA MEDICION
+------------------------------------------------------------------------------
+D4D5::la-cifra-tiene-emisor-pero-no-tiene-guardia queda VIVA, con su texto
+intacto —tiene `texto_literal: null` y `sin_texto: true`, no hay texto que
+tocar— y con un campo NUEVO fechado, sin reescribir los viejos (§3.3).
+
+  "5 de 15" — la que este movimiento invalido ... 37 apariciones en 17 ficheros
+  "4 de 15" — la que invalido el anterior ....... 47 apariciones en 20 ficheros
+  en tmarea-pwa ................................. 0, las dos veces
+
+EL CORPUS SE DECLARA: todo lo trackeado de los dos repos MENOS el directorio de
+evidencia de esta pieza, que aporta 27 apariciones mas en 9 ficheros y son CITAS
+por construccion — la bitacora de un movimiento de la cifra cita la cifra vieja, y
+no puede no hacerlo.
+
+EL DEFECTO, MEDIDO TRES VECES EL MISMO DIA Y LAS TRES DISTINTO:
+LA METRICA SE CONTAMINA AL REPORTARSE.
+
+  (1) El primer conteo dio 37 en 18. Se barrieron las CINCO apariciones vivas de
+      PLAN_JURISDICCION.md y el conteo volvio a dar 37, porque el pie del emisor y
+      la propia fila metieron CINCO CITAS nuevas. El total quedo CLAVADO y solo
+      bajaron los ficheros, 18 -> 17.
+  (2) Al STAGEAR la evidencia, el mismo conteo salto a 66 en 27 sin que nadie
+      escribiera una copia nueva: `git ls-files` ve el indice, y la evidencia de
+      esta pieza paso a estar trackeada de golpe.
+  (3) EL INSTRUMENTO ESCRIBIA SU SALIDA DENTRO DEL ARBOL QUE CONTABA. Leia
+      14_conteo_FINAL.txt, lo contaba, y despues lo pisaba: dos corridas seguidas
+      daban numeros distintos. NO LO CAZO EL INSTRUMENTO — lo cazo un SEGUNDO
+      instrumento, un grep directo, que dio 66/27 contra 64/26. Dos apariciones y
+      un fichero de diferencia, y esa diferencia ERA la salida del propio script.
+
+SE ARREGLO DECLARANDO EL CORPUS, NO PERSIGUIENDO UN PUNTO FIJO: el instrumento se
+excluye a si mismo e informa lo propio aparte. Dos corridas seguidas ahora dan
+igual — comprobado.
+
+    UN CONTEO QUE NO SEPARA AFIRMACION VIVA DE CITA HISTORICA PUEDE NO MOVERSE
+    AUNQUE EL BARRIDO AVANCE, Y PUEDE MOVERSE SIN QUE NADIE BARRA NADA.
+
+Es el mismo defecto que la cifra de §2 tiene un piso mas arriba, y es la razon
+exacta por la que la fila declara que el barrido pendiente NO es un grep. Lo
+unico que esta pieza si barrio son los tres restos de la cadena vieja en el emisor
+y su mordida: se revisaron uno por uno, los tres son CITA HISTORICA, y se dejaron.
+Tres de treinta y siete.
+
+Y LA REGLA DE METODO QUE DEJA, porque no es sobre la cifra: UN NUMERO QUE NO
+AGUANTA UN SEGUNDO INSTRUMENTO NO SE PUBLICA. Acá el segundo instrumento era un
+grep de tres lineas y encontro un defecto de auto-referencia que el primero no
+podia ver desde adentro.
+
+Filas del declarativo: 93 antes, 93 despues. Esta pieza no abre ni cierra ninguna.
+
+
+------------------------------------------------------------------------------
+6 bis . EL REPARTO SE CORRIO, Y VA ANOTADO POR PEDIDO DEL OWNER
+------------------------------------------------------------------------------
+NO ES UN REPROCHE — es el registro. Palabras del owner: «eran mias y las tomaste».
+
+DOS DECISIONES QUE ERAN DEL OWNER Y TOME YO EN MEDIO DE LA PIEZA, sin traerlas
+como pregunta:
+
+  (a) RENOMBRAR LA CLAVE `nota_obligatoria_s3_dividido` ->
+      `nota_obligatoria_s3_por_trabajo`. Lo firmado era «reemplazar la afirmacion
+      de la nota, no borrarla». Renombrar la clave es mas que eso: toca cuatro
+      sitios y cambia el contrato del fichero con su emisor.
+  (b) DECLARAR EL CORPUS del conteo excluyendo la evidencia de esta pieza. Lo
+      pedido era «remedi el conteo y deja la fila viva con numero fresco». Elegir
+      que entra al denominador es elegir que dice el numero.
+
+LAS DOS SE FIRMARON DESPUES Y EL OWNER DIJO QUE LAS HABRIA FIRMADO SI SE LAS
+PREGUNTABA. Eso no las convierte en mias: las dos veces la alternativa era una
+frase, no una pieza, y en las dos habia una parada natural donde preguntarlas.
+
+POR QUE PASO, y es lo unico util de anotar: las dos apareciron MIENTRAS aplicaba,
+no al abrir. El gate (§5.6) junta las decisiones ANTES de escribir, y ninguna de
+estas existia todavia — el renombre nacio al escribir la nota nueva, y el corpus
+al ver que el conteo no se reproducia. Una pieza larga genera decisiones despues
+de su gate, y el gate no las cubre por construccion.
+
+LO QUE SE HACE CON ESO: cuando una decision del owner aparece a mitad de la
+aplicacion, se para y se pregunta, aunque parezca chica y aunque la respuesta
+parezca obvia. «Lo habria firmado» es exactamente el argumento que hace que no se
+pregunte la proxima, y la proxima puede no serlo.
+
+
+------------------------------------------------------------------------------
+6 ter . LA REGLA QUE SALE DE ACA — CLAUDE.md §4.10
+------------------------------------------------------------------------------
+Por decision del owner del 2026-08-21, el hallazgo de §2 NO queda como nota de
+esta bitacora: queda como REGLA del arbol.
+
+    ~~UN «n/n» CON EL CONTROL NEGATIVO EN ROJO NO ES UN 100 %:
+    ES UNA MEDICION QUE NO SE HIZO.~~   <-- ASI SE FIRMO, Y ERA FALSA
+
+    CON EL CONTROL NEGATIVO EN ROJO, EL NUMERADOR NO VALE n-1: VALE CERO.
+
+EL TITULAR SE CORRIGIO ANTES DE COMMITEAR, Y EL RENGLON TACHADO NO SE BORRA
+PORQUE ES EL CASO. Salio de un reporte mio MAL MEDIDO —yo le dije al owner que
+la suite podia dar «n/n» con el negativo en rojo— y el owner lo elevo a regla del
+arbol sin verificarlo. Lo destapo su propia pregunta: «si la clausula nace con
+cuatro instrumentos que no la cumplen, ¿que pasa con esos cuatro?». Al ir a
+medirlos aparecio que NINGUNO la incumple:
+
+  drift  : imprime «mordida N/N + control negativo» SOLO si fallas === 0
+  ancla  : linea de exito «el control negativo no mordio y las N familias mordieron»
+  deudas : total = MORDIDAS.length + 1 — el negativo esta EN el denominador
+  cifra  : igual, 17 = 15 mordidas + 2 controles
+
+Los cuatro declaran ademas en su cabecera: «Sale 0 solo si el control negativo NO
+muerde y TODAS las familias muerden». O sea que UN «n/n» CON EL NEGATIVO EN ROJO
+ES IMPOSIBLE EN ESTE ARBOL: el negativo rojo siempre baja el total.
+
+Y EL TEXTO SE DESMENTIA A SI MISMO TRES PARRAFOS ABAJO: el titular decia «n/n» y
+el caso medido, en la misma seccion, decia 12/13. El propio ejemplo lo refutaba y
+ninguno de los dos lo leimos junto al otro.
+
+LO QUE DE VERDAD PASO, Y ES PEOR QUE LO QUE ESCRIBI: el instrumento reporto bien
+—12/13, no 13/13—. El que fallo fui yo LEYENDO. Un total corto por el control
+negativo se lee como «casi todo bien, fallo una», cuando lo cierto es que el 12
+no valia 12: VALIA CERO. No resta un caso, anula el numerador entero. Eso es mas
+traicionero que un 100 % falso, porque no se ve como un 100 %: se ve como un casi.
+
+Y ES LA MISMA FAMILIA QUE VENIMOS PERSIGUIENDO TODO EL DIA — una afirmacion que
+nadie contrasto —, solo que esta vez no la firmo un documento viejo: la escribi yo
+mal y la firmo el owner sin verificarla, el mismo dia en que el resto de la pieza
+existia para cazar exactamente eso.
+
+Aplicada en CLAUDE.md §4.10, que cierra la familia de §4.6 —un control tiene que
+poder fallar— y §4.9 —uno que puede fallar todavia puede comprobar otra cosa—. Se
+enlaza desde §4.6. Su medicion vive en la fila
+METODO::con-el-negativo-en-rojo-el-numerador-vale-cero, y si el texto y
+la fila dejan de decir lo mismo, manda la fila.
+
+VALE PARA TODA MORDIDA DE ESTE ARBOL, no para la que la produjo. Lo que la fila
+deja ABIERTO: las otras cuatro suites —drift, ancla, deudas, y las que vengan— NO
+se revisaron bajo este criterio.
+
+Y AL ESCRIBIR LA FILA, DOS GUARDAS DEL DECLARATIVO MORDIERON DE VERDAD, una por
+lado: [V2] rechazo la fila porque su sitio no estaba declarado —«Entro de
+contrabando»— y despues [V5] rechazo el sitio por no estar en la canon del
+validador. Ninguna de las dos se aflojo (§0.3). Cifras del declarativo:
+filas 93 -> 94 · sitios 26 -> 27 · barridos 17 -> 18 · sin barrer 9.
+
+
+------------------------------------------------------------------------------
+7 . LO QUE APARECIO AL PASAR Y NO ABRE FILA — VAN COMO LINEAS
+------------------------------------------------------------------------------
+L1 · `publicar_cifra_spec2.js` normaliza una tilde que el dato no tiene:
+     `.replace('decisión', 'decision')` sobre un `forma_legal` que es ASCII plano.
+     Hoy es un no-op. Lo que SI hace es tolerar una `forma_legal` acentuada, que
+     es justo lo que la convencion del fichero prohibe —va a la consola de
+     Windows, donde un acento ya mato un control una vez—. No se toca: quitarlo
+     cambia el comportamiento en ese borde y eso es una decision, no una limpieza.
+
+L2 · El pie del emisor lleva numeros escritos a mano y VA A ENVEJECER, igual que
+     el que reemplaza. No se deriva porque derivarlo obligaria a `npm run cifra` a
+     recorrer los dos repos en cada corrida. Lo que se hizo en cambio: que lleve
+     FECHA y apunte a su crudo, que es lo unico que permite saber al leerlo si
+     todavia describe algo.
+
+L3 · La guarda de la nota de S3 caduco en ROJO y EXIGIENDO la mentira — para que
+     `npm run cifra` corriera habia que dejar escrita una nota ya falsa. El
+     reanclaje no arregla eso: es el limite de la forma positiva. Lo unico que lo
+     arregla es que alguien mire el rojo, y esta vez alguien lo miro.
+
+
+------------------------------------------------------------------------------
+8 . LO QUE ESTA PIEZA NO HIZO
+------------------------------------------------------------------------------
+· NO construyo el barredor de copias a mano. Mismo motivo que la pieza anterior:
+  separar cita historica de afirmacion viva es una decision de diseno adentro de
+  un instrumento nuevo, no un grep. La medicion de §6 lo confirma con numeros.
+· NO toco la PWA. Nada de esto se ve en pantalla.
+· NO abrio ni cerro filas.
+· NO toco los tres ` M` intocables del arbol, ni los servidores de la otra sesion
+  (3000 PID 17800 · 5173 PID 14072), que siguen vivos.
+
+==============================================================================
+FIN — VERIFICADO
+==============================================================================

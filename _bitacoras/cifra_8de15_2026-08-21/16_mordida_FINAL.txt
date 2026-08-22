@@ -1,0 +1,27 @@
+
+> tmarea-backend@0.1.0 cifra:mordida
+> node scripts/prueba_mordida_cifra.js
+
+MORDIDA — el emisor de la cifra de §2 tiene que DETENERSE con el dato mutado
+
+  ok    cumple + no_cumple != vigente  ->  exit 1
+  ok    vigente + anuladas != original  ->  exit 1
+  ok    el bloque anuladas pierde una entrada pero la cifra sigue diciendo 2  ->  exit 1
+  ok    forma_legal declarada que NO describe el dato  ->  exit 1
+  ok    la vista por punto pierde su nota obligatoria de derogacion  ->  exit 1
+  ok    por punto: divididos incoherente con unanimes  ->  exit 1
+  ok    por punto: un punto se pierde entre cumple, no_cumple y divididos  ->  exit 1
+  ok    la vista por punto pierde su nota obligatoria de S3 por trabajo  ->  exit 1
+  ok    la de derogacion se tapa con la de S3: la guarda de derogacion no se deja  ->  exit 1
+  ok    la de S3 se tapa con la de derogacion: la guarda de S3 no se deja  ->  exit 1
+  ok    divididos_cuales no concuerda con divididos  ->  exit 1
+  ok    la ultima foto de la serie deja de coincidir con `antes`  ->  exit 1
+  ok    por punto: cumple_cuales pierde una entrada y cumple sigue diciendo lo mismo  ->  exit 1
+  ok    por punto: no_cumple_cuales pierde una entrada y no_cumple sigue diciendo lo mismo  ->  exit 1
+  ok    la foto viva se queda sin decir que la movio  ->  exit 1
+
+CONTROL NEGATIVO — la copia SIN mutar tiene que publicar en verde:
+  ok    copia intacta -> exit 0
+  ok    el dato quedo byte a byte como estaba
+
+MORDIDA: 17/17
